@@ -312,7 +312,7 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-3">
                   {IPHONE_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
-                      {(s as { image?: string }).image && <img src={(s as { image?: string }).image} alt={s.label} className="w-14 h-14 object-contain mb-1" />}
+                      {(s as { image?: string }).image && <img src={(s as { image?: string }).image} alt={s.label} loading="lazy" className="w-14 h-14 object-contain mb-1" />}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${s.topPrice}</p>
                     </button>
