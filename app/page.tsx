@@ -5,43 +5,43 @@ const BRAND = "Top Cash Cellular";
 const PHONE = "(512) 960-9256";
 
 const IPHONE_SERIES = [
-  { id: "17", label: "iPhone 17", year: "2025", topPrice: 830, variants: [
+  { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 830, variants: [
     { id: "ip17pm", label: "iPhone 17 Pro Max", base: 830 },
     { id: "ip17p", label: "iPhone 17 Pro", base: 720 },
     { id: "ip17air", label: "iPhone 17 Air", base: 480 },
     { id: "ip17", label: "iPhone 17", base: 450 },
     { id: "ip17e", label: "iPhone 17E", base: 220 },
   ]},
-  { id: "16", label: "iPhone 16", year: "2024", topPrice: 500, variants: [
+  { id: "16", label: "iPhone 16", image: "/iphone16.png", year: "2024", topPrice: 500, variants: [
     { id: "ip16pm", label: "iPhone 16 Pro Max", base: 500 },
     { id: "ip16p", label: "iPhone 16 Pro", base: 420 },
     { id: "ip16plus", label: "iPhone 16 Plus", base: 330 },
     { id: "ip16", label: "iPhone 16", base: 310 },
     { id: "ip16e", label: "iPhone 16E", base: 170 },
   ]},
-  { id: "15", label: "iPhone 15", year: "2023", topPrice: 310, variants: [
+  { id: "15", label: "iPhone 15", image: "/iphone15.png", year: "2023", topPrice: 310, variants: [
     { id: "ip15pm", label: "iPhone 15 Pro Max", base: 310 },
     { id: "ip15p", label: "iPhone 15 Pro", base: 270 },
     { id: "ip15plus", label: "iPhone 15 Plus", base: 210 },
     { id: "ip15", label: "iPhone 15", base: 190 },
   ]},
-  { id: "14", label: "iPhone 14", year: "2022", topPrice: 240, variants: [
+  { id: "14", label: "iPhone 14", image: "/iphone14.png", year: "2022", topPrice: 240, variants: [
     { id: "ip14pm", label: "iPhone 14 Pro Max", base: 240 },
     { id: "ip14p", label: "iPhone 14 Pro", base: 210 },
     { id: "ip14plus", label: "iPhone 14 Plus", base: 170 },
     { id: "ip14", label: "iPhone 14", base: 150 },
   ]},
-  { id: "13", label: "iPhone 13", year: "2021", topPrice: 180, variants: [
+  { id: "13", label: "iPhone 13", image: "/iphone13.png", year: "2021", topPrice: 180, variants: [
     { id: "ip13pm", label: "iPhone 13 Pro Max", base: 180 },
     { id: "ip13p", label: "iPhone 13 Pro", base: 150 },
     { id: "ip13", label: "iPhone 13", base: 120 },
   ]},
-  { id: "12", label: "iPhone 12", year: "2020", topPrice: 130, variants: [
+  { id: "12", label: "iPhone 12", image: "/iphone12.png", year: "2020", topPrice: 130, variants: [
     { id: "ip12pm", label: "iPhone 12 Pro Max", base: 130 },
     { id: "ip12p", label: "iPhone 12 Pro", base: 110 },
     { id: "ip12", label: "iPhone 12", base: 80 },
   ]},
-  { id: "11", label: "iPhone 11", year: "2019", topPrice: 100, variants: [
+  { id: "11", label: "iPhone 11", image: "/iphone11.png", year: "2019", topPrice: 100, variants: [
     { id: "ip11pm", label: "iPhone 11 Pro Max", base: 100 },
     { id: "ip11p", label: "iPhone 11 Pro", base: 85 },
     { id: "ip11", label: "iPhone 11", base: 60 },
@@ -311,10 +311,10 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your series</p>
                 <div className="grid grid-cols-2 gap-3">
                   {IPHONE_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[110px] active:scale-[0.97]">
-                      <p className="font-bold text-base mb-1">{s.label}</p>
-                      <p className="text-[#888] text-xs">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-sm mt-1">up to ${s.topPrice}</p>
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
+                      {(s as { image?: string }).image && <img src={(s as { image?: string }).image} alt={s.label} className="w-14 h-14 object-contain mb-1" />}
+                      <p className="font-bold text-sm">{s.label}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${s.topPrice}</p>
                     </button>
                   ))}
                 </div>
