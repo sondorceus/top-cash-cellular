@@ -43,6 +43,34 @@ const SAMSUNG_MODELS = [
   { id: "gs21", label: "Galaxy S21/S21+", base: 120 },
 ];
 
+const MACBOOK_MODELS = [
+  { id: "mbp16m4", label: "MacBook Pro 16\" M4", base: 1200 },
+  { id: "mbp14m4", label: "MacBook Pro 14\" M4", base: 1000 },
+  { id: "mbp16m3", label: "MacBook Pro 16\" M3", base: 950 },
+  { id: "mbp14m3", label: "MacBook Pro 14\" M3", base: 800 },
+  { id: "mba15m3", label: "MacBook Air 15\" M3", base: 700 },
+  { id: "mba13m3", label: "MacBook Air 13\" M3", base: 600 },
+  { id: "mbp16m2", label: "MacBook Pro 16\" M2", base: 750 },
+  { id: "mbp14m2", label: "MacBook Pro 14\" M2", base: 650 },
+  { id: "mba15m2", label: "MacBook Air 15\" M2", base: 550 },
+  { id: "mba13m2", label: "MacBook Air 13\" M2", base: 480 },
+  { id: "mba13m1", label: "MacBook Air 13\" M1", base: 350 },
+  { id: "mbp13m1", label: "MacBook Pro 13\" M1", base: 400 },
+];
+
+const CONSOLE_MODELS = [
+  { id: "ps5", label: "PlayStation 5", base: 300 },
+  { id: "ps5d", label: "PlayStation 5 Digital", base: 250 },
+  { id: "ps4pro", label: "PlayStation 4 Pro", base: 150 },
+  { id: "ps4", label: "PlayStation 4", base: 100 },
+  { id: "xsx", label: "Xbox Series X", base: 280 },
+  { id: "xss", label: "Xbox Series S", base: 150 },
+  { id: "xone", label: "Xbox One", base: 80 },
+  { id: "switch", label: "Nintendo Switch OLED", base: 180 },
+  { id: "switchv2", label: "Nintendo Switch V2", base: 130 },
+  { id: "switchlite", label: "Nintendo Switch Lite", base: 90 },
+];
+
 const CONDITIONS = [
   { id: "flawless", label: "Flawless", desc: "Like new, no scratches or damage", multiplier: 1.0, icon: "✨" },
   { id: "good", label: "Good", desc: "Minor scratches, fully functional", multiplier: 0.85, icon: "👍" },
@@ -78,7 +106,8 @@ type Step = "device" | "model" | "storage" | "condition" | "quote" | "payout" | 
 
 export default function Home() {
   const [step, setStep] = useState<Step>("device");
-  const [deviceType, setDeviceType] = useState<"iphone" | "android" | null>(null);
+  const [deviceType, setDeviceType] = useState<"iphone" | "android" | "macbook" | "console" | null>(null);
+  const [page, setPage] = useState<"home" | "about">("home");
   const [model, setModel] = useState<{ id: string; label: string; base: number } | null>(null);
   const [storage, setStorage] = useState<typeof STORAGES[0] | null>(null);
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
@@ -94,7 +123,7 @@ export default function Home() {
   const handleBack = () => {
     if (step === "model") { setStep("device"); setDeviceType(null); }
     else if (step === "storage") { setStep("model"); setModel(null); }
-    else if (step === "condition") { setStep("storage"); setStorage(null); }
+    else if (step === "condition") { if (deviceType === "console") { setStep("model"); setModel(null); } else { setStep("storage"); setStorage(null); } }
     else if (step === "quote") { setStep("condition"); setCondition(null); }
     else if (step === "payout") setStep("quote");
     else if (step === "contact") setStep("payout");
@@ -108,12 +137,13 @@ export default function Home() {
     setCondition(null);
     setPayout(null);
     setExpandedFaq(null);
+    setPage("home");
     setName("");
     setPhone("");
     setEmail("");
   };
 
-  const models = deviceType === "iphone" ? IPHONE_MODELS : deviceType === "android" ? SAMSUNG_MODELS : [];
+  const models = deviceType === "iphone" ? IPHONE_MODELS : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "console" ? CONSOLE_MODELS : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -121,7 +151,7 @@ export default function Home() {
       <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={reset} className="cursor-pointer">
-            <span className="text-lg font-bold tracking-tight">💰 {BRAND}</span>
+            <span className="text-lg font-bold tracking-tight"><span className="text-[#00c853]">$</span> {BRAND}</span>
           </button>
           <a href={`tel:${PHONE}`} className="bg-[#00c853] text-white px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
             Call Us
@@ -130,7 +160,7 @@ export default function Home() {
       </nav>
 
       {/* STEP: DEVICE TYPE */}
-      {step === "device" && (
+      {step === "device" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg mx-auto px-4 pt-12 pb-8">
             <h1 className="text-4xl font-bold tracking-tight leading-[1.08] mb-3">
@@ -144,6 +174,8 @@ export default function Home() {
               {[
                 { id: "iphone" as const, label: "iPhone", sub: "iPhone 11 and newer", icon: "📱" },
                 { id: "android" as const, label: "Samsung Galaxy", sub: "Galaxy S21 and newer", icon: "📲" },
+                { id: "macbook" as const, label: "MacBook", sub: "MacBook Air & Pro, M1+", icon: "💻" },
+                { id: "console" as const, label: "Game Console", sub: "PS4/5, Xbox, Switch", icon: "🎮" },
               ].map((d) => (
                 <button
                   key={d.id}
@@ -182,7 +214,7 @@ export default function Home() {
       )}
 
       {/* STEP: MODEL SELECTION */}
-      {step === "model" && (
+      {step === "model" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
@@ -195,7 +227,7 @@ export default function Home() {
               {models.map((m) => (
                 <button
                   key={m.id}
-                  onClick={() => { setModel(m); setStep("storage"); }}
+                  onClick={() => { setModel(m); setStep(deviceType === "console" ? "condition" : "storage"); }}
                   className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
                 >
                   <p className="font-semibold text-[15px]">{m.label}</p>
@@ -211,7 +243,7 @@ export default function Home() {
       )}
 
       {/* STEP: STORAGE */}
-      {step === "storage" && model && (
+      {step === "storage" && page === "home" && model && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
@@ -237,7 +269,7 @@ export default function Home() {
       )}
 
       {/* STEP: CONDITION */}
-      {step === "condition" && model && (
+      {step === "condition" && page === "home" && model && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
@@ -267,7 +299,7 @@ export default function Home() {
       )}
 
       {/* STEP: QUOTE */}
-      {step === "quote" && model && condition && (
+      {step === "quote" && page === "home" && model && condition && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg mx-auto px-4 pt-12 pb-8 text-center">
             <p className="text-[#888] text-sm font-medium mb-2">{model.label} · {storage?.label} · {condition.label}</p>
@@ -287,7 +319,7 @@ export default function Home() {
       )}
 
       {/* STEP: PAYOUT METHOD */}
-      {step === "payout" && (
+      {step === "payout" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
@@ -313,7 +345,7 @@ export default function Home() {
       )}
 
       {/* STEP: CONTACT INFO */}
-      {step === "contact" && model && condition && payout && (
+      {step === "contact" && page === "home" && model && condition && payout && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
@@ -354,7 +386,7 @@ export default function Home() {
       )}
 
       {/* STEP: DONE */}
-      {step === "done" && model && condition && payout && (
+      {step === "done" && page === "home" && model && condition && payout && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg mx-auto px-4 pt-16 pb-8 text-center">
             <div className="w-20 h-20 rounded-full bg-[#00c853]/10 flex items-center justify-center mx-auto mb-6">
@@ -382,7 +414,7 @@ export default function Home() {
       )}
 
       {/* TRUST + TESTIMONIALS + FAQ (only on home) */}
-      {step === "device" && (
+      {step === "device" && page === "home" && (
         <>
           {/* TRUST SIGNALS */}
           <section className="py-8 bg-[#111]">
@@ -456,16 +488,65 @@ export default function Home() {
         </>
       )}
 
+      {/* ABOUT US PAGE */}
+      {page === "about" && (
+        <section className="min-h-[60vh] animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg mx-auto px-4 pt-6 pb-16">
+            <button onClick={() => { setPage("home"); window.scrollTo({ top: 0 }); }} className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Home
+            </button>
+            <h1 className="text-3xl font-bold mb-4">About Us</h1>
+            <p className="text-[#888] mb-6 leading-relaxed">Top Cash Cellular is Austin&apos;s local phone and device buyback service. We pay top dollar for your used iPhones, Samsung phones, MacBooks, and game consoles — fast, fair, and on your terms.</p>
+            <div className="space-y-4">
+              <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
+                <p className="font-semibold mb-1">Why sell to us?</p>
+                <p className="text-[#888] text-sm">We offer higher payouts than carrier trade-ins, instant quotes with no hidden fees, and same-day payment. Cash, Venmo, Zelle, PayPal — your choice.</p>
+              </div>
+              <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
+                <p className="font-semibold mb-1">Local &amp; trustworthy</p>
+                <p className="text-[#888] text-sm">We&apos;re based in Austin, TX. No shipping, no waiting weeks for a check. We meet you locally and pay on the spot.</p>
+              </div>
+              <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
+                <p className="font-semibold mb-1">We buy everything</p>
+                <p className="text-[#888] text-sm">iPhones, Samsung Galaxy, MacBooks, PlayStation, Xbox, Nintendo Switch. Working or broken — we make an offer on anything.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* FOOTER */}
-      <footer className="mt-auto bg-[#0a0a0a] text-[#888] py-8 border-t border-white/10">
-        <div className="max-w-lg mx-auto px-4 text-center">
-          <p className="text-xs font-medium">{PHONE} · Austin, TX</p>
-          <p className="text-[11px] mt-3 text-[#888]/60">© 2026 {BRAND}. All rights reserved.</p>
+      <footer className="mt-auto bg-[#060606] text-[#888] py-10 border-t border-white/10">
+        <div className="max-w-lg mx-auto px-4">
+          <div className="grid grid-cols-2 gap-6 mb-6">
+            <div>
+              <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Company</p>
+              <div className="space-y-2">
+                <button onClick={() => { setPage("about"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-white transition cursor-pointer">About Us</button>
+                <a href={`tel:${PHONE}`} className="block text-xs hover:text-white transition">Contact</a>
+              </div>
+            </div>
+            <div>
+              <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Service</p>
+              <div className="space-y-2">
+                <p className="text-xs">Austin, TX</p>
+                <p className="text-xs">Mon-Sat 8AM-8PM</p>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-white/10 pt-6 text-center">
+            <p className="text-[11px] text-[#888]/60 mb-3">© 2026 {BRAND}</p>
+            <a href="https://swiftfix-repair.vercel.app" target="_blank" rel="noopener noreferrer" className="text-[11px] text-[#555] hover:text-[#888] transition">
+              Need a repair instead? Visit Austin Mobile Repair →
+            </a>
+          </div>
         </div>
       </footer>
 
       <style jsx>{`
         @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
       `}</style>
     </main>
   );
