@@ -86,6 +86,14 @@ const STORAGES = [
   { id: "1tb", label: "1 TB", multiplier: 1.4 },
 ];
 
+const CARRIERS = [
+  { id: "unlocked", label: "Unlocked", multiplier: 1.0, icon: "🔓" },
+  { id: "att", label: "AT&T", multiplier: 0.95, icon: "📶" },
+  { id: "tmobile", label: "T-Mobile", multiplier: 0.95, icon: "📶" },
+  { id: "verizon", label: "Verizon", multiplier: 0.95, icon: "📶" },
+  { id: "other", label: "Other / Locked", multiplier: 0.85, icon: "🔒" },
+];
+
 const PAYOUTS = [
   { id: "cash", label: "Cash", icon: "💵" },
   { id: "venmo", label: "Venmo", icon: "📱" },
@@ -102,12 +110,13 @@ const FAQS = [
   { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
 ];
 
-type Step = "device" | "model" | "storage" | "condition" | "quote" | "payout" | "contact" | "done";
+type Step = "device" | "model" | "storage" | "condition" | "carrier" | "quote" | "payout" | "contact" | "done";
 
 export default function Home() {
   const [step, setStep] = useState<Step>("device");
   const [deviceType, setDeviceType] = useState<"iphone" | "android" | "macbook" | "console" | null>(null);
-  const [page, setPage] = useState<"home" | "about">("home");
+  const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
+  const [page, setPage] = useState<"home" | "about" | "privacy" | "terms">("home");
   const [model, setModel] = useState<{ id: string; label: string; base: number } | null>(null);
   const [storage, setStorage] = useState<typeof STORAGES[0] | null>(null);
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
@@ -118,13 +127,15 @@ export default function Home() {
   const [email, setEmail] = useState("");
 
   const storageMultiplier = storage?.multiplier ?? 1;
-  const quote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier) : 0;
+  const carrierMultiplier = carrier?.multiplier ?? 1;
+  const quote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier) : 0;
 
   const handleBack = () => {
     if (step === "model") { setStep("device"); setDeviceType(null); }
     else if (step === "storage") { setStep("model"); setModel(null); }
     else if (step === "condition") { if (deviceType === "console") { setStep("model"); setModel(null); } else { setStep("storage"); setStorage(null); } }
-    else if (step === "quote") { setStep("condition"); setCondition(null); }
+    else if (step === "carrier") { setStep("condition"); setCondition(null); }
+    else if (step === "quote") { if (carrier) { setStep("carrier"); setCarrier(null); } else { setStep("condition"); setCondition(null); } }
     else if (step === "payout") setStep("quote");
     else if (step === "contact") setStep("payout");
   };
@@ -135,6 +146,7 @@ export default function Home() {
     setModel(null);
     setStorage(null);
     setCondition(null);
+    setCarrier(null);
     setPayout(null);
     setExpandedFaq(null);
     setPage("home");
@@ -162,7 +174,11 @@ export default function Home() {
       {/* STEP: DEVICE TYPE */}
       {step === "device" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg mx-auto px-4 pt-12 pb-8">
+          {/* PROMO BANNER */}
+          <div className="bg-[#00c853] text-center py-2 px-4">
+            <p className="text-white text-xs font-semibold">🔥 Limited time: Extra 10% on all iPhones this week</p>
+          </div>
+          <div className="max-w-lg mx-auto px-4 pt-10 pb-8">
             <h1 className="text-4xl font-bold tracking-tight leading-[1.08] mb-3">
               Sell your phone<br />for top dollar.
             </h1>
@@ -282,7 +298,7 @@ export default function Home() {
               {CONDITIONS.map((c) => (
                 <button
                   key={c.id}
-                  onClick={() => { setCondition(c); setStep("quote"); }}
+                  onClick={() => { setCondition(c); setStep((deviceType === "iphone" || deviceType === "android") ? "carrier" : "quote"); }}
                   className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
                 >
                   <span className="text-2xl">{c.icon}</span>
@@ -291,6 +307,33 @@ export default function Home() {
                     <p className="text-[#888] text-sm">{c.desc}</p>
                   </div>
                   <span className="text-[#00c853] font-bold">${Math.round(model.base * storageMultiplier * c.multiplier)}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: CARRIER */}
+      {step === "carrier" && page === "home" && model && condition && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
+            <button onClick={handleBack} className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+            <h2 className="text-2xl font-bold mb-1">Carrier status?</h2>
+            <p className="text-[#888] text-sm mb-6">Is your phone unlocked or locked to a carrier?</p>
+            <div className="space-y-2">
+              {CARRIERS.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => { setCarrier(c); setStep("quote"); }}
+                  className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
+                >
+                  <span className="text-xl">{c.icon}</span>
+                  <p className="font-semibold text-[15px] flex-1">{c.label}</p>
+                  {c.id === "unlocked" && <span className="text-[#00c853] text-xs font-medium">Best value</span>}
                 </button>
               ))}
             </div>
@@ -488,15 +531,15 @@ export default function Home() {
         </>
       )}
 
-      {/* ABOUT US PAGE */}
-      {page === "about" && (
+      {/* INNER PAGES */}
+      {(page === "about" || page === "privacy" || page === "terms") && (
         <section className="min-h-[60vh] animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg mx-auto px-4 pt-6 pb-16">
             <button onClick={() => { setPage("home"); window.scrollTo({ top: 0 }); }} className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Home
             </button>
-            <h1 className="text-3xl font-bold mb-4">About Us</h1>
+            {page === "about" && <><h1 className="text-3xl font-bold mb-4">About Us</h1>
             <p className="text-[#888] mb-6 leading-relaxed">Top Cash Cellular is Austin&apos;s local phone and device buyback service. We pay top dollar for your used iPhones, Samsung phones, MacBooks, and game consoles — fast, fair, and on your terms.</p>
             <div className="space-y-4">
               <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
@@ -511,7 +554,31 @@ export default function Home() {
                 <p className="font-semibold mb-1">We buy everything</p>
                 <p className="text-[#888] text-sm">iPhones, Samsung Galaxy, MacBooks, PlayStation, Xbox, Nintendo Switch. Working or broken — we make an offer on anything.</p>
               </div>
-            </div>
+            </div></>}
+
+            {page === "privacy" && (
+              <div className="animate-[fadeIn_0.3s_ease-out]">
+                <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
+                <div className="text-[#888] text-sm space-y-4 leading-relaxed">
+                  <p>Top Cash Cellular respects your privacy. We collect only the information needed to process your device sale: name, phone number, email, device details, and payout preference.</p>
+                  <p>We do not sell, share, or distribute your personal information to third parties. Your data is used solely to complete your transaction and communicate with you about your sale.</p>
+                  <p>Device data (photos, files) is your responsibility to remove before selling. We recommend a factory reset before handoff. We are not responsible for any data left on sold devices.</p>
+                  <p>For questions about your data, contact us at {PHONE}.</p>
+                </div>
+              </div>
+            )}
+
+            {page === "terms" && (
+              <div className="animate-[fadeIn_0.3s_ease-out]">
+                <h1 className="text-3xl font-bold mb-4">Terms of Service</h1>
+                <div className="text-[#888] text-sm space-y-4 leading-relaxed">
+                  <p>By using Top Cash Cellular, you agree to these terms. Quotes provided on our site are estimates based on the condition and model you select. Final pricing is confirmed during in-person inspection.</p>
+                  <p>All devices sold to us must be legally owned by the seller. Stolen devices will be reported to law enforcement. Sellers must provide valid identification at the time of sale.</p>
+                  <p>Payouts are processed via your selected method (Cash, Venmo, Zelle, PayPal) at the time of device inspection and acceptance. We reserve the right to adjust offers if the device condition differs from the online assessment.</p>
+                  <p>All sales are final once payment is issued. Top Cash Cellular is not responsible for data left on sold devices. Please factory reset your device before selling.</p>
+                </div>
+              </div>
+            )}
           </div>
         </section>
       )}
@@ -525,6 +592,8 @@ export default function Home() {
               <div className="space-y-2">
                 <button onClick={() => { setPage("about"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-white transition cursor-pointer">About Us</button>
                 <a href={`tel:${PHONE}`} className="block text-xs hover:text-white transition">Contact</a>
+                <button onClick={() => { setPage("privacy"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-white transition cursor-pointer">Privacy Policy</button>
+                <button onClick={() => { setPage("terms"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-white transition cursor-pointer">Terms of Service</button>
               </div>
             </div>
             <div>
