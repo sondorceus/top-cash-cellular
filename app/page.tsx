@@ -50,6 +50,14 @@ const CONDITIONS = [
   { id: "poor", label: "Poor", desc: "Heavy damage, broken screen, etc.", multiplier: 0.4, icon: "⚠️" },
 ];
 
+const STORAGES = [
+  { id: "64", label: "64 GB", multiplier: 0.85 },
+  { id: "128", label: "128 GB", multiplier: 1.0 },
+  { id: "256", label: "256 GB", multiplier: 1.12 },
+  { id: "512", label: "512 GB", multiplier: 1.25 },
+  { id: "1tb", label: "1 TB", multiplier: 1.4 },
+];
+
 const PAYOUTS = [
   { id: "cash", label: "Cash", icon: "💵" },
   { id: "venmo", label: "Venmo", icon: "📱" },
@@ -57,23 +65,36 @@ const PAYOUTS = [
   { id: "paypal", label: "PayPal", icon: "💳" },
 ];
 
-type Step = "device" | "model" | "condition" | "quote" | "payout" | "contact" | "done";
+const FAQS = [
+  { q: "How does the process work?", a: "Select your device, choose its condition, and get an instant quote. Accept the offer, pick your payout method, and we'll arrange a local pickup in Austin." },
+  { q: "How fast will I get paid?", a: "Same day for local Austin pickups. We pay on the spot via your preferred method — Cash, Venmo, Zelle, or PayPal." },
+  { q: "What if my device is cracked or damaged?", a: "We buy devices in any condition. Damaged phones get a lower offer, but you'll still get cash. Select 'Fair' or 'Poor' condition for an accurate quote." },
+  { q: "Are the quotes guaranteed?", a: "Quotes are based on the condition you select. Final price is confirmed during inspection at pickup — if the device matches your description, you get the quoted price." },
+  { q: "What devices do you buy?", a: "We buy iPhones (11 and newer) and Samsung Galaxy phones (S21 and newer), including Z Fold and Z Flip models." },
+  { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
+];
+
+type Step = "device" | "model" | "storage" | "condition" | "quote" | "payout" | "contact" | "done";
 
 export default function Home() {
   const [step, setStep] = useState<Step>("device");
   const [deviceType, setDeviceType] = useState<"iphone" | "android" | null>(null);
   const [model, setModel] = useState<{ id: string; label: string; base: number } | null>(null);
+  const [storage, setStorage] = useState<typeof STORAGES[0] | null>(null);
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
 
-  const quote = model && condition ? Math.round(model.base * condition.multiplier) : 0;
+  const storageMultiplier = storage?.multiplier ?? 1;
+  const quote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier) : 0;
 
   const handleBack = () => {
     if (step === "model") { setStep("device"); setDeviceType(null); }
-    else if (step === "condition") { setStep("model"); setModel(null); }
+    else if (step === "storage") { setStep("model"); setModel(null); }
+    else if (step === "condition") { setStep("storage"); setStorage(null); }
     else if (step === "quote") { setStep("condition"); setCondition(null); }
     else if (step === "payout") setStep("quote");
     else if (step === "contact") setStep("payout");
@@ -83,8 +104,10 @@ export default function Home() {
     setStep("device");
     setDeviceType(null);
     setModel(null);
+    setStorage(null);
     setCondition(null);
     setPayout(null);
+    setExpandedFaq(null);
     setName("");
     setPhone("");
     setEmail("");
@@ -172,7 +195,7 @@ export default function Home() {
               {models.map((m) => (
                 <button
                   key={m.id}
-                  onClick={() => { setModel(m); setStep("condition"); }}
+                  onClick={() => { setModel(m); setStep("storage"); }}
                   className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
                 >
                   <p className="font-semibold text-[15px]">{m.label}</p>
@@ -180,6 +203,32 @@ export default function Home() {
                     <span className="text-[#00c853] font-bold text-sm">up to ${m.base}</span>
                     <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                   </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: STORAGE */}
+      {step === "storage" && model && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
+            <button onClick={handleBack} className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+            <h2 className="text-2xl font-bold mb-1">Storage capacity?</h2>
+            <p className="text-[#888] text-sm mb-6">{model.label}</p>
+            <div className="space-y-2">
+              {STORAGES.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => { setStorage(s); setStep("condition"); }}
+                  className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
+                >
+                  <p className="font-semibold text-[15px]">{s.label}</p>
+                  <span className="text-[#00c853] font-bold text-sm">up to ${Math.round(model.base * s.multiplier)}</span>
                 </button>
               ))}
             </div>
@@ -209,7 +258,7 @@ export default function Home() {
                     <p className="font-semibold text-lg">{c.label}</p>
                     <p className="text-[#888] text-sm">{c.desc}</p>
                   </div>
-                  <span className="text-[#00c853] font-bold">${Math.round(model.base * c.multiplier)}</span>
+                  <span className="text-[#00c853] font-bold">${Math.round(model.base * storageMultiplier * c.multiplier)}</span>
                 </button>
               ))}
             </div>
@@ -221,7 +270,7 @@ export default function Home() {
       {step === "quote" && model && condition && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg mx-auto px-4 pt-12 pb-8 text-center">
-            <p className="text-[#888] text-sm font-medium mb-2">{model.label} · {condition.label}</p>
+            <p className="text-[#888] text-sm font-medium mb-2">{model.label} · {storage?.label} · {condition.label}</p>
             <h2 className="text-lg font-semibold text-[#888] mb-2">Your instant quote</h2>
             <p className="text-6xl font-bold text-[#00c853] mb-6">${quote}</p>
             <button
@@ -277,7 +326,7 @@ export default function Home() {
                 <p className="font-semibold">{model.label}</p>
                 <p className="text-[#00c853] font-bold text-xl">${quote}</p>
               </div>
-              <p className="text-[#888] text-sm">{condition.label} condition · {payout.label} payout</p>
+              <p className="text-[#888] text-sm">{storage?.label} · {condition.label} · {payout.label}</p>
             </div>
 
             <h2 className="text-xl font-bold mb-1">Almost done</h2>
@@ -317,7 +366,7 @@ export default function Home() {
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="font-semibold">{model.label}</p>
-                  <p className="text-[#888] text-xs">{condition.label} · {payout.label}</p>
+                  <p className="text-[#888] text-xs">{storage?.label} · {condition.label} · {payout.label}</p>
                 </div>
                 <p className="text-[#00c853] font-bold text-2xl">${quote}</p>
               </div>
@@ -330,6 +379,81 @@ export default function Home() {
             </button>
           </div>
         </section>
+      )}
+
+      {/* TRUST + TESTIMONIALS + FAQ (only on home) */}
+      {step === "device" && (
+        <>
+          {/* TRUST SIGNALS */}
+          <section className="py-8 bg-[#111]">
+            <div className="max-w-lg mx-auto px-4">
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div><p className="text-2xl font-bold text-[#00c853]">500+</p><p className="text-[#888] text-xs">Devices Bought</p></div>
+                <div><p className="text-2xl font-bold text-[#00c853]">4.9★</p><p className="text-[#888] text-xs">Avg Rating</p></div>
+                <div><p className="text-2xl font-bold text-[#00c853]">Same Day</p><p className="text-[#888] text-xs">Payout</p></div>
+              </div>
+            </div>
+          </section>
+
+          {/* TESTIMONIALS */}
+          <section className="py-10 overflow-hidden bg-[#0a0a0a]">
+            <p className="text-white font-semibold text-lg text-center mb-6">What sellers say</p>
+            <div className="relative">
+              <div className="flex animate-[marquee_25s_linear_infinite] gap-4 w-max">
+                {[
+                  { text: "Got $420 for my iPhone 14 Pro. Way more than the Apple trade-in.", name: "Mike R." },
+                  { text: "Venmo payment hit my account same day. Super smooth.", name: "Ashley T." },
+                  { text: "They came to me and paid cash on the spot. Can't beat that.", name: "David L." },
+                  { text: "Sold my old Galaxy S23 in 5 minutes. Easy money.", name: "Sarah K." },
+                  { text: "Best price I found anywhere in Austin. Highly recommend.", name: "Chris M." },
+                  { text: "Got $420 for my iPhone 14 Pro. Way more than the Apple trade-in.", name: "Mike R." },
+                  { text: "Venmo payment hit my account same day. Super smooth.", name: "Ashley T." },
+                  { text: "They came to me and paid cash on the spot. Can't beat that.", name: "David L." },
+                  { text: "Sold my old Galaxy S23 in 5 minutes. Easy money.", name: "Sarah K." },
+                  { text: "Best price I found anywhere in Austin. Highly recommend.", name: "Chris M." },
+                ].map((r, i) => (
+                  <div key={i} className="flex-shrink-0 w-[260px] bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <p className="text-sm text-white/85 font-medium mb-2">&ldquo;{r.text}&rdquo;</p>
+                    <p className="text-xs text-[#888]">— {r.name}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* CTA SECTION */}
+          <section className="py-12 bg-[#0a0a0a] text-center">
+            <div className="max-w-lg mx-auto px-4">
+              <h2 className="text-2xl font-bold mb-2">Still sitting on an old phone?</h2>
+              <p className="text-[#888] text-sm mb-6">Turn it into cash in under a minute.</p>
+              <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="bg-[#00c853] text-white px-10 py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
+                Get Your Quote
+              </button>
+            </div>
+          </section>
+
+          {/* FAQ */}
+          <section className="py-12 bg-[#111]">
+            <div className="max-w-lg mx-auto px-4">
+              <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+              <div className="space-y-2">
+                {FAQS.map((faq, i) => (
+                  <div key={i} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+                    <button onClick={() => setExpandedFaq(expandedFaq === i ? null : i)} className="w-full flex items-center justify-between p-4 cursor-pointer text-left">
+                      <p className="font-semibold text-sm pr-4">{faq.q}</p>
+                      <svg className={`w-4 h-4 text-[#888] shrink-0 transition-transform ${expandedFaq === i ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    {expandedFaq === i && (
+                      <div className="px-4 pb-4 animate-[fadeIn_0.2s_ease-out]">
+                        <p className="text-[#888] text-sm">{faq.a}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </>
       )}
 
       {/* FOOTER */}
