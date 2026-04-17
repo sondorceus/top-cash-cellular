@@ -11,7 +11,15 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Top Cash Cellular",
+    url: "https://top-cash-cellular.vercel.app",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Top Cash Cellular — Sell Your Phone for Top Dollar",
+    description: "Instant quotes. Same-day payout. Cash, Venmo, Zelle, or PayPal. Austin, TX.",
+  },
+  robots: { index: true, follow: true },
+  alternates: { canonical: "https://top-cash-cellular.vercel.app" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
