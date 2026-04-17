@@ -163,7 +163,15 @@ export default function Home() {
       <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={reset} className="cursor-pointer">
-            <span className="text-lg font-bold tracking-tight"><span className="text-[#00c853]">$</span> {BRAND}</span>
+            <span className="flex items-center gap-2">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <rect width="28" height="28" rx="6" fill="#00c853"/>
+                <path d="M14 6v2m0 12v2M10 14h-2m12 0h2" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
+                <circle cx="14" cy="14" r="5" stroke="#fff" strokeWidth="2"/>
+                <path d="M14 11v6M12.5 12.5h3a1.5 1.5 0 010 3h-3" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span className="text-base font-bold tracking-tight">{BRAND}</span>
+            </span>
           </button>
           <a href={`tel:${PHONE}`} className="bg-[#00c853] text-white px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
             Call Us
