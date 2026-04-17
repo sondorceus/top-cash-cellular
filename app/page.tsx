@@ -613,6 +613,13 @@ export default function Home() {
         </div>
       </footer>
 
+      {/* PROGRESS BAR — shows during flow */}
+      {step !== "device" && step !== "done" && page === "home" && (
+        <div className="fixed top-[52px] left-0 right-0 z-30 h-1 bg-white/10">
+          <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${({model: 15, storage: 30, condition: 45, carrier: 60, quote: 75, payout: 85, contact: 95} as Record<string,number>)[step] ?? 0}%` }} />
+        </div>
+      )}
+
       <style jsx>{`
         @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
