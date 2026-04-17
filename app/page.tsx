@@ -123,6 +123,7 @@ export default function Home() {
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
+  const [chatMode, setChatMode] = useState<"choose" | "chat" | "call">("choose");
   const [chatMsg, setChatMsg] = useState("");
   const [chatSent, setChatSent] = useState(false);
   const [name, setName] = useState("");
@@ -633,18 +634,49 @@ export default function Home() {
               <button onClick={() => setChatOpen(false)} className="text-white/80 hover:text-white cursor-pointer text-lg">×</button>
             </div>
             <div className="p-4">
-              {!chatSent ? (
+              {chatMode === "choose" && (
                 <>
-                  <p className="text-white text-sm mb-3">Hey! Got a device to sell? I can give you a quick quote or answer any questions.</p>
+                  <p className="text-white text-sm mb-4">Hey! Got a device to sell? How would you like to connect?</p>
+                  <div className="space-y-2">
+                    <button onClick={() => setChatMode("chat")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left active:scale-[0.98]">
+                      <span className="text-xl">💬</span>
+                      <div>
+                        <p className="font-semibold text-sm">Live Chat</p>
+                        <p className="text-[#888] text-xs">Send us a message</p>
+                      </div>
+                    </button>
+                    <button onClick={() => setChatMode("call")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left active:scale-[0.98]">
+                      <span className="text-xl">📞</span>
+                      <div>
+                        <p className="font-semibold text-sm">Talk to a Human</p>
+                        <p className="text-[#888] text-xs">Call or get a callback</p>
+                      </div>
+                    </button>
+                  </div>
+                </>
+              )}
+              {chatMode === "chat" && !chatSent && (
+                <>
+                  <button onClick={() => setChatMode("choose")} className="text-[#888] text-xs mb-2 cursor-pointer hover:text-white">← Back</button>
                   <textarea value={chatMsg} onChange={(e) => setChatMsg(e.target.value)} placeholder="Type your message..." rows={3} className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] resize-none mb-2" />
                   <button onClick={() => { if (chatMsg.trim()) setChatSent(true); }} className="w-full bg-[#00c853] text-white py-2 rounded-xl text-sm font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
                     Send
                   </button>
                 </>
-              ) : (
+              )}
+              {chatMode === "chat" && chatSent && (
                 <div className="text-center py-2">
                   <p className="text-[#00c853] font-semibold mb-1">Message sent!</p>
                   <p className="text-[#888] text-xs">We&apos;ll get back to you shortly.</p>
+                </div>
+              )}
+              {chatMode === "call" && (
+                <div className="text-center py-2">
+                  <button onClick={() => setChatMode("choose")} className="text-[#888] text-xs mb-3 cursor-pointer hover:text-white block mx-auto">← Back</button>
+                  <a href={`tel:${PHONE}`} className="block w-full bg-[#00c853] text-white py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2">
+                    📞 Call {PHONE}
+                  </a>
+                  <p className="text-[#888] text-xs">Mon-Sat 8AM-8PM</p>
                 </div>
               )}
             </div>
