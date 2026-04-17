@@ -126,6 +126,26 @@ export default function Home() {
   const [chatMode, setChatMode] = useState<"choose" | "chat" | "call">("choose");
   const [chatMsg, setChatMsg] = useState("");
   const [chatSent, setChatSent] = useState(false);
+  const [chatMessages, setChatMessages] = useState<{ from: "user" | "bot"; text: string }[]>([
+    { from: "bot", text: "Hey! I'm here to help you sell your device. Ask me anything about pricing, how it works, or what we buy!" }
+  ]);
+  const [chatLoading, setChatLoading] = useState(false);
+
+  const sendChat = async () => {
+    if (!chatMsg.trim()) return;
+    const msg = chatMsg;
+    setChatMsg("");
+    setChatMessages(prev => [...prev, { from: "user", text: msg }]);
+    setChatLoading(true);
+    try {
+      const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: msg, name }) });
+      const data = await res.json();
+      setChatMessages(prev => [...prev, { from: "bot", text: data.reply }]);
+    } catch {
+      setChatMessages(prev => [...prev, { from: "bot", text: "Sorry, something went wrong. Try again or call us!" }]);
+    }
+    setChatLoading(false);
+  };
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -655,20 +675,24 @@ export default function Home() {
                   </div>
                 </>
               )}
-              {chatMode === "chat" && !chatSent && (
+              {chatMode === "chat" && (
                 <>
                   <button onClick={() => setChatMode("choose")} className="text-[#888] text-xs mb-2 cursor-pointer hover:text-white">← Back</button>
-                  <textarea value={chatMsg} onChange={(e) => setChatMsg(e.target.value)} placeholder="Type your message..." rows={3} className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] resize-none mb-2" />
-                  <button onClick={() => { if (chatMsg.trim()) setChatSent(true); }} className="w-full bg-[#00c853] text-white py-2 rounded-xl text-sm font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
-                    Send
-                  </button>
+                  <div className="h-[200px] overflow-y-auto space-y-2 mb-2 pr-1">
+                    {chatMessages.map((m, i) => (
+                      <div key={i} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
+                        <div className={`max-w-[85%] px-3 py-2 rounded-xl text-xs ${m.from === "user" ? "bg-[#00c853] text-white" : "bg-white/10 text-white/90"}`}>
+                          {m.text}
+                        </div>
+                      </div>
+                    ))}
+                    {chatLoading && <div className="flex justify-start"><div className="bg-white/10 text-white/60 px-3 py-2 rounded-xl text-xs">Typing...</div></div>}
+                  </div>
+                  <div className="flex gap-2">
+                    <input value={chatMsg} onChange={(e) => setChatMsg(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendChat()} placeholder="Ask me anything..." className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853]" />
+                    <button onClick={sendChat} disabled={chatLoading} className="bg-[#00c853] text-white px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer hover:bg-[#00e676] transition disabled:opacity-50">Send</button>
+                  </div>
                 </>
-              )}
-              {chatMode === "chat" && chatSent && (
-                <div className="text-center py-2">
-                  <p className="text-[#00c853] font-semibold mb-1">Message sent!</p>
-                  <p className="text-[#888] text-xs">We&apos;ll get back to you shortly.</p>
-                </div>
               )}
               {chatMode === "call" && (
                 <div className="text-center py-2">
