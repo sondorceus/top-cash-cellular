@@ -581,6 +581,13 @@ export default function Home() {
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote, payout: payout?.label }),
                 });
+                if (email) {
+                  fetch("/api/confirm", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, quote, payout: payout?.label }),
+                  }).catch(() => {});
+                }
               } catch {}
               setStep("done"); pushHistory("done");
             }} className="space-y-4">
