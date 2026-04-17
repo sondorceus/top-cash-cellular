@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Top Cash Cellular",
-    url: "https://top-cash-cellular.vercel.app",
+    url: "https://topcashcellular.com",
   },
   twitter: {
     card: "summary_large_image",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     description: "Instant quotes. Same-day payout. Cash, Venmo, Zelle, or PayPal. Austin, TX.",
   },
   robots: { index: true, follow: true },
-  alternates: { canonical: "https://top-cash-cellular.vercel.app" },
+  alternates: { canonical: "https://topcashcellular.com" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
