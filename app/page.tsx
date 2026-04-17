@@ -511,7 +511,17 @@ export default function Home() {
             <h2 className="text-xl font-bold mb-1">Almost done</h2>
             <p className="text-[#888] text-sm mb-6">We&apos;ll contact you to arrange pickup &amp; payment</p>
 
-            <form onSubmit={(e) => { e.preventDefault(); setStep("done"); pushHistory("done"); }} className="space-y-4">
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                await fetch("/api/lead", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote, payout: payout?.label }),
+                });
+              } catch {}
+              setStep("done"); pushHistory("done");
+            }} className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Name</label>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
