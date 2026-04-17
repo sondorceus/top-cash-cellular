@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const BRAND = "Top Cash Cellular";
 const PHONE = "(512) 960-9256";
@@ -154,6 +154,16 @@ export default function Home() {
   const carrierMultiplier = carrier?.multiplier ?? 1;
   const quote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier) : 0;
 
+  const pushHistory = useCallback((s: string) => {
+    window.history.pushState({ step: s }, "", `#${s}`);
+  }, []);
+
+  useEffect(() => {
+    const onPop = () => { handleBack(); };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  });
+
   const handleBack = () => {
     if (step === "model") { setStep("device"); setDeviceType(null); }
     else if (step === "storage") { setStep("model"); setModel(null); }
@@ -161,7 +171,7 @@ export default function Home() {
     else if (step === "carrier") { setStep("condition"); setCondition(null); }
     else if (step === "quote") { if (carrier) { setStep("carrier"); setCarrier(null); } else { setStep("condition"); setCondition(null); } }
     else if (step === "payout") setStep("quote");
-    else if (step === "contact") setStep("payout");
+    else if (step === "contact") setStep("payout"); pushHistory("payout");
   };
 
   const reset = () => {
@@ -227,7 +237,7 @@ export default function Home() {
               ].map((d) => (
                 <button
                   key={d.id}
-                  onClick={() => { setDeviceType(d.id); setStep("model"); }}
+                  onClick={() => { setDeviceType(d.id); setStep("model"); pushHistory("model"); }}
                   className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-200 cursor-pointer text-left active:scale-[0.98]"
                 >
                   <span className="text-3xl">{d.icon}</span>
@@ -275,7 +285,7 @@ export default function Home() {
               {models.map((m) => (
                 <button
                   key={m.id}
-                  onClick={() => { setModel(m); setStep(deviceType === "console" ? "condition" : "storage"); }}
+                  onClick={() => { setModel(m); const ns = deviceType === "console" ? "condition" : "storage"; setStep(ns); pushHistory(ns); }}
                   className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
                 >
                   <p className="font-semibold text-[15px]">{m.label}</p>
@@ -304,7 +314,7 @@ export default function Home() {
               {STORAGES.map((s) => (
                 <button
                   key={s.id}
-                  onClick={() => { setStorage(s); setStep("condition"); }}
+                  onClick={() => { setStorage(s); setStep("condition"); pushHistory("condition"); }}
                   className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
                 >
                   <p className="font-semibold text-[15px]">{s.label}</p>
@@ -330,7 +340,7 @@ export default function Home() {
               {CONDITIONS.map((c) => (
                 <button
                   key={c.id}
-                  onClick={() => { setCondition(c); setStep((deviceType === "iphone" || deviceType === "android") ? "carrier" : "quote"); }}
+                  onClick={() => { setCondition(c); const cs = (deviceType === "iphone" || deviceType === "android") ? "carrier" : "quote"; setStep(cs); pushHistory(cs); }}
                   className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
                 >
                   <span className="text-2xl">{c.icon}</span>
@@ -360,7 +370,7 @@ export default function Home() {
               {CARRIERS.map((c) => (
                 <button
                   key={c.id}
-                  onClick={() => { setCarrier(c); setStep("quote"); }}
+                  onClick={() => { setCarrier(c); setStep("quote"); pushHistory("quote"); }}
                   className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
                 >
                   <span className="text-xl">{c.icon}</span>
@@ -407,7 +417,7 @@ export default function Home() {
               {PAYOUTS.map((p) => (
                 <button
                   key={p.id}
-                  onClick={() => { setPayout(p); setStep("contact"); }}
+                  onClick={() => { setPayout(p); setStep("contact"); pushHistory("contact"); }}
                   className="flex flex-col items-center justify-center p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[100px] active:scale-[0.96]"
                 >
                   <span className="text-3xl mb-2">{p.icon}</span>
@@ -439,7 +449,7 @@ export default function Home() {
             <h2 className="text-xl font-bold mb-1">Almost done</h2>
             <p className="text-[#888] text-sm mb-6">We&apos;ll contact you to arrange pickup &amp; payment</p>
 
-            <form onSubmit={(e) => { e.preventDefault(); setStep("done"); }} className="space-y-4">
+            <form onSubmit={(e) => { e.preventDefault(); setStep("done"); pushHistory("done"); }} className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Name</label>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
