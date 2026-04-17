@@ -297,7 +297,7 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-2">
+            <div className="mt-6 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 bg-[#00c853]/15 text-[#00c853] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#00c853]/20">
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                 Best Price Guarantee
@@ -306,8 +306,27 @@ export default function Home() {
                 Same-Day Payout
               </span>
               <span className="inline-flex items-center gap-1.5 bg-white/5 text-[#888] text-xs font-medium px-3 py-1.5 rounded-full border border-white/10">
-                Austin Local
+                Austin Local + Shipping
               </span>
+            </div>
+
+            <div className="mt-8">
+              <p className="text-[#888] text-xs font-semibold uppercase tracking-wider mb-3">Popular devices — sell yours today</p>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { name: "iPhone 16 Pro Max", price: "$500" },
+                  { name: "iPhone 15 Pro Max", price: "$310" },
+                  { name: "Samsung S24 Ultra", price: "$500" },
+                  { name: "MacBook Pro 16\" M4", price: "$1,200" },
+                  { name: "PlayStation 5", price: "$300" },
+                  { name: "iPhone 14 Pro", price: "$210" },
+                ].map((d) => (
+                  <button key={d.name} onClick={() => { setDeviceType("iphone"); setStep("model"); pushHistory("model"); }} className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 hover:bg-white/10 transition cursor-pointer text-left active:scale-[0.98]">
+                    <span className="text-white text-xs font-medium">{d.name}</span>
+                    <span className="text-[#00c853] text-xs font-bold">up to {d.price}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </section>
