@@ -222,13 +222,17 @@ export default function Home() {
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={reset} className="cursor-pointer">
             <span className="flex items-center gap-2">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                <rect width="28" height="28" rx="6" fill="#00c853"/>
-                <path d="M14 6v2m0 12v2M10 14h-2m12 0h2" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
-                <circle cx="14" cy="14" r="5" stroke="#fff" strokeWidth="2"/>
-                <path d="M14 11v6M12.5 12.5h3a1.5 1.5 0 010 3h-3" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="8" fill="url(#logoGrad)"/>
+                <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stopColor="#00e676"/><stop offset="100%" stopColor="#00c853"/></linearGradient></defs>
+                <rect x="10" y="5" width="12" height="22" rx="3" stroke="#fff" strokeWidth="1.8" fill="none"/>
+                <line x1="13" y1="24" x2="19" y2="24" stroke="#fff" strokeWidth="1.2" strokeLinecap="round"/>
+                <path d="M16 10l-3.5 4h2.5v4h2v-4h2.5L16 10z" fill="#fff"/>
               </svg>
-              <span className="text-base font-bold tracking-tight">{BRAND}</span>
+              <div className="flex flex-col leading-none">
+                <span className="text-[13px] font-extrabold tracking-tight text-white">TOP CASH</span>
+                <span className="text-[9px] font-semibold tracking-[0.15em] text-[#00c853] uppercase">Cellular</span>
+              </div>
             </span>
           </button>
           <a href="https://wa.me/15129609256" target="_blank" rel="noopener noreferrer" aria-label="Message us on WhatsApp" className="w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center hover:bg-[#20bd5a] transition">
