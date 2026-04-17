@@ -172,6 +172,7 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [quoteEmail, setQuoteEmail] = useState("");
   const [quoteSaved, setQuoteSaved] = useState(false);
+  const [devicePhoto, setDevicePhoto] = useState<string | null>(null);
 
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrier?.multiplier ?? 1;
@@ -626,6 +627,28 @@ export default function Home() {
               <div>
                 <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Email <span className="normal-case text-[12px]">(optional)</span></label>
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Device Photo <span className="normal-case text-[12px]">(optional — speeds up payout)</span></label>
+                {!devicePhoto ? (
+                  <label className="flex flex-col items-center justify-center w-full h-28 bg-white/5 border-2 border-dashed border-white/15 rounded-xl cursor-pointer hover:bg-white/10 hover:border-[#00c853]/30 transition">
+                    <svg className="w-8 h-8 text-[#555] mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    <span className="text-[#555] text-xs">Tap to add a photo</span>
+                    <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = () => setDevicePhoto(reader.result as string);
+                        reader.readAsDataURL(file);
+                      }
+                    }} />
+                  </label>
+                ) : (
+                  <div className="relative">
+                    <img src={devicePhoto} alt="Device" className="w-full h-28 object-cover rounded-xl" />
+                    <button type="button" onClick={() => setDevicePhoto(null)} className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/60 text-white text-xs flex items-center justify-center cursor-pointer hover:bg-black/80">x</button>
+                  </div>
+                )}
               </div>
               <p className="text-[#666] text-[11px] text-center leading-relaxed">By submitting, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
               <button type="submit" className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
