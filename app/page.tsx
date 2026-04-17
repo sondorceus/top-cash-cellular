@@ -451,7 +451,27 @@ export default function Home() {
           <div className="max-w-lg mx-auto px-4 pt-12 pb-8 text-center">
             <p className="text-[#888] text-sm font-medium mb-2">{model.label} · {storage?.label} · {condition.label}</p>
             <h2 className="text-lg font-semibold text-[#888] mb-2">Your instant quote</h2>
-            <p className="text-6xl font-bold text-[#00c853] mb-6">${quote}</p>
+            <p className="text-6xl font-bold text-[#00c853] mb-4">${quote}</p>
+
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 text-left">
+              <p className="text-xs font-semibold text-[#888] uppercase tracking-wider mb-3">How we compare</p>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-[#00c853]">Top Cash Cellular</span>
+                  <span className="text-lg font-bold text-[#00c853]">${quote}</span>
+                </div>
+                <div className="flex items-center justify-between text-[#888]">
+                  <span className="text-sm">Apple Trade-In</span>
+                  <span className="text-sm">${Math.round(quote * 0.62)}</span>
+                </div>
+                <div className="flex items-center justify-between text-[#888]">
+                  <span className="text-sm">Carrier Trade-In</span>
+                  <span className="text-sm">${Math.round(quote * 0.7)}</span>
+                </div>
+              </div>
+              <p className="text-[#00c853] text-xs font-semibold mt-3">You save up to ${quote - Math.round(quote * 0.62)} more with us</p>
+            </div>
+
             <button
               onClick={() => setStep("payout")}
               className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]"
