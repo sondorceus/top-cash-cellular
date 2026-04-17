@@ -26,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="h-full antialiased">
       <head>
+        <meta name="google-site-verification" content="BZt20XeVKiVl8Pb0tnXR0LwGJnweRfDtDUdInz1O2tU" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
