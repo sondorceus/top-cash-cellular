@@ -1,35 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = "9b4dce8e03c1d2aaf86d272a2afda99a0157f49abd66450f";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-const SYSTEM_PROMPT = `You are Theot, the friendly AI assistant for Top Cash Cellular — a phone and device buyback service in Austin, TX.
-
-Your job: help potential sellers get quotes, understand the process, and feel confident selling their device.
-
-Key facts about the business:
-- We buy: iPhones (11+), Samsung Galaxy (S21+), MacBooks (M1+), game consoles (PS4/PS5, Xbox, Switch)
-- Payout methods: Cash, Venmo, Zelle, PayPal — seller's choice
-- Austin local pickup only — we meet in a public place
-- Same-day payment on the spot
-- We buy in ANY condition — even broken/cracked (lower price)
-- Price depends on: model, storage, condition, carrier lock status
-- 30-day warranty on pricing (quote valid for 30 days)
-
-Pricing ranges (approximate):
-- iPhone 16 Pro Max: up to $580 (flawless, unlocked, 256GB)
-- iPhone 15 Pro Max: up to $480
-- iPhone 14 Pro Max: up to $380
-- Samsung Galaxy S24 Ultra: up to $500
-- MacBook Pro 16" M4: up to $1,200
-- PS5: up to $300
-
-Personality: Friendly, direct, helpful. Keep responses SHORT (2-3 sentences max). If they ask about pricing, suggest they use the quote tool on the site for an exact number. Always try to move them toward getting a quote or providing their contact info.
-
-Never discuss competitors. Never make specific price promises — always say "up to" or "use our quote tool for exact pricing."`;
+function smartReply(message: string): string {
+  const m = message.toLowerCase();
+  if (m.match(/price|worth|how much|value|quote|sell.*for/)) return "Great question! Use our instant quote tool on the homepage to get an exact price. Just select your device, storage, and condition — takes 30 seconds. Prices range from $80 to $580+ depending on the model.";
+  if (m.match(/iphone|apple/)) return "We buy all iPhones from iPhone 11 and newer! Use the quote tool on our homepage to see exactly what yours is worth. iPhone 16 Pro Max goes for up to $580.";
+  if (m.match(/samsung|galaxy|android/)) return "We buy Samsung Galaxy S21 and newer, plus Z Fold and Z Flip models! Use our quote tool for an instant price — Galaxy S24 Ultra goes for up to $500.";
+  if (m.match(/macbook|mac|laptop/)) return "Yes! We buy MacBooks — Air and Pro, M1 chip and newer. MacBook Pro 16\" M4 goes for up to $1,200. Use our quote tool for your exact model!";
+  if (m.match(/ps[45]|playstation|xbox|switch|console|game/)) return "We buy PS4, PS5, Xbox One, Xbox Series S/X, and Nintendo Switch! PS5 goes for up to $300. Check our quote tool for exact pricing.";
+  if (m.match(/pay|venmo|zelle|paypal|cash|money/)) return "We pay via Cash, Venmo, Zelle, or PayPal — your choice! Payment is same-day for local Austin pickups. We pay on the spot.";
+  if (m.match(/broken|crack|damage|screen/)) return "We buy devices in ANY condition — even cracked or water damaged. You'll get a lower offer than a pristine device, but we'll still pay you. Select 'Fair' or 'Poor' in our quote tool.";
+  if (m.match(/how|work|process|step/)) return "Super simple: 1) Use our quote tool to get an instant price, 2) We arrange a local meetup in Austin, 3) We inspect and pay you on the spot. Takes about 5 minutes total!";
+  if (m.match(/where|location|austin|meet|pickup/)) return "We do local meetups all across Austin, TX. Public locations like coffee shops or parking lots — safe, fast, and convenient. We come to you!";
+  if (m.match(/ship|mail|send/)) return "We're currently Austin local pickup only — no shipping needed! We meet you at a convenient location and pay on the spot.";
+  if (m.match(/hi|hey|hello|sup|yo|what'?s up/)) return "Hey there! 👋 Welcome to Top Cash Cellular. Got a device you want to sell? I can help with pricing, tell you how the process works, or answer any questions. What's on your mind?";
+  if (m.match(/thank|thanks|thx|appreciate/)) return "You're welcome! 😊 Ready to get a quote? Just tap 'Get Your Quote' on our homepage, or ask me anything else!";
+  if (m.match(/bye|later|done|gtg/)) return "See you! When you're ready to sell, we're here. Use the quote tool anytime or call us at (512) 960-9256. 💰";
+  return "I can help with device pricing, how our buyback process works, payment methods, or what devices we buy. Try asking something like 'How much is my iPhone 15 Pro worth?' or use our instant quote tool on the homepage!";
+}
 
 export async function POST(req: NextRequest) {
   const { message, history } = await req.json();
@@ -48,27 +38,28 @@ export async function POST(req: NextRequest) {
         priority: "high",
       }),
     });
-  } catch {
-    // MC notification failed silently
-  }
+  } catch { /* silent */ }
 
+  // Try Anthropic first, fall back to smart replies
   try {
+    const Anthropic = (await import("@anthropic-ai/sdk")).default;
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const messages = (history || []).map((m: { from: string; text: string }) => ({
       role: m.from === "user" ? "user" as const : "assistant" as const,
       content: m.text,
     }));
     messages.push({ role: "user" as const, content: message });
 
-    const response = await anthropic.messages.create({
+    const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 200,
-      system: SYSTEM_PROMPT,
+      system: "You are the friendly AI assistant for Top Cash Cellular — a phone buyback service in Austin, TX. Keep responses SHORT (2-3 sentences). Help sellers get quotes and understand the process. We buy iPhones 11+, Samsung S21+, MacBooks M1+, game consoles. Payout: Cash, Venmo, Zelle, PayPal. Austin local pickup, same-day payment.",
       messages,
     });
 
-    const reply = response.content[0].type === "text" ? response.content[0].text : "Sorry, I couldn't process that. Try again!";
+    const reply = response.content[0].type === "text" ? response.content[0].text : smartReply(message);
     return NextResponse.json({ reply });
   } catch {
-    return NextResponse.json({ reply: "I'm having trouble right now. You can call us at (512) 960-9256 or use the quote tool on our homepage!" });
+    return NextResponse.json({ reply: smartReply(message) });
   }
 }
