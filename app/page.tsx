@@ -170,6 +170,8 @@ export default function Home() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [quoteEmail, setQuoteEmail] = useState("");
+  const [quoteSaved, setQuoteSaved] = useState(false);
 
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrier?.multiplier ?? 1;
@@ -488,12 +490,36 @@ export default function Home() {
               <p className="text-[#00c853] text-xs font-semibold mt-3">You save up to ${quote - Math.round(quote * 0.62)} more with us</p>
             </div>
 
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              <p className="text-[#00c853] text-sm font-semibold">Price locked for 7 days</p>
+            </div>
+
             <button
               onClick={() => setStep("payout")}
               className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]"
             >
               Accept Offer
             </button>
+
+            {!quoteSaved ? (
+              <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4">
+                <p className="text-[#888] text-xs font-medium mb-3">Not ready yet? Save this quote for later.</p>
+                <div className="flex gap-2">
+                  <input type="email" value={quoteEmail} onChange={(e) => setQuoteEmail(e.target.value)} placeholder="your@email.com" className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] transition" />
+                  <button onClick={async () => {
+                    if (!quoteEmail) return;
+                    try { await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "", phone: "", email: quoteEmail, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote, payout: "TBD" }) }); } catch {}
+                    setQuoteSaved(true);
+                  }} className="bg-white/10 text-white px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-white/15 transition active:scale-95">
+                    Save
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="mt-5 text-[#00c853] text-sm font-medium">Quote saved! Check your inbox.</p>
+            )}
+
             <button onClick={handleBack} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-white transition">
               Change condition
             </button>
