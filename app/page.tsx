@@ -284,7 +284,7 @@ export default function Home() {
                 <button
                   key={d.id}
                   onClick={() => { setDeviceType(d.id); setStep("model"); pushHistory("model"); }}
-                  className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-200 cursor-pointer text-left active:scale-[0.98]"
+                  className="glow-border w-full flex items-center gap-4 p-5 rounded-2xl bg-[#0a0a0a] hover:bg-white/5 transition-all duration-200 cursor-pointer text-left active:scale-[0.98]"
                 >
                   <span className="text-3xl">{d.icon}</span>
                   <div className="flex-1">
