@@ -122,6 +122,9 @@ export default function Home() {
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMsg, setChatMsg] = useState("");
+  const [chatSent, setChatSent] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -620,6 +623,41 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* CHAT WIDGET */}
+      <div className="fixed bottom-6 right-6 z-50">
+        {chatOpen && (
+          <div className="mb-3 w-[300px] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+            <div className="bg-[#00c853] px-4 py-3 flex items-center justify-between">
+              <p className="text-white font-semibold text-sm">Top Cash Cellular</p>
+              <button onClick={() => setChatOpen(false)} className="text-white/80 hover:text-white cursor-pointer text-lg">×</button>
+            </div>
+            <div className="p-4">
+              {!chatSent ? (
+                <>
+                  <p className="text-white text-sm mb-3">Hey! Got a device to sell? I can give you a quick quote or answer any questions.</p>
+                  <textarea value={chatMsg} onChange={(e) => setChatMsg(e.target.value)} placeholder="Type your message..." rows={3} className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] resize-none mb-2" />
+                  <button onClick={() => { if (chatMsg.trim()) setChatSent(true); }} className="w-full bg-[#00c853] text-white py-2 rounded-xl text-sm font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
+                    Send
+                  </button>
+                </>
+              ) : (
+                <div className="text-center py-2">
+                  <p className="text-[#00c853] font-semibold mb-1">Message sent!</p>
+                  <p className="text-[#888] text-xs">We&apos;ll get back to you shortly.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        <button onClick={() => setChatOpen(!chatOpen)} className="w-14 h-14 rounded-full bg-[#00c853] text-white flex items-center justify-center shadow-lg hover:bg-[#00e676] transition cursor-pointer active:scale-90">
+          {chatOpen ? (
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+          ) : (
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+          )}
+        </button>
+      </div>
 
       {/* PROGRESS BAR — shows during flow */}
       {step !== "device" && step !== "done" && page === "home" && (
