@@ -1,33 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
+import Anthropic from "@anthropic-ai/sdk";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = "9b4dce8e03c1d2aaf86d272a2afda99a0157f49abd66450f";
 
-const RESPONSES: Record<string, string> = {
-  price: "I can help with pricing! Just use our quote tool on the homepage — select your device, storage, and condition to get an instant offer. Or tell me what device you have and I'll give you a ballpark.",
-  iphone: "We buy all iPhones from iPhone 11 and newer. Use the quote tool to get an exact price based on your model, storage, and condition. Prices range from $100–$580 depending on the model.",
-  samsung: "We buy Samsung Galaxy S21 and newer, plus Z Fold and Z Flip models. Use our quote tool for an instant price!",
-  macbook: "Yes, we buy MacBooks! MacBook Air and Pro, M1 chip and newer. Prices range from $350–$1,200 depending on the model and condition.",
-  console: "We buy PS4, PS5, Xbox One, Xbox Series S/X, and Nintendo Switch. Use the quote tool for pricing!",
-  pay: "We pay via Cash, Venmo, Zelle, or PayPal — your choice. Payment is same-day for local Austin pickups.",
-  ship: "We're currently Austin local pickup only. We meet you at a convenient location and pay on the spot.",
-  broken: "We buy devices in any condition — even broken or cracked. You'll get a lower offer, but we'll still make you an offer. Select 'Fair' or 'Poor' condition in our quote tool.",
-  how: "It's simple: 1) Get an instant quote on our site, 2) We arrange a local meetup in Austin, 3) We inspect the device and pay you on the spot. Takes about 5 minutes!",
-  meet: "We do local meetups in Austin, TX. Public locations like coffee shops or parking lots. Safe, fast, and convenient.",
-};
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-function getResponse(message: string): string {
-  const lower = message.toLowerCase();
-  for (const [key, response] of Object.entries(RESPONSES)) {
-    if (lower.includes(key)) return response;
-  }
-  return "Thanks for reaching out! I can help with device quotes, pricing, payment methods, or how our buyback process works. What would you like to know? You can also use our instant quote tool on the homepage for a quick price.";
-}
+const SYSTEM_PROMPT = `You are Theot, the friendly AI assistant for Top Cash Cellular — a phone and device buyback service in Austin, TX.
+
+Your job: help potential sellers get quotes, understand the process, and feel confident selling their device.
+
+Key facts about the business:
+- We buy: iPhones (11+), Samsung Galaxy (S21+), MacBooks (M1+), game consoles (PS4/PS5, Xbox, Switch)
+- Payout methods: Cash, Venmo, Zelle, PayPal — seller's choice
+- Austin local pickup only — we meet in a public place
+- Same-day payment on the spot
+- We buy in ANY condition — even broken/cracked (lower price)
+- Price depends on: model, storage, condition, carrier lock status
+- 30-day warranty on pricing (quote valid for 30 days)
+
+Pricing ranges (approximate):
+- iPhone 16 Pro Max: up to $580 (flawless, unlocked, 256GB)
+- iPhone 15 Pro Max: up to $480
+- iPhone 14 Pro Max: up to $380
+- Samsung Galaxy S24 Ultra: up to $500
+- MacBook Pro 16" M4: up to $1,200
+- PS5: up to $300
+
+Personality: Friendly, direct, helpful. Keep responses SHORT (2-3 sentences max). If they ask about pricing, suggest they use the quote tool on the site for an exact number. Always try to move them toward getting a quote or providing their contact info.
+
+Never discuss competitors. Never make specific price promises — always say "up to" or "use our quote tool for exact pricing."`;
 
 export async function POST(req: NextRequest) {
-  const { message, name } = await req.json();
-
-  const reply = getResponse(message);
+  const { message, history } = await req.json();
 
   // Forward lead to Mission Control
   try {
@@ -38,7 +43,7 @@ export async function POST(req: NextRequest) {
         from: "topcash-web",
         fromName: "Top Cash Cellular Chat",
         role: "system",
-        body: `[CHAT LEAD] ${name || "Visitor"}: "${message}"`,
+        body: `[CHAT LEAD] Visitor: "${message}"`,
         tags: ["chat-lead"],
         priority: "high",
       }),
@@ -47,5 +52,23 @@ export async function POST(req: NextRequest) {
     // MC notification failed silently
   }
 
-  return NextResponse.json({ reply });
+  try {
+    const messages = (history || []).map((m: { from: string; text: string }) => ({
+      role: m.from === "user" ? "user" as const : "assistant" as const,
+      content: m.text,
+    }));
+    messages.push({ role: "user" as const, content: message });
+
+    const response = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 200,
+      system: SYSTEM_PROMPT,
+      messages,
+    });
+
+    const reply = response.content[0].type === "text" ? response.content[0].text : "Sorry, I couldn't process that. Try again!";
+    return NextResponse.json({ reply });
+  } catch {
+    return NextResponse.json({ reply: "I'm having trouble right now. You can call us at (512) 960-9256 or use the quote tool on our homepage!" });
+  }
 }

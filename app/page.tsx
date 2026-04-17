@@ -138,7 +138,7 @@ export default function Home() {
     setChatMessages(prev => [...prev, { from: "user", text: msg }]);
     setChatLoading(true);
     try {
-      const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: msg, name }) });
+      const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: msg, history: chatMessages }) });
       const data = await res.json();
       setChatMessages(prev => [...prev, { from: "bot", text: data.reply }]);
     } catch {
