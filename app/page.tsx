@@ -78,10 +78,10 @@ const CONSOLE_MODELS = [
 ];
 
 const CONDITIONS = [
-  { id: "flawless", label: "Flawless", desc: "Like new, no scratches or damage", multiplier: 1.0, icon: "✨" },
-  { id: "good", label: "Good", desc: "Minor scratches, fully functional", multiplier: 0.85, icon: "👍" },
-  { id: "fair", label: "Fair", desc: "Visible wear, cracks, or dents", multiplier: 0.65, icon: "👌" },
-  { id: "poor", label: "Poor", desc: "Heavy damage, broken screen, etc.", multiplier: 0.4, icon: "⚠️" },
+  { id: "flawless", label: "Flawless (Grade A)", desc: "Like new, no scratches or damage", multiplier: 1.0, icon: "✨" },
+  { id: "good", label: "Good (Grade B)", desc: "Minor scratches, fully functional", multiplier: 0.98, icon: "👍" },
+  { id: "fair", label: "Fair (Grade C)", desc: "Visible wear, scuffs, light cracks", multiplier: 0.77, icon: "👌" },
+  { id: "poor", label: "Broken (Grade D)", desc: "Cracked screen, heavy damage", multiplier: 0.55, icon: "⚠️" },
 ];
 
 const STORAGES = [
