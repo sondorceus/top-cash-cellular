@@ -599,6 +599,28 @@ export default function Home() {
       {/* TRUST + TESTIMONIALS + FAQ (only on home) */}
       {step === "device" && page === "home" && (
         <>
+          {/* HOW IT WORKS */}
+          <section className="py-12 bg-[#0d0d0d]">
+            <div className="max-w-lg mx-auto px-4">
+              <h2 className="text-xl font-bold text-center mb-8">How it works</h2>
+              <div className="space-y-4">
+                {[
+                  { num: "1", icon: "📱", title: "Get an instant quote", desc: "Select your device, storage, and condition. See your price in 30 seconds." },
+                  { num: "2", icon: "🤝", title: "We meet you locally", desc: "Choose a convenient spot in Austin. We come to you — coffee shops, offices, anywhere." },
+                  { num: "3", icon: "💰", title: "Get paid on the spot", desc: "We inspect your device and pay instantly via Cash, Venmo, Zelle, or PayPal." },
+                ].map((s) => (
+                  <div key={s.num} className="flex items-start gap-4 bg-white/5 border border-white/10 rounded-2xl p-5">
+                    <div className="w-10 h-10 rounded-full bg-[#00c853]/15 flex items-center justify-center text-[#00c853] font-bold text-sm shrink-0">{s.num}</div>
+                    <div>
+                      <p className="font-semibold text-[15px] mb-1">{s.title}</p>
+                      <p className="text-[#888] text-sm leading-relaxed">{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
           {/* TRUST SIGNALS */}
           <section className="py-8 bg-[#111]">
             <div className="max-w-lg mx-auto px-4">
