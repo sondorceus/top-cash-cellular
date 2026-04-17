@@ -641,22 +641,75 @@ export default function Home() {
       {/* TRUST + TESTIMONIALS + FAQ (only on home) */}
       {step === "device" && page === "home" && (
         <>
-          {/* HOW IT WORKS */}
+          {/* HOW IT WORKS — Visual persona example */}
           <section className="py-12 bg-[#0d0d0d]">
             <div className="max-w-lg mx-auto px-4">
-              <h2 className="text-xl font-bold text-center mb-8">How it works</h2>
-              <div className="space-y-4">
-                {[
-                  { num: "1", icon: "📱", title: "Get an instant quote", desc: "Select your device, storage, and condition. See your price in 30 seconds." },
-                  { num: "2", icon: "🤝", title: "We meet you locally", desc: "Choose a convenient spot in Austin. We come to you — coffee shops, offices, anywhere." },
-                  { num: "3", icon: "💰", title: "Get paid on the spot", desc: "We inspect your device and pay instantly via Cash, Venmo, Zelle, or PayPal." },
-                ].map((s) => (
-                  <div key={s.num} className="flex items-start gap-4 bg-white/5 border border-white/10 rounded-2xl p-5">
-                    <div className="w-10 h-10 rounded-full bg-[#00c853]/15 flex items-center justify-center text-[#00c853] font-bold text-sm shrink-0">{s.num}</div>
-                    <div>
-                      <p className="font-semibold text-[15px] mb-1">{s.title}</p>
-                      <p className="text-[#888] text-sm leading-relaxed">{s.desc}</p>
+              <h2 className="text-xl font-bold text-center mb-2">Get your instant quote</h2>
+              <p className="text-[#888] text-sm text-center mb-8">Select your device and condition, and get your offer before you say &ldquo;goodbye, clutter&rdquo;</p>
+
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8">
+                <p className="text-[#888] text-xs font-medium mb-4 uppercase tracking-wider">Jenny wants to sell her iPhone</p>
+                <div className="grid grid-cols-3 gap-4 mb-5">
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
+                      <span className="text-xl">📱</span>
                     </div>
+                    <p className="text-[#888] text-[10px] uppercase tracking-wider font-medium">Device</p>
+                    <p className="text-white text-sm font-bold">iPhone 13</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
+                      <span className="text-xl">✨</span>
+                    </div>
+                    <p className="text-[#888] text-[10px] uppercase tracking-wider font-medium">Condition</p>
+                    <p className="text-white text-sm font-bold">Good</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
+                      <span className="text-xl">💰</span>
+                    </div>
+                    <p className="text-[#888] text-[10px] uppercase tracking-wider font-medium">Offer</p>
+                    <p className="text-[#00c853] text-sm font-bold">$190.00</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between bg-[#00c853]/10 border border-[#00c853]/20 rounded-xl px-4 py-3">
+                  <span className="text-white text-sm font-semibold">Jenny&apos;s payout</span>
+                  <span className="text-[#00c853] text-lg font-bold">$190.00</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center gap-3 mb-2">
+                {["Device", "Condition", "Offer"].map((label, i) => (
+                  <div key={label} className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-[#00c853] flex items-center justify-center text-white text-xs font-bold">{i + 1}</div>
+                      <span className="text-white text-xs font-semibold">{label}</span>
+                    </div>
+                    {i < 2 && <svg className="w-4 h-4 text-[#555]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>}
+                  </div>
+                ))}
+              </div>
+              <p className="text-[#555] text-xs text-center">3 steps. 30 seconds. Done.</p>
+            </div>
+          </section>
+
+          {/* SHIP TO US */}
+          <section className="py-12 bg-[#0a0a0a]">
+            <div className="max-w-lg mx-auto px-4">
+              <h2 className="text-xl font-bold text-center mb-2">Not in Austin? Ship to us</h2>
+              <p className="text-[#888] text-sm text-center mb-8">Mail your device from anywhere in the US. We pay shipping.</p>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { num: "1", icon: "📦", title: "Pack", desc: "We send you a free prepaid shipping label" },
+                  { num: "2", icon: "✈️", title: "Ship", desc: "Drop it off at any USPS or UPS location" },
+                  { num: "3", icon: "💸", title: "Get Paid", desc: "Payment sent same day we receive it" },
+                ].map((s) => (
+                  <div key={s.num} className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+                    <div className="w-10 h-10 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
+                      <span className="text-lg">{s.icon}</span>
+                    </div>
+                    <p className="text-white text-sm font-bold mb-1">{s.title}</p>
+                    <p className="text-[#888] text-[11px] leading-relaxed">{s.desc}</p>
                   </div>
                 ))}
               </div>
