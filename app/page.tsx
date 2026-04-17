@@ -253,11 +253,23 @@ export default function Home() {
           </div>
           <div className="max-w-lg mx-auto px-4 pt-10 pb-8">
             <h1 className="text-4xl font-bold tracking-tight leading-[1.08] mb-3">
-              Sell your phone<br />for top dollar.
+              Get top dollar<br />for your phone.
             </h1>
-            <p className="text-[#888] text-lg mb-10 font-medium">
-              Instant quote. Fast payout. Cash, Venmo, Zelle, or PayPal.
+            <p className="text-[#888] text-lg mb-1 font-medium">
+              Instant quote. Same-day payout available.
             </p>
+            <p className="text-[#888] text-lg mb-6 font-medium">
+              Cash, Venmo, Zelle, or PayPal.
+            </p>
+
+            <button
+              onClick={() => { setDeviceType("iphone"); setStep("model"); pushHistory("model"); }}
+              className="w-full bg-[#00c853] text-white py-5 rounded-2xl text-xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] mb-6 shadow-lg shadow-[#00c853]/20"
+            >
+              Get My Quote
+            </button>
+
+            <p className="text-[#555] text-xs text-center mb-6 font-medium">Or select your device below</p>
 
             <div className="space-y-3">
               {[
