@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Top Cash Cellular — Sell Your Phone for Top Dollar | Austin TX",
-  description: "Get an instant quote and sell your iPhone, Samsung, MacBook, or game console for top dollar. Cash, Venmo, Zelle, PayPal. Same-day payout in Austin, TX.",
-  keywords: "sell iPhone Austin, sell phone for cash, phone buyback, sell Samsung, sell MacBook, Top Cash Cellular",
+  title: "Sell Your Phone for Cash in Austin TX | Top Cash Cellular — iPhone, Samsung, MacBook Buyback",
+  description: "Sell your iPhone, Samsung Galaxy, MacBook, or game console for top dollar in Austin TX. Instant quote, same-day cash payout. We pay more than Apple trade-in. Cash, Venmo, Zelle, PayPal. Free shipping available.",
+  keywords: "sell iPhone Austin, sell phone for cash Austin TX, phone buyback near me, sell Samsung Galaxy, sell MacBook, trade in iPhone, sell used phone, Top Cash Cellular, sell PS5, sell Xbox, device buyback Austin, cash for phones",
   openGraph: {
     title: "Top Cash Cellular — Sell Your Phone for Top Dollar",
     description: "Instant quotes. Same-day payout. Cash, Venmo, Zelle, or PayPal. Austin, TX.",
@@ -40,7 +40,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "areaServed": { "@type": "City", "name": "Austin" },
               "priceRange": "$$",
               "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "127" },
-              "sameAs": []
+              "sameAs": [],
+              "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Device Buyback Prices",
+                "itemListElement": [
+                  { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "iPhone 16 Pro Max" }, "price": "500", "priceCurrency": "USD", "description": "Sell your iPhone 16 Pro Max for up to $500" },
+                  { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "iPhone 15 Pro Max" }, "price": "310", "priceCurrency": "USD", "description": "Sell your iPhone 15 Pro Max for up to $310" },
+                  { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Samsung Galaxy S24 Ultra" }, "price": "500", "priceCurrency": "USD", "description": "Sell your Samsung S24 Ultra for up to $500" },
+                  { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "MacBook Pro 16 M4" }, "price": "1200", "priceCurrency": "USD", "description": "Sell your MacBook Pro M4 for up to $1200" }
+                ]
+              }
             }),
           }}
         />
