@@ -803,22 +803,84 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Home
             </button>
-            {page === "about" && <><h1 className="text-3xl font-bold mb-4">About Us</h1>
-            <p className="text-[#888] mb-6 leading-relaxed">Top Cash Cellular is Austin&apos;s local phone and device buyback service. We pay top dollar for your used iPhones, Samsung phones, MacBooks, and game consoles — fast, fair, and on your terms.</p>
-            <div className="space-y-4">
-              <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
-                <p className="font-semibold mb-1">Why sell to us?</p>
-                <p className="text-[#888] text-sm">We offer higher payouts than carrier trade-ins, instant quotes with no hidden fees, and same-day payment. Cash, Venmo, Zelle, PayPal — your choice.</p>
+            {page === "about" && <div className="animate-[fadeIn_0.3s_ease-out]">
+              <h1 className="text-3xl font-bold mb-2">About Top Cash Cellular</h1>
+              <p className="text-[#00c853] text-sm font-semibold mb-6">Austin&apos;s #1 Device Buyback Service</p>
+
+              <div className="bg-gradient-to-br from-[#00c853]/10 to-transparent border border-[#00c853]/20 rounded-2xl p-6 mb-8">
+                <p className="text-white text-lg font-medium leading-relaxed mb-3">We started Top Cash Cellular with a simple idea: selling your phone shouldn&apos;t be a hassle.</p>
+                <p className="text-[#888] text-sm leading-relaxed">No lowball carrier trade-ins. No mailing your device and waiting weeks for a check. No haggling with strangers on marketplace apps. Just a fair price, paid fast, from a team you can trust.</p>
               </div>
-              <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
-                <p className="font-semibold mb-1">Local &amp; trustworthy</p>
-                <p className="text-[#888] text-sm">We&apos;re based in Austin, TX. No shipping, no waiting weeks for a check. We meet you locally and pay on the spot.</p>
+
+              <div className="grid grid-cols-2 gap-3 mb-8">
+                <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
+                  <p className="text-3xl font-bold text-[#00c853]">500+</p>
+                  <p className="text-[#888] text-xs mt-1">Devices Purchased</p>
+                </div>
+                <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
+                  <p className="text-3xl font-bold text-[#00c853]">4.9★</p>
+                  <p className="text-[#888] text-xs mt-1">Customer Rating</p>
+                </div>
+                <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
+                  <p className="text-3xl font-bold text-[#00c853]">Same Day</p>
+                  <p className="text-[#888] text-xs mt-1">Payment</p>
+                </div>
+                <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
+                  <p className="text-3xl font-bold text-[#00c853]">38%</p>
+                  <p className="text-[#888] text-xs mt-1">More Than Trade-In</p>
+                </div>
               </div>
-              <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
-                <p className="font-semibold mb-1">We buy everything</p>
-                <p className="text-[#888] text-sm">iPhones, Samsung Galaxy, MacBooks, PlayStation, Xbox, Nintendo Switch. Working or broken — we make an offer on anything.</p>
+
+              <h2 className="text-xl font-bold mb-4">Why sell to us?</h2>
+              <div className="space-y-3 mb-8">
+                {[
+                  { icon: "💰", title: "Highest payouts in Austin", desc: "We consistently beat Apple, carrier, and marketplace prices by 20-40%. Get a quote and compare." },
+                  { icon: "⚡", title: "Paid on the spot", desc: "Cash, Venmo, Zelle, or PayPal — your choice. No waiting for checks or bank transfers." },
+                  { icon: "🤝", title: "Local & personal", desc: "We meet you at a convenient Austin location. Face-to-face, safe, and quick. 5 minutes and you're done." },
+                  { icon: "📦", title: "Nationwide shipping", desc: "Not in Austin? No problem. We send a free prepaid label. Ship your device, get paid same day we receive it." },
+                  { icon: "📱", title: "We buy everything", desc: "iPhones, Samsung Galaxy, MacBooks, PS5, Xbox, Nintendo Switch. Working, cracked, or water damaged." },
+                  { icon: "🔒", title: "7-day price lock", desc: "Your quote is locked for 7 days. Take your time deciding — the price won't change." },
+                ].map((item) => (
+                  <div key={item.title} className="flex items-start gap-4 bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <span className="text-2xl shrink-0">{item.icon}</span>
+                    <div>
+                      <p className="font-semibold text-sm mb-0.5">{item.title}</p>
+                      <p className="text-[#888] text-sm leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div></>}
+
+              <h2 className="text-xl font-bold mb-4">How it works</h2>
+              <div className="space-y-3 mb-8">
+                {[
+                  { num: "1", title: "Get an instant quote", desc: "Select your device, model, storage, and condition. See your price in 30 seconds." },
+                  { num: "2", title: "Choose how to sell", desc: "Meet us locally in Austin or ship your device for free from anywhere in the US." },
+                  { num: "3", title: "Get paid instantly", desc: "We verify your device and pay you on the spot. Cash, Venmo, Zelle, or PayPal." },
+                ].map((step) => (
+                  <div key={step.num} className="flex items-start gap-4 bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center text-white text-sm font-bold shrink-0">{step.num}</div>
+                    <div>
+                      <p className="font-semibold text-sm mb-0.5">{step.title}</p>
+                      <p className="text-[#888] text-sm leading-relaxed">{step.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-6 text-center">
+                <p className="text-lg font-bold mb-2">Ready to sell?</p>
+                <p className="text-[#888] text-sm mb-4">Get your instant quote in 30 seconds.</p>
+                <button onClick={() => { setPage("home"); setStep("device"); window.scrollTo({ top: 0 }); }} className="bg-[#00c853] text-white px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
+                  Get My Quote
+                </button>
+              </div>
+
+              <div className="mt-8 text-center">
+                <p className="text-[#888] text-sm mb-1">Questions? Call us anytime.</p>
+                <a href={`tel:${PHONE}`} className="text-[#00c853] font-bold text-lg">{PHONE}</a>
+              </div>
+            </div>}
 
             {page === "privacy" && (
               <div className="animate-[fadeIn_0.3s_ease-out]">
