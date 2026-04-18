@@ -980,9 +980,13 @@ export default function Home() {
           </div>
           <div className="border-t border-white/10 pt-6 text-center">
             <p className="text-[11px] text-[#888]/60 mb-3">© 2026 {BRAND}</p>
-            <a href="https://atxgadgetfix.com" target="_blank" rel="noopener noreferrer" className="text-[11px] text-[#555] hover:text-[#888] transition">
-              Need a repair instead? Visit ATX Gadget Fix →
-            </a>
+            <div className="flex items-center justify-center gap-4">
+              <a href="/privacy" className="text-[11px] text-[#555] hover:text-[#888] transition">Privacy Policy</a>
+              <span className="text-[11px] text-[#333]">·</span>
+              <a href="https://atxgadgetfix.com" target="_blank" rel="noopener noreferrer" className="text-[11px] text-[#555] hover:text-[#888] transition">
+                Need a repair? ATX Gadget Fix →
+              </a>
+            </div>
           </div>
         </div>
       </footer>
