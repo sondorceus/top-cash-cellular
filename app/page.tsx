@@ -1065,18 +1065,11 @@ export default function Home() {
       )}
 
       {cookieConsent === null && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111] border-t border-white/10 p-4 animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg mx-auto">
-            <p className="text-white text-sm mb-3">We use cookies to improve your experience. Choose your preference:</p>
-            <div className="flex gap-3">
-              <button onClick={() => { localStorage.setItem("cookie-consent", "essential"); setCookieConsent("essential"); }} className="flex-1 bg-white/10 text-white py-2.5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-white/15 transition border border-white/10">
-                Essential Only
-              </button>
-              <button onClick={() => { localStorage.setItem("cookie-consent", "full"); setCookieConsent("full"); }} className="flex-1 bg-[#00c853] text-white py-2.5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-[#00e676] transition">
-                Full Access
-              </button>
-            </div>
-            <p className="text-[#555] text-[10px] mt-2 text-center">Essential cookies are required for the site to function. Full access enables analytics and personalization.</p>
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111]/95 backdrop-blur-sm border-t border-white/10 px-3 py-2 animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg mx-auto flex items-center gap-3">
+            <p className="text-white/80 text-[11px] flex-1">We use cookies to improve your experience.</p>
+            <button onClick={() => { localStorage.setItem("cookie-consent", "essential"); setCookieConsent("essential"); }} className="text-white/60 text-[11px] font-medium cursor-pointer hover:text-white transition whitespace-nowrap">Essential</button>
+            <button onClick={() => { localStorage.setItem("cookie-consent", "full"); setCookieConsent("full"); }} className="bg-[#00c853] text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer hover:bg-[#00e676] transition whitespace-nowrap">Accept All</button>
           </div>
         </div>
       )}
