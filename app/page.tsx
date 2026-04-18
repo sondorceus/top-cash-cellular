@@ -980,8 +980,8 @@ export default function Home() {
           </div>
           <div className="border-t border-white/10 pt-6 text-center">
             <p className="text-[11px] text-[#888]/60 mb-3">© 2026 {BRAND}</p>
-            <a href="https://swiftfix-repair.vercel.app" target="_blank" rel="noopener noreferrer" className="text-[11px] text-[#555] hover:text-[#888] transition">
-              Need a repair instead? Visit Austin Mobile Repair →
+            <a href="https://atxgadgetfix.com" target="_blank" rel="noopener noreferrer" className="text-[11px] text-[#555] hover:text-[#888] transition">
+              Need a repair instead? Visit ATX Gadget Fix →
             </a>
           </div>
         </div>
