@@ -6,6 +6,7 @@ const MC_KEY = process.env.MC_API_KEY || "";
 export async function POST(req: NextRequest) {
   const data = await req.json();
   const { name, phone, email, device, model, storage, condition, quote, payout } = data;
+  if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
 
   const leadBody = [
     `[NEW BUYBACK LEAD]`,
