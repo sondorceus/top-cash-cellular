@@ -38,8 +38,9 @@ export function generateStaticParams() {
   return DEVICES.map((d) => ({ slug: d.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const device = DEVICES.find((d) => d.slug === params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const device = DEVICES.find((d) => d.slug === slug);
   if (!device) return { title: "Sell Your Device | Top Cash Cellular" };
   return {
     title: `Sell ${device.name} for Cash in Austin TX | Up to $${device.price} | Top Cash Cellular`,
@@ -53,8 +54,9 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   };
 }
 
-export default function SellDevicePage({ params }: { params: { slug: string } }) {
-  const device = DEVICES.find((d) => d.slug === params.slug);
+export default async function SellDevicePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const device = DEVICES.find((d) => d.slug === slug);
   if (!device) {
     return (
       <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center">
