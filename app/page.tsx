@@ -603,11 +603,12 @@ export default function Home() {
             <form onSubmit={async (e) => {
               e.preventDefault();
               try {
-                await fetch("/api/lead", {
+                const res = await fetch("/api/lead", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote, payout: payout?.label }),
                 });
+                if (!res.ok) throw new Error('Failed');
                 if (email) {
                   fetch("/api/confirm", {
                     method: "POST",
@@ -615,8 +616,8 @@ export default function Home() {
                     body: JSON.stringify({ name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, quote, payout: payout?.label }),
                   }).catch(() => {});
                 }
-              } catch {}
-              setStep("done"); pushHistory("done");
+                setStep("done"); pushHistory("done");
+              } catch { alert("Something went wrong. Please try again or call us directly."); }
             }} className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Name</label>
