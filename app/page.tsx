@@ -645,6 +645,7 @@ export default function Home() {
                     <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file) {
+                        if (file.size > 10 * 1024 * 1024) { alert("Photo must be under 10MB"); e.target.value = ""; return; }
                         const reader = new FileReader();
                         reader.onload = () => setDevicePhoto(reader.result as string);
                         reader.readAsDataURL(file);
