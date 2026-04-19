@@ -968,7 +968,7 @@ export default function Home() {
               <div className="space-y-2">
                 <button onClick={() => { setPage("about"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-white transition cursor-pointer">About Us</button>
                 <a href={`tel:${PHONE_TEL}`} className="block text-xs hover:text-white transition">Contact</a>
-                <button onClick={() => { setPage("privacy"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-white transition cursor-pointer">Privacy Policy</button>
+                <a href="/privacy" className="block text-xs hover:text-white transition">Privacy Policy</a>
                 <button onClick={() => { setPage("terms"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-white transition cursor-pointer">Terms of Service</button>
               </div>
             </div>
