@@ -2,26 +2,29 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://topcashcellular.com/</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-04-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://topcashcellular.com/#about</loc>
-    <lastmod>2026-04-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://topcashcellular.com/privacy</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-04-18</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
-  <url>
-    <loc>https://topcashcellular.com/#terms</loc>
-    <lastmod>2026-04-17</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
+  <url><loc>https://topcashcellular.com/sell/iphone-17-pro-max</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://topcashcellular.com/sell/iphone-16-pro-max</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://topcashcellular.com/sell/iphone-16-pro</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://topcashcellular.com/sell/iphone-15-pro-max</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://topcashcellular.com/sell/iphone-15-pro</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://topcashcellular.com/sell/iphone-14-pro-max</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://topcashcellular.com/sell/iphone-13-pro-max</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://topcashcellular.com/sell/samsung-galaxy-s24-ultra</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://topcashcellular.com/sell/samsung-galaxy-s23-ultra</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://topcashcellular.com/sell/samsung-galaxy-z-fold-5</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://topcashcellular.com/sell/macbook-pro-16-m4</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://topcashcellular.com/sell/macbook-air-m3</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://topcashcellular.com/sell/playstation-5</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://topcashcellular.com/sell/xbox-series-x</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://topcashcellular.com/sell/nintendo-switch-oled</loc><lastmod>2026-04-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>
