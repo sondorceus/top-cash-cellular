@@ -6,6 +6,8 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   font-weight: 500;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 button, a, [role="button"] {
