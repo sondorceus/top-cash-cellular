@@ -6,18 +6,18 @@ const PHONE = "(877) 549-2056";
 const PHONE_TEL = "+18775492056";
 
 const IPHONE_SERIES = [
-  { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 830, variants: [
-    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 830 },
-    { id: "ip17p", label: "iPhone 17 Pro", base: 720 },
-    { id: "ip17air", label: "iPhone 17 Air", base: 480 },
-    { id: "ip17", label: "iPhone 17", base: 450 },
-    { id: "ip17e", label: "iPhone 17E", base: 220 },
+  { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 895, variants: [
+    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 895 },
+    { id: "ip17p", label: "iPhone 17 Pro", base: 775 },
+    { id: "ip17air", label: "iPhone 17 Air", base: 535 },
+    { id: "ip17", label: "iPhone 17", base: 440 },
+    { id: "ip17e", label: "iPhone 17E", base: 110 },
   ]},
-  { id: "16", label: "iPhone 16", image: "/iphone16.png", year: "2024", topPrice: 500, variants: [
-    { id: "ip16pm", label: "iPhone 16 Pro Max", base: 500 },
-    { id: "ip16p", label: "iPhone 16 Pro", base: 420 },
-    { id: "ip16plus", label: "iPhone 16 Plus", base: 330 },
-    { id: "ip16", label: "iPhone 16", base: 310 },
+  { id: "16", label: "iPhone 16", image: "/iphone16.png", year: "2024", topPrice: 695, variants: [
+    { id: "ip16pm", label: "iPhone 16 Pro Max", base: 695 },
+    { id: "ip16p", label: "iPhone 16 Pro", base: 540 },
+    { id: "ip16plus", label: "iPhone 16 Plus", base: 325 },
+    { id: "ip16", label: "iPhone 16", base: 265 },
     { id: "ip16e", label: "iPhone 16E", base: 170 },
   ]},
   { id: "15", label: "iPhone 15", image: "/iphone15.png", year: "2023", topPrice: 310, variants: [
@@ -335,6 +335,10 @@ export default function Home() {
                   </svg>
                 </button>
               ))}
+            </div>
+
+            <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+              <p className="text-[#888] text-sm">Don&apos;t see your device? <a href={`tel:${PHONE_TEL}`} className="text-[#00c853] font-semibold hover:underline">Contact us</a> and we&apos;ll make you an offer!</p>
             </div>
 
             <div className="mt-6 flex flex-wrap items-center gap-2">
