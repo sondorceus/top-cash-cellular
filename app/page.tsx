@@ -846,26 +846,30 @@ export default function Home() {
             </div>
 
             <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5 text-left">
-              <h3 className="text-base font-bold text-white mb-1">Fair Evaluation Promise</h3>
-              <p className="text-[#888] text-xs mb-4">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
+              <h3 className="text-base font-bold text-white mb-1">The Top Cash Guarantee</h3>
+              <p className="text-[#888] text-xs mb-4">Your device, your terms. Here&apos;s what we stand behind.</p>
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm font-semibold text-[#ccc]">✅ Consistent grading</p>
-                  <p className="text-xs text-[#888] mt-1">Every device is evaluated using a standardized process based on the condition you select.</p>
+                  <p className="text-sm font-semibold text-[#ccc]">🎯 Transparent Pricing</p>
+                  <p className="text-xs text-[#888] mt-1">What you see is what you get. No surprise deductions, no bait-and-switch. Your quote is based on the condition you select.</p>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[#ccc]">✅ Clear explanations</p>
-                  <p className="text-xs text-[#888] mt-1">If your device differs from what was described, we&apos;ll explain what we found before adjusting your offer.</p>
+                  <p className="text-sm font-semibold text-[#ccc]">🤝 Honest Inspections</p>
+                  <p className="text-xs text-[#888] mt-1">If anything differs from your description, we&apos;ll walk you through our findings before adjusting — no silent changes.</p>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[#ccc]">✅ Your choice</p>
-                  <p className="text-xs text-[#888] mt-1">Don&apos;t agree with the updated offer? We&apos;ll return your device or you can request a re-evaluation.</p>
+                  <p className="text-sm font-semibold text-[#ccc]">🔄 No Pressure, No Strings</p>
+                  <p className="text-xs text-[#888] mt-1">Changed your mind? Not happy with the final offer? We&apos;ll return your device — no questions asked.</p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#ccc]">⚡ Same-Day Payout</p>
+                  <p className="text-xs text-[#888] mt-1">Austin local? Get paid on the spot. Cash, Venmo, Zelle, or PayPal — your call.</p>
                 </div>
               </div>
             </div>
 
             <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5 text-left">
-              <h3 className="text-base font-bold text-white mb-4">Why People Choose Us and Love It</h3>
+              <h3 className="text-base font-bold text-white mb-4">Why Austin Trusts Top Cash</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-2xl font-bold text-[#00c853]">20,000+</p>
