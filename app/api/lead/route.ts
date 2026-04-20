@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
+const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
+const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
+const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
+const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
@@ -33,7 +37,21 @@ export async function POST(req: NextRequest) {
         priority: "urgent",
       }),
     });
-  } catch { /* silent */ }
+  } catch {}
+
+  if (TWILIO_SID && TWILIO_AUTH) {
+    const ownerSms = `NEW LEAD: ${name} wants to sell ${model} (${condition}) for $${quote}. Phone: ${phone || "N/A"} Email: ${email || "N/A"}`;
+    try {
+      await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
+        method: "POST",
+        headers: {
+          "Authorization": "Basic " + Buffer.from(`${TWILIO_SID}:${TWILIO_AUTH}`).toString("base64"),
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({ To: OWNER_PHONE, From: TWILIO_FROM, Body: ownerSms }),
+      });
+    } catch {}
+  }
 
   return NextResponse.json({ ok: true });
 }
