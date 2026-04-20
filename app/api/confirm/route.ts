@@ -98,8 +98,8 @@ export async function POST(req: NextRequest) {
 <tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">2</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Quick inspection confirms your quoted price</td></tr>
 <tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">3</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Get paid on the spot — Cash, Venmo, Zelle, or PayPal</td></tr>
 </table>
-<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px"><tr><td style="background:#1a1a2e;border:1px solid #333;border-radius:10px;padding:14px 20px;font-size:13px;color:#888;text-align:center">
-📦 <strong style="color:#ccc">Not in Austin?</strong> Reply to this email and we'll send you a free prepaid shipping label.
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px"><tr><td style="background:#00c853;border-radius:10px;padding:14px 20px;font-size:13px;color:#000;text-align:center;font-weight:700">
+🏠 We're Austin-local — we come to you! No shipping needed.
 </td></tr></table>
 </td></tr>
 
