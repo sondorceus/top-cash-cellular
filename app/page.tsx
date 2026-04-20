@@ -364,31 +364,41 @@ export default function Home() {
             </button>
             <h2 className="text-2xl font-bold mb-1">What are you selling?</h2>
             <p className="text-[#888] text-sm mb-6">Select a category</p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-2.5">
               {[
-                { id: "phones" as const, label: "Phones", sub: "iPhone, Samsung", icon: "📱" },
-                { id: "computers" as const, label: "Computers", sub: "MacBook, Laptop", icon: "💻" },
-                { id: "consoles" as const, label: "Game Consoles", sub: "PS5, Xbox, Switch", icon: "🎮" },
-              ].map((cat) => (
+                { id: "phones" as const, label: "Phone", icon: "📱" },
+                { id: "computers" as const, label: "MacBook", icon: "💻" },
+                { id: "consoles" as const, label: "Game Console", icon: "🎮" },
+                { id: "phones" as const, label: "iPad", icon: "📋", direct: true },
+                { id: "computers" as const, label: "Tablet", icon: "📱", direct: true },
+                { id: "computers" as const, label: "Laptop", icon: "💻", direct: true },
+                { id: "computers" as const, label: "Desktop", icon: "🖥️", direct: true },
+                { id: "phones" as const, label: "Smartwatch", icon: "⌚", direct: true },
+                { id: "computers" as const, label: "Graphics Card", icon: "🎨", direct: true },
+                { id: "computers" as const, label: "Camera", icon: "📷", direct: true },
+                { id: "computers" as const, label: "Audio", icon: "🎧", direct: true },
+                { id: "computers" as const, label: "Drone", icon: "🛸", direct: true },
+                { id: "computers" as const, label: "VR", icon: "🥽", direct: true },
+                { id: "computers" as const, label: "Monitor", icon: "🖥️", direct: true },
+                { id: "phones" as const, label: "Other", icon: "📦", direct: true },
+              ].map((cat, idx) => (
                 <button
-                  key={cat.id}
-                  onClick={() => { setCategory(cat.id); setStep("brand"); pushHistory("brand"); }}
-                  className="flex flex-col items-center justify-center p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
+                  key={idx}
+                  onClick={() => {
+                    if ((cat as { direct?: boolean }).direct) {
+                      window.location.href = `tel:${PHONE_TEL}`;
+                      return;
+                    }
+                    setCategory(cat.id); setStep("brand"); pushHistory("brand");
+                  }}
+                  className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
                 >
-                  <span className="text-4xl mb-3">{cat.icon}</span>
-                  <p className="font-semibold text-white text-base">{cat.label}</p>
-                  <p className="text-[#888] text-xs mt-1">{cat.sub}</p>
+                  <span className="text-2xl mb-1.5">{cat.icon}</span>
+                  <p className="font-semibold text-white text-xs text-center">{cat.label}</p>
                 </button>
               ))}
-              <button
-                onClick={() => window.location.href = `tel:${PHONE_TEL}`}
-                className="flex flex-col items-center justify-center p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
-              >
-                <span className="text-4xl mb-3">📦</span>
-                <p className="font-semibold text-white text-base">Other</p>
-                <p className="text-[#888] text-xs mt-1">Contact us</p>
-              </button>
             </div>
+            <p className="text-[#555] text-[10px] text-center mt-3">Categories marked with 📞 will connect you to our team for a custom quote</p>
           </div>
         </section>
       )}
