@@ -657,8 +657,16 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            <h2 className="text-2xl font-bold mb-1">Select Condition</h2>
-            <p className="text-[#888] text-sm mb-2">{model.label}</p>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="relative w-24 h-24 shrink-0">
+                <img src="/iphone17.png" alt="Condition preview" className="w-24 h-24 object-contain transition-all duration-300" id="condition-preview-img" />
+                <div id="condition-overlay" className="absolute inset-0 rounded-xl pointer-events-none transition-all duration-300" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold mb-1">Select Condition</h2>
+                <p className="text-[#888] text-sm">{model.label}</p>
+              </div>
+            </div>
             <button className="text-[#00c853] text-xs font-medium mb-4 cursor-pointer hover:underline" onClick={() => { const el = document.getElementById('condition-guide'); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }}>How to assess condition</button>
             <div id="condition-guide" style={{ display: 'none' }} className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-xs text-[#aaa] space-y-2">
               <p><strong className="text-white">Brand New:</strong> Sealed in original packaging, never opened</p>
@@ -673,6 +681,28 @@ export default function Home() {
                 <button
                   key={c.id}
                   onClick={() => { setCondition(c); const cs = (deviceType === "iphone" || deviceType === "android") ? "carrier" : "quote"; if (cs === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); } setStep(cs); pushHistory(cs); }}
+                  onMouseEnter={() => {
+                    const img = document.getElementById('condition-preview-img') as HTMLImageElement;
+                    const ov = document.getElementById('condition-overlay');
+                    if (!img || !ov) return;
+                    const effects: Record<string, [string, string]> = {
+                      brandnew: ['brightness(1.1) saturate(1.1)', ''],
+                      flawless: ['brightness(1.05)', ''],
+                      verygood: ['brightness(1)', ''],
+                      good: ['brightness(0.95) contrast(1.05)', 'background:linear-gradient(135deg,transparent 60%,rgba(255,255,255,0.08) 100%)'],
+                      fair: ['brightness(0.85) contrast(1.1)', 'background:linear-gradient(135deg,transparent 40%,rgba(255,200,0,0.15) 100%)'],
+                      broken: ['brightness(0.7) contrast(1.2) grayscale(0.2)', 'background:linear-gradient(45deg,transparent 30%,rgba(255,0,0,0.2) 50%,transparent 70%)'],
+                    };
+                    const [filter, bg] = effects[c.id] || ['', ''];
+                    img.style.filter = filter;
+                    ov.style.cssText = bg;
+                  }}
+                  onMouseLeave={() => {
+                    const img = document.getElementById('condition-preview-img') as HTMLImageElement;
+                    const ov = document.getElementById('condition-overlay');
+                    if (img) img.style.filter = '';
+                    if (ov) ov.style.cssText = '';
+                  }}
                   className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
                 >
                   <span className="text-2xl">{c.icon}</span>
