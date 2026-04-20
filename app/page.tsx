@@ -252,7 +252,7 @@ export default function Home() {
 
   const handleBack = () => {
     if (step === "model" && selectedSeries) { setSelectedSeries(null); return; }
-    if (step === "model") { setStep("brand"); setDeviceType(null); }
+    if (step === "model") { if (category) { setStep("brand"); } else { setStep("category"); } setDeviceType(null); }
     else if (step === "brand") { setStep("category"); setCategory(null); }
     else if (step === "category") { setStep("device"); }
     else if (step === "storage") { setStep("model"); setModel(null); }
@@ -390,7 +390,7 @@ export default function Home() {
             <div className="grid grid-cols-4 gap-2">
               {[
                 { id: "phones" as const, label: "Sell Phone", icon: "📱" },
-                { id: "phones" as const, label: "Sell Tablet", icon: "📋", direct: false, deviceType: "ipad" as const },
+                { id: "phones" as const, label: "Sell Tablet", icon: "📱", direct: false, deviceType: "ipad" as const },
                 { id: "computers" as const, label: "Sell Laptop", icon: "💻" },
                 { id: "computers" as const, label: "Sell Desktop", icon: "🖥️", direct: true },
                 { id: "phones" as const, label: "Sell Smartwatch", icon: "⌚", direct: true },
