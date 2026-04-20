@@ -893,7 +893,35 @@ export default function Home() {
                 </form>
               </div>
 
-              <div className="flex items-center gap-3 my-2">
+              <div className="flex items-center gap-3 my-3">
+                <div className="flex-1 h-px bg-white/10" />
+                <span className="text-[#555] text-xs">or</span>
+                <div className="flex-1 h-px bg-white/10" />
+              </div>
+
+              <div>
+                <h3 className="text-sm font-semibold text-[#888] uppercase tracking-wider mb-3">Create an Account</h3>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!email) return;
+                  fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "New Account", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
+                  setStep("payout"); pushHistory("payout");
+                }} className="space-y-3">
+                  <div>
+                    <label className="block text-xs text-[#888] mb-1.5">Email</label>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-[#888] mb-1.5">Password</label>
+                    <input type="password" required minLength={6} placeholder="Create a password" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                  </div>
+                  <button type="submit" className="w-full bg-white/10 text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-white/15 transition active:scale-[0.98]">
+                    Create Account
+                  </button>
+                </form>
+              </div>
+
+              <div className="flex items-center gap-3 my-3">
                 <div className="flex-1 h-px bg-white/10" />
                 <span className="text-[#555] text-xs">or</span>
                 <div className="flex-1 h-px bg-white/10" />
@@ -1005,10 +1033,7 @@ export default function Home() {
                   else setPhone(digits);
                 }} required pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
               </div>
-              <div>
-                <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Email <span className="normal-case text-[12px]">(optional)</span></label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
-              </div>
+              {email && <p className="text-[#888] text-xs">Email: {email}</p>}
               <div>
                 <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Device Photo <span className="normal-case text-[12px]">(optional — speeds up payout)</span></label>
                 {!devicePhoto ? (
