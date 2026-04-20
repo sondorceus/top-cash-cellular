@@ -35,12 +35,12 @@ export async function POST(req: NextRequest) {
   if (email && process.env.RESEND_API_KEY) {
     const htmlEmail = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px 0">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a">
 <tr><td align="center">
-<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:100%;width:100%">
 
 <!-- Header -->
-<tr><td style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 100%);padding:30px 40px;text-align:center;border-radius:16px 16px 0 0;border-bottom:2px solid #00c853">
+<tr><td style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 100%);padding:30px 40px;text-align:center;border-bottom:2px solid #00c853">
 <div style="font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.5px">💰 Top Cash Cellular</div>
 <div style="font-size:13px;color:#00c853;margin-top:4px;font-weight:600">Austin's #1 Device Buyback</div>
 </td></tr>
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
 </td></tr>
 
 <!-- Footer -->
-<tr><td style="background:#0a0a0a;padding:24px 40px;text-align:center;border-radius:0 0 16px 16px;border-top:1px solid #222">
+<tr><td style="background:#0a0a0a;padding:24px 40px;text-align:center;border-top:1px solid #222">
 <div style="margin-bottom:8px"><a href="tel:+18775492056" style="color:#00c853;text-decoration:none;font-size:15px;font-weight:700">(877) 549-2056</a></div>
 <div style="font-size:12px;color:#555">Top Cash Cellular · Austin, TX</div>
 <div style="font-size:11px;color:#444;margin-top:8px">Questions? Call or reply to this email.</div>
