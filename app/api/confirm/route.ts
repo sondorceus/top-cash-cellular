@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
 
 <!-- Quote + CTA (above the fold) -->
 <tr><td style="background:#111;padding:24px 20px 16px">
-<div style="font-size:15px;color:#ccc;margin-bottom:16px;line-height:1.5">Hi <strong style="color:#fff">${name || "there"}</strong>, great news — your quote is ready:</div>
+<div style="font-size:15px;color:#ccc;margin-bottom:16px;line-height:1.5">Hi <strong style="color:#fff">${name || "there"}</strong>, we've received your request and your offer is locked in:</div>
 
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#1a1a2e;border-radius:10px;border:1px solid #333">
 <tr><td style="padding:20px 20px;text-align:center;border-bottom:1px solid #333">
@@ -64,15 +64,13 @@ export async function POST(req: NextRequest) {
 </td></tr>
 </table>
 
-<!-- CTA Button -->
+<!-- Confirmation Badge -->
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px">
-<tr><td align="center">
-<table cellpadding="0" cellspacing="0" width="100%"><tr><td align="center" style="background:#00c853;border-radius:10px;text-align:center">
-<a href="https://topcashcellular.com" style="display:block;padding:16px 20px;color:#000;font-size:18px;font-weight:800;text-decoration:none;line-height:1.4">Accept Your $${quote} Offer</a>
-</td></tr></table>
+<tr><td style="background:#00c853;border-radius:10px;text-align:center;padding:14px 20px">
+<div style="color:#000;font-size:16px;font-weight:800;line-height:1.4">🔒 Your offer is locked in for 7 days</div>
 </td></tr>
 </table>
-<div style="text-align:center;margin-top:10px;font-size:12px;color:#888;line-height:1.5">Your offer expires in 7 days. Prices may change after.</div>
+<div style="text-align:center;margin-top:12px;font-size:14px;color:#ccc;line-height:1.5">We'll reach out shortly to confirm next steps.</div>
 
 <!-- Trust Signals -->
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px">
@@ -86,14 +84,14 @@ export async function POST(req: NextRequest) {
 
 <!-- 3-Step Process -->
 <tr><td style="background:#111;padding:8px 20px 20px">
-<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:12px">How it works:</div>
+<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:12px">What happens next:</div>
 <table cellpadding="0" cellspacing="0" width="100%">
-<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">1</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Accept your offer</td></tr>
-<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">2</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Schedule pickup — we come to you</td></tr>
-<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">3</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Get paid on the spot</td></tr>
+<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">1</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">We'll contact you to schedule pickup</td></tr>
+<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">2</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Quick inspection confirms your price</td></tr>
+<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">3</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Get paid on the spot — Cash, Venmo, or Zelle</td></tr>
 </table>
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px"><tr><td style="background:#1a1a2e;border:1px solid #333;border-radius:10px;padding:14px 20px;font-size:13px;color:#888;text-align:center">
-📦 <strong style="color:#ccc">Prefer shipping?</strong> Reply to this email for a free prepaid label.
+📦 <strong style="color:#ccc">Need to ship instead?</strong> Just reply to this email and we'll send you a free prepaid label.
 </td></tr></table>
 </td></tr>
 
