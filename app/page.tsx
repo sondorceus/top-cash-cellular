@@ -384,23 +384,20 @@ export default function Home() {
             </button>
             <h2 className="text-2xl font-bold mb-1">What are you selling?</h2>
             <p className="text-[#888] text-sm mb-6">Select a category</p>
-            <div className="grid grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-4 gap-2">
               {[
-                { id: "phones" as const, label: "Phone", icon: "📱" },
-                { id: "computers" as const, label: "MacBook", icon: "💻" },
-                { id: "consoles" as const, label: "Game Console", icon: "🎮" },
-                { id: "phones" as const, label: "iPad", icon: "📋", direct: false, deviceType: "ipad" as const },
-                { id: "computers" as const, label: "Tablet", icon: "📱", direct: true },
-                { id: "computers" as const, label: "Laptop", icon: "💻", direct: true },
-                { id: "computers" as const, label: "Desktop", icon: "🖥️", direct: true },
-                { id: "phones" as const, label: "Smartwatch", icon: "⌚", direct: true },
-                { id: "computers" as const, label: "Graphics Card", icon: "🎨", direct: true },
-                { id: "computers" as const, label: "Camera", icon: "📷", direct: true },
-                { id: "computers" as const, label: "Audio", icon: "🎧", direct: true },
-                { id: "computers" as const, label: "Drone", icon: "🛸", direct: true },
-                { id: "computers" as const, label: "VR", icon: "🥽", direct: true },
-                { id: "computers" as const, label: "Monitor", icon: "🖥️", direct: true },
-                { id: "phones" as const, label: "Other", icon: "📦", direct: true },
+                { id: "phones" as const, label: "Sell Phone", icon: "📱" },
+                { id: "phones" as const, label: "Sell Tablet", icon: "📋", direct: false, deviceType: "ipad" as const },
+                { id: "computers" as const, label: "Sell Laptop", icon: "💻" },
+                { id: "computers" as const, label: "Sell Desktop", icon: "🖥️", direct: true },
+                { id: "phones" as const, label: "Sell Smartwatch", icon: "⌚", direct: true },
+                { id: "consoles" as const, label: "Sell Game Console", icon: "🎮" },
+                { id: "computers" as const, label: "Sell Graphics Card", icon: "🎨", direct: true },
+                { id: "computers" as const, label: "Sell Camera", icon: "📷", direct: true },
+                { id: "computers" as const, label: "Sell Audio", icon: "🎧", direct: true },
+                { id: "computers" as const, label: "Sell Drone", icon: "🛸", direct: true },
+                { id: "computers" as const, label: "Sell VR", icon: "🥽", direct: true },
+                { id: "computers" as const, label: "Sell Monitor", icon: "🖥️", direct: true },
               ].map((cat, idx) => (
                 <button
                   key={idx}
@@ -420,7 +417,7 @@ export default function Home() {
                 </button>
               ))}
             </div>
-            <p className="text-[#555] text-[10px] text-center mt-3">Categories marked with 📞 will connect you to our team for a custom quote</p>
+            <p className="text-[#555] text-[10px] text-center mt-3">Some categories will connect you to our team for a custom quote</p>
           </div>
         </section>
       )}
