@@ -174,6 +174,8 @@ export default function Home() {
   const [quoteEmail, setQuoteEmail] = useState("");
   const [quoteSaved, setQuoteSaved] = useState(false);
   const [devicePhoto, setDevicePhoto] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [showConfetti, setShowConfetti] = useState(false);
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
 
   useEffect(() => {
@@ -215,6 +217,7 @@ export default function Home() {
     setCondition(null);
     setCarrier(null);
     setPayout(null);
+    setQuantity(1);
     setExpandedFaq(null);
     setPage("home");
     setName("");
@@ -447,7 +450,7 @@ export default function Home() {
               {CONDITIONS.map((c) => (
                 <button
                   key={c.id}
-                  onClick={() => { setCondition(c); const cs = (deviceType === "iphone" || deviceType === "android") ? "carrier" : "quote"; setStep(cs); pushHistory(cs); }}
+                  onClick={() => { setCondition(c); const cs = (deviceType === "iphone" || deviceType === "android") ? "carrier" : "quote"; if (cs === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); } setStep(cs); pushHistory(cs); }}
                   className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
                 >
                   <span className="text-2xl">{c.icon}</span>
@@ -477,7 +480,7 @@ export default function Home() {
               {CARRIERS.map((c) => (
                 <button
                   key={c.id}
-                  onClick={() => { setCarrier(c); setStep("quote"); pushHistory("quote"); }}
+                  onClick={() => { setCarrier(c); setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote"); }}
                   className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
                 >
                   <span className="text-xl">{c.icon}</span>
@@ -492,29 +495,56 @@ export default function Home() {
 
       {/* STEP: QUOTE */}
       {step === "quote" && page === "home" && model && condition && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.3s_ease-out] relative">
+          {showConfetti && (
+            <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+              {Array.from({ length: 60 }).map((_, i) => (
+                <div key={i} className="absolute animate-[confettiFall_2.5s_ease-out_forwards]" style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `-5%`,
+                  animationDelay: `${Math.random() * 0.8}s`,
+                  width: `${8 + Math.random() * 8}px`,
+                  height: `${8 + Math.random() * 8}px`,
+                  background: ['#00c853','#00e676','#fff','#76ff03','#ffd600','#ff6d00'][Math.floor(Math.random() * 6)],
+                  borderRadius: Math.random() > 0.5 ? '50%' : '2px',
+                  transform: `rotate(${Math.random() * 360}deg)`,
+                }} />
+              ))}
+            </div>
+          )}
           <div className="max-w-lg mx-auto px-4 pt-12 pb-8 text-center">
             <p className="text-[#888] text-sm font-medium mb-2">{model.label} · {storage?.label} · {condition.label}</p>
             <h2 className="text-lg font-semibold text-[#888] mb-2">Your instant quote</h2>
-            <p className="text-6xl font-bold text-[#00c853] mb-4">${quote}</p>
+            <p className="text-6xl font-bold text-[#00c853] mb-1">${quote * quantity}</p>
+            {quantity > 1 && <p className="text-[#888] text-sm mb-2">${quote} each × {quantity}</p>}
+            {quantity === 1 && <div className="mb-3" />}
+
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <span className="text-[#888] text-sm">Quantity:</span>
+              <div className="flex items-center bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-3 py-2 text-white hover:bg-white/10 transition cursor-pointer text-lg font-bold">−</button>
+                <span className="px-4 py-2 text-white font-semibold text-sm min-w-[2rem] text-center">{quantity}</span>
+                <button onClick={() => setQuantity(Math.min(10, quantity + 1))} className="px-3 py-2 text-white hover:bg-white/10 transition cursor-pointer text-lg font-bold">+</button>
+              </div>
+            </div>
 
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 text-left">
               <p className="text-xs font-semibold text-[#888] uppercase tracking-wider mb-3">How we compare</p>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-[#00c853]">Top Cash Cellular</span>
-                  <span className="text-lg font-bold text-[#00c853]">${quote}</span>
+                  <span className="text-lg font-bold text-[#00c853]">${quote * quantity}</span>
                 </div>
                 <div className="flex items-center justify-between text-[#888]">
                   <span className="text-sm">Apple Trade-In</span>
-                  <span className="text-sm">${Math.round(quote * 0.62)}</span>
+                  <span className="text-sm">${Math.round(quote * 0.62 * quantity)}</span>
                 </div>
                 <div className="flex items-center justify-between text-[#888]">
                   <span className="text-sm">Carrier Trade-In</span>
-                  <span className="text-sm">${Math.round(quote * 0.7)}</span>
+                  <span className="text-sm">${Math.round(quote * 0.7 * quantity)}</span>
                 </div>
               </div>
-              <p className="text-[#00c853] text-xs font-semibold mt-3">You save up to ${quote - Math.round(quote * 0.62)} more with us</p>
+              <p className="text-[#00c853] text-xs font-semibold mt-3">You save up to ${(quote - Math.round(quote * 0.62)) * quantity} more with us</p>
             </div>
 
             <div className="flex items-center justify-center gap-2 mb-4">
@@ -592,9 +622,9 @@ export default function Home() {
             <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
               <div className="flex items-center justify-between mb-2">
                 <p className="font-semibold">{model.label}</p>
-                <p className="text-[#00c853] font-bold text-xl">${quote}</p>
+                <p className="text-[#00c853] font-bold text-xl">${quote * quantity}</p>
               </div>
-              <p className="text-[#888] text-sm">{storage?.label} · {condition.label} · {payout.label}</p>
+              <p className="text-[#888] text-sm">{storage?.label} · {condition.label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
             </div>
 
             <h2 className="text-xl font-bold mb-1">Almost done</h2>
@@ -606,14 +636,14 @@ export default function Home() {
                 const res = await fetch("/api/lead", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote, payout: payout?.label }),
+                  body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: payout?.label, quantity }),
                 });
                 if (!res.ok) throw new Error('Failed');
                 if (email || phone) {
                   fetch("/api/confirm", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, quote, payout: payout?.label }),
+                    body: JSON.stringify({ name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: payout?.label, quantity }),
                   }).catch(() => {});
                 }
                 setStep("done"); pushHistory("done");
