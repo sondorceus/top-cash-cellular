@@ -308,12 +308,14 @@ export default function Home() {
               Cash, Venmo, Zelle, or PayPal.
             </p>
 
-            <button
-              onClick={() => { setStep("category"); pushHistory("category"); }}
-              className="w-full bg-[#00c853] text-white py-5 rounded-2xl text-xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] mb-6 shadow-lg shadow-[#00c853]/20"
-            >
-              Sell Your Device
-            </button>
+            <div className="glow-border mb-6">
+              <button
+                onClick={() => { setStep("category"); pushHistory("category"); }}
+                className="w-full bg-[#00c853] text-white py-5 rounded-2xl text-xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20 relative z-10"
+              >
+                Sell Your Device
+              </button>
+            </div>
 
             <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
               <p className="text-[#888] text-sm">Don&apos;t see your device? <a href={`tel:${PHONE_TEL}`} className="text-[#00c853] font-semibold hover:underline">Contact us</a> and we&apos;ll make you an offer!</p>
