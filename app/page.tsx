@@ -131,7 +131,7 @@ const FAQS = [
   { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
 ];
 
-type Step = "device" | "model" | "storage" | "condition" | "carrier" | "quote" | "payout" | "contact" | "done";
+type Step = "device" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done";
 
 export default function Home() {
   const [step, setStep] = useState<Step>("device");
@@ -204,7 +204,8 @@ export default function Home() {
     else if (step === "condition") { if (deviceType === "console") { setStep("model"); setModel(null); } else { setStep("storage"); setStorage(null); } }
     else if (step === "carrier") { setStep("condition"); setCondition(null); }
     else if (step === "quote") { if (carrier) { setStep("carrier"); setCarrier(null); } else { setStep("condition"); setCondition(null); } }
-    else if (step === "payout") setStep("quote");
+    else if (step === "checkout") setStep("quote");
+    else if (step === "payout") setStep("checkout");
     else if (step === "contact") setStep("payout"); pushHistory("payout");
   };
 
@@ -557,7 +558,7 @@ export default function Home() {
                 Back
               </button>
               <button
-                onClick={() => { setStep("payout"); pushHistory("payout"); }}
+                onClick={() => { setStep("checkout"); pushHistory("checkout"); }}
                 className="flex-[2] bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]"
               >
                 Add to Cart
@@ -638,6 +639,71 @@ export default function Home() {
             <button onClick={reset} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-white transition">
               Start new quote
             </button>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: CHECKOUT (email capture) */}
+      {step === "checkout" && page === "home" && model && condition && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-semibold text-sm">{model.label}</p>
+                  <p className="text-[#888] text-xs">{storage?.label} · {condition.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
+                </div>
+                <p className="text-[#00c853] font-bold text-xl">${quote * quantity}</p>
+              </div>
+            </div>
+
+            <h2 className="text-2xl font-bold mb-1">Checkout</h2>
+            <p className="text-[#888] text-sm mb-6">You&apos;re one step away from getting paid.</p>
+
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-sm font-semibold text-[#888] uppercase tracking-wider mb-3">Guest Checkout</h3>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!email) return;
+                  fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Guest", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
+                  setStep("payout"); pushHistory("payout");
+                }} className="space-y-3">
+                  <div>
+                    <label className="block text-xs text-[#888] mb-1.5">Email</label>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                  </div>
+                  <button type="submit" className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
+                    Continue as Guest
+                  </button>
+                </form>
+              </div>
+
+              <div className="flex items-center gap-3 my-2">
+                <div className="flex-1 h-px bg-white/10" />
+                <span className="text-[#555] text-xs">or</span>
+                <div className="flex-1 h-px bg-white/10" />
+              </div>
+
+              <button
+                onClick={() => {
+                  if (!email) return;
+                  fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Gmail User", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
+                  setStep("payout"); pushHistory("payout");
+                }}
+                className="w-full flex items-center justify-center gap-3 bg-white/5 border border-white/10 text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-white/10 transition active:scale-[0.98]"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Sign in with Google
+              </button>
+            </div>
+
+            <p className="text-[#555] text-[10px] text-center mt-6">Your email is used to send your quote confirmation and for follow-up only.</p>
           </div>
         </section>
       )}
@@ -1165,7 +1231,7 @@ export default function Home() {
       {/* PROGRESS BAR — shows during flow */}
       {step !== "device" && step !== "done" && page === "home" && (
         <div className="fixed top-[52px] left-0 right-0 z-30 h-1 bg-white/10">
-          <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${({model: 15, storage: 30, condition: 45, carrier: 60, quote: 75, payout: 85, contact: 95} as Record<string,number>)[step] ?? 0}%` }} />
+          <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${({model: 15, storage: 25, condition: 40, carrier: 50, quote: 60, checkout: 72, payout: 82, contact: 92} as Record<string,number>)[step] ?? 0}%` }} />
         </div>
       )}
 
