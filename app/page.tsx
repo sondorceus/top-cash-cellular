@@ -727,8 +727,11 @@ export default function Home() {
             <div className="flex items-center justify-center gap-5 mb-2">
               {(() => {
                 const imgMap: Record<string, string> = { ip17e: "/iphone17e.png", ip17pm: "/iphone17.png", ip17p: "/iphone17.png", ip17air: "/iphone17air.png", ip17plus: "/iphone17plus.png", ip17: "/iphone17base.png", ip16pm: "/iphone16.png", ip16p: "/iphone16.png", ip16plus: "/iphone16plus.png", ip16: "/iphone16base.png", ip16e: "/iphone16e.png", ip15pm: "/iphone15.png", ip15p: "/iphone15.png", ip15plus: "/iphone15.png", ip15: "/iphone15.png", ip14pm: "/iphone14.png", ip14p: "/iphone14.png", ip14: "/iphone14.png", ip13pm: "/iphone13.png", ip13p: "/iphone13.png", ip13: "/iphone13.png", ip12pm: "/iphone12.png", ip12: "/iphone12.png", ip11pm: "/iphone11.png", ip11: "/iphone11.png" };
-                const src = imgMap[model.id];
-                return src ? <img src={src} alt={model.label} className="w-20 h-20 object-contain" /> : null;
+                const isTablet = deviceType === "ipad";
+                const fallbackImg = isTablet ? "/ipad.png" : null;
+                const src = imgMap[model.id] || fallbackImg;
+                const sizeClass = isTablet ? "w-28 h-28" : "w-20 h-20";
+                return src ? <img src={src} alt={model.label} className={`${sizeClass} object-contain`} /> : null;
               })()}
               <div>
                 <p className="text-[#888] text-sm font-medium">{model.label} · {storage?.label} · {condition.label}</p>
