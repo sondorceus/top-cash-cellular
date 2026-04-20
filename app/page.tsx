@@ -872,27 +872,68 @@ export default function Home() {
       {/* STEP: DONE */}
       {step === "done" && page === "home" && model && condition && payout && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg mx-auto px-4 pt-16 pb-8 text-center">
-            <div className="w-20 h-20 rounded-full bg-[#00c853]/10 flex items-center justify-center mx-auto mb-6">
-              <span className="text-4xl">✅</span>
+          <div className="max-w-lg mx-auto px-4 pt-10 pb-8">
+            <div className="text-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-[#00c853]/10 flex items-center justify-center mx-auto mb-4">
+                <span className="text-4xl">✅</span>
+              </div>
+              <h2 className="text-2xl font-bold mb-1">Okay, I sold! Now what?</h2>
+              <p className="text-[#888] text-sm">We&apos;ll contact you within the hour. Here&apos;s your summary:</p>
             </div>
-            <h2 className="text-2xl font-bold mb-2">You&apos;re all set!</h2>
-            <p className="text-[#888] text-sm mb-6">We&apos;ll contact you within the hour to arrange pickup and payment.</p>
+
             <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6 text-left">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="font-semibold">{model.label}</p>
-                  <p className="text-[#888] text-xs">{storage?.label} · {condition.label} · {payout.label}</p>
+                  <p className="text-[#888] text-xs">{storage?.label} · {condition.label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
                 </div>
-                <p className="text-[#00c853] font-bold text-2xl">${quote}</p>
+                <p className="text-[#00c853] font-bold text-2xl">${quote * quantity}</p>
               </div>
               <div className="border-t border-white/10 pt-3 text-sm text-[#888]">
-                <p>{name} · {phone}</p>
+                <p>{name} · {phone}{email ? ` · ${email}` : ''}</p>
               </div>
             </div>
-            <button onClick={reset} className="text-[#00c853] font-semibold text-sm cursor-pointer hover:underline">
-              Sell another device
-            </button>
+
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
+              <h3 className="font-bold text-base mb-4">Shipping Instructions</h3>
+              <p className="text-[#888] text-sm mb-4">If you&apos;re shipping your device, it&apos;s fast, free, and easy! You&apos;ll receive an email with your prepaid label.</p>
+
+              <div className="space-y-5">
+                <div className="flex gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#00c853] text-black flex items-center justify-center font-bold text-sm shrink-0">1</div>
+                  <div>
+                    <p className="font-semibold text-sm mb-1">Device Preparation</p>
+                    <p className="text-[#888] text-xs leading-relaxed">Reset your device and turn off &quot;Find My&quot; or Android Activation Lock. Remove any SIM or SD cards.</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#00c853] text-black flex items-center justify-center font-bold text-sm shrink-0">2</div>
+                  <div>
+                    <p className="font-semibold text-sm mb-1">Packaging</p>
+                    <p className="text-[#888] text-xs leading-relaxed">Pack your device securely in a box with safe packaging materials. Tape the box shut and make sure the shipping label barcode is flat and visible.</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#00c853] text-black flex items-center justify-center font-bold text-sm shrink-0">3</div>
+                  <div>
+                    <p className="font-semibold text-sm mb-1">Ship It</p>
+                    <p className="text-[#888] text-xs leading-relaxed">Drop it off at FedEx or UPS. Your trade-in must be received within 21 days from offer creation.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-4 mb-6 text-center">
+              <p className="text-[#00c853] font-semibold text-sm">🏠 Austin local? We&apos;ll come to you — no shipping needed!</p>
+            </div>
+
+            <div className="text-center">
+              <button onClick={reset} className="text-[#00c853] font-semibold text-sm cursor-pointer hover:underline">
+                Sell another device
+              </button>
+            </div>
           </div>
         </section>
       )}
