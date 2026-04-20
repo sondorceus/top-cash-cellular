@@ -572,6 +572,25 @@ export default function Home() {
               <div className="flex items-center gap-3"><span className="text-lg">💳</span><span className="text-sm text-[#ccc]">Cash, Venmo, Zelle, or PayPal</span></div>
             </div>
 
+            <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5 text-left">
+              <h3 className="text-base font-bold text-white mb-1">Fair Evaluation Promise</h3>
+              <p className="text-[#888] text-xs mb-4">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-semibold text-[#ccc]">✅ Consistent grading</p>
+                  <p className="text-xs text-[#888] mt-1">Every device is evaluated using a standardized process based on the condition you select.</p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#ccc]">✅ Clear explanations</p>
+                  <p className="text-xs text-[#888] mt-1">If your device differs from what was described, we&apos;ll explain what we found before adjusting your offer.</p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#ccc]">✅ Your choice</p>
+                  <p className="text-xs text-[#888] mt-1">Don&apos;t agree with the updated offer? We&apos;ll return your device or you can request a re-evaluation.</p>
+                </div>
+              </div>
+            </div>
+
             {!quoteSaved ? (
               <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4">
                 <p className="text-[#888] text-xs font-medium mb-3">Not ready yet? Save this quote for later.</p>
