@@ -57,13 +57,13 @@ Austin, TX`;
     try {
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
-      await resend.emails.send({
-        from: "Top Cash Cellular <noreply@topcashcellular.com>",
+      const result = await resend.emails.send({
+        from: "Top Cash Cellular <topcash@resend.dev>",
         to: email,
         subject: `Your $${quote} quote for ${model} — Top Cash Cellular`,
         text: emailBody,
       });
-      emailSent = true;
+      emailSent = !!(result?.data?.id);
     } catch {}
   }
 
