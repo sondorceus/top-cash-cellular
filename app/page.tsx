@@ -6,36 +6,36 @@ const PHONE = "(877) 549-2056";
 const PHONE_TEL = "+18775492056";
 
 const IPHONE_SERIES = [
-  { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 895, variants: [
-    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 895 },
-    { id: "ip17p", label: "iPhone 17 Pro", base: 775 },
-    { id: "ip17air", label: "iPhone 17 Air", base: 535 },
-    { id: "ip17", label: "iPhone 17", base: 440 },
-    { id: "ip17e", label: "iPhone 17E", base: 110 },
+  { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 825, variants: [
+    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 825 },
+    { id: "ip17p", label: "iPhone 17 Pro", base: 715 },
+    { id: "ip17air", label: "iPhone 17 Air", base: 475 },
+    { id: "ip17", label: "iPhone 17", base: 455 },
+    { id: "ip17e", label: "iPhone 17E", base: 190 },
   ]},
-  { id: "16", label: "iPhone 16", image: "/iphone16.png", year: "2024", topPrice: 695, variants: [
-    { id: "ip16pm", label: "iPhone 16 Pro Max", base: 695 },
-    { id: "ip16p", label: "iPhone 16 Pro", base: 540 },
-    { id: "ip16plus", label: "iPhone 16 Plus", base: 325 },
-    { id: "ip16", label: "iPhone 16", base: 265 },
-    { id: "ip16e", label: "iPhone 16E", base: 170 },
+  { id: "16", label: "iPhone 16", image: "/iphone16.png", year: "2024", topPrice: 490, variants: [
+    { id: "ip16pm", label: "iPhone 16 Pro Max", base: 490 },
+    { id: "ip16p", label: "iPhone 16 Pro", base: 390 },
+    { id: "ip16plus", label: "iPhone 16 Plus", base: 320 },
+    { id: "ip16", label: "iPhone 16", base: 300 },
+    { id: "ip16e", label: "iPhone 16E", base: 145 },
   ]},
-  { id: "15", label: "iPhone 15", image: "/iphone15.png", year: "2023", topPrice: 310, variants: [
-    { id: "ip15pm", label: "iPhone 15 Pro Max", base: 310 },
-    { id: "ip15p", label: "iPhone 15 Pro", base: 270 },
-    { id: "ip15plus", label: "iPhone 15 Plus", base: 210 },
-    { id: "ip15", label: "iPhone 15", base: 190 },
+  { id: "15", label: "iPhone 15", image: "/iphone15.png", year: "2023", topPrice: 290, variants: [
+    { id: "ip15pm", label: "iPhone 15 Pro Max", base: 290 },
+    { id: "ip15p", label: "iPhone 15 Pro", base: 235 },
+    { id: "ip15plus", label: "iPhone 15 Plus", base: 180 },
+    { id: "ip15", label: "iPhone 15", base: 160 },
   ]},
-  { id: "14", label: "iPhone 14", image: "/iphone14.png", year: "2022", topPrice: 240, variants: [
-    { id: "ip14pm", label: "iPhone 14 Pro Max", base: 240 },
-    { id: "ip14p", label: "iPhone 14 Pro", base: 210 },
-    { id: "ip14plus", label: "iPhone 14 Plus", base: 170 },
-    { id: "ip14", label: "iPhone 14", base: 150 },
+  { id: "14", label: "iPhone 14", image: "/iphone14.png", year: "2022", topPrice: 170, variants: [
+    { id: "ip14pm", label: "iPhone 14 Pro Max", base: 170 },
+    { id: "ip14p", label: "iPhone 14 Pro", base: 140 },
+    { id: "ip14plus", label: "iPhone 14 Plus", base: 110 },
+    { id: "ip14", label: "iPhone 14", base: 100 },
   ]},
-  { id: "13", label: "iPhone 13", image: "/iphone13.png", year: "2021", topPrice: 180, variants: [
-    { id: "ip13pm", label: "iPhone 13 Pro Max", base: 180 },
-    { id: "ip13p", label: "iPhone 13 Pro", base: 150 },
-    { id: "ip13", label: "iPhone 13", base: 120 },
+  { id: "13", label: "iPhone 13", image: "/iphone13.png", year: "2021", topPrice: 130, variants: [
+    { id: "ip13pm", label: "iPhone 13 Pro Max", base: 130 },
+    { id: "ip13p", label: "iPhone 13 Pro", base: 100 },
+    { id: "ip13", label: "iPhone 13", base: 75 },
   ]},
   { id: "12", label: "iPhone 12", image: "/iphone12.png", year: "2020", topPrice: 130, variants: [
     { id: "ip12pm", label: "iPhone 12 Pro Max", base: 130 },
