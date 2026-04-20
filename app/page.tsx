@@ -894,35 +894,8 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
-              <h3 className="font-bold text-base mb-4">Shipping Instructions</h3>
-              <p className="text-[#888] text-sm mb-4">If you&apos;re shipping your device, it&apos;s fast, free, and easy! You&apos;ll receive an email with your prepaid label.</p>
-
-              <div className="space-y-5">
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#00c853] text-black flex items-center justify-center font-bold text-sm shrink-0">1</div>
-                  <div>
-                    <p className="font-semibold text-sm mb-1">Device Preparation</p>
-                    <p className="text-[#888] text-xs leading-relaxed">Reset your device and turn off &quot;Find My&quot; or Android Activation Lock. Remove any SIM or SD cards.</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#00c853] text-black flex items-center justify-center font-bold text-sm shrink-0">2</div>
-                  <div>
-                    <p className="font-semibold text-sm mb-1">Packaging</p>
-                    <p className="text-[#888] text-xs leading-relaxed">Pack your device securely in a box with safe packaging materials. Tape the box shut and make sure the shipping label barcode is flat and visible.</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#00c853] text-black flex items-center justify-center font-bold text-sm shrink-0">3</div>
-                  <div>
-                    <p className="font-semibold text-sm mb-1">Ship It</p>
-                    <p className="text-[#888] text-xs leading-relaxed">Drop it off at FedEx or UPS. Your trade-in must be received within 21 days from offer creation.</p>
-                  </div>
-                </div>
-              </div>
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 text-center">
+              <p className="text-[#888] text-sm">📦 Need to ship? You&apos;ll receive an email with shipping instructions shortly.</p>
             </div>
 
             <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-4 mb-6 text-center">
