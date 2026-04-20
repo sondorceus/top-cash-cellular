@@ -2,13 +2,38 @@ import { NextRequest, NextResponse } from "next/server";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
+const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
+const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
+const TWILIO_FROM = process.env.TWILIO_PHONE || "+15129609256";
+
+async function sendSms(to: string, body: string): Promise<boolean> {
+  if (!TWILIO_SID || !TWILIO_AUTH) return false;
+  const digits = to.replace(/\D/g, "");
+  const e164 = digits.length === 10 ? `+1${digits}` : digits.length === 11 && digits.startsWith("1") ? `+${digits}` : null;
+  if (!e164) return false;
+  try {
+    const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
+      method: "POST",
+      headers: {
+        "Authorization": "Basic " + Buffer.from(`${TWILIO_SID}:${TWILIO_AUTH}`).toString("base64"),
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({ To: e164, From: TWILIO_FROM, Body: body }),
+    });
+    return res.ok;
+  } catch { return false; }
+}
 
 export async function POST(req: NextRequest) {
   const { name, email, phone, model, storage, condition, quote, payout } = await req.json();
 
-  if (!email) return NextResponse.json({ ok: false, error: "No email" });
+  if (!email && !phone) return NextResponse.json({ ok: false, error: "No contact info" });
 
-  const emailBody = `Hi ${name || "there"},
+  let emailSent = false;
+  let smsSent = false;
+
+  if (email && process.env.RESEND_API_KEY) {
+    const emailBody = `Hi ${name || "there"},
 
 Thanks for choosing Top Cash Cellular! Here's your quote summary:
 
@@ -29,9 +54,6 @@ Questions? Call us at (512) 960-9256 or reply to this email.
 — Top Cash Cellular
 Austin, TX`;
 
-  let emailSent = false;
-
-  if (process.env.RESEND_API_KEY) {
     try {
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
@@ -45,6 +67,17 @@ Austin, TX`;
     } catch {}
   }
 
+  if (phone) {
+    const smsBody = `Top Cash Cellular: Your $${quote} quote for ${model} is locked for 7 days! We'll contact you within the hour. Questions? Call (512) 960-9256`;
+    smsSent = await sendSms(phone, smsBody);
+  }
+
+  const status = [
+    emailSent ? "EMAIL SENT" : null,
+    smsSent ? "SMS SENT" : null,
+    !emailSent && !smsSent ? "NO CONFIRMATION SENT" : null,
+  ].filter(Boolean).join(" + ");
+
   try {
     await fetch(`${MC_API}/api/comms`, {
       method: "POST",
@@ -53,12 +86,12 @@ Austin, TX`;
         from: "topcash-web",
         fromName: "Top Cash Cellular",
         role: "system",
-        body: `[QUOTE CONFIRMATION${emailSent ? " — EMAIL SENT" : " — EMAIL PENDING (no Resend key)"}]\nTo: ${name} <${email}> | ${phone}\nDevice: ${model} | ${storage} | ${condition}\nQuote: $${quote} | Payout: ${payout}`,
+        body: `[QUOTE CONFIRMATION — ${status}]\nTo: ${name} <${email || "no email"}> | ${phone || "no phone"}\nDevice: ${model} | ${storage} | ${condition}\nQuote: $${quote} | Payout: ${payout}`,
         tags: ["confirmation", "lead"],
         priority: "normal",
       }),
     });
   } catch {}
 
-  return NextResponse.json({ ok: true, emailSent });
+  return NextResponse.json({ ok: true, emailSent, smsSent });
 }

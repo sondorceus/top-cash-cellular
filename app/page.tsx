@@ -609,7 +609,7 @@ export default function Home() {
                   body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote, payout: payout?.label }),
                 });
                 if (!res.ok) throw new Error('Failed');
-                if (email) {
+                if (email || phone) {
                   fetch("/api/confirm", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
