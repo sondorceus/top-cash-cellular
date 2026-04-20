@@ -79,6 +79,23 @@ const MACBOOK_MODELS = [
   { id: "mbp13m1", label: "MacBook Pro 13\" M1", base: 400 },
 ];
 
+const IPAD_MODELS = [
+  { id: "ipadpro13m5", label: "iPad Pro 13\" M5", base: 610 },
+  { id: "ipadpro11m5", label: "iPad Pro 11\" M5", base: 475 },
+  { id: "ipadpro13m4", label: "iPad Pro 13\" M4", base: 500 },
+  { id: "ipadpro11m4", label: "iPad Pro 11\" M4", base: 350 },
+  { id: "ipadpro129g6", label: "iPad Pro 12.9\" 6th Gen", base: 270 },
+  { id: "ipadpro11g4", label: "iPad Pro 11\" 4th Gen", base: 225 },
+  { id: "ipadair13m3", label: "iPad Air 13\" M3", base: 360 },
+  { id: "ipadair11m3", label: "iPad Air 11\" M3", base: 275 },
+  { id: "ipadair13m2", label: "iPad Air 13\" M2", base: 275 },
+  { id: "ipadair11m2", label: "iPad Air 11\" M2", base: 200 },
+  { id: "ipad10", label: "iPad 10th Gen", base: 150 },
+  { id: "ipad9", label: "iPad 9th Gen", base: 100 },
+  { id: "ipadmini7", label: "iPad Mini 7th Gen", base: 225 },
+  { id: "ipadmini6", label: "iPad Mini 6th Gen", base: 150 },
+];
+
 const CONSOLE_MODELS = [
   { id: "ps5", label: "PlayStation 5", base: 300 },
   { id: "ps5d", label: "PlayStation 5 Digital", base: 250 },
@@ -132,11 +149,12 @@ const FAQS = [
 ];
 
 type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done";
+type DeviceType = "iphone" | "android" | "macbook" | "console" | "ipad" | null;
 
 export default function Home() {
   const [step, setStep] = useState<Step>("device");
   const [category, setCategory] = useState<"phones" | "computers" | "consoles" | null>(null);
-  const [deviceType, setDeviceType] = useState<"iphone" | "android" | "macbook" | "console" | null>(null);
+  const [deviceType, setDeviceType] = useState<DeviceType>(null);
   const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
   const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
   const [page, setPage] = useState<"home" | "about" | "privacy" | "terms">("home");
@@ -262,7 +280,7 @@ export default function Home() {
   };
 
   const iphoneVariants = selectedSeries ? IPHONE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "console" ? CONSOLE_MODELS : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "ipad" ? IPAD_MODELS : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -371,7 +389,7 @@ export default function Home() {
                 { id: "phones" as const, label: "Phone", icon: "📱" },
                 { id: "computers" as const, label: "MacBook", icon: "💻" },
                 { id: "consoles" as const, label: "Game Console", icon: "🎮" },
-                { id: "phones" as const, label: "iPad", icon: "📋", direct: true },
+                { id: "phones" as const, label: "iPad", icon: "📋", direct: false, deviceType: "ipad" as const },
                 { id: "computers" as const, label: "Tablet", icon: "📱", direct: true },
                 { id: "computers" as const, label: "Laptop", icon: "💻", direct: true },
                 { id: "computers" as const, label: "Desktop", icon: "🖥️", direct: true },
@@ -391,6 +409,8 @@ export default function Home() {
                       window.location.href = `tel:${PHONE_TEL}`;
                       return;
                     }
+                    const dt = (cat as { deviceType?: string }).deviceType;
+                    if (dt) { setDeviceType(dt as DeviceType); setStep("model"); pushHistory("model"); return; }
                     setCategory(cat.id); setStep("brand"); pushHistory("brand");
                   }}
                   className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
