@@ -552,12 +552,25 @@ export default function Home() {
               <p className="text-[#00c853] text-sm font-semibold">Price locked for 7 days</p>
             </div>
 
-            <button
-              onClick={() => setStep("payout")}
-              className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]"
-            >
-              Accept Offer
-            </button>
+            <div className="flex gap-3">
+              <button onClick={handleBack} className="flex-1 bg-white/10 text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-white/15 transition active:scale-[0.98]">
+                Back
+              </button>
+              <button
+                onClick={() => { setStep("payout"); pushHistory("payout"); }}
+                className="flex-[2] bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]"
+              >
+                Add to Cart
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-3 text-left">
+              <div className="flex items-center gap-3"><span className="text-lg">💰</span><span className="text-sm text-[#ccc]">No selling fees</span></div>
+              <div className="flex items-center gap-3"><span className="text-lg">🛡️</span><span className="text-sm text-[#ccc]">Zero fraud risk</span></div>
+              <div className="flex items-center gap-3"><span className="text-lg">📦</span><span className="text-sm text-[#ccc]">Free shipping via FedEx or UPS</span></div>
+              <div className="flex items-center gap-3"><span className="text-lg">⚡</span><span className="text-sm text-[#ccc]">Same-day pickup &amp; 24-hour processing</span></div>
+              <div className="flex items-center gap-3"><span className="text-lg">💳</span><span className="text-sm text-[#ccc]">Cash, Venmo, Zelle, or PayPal</span></div>
+            </div>
 
             {!quoteSaved ? (
               <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4">
@@ -577,8 +590,8 @@ export default function Home() {
               <p className="mt-5 text-[#00c853] text-sm font-medium">Quote saved! Check your inbox.</p>
             )}
 
-            <button onClick={handleBack} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-white transition">
-              Change condition
+            <button onClick={reset} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-white transition">
+              Start new quote
             </button>
           </div>
         </section>
@@ -592,6 +605,16 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
+              <p className="text-xs font-semibold text-[#888] uppercase tracking-wider mb-2">Your Cart</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-semibold text-sm">{model?.label}</p>
+                  <p className="text-[#888] text-xs">{storage?.label} · {condition?.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
+                </div>
+                <p className="text-[#00c853] font-bold text-xl">${quote * quantity}</p>
+              </div>
+            </div>
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
             <p className="text-[#888] text-sm mb-6">Select your preferred payout method</p>
             <div className="grid grid-cols-2 gap-3">
