@@ -326,10 +326,10 @@ export default function Home() {
               Cash, Venmo, Zelle, or PayPal.
             </p>
 
-            <div className="glow-border mb-6">
+            <div className="glow-border mb-6 p-[3px]">
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
-                className="w-full bg-[#00c853] text-white py-5 rounded-2xl text-xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20 relative z-10"
+                className="w-full bg-[#00c853] text-white py-5 rounded-[14px] text-xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20 relative z-10"
               >
                 Sell Your Device
               </button>
