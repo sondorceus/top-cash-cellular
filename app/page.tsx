@@ -311,28 +311,45 @@ export default function Home() {
               Get My Quote
             </button>
 
-            <p className="text-[#555] text-xs text-center mb-6 font-medium">Or select your device below</p>
+            <p className="text-[#555] text-xs text-center mb-6 font-medium">Or select a category below</p>
 
-            <div className="space-y-3">
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              {[
+                { id: "phones", label: "Phones", icon: "📱" },
+                { id: "computers", label: "Computers", icon: "💻" },
+                { id: "consoles", label: "Game Consoles", icon: "🎮" },
+              ].map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => {
+                    if (cat.id === "computers") { setDeviceType("macbook"); setStep("model"); pushHistory("model"); }
+                    else if (cat.id === "consoles") { setDeviceType("console"); setStep("model"); pushHistory("model"); }
+                    else { const el = document.getElementById('phone-subcats'); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'block'; }
+                  }}
+                  className="glow-border flex flex-col items-center justify-center p-5 rounded-2xl bg-[#0a0a0a] hover:bg-white/5 transition cursor-pointer active:scale-[0.98]"
+                >
+                  <span className="text-3xl mb-2">{cat.icon}</span>
+                  <p className="font-semibold text-white text-sm">{cat.label}</p>
+                </button>
+              ))}
+            </div>
+
+            <div id="phone-subcats" className="space-y-3">
               {[
                 { id: "iphone" as const, label: "iPhone", sub: "iPhone 11 and newer", icon: "📱" },
                 { id: "android" as const, label: "Samsung Galaxy", sub: "Galaxy S21 and newer", icon: "📲" },
-                { id: "macbook" as const, label: "MacBook", sub: "MacBook Air & Pro, M1+", icon: "💻" },
-                { id: "console" as const, label: "Game Console", sub: "PS4/5, Xbox, Switch", icon: "🎮" },
               ].map((d) => (
                 <button
                   key={d.id}
                   onClick={() => { setDeviceType(d.id); setStep("model"); pushHistory("model"); }}
-                  className="glow-border w-full flex items-center gap-4 p-5 rounded-2xl bg-[#0a0a0a] hover:bg-white/5 transition-all duration-200 cursor-pointer text-left active:scale-[0.98]"
+                  className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer text-left active:scale-[0.98]"
                 >
-                  <span className="text-3xl">{d.icon}</span>
+                  <span className="text-2xl">{d.icon}</span>
                   <div className="flex-1">
-                    <p className="font-semibold text-white text-lg">{d.label}</p>
-                    <p className="text-[#888] text-sm">{d.sub}</p>
+                    <p className="font-semibold text-white">{d.label}</p>
+                    <p className="text-[#888] text-xs">{d.sub}</p>
                   </div>
-                  <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                  <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
               ))}
             </div>
@@ -585,7 +602,7 @@ export default function Home() {
                   <span className="text-sm">${Math.round(quote * 0.7 * quantity)}</span>
                 </div>
               </div>
-              <p className="text-[#00c853] text-xs font-semibold mt-3">You save up to ${(quote - Math.round(quote * 0.62)) * quantity} more with us</p>
+              <p className="text-[#00c853] text-xs font-semibold mt-3">You make up to ${(quote - Math.round(quote * 0.62)) * quantity} more with us</p>
             </div>
 
             <div className="flex items-center justify-center gap-2 mb-4">
