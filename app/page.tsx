@@ -543,9 +543,17 @@ export default function Home() {
             </div>
           )}
           <div className="max-w-lg mx-auto px-4 pt-12 pb-8 text-center">
-            <p className="text-[#888] text-sm font-medium mb-2">{model.label} · {storage?.label} · {condition.label}</p>
-            <h2 className="text-lg font-semibold text-[#888] mb-2">Your instant quote</h2>
-            <p className="text-6xl font-bold text-[#00c853] mb-1">${quote * quantity}</p>
+            <div className="flex items-center justify-center gap-5 mb-2">
+              {(() => {
+                const imgMap: Record<string, string> = { ip17e: "/iphone17e.png", ip17pm: "/iphone17.png", ip17p: "/iphone17.png", ip17air: "/iphone17.png", ip17: "/iphone17.png", ip16pm: "/iphone16.png", ip16p: "/iphone16.png", ip16plus: "/iphone16.png", ip16: "/iphone16.png", ip16e: "/iphone16.png", ip15pm: "/iphone15.png", ip15p: "/iphone15.png", ip15plus: "/iphone15.png", ip15: "/iphone15.png", ip14pm: "/iphone14.png", ip14p: "/iphone14.png", ip14: "/iphone14.png", ip13pm: "/iphone13.png", ip13p: "/iphone13.png", ip13: "/iphone13.png", ip12pm: "/iphone12.png", ip12: "/iphone12.png", ip11pm: "/iphone11.png", ip11: "/iphone11.png" };
+                const src = imgMap[model.id];
+                return src ? <img src={src} alt={model.label} className="w-20 h-20 object-contain" /> : null;
+              })()}
+              <div>
+                <p className="text-[#888] text-sm font-medium">{model.label} · {storage?.label} · {condition.label}</p>
+                <p className="text-5xl font-bold text-[#00c853] mt-1">${quote * quantity}</p>
+              </div>
+            </div>
             {quantity > 1 && <p className="text-[#888] text-sm mb-2">${quote} each × {quantity}</p>}
             {quantity === 1 && <div className="mb-3" />}
 
