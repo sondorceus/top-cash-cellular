@@ -50,18 +50,23 @@ const IPHONE_SERIES = [
 ];
 
 const SAMSUNG_MODELS = [
+  { id: "gs25u", label: "Galaxy S25 Ultra", base: 620 },
+  { id: "gs25p", label: "Galaxy S25+", base: 470 },
+  { id: "gs25", label: "Galaxy S25", base: 380 },
   { id: "gs24u", label: "Galaxy S24 Ultra", base: 500 },
   { id: "gs24p", label: "Galaxy S24+", base: 380 },
-  { id: "gs24", label: "Galaxy S24", base: 320 },
-  { id: "gs23u", label: "Galaxy S23 Ultra", base: 400 },
-  { id: "gs23p", label: "Galaxy S23+", base: 300 },
-  { id: "gs23", label: "Galaxy S23", base: 240 },
-  { id: "gzfold5", label: "Galaxy Z Fold 5", base: 520 },
-  { id: "gzflip5", label: "Galaxy Z Flip 5", base: 280 },
+  { id: "gs24", label: "Galaxy S24", base: 300 },
+  { id: "gs23u", label: "Galaxy S23 Ultra", base: 380 },
+  { id: "gs23p", label: "Galaxy S23+", base: 270 },
+  { id: "gs23", label: "Galaxy S23", base: 210 },
+  { id: "gzfold6", label: "Galaxy Z Fold 6", base: 650 },
+  { id: "gzfold5", label: "Galaxy Z Fold 5", base: 480 },
+  { id: "gzflip6", label: "Galaxy Z Flip 6", base: 320 },
+  { id: "gzflip5", label: "Galaxy Z Flip 5", base: 240 },
   { id: "gs22u", label: "Galaxy S22 Ultra", base: 280 },
   { id: "gs22", label: "Galaxy S22/S22+", base: 180 },
-  { id: "gs21u", label: "Galaxy S21 Ultra", base: 200 },
-  { id: "gs21", label: "Galaxy S21/S21+", base: 120 },
+  { id: "gs21u", label: "Galaxy S21 Ultra", base: 480 },
+  { id: "gs21", label: "Galaxy S21/S21+", base: 300 },
 ];
 
 const MACBOOK_MODELS = [
