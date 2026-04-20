@@ -183,6 +183,35 @@ export default function Home() {
     setCookieConsent(saved);
   }, []);
 
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("tcc-session");
+      if (saved) {
+        const s = JSON.parse(saved);
+        if (s.step && s.step !== "done" && Date.now() - (s.ts || 0) < 7 * 24 * 60 * 60 * 1000) {
+          if (s.deviceType) setDeviceType(s.deviceType);
+          if (s.selectedSeries) setSelectedSeries(s.selectedSeries);
+          if (s.model) setModel(s.model);
+          if (s.storage) setStorage(s.storage);
+          if (s.condition) setCondition(s.condition);
+          if (s.carrier) setCarrier(s.carrier);
+          if (s.quantity) setQuantity(s.quantity);
+          if (s.email) setEmail(s.email);
+          setStep(s.step);
+        }
+      }
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    if (step === "device") { localStorage.removeItem("tcc-session"); return; }
+    try {
+      localStorage.setItem("tcc-session", JSON.stringify({
+        step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, ts: Date.now(),
+      }));
+    } catch {}
+  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email]);
+
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrier?.multiplier ?? 1;
   const quote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier) : 0;
@@ -780,7 +809,7 @@ export default function Home() {
                     body: JSON.stringify({ name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: payout?.label, quantity }),
                   }).catch(() => {});
                 }
-                setStep("done"); pushHistory("done");
+                localStorage.removeItem("tcc-session"); setStep("done"); pushHistory("done");
               } catch { alert("Something went wrong. Please try again or call us directly."); }
             }} className="space-y-4">
               <div>
