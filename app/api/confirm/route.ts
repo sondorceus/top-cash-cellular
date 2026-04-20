@@ -36,68 +36,71 @@ export async function POST(req: NextRequest) {
     const htmlEmail = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a">
-<tr><td align="center">
-<table width="100%" cellpadding="0" cellspacing="0" style="max-width:100%;width:100%">
+<tr><td align="center" style="padding:20px 16px">
+<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;margin:0 auto">
 
 <!-- Header -->
-<tr><td style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 100%);padding:24px 40px;text-align:center;border-bottom:2px solid #00c853">
-<div style="font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.5px">💰 Top Cash Cellular</div>
+<tr><td style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 100%);padding:24px 20px;text-align:center;border-bottom:2px solid #00c853">
+<div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.5px">💰 Top Cash Cellular</div>
 <div style="font-size:13px;color:#00c853;margin-top:4px;font-weight:600">Austin's #1 Device Buyback</div>
 </td></tr>
 
-<!-- Quote Card -->
-<tr><td style="background:#111;padding:24px 40px 16px">
-<div style="font-size:16px;color:#ccc;margin-bottom:16px">Hi <strong style="color:#fff">${name || "there"}</strong>,</div>
-<div style="font-size:15px;color:#aaa;line-height:1.5;margin-bottom:20px">Great news — your quote is ready:</div>
+<!-- Quote + CTA (above the fold) -->
+<tr><td style="background:#111;padding:24px 20px 16px">
+<div style="font-size:15px;color:#ccc;margin-bottom:16px;line-height:1.5">Hi <strong style="color:#fff">${name || "there"}</strong>, great news — your quote is ready:</div>
 
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#1a1a2e;border-radius:12px;border:1px solid #333;overflow:hidden">
-<tr><td style="padding:20px 24px;text-align:center;border-bottom:1px solid #333">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#1a1a2e;border-radius:10px;border:1px solid #333">
+<tr><td style="padding:20px 20px;text-align:center;border-bottom:1px solid #333">
 <div style="font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Your Offer</div>
-<div style="font-size:48px;font-weight:800;color:#00c853">$${quote}</div>
+<div style="font-size:44px;font-weight:800;color:#00c853">$${quote}</div>
 </td></tr>
-<tr><td style="padding:14px 24px">
+<tr><td style="padding:12px 20px">
 <table width="100%" cellpadding="0" cellspacing="0">
-<tr><td style="padding:7px 0;color:#888;font-size:13px;border-bottom:1px solid #222">Device</td><td style="padding:7px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid #222;font-weight:600">${model}</td></tr>
-<tr><td style="padding:7px 0;color:#888;font-size:13px;border-bottom:1px solid #222">Storage</td><td style="padding:7px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid #222">${storage || "N/A"}</td></tr>
-<tr><td style="padding:7px 0;color:#888;font-size:13px;border-bottom:1px solid #222">Condition</td><td style="padding:7px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid #222">${condition}</td></tr>
-<tr><td style="padding:7px 0;color:#888;font-size:13px">Payout</td><td style="padding:7px 0;color:#00c853;font-size:13px;text-align:right;font-weight:600">${payout}</td></tr>
+<tr><td style="padding:7px 0;color:#888;font-size:14px;border-bottom:1px solid #222">Device</td><td style="padding:7px 0;color:#fff;font-size:14px;text-align:right;border-bottom:1px solid #222;font-weight:600">${model}</td></tr>
+<tr><td style="padding:7px 0;color:#888;font-size:14px;border-bottom:1px solid #222">Storage</td><td style="padding:7px 0;color:#fff;font-size:14px;text-align:right;border-bottom:1px solid #222">${storage || "N/A"}</td></tr>
+<tr><td style="padding:7px 0;color:#888;font-size:14px;border-bottom:1px solid #222">Condition</td><td style="padding:7px 0;color:#fff;font-size:14px;text-align:right;border-bottom:1px solid #222">${condition}</td></tr>
+<tr><td style="padding:7px 0;color:#888;font-size:14px">Payout</td><td style="padding:7px 0;color:#00c853;font-size:14px;text-align:right;font-weight:600">${payout}</td></tr>
 </table>
 </td></tr>
 </table>
 
 <!-- CTA Button -->
-<div style="text-align:center;margin-top:20px">
-<a href="https://topcashcellular.com" style="display:inline-block;background:#00c853;color:#000;padding:16px 48px;border-radius:50px;font-size:18px;font-weight:800;text-decoration:none;letter-spacing:-0.3px">Accept Your $${quote} Offer</a>
-</div>
-<div style="text-align:center;margin-top:10px;font-size:12px;color:#888">Your offer expires in 7 days. Prices may change after.</div>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px">
+<tr><td align="center">
+<table cellpadding="0" cellspacing="0" width="100%"><tr><td align="center" style="background:#00c853;border-radius:10px;text-align:center">
+<a href="https://topcashcellular.com" style="display:block;padding:16px 20px;color:#000;font-size:18px;font-weight:800;text-decoration:none;line-height:1.4">Accept Your $${quote} Offer</a>
+</td></tr></table>
+</td></tr>
+</table>
+<div style="text-align:center;margin-top:10px;font-size:12px;color:#888;line-height:1.5">Your offer expires in 7 days. Prices may change after.</div>
 
 <!-- Trust Signals -->
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px">
 <tr>
-<td style="text-align:center;padding:8px;font-size:12px;color:#aaa;border-right:1px solid #222">✓ No hidden fees</td>
-<td style="text-align:center;padding:8px;font-size:12px;color:#aaa;border-right:1px solid #222">✓ Price guaranteed</td>
-<td style="text-align:center;padding:8px;font-size:12px;color:#aaa">✓ Paid instantly</td>
+<td width="33%" style="text-align:center;padding:8px 4px;font-size:12px;color:#aaa">✓ No hidden fees</td>
+<td width="34%" style="text-align:center;padding:8px 4px;font-size:12px;color:#aaa">✓ Price guaranteed</td>
+<td width="33%" style="text-align:center;padding:8px 4px;font-size:12px;color:#aaa">✓ Paid instantly</td>
 </tr>
 </table>
 </td></tr>
 
 <!-- 3-Step Process -->
-<tr><td style="background:#111;padding:8px 40px 20px">
-<div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:10px">How it works:</div>
+<tr><td style="background:#111;padding:8px 20px 20px">
+<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:12px">How it works:</div>
 <table cellpadding="0" cellspacing="0" width="100%">
-<tr><td style="padding:6px 0;font-size:13px;color:#ccc;line-height:1.4"><span style="display:inline-block;width:24px;height:24px;background:#00c853;color:#000;border-radius:50%;text-align:center;line-height:24px;font-weight:800;font-size:12px;margin-right:10px;vertical-align:middle">1</span> Accept your offer</td></tr>
-<tr><td style="padding:6px 0;font-size:13px;color:#ccc;line-height:1.4"><span style="display:inline-block;width:24px;height:24px;background:#00c853;color:#000;border-radius:50%;text-align:center;line-height:24px;font-weight:800;font-size:12px;margin-right:10px;vertical-align:middle">2</span> Schedule pickup — we come to you</td></tr>
-<tr><td style="padding:6px 0;font-size:13px;color:#ccc;line-height:1.4"><span style="display:inline-block;width:24px;height:24px;background:#00c853;color:#000;border-radius:50%;text-align:center;line-height:24px;font-weight:800;font-size:12px;margin-right:10px;vertical-align:middle">3</span> Get paid on the spot</td></tr>
+<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">1</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Accept your offer</td></tr>
+<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">2</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Schedule pickup — we come to you</td></tr>
+<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">3</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Get paid on the spot</td></tr>
 </table>
-<div style="background:#1a1a2e;border:1px solid #333;border-radius:10px;padding:12px 20px;margin-top:12px;font-size:12px;color:#888;text-align:center">
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px"><tr><td style="background:#1a1a2e;border:1px solid #333;border-radius:10px;padding:14px 20px;font-size:13px;color:#888;text-align:center">
 📦 <strong style="color:#ccc">Prefer shipping?</strong> Reply to this email for a free prepaid label.
-</div>
+</td></tr></table>
 </td></tr>
 
 <!-- Footer -->
-<tr><td style="background:#0a0a0a;padding:20px 40px;text-align:center;border-top:1px solid #222">
+<tr><td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #222">
 <div style="margin-bottom:6px"><a href="tel:+18775492056" style="color:#00c853;text-decoration:none;font-size:15px;font-weight:700">(877) 549-2056</a></div>
-<div style="font-size:12px;color:#555">Top Cash Cellular · Austin, TX</div>
+<div style="font-size:12px;color:#555;line-height:1.5">Top Cash Cellular · Austin, TX</div>
 <div style="font-size:11px;color:#444;margin-top:6px">Questions? Call or reply to this email.</div>
 </td></tr>
 
