@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 export default function ThankYou() {
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center">
+      <script dangerouslySetInnerHTML={{ __html: `gtag('event','ads_conversion_Request_quote_1',{});` }} />
       <div className="max-w-lg mx-auto px-4 text-center">
         <div className="w-20 h-20 rounded-full bg-[#00c853]/10 flex items-center justify-center mx-auto mb-6">
           <span className="text-4xl">✅</span>
