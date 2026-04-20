@@ -591,6 +591,32 @@ export default function Home() {
               </div>
             </div>
 
+            <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5 text-left">
+              <h3 className="text-base font-bold text-white mb-4">Why People Choose Us and Love It</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-3 bg-white/5 rounded-xl">
+                  <p className="text-2xl font-bold text-[#00c853]">20,000+</p>
+                  <p className="text-xs text-[#888] mt-1">⭐ Reviews — our customers love us</p>
+                </div>
+                <div className="text-center p-3 bg-white/5 rounded-xl">
+                  <p className="text-2xl font-bold text-[#00c853]">4.91/5</p>
+                  <p className="text-xs text-[#888] mt-1">🏆 Elite Rating</p>
+                </div>
+                <div className="text-center p-3 bg-white/5 rounded-xl">
+                  <p className="text-lg font-bold text-white">BBB</p>
+                  <p className="text-xs text-[#888] mt-1">Accredited Business</p>
+                </div>
+                <div className="text-center p-3 bg-white/5 rounded-xl">
+                  <p className="text-lg font-bold text-[#00c853]">⚡ Fast</p>
+                  <p className="text-xs text-[#888] mt-1">Payments within days</p>
+                </div>
+              </div>
+              <div className="mt-4 text-center">
+                <p className="text-xs text-[#888] mb-2">Higher offers than competitors</p>
+                <p className="text-[10px] text-[#555]">As seen on: CNBC · LA Times · CNET · ZDNet · PCWorld</p>
+              </div>
+            </div>
+
             {!quoteSaved ? (
               <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4">
                 <p className="text-[#888] text-xs font-medium mb-3">Not ready yet? Save this quote for later.</p>
