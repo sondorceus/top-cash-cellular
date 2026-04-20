@@ -33,6 +33,8 @@ export async function POST(req: NextRequest) {
   let smsSent = false;
 
   if (email && process.env.RESEND_API_KEY) {
+    const offerNum = Date.now().toString(36).toUpperCase();
+    const offerDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     const htmlEmail = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a">
@@ -45,13 +47,20 @@ export async function POST(req: NextRequest) {
 <div style="font-size:13px;color:#00c853;margin-top:4px;font-weight:600">Austin's #1 Device Buyback</div>
 </td></tr>
 
-<!-- Quote + CTA (above the fold) -->
+<!-- Welcome -->
 <tr><td style="background:#111;padding:24px 20px 16px">
-<div style="font-size:15px;color:#ccc;margin-bottom:16px;line-height:1.5">Hi <strong style="color:#fff">${name || "there"}</strong>, we've received your request and your offer is locked in:</div>
+<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:8px">We're thrilled you decided to sell to us!</div>
+<div style="font-size:14px;color:#aaa;line-height:1.5;margin-bottom:16px">Hi <strong style="color:#fff">${name || "there"}</strong>, below you'll find everything you need for a successful trade-in.</div>
 
+<!-- Offer Info -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px">
+<tr><td style="font-size:12px;color:#888">Offer #${offerNum}</td><td style="font-size:12px;color:#888;text-align:right">${offerDate}</td></tr>
+</table>
+
+<!-- Quote Card -->
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#1a1a2e;border-radius:10px;border:1px solid #333">
 <tr><td style="padding:20px 20px;text-align:center;border-bottom:1px solid #333">
-<div style="font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Your Offer</div>
+<div style="font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Your Locked-In Offer</div>
 <div style="font-size:44px;font-weight:800;color:#00c853">$${quote}</div>
 </td></tr>
 <tr><td style="padding:12px 20px">
@@ -64,34 +73,33 @@ export async function POST(req: NextRequest) {
 </td></tr>
 </table>
 
-<!-- Confirmation Badge -->
-<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px">
-<tr><td style="background:#00c853;border-radius:10px;text-align:center;padding:14px 20px">
-<div style="color:#000;font-size:16px;font-weight:800;line-height:1.4">🔒 Your offer is locked in for 7 days</div>
-</td></tr>
-</table>
-<div style="text-align:center;margin-top:12px;font-size:14px;color:#ccc;line-height:1.5">We'll reach out shortly to confirm next steps.</div>
-
-<!-- Trust Signals -->
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px">
-<tr>
-<td width="33%" style="text-align:center;padding:8px 4px;font-size:12px;color:#aaa">✓ No hidden fees</td>
-<td width="34%" style="text-align:center;padding:8px 4px;font-size:12px;color:#aaa">✓ Price guaranteed</td>
-<td width="33%" style="text-align:center;padding:8px 4px;font-size:12px;color:#aaa">✓ Paid instantly</td>
-</tr>
+<tr><td style="background:#00c853;border-radius:10px;text-align:center;padding:12px 20px">
+<div style="color:#000;font-size:14px;font-weight:800">🔒 Offer valid for 7 days</div>
+</td></tr>
 </table>
 </td></tr>
 
-<!-- 3-Step Process -->
+<!-- Device Prep -->
 <tr><td style="background:#111;padding:8px 20px 20px">
+<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:12px">Before we meet — device preparation:</div>
+<table cellpadding="0" cellspacing="0" width="100%">
+<tr><td style="padding:6px 0;font-size:13px;color:#ccc;line-height:1.5">☑ <strong>Required:</strong> Reset your device and turn off "Find My" or Android Activation Lock</td></tr>
+<tr><td style="padding:6px 0;font-size:13px;color:#ccc;line-height:1.5">☑ <strong>Optional:</strong> Confirm your device is fully paid off (financed devices may have offers adjusted up to 75%)</td></tr>
+<tr><td style="padding:6px 0;font-size:13px;color:#ccc;line-height:1.5">☑ <strong>Optional:</strong> Remove SIM cards, SD cards, screen protectors, and cases</td></tr>
+</table>
+</td></tr>
+
+<!-- What Happens Next -->
+<tr><td style="background:#111;padding:0 20px 20px">
 <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:12px">What happens next:</div>
 <table cellpadding="0" cellspacing="0" width="100%">
-<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">1</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">We'll contact you to schedule pickup</td></tr>
-<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">2</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Quick inspection confirms your price</td></tr>
-<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">3</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Get paid on the spot — Cash, Venmo, or Zelle</td></tr>
+<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">1</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">We'll reach out to schedule your pickup (we come to you!)</td></tr>
+<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">2</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Quick inspection confirms your quoted price</td></tr>
+<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">3</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Get paid on the spot — Cash, Venmo, Zelle, or PayPal</td></tr>
 </table>
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px"><tr><td style="background:#1a1a2e;border:1px solid #333;border-radius:10px;padding:14px 20px;font-size:13px;color:#888;text-align:center">
-📦 <strong style="color:#ccc">Need to ship instead?</strong> Just reply to this email and we'll send you a free prepaid label.
+📦 <strong style="color:#ccc">Not in Austin?</strong> Reply to this email and we'll send you a free prepaid shipping label.
 </td></tr></table>
 </td></tr>
 
