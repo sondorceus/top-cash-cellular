@@ -103,6 +103,22 @@ export async function POST(req: NextRequest) {
 </td></tr></table>
 </td></tr>
 
+<!-- Submission Summary -->
+<tr><td style="background:#111;padding:0 20px 20px">
+<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:12px">Your Submission Summary</div>
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#1a1a2e;border-radius:10px;border:1px solid #333;padding:16px 20px">
+<tr><td style="padding:5px 0;color:#888;font-size:13px">Device</td><td style="padding:5px 0;color:#fff;font-size:13px;text-align:right;font-weight:600">${model}</td></tr>
+<tr><td style="padding:5px 0;color:#888;font-size:13px">Storage</td><td style="padding:5px 0;color:#fff;font-size:13px;text-align:right">${storage || "N/A"}</td></tr>
+<tr><td style="padding:5px 0;color:#888;font-size:13px">Condition</td><td style="padding:5px 0;color:#fff;font-size:13px;text-align:right">${condition}</td></tr>
+<tr><td style="padding:5px 0;color:#888;font-size:13px">Quoted Price</td><td style="padding:5px 0;color:#00c853;font-size:13px;text-align:right;font-weight:700">$${quote}</td></tr>
+<tr><td style="padding:5px 0;color:#888;font-size:13px">Payout Method</td><td style="padding:5px 0;color:#fff;font-size:13px;text-align:right">${payout}</td></tr>
+<tr><td colspan="2" style="padding:8px 0 0;border-top:1px solid #333"></td></tr>
+<tr><td style="padding:5px 0;color:#888;font-size:13px">Name</td><td style="padding:5px 0;color:#fff;font-size:13px;text-align:right">${name || "N/A"}</td></tr>
+<tr><td style="padding:5px 0;color:#888;font-size:13px">Email</td><td style="padding:5px 0;color:#fff;font-size:13px;text-align:right">${email}</td></tr>
+${phone ? `<tr><td style="padding:5px 0;color:#888;font-size:13px">Phone</td><td style="padding:5px 0;color:#fff;font-size:13px;text-align:right">${phone}</td></tr>` : ''}
+</table>
+</td></tr>
+
 <!-- Footer -->
 <tr><td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #222">
 <div style="margin-bottom:6px"><a href="tel:+18775492056" style="color:#00c853;text-decoration:none;font-size:15px;font-weight:700">(877) 549-2056</a></div>
@@ -122,6 +138,7 @@ export async function POST(req: NextRequest) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       const result = await resend.emails.send({
         from: "Top Cash Cellular <topcash@resend.dev>",
+        replyTo: "topcashcellular@gmail.com",
         to: email,
         subject: `Your $${quote} quote for ${model} — Top Cash Cellular`,
         html: htmlEmail,
