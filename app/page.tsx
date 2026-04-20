@@ -320,35 +320,14 @@ export default function Home() {
           </div>
           {/* HERO: Phone → Cash Visual */}
           <div className="max-w-lg mx-auto px-4 pt-8 pb-4">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="text-center">
-                <div className="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10">
-                  <img src="/iphone17.png" alt="Phone" className="w-14 h-14 object-contain" />
-                </div>
-                <p className="text-[#888] text-[10px] mt-1.5">Your device</p>
-              </div>
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <img src="/iphone17.png" alt="Phone" className="w-16 h-16 object-contain" />
               <div className="flex items-center gap-0.5 animate-pulse">
                 <svg className="w-6 h-6 text-[#00c853]" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
                 <svg className="w-6 h-6 text-[#00c853]/60" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
                 <svg className="w-6 h-6 text-[#00c853]/30" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
               </div>
-              <div className="text-center">
-                <div className="w-20 h-20 bg-[#00c853]/10 rounded-2xl flex items-center justify-center border border-[#00c853]/20">
-                  <span className="text-4xl">💰</span>
-                </div>
-                <p className="text-[#00c853] text-[10px] mt-1.5 font-semibold">Instant cash</p>
-              </div>
-            </div>
-          </div>
-
-          {/* "As Featured On" */}
-          <div className="text-center mb-6">
-            <p className="text-[#555] text-xs font-medium mb-3">As featured on</p>
-            <div className="flex items-center justify-center gap-6 opacity-40">
-              <span className="text-[#888] text-sm font-bold">CNET</span>
-              <span className="text-[#888] text-sm font-bold">PCWorld</span>
-              <span className="text-[#888] text-sm font-bold italic">LA Times</span>
-              <span className="text-[#888] text-sm font-bold">ZDNet</span>
+              <span className="text-4xl">💰</span>
             </div>
           </div>
 
