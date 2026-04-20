@@ -176,6 +176,8 @@ export default function Home() {
   const [devicePhoto, setDevicePhoto] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [cartItems, setCartItems] = useState<Array<{ model: string; modelId: string; storage: string; condition: string; price: number; quantity: number }>>([]);
+  const [cartOpen, setCartOpen] = useState(false);
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
 
   useEffect(() => {
@@ -595,7 +597,17 @@ export default function Home() {
                 Back
               </button>
               <button
-                onClick={() => { setStep("checkout"); pushHistory("checkout"); }}
+                onClick={() => {
+                  if (model && condition) {
+                    setCartItems(prev => {
+                      const key = `${model.id}-${storage?.label || ''}-${condition.label}`;
+                      const existing = prev.find(i => `${i.modelId}-${i.storage}-${i.condition}` === key);
+                      if (existing) return prev.map(i => `${i.modelId}-${i.storage}-${i.condition}` === key ? { ...i, quantity: i.quantity + quantity } : i);
+                      return [...prev, { model: model.label, modelId: model.id, storage: storage?.label || 'N/A', condition: condition.label, price: quote, quantity }];
+                    });
+                  }
+                  setStep("checkout"); pushHistory("checkout");
+                }}
                 className="flex-[2] bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]"
               >
                 Add to Cart
@@ -1209,72 +1221,60 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* CHAT WIDGET */}
+      {/* CART WIDGET */}
       <div className="fixed bottom-6 right-6 z-50">
-        {chatOpen && (
-          <div className="mb-3 w-[300px] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+        {cartOpen && (
+          <div className="mb-3 w-[320px] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
             <div className="bg-[#00c853] px-4 py-3 flex items-center justify-between">
-              <p className="text-white font-semibold text-sm">Top Cash Cellular</p>
-              <button onClick={() => setChatOpen(false)} aria-label="Close chat" className="text-white/80 hover:text-white cursor-pointer text-lg">×</button>
+              <p className="text-black font-semibold text-sm">Your Cart ({cartItems.reduce((sum, i) => sum + i.quantity, 0)} items)</p>
+              <button onClick={() => setCartOpen(false)} aria-label="Close cart" className="text-black/60 hover:text-black cursor-pointer text-lg font-bold">×</button>
             </div>
-            <div className="p-4">
-              {chatMode === "choose" && (
+            <div className="p-4 max-h-[300px] overflow-y-auto">
+              {cartItems.length === 0 ? (
+                <div className="text-center py-6">
+                  <p className="text-[#888] text-sm">Your cart is empty</p>
+                  <p className="text-[#555] text-xs mt-2">Get a quote and add a device!</p>
+                </div>
+              ) : (
                 <>
-                  <p className="text-white text-sm mb-4">Hey! Got a device to sell? How would you like to connect?</p>
-                  <div className="space-y-2">
-                    <button onClick={() => setChatMode("chat")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left active:scale-[0.98]">
-                      <span className="text-xl">💬</span>
-                      <div>
-                        <p className="font-semibold text-sm">Live Chat</p>
-                        <p className="text-[#888] text-xs">Send us a message</p>
-                      </div>
-                    </button>
-                    <button onClick={() => setChatMode("call")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left active:scale-[0.98]">
-                      <span className="text-xl">📞</span>
-                      <div>
-                        <p className="font-semibold text-sm">Talk to a Human</p>
-                        <p className="text-[#888] text-xs">Call or get a callback</p>
-                      </div>
-                    </button>
-                  </div>
-                </>
-              )}
-              {chatMode === "chat" && (
-                <>
-                  <button onClick={() => setChatMode("choose")} className="text-[#888] text-xs mb-2 cursor-pointer hover:text-white">← Back</button>
-                  <div className="h-[200px] overflow-y-auto space-y-2 mb-2 pr-1">
-                    {chatMessages.map((m, i) => (
-                      <div key={i} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[85%] px-3 py-2 rounded-xl text-xs ${m.from === "user" ? "bg-[#00c853] text-white" : "bg-white/10 text-white/90"}`}>
-                          {m.text}
+                  <div className="space-y-3">
+                    {cartItems.map((item, i) => (
+                      <div key={i} className="bg-white/5 rounded-xl p-3 border border-white/10">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="font-semibold text-sm text-white">{item.model}</p>
+                          <button onClick={() => setCartItems(prev => prev.filter((_, idx) => idx !== i))} className="text-[#888] hover:text-red-400 text-xs cursor-pointer">Remove</button>
+                        </div>
+                        <p className="text-[#888] text-xs">{item.storage} · {item.condition}</p>
+                        <div className="flex items-center justify-between mt-2">
+                          <div className="flex items-center gap-2">
+                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it))} className="w-6 h-6 rounded bg-white/10 text-white text-xs flex items-center justify-center cursor-pointer hover:bg-white/20">−</button>
+                            <span className="text-white text-sm font-semibold">{item.quantity}</span>
+                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it))} className="w-6 h-6 rounded bg-white/10 text-white text-xs flex items-center justify-center cursor-pointer hover:bg-white/20">+</button>
+                          </div>
+                          <p className="text-[#00c853] font-bold text-sm">${item.price * item.quantity}</p>
                         </div>
                       </div>
                     ))}
-                    {chatLoading && <div className="flex justify-start"><div className="bg-white/10 text-white/60 px-3 py-2 rounded-xl text-xs">Typing...</div></div>}
                   </div>
-                  <div className="flex gap-2">
-                    <input value={chatMsg} onChange={(e) => setChatMsg(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendChat()} placeholder="Ask me anything..." aria-label="Chat message" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853]" />
-                    <button onClick={sendChat} disabled={chatLoading} aria-label="Send message" className="bg-[#00c853] text-white px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer hover:bg-[#00e676] transition disabled:opacity-50">Send</button>
+                  <div className="border-t border-white/10 mt-3 pt-3 flex items-center justify-between">
+                    <p className="text-[#888] text-sm">Total</p>
+                    <p className="text-[#00c853] font-bold text-lg">${cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0)}</p>
                   </div>
+                  <button
+                    onClick={() => { setCartOpen(false); setStep("checkout"); pushHistory("checkout"); }}
+                    className="w-full mt-3 bg-[#00c853] text-black py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]"
+                  >
+                    Checkout
+                  </button>
                 </>
-              )}
-              {chatMode === "call" && (
-                <div className="text-center py-2">
-                  <button onClick={() => setChatMode("choose")} className="text-[#888] text-xs mb-3 cursor-pointer hover:text-white block mx-auto">← Back</button>
-                  <a href={`tel:${PHONE_TEL}`} className="block w-full bg-[#00c853] text-white py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2">
-                    📞 Call {PHONE}
-                  </a>
-                  <p className="text-[#888] text-xs">Mon-Sat 8AM-8PM</p>
-                </div>
               )}
             </div>
           </div>
         )}
-        <button onClick={() => setChatOpen(!chatOpen)} className="w-14 h-14 rounded-full bg-[#00c853] text-white flex items-center justify-center shadow-lg hover:bg-[#00e676] transition cursor-pointer active:scale-90">
-          {chatOpen ? (
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-          ) : (
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+        <button onClick={() => setCartOpen(!cartOpen)} className="w-14 h-14 rounded-full bg-[#00c853] text-black flex items-center justify-center shadow-lg hover:bg-[#00e676] transition cursor-pointer active:scale-90 relative">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>
+          {cartItems.length > 0 && (
+            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">{cartItems.reduce((sum, i) => sum + i.quantity, 0)}</span>
           )}
         </button>
       </div>
