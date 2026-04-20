@@ -657,8 +657,17 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            <h2 className="text-2xl font-bold mb-1">What condition?</h2>
-            <p className="text-[#888] text-sm mb-6">{model.label}</p>
+            <h2 className="text-2xl font-bold mb-1">Select Condition</h2>
+            <p className="text-[#888] text-sm mb-2">{model.label}</p>
+            <button className="text-[#00c853] text-xs font-medium mb-4 cursor-pointer hover:underline" onClick={() => { const el = document.getElementById('condition-guide'); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }}>How to assess condition</button>
+            <div id="condition-guide" style={{ display: 'none' }} className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-xs text-[#aaa] space-y-2">
+              <p><strong className="text-white">Brand New:</strong> Sealed in original packaging, never opened</p>
+              <p><strong className="text-white">Flawless:</strong> Opened but looks brand new — zero scratches, scuffs, or marks</p>
+              <p><strong className="text-white">Very Good:</strong> Minimal signs of use, no scratches visible at arm&apos;s length</p>
+              <p><strong className="text-white">Good:</strong> Light scratches on screen or body, fully functional</p>
+              <p><strong className="text-white">Fair:</strong> Noticeable wear — scuffs, dents, or cosmetic damage</p>
+              <p><strong className="text-white">Broken:</strong> Cracked screen, water damage, or not fully functional</p>
+            </div>
             <div className="space-y-3">
               {CONDITIONS.map((c) => (
                 <button
