@@ -12,35 +12,30 @@ button, a, [role="button"] {
   -webkit-tap-highlight-color: transparent;
 }
 
-@keyframes borderFlow {
-  0% { --border-angle: 0deg; }
-  100% { --border-angle: 360deg; }
-}
-
-@property --border-angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
+@keyframes spinRing {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .glow-border {
   position: relative;
-  background: #0a0a0a;
   border-radius: 1rem;
   overflow: hidden;
 }
 .glow-border::before {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: 1rem;
-  padding: 1.5px;
-  background: conic-gradient(from var(--border-angle), transparent 40%, #00ff88 50%, #00c853 55%, transparent 60%);
-  animation: borderFlow 3s linear infinite;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent 0%, #00c853 20%, #00ff88 40%, #4fc3f7 60%, #00c853 80%, transparent 100%);
+  animation: spinRing 2s linear infinite;
   pointer-events: none;
+}
+.glow-border > * {
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes confettiFall {
