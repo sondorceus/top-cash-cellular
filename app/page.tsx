@@ -131,10 +131,11 @@ const FAQS = [
   { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
 ];
 
-type Step = "device" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done";
+type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done";
 
 export default function Home() {
   const [step, setStep] = useState<Step>("device");
+  const [category, setCategory] = useState<"phones" | "computers" | "consoles" | null>(null);
   const [deviceType, setDeviceType] = useState<"iphone" | "android" | "macbook" | "console" | null>(null);
   const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
   const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
@@ -230,7 +231,9 @@ export default function Home() {
 
   const handleBack = () => {
     if (step === "model" && selectedSeries) { setSelectedSeries(null); return; }
-    if (step === "model") { setStep("device"); setDeviceType(null); }
+    if (step === "model") { setStep("brand"); setDeviceType(null); }
+    else if (step === "brand") { setStep("category"); setCategory(null); }
+    else if (step === "category") { setStep("device"); }
     else if (step === "storage") { setStep("model"); setModel(null); }
     else if (step === "condition") { if (deviceType === "console") { setStep("model"); setModel(null); } else { setStep("storage"); setStorage(null); } }
     else if (step === "carrier") { setStep("condition"); setCondition(null); }
@@ -242,6 +245,7 @@ export default function Home() {
 
   const reset = () => {
     setStep("device");
+    setCategory(null);
     setDeviceType(null);
     setSelectedSeries(null);
     setModel(null);
@@ -305,54 +309,11 @@ export default function Home() {
             </p>
 
             <button
-              onClick={() => { setDeviceType("iphone"); setStep("model"); pushHistory("model"); }}
+              onClick={() => { setStep("category"); pushHistory("category"); }}
               className="w-full bg-[#00c853] text-white py-5 rounded-2xl text-xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] mb-6 shadow-lg shadow-[#00c853]/20"
             >
-              Get My Quote
+              Sell Your Device
             </button>
-
-            <p className="text-[#555] text-xs text-center mb-6 font-medium">Or select a category below</p>
-
-            <div className="grid grid-cols-3 gap-3 mb-4">
-              {[
-                { id: "phones", label: "Phones", icon: "📱" },
-                { id: "computers", label: "Computers", icon: "💻" },
-                { id: "consoles", label: "Game Consoles", icon: "🎮" },
-              ].map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => {
-                    if (cat.id === "computers") { setDeviceType("macbook"); setStep("model"); pushHistory("model"); }
-                    else if (cat.id === "consoles") { setDeviceType("console"); setStep("model"); pushHistory("model"); }
-                    else { const el = document.getElementById('phone-subcats'); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'block'; }
-                  }}
-                  className="glow-border flex flex-col items-center justify-center p-5 rounded-2xl bg-[#0a0a0a] hover:bg-white/5 transition cursor-pointer active:scale-[0.98]"
-                >
-                  <span className="text-3xl mb-2">{cat.icon}</span>
-                  <p className="font-semibold text-white text-sm">{cat.label}</p>
-                </button>
-              ))}
-            </div>
-
-            <div id="phone-subcats" className="space-y-3">
-              {[
-                { id: "iphone" as const, label: "iPhone", sub: "iPhone 11 and newer", icon: "📱" },
-                { id: "android" as const, label: "Samsung Galaxy", sub: "Galaxy S21 and newer", icon: "📲" },
-              ].map((d) => (
-                <button
-                  key={d.id}
-                  onClick={() => { setDeviceType(d.id); setStep("model"); pushHistory("model"); }}
-                  className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer text-left active:scale-[0.98]"
-                >
-                  <span className="text-2xl">{d.icon}</span>
-                  <div className="flex-1">
-                    <p className="font-semibold text-white">{d.label}</p>
-                    <p className="text-[#888] text-xs">{d.sub}</p>
-                  </div>
-                  <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                </button>
-              ))}
-            </div>
 
             <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
               <p className="text-[#888] text-sm">Don&apos;t see your device? <a href={`tel:${PHONE_TEL}`} className="text-[#00c853] font-semibold hover:underline">Contact us</a> and we&apos;ll make you an offer!</p>
@@ -388,6 +349,87 @@ export default function Home() {
                   </button>
                 ))}
               </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: CATEGORY */}
+      {step === "category" && page === "home" && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+            <h2 className="text-2xl font-bold mb-1">What are you selling?</h2>
+            <p className="text-[#888] text-sm mb-6">Select a category</p>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { id: "phones" as const, label: "Phones", sub: "iPhone, Samsung", icon: "📱" },
+                { id: "computers" as const, label: "Computers", sub: "MacBook, Laptop", icon: "💻" },
+                { id: "consoles" as const, label: "Game Consoles", sub: "PS5, Xbox, Switch", icon: "🎮" },
+              ].map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => { setCategory(cat.id); setStep("brand"); pushHistory("brand"); }}
+                  className="flex flex-col items-center justify-center p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
+                >
+                  <span className="text-4xl mb-3">{cat.icon}</span>
+                  <p className="font-semibold text-white text-base">{cat.label}</p>
+                  <p className="text-[#888] text-xs mt-1">{cat.sub}</p>
+                </button>
+              ))}
+              <button
+                onClick={() => window.location.href = `tel:${PHONE_TEL}`}
+                className="flex flex-col items-center justify-center p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
+              >
+                <span className="text-4xl mb-3">📦</span>
+                <p className="font-semibold text-white text-base">Other</p>
+                <p className="text-[#888] text-xs mt-1">Contact us</p>
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: BRAND */}
+      {step === "brand" && page === "home" && category && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+            <h2 className="text-2xl font-bold mb-1">Select your brand</h2>
+            <p className="text-[#888] text-sm mb-6">{category === "phones" ? "Phone brands" : category === "computers" ? "Computer brands" : "Console brands"}</p>
+            <div className="space-y-3">
+              {category === "phones" && [
+                { id: "iphone" as const, label: "Apple iPhone", sub: "iPhone 11 and newer", icon: "📱" },
+                { id: "android" as const, label: "Samsung Galaxy", sub: "Galaxy S21 and newer", icon: "📲" },
+              ].map((b) => (
+                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
+                  <span className="text-3xl">{b.icon}</span>
+                  <div className="flex-1"><p className="font-semibold text-white text-lg">{b.label}</p><p className="text-[#888] text-sm">{b.sub}</p></div>
+                  <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </button>
+              ))}
+              {category === "computers" && [
+                { id: "macbook" as const, label: "Apple MacBook", sub: "MacBook Air & Pro, M1+", icon: "💻" },
+              ].map((b) => (
+                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
+                  <span className="text-3xl">{b.icon}</span>
+                  <div className="flex-1"><p className="font-semibold text-white text-lg">{b.label}</p><p className="text-[#888] text-sm">{b.sub}</p></div>
+                  <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </button>
+              ))}
+              {category === "consoles" && (
+                <button onClick={() => { setDeviceType("console"); setStep("model"); pushHistory("model"); }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
+                  <span className="text-3xl">🎮</span>
+                  <div className="flex-1"><p className="font-semibold text-white text-lg">Game Consoles</p><p className="text-[#888] text-sm">PlayStation, Xbox, Nintendo</p></div>
+                  <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </button>
+              )}
             </div>
           </div>
         </section>
@@ -1360,7 +1402,7 @@ export default function Home() {
       {/* PROGRESS BAR — shows during flow */}
       {step !== "device" && step !== "done" && page === "home" && (
         <div className="fixed top-[52px] left-0 right-0 z-30 h-1 bg-white/10">
-          <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${({model: 15, storage: 25, condition: 40, carrier: 50, quote: 60, checkout: 72, payout: 82, contact: 92} as Record<string,number>)[step] ?? 0}%` }} />
+          <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${({category: 8, brand: 15, model: 22, storage: 32, condition: 42, carrier: 52, quote: 62, checkout: 72, payout: 82, contact: 92} as Record<string,number>)[step] ?? 0}%` }} />
         </div>
       )}
 
