@@ -2,8 +2,8 @@
 import { useState, useEffect, useCallback } from "react";
 
 const BRAND = "Top Cash Cellular";
-const PHONE = "(512) 960-9256";
-const PHONE_TEL = "+15129609256";
+const PHONE = "(877) 549-2056";
+const PHONE_TEL = "+18775492056";
 
 const IPHONE_SERIES = [
   { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 830, variants: [

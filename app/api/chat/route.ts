@@ -17,7 +17,7 @@ function smartReply(message: string): string {
   if (m.match(/ship|mail|send/)) return "We're currently Austin local pickup only — no shipping needed! We meet you at a convenient location and pay on the spot.";
   if (m.match(/hi|hey|hello|sup|yo|what'?s up/)) return "Hey there! 👋 Welcome to Top Cash Cellular. Got a device you want to sell? I can help with pricing, tell you how the process works, or answer any questions. What's on your mind?";
   if (m.match(/thank|thanks|thx|appreciate/)) return "You're welcome! 😊 Ready to get a quote? Just tap 'Get Your Quote' on our homepage, or ask me anything else!";
-  if (m.match(/bye|later|done|gtg/)) return "See you! When you're ready to sell, we're here. Use the quote tool anytime or call us at (512) 960-9256. 💰";
+  if (m.match(/bye|later|done|gtg/)) return "See you! When you're ready to sell, we're here. Use the quote tool anytime or call us at (877) 549-2056. 💰";
   return "I can help with device pricing, how our buyback process works, payment methods, or what devices we buy. Try asking something like 'How much is my iPhone 15 Pro worth?' or use our instant quote tool on the homepage!";
 }
 

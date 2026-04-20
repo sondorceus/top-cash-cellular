@@ -26,7 +26,7 @@ export default function ThankYou() {
         >
           Back to Home
         </a>
-        <p className="text-[#555] text-xs mt-6">Questions? Call (512) 960-9256</p>
+        <p className="text-[#555] text-xs mt-6">Questions? Call (877) 549-2056</p>
       </div>
     </main>
   );

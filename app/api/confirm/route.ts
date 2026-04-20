@@ -4,7 +4,7 @@ const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_FROM = process.env.TWILIO_PHONE || "+15129609256";
+const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
 
 async function sendSms(to: string, body: string): Promise<boolean> {
   if (!TWILIO_SID || !TWILIO_AUTH) return false;
@@ -49,7 +49,7 @@ Next steps:
 • Austin local? We'll contact you within the hour to arrange pickup & payment.
 • Shipping? Reply to this email and we'll send you a free prepaid label.
 
-Questions? Call us at (512) 960-9256 or reply to this email.
+Questions? Call us at (877) 549-2056 or reply to this email.
 
 — Top Cash Cellular
 Austin, TX`;
@@ -68,7 +68,7 @@ Austin, TX`;
   }
 
   if (phone) {
-    const smsBody = `Top Cash Cellular: Your $${quote} quote for ${model} is locked for 7 days! We'll contact you within the hour. Questions? Call (512) 960-9256`;
+    const smsBody = `Top Cash Cellular: Your $${quote} quote for ${model} is locked for 7 days! We'll contact you within the hour. Questions? Call (877) 549-2056`;
     smsSent = await sendSms(phone, smsBody);
   }
 

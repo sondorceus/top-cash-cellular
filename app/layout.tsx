@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "name": "Top Cash Cellular",
               "description": "Austin's #1 phone and device buyback service. Sell your iPhone, Samsung, MacBook, or game console for top dollar.",
               "url": "https://topcashcellular.com",
-              "telephone": "(512) 960-9256",
+              "telephone": "(877) 549-2056",
               "address": { "@type": "PostalAddress", "addressLocality": "Austin", "addressRegion": "TX", "addressCountry": "US" },
               "areaServed": { "@type": "City", "name": "Austin" },
               "priceRange": "$$",
