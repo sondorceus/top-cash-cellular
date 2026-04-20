@@ -148,7 +148,7 @@ const FAQS = [
   { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
 ];
 
-type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done";
+type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
 type DeviceType = "iphone" | "android" | "macbook" | "console" | "ipad" | null;
 
 export default function Home() {
@@ -197,6 +197,9 @@ export default function Home() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [cartItems, setCartItems] = useState<Array<{ model: string; modelId: string; storage: string; condition: string; price: number; quantity: number }>>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [inquiryCategory, setInquiryCategory] = useState("");
+  const [inquirySent, setInquirySent] = useState(false);
+  const [inquiryDesc, setInquiryDesc] = useState("");
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
 
   useEffect(() => {
@@ -403,7 +406,11 @@ export default function Home() {
                   key={idx}
                   onClick={() => {
                     if ((cat as { direct?: boolean }).direct) {
-                      window.location.href = `tel:${PHONE_TEL}`;
+                      setInquiryCategory(cat.label.replace('Sell ', ''));
+                      setInquirySent(false);
+                      setInquiryDesc('');
+                      setStep("inquiry");
+                      pushHistory("inquiry");
                       return;
                     }
                     const dt = (cat as { deviceType?: string }).deviceType;
@@ -418,6 +425,70 @@ export default function Home() {
               ))}
             </div>
             <p className="text-[#555] text-[10px] text-center mt-3">Some categories will connect you to our team for a custom quote</p>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: INQUIRY (unknown categories) */}
+      {step === "inquiry" && page === "home" && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
+            <button onClick={() => { setStep("category"); pushHistory("category"); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+            <h2 className="text-2xl font-bold mb-1">Sell Your {inquiryCategory}</h2>
+            <p className="text-[#888] text-sm mb-6">Tell us what you have and we&apos;ll get back to you with an offer.</p>
+
+            {!inquirySent ? (
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                  await fetch("/api/lead", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, phone, email, device: inquiryCategory, model: inquiryDesc, storage: "N/A", condition: "N/A", quote: 0, payout: "TBD" }),
+                  });
+                } catch {}
+                setInquirySent(true);
+              }} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">What do you have?</label>
+                  <textarea value={inquiryDesc} onChange={(e) => setInquiryDesc(e.target.value)} required placeholder={`Describe your ${inquiryCategory.toLowerCase()} (brand, model, condition...)`} rows={3} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition resize-none" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Name</label>
+                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Phone</label>
+                  <input type="tel" value={phone} onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                    if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
+                    else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
+                    else setPhone(digits);
+                  }} required placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Email <span className="normal-case text-[12px]">(optional)</span></label>
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                </div>
+                <button type="submit" className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
+                  Get My Quote
+                </button>
+              </form>
+            ) : (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 rounded-full bg-[#00c853]/10 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">✅</span>
+                </div>
+                <h3 className="text-xl font-bold mb-2">We&apos;ll be in touch!</h3>
+                <p className="text-[#888] text-sm mb-6">We&apos;ve received your inquiry and will get back to you with an offer shortly.</p>
+                <button onClick={reset} className="text-[#00c853] font-semibold text-sm cursor-pointer hover:underline">
+                  Sell another device
+                </button>
+              </div>
+            )}
           </div>
         </section>
       )}
