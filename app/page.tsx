@@ -444,7 +444,7 @@ export default function Home() {
                 { id: "phones" as const, label: "Sell Tablet", icon: "⬜", direct: false, deviceType: "ipad" as const, customIcon: true },
                 { id: "computers" as const, label: "Sell Laptop", icon: "💻" },
                 { id: "computers" as const, label: "Sell Desktop", icon: "🖥️", direct: true },
-                { id: "phones" as const, label: "Sell Smartwatch", icon: "⌚", direct: true },
+                { id: "phones" as const, label: "Sell Smartwatch", icon: "⌚", direct: true, subcats: ["Apple Watch", "Google Pixel Watch", "Garmin"] },
                 { id: "consoles" as const, label: "Sell Game Console", icon: "🎮" },
                 { id: "computers" as const, label: "Sell Graphics Card", icon: "🎨", direct: true },
                 { id: "computers" as const, label: "Sell Camera", icon: "📷", direct: true },
@@ -457,9 +457,10 @@ export default function Home() {
                   key={idx}
                   onClick={() => {
                     if ((cat as { direct?: boolean }).direct) {
-                      setInquiryCategory(cat.label.replace('Sell ', ''));
+                      const subs = (cat as { subcats?: string[] }).subcats;
+                      setInquiryCategory(subs ? cat.label.replace('Sell ', '') : cat.label.replace('Sell ', ''));
                       setInquirySent(false);
-                      setInquiryDesc('');
+                      setInquiryDesc(subs ? '' : '');
                       setStep("inquiry");
                       pushHistory("inquiry");
                       return;
@@ -494,6 +495,19 @@ export default function Home() {
             </button>
             <h2 className="text-2xl font-bold mb-1">Sell Your {inquiryCategory}</h2>
             <p className="text-[#888] text-sm mb-6">Tell us what you have and we&apos;ll get back to you with an offer.</p>
+
+            {inquiryCategory === "Smartwatch" && !inquirySent && (
+              <div className="mb-4">
+                <p className="text-xs font-medium text-[#888] mb-2 uppercase tracking-wider">Select Brand</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {["Apple Watch", "Google Pixel Watch", "Garmin"].map((brand) => (
+                    <button key={brand} onClick={() => setInquiryDesc(prev => prev.includes(brand) ? prev : brand + (prev ? ' - ' + prev : ''))} className={`p-3 rounded-xl text-xs font-semibold text-center cursor-pointer transition ${inquiryDesc.includes(brand) ? 'bg-[#00c853] text-black' : 'bg-white/5 border border-white/10 text-white hover:bg-white/10'}`}>
+                      {brand}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {!inquirySent ? (
               <form onSubmit={async (e) => {
