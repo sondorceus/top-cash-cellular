@@ -13,7 +13,7 @@ function smartReply(message: string): string {
   if (m.match(/pay|venmo|zelle|paypal|cash|money/)) return "We pay via Cash, Venmo, Zelle, or PayPal — your choice! Payment is same-day for local Austin pickups. We pay on the spot.";
   if (m.match(/broken|crack|damage|screen/)) return "We buy devices in ANY condition — even cracked or water damaged. You'll get a lower offer than a pristine device, but we'll still pay you. Select 'Fair' or 'Poor' in our quote tool.";
   if (m.match(/how|work|process|step/)) return "Super simple: 1) Use our quote tool to get an instant price, 2) We arrange a local meetup in Austin, 3) We inspect and pay you on the spot. Takes about 5 minutes total!";
-  if (m.match(/where|location|austin|meet|pickup/)) return "We do local meetups all across Austin, TX. Public locations like coffee shops or parking lots — safe, fast, and convenient. We come to you!";
+  if (m.match(/where|location|austin|meet|pickup/)) return "We do local meetups all across Austin, TX. Public locations like coffee shops or parking lots — safe, fast, and convenient. We meet local!";
   if (m.match(/ship|mail|send/)) return "We're currently Austin local pickup only — no shipping needed! We meet you at a convenient location and pay on the spot.";
   if (m.match(/hi|hey|hello|sup|yo|what'?s up/)) return "Hey there! 👋 Welcome to Top Cash Cellular. Got a device you want to sell? I can help with pricing, tell you how the process works, or answer any questions. What's on your mind?";
   if (m.match(/thank|thanks|thx|appreciate/)) return "You're welcome! 😊 Ready to get a quote? Just tap 'Get Your Quote' on our homepage, or ask me anything else!";

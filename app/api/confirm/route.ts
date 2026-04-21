@@ -94,12 +94,12 @@ export async function POST(req: NextRequest) {
 <tr><td style="background:#111;padding:0 20px 20px">
 <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:12px">What happens next:</div>
 <table cellpadding="0" cellspacing="0" width="100%">
-<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">1</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">We'll reach out to schedule your pickup (we come to you!)</td></tr>
+<tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">1</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">We'll reach out to schedule a local meetup</td></tr>
 <tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">2</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Quick inspection confirms your quoted price</td></tr>
 <tr><td width="36" style="padding:8px 0;vertical-align:top"><table cellpadding="0" cellspacing="0"><tr><td style="width:28px;height:28px;background:#00c853;color:#000;border-radius:14px;text-align:center;font-weight:800;font-size:13px;line-height:28px">3</td></tr></table></td><td style="padding:8px 0 8px 10px;font-size:14px;color:#ccc;line-height:1.5;vertical-align:middle">Get paid on the spot — Cash, Venmo, Zelle, or PayPal</td></tr>
 </table>
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px"><tr><td style="background:#1a1a2e;border:1px solid #333;border-radius:10px;padding:14px 20px;font-size:13px;color:#888;text-align:center">
-🏠 <strong style="color:#ccc">Austin local? We come to you!</strong> Prefer to ship? Just reply and we'll send you a prepaid label.
+🏠 <strong style="color:#ccc">Austin local? We meet locally!</strong> Prefer to ship? Just reply and we'll send you a prepaid label.
 </td></tr></table>
 </td></tr>
 

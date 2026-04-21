@@ -871,7 +871,7 @@ export default function Home() {
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-xl font-bold text-[#00c853]">🏠</p>
-                  <p className="text-xs text-[#888] mt-1">We come to you in Austin</p>
+                  <p className="text-xs text-[#888] mt-1">We meet locally in Austin</p>
                 </div>
               </div>
             </div>
@@ -1047,7 +1047,7 @@ export default function Home() {
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-2xl">🏠</p>
-                  <p className="text-xs text-[#888] mt-1">We come to you in Austin</p>
+                  <p className="text-xs text-[#888] mt-1">We meet locally in Austin</p>
                 </div>
               </div>
               <div className="mt-4 text-center">
@@ -1161,7 +1161,7 @@ export default function Home() {
             {/* SECTION 3: SHIPPING */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-4">
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Shipping</h3>
-              <p className="text-[#888] text-xs">Austin local? We come to you! Or reply for a free prepaid shipping label.</p>
+              <p className="text-[#888] text-xs">Austin local? We meet locally! Or reply for a free prepaid shipping label.</p>
             </div>
 
             {/* SECTION 4: OPTIONS & TERMS */}
@@ -1324,7 +1324,7 @@ export default function Home() {
             </div>
 
             <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-4 mb-6 text-center">
-              <p className="text-[#00c853] font-semibold text-sm">🏠 Austin local? We&apos;ll come to you — no shipping needed!</p>
+              <p className="text-[#00c853] font-semibold text-sm">🏠 Austin local? We meet locally — no shipping needed!</p>
             </div>
 
             <div className="text-center">
