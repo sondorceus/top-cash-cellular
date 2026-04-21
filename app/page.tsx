@@ -116,12 +116,12 @@ const CONSOLE_MODELS = [
 ];
 
 const CONDITIONS = [
-  { id: "brandnew", label: "Brand New", desc: "Sealed or unopened, never used", multiplier: 1.15, icon: "🆕" },
-  { id: "flawless", label: "Flawless", desc: "Like new condition, zero signs of use", multiplier: 1.0, icon: "✨" },
-  { id: "verygood", label: "Very Good", desc: "Minimal signs of use, no scratches visible at arm's length", multiplier: 0.95, icon: "💎" },
-  { id: "good", label: "Good", desc: "Light scratches or minor wear, fully functional", multiplier: 0.88, icon: "👍" },
-  { id: "fair", label: "Fair", desc: "Visible wear, scuffs, or cosmetic damage", multiplier: 0.72, icon: "👌" },
-  { id: "broken", label: "Broken", desc: "Cracked screen, heavy damage, or not fully functional", multiplier: 0.50, icon: "⚠️" },
+  { id: "brandnew", label: "Brand New", desc: "Factory sealed, never activated", multiplier: 1.15, icon: "🆕", details: ["Still in factory original packaging", "Plastic film still on the device and has not been reapplied", "Device is not activated", "Must come with the original box with matching serial number", "Contains all original accessories"] },
+  { id: "flawless", label: "Flawless", desc: "Like new, zero signs of use", multiplier: 1.0, icon: "✨", details: ["Zero scratches, scuffs, or other marks — looks like new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
+  { id: "verygood", label: "Very Good", desc: "Minimal use, no visible scratches at arm's length", multiplier: 0.95, icon: "💎", details: ["Light scratches or scuffs not visible at arm's length — no dents, dings, or deep scratches", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
+  { id: "good", label: "Good", desc: "Light wear, fully functional", multiplier: 0.88, icon: "👍", details: ["Light to moderate signs of wear — few light scratches and/or dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
+  { id: "fair", label: "Fair", desc: "Moderate to heavy wear, functional", multiplier: 0.72, icon: "👌", details: ["Moderate to excessive signs of wear — contains heavy scratches and/or dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
+  { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: "⚠️", details: ["Functionally defective or broken parts on either screen or body", "Cracked display or damaged housing", "Display defects such as dead pixels, white spots, or burn-in", "Shows no signs of liquid intrusion or water damage"] },
 ];
 
 const STORAGES = [
@@ -703,14 +703,19 @@ export default function Home() {
                     if (img) img.style.filter = '';
                     if (ov) ov.style.cssText = '';
                   }}
-                  className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
+                  className="group w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
                 >
                   <span className="text-2xl">{c.icon}</span>
                   <div className="flex-1">
                     <p className="font-semibold text-lg">{c.label}</p>
                     <p className="text-[#888] text-sm">{c.desc}</p>
+                    {(c as { details?: string[] }).details && (
+                      <ul className="mt-2 space-y-1 text-[#999] text-xs list-disc list-inside hidden group-hover:block">
+                        {(c as { details?: string[] }).details!.map((d, i) => <li key={i}>{d}</li>)}
+                      </ul>
+                    )}
                   </div>
-                  <span className="text-[#00c853] font-bold">${Math.round(model.base * storageMultiplier * c.multiplier)}</span>
+                  <span className="text-[#00c853] font-bold text-sm">${Math.round(model.base * storageMultiplier * c.multiplier)}</span>
                 </button>
               ))}
             </div>
