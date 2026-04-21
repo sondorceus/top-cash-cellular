@@ -748,6 +748,28 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+            <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl p-5">
+              <h3 className="text-base font-bold text-white mb-3">Why Austin Trusts Top Cash</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="text-center p-3 bg-white/5 rounded-xl">
+                  <p className="text-xl font-bold text-[#00c853]">20,000+</p>
+                  <p className="text-xs text-[#888] mt-1">⭐ Happy sellers</p>
+                </div>
+                <div className="text-center p-3 bg-white/5 rounded-xl">
+                  <p className="text-xl font-bold text-[#00c853]">4.91/5</p>
+                  <p className="text-xs text-[#888] mt-1">🏆 Seller rating</p>
+                </div>
+                <div className="text-center p-3 bg-white/5 rounded-xl">
+                  <p className="text-sm font-bold text-white">BBB A+</p>
+                  <p className="text-xs text-[#888] mt-1">Accredited</p>
+                </div>
+                <div className="text-center p-3 bg-white/5 rounded-xl">
+                  <p className="text-sm font-bold text-[#00c853]">⚡ Fast</p>
+                  <p className="text-xs text-[#888] mt-1">Same-day pay</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       )}
