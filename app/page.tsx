@@ -426,7 +426,7 @@ export default function Home() {
             <div className="grid grid-cols-4 gap-2">
               {[
                 { id: "phones" as const, label: "Sell Phone", icon: "📱" },
-                { id: "phones" as const, label: "Sell Tablet", icon: "📲", direct: false, deviceType: "ipad" as const },
+                { id: "phones" as const, label: "Sell Tablet", icon: "⬜", direct: false, deviceType: "ipad" as const, customIcon: true },
                 { id: "computers" as const, label: "Sell Laptop", icon: "💻" },
                 { id: "computers" as const, label: "Sell Desktop", icon: "🖥️", direct: true },
                 { id: "phones" as const, label: "Sell Smartwatch", icon: "⌚", direct: true },
@@ -455,7 +455,11 @@ export default function Home() {
                   }}
                   className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
                 >
-                  <span className="text-2xl mb-1.5">{cat.icon}</span>
+                  {(cat as { customIcon?: boolean }).customIcon ? (
+                    <svg className="w-8 h-6 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
+                  ) : (
+                    <span className="text-2xl mb-1.5">{cat.icon}</span>
+                  )}
                   <p className="font-semibold text-white text-xs text-center">{cat.label}</p>
                 </button>
               ))}
