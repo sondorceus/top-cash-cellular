@@ -42,6 +42,7 @@ const IPHONE_SERIES = [
     { id: "ip12pm", label: "iPhone 12 Pro Max", base: 130 },
     { id: "ip12p", label: "iPhone 12 Pro", base: 110 },
     { id: "ip12", label: "iPhone 12", base: 80 },
+    { id: "ip12mini", label: "iPhone 12 Mini", base: 60 },
   ]},
   { id: "11", label: "iPhone 11", image: "/iphone11.png", year: "2019", topPrice: 100, variants: [
     { id: "ip11pm", label: "iPhone 11 Pro Max", base: 100 },
@@ -807,7 +808,7 @@ export default function Home() {
           <div className="max-w-lg mx-auto px-4 pt-12 pb-8 text-center">
             <div className="flex items-center justify-center gap-5 mb-2">
               {(() => {
-                const imgMap: Record<string, string> = { ip17e: "/iphone17e.png", ip17pm: "/iphone17.png", ip17p: "/iphone17.png", ip17air: "/iphone17air.png", ip17plus: "/iphone17plus.png", ip17: "/iphone17base.png", ip16pm: "/iphone16.png", ip16p: "/iphone16.png", ip16plus: "/iphone16plus.png", ip16: "/iphone16base.png", ip16e: "/iphone16e.png", ip15pm: "/iphone15.png", ip15p: "/iphone15.png", ip15plus: "/iphone15.png", ip15: "/iphone15base.png", ip14pm: "/iphone14.png", ip14p: "/iphone14.png", ip14plus: "/iphone14plus.png", ip14: "/iphone14base.png", ip13pm: "/iphone13.png", ip13p: "/iphone13.png", ip13: "/iphone13base.png", ip12pm: "/iphone12.png", ip12: "/iphone12base.png", ip11pm: "/iphone11.png", ip11: "/iphone11base.png" };
+                const imgMap: Record<string, string> = { ip17e: "/iphone17e.png", ip17pm: "/iphone17.png", ip17p: "/iphone17.png", ip17air: "/iphone17air.png", ip17plus: "/iphone17plus.png", ip17: "/iphone17base.png", ip16pm: "/iphone16.png", ip16p: "/iphone16.png", ip16plus: "/iphone16plus.png", ip16: "/iphone16base.png", ip16e: "/iphone16e.png", ip15pm: "/iphone15.png", ip15p: "/iphone15.png", ip15plus: "/iphone15.png", ip15: "/iphone15base.png", ip14pm: "/iphone14.png", ip14p: "/iphone14.png", ip14plus: "/iphone14plus.png", ip14: "/iphone14base.png", ip13pm: "/iphone13.png", ip13p: "/iphone13.png", ip13: "/iphone13base.png", ip12pm: "/iphone12.png", ip12: "/iphone12base.png", ip12mini: "/iphone12mini.png", ip11pm: "/iphone11.png", ip11: "/iphone11base.png" };
                 const isTablet = deviceType === "ipad";
                 const fallbackImg = isTablet ? "/ipad.png" : null;
                 const src = imgMap[model.id] || fallbackImg;
