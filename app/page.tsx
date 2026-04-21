@@ -162,9 +162,9 @@ type DeviceType = "iphone" | "android" | "macbook" | "console" | "ipad" | null;
 function TrustBadge() {
   return (
     <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[#888] text-xs">
-      <span>💰 No hidden fees</span>
+      <span>⭐ Thousands of happy sellers</span>
       <span>·</span>
-      <span>🔒 Price guaranteed</span>
+      <span>🔒 7-day price lock</span>
       <span>·</span>
       <span>⚡ Same-day payout</span>
       <span>·</span>
@@ -736,20 +736,20 @@ export default function Home() {
               <h3 className="text-base font-bold text-white mb-3">Why Sellers Choose Top Cash</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-lg font-bold text-[#00c853]">💰</p>
-                  <p className="text-xs text-[#888] mt-1">No hidden fees</p>
+                  <p className="text-xl font-bold text-[#00c853]">⭐</p>
+                  <p className="text-xs text-[#888] mt-1">Thousands of happy sellers</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-lg font-bold text-[#00c853]">⚡</p>
-                  <p className="text-xs text-[#888] mt-1">Same-day payout</p>
+                  <p className="text-xl font-bold text-[#00c853]">⚡</p>
+                  <p className="text-xs text-[#888] mt-1">Get paid the same day</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-lg font-bold text-[#00c853]">🔒</p>
-                  <p className="text-xs text-[#888] mt-1">7-day price lock</p>
+                  <p className="text-xl font-bold text-[#00c853]">🔒</p>
+                  <p className="text-xs text-[#888] mt-1">Your price is locked 7 days</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-lg font-bold text-[#00c853]">🏠</p>
-                  <p className="text-xs text-[#888] mt-1">Austin local pickup</p>
+                  <p className="text-xl font-bold text-[#00c853]">🏠</p>
+                  <p className="text-xs text-[#888] mt-1">We come to you in Austin</p>
                 </div>
               </div>
             </div>
@@ -912,20 +912,20 @@ export default function Home() {
               <h3 className="text-base font-bold text-white mb-4">Why Sellers Choose Top Cash</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-2xl">💰</p>
-                  <p className="text-xs text-[#888] mt-1">No hidden fees — ever</p>
+                  <p className="text-2xl">⭐</p>
+                  <p className="text-xs text-[#888] mt-1">Thousands of happy sellers</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-2xl">⚡</p>
-                  <p className="text-xs text-[#888] mt-1">Same-day payout</p>
+                  <p className="text-xs text-[#888] mt-1">Get paid the same day</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-2xl">🔒</p>
-                  <p className="text-xs text-[#888] mt-1">7-day price guarantee</p>
+                  <p className="text-xs text-[#888] mt-1">Your price is locked 7 days</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-2xl">🏠</p>
-                  <p className="text-xs text-[#888] mt-1">We come to you — Austin local</p>
+                  <p className="text-xs text-[#888] mt-1">We come to you in Austin</p>
                 </div>
               </div>
               <div className="mt-4 text-center">
