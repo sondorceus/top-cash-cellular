@@ -1359,21 +1359,21 @@ export default function Home() {
           <section className="py-14 bg-[#111]" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
             <div className="max-w-lg mx-auto px-4">
               <p className="text-[#888] text-xs font-semibold uppercase tracking-wider text-center mb-8">Top Cash Cellular by the numbers</p>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-                  <p className="text-4xl font-extrabold text-[#00c853] tabular-nums">{animatedStats.devices}+</p>
-                  <p className="text-white text-sm font-semibold mt-1">Devices Bought</p>
-                  <p className="text-[#888] text-[11px] mt-0.5">and counting</p>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
+                  <p className="text-2xl font-extrabold text-[#00c853] tabular-nums">{animatedStats.devices}+</p>
+                  <p className="text-white text-xs font-semibold mt-1">Devices Bought</p>
+                  <p className="text-[#888] text-[10px] mt-0.5">and counting</p>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-                  <p className="text-4xl font-extrabold text-[#00c853] tabular-nums">${animatedStats.payout}K+</p>
-                  <p className="text-white text-sm font-semibold mt-1">Paid Out</p>
-                  <p className="text-[#888] text-[11px] mt-0.5">to Austin sellers</p>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
+                  <p className="text-2xl font-extrabold text-[#00c853] tabular-nums">${animatedStats.payout}K+</p>
+                  <p className="text-white text-xs font-semibold mt-1">Paid Out</p>
+                  <p className="text-[#888] text-[10px] mt-0.5">to Austin sellers</p>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-                  <p className="text-4xl font-extrabold text-[#00c853] tabular-nums">&lt;{animatedStats.time}h</p>
-                  <p className="text-white text-sm font-semibold mt-1">Avg Payout</p>
-                  <p className="text-[#888] text-[11px] mt-0.5">from quote to cash</p>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
+                  <p className="text-2xl font-extrabold text-[#00c853] tabular-nums">&lt;{animatedStats.time}h</p>
+                  <p className="text-white text-xs font-semibold mt-1">Avg Payout</p>
+                  <p className="text-[#888] text-[10px] mt-0.5">from quote to cash</p>
                 </div>
               </div>
             </div>
