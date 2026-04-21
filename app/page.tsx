@@ -607,6 +607,9 @@ export default function Home() {
                     <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Phone</label>
                     <input type="tel" value={phone} onChange={(e) => {
                       const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                      if (!digits) { setPhone(""); return; }
+                      const isDeleting = e.target.value.length < phone.length;
+                      if (isDeleting) { setPhone(digits); return; }
                       if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
                       else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                       else setPhone(digits);
