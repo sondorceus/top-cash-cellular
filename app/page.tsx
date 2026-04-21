@@ -728,6 +728,26 @@ export default function Home() {
                 </button>
               ))}
             </div>
+
+            <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5">
+              <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-1">Our Promise</h3>
+              <p className="text-base font-bold text-white mb-1">The Top Cash Guarantee</p>
+              <p className="text-[#888] text-xs mb-4">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
+              <div className="space-y-3">
+                <div className="flex gap-3">
+                  <span className="text-lg">🎯</span>
+                  <div><p className="text-sm font-semibold text-[#ccc]">Transparent Pricing</p><p className="text-xs text-[#888]">What you see is what you get. Your quote is based on the condition you select — no surprise deductions.</p></div>
+                </div>
+                <div className="flex gap-3">
+                  <span className="text-lg">🤝</span>
+                  <div><p className="text-sm font-semibold text-[#ccc]">Honest Inspections</p><p className="text-xs text-[#888]">If anything differs from your description, we&apos;ll walk you through our findings before adjusting.</p></div>
+                </div>
+                <div className="flex gap-3">
+                  <span className="text-lg">🔄</span>
+                  <div><p className="text-sm font-semibold text-[#ccc]">No Pressure, No Strings</p><p className="text-xs text-[#888]">Not happy with the final offer? We&apos;ll return your device — no questions asked.</p></div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       )}
