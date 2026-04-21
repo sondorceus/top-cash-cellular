@@ -131,16 +131,17 @@ const ALL_STORAGES = [
   { id: "256", label: "256 GB", multiplier: 1.12 },
   { id: "512", label: "512 GB", multiplier: 1.25 },
   { id: "1tb", label: "1 TB", multiplier: 1.4 },
+  { id: "2tb", label: "2 TB", multiplier: 1.55 },
 ];
 
 const STORAGE_MAP: Record<string, string[]> = {
-  // iPhone 17 series — all start at 256GB
-  ip17pm: ["256", "512", "1tb"],
+  // iPhone 17 series — confirmed by Skywalker
+  ip17pm: ["256", "512", "1tb", "2tb"],
   ip17p: ["256", "512", "1tb"],
-  ip17air: ["128", "256", "512"],
-  ip17plus: ["128", "256", "512"],
-  ip17: ["128", "256", "512"],
-  ip17e: ["128", "256"],
+  ip17air: ["256", "512", "1tb"],
+  ip17plus: ["256", "512"],
+  ip17: ["256", "512"],
+  ip17e: ["256"],
   // iPhone 16 series
   ip16pm: ["256", "512", "1tb"],
   ip16p: ["128", "256", "512", "1tb"],
