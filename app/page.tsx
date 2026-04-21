@@ -159,6 +159,20 @@ const FAQS = [
 type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
 type DeviceType = "iphone" | "android" | "macbook" | "console" | "ipad" | null;
 
+function TrustBadge() {
+  return (
+    <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[#888] text-xs">
+      <span>⭐ 20,000+ sellers</span>
+      <span>·</span>
+      <span>🏆 4.91/5 rating</span>
+      <span>·</span>
+      <span>BBB A+</span>
+      <span>·</span>
+      <span>⚡ Same-day pay</span>
+    </div>
+  );
+}
+
 export default function Home() {
   const [step, setStep] = useState<Step>("device");
   const [category, setCategory] = useState<"phones" | "computers" | "consoles" | null>(null);
@@ -619,6 +633,7 @@ export default function Home() {
                 </div>
               </>
             )}
+            <TrustBadge />
           </div>
         </section>
       )}
@@ -645,6 +660,7 @@ export default function Home() {
                 </button>
               ))}
             </div>
+            <TrustBadge />
           </div>
         </section>
       )}
@@ -764,6 +780,7 @@ export default function Home() {
                 </button>
               ))}
             </div>
+            <TrustBadge />
           </div>
         </section>
       )}
