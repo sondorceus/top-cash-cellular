@@ -481,6 +481,9 @@ export default function Home() {
               ))}
             </div>
             <p className="text-[#777] text-[11px] text-center mt-3">Some categories will connect you to our team for a custom quote</p>
+
+            <FairPromise />
+            <TrustBadge />
           </div>
         </section>
       )}
