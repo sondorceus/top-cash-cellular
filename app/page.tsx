@@ -125,13 +125,104 @@ const CONDITIONS = [
   { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: "⚠️", details: ["Functionally defective or broken parts on either screen or body", "Cracked display or damaged housing", "Display defects such as dead pixels, white spots, or burn-in", "Shows no signs of liquid intrusion or water damage"] },
 ];
 
-const STORAGES = [
+const ALL_STORAGES = [
   { id: "64", label: "64 GB", multiplier: 0.85 },
   { id: "128", label: "128 GB", multiplier: 1.0 },
   { id: "256", label: "256 GB", multiplier: 1.12 },
   { id: "512", label: "512 GB", multiplier: 1.25 },
   { id: "1tb", label: "1 TB", multiplier: 1.4 },
 ];
+
+const STORAGE_MAP: Record<string, string[]> = {
+  // iPhone 17 series — all start at 256GB
+  ip17pm: ["256", "512", "1tb"],
+  ip17p: ["256", "512", "1tb"],
+  ip17air: ["128", "256", "512"],
+  ip17plus: ["128", "256", "512"],
+  ip17: ["128", "256", "512"],
+  ip17e: ["128", "256"],
+  // iPhone 16 series
+  ip16pm: ["256", "512", "1tb"],
+  ip16p: ["128", "256", "512", "1tb"],
+  ip16plus: ["128", "256", "512"],
+  ip16: ["128", "256", "512"],
+  ip16e: ["128", "256"],
+  // iPhone 15 series
+  ip15pm: ["256", "512", "1tb"],
+  ip15p: ["128", "256", "512", "1tb"],
+  ip15plus: ["128", "256", "512"],
+  ip15: ["128", "256", "512"],
+  // iPhone 14 series
+  ip14pm: ["128", "256", "512", "1tb"],
+  ip14p: ["128", "256", "512", "1tb"],
+  ip14plus: ["128", "256", "512"],
+  ip14: ["128", "256", "512"],
+  // iPhone 13 series — 13 Pro/PM have 128/256/512/1TB, base 13 has 128/256/512
+  ip13pm: ["128", "256", "512", "1tb"],
+  ip13p: ["128", "256", "512", "1tb"],
+  ip13: ["128", "256", "512"],
+  // iPhone 12 series — 12 Pro/PM start 128, base has 64/128/256
+  ip12pm: ["128", "256", "512"],
+  ip12p: ["128", "256", "512"],
+  ip12: ["64", "128", "256"],
+  ip12mini: ["64", "128", "256"],
+  // iPhone 11 series — all have 64/128/256
+  ip11pm: ["64", "128", "256", "512"],
+  ip11p: ["64", "128", "256", "512"],
+  ip11: ["64", "128", "256"],
+  // Samsung Galaxy — all come in 128/256/512 (Ultra has 1TB option on some)
+  gs25u: ["256", "512", "1tb"],
+  gs25p: ["256", "512"],
+  gs25: ["128", "256", "512"],
+  gs24u: ["256", "512", "1tb"],
+  gs24p: ["256", "512"],
+  gs24: ["128", "256"],
+  gs23u: ["256", "512", "1tb"],
+  gs23p: ["256", "512"],
+  gs23: ["128", "256"],
+  gzfold6: ["256", "512", "1tb"],
+  gzfold5: ["256", "512"],
+  gzflip6: ["256", "512"],
+  gzflip5: ["256", "512"],
+  gs22u: ["128", "256", "512", "1tb"],
+  gs22: ["128", "256"],
+  gs21u: ["128", "256", "512"],
+  gs21: ["128", "256"],
+  // MacBooks — unified memory, storage options
+  mbp16m4: ["512", "1tb"],
+  mbp14m4: ["512", "1tb"],
+  mbp16m3: ["512", "1tb"],
+  mbp14m3: ["512", "1tb"],
+  mba15m3: ["256", "512", "1tb"],
+  mba13m3: ["256", "512", "1tb"],
+  mbp16m2: ["512", "1tb"],
+  mbp14m2: ["512", "1tb"],
+  mba15m2: ["256", "512"],
+  mba13m2: ["256", "512"],
+  mba13m1: ["256", "512"],
+  mbp13m1: ["256", "512"],
+  // iPads
+  ipadpro13m5: ["256", "512", "1tb"],
+  ipadpro11m5: ["256", "512", "1tb"],
+  ipadpro13m4: ["256", "512", "1tb"],
+  ipadpro11m4: ["256", "512", "1tb"],
+  ipadpro129g6: ["128", "256", "512", "1tb"],
+  ipadpro11g4: ["128", "256", "512", "1tb"],
+  ipadair13m3: ["128", "256", "512", "1tb"],
+  ipadair11m3: ["128", "256", "512", "1tb"],
+  ipadair13m2: ["128", "256", "512", "1tb"],
+  ipadair11m2: ["128", "256", "512", "1tb"],
+  ipad10: ["64", "256"],
+  ipad9: ["64", "256"],
+  ipadmini7: ["128", "256", "512"],
+  ipadmini6: ["64", "256"],
+};
+
+function getStoragesForModel(modelId: string) {
+  const valid = STORAGE_MAP[modelId];
+  if (!valid) return ALL_STORAGES;
+  return ALL_STORAGES.filter(s => valid.includes(s.id));
+}
 
 const CARRIERS = [
   { id: "unlocked", label: "Unlocked", multiplier: 1.0, icon: "🔓" },
@@ -197,7 +288,7 @@ export default function Home() {
   const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
   const [page, setPage] = useState<"home" | "about" | "privacy" | "terms">("home");
   const [model, setModel] = useState<{ id: string; label: string; base: number } | null>(null);
-  const [storage, setStorage] = useState<typeof STORAGES[0] | null>(null);
+  const [storage, setStorage] = useState<typeof ALL_STORAGES[0] | null>(null);
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
@@ -770,7 +861,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold mb-1">Storage capacity?</h2>
             <p className="text-[#888] text-sm mb-6">{model.label}</p>
             <div className="space-y-2">
-              {STORAGES.map((s) => (
+              {getStoragesForModel(model.id).map((s) => (
                 <button
                   key={s.id}
                   onClick={() => { setStorage(s); setStep("condition"); pushHistory("condition"); }}
