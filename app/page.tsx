@@ -426,7 +426,7 @@ export default function Home() {
             <div className="grid grid-cols-4 gap-2">
               {[
                 { id: "phones" as const, label: "Sell Phone", icon: "📱" },
-                { id: "phones" as const, label: "Sell Tablet", icon: "📱", direct: false, deviceType: "ipad" as const },
+                { id: "phones" as const, label: "Sell Tablet", icon: "📲", direct: false, deviceType: "ipad" as const },
                 { id: "computers" as const, label: "Sell Laptop", icon: "💻" },
                 { id: "computers" as const, label: "Sell Desktop", icon: "🖥️", direct: true },
                 { id: "phones" as const, label: "Sell Smartwatch", icon: "⌚", direct: true },
