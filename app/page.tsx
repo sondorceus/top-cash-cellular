@@ -563,7 +563,6 @@ export default function Home() {
                 { id: "phones" as const, label: "Sell Smartwatch", icon: "⌚", direct: true, subcats: ["Apple Watch", "Google Pixel Watch", "Garmin"] },
                 { id: "consoles" as const, label: "Sell Game Console", icon: "🎮", direct: false, deviceType: "console" as const },
                 { id: "computers" as const, label: "Sell Graphics Card", icon: "⚡", direct: true },
-                { id: "computers" as const, label: "Sell Camera", icon: "📷", direct: true },
                 { id: "computers" as const, label: "Sell Drone", icon: "🛸", direct: true },
                 { id: "computers" as const, label: "Sell VR", icon: "🥽", direct: true },
                 { id: "computers" as const, label: "Sell Monitor", icon: "🖥️", direct: true },
