@@ -1651,6 +1651,61 @@ export default function Home() {
               </div>
             </div>
           </section>
+
+          {/* GREEN / SUSTAINABILITY */}
+          <section className="py-12 bg-[#0a0a0a]">
+            <div className="max-w-lg mx-auto px-4">
+              <div className="bg-[#00c853]/5 border border-[#00c853]/15 rounded-2xl p-6 text-center">
+                <p className="text-2xl mb-2">����</p>
+                <h3 className="text-lg font-bold mb-1">Good for your wallet. Better for the planet.</h3>
+                <p className="text-[#888] text-sm leading-relaxed">Every device we buy gets a second life — refurbished and reused, not dumped in a landfill. Selling your old tech with Top Cash Cellular keeps electronics out of waste streams and puts cash in your pocket.</p>
+              </div>
+            </div>
+          </section>
+
+          {/* LOCAL CREDIBILITY */}
+          <section className="py-8 bg-[#111]">
+            <div className="max-w-lg mx-auto px-4">
+              <div className="flex flex-wrap items-center justify-center gap-4 text-center">
+                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
+                  <span className="text-sm">📍</span>
+                  <span className="text-white text-xs font-semibold">Austin-Based Business</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
+                  <span className="text-sm">🤝</span>
+                  <span className="text-white text-xs font-semibold">Real People, Local Meetups</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
+                  <span className="text-sm">⚡</span>
+                  <span className="text-white text-xs font-semibold">Same-Day Payout</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
+                  <span className="text-sm">🔒</span>
+                  <span className="text-white text-xs font-semibold">Secure Transactions</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* BULK / BUSINESS SELLING */}
+          <section className="py-12 bg-[#0a0a0a]">
+            <div className="max-w-lg mx-auto px-4">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                <div className="text-center mb-4">
+                  <p className="text-2xl mb-2">🏢</p>
+                  <h3 className="text-lg font-bold">Selling in bulk?</h3>
+                  <p className="text-[#888] text-sm">Upgrading your office, school, or fleet? We buy devices in bulk with custom pricing.</p>
+                </div>
+                <button
+                  onClick={() => { setInquiryCategory("Bulk / Business"); setInquirySent(false); setInquiryDesc(""); setModel(null); setCondition(null); setStep("inquiry"); pushHistory("inquiry"); }}
+                  className="w-full bg-[#00c853] text-white py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]"
+                >
+                  Get a Bulk Quote
+                </button>
+                <p className="text-[#777] text-[11px] text-center mt-3">10+ devices? We&apos;ll make you a custom offer.</p>
+              </div>
+            </div>
+          </section>
         </>
       )}
 
