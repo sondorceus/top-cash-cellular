@@ -160,6 +160,21 @@ const FAQS = [
 type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
 type DeviceType = "iphone" | "android" | "macbook" | "console" | "ipad" | null;
 
+function FairPromise() {
+  return (
+    <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5">
+      <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-1">Our Promise</h3>
+      <p className="text-base font-bold text-white mb-1">Fair Evaluation Promise</p>
+      <p className="text-[#888] text-xs mb-3">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
+      <div className="space-y-3">
+        <div className="flex gap-3"><span className="text-lg">🎯</span><div><p className="text-sm font-semibold text-[#ccc]">Consistent grading</p><p className="text-xs text-[#888]">Every device is evaluated using a standardized process based on the condition you select.</p></div></div>
+        <div className="flex gap-3"><span className="text-lg">🤝</span><div><p className="text-sm font-semibold text-[#ccc]">Clear explanations</p><p className="text-xs text-[#888]">If your device differs from what was described, we&apos;ll explain what we found before adjusting your offer.</p></div></div>
+        <div className="flex gap-3"><span className="text-lg">🔄</span><div><p className="text-sm font-semibold text-[#ccc]">Your choice</p><p className="text-xs text-[#888]">Don&apos;t agree with the updated offer? We&apos;ll return your device — no questions asked.</p></div></div>
+      </div>
+    </div>
+  );
+}
+
 function TrustBadge() {
   return (
     <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[#888] text-xs">
@@ -638,6 +653,7 @@ export default function Home() {
                 </div>
               </>
             )}
+            <FairPromise />
             <TrustBadge />
           </div>
         </section>
@@ -665,6 +681,7 @@ export default function Home() {
                 </button>
               ))}
             </div>
+            <FairPromise />
             <TrustBadge />
           </div>
         </section>
