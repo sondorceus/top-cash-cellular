@@ -162,13 +162,13 @@ type DeviceType = "iphone" | "android" | "macbook" | "console" | "ipad" | null;
 function TrustBadge() {
   return (
     <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[#888] text-xs">
-      <span>⭐ 20,000+ sellers</span>
+      <span>💰 No hidden fees</span>
       <span>·</span>
-      <span>🏆 4.91/5 rating</span>
+      <span>🔒 Price guaranteed</span>
       <span>·</span>
-      <span>BBB A+</span>
+      <span>⚡ Same-day payout</span>
       <span>·</span>
-      <span>⚡ Same-day pay</span>
+      <span>🏠 Austin local</span>
     </div>
   );
 }
@@ -733,23 +733,23 @@ export default function Home() {
             </div>
 
             <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl p-5">
-              <h3 className="text-base font-bold text-white mb-3">Why Austin Trusts Top Cash</h3>
+              <h3 className="text-base font-bold text-white mb-3">Why Sellers Choose Top Cash</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-xl font-bold text-[#00c853]">20,000+</p>
-                  <p className="text-xs text-[#888] mt-1">⭐ Happy sellers</p>
+                  <p className="text-lg font-bold text-[#00c853]">💰</p>
+                  <p className="text-xs text-[#888] mt-1">No hidden fees</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-xl font-bold text-[#00c853]">4.91/5</p>
-                  <p className="text-xs text-[#888] mt-1">🏆 Seller rating</p>
+                  <p className="text-lg font-bold text-[#00c853]">⚡</p>
+                  <p className="text-xs text-[#888] mt-1">Same-day payout</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-sm font-bold text-white">BBB A+</p>
-                  <p className="text-xs text-[#888] mt-1">Accredited</p>
+                  <p className="text-lg font-bold text-[#00c853]">🔒</p>
+                  <p className="text-xs text-[#888] mt-1">7-day price lock</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-sm font-bold text-[#00c853]">⚡ Fast</p>
-                  <p className="text-xs text-[#888] mt-1">Same-day pay</p>
+                  <p className="text-lg font-bold text-[#00c853]">🏠</p>
+                  <p className="text-xs text-[#888] mt-1">Austin local pickup</p>
                 </div>
               </div>
             </div>
@@ -909,28 +909,27 @@ export default function Home() {
             </div>
 
             <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5 text-left">
-              <h3 className="text-base font-bold text-white mb-4">Why Austin Trusts Top Cash</h3>
+              <h3 className="text-base font-bold text-white mb-4">Why Sellers Choose Top Cash</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-2xl font-bold text-[#00c853]">20,000+</p>
-                  <p className="text-xs text-[#888] mt-1">⭐ Reviews — our customers love us</p>
+                  <p className="text-2xl">💰</p>
+                  <p className="text-xs text-[#888] mt-1">No hidden fees — ever</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-2xl font-bold text-[#00c853]">4.91/5</p>
-                  <p className="text-xs text-[#888] mt-1">🏆 Elite Rating</p>
+                  <p className="text-2xl">⚡</p>
+                  <p className="text-xs text-[#888] mt-1">Same-day payout</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-lg font-bold text-white">BBB</p>
-                  <p className="text-xs text-[#888] mt-1">Accredited Business</p>
+                  <p className="text-2xl">🔒</p>
+                  <p className="text-xs text-[#888] mt-1">7-day price guarantee</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-lg font-bold text-[#00c853]">⚡ Fast</p>
-                  <p className="text-xs text-[#888] mt-1">Payments within days</p>
+                  <p className="text-2xl">🏠</p>
+                  <p className="text-xs text-[#888] mt-1">We come to you — Austin local</p>
                 </div>
               </div>
               <div className="mt-4 text-center">
-                <p className="text-xs text-[#888] mb-2">Higher offers than competitors</p>
-                <p className="text-[11px] text-[#777]">As seen on: CNBC · LA Times · CNET · ZDNet · PCWorld</p>
+                <p className="text-xs text-[#888]">Trusted by Austin sellers</p>
               </div>
             </div>
 
