@@ -239,11 +239,36 @@ export default function Home() {
   const [inquirySent, setInquirySent] = useState(false);
   const [inquiryDesc, setInquiryDesc] = useState("");
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
+  const [statsVisible, setStatsVisible] = useState(false);
+  const [animatedStats, setAnimatedStats] = useState({ devices: 0, payout: 0, time: 0 });
 
   useEffect(() => {
     const saved = localStorage.getItem("cookie-consent");
     setCookieConsent(saved);
   }, []);
+
+  useEffect(() => {
+    if (!statsVisible) return;
+    const targets = { devices: 500, payout: 150, time: 24 };
+    const duration = 1500;
+    const steps = 40;
+    const interval = duration / steps;
+    let current = 0;
+    const timer = setInterval(() => {
+      current++;
+      const progress = current / steps;
+      const ease = 1 - Math.pow(1 - progress, 3);
+      setAnimatedStats({
+        devices: Math.round(targets.devices * ease),
+        payout: Math.round(targets.payout * ease),
+        time: Math.round(targets.time * ease),
+      });
+      if (current >= steps) clearInterval(timer);
+    }, interval);
+    return () => clearInterval(timer);
+  }, [statsVisible]);
 
   useEffect(() => {
     try {
@@ -445,10 +470,9 @@ export default function Home() {
                 { id: "computers" as const, label: "Sell Laptop", icon: "💻" },
                 { id: "computers" as const, label: "Sell Desktop", icon: "🖥️", direct: true },
                 { id: "phones" as const, label: "Sell Smartwatch", icon: "⌚", direct: true, subcats: ["Apple Watch", "Google Pixel Watch", "Garmin"] },
-                { id: "consoles" as const, label: "Sell Game Console", icon: "🎮" },
+                { id: "consoles" as const, label: "Sell Game Console", icon: "🎮", direct: false, deviceType: "console" as const },
                 { id: "computers" as const, label: "Sell Graphics Card", icon: "⚡", direct: true },
                 { id: "computers" as const, label: "Sell Camera", icon: "📷", direct: true },
-                { id: "computers" as const, label: "Sell Audio", icon: "🎧", direct: true },
                 { id: "computers" as const, label: "Sell Drone", icon: "🛸", direct: true },
                 { id: "computers" as const, label: "Sell VR", icon: "🥽", direct: true },
                 { id: "computers" as const, label: "Sell Monitor", icon: "🖥️", direct: true },
@@ -1331,13 +1355,26 @@ export default function Home() {
             </div>
           </section>
 
-          {/* TRUST SIGNALS */}
-          <section className="py-8 bg-[#111]">
+          {/* BOLD STATS COUNTER */}
+          <section className="py-14 bg-[#111]" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
             <div className="max-w-lg mx-auto px-4">
+              <p className="text-[#888] text-xs font-semibold uppercase tracking-wider text-center mb-8">Top Cash Cellular by the numbers</p>
               <div className="grid grid-cols-3 gap-4 text-center">
-                <div><p className="text-2xl font-bold text-[#00c853]">500+</p><p className="text-[#888] text-xs">Devices Bought</p></div>
-                <div><p className="text-2xl font-bold text-[#00c853]">4.9★</p><p className="text-[#888] text-xs">Avg Rating</p></div>
-                <div><p className="text-2xl font-bold text-[#00c853]">Same Day</p><p className="text-[#888] text-xs">Payout</p></div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                  <p className="text-4xl font-extrabold text-[#00c853] tabular-nums">{animatedStats.devices}+</p>
+                  <p className="text-white text-sm font-semibold mt-1">Devices Bought</p>
+                  <p className="text-[#888] text-[11px] mt-0.5">and counting</p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                  <p className="text-4xl font-extrabold text-[#00c853] tabular-nums">${animatedStats.payout}K+</p>
+                  <p className="text-white text-sm font-semibold mt-1">Paid Out</p>
+                  <p className="text-[#888] text-[11px] mt-0.5">to Austin sellers</p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                  <p className="text-4xl font-extrabold text-[#00c853] tabular-nums">&lt;{animatedStats.time}h</p>
+                  <p className="text-white text-sm font-semibold mt-1">Avg Payout</p>
+                  <p className="text-[#888] text-[11px] mt-0.5">from quote to cash</p>
+                </div>
               </div>
             </div>
           </section>
@@ -1368,14 +1405,78 @@ export default function Home() {
             </div>
           </section>
 
-          {/* CTA SECTION */}
-          <section className="py-12 bg-[#0a0a0a] text-center">
+          {/* PAYMENT TIMELINE */}
+          <section className="py-12 bg-[#0d0d0d]">
             <div className="max-w-lg mx-auto px-4">
-              <h2 className="text-2xl font-bold mb-2">Still sitting on an old phone?</h2>
-              <p className="text-[#888] text-sm mb-6">Turn it into cash in under a minute.</p>
-              <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="bg-[#00c853] text-white px-10 py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
-                Get Your Quote
-              </button>
+              <h2 className="text-xl font-bold text-center mb-2">When do I get paid?</h2>
+              <p className="text-[#888] text-sm text-center mb-8">Transparent timelines. No surprises.</p>
+              <div className="space-y-3">
+                {[
+                  { method: "Local Pickup", icon: "🏠", timeline: "Same day", desc: "We meet in Austin. Inspect device. Pay on the spot.", highlight: true },
+                  { method: "Cash", icon: "💵", timeline: "Instant", desc: "Handed to you at pickup. Immediate.", highlight: false },
+                  { method: "Venmo / Zelle", icon: "⚡", timeline: "Under 5 min", desc: "Sent while you watch. Hits your account instantly.", highlight: false },
+                  { method: "PayPal", icon: "💳", timeline: "Under 1 hour", desc: "Sent immediately. May take a few minutes to clear.", highlight: false },
+                  { method: "Ship To Us", icon: "📦", timeline: "Same day received", desc: "We inspect and pay within hours of receiving your device.", highlight: false },
+                ].map((p) => (
+                  <div key={p.method} className={`flex items-center gap-4 rounded-2xl p-4 border ${p.highlight ? "bg-[#00c853]/10 border-[#00c853]/20" : "bg-white/5 border-white/10"}`}>
+                    <span className="text-2xl">{p.icon}</span>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <p className="text-white text-sm font-bold">{p.method}</p>
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${p.highlight ? "bg-[#00c853]/20 text-[#00c853]" : "bg-white/10 text-[#aaa]"}`}>{p.timeline}</span>
+                      </div>
+                      <p className="text-[#888] text-xs">{p.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* CTA SECTION */}
+          <section className="py-16 bg-[#0a0a0a] text-center">
+            <div className="max-w-lg mx-auto px-4">
+              <div className="bg-gradient-to-br from-[#00c853]/10 to-transparent border border-[#00c853]/20 rounded-3xl p-8">
+                <p className="text-4xl mb-3">💸</p>
+                <h2 className="text-3xl font-bold mb-2">Still sitting on old tech?</h2>
+                <p className="text-[#888] text-base mb-2">That phone in your drawer is losing value every day.</p>
+                <p className="text-white/70 text-sm mb-6">Get your instant quote — it takes 30 seconds.</p>
+                <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="bg-[#00c853] text-white px-10 py-4 rounded-2xl text-lg font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20">
+                  Get Your Quote Now
+                </button>
+                <p className="text-[#777] text-xs mt-4">No account required · Free instant quote · No obligation</p>
+              </div>
+            </div>
+          </section>
+
+          {/* NEWSLETTER CAPTURE */}
+          <section className="py-12 bg-[#0d0d0d]">
+            <div className="max-w-lg mx-auto px-4">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
+                <p className="text-xl mb-2">📬</p>
+                <h3 className="text-lg font-bold mb-1">Get price alerts &amp; deals</h3>
+                <p className="text-[#888] text-sm mb-4">We&apos;ll let you know when buyback prices go up or we run a promo. No spam — just money.</p>
+                {newsletterSubmitted ? (
+                  <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-xl p-4">
+                    <p className="text-[#00c853] font-semibold text-sm">You&apos;re in! We&apos;ll keep you posted.</p>
+                  </div>
+                ) : (
+                  <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!newsletterEmail.trim()) return;
+                    try {
+                      await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Newsletter Signup", email: newsletterEmail, phone: "", device: "Newsletter", notes: "Homepage newsletter signup" }) });
+                    } catch {}
+                    setNewsletterSubmitted(true);
+                  }} className="flex gap-2">
+                    <input type="email" value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} placeholder="your@email.com" required aria-label="Email for newsletter" className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition" />
+                    <button type="submit" className="bg-[#00c853] text-white px-6 py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] whitespace-nowrap">
+                      Sign Up
+                    </button>
+                  </form>
+                )}
+                <p className="text-[#777] text-[11px] mt-3">Unsubscribe anytime. We respect your inbox.</p>
+              </div>
             </div>
           </section>
 
