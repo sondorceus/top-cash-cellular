@@ -680,7 +680,13 @@ export default function Home() {
               {CONDITIONS.map((c) => (
                 <button
                   key={c.id}
-                  onClick={() => { setCondition(c); const cs = (deviceType === "iphone" || deviceType === "android") ? "carrier" : "quote"; if (cs === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); } setStep(cs); pushHistory(cs); }}
+                  onClick={(e) => {
+                    if ((e.target as HTMLElement).closest('details') || (e.target as HTMLElement).closest('summary')) return;
+                    const img = document.getElementById('condition-preview-img') as HTMLImageElement;
+                    const effects: Record<string, string> = { brandnew: 'brightness(1.1) saturate(1.1)', flawless: 'brightness(1.05)', verygood: 'brightness(1)', good: 'brightness(0.95) contrast(1.05)', fair: 'brightness(0.85) contrast(1.1)', broken: 'brightness(0.7) contrast(1.2) grayscale(0.2)' };
+                    if (img) img.style.filter = effects[c.id] || '';
+                    setTimeout(() => { setCondition(c); const cs = (deviceType === "iphone" || deviceType === "android") ? "carrier" : "quote"; if (cs === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); } setStep(cs); pushHistory(cs); }, 400);
+                  }}
                   onMouseEnter={() => {
                     const img = document.getElementById('condition-preview-img') as HTMLImageElement;
                     const ov = document.getElementById('condition-overlay');
@@ -710,9 +716,12 @@ export default function Home() {
                     <p className="font-semibold text-lg">{c.label}</p>
                     <p className="text-[#888] text-sm">{c.desc}</p>
                     {(c as { details?: string[] }).details && (
-                      <ul className="mt-2 space-y-1 text-[#999] text-xs list-disc list-inside hidden group-hover:block">
-                        {(c as { details?: string[] }).details!.map((d, i) => <li key={i}>{d}</li>)}
-                      </ul>
+                      <details className="mt-2">
+                        <summary className="text-[#00c853] text-xs cursor-pointer hover:underline">ℹ️ What qualifies?</summary>
+                        <ul className="mt-1.5 space-y-1 text-[#999] text-xs list-disc list-inside">
+                          {(c as { details?: string[] }).details!.map((d, i) => <li key={i}>{d}</li>)}
+                        </ul>
+                      </details>
                     )}
                   </div>
                   <span className="text-[#00c853] font-bold text-sm">${Math.round(model.base * storageMultiplier * c.multiplier)}</span>
