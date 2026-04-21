@@ -512,7 +512,7 @@ export default function Home() {
         </section>
       )}
 
-      {/* STEP: INQUIRY (unknown categories) */}
+      {/* STEP: INQUIRY (unknown categories) — full quote flow */}
       {step === "inquiry" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
@@ -521,70 +521,126 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">Sell Your {inquiryCategory}</h2>
-            <p className="text-[#888] text-sm mb-6">Tell us what you have and we&apos;ll get back to you with an offer.</p>
 
-            {inquiryCategory === "Smartwatch" && !inquirySent && (
-              <div className="mb-4">
-                <p className="text-xs font-medium text-[#888] mb-2 uppercase tracking-wider">Select Brand</p>
-                <div className="grid grid-cols-3 gap-2">
-                  {["Apple Watch", "Google Pixel Watch", "Garmin"].map((brand) => (
-                    <button key={brand} onClick={() => setInquiryDesc(prev => prev.includes(brand) ? prev : brand + (prev ? ' - ' + prev : ''))} className={`p-3 rounded-xl text-xs font-semibold text-center cursor-pointer transition ${inquiryDesc.includes(brand) ? 'bg-[#00c853] text-black' : 'bg-white/5 border border-white/10 text-white hover:bg-white/10'}`}>
-                      {brand}
+            {/* Step 1: Device details */}
+            {!condition && !inquirySent && (
+              <>
+                <p className="text-[#888] text-sm mb-6">Tell us about your device, then we&apos;ll walk you through the same quick process.</p>
+
+                {inquiryCategory === "Smartwatch" && (
+                  <div className="mb-4">
+                    <p className="text-xs font-medium text-[#888] mb-2 uppercase tracking-wider">Select Brand</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      {["Apple Watch", "Google Pixel Watch", "Garmin"].map((brand) => (
+                        <button key={brand} onClick={() => setInquiryDesc(prev => prev.includes(brand) ? prev : brand + (prev ? ' - ' + prev : ''))} className={`p-3 rounded-xl text-xs font-semibold text-center cursor-pointer transition ${inquiryDesc.includes(brand) ? 'bg-[#00c853] text-black' : 'bg-white/5 border border-white/10 text-white hover:bg-white/10'}`}>
+                          {brand}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Device Details</label>
+                    <textarea value={inquiryDesc} onChange={(e) => setInquiryDesc(e.target.value)} required placeholder={`Brand, model, storage size, any issues (e.g. "Samsung Galaxy S24, 256GB, small crack on back")`} rows={3} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition resize-none" />
+                  </div>
+                  <button
+                    onClick={() => { if (inquiryDesc.trim()) { setModel({ id: "custom", label: inquiryDesc.trim(), base: 0 }); } }}
+                    disabled={!inquiryDesc.trim()}
+                    className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    Next: Select Condition
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* Step 2: Condition selection */}
+            {model && !condition && !inquirySent && (
+              <>
+                <p className="text-[#888] text-sm mb-6">What condition is your device in?</p>
+                <div className="space-y-2">
+                  {CONDITIONS.map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => setCondition(c)}
+                      className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/30 cursor-pointer transition text-left active:scale-[0.98]"
+                    >
+                      <span className="text-2xl">{c.icon}</span>
+                      <div className="flex-1">
+                        <p className="font-semibold text-sm">{c.label}</p>
+                        <p className="text-[#888] text-xs">{c.desc}</p>
+                      </div>
                     </button>
                   ))}
                 </div>
-              </div>
+                <button onClick={() => setModel(null)} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-white transition">← Change device details</button>
+              </>
             )}
 
-            {!inquirySent ? (
-              <form onSubmit={async (e) => {
-                e.preventDefault();
-                try {
-                  await fetch("/api/lead", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, device: inquiryCategory, model: inquiryDesc, storage: "N/A", condition: "N/A", quote: 0, payout: "TBD" }),
-                  });
-                } catch {}
-                setInquirySent(true);
-              }} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">What do you have?</label>
-                  <textarea value={inquiryDesc} onChange={(e) => setInquiryDesc(e.target.value)} required placeholder={`Describe your ${inquiryCategory.toLowerCase()} (brand, model, condition...)`} rows={3} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition resize-none" />
+            {/* Step 3: Contact + Submit (replaces checkout for custom devices) */}
+            {model && condition && !inquirySent && (
+              <>
+                <p className="text-[#888] text-sm mb-2">Almost done! We&apos;ll review your device and send you a quote.</p>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
+                  <p className="text-xs text-[#888] uppercase tracking-wider font-medium mb-2">Your device</p>
+                  <p className="text-white font-semibold text-sm">{model.label}</p>
+                  <p className="text-[#888] text-xs mt-1">Condition: {condition.label} ({condition.desc})</p>
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Name</label>
-                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Phone</label>
-                  <input type="tel" value={phone} onChange={(e) => {
-                    const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
-                    if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
-                    else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
-                    else setPhone(digits);
-                  }} required placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Email <span className="normal-case text-[12px]">(optional)</span></label>
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
-                </div>
-                <button type="submit" className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
-                  Get My Quote
-                </button>
-              </form>
-            ) : (
+                <form onSubmit={async (e) => {
+                  e.preventDefault();
+                  try {
+                    await fetch("/api/lead", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ name, phone, email, device: inquiryCategory, model: model.label, storage: "N/A", condition: condition.label, quote: 0, payout: "TBD", notes: "Custom device - full flow submission" }),
+                    });
+                  } catch {}
+                  setInquirySent(true);
+                }} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Name</label>
+                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Phone</label>
+                    <input type="tel" value={phone} onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                      if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
+                      else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
+                      else setPhone(digits);
+                    }} required placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Email</label>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                  </div>
+                  <button type="submit" className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
+                    Get My Custom Quote
+                  </button>
+                </form>
+                <button onClick={() => setCondition(null)} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-white transition">← Change condition</button>
+              </>
+            )}
+
+            {/* Step 4: Confirmation */}
+            {inquirySent && (
               <div className="text-center py-8">
                 <div className="w-16 h-16 rounded-full bg-[#00c853]/10 flex items-center justify-center mx-auto mb-4">
                   <span className="text-3xl">✅</span>
                 </div>
-                <h3 className="text-xl font-bold mb-2">We&apos;ll be in touch!</h3>
-                <p className="text-[#888] text-sm mb-6">We&apos;ve received your inquiry and will get back to you with an offer shortly.</p>
+                <h3 className="text-xl font-bold mb-2">Submitted!</h3>
+                <p className="text-[#888] text-sm mb-2">We&apos;re reviewing your {inquiryCategory.toLowerCase()} and will send you a personalized quote shortly.</p>
+                <p className="text-[#888] text-xs mb-6">Most quotes are sent within a few hours.</p>
                 <button onClick={reset} className="text-[#00c853] font-semibold text-sm cursor-pointer hover:underline">
                   Sell another device
                 </button>
               </div>
             )}
+
+            <FairPromise />
+            <TrustBadge />
           </div>
         </section>
       )}
