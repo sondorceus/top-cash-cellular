@@ -166,9 +166,9 @@ const STORAGE_MAP: Record<string, string[]> = {
   ip12p: ["128", "256", "512"],
   ip12: ["64", "128", "256"],
   ip12mini: ["64", "128", "256"],
-  // iPhone 11 series — all have 64/128/256
-  ip11pm: ["64", "128", "256", "512"],
-  ip11p: ["64", "128", "256", "512"],
+  // iPhone 11 series — Pro/PM skip 128GB
+  ip11pm: ["64", "256", "512"],
+  ip11p: ["64", "256", "512"],
   ip11: ["64", "128", "256"],
   // Samsung Galaxy — all come in 128/256/512 (Ultra has 1TB option on some)
   gs25u: ["256", "512", "1tb"],
