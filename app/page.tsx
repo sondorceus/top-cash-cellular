@@ -831,20 +831,20 @@ export default function Home() {
           </div>
 
           <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pb-8">
-            <h1 className="text-4xl font-bold tracking-tight leading-[1.08] mb-3">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] mb-3 md:mb-5">
               Get top dollar<br />for your device.
             </h1>
-            <p className="text-[#888] text-lg mb-1 font-medium">
+            <p className="text-[#888] text-lg md:text-xl mb-1 font-medium">
               Instant quote. Same-day payout available.
             </p>
-            <p className="text-[#888] text-lg mb-6 font-medium">
+            <p className="text-[#888] text-lg md:text-xl mb-6 md:mb-8 font-medium">
               Cash, Venmo, Zelle, or PayPal.
             </p>
 
             <div className="glow-border mb-6 p-[3px]">
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
-                className="w-full bg-[#00c853] text-white py-5 rounded-[14px] text-xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20 relative z-10"
+                className="w-full md:w-auto md:px-16 bg-[#00c853] text-white py-5 md:py-6 rounded-[14px] text-xl md:text-2xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20 relative z-10"
               >
                 Sell Your Device
               </button>
@@ -869,7 +869,7 @@ export default function Home() {
 
             <div className="mt-8">
               <p className="text-[#888] text-xs font-semibold uppercase tracking-wider mb-3">Popular devices — sell yours today</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
                 {[
                   { name: "iPhone 16 Pro Max", price: "$500" },
                   { name: "iPhone 15 Pro Max", price: "$310" },
@@ -899,7 +899,7 @@ export default function Home() {
             </button>
             <h2 className="text-2xl font-bold mb-1">What are you selling?</h2>
             <p className="text-[#888] text-sm mb-6">Select a category</p>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-2 md:gap-3">
               {[
                 { id: "phones" as const, label: "Sell Phone", icon: "📱" },
                 { id: "phones" as const, label: "Sell Tablet", icon: "⬜", direct: false, deviceType: "ipad" as const, customIcon: true },
@@ -1091,9 +1091,9 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            <h2 className="text-2xl font-bold mb-1">Select your brand</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your brand</h2>
             <p className="text-[#888] text-sm mb-6">{category === "phones" ? "Phone brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : category === "watches" ? "Smartwatch brands" : category === "drones" ? "Drone brands" : "Console brands"}</p>
-            <div className="space-y-3">
+            <div className="space-y-3 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
               {category === "phones" && [
                 { id: "iphone" as const, label: "Apple iPhone", sub: "iPhone 11 and newer", icon: "📱" },
                 { id: "android" as const, label: "Samsung Galaxy", sub: "Galaxy S21 and newer", icon: "📲" },
@@ -1198,9 +1198,9 @@ export default function Home() {
             {/* iPhone: Series grid → Variant list */}
             {deviceType === "iphone" && !selectedSeries && (
               <>
-                <h2 className="text-2xl font-bold mb-1">Select your iPhone</h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your iPhone</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your series</p>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {IPHONE_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
                       {(s as { image?: string }).image && <img src={(s as { image?: string }).image} alt={s.label} loading="eager" className="w-14 h-14 object-contain mb-1" />}
@@ -1239,9 +1239,9 @@ export default function Home() {
             {/* iPad: Series grid → Variant list */}
             {deviceType === "ipad" && !selectedSeries && (
               <>
-                <h2 className="text-2xl font-bold mb-1">Select your iPad</h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your iPad</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your model line</p>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {IPAD_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
                       {(s as { image?: string }).image ? (
@@ -1305,7 +1305,7 @@ export default function Home() {
             {/* Laptop/Desktop: Grid on mobile, list on desktop */}
             {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && (category === "computers" || category === "desktops") && (
               <>
-                <h2 className="text-2xl font-bold mb-1">Select your model</h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your model</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 {/* Mobile: grid cards */}
                 <div className="grid grid-cols-2 gap-2 md:hidden">
@@ -1335,7 +1335,7 @@ export default function Home() {
             {/* Other categories (phones, consoles, watches): Flat model list */}
             {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && category !== "computers" && category !== "desktops" && (
               <>
-                <h2 className="text-2xl font-bold mb-1">Select your model</h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your model</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 <div className="space-y-2">
                   {models.map((m) => (
@@ -2019,17 +2019,17 @@ export default function Home() {
               <p className="text-[#888] text-xs font-semibold uppercase tracking-wider text-center mb-8">Top Cash Cellular by the numbers</p>
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
-                  <p className="text-2xl font-extrabold text-[#00c853] tabular-nums">{animatedStats.devices}+</p>
+                  <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">{animatedStats.devices}+</p>
                   <p className="text-white text-xs font-semibold mt-1">Devices Bought</p>
                   <p className="text-[#888] text-[10px] mt-0.5">and counting</p>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
-                  <p className="text-2xl font-extrabold text-[#00c853] tabular-nums">${animatedStats.payout}K+</p>
+                  <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">${animatedStats.payout}K+</p>
                   <p className="text-white text-xs font-semibold mt-1">Paid Out</p>
                   <p className="text-[#888] text-[10px] mt-0.5">to Austin sellers</p>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
-                  <p className="text-2xl font-extrabold text-[#00c853] tabular-nums">&lt;{animatedStats.time}h</p>
+                  <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">&lt;{animatedStats.time}h</p>
                   <p className="text-white text-xs font-semibold mt-1">Avg Payout</p>
                   <p className="text-[#888] text-[10px] mt-0.5">from quote to cash</p>
                 </div>
