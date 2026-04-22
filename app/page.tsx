@@ -935,21 +935,21 @@ export default function Home() {
                 </button>
               ))}
               {category === "computers" && [
-                { id: "macbook" as const, label: "Apple MacBook", sub: "MacBook Air & Pro, M1+", icon: "💻" },
-                { id: "samsung_pc" as const, label: "Samsung", sub: "Galaxy Book 2, 3, 4 series", icon: "💻" },
-                { id: "dell" as const, label: "Dell", sub: "XPS, Latitude, Inspiron", icon: "💻" },
-                { id: "alienware" as const, label: "Alienware", sub: "m16, m18, x14, x16", icon: "👽" },
-                { id: "hp" as const, label: "HP", sub: "Spectre, Envy, OMEN, EliteBook", icon: "💻" },
-                { id: "lenovo" as const, label: "Lenovo", sub: "ThinkPad, Yoga, Legion, IdeaPad", icon: "💻" },
-                { id: "acer" as const, label: "Acer", sub: "Swift, Predator, Nitro, Aspire", icon: "💻" },
-                { id: "lg_pc" as const, label: "LG", sub: "Gram, Gram Pro, UltraGear", icon: "💻" },
-                { id: "other_pc" as const, label: "Other Brand", sub: "Any other computer", icon: "🖥️" },
+                { id: "macbook" as const, label: "Apple MacBook", sub: "MacBook Air & Pro, M1+", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#333"/><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></svg> },
+                { id: "samsung_pc" as const, label: "Samsung", sub: "Galaxy Book 2, 3, 4 series", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="bold" fontFamily="Arial">S</text></svg> },
+                { id: "dell" as const, label: "Dell", sub: "XPS, Latitude, Inspiron", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#007db8"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">DELL</text></svg> },
+                { id: "alienware" as const, label: "Alienware", sub: "m16, m18, x14, x16", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1a1a2e"/><path d="M20 6 L8 24 L14 24 L17 30 L20 24 L23 30 L26 24 L32 24 Z" fill="none" stroke="#00e5ff" strokeWidth="1.5"/><circle cx="16" cy="18" r="2" fill="#00e5ff"/><circle cx="24" cy="18" r="2" fill="#00e5ff"/></svg> },
+                { id: "hp" as const, label: "HP", sub: "Spectre, Envy, OMEN, EliteBook", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#0096d6"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">hp</text></svg> },
+                { id: "lenovo" as const, label: "Lenovo", sub: "ThinkPad, Yoga, Legion, IdeaPad", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg> },
+                { id: "acer" as const, label: "Acer", sub: "Swift, Predator, Nitro, Aspire", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#83b81a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold" fontFamily="Arial">acer</text></svg> },
+                { id: "lg_pc" as const, label: "LG", sub: "Gram, Gram Pro, UltraGear", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#a50034"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">LG</text></svg> },
+                { id: "other_pc" as const, label: "Other Brand", sub: "Any other computer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#444"/><rect x="11" y="10" width="18" height="14" rx="2" fill="none" stroke="#fff" strokeWidth="1.5"/><line x1="15" y1="28" x2="25" y2="28" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/><line x1="20" y1="24" x2="20" y2="28" stroke="#fff" strokeWidth="1.5"/></svg> },
               ].map((b) => (
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_pc") { setInquiryCategory("Computer"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
                 }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
-                  <span className="text-3xl">{b.icon}</span>
+                  <span className="flex-shrink-0">{b.brandIcon}</span>
                   <div className="flex-1"><p className="font-semibold text-white text-lg">{b.label}</p><p className="text-[#888] text-sm">{b.sub}</p></div>
                   <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
