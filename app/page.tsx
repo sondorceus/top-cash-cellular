@@ -871,12 +871,12 @@ export default function Home() {
               <p className="text-[#888] text-xs font-semibold uppercase tracking-wider mb-3">Popular devices — sell yours today</p>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
                 {[
-                  { name: "iPhone 16 Pro Max", price: "$500" },
-                  { name: "iPhone 15 Pro Max", price: "$310" },
-                  { name: "Samsung S24 Ultra", price: "$500" },
-                  { name: "MacBook Pro 16\" M4", price: "$1,200" },
-                  { name: "PlayStation 5", price: "$300" },
-                  { name: "iPhone 14 Pro", price: "$210" },
+                  { name: "iPhone 16 Pro Max", price: "$789" },
+                  { name: "iPhone 15 Pro Max", price: "$467" },
+                  { name: "Samsung S24 Ultra", price: "$805" },
+                  { name: "MacBook Pro 16\" M4", price: "$1,932" },
+                  { name: "PlayStation 5", price: "$345" },
+                  { name: "iPhone 14 Pro", price: "$225" },
                 ].map((d) => (
                   <button key={d.name} onClick={() => { setDeviceType("iphone"); setStep("model"); pushHistory("model"); }} className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 hover:bg-white/10 transition cursor-pointer text-left active:scale-[0.98]">
                     <span className="text-white text-xs font-medium">{d.name}</span>
