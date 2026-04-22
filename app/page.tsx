@@ -170,6 +170,70 @@ const LG_PC_MODELS = [
   { id: "lgultgear", label: "LG UltraGear 16\" (2024)", base: 550 },
 ];
 
+const APPLE_DESKTOP_MODELS = [
+  { id: "macstudiom4u", label: "Mac Studio M4 Ultra", base: 2200 },
+  { id: "macstudiom4m", label: "Mac Studio M4 Max", base: 1400 },
+  { id: "macstudiom2u", label: "Mac Studio M2 Ultra", base: 1600 },
+  { id: "macstudiom2m", label: "Mac Studio M2 Max", base: 1000 },
+  { id: "macprom2u", label: "Mac Pro M2 Ultra", base: 2800 },
+  { id: "macminim4", label: "Mac Mini M4", base: 400 },
+  { id: "macminim4p", label: "Mac Mini M4 Pro", base: 600 },
+  { id: "macminim2", label: "Mac Mini M2", base: 300 },
+  { id: "macminim1", label: "Mac Mini M1", base: 220 },
+  { id: "imac24m4", label: "iMac 24\" M4", base: 900 },
+  { id: "imac24m3", label: "iMac 24\" M3", base: 700 },
+  { id: "imac24m1", label: "iMac 24\" M1", base: 450 },
+];
+
+const DELL_DESKTOP_MODELS = [
+  { id: "doptiplex7010", label: "OptiPlex 7010", base: 350 },
+  { id: "doptiplex5000", label: "OptiPlex 5000", base: 280 },
+  { id: "dxps8960", label: "XPS Desktop 8960", base: 500 },
+  { id: "dxps8950", label: "XPS Desktop 8950", base: 380 },
+  { id: "dinsp3030", label: "Inspiron 3030 Desktop", base: 250 },
+  { id: "dprecision3680", label: "Precision 3680", base: 550 },
+];
+
+const LENOVO_DESKTOP_MODELS = [
+  { id: "lnthinkm", label: "ThinkCentre M920", base: 300 },
+  { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 350 },
+  { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 550 },
+  { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 750 },
+  { id: "lnideactower", label: "IdeaCentre 5i", base: 250 },
+];
+
+const HP_DESKTOP_MODELS = [
+  { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 400 },
+  { id: "hpprodesk", label: "ProDesk 400 G9", base: 280 },
+  { id: "hpomendsk", label: "OMEN 45L Desktop", base: 650 },
+  { id: "hpomen40", label: "OMEN 40L Desktop", base: 500 },
+  { id: "hpenvy34", label: "Envy 34 All-in-One", base: 550 },
+  { id: "hppav32", label: "Pavilion 32 All-in-One", base: 380 },
+];
+
+const ASUS_DESKTOP_MODELS = [
+  { id: "asrogstrix", label: "ROG Strix G16CH", base: 700 },
+  { id: "asroghyper", label: "ROG Hyperion", base: 1200 },
+  { id: "asrogflow", label: "ROG NUC", base: 500 },
+  { id: "astufgaming", label: "TUF Gaming Desktop", base: 450 },
+  { id: "asexperpro", label: "ExpertCenter D5", base: 300 },
+  { id: "asnuc14", label: "NUC 14 Pro", base: 350 },
+];
+
+const ALIENWARE_DESKTOP_MODELS = [
+  { id: "awaurorar16", label: "Aurora R16", base: 800 },
+  { id: "awaurorar15", label: "Aurora R15", base: 600 },
+  { id: "awaurorar13", label: "Aurora R13", base: 450 },
+];
+
+const MSI_DESKTOP_MODELS = [
+  { id: "msiinfinity", label: "MEG Trident X2", base: 900 },
+  { id: "msitrident", label: "MAG Trident S5", base: 550 },
+  { id: "msinightblade", label: "MAG Codex 6", base: 650 },
+  { id: "msicodex5", label: "MAG Codex 5", base: 450 },
+  { id: "msipro", label: "PRO DP180", base: 300 },
+];
+
 const IPAD_SERIES = [
   { id: "ipadpro", label: "iPad Pro", topPrice: 610, image: "/ipadpro.png", variants: [
     { id: "ipadpro13m5", label: "iPad Pro 13\" M5", base: 610 },
@@ -366,6 +430,56 @@ const STORAGE_MAP: Record<string, string[]> = {
   lggr16g23: ["256", "512"],
   lggrpro16: ["512", "1tb"],
   lgultgear: ["512", "1tb"],
+  // Apple Desktops
+  macstudiom4u: ["512", "1tb"],
+  macstudiom4m: ["512", "1tb"],
+  macstudiom2u: ["512", "1tb"],
+  macstudiom2m: ["512", "1tb"],
+  macprom2u: ["1tb"],
+  macminim4: ["256", "512"],
+  macminim4p: ["512", "1tb"],
+  macminim2: ["256", "512"],
+  macminim1: ["256", "512"],
+  imac24m4: ["256", "512", "1tb"],
+  imac24m3: ["256", "512", "1tb"],
+  imac24m1: ["256", "512"],
+  // Dell Desktops
+  doptiplex7010: ["256", "512"],
+  doptiplex5000: ["256", "512"],
+  dxps8960: ["512", "1tb"],
+  dxps8950: ["512", "1tb"],
+  dinsp3030: ["256", "512"],
+  dprecision3680: ["512", "1tb"],
+  // Lenovo Desktops
+  lnthinkm: ["256", "512"],
+  lnthinkm90q: ["256", "512"],
+  lnlegion5dtwr: ["512", "1tb"],
+  lnlegion7dtwr: ["512", "1tb"],
+  lnideactower: ["256", "512"],
+  // HP Desktops
+  hpelitedesk: ["256", "512"],
+  hpprodesk: ["256", "512"],
+  hpomendsk: ["512", "1tb"],
+  hpomen40: ["512", "1tb"],
+  hpenvy34: ["512", "1tb"],
+  hppav32: ["256", "512"],
+  // Asus Desktops
+  asrogstrix: ["512", "1tb"],
+  asroghyper: ["1tb"],
+  asrogflow: ["512", "1tb"],
+  astufgaming: ["512", "1tb"],
+  asexperpro: ["256", "512"],
+  asnuc14: ["256", "512"],
+  // Alienware Desktops
+  awaurorar16: ["512", "1tb"],
+  awaurorar15: ["512", "1tb"],
+  awaurorar13: ["512", "1tb"],
+  // MSI Desktops
+  msiinfinity: ["1tb"],
+  msitrident: ["512", "1tb"],
+  msinightblade: ["512", "1tb"],
+  msicodex5: ["512", "1tb"],
+  msipro: ["256", "512"],
   // iPads
   ipadpro13m5: ["256", "512", "1tb"],
   ipadpro11m5: ["256", "512", "1tb"],
@@ -414,7 +528,7 @@ const FAQS = [
 ];
 
 type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
-type DeviceType = "iphone" | "android" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "console" | "ipad" | null;
+type DeviceType = "iphone" | "android" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "ipad" | null;
 
 function FairPromise() {
   return (
@@ -447,7 +561,7 @@ function TrustBadge() {
 
 export default function Home() {
   const [step, setStep] = useState<Step>("device");
-  const [category, setCategory] = useState<"phones" | "computers" | "consoles" | null>(null);
+  const [category, setCategory] = useState<"phones" | "computers" | "desktops" | "consoles" | null>(null);
   const [deviceType, setDeviceType] = useState<DeviceType>(null);
   const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
   const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
@@ -612,7 +726,7 @@ export default function Home() {
 
   const iphoneVariants = selectedSeries ? IPHONE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const ipadVariants = selectedSeries ? IPAD_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -734,7 +848,7 @@ export default function Home() {
                 { id: "phones" as const, label: "Sell Phone", icon: "📱" },
                 { id: "phones" as const, label: "Sell Tablet", icon: "⬜", direct: false, deviceType: "ipad" as const, customIcon: true },
                 { id: "computers" as const, label: "Sell Laptop", icon: "💻" },
-                { id: "computers" as const, label: "Sell Desktop", icon: "🖥️", direct: true },
+                { id: "desktops" as const, label: "Sell Desktop", icon: "🖥️" },
                 { id: "phones" as const, label: "Sell Smartwatch", icon: "⌚", direct: true, subcats: ["Apple Watch", "Google Pixel Watch", "Garmin"] },
                 { id: "consoles" as const, label: "Sell Game Console", icon: "🎮", direct: false, deviceType: "console" as const },
                 { id: "computers" as const, label: "Sell Graphics Card", icon: "⚡", direct: true },
@@ -922,7 +1036,7 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">Select your brand</h2>
-            <p className="text-[#888] text-sm mb-6">{category === "phones" ? "Phone brands" : category === "computers" ? "Computer brands" : "Console brands"}</p>
+            <p className="text-[#888] text-sm mb-6">{category === "phones" ? "Phone brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : "Console brands"}</p>
             <div className="space-y-3">
               {category === "phones" && [
                 { id: "iphone" as const, label: "Apple iPhone", sub: "iPhone 11 and newer", icon: "📱" },
@@ -947,6 +1061,25 @@ export default function Home() {
               ].map((b) => (
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_pc") { setInquiryCategory("Computer"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
+                  setDeviceType(b.id); setStep("model"); pushHistory("model");
+                }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
+                  <span className="flex-shrink-0">{b.brandIcon}</span>
+                  <div className="flex-1"><p className="font-semibold text-white text-lg">{b.label}</p><p className="text-[#888] text-sm">{b.sub}</p></div>
+                  <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </button>
+              ))}
+              {category === "desktops" && [
+                { id: "apple_desktop" as const, label: "Apple", sub: "Mac Studio, Mac Mini, Mac Pro, iMac", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#333"/><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></svg> },
+                { id: "dell_desktop" as const, label: "Dell", sub: "OptiPlex, XPS, Precision, Inspiron", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#007db8"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">DELL</text></svg> },
+                { id: "lenovo_desktop" as const, label: "Lenovo", sub: "ThinkCentre, Legion Tower, IdeaCentre", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg> },
+                { id: "hp_desktop" as const, label: "HP", sub: "EliteDesk, OMEN, Envy, Pavilion", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#0096d6"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">hp</text></svg> },
+                { id: "asus_desktop" as const, label: "Asus", sub: "ROG, TUF Gaming, ExpertCenter, NUC", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">ASUS</text></svg> },
+                { id: "alienware_desktop" as const, label: "Alienware", sub: "Aurora R13, R15, R16", brandIcon: <span className="text-[40px] leading-none">👽</span> },
+                { id: "msi_desktop" as const, label: "MSI", sub: "MEG, MAG Trident, Codex, PRO", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#eb1c24"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold" fontFamily="Arial">MSI</text></svg> },
+                { id: "other_desktop" as const, label: "Other Brand", sub: "Any other desktop", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#444"/><rect x="10" y="8" width="20" height="16" rx="2" fill="none" stroke="#fff" strokeWidth="1.5"/><line x1="14" y1="28" x2="26" y2="28" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/><line x1="20" y1="24" x2="20" y2="28" stroke="#fff" strokeWidth="1.5"/></svg> },
+              ].map((b) => (
+                <button key={b.id} onClick={() => {
+                  if (b.id === "other_desktop") { setInquiryCategory("Desktop"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
                 }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
                   <span className="flex-shrink-0">{b.brandIcon}</span>
