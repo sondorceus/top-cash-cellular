@@ -841,10 +841,10 @@ export default function Home() {
               Cash, Venmo, Zelle, or PayPal.
             </p>
 
-            <div className="glow-border mb-6 p-[3px]">
+            <div className="glow-border mb-6 p-[3px] md:inline-block">
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
-                className="w-full md:w-auto md:px-16 bg-[#00c853] text-white py-5 md:py-6 rounded-[14px] text-xl md:text-2xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20 relative z-10"
+                className="w-full bg-[#00c853] text-white py-5 md:py-6 md:px-16 rounded-[14px] text-xl md:text-2xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20 relative z-10"
               >
                 Sell Your Device
               </button>
@@ -928,14 +928,14 @@ export default function Home() {
                     if (dt) { setDeviceType(dt as DeviceType); setStep("model"); pushHistory("model"); return; }
                     setCategory(cat.id); setStep("brand"); pushHistory("brand");
                   }}
-                  className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
+                  className="flex flex-col items-center justify-center p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
                 >
                   {(cat as { customIcon?: boolean }).customIcon ? (
-                    <svg className="w-8 h-6 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
+                    <svg className="w-8 h-6 md:w-10 md:h-8 mb-1.5 md:mb-2 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
                   ) : (
-                    <span className="text-2xl mb-1.5">{cat.icon}</span>
+                    <span className="text-2xl md:text-3xl mb-1.5 md:mb-2">{cat.icon}</span>
                   )}
-                  <p className="font-semibold text-white text-xs text-center">{cat.label}</p>
+                  <p className="font-semibold text-white text-xs md:text-sm text-center">{cat.label}</p>
                 </button>
               ))}
             </div>
