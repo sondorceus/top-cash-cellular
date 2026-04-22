@@ -937,7 +937,6 @@ export default function Home() {
                 { id: "computers" as const, label: "Sell Graphics Card", icon: "⚡", direct: true },
                 { id: "drones" as const, label: "Sell Drone", icon: "🛸" },
                 { id: "vr" as const, label: "Sell VR", icon: "🥽" },
-                { id: "computers" as const, label: "Sell Monitor", icon: "🖥️", direct: true },
               ].map((cat, idx) => (
                 <button
                   key={idx}
