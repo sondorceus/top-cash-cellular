@@ -95,17 +95,17 @@ const IPAD_SERIES = [
     { id: "ipadpro129g6", label: "iPad Pro 12.9\" 6th Gen", base: 270 },
     { id: "ipadpro11g4", label: "iPad Pro 11\" 4th Gen", base: 225 },
   ]},
-  { id: "ipadair", label: "iPad Air", topPrice: 360, image: "/ipadair.webp", variants: [
+  { id: "ipadair", label: "iPad Air", topPrice: 360, image: "/ipadair.png", variants: [
     { id: "ipadair13m3", label: "iPad Air 13\" M3", base: 360 },
     { id: "ipadair11m3", label: "iPad Air 11\" M3", base: 275 },
     { id: "ipadair13m2", label: "iPad Air 13\" M2", base: 275 },
     { id: "ipadair11m2", label: "iPad Air 11\" M2", base: 200 },
   ]},
-  { id: "ipadmini", label: "iPad Mini", topPrice: 225, image: "/ipadmini.webp", variants: [
+  { id: "ipadmini", label: "iPad Mini", topPrice: 225, image: "/ipadmini.png", variants: [
     { id: "ipadmini7", label: "iPad Mini 7th Gen", base: 225 },
     { id: "ipadmini6", label: "iPad Mini 6th Gen", base: 150 },
   ]},
-  { id: "ipadbase", label: "iPad", topPrice: 150, image: "/ipadbase.webp", variants: [
+  { id: "ipadbase", label: "iPad", topPrice: 150, image: "/ipadbase.png", variants: [
     { id: "ipad10", label: "iPad 10th Gen", base: 150 },
     { id: "ipad9", label: "iPad 9th Gen", base: 100 },
   ]},
@@ -846,7 +846,7 @@ export default function Home() {
                   {IPAD_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
                       {(s as { image?: string }).image ? (
-                        <img src={(s as { image?: string }).image} alt={s.label} loading="lazy" className="w-14 h-14 object-contain mb-1" style={{ mixBlendMode: 'multiply', filter: 'brightness(1.6) contrast(1.1)' }} />
+                        <img src={(s as { image?: string }).image} alt={s.label} loading="lazy" className="w-14 h-14 object-contain mb-1" />
                       ) : (
                         <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
                       )}
@@ -1071,13 +1071,13 @@ export default function Home() {
           <div className="max-w-lg mx-auto px-4 pt-12 pb-8 text-center">
             <div className="flex items-center justify-center gap-5 mb-2">
               {(() => {
-                const imgMap: Record<string, string> = { ip17e: "/iphone17e.png", ip17pm: "/iphone17.png", ip17p: "/iphone17.png", ip17air: "/iphone17air.png", ip17plus: "/iphone17plus.png", ip17: "/iphone17base.png", ip16pm: "/iphone16.png", ip16p: "/iphone16.png", ip16plus: "/iphone16plus.png", ip16: "/iphone16base.png", ip16e: "/iphone16e.png", ip15pm: "/iphone15.png", ip15p: "/iphone15.png", ip15plus: "/iphone15.png", ip15: "/iphone15base.png", ip14pm: "/iphone14.png", ip14p: "/iphone14.png", ip14plus: "/iphone14plus.png", ip14: "/iphone14base.png", ip13pm: "/iphone13.png", ip13p: "/iphone13.png", ip13: "/iphone13base.png", ip12pm: "/iphone12.png", ip12: "/iphone12base.png", ip12mini: "/iphone12mini.png", ip11pm: "/iphone11.png", ip11: "/iphone11base.png", ipadpro13m5: "/ipadpro.png", ipadpro11m5: "/ipadpro.png", ipad10: "/ipadbase.webp", ipad9: "/ipadbase.webp", ipadair13m3: "/ipadair.webp", ipadair11m3: "/ipadair.webp", ipadair13m2: "/ipadair.webp", ipadair11m2: "/ipadair.webp", ipadmini7: "/ipadmini.webp", ipadmini6: "/ipadmini.webp" };
+                const imgMap: Record<string, string> = { ip17e: "/iphone17e.png", ip17pm: "/iphone17.png", ip17p: "/iphone17.png", ip17air: "/iphone17air.png", ip17plus: "/iphone17plus.png", ip17: "/iphone17base.png", ip16pm: "/iphone16.png", ip16p: "/iphone16.png", ip16plus: "/iphone16plus.png", ip16: "/iphone16base.png", ip16e: "/iphone16e.png", ip15pm: "/iphone15.png", ip15p: "/iphone15.png", ip15plus: "/iphone15.png", ip15: "/iphone15base.png", ip14pm: "/iphone14.png", ip14p: "/iphone14.png", ip14plus: "/iphone14plus.png", ip14: "/iphone14base.png", ip13pm: "/iphone13.png", ip13p: "/iphone13.png", ip13: "/iphone13base.png", ip12pm: "/iphone12.png", ip12: "/iphone12base.png", ip12mini: "/iphone12mini.png", ip11pm: "/iphone11.png", ip11: "/iphone11base.png", ipadpro13m5: "/ipadpro.png", ipadpro11m5: "/ipadpro.png", ipad10: "/ipadbase.png", ipad9: "/ipadbase.png", ipadair13m3: "/ipadair.png", ipadair11m3: "/ipadair.png", ipadair13m2: "/ipadair.png", ipadair11m2: "/ipadair.png", ipadmini7: "/ipadmini.png", ipadmini6: "/ipadmini.png" };
                 const isTablet = deviceType === "ipad";
                 const fallbackImg = isTablet ? "/ipad.png" : null;
                 const src = imgMap[model.id] || fallbackImg;
                 const sizeClass = isTablet ? "w-28 h-28" : "w-20 h-20";
                 if (!src) return null;
-                if (isTablet) return <img src={src} alt={model.label} className={`${sizeClass} object-contain`} style={{ mixBlendMode: 'multiply', filter: 'brightness(1.6) contrast(1.1)' }} />;
+                if (isTablet) return <img src={src} alt={model.label} className={`${sizeClass} object-contain`} />;
                 return <img src={src} alt={model.label} className={`${sizeClass} object-contain`} />;
               })()}
               <div>
