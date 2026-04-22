@@ -1401,7 +1401,7 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 <div className="space-y-2">
                   {models.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); const ns = (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" || deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch" || deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr") ? "condition" : "storage"; setStep(ns); pushHistory(ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
+                    <button key={m.id} onClick={() => { setModel(m); const ns = (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" || deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch") ? "condition" : "storage"; setStep(ns); pushHistory(ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">up to ${(m as { base?: number }).base}</span>
