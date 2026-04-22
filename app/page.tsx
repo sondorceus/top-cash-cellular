@@ -86,6 +86,32 @@ const MACBOOK_MODELS = [
   { id: "mbp13m1", label: "MacBook Pro 13\" M1", base: 400 },
 ];
 
+const SAMSUNG_PC_MODELS = [
+  { id: "sgbk4u", label: "Galaxy Book 4 Ultra", base: 750 },
+  { id: "sgbk4p", label: "Galaxy Book 4 Pro 360", base: 600 },
+  { id: "sgbk4pro", label: "Galaxy Book 4 Pro", base: 520 },
+  { id: "sgbk4", label: "Galaxy Book 4", base: 350 },
+  { id: "sgbk3u", label: "Galaxy Book 3 Ultra", base: 580 },
+  { id: "sgbk3p", label: "Galaxy Book 3 Pro 360", base: 450 },
+  { id: "sgbk3pro", label: "Galaxy Book 3 Pro", base: 380 },
+  { id: "sgbk3", label: "Galaxy Book 3", base: 250 },
+  { id: "sgbk2p", label: "Galaxy Book 2 Pro", base: 280 },
+  { id: "sgbk2", label: "Galaxy Book 2", base: 180 },
+];
+
+const LENOVO_MODELS = [
+  { id: "lntp14g5", label: "ThinkPad X1 Carbon Gen 12", base: 700 },
+  { id: "lntp14g4", label: "ThinkPad X1 Carbon Gen 11", base: 550 },
+  { id: "lntp14g3", label: "ThinkPad X1 Carbon Gen 10", base: 400 },
+  { id: "lnyoga9", label: "Yoga 9i 14\" Gen 9", base: 600 },
+  { id: "lnyoga7", label: "Yoga 7i 16\" Gen 9", base: 450 },
+  { id: "lnslim7", label: "IdeaPad Slim 7 Pro", base: 380 },
+  { id: "lnslim5", label: "IdeaPad Slim 5", base: 250 },
+  { id: "lnlegion7", label: "Legion Pro 7i Gen 9", base: 850 },
+  { id: "lnlegion5", label: "Legion 5i Gen 9", base: 550 },
+  { id: "lnlegion5g8", label: "Legion 5i Gen 8", base: 400 },
+];
+
 const IPAD_SERIES = [
   { id: "ipadpro", label: "iPad Pro", topPrice: 610, image: "/ipadpro.png", variants: [
     { id: "ipadpro13m5", label: "iPad Pro 13\" M5", base: 610 },
@@ -212,6 +238,28 @@ const STORAGE_MAP: Record<string, string[]> = {
   mba13m2: ["256", "512"],
   mba13m1: ["256", "512"],
   mbp13m1: ["256", "512"],
+  // Samsung Computers
+  sgbk4u: ["512", "1tb"],
+  sgbk4p: ["512", "1tb"],
+  sgbk4pro: ["256", "512"],
+  sgbk4: ["256", "512"],
+  sgbk3u: ["512", "1tb"],
+  sgbk3p: ["512", "1tb"],
+  sgbk3pro: ["256", "512"],
+  sgbk3: ["256", "512"],
+  sgbk2p: ["256", "512"],
+  sgbk2: ["256", "512"],
+  // Lenovo
+  lntp14g5: ["256", "512", "1tb"],
+  lntp14g4: ["256", "512", "1tb"],
+  lntp14g3: ["256", "512"],
+  lnyoga9: ["512", "1tb"],
+  lnyoga7: ["256", "512"],
+  lnslim7: ["256", "512"],
+  lnslim5: ["256", "512"],
+  lnlegion7: ["512", "1tb"],
+  lnlegion5: ["256", "512", "1tb"],
+  lnlegion5g8: ["256", "512"],
   // iPads
   ipadpro13m5: ["256", "512", "1tb"],
   ipadpro11m5: ["256", "512", "1tb"],
@@ -260,7 +308,7 @@ const FAQS = [
 ];
 
 type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
-type DeviceType = "iphone" | "android" | "macbook" | "console" | "ipad" | null;
+type DeviceType = "iphone" | "android" | "macbook" | "samsung_pc" | "lenovo" | "console" | "ipad" | null;
 
 function FairPromise() {
   return (
@@ -458,7 +506,7 @@ export default function Home() {
 
   const iphoneVariants = selectedSeries ? IPHONE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const ipadVariants = selectedSeries ? IPAD_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -782,6 +830,8 @@ export default function Home() {
               ))}
               {category === "computers" && [
                 { id: "macbook" as const, label: "Apple MacBook", sub: "MacBook Air & Pro, M1+", icon: "💻" },
+                { id: "samsung_pc" as const, label: "Samsung Computers", sub: "Galaxy Book 2, 3, 4 series", icon: "💻" },
+                { id: "lenovo" as const, label: "Lenovo", sub: "ThinkPad, Yoga, Legion, IdeaPad", icon: "💻" },
               ].map((b) => (
                 <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
                   <span className="text-3xl">{b.icon}</span>
