@@ -819,14 +819,14 @@ export default function Home() {
           </div>
           {/* HERO: Phone → Cash Visual */}
           <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-8 pb-4">
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <img src="/iphone17.png" alt="Phone" className="w-16 h-16 object-contain" />
+            <div className="flex items-center justify-center gap-4 md:gap-6 mb-4 md:mb-8">
+              <img src="/iphone17.png" alt="Phone" className="w-16 h-16 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain" />
               <div className="flex items-center gap-0.5 animate-pulse">
-                <svg className="w-6 h-6 text-[#00c853]" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-                <svg className="w-6 h-6 text-[#00c853]/60" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-                <svg className="w-6 h-6 text-[#00c853]/30" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                <svg className="w-6 h-6 md:w-8 md:h-8 text-[#00c853]" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                <svg className="w-6 h-6 md:w-8 md:h-8 text-[#00c853]/60" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                <svg className="w-6 h-6 md:w-8 md:h-8 text-[#00c853]/30" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
               </div>
-              <span className="text-4xl">💰</span>
+              <span className="text-4xl md:text-6xl">💰</span>
             </div>
           </div>
 
@@ -844,7 +844,7 @@ export default function Home() {
             <div className="glow-border mb-6 p-[3px] md:inline-block">
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
-                className="w-full bg-[#00c853] text-white py-5 md:py-6 md:px-16 rounded-[14px] text-xl md:text-2xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20 relative z-10"
+                className="w-full bg-[#00c853] text-white py-5 md:py-8 lg:py-10 md:px-24 lg:px-32 rounded-[14px] text-xl md:text-3xl lg:text-4xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20 relative z-10"
               >
                 Sell Your Device
               </button>
