@@ -282,6 +282,42 @@ const NINTENDO_MODELS = [
 
 const CONSOLE_MODELS = [...SONY_MODELS, ...MICROSOFT_MODELS, ...NINTENDO_MODELS];
 
+const APPLEWATCH_MODELS = [
+  { id: "awu2", label: "Apple Watch Ultra 2", base: 450 },
+  { id: "awu1", label: "Apple Watch Ultra", base: 350 },
+  { id: "aws10", label: "Apple Watch Series 10", base: 280 },
+  { id: "aws9", label: "Apple Watch Series 9", base: 220 },
+  { id: "aws8", label: "Apple Watch Series 8", base: 170 },
+  { id: "aws7", label: "Apple Watch Series 7", base: 120 },
+  { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 130 },
+  { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 80 },
+];
+
+const PIXELWATCH_MODELS = [
+  { id: "pw3", label: "Pixel Watch 3", base: 200 },
+  { id: "pw2", label: "Pixel Watch 2", base: 130 },
+  { id: "pw1", label: "Pixel Watch", base: 80 },
+];
+
+const GARMIN_MODELS = [
+  { id: "gfenix7", label: "Fenix 7", base: 300 },
+  { id: "gfenix7s", label: "Fenix 7S", base: 250 },
+  { id: "gepix2", label: "Epix Gen 2", base: 280 },
+  { id: "gfr965", label: "Forerunner 965", base: 250 },
+  { id: "gfr265", label: "Forerunner 265", base: 180 },
+  { id: "gvenu3", label: "Venu 3", base: 220 },
+  { id: "gvenu2", label: "Venu 2", base: 130 },
+];
+
+const SAMSUNGWATCH_MODELS = [
+  { id: "sgwu", label: "Galaxy Watch Ultra", base: 350 },
+  { id: "sgw7", label: "Galaxy Watch 7", base: 150 },
+  { id: "sgw6c", label: "Galaxy Watch 6 Classic", base: 160 },
+  { id: "sgw6", label: "Galaxy Watch 6", base: 110 },
+  { id: "sgw5p", label: "Galaxy Watch 5 Pro", base: 130 },
+  { id: "sgw5", label: "Galaxy Watch 5", base: 80 },
+];
+
 const CONDITIONS = [
   { id: "brandnew", label: "Brand New", desc: "Factory sealed, never activated", multiplier: 1.15, icon: "🆕", details: ["Still in factory original packaging", "Plastic film still on the device and has not been reapplied", "Device is not activated", "Must come with the original box with matching serial number", "Contains all original accessories"] },
   { id: "flawless", label: "Flawless", desc: "Like new, zero signs of use", multiplier: 1.0, icon: "✨", details: ["Zero scratches, scuffs, or other marks — looks like new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
@@ -536,7 +572,7 @@ const FAQS = [
 ];
 
 type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
-type DeviceType = "iphone" | "android" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "sony" | "microsoft" | "nintendo" | "ipad" | null;
+type DeviceType = "iphone" | "android" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "sony" | "microsoft" | "nintendo" | "applewatch" | "pixelwatch" | "garmin" | "samsungwatch" | "ipad" | null;
 
 function FairPromise() {
   return (
@@ -569,7 +605,7 @@ function TrustBadge() {
 
 export default function Home() {
   const [step, setStep] = useState<Step>("device");
-  const [category, setCategory] = useState<"phones" | "computers" | "desktops" | "consoles" | null>(null);
+  const [category, setCategory] = useState<"phones" | "computers" | "desktops" | "consoles" | "watches" | null>(null);
   const [deviceType, setDeviceType] = useState<DeviceType>(null);
   const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
   const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
@@ -706,7 +742,7 @@ export default function Home() {
     else if (step === "brand") { setStep("category"); setCategory(null); }
     else if (step === "category") { setStep("device"); }
     else if (step === "storage") { setStep("model"); setModel(null); }
-    else if (step === "condition") { if (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo") { setStep("model"); setModel(null); } else { setStep("storage"); setStorage(null); } }
+    else if (step === "condition") { if (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" || deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch") { setStep("model"); setModel(null); } else { setStep("storage"); setStorage(null); } }
     else if (step === "carrier") { setStep("condition"); setCondition(null); }
     else if (step === "quote") { if (carrier) { setStep("carrier"); setCarrier(null); } else { setStep("condition"); setCondition(null); } }
     else if (step === "checkout") setStep("quote");
@@ -734,7 +770,7 @@ export default function Home() {
 
   const iphoneVariants = selectedSeries ? IPHONE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const ipadVariants = selectedSeries ? IPAD_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS : deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -857,7 +893,7 @@ export default function Home() {
                 { id: "phones" as const, label: "Sell Tablet", icon: "⬜", direct: false, deviceType: "ipad" as const, customIcon: true },
                 { id: "computers" as const, label: "Sell Laptop", icon: "💻" },
                 { id: "desktops" as const, label: "Sell Desktop", icon: "🖥️" },
-                { id: "phones" as const, label: "Sell Smartwatch", icon: "⌚", direct: true, subcats: ["Apple Watch", "Google Pixel Watch", "Garmin"] },
+                { id: "watches" as const, label: "Sell Smartwatch", icon: "⌚" },
                 { id: "consoles" as const, label: "Sell Game Console", icon: "🎮" },
                 { id: "computers" as const, label: "Sell Graphics Card", icon: "⚡", direct: true },
                 { id: "computers" as const, label: "Sell Drone", icon: "🛸", direct: true },
@@ -1044,7 +1080,7 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">Select your brand</h2>
-            <p className="text-[#888] text-sm mb-6">{category === "phones" ? "Phone brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : "Console brands"}</p>
+            <p className="text-[#888] text-sm mb-6">{category === "phones" ? "Phone brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : category === "watches" ? "Smartwatch brands" : "Console brands"}</p>
             <div className="space-y-3">
               {category === "phones" && [
                 { id: "iphone" as const, label: "Apple iPhone", sub: "iPhone 11 and newer", icon: "📱" },
@@ -1088,6 +1124,22 @@ export default function Home() {
               ].map((b) => (
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_desktop") { setInquiryCategory("Desktop"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
+                  setDeviceType(b.id); setStep("model"); pushHistory("model");
+                }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
+                  <span className="flex-shrink-0">{b.brandIcon}</span>
+                  <div className="flex-1"><p className="font-semibold text-white text-lg">{b.label}</p><p className="text-[#888] text-sm">{b.sub}</p></div>
+                  <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </button>
+              ))}
+              {category === "watches" && [
+                { id: "applewatch" as const, label: "Apple Watch", sub: "Ultra, Series 7–10, SE", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#333"/><rect x="14" y="10" width="12" height="20" rx="5" fill="none" stroke="#fff" strokeWidth="1.5"/><circle cx="20" cy="20" r="4" fill="none" stroke="#fff" strokeWidth="1"/><circle cx="27" cy="17" r="1.5" fill="#fff"/></svg> },
+                { id: "samsungwatch" as const, label: "Samsung", sub: "Galaxy Watch Ultra, 5–7", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1428a0"/><circle cx="20" cy="20" r="9" fill="none" stroke="#fff" strokeWidth="1.5"/><line x1="20" y1="14" x2="20" y2="20" stroke="#fff" strokeWidth="1.2"/><line x1="20" y1="20" x2="25" y2="22" stroke="#fff" strokeWidth="1.2"/></svg> },
+                { id: "pixelwatch" as const, label: "Google Pixel Watch", sub: "Pixel Watch 1–3", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1a73e8"/><circle cx="20" cy="20" r="9" fill="none" stroke="#fff" strokeWidth="1.5"/><circle cx="20" cy="20" r="2" fill="#fff"/><line x1="20" y1="13" x2="20" y2="16" stroke="#fff" strokeWidth="1"/><line x1="20" y1="24" x2="20" y2="27" stroke="#fff" strokeWidth="1"/><line x1="13" y1="20" x2="16" y2="20" stroke="#fff" strokeWidth="1"/><line x1="24" y1="20" x2="27" y2="20" stroke="#fff" strokeWidth="1"/></svg> },
+                { id: "garmin" as const, label: "Garmin", sub: "Fenix, Epix, Forerunner, Venu", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1d4e89"/><text x="20" y="24" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">GARMIN</text></svg> },
+                { id: "other_watch" as const, label: "Other Brand", sub: "Fitbit, Amazfit, etc.", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#444"/><circle cx="20" cy="20" r="9" fill="none" stroke="#fff" strokeWidth="1.5"/><text x="20" y="24" textAnchor="middle" fill="#fff" fontSize="10">?</text></svg> },
+              ].map((b) => (
+                <button key={b.id} onClick={() => {
+                  if (b.id === "other_watch") { setInquiryCategory("Smartwatch"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
                 }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
                   <span className="flex-shrink-0">{b.brandIcon}</span>
@@ -1215,7 +1267,7 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 <div className="space-y-2">
                   {models.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); const ns = (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo") ? "condition" : "storage"; setStep(ns); pushHistory(ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
+                    <button key={m.id} onClick={() => { setModel(m); const ns = (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" || deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch") ? "condition" : "storage"; setStep(ns); pushHistory(ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">up to ${m.base}</span>
