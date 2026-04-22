@@ -105,7 +105,7 @@ const IPAD_SERIES = [
     { id: "ipadmini7", label: "iPad Mini 7th Gen", base: 225 },
     { id: "ipadmini6", label: "iPad Mini 6th Gen", base: 150 },
   ]},
-  { id: "ipadbase", label: "iPad", topPrice: 150, variants: [
+  { id: "ipadbase", label: "iPad", topPrice: 150, image: "/ipadbase.webp", variants: [
     { id: "ipad10", label: "iPad 10th Gen", base: 150 },
     { id: "ipad9", label: "iPad 9th Gen", base: 100 },
   ]},
@@ -1071,7 +1071,7 @@ export default function Home() {
           <div className="max-w-lg mx-auto px-4 pt-12 pb-8 text-center">
             <div className="flex items-center justify-center gap-5 mb-2">
               {(() => {
-                const imgMap: Record<string, string> = { ip17e: "/iphone17e.png", ip17pm: "/iphone17.png", ip17p: "/iphone17.png", ip17air: "/iphone17air.png", ip17plus: "/iphone17plus.png", ip17: "/iphone17base.png", ip16pm: "/iphone16.png", ip16p: "/iphone16.png", ip16plus: "/iphone16plus.png", ip16: "/iphone16base.png", ip16e: "/iphone16e.png", ip15pm: "/iphone15.png", ip15p: "/iphone15.png", ip15plus: "/iphone15.png", ip15: "/iphone15base.png", ip14pm: "/iphone14.png", ip14p: "/iphone14.png", ip14plus: "/iphone14plus.png", ip14: "/iphone14base.png", ip13pm: "/iphone13.png", ip13p: "/iphone13.png", ip13: "/iphone13base.png", ip12pm: "/iphone12.png", ip12: "/iphone12base.png", ip12mini: "/iphone12mini.png", ip11pm: "/iphone11.png", ip11: "/iphone11base.png", ipadpro13m5: "/ipadpro.png", ipadpro11m5: "/ipadpro.png" };
+                const imgMap: Record<string, string> = { ip17e: "/iphone17e.png", ip17pm: "/iphone17.png", ip17p: "/iphone17.png", ip17air: "/iphone17air.png", ip17plus: "/iphone17plus.png", ip17: "/iphone17base.png", ip16pm: "/iphone16.png", ip16p: "/iphone16.png", ip16plus: "/iphone16plus.png", ip16: "/iphone16base.png", ip16e: "/iphone16e.png", ip15pm: "/iphone15.png", ip15p: "/iphone15.png", ip15plus: "/iphone15.png", ip15: "/iphone15base.png", ip14pm: "/iphone14.png", ip14p: "/iphone14.png", ip14plus: "/iphone14plus.png", ip14: "/iphone14base.png", ip13pm: "/iphone13.png", ip13p: "/iphone13.png", ip13: "/iphone13base.png", ip12pm: "/iphone12.png", ip12: "/iphone12base.png", ip12mini: "/iphone12mini.png", ip11pm: "/iphone11.png", ip11: "/iphone11base.png", ipadpro13m5: "/ipadpro.png", ipadpro11m5: "/ipadpro.png", ipad10: "/ipadbase.webp", ipad9: "/ipadbase.webp" };
                 const isTablet = deviceType === "ipad";
                 const fallbackImg = isTablet ? "/ipad.png" : null;
                 const src = imgMap[model.id] || fallbackImg;
