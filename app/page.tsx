@@ -112,6 +112,64 @@ const LENOVO_MODELS = [
   { id: "lnlegion5g8", label: "Legion 5i Gen 8", base: 400 },
 ];
 
+const DELL_MODELS = [
+  { id: "dxps17", label: "XPS 17 (2024)", base: 750 },
+  { id: "dxps15", label: "XPS 15 (2024)", base: 620 },
+  { id: "dxps13", label: "XPS 13 (2024)", base: 480 },
+  { id: "dxps15g23", label: "XPS 15 (2023)", base: 500 },
+  { id: "dxps13g23", label: "XPS 13 (2023)", base: 380 },
+  { id: "dlat7440", label: "Latitude 7440", base: 420 },
+  { id: "dlat5540", label: "Latitude 5540", base: 300 },
+  { id: "dinsp16p", label: "Inspiron 16 Plus", base: 350 },
+  { id: "dinsp15", label: "Inspiron 15", base: 220 },
+  { id: "dinsp14", label: "Inspiron 14", base: 200 },
+];
+
+const ALIENWARE_MODELS = [
+  { id: "awm18r2", label: "Alienware m18 R2", base: 1100 },
+  { id: "awm16r2", label: "Alienware m16 R2", base: 850 },
+  { id: "awx16r2", label: "Alienware x16 R2", base: 750 },
+  { id: "awx14r2", label: "Alienware x14 R2", base: 600 },
+  { id: "awm18r1", label: "Alienware m18 R1", base: 800 },
+  { id: "awm16r1", label: "Alienware m16 R1", base: 600 },
+  { id: "awx16r1", label: "Alienware x16 R1", base: 550 },
+  { id: "awx14r1", label: "Alienware x14 R1", base: 420 },
+];
+
+const HP_MODELS = [
+  { id: "hpspec16", label: "Spectre x360 16\" (2024)", base: 650 },
+  { id: "hpspec14", label: "Spectre x360 14\" (2024)", base: 520 },
+  { id: "hpspec16g23", label: "Spectre x360 16\" (2023)", base: 480 },
+  { id: "hpenvy16", label: "Envy 16\" (2024)", base: 420 },
+  { id: "hpenvy15", label: "Envy x360 15\" (2024)", base: 350 },
+  { id: "hpomen17", label: "OMEN 17\" (2024)", base: 700 },
+  { id: "hpomen16", label: "OMEN 16\" (2024)", base: 550 },
+  { id: "hppav15", label: "Pavilion 15\"", base: 200 },
+  { id: "hpelite840", label: "EliteBook 840 G10", base: 450 },
+  { id: "hpprobook", label: "ProBook 450 G10", base: 300 },
+];
+
+const ACER_MODELS = [
+  { id: "acswx14", label: "Swift X 14 (2024)", base: 480 },
+  { id: "acsw14", label: "Swift Go 14 (2024)", base: 380 },
+  { id: "acpred16", label: "Predator Helios 16 (2024)", base: 750 },
+  { id: "acpred18", label: "Predator Helios 18 (2024)", base: 900 },
+  { id: "acnit16", label: "Nitro V 16 (2024)", base: 400 },
+  { id: "acnit15", label: "Nitro 5 (2023)", base: 300 },
+  { id: "acasp15", label: "Aspire 5", base: 200 },
+  { id: "acasp3", label: "Aspire 3", base: 150 },
+];
+
+const LG_PC_MODELS = [
+  { id: "lggr17", label: "LG Gram 17\" (2024)", base: 600 },
+  { id: "lggr16", label: "LG Gram 16\" (2024)", base: 520 },
+  { id: "lggr14", label: "LG Gram 14\" (2024)", base: 420 },
+  { id: "lggr17g23", label: "LG Gram 17\" (2023)", base: 450 },
+  { id: "lggr16g23", label: "LG Gram 16\" (2023)", base: 380 },
+  { id: "lggrpro16", label: "LG Gram Pro 16\" (2024)", base: 680 },
+  { id: "lgultgear", label: "LG UltraGear 16\" (2024)", base: 550 },
+];
+
 const IPAD_SERIES = [
   { id: "ipadpro", label: "iPad Pro", topPrice: 610, image: "/ipadpro.png", variants: [
     { id: "ipadpro13m5", label: "iPad Pro 13\" M5", base: 610 },
@@ -260,6 +318,54 @@ const STORAGE_MAP: Record<string, string[]> = {
   lnlegion7: ["512", "1tb"],
   lnlegion5: ["256", "512", "1tb"],
   lnlegion5g8: ["256", "512"],
+  // Dell
+  dxps17: ["512", "1tb"],
+  dxps15: ["512", "1tb"],
+  dxps13: ["256", "512", "1tb"],
+  dxps15g23: ["512", "1tb"],
+  dxps13g23: ["256", "512"],
+  dlat7440: ["256", "512"],
+  dlat5540: ["256", "512"],
+  dinsp16p: ["256", "512", "1tb"],
+  dinsp15: ["256", "512"],
+  dinsp14: ["256", "512"],
+  // Alienware
+  awm18r2: ["512", "1tb"],
+  awm16r2: ["512", "1tb"],
+  awx16r2: ["512", "1tb"],
+  awx14r2: ["512", "1tb"],
+  awm18r1: ["512", "1tb"],
+  awm16r1: ["512", "1tb"],
+  awx16r1: ["512", "1tb"],
+  awx14r1: ["256", "512"],
+  // HP
+  hpspec16: ["512", "1tb"],
+  hpspec14: ["512", "1tb"],
+  hpspec16g23: ["512", "1tb"],
+  hpenvy16: ["512", "1tb"],
+  hpenvy15: ["256", "512"],
+  hpomen17: ["512", "1tb"],
+  hpomen16: ["512", "1tb"],
+  hppav15: ["256", "512"],
+  hpelite840: ["256", "512"],
+  hpprobook: ["256", "512"],
+  // Acer
+  acswx14: ["512", "1tb"],
+  acsw14: ["256", "512"],
+  acpred16: ["512", "1tb"],
+  acpred18: ["512", "1tb"],
+  acnit16: ["256", "512"],
+  acnit15: ["256", "512"],
+  acasp15: ["256", "512"],
+  acasp3: ["128", "256"],
+  // LG
+  lggr17: ["512", "1tb"],
+  lggr16: ["256", "512", "1tb"],
+  lggr14: ["256", "512"],
+  lggr17g23: ["512", "1tb"],
+  lggr16g23: ["256", "512"],
+  lggrpro16: ["512", "1tb"],
+  lgultgear: ["512", "1tb"],
   // iPads
   ipadpro13m5: ["256", "512", "1tb"],
   ipadpro11m5: ["256", "512", "1tb"],
@@ -308,7 +414,7 @@ const FAQS = [
 ];
 
 type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
-type DeviceType = "iphone" | "android" | "macbook" | "samsung_pc" | "lenovo" | "console" | "ipad" | null;
+type DeviceType = "iphone" | "android" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "console" | "ipad" | null;
 
 function FairPromise() {
   return (
@@ -506,7 +612,7 @@ export default function Home() {
 
   const iphoneVariants = selectedSeries ? IPHONE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const ipadVariants = selectedSeries ? IPAD_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -830,10 +936,19 @@ export default function Home() {
               ))}
               {category === "computers" && [
                 { id: "macbook" as const, label: "Apple MacBook", sub: "MacBook Air & Pro, M1+", icon: "💻" },
-                { id: "samsung_pc" as const, label: "Samsung Computers", sub: "Galaxy Book 2, 3, 4 series", icon: "💻" },
+                { id: "samsung_pc" as const, label: "Samsung", sub: "Galaxy Book 2, 3, 4 series", icon: "💻" },
+                { id: "dell" as const, label: "Dell", sub: "XPS, Latitude, Inspiron", icon: "💻" },
+                { id: "alienware" as const, label: "Alienware", sub: "m16, m18, x14, x16", icon: "👽" },
+                { id: "hp" as const, label: "HP", sub: "Spectre, Envy, OMEN, EliteBook", icon: "💻" },
                 { id: "lenovo" as const, label: "Lenovo", sub: "ThinkPad, Yoga, Legion, IdeaPad", icon: "💻" },
+                { id: "acer" as const, label: "Acer", sub: "Swift, Predator, Nitro, Aspire", icon: "💻" },
+                { id: "lg_pc" as const, label: "LG", sub: "Gram, Gram Pro, UltraGear", icon: "💻" },
+                { id: "other_pc" as const, label: "Other Brand", sub: "Any other computer", icon: "🖥️" },
               ].map((b) => (
-                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
+                <button key={b.id} onClick={() => {
+                  if (b.id === "other_pc") { setInquiryCategory("Computer"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
+                  setDeviceType(b.id); setStep("model"); pushHistory("model");
+                }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
                   <span className="text-3xl">{b.icon}</span>
                   <div className="flex-1"><p className="font-semibold text-white text-lg">{b.label}</p><p className="text-[#888] text-sm">{b.sub}</p></div>
                   <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
