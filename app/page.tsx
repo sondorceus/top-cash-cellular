@@ -821,8 +821,15 @@ export default function Home() {
             {/* iPhone: Variant list (after series selected) */}
             {deviceType === "iphone" && selectedSeries && (
               <>
-                <h2 className="text-2xl font-bold mb-1">{IPHONE_SERIES.find(s => s.id === selectedSeries)?.label} Series</h2>
-                <p className="text-[#888] text-sm mb-6">Pick your exact model</p>
+                {(() => { const series = IPHONE_SERIES.find(s => s.id === selectedSeries); return series ? (
+                  <div className="flex items-center gap-4 mb-6">
+                    {(series as { image?: string }).image && <img src={(series as { image?: string }).image!} alt={series.label} className="w-20 h-20 object-contain" />}
+                    <div>
+                      <h2 className="text-2xl font-bold">{series.label} Series</h2>
+                      <p className="text-[#888] text-sm">Pick your exact model</p>
+                    </div>
+                  </div>
+                ) : null; })()}
                 <div className="space-y-2">
                   {models.map((m) => (
                     <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
