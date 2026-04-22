@@ -788,7 +788,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#0a0a0a] text-white">
       {/* NAV */}
       <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={reset} aria-label="Go to homepage" className="cursor-pointer">
             <span className="flex items-center gap-2">
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -818,33 +818,33 @@ export default function Home() {
             <p className="text-white text-xs font-semibold">🔥 Limited time: Extra 10% on all iPhones this week</p>
           </div>
           {/* HERO: Phone → Cash Visual */}
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-8 pb-4">
-            <div className="flex items-center justify-center gap-4 md:gap-6 mb-4 md:mb-8">
-              <img src="/iphone17.png" alt="Phone" className="w-16 h-16 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain" />
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-8 pb-4">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <img src="/iphone17.png" alt="Phone" className="w-16 h-16 object-contain" />
               <div className="flex items-center gap-0.5 animate-pulse">
-                <svg className="w-6 h-6 md:w-8 md:h-8 text-[#00c853]" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-                <svg className="w-6 h-6 md:w-8 md:h-8 text-[#00c853]/60" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-                <svg className="w-6 h-6 md:w-8 md:h-8 text-[#00c853]/30" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                <svg className="w-6 h-6 text-[#00c853]" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                <svg className="w-6 h-6 text-[#00c853]/60" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                <svg className="w-6 h-6 text-[#00c853]/30" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
               </div>
-              <span className="text-4xl md:text-6xl">💰</span>
+              <span className="text-4xl">💰</span>
             </div>
           </div>
 
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pb-8">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] mb-3 md:mb-5">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pb-8">
+            <h1 className="text-4xl font-bold tracking-tight leading-[1.08] mb-3">
               Get top dollar<br />for your device.
             </h1>
-            <p className="text-[#888] text-lg md:text-xl mb-1 font-medium">
+            <p className="text-[#888] text-lg mb-1 font-medium">
               Instant quote. Same-day payout available.
             </p>
-            <p className="text-[#888] text-lg md:text-xl mb-6 md:mb-8 font-medium">
+            <p className="text-[#888] text-lg mb-6 font-medium">
               Cash, Venmo, Zelle, or PayPal.
             </p>
 
-            <div className="glow-border mb-6 p-[3px] md:inline-block">
+            <div className="glow-border mb-6 p-[3px]">
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
-                className="w-full bg-[#00c853] text-white py-5 md:py-8 lg:py-10 md:px-24 lg:px-32 rounded-[14px] text-xl md:text-3xl lg:text-4xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20 relative z-10"
+                className="w-full bg-[#00c853] text-white py-5 rounded-[14px] text-xl font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20 relative z-10"
               >
                 Sell Your Device
               </button>
@@ -892,14 +892,14 @@ export default function Home() {
       {/* STEP: CATEGORY */}
       {step === "category" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            <h2 className="text-2xl md:text-4xl font-bold mb-1 md:mb-3">What are you selling?</h2>
-            <p className="text-[#888] text-sm md:text-lg mb-6 md:mb-8">Select a category</p>
-            <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-2 md:gap-4 lg:gap-5">
+            <h2 className="text-2xl font-bold mb-1">What are you selling?</h2>
+            <p className="text-[#888] text-sm mb-6">Select a category</p>
+            <div className="grid grid-cols-4 md:grid-cols-5 gap-2 md:gap-3">
               {[
                 { id: "phones" as const, label: "Sell Phone", icon: "📱" },
                 { id: "phones" as const, label: "Sell Tablet", icon: "⬜", direct: false, deviceType: "ipad" as const, customIcon: true },
@@ -928,14 +928,14 @@ export default function Home() {
                     if (dt) { setDeviceType(dt as DeviceType); setStep("model"); pushHistory("model"); return; }
                     setCategory(cat.id); setStep("brand"); pushHistory("brand");
                   }}
-                  className="flex flex-col items-center justify-center p-4 md:p-8 lg:p-10 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
+                  className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
                 >
                   {(cat as { customIcon?: boolean }).customIcon ? (
-                    <svg className="w-8 h-6 md:w-12 md:h-10 lg:w-14 lg:h-12 mb-1.5 md:mb-3 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
+                    <svg className="w-8 h-6 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
                   ) : (
-                    <span className="text-2xl md:text-4xl lg:text-5xl mb-1.5 md:mb-3">{cat.icon}</span>
+                    <span className="text-2xl mb-1.5">{cat.icon}</span>
                   )}
-                  <p className="font-semibold text-white text-xs md:text-base lg:text-lg text-center">{cat.label}</p>
+                  <p className="font-semibold text-white text-xs text-center">{cat.label}</p>
                 </button>
               ))}
             </div>
@@ -950,7 +950,7 @@ export default function Home() {
       {/* STEP: INQUIRY (unknown categories) — full quote flow */}
       {step === "inquiry" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
             <button onClick={() => { setStep("category"); pushHistory("category"); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -1086,7 +1086,7 @@ export default function Home() {
       {/* STEP: BRAND */}
       {step === "brand" && page === "home" && category && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -1189,7 +1189,7 @@ export default function Home() {
       {/* STEP: MODEL SELECTION */}
       {step === "model" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -1359,7 +1359,7 @@ export default function Home() {
       {/* STEP: STORAGE */}
       {step === "storage" && page === "home" && model && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -1387,7 +1387,7 @@ export default function Home() {
       {/* STEP: CONDITION */}
       {step === "condition" && page === "home" && model && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -1479,7 +1479,7 @@ export default function Home() {
       {/* STEP: CARRIER */}
       {step === "carrier" && page === "home" && model && condition && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -1523,7 +1523,7 @@ export default function Home() {
               ))}
             </div>
           )}
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-12 pb-8 text-center">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-12 pb-8 text-center">
             <div className="flex items-center justify-center gap-5 mb-2">
               {(() => {
                 const imgMap: Record<string, string> = { ip17e: "/iphone17e.png", ip17pm: "/iphone17.png", ip17p: "/iphone17.png", ip17air: "/iphone17air.png", ip17plus: "/iphone17plus.png", ip17: "/iphone17base.png", ip16pm: "/iphone16.png", ip16p: "/iphone16.png", ip16plus: "/iphone16plus.png", ip16: "/iphone16base.png", ip16e: "/iphone16e.png", ip15pm: "/iphone15.png", ip15p: "/iphone15.png", ip15plus: "/iphone15.png", ip15: "/iphone15base.png", ip14pm: "/iphone14.png", ip14p: "/iphone14.png", ip14plus: "/iphone14plus.png", ip14: "/iphone14base.png", ip13pm: "/iphone13.png", ip13p: "/iphone13.png", ip13: "/iphone13base.png", ip12pm: "/iphone12.png", ip12: "/iphone12base.png", ip12mini: "/iphone12mini.png", ip11pm: "/iphone11.png", ip11: "/iphone11base.png", ipadpro13m5: "/ipadpro.png", ipadpro11m5: "/ipadpro.png", ipad10: "/ipadbase.png", ipad9: "/ipadbase.png", ipadair13m3: "/ipadair.png", ipadair11m3: "/ipadair.png", ipadair13m2: "/ipadair.png", ipadair11m2: "/ipadair.png", ipadmini7: "/ipadmini.png", ipadmini6: "/ipadmini.png" };
@@ -1682,7 +1682,7 @@ export default function Home() {
       {/* STEP: CHECKOUT (email capture) */}
       {step === "checkout" && page === "home" && model && condition && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -1775,7 +1775,7 @@ export default function Home() {
       {/* STEP: PAYOUT METHOD */}
       {step === "payout" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -1811,7 +1811,7 @@ export default function Home() {
       {/* STEP: CONTACT INFO */}
       {step === "contact" && page === "home" && model && condition && payout && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -1896,7 +1896,7 @@ export default function Home() {
       {/* STEP: DONE */}
       {step === "done" && page === "home" && model && condition && payout && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-10 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-10 pb-8">
             <div className="text-center mb-6">
               <div className="w-20 h-20 rounded-full bg-[#00c853]/10 flex items-center justify-center mx-auto mb-4">
                 <span className="text-4xl">✅</span>
@@ -1940,7 +1940,7 @@ export default function Home() {
         <>
           {/* HOW IT WORKS — Visual persona example */}
           <section className="py-12 bg-[#0d0d0d]">
-            <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <h2 className="text-xl font-bold text-center mb-2">Get your instant quote</h2>
               <p className="text-[#888] text-sm text-center mb-8">Select your device and condition, and get your offer before you say &ldquo;goodbye, clutter&rdquo;</p>
 
@@ -1992,7 +1992,7 @@ export default function Home() {
 
           {/* SHIP TO US */}
           <section className="py-12 bg-[#0a0a0a]">
-            <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <h2 className="text-xl font-bold text-center mb-2">Not in Austin? Ship to us</h2>
               <p className="text-[#888] text-sm text-center mb-8">Mail your device from anywhere in the US. We pay shipping.</p>
               <div className="grid grid-cols-3 gap-3">
@@ -2015,7 +2015,7 @@ export default function Home() {
 
           {/* BOLD STATS COUNTER */}
           <section className="py-14 bg-[#111]" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
-            <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <p className="text-[#888] text-xs font-semibold uppercase tracking-wider text-center mb-8">Top Cash Cellular by the numbers</p>
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
@@ -2065,7 +2065,7 @@ export default function Home() {
 
           {/* PAYMENT TIMELINE */}
           <section className="py-12 bg-[#0d0d0d]">
-            <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <h2 className="text-xl font-bold text-center mb-2">When do I get paid?</h2>
               <p className="text-[#888] text-sm text-center mb-8">Transparent timelines. No surprises.</p>
               <div className="space-y-3">
@@ -2093,7 +2093,7 @@ export default function Home() {
 
           {/* CTA SECTION */}
           <section className="py-16 bg-[#0a0a0a] text-center">
-            <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <div className="bg-gradient-to-br from-[#00c853]/10 to-transparent border border-[#00c853]/20 rounded-3xl p-8">
                 <p className="text-4xl mb-3">💸</p>
                 <h2 className="text-3xl font-bold mb-2">Still sitting on old tech?</h2>
@@ -2109,7 +2109,7 @@ export default function Home() {
 
           {/* NEWSLETTER CAPTURE */}
           <section className="py-12 bg-[#0d0d0d]">
-            <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
                 <p className="text-xl mb-2">📬</p>
                 <h3 className="text-lg font-bold mb-1">Get price alerts &amp; deals</h3>
@@ -2140,7 +2140,7 @@ export default function Home() {
 
           {/* FAQ */}
           <section className="py-12 bg-[#111]">
-            <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
               <div className="space-y-2">
                 {FAQS.map((faq, i) => (
@@ -2162,7 +2162,7 @@ export default function Home() {
 
           {/* GREEN / SUSTAINABILITY */}
           <section className="py-12 bg-[#0a0a0a]">
-            <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <div className="bg-[#00c853]/5 border border-[#00c853]/15 rounded-2xl p-6 text-center">
                 <p className="text-2xl mb-2">����</p>
                 <h3 className="text-lg font-bold mb-1">Good for your wallet. Better for the planet.</h3>
@@ -2173,7 +2173,7 @@ export default function Home() {
 
           {/* LOCAL CREDIBILITY */}
           <section className="py-8 bg-[#111]">
-            <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <div className="flex flex-wrap items-center justify-center gap-4 text-center">
                 <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
                   <span className="text-sm">📍</span>
@@ -2197,7 +2197,7 @@ export default function Home() {
 
           {/* BULK / BUSINESS SELLING */}
           <section className="py-12 bg-[#0a0a0a]">
-            <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                 <div className="text-center mb-4">
                   <p className="text-2xl mb-2">🏢</p>
@@ -2220,7 +2220,7 @@ export default function Home() {
       {/* INNER PAGES */}
       {(page === "about" || page === "privacy" || page === "terms") && (
         <section className="min-h-[60vh] animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-6 pb-16">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-16">
             <button onClick={() => { setPage("home"); window.scrollTo({ top: 0 }); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Home
@@ -2333,7 +2333,7 @@ export default function Home() {
 
       {/* FOOTER */}
       <footer className="mt-auto bg-[#060606] text-[#888] py-10 border-t border-white/10">
-        <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4">
+        <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div>
               <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Company</p>
@@ -2492,7 +2492,7 @@ export default function Home() {
 
       {cookieConsent === null && (
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111]/95 backdrop-blur-sm border-t border-white/10 px-3 py-2 animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto flex items-center gap-3">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto flex items-center gap-3">
             <p className="text-white/80 text-[11px] flex-1">We use cookies to improve your experience.</p>
             <button onClick={() => { localStorage.setItem("cookie-consent", "essential"); setCookieConsent("essential"); }} className="text-white/60 text-[11px] font-medium cursor-pointer hover:text-white transition whitespace-nowrap">Essential</button>
             <button onClick={() => { localStorage.setItem("cookie-consent", "full"); setCookieConsent("full"); }} className="bg-[#00c853] text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer hover:bg-[#00e676] transition whitespace-nowrap">Accept All</button>
