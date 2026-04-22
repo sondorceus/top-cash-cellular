@@ -352,6 +352,15 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const imgs = ["/ipadpro.png", "/ipadair.png", "/ipadmini.png", "/ipadbase.png", "/ipad.png",
+      "/iphone17.png", "/iphone16.png", "/iphone15.png", "/iphone14.png", "/iphone13.png", "/iphone12.png", "/iphone11.png",
+      "/iphone17air.png", "/iphone17plus.png", "/iphone17e.png", "/iphone17base.png",
+      "/iphone16plus.png", "/iphone16base.png", "/iphone16e.png", "/iphone15base.png",
+      "/iphone14base.png", "/iphone14plus.png", "/iphone13base.png", "/iphone12base.png", "/iphone12mini.png", "/iphone11base.png"];
+    imgs.forEach(src => { const img = new Image(); img.src = src; });
+  }, []);
+
+  useEffect(() => {
     if (!statsVisible) return;
     const targets = { devices: 500, payout: 150, time: 24 };
     const duration = 1500;
@@ -809,7 +818,7 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-3">
                   {IPHONE_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
-                      {(s as { image?: string }).image && <img src={(s as { image?: string }).image} alt={s.label} loading="lazy" className="w-14 h-14 object-contain mb-1" />}
+                      {(s as { image?: string }).image && <img src={(s as { image?: string }).image} alt={s.label} loading="eager" className="w-14 h-14 object-contain mb-1" />}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${s.topPrice}</p>
                     </button>
@@ -853,7 +862,7 @@ export default function Home() {
                   {IPAD_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
                       {(s as { image?: string }).image ? (
-                        <img src={(s as { image?: string }).image} alt={s.label} loading="lazy" className="w-14 h-14 object-contain mb-1" />
+                        <img src={(s as { image?: string }).image} alt={s.label} loading="eager" className="w-14 h-14 object-contain mb-1" />
                       ) : (
                         <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
                       )}

@@ -44,3 +44,11 @@ button, a, [role="button"] {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
+
+@keyframes imgFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+img[loading="lazy"], section img {
+  animation: imgFadeIn 0.3s ease-out both;
+}
