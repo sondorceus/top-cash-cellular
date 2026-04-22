@@ -846,7 +846,9 @@ export default function Home() {
                   {IPAD_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
                       {(s as { image?: string }).image ? (
-                        <img src={(s as { image?: string }).image} alt={s.label} loading="lazy" className="w-14 h-14 object-contain mb-1 rounded-lg" style={{ mixBlendMode: 'multiply' }} />
+                        <div className="w-14 h-14 mb-1 rounded-xl bg-white/90 flex items-center justify-center p-1">
+                          <img src={(s as { image?: string }).image} alt={s.label} loading="lazy" className="w-full h-full object-contain" />
+                        </div>
                       ) : (
                         <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
                       )}
@@ -1076,7 +1078,9 @@ export default function Home() {
                 const fallbackImg = isTablet ? "/ipad.png" : null;
                 const src = imgMap[model.id] || fallbackImg;
                 const sizeClass = isTablet ? "w-28 h-28" : "w-20 h-20";
-                return src ? <img src={src} alt={model.label} className={`${sizeClass} object-contain rounded-lg`} style={isTablet ? { mixBlendMode: 'multiply' } : undefined} /> : null;
+                if (!src) return null;
+                if (isTablet) return <div className={`${sizeClass} rounded-2xl bg-white/90 flex items-center justify-center p-2`}><img src={src} alt={model.label} className="w-full h-full object-contain" /></div>;
+                return <img src={src} alt={model.label} className={`${sizeClass} object-contain`} />;
               })()}
               <div>
                 <p className="text-[#888] text-sm font-medium">{model.label} · {storage?.label} · {condition.label}</p>
