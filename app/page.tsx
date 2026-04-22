@@ -331,30 +331,30 @@ const DJI_MODELS = [
 ];
 
 const APPLE_VR_MODELS = [
-  { id: "avp1tb", label: "Apple Vision Pro (1TB)", base: 2200 },
-  { id: "avp512", label: "Apple Vision Pro (512GB)", base: 2000 },
-  { id: "avp256", label: "Apple Vision Pro (256GB)", base: 1800 },
+  { id: "avp1tb", label: "Apple Vision Pro (1TB)" },
+  { id: "avp512", label: "Apple Vision Pro (512GB)" },
+  { id: "avp256", label: "Apple Vision Pro (256GB)" },
 ];
 
 const META_VR_MODELS = [
-  { id: "mq3512", label: "Meta Quest 3S (512GB)", base: 280 },
-  { id: "mq3128", label: "Meta Quest 3S (128GB)", base: 200 },
-  { id: "mq3", label: "Meta Quest 3 (512GB)", base: 350 },
-  { id: "mq3b", label: "Meta Quest 3 (128GB)", base: 280 },
-  { id: "mq2256", label: "Meta Quest 2 (256GB)", base: 150 },
-  { id: "mq2128", label: "Meta Quest 2 (128GB)", base: 120 },
-  { id: "mqpro", label: "Meta Quest Pro", base: 400 },
+  { id: "mq3512", label: "Meta Quest 3S (512GB)" },
+  { id: "mq3128", label: "Meta Quest 3S (128GB)" },
+  { id: "mq3", label: "Meta Quest 3 (512GB)" },
+  { id: "mq3b", label: "Meta Quest 3 (128GB)" },
+  { id: "mq2256", label: "Meta Quest 2 (256GB)" },
+  { id: "mq2128", label: "Meta Quest 2 (128GB)" },
+  { id: "mqpro", label: "Meta Quest Pro" },
 ];
 
 const VALVE_VR_MODELS = [
-  { id: "valveidx", label: "Valve Index Full Kit", base: 525 },
-  { id: "valveidxhmd", label: "Valve Index Headset Only", base: 300 },
+  { id: "valveidx", label: "Valve Index Full Kit" },
+  { id: "valveidxhmd", label: "Valve Index Headset Only" },
 ];
 
 const PSVR_MODELS = [
-  { id: "psvr2", label: "PlayStation VR2", base: 280 },
-  { id: "psvr2h", label: "PlayStation VR2 Horizon Bundle", base: 300 },
-  { id: "psvr1", label: "PlayStation VR (Original)", base: 80 },
+  { id: "psvr2", label: "PlayStation VR2" },
+  { id: "psvr2h", label: "PlayStation VR2 Horizon Bundle" },
+  { id: "psvr1", label: "PlayStation VR (Original)" },
 ];
 
 const CONDITIONS = [
@@ -809,7 +809,7 @@ export default function Home() {
 
   const iphoneVariants = selectedSeries ? IPHONE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const ipadVariants = selectedSeries ? IPAD_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS : deviceType === "apple_vr" ? APPLE_VR_MODELS : deviceType === "meta_vr" ? META_VR_MODELS : deviceType === "valve_vr" ? VALVE_VR_MODELS : deviceType === "psvr" ? PSVR_MODELS : deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -1375,8 +1375,27 @@ export default function Home() {
               </>
             )}
 
+            {/* VR: No pricing, goes to inquiry */}
+            {(deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr") && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your device</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your VR headset</p>
+                <div className="space-y-2">
+                  {(deviceType === "apple_vr" ? APPLE_VR_MODELS : deviceType === "meta_vr" ? META_VR_MODELS : deviceType === "valve_vr" ? VALVE_VR_MODELS : PSVR_MODELS).map((m) => (
+                    <button key={m.id} onClick={() => { setInquiryCategory("VR Headset"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
+                      <p className="font-semibold text-[15px]">{m.label}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
+                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
             {/* Other categories (phones, consoles, watches): Flat model list */}
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && category !== "computers" && category !== "desktops" && (
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && category !== "computers" && category !== "desktops" && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your model</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
