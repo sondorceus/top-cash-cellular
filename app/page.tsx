@@ -1145,10 +1145,8 @@ export default function Home() {
               ))}
               {category === "drones" && [
                 { id: "dji" as const, label: "DJI", sub: "Mavic, Inspire, Avata, Mini, Air", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="bold" fontFamily="Arial">DJI</text></svg> },
-                { id: "other_drone" as const, label: "Other Brand", sub: "Any other drone", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#444"/><text x="20" y="24" textAnchor="middle" fill="#fff" fontSize="16">🛸</text></svg> },
               ].map((b) => (
                 <button key={b.id} onClick={() => {
-                  if (b.id === "other_drone") { setInquiryCategory("Drone"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
                 }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
                   <span className="flex-shrink-0">{b.brandIcon}</span>
@@ -1300,19 +1298,29 @@ export default function Home() {
                       </div>
                     </button>
                   ))}
-                  <button onClick={() => { setInquiryCategory("Drone"); setInquiryDesc(""); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
-                    <p className="font-semibold text-[15px] text-[#888]">Other DJI Model</p>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[#00c853] font-bold text-sm">Get Quote</span>
-                      <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                    </div>
-                  </button>
                 </div>
               </>
             )}
 
-            {/* Non-iPhone/iPad/DJI: Flat model list */}
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && (
+            {/* Laptop/Desktop: Grid card layout (matching iPhone/iPad style) */}
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && (category === "computers" || category === "desktops") && (
+              <>
+                <h2 className="text-2xl font-bold mb-1">Select your model</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {models.map((m) => (
+                    <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition active:scale-[0.97]">
+                      <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
+                      <p className="font-bold text-sm text-center leading-tight">{m.label}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${(m as { base?: number }).base}</p>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Other categories (phones, consoles, watches): Flat model list */}
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && category !== "computers" && category !== "desktops" && (
               <>
                 <h2 className="text-2xl font-bold mb-1">Select your model</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
