@@ -261,18 +261,26 @@ const IPAD_SERIES = [
 
 const IPAD_MODELS = IPAD_SERIES.flatMap(s => s.variants);
 
-const CONSOLE_MODELS = [
+const SONY_MODELS = [
   { id: "ps5", label: "PlayStation 5", base: 300 },
   { id: "ps5d", label: "PlayStation 5 Digital", base: 250 },
   { id: "ps4pro", label: "PlayStation 4 Pro", base: 150 },
   { id: "ps4", label: "PlayStation 4", base: 100 },
+];
+
+const MICROSOFT_MODELS = [
   { id: "xsx", label: "Xbox Series X", base: 280 },
   { id: "xss", label: "Xbox Series S", base: 150 },
   { id: "xone", label: "Xbox One", base: 80 },
+];
+
+const NINTENDO_MODELS = [
   { id: "switch", label: "Nintendo Switch OLED", base: 180 },
   { id: "switchv2", label: "Nintendo Switch V2", base: 130 },
   { id: "switchlite", label: "Nintendo Switch Lite", base: 90 },
 ];
+
+const CONSOLE_MODELS = [...SONY_MODELS, ...MICROSOFT_MODELS, ...NINTENDO_MODELS];
 
 const CONDITIONS = [
   { id: "brandnew", label: "Brand New", desc: "Factory sealed, never activated", multiplier: 1.15, icon: "🆕", details: ["Still in factory original packaging", "Plastic film still on the device and has not been reapplied", "Device is not activated", "Must come with the original box with matching serial number", "Contains all original accessories"] },
@@ -528,7 +536,7 @@ const FAQS = [
 ];
 
 type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
-type DeviceType = "iphone" | "android" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "ipad" | null;
+type DeviceType = "iphone" | "android" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "sony" | "microsoft" | "nintendo" | "ipad" | null;
 
 function FairPromise() {
   return (
@@ -698,7 +706,7 @@ export default function Home() {
     else if (step === "brand") { setStep("category"); setCategory(null); }
     else if (step === "category") { setStep("device"); }
     else if (step === "storage") { setStep("model"); setModel(null); }
-    else if (step === "condition") { if (deviceType === "console") { setStep("model"); setModel(null); } else { setStep("storage"); setStorage(null); } }
+    else if (step === "condition") { if (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo") { setStep("model"); setModel(null); } else { setStep("storage"); setStorage(null); } }
     else if (step === "carrier") { setStep("condition"); setCondition(null); }
     else if (step === "quote") { if (carrier) { setStep("carrier"); setCarrier(null); } else { setStep("condition"); setCondition(null); } }
     else if (step === "checkout") setStep("quote");
@@ -726,7 +734,7 @@ export default function Home() {
 
   const iphoneVariants = selectedSeries ? IPHONE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const ipadVariants = selectedSeries ? IPAD_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -850,7 +858,7 @@ export default function Home() {
                 { id: "computers" as const, label: "Sell Laptop", icon: "💻" },
                 { id: "desktops" as const, label: "Sell Desktop", icon: "🖥️" },
                 { id: "phones" as const, label: "Sell Smartwatch", icon: "⌚", direct: true, subcats: ["Apple Watch", "Google Pixel Watch", "Garmin"] },
-                { id: "consoles" as const, label: "Sell Game Console", icon: "🎮", direct: false, deviceType: "console" as const },
+                { id: "consoles" as const, label: "Sell Game Console", icon: "🎮" },
                 { id: "computers" as const, label: "Sell Graphics Card", icon: "⚡", direct: true },
                 { id: "computers" as const, label: "Sell Drone", icon: "🛸", direct: true },
                 { id: "computers" as const, label: "Sell VR", icon: "🥽", direct: true },
@@ -1087,13 +1095,17 @@ export default function Home() {
                   <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
               ))}
-              {category === "consoles" && (
-                <button onClick={() => { setDeviceType("console"); setStep("model"); pushHistory("model"); }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
-                  <span className="text-3xl">🎮</span>
-                  <div className="flex-1"><p className="font-semibold text-white text-lg">Game Consoles</p><p className="text-[#888] text-sm">PlayStation, Xbox, Nintendo</p></div>
+              {category === "consoles" && [
+                { id: "sony" as const, label: "Sony", sub: "PlayStation 4, PS4 Pro, PS5", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#003087"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold" fontFamily="Arial">SONY</text></svg> },
+                { id: "microsoft" as const, label: "Microsoft", sub: "Xbox One, Series S, Series X", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#107c10"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold" fontFamily="Arial">XBOX</text></svg> },
+                { id: "nintendo" as const, label: "Nintendo", sub: "Switch OLED, Switch V2, Switch Lite", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#e60012"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">Nintendo</text></svg> },
+              ].map((b) => (
+                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
+                  <span className="flex-shrink-0">{b.brandIcon}</span>
+                  <div className="flex-1"><p className="font-semibold text-white text-lg">{b.label}</p><p className="text-[#888] text-sm">{b.sub}</p></div>
                   <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
-              )}
+              ))}
             </div>
           </div>
         </section>
@@ -1203,7 +1215,7 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 <div className="space-y-2">
                   {models.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); const ns = deviceType === "console" ? "condition" : "storage"; setStep(ns); pushHistory(ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
+                    <button key={m.id} onClick={() => { setModel(m); const ns = (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo") ? "condition" : "storage"; setStep(ns); pushHistory(ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">up to ${m.base}</span>
