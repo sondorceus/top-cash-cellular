@@ -318,6 +318,18 @@ const SAMSUNGWATCH_MODELS = [
   { id: "sgw5", label: "Galaxy Watch 5", base: 80 },
 ];
 
+const DJI_MODELS = [
+  { id: "djimavic", label: "DJI Mavic" },
+  { id: "djiinspire", label: "DJI Inspire" },
+  { id: "djiavata", label: "DJI Avata" },
+  { id: "djifpv", label: "DJI FPV" },
+  { id: "djiair", label: "DJI Air" },
+  { id: "djimini", label: "DJI Mini" },
+  { id: "djiphantom", label: "DJI Phantom" },
+  { id: "djiflip", label: "DJI Flip" },
+  { id: "djispark", label: "DJI Spark" },
+];
+
 const CONDITIONS = [
   { id: "brandnew", label: "Brand New", desc: "Factory sealed, never activated", multiplier: 1.15, icon: "🆕", details: ["Still in factory original packaging", "Plastic film still on the device and has not been reapplied", "Device is not activated", "Must come with the original box with matching serial number", "Contains all original accessories"] },
   { id: "flawless", label: "Flawless", desc: "Like new, zero signs of use", multiplier: 1.0, icon: "✨", details: ["Zero scratches, scuffs, or other marks — looks like new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
@@ -572,7 +584,7 @@ const FAQS = [
 ];
 
 type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
-type DeviceType = "iphone" | "android" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "sony" | "microsoft" | "nintendo" | "applewatch" | "pixelwatch" | "garmin" | "samsungwatch" | "ipad" | null;
+type DeviceType = "iphone" | "android" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "sony" | "microsoft" | "nintendo" | "applewatch" | "pixelwatch" | "garmin" | "samsungwatch" | "dji" | "ipad" | null;
 
 function FairPromise() {
   return (
@@ -605,7 +617,7 @@ function TrustBadge() {
 
 export default function Home() {
   const [step, setStep] = useState<Step>("device");
-  const [category, setCategory] = useState<"phones" | "computers" | "desktops" | "consoles" | "watches" | null>(null);
+  const [category, setCategory] = useState<"phones" | "computers" | "desktops" | "consoles" | "watches" | "drones" | null>(null);
   const [deviceType, setDeviceType] = useState<DeviceType>(null);
   const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
   const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
@@ -896,7 +908,7 @@ export default function Home() {
                 { id: "watches" as const, label: "Sell Smartwatch", icon: "⌚" },
                 { id: "consoles" as const, label: "Sell Game Console", icon: "🎮" },
                 { id: "computers" as const, label: "Sell Graphics Card", icon: "⚡", direct: true },
-                { id: "computers" as const, label: "Sell Drone", icon: "🛸", direct: true },
+                { id: "drones" as const, label: "Sell Drone", icon: "🛸" },
                 { id: "computers" as const, label: "Sell VR", icon: "🥽", direct: true },
                 { id: "computers" as const, label: "Sell Monitor", icon: "🖥️", direct: true },
               ].map((cat, idx) => (
@@ -1080,7 +1092,7 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">Select your brand</h2>
-            <p className="text-[#888] text-sm mb-6">{category === "phones" ? "Phone brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : category === "watches" ? "Smartwatch brands" : "Console brands"}</p>
+            <p className="text-[#888] text-sm mb-6">{category === "phones" ? "Phone brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : category === "watches" ? "Smartwatch brands" : category === "drones" ? "Drone brands" : "Console brands"}</p>
             <div className="space-y-3">
               {category === "phones" && [
                 { id: "iphone" as const, label: "Apple iPhone", sub: "iPhone 11 and newer", icon: "📱" },
@@ -1124,6 +1136,19 @@ export default function Home() {
               ].map((b) => (
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_desktop") { setInquiryCategory("Desktop"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
+                  setDeviceType(b.id); setStep("model"); pushHistory("model");
+                }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
+                  <span className="flex-shrink-0">{b.brandIcon}</span>
+                  <div className="flex-1"><p className="font-semibold text-white text-lg">{b.label}</p><p className="text-[#888] text-sm">{b.sub}</p></div>
+                  <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </button>
+              ))}
+              {category === "drones" && [
+                { id: "dji" as const, label: "DJI", sub: "Mavic, Inspire, Avata, Mini, Air", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="bold" fontFamily="Arial">DJI</text></svg> },
+                { id: "other_drone" as const, label: "Other Brand", sub: "Any other drone", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#444"/><text x="20" y="24" textAnchor="middle" fill="#fff" fontSize="16">🛸</text></svg> },
+              ].map((b) => (
+                <button key={b.id} onClick={() => {
+                  if (b.id === "other_drone") { setInquiryCategory("Drone"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
                 }} className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left active:scale-[0.98]">
                   <span className="flex-shrink-0">{b.brandIcon}</span>
@@ -1260,8 +1285,34 @@ export default function Home() {
               </>
             )}
 
-            {/* Non-iPhone/iPad: Flat model list */}
-            {deviceType !== "iphone" && deviceType !== "ipad" && (
+            {/* DJI Drones: No pricing, goes to inquiry */}
+            {deviceType === "dji" && (
+              <>
+                <h2 className="text-2xl font-bold mb-1">Select your drone</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your DJI model</p>
+                <div className="space-y-2">
+                  {DJI_MODELS.map((m) => (
+                    <button key={m.id} onClick={() => { setInquiryCategory("Drone"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
+                      <p className="font-semibold text-[15px]">{m.label}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[#00c853] font-bold text-sm">Get Quote</span>
+                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                      </div>
+                    </button>
+                  ))}
+                  <button onClick={() => { setInquiryCategory("Drone"); setInquiryDesc(""); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
+                    <p className="font-semibold text-[15px] text-[#888]">Other DJI Model</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[#00c853] font-bold text-sm">Get Quote</span>
+                      <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </div>
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* Non-iPhone/iPad/DJI: Flat model list */}
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && (
               <>
                 <h2 className="text-2xl font-bold mb-1">Select your model</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
@@ -1270,7 +1321,7 @@ export default function Home() {
                     <button key={m.id} onClick={() => { setModel(m); const ns = (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" || deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch") ? "condition" : "storage"; setStep(ns); pushHistory(ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">up to ${m.base}</span>
+                        <span className="text-[#00c853] font-bold text-sm">up to ${(m as { base?: number }).base}</span>
                         <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
