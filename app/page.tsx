@@ -897,9 +897,9 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            <h2 className="text-2xl font-bold mb-1">What are you selling?</h2>
-            <p className="text-[#888] text-sm mb-6">Select a category</p>
-            <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-2 md:gap-3">
+            <h2 className="text-2xl md:text-4xl font-bold mb-1 md:mb-3">What are you selling?</h2>
+            <p className="text-[#888] text-sm md:text-lg mb-6 md:mb-8">Select a category</p>
+            <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-2 md:gap-4 lg:gap-5">
               {[
                 { id: "phones" as const, label: "Sell Phone", icon: "📱" },
                 { id: "phones" as const, label: "Sell Tablet", icon: "⬜", direct: false, deviceType: "ipad" as const, customIcon: true },
@@ -928,14 +928,14 @@ export default function Home() {
                     if (dt) { setDeviceType(dt as DeviceType); setStep("model"); pushHistory("model"); return; }
                     setCategory(cat.id); setStep("brand"); pushHistory("brand");
                   }}
-                  className="flex flex-col items-center justify-center p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
+                  className="flex flex-col items-center justify-center p-4 md:p-8 lg:p-10 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
                 >
                   {(cat as { customIcon?: boolean }).customIcon ? (
-                    <svg className="w-8 h-6 md:w-10 md:h-8 mb-1.5 md:mb-2 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
+                    <svg className="w-8 h-6 md:w-12 md:h-10 lg:w-14 lg:h-12 mb-1.5 md:mb-3 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
                   ) : (
-                    <span className="text-2xl md:text-3xl mb-1.5 md:mb-2">{cat.icon}</span>
+                    <span className="text-2xl md:text-4xl lg:text-5xl mb-1.5 md:mb-3">{cat.icon}</span>
                   )}
-                  <p className="font-semibold text-white text-xs md:text-sm text-center">{cat.label}</p>
+                  <p className="font-semibold text-white text-xs md:text-base lg:text-lg text-center">{cat.label}</p>
                 </button>
               ))}
             </div>
