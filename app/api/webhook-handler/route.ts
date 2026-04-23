@@ -21,7 +21,7 @@ Flag any gaps. Keep response under 150 words.`,
 
 export async function POST(req: NextRequest) {
   const secret = req.headers.get("x-webhook-secret");
-  if (secret !== (process.env.WEBHOOK_SECRET || "theot-webhook-2026")) {
+  if (!process.env.WEBHOOK_SECRET || secret !== process.env.WEBHOOK_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
