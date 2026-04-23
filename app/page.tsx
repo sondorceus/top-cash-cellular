@@ -358,37 +358,37 @@ const PSVR_MODELS = [
 ];
 
 const SAMSUNG_TAB_MODELS = [
-  { id: "stabs9u", label: "Galaxy Tab S9 Ultra", base: 450 },
-  { id: "stabs9p", label: "Galaxy Tab S9+", base: 350 },
-  { id: "stabs9", label: "Galaxy Tab S9", base: 280 },
-  { id: "stabs8u", label: "Galaxy Tab S8 Ultra", base: 320 },
-  { id: "stabs8p", label: "Galaxy Tab S8+", base: 250 },
-  { id: "stabs8", label: "Galaxy Tab S8", base: 200 },
-  { id: "staba9", label: "Galaxy Tab A9+", base: 120 },
+  { id: "stabs9u", label: "Galaxy Tab S9 Ultra" },
+  { id: "stabs9p", label: "Galaxy Tab S9+" },
+  { id: "stabs9", label: "Galaxy Tab S9" },
+  { id: "stabs8u", label: "Galaxy Tab S8 Ultra" },
+  { id: "stabs8p", label: "Galaxy Tab S8+" },
+  { id: "stabs8", label: "Galaxy Tab S8" },
+  { id: "staba9", label: "Galaxy Tab A9+" },
 ];
 
 const SURFACE_MODELS = [
-  { id: "surfpro10", label: "Surface Pro 10", base: 550 },
-  { id: "surfpro9", label: "Surface Pro 9", base: 400 },
-  { id: "surfgo4", label: "Surface Go 4", base: 200 },
-  { id: "surfgo3", label: "Surface Go 3", base: 130 },
+  { id: "surfpro10", label: "Surface Pro 10" },
+  { id: "surfpro9", label: "Surface Pro 9" },
+  { id: "surfgo4", label: "Surface Go 4" },
+  { id: "surfgo3", label: "Surface Go 3" },
 ];
 
 const LENOVO_TAB_MODELS = [
-  { id: "ltabp12", label: "Tab P12 Pro", base: 280 },
-  { id: "ltabp11g2", label: "Tab P11 Pro Gen 2", base: 200 },
-  { id: "ltabp11", label: "Tab P11 Plus", base: 130 },
-  { id: "ltabm11", label: "Tab M11", base: 100 },
+  { id: "ltabp12", label: "Tab P12 Pro" },
+  { id: "ltabp11g2", label: "Tab P11 Pro Gen 2" },
+  { id: "ltabp11", label: "Tab P11 Plus" },
+  { id: "ltabm11", label: "Tab M11" },
 ];
 
 const ONEPLUS_TAB_MODELS = [
-  { id: "oppad2", label: "OnePlus Pad 2", base: 280 },
-  { id: "oppad", label: "OnePlus Pad", base: 180 },
+  { id: "oppad2", label: "OnePlus Pad 2" },
+  { id: "oppad", label: "OnePlus Pad" },
 ];
 
 const GOOGLE_TAB_MODELS = [
-  { id: "gpixeltab", label: "Pixel Tablet (256GB)", base: 250 },
-  { id: "gpixeltab128", label: "Pixel Tablet (128GB)", base: 200 },
+  { id: "gpixeltab", label: "Pixel Tablet (256GB)" },
+  { id: "gpixeltab128", label: "Pixel Tablet (128GB)" },
 ];
 
 const CONDITIONS = [
@@ -867,7 +867,7 @@ export default function Home() {
 
   const iphoneVariants = selectedSeries ? IPHONE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const ipadVariants = selectedSeries ? IPAD_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : deviceType === "samsung_tab" ? SAMSUNG_TAB_MODELS : deviceType === "surface" ? SURFACE_MODELS : deviceType === "lenovo_tab" ? LENOVO_TAB_MODELS : deviceType === "oneplus_tab" ? ONEPLUS_TAB_MODELS : deviceType === "google_tab" ? GOOGLE_TAB_MODELS : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -1450,14 +1450,14 @@ export default function Home() {
               </>
             )}
 
-            {/* VR: No pricing, goes to inquiry */}
-            {(deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr") && (
+            {/* No-price devices (VR + non-Apple tablets): goes to inquiry */}
+            {(deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" || deviceType === "samsung_tab" || deviceType === "surface" || deviceType === "lenovo_tab" || deviceType === "oneplus_tab" || deviceType === "google_tab") && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your device</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your VR headset</p>
+                <p className="text-[#888] text-sm mb-6">Choose your model</p>
                 <div className="space-y-2">
-                  {(deviceType === "apple_vr" ? APPLE_VR_MODELS : deviceType === "meta_vr" ? META_VR_MODELS : deviceType === "valve_vr" ? VALVE_VR_MODELS : PSVR_MODELS).map((m) => (
-                    <button key={m.id} onClick={() => { setInquiryCategory("VR Headset"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
+                  {(deviceType === "apple_vr" ? APPLE_VR_MODELS : deviceType === "meta_vr" ? META_VR_MODELS : deviceType === "valve_vr" ? VALVE_VR_MODELS : deviceType === "psvr" ? PSVR_MODELS : deviceType === "samsung_tab" ? SAMSUNG_TAB_MODELS : deviceType === "surface" ? SURFACE_MODELS : deviceType === "lenovo_tab" ? LENOVO_TAB_MODELS : deviceType === "oneplus_tab" ? ONEPLUS_TAB_MODELS : GOOGLE_TAB_MODELS).map((m) => (
+                    <button key={m.id} onClick={() => { setInquiryCategory(deviceType?.includes("vr") || deviceType === "psvr" ? "VR Headset" : "Tablet"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
@@ -1470,7 +1470,7 @@ export default function Home() {
             )}
 
             {/* Other categories (phones, consoles, watches): Flat model list */}
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && category !== "computers" && category !== "desktops" && (
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && deviceType !== "samsung_tab" && deviceType !== "surface" && deviceType !== "lenovo_tab" && deviceType !== "oneplus_tab" && deviceType !== "google_tab" && category !== "computers" && category !== "desktops" && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your model</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
