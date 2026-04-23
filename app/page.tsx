@@ -748,6 +748,8 @@ export default function Home() {
   const [cartOpen, setCartOpen] = useState(false);
   const [inquiryCategory, setInquiryCategory] = useState("");
   const [inquirySent, setInquirySent] = useState(false);
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
   const [inquiryDesc, setInquiryDesc] = useState("");
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -1113,7 +1115,7 @@ export default function Home() {
                     await fetch("/api/lead", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ name, phone, email, device: inquiryCategory, model: model.label, storage: "N/A", condition: condition.label, quote: 0, payout: "TBD", notes: "Custom device - full flow submission" }),
+                      body: JSON.stringify({ name, phone, email, device: inquiryCategory, model: model.label, storage: "N/A", condition: condition.label, quote: 0, payout: "TBD", notes: "Custom device - full flow submission", photos: photoUrls }),
                     });
                   } catch {}
                   setInquirySent(true);
@@ -1138,7 +1140,41 @@ export default function Home() {
                     <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Email</label>
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
                   </div>
-                  <button type="submit" className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
+                  <div>
+                    <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Photos (optional)</label>
+                    <label className={`flex items-center justify-center gap-2 w-full px-4 py-3.5 bg-white/5 border border-white/10 border-dashed rounded-xl text-sm cursor-pointer hover:bg-white/10 transition ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
+                      <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                      <span className="text-[#888]">{uploading ? "Uploading..." : photoUrls.length ? `${photoUrls.length} photo${photoUrls.length > 1 ? "s" : ""} added` : "Add photos of your device"}</span>
+                      <input type="file" accept="image/*" multiple className="hidden" onChange={async (e) => {
+                        const files = e.target.files;
+                        if (!files?.length) return;
+                        setUploading(true);
+                        const urls: string[] = [...photoUrls];
+                        for (const file of Array.from(files)) {
+                          try {
+                            const fd = new FormData();
+                            fd.append("file", file);
+                            const res = await fetch("/api/upload", { method: "POST", body: fd });
+                            const data = await res.json();
+                            if (data.url) urls.push(data.url);
+                          } catch {}
+                        }
+                        setPhotoUrls(urls);
+                        setUploading(false);
+                      }} />
+                    </label>
+                    {photoUrls.length > 0 && (
+                      <div className="flex gap-2 mt-2 flex-wrap">
+                        {photoUrls.map((url, i) => (
+                          <div key={i} className="relative">
+                            <img src={url} alt={`Photo ${i + 1}`} className="w-16 h-16 object-cover rounded-lg border border-white/10" />
+                            <button type="button" onClick={() => setPhotoUrls(photoUrls.filter((_, j) => j !== i))} className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center cursor-pointer">×</button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <button type="submit" disabled={uploading} className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed">
                     Get My Custom Quote
                   </button>
                 </form>

@@ -9,8 +9,12 @@ const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const { name, phone, email, device, model, storage, condition, quote, payout } = data;
+  const { name, phone, email, device, model, storage, condition, quote, payout, photos } = data;
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
+
+  const photoLines = (photos as string[] | undefined)?.length
+    ? [`Photos: ${(photos as string[]).join(" | ")}`]
+    : [];
 
   const leadBody = [
     `[NEW BUYBACK LEAD]`,
@@ -20,8 +24,9 @@ export async function POST(req: NextRequest) {
     `Device: ${device} — ${model}`,
     storage ? `Storage: ${storage}` : null,
     `Condition: ${condition}`,
-    `Quote: $${quote}`,
+    quote ? `Quote: $${quote}` : `Quote: TBD (custom)`,
     `Payout: ${payout}`,
+    ...photoLines,
   ].filter(Boolean).join("\n");
 
   try {
@@ -40,7 +45,8 @@ export async function POST(req: NextRequest) {
   } catch {}
 
   if (TWILIO_SID && TWILIO_AUTH) {
-    const ownerSms = `NEW LEAD: ${name} wants to sell ${model} (${condition}) for $${quote}. Phone: ${phone || "N/A"} Email: ${email || "N/A"}`;
+    const photoNote = (photos as string[] | undefined)?.length ? ` Photos: ${(photos as string[])[0]}` : "";
+    const ownerSms = `NEW LEAD: ${name} wants to sell ${model} (${condition})${quote ? ` for $${quote}` : " — custom quote needed"}. Phone: ${phone || "N/A"} Email: ${email || "N/A"}${photoNote}`;
     try {
       await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
         method: "POST",
