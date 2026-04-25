@@ -7,10 +7,34 @@ const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 
+// Lead dedup: track recent submissions to prevent duplicates
+const recentLeads = new Map<string, number>();
+const DEDUP_WINDOW_MS = 60 * 1000; // 60 seconds
+
+function isDuplicate(email: string, model: string): boolean {
+  const key = `${(email || "").toLowerCase()}|${(model || "").toLowerCase()}`;
+  const now = Date.now();
+  const lastSeen = recentLeads.get(key);
+  if (lastSeen && (now - lastSeen) < DEDUP_WINDOW_MS) return true;
+  recentLeads.set(key, now);
+  // Cleanup old entries every 50 leads
+  if (recentLeads.size > 50) {
+    for (const [k, t] of recentLeads) {
+      if (now - t > DEDUP_WINDOW_MS * 5) recentLeads.delete(k);
+    }
+  }
+  return false;
+}
+
 export async function POST(req: NextRequest) {
   const data = await req.json();
   const { name, phone, email, device, model, storage, condition, quote, payout, photos } = data;
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
+
+  // Dedup check — skip if same email+model submitted within 60s
+  if (isDuplicate(email, model)) {
+    return NextResponse.json({ ok: true, deduped: true });
+  }
 
   const photoLines = (photos as string[] | undefined)?.length
     ? [`Photos: ${(photos as string[]).join(" | ")}`]
