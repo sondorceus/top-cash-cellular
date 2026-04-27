@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { list } from "@vercel/blob";
 import type { Review } from "../api/reviews/route";
+
+const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
+const MC_KEY = process.env.MC_API_KEY || "";
 
 export const metadata: Metadata = {
   title: "Customer Reviews — Top Cash Cellular | Real Austin Sellers",
@@ -19,20 +21,13 @@ export const revalidate = 60;
 
 async function loadReviews(): Promise<Review[]> {
   try {
-    const { blobs } = await list({ prefix: "reviews/" });
-    const items = await Promise.all(
-      blobs.map(async (b) => {
-        try {
-          const r = await fetch(b.url, { cache: "no-store" });
-          return (await r.json()) as Review;
-        } catch {
-          return null;
-        }
-      })
-    );
-    return items
-      .filter((r): r is Review => !!r)
-      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+    const r = await fetch(`${MC_API}/api/reviews?limit=200`, {
+      headers: { "x-api-key": MC_KEY },
+      next: { revalidate: 60 },
+    });
+    if (!r.ok) return [];
+    const data = await r.json();
+    return (data.reviews || []) as Review[];
   } catch {
     return [];
   }
