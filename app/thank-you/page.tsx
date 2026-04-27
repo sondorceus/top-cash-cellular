@@ -20,12 +20,20 @@ export default function ThankYou() {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
           <p className="text-sm text-[#888]">Your price is locked for 7 days. Same-day payout available.</p>
         </div>
-        <a
-          href="/"
-          className="inline-block bg-[#00c853] text-white px-8 py-3 rounded-2xl font-semibold hover:bg-[#00e676] transition"
-        >
-          Back to Home
-        </a>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <a
+            href="/reviews/new"
+            className="inline-block bg-[#00c853] text-white px-6 py-3 rounded-2xl font-semibold hover:bg-[#00e676] transition"
+          >
+            Leave a review
+          </a>
+          <a
+            href="/"
+            className="inline-block bg-white/5 border border-white/10 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-white/10 transition"
+          >
+            Back to Home
+          </a>
+        </div>
         <p className="text-[#555] text-xs mt-6">Questions? Call (877) 549-2056</p>
       </div>
     </main>

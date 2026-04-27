@@ -891,9 +891,12 @@ export default function Home() {
               </div>
             </span>
           </button>
-          <a href={`tel:${PHONE_TEL}`} aria-label="Call us" className="bg-[#00c853] text-white px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
-            Call Us
-          </a>
+          <div className="flex items-center gap-3">
+            <a href="/reviews" className="text-xs text-[#888] hover:text-white transition hidden sm:inline">Reviews</a>
+            <a href={`tel:${PHONE_TEL}`} aria-label="Call us" className="bg-[#00c853] text-white px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
+              Call Us
+            </a>
+          </div>
         </div>
       </nav>
 
@@ -2512,6 +2515,7 @@ export default function Home() {
               <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Company</p>
               <div className="space-y-2">
                 <button onClick={() => { setPage("about"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-white transition cursor-pointer">About Us</button>
+                <a href="/reviews" className="block text-xs hover:text-white transition">Reviews</a>
                 <a href={`tel:${PHONE_TEL}`} className="block text-xs hover:text-white transition">Contact</a>
                 <a href="/privacy" className="block text-xs hover:text-white transition">Privacy Policy</a>
                 <button onClick={() => { setPage("terms"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-white transition cursor-pointer">Terms of Service</button>
