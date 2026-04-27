@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
-const MC_KEY = process.env.MC_API_KEY || "";
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
@@ -152,27 +150,6 @@ ${phone ? `<tr><td style="padding:5px 0;color:#888;font-size:13px">Phone</td><td
     const smsBody = `Top Cash Cellular: Your $${quote} quote for ${model} is locked for 7 days! We'll contact you within the hour. Questions? Call (877) 549-2056`;
     smsSent = await sendSms(phone, smsBody);
   }
-
-  const status = [
-    emailSent ? "EMAIL SENT" : null,
-    smsSent ? "SMS SENT" : null,
-    !emailSent && !smsSent ? "NO CONFIRMATION SENT" : null,
-  ].filter(Boolean).join(" + ");
-
-  try {
-    await fetch(`${MC_API}/api/comms`, {
-      method: "POST",
-      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from: "topcash-web",
-        fromName: "Top Cash Cellular",
-        role: "system",
-        body: `[QUOTE CONFIRMATION — ${status}]\nTo: ${name} <${email || "no email"}> | ${phone || "no phone"}\nDevice: ${model} | ${storage} | ${condition}\nQuote: $${quote} | Payout: ${payout}`,
-        tags: ["confirmation", "lead"],
-        priority: "normal",
-      }),
-    });
-  } catch {}
 
   return NextResponse.json({ ok: true, emailSent, smsSent });
 }
