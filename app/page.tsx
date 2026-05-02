@@ -67,7 +67,7 @@ const SAMSUNG_SERIES = [
     { id: "gs21u", label: "Galaxy S21 Ultra", base: 480 },
     { id: "gs21", label: "Galaxy S21/S21+", base: 300 },
   ]},
-  { id: "foldseries", label: "Fold Series", year: "Z Fold lineup", topPrice: 650, variants: [
+  { id: "foldseries", label: "Fold Series", year: "Z Fold lineup", topPrice: 650, image: "/fold-series.webp", variants: [
     { id: "gzfold6", label: "Galaxy Z Fold 6", base: 650 },
     { id: "gzfold5", label: "Galaxy Z Fold 5", base: 480 },
   ]},
@@ -1426,7 +1426,11 @@ export default function Home() {
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {SAMSUNG_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
-                      <svg viewBox="0 0 40 40" className="w-10 h-10 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg>
+                      {(s as { image?: string }).image ? (
+                        <img src={(s as { image?: string }).image} alt={s.label} loading="eager" className="w-12 h-12 object-contain mb-1" />
+                      ) : (
+                        <svg viewBox="0 0 40 40" className="w-10 h-10 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg>
+                      )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${s.topPrice}</p>
                     </button>
