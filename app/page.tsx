@@ -103,7 +103,7 @@ const PIXEL_SERIES = [
     { id: "px7p", label: "Pixel 7 Pro", base: 85 },
     { id: "px6p", label: "Pixel 6 Pro", base: 50 },
   ]},
-  { id: "pstandard", label: "Standard Series", year: "Pixel 5–10 + a-series", topPrice: 325, variants: [
+  { id: "pstandard", label: "Standard Series", year: "Pixel 5–10 + a-series", topPrice: 325, image: "/pixel-standard-series.webp", variants: [
     { id: "px10", label: "Pixel 10", base: 325 },
     { id: "px10a", label: "Pixel 10a", base: 145 },
     { id: "px9", label: "Pixel 9", base: 185 },
