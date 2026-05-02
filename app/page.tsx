@@ -761,6 +761,20 @@ const FAQS = [
 ];
 
 type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
+const BRAND_LABELS: Record<string, string> = {
+  iphone: "iPhone", android: "Samsung", pixel: "Pixel", ipad: "iPad",
+  macbook: "MacBook", samsung_pc: "Samsung", lenovo: "Lenovo", dell: "Dell",
+  alienware: "Alienware", hp: "HP", acer: "Acer", lg_pc: "LG",
+  apple_desktop: "Apple", dell_desktop: "Dell", lenovo_desktop: "Lenovo",
+  hp_desktop: "HP", asus_desktop: "ASUS", alienware_desktop: "Alienware",
+  msi_desktop: "MSI", console: "Console", sony: "PlayStation",
+  microsoft: "Xbox", nintendo: "Nintendo", applewatch: "Apple Watch",
+  pixelwatch: "Pixel Watch", garmin: "Garmin", samsungwatch: "Galaxy Watch",
+  dji: "DJI", samsung_tab: "Samsung", surface: "Surface", lenovo_tab: "Lenovo",
+  oneplus_tab: "OnePlus", google_tab: "Google", apple_vr: "Apple Vision",
+  meta_vr: "Meta Quest", valve_vr: "Valve Index", psvr: "PSVR",
+};
+
 type DeviceType = "iphone" | "android" | "pixel" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "sony" | "microsoft" | "nintendo" | "applewatch" | "pixelwatch" | "garmin" | "samsungwatch" | "dji" | "samsung_tab" | "surface" | "lenovo_tab" | "oneplus_tab" | "google_tab" | "apple_vr" | "meta_vr" | "valve_vr" | "psvr" | "ipad" | null;
 
 function FairPromise() {
@@ -963,6 +977,19 @@ export default function Home() {
   const ipadVariants = selectedSeries ? IPAD_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const samsungVariants = selectedSeries ? SAMSUNG_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const pixelVariants = selectedSeries ? PIXEL_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
+
+  const breadcrumbs: string[] = ["Sell"];
+  if (deviceType) breadcrumbs.push(BRAND_LABELS[deviceType] || deviceType);
+  if (selectedSeries) {
+    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : null;
+    const ser = seriesList?.find(s => s.id === selectedSeries);
+    if (ser) breadcrumbs.push(ser.label);
+  }
+  if (model) breadcrumbs.push(model.label);
+  if (storage) breadcrumbs.push(storage.label);
+  if (condition) breadcrumbs.push(condition.label);
+  if (carrier) breadcrumbs.push(carrier.label);
+  const showBreadcrumbs = breadcrumbs.length > 1 && step !== "device" && step !== "category" && page === "home";
   const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
@@ -994,6 +1021,20 @@ export default function Home() {
           </div>
         </div>
       </nav>
+
+      {/* BREADCRUMB */}
+      {showBreadcrumbs && (
+        <div className="bg-[#0a0a0a] border-b border-white/5">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-2 flex items-center gap-1.5 text-xs overflow-x-auto whitespace-nowrap scrollbar-hide">
+            {breadcrumbs.map((c, i) => (
+              <span key={i} className="flex items-center gap-1.5 flex-shrink-0">
+                {i > 0 && <span className="text-[#444]">/</span>}
+                <span className={i === breadcrumbs.length - 1 ? "text-white font-semibold" : "text-[#888]"}>{c}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* STEP: DEVICE TYPE */}
       {step === "device" && page === "home" && (
