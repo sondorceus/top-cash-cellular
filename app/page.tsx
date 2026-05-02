@@ -52,7 +52,7 @@ const IPHONE_SERIES = [
 ];
 
 const SAMSUNG_SERIES = [
-  { id: "sseries", label: "S Series", year: "Galaxy S21–S25", topPrice: 620, variants: [
+  { id: "sseries", label: "S Series", year: "Galaxy S21–S25", topPrice: 620, image: "/s-series.webp", variants: [
     { id: "gs25u", label: "Galaxy S25 Ultra", base: 620 },
     { id: "gs25p", label: "Galaxy S25+", base: 470 },
     { id: "gs25", label: "Galaxy S25", base: 380 },
