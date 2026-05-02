@@ -929,7 +929,16 @@ export default function Home() {
 
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrier?.multiplier ?? 1;
-  const quote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier) : 0;
+
+  type Promo = { active: boolean; text: string; percent: number; appliesTo: string };
+  const [promo, setPromo] = useState<Promo | null>(null);
+  useEffect(() => {
+    fetch("/promo.json", { cache: "no-store" }).then(r => r.ok ? r.json() : null).then(setPromo).catch(() => setPromo(null));
+  }, []);
+  const promoApplies = !!(promo?.active && deviceType && (promo.appliesTo === "all" || promo.appliesTo === deviceType));
+  const promoMultiplier = promoApplies && promo ? 1 + (promo.percent / 100) : 1;
+
+  const quote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * promoMultiplier) : 0;
 
   const maxQuoteFor = (v: { id: string; base: number }) => {
     const sids = STORAGE_MAP[v.id];
@@ -1046,10 +1055,12 @@ export default function Home() {
       {/* STEP: DEVICE TYPE */}
       {step === "device" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          {/* PROMO BANNER */}
-          <div className="bg-[#00c853] text-center py-2 px-4">
-            <p className="text-white text-xs font-semibold">🔥 Limited time: Extra 10% on all iPhones this week</p>
-          </div>
+          {/* PROMO BANNER (config: public/promo.json) */}
+          {promo?.active && promo.text && (
+            <div className="bg-[#00c853] text-center py-2 px-4">
+              <p className="text-white text-xs font-semibold">{promo.text}</p>
+            </div>
+          )}
           {/* HERO: Phone → Cash Visual */}
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-8 pb-4">
             <div className="flex items-center justify-center gap-4 mb-4">
@@ -1955,6 +1966,9 @@ export default function Home() {
               <div>
                 <p className="text-[#888] text-sm font-medium">{model.label} · {storage?.label} · {condition.label}</p>
                 <p className="text-5xl font-bold text-[#00c853] mt-1">${quote * quantity}</p>
+                {promoApplies && promo && (
+                  <p className="text-[10px] mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎉 +{promo.percent}% promo applied</p>
+                )}
               </div>
             </div>
             {quantity > 1 && <p className="text-[#888] text-sm mb-2">${quote} each × {quantity}</p>}
