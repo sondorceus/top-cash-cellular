@@ -1003,7 +1003,6 @@ export default function Home() {
                 { id: "consoles" as const, label: "Sell Game Console", icon: "🎮" },
                 { id: "drones" as const, label: "Sell Drone", icon: "🛸" },
                 { id: "vr" as const, label: "Sell VR", icon: "🥽" },
-                { id: "phones" as const, label: "Sell Other", icon: "📦", direct: true },
               ].map((cat, idx) => (
                 <button
                   key={idx}
@@ -1033,6 +1032,20 @@ export default function Home() {
               ))}
             </div>
             <p className="text-[#777] text-[11px] text-center mt-3">Some categories will connect you to our team for a custom quote</p>
+            <div className="text-center mt-2">
+              <button
+                onClick={() => {
+                  setInquiryCategory("Other");
+                  setInquirySent(false);
+                  setInquiryDesc("");
+                  setStep("inquiry");
+                  pushHistory("inquiry");
+                }}
+                className="text-[#888] text-[11px] underline underline-offset-2 hover:text-[#00c853] cursor-pointer transition"
+              >
+                Sell other
+              </button>
+            </div>
 
             <FairPromise />
             <TrustBadge />
