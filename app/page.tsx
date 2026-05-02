@@ -93,6 +93,37 @@ const SAMSUNG_SERIES = [
   ]},
 ];
 
+const PIXEL_SERIES = [
+  { id: "pproseries", label: "Pro Series", year: "Pixel 6 Pro–10 Pro XL", topPrice: 530, variants: [
+    { id: "px10pxl", label: "Pixel 10 Pro XL", base: 530 },
+    { id: "px10p", label: "Pixel 10 Pro", base: 440 },
+    { id: "px9pxl", label: "Pixel 9 Pro XL", base: 375 },
+    { id: "px9p", label: "Pixel 9 Pro", base: 305 },
+    { id: "px8p", label: "Pixel 8 Pro", base: 240 },
+    { id: "px7p", label: "Pixel 7 Pro", base: 85 },
+    { id: "px6p", label: "Pixel 6 Pro", base: 50 },
+  ]},
+  { id: "pstandard", label: "Standard Series", year: "Pixel 5–10 + a-series", topPrice: 325, variants: [
+    { id: "px10", label: "Pixel 10", base: 325 },
+    { id: "px10a", label: "Pixel 10a", base: 145 },
+    { id: "px9", label: "Pixel 9", base: 185 },
+    { id: "px9a", label: "Pixel 9a", base: 135 },
+    { id: "px8", label: "Pixel 8", base: 120 },
+    { id: "px8a", label: "Pixel 8a", base: 90 },
+    { id: "px7", label: "Pixel 7", base: 45 },
+    { id: "px7a", label: "Pixel 7a", base: 10 },
+    { id: "px6", label: "Pixel 6", base: 40 },
+    { id: "px6a", label: "Pixel 6a", base: 30 },
+    { id: "px5", label: "Pixel 5", base: 50 },
+    { id: "px5a", label: "Pixel 5a (5G)", base: 30 },
+  ]},
+  { id: "pfoldseries", label: "Fold Series", year: "Pixel Fold lineup", topPrice: 755, variants: [
+    { id: "px10pfold", label: "Pixel 10 Pro Fold", base: 755 },
+    { id: "px9pfold", label: "Pixel 9 Pro Fold", base: 575 },
+    { id: "pxfold", label: "Pixel Fold", base: 280 },
+  ]},
+];
+
 const MACBOOK_MODELS = [
   { id: "mbp16m4", label: "MacBook Pro 16\" M4", base: 1200 },
   { id: "mbp14m4", label: "MacBook Pro 14\" M4", base: 1000 },
@@ -502,6 +533,29 @@ const STORAGE_MAP: Record<string, string[]> = {
   gzflip5: ["256", "512"],
   gzflip4: ["128", "256", "512"],
   gzflip3: ["128", "256"],
+  // Google Pixel
+  px10pxl: ["128", "256", "512", "1tb"],
+  px10p: ["128", "256", "512", "1tb"],
+  px10: ["128", "256"],
+  px10a: ["128", "256"],
+  px10pfold: ["256", "512", "1tb"],
+  px9pxl: ["128", "256", "512", "1tb"],
+  px9p: ["128", "256", "512", "1tb"],
+  px9: ["128", "256"],
+  px9a: ["128", "256"],
+  px9pfold: ["256", "512"],
+  px8p: ["128", "256", "512", "1tb"],
+  px8: ["128", "256"],
+  px8a: ["128", "256"],
+  px7p: ["128", "256", "512"],
+  px7: ["128", "256"],
+  px7a: ["128"],
+  pxfold: ["256", "512"],
+  px6p: ["128", "256", "512"],
+  px6: ["128", "256"],
+  px6a: ["128"],
+  px5: ["128"],
+  px5a: ["128"],
   // MacBooks — unified memory, storage options
   mbp16m4: ["512", "1tb"],
   mbp14m4: ["512", "1tb"],
@@ -707,7 +761,7 @@ const FAQS = [
 ];
 
 type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
-type DeviceType = "iphone" | "android" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "sony" | "microsoft" | "nintendo" | "applewatch" | "pixelwatch" | "garmin" | "samsungwatch" | "dji" | "samsung_tab" | "surface" | "lenovo_tab" | "oneplus_tab" | "google_tab" | "apple_vr" | "meta_vr" | "valve_vr" | "psvr" | "ipad" | null;
+type DeviceType = "iphone" | "android" | "pixel" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "sony" | "microsoft" | "nintendo" | "applewatch" | "pixelwatch" | "garmin" | "samsungwatch" | "dji" | "samsung_tab" | "surface" | "lenovo_tab" | "oneplus_tab" | "google_tab" | "apple_vr" | "meta_vr" | "valve_vr" | "psvr" | "ipad" | null;
 
 function FairPromise() {
   return (
@@ -908,7 +962,8 @@ export default function Home() {
   const iphoneVariants = selectedSeries ? IPHONE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const ipadVariants = selectedSeries ? IPAD_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const samsungVariants = selectedSeries ? SAMSUNG_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
+  const pixelVariants = selectedSeries ? PIXEL_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -1277,6 +1332,7 @@ export default function Home() {
               {category === "phones" && [
                 { id: "iphone" as const, label: "Apple iPhone", sub: "iPhone 11 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg> },
                 { id: "android" as const, label: "Samsung Galaxy", sub: "Galaxy S21 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg> },
+                { id: "pixel" as const, label: "Google Pixel", sub: "Pixel 5 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.4">PIXEL</text><rect x="14" y="24" width="3" height="1" rx="0.5" fill="#4285F4"/><rect x="17.5" y="24" width="3" height="1" rx="0.5" fill="#EA4335"/><rect x="21" y="24" width="3" height="1" rx="0.5" fill="#FBBC05"/><rect x="24.5" y="24" width="1.5" height="1" rx="0.5" fill="#34A853"/></svg> },
               ].map((b) => (
                 <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
@@ -1490,6 +1546,42 @@ export default function Home() {
               </>
             )}
 
+            {/* Pixel: Series grid */}
+            {deviceType === "pixel" && !selectedSeries && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Pixel</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your series</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {PIXEL_SERIES.map((s) => (
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
+                      <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.4">PIXEL</text><rect x="14" y="24" width="3" height="1" rx="0.5" fill="#4285F4"/><rect x="17.5" y="24" width="3" height="1" rx="0.5" fill="#EA4335"/><rect x="21" y="24" width="3" height="1" rx="0.5" fill="#FBBC05"/><rect x="24.5" y="24" width="1.5" height="1" rx="0.5" fill="#34A853"/></svg>
+                      <p className="font-bold text-sm">{s.label}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${s.topPrice}</p>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Pixel: Variant list (after series selected) */}
+            {deviceType === "pixel" && selectedSeries && (
+              <>
+                <h2 className="text-2xl font-bold mb-1">{PIXEL_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
+                <p className="text-[#888] text-sm mb-6">Pick your exact model</p>
+                <div className="space-y-2">
+                  {models.map((m) => (
+                    <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
+                      <p className="font-semibold text-[15px] flex-1">{m.label}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[#00c853] font-bold text-sm">up to ${(m as { base?: number }).base}</span>
+                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
             {/* iPad: Series grid → Variant list */}
             {deviceType === "ipad" && !selectedSeries && (
               <>
@@ -1606,7 +1698,7 @@ export default function Home() {
             )}
 
             {/* Other categories (consoles, watches): Flat model list */}
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "android" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && deviceType !== "samsung_tab" && deviceType !== "surface" && deviceType !== "lenovo_tab" && deviceType !== "oneplus_tab" && deviceType !== "google_tab" && category !== "computers" && category !== "desktops" && (
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "android" && deviceType !== "pixel" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && deviceType !== "samsung_tab" && deviceType !== "surface" && deviceType !== "lenovo_tab" && deviceType !== "oneplus_tab" && deviceType !== "google_tab" && category !== "computers" && category !== "desktops" && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your model</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
@@ -1682,7 +1774,7 @@ export default function Home() {
                   key={c.id}
                   onClick={(e) => {
                     if ((e.target as HTMLElement).closest('details') || (e.target as HTMLElement).closest('summary')) return;
-                    setCondition(c); const cs = (deviceType === "iphone" || deviceType === "android") ? "carrier" : "quote"; if (cs === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); } setStep(cs); pushHistory(cs);
+                    setCondition(c); const cs = (deviceType === "iphone" || deviceType === "android" || deviceType === "pixel") ? "carrier" : "quote"; if (cs === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); } setStep(cs); pushHistory(cs);
                   }}
                   className="group w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
                 >
