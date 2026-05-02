@@ -1427,7 +1427,7 @@ export default function Home() {
                   {SAMSUNG_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
                       {(s as { image?: string }).image ? (
-                        <img src={(s as { image?: string }).image} alt={s.label} loading="eager" className="w-16 h-16 object-contain mb-1" />
+                        <img src={(s as { image?: string }).image} alt={s.label} loading="eager" className={`${s.id === "sseries" ? "w-[71px] h-[71px]" : "w-16 h-16"} object-contain mb-1`} />
                       ) : (
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg>
                       )}
