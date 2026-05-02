@@ -51,24 +51,38 @@ const IPHONE_SERIES = [
   ]},
 ];
 
-const SAMSUNG_MODELS = [
-  { id: "gs25u", label: "Galaxy S25 Ultra", base: 620 },
-  { id: "gs25p", label: "Galaxy S25+", base: 470 },
-  { id: "gs25", label: "Galaxy S25", base: 380 },
-  { id: "gs24u", label: "Galaxy S24 Ultra", base: 500 },
-  { id: "gs24p", label: "Galaxy S24+", base: 380 },
-  { id: "gs24", label: "Galaxy S24", base: 300 },
-  { id: "gs23u", label: "Galaxy S23 Ultra", base: 380 },
-  { id: "gs23p", label: "Galaxy S23+", base: 270 },
-  { id: "gs23", label: "Galaxy S23", base: 210 },
-  { id: "gzfold6", label: "Galaxy Z Fold 6", base: 650 },
-  { id: "gzfold5", label: "Galaxy Z Fold 5", base: 480 },
-  { id: "gzflip6", label: "Galaxy Z Flip 6", base: 320 },
-  { id: "gzflip5", label: "Galaxy Z Flip 5", base: 240 },
-  { id: "gs22u", label: "Galaxy S22 Ultra", base: 280 },
-  { id: "gs22", label: "Galaxy S22/S22+", base: 180 },
-  { id: "gs21u", label: "Galaxy S21 Ultra", base: 480 },
-  { id: "gs21", label: "Galaxy S21/S21+", base: 300 },
+const SAMSUNG_SERIES = [
+  { id: "s25", label: "Galaxy S25", year: "2025", topPrice: 620, variants: [
+    { id: "gs25u", label: "Galaxy S25 Ultra", base: 620 },
+    { id: "gs25p", label: "Galaxy S25+", base: 470 },
+    { id: "gs25", label: "Galaxy S25", base: 380 },
+  ]},
+  { id: "s24", label: "Galaxy S24", year: "2024", topPrice: 500, variants: [
+    { id: "gs24u", label: "Galaxy S24 Ultra", base: 500 },
+    { id: "gs24p", label: "Galaxy S24+", base: 380 },
+    { id: "gs24", label: "Galaxy S24", base: 300 },
+  ]},
+  { id: "s23", label: "Galaxy S23", year: "2023", topPrice: 380, variants: [
+    { id: "gs23u", label: "Galaxy S23 Ultra", base: 380 },
+    { id: "gs23p", label: "Galaxy S23+", base: 270 },
+    { id: "gs23", label: "Galaxy S23", base: 210 },
+  ]},
+  { id: "s22", label: "Galaxy S22", year: "2022", topPrice: 280, variants: [
+    { id: "gs22u", label: "Galaxy S22 Ultra", base: 280 },
+    { id: "gs22", label: "Galaxy S22/S22+", base: 180 },
+  ]},
+  { id: "s21", label: "Galaxy S21", year: "2021", topPrice: 480, variants: [
+    { id: "gs21u", label: "Galaxy S21 Ultra", base: 480 },
+    { id: "gs21", label: "Galaxy S21/S21+", base: 300 },
+  ]},
+  { id: "zfold", label: "Galaxy Z Fold", year: "Foldable", topPrice: 650, variants: [
+    { id: "gzfold6", label: "Galaxy Z Fold 6", base: 650 },
+    { id: "gzfold5", label: "Galaxy Z Fold 5", base: 480 },
+  ]},
+  { id: "zflip", label: "Galaxy Z Flip", year: "Foldable", topPrice: 320, variants: [
+    { id: "gzflip6", label: "Galaxy Z Flip 6", base: 320 },
+    { id: "gzflip5", label: "Galaxy Z Flip 5", base: 240 },
+  ]},
 ];
 
 const MACBOOK_MODELS = [
@@ -869,7 +883,8 @@ export default function Home() {
 
   const iphoneVariants = selectedSeries ? IPHONE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const ipadVariants = selectedSeries ? IPAD_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? SAMSUNG_MODELS : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
+  const samsungVariants = selectedSeries ? SAMSUNG_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -1410,6 +1425,42 @@ export default function Home() {
               </>
             )}
 
+            {/* Samsung: Series grid → Variant list */}
+            {deviceType === "android" && !selectedSeries && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Galaxy</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your series</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {SAMSUNG_SERIES.map((s) => (
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
+                      <svg viewBox="0 0 40 40" className="w-10 h-10 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg>
+                      <p className="font-bold text-sm">{s.label}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${s.topPrice}</p>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Samsung: Variant list (after series selected) */}
+            {deviceType === "android" && selectedSeries && (
+              <>
+                <h2 className="text-2xl font-bold mb-1">{SAMSUNG_SERIES.find(s => s.id === selectedSeries)?.label} Series</h2>
+                <p className="text-[#888] text-sm mb-6">Pick your exact model</p>
+                <div className="space-y-2">
+                  {models.map((m) => (
+                    <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
+                      <p className="font-semibold text-[15px] flex-1">{m.label}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[#00c853] font-bold text-sm">up to ${(m as { base?: number }).base}</span>
+                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
             {/* iPad: Series grid → Variant list */}
             {deviceType === "ipad" && !selectedSeries && (
               <>
@@ -1525,8 +1576,8 @@ export default function Home() {
               </>
             )}
 
-            {/* Other categories (phones, consoles, watches): Flat model list */}
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && deviceType !== "samsung_tab" && deviceType !== "surface" && deviceType !== "lenovo_tab" && deviceType !== "oneplus_tab" && deviceType !== "google_tab" && category !== "computers" && category !== "desktops" && (
+            {/* Other categories (consoles, watches): Flat model list */}
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "android" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && deviceType !== "samsung_tab" && deviceType !== "surface" && deviceType !== "lenovo_tab" && deviceType !== "oneplus_tab" && deviceType !== "google_tab" && category !== "computers" && category !== "desktops" && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your model</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
