@@ -884,19 +884,7 @@ export default function Home() {
       <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={reset} aria-label="Go to homepage" className="cursor-pointer">
-            <span className="flex items-center gap-2">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <rect width="32" height="32" rx="8" fill="url(#logoGrad)"/>
-                <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stopColor="#00e676"/><stop offset="100%" stopColor="#00c853"/></linearGradient></defs>
-                <rect x="10" y="5" width="12" height="22" rx="3" stroke="#fff" strokeWidth="1.8" fill="none"/>
-                <line x1="13" y1="24" x2="19" y2="24" stroke="#fff" strokeWidth="1.2" strokeLinecap="round"/>
-                <path d="M16 10l-3.5 4h2.5v4h2v-4h2.5L16 10z" fill="#fff"/>
-              </svg>
-              <div className="flex flex-col leading-none">
-                <span className="text-[13px] font-extrabold tracking-tight text-white">TOP CASH</span>
-                <span className="text-[9px] font-semibold tracking-[0.15em] text-[#00c853] uppercase">Cellular</span>
-              </div>
-            </span>
+            <img src="/logo.png" alt="Top Cash Cellular" className="h-9 md:h-10 w-auto object-contain" />
           </button>
           <div className="flex items-center gap-3">
             <a href="/reviews" className="text-xs text-[#888] hover:text-white transition hidden sm:inline">Reviews</a>
