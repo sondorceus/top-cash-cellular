@@ -52,34 +52,26 @@ const IPHONE_SERIES = [
 ];
 
 const SAMSUNG_SERIES = [
-  { id: "s25", label: "Galaxy S25", year: "2025", topPrice: 620, variants: [
+  { id: "sseries", label: "S Series", year: "Galaxy S21–S25", topPrice: 620, variants: [
     { id: "gs25u", label: "Galaxy S25 Ultra", base: 620 },
     { id: "gs25p", label: "Galaxy S25+", base: 470 },
     { id: "gs25", label: "Galaxy S25", base: 380 },
-  ]},
-  { id: "s24", label: "Galaxy S24", year: "2024", topPrice: 500, variants: [
     { id: "gs24u", label: "Galaxy S24 Ultra", base: 500 },
     { id: "gs24p", label: "Galaxy S24+", base: 380 },
     { id: "gs24", label: "Galaxy S24", base: 300 },
-  ]},
-  { id: "s23", label: "Galaxy S23", year: "2023", topPrice: 380, variants: [
     { id: "gs23u", label: "Galaxy S23 Ultra", base: 380 },
     { id: "gs23p", label: "Galaxy S23+", base: 270 },
     { id: "gs23", label: "Galaxy S23", base: 210 },
-  ]},
-  { id: "s22", label: "Galaxy S22", year: "2022", topPrice: 280, variants: [
     { id: "gs22u", label: "Galaxy S22 Ultra", base: 280 },
     { id: "gs22", label: "Galaxy S22/S22+", base: 180 },
-  ]},
-  { id: "s21", label: "Galaxy S21", year: "2021", topPrice: 480, variants: [
     { id: "gs21u", label: "Galaxy S21 Ultra", base: 480 },
     { id: "gs21", label: "Galaxy S21/S21+", base: 300 },
   ]},
-  { id: "zfold", label: "Galaxy Z Fold", year: "Foldable", topPrice: 650, variants: [
+  { id: "foldseries", label: "Fold Series", year: "Z Fold lineup", topPrice: 650, variants: [
     { id: "gzfold6", label: "Galaxy Z Fold 6", base: 650 },
     { id: "gzfold5", label: "Galaxy Z Fold 5", base: 480 },
   ]},
-  { id: "zflip", label: "Galaxy Z Flip", year: "Foldable", topPrice: 320, variants: [
+  { id: "flipseries", label: "Flip Series", year: "Z Flip lineup", topPrice: 320, variants: [
     { id: "gzflip6", label: "Galaxy Z Flip 6", base: 320 },
     { id: "gzflip5", label: "Galaxy Z Flip 5", base: 240 },
   ]},
@@ -1445,7 +1437,7 @@ export default function Home() {
             {/* Samsung: Variant list (after series selected) */}
             {deviceType === "android" && selectedSeries && (
               <>
-                <h2 className="text-2xl font-bold mb-1">{SAMSUNG_SERIES.find(s => s.id === selectedSeries)?.label} Series</h2>
+                <h2 className="text-2xl font-bold mb-1">{SAMSUNG_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
                 <p className="text-[#888] text-sm mb-6">Pick your exact model</p>
                 <div className="space-y-2">
                   {models.map((m) => (
