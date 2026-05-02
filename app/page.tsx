@@ -71,7 +71,7 @@ const SAMSUNG_SERIES = [
     { id: "gzfold6", label: "Galaxy Z Fold 6", base: 650 },
     { id: "gzfold5", label: "Galaxy Z Fold 5", base: 480 },
   ]},
-  { id: "flipseries", label: "Flip Series", year: "Z Flip lineup", topPrice: 320, variants: [
+  { id: "flipseries", label: "Flip Series", year: "Z Flip lineup", topPrice: 320, image: "/flip-series.webp", variants: [
     { id: "gzflip6", label: "Galaxy Z Flip 6", base: 320 },
     { id: "gzflip5", label: "Galaxy Z Flip 5", base: 240 },
   ]},
