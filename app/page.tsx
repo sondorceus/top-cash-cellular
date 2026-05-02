@@ -931,6 +931,13 @@ export default function Home() {
   const carrierMultiplier = carrier?.multiplier ?? 1;
   const quote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier) : 0;
 
+  const maxQuoteFor = (v: { id: string; base: number }) => {
+    const sids = STORAGE_MAP[v.id];
+    const maxStorageMult = sids?.length ? Math.max(...sids.map(sid => ALL_STORAGES.find(s => s.id === sid)?.multiplier ?? 1)) : 1;
+    return Math.round(v.base * maxStorageMult * 1.15);
+  };
+  const maxQuoteForSeries = (vs: { id: string; base: number }[]) => Math.max(...vs.map(maxQuoteFor));
+
   const pushHistory = useCallback((s: string) => {
     window.history.pushState({ step: s }, "", `#${s}`);
   }, []);
@@ -1516,7 +1523,7 @@ export default function Home() {
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
                       {(s as { image?: string }).image && <img src={(s as { image?: string }).image} alt={s.label} loading="eager" className="w-14 h-14 object-contain mb-1" />}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${s.topPrice}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${maxQuoteForSeries(s.variants)}</p>
                     </button>
                   ))}
                 </div>
@@ -1537,7 +1544,7 @@ export default function Home() {
                       {imgSrc && <img src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">up to ${m.base}</span>
+                        <span className="text-[#00c853] font-bold text-sm">up to ${maxQuoteFor(m)}</span>
                         <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
@@ -1561,7 +1568,7 @@ export default function Home() {
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${s.topPrice}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${maxQuoteForSeries(s.variants)}</p>
                     </button>
                   ))}
                 </div>
@@ -1578,7 +1585,7 @@ export default function Home() {
                     <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">up to ${(m as { base?: number }).base}</span>
+                        <span className="text-[#00c853] font-bold text-sm">up to ${maxQuoteFor(m as { id: string; base: number })}</span>
                         <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
@@ -1641,7 +1648,7 @@ export default function Home() {
                         <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${s.topPrice}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${maxQuoteForSeries(s.variants)}</p>
                     </button>
                   ))}
                 </div>
@@ -1665,7 +1672,7 @@ export default function Home() {
                     <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">up to ${m.base}</span>
+                        <span className="text-[#00c853] font-bold text-sm">up to ${maxQuoteFor(m)}</span>
                         <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
@@ -1704,7 +1711,7 @@ export default function Home() {
                     <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition active:scale-[0.97]">
                       <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
                       <p className="font-bold text-sm text-center leading-tight">{m.label}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${(m as { base?: number }).base}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${maxQuoteFor(m as { id: string; base: number })}</p>
                     </button>
                   ))}
                 </div>
@@ -1714,7 +1721,7 @@ export default function Home() {
                     <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">up to ${(m as { base?: number }).base}</span>
+                        <span className="text-[#00c853] font-bold text-sm">up to ${maxQuoteFor(m as { id: string; base: number })}</span>
                         <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
@@ -1752,7 +1759,7 @@ export default function Home() {
                     <button key={m.id} onClick={() => { setModel(m); const ns = (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" || deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch") ? "condition" : "storage"; setStep(ns); pushHistory(ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">up to ${(m as { base?: number }).base}</span>
+                        <span className="text-[#00c853] font-bold text-sm">up to ${maxQuoteFor(m as { id: string; base: number })}</span>
                         <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
@@ -1784,7 +1791,7 @@ export default function Home() {
                   className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]"
                 >
                   <p className="font-semibold text-[15px]">{s.label}</p>
-                  <span className="text-[#00c853] font-bold text-sm">up to ${Math.round(model.base * s.multiplier)}</span>
+                  <span className="text-[#00c853] font-bold text-sm">up to ${Math.round(model.base * s.multiplier * 1.15)}</span>
                 </button>
               ))}
             </div>
