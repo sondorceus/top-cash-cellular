@@ -1550,13 +1550,13 @@ export default function Home() {
             {deviceType === "pixel" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Pixel</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your series</p>
+                <p className="text-[#888] text-sm mb-6">Choose your series — we&apos;ll send you a custom offer</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {PIXEL_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
                       <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#4285F4" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="0"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#EA4335" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-15"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#FBBC05" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-30"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#34A853" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-45"/><text x="20" y="24" textAnchor="middle" fill="#4285F4" fontSize="11" fontWeight="bold" fontFamily="Arial">G</text></svg>
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${s.topPrice}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
                   ))}
                 </div>
@@ -1567,13 +1567,13 @@ export default function Home() {
             {deviceType === "pixel" && selectedSeries && (
               <>
                 <h2 className="text-2xl font-bold mb-1">{PIXEL_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
-                <p className="text-[#888] text-sm mb-6">Pick your exact model</p>
+                <p className="text-[#888] text-sm mb-6">Pick your model — we&apos;ll send you a custom offer</p>
                 <div className="space-y-2">
                   {models.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
+                    <button key={m.id} onClick={() => { setInquiryCategory("Google Pixel"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">up to ${(m as { base?: number }).base}</span>
+                        <span className="text-[#00c853] font-bold text-sm">Get an offer</span>
                         <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
