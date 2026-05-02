@@ -49,6 +49,16 @@ button, a, [role="button"] {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
+
+@keyframes promoShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes promoGradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
 img[loading="lazy"], section img {
   animation: imgFadeIn 0.3s ease-out both;
 }

@@ -1,6 +1,7 @@
 {
   "active": true,
-  "text": "🔥 Limited time: Extra 10% on all iPhones this week",
+  "text": "🚀 Trade 2+ devices · get +10% extra cash",
   "percent": 10,
-  "appliesTo": "iphone"
+  "appliesTo": "all",
+  "minQuantity": 2
 }

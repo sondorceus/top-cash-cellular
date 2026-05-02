@@ -930,12 +930,12 @@ export default function Home() {
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrier?.multiplier ?? 1;
 
-  type Promo = { active: boolean; text: string; percent: number; appliesTo: string };
+  type Promo = { active: boolean; text: string; percent: number; appliesTo: string; minQuantity?: number };
   const [promo, setPromo] = useState<Promo | null>(null);
   useEffect(() => {
     fetch("/promo.json", { cache: "no-store" }).then(r => r.ok ? r.json() : null).then(setPromo).catch(() => setPromo(null));
   }, []);
-  const promoApplies = !!(promo?.active && deviceType && (promo.appliesTo === "all" || promo.appliesTo === deviceType));
+  const promoApplies = !!(promo?.active && deviceType && (promo.appliesTo === "all" || promo.appliesTo === deviceType) && (!promo.minQuantity || quantity >= promo.minQuantity));
   const promoMultiplier = promoApplies && promo ? 1 + (promo.percent / 100) : 1;
 
   const quote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * promoMultiplier) : 0;
@@ -1057,8 +1057,9 @@ export default function Home() {
         <section className="animate-[fadeIn_0.3s_ease-out]">
           {/* PROMO BANNER (config: public/promo.json) */}
           {promo?.active && promo.text && (
-            <div className="bg-[#00c853] text-center py-2 px-4">
-              <p className="text-white text-xs font-semibold">{promo.text}</p>
+            <div className="relative overflow-hidden text-center py-2.5 px-4 border-y border-white/10" style={{ background: "linear-gradient(90deg, #00c853 0%, #00e5ff 50%, #7c4dff 100%)", backgroundSize: "200% 100%", animation: "promoGradient 6s ease-in-out infinite" }}>
+              <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)", animation: "promoShimmer 3s ease-in-out infinite" }}></div>
+              <p className="relative text-white text-xs font-extrabold tracking-wide drop-shadow">{promo.text}</p>
             </div>
           )}
           {/* HERO: Phone → Cash Visual */}
