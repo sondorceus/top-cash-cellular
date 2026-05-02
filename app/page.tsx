@@ -1001,9 +1001,9 @@ export default function Home() {
                 { id: "desktops" as const, label: "Sell Desktop", icon: "🖥️" },
                 { id: "watches" as const, label: "Sell Smartwatch", icon: "⌚" },
                 { id: "consoles" as const, label: "Sell Game Console", icon: "🎮" },
-                { id: "computers" as const, label: "Sell Graphics Card", icon: "⚡", direct: true },
                 { id: "drones" as const, label: "Sell Drone", icon: "🛸" },
                 { id: "vr" as const, label: "Sell VR", icon: "🥽" },
+                { id: "phones" as const, label: "Sell Other", icon: "📦", direct: true },
               ].map((cat, idx) => (
                 <button
                   key={idx}
@@ -1048,7 +1048,7 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            <h2 className="text-2xl font-bold mb-1">Sell Your {inquiryCategory}</h2>
+            <h2 className="text-2xl font-bold mb-1">{inquiryCategory === "Other" ? "Tell us what you'd like to sell" : `Sell Your ${inquiryCategory}`}</h2>
 
             {/* Step 1: Device details */}
             {!condition && !inquirySent && (
@@ -1196,7 +1196,7 @@ export default function Home() {
                   <span className="text-3xl">✅</span>
                 </div>
                 <h3 className="text-xl font-bold mb-2">Submitted!</h3>
-                <p className="text-[#888] text-sm mb-2">We&apos;re reviewing your {inquiryCategory.toLowerCase()} and will send you a personalized quote shortly.</p>
+                <p className="text-[#888] text-sm mb-2">We&apos;re reviewing your {inquiryCategory === "Other" ? "item" : inquiryCategory.toLowerCase()} and will send you a personalized quote shortly.</p>
                 <p className="text-[#888] text-xs mb-6">Most quotes are sent within a few hours.</p>
                 <button onClick={reset} className="text-[#00c853] font-semibold text-sm cursor-pointer hover:underline">
                   Sell another device
