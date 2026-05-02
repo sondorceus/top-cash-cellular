@@ -59,6 +59,11 @@ button, a, [role="button"] {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
 }
+
+@keyframes promoPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 24px rgba(0, 229, 255, 0.4), 0 0 0 0 rgba(0, 229, 255, 0.5); }
+  50% { transform: scale(1.015); box-shadow: 0 0 32px rgba(124, 77, 255, 0.55), 0 0 0 6px rgba(0, 229, 255, 0); }
+}
 img[loading="lazy"], section img {
   animation: imgFadeIn 0.3s ease-out both;
 }

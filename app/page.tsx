@@ -1057,9 +1057,11 @@ export default function Home() {
         <section className="animate-[fadeIn_0.3s_ease-out]">
           {/* PROMO BANNER (config: public/promo.json) */}
           {promo?.active && promo.text && (
-            <div className="relative overflow-hidden text-center py-2.5 px-4 border-y border-white/10" style={{ background: "linear-gradient(90deg, #00c853 0%, #00e5ff 50%, #7c4dff 100%)", backgroundSize: "200% 100%", animation: "promoGradient 6s ease-in-out infinite" }}>
-              <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)", animation: "promoShimmer 3s ease-in-out infinite" }}></div>
-              <p className="relative text-white text-xs font-extrabold tracking-wide drop-shadow">{promo.text}</p>
+            <div className="px-3 pt-3 pb-1">
+              <div className="relative overflow-hidden rounded-full text-center py-2 px-5 mx-auto max-w-fit" style={{ background: "linear-gradient(90deg, #00c853 0%, #00e5ff 50%, #7c4dff 100%)", backgroundSize: "200% 100%", animation: "promoGradient 6s ease-in-out infinite, promoPulse 2.4s ease-in-out infinite" }}>
+                <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 50%, transparent 100%)", animation: "promoShimmer 3s ease-in-out infinite" }}></div>
+                <p className="relative text-white text-xs font-extrabold tracking-wide drop-shadow whitespace-nowrap">{promo.text}</p>
+              </div>
             </div>
           )}
           {/* HERO: Phone → Cash Visual */}
