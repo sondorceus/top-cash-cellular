@@ -884,7 +884,20 @@ export default function Home() {
       <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={reset} aria-label="Go to homepage" className="cursor-pointer">
-            <img src="/logo.png" alt="Top Cash Cellular" className="h-9 md:h-10 w-auto object-contain" />
+            <span className="flex items-center gap-2">
+              <span className="w-9 h-9 rounded-xl bg-black border border-white/15 flex items-center justify-center">
+                <span className="w-6 h-6 rounded-lg bg-[#00c853] flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" className="w-3.5 h-5" fill="none" stroke="#fff" strokeWidth="2">
+                    <rect x="6" y="2" width="12" height="20" rx="2.5" />
+                    <line x1="10" y1="19" x2="14" y2="19" strokeLinecap="round" />
+                  </svg>
+                </span>
+              </span>
+              <div className="flex flex-col leading-none">
+                <span className="text-[14px] font-extrabold tracking-tight text-white">TOP CASH</span>
+                <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
+              </div>
+            </span>
           </button>
           <div className="flex items-center gap-3">
             <a href="/reviews" className="text-xs text-[#888] hover:text-white transition hidden sm:inline">Reviews</a>
