@@ -94,7 +94,7 @@ const SAMSUNG_SERIES = [
 ];
 
 const PIXEL_SERIES = [
-  { id: "pproseries", label: "Pro Series", year: "Pixel 6 Pro–10 Pro XL", topPrice: 530, variants: [
+  { id: "pproseries", label: "Pro Series", year: "Pixel 6 Pro–10 Pro XL", topPrice: 530, image: "/pixel-pro-series.webp", variants: [
     { id: "px10pxl", label: "Pixel 10 Pro XL", base: 530 },
     { id: "px10p", label: "Pixel 10 Pro", base: 440 },
     { id: "px9pxl", label: "Pixel 9 Pro XL", base: 375 },
@@ -117,7 +117,7 @@ const PIXEL_SERIES = [
     { id: "px5", label: "Pixel 5", base: 50 },
     { id: "px5a", label: "Pixel 5a (5G)", base: 30 },
   ]},
-  { id: "pfoldseries", label: "Fold Series", year: "Pixel Fold lineup", topPrice: 755, variants: [
+  { id: "pfoldseries", label: "Fold Series", year: "Pixel Fold lineup", topPrice: 755, image: "/pixel-fold-series.webp", variants: [
     { id: "px10pfold", label: "Pixel 10 Pro Fold", base: 755 },
     { id: "px9pfold", label: "Pixel 9 Pro Fold", base: 575 },
     { id: "pxfold", label: "Pixel Fold", base: 280 },
@@ -1554,7 +1554,11 @@ export default function Home() {
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {PIXEL_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
-                      <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#4285F4" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="0"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#EA4335" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-15"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#FBBC05" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-30"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#34A853" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-45"/><text x="20" y="24" textAnchor="middle" fill="#4285F4" fontSize="11" fontWeight="bold" fontFamily="Arial">G</text></svg>
+                      {(s as { image?: string }).image ? (
+                        <img src={(s as { image?: string }).image} alt={s.label} loading="eager" className="w-16 h-16 object-contain mb-1" />
+                      ) : (
+                        <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#4285F4" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="0"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#EA4335" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-15"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#FBBC05" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-30"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#34A853" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-45"/><text x="20" y="24" textAnchor="middle" fill="#4285F4" fontSize="11" fontWeight="bold" fontFamily="Arial">G</text></svg>
+                      )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
