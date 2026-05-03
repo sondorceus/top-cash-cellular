@@ -125,19 +125,31 @@ const PIXEL_SERIES = [
   ]},
 ];
 
-const MACBOOK_MODELS = [
+const MACBOOK_PRO_MODELS = [
   { id: "mbp16m4", label: "MacBook Pro 16\" M4", base: 1200 },
   { id: "mbp14m4", label: "MacBook Pro 14\" M4", base: 1000 },
   { id: "mbp16m3", label: "MacBook Pro 16\" M3", base: 950 },
   { id: "mbp14m3", label: "MacBook Pro 14\" M3", base: 800 },
-  { id: "mba15m3", label: "MacBook Air 15\" M3", base: 700 },
-  { id: "mba13m3", label: "MacBook Air 13\" M3", base: 600 },
   { id: "mbp16m2", label: "MacBook Pro 16\" M2", base: 750 },
   { id: "mbp14m2", label: "MacBook Pro 14\" M2", base: 650 },
+  { id: "mbp13m1", label: "MacBook Pro 13\" M1", base: 400 },
+];
+const MACBOOK_AIR_MODELS = [
+  { id: "mba15m3", label: "MacBook Air 15\" M3", base: 700 },
+  { id: "mba13m3", label: "MacBook Air 13\" M3", base: 600 },
   { id: "mba15m2", label: "MacBook Air 15\" M2", base: 550 },
   { id: "mba13m2", label: "MacBook Air 13\" M2", base: 480 },
   { id: "mba13m1", label: "MacBook Air 13\" M1", base: 350 },
-  { id: "mbp13m1", label: "MacBook Pro 13\" M1", base: 400 },
+];
+const MACBOOK_CLASSIC_MODELS = [
+  { id: "mb12_2017", label: "MacBook 12\" (2017)", base: 0 },
+  { id: "mb12_2016", label: "MacBook 12\" (2016)", base: 0 },
+  { id: "mb12_2015", label: "MacBook 12\" (2015)", base: 0 },
+];
+const MACBOOK_SERIES = [
+  { id: "mbpro", label: "MacBook Pro", year: "M1–M4", topPrice: 1200, variants: MACBOOK_PRO_MODELS },
+  { id: "mbair", label: "MacBook Air", year: "M1–M3", topPrice: 700, variants: MACBOOK_AIR_MODELS },
+  { id: "mbclassic", label: "MacBook", year: "12-inch Retina", topPrice: 0, variants: MACBOOK_CLASSIC_MODELS, inquiryOnly: true },
 ];
 
 const SAMSUNG_PC_MODELS = [
@@ -1015,6 +1027,7 @@ export default function Home() {
   const ipadVariants = selectedSeries ? IPAD_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const samsungVariants = selectedSeries ? SAMSUNG_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const pixelVariants = selectedSeries ? PIXEL_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
+  const macbookVariants = selectedSeries ? MACBOOK_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
 
   type Crumb = { label: string; onClick: () => void };
   const breadcrumbs: Crumb[] = [
@@ -1027,7 +1040,7 @@ export default function Home() {
     });
   }
   if (selectedSeries) {
-    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : null;
+    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : null;
     const ser = seriesList?.find(s => s.id === selectedSeries);
     if (ser) breadcrumbs.push({
       label: ser.label,
@@ -1051,7 +1064,7 @@ export default function Home() {
     onClick: () => { setStep("quote"); pushHistory("quote"); },
   });
   const showBreadcrumbs = breadcrumbs.length > 1 && step !== "device" && step !== "category" && page === "home";
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? MACBOOK_MODELS : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -1720,6 +1733,50 @@ export default function Home() {
               </>
             )}
 
+            {/* MacBook: Series grid (Pro / Air / 12" Classic) */}
+            {deviceType === "macbook" && !selectedSeries && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your MacBook</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your family</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {MACBOOK_SERIES.map((s) => (
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] active:scale-[0.97]">
+                      <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg>
+                      <p className="font-bold text-sm">{s.label}</p>
+                      <p className="text-[#888] text-[10px]">{s.year}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">{(s as { inquiryOnly?: boolean }).inquiryOnly ? "Get an offer" : `up to $${maxQuoteForSeries(s.variants)}`}</p>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* MacBook: Variant list (after series selected) */}
+            {deviceType === "macbook" && selectedSeries && (() => {
+              const ser = MACBOOK_SERIES.find(s => s.id === selectedSeries);
+              const isInquiry = !!(ser as { inquiryOnly?: boolean })?.inquiryOnly;
+              return (
+                <>
+                  <h2 className="text-2xl font-bold mb-1">{ser?.label}</h2>
+                  <p className="text-[#888] text-sm mb-6">{isInquiry ? "Pick your model — we'll send a custom offer" : "Pick your exact model"}</p>
+                  <div className="space-y-2">
+                    {models.map((m) => (
+                      <button key={m.id} onClick={() => {
+                        if (isInquiry) { setInquiryCategory("MacBook"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
+                        else { setModel(m); setStep("storage"); pushHistory("storage"); }
+                      }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
+                        <p className="font-semibold text-[15px] flex-1">{m.label}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[#00c853] font-bold text-sm">{isInquiry ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</span>
+                          <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              );
+            })()}
+
             {/* iPad: Series grid → Variant list */}
             {deviceType === "ipad" && !selectedSeries && (
               <>
@@ -1787,7 +1844,7 @@ export default function Home() {
             )}
 
             {/* Laptop/Desktop: Grid on mobile, list on desktop */}
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && (category === "computers" || category === "desktops") && (
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your model</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
