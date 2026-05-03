@@ -341,12 +341,23 @@ const IPAD_SERIES = [
 
 const IPAD_MODELS = IPAD_SERIES.flatMap(s => s.variants);
 
-const SONY_MODELS = [
-  { id: "ps5", label: "PlayStation 5", base: 300 },
+const PS5_VARIANTS = [
+  { id: "ps5pro", label: "PlayStation 5 Pro (2024)", base: 0, inquiryOnly: true },
+  { id: "ps5", label: "PlayStation 5 (Standard, Disc)", base: 300 },
   { id: "ps5d", label: "PlayStation 5 Digital", base: 250 },
-  { id: "ps4pro", label: "PlayStation 4 Pro", base: 150 },
-  { id: "ps4", label: "PlayStation 4", base: 100 },
+  { id: "ps5slim", label: "PlayStation 5 Slim (Disc)", base: 0, inquiryOnly: true },
+  { id: "ps5slim_d", label: "PlayStation 5 Slim Digital", base: 0, inquiryOnly: true },
 ];
+const PS4_VARIANTS = [
+  { id: "ps4pro", label: "PlayStation 4 Pro", base: 150 },
+  { id: "ps4", label: "PlayStation 4 (Standard)", base: 100 },
+  { id: "ps4slim", label: "PlayStation 4 Slim", base: 0, inquiryOnly: true },
+];
+const SONY_SERIES = [
+  { id: "ps5_family", label: "PlayStation 5", year: "Pro · Std · Slim", topPrice: 300, image: "/ps5-series.webp", variants: PS5_VARIANTS },
+  { id: "ps4_family", label: "PlayStation 4", year: "Pro · Std · Slim", topPrice: 150, variants: PS4_VARIANTS },
+];
+const SONY_MODELS = [...PS5_VARIANTS, ...PS4_VARIANTS];
 
 const MICROSOFT_MODELS = [
   { id: "xsx", label: "Xbox Series X", base: 280 },
@@ -1042,6 +1053,7 @@ export default function Home() {
   const samsungVariants = selectedSeries ? SAMSUNG_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const pixelVariants = selectedSeries ? PIXEL_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const macbookVariants = selectedSeries ? MACBOOK_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
+  const sonyVariants = selectedSeries ? SONY_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
 
   type Crumb = { label: string; onClick: () => void };
   const breadcrumbs: Crumb[] = [
@@ -1054,7 +1066,7 @@ export default function Home() {
     });
   }
   if (selectedSeries) {
-    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : null;
+    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : null;
     const ser = seriesList?.find(s => s.id === selectedSeries);
     if (ser) breadcrumbs.push({
       label: ser.label,
@@ -1078,7 +1090,7 @@ export default function Home() {
     onClick: () => { setStep("quote"); pushHistory("quote"); },
   });
   const showBreadcrumbs = breadcrumbs.length > 1 && step !== "device" && step !== "category" && page === "home";
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? SONY_MODELS : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -1914,21 +1926,51 @@ export default function Home() {
               </>
             )}
 
-            {/* Other categories (consoles, watches): Flat model list */}
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "android" && deviceType !== "pixel" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && deviceType !== "samsung_tab" && deviceType !== "surface" && deviceType !== "lenovo_tab" && deviceType !== "oneplus_tab" && deviceType !== "google_tab" && category !== "computers" && category !== "desktops" && (
+            {/* Sony: PlayStation 5 / PlayStation 4 family picker */}
+            {deviceType === "sony" && !selectedSeries && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your model</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
-                <div className="space-y-2">
-                  {models.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); const ns = (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" || deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch") ? "condition" : "storage"; setStep(ns); pushHistory(ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                      <p className="font-semibold text-[15px]">{m.label}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">up to ${maxQuoteFor(m as { id: string; base: number })}</span>
-                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                      </div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your PlayStation</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your console family</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {SONY_SERIES.map((s) => (
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                      {(s as { image?: string }).image ? (
+                        <div className="bg-white rounded-xl px-2 py-1 mb-1 flex items-center justify-center w-[72px] h-[60px]">
+                          <img src={(s as { image?: string }).image} alt={s.label} width={56} height={52} loading="eager" decoding="async" fetchPriority="high" className="w-14 h-13 object-contain" />
+                        </div>
+                      ) : (
+                        <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#003087"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">{s.id === "ps5_family" ? "PS5" : "PS4"}</text></svg>
+                      )}
+                      <p className="font-bold text-sm">{s.label}</p>
+                      <p className="text-[#888] text-[10px]">{s.year}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${maxQuoteForSeries(s.variants)}</p>
                     </button>
                   ))}
+                </div>
+              </>
+            )}
+
+            {/* Other categories (consoles, watches): Flat model list */}
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "android" && deviceType !== "pixel" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && deviceType !== "samsung_tab" && deviceType !== "surface" && deviceType !== "lenovo_tab" && deviceType !== "oneplus_tab" && deviceType !== "google_tab" && category !== "computers" && category !== "desktops" && !(deviceType === "sony" && !selectedSeries) && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "sony" ? (SONY_SERIES.find(s => s.id === selectedSeries)?.label || "Select your model") : "Select your model"}</h2>
+                <p className="text-[#888] text-sm mb-6">{deviceType === "sony" ? "Pick your exact variant" : "Choose your exact device"}</p>
+                <div className="space-y-2">
+                  {models.map((m) => {
+                    const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
+                    return (
+                      <button key={m.id} onClick={() => {
+                        if (inq) { setInquiryCategory(deviceType === "sony" ? "PlayStation" : "Console"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
+                        else { setModel(m); const ns = (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" || deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch") ? "condition" : "storage"; setStep(ns); pushHistory(ns); }
+                      }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                        <p className="font-semibold text-[15px]">{m.label}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</span>
+                          <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </>
             )}
