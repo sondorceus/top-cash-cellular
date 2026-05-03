@@ -355,7 +355,7 @@ const PS4_VARIANTS = [
 ];
 const SONY_SERIES = [
   { id: "ps5_family", label: "PlayStation 5", year: "Pro · Std · Slim", topPrice: 300, image: "/ps5-series.webp", variants: PS5_VARIANTS },
-  { id: "ps4_family", label: "PlayStation 4", year: "Pro · Std · Slim", topPrice: 150, variants: PS4_VARIANTS },
+  { id: "ps4_family", label: "PlayStation 4", year: "Pro · Std · Slim", topPrice: 150, image: "/ps4-series.webp", variants: PS4_VARIANTS },
 ];
 const SONY_MODELS = [...PS5_VARIANTS, ...PS4_VARIANTS];
 
