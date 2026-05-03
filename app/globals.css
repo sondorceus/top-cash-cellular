@@ -88,6 +88,11 @@ button, a, [role="button"] {
 .tcc-logo-coin {
   animation: logoCoin 2.6s ease-in-out infinite;
 }
+
+.tcc-marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+}
 img[loading="lazy"], section img {
   animation: imgFadeIn 0.3s ease-out both;
 }
