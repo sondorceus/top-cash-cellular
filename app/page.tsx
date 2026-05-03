@@ -1063,9 +1063,19 @@ export default function Home() {
               <span className="relative w-9 h-9 rounded-xl tcc-logo-card flex items-center justify-center">
                 <span className="absolute inset-0 rounded-xl pointer-events-none" style={{ background: "radial-gradient(circle at 28% 25%, rgba(0,230,118,0.18), transparent 65%)" }}></span>
                 <span className="relative w-6 h-6 rounded-lg tcc-logo-tile flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" className="w-3.5 h-5" fill="none" stroke="#fff" strokeWidth="2.2" style={{ filter: "drop-shadow(0 1px 0 rgba(0,0,0,0.35))" }}>
-                    <rect x="6" y="2" width="12" height="20" rx="2.5" />
-                    <line x1="10" y1="19" x2="14" y2="19" strokeLinecap="round" />
+                  <svg viewBox="0 0 24 24" className="w-3.5 h-5" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 1px 0 rgba(0,0,0,0.35))" }}>
+                    {/* phone body */}
+                    <rect x="6" y="1.5" width="12" height="21" rx="3" />
+                    {/* dynamic island */}
+                    <rect x="10" y="3" width="4" height="1.4" rx="0.7" fill="#fff" stroke="none" />
+                    {/* speaker grille */}
+                    <line x1="10.8" y1="3.7" x2="13.2" y2="3.7" strokeWidth="0.6" stroke="#00a039" />
+                    {/* screen frame */}
+                    <rect x="7.5" y="5.5" width="9" height="13.5" rx="1" stroke="rgba(255,255,255,0.4)" strokeWidth="0.7" />
+                    {/* home indicator */}
+                    <line x1="10" y1="20.3" x2="14" y2="20.3" strokeWidth="1.6" />
+                    {/* side button */}
+                    <line x1="5.6" y1="9" x2="5.6" y2="12" strokeWidth="1" />
                   </svg>
                 </span>
                 <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-extrabold text-[#1a1100] tcc-logo-coin" style={{ background: "radial-gradient(circle at 30% 30%, #ffe066, #ffb400 70%, #c08a00)", boxShadow: "0 1px 2px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.7)" }}>$</span>
