@@ -276,13 +276,13 @@ const ACER_MODELS = [
 ];
 
 const LG_PC_MODELS = [
-  { id: "lggr17", label: "LG Gram 17\" (2024)", base: 600 },
-  { id: "lggr16", label: "LG Gram 16\" (2024)", base: 520 },
-  { id: "lggr14", label: "LG Gram 14\" (2024)", base: 420 },
-  { id: "lggr17g23", label: "LG Gram 17\" (2023)", base: 450 },
-  { id: "lggr16g23", label: "LG Gram 16\" (2023)", base: 380 },
-  { id: "lggrpro16", label: "LG Gram Pro 16\" (2024)", base: 680 },
-  { id: "lgultgear", label: "LG UltraGear 16\" (2024)", base: 550 },
+  { id: "lggr17", label: "LG Gram 17\" (2024)", base: 0, inquiryOnly: true },
+  { id: "lggr16", label: "LG Gram 16\" (2024)", base: 0, inquiryOnly: true },
+  { id: "lggr14", label: "LG Gram 14\" (2024)", base: 0, inquiryOnly: true },
+  { id: "lggr17g23", label: "LG Gram 17\" (2023)", base: 0, inquiryOnly: true },
+  { id: "lggr16g23", label: "LG Gram 16\" (2023)", base: 0, inquiryOnly: true },
+  { id: "lggrpro16", label: "LG Gram Pro 16\" (2024)", base: 0, inquiryOnly: true },
+  { id: "lgultgear", label: "LG UltraGear 16\" (2024)", base: 0, inquiryOnly: true },
 ];
 
 const APPLE_DESKTOP_MODELS = [
