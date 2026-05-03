@@ -126,25 +126,38 @@ const PIXEL_SERIES = [
 ];
 
 const MACBOOK_PRO_MODELS = [
-  { id: "mbp16m4", label: "MacBook Pro 16\" M4", base: 1200 },
-  { id: "mbp14m4", label: "MacBook Pro 14\" M4", base: 1000 },
-  { id: "mbp16m3", label: "MacBook Pro 16\" M3", base: 950 },
-  { id: "mbp14m3", label: "MacBook Pro 14\" M3", base: 800 },
-  { id: "mbp16m2", label: "MacBook Pro 16\" M2", base: 750 },
-  { id: "mbp14m2", label: "MacBook Pro 14\" M2", base: 650 },
-  { id: "mbp13m1", label: "MacBook Pro 13\" M1", base: 400 },
+  { id: "mbp_m5pmax_2026", label: "MacBook Pro M5 Pro/Max (14\" & 16\", 2026)", base: 0, inquiryOnly: true },
+  { id: "mbp14_m5_2025", label: "MacBook Pro 14\" M5 (2025)", base: 0, inquiryOnly: true },
+  { id: "mbp16m4", label: "MacBook Pro 16\" M4 (2024)", base: 1200 },
+  { id: "mbp14m4", label: "MacBook Pro 14\" M4 (2024)", base: 1000 },
+  { id: "mbp16m3", label: "MacBook Pro 16\" M3 (2023)", base: 950 },
+  { id: "mbp14m3", label: "MacBook Pro 14\" M3 (2023)", base: 800 },
+  { id: "mbp16m2", label: "MacBook Pro 16\" M2 (2023)", base: 750 },
+  { id: "mbp14m2", label: "MacBook Pro 14\" M2 (2023)", base: 650 },
+  { id: "mbp13m1", label: "MacBook Pro 13\" M1 (2020)", base: 400 },
+  { id: "mbp13_intel_2020", label: "MacBook Pro 13\" Intel (2020)", base: 0, inquiryOnly: true },
+  { id: "mbp16_intel_2019", label: "MacBook Pro 16\" Intel (2019)", base: 0, inquiryOnly: true },
+  { id: "mbp_tb_2018_2019", label: "MacBook Pro Touch Bar 13\"/15\" (2018–2019)", base: 0, inquiryOnly: true },
+  { id: "mbp_tb_2016_2017", label: "MacBook Pro Touch Bar 13\"/15\" (2016–2017)", base: 0, inquiryOnly: true },
+  { id: "mbp_retina_2015", label: "MacBook Pro Retina 13\"/15\" (2015)", base: 0, inquiryOnly: true },
+  { id: "mbp_retina_2014", label: "MacBook Pro Retina 13\"/15\" (2014)", base: 0, inquiryOnly: true },
 ];
 const MACBOOK_AIR_MODELS = [
-  { id: "mba15m3", label: "MacBook Air 15\" M3", base: 700 },
-  { id: "mba13m3", label: "MacBook Air 13\" M3", base: 600 },
-  { id: "mba15m2", label: "MacBook Air 15\" M2", base: 550 },
-  { id: "mba13m2", label: "MacBook Air 13\" M2", base: 480 },
-  { id: "mba13m1", label: "MacBook Air 13\" M1", base: 350 },
+  { id: "mba_m5_2026", label: "MacBook Air M5 (13\" & 15\", 2026)", base: 0, inquiryOnly: true },
+  { id: "mba15m3", label: "MacBook Air 15\" M3 (2024)", base: 700 },
+  { id: "mba13m3", label: "MacBook Air 13\" M3 (2024)", base: 600 },
+  { id: "mba15m2", label: "MacBook Air 15\" M2 (2023)", base: 550 },
+  { id: "mba13m2", label: "MacBook Air 13\" M2 (2022)", base: 480 },
+  { id: "mba13m1", label: "MacBook Air 13\" M1 (2020)", base: 350 },
+  { id: "mba_intel_2020", label: "MacBook Air Intel (2020)", base: 0, inquiryOnly: true },
+  { id: "mba_retina_2018_2019", label: "MacBook Air Retina (2018–2019)", base: 0, inquiryOnly: true },
+  { id: "mba_2017", label: "MacBook Air (2017)", base: 0, inquiryOnly: true },
+  { id: "mba_2014_2015", label: "MacBook Air (2014–2015)", base: 0, inquiryOnly: true },
 ];
 const MACBOOK_CLASSIC_MODELS = [
-  { id: "mb12_2017", label: "MacBook 12\" (2017)", base: 0 },
-  { id: "mb12_2016", label: "MacBook 12\" (2016)", base: 0 },
-  { id: "mb12_2015", label: "MacBook 12\" (2015)", base: 0 },
+  { id: "mb12_2017", label: "MacBook 12\" (2017)", base: 0, inquiryOnly: true },
+  { id: "mb12_2016", label: "MacBook 12\" (2016)", base: 0, inquiryOnly: true },
+  { id: "mb12_2015", label: "MacBook 12\" (2015)", base: 0, inquiryOnly: true },
 ];
 const MACBOOK_SERIES = [
   { id: "mbpro", label: "MacBook Pro", year: "M1–M4", topPrice: 1200, variants: MACBOOK_PRO_MODELS },
@@ -1754,24 +1767,26 @@ export default function Home() {
             {/* MacBook: Variant list (after series selected) */}
             {deviceType === "macbook" && selectedSeries && (() => {
               const ser = MACBOOK_SERIES.find(s => s.id === selectedSeries);
-              const isInquiry = !!(ser as { inquiryOnly?: boolean })?.inquiryOnly;
               return (
                 <>
                   <h2 className="text-2xl font-bold mb-1">{ser?.label}</h2>
-                  <p className="text-[#888] text-sm mb-6">{isInquiry ? "Pick your model — we'll send a custom offer" : "Pick your exact model"}</p>
+                  <p className="text-[#888] text-sm mb-6">Pick your exact model</p>
                   <div className="space-y-2">
-                    {models.map((m) => (
-                      <button key={m.id} onClick={() => {
-                        if (isInquiry) { setInquiryCategory("MacBook"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
-                        else { setModel(m); setStep("storage"); pushHistory("storage"); }
-                      }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
-                        <p className="font-semibold text-[15px] flex-1">{m.label}</p>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[#00c853] font-bold text-sm">{isInquiry ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</span>
-                          <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                        </div>
-                      </button>
-                    ))}
+                    {models.map((m) => {
+                      const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
+                      return (
+                        <button key={m.id} onClick={() => {
+                          if (inq) { setInquiryCategory("MacBook"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
+                          else { setModel(m); setStep("storage"); pushHistory("storage"); }
+                        }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left active:scale-[0.98]">
+                          <p className="font-semibold text-[15px] flex-1">{m.label}</p>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[#00c853] font-bold text-sm">{inq ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</span>
+                            <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </>
               );
