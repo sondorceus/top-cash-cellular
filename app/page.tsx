@@ -206,14 +206,14 @@ const DELL_MODELS = [
 ];
 
 const ALIENWARE_MODELS = [
-  { id: "awm18r2", label: "Alienware m18 R2", base: 1100 },
-  { id: "awm16r2", label: "Alienware m16 R2", base: 850 },
-  { id: "awx16r2", label: "Alienware x16 R2", base: 750 },
-  { id: "awx14r2", label: "Alienware x14 R2", base: 600 },
-  { id: "awm18r1", label: "Alienware m18 R1", base: 800 },
-  { id: "awm16r1", label: "Alienware m16 R1", base: 600 },
-  { id: "awx16r1", label: "Alienware x16 R1", base: 550 },
-  { id: "awx14r1", label: "Alienware x14 R1", base: 420 },
+  { id: "awm18r2", label: "Alienware m18 R2", base: 0, inquiryOnly: true },
+  { id: "awm16r2", label: "Alienware m16 R2", base: 0, inquiryOnly: true },
+  { id: "awx16r2", label: "Alienware x16 R2", base: 0, inquiryOnly: true },
+  { id: "awx14r2", label: "Alienware x14 R2", base: 0, inquiryOnly: true },
+  { id: "awm18r1", label: "Alienware m18 R1", base: 0, inquiryOnly: true },
+  { id: "awm16r1", label: "Alienware m16 R1", base: 0, inquiryOnly: true },
+  { id: "awx16r1", label: "Alienware x16 R1", base: 0, inquiryOnly: true },
+  { id: "awx14r1", label: "Alienware x14 R1", base: 0, inquiryOnly: true },
 ];
 
 const HP_MODELS = [
@@ -1882,25 +1882,37 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 {/* Mobile: grid cards */}
                 <div className="grid grid-cols-2 gap-2 md:hidden">
-                  {models.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition tap-press">
-                      <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
-                      <p className="font-bold text-sm text-center leading-tight">{m.label}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${maxQuoteFor(m as { id: string; base: number })}</p>
-                    </button>
-                  ))}
+                  {models.map((m) => {
+                    const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
+                    return (
+                      <button key={m.id} onClick={() => {
+                        if (inq) { setInquiryCategory(category === "computers" ? "Laptop" : "Desktop"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
+                        else { setModel(m); setStep("storage"); pushHistory("storage"); }
+                      }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition tap-press">
+                        <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
+                        <p className="font-bold text-sm text-center leading-tight">{m.label}</p>
+                        <p className="text-[#00c853] font-bold text-xs mt-0.5">{inq ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</p>
+                      </button>
+                    );
+                  })}
                 </div>
                 {/* Desktop: expanded list */}
                 <div className="hidden md:block space-y-2">
-                  {models.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                      <p className="font-semibold text-[15px]">{m.label}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">up to ${maxQuoteFor(m as { id: string; base: number })}</span>
-                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                      </div>
-                    </button>
-                  ))}
+                  {models.map((m) => {
+                    const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
+                    return (
+                      <button key={m.id} onClick={() => {
+                        if (inq) { setInquiryCategory(category === "computers" ? "Laptop" : "Desktop"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
+                        else { setModel(m); setStep("storage"); pushHistory("storage"); }
+                      }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                        <p className="font-semibold text-[15px]">{m.label}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</span>
+                          <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </>
             )}
