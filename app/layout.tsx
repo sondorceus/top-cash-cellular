@@ -1,5 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  themeColor: "#00c853",
+};
 
 export const metadata: Metadata = {
   title: "Sell Your Phone for Cash in Austin TX | Top Cash Cellular — iPhone, Samsung, MacBook Buyback",
@@ -20,6 +24,19 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   alternates: { canonical: "https://topcashcellular.com" },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "Top Cash",
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    icon: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/icon-192.png" }],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -42,7 +59,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "address": { "@type": "PostalAddress", "addressLocality": "Austin", "addressRegion": "TX", "addressCountry": "US" },
               "areaServed": { "@type": "City", "name": "Austin" },
               "priceRange": "$$",
-              "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "127" },
               "sameAs": [],
               "hasOfferCatalog": {
                 "@type": "OfferCatalog",
