@@ -2605,28 +2605,30 @@ export default function Home() {
 
           {/* PAYMENT TIMELINE */}
           <section className="py-12 bg-[#0d0d0d]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
-              <h2 className="text-xl font-bold text-center mb-2">When do I get paid?</h2>
-              <p className="text-[#888] text-sm text-center mb-8">Transparent timelines. No surprises.</p>
-              <div className="space-y-3">
-                {[
-                  { method: "Local Pickup", icon: "🏠", timeline: "Same day", desc: "We meet in Austin. Inspect device. Pay on the spot.", highlight: true },
-                  { method: "Cash", icon: "💵", timeline: "Instant", desc: "Handed to you at pickup. Immediate.", highlight: false },
-                  { method: "Cash App / Zelle", icon: "⚡", timeline: "Under 5 min", desc: "Sent while you watch. Hits your account instantly.", highlight: false },
-                  { method: "Bitcoin (BTC)", icon: "₿", timeline: "Under 30 min", desc: "Sent on-chain to your wallet. Confirmation in minutes.", highlight: false },
-                  { method: "Ship To Us", icon: "📦", timeline: "Same day received", desc: "We inspect and pay within hours of receiving your device.", highlight: false },
-                ].map((p) => (
-                  <div key={p.method} className={`flex items-center gap-4 rounded-2xl p-4 border ${p.highlight ? "bg-[#00c853]/10 border-[#00c853]/20" : "bg-white/5 border-white/10"}`}>
-                    <span className="text-2xl">{p.icon}</span>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <p className="text-white text-sm font-bold">{p.method}</p>
-                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${p.highlight ? "bg-[#00c853]/20 text-[#00c853]" : "bg-white/10 text-[#aaa]"}`}>{p.timeline}</span>
+            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto">
+              <h2 className="text-xl font-bold text-center mb-2 px-4">When do I get paid?</h2>
+              <p className="text-[#888] text-sm text-center mb-8 px-4">Transparent timelines. No surprises.</p>
+              <div className="overflow-hidden tcc-marquee-mask">
+                <div className="flex gap-3 w-max animate-[marquee_32s_linear_infinite] hover:[animation-play-state:paused]">
+                  {[...Array(2)].flatMap((_, dup) => [
+                    { method: "Local Pickup", icon: "🏠", timeline: "Same day", desc: "We meet in Austin. Inspect device. Pay on the spot.", highlight: true },
+                    { method: "Cash", icon: "💵", timeline: "Instant", desc: "Handed to you at pickup. Immediate.", highlight: false },
+                    { method: "Cash App / Zelle", icon: "⚡", timeline: "Under 5 min", desc: "Sent while you watch. Hits your account instantly.", highlight: false },
+                    { method: "Bitcoin (BTC)", icon: "₿", timeline: "Under 30 min", desc: "Sent on-chain to your wallet. Confirmation in minutes.", highlight: false },
+                    { method: "Ship To Us", icon: "📦", timeline: "Same day received", desc: "We inspect and pay within hours of receiving your device.", highlight: false },
+                  ].map((p, i) => (
+                    <div key={`${dup}-${i}`} className={`flex-shrink-0 w-[280px] flex items-start gap-3 rounded-2xl p-4 border ${p.highlight ? "bg-[#00c853]/10 border-[#00c853]/30" : "bg-white/5 border-white/10"}`}>
+                      <span className="text-2xl shrink-0">{p.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <p className="text-white text-sm font-bold">{p.method}</p>
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${p.highlight ? "bg-[#00c853]/20 text-[#00c853]" : "bg-white/10 text-[#aaa]"}`}>{p.timeline}</span>
+                        </div>
+                        <p className="text-[#888] text-xs leading-snug">{p.desc}</p>
                       </div>
-                      <p className="text-[#888] text-xs">{p.desc}</p>
                     </div>
-                  </div>
-                ))}
+                  )))}
+                </div>
               </div>
             </div>
           </section>
