@@ -275,14 +275,65 @@ const ACER_MODELS = [
   { id: "acasp3", label: "Aspire 3", base: 150 },
 ];
 
+const LG_GRAM_STANDARD_VARIANTS = [
+  { id: "lg_gr17_24", label: "LG Gram 17 (17Z90S, 2024)", base: 0, inquiryOnly: true },
+  { id: "lg_gr16_24", label: "LG Gram 16 (16Z90S, 2024)", base: 0, inquiryOnly: true },
+  { id: "lg_gr14_24", label: "LG Gram 14 (14Z90S, 2024)", base: 0, inquiryOnly: true },
+  { id: "lg_gr17_23", label: "LG Gram 17 (17Z90R, 2023)", base: 0, inquiryOnly: true },
+  { id: "lg_gr16_23", label: "LG Gram 16 (16Z90R, 2023)", base: 0, inquiryOnly: true },
+  { id: "lg_gr15_23", label: "LG Gram 15 (15Z90R, 2023)", base: 0, inquiryOnly: true },
+  { id: "lg_gr14_23", label: "LG Gram 14 (14Z90R, 2023)", base: 0, inquiryOnly: true },
+];
+const LG_GRAM_2IN1_VARIANTS = [
+  { id: "lg_gr16t_24", label: "LG Gram 16 2-in-1 (16T90S, 2024)", base: 0, inquiryOnly: true },
+  { id: "lg_gr14t_24", label: "LG Gram 14 2-in-1 (14T90S, 2024)", base: 0, inquiryOnly: true },
+  { id: "lg_gr16t_23", label: "LG Gram 16 2-in-1 (16T90R, 2023)", base: 0, inquiryOnly: true },
+  { id: "lg_gr14t_23", label: "LG Gram 14 2-in-1 (14T90R, 2023)", base: 0, inquiryOnly: true },
+];
+const LG_GRAM_STYLE_VARIANTS = [
+  { id: "lg_grstyle16", label: "LG Gram Style 16 (16Z90RS, 2023)", base: 0, inquiryOnly: true },
+  { id: "lg_grstyle14", label: "LG Gram Style 14 (14Z90RS, 2023)", base: 0, inquiryOnly: true },
+];
+const LG_GRAM_ULTRASLIM_VARIANTS = [
+  { id: "lg_grultra15", label: "LG Gram Ultraslim 15 (15Z90RT, 2023)", base: 0, inquiryOnly: true },
+];
+const LG_GRAM_PRO_VARIANTS = [
+  { id: "lg_grpro17_25", label: "LG Gram Pro 17 (17Z90TR, 2025)", base: 0, inquiryOnly: true },
+  { id: "lg_grpro16_25", label: "LG Gram Pro 16 (16Z90TR, 2025)", base: 0, inquiryOnly: true },
+  { id: "lg_grpro17_24", label: "LG Gram Pro 17 (17Z90SP, 2024)", base: 0, inquiryOnly: true },
+  { id: "lg_grpro16_24", label: "LG Gram Pro 16 (16Z90SP, 2024)", base: 0, inquiryOnly: true },
+];
+const LG_GRAM_PRO_2IN1_VARIANTS = [
+  { id: "lg_grpro16t_24", label: "LG Gram Pro 16 2-in-1 (16T90SP, 2024)", base: 0, inquiryOnly: true },
+];
+const LG_GRAM_BOOK_VARIANTS = [
+  { id: "lg_grbook16", label: "LG Gram Book 16 (2024–2025)", base: 0, inquiryOnly: true },
+  { id: "lg_grbook15", label: "LG Gram Book 15.6 (2024–2025)", base: 0, inquiryOnly: true },
+];
+const LG_ULTRAGEAR_VARIANTS = [
+  { id: "lg_ultragear16_24", label: "LG UltraGear 16 (16G90S, 2024)", base: 0, inquiryOnly: true },
+  { id: "lg_ultragear16_23", label: "LG UltraGear 16 (16G90R, 2023)", base: 0, inquiryOnly: true },
+  { id: "lg_ultragear16_22", label: "LG UltraGear 16 (16G90Q, 2022)", base: 0, inquiryOnly: true },
+];
+const LG_PC_SERIES = [
+  { id: "lg_gram", label: "Gram", year: "Standard", topPrice: 0, variants: LG_GRAM_STANDARD_VARIANTS, inquiryOnly: true },
+  { id: "lg_gram2in1", label: "Gram 2-in-1", year: "Convertible", topPrice: 0, variants: LG_GRAM_2IN1_VARIANTS, inquiryOnly: true },
+  { id: "lg_gramstyle", label: "Gram Style", year: "OLED", topPrice: 0, variants: LG_GRAM_STYLE_VARIANTS, inquiryOnly: true },
+  { id: "lg_gramultra", label: "Gram Ultraslim", year: "Super-thin", topPrice: 0, variants: LG_GRAM_ULTRASLIM_VARIANTS, inquiryOnly: true },
+  { id: "lg_grampro", label: "Gram Pro", year: "Performance", topPrice: 0, variants: LG_GRAM_PRO_VARIANTS, inquiryOnly: true },
+  { id: "lg_grampro2in1", label: "Gram Pro 2-in-1", year: "Pro Convertible", topPrice: 0, variants: LG_GRAM_PRO_2IN1_VARIANTS, inquiryOnly: true },
+  { id: "lg_grambook", label: "Gram Book", year: "Budget", topPrice: 0, variants: LG_GRAM_BOOK_VARIANTS, inquiryOnly: true },
+  { id: "lg_ultragear", label: "UltraGear", year: "Gaming", topPrice: 0, variants: LG_ULTRAGEAR_VARIANTS, inquiryOnly: true },
+];
 const LG_PC_MODELS = [
-  { id: "lggr17", label: "LG Gram 17\" (2024)", base: 0, inquiryOnly: true },
-  { id: "lggr16", label: "LG Gram 16\" (2024)", base: 0, inquiryOnly: true },
-  { id: "lggr14", label: "LG Gram 14\" (2024)", base: 0, inquiryOnly: true },
-  { id: "lggr17g23", label: "LG Gram 17\" (2023)", base: 0, inquiryOnly: true },
-  { id: "lggr16g23", label: "LG Gram 16\" (2023)", base: 0, inquiryOnly: true },
-  { id: "lggrpro16", label: "LG Gram Pro 16\" (2024)", base: 0, inquiryOnly: true },
-  { id: "lgultgear", label: "LG UltraGear 16\" (2024)", base: 0, inquiryOnly: true },
+  ...LG_GRAM_STANDARD_VARIANTS,
+  ...LG_GRAM_2IN1_VARIANTS,
+  ...LG_GRAM_STYLE_VARIANTS,
+  ...LG_GRAM_ULTRASLIM_VARIANTS,
+  ...LG_GRAM_PRO_VARIANTS,
+  ...LG_GRAM_PRO_2IN1_VARIANTS,
+  ...LG_GRAM_BOOK_VARIANTS,
+  ...LG_ULTRAGEAR_VARIANTS,
 ];
 
 const APPLE_DESKTOP_MODELS = [
@@ -1090,6 +1141,7 @@ export default function Home() {
   const macbookVariants = selectedSeries ? MACBOOK_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const sonyVariants = selectedSeries ? SONY_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const alienwareVariants = selectedSeries ? ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
+  const lgPcVariants = selectedSeries ? LG_PC_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
 
   type Crumb = { label: string; onClick: () => void };
   const breadcrumbs: Crumb[] = [
@@ -1102,7 +1154,7 @@ export default function Home() {
     });
   }
   if (selectedSeries) {
-    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : null;
+    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : deviceType === "lg_pc" ? LG_PC_SERIES : null;
     const ser = seriesList?.find(s => s.id === selectedSeries);
     if (ser) breadcrumbs.push({
       label: ser.label,
@@ -1126,7 +1178,7 @@ export default function Home() {
     onClick: () => { setStep("quote"); pushHistory("quote"); },
   });
   const showBreadcrumbs = breadcrumbs.length > 1 && step !== "device" && step !== "category" && page === "home";
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -1912,6 +1964,28 @@ export default function Home() {
             )}
 
             {/* Laptop/Desktop: Grid on mobile, list on desktop */}
+            {/* LG: 8 family boxes (Gram / 2-in-1 / Style / Ultraslim / Pro / Pro 2-in-1 / Book / UltraGear) */}
+            {deviceType === "lg_pc" && !selectedSeries && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your LG laptop</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {LG_PC_SERIES.map((s) => (
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
+                      <svg className="w-12 h-9 mb-2 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="2" y="2" width="28" height="18" rx="3" />
+                        <line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" />
+                        <text x="16" y="14" fill="#a50034" fontSize="6" fontWeight="bold" textAnchor="middle" stroke="none">LG</text>
+                      </svg>
+                      <p className="font-bold text-sm">{s.label}</p>
+                      <p className="text-[#888] text-[10px]">{s.year}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
             {/* Alienware: 4 family boxes (Flagship / Aurora & X / Ultraslim / M-Series) */}
             {deviceType === "alienware" && !selectedSeries && (
               <>
@@ -1937,9 +2011,9 @@ export default function Home() {
               </>
             )}
 
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && (
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSeries ? `LG ${LG_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 {/* Mobile: grid cards */}
                 <div className="grid grid-cols-2 gap-2 md:hidden">
