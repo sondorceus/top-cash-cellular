@@ -1052,6 +1052,9 @@ export default function Home() {
             </span>
           </button>
           <div className="flex items-center gap-3">
+            <a href="/how-it-works" className="hidden md:inline text-xs text-[#888] hover:text-white transition">How it works</a>
+            <a href="/faq" className="hidden md:inline text-xs text-[#888] hover:text-white transition">FAQ</a>
+            <a href="/bulk" className="hidden md:inline text-xs text-[#888] hover:text-white transition">Bulk</a>
             <a href="/reviews" className="hidden sm:inline-flex items-center gap-1 text-xs text-[#ffb400] hover:text-[#ffd54f] font-semibold transition"><svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.5 5.9.7-4.4 4.1 1.2 5.8L10 14.7l-5.3 2.9 1.2-5.8L1.5 7.7l5.9-.7L10 1.5z"/></svg>Reviews</a>
             <a href={`tel:${PHONE_TEL}`} aria-label="Call us" className="bg-[#00c853] text-white px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
               Call Us
