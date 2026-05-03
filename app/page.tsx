@@ -1186,8 +1186,8 @@ export default function Home() {
             </div>
 
             <div className="mt-8">
-              <p className="text-[#888] text-[11px] font-bold uppercase tracking-[0.18em] mb-3">Popular devices — sell yours today</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <p className="text-[#888] text-xs font-semibold uppercase tracking-wider mb-3">Popular devices — sell yours today</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
                 {[
                   { name: "iPhone 16 Pro Max", price: 789, brand: "iphone" as const },
                   { name: "iPhone 15 Pro Max", price: 467, brand: "iphone" as const },
@@ -1196,12 +1196,9 @@ export default function Home() {
                   { name: "PlayStation 5", price: 345, brand: "sony" as const },
                   { name: "iPhone 14 Pro", price: 225, brand: "iphone" as const },
                 ].map((d) => (
-                  <button key={d.name} onClick={() => { setDeviceType(d.brand); setStep("model"); pushHistory("model"); }} className="group flex items-center justify-between bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 hover:bg-white/[0.08] hover:border-[#00c853]/30 transition cursor-pointer text-left active:scale-[0.98]">
-                    <span className="text-white text-sm font-semibold tracking-tight">{d.name}</span>
-                    <span className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-[#888] uppercase tracking-wider">up to</span>
-                      <span className="text-[#00c853] text-sm font-extrabold">${d.price.toLocaleString()}</span>
-                    </span>
+                  <button key={d.name} onClick={() => { setDeviceType(d.brand); setStep("model"); pushHistory("model"); }} className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 hover:bg-white/10 hover:border-[#00c853]/25 transition cursor-pointer text-left active:scale-[0.98]">
+                    <span className="text-white text-xs font-semibold truncate pr-2">{d.name}</span>
+                    <span className="text-[#00c853] text-xs font-bold whitespace-nowrap">up to ${d.price.toLocaleString()}</span>
                   </button>
                 ))}
               </div>
