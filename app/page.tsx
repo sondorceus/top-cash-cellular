@@ -1185,36 +1185,23 @@ export default function Home() {
               </span>
             </div>
 
-            <div className="mt-10">
-              <div className="flex items-end justify-between mb-4">
-                <div>
-                  <p className="text-[#888] text-[10px] font-bold uppercase tracking-[0.2em]">Popular devices</p>
-                  <h3 className="text-white text-lg font-bold mt-0.5">Sell yours today</h3>
-                </div>
-                <span className="hidden sm:inline text-[10px] text-[#666] tracking-wider uppercase">Tap to start →</span>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
+            <div className="mt-8">
+              <p className="text-[#888] text-[11px] font-bold uppercase tracking-[0.18em] mb-3">Popular devices — sell yours today</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {[
-                  { name: "iPhone 16 Pro Max", price: 789, brand: "iphone" as const, img: "/iphone16.png" },
-                  { name: "iPhone 15 Pro Max", price: 467, brand: "iphone" as const, img: "/iphone15.png" },
-                  { name: "Samsung S24 Ultra", price: 805, brand: "android" as const, img: "/s-series.webp" },
-                  { name: "MacBook Pro 16\" M4", price: 1932, brand: "macbook" as const, emoji: "💻" },
-                  { name: "PlayStation 5", price: 345, brand: "sony" as const, emoji: "🎮" },
-                  { name: "iPhone 14 Pro", price: 225, brand: "iphone" as const, img: "/iphone14.png" },
+                  { name: "iPhone 16 Pro Max", price: 789, brand: "iphone" as const },
+                  { name: "iPhone 15 Pro Max", price: 467, brand: "iphone" as const },
+                  { name: "Samsung S24 Ultra", price: 805, brand: "android" as const },
+                  { name: "MacBook Pro 16\" M4", price: 1932, brand: "macbook" as const },
+                  { name: "PlayStation 5", price: 345, brand: "sony" as const },
+                  { name: "iPhone 14 Pro", price: 225, brand: "iphone" as const },
                 ].map((d) => (
-                  <button key={d.name} onClick={() => { setDeviceType(d.brand); setStep("model"); pushHistory("model"); }} className="group relative flex flex-col items-start gap-2 bg-gradient-to-b from-white/[0.07] to-white/[0.015] border border-white/10 rounded-2xl p-3 hover:border-[#00c853]/40 hover:from-white/[0.12] transition cursor-pointer text-left active:scale-[0.98] overflow-hidden">
-                    <span className="absolute top-2 right-2 text-[9px] font-bold uppercase tracking-wider text-[#00c853] bg-[#00c853]/10 border border-[#00c853]/20 rounded-full px-1.5 py-0.5 group-hover:bg-[#00c853]/20 transition">Sell</span>
-                    <div className="w-full h-12 flex items-center justify-center">
-                      {d.img ? (
-                        <img src={d.img} alt={d.name} className="h-12 w-auto object-contain" />
-                      ) : (
-                        <span className="text-3xl leading-none">{d.emoji}</span>
-                      )}
-                    </div>
-                    <div className="w-full">
-                      <p className="text-white text-[11px] font-semibold leading-tight truncate">{d.name}</p>
-                      <p className="text-[#00c853] text-sm font-extrabold mt-0.5">up to ${d.price.toLocaleString()}</p>
-                    </div>
+                  <button key={d.name} onClick={() => { setDeviceType(d.brand); setStep("model"); pushHistory("model"); }} className="group flex items-center justify-between bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 hover:bg-white/[0.08] hover:border-[#00c853]/30 transition cursor-pointer text-left active:scale-[0.98]">
+                    <span className="text-white text-sm font-semibold tracking-tight">{d.name}</span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="text-[10px] text-[#888] uppercase tracking-wider">up to</span>
+                      <span className="text-[#00c853] text-sm font-extrabold">${d.price.toLocaleString()}</span>
+                    </span>
                   </button>
                 ))}
               </div>
