@@ -940,7 +940,27 @@ export default function Home() {
   const promoApplies = !!(promo?.active && deviceType && (promo.appliesTo === "all" || promo.appliesTo === deviceType) && (!promo.minQuantity || quantity >= promo.minQuantity));
   const promoMultiplier = promoApplies && promo ? 1 + (promo.percent / 100) : 1;
 
-  const quote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * promoMultiplier) : 0;
+  const [couponCode, setCouponCode] = useState("");
+  const [couponPercent, setCouponPercent] = useState(0);
+  const [couponLabel, setCouponLabel] = useState("");
+  const [couponError, setCouponError] = useState("");
+  const couponMultiplier = 1 + (couponPercent / 100);
+  const applyCoupon = async () => {
+    setCouponError("");
+    const code = couponCode.trim().toUpperCase();
+    if (!code) { setCouponError("Enter a code"); return; }
+    try {
+      const res = await fetch("/coupons.json", { cache: "no-store" });
+      const data: Record<string, { percent: number; active: boolean; description?: string }> = await res.json();
+      const c = data[code];
+      if (!c || !c.active) { setCouponError("Invalid or expired code"); return; }
+      setCouponPercent(c.percent);
+      setCouponLabel(code);
+      setCouponError("");
+    } catch { setCouponError("Couldn't verify code, try again"); }
+  };
+
+  const quote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * promoMultiplier * couponMultiplier) : 0;
 
   const maxQuoteFor = (v: { id: string; base: number }) => {
     const sids = STORAGE_MAP[v.id];
@@ -1032,7 +1052,7 @@ export default function Home() {
             </span>
           </button>
           <div className="flex items-center gap-3">
-            <a href="/reviews" className="text-xs text-[#888] hover:text-white transition hidden sm:inline">Reviews</a>
+            <a href="/reviews" className="hidden sm:inline-flex items-center gap-1 text-xs text-[#ffb400] hover:text-[#ffd54f] font-semibold transition"><svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.5 5.9.7-4.4 4.1 1.2 5.8L10 14.7l-5.3 2.9 1.2-5.8L1.5 7.7l5.9-.7L10 1.5z"/></svg>Reviews</a>
             <a href={`tel:${PHONE_TEL}`} aria-label="Call us" className="bg-[#00c853] text-white px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
               Call Us
             </a>
@@ -1974,6 +1994,9 @@ export default function Home() {
                 {promoApplies && promo && (
                   <p className="text-[10px] mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎉 +{promo.percent}% promo applied</p>
                 )}
+                {couponPercent > 0 && (
+                  <p className="text-[10px] mt-1 ml-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎟️ {couponLabel} +{couponPercent}%</p>
+                )}
               </div>
             </div>
             {quantity > 1 && <p className="text-[#888] text-sm mb-2">${quote} each × {quantity}</p>}
@@ -2005,6 +2028,26 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-[#00c853] text-xs font-semibold mt-3">You make up to ${(quote - Math.round(quote * 0.62)) * quantity} more with us</p>
+              <a href={`mailto:offers@topcashcellular.com?subject=Price%20Match%20Request&body=Model%3A%20${encodeURIComponent(model?.label || '')}%0AStorage%3A%20${encodeURIComponent(storage?.label || '')}%0AStorage%3A%20${encodeURIComponent(condition?.label || '')}%0ACompetitor%20URL%3A%20%0ACompetitor%20offer%3A%20%24`} className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#00c853]/10 border border-[#00c853]/30 hover:bg-[#00c853]/15 text-[#00c853] text-xs font-bold transition">⚡ Got a higher offer? We&apos;ll beat it by $25</a>
+            </div>
+
+            {/* Coupon code */}
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-left">
+              <p className="text-xs font-semibold text-[#888] uppercase tracking-wider mb-2">Have a coupon code?</p>
+              {couponLabel ? (
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00c853]/15 border border-[#00c853]/30 text-[#00c853] text-xs font-bold">🎟️ {couponLabel} · +{couponPercent}% applied</span>
+                  <button onClick={() => { setCouponPercent(0); setCouponLabel(""); setCouponCode(""); }} className="text-[#888] hover:text-white text-xs underline cursor-pointer">Remove</button>
+                </div>
+              ) : (
+                <>
+                  <div className="flex gap-2">
+                    <input type="text" value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} placeholder="ENTER CODE" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#666] focus:outline-none focus:border-[#00c853] transition uppercase tracking-wide" />
+                    <button onClick={applyCoupon} className="px-4 py-2 bg-[#00c853] text-white rounded-xl text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition">Apply</button>
+                  </div>
+                  {couponError && <p className="text-xs text-red-400 mt-1.5">{couponError}</p>}
+                </>
+              )}
             </div>
 
             <div className="flex items-center justify-center gap-2 mb-4">
@@ -2039,7 +2082,20 @@ export default function Home() {
               <div className="flex items-center gap-3"><span className="text-lg">🛡️</span><span className="text-sm text-[#ccc]">Zero fraud risk</span></div>
               <div className="flex items-center gap-3"><span className="text-lg">📦</span><span className="text-sm text-[#ccc]">Free shipping via FedEx or UPS</span></div>
               <div className="flex items-center gap-3"><span className="text-lg">⚡</span><span className="text-sm text-[#ccc]">Same-day pickup &amp; 24-hour processing</span></div>
-              <div className="flex items-center gap-3"><span className="text-lg">💳</span><span className="text-sm text-[#ccc]">Cash, Venmo, Zelle, or PayPal</span></div>
+              <div className="flex items-start gap-3">
+                <span className="text-lg leading-none">💳</span>
+                <div className="flex-1">
+                  <p className="text-sm text-[#ccc] mb-2">Get paid your way</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#003087] text-white text-[10px] font-bold">PayPal</span>
+                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#3D95CE] text-white text-[10px] font-bold">Venmo</span>
+                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#00d54b] text-white text-[10px] font-bold">Cash App</span>
+                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#6D1ED4] text-white text-[10px] font-bold">Zelle</span>
+                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-bold">Cash</span>
+                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-bold">Check</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5 text-left">

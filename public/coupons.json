@@ -1,0 +1,5 @@
+{
+  "TOPCASH10": { "percent": 10, "active": true, "description": "10% extra cash" },
+  "WELCOME5": { "percent": 5, "active": true, "description": "First-trade bonus" },
+  "FRIENDS15": { "percent": 15, "active": true, "description": "Friends & family" }
+}
