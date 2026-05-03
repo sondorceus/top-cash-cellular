@@ -77,7 +77,8 @@ const SAMSUNG_SERIES = [
     { id: "gs20", label: "Galaxy S20", base: 35 },
     { id: "gs25fe", label: "Galaxy S25 FE", base: 95 },
   ]},
-  { id: "foldseries", label: "Fold Series", year: "Z Fold lineup", topPrice: 630, image: "/fold-series.webp", variants: [
+  { id: "foldseries", label: "Fold Series", year: "Z TriFold + Z Fold lineup", topPrice: 1475, image: "/fold-series.webp", variants: [
+    { id: "gztrifold", label: "Galaxy Z TriFold", base: 1475 },
     { id: "gzfold7", label: "Galaxy Z Fold 7", base: 630 },
     { id: "gzfold6", label: "Galaxy Z Fold 6", base: 325 },
     { id: "gzfold5", label: "Galaxy Z Fold 5", base: 400 },
@@ -523,6 +524,7 @@ const STORAGE_MAP: Record<string, string[]> = {
   gs20u: ["128", "256", "512"],
   gs20p: ["128", "256", "512"],
   gs20: ["128"],
+  gztrifold: ["512", "1tb"],
   gzfold7: ["256", "512", "1tb"],
   gzfold6: ["256", "512", "1tb"],
   gzfold5: ["256", "512", "1tb"],
