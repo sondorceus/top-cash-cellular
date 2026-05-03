@@ -96,6 +96,25 @@ button, a, [role="button"] {
 img {
   background-color: rgba(255,255,255,0.04);
 }
-img[loading="lazy"], section img {
+img[loading="lazy"] {
   animation: imgFadeIn 0.5s ease-out both;
+}
+
+.tap-press {
+  transform-origin: center;
+  transition: transform 280ms cubic-bezier(0.34, 1.8, 0.45, 1), box-shadow 320ms ease-out, border-color 200ms ease-out;
+}
+.tap-press:active {
+  transform: scale(0.94);
+  box-shadow: 0 0 0 6px rgba(0, 200, 83, 0.18), 0 0 22px rgba(0, 200, 83, 0.18);
+  transition: transform 70ms ease-out, box-shadow 70ms ease-out;
+}
+.tap-press:active p,
+.tap-press:active span:not([class*="bg-"]) {
+  transform: translateY(0.5px);
+  filter: brightness(1.15);
+  transition: transform 70ms ease-out, filter 70ms ease-out;
+}
+.tap-press p, .tap-press span {
+  transition: transform 240ms ease-out, filter 240ms ease-out;
 }
