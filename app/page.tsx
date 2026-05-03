@@ -1133,7 +1133,7 @@ export default function Home() {
       {/* NAV */}
       <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <button onClick={reset} aria-label="Go to homepage" className="cursor-pointer group">
+          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer group tap-press rounded-xl">
             <span className="flex items-center gap-2">
               <span className="relative w-9 h-9 rounded-xl tcc-logo-card flex items-center justify-center">
                 <span className="absolute inset-0 rounded-xl pointer-events-none" style={{ background: "radial-gradient(circle at 28% 25%, rgba(0,230,118,0.18), transparent 65%)" }}></span>
@@ -1291,7 +1291,7 @@ export default function Home() {
       {step === "category" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -1324,7 +1324,7 @@ export default function Home() {
                     if (dt) { setDeviceType(dt as DeviceType); setStep("model"); pushHistory("model"); return; }
                     setCategory(cat.id); setStep("brand"); pushHistory("brand");
                   }}
-                  className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer active:scale-[0.96]"
+                  className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press"
                 >
                   {(cat as { customIcon?: boolean }).customIcon ? (
                     <svg className="w-8 h-6 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
@@ -1361,7 +1361,7 @@ export default function Home() {
       {step === "inquiry" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={() => { setStep("category"); pushHistory("category"); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+            <button onClick={() => { setStep("category"); pushHistory("category"); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -1531,7 +1531,7 @@ export default function Home() {
       {step === "brand" && page === "home" && category && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -1669,7 +1669,7 @@ export default function Home() {
       {step === "model" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -2053,7 +2053,7 @@ export default function Home() {
       {step === "storage" && page === "home" && model && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -2081,7 +2081,7 @@ export default function Home() {
       {step === "condition" && page === "home" && model && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -2173,7 +2173,7 @@ export default function Home() {
       {step === "carrier" && page === "home" && model && condition && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -2393,7 +2393,7 @@ export default function Home() {
                     if (!quoteEmail) return;
                     try { await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "", phone: "", email: quoteEmail, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote, payout: "TBD" }) }); } catch {}
                     setQuoteSaved(true);
-                  }} className="bg-white/10 text-white px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-white/15 transition active:scale-95">
+                  }} className="bg-white/10 text-white px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-white/15 transition tap-press">
                     Save
                   </button>
                 </div>
@@ -2413,7 +2413,7 @@ export default function Home() {
       {step === "checkout" && page === "home" && model && condition && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -2506,7 +2506,7 @@ export default function Home() {
       {step === "payout" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -2527,7 +2527,7 @@ export default function Home() {
                 <button
                   key={p.id}
                   onClick={() => { setPayout(p); setStep("contact"); pushHistory("contact"); }}
-                  className="flex flex-col items-center justify-center p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[100px] active:scale-[0.96]"
+                  className="flex flex-col items-center justify-center p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[100px] tap-press"
                 >
                   <span className="text-3xl mb-2">{p.icon}</span>
                   <p className="font-semibold text-sm">{p.label}</p>
@@ -2542,7 +2542,7 @@ export default function Home() {
       {step === "contact" && page === "home" && model && condition && payout && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -2953,7 +2953,7 @@ export default function Home() {
       {(page === "about" || page === "privacy" || page === "terms") && (
         <section className="min-h-[60vh] animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-16">
-            <button onClick={() => { setPage("home"); window.scrollTo({ top: 0 }); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition active:scale-95">
+            <button onClick={() => { setPage("home"); window.scrollTo({ top: 0 }); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Home
             </button>
@@ -3149,7 +3149,7 @@ export default function Home() {
             </div>
           </div>
         )}
-        <button onClick={() => setChatOpen(!chatOpen)} className="w-14 h-14 rounded-full bg-[#00c853] text-white flex items-center justify-center shadow-lg hover:bg-[#00e676] transition cursor-pointer active:scale-90">
+        <button onClick={() => setChatOpen(!chatOpen)} className="w-14 h-14 rounded-full bg-[#00c853] text-white flex items-center justify-center shadow-lg hover:bg-[#00e676] transition cursor-pointer tap-press">
           {chatOpen ? (
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           ) : (
@@ -3208,7 +3208,7 @@ export default function Home() {
             </div>
           </div>
         )}
-        <button onClick={() => setCartOpen(!cartOpen)} className="w-14 h-14 rounded-full bg-[#00c853] text-black flex items-center justify-center shadow-lg hover:bg-[#00e676] transition cursor-pointer active:scale-90 relative">
+        <button onClick={() => setCartOpen(!cartOpen)} className="w-14 h-14 rounded-full bg-[#00c853] text-black flex items-center justify-center shadow-lg hover:bg-[#00e676] transition cursor-pointer tap-press relative">
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>
           {cartItems.length > 0 && (
             <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center">{cartItems.reduce((sum, i) => sum + i.quantity, 0)}</span>
