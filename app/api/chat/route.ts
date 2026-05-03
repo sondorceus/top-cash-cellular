@@ -10,7 +10,7 @@ function smartReply(message: string): string {
   if (m.match(/samsung|galaxy|android/)) return "We buy Samsung Galaxy S21 and newer, plus Z Fold and Z Flip models! Use our quote tool for an instant price — Galaxy S24 Ultra goes for up to $500.";
   if (m.match(/macbook|mac|laptop/)) return "Yes! We buy MacBooks — Air and Pro, M1 chip and newer. MacBook Pro 16\" M4 goes for up to $1,200. Use our quote tool for your exact model!";
   if (m.match(/ps[45]|playstation|xbox|switch|console|game/)) return "We buy PS4, PS5, Xbox One, Xbox Series S/X, and Nintendo Switch! PS5 goes for up to $300. Check our quote tool for exact pricing.";
-  if (m.match(/pay|venmo|zelle|paypal|cash|money/)) return "We pay via Cash, Venmo, Zelle, or PayPal — your choice! Payment is same-day for local Austin pickups. We pay on the spot.";
+  if (m.match(/pay|cashapp|cash app|zelle|btc|bitcoin|cash|money/)) return "We pay via Cash, Cash App, Zelle, or BTC — your choice! Payment is same-day for local Austin pickups. We pay on the spot.";
   if (m.match(/broken|crack|damage|screen/)) return "We buy devices in ANY condition — even cracked or water damaged. You'll get a lower offer than a pristine device, but we'll still pay you. Select 'Fair' or 'Poor' in our quote tool.";
   if (m.match(/how|work|process|step/)) return "Super simple: 1) Use our quote tool to get an instant price, 2) We arrange a local meetup in Austin, 3) We inspect and pay you on the spot. Takes about 5 minutes total!";
   if (m.match(/where|location|austin|meet|pickup/)) return "We do local meetups all across Austin, TX. Public locations like coffee shops or parking lots — safe, fast, and convenient. We meet local!";
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 200,
-      system: "You are the friendly AI assistant for Top Cash Cellular — a phone buyback service in Austin, TX. Keep responses SHORT (2-3 sentences). Help sellers get quotes and understand the process. We buy iPhones 11+, Samsung S21+, MacBooks M1+, game consoles. Payout: Cash, Venmo, Zelle, PayPal. Austin local pickup, same-day payment.",
+      system: "You are the friendly AI assistant for Top Cash Cellular — a phone buyback service in Austin, TX. Keep responses SHORT (2-3 sentences). Help sellers get quotes and understand the process. We buy iPhones 11+, Samsung S21+, MacBooks M1+, game consoles. Payout: Cash, Cash App, Zelle, BTC. Austin local pickup, same-day payment.",
       messages,
     });
 

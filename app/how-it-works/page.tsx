@@ -24,7 +24,7 @@ const STEPS = [
     n: 3,
     icon: "💵",
     title: "Get paid your way",
-    body: "Same business day we receive and verify the device. PayPal · Venmo · Cash App · Zelle land in minutes. Cash, check, or store credit also available.",
+    body: "Same business day we receive and verify the device. Cash App · Zelle land in minutes. Bitcoin (BTC) sends on-chain within ~30 min. Local Austin? Cash on the spot.",
   },
 ];
 
@@ -32,7 +32,7 @@ const PROMISES = [
   { icon: "🎯", title: "Locked-in prices", body: "What you see at quote is what you get — provided your device matches the condition tier you picked." },
   { icon: "🛡️", title: "Free return shipping", body: "Don't like the final offer? We mail it back free. No restocking fee, no questions." },
   { icon: "🔒", title: "Certified data wipe", body: "Every device gets a NIST 800-88 compliant factory wipe before resale or recycling." },
-  { icon: "⚡", title: "Same-day payouts", body: "Most payments go out the same business day. PayPal/Venmo/Zelle in minutes." },
+  { icon: "⚡", title: "Same-day payouts", body: "Most payments go out the same business day. Cash App/Zelle in minutes, BTC on-chain in ~30." },
 ];
 
 export default function HowItWorksPage() {

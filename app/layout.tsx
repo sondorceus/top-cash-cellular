@@ -7,11 +7,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "Sell Your Phone for Cash in Austin TX | Top Cash Cellular — iPhone, Samsung, MacBook Buyback",
-  description: "Sell your iPhone, Samsung Galaxy, MacBook, or game console for top dollar in Austin TX. Instant quote, same-day cash payout. We pay more than Apple trade-in. Cash, Venmo, Zelle, PayPal. Free shipping available.",
+  description: "Sell your iPhone, Samsung Galaxy, MacBook, or game console for top dollar in Austin TX. Instant quote, same-day cash payout. We pay more than Apple trade-in. Cash, Cash App, Zelle, BTC. Free shipping available.",
   keywords: "sell iPhone Austin, sell phone for cash Austin TX, phone buyback near me, sell Samsung Galaxy, sell MacBook, trade in iPhone, sell used phone, Top Cash Cellular, sell PS5, sell Xbox, device buyback Austin, cash for phones",
   openGraph: {
     title: "Top Cash Cellular — Sell Your Phone for Top Dollar",
-    description: "Instant quotes. Same-day payout. Cash, Venmo, Zelle, or PayPal. Austin, TX.",
+    description: "Instant quotes. Same-day payout. Cash, Cash App, Zelle, or BTC. Austin, TX.",
     type: "website",
     locale: "en_US",
     siteName: "Top Cash Cellular",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Top Cash Cellular — Sell Your Phone for Top Dollar",
-    description: "Instant quotes. Same-day payout. Cash, Venmo, Zelle, or PayPal. Austin, TX.",
+    description: "Instant quotes. Same-day payout. Cash, Cash App, Zelle, or BTC. Austin, TX.",
   },
   robots: { index: true, follow: true },
   alternates: { canonical: "https://topcashcellular.com" },

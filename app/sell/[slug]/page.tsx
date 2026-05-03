@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!device) return { title: "Sell Your Device | Top Cash Cellular" };
   return {
     title: `Sell ${device.name} for Cash in Austin TX | Up to $${device.price} | Top Cash Cellular`,
-    description: `Sell your ${device.name} for up to $${device.price} in Austin TX. Instant quote, same-day payout. Cash, Venmo, Zelle, or PayPal. We pay more than Apple trade-in.`,
+    description: `Sell your ${device.name} for up to $${device.price} in Austin TX. Instant quote, same-day payout. Cash, Cash App, Zelle, or BTC. We pay more than Apple trade-in.`,
     openGraph: {
       title: `Sell ${device.name} — Up to $${device.price}`,
       description: `Get up to $${device.price} for your ${device.name}. Instant quote, same-day cash payout in Austin TX.`,
@@ -124,7 +124,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
             {[
               { num: "1", title: "Get Your Quote", desc: `Select ${device.name}, choose your storage and condition to get an instant price.` },
               { num: "2", title: "Meet Up or Ship", desc: "Austin local meetup or free prepaid shipping label — your choice." },
-              { num: "3", title: "Get Paid", desc: "Cash, Venmo, Zelle, or PayPal. Same-day payout on local meetups." },
+              { num: "3", title: "Get Paid", desc: "Cash, Cash App, Zelle, or BTC. Same-day payout on local meetups." },
             ].map((s) => (
               <div key={s.num} className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-full bg-[#00c853]/15 flex items-center justify-center shrink-0">
@@ -146,7 +146,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
             <li className="flex items-start gap-2"><span className="text-[#00c853]">✓</span> Same-day payout — no waiting</li>
             <li className="flex items-start gap-2"><span className="text-[#00c853]">✓</span> We buy any condition — even cracked</li>
             <li className="flex items-start gap-2"><span className="text-[#00c853]">✓</span> Local Austin meetup or free shipping</li>
-            <li className="flex items-start gap-2"><span className="text-[#00c853]">✓</span> Cash, Venmo, Zelle, or PayPal</li>
+            <li className="flex items-start gap-2"><span className="text-[#00c853]">✓</span> Cash, Cash App, Zelle, or BTC</li>
           </ul>
         </div>
 

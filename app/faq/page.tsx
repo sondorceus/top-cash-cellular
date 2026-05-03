@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const FAQ = [
   {
     q: "How fast do I get paid?",
-    a: "Most payouts go out the same business day we receive and verify your device. PayPal, Venmo, Cash App, and Zelle land within minutes. Mailed checks take 2–3 business days.",
+    a: "Most payouts go out the same business day we receive and verify your device. Cash App and Zelle land within minutes. Bitcoin (BTC) sends on-chain within ~30 minutes. Local Austin pickups get cash on the spot.",
   },
   {
     q: "What if my device arrives in worse condition than I quoted?",

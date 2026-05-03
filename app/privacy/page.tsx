@@ -38,7 +38,7 @@ export default function PrivacyPage() {
           <p>We do not sell your personal information. We may share data with:</p>
           <ul className="list-disc ml-6 mt-2 space-y-1">
             <li><strong>Google Analytics</strong> — for anonymous website usage analysis</li>
-            <li><strong>Payment processors</strong> — to complete your payout (Venmo, Zelle, PayPal, or cash)</li>
+            <li><strong>Payment processors</strong> — to complete your payout (Cash App, Zelle, BTC, or cash)</li>
             <li><strong>Service providers</strong> — that help us operate our website and business</li>
           </ul>
         </section>

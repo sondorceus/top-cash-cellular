@@ -748,14 +748,14 @@ const CARRIERS = [
 
 const PAYOUTS = [
   { id: "cash", label: "Cash", icon: "💵" },
-  { id: "venmo", label: "Venmo", icon: "📱" },
+  { id: "cashapp", label: "Cash App", icon: "💚" },
   { id: "zelle", label: "Zelle", icon: "⚡" },
-  { id: "paypal", label: "PayPal", icon: "💳" },
+  { id: "btc", label: "Bitcoin", icon: "₿" },
 ];
 
 const FAQS = [
   { q: "How does the process work?", a: "Select your device, choose its condition, and get an instant quote. Accept the offer, pick your payout method, and we'll arrange a local pickup in Austin." },
-  { q: "How fast will I get paid?", a: "Same day for local Austin pickups. We pay on the spot via your preferred method — Cash, Venmo, Zelle, or PayPal." },
+  { q: "How fast will I get paid?", a: "Same day for local Austin pickups. We pay on the spot via your preferred method — Cash, Cash App, Zelle, or BTC." },
   { q: "What if my device is cracked or damaged?", a: "We buy devices in any condition. Damaged phones get a lower offer, but you'll still get cash. Select 'Fair' or 'Poor' condition for an accurate quote." },
   { q: "Are the quotes guaranteed?", a: "Quotes are based on the condition you select. Final price is confirmed during inspection at pickup — if the device matches your description, you get the quoted price." },
   { q: "What devices do you buy?", a: "We buy iPhones (11 and newer) and Samsung Galaxy phones (S21 and newer), including Z Fold and Z Flip models." },
@@ -1152,7 +1152,7 @@ export default function Home() {
               Instant quote. Same-day payout available.
             </p>
             <p className="text-[#888] text-lg mb-6 font-medium">
-              Cash, Venmo, Zelle, or PayPal.
+              Cash, Cash App, Zelle, or BTC.
             </p>
 
             <div className="glow-border mb-6 p-[3px]">
@@ -2132,12 +2132,10 @@ export default function Home() {
                 <div className="flex-1">
                   <p className="text-sm text-[#ccc] mb-2">Get paid your way</p>
                   <div className="flex flex-wrap gap-1.5">
-                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#003087] text-white text-[10px] font-bold">PayPal</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#3D95CE] text-white text-[10px] font-bold">Venmo</span>
+                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-bold">💵 Cash</span>
                     <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#00d54b] text-white text-[10px] font-bold">Cash App</span>
                     <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#6D1ED4] text-white text-[10px] font-bold">Zelle</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-bold">Cash</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-bold">Check</span>
+                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#f7931a] text-white text-[10px] font-bold">₿ BTC</span>
                   </div>
                 </div>
               </div>
@@ -2161,7 +2159,7 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-[#ccc]">⚡ Same-Day Payout</p>
-                  <p className="text-xs text-[#888] mt-1">Austin local? Get paid on the spot. Cash, Venmo, Zelle, or PayPal — your call.</p>
+                  <p className="text-xs text-[#888] mt-1">Austin local? Get paid on the spot. Cash, Cash App, Zelle, or BTC — your call.</p>
                 </div>
               </div>
             </div>
@@ -2581,12 +2579,12 @@ export default function Home() {
               <div className="flex animate-[marquee_25s_linear_infinite] gap-4 w-max">
                 {[
                   { text: "Got $420 for my iPhone 14 Pro. Way more than the Apple trade-in.", name: "Mike R." },
-                  { text: "Venmo payment hit my account same day. Super smooth.", name: "Ashley T." },
+                  { text: "Zelle payment hit my account same day. Super smooth.", name: "Ashley T." },
                   { text: "They came to me and paid cash on the spot. Can't beat that.", name: "David L." },
                   { text: "Sold my old Galaxy S23 in 5 minutes. Easy money.", name: "Sarah K." },
                   { text: "Best price I found anywhere in Austin. Highly recommend.", name: "Chris M." },
                   { text: "Got $420 for my iPhone 14 Pro. Way more than the Apple trade-in.", name: "Mike R." },
-                  { text: "Venmo payment hit my account same day. Super smooth.", name: "Ashley T." },
+                  { text: "Zelle payment hit my account same day. Super smooth.", name: "Ashley T." },
                   { text: "They came to me and paid cash on the spot. Can't beat that.", name: "David L." },
                   { text: "Sold my old Galaxy S23 in 5 minutes. Easy money.", name: "Sarah K." },
                   { text: "Best price I found anywhere in Austin. Highly recommend.", name: "Chris M." },
@@ -2609,8 +2607,8 @@ export default function Home() {
                 {[
                   { method: "Local Pickup", icon: "🏠", timeline: "Same day", desc: "We meet in Austin. Inspect device. Pay on the spot.", highlight: true },
                   { method: "Cash", icon: "💵", timeline: "Instant", desc: "Handed to you at pickup. Immediate.", highlight: false },
-                  { method: "Venmo / Zelle", icon: "⚡", timeline: "Under 5 min", desc: "Sent while you watch. Hits your account instantly.", highlight: false },
-                  { method: "PayPal", icon: "💳", timeline: "Under 1 hour", desc: "Sent immediately. May take a few minutes to clear.", highlight: false },
+                  { method: "Cash App / Zelle", icon: "⚡", timeline: "Under 5 min", desc: "Sent while you watch. Hits your account instantly.", highlight: false },
+                  { method: "Bitcoin (BTC)", icon: "₿", timeline: "Under 30 min", desc: "Sent on-chain to your wallet. Confirmation in minutes.", highlight: false },
                   { method: "Ship To Us", icon: "📦", timeline: "Same day received", desc: "We inspect and pay within hours of receiving your device.", highlight: false },
                 ].map((p) => (
                   <div key={p.method} className={`flex items-center gap-4 rounded-2xl p-4 border ${p.highlight ? "bg-[#00c853]/10 border-[#00c853]/20" : "bg-white/5 border-white/10"}`}>
@@ -2794,7 +2792,7 @@ export default function Home() {
               <div className="space-y-3 mb-8">
                 {[
                   { icon: "💰", title: "Highest payouts in Austin", desc: "We consistently beat Apple, carrier, and marketplace prices by 20-40%. Get a quote and compare." },
-                  { icon: "⚡", title: "Paid on the spot", desc: "Cash, Venmo, Zelle, or PayPal — your choice. No waiting for checks or bank transfers." },
+                  { icon: "⚡", title: "Paid on the spot", desc: "Cash, Cash App, Zelle, or BTC — your choice. No waiting for checks or bank transfers." },
                   { icon: "🤝", title: "Local & personal", desc: "We meet you at a convenient Austin location. Face-to-face, safe, and quick. 5 minutes and you're done." },
                   { icon: "📦", title: "Nationwide shipping", desc: "Not in Austin? No problem. We send a free prepaid label. Ship your device, get paid same day we receive it." },
                   { icon: "📱", title: "We buy everything", desc: "iPhones, Samsung Galaxy, MacBooks, PS5, Xbox, Nintendo Switch. Working, cracked, or water damaged." },
@@ -2815,7 +2813,7 @@ export default function Home() {
                 {[
                   { num: "1", title: "Get an instant quote", desc: "Select your device, model, storage, and condition. See your price in 30 seconds." },
                   { num: "2", title: "Choose how to sell", desc: "Meet us locally in Austin or ship your device for free from anywhere in the US." },
-                  { num: "3", title: "Get paid instantly", desc: "We verify your device and pay you on the spot. Cash, Venmo, Zelle, or PayPal." },
+                  { num: "3", title: "Get paid instantly", desc: "We verify your device and pay you on the spot. Cash, Cash App, Zelle, or BTC." },
                 ].map((step) => (
                   <div key={step.num} className="flex items-start gap-4 bg-white/5 rounded-2xl p-4 border border-white/10">
                     <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center text-white text-sm font-bold shrink-0">{step.num}</div>
@@ -2859,7 +2857,7 @@ export default function Home() {
                 <div className="text-[#888] text-sm space-y-4 leading-relaxed">
                   <p>By using Top Cash Cellular, you agree to these terms. Quotes provided on our site are estimates based on the condition and model you select. Final pricing is confirmed during in-person inspection.</p>
                   <p>All devices sold to us must be legally owned by the seller. Stolen devices will be reported to law enforcement. Sellers must provide valid identification at the time of sale.</p>
-                  <p>Payouts are processed via your selected method (Cash, Venmo, Zelle, PayPal) at the time of device inspection and acceptance. We reserve the right to adjust offers if the device condition differs from the online assessment.</p>
+                  <p>Payouts are processed via your selected method (Cash, Cash App, Zelle, BTC) at the time of device inspection and acceptance. We reserve the right to adjust offers if the device condition differs from the online assessment.</p>
                   <p>All sales are final once payment is issued. Top Cash Cellular is not responsible for data left on sold devices. Please factory reset your device before selling.</p>
                 </div>
               </div>
