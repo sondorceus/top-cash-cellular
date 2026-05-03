@@ -46,8 +46,8 @@ button, a, [role="button"] {
 }
 
 @keyframes imgFadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes promoShimmer {
@@ -93,6 +93,9 @@ button, a, [role="button"] {
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
   mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
 }
+img {
+  background-color: rgba(255,255,255,0.04);
+}
 img[loading="lazy"], section img {
-  animation: imgFadeIn 0.3s ease-out both;
+  animation: imgFadeIn 0.5s ease-out both;
 }
