@@ -252,16 +252,16 @@ const ALIENWARE_MODELS = [
 ];
 
 const HP_MODELS = [
-  { id: "hpspec16", label: "Spectre x360 16\" (2024)", base: 650 },
-  { id: "hpspec14", label: "Spectre x360 14\" (2024)", base: 520 },
-  { id: "hpspec16g23", label: "Spectre x360 16\" (2023)", base: 480 },
-  { id: "hpenvy16", label: "Envy 16\" (2024)", base: 420 },
-  { id: "hpenvy15", label: "Envy x360 15\" (2024)", base: 350 },
-  { id: "hpomen17", label: "OMEN 17\" (2024)", base: 700 },
-  { id: "hpomen16", label: "OMEN 16\" (2024)", base: 550 },
-  { id: "hppav15", label: "Pavilion 15\"", base: 200 },
-  { id: "hpelite840", label: "EliteBook 840 G10", base: 450 },
-  { id: "hpprobook", label: "ProBook 450 G10", base: 300 },
+  { id: "hpspec16", label: "Spectre x360 16\" (2024)", base: 0, inquiryOnly: true },
+  { id: "hpspec14", label: "Spectre x360 14\" (2024)", base: 0, inquiryOnly: true },
+  { id: "hpspec16g23", label: "Spectre x360 16\" (2023)", base: 0, inquiryOnly: true },
+  { id: "hpenvy16", label: "Envy 16\" (2024)", base: 0, inquiryOnly: true },
+  { id: "hpenvy15", label: "Envy x360 15\" (2024)", base: 0, inquiryOnly: true },
+  { id: "hpomen17", label: "OMEN 17\" (2024)", base: 0, inquiryOnly: true },
+  { id: "hpomen16", label: "OMEN 16\" (2024)", base: 0, inquiryOnly: true },
+  { id: "hppav15", label: "Pavilion 15\"", base: 0, inquiryOnly: true },
+  { id: "hpelite840", label: "EliteBook 840 G10", base: 0, inquiryOnly: true },
+  { id: "hpprobook", label: "ProBook 450 G10", base: 0, inquiryOnly: true },
 ];
 
 const ACER_MODELS = [
