@@ -206,6 +206,11 @@ const DELL_MODELS = [
 ];
 
 const ALIENWARE_MODELS = [
+  { id: "aw18_a51_2026", label: "Alienware 18 Area-51 (2026)", base: 0, inquiryOnly: true },
+  { id: "aw16_a51_2026", label: "Alienware 16 Area-51 (2026)", base: 0, inquiryOnly: true },
+  { id: "aw16x_aurora_2026", label: "Alienware 16X Aurora (2026)", base: 0, inquiryOnly: true },
+  { id: "aw16_ultraslim_2026", label: "Alienware 16 Ultraslim (2026)", base: 0, inquiryOnly: true },
+  { id: "aw14_ultraslim_2026", label: "Alienware 14 Ultraslim (2026)", base: 0, inquiryOnly: true },
   { id: "awm18r2", label: "Alienware m18 R2", base: 0, inquiryOnly: true },
   { id: "awm16r2", label: "Alienware m16 R2", base: 0, inquiryOnly: true },
   { id: "awx16r2", label: "Alienware x16 R2", base: 0, inquiryOnly: true },
@@ -214,6 +219,14 @@ const ALIENWARE_MODELS = [
   { id: "awm16r1", label: "Alienware m16 R1", base: 0, inquiryOnly: true },
   { id: "awx16r1", label: "Alienware x16 R1", base: 0, inquiryOnly: true },
   { id: "awx14r1", label: "Alienware x14 R1", base: 0, inquiryOnly: true },
+  { id: "awm17r5", label: "Alienware m17 R5", base: 0, inquiryOnly: true },
+  { id: "awm15r7", label: "Alienware m15 R7", base: 0, inquiryOnly: true },
+  { id: "awm15r6", label: "Alienware m15 R6", base: 0, inquiryOnly: true },
+  { id: "awm15r5_ryzen", label: "Alienware m15 R5 (Ryzen Edition)", base: 0, inquiryOnly: true },
+  { id: "awx17r2", label: "Alienware x17 R2", base: 0, inquiryOnly: true },
+  { id: "awx15r2", label: "Alienware x15 R2", base: 0, inquiryOnly: true },
+  { id: "awx17r1", label: "Alienware x17 R1", base: 0, inquiryOnly: true },
+  { id: "awx15r1", label: "Alienware x15 R1", base: 0, inquiryOnly: true },
 ];
 
 const HP_MODELS = [
