@@ -1766,11 +1766,9 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your family</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {MACBOOK_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px]">
                       {(s as { image?: string }).image ? (
-                        <div className="bg-white rounded-xl px-2 py-1 mb-1 flex items-center justify-center w-[72px] h-[52px]">
-                          <img src={(s as { image?: string }).image} alt={s.label} width={64} height={48} loading="eager" decoding="async" fetchPriority="high" className="w-16 h-12 object-contain" />
-                        </div>
+                        <img src={(s as { image?: string }).image} alt={s.label} width={64} height={48} loading="eager" decoding="async" fetchPriority="high" className="w-16 h-12 object-contain mb-1" style={{ backgroundColor: "transparent" }} />
                       ) : (
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg>
                       )}
@@ -1933,11 +1931,9 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your console family</p>
                 <div className="grid grid-cols-2 gap-3">
                   {SONY_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
                       {(s as { image?: string }).image ? (
-                        <div className="bg-white rounded-xl px-2 py-1 mb-1 flex items-center justify-center w-[72px] h-[60px]">
-                          <img src={(s as { image?: string }).image} alt={s.label} width={56} height={52} loading="eager" decoding="async" fetchPriority="high" className="w-14 h-13 object-contain" />
-                        </div>
+                        <img src={(s as { image?: string }).image} alt={s.label} width={56} height={56} loading="eager" decoding="async" fetchPriority="high" className="w-14 h-14 object-contain mb-1" style={{ backgroundColor: "transparent" }} />
                       ) : (
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#003087"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">{s.id === "ps5_family" ? "PS5" : "PS4"}</text></svg>
                       )}
