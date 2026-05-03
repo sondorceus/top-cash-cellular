@@ -1058,18 +1058,20 @@ export default function Home() {
       {/* NAV */}
       <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <button onClick={reset} aria-label="Go to homepage" className="cursor-pointer">
+          <button onClick={reset} aria-label="Go to homepage" className="cursor-pointer group">
             <span className="flex items-center gap-2">
-              <span className="w-9 h-9 rounded-xl bg-black border border-white/15 flex items-center justify-center">
-                <span className="w-6 h-6 rounded-lg bg-[#00c853] flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" className="w-3.5 h-5" fill="none" stroke="#fff" strokeWidth="2">
+              <span className="relative w-9 h-9 rounded-xl tcc-logo-card flex items-center justify-center">
+                <span className="absolute inset-0 rounded-xl pointer-events-none" style={{ background: "radial-gradient(circle at 28% 25%, rgba(0,230,118,0.18), transparent 65%)" }}></span>
+                <span className="relative w-6 h-6 rounded-lg tcc-logo-tile flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" className="w-3.5 h-5" fill="none" stroke="#fff" strokeWidth="2.2" style={{ filter: "drop-shadow(0 1px 0 rgba(0,0,0,0.35))" }}>
                     <rect x="6" y="2" width="12" height="20" rx="2.5" />
                     <line x1="10" y1="19" x2="14" y2="19" strokeLinecap="round" />
                   </svg>
                 </span>
+                <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-extrabold text-[#1a1100] tcc-logo-coin" style={{ background: "radial-gradient(circle at 30% 30%, #ffe066, #ffb400 70%, #c08a00)", boxShadow: "0 1px 2px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.7)" }}>$</span>
               </span>
               <div className="flex flex-col leading-none">
-                <span className="text-[14px] font-extrabold tracking-tight text-white">TOP CASH</span>
+                <span className="text-[14px] font-extrabold tracking-tight text-white group-hover:text-[#00e676] transition">TOP CASH</span>
                 <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
               </div>
             </span>
