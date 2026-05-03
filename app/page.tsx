@@ -2641,7 +2641,7 @@ export default function Home() {
                 <h2 className="text-3xl font-bold mb-2">Still sitting on old tech?</h2>
                 <p className="text-[#888] text-base mb-2">That phone in your drawer is losing value every day.</p>
                 <p className="text-white/70 text-sm mb-6">Get your instant quote — it takes 30 seconds.</p>
-                <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="bg-[#00c853] text-white px-10 py-4 rounded-2xl text-lg font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20">
+                <button onClick={() => { setStep("category"); pushHistory("category"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="bg-[#00c853] text-white px-10 py-4 rounded-2xl text-lg font-bold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98] shadow-lg shadow-[#00c853]/20">
                   Get Your Quote Now
                 </button>
                 <p className="text-[#777] text-xs mt-4">No account required · Free instant quote · No obligation</p>
@@ -2835,7 +2835,7 @@ export default function Home() {
               <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-6 text-center">
                 <p className="text-lg font-bold mb-2">Ready to sell?</p>
                 <p className="text-[#888] text-sm mb-4">Get your instant quote in 30 seconds.</p>
-                <button onClick={() => { setPage("home"); setStep("device"); window.scrollTo({ top: 0 }); }} className="bg-[#00c853] text-white px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
+                <button onClick={() => { setPage("home"); setStep("category"); pushHistory("category"); window.scrollTo({ top: 0 }); }} className="bg-[#00c853] text-white px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition active:scale-[0.98]">
                   Get My Quote
                 </button>
               </div>
