@@ -1081,8 +1081,11 @@ export default function Home() {
                 <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-extrabold text-[#1a1100] tcc-logo-coin" style={{ background: "radial-gradient(circle at 30% 30%, #ffe066, #ffb400 70%, #c08a00)", boxShadow: "0 1px 2px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.7)" }}>$</span>
               </span>
               <div className="flex flex-col leading-none">
-                <span className="text-[14px] font-extrabold tracking-tight text-white group-hover:text-[#00e676] transition">TOP CASH</span>
-                <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
+                <span className="text-[15px] font-black tracking-[-0.02em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-[#bdbdbd] group-hover:from-[#00e676] group-hover:via-[#00e676] group-hover:to-[#00a039] transition" style={{ fontFeatureSettings: '"ss01", "cv11"' }}>TOP CASH</span>
+                <span className="flex items-center gap-1.5 text-[9px] font-bold tracking-[0.32em] uppercase">
+                  <span className="block w-1 h-1 rounded-full bg-[#00c853] shadow-[0_0_4px_#00c853]"></span>
+                  <span className="text-[#00c853]">Cellular</span>
+                </span>
               </div>
             </span>
           </button>
