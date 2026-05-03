@@ -2706,7 +2706,7 @@ export default function Home() {
           <section className="py-12 bg-[#0a0a0a]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <div className="bg-[#00c853]/5 border border-[#00c853]/15 rounded-2xl p-6 text-center">
-                <p className="text-2xl mb-2">����</p>
+                <p className="text-2xl mb-2">♻️</p>
                 <h3 className="text-lg font-bold mb-1">Good for your wallet. Better for the planet.</h3>
                 <p className="text-[#888] text-sm leading-relaxed">Every device we buy gets a second life — refurbished and reused, not dumped in a landfill. Selling your old tech with Top Cash Cellular keeps electronics out of waste streams and puts cash in your pocket.</p>
               </div>
