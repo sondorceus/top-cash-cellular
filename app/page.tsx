@@ -162,7 +162,7 @@ const MACBOOK_CLASSIC_MODELS = [
 const MACBOOK_SERIES = [
   { id: "mbpro", label: "MacBook Pro", year: "M1–M4", topPrice: 1200, image: "/macbook-pro-series.webp", variants: MACBOOK_PRO_MODELS },
   { id: "mbair", label: "MacBook Air", year: "M1–M3", topPrice: 700, image: "/macbook-air-series.webp", variants: MACBOOK_AIR_MODELS },
-  { id: "mbclassic", label: "MacBook", year: "12-inch Retina", topPrice: 0, variants: MACBOOK_CLASSIC_MODELS, inquiryOnly: true },
+  { id: "mbclassic", label: "MacBook", year: "12-inch Retina", topPrice: 0, image: "/macbook-classic-series.webp", variants: MACBOOK_CLASSIC_MODELS, inquiryOnly: true },
 ];
 
 const SAMSUNG_PC_MODELS = [
