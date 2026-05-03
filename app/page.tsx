@@ -205,28 +205,50 @@ const DELL_MODELS = [
   { id: "dinsp14", label: "Inspiron 14", base: 200 },
 ];
 
-const ALIENWARE_MODELS = [
+const ALIENWARE_FLAGSHIP_VARIANTS = [
   { id: "aw18_a51_2026", label: "Alienware 18 Area-51 (2026)", base: 0, inquiryOnly: true },
   { id: "aw16_a51_2026", label: "Alienware 16 Area-51 (2026)", base: 0, inquiryOnly: true },
+  { id: "awm18r2", label: "Alienware m18 R2", base: 0, inquiryOnly: true },
+  { id: "awm18r1", label: "Alienware m18 R1", base: 0, inquiryOnly: true },
+  { id: "aw_a51m_r2", label: "Alienware Area-51m R2", base: 0, inquiryOnly: true },
+  { id: "aw_a51m_r1", label: "Alienware Area-51m R1", base: 0, inquiryOnly: true },
+];
+const ALIENWARE_AURORA_VARIANTS = [
   { id: "aw16x_aurora_2026", label: "Alienware 16X Aurora (2026)", base: 0, inquiryOnly: true },
+  { id: "aw16_aurora_2026", label: "Alienware 16 Aurora (2026)", base: 0, inquiryOnly: true },
+  { id: "awx16r2", label: "Alienware x16 R2", base: 0, inquiryOnly: true },
+  { id: "awx16r1", label: "Alienware x16 R1", base: 0, inquiryOnly: true },
+  { id: "awx14r2", label: "Alienware x14 R2", base: 0, inquiryOnly: true },
+  { id: "awx14r1", label: "Alienware x14 R1", base: 0, inquiryOnly: true },
+  { id: "awx17r2", label: "Alienware x17 R2", base: 0, inquiryOnly: true },
+  { id: "awx17r1", label: "Alienware x17 R1", base: 0, inquiryOnly: true },
+  { id: "awx15r2", label: "Alienware x15 R2", base: 0, inquiryOnly: true },
+  { id: "awx15r1", label: "Alienware x15 R1", base: 0, inquiryOnly: true },
+];
+const ALIENWARE_ULTRASLIM_VARIANTS = [
   { id: "aw16_ultraslim_2026", label: "Alienware 16 Ultraslim (2026)", base: 0, inquiryOnly: true },
   { id: "aw14_ultraslim_2026", label: "Alienware 14 Ultraslim (2026)", base: 0, inquiryOnly: true },
-  { id: "awm18r2", label: "Alienware m18 R2", base: 0, inquiryOnly: true },
+];
+const ALIENWARE_MAINSTREAM_VARIANTS = [
+  { id: "aw_entry_2026", label: "Alienware Entry-Level (2026)", base: 0, inquiryOnly: true },
   { id: "awm16r2", label: "Alienware m16 R2", base: 0, inquiryOnly: true },
-  { id: "awx16r2", label: "Alienware x16 R2", base: 0, inquiryOnly: true },
-  { id: "awx14r2", label: "Alienware x14 R2", base: 0, inquiryOnly: true },
-  { id: "awm18r1", label: "Alienware m18 R1", base: 0, inquiryOnly: true },
   { id: "awm16r1", label: "Alienware m16 R1", base: 0, inquiryOnly: true },
-  { id: "awx16r1", label: "Alienware x16 R1", base: 0, inquiryOnly: true },
-  { id: "awx14r1", label: "Alienware x14 R1", base: 0, inquiryOnly: true },
-  { id: "awm17r5", label: "Alienware m17 R5", base: 0, inquiryOnly: true },
+  { id: "awm17r5", label: "Alienware m17 R5 (AMD flagship)", base: 0, inquiryOnly: true },
   { id: "awm15r7", label: "Alienware m15 R7", base: 0, inquiryOnly: true },
   { id: "awm15r6", label: "Alienware m15 R6", base: 0, inquiryOnly: true },
-  { id: "awm15r5_ryzen", label: "Alienware m15 R5 (Ryzen Edition)", base: 0, inquiryOnly: true },
-  { id: "awx17r2", label: "Alienware x17 R2", base: 0, inquiryOnly: true },
-  { id: "awx15r2", label: "Alienware x15 R2", base: 0, inquiryOnly: true },
-  { id: "awx17r1", label: "Alienware x17 R1", base: 0, inquiryOnly: true },
-  { id: "awx15r1", label: "Alienware x15 R1", base: 0, inquiryOnly: true },
+  { id: "awm15r5_ryzen", label: "Alienware m15 R5 (Ryzen)", base: 0, inquiryOnly: true },
+];
+const ALIENWARE_SERIES = [
+  { id: "aw_flagship", label: "Flagship", year: "Area-51 / m18", topPrice: 0, variants: ALIENWARE_FLAGSHIP_VARIANTS, inquiryOnly: true },
+  { id: "aw_aurora", label: "Aurora & X", year: "Premium Slim", topPrice: 0, variants: ALIENWARE_AURORA_VARIANTS, inquiryOnly: true },
+  { id: "aw_ultraslim", label: "Ultraslim", year: "2026 — New", topPrice: 0, variants: ALIENWARE_ULTRASLIM_VARIANTS, inquiryOnly: true },
+  { id: "aw_mainstream", label: "M-Series & Entry", year: "All-rounder", topPrice: 0, variants: ALIENWARE_MAINSTREAM_VARIANTS, inquiryOnly: true },
+];
+const ALIENWARE_MODELS = [
+  ...ALIENWARE_FLAGSHIP_VARIANTS,
+  ...ALIENWARE_AURORA_VARIANTS,
+  ...ALIENWARE_ULTRASLIM_VARIANTS,
+  ...ALIENWARE_MAINSTREAM_VARIANTS,
 ];
 
 const HP_MODELS = [
@@ -1067,6 +1089,7 @@ export default function Home() {
   const pixelVariants = selectedSeries ? PIXEL_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const macbookVariants = selectedSeries ? MACBOOK_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const sonyVariants = selectedSeries ? SONY_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
+  const alienwareVariants = selectedSeries ? ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
 
   type Crumb = { label: string; onClick: () => void };
   const breadcrumbs: Crumb[] = [
@@ -1079,7 +1102,7 @@ export default function Home() {
     });
   }
   if (selectedSeries) {
-    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : null;
+    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : null;
     const ser = seriesList?.find(s => s.id === selectedSeries);
     if (ser) breadcrumbs.push({
       label: ser.label,
@@ -1103,7 +1126,7 @@ export default function Home() {
     onClick: () => { setStep("quote"); pushHistory("quote"); },
   });
   const showBreadcrumbs = breadcrumbs.length > 1 && step !== "device" && step !== "category" && page === "home";
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? ALIENWARE_MODELS : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? LG_PC_MODELS : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -1889,9 +1912,34 @@ export default function Home() {
             )}
 
             {/* Laptop/Desktop: Grid on mobile, list on desktop */}
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && (
+            {/* Alienware: 4 family boxes (Flagship / Aurora & X / Ultraslim / M-Series) */}
+            {deviceType === "alienware" && !selectedSeries && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your model</h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Alienware</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your tier</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {ALIENWARE_SERIES.map((s) => (
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
+                      <svg className="w-12 h-9 mb-2 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="2" y="2" width="28" height="18" rx="3" />
+                        <line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" />
+                        {s.id === "aw_flagship" && <text x="16" y="14" fill="#00c853" fontSize="6" fontWeight="bold" textAnchor="middle" stroke="none">FLAG</text>}
+                        {s.id === "aw_aurora" && <text x="16" y="14" fill="#00c853" fontSize="6" fontWeight="bold" textAnchor="middle" stroke="none">AURORA</text>}
+                        {s.id === "aw_ultraslim" && <text x="16" y="14" fill="#00c853" fontSize="5" fontWeight="bold" textAnchor="middle" stroke="none">ULTRA</text>}
+                        {s.id === "aw_mainstream" && <text x="16" y="14" fill="#00c853" fontSize="6" fontWeight="bold" textAnchor="middle" stroke="none">M-SERIES</text>}
+                      </svg>
+                      <p className="font-bold text-sm">{s.label}</p>
+                      <p className="text-[#888] text-[10px]">{s.year}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 {/* Mobile: grid cards */}
                 <div className="grid grid-cols-2 gap-2 md:hidden">
