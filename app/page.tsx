@@ -2363,6 +2363,7 @@ export default function Home() {
                       ad_imac: "/imac-series.webp",
                       ad_macmini: "/macmini-series.webp",
                       ad_macstudio: "/macstudio-series.webp",
+                      ad_macpro: "/macpro-series.webp",
                     };
                     const img = imgMap[s.id];
                     return (
