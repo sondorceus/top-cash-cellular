@@ -1215,6 +1215,8 @@ export default function Home() {
     else setPhone(lookupContact.trim());
     setLookupOpen(false);
   };
+  // Returning-customer hint at the contact step (Option A chunk 3 — server-side detection)
+  const [returningHint, setReturningHint] = useState<{ name?: string; leadCount: number } | null>(null);
   const [cartItems, setCartItems] = useState<Array<{ model: string; modelId: string; storage: string; condition: string; price: number; quantity: number }>>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [inquiryCategory, setInquiryCategory] = useState("");
@@ -1238,6 +1240,36 @@ export default function Home() {
     if (typeof window === "undefined") return;
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [step, page]);
+
+  // Returning-customer detection at contact step — debounced lookup as user types phone/email
+  useEffect(() => {
+    if (step !== "contact") { setReturningHint(null); return; }
+    const phoneDigits = phone.replace(/\D/g, "");
+    const looksLikePhone = phoneDigits.length === 10;
+    const looksLikeEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!looksLikePhone && !looksLikeEmail) { setReturningHint(null); return; }
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      try {
+        const r = await fetch("/api/lookup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(looksLikeEmail ? { email } : { phone }),
+        });
+        if (!r.ok) return;
+        const d = await r.json();
+        if (cancelled) return;
+        if (d.found && d.leadCount > 0) {
+          setReturningHint({ name: d.name, leadCount: d.leadCount });
+        } else {
+          setReturningHint(null);
+        }
+      } catch {
+        if (!cancelled) setReturningHint(null);
+      }
+    }, 700);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [step, phone, email]);
 
   useEffect(() => {
     const imgs = ["/ipadpro.png", "/ipadair.png", "/ipadmini.png", "/ipadbase.png", "/ipad.png",
@@ -3192,6 +3224,16 @@ export default function Home() {
               </div>
               <p className="text-[#888] text-sm">{storage?.label} · {condition.label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
             </div>
+
+            {returningHint && returningHint.leadCount > 0 && (
+              <div className="bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 mb-5 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
+                <span className="text-2xl">👋</span>
+                <div className="flex-1 text-sm">
+                  <p className="text-white font-semibold">Welcome back{returningHint.name ? `, ${returningHint.name.split(" ")[0]}` : ""}!</p>
+                  <p className="text-[#aaa] text-xs">You&apos;ve sold to us {returningHint.leadCount} time{returningHint.leadCount === 1 ? "" : "s"} before — thanks for coming back.</p>
+                </div>
+              </div>
+            )}
 
             <h2 className="text-xl font-bold mb-1">Almost done</h2>
             <p className="text-[#888] text-sm mb-6">We&apos;ll contact you to arrange pickup &amp; payment</p>
