@@ -1339,6 +1339,150 @@ export default function Home() {
         </section>
       )}
 
+      {/* HOMEPAGE: How it works (3 steps) */}
+      {step === "device" && page === "home" && (
+        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-10">
+          <div className="text-center mb-8">
+            <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">How it works</p>
+            <h2 className="text-3xl md:text-4xl font-bold leading-tight reveal" data-stagger="1">From drawer to dollars in 3 steps</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { n: 1, icon: "💸", title: "Get an instant quote", body: "Pick your device, condition, and storage. We show you the offer in seconds — no signup needed." },
+              { n: 2, icon: "📦", title: "Ship free or drop off", body: "Print our prepaid label, or drop off in Austin. We pay shipping. Insured up to $1,000." },
+              { n: 3, icon: "💵", title: "Get paid same-day", body: "Cash, Cash App, Zelle, or BTC. Most payouts hit within 24 hours of arrival." },
+            ].map((s, i) => (
+              <div key={s.n} className="relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
+                <div className="absolute -top-3 -left-2 w-9 h-9 rounded-full bg-[#00c853] text-white text-sm font-bold flex items-center justify-center shadow-lg shadow-[#00c853]/30">{s.n}</div>
+                <div className="text-4xl mb-3">{s.icon}</div>
+                <h3 className="font-bold text-lg mb-1.5">{s.title}</h3>
+                <p className="text-[#888] text-sm leading-relaxed">{s.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* HOMEPAGE: Why people choose us (6-tile trust grid) */}
+      {step === "device" && page === "home" && (
+        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-10">
+          <div className="text-center mb-8">
+            <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">Why Austin chooses us</p>
+            <h2 className="text-3xl md:text-4xl font-bold leading-tight reveal" data-stagger="1">Trusted by thousands of locals</h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {[
+              { stat: "5,000+", label: "Devices bought", icon: "📲" },
+              { stat: "4.9★", label: "Average review rating", icon: "⭐" },
+              { stat: "Same-Day", label: "Payouts available", icon: "⚡" },
+              { stat: "Free", label: "Shipping nationwide", icon: "📦" },
+              { stat: "Higher", label: "Offer than Apple trade-in", icon: "💰" },
+              { stat: "Local", label: "Austin-based, real humans", icon: "🤠" },
+            ].map((t, i) => (
+              <div key={i} className="bg-gradient-to-br from-white/[0.08] to-white/[0.03] border border-white/10 rounded-2xl p-5 text-center hover:border-[#00c853]/30 hover:from-white/[0.12] transition reveal" data-stagger={Math.min(i + 2, 8)}>
+                <div className="text-3xl mb-2">{t.icon}</div>
+                <div className="text-2xl font-extrabold text-[#00c853] mb-1 leading-none">{t.stat}</div>
+                <div className="text-[#888] text-xs font-medium leading-tight">{t.label}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* HOMEPAGE: Mid-page reinforcement CTA */}
+      {step === "device" && page === "home" && (
+        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-8">
+          <div className="bg-gradient-to-r from-[#00c853]/[0.18] via-[#00c853]/[0.10] to-[#00c853]/[0.18] border border-[#00c853]/30 rounded-3xl p-7 md:p-9 text-center reveal">
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 leading-tight">Still sitting on that old tech?</h2>
+            <p className="text-[#aaa] text-sm md:text-base mb-5">Turn it into cash today. Quote in 30 seconds.</p>
+            <button onClick={() => { setStep("category"); pushHistory("category"); }} className="bg-[#00c853] hover:bg-[#00e676] text-white font-bold px-8 py-3.5 rounded-full shadow-lg shadow-[#00c853]/30 transition tap-press cursor-pointer">
+              Get my quote →
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* HOMEPAGE: Customer reviews carousel */}
+      {step === "device" && page === "home" && (
+        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto py-10">
+          <div className="px-4 flex items-end justify-between mb-6">
+            <div>
+              <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-1 reveal">Real Austin customers</p>
+              <h2 className="text-3xl md:text-4xl font-bold leading-tight reveal" data-stagger="1">What people are saying</h2>
+            </div>
+            <a href="/reviews" className="text-[#00c853] text-sm font-semibold whitespace-nowrap hover:underline">See all →</a>
+          </div>
+          <div className="overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex gap-3 snap-x snap-mandatory">
+              {[
+                { name: "Marcus T.", loc: "South Austin", text: "Sold my iPhone 14 Pro for $480. Apple offered $230. Same-day cash. Zero BS.", stars: 5 },
+                { name: "Priya S.", loc: "Round Rock", text: "Drove in, walked out with cash for my MacBook in 20 minutes. Easiest sale I've ever made.", stars: 5 },
+                { name: "Jamal R.", loc: "East Austin", text: "Better offer than Gazelle and IWM. Got the money on Cash App in 15 min after they tested it.", stars: 5 },
+                { name: "Sarah M.", loc: "Cedar Park", text: "Shipped my Galaxy S22 Ultra. Free label, instant quote, payout was same-day on Zelle.", stars: 5 },
+                { name: "Diego L.", loc: "Pflugerville", text: "Sold my PS5 Pro. They Zelle'd me before my coffee finished brewing. Wild.", stars: 5 },
+                { name: "Kelsey W.", loc: "North Austin", text: "Actual Austinites running this — not some bot site. Picked up the phone on the first ring.", stars: 5 },
+              ].map((r, i) => (
+                <div key={i} className="snap-start flex-shrink-0 w-[280px] md:w-[320px] bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
+                  <div className="flex gap-0.5 mb-3 text-[#ffb400] text-sm">{"★".repeat(r.stars)}</div>
+                  <p className="text-white text-sm leading-relaxed mb-4 min-h-[80px]">&ldquo;{r.text}&rdquo;</p>
+                  <div className="flex items-center gap-2 pt-3 border-t border-white/5">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00c853] to-[#00a039] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">{r.name[0]}</div>
+                    <div className="min-w-0">
+                      <div className="text-white text-sm font-semibold leading-tight truncate">{r.name}</div>
+                      <div className="text-[#888] text-xs truncate">{r.loc}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* HOMEPAGE: FAQ accordion */}
+      {step === "device" && page === "home" && (
+        <section className="max-w-lg md:max-w-3xl mx-auto px-4 py-10">
+          <div className="text-center mb-8">
+            <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">Got questions?</p>
+            <h2 className="text-3xl md:text-4xl font-bold leading-tight reveal" data-stagger="1">Things people ask us</h2>
+          </div>
+          <div className="space-y-2">
+            {[
+              { q: "How do I get paid?", a: "Choose Cash, Cash App, Zelle, or BTC. Most payouts hit your account within 24 hours of your device arriving — same-day if you drop off in Austin." },
+              { q: "Do you ship for free?", a: "Yes — every offer over $50 gets a free prepaid USPS label. We also offer free Austin pickup for local sellers." },
+              { q: "What if my device shows up worth less than the quote?", a: "We send you a revised offer. If you don't like it, we ship the device back to you free of charge. No pressure, no surprises." },
+              { q: "Are you really in Austin?", a: "Yes — Austin-based and real humans. You can drop off locally for same-day cash, or ship from anywhere in the US." },
+              { q: "How fast is the quote?", a: "Instant. Pick your device, condition, and storage and we show you the offer right then. No signup, no email required." },
+              { q: "Is my data safe?", a: "We do a certified factory wipe on every device. We also recommend you sign out of iCloud/Google and remove screen locks before shipping." },
+            ].map((f, i) => (
+              <details key={i} className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-white/20 transition reveal" data-stagger={Math.min(i + 1, 8)}>
+                <summary className="cursor-pointer px-5 py-4 flex items-center justify-between font-semibold list-none [&::-webkit-details-marker]:hidden">
+                  <span className="pr-3">{f.q}</span>
+                  <svg className="w-5 h-5 text-[#00c853] flex-shrink-0 group-open:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
+                </summary>
+                <div className="px-5 pb-4 text-[#aaa] text-sm leading-relaxed">{f.a}</div>
+              </details>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* HOMEPAGE: Closing CTA banner */}
+      {step === "device" && page === "home" && (
+        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-10">
+          <div className="relative overflow-hidden bg-gradient-to-br from-[#0a3d20] via-[#003d1a] to-[#012812] border border-[#00c853]/30 rounded-3xl p-8 md:p-12 text-center reveal">
+            <div className="absolute inset-0 opacity-30 pointer-events-none" style={{ background: "radial-gradient(circle at 30% 20%, rgba(0, 200, 83, 0.4), transparent 60%), radial-gradient(circle at 70% 80%, rgba(0, 230, 118, 0.3), transparent 50%)" }} />
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">Swap your old tech for cash today.</h2>
+              <p className="text-[#bbb] text-base md:text-lg mb-6">Instant quote · Same-day payout · No signup needed</p>
+              <button onClick={() => { setStep("category"); pushHistory("category"); }} className="bg-[#00c853] hover:bg-[#00e676] text-white font-bold text-lg px-10 py-4 rounded-full shadow-lg shadow-[#00c853]/40 transition tap-press cursor-pointer">
+                Sell Your Device
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* STEP: CATEGORY */}
       {step === "category" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
