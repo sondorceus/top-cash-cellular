@@ -55,6 +55,7 @@ export default function AdminPage() {
   const [pendingStatus, setPendingStatus] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
   const [savedFlash, setSavedFlash] = useState<Record<string, { sms: boolean; email: boolean } | null>>({});
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   // Hydrate token from URL or localStorage
   useEffect(() => {
@@ -169,7 +170,11 @@ export default function AdminPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold">TCC Staff Ops</h1>
-            <p className="text-[#888] text-sm">{leads.length} lead{leads.length === 1 ? "" : "s"} · last 50 from MC comms</p>
+            <p className="text-[#888] text-sm">
+              {statusFilter === "all"
+                ? `${leads.length} lead${leads.length === 1 ? "" : "s"} · last 50 from MC comms`
+                : `${leads.filter((l) => l.status === statusFilter).length} of ${leads.length} matching${statusFilter === "all" ? "" : " filter"}`}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={fetchLeads} disabled={loading} className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm hover:bg-white/10 transition disabled:opacity-50 cursor-pointer">
@@ -182,6 +187,41 @@ export default function AdminPage() {
         </div>
 
         {error && <div className="bg-[#ef5350]/10 border border-[#ef5350]/30 rounded-xl p-4 mb-4 text-sm text-[#ef5350]">{error}</div>}
+
+        {leads.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            {(() => {
+              const counts: Record<string, number> = { all: leads.length };
+              for (const l of leads) counts[l.status] = (counts[l.status] || 0) + 1;
+              const chip = (value: string, label: string, color?: string) => {
+                const active = statusFilter === value;
+                const count = counts[value] || 0;
+                if (value !== "all" && count === 0) return null;
+                return (
+                  <button
+                    key={value}
+                    onClick={() => setStatusFilter(value)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition flex items-center gap-1.5 cursor-pointer ${
+                      active
+                        ? "bg-[#00c853] text-white border-[#00c853]"
+                        : "bg-white/5 text-[#aaa] border-white/10 hover:bg-white/10"
+                    }`}
+                    style={active && value !== "all" && color ? { backgroundColor: color, borderColor: color } : undefined}
+                  >
+                    <span>{label}</span>
+                    <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${active ? "bg-white/20" : "bg-white/10"}`}>{count}</span>
+                  </button>
+                );
+              };
+              return (
+                <>
+                  {chip("all", "All")}
+                  {STATUS_OPTIONS.map((opt) => chip(opt.value, opt.label, opt.color))}
+                </>
+              );
+            })()}
+          </div>
+        )}
 
         {leads.length === 0 && !loading && !error && (
           <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center">
@@ -199,7 +239,7 @@ export default function AdminPage() {
               <div>Status</div>
             </div>
             <ul className="divide-y divide-white/5">
-              {leads.map((lead) => {
+              {leads.filter((l) => statusFilter === "all" || l.status === statusFilter).map((lead) => {
                 const current = pendingStatus[lead.id] ?? lead.status;
                 const meta = statusMeta(current);
                 return (
