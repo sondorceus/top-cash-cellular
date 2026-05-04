@@ -86,6 +86,29 @@ export default function BulkPage() {
           </div>
         </div>
 
+        {/* BULK PRICING TIERS */}
+        <div className="bg-gradient-to-br from-[#00c853]/8 via-transparent to-[#00c853]/8 border border-[#00c853]/25 rounded-2xl p-5 mb-8">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-lg">📈</span>
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[#00c853]">Volume bonus pricing</h2>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-center">
+              <p className="text-2xl font-extrabold text-white">+5%</p>
+              <p className="text-[11px] text-[#888] mt-0.5 leading-tight">10+ devices</p>
+            </div>
+            <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl px-3 py-3 text-center">
+              <p className="text-2xl font-extrabold text-[#00c853]">+10%</p>
+              <p className="text-[11px] text-[#aaa] mt-0.5 leading-tight">50+ devices</p>
+            </div>
+            <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-center">
+              <p className="text-lg font-extrabold text-white leading-none mt-1">Custom</p>
+              <p className="text-[11px] text-[#888] mt-1 leading-tight">100+ devices · we&apos;ll call you</p>
+            </div>
+          </div>
+          <p className="text-[11px] text-[#888] text-center mt-3 leading-relaxed">Bonus stacks on top of your base per-device quote. Mixed device types qualify together.</p>
+        </div>
+
         {submitted ? (
           <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-2xl p-8 text-center">
             <div className="text-5xl mb-3">✅</div>
