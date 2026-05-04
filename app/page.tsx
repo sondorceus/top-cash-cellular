@@ -1177,7 +1177,6 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [quoteEmail, setQuoteEmail] = useState("");
   const [quoteSaved, setQuoteSaved] = useState(false);
-  const [devicePhoto, setDevicePhoto] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [showConfetti, setShowConfetti] = useState(false);
   // Returning-customer lookup (Option A login)
@@ -3244,7 +3243,7 @@ export default function Home() {
                 const res = await fetch("/api/lead", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: payout?.label, quantity }),
+                  body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: photoUrls }),
                 });
                 if (!res.ok) throw new Error('Failed');
                 if (email || phone) {
@@ -3272,25 +3271,45 @@ export default function Home() {
               </div>
               {email && <p className="text-[#888] text-xs">Email: {email}</p>}
               <div>
-                <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Device Photo <span className="normal-case text-[12px]">(optional — speeds up payout)</span></label>
-                {!devicePhoto ? (
-                  <label className="flex flex-col items-center justify-center w-full h-28 bg-white/5 border-2 border-dashed border-white/15 rounded-xl cursor-pointer hover:bg-white/10 hover:border-[#00c853]/30 transition">
+                <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">
+                  Device Photos <span className="normal-case text-[12px]">(optional — up to 3, speeds up payout)</span>
+                </label>
+                {photoUrls.length < 3 && (
+                  <label className={`flex flex-col items-center justify-center w-full h-28 bg-white/5 border-2 border-dashed border-white/15 rounded-xl cursor-pointer hover:bg-white/10 hover:border-[#00c853]/30 transition ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
                     <svg className="w-8 h-8 text-[#777] mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    <span className="text-[#777] text-xs">Tap to add a photo</span>
-                    <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        if (file.size > 10 * 1024 * 1024) { alert("Photo must be under 10MB"); e.target.value = ""; return; }
-                        const reader = new FileReader();
-                        reader.onload = () => setDevicePhoto(reader.result as string);
-                        reader.readAsDataURL(file);
+                    <span className="text-[#777] text-xs">
+                      {uploading ? "Uploading…" : photoUrls.length === 0 ? "Tap to add front, back & screen-on photos" : `Add another (${photoUrls.length}/3)`}
+                    </span>
+                    <input type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={async (e) => {
+                      const files = e.target.files;
+                      if (!files?.length) return;
+                      setUploading(true);
+                      const urls: string[] = [...photoUrls];
+                      for (const file of Array.from(files)) {
+                        if (urls.length >= 3) break;
+                        if (file.size > 10 * 1024 * 1024) { alert("Photo must be under 10MB"); continue; }
+                        try {
+                          const fd = new FormData();
+                          fd.append("file", file);
+                          const res = await fetch("/api/upload", { method: "POST", body: fd });
+                          const data = await res.json();
+                          if (data.url) urls.push(data.url);
+                        } catch {}
                       }
+                      setPhotoUrls(urls);
+                      setUploading(false);
+                      e.target.value = "";
                     }} />
                   </label>
-                ) : (
-                  <div className="relative">
-                    <img src={devicePhoto} alt="Device" className="w-full h-28 object-cover rounded-xl" />
-                    <button type="button" onClick={() => setDevicePhoto(null)} aria-label="Remove photo" className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/60 text-white text-xs flex items-center justify-center cursor-pointer hover:bg-black/80">x</button>
+                )}
+                {photoUrls.length > 0 && (
+                  <div className="flex gap-2 mt-2 flex-wrap">
+                    {photoUrls.map((url, i) => (
+                      <div key={i} className="relative">
+                        <img src={url} alt={`Device photo ${i + 1}`} className="w-20 h-20 object-cover rounded-lg border border-white/10" />
+                        <button type="button" onClick={() => setPhotoUrls(photoUrls.filter((_, j) => j !== i))} aria-label="Remove photo" className="absolute -top-1.5 -right-1.5 w-6 h-6 bg-red-500 rounded-full text-white text-xs font-bold flex items-center justify-center cursor-pointer hover:bg-red-600">×</button>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
