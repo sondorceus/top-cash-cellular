@@ -44,6 +44,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="h-full antialiased">
       <head>
         <link rel="preload" as="image" href="/iphone17.png" fetchPriority="high" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(()=>{if(typeof IntersectionObserver==='undefined')return;const o=new IntersectionObserver((es,ob)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');ob.unobserve(e.target);}});},{threshold:0.12,rootMargin:'0px 0px -8% 0px'});let p=false;const arm=()=>{p=false;document.querySelectorAll('.reveal:not(.is-visible)').forEach(el=>o.observe(el));};const sched=()=>{if(p)return;p=true;requestAnimationFrame(arm);};if(document.readyState==='complete')arm();else window.addEventListener('load',arm);try{new MutationObserver(sched).observe(document.documentElement,{childList:true,subtree:true});}catch(e){}})();`
+          }}
+        />
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-8H5VGFLJ71" />
         <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8H5VGFLJ71');gtag('config','AW-18099653912');` }} />
         <meta name="google-site-verification" content="BZt20XeVKiVl8Pb0tnXR0LwGJnweRfDtDUdInz1O2tU" />

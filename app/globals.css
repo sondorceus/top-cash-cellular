@@ -118,3 +118,48 @@ img[loading="lazy"] {
 .tap-press p, .tap-press span {
   transition: transform 240ms ease-out, filter 240ms ease-out;
 }
+
+/* scroll-reveal: opt-in classes that fade/slide in when entering the viewport */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 720ms cubic-bezier(.22, 1, .36, 1), transform 720ms cubic-bezier(.22, 1, .36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+.reveal-left { transform: translateX(-36px); }
+.reveal-right { transform: translateX(36px); }
+.reveal-scale { transform: scale(0.92); }
+.reveal-zoom { transform: scale(1.06); }
+
+.reveal[data-stagger="1"] { transition-delay: 60ms; }
+.reveal[data-stagger="2"] { transition-delay: 120ms; }
+.reveal[data-stagger="3"] { transition-delay: 180ms; }
+.reveal[data-stagger="4"] { transition-delay: 240ms; }
+.reveal[data-stagger="5"] { transition-delay: 300ms; }
+.reveal[data-stagger="6"] { transition-delay: 360ms; }
+.reveal[data-stagger="7"] { transition-delay: 420ms; }
+.reveal[data-stagger="8"] { transition-delay: 480ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transition: none; opacity: 1; transform: none; }
+}
+
+/* hero entrance — runs once on first paint, no scroll trigger */
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes heroScaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: none; }
+}
+.hero-fade-up { animation: heroFadeUp 700ms cubic-bezier(.22, 1, .36, 1) both; }
+.hero-scale-in { animation: heroScaleIn 700ms cubic-bezier(.22, 1, .36, 1) both; }
+.hero-d-1 { animation-delay: 80ms; }
+.hero-d-2 { animation-delay: 160ms; }
+.hero-d-3 { animation-delay: 240ms; }
+.hero-d-4 { animation-delay: 320ms; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade-up, .hero-scale-in { animation: none; }
+}

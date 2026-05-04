@@ -1272,17 +1272,17 @@ export default function Home() {
           </div>
 
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pb-8">
-            <h1 className="text-4xl font-bold tracking-tight leading-[1.08] mb-3">
+            <h1 className="text-4xl font-bold tracking-tight leading-[1.08] mb-3 hero-fade-up">
               Get top dollar<br />for your device.
             </h1>
-            <p className="text-[#888] text-lg mb-1 font-medium">
+            <p className="text-[#888] text-lg mb-1 font-medium hero-fade-up hero-d-1">
               Instant quote. Same-day payout available.
             </p>
-            <p className="text-[#888] text-lg mb-6 font-medium">
+            <p className="text-[#888] text-lg mb-6 font-medium hero-fade-up hero-d-2">
               Cash, Cash App, Zelle, or BTC.
             </p>
 
-            <div className="glow-border mb-6 p-[3px]">
+            <div className="glow-border mb-6 p-[3px] hero-scale-in hero-d-3">
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
                 className="w-full bg-[#00c853] text-white py-5 rounded-[14px] text-xl font-bold cursor-pointer hover:bg-[#00e676] transition tap-press shadow-lg shadow-[#00c853]/20 relative z-10"
@@ -1295,7 +1295,7 @@ export default function Home() {
               <p className="text-[#888] text-sm">Don&apos;t see your device? <a href={`tel:${PHONE_TEL}`} className="text-[#00c853] font-semibold hover:underline">Contact us</a> and we&apos;ll make you an offer!</p>
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-2">
+            <div className="mt-6 flex flex-wrap items-center gap-2 hero-fade-up hero-d-4">
               <a href="/reviews" className="inline-flex items-center gap-1.5 bg-[#ffb400]/10 text-[#ffb400] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#ffb400]/20 hover:bg-[#ffb400]/15 transition">
                 <span className="text-sm leading-none">★</span>
                 4.9 — Read reviews
@@ -1376,7 +1376,8 @@ export default function Home() {
                     if (dt) { setDeviceType(dt as DeviceType); setStep("model"); pushHistory("model"); return; }
                     setCategory(cat.id); setStep("brand"); pushHistory("brand");
                   }}
-                  className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press"
+                  className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press reveal"
+                  data-stagger={Math.min(idx + 1, 8)}
                 >
                   {(cat as { customIcon?: boolean }).customIcon ? (
                     <svg className="w-8 h-6 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
@@ -1594,8 +1595,8 @@ export default function Home() {
                 { id: "iphone" as const, label: "Apple iPhone", sub: "iPhone 11 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg> },
                 { id: "android" as const, label: "Samsung Galaxy", sub: "Galaxy S21 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg> },
                 { id: "pixel" as const, label: "Google Pixel", sub: "Pixel 5 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#4285F4" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="0"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#EA4335" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-15"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#FBBC05" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-30"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#34A853" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-45"/><text x="20" y="24" textAnchor="middle" fill="#4285F4" fontSize="11" fontWeight="bold" fontFamily="Arial">G</text></svg> },
-              ].map((b) => (
-                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+              ].map((b, i) => (
+                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press reveal" data-stagger={Math.min(i + 1, 8)}>
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
