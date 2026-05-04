@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 const BRAND = "Top Cash Cellular";
 const PHONE = "(877) 549-2056";
@@ -1036,6 +1036,106 @@ function TrustBadge() {
   );
 }
 
+// CountUp: animates a number from 0 to `end` when the element enters the viewport.
+function CountUp({ end, decimals = 0, prefix = "", suffix = "", duration = 1400 }: { end: number; decimals?: number; prefix?: string; suffix?: string; duration?: number }) {
+  const ref = useRef<HTMLSpanElement | null>(null);
+  const [val, setVal] = useState(0);
+  const startedRef = useRef(false);
+  useEffect(() => {
+    if (!ref.current || startedRef.current) return;
+    if (typeof IntersectionObserver === "undefined") { setVal(end); return; }
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting && !startedRef.current) {
+          startedRef.current = true;
+          obs.disconnect();
+          const startTs = performance.now();
+          const tick = (now: number) => {
+            const elapsed = now - startTs;
+            const t = Math.min(1, elapsed / duration);
+            const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+            setVal(end * eased);
+            if (t < 1) requestAnimationFrame(tick);
+            else setVal(end);
+          };
+          requestAnimationFrame(tick);
+        }
+      });
+    }, { threshold: 0.4 });
+    obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [end, duration]);
+  const formatted = decimals > 0 ? val.toFixed(decimals) : Math.floor(val).toLocaleString();
+  return <span ref={ref}>{prefix}{formatted}{suffix}</span>;
+}
+
+// ReviewsCarousel: scroll-snap carousel with prev/next arrows + dot indicators
+function ReviewsCarousel({ reviews }: { reviews: { name: string; loc: string; text: string; stars: number }[] }) {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const update = () => {
+      const cardWidth = el.querySelector<HTMLDivElement>(":scope > div")?.offsetWidth || 1;
+      const gap = 12;
+      const idx = Math.round(el.scrollLeft / (cardWidth + gap));
+      setActiveIdx(Math.max(0, Math.min(reviews.length - 1, idx)));
+    };
+    el.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => el.removeEventListener("scroll", update);
+  }, [reviews.length]);
+  const scrollBy = (dir: 1 | -1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLDivElement>(":scope > div");
+    const cardWidth = (card?.offsetWidth || 280) + 12;
+    el.scrollBy({ left: dir * cardWidth, behavior: "smooth" });
+  };
+  const scrollTo = (idx: number) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLDivElement>(":scope > div");
+    const cardWidth = (card?.offsetWidth || 280) + 12;
+    el.scrollTo({ left: idx * cardWidth, behavior: "smooth" });
+  };
+  return (
+    <div className="relative">
+      <div ref={trackRef} className="overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-smooth">
+        <div className="flex gap-3 snap-x snap-mandatory">
+          {reviews.map((r, i) => (
+            <div key={i} className="snap-start flex-shrink-0 w-[280px] md:w-[320px] bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
+              <div className="flex gap-0.5 mb-3 text-[#ffb400] text-sm">{"★".repeat(r.stars)}</div>
+              <p className="text-white text-sm leading-relaxed mb-4 min-h-[80px]">&ldquo;{r.text}&rdquo;</p>
+              <div className="flex items-center gap-2 pt-3 border-t border-white/5">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00c853] to-[#00a039] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">{r.name[0]}</div>
+                <div className="min-w-0">
+                  <div className="text-white text-sm font-semibold leading-tight truncate">{r.name}</div>
+                  <div className="text-[#888] text-xs truncate">{r.loc}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Prev/Next arrow buttons (hidden on small screens since swipe works) */}
+      <button onClick={() => scrollBy(-1)} aria-label="Previous review" className="hidden md:flex absolute left-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 backdrop-blur border border-white/15 hover:bg-black/80 hover:border-[#00c853]/40 items-center justify-center cursor-pointer tap-press">
+        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+      </button>
+      <button onClick={() => scrollBy(1)} aria-label="Next review" className="hidden md:flex absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 backdrop-blur border border-white/15 hover:bg-black/80 hover:border-[#00c853]/40 items-center justify-center cursor-pointer tap-press">
+        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+      </button>
+      {/* Dot indicators */}
+      <div className="flex justify-center gap-2 mt-4">
+        {reviews.map((_, i) => (
+          <button key={i} onClick={() => scrollTo(i)} aria-label={`Go to review ${i + 1}`} className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${i === activeIdx ? "w-6 bg-[#00c853]" : "w-2 bg-white/20 hover:bg-white/40"}`} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [step, setStep] = useState<Step>("device");
   const [category, setCategory] = useState<"phones" | "tablets" | "computers" | "desktops" | "consoles" | "watches" | "drones" | "vr" | null>(null);
@@ -1486,8 +1586,8 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {[
-              { stat: "5,000+", label: "Devices bought", icon: "📲" },
-              { stat: "4.9★", label: "Average review rating", icon: "⭐" },
+              { stat: <CountUp end={5000} suffix="+" />, label: "Devices bought", icon: "📲" },
+              { stat: <CountUp end={4.9} decimals={1} suffix="★" />, label: "Average review rating", icon: "⭐" },
               { stat: "Same-Day", label: "Payouts available", icon: "⚡" },
               { stat: "Free", label: "Shipping nationwide", icon: "📦" },
               { stat: "Higher", label: "Offer than Apple trade-in", icon: "💰" },
@@ -1526,30 +1626,14 @@ export default function Home() {
             </div>
             <a href="/reviews" className="text-[#00c853] text-sm font-semibold whitespace-nowrap hover:underline">See all →</a>
           </div>
-          <div className="overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <div className="flex gap-3 snap-x snap-mandatory">
-              {[
-                { name: "Marcus T.", loc: "South Austin", text: "Sold my iPhone 14 Pro for $480. Apple offered $230. Same-day cash. Zero BS.", stars: 5 },
-                { name: "Priya S.", loc: "Round Rock", text: "Drove in, walked out with cash for my MacBook in 20 minutes. Easiest sale I've ever made.", stars: 5 },
-                { name: "Jamal R.", loc: "East Austin", text: "Better offer than Gazelle and IWM. Got the money on Cash App in 15 min after they tested it.", stars: 5 },
-                { name: "Sarah M.", loc: "Cedar Park", text: "Shipped my Galaxy S22 Ultra. Free label, instant quote, payout was same-day on Zelle.", stars: 5 },
-                { name: "Diego L.", loc: "Pflugerville", text: "Sold my PS5 Pro. They Zelle'd me before my coffee finished brewing. Wild.", stars: 5 },
-                { name: "Kelsey W.", loc: "North Austin", text: "Actual Austinites running this — not some bot site. Picked up the phone on the first ring.", stars: 5 },
-              ].map((r, i) => (
-                <div key={i} className="snap-start flex-shrink-0 w-[280px] md:w-[320px] bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
-                  <div className="flex gap-0.5 mb-3 text-[#ffb400] text-sm">{"★".repeat(r.stars)}</div>
-                  <p className="text-white text-sm leading-relaxed mb-4 min-h-[80px]">&ldquo;{r.text}&rdquo;</p>
-                  <div className="flex items-center gap-2 pt-3 border-t border-white/5">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00c853] to-[#00a039] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">{r.name[0]}</div>
-                    <div className="min-w-0">
-                      <div className="text-white text-sm font-semibold leading-tight truncate">{r.name}</div>
-                      <div className="text-[#888] text-xs truncate">{r.loc}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ReviewsCarousel reviews={[
+            { name: "Marcus T.", loc: "South Austin", text: "Sold my iPhone 14 Pro for $480. Apple offered $230. Same-day cash. Zero BS.", stars: 5 },
+            { name: "Priya S.", loc: "Round Rock", text: "Drove in, walked out with cash for my MacBook in 20 minutes. Easiest sale I've ever made.", stars: 5 },
+            { name: "Jamal R.", loc: "East Austin", text: "Better offer than Gazelle and IWM. Got the money on Cash App in 15 min after they tested it.", stars: 5 },
+            { name: "Sarah M.", loc: "Cedar Park", text: "Shipped my Galaxy S22 Ultra. Free label, instant quote, payout was same-day on Zelle.", stars: 5 },
+            { name: "Diego L.", loc: "Pflugerville", text: "Sold my PS5 Pro. They Zelle'd me before my coffee finished brewing. Wild.", stars: 5 },
+            { name: "Kelsey W.", loc: "North Austin", text: "Actual Austinites running this — not some bot site. Picked up the phone on the first ring.", stars: 5 },
+          ]} />
         </section>
       )}
 
