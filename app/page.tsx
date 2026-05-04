@@ -1179,6 +1179,42 @@ export default function Home() {
   const [quoteSaved, setQuoteSaved] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [showConfetti, setShowConfetti] = useState(false);
+  // IMEI / serial validator (optional, contact step)
+  const [imeiInput, setImeiInput] = useState("");
+  const [imeiState, setImeiState] = useState<"idle" | "checking" | "ok" | "warn" | "error">("idle");
+  const [imeiResult, setImeiResult] = useState<{ model?: string; warnings?: string[]; error?: string } | null>(null);
+  const checkImei = async () => {
+    const clean = imeiInput.replace(/\D/g, "");
+    if (clean.length !== 15) {
+      setImeiState("error");
+      setImeiResult({ error: "IMEI must be 15 digits. Tap *#06# on the device to display it." });
+      return;
+    }
+    setImeiState("checking");
+    setImeiResult(null);
+    try {
+      const r = await fetch("/api/imei/check", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imei: clean, deviceCategory: deviceType }),
+      });
+      const d = await r.json();
+      if (!d.ok && d.stage === "format") {
+        setImeiState("error");
+        setImeiResult({ error: d.error });
+      } else if (d.warnings && d.warnings.length > 0) {
+        setImeiState("warn");
+        setImeiResult({ model: d.model, warnings: d.warnings });
+      } else {
+        setImeiState("ok");
+        setImeiResult({ model: d.model });
+      }
+    } catch {
+      setImeiState("error");
+      setImeiResult({ error: "Couldn't verify — try again or skip." });
+    }
+  };
+
   // Returning-customer lookup (Option A login)
   const [lookupOpen, setLookupOpen] = useState(false);
   const [lookupContact, setLookupContact] = useState("");
@@ -3243,7 +3279,7 @@ export default function Home() {
                 const res = await fetch("/api/lead", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: photoUrls }),
+                  body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: photoUrls, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined }),
                 });
                 if (!res.ok) throw new Error('Failed');
                 if (email || phone) {
@@ -3270,6 +3306,46 @@ export default function Home() {
                 }} required pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
               </div>
               {email && <p className="text-[#888] text-xs">Email: {email}</p>}
+              <div>
+                <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">
+                  IMEI / Serial <span className="normal-case text-[12px]">(optional — speeds up verification, dial *#06#)</span>
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={imeiInput}
+                    onChange={(e) => { setImeiInput(e.target.value); if (imeiState !== "idle") { setImeiState("idle"); setImeiResult(null); } }}
+                    placeholder="15-digit IMEI"
+                    maxLength={20}
+                    className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition tracking-wider"
+                  />
+                  <button
+                    type="button"
+                    onClick={checkImei}
+                    disabled={imeiState === "checking" || imeiInput.replace(/\D/g, "").length < 15}
+                    className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-semibold hover:bg-white/10 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    {imeiState === "checking" ? "…" : "Verify"}
+                  </button>
+                </div>
+                {imeiState === "ok" && imeiResult && (
+                  <p className="text-xs text-[#00c853] mt-1.5">✓ Verified{imeiResult.model ? ` — ${imeiResult.model}` : ""}</p>
+                )}
+                {imeiState === "warn" && imeiResult?.warnings && (
+                  <div className="mt-1.5 px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                    <p className="text-xs text-yellow-300 font-semibold mb-1">⚠️ Heads up{imeiResult.model ? ` — ${imeiResult.model}` : ""}</p>
+                    {imeiResult.warnings.map((w, i) => (
+                      <p key={i} className="text-[11px] text-yellow-200">• {w}</p>
+                    ))}
+                    <p className="text-[11px] text-[#aaa] mt-1">Quote still valid — staff will work it out at handoff.</p>
+                  </div>
+                )}
+                {imeiState === "error" && imeiResult?.error && (
+                  <p className="text-xs text-red-400 mt-1.5">{imeiResult.error}</p>
+                )}
+              </div>
+
               <div>
                 <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">
                   Device Photos <span className="normal-case text-[12px]">(optional — up to 3, speeds up payout)</span>

@@ -37,7 +37,7 @@ function isDuplicate(email: string, contact: string, device: string, model: stri
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const { name, phone, email, device, model, storage, condition, quote, payout, photos } = data;
+  const { name, phone, email, device, model, storage, condition, quote, payout, photos, imei, imeiWarnings } = data;
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
 
   // Dedup check — wider window for custom-quote flows (free-text descriptions)
@@ -50,6 +50,12 @@ export async function POST(req: NextRequest) {
     ? [`Photos: ${(photos as string[]).join(" | ")}`]
     : [];
 
+  const imeiLines: string[] = [];
+  if (imei) imeiLines.push(`IMEI: ${imei}`);
+  if (Array.isArray(imeiWarnings) && imeiWarnings.length > 0) {
+    imeiLines.push(`[IMEI WARNINGS] ${(imeiWarnings as string[]).join(" | ")}`);
+  }
+
   const leadBody = [
     `[NEW BUYBACK LEAD]`,
     `Name: ${name}`,
@@ -60,6 +66,7 @@ export async function POST(req: NextRequest) {
     `Condition: ${condition}`,
     quote ? `Quote: $${quote}` : `Quote: TBD (custom)`,
     `Payout: ${payout}`,
+    ...imeiLines,
     ...photoLines,
   ].filter(Boolean).join("\n");
 
