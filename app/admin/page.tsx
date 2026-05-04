@@ -14,6 +14,9 @@ interface Lead {
   condition?: string;
   quote?: string;
   payout?: string;
+  imei?: string;
+  imeiWarnings?: string[];
+  photos?: string[];
   status: string;
   statusUpdatedAt?: string;
 }
@@ -210,10 +213,28 @@ export default function AdminPage() {
                       {lead.email && <p className="text-[#888] truncate" title={lead.email}>{lead.email}</p>}
                     </div>
                     <div className="text-sm">
-                      <p className="font-medium">{lead.model || lead.device || "—"}</p>
+                      <p className="font-medium flex items-center gap-2 flex-wrap">
+                        {lead.model || lead.device || "—"}
+                        {lead.imeiWarnings && lead.imeiWarnings.length > 0 && (
+                          <span title={lead.imeiWarnings.join(" · ")} className="px-1.5 py-0.5 rounded text-[10px] bg-yellow-500/15 text-yellow-300 border border-yellow-500/30 font-bold cursor-help">⚠️ IMEI</span>
+                        )}
+                      </p>
                       <p className="text-[#666] text-xs">
                         {[lead.storage, lead.condition].filter(Boolean).join(" · ")}
+                        {lead.imei && <span className="ml-1 text-[#777] font-mono">· {lead.imei.slice(-6)}</span>}
                       </p>
+                      {lead.photos && lead.photos.length > 0 && (
+                        <div className="flex gap-1 mt-1.5">
+                          {lead.photos.slice(0, 3).map((url, i) => (
+                            <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="block w-10 h-10 rounded overflow-hidden border border-white/10 hover:border-[#00c853] transition">
+                              <img src={url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
+                            </a>
+                          ))}
+                          {lead.photos.length > 3 && (
+                            <span className="w-10 h-10 rounded bg-white/5 border border-white/10 flex items-center justify-center text-[10px] text-[#888]">+{lead.photos.length - 3}</span>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <div className="text-sm">
                       <p className="font-semibold text-[#00c853]">{lead.quote || "—"}</p>

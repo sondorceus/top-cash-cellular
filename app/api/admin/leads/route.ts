@@ -21,6 +21,9 @@ interface AdminLead {
   condition?: string;
   quote?: string;
   payout?: string;
+  imei?: string;
+  imeiWarnings?: string[];
+  photos?: string[];
   status: string;
   statusUpdatedAt?: string;
 }
@@ -75,6 +78,10 @@ export async function GET(req: NextRequest) {
     if (!m.body || !m.body.includes("[NEW BUYBACK LEAD]")) continue;
     const deviceLine = parseField(m.body, "Device");
     const status = statusByLead.get(m.id);
+    const photosLine = parseField(m.body, "Photos");
+    const photos = photosLine ? photosLine.split(" | ").map((s) => s.trim()).filter(Boolean) : undefined;
+    const warningsMatch = m.body.match(/\[IMEI WARNINGS\]\s*([^\n]+)/i);
+    const imeiWarnings = warningsMatch ? warningsMatch[1].split(" | ").map((s) => s.trim()).filter(Boolean) : undefined;
     leads.push({
       id: m.id,
       timestamp: m.timestamp,
@@ -87,6 +94,9 @@ export async function GET(req: NextRequest) {
       condition: parseField(m.body, "Condition"),
       quote: parseField(m.body, "Quote") || parseField(m.body, "Offer"),
       payout: parseField(m.body, "Payout"),
+      imei: parseField(m.body, "IMEI"),
+      imeiWarnings,
+      photos,
       status: status?.status || "quote_requested",
       statusUpdatedAt: status?.timestamp,
     });
