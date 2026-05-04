@@ -56,6 +56,7 @@ export default function AdminPage() {
   const [savingId, setSavingId] = useState<string | null>(null);
   const [savedFlash, setSavedFlash] = useState<Record<string, { sms: boolean; email: boolean } | null>>({});
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Hydrate token from URL or localStorage
   useEffect(() => {
@@ -108,6 +109,25 @@ export default function AdminPage() {
     setLeads([]);
     localStorage.removeItem("tcc-admin-token");
   };
+
+  const matchesSearch = (lead: Lead, q: string): boolean => {
+    if (!q) return true;
+    const needle = q.toLowerCase();
+    const hay = [
+      lead.name,
+      lead.phone,
+      lead.email,
+      lead.device,
+      lead.model,
+      lead.storage,
+      lead.condition,
+      lead.imei,
+      lead.payout,
+    ].filter(Boolean).join(" ").toLowerCase();
+    return hay.includes(needle);
+  };
+
+  const filteredLeads = leads.filter((l) => matchesSearch(l, searchQuery));
 
   const saveStatus = async (lead: Lead, newStatus: string) => {
     if (!token || newStatus === lead.status) return;
@@ -171,9 +191,11 @@ export default function AdminPage() {
           <div>
             <h1 className="text-2xl font-bold">TCC Staff Ops</h1>
             <p className="text-[#888] text-sm">
-              {statusFilter === "all"
-                ? `${leads.length} lead${leads.length === 1 ? "" : "s"} · last 50 from MC comms`
-                : `${leads.filter((l) => l.status === statusFilter).length} of ${leads.length} matching${statusFilter === "all" ? "" : " filter"}`}
+              {(() => {
+                const statusFiltered = filteredLeads.filter((l) => statusFilter === "all" || l.status === statusFilter);
+                if (statusFilter === "all" && !searchQuery) return `${leads.length} lead${leads.length === 1 ? "" : "s"} · last 50 from MC comms`;
+                return `${statusFiltered.length} of ${leads.length}${searchQuery ? ` · matching "${searchQuery}"` : ""}`;
+              })()}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -186,13 +208,29 @@ export default function AdminPage() {
           </div>
         </div>
 
+        {leads.length > 0 && (
+          <div className="relative mb-3">
+            <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#666]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z" /></svg>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search name, phone, email, device, IMEI…"
+              className="w-full pl-10 pr-10 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-2 focus:ring-[#00c853]/20 transition"
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery("")} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white/10 text-[#aaa] text-xs hover:bg-white/20 cursor-pointer">×</button>
+            )}
+          </div>
+        )}
+
         {error && <div className="bg-[#ef5350]/10 border border-[#ef5350]/30 rounded-xl p-4 mb-4 text-sm text-[#ef5350]">{error}</div>}
 
         {leads.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
             {(() => {
-              const counts: Record<string, number> = { all: leads.length };
-              for (const l of leads) counts[l.status] = (counts[l.status] || 0) + 1;
+              const counts: Record<string, number> = { all: filteredLeads.length };
+              for (const l of filteredLeads) counts[l.status] = (counts[l.status] || 0) + 1;
               const chip = (value: string, label: string, color?: string) => {
                 const active = statusFilter === value;
                 const count = counts[value] || 0;
@@ -239,7 +277,7 @@ export default function AdminPage() {
               <div>Status</div>
             </div>
             <ul className="divide-y divide-white/5">
-              {leads.filter((l) => statusFilter === "all" || l.status === statusFilter).map((lead) => {
+              {filteredLeads.filter((l) => statusFilter === "all" || l.status === statusFilter).map((lead) => {
                 const current = pendingStatus[lead.id] ?? lead.status;
                 const meta = statusMeta(current);
                 return (
