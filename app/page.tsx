@@ -993,6 +993,12 @@ export default function Home() {
     setCookieConsent(saved);
   }, []);
 
+  // Scroll to top whenever step changes (so the new screen starts at the top, not at the button position)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [step, page]);
+
   useEffect(() => {
     const imgs = ["/ipadpro.png", "/ipadair.png", "/ipadmini.png", "/ipadbase.png", "/ipad.png",
       "/iphone17.png", "/iphone16.png", "/iphone15.png", "/iphone14.png", "/iphone13.png", "/iphone12.png", "/iphone11.png",
