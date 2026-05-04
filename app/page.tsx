@@ -1180,6 +1180,41 @@ export default function Home() {
   const [devicePhoto, setDevicePhoto] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [showConfetti, setShowConfetti] = useState(false);
+  // Returning-customer lookup (Option A login)
+  const [lookupOpen, setLookupOpen] = useState(false);
+  const [lookupContact, setLookupContact] = useState("");
+  const [lookupLoading, setLookupLoading] = useState(false);
+  const [lookupResult, setLookupResult] = useState<{ found: boolean; name?: string; lastQuote?: string; leadCount?: number; leads?: Array<{ name?: string; device?: string; model?: string; quote?: string; timestamp: string }> } | null>(null);
+  const [lookupError, setLookupError] = useState("");
+  const handleLookup = async () => {
+    if (!lookupContact.trim()) return;
+    setLookupLoading(true);
+    setLookupError("");
+    setLookupResult(null);
+    const isEmail = lookupContact.includes("@");
+    try {
+      const r = await fetch("/api/lookup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(isEmail ? { email: lookupContact.trim() } : { phone: lookupContact.trim() }),
+      });
+      if (!r.ok) throw new Error("Lookup failed");
+      const data = await r.json();
+      setLookupResult(data);
+    } catch {
+      setLookupError("Couldn't look that up — try again or contact us.");
+    } finally {
+      setLookupLoading(false);
+    }
+  };
+  const applyLookup = () => {
+    if (!lookupResult?.found) return;
+    if (lookupResult.name) setName(lookupResult.name);
+    const isEmail = lookupContact.includes("@");
+    if (isEmail) setEmail(lookupContact.trim());
+    else setPhone(lookupContact.trim());
+    setLookupOpen(false);
+  };
   const [cartItems, setCartItems] = useState<Array<{ model: string; modelId: string; storage: string; condition: string; price: number; quantity: number }>>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [inquiryCategory, setInquiryCategory] = useState("");
@@ -1434,6 +1469,7 @@ export default function Home() {
             <a href="/how-it-works" className="hidden md:inline text-xs text-[#888] hover:text-white transition">How it works</a>
             <a href="/faq" className="hidden md:inline text-xs text-[#888] hover:text-white transition">FAQ</a>
             <a href="/bulk" className="hidden md:inline text-xs text-[#888] hover:text-white transition">Bulk</a>
+            <button onClick={() => setLookupOpen(true)} className="hidden sm:inline text-xs text-[#00c853] hover:text-[#00e676] font-semibold transition cursor-pointer">Returning?</button>
             <a href="/reviews" className="hidden sm:inline-flex items-center gap-1 text-xs text-[#ffb400] hover:text-[#ffd54f] font-semibold transition"><svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.5 5.9.7-4.4 4.1 1.2 5.8L10 14.7l-5.3 2.9 1.2-5.8L1.5 7.7l5.9-.7L10 1.5z"/></svg>Reviews</a>
             <a href={`tel:${PHONE_TEL}`} aria-label="Call us" className="bg-[#00c853] text-white px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
               Call Us
@@ -1441,6 +1477,78 @@ export default function Home() {
           </div>
         </div>
       </nav>
+
+      {/* RETURNING-CUSTOMER LOOKUP MODAL */}
+      {lookupOpen && (
+        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setLookupOpen(false)}>
+          <div className="bg-[#111] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+              <div>
+                <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em]">Returning customer</p>
+                <h3 className="text-white text-lg font-bold">Find your info</h3>
+              </div>
+              <button onClick={() => setLookupOpen(false)} aria-label="Close" className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press">
+                <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="p-5">
+              {!lookupResult && (
+                <>
+                  <p className="text-[#aaa] text-sm mb-4">Enter the phone number or email you used last time. We&apos;ll pull up your past quotes — no password needed.</p>
+                  <input
+                    type="text"
+                    inputMode="email"
+                    value={lookupContact}
+                    onChange={(e) => setLookupContact(e.target.value)}
+                    placeholder="Phone or email"
+                    autoFocus
+                    onKeyDown={(e) => { if (e.key === "Enter") handleLookup(); }}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-[#666] focus:outline-none focus:border-[#00c853]/50 focus:bg-white/[0.07] transition"
+                  />
+                  {lookupError && <p className="text-[#ff4d4d] text-xs mt-2">{lookupError}</p>}
+                  <button
+                    onClick={handleLookup}
+                    disabled={lookupLoading || !lookupContact.trim()}
+                    className="w-full mt-3 bg-[#00c853] hover:bg-[#00e676] disabled:bg-white/10 disabled:text-white/40 text-white font-bold py-3 rounded-xl transition tap-press cursor-pointer"
+                  >
+                    {lookupLoading ? "Looking up..." : "Find my info"}
+                  </button>
+                </>
+              )}
+              {lookupResult && lookupResult.found && (
+                <>
+                  <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-4 mb-4">
+                    <p className="text-[#00c853] text-xs font-semibold uppercase tracking-wider mb-1">Welcome back</p>
+                    <p className="text-white text-lg font-bold">{lookupResult.name || "Hi there"}</p>
+                    {lookupResult.lastQuote && <p className="text-[#aaa] text-sm mt-1">Last quote: <span className="text-white font-semibold">{lookupResult.lastQuote}</span></p>}
+                    <p className="text-[#888] text-xs mt-1">{lookupResult.leadCount} past trade{lookupResult.leadCount === 1 ? "" : "s"}</p>
+                  </div>
+                  {lookupResult.leads && lookupResult.leads.length > 0 && (
+                    <div className="space-y-1.5 mb-4 max-h-48 overflow-y-auto">
+                      {lookupResult.leads.slice(0, 5).map((l, i) => (
+                        <div key={i} className="text-xs bg-white/[0.03] border border-white/5 rounded-lg px-3 py-2">
+                          <div className="text-white font-medium">{l.device || "Device"} {l.model ? `— ${l.model}` : ""}</div>
+                          <div className="text-[#888]">{l.quote || "—"} · {new Date(l.timestamp).toLocaleDateString()}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <button onClick={applyLookup} className="w-full bg-[#00c853] hover:bg-[#00e676] text-white font-bold py-3 rounded-xl transition tap-press cursor-pointer">Use this info →</button>
+                </>
+              )}
+              {lookupResult && !lookupResult.found && (
+                <>
+                  <div className="bg-white/[0.03] border border-white/10 rounded-xl p-4 mb-4 text-center">
+                    <p className="text-white font-semibold mb-1">No past trades found</p>
+                    <p className="text-[#888] text-sm">First time? No worries — start a fresh quote and we&apos;ll save it for next time.</p>
+                  </div>
+                  <button onClick={() => { setLookupOpen(false); setStep("category"); pushHistory("category"); }} className="w-full bg-[#00c853] hover:bg-[#00e676] text-white font-bold py-3 rounded-xl transition tap-press cursor-pointer">Start fresh quote</button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* BREADCRUMB */}
       {showBreadcrumbs && (
