@@ -50,6 +50,8 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pendingStatus, setPendingStatus] = useState<Record<string, string>>({});
+  const [savingId, setSavingId] = useState<string | null>(null);
+  const [savedFlash, setSavedFlash] = useState<Record<string, { sms: boolean; email: boolean } | null>>({});
 
   // Hydrate token from URL or localStorage
   useEffect(() => {
@@ -101,6 +103,37 @@ export default function AdminPage() {
     setToken("");
     setLeads([]);
     localStorage.removeItem("tcc-admin-token");
+  };
+
+  const saveStatus = async (lead: Lead, newStatus: string) => {
+    if (!token || newStatus === lead.status) return;
+    setSavingId(lead.id);
+    try {
+      const r = await fetch(`/api/admin/leads/status?token=${encodeURIComponent(token)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          leadId: lead.id,
+          status: newStatus,
+          name: lead.name,
+          phone: lead.phone,
+          email: lead.email,
+          device: lead.model || lead.device,
+          quote: lead.quote,
+          payout: lead.payout,
+        }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const d = await r.json();
+      setLeads((cur) => cur.map((l) => (l.id === lead.id ? { ...l, status: newStatus, statusUpdatedAt: new Date().toISOString() } : l)));
+      setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; });
+      setSavedFlash((s) => ({ ...s, [lead.id]: { sms: !!d.smsSent, email: !!d.emailSent } }));
+      setTimeout(() => setSavedFlash((s) => ({ ...s, [lead.id]: null })), 3500);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Save failed");
+    } finally {
+      setSavingId(null);
+    }
   };
 
   // Token gate
@@ -189,16 +222,26 @@ export default function AdminPage() {
                     <div>
                       <select
                         value={current}
-                        onChange={(e) => setPendingStatus((p) => ({ ...p, [lead.id]: e.target.value }))}
-                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00c853] cursor-pointer"
+                        disabled={savingId === lead.id}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setPendingStatus((p) => ({ ...p, [lead.id]: v }));
+                          saveStatus(lead, v);
+                        }}
+                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00c853] cursor-pointer disabled:opacity-60"
                         style={{ borderColor: meta.color + "55" }}
                       >
                         {STATUS_OPTIONS.map((opt) => (
                           <option key={opt.value} value={opt.value} className="bg-black">{opt.label}</option>
                         ))}
                       </select>
-                      {pendingStatus[lead.id] && pendingStatus[lead.id] !== lead.status && (
-                        <p className="text-[10px] text-[#ff9100] mt-1">unsaved · save endpoint coming</p>
+                      {savingId === lead.id && (
+                        <p className="text-[10px] text-[#888] mt-1">Saving…</p>
+                      )}
+                      {savedFlash[lead.id] && (
+                        <p className="text-[10px] text-[#00c853] mt-1">
+                          ✓ Saved{savedFlash[lead.id]!.sms ? " · SMS sent" : ""}{savedFlash[lead.id]!.email ? " · email sent" : ""}
+                        </p>
                       )}
                     </div>
                   </li>
