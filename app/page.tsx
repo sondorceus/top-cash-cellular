@@ -551,11 +551,44 @@ const SURFACE_MODELS = [
   { id: "surfgo3", label: "Surface Go 3" },
 ];
 
+const LENOVO_LEGION_TAB_VARIANTS = [
+  { id: "legtabg5", label: "Legion Tab Gen 5 (8.8\")", base: 0, inquiryOnly: true },
+  { id: "legtabg3", label: "Legion Tab Gen 3", base: 0, inquiryOnly: true },
+  { id: "legy900_2026", label: "Legion Y900 (2026)", base: 0, inquiryOnly: true },
+];
+const LENOVO_IDEA_TAB_VARIANTS = [
+  { id: "ideatabprog2", label: "Idea Tab Pro Gen 2", base: 0, inquiryOnly: true },
+  { id: "ideatabstd", label: "Idea Tab (Standard)", base: 0, inquiryOnly: true },
+  { id: "yogatab13aura", label: "Yoga Tab 13 (Aura Edition)", base: 0, inquiryOnly: true },
+];
+const LENOVO_TABPK_VARIANTS = [
+  { id: "tabk11plus", label: "Tab K11 Plus", base: 0, inquiryOnly: true },
+  { id: "tabp12", label: "Tab P12", base: 0, inquiryOnly: true },
+  { id: "tabp11g2", label: "Tab P11 Gen 2", base: 0, inquiryOnly: true },
+  { id: "tabk11", label: "Tab K11", base: 0, inquiryOnly: true },
+];
+const LENOVO_TABM_VARIANTS = [
+  { id: "tabplusjbl", label: "Tab Plus (8-speaker JBL)", base: 0, inquiryOnly: true },
+  { id: "tabm11", label: "Tab M11", base: 0, inquiryOnly: true },
+  { id: "tabm10_5g", label: "Tab M10 (5G)", base: 0, inquiryOnly: true },
+  { id: "tabm8g5", label: "Tab M8 (Gen 5)", base: 0, inquiryOnly: true },
+];
+const LENOVO_THINKTAB_VARIANTS = [
+  { id: "thinktabx11", label: "ThinkTab X11", base: 0, inquiryOnly: true },
+];
+const LENOVO_TAB_SERIES = [
+  { id: "lenovo_legion", label: "Legion", year: "Gaming", topPrice: 0, variants: LENOVO_LEGION_TAB_VARIANTS, inquiryOnly: true },
+  { id: "lenovo_ideatab", label: "Idea Tab", year: "Productivity", topPrice: 0, variants: LENOVO_IDEA_TAB_VARIANTS, inquiryOnly: true },
+  { id: "lenovo_tabpk", label: "Tab P & K", year: "Education", topPrice: 0, variants: LENOVO_TABPK_VARIANTS, inquiryOnly: true },
+  { id: "lenovo_tabm", label: "Tab M & Plus", year: "Budget", topPrice: 0, variants: LENOVO_TABM_VARIANTS, inquiryOnly: true },
+  { id: "lenovo_thinktab", label: "ThinkTab", year: "Industrial", topPrice: 0, variants: LENOVO_THINKTAB_VARIANTS, inquiryOnly: true },
+];
 const LENOVO_TAB_MODELS = [
-  { id: "ltabp12", label: "Tab P12 Pro" },
-  { id: "ltabp11g2", label: "Tab P11 Pro Gen 2" },
-  { id: "ltabp11", label: "Tab P11 Plus" },
-  { id: "ltabm11", label: "Tab M11" },
+  ...LENOVO_LEGION_TAB_VARIANTS,
+  ...LENOVO_IDEA_TAB_VARIANTS,
+  ...LENOVO_TABPK_VARIANTS,
+  ...LENOVO_TABM_VARIANTS,
+  ...LENOVO_THINKTAB_VARIANTS,
 ];
 
 const ONEPLUS_TAB_MODELS = [
@@ -1148,6 +1181,7 @@ export default function Home() {
   const sonyVariants = selectedSeries ? SONY_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const alienwareVariants = selectedSeries ? ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const lgPcVariants = selectedSeries ? LG_PC_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
+  const lenovoTabVariants = selectedSeries ? LENOVO_TAB_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
 
   type Crumb = { label: string; onClick: () => void };
   const breadcrumbs: Crumb[] = [
@@ -1160,7 +1194,7 @@ export default function Home() {
     });
   }
   if (selectedSeries) {
-    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : deviceType === "lg_pc" ? LG_PC_SERIES : null;
+    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : deviceType === "lg_pc" ? LG_PC_SERIES : deviceType === "lenovo_tab" ? LENOVO_TAB_SERIES : null;
     const ser = seriesList?.find(s => s.id === selectedSeries);
     if (ser) breadcrumbs.push({
       label: ser.label,
@@ -2137,6 +2171,43 @@ export default function Home() {
               </>
             )}
 
+            {/* Lenovo Tab: 5 family boxes (Legion / Idea Tab / Tab P&K / Tab M&Plus / ThinkTab) */}
+            {deviceType === "lenovo_tab" && !selectedSeries && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Lenovo tablet</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {LENOVO_TAB_SERIES.map((s) => (
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
+                      <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg>
+                      <p className="font-bold text-sm">{s.label}</p>
+                      <p className="text-[#888] text-[10px]">{s.year}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Lenovo Tab: variant list when a series is selected */}
+            {deviceType === "lenovo_tab" && selectedSeries && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Lenovo {LENOVO_TAB_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your model</p>
+                <div className="space-y-2">
+                  {lenovoTabVariants.map((m) => (
+                    <button key={m.id} onClick={() => { setInquiryCategory("Tablet"); setInquiryDesc(`Lenovo ${m.label}`); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                      <p className="font-semibold text-[15px]">{m.label}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
+                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
             {/* Alienware: 4 family boxes (Flagship / Aurora & X / Ultraslim / M-Series) */}
             {deviceType === "alienware" && !selectedSeries && (
               <>
@@ -2203,13 +2274,13 @@ export default function Home() {
               </>
             )}
 
-            {/* No-price devices (VR + non-Apple tablets): goes to inquiry */}
-            {(deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" || deviceType === "samsung_tab" || deviceType === "surface" || deviceType === "lenovo_tab" || deviceType === "oneplus_tab" || deviceType === "google_tab") && (
+            {/* No-price devices (VR + non-Apple/non-Lenovo tablets): goes to inquiry */}
+            {(deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" || deviceType === "samsung_tab" || deviceType === "surface" || deviceType === "oneplus_tab" || deviceType === "google_tab") && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your device</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your model</p>
                 <div className="space-y-2">
-                  {(deviceType === "apple_vr" ? APPLE_VR_MODELS : deviceType === "meta_vr" ? META_VR_MODELS : deviceType === "valve_vr" ? VALVE_VR_MODELS : deviceType === "psvr" ? PSVR_MODELS : deviceType === "samsung_tab" ? SAMSUNG_TAB_MODELS : deviceType === "surface" ? SURFACE_MODELS : deviceType === "lenovo_tab" ? LENOVO_TAB_MODELS : deviceType === "oneplus_tab" ? ONEPLUS_TAB_MODELS : GOOGLE_TAB_MODELS).map((m) => (
+                  {(deviceType === "apple_vr" ? APPLE_VR_MODELS : deviceType === "meta_vr" ? META_VR_MODELS : deviceType === "valve_vr" ? VALVE_VR_MODELS : deviceType === "psvr" ? PSVR_MODELS : deviceType === "samsung_tab" ? SAMSUNG_TAB_MODELS : deviceType === "surface" ? SURFACE_MODELS : deviceType === "oneplus_tab" ? ONEPLUS_TAB_MODELS : GOOGLE_TAB_MODELS).map((m) => (
                     <button key={m.id} onClick={() => { setInquiryCategory(deviceType?.includes("vr") || deviceType === "psvr" ? "VR Headset" : "Tablet"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
