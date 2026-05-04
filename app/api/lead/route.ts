@@ -7,20 +7,29 @@ const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 
-// Lead dedup: track recent submissions to prevent duplicates
+// Lead dedup: track recent submissions to prevent duplicates.
+// Custom-quote flows (no instant price) get a wider window keyed on
+// device-category + email — this catches the case where a user re-submits
+// the same kind of device with a tweaked free-text description.
 const recentLeads = new Map<string, number>();
-const DEDUP_WINDOW_MS = 60 * 1000; // 60 seconds
+const DEDUP_REGULAR_MS = 60 * 1000; // 60s for instant-quote flows
+const DEDUP_CUSTOM_MS = 5 * 60 * 1000; // 5min for custom-quote flows
 
-function isDuplicate(email: string, model: string): boolean {
-  const key = `${(email || "").toLowerCase()}|${(model || "").toLowerCase()}`;
+function isDuplicate(email: string, contact: string, device: string, model: string, isCustom: boolean): boolean {
+  const e = (email || "").toLowerCase().trim();
+  const c = (contact || "").replace(/\D/g, "");
+  // For custom flows: key on device-category only (Tablet/Desktop/etc.) so
+  // free-text condition tweaks dedupe. For regular flows: key on full model.
+  const productKey = isCustom ? (device || "").toLowerCase() : (model || "").toLowerCase();
+  const key = `${e || c}|${productKey}|${isCustom ? "custom" : "regular"}`;
+  const window = isCustom ? DEDUP_CUSTOM_MS : DEDUP_REGULAR_MS;
   const now = Date.now();
   const lastSeen = recentLeads.get(key);
-  if (lastSeen && (now - lastSeen) < DEDUP_WINDOW_MS) return true;
+  if (lastSeen && (now - lastSeen) < window) return true;
   recentLeads.set(key, now);
-  // Cleanup old entries every 50 leads
   if (recentLeads.size > 50) {
     for (const [k, t] of recentLeads) {
-      if (now - t > DEDUP_WINDOW_MS * 5) recentLeads.delete(k);
+      if (now - t > DEDUP_CUSTOM_MS * 2) recentLeads.delete(k);
     }
   }
   return false;
@@ -31,8 +40,9 @@ export async function POST(req: NextRequest) {
   const { name, phone, email, device, model, storage, condition, quote, payout, photos } = data;
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
 
-  // Dedup check — skip if same email+model submitted within 60s
-  if (isDuplicate(email, model)) {
+  // Dedup check — wider window for custom-quote flows (free-text descriptions)
+  const isCustom = !quote || quote === 0 || quote === "0";
+  if (isDuplicate(email, phone, device, model, isCustom)) {
     return NextResponse.json({ ok: true, deduped: true });
   }
 
