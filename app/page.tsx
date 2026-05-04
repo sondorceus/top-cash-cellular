@@ -336,19 +336,39 @@ const LG_PC_MODELS = [
   ...LG_ULTRAGEAR_VARIANTS,
 ];
 
+// Apple Desktops — 4 family boxes (iMac / Mac Mini / Mac Studio / Mac Pro)
+// Prices reduced 20% per Skywalker's competitor-research directive 2026-05-04
+const APPLE_IMAC_VARIANTS = [
+  { id: "imac24m4", label: "iMac 24\" M4", base: 720 },
+  { id: "imac24m3", label: "iMac 24\" M3", base: 560 },
+  { id: "imac24m1", label: "iMac 24\" M1", base: 360 },
+];
+const APPLE_MACMINI_VARIANTS = [
+  { id: "macminim4p", label: "Mac Mini M4 Pro", base: 480 },
+  { id: "macminim4", label: "Mac Mini M4", base: 320 },
+  { id: "macminim2", label: "Mac Mini M2", base: 240 },
+  { id: "macminim1", label: "Mac Mini M1", base: 175 },
+];
+const APPLE_MACSTUDIO_VARIANTS = [
+  { id: "macstudiom4u", label: "Mac Studio M4 Ultra", base: 1760 },
+  { id: "macstudiom4m", label: "Mac Studio M4 Max", base: 1120 },
+  { id: "macstudiom2u", label: "Mac Studio M2 Ultra", base: 1280 },
+  { id: "macstudiom2m", label: "Mac Studio M2 Max", base: 800 },
+];
+const APPLE_MACPRO_VARIANTS = [
+  { id: "macprom2u", label: "Mac Pro M2 Ultra", base: 2240 },
+];
+const APPLE_DESKTOP_SERIES = [
+  { id: "ad_imac", label: "iMac", year: "All-in-one", topPrice: 720, variants: APPLE_IMAC_VARIANTS },
+  { id: "ad_macmini", label: "Mac Mini", year: "Compact", topPrice: 480, variants: APPLE_MACMINI_VARIANTS },
+  { id: "ad_macstudio", label: "Mac Studio", year: "Pro", topPrice: 1760, variants: APPLE_MACSTUDIO_VARIANTS },
+  { id: "ad_macpro", label: "Mac Pro", year: "Workstation", topPrice: 2240, variants: APPLE_MACPRO_VARIANTS },
+];
 const APPLE_DESKTOP_MODELS = [
-  { id: "macstudiom4u", label: "Mac Studio M4 Ultra", base: 2200 },
-  { id: "macstudiom4m", label: "Mac Studio M4 Max", base: 1400 },
-  { id: "macstudiom2u", label: "Mac Studio M2 Ultra", base: 1600 },
-  { id: "macstudiom2m", label: "Mac Studio M2 Max", base: 1000 },
-  { id: "macprom2u", label: "Mac Pro M2 Ultra", base: 2800 },
-  { id: "macminim4", label: "Mac Mini M4", base: 400 },
-  { id: "macminim4p", label: "Mac Mini M4 Pro", base: 600 },
-  { id: "macminim2", label: "Mac Mini M2", base: 300 },
-  { id: "macminim1", label: "Mac Mini M1", base: 220 },
-  { id: "imac24m4", label: "iMac 24\" M4", base: 900 },
-  { id: "imac24m3", label: "iMac 24\" M3", base: 700 },
-  { id: "imac24m1", label: "iMac 24\" M1", base: 450 },
+  ...APPLE_IMAC_VARIANTS,
+  ...APPLE_MACMINI_VARIANTS,
+  ...APPLE_MACSTUDIO_VARIANTS,
+  ...APPLE_MACPRO_VARIANTS,
 ];
 
 const DELL_DESKTOP_MODELS = [
@@ -1235,6 +1255,7 @@ export default function Home() {
   const lgPcVariants = selectedSeries ? LG_PC_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const lenovoTabVariants = selectedSeries ? LENOVO_TAB_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const surfaceVariants = selectedSeries ? SURFACE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
+  const appleDesktopVariants = selectedSeries ? APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
 
   type Crumb = { label: string; onClick: () => void };
   const breadcrumbs: Crumb[] = [
@@ -1247,7 +1268,7 @@ export default function Home() {
     });
   }
   if (selectedSeries) {
-    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : deviceType === "lg_pc" ? LG_PC_SERIES : deviceType === "lenovo_tab" ? LENOVO_TAB_SERIES : deviceType === "surface" ? SURFACE_SERIES : null;
+    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : deviceType === "lg_pc" ? LG_PC_SERIES : deviceType === "lenovo_tab" ? LENOVO_TAB_SERIES : deviceType === "surface" ? SURFACE_SERIES : deviceType === "apple_desktop" ? APPLE_DESKTOP_SERIES : null;
     const ser = seriesList?.find(s => s.id === selectedSeries);
     if (ser) breadcrumbs.push({
       label: ser.label,
@@ -1271,7 +1292,7 @@ export default function Home() {
     onClick: () => { setStep("quote"); pushHistory("quote"); },
   });
   const showBreadcrumbs = breadcrumbs.length > 1 && step !== "device" && step !== "category" && page === "home";
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? APPLE_DESKTOP_MODELS : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -2331,9 +2352,39 @@ export default function Home() {
               </>
             )}
 
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && (
+            {/* Apple Desktops: 4 family boxes (iMac / Mac Mini / Mac Studio / Mac Pro) */}
+            {deviceType === "apple_desktop" && !selectedSeries && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSeries ? `LG ${LG_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Mac</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {APPLE_DESKTOP_SERIES.map((s) => {
+                    const imgMap: Record<string, string> = {
+                      ad_imac: "/imac-series.webp",
+                      ad_macmini: "/macmini-series.webp",
+                      ad_macstudio: "/macstudio-series.webp",
+                    };
+                    const img = imgMap[s.id];
+                    return (
+                      <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
+                        {img ? (
+                          <img src={img} alt={s.label} width={64} height={48} loading="eager" decoding="async" fetchPriority="high" className="w-16 h-12 object-contain mb-1" style={{ backgroundColor: "transparent" }} />
+                        ) : (
+                          <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg>
+                        )}
+                        <p className="font-bold text-sm">{s.label}</p>
+                        <p className="text-[#888] text-[10px]">{s.year}</p>
+                        <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${s.topPrice}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "apple_desktop" && !selectedSeries) && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSeries ? `LG ${LG_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 {/* Mobile: grid cards */}
                 <div className="grid grid-cols-2 gap-2 md:hidden">
