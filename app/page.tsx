@@ -3863,17 +3863,19 @@ export default function Home() {
       )}
 
       {/* FOOTER */}
-      <footer className="mt-auto bg-[#060606] text-[#888] py-10 border-t border-white/10">
+      <footer className="mt-auto bg-gradient-to-b from-[#0d1f15] via-[#0a1812] to-[#070d0a] text-[#9aa] py-10 relative">
+        {/* Green accent stripe at top — signals end-of-page + brand color */}
+        <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-[#00c853]/60 to-transparent" />
         <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div>
               <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Company</p>
               <div className="space-y-2">
-                <button onClick={() => { setPage("about"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-white transition cursor-pointer">About Us</button>
-                <a href="/reviews" className="block text-xs hover:text-white transition">Reviews</a>
-                <a href={`tel:${PHONE_TEL}`} className="block text-xs hover:text-white transition">Contact</a>
-                <a href="/privacy" className="block text-xs hover:text-white transition">Privacy Policy</a>
-                <button onClick={() => { setPage("terms"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-white transition cursor-pointer">Terms of Service</button>
+                <button onClick={() => { setPage("about"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer">About Us</button>
+                <a href="/reviews" className="block text-xs hover:text-[#00c853] transition">Reviews</a>
+                <a href={`tel:${PHONE_TEL}`} className="block text-xs hover:text-[#00c853] transition">Contact</a>
+                <a href="/privacy" className="block text-xs hover:text-[#00c853] transition">Privacy Policy</a>
+                <button onClick={() => { setPage("terms"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer">Terms of Service</button>
               </div>
             </div>
             <div>
@@ -3884,12 +3886,12 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="border-t border-white/10 pt-6 text-center">
-            <p className="text-[11px] text-[#888]/60 mb-3">© 2026 {BRAND}</p>
+          <div className="border-t border-[#00c853]/15 pt-6 text-center">
+            <p className="text-[11px] text-[#9aa]/70 mb-3">© 2026 {BRAND}</p>
             <div className="flex items-center justify-center gap-4">
-              <a href="/privacy" className="text-[11px] text-[#777] hover:text-[#888] transition">Privacy Policy</a>
-              <span className="text-[11px] text-[#333]">·</span>
-              <a href="https://atxgadgetfix.com" target="_blank" rel="noopener noreferrer" className="text-[11px] text-[#777] hover:text-[#888] transition">
+              <a href="/privacy" className="text-[11px] text-[#9aa] hover:text-[#00c853] transition">Privacy Policy</a>
+              <span className="text-[11px] text-[#00c853]/40">·</span>
+              <a href="https://atxgadgetfix.com" target="_blank" rel="noopener noreferrer" className="text-[11px] text-[#9aa] hover:text-[#00c853] transition">
                 Need a repair? ATX Gadget Fix →
               </a>
             </div>
