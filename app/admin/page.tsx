@@ -55,6 +55,8 @@ export default function AdminPage() {
   const [pendingStatus, setPendingStatus] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
   const [savedFlash, setSavedFlash] = useState<Record<string, { sms: boolean; email: boolean } | null>>({});
+  const [rejectingId, setRejectingId] = useState<string | null>(null);
+  const [rejectionReason, setRejectionReason] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -162,7 +164,7 @@ export default function AdminPage() {
   };
   const stats = computeStats(leads);
 
-  const saveStatus = async (lead: Lead, newStatus: string) => {
+  const saveStatus = async (lead: Lead, newStatus: string, reason?: string) => {
     if (!token || newStatus === lead.status) return;
     setSavingId(lead.id);
     try {
@@ -178,6 +180,7 @@ export default function AdminPage() {
           device: lead.model || lead.device,
           quote: lead.quote,
           payout: lead.payout,
+          rejectionReason: newStatus === "rejected" ? reason : undefined,
         }),
       });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -385,9 +388,15 @@ export default function AdminPage() {
                     <div>
                       <select
                         value={current}
-                        disabled={savingId === lead.id}
+                        disabled={savingId === lead.id || rejectingId === lead.id}
                         onChange={(e) => {
                           const v = e.target.value;
+                          if (v === "rejected" && lead.status !== "rejected") {
+                            setRejectingId(lead.id);
+                            setRejectionReason("");
+                            setPendingStatus((p) => ({ ...p, [lead.id]: v }));
+                            return;
+                          }
                           setPendingStatus((p) => ({ ...p, [lead.id]: v }));
                           saveStatus(lead, v);
                         }}
@@ -405,6 +414,55 @@ export default function AdminPage() {
                         <p className="text-[10px] text-[#00c853] mt-1">
                           ✓ Saved{savedFlash[lead.id]!.sms ? " · SMS sent" : ""}{savedFlash[lead.id]!.email ? " · email sent" : ""}
                         </p>
+                      )}
+                      {rejectingId === lead.id && (
+                        <div className="mt-2 p-2.5 bg-red-500/10 border border-red-500/30 rounded-lg space-y-2 max-w-[260px]">
+                          <p className="text-[10px] text-red-300 font-bold uppercase tracking-wider">Reason for rejection</p>
+                          <select
+                            value={rejectionReason}
+                            onChange={(e) => setRejectionReason(e.target.value)}
+                            className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-red-400 cursor-pointer"
+                          >
+                            <option value="">— pick a reason —</option>
+                            <option>iCloud / Find My is locked</option>
+                            <option>Device is blacklisted / reported</option>
+                            <option>Damage worse than disclosed</option>
+                            <option>Screen previously replaced (non-OEM)</option>
+                            <option>Battery health below threshold</option>
+                            <option>Device not paid off / financed</option>
+                            <option>Different model than quoted</option>
+                            <option>Other</option>
+                          </select>
+                          {rejectionReason === "Other" && (
+                            <input
+                              type="text"
+                              autoFocus
+                              placeholder="Type the reason…"
+                              onChange={(e) => setRejectionReason(e.target.value)}
+                              className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-red-400"
+                            />
+                          )}
+                          <div className="flex gap-1.5">
+                            <button
+                              type="button"
+                              disabled={!rejectionReason.trim() || rejectionReason === "Other"}
+                              onClick={() => {
+                                saveStatus(lead, "rejected", rejectionReason);
+                                setRejectingId(null);
+                              }}
+                              className="flex-1 px-2 py-1.5 bg-red-500 text-white rounded text-[11px] font-bold hover:bg-red-600 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                              Confirm
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => { setRejectingId(null); setRejectionReason(""); setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; }); }}
+                              className="px-2 py-1.5 bg-white/5 border border-white/10 rounded text-[11px] text-[#aaa] hover:bg-white/10 transition cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
                       )}
                     </div>
                   </li>

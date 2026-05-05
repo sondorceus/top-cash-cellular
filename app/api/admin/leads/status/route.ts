@@ -33,7 +33,7 @@ async function sendSms(to: string, body: string): Promise<boolean> {
   } catch { return false; }
 }
 
-function smsTemplate(status: string, ctx: { name?: string; device?: string; quote?: string; payout?: string }): string {
+function smsTemplate(status: string, ctx: { name?: string; device?: string; quote?: string; payout?: string; rejectionReason?: string }): string {
   const dev = ctx.device || "your device";
   const first = ctx.name?.split(" ")[0] || "there";
   switch (status) {
@@ -46,13 +46,16 @@ function smsTemplate(status: string, ctx: { name?: string; device?: string; quot
     case "paid":
       return `Top Cash: ${ctx.quote || "Payment"} sent via ${ctx.payout || "your method"}! Thanks for selling with us, ${first}. — TCC Austin`;
     case "rejected":
+      if (ctx.rejectionReason) {
+        return `Top Cash: Hi ${first}, we couldn't accept ${dev} — ${ctx.rejectionReason}. Call (877) 549-2056 if you'd like to discuss.`;
+      }
       return `Top Cash: There's an issue with ${dev}, ${first}. Please call (877) 549-2056 — we'll work it out.`;
     default:
       return `Top Cash: Status update on your ${dev} — ${status}. Call (877) 549-2056 with questions.`;
   }
 }
 
-async function emailStatus(to: string, status: string, ctx: { name?: string; device?: string; quote?: string; payout?: string }) {
+async function emailStatus(to: string, status: string, ctx: { name?: string; device?: string; quote?: string; payout?: string; rejectionReason?: string }) {
   if (!process.env.RESEND_API_KEY) return false;
   const first = ctx.name?.split(" ")[0] || "there";
   const dev = ctx.device || "your device";
@@ -99,14 +102,15 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { leadId, status, name, phone, email, device, quote, payout } = body;
+  const { leadId, status, name, phone, email, device, quote, payout, rejectionReason } = body;
 
   if (!leadId || !status || !STATUSES.includes(status)) {
     return NextResponse.json({ error: "leadId and valid status required" }, { status: 400 });
   }
 
   // 1. Persist by posting [STATUS: ...] [LEAD: ...] reply to MC comms.
-  const statusBody = `[STATUS: ${status}] [LEAD: ${leadId}]\nDevice: ${device || "—"}\nCustomer: ${name || "—"}\nQuote: ${quote || "—"}\nPayout: ${payout || "—"}`;
+  const reasonLine = status === "rejected" && rejectionReason ? `\nReason: ${rejectionReason}` : "";
+  const statusBody = `[STATUS: ${status}] [LEAD: ${leadId}]\nDevice: ${device || "—"}\nCustomer: ${name || "—"}\nQuote: ${quote || "—"}\nPayout: ${payout || "—"}${reasonLine}`;
   let mcOk = false;
   try {
     const r = await fetch(`${MC_API}/api/comms`, {
@@ -124,7 +128,7 @@ export async function POST(req: NextRequest) {
   } catch {}
 
   // 2. Fire SMS + email in parallel.
-  const ctx = { name, device, quote, payout };
+  const ctx = { name, device, quote, payout, rejectionReason };
   const [smsSent, emailSent] = await Promise.all([
     phone ? sendSms(phone, smsTemplate(status, ctx)) : Promise.resolve(false),
     email ? emailStatus(email, status, ctx) : Promise.resolve(false),
