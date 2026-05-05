@@ -26,6 +26,9 @@ interface AdminLead {
   photos?: string[];
   status: string;
   statusUpdatedAt?: string;
+  latestNote?: string;
+  latestNoteAt?: string;
+  noteCount?: number;
 }
 
 const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "rejected"];
@@ -56,19 +59,28 @@ export async function GET(req: NextRequest) {
   const data = await r.json();
   const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
 
-  // Pass 1: index status updates by lead id.
+  // Pass 1: index status updates + notes by lead id.
   // Status post format: "[STATUS: <status>] [LEAD: <leadId>]"
+  // Note post format: "[NOTE: <text>] [LEAD: <leadId>]"
   const statusByLead = new Map<string, { status: string; timestamp: string }>();
+  const notesByLead = new Map<string, { text: string; timestamp: string }[]>();
   for (const m of messages) {
     if (!m.body) continue;
-    const sm = m.body.match(/\[STATUS:\s*(\w+)\]/i);
     const lm = m.body.match(/\[LEAD:\s*([\w-]+)\]/i);
-    if (sm && lm && STATUSES.includes(sm[1].toLowerCase())) {
-      const leadId = lm[1];
+    if (!lm) continue;
+    const leadId = lm[1];
+    const sm = m.body.match(/\[STATUS:\s*(\w+)\]/i);
+    if (sm && STATUSES.includes(sm[1].toLowerCase())) {
       const existing = statusByLead.get(leadId);
       if (!existing || m.timestamp > existing.timestamp) {
         statusByLead.set(leadId, { status: sm[1].toLowerCase(), timestamp: m.timestamp });
       }
+    }
+    const nm = m.body.match(/\[NOTE:\s*([^\]]+)\]/i);
+    if (nm) {
+      const arr = notesByLead.get(leadId) || [];
+      arr.push({ text: nm[1].trim(), timestamp: m.timestamp });
+      notesByLead.set(leadId, arr);
     }
   }
 
@@ -82,6 +94,9 @@ export async function GET(req: NextRequest) {
     const photos = photosLine ? photosLine.split(" | ").map((s) => s.trim()).filter(Boolean) : undefined;
     const warningsMatch = m.body.match(/\[IMEI WARNINGS\]\s*([^\n]+)/i);
     const imeiWarnings = warningsMatch ? warningsMatch[1].split(" | ").map((s) => s.trim()).filter(Boolean) : undefined;
+    const notes = notesByLead.get(m.id) || [];
+    notes.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+    const latestNote = notes[0];
     leads.push({
       id: m.id,
       timestamp: m.timestamp,
@@ -99,6 +114,9 @@ export async function GET(req: NextRequest) {
       photos,
       status: status?.status || "quote_requested",
       statusUpdatedAt: status?.timestamp,
+      latestNote: latestNote?.text,
+      latestNoteAt: latestNote?.timestamp,
+      noteCount: notes.length,
     });
   }
 

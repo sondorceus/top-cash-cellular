@@ -19,6 +19,9 @@ interface Lead {
   photos?: string[];
   status: string;
   statusUpdatedAt?: string;
+  latestNote?: string;
+  latestNoteAt?: string;
+  noteCount?: number;
 }
 
 const STATUS_OPTIONS = [
@@ -57,6 +60,29 @@ export default function AdminPage() {
   const [savedFlash, setSavedFlash] = useState<Record<string, { sms: boolean; email: boolean } | null>>({});
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [rejectionReason, setRejectionReason] = useState<string>("");
+  const [noteOpenId, setNoteOpenId] = useState<string | null>(null);
+  const [noteDraft, setNoteDraft] = useState<string>("");
+  const [noteSavingId, setNoteSavingId] = useState<string | null>(null);
+
+  const saveNote = async (lead: Lead) => {
+    if (!token || !noteDraft.trim()) return;
+    setNoteSavingId(lead.id);
+    try {
+      const r = await fetch(`/api/admin/leads/note?token=${encodeURIComponent(token)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId: lead.id, note: noteDraft }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      setLeads((cur) => cur.map((l) => (l.id === lead.id ? { ...l, latestNote: noteDraft.trim(), latestNoteAt: new Date().toISOString(), noteCount: (l.noteCount || 0) + 1 } : l)));
+      setNoteDraft("");
+      setNoteOpenId(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Note save failed");
+    } finally {
+      setNoteSavingId(null);
+    }
+  };
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -380,6 +406,34 @@ export default function AdminPage() {
                           )}
                         </div>
                       )}
+                      {/* Notes */}
+                      <div className="mt-1.5">
+                        {lead.latestNote && (
+                          <div className="text-[11px] text-[#aaa] bg-white/[0.03] border-l-2 border-[#00c853]/40 pl-2 py-1 rounded-sm" title={lead.latestNote}>
+                            <span className="text-[9px] uppercase tracking-wider text-[#666] font-bold">Note{lead.noteCount && lead.noteCount > 1 ? ` (${lead.noteCount})` : ""}: </span>
+                            <span className="break-words">{lead.latestNote.length > 80 ? lead.latestNote.slice(0, 80) + "…" : lead.latestNote}</span>
+                          </div>
+                        )}
+                        {noteOpenId === lead.id ? (
+                          <div className="mt-1.5 space-y-1.5">
+                            <textarea
+                              value={noteDraft}
+                              onChange={(e) => setNoteDraft(e.target.value)}
+                              placeholder="Internal note…"
+                              rows={2}
+                              maxLength={500}
+                              autoFocus
+                              className="w-full px-2 py-1.5 bg-white/5 border border-white/10 rounded text-xs text-white placeholder:text-[#666] focus:outline-none focus:border-[#00c853] resize-none"
+                            />
+                            <div className="flex gap-1.5">
+                              <button type="button" disabled={!noteDraft.trim() || noteSavingId === lead.id} onClick={() => saveNote(lead)} className="px-2.5 py-1 bg-[#00c853] text-white rounded text-[11px] font-bold hover:bg-[#00e676] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">{noteSavingId === lead.id ? "Saving…" : "Save"}</button>
+                              <button type="button" onClick={() => { setNoteOpenId(null); setNoteDraft(""); }} className="px-2.5 py-1 bg-white/5 border border-white/10 rounded text-[11px] text-[#aaa] hover:bg-white/10 cursor-pointer">Cancel</button>
+                            </div>
+                          </div>
+                        ) : (
+                          <button type="button" onClick={() => { setNoteOpenId(lead.id); setNoteDraft(""); }} className="text-[10px] text-[#666] hover:text-[#aaa] transition mt-1 cursor-pointer">+ {lead.latestNote ? "Add another note" : "Add internal note"}</button>
+                        )}
+                      </div>
                     </div>
                     <div className="text-sm">
                       <p className="font-semibold text-[#00c853]">{lead.quote || "—"}</p>
