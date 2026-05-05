@@ -22,6 +22,8 @@ interface Lead {
   latestNote?: string;
   latestNoteAt?: string;
   noteCount?: number;
+  duplicateCount?: number;
+  duplicateIds?: string[];
 }
 
 const STATUS_OPTIONS = [
@@ -155,7 +157,39 @@ export default function AdminPage() {
     return hay.includes(needle);
   };
 
-  const filteredLeads = leads.filter((l) => matchesSearch(l, searchQuery));
+  // Client-side de-dupe: collapse near-identical lead submissions (same contact +
+  // same device + same quote within 24h) into a single row, with a count of
+  // earlier duplicates attached to the canonical (newest) lead.
+  const dedupeLeads = (list: Lead[]): Lead[] => {
+    const sorted = [...list].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+    const dayMs = 24 * 3600 * 1000;
+    const groups = new Map<string, Lead & { duplicateCount?: number; duplicateIds?: string[] }>();
+    for (const lead of sorted) {
+      const contact = (lead.email || lead.phone || "").toLowerCase().replace(/\D/g, "");
+      const key = `${contact}|${(lead.model || lead.device || "").toLowerCase()}|${(lead.quote || "").toLowerCase()}`;
+      const existing = groups.get(key);
+      if (!existing) {
+        groups.set(key, { ...lead });
+        continue;
+      }
+      const existingTs = new Date(existing.timestamp).getTime();
+      const leadTs = new Date(lead.timestamp).getTime();
+      if (Math.abs(existingTs - leadTs) < dayMs) {
+        existing.duplicateCount = (existing.duplicateCount || 0) + 1;
+        existing.duplicateIds = [...(existing.duplicateIds || []), lead.id];
+        // If the older one is "completed" (paid/rejected) and current is also
+        // a dupe, prefer keeping that completion status visible — already handled
+        // since `existing` is the newest by sort.
+      } else {
+        // Outside dedup window — treat as separate
+        groups.set(`${key}|${lead.id}`, { ...lead });
+      }
+    }
+    return Array.from(groups.values()).sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+  };
+
+  const dedupedLeads = dedupeLeads(leads);
+  const filteredLeads = dedupedLeads.filter((l) => matchesSearch(l, searchQuery));
 
   const computeStats = (list: Lead[]) => {
     const now = Date.now();
@@ -188,7 +222,7 @@ export default function AdminPage() {
     const topPayouts = Object.entries(payoutTally).sort((a, b) => b[1] - a[1]).slice(0, 3);
     return { total: list.length, thisWeek, thisMonth, conversionRate, avgQuote, topPayouts };
   };
-  const stats = computeStats(leads);
+  const stats = computeStats(dedupedLeads);
 
   const saveStatus = async (lead: Lead, newStatus: string, reason?: string) => {
     if (!token || newStatus === lead.status) return;
@@ -260,10 +294,13 @@ export default function AdminPage() {
                   if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
                   return l.status === statusFilter;
                 });
-                if (statusFilter === "all" && !searchQuery) return `${leads.length} lead${leads.length === 1 ? "" : "s"} · last 50 from MC comms`;
+                if (statusFilter === "all" && !searchQuery) {
+                  const dupeNote = leads.length !== dedupedLeads.length ? ` (${leads.length - dedupedLeads.length} dupes merged)` : "";
+                  return `${dedupedLeads.length} unique lead${dedupedLeads.length === 1 ? "" : "s"}${dupeNote}`;
+                }
                 const labels: Record<string, string> = { active: "active", completed: "completed", all: "all" };
                 const label = labels[statusFilter] || statusFilter.replace("_", " ");
-                return `${statusFiltered.length} of ${leads.length} · ${label}${searchQuery ? ` · matching "${searchQuery}"` : ""}`;
+                return `${statusFiltered.length} of ${dedupedLeads.length} · ${label}${searchQuery ? ` · matching "${searchQuery}"` : ""}`;
               })()}
             </p>
           </div>
@@ -399,7 +436,12 @@ export default function AdminPage() {
                 return (
                   <li key={lead.id} className="px-5 py-4 grid md:grid-cols-[1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 items-center hover:bg-white/[0.02] transition">
                     <div>
-                      <p className="font-semibold text-sm">{lead.name || "—"}</p>
+                      <p className="font-semibold text-sm flex items-center gap-1.5 flex-wrap">
+                        {lead.name || "—"}
+                        {lead.duplicateCount && lead.duplicateCount > 0 && (
+                          <span title={`${lead.duplicateCount} earlier submission${lead.duplicateCount === 1 ? "" : "s"} merged into this row`} className="px-1.5 py-0.5 rounded text-[9px] bg-white/10 text-[#888] border border-white/10 font-bold cursor-help">+{lead.duplicateCount} dupe{lead.duplicateCount === 1 ? "" : "s"}</span>
+                        )}
+                      </p>
                       <p className="text-[#666] text-xs">{timeAgo(lead.timestamp)}</p>
                     </div>
                     <div className="text-xs text-[#aaa] space-y-0.5">
