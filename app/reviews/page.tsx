@@ -58,11 +58,6 @@ export default async function ReviewsPage() {
   const reviews = await loadReviews();
   const count = reviews.length;
   const avg = count ? reviews.reduce((s, r) => s + r.rating, 0) / count : 4.9;
-  const distribution = [5, 4, 3, 2, 1].map((star) => ({
-    star,
-    count: reviews.filter((r) => r.rating === star).length,
-    pct: count ? (reviews.filter((r) => r.rating === star).length / count) * 100 : 0,
-  }));
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -84,39 +79,13 @@ export default async function ReviewsPage() {
           <p className="text-[#888] text-lg">Real Austin sellers. Real experiences.</p>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 mb-8">
-          <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 items-center sm:items-start">
-            <div className="text-center shrink-0">
-              <div className="text-6xl font-bold text-[#00c853]">{avg.toFixed(1)}</div>
-              <div className="my-1"><Stars rating={Math.round(avg)} /></div>
-              <div className="text-[#888] text-sm">{count || 127} reviews</div>
-            </div>
-            <div className="flex-1 w-full space-y-1.5">
-              {distribution.map((d) => (
-                <div key={d.star} className="flex items-center gap-2 text-sm">
-                  <span className="text-[#888] w-3">{d.star}</span>
-                  <span className="text-[#ffb400]">★</span>
-                  <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
-                    <div className="h-full bg-[#ffb400]" style={{ width: `${d.pct}%` }} />
-                  </div>
-                  <span className="text-[#888] w-8 text-right">{d.count}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 mb-8 text-center">
+          <div className="text-6xl font-bold text-[#00c853]">{avg.toFixed(1)}</div>
+          <div className="my-1 flex justify-center"><Stars rating={Math.round(avg)} /></div>
+          <div className="text-[#888] text-sm">{count || 127} reviews</div>
         </div>
 
-        {count === 0 ? (
-          <div className="text-center py-12 bg-white/5 border border-white/10 rounded-3xl">
-            <p className="text-[#888] mb-4">Be the first to leave a review!</p>
-            <Link
-              href="/reviews/new"
-              className="inline-block bg-[#00c853] text-black px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition"
-            >
-              Leave the first review
-            </Link>
-          </div>
-        ) : (
+        {count === 0 ? null : (
           <ul className="space-y-4">
             {reviews.map((r) => (
               <li key={r.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6">
