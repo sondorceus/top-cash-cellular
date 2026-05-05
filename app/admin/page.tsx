@@ -71,6 +71,8 @@ export default function AdminPage() {
   const [bulkProgress, setBulkProgress] = useState<{ done: number; total: number } | null>(null);
   const [smsOpenId, setSmsOpenId] = useState<string | null>(null);
   const [smsThreads, setSmsThreads] = useState<Record<string, { loading: boolean; messages?: { sid: string; body: string; direction: string; timestamp: string }[]; error?: string }>>({});
+  const [recentlyChanged, setRecentlyChanged] = useState<Record<string, number>>({});
+  const [autoRefresh, setAutoRefresh] = useState(true);
 
   const loadSmsThread = async (lead: Lead) => {
     if (!token || !lead.phone) return;
@@ -191,6 +193,54 @@ export default function AdminPage() {
   useEffect(() => {
     if (token) fetchLeads();
   }, [token, fetchLeads]);
+
+  // Auto-refresh every 15s while tab is visible. Diff against the previous
+  // snapshot and pulse-highlight any row whose status changed.
+  useEffect(() => {
+    if (!token || !autoRefresh) return;
+    const tick = async () => {
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+      try {
+        const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}`, { cache: "no-store" });
+        if (!r.ok) return;
+        const d = await r.json();
+        const next: Lead[] = d.leads || [];
+        setLeads((prev) => {
+          const prevById = new Map(prev.map((l) => [l.id, l.status]));
+          const changedIds: string[] = [];
+          for (const lead of next) {
+            const prevStatus = prevById.get(lead.id);
+            if (prevStatus && prevStatus !== lead.status) changedIds.push(lead.id);
+          }
+          if (changedIds.length > 0) {
+            const now = Date.now();
+            setRecentlyChanged((rc) => {
+              const updated = { ...rc };
+              for (const id of changedIds) updated[id] = now;
+              return updated;
+            });
+          }
+          return next;
+        });
+      } catch {}
+    };
+    const interval = setInterval(tick, 15000);
+    return () => clearInterval(interval);
+  }, [token, autoRefresh]);
+
+  // Clean up the "recently changed" highlights after 4s.
+  useEffect(() => {
+    if (Object.keys(recentlyChanged).length === 0) return;
+    const t = setTimeout(() => {
+      const cutoff = Date.now() - 4000;
+      setRecentlyChanged((rc) => {
+        const next: Record<string, number> = {};
+        for (const [id, ts] of Object.entries(rc)) if (ts > cutoff) next[id] = ts;
+        return next;
+      });
+    }, 1000);
+    return () => clearTimeout(t);
+  }, [recentlyChanged]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -375,6 +425,13 @@ export default function AdminPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setAutoRefresh((v) => !v)}
+              title={autoRefresh ? "Auto-refresh ON (every 15s)" : "Auto-refresh OFF"}
+              className={`px-3 py-2 border rounded-lg text-xs font-semibold transition cursor-pointer ${autoRefresh ? "bg-[#00c853]/15 border-[#00c853]/40 text-[#00c853]" : "bg-white/5 border-white/10 text-[#888] hover:bg-white/10"}`}
+            >
+              {autoRefresh ? "🟢 Live" : "⏸ Paused"}
+            </button>
             <button onClick={fetchLeads} disabled={loading} className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm hover:bg-white/10 transition disabled:opacity-50 cursor-pointer">
               {loading ? "Loading…" : "Refresh"}
             </button>
@@ -530,7 +587,7 @@ export default function AdminPage() {
                 const current = pendingStatus[lead.id] ?? lead.status;
                 const meta = statusMeta(current);
                 return (
-                  <li key={lead.id} className={`px-5 py-4 grid md:grid-cols-[auto_1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 items-center hover:bg-white/[0.02] transition ${selectedIds.has(lead.id) ? "bg-[#00c853]/5" : ""}`}>
+                  <li key={lead.id} className={`px-5 py-4 grid md:grid-cols-[auto_1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 items-center hover:bg-white/[0.02] transition ${selectedIds.has(lead.id) ? "bg-[#00c853]/5" : ""} ${recentlyChanged[lead.id] ? "animate-[pulse_2s_ease-out_2] ring-1 ring-[#00c853]/40" : ""}`}>
                     <div className="w-4">
                       <input type="checkbox" aria-label={`Select ${lead.name || lead.id}`} checked={selectedIds.has(lead.id)} onChange={() => toggleSelect(lead.id)} className="cursor-pointer accent-[#00c853]" />
                     </div>
