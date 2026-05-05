@@ -65,6 +65,56 @@ export default function AdminPage() {
   const [noteOpenId, setNoteOpenId] = useState<string | null>(null);
   const [noteDraft, setNoteDraft] = useState<string>("");
   const [noteSavingId, setNoteSavingId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkStatus, setBulkStatus] = useState<string>("");
+  const [bulkSaving, setBulkSaving] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState<{ done: number; total: number } | null>(null);
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const runBulkStatus = async (newStatus: string) => {
+    if (!token || !newStatus || selectedIds.size === 0) return;
+    setBulkSaving(true);
+    const ids = Array.from(selectedIds);
+    setBulkProgress({ done: 0, total: ids.length });
+    try {
+      for (let i = 0; i < ids.length; i++) {
+        const lead = leads.find((l) => l.id === ids[i]);
+        if (!lead) { setBulkProgress({ done: i + 1, total: ids.length }); continue; }
+        if (lead.status === newStatus) { setBulkProgress({ done: i + 1, total: ids.length }); continue; }
+        try {
+          await fetch(`/api/admin/leads/status?token=${encodeURIComponent(token)}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              leadId: lead.id,
+              status: newStatus,
+              name: lead.name,
+              phone: lead.phone,
+              email: lead.email,
+              device: lead.model || lead.device,
+              quote: lead.quote,
+              payout: lead.payout,
+              rejectionReason: newStatus === "rejected" ? "Bulk update — see operator for details" : undefined,
+            }),
+          });
+          setLeads((cur) => cur.map((l) => (l.id === lead.id ? { ...l, status: newStatus, statusUpdatedAt: new Date().toISOString() } : l)));
+        } catch {}
+        setBulkProgress({ done: i + 1, total: ids.length });
+      }
+      setSelectedIds(new Set());
+      setBulkStatus("");
+    } finally {
+      setBulkSaving(false);
+      setTimeout(() => setBulkProgress(null), 1500);
+    }
+  };
 
   const saveNote = async (lead: Lead) => {
     if (!token || !noteDraft.trim()) return;
@@ -417,7 +467,33 @@ export default function AdminPage() {
 
         {leads.length > 0 && (
           <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-            <div className="hidden md:grid grid-cols-[1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 px-5 py-3 bg-white/5 text-xs font-semibold text-[#888] uppercase tracking-wider border-b border-white/10">
+            <div className="hidden md:grid grid-cols-[auto_1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 px-5 py-3 bg-white/5 text-xs font-semibold text-[#888] uppercase tracking-wider border-b border-white/10 items-center">
+              <div className="w-4">
+                <input
+                  type="checkbox"
+                  aria-label="Select all visible"
+                  checked={(() => {
+                    const visible = filteredLeads.filter((l) => {
+                      if (statusFilter === "all") return true;
+                      if (statusFilter === "active") return l.status !== "paid" && l.status !== "rejected";
+                      if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
+                      return l.status === statusFilter;
+                    });
+                    return visible.length > 0 && visible.every((l) => selectedIds.has(l.id));
+                  })()}
+                  onChange={(e) => {
+                    const visible = filteredLeads.filter((l) => {
+                      if (statusFilter === "all") return true;
+                      if (statusFilter === "active") return l.status !== "paid" && l.status !== "rejected";
+                      if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
+                      return l.status === statusFilter;
+                    });
+                    if (e.target.checked) setSelectedIds(new Set(visible.map((l) => l.id)));
+                    else setSelectedIds(new Set());
+                  }}
+                  className="cursor-pointer accent-[#00c853]"
+                />
+              </div>
               <div>Customer</div>
               <div>Contact</div>
               <div>Device</div>
@@ -434,7 +510,10 @@ export default function AdminPage() {
                 const current = pendingStatus[lead.id] ?? lead.status;
                 const meta = statusMeta(current);
                 return (
-                  <li key={lead.id} className="px-5 py-4 grid md:grid-cols-[1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 items-center hover:bg-white/[0.02] transition">
+                  <li key={lead.id} className={`px-5 py-4 grid md:grid-cols-[auto_1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 items-center hover:bg-white/[0.02] transition ${selectedIds.has(lead.id) ? "bg-[#00c853]/5" : ""}`}>
+                    <div className="w-4">
+                      <input type="checkbox" aria-label={`Select ${lead.name || lead.id}`} checked={selectedIds.has(lead.id)} onChange={() => toggleSelect(lead.id)} className="cursor-pointer accent-[#00c853]" />
+                    </div>
                     <div>
                       <p className="font-semibold text-sm flex items-center gap-1.5 flex-wrap">
                         {lead.name || "—"}
@@ -591,6 +670,41 @@ export default function AdminPage() {
           </div>
         )}
       </div>
+
+      {/* Bulk-action sticky bar */}
+      {selectedIds.size > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-white/10 px-4 py-3 z-40">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-3">
+              <p className="text-sm font-semibold text-white">{selectedIds.size} selected</p>
+              <button onClick={() => setSelectedIds(new Set())} className="text-xs text-[#888] hover:text-white cursor-pointer">Clear</button>
+              {bulkProgress && (
+                <p className="text-xs text-[#00c853]">{bulkProgress.done}/{bulkProgress.total} updated</p>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <select
+                value={bulkStatus}
+                disabled={bulkSaving}
+                onChange={(e) => setBulkStatus(e.target.value)}
+                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#00c853] cursor-pointer disabled:opacity-50"
+              >
+                <option value="">Mark selected as…</option>
+                {STATUS_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value} className="bg-black">{opt.label}</option>
+                ))}
+              </select>
+              <button
+                onClick={() => bulkStatus && runBulkStatus(bulkStatus)}
+                disabled={!bulkStatus || bulkSaving}
+                className="px-4 py-2 bg-[#00c853] text-white rounded-lg text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {bulkSaving ? "Updating…" : "Apply"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
