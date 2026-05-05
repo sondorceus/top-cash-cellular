@@ -73,6 +73,41 @@ export default function AdminPage() {
   const [smsThreads, setSmsThreads] = useState<Record<string, { loading: boolean; messages?: { sid: string; body: string; direction: string; timestamp: string }[]; error?: string }>>({});
   const [recentlyChanged, setRecentlyChanged] = useState<Record<string, number>>({});
   const [autoRefresh, setAutoRefresh] = useState(true);
+  const [adjustingId, setAdjustingId] = useState<string | null>(null);
+  const [adjustQuote, setAdjustQuote] = useState<string>("");
+  const [adjustReason, setAdjustReason] = useState<string>("");
+  const [adjustSavingId, setAdjustSavingId] = useState<string | null>(null);
+
+  const saveAdjust = async (lead: Lead) => {
+    if (!token) return;
+    const newQuote = parseInt(adjustQuote.replace(/\D/g, ""), 10);
+    if (!newQuote || isNaN(newQuote) || !adjustReason.trim()) return;
+    setAdjustSavingId(lead.id);
+    try {
+      const r = await fetch(`/api/admin/leads/adjust?token=${encodeURIComponent(token)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          leadId: lead.id,
+          newQuote,
+          reason: adjustReason.trim(),
+          name: lead.name,
+          phone: lead.phone,
+          email: lead.email,
+          device: lead.model || lead.device,
+        }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      setLeads((cur) => cur.map((l) => (l.id === lead.id ? { ...l, quote: `$${newQuote}` } : l)));
+      setAdjustingId(null);
+      setAdjustQuote("");
+      setAdjustReason("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Adjust failed");
+    } finally {
+      setAdjustSavingId(null);
+    }
+  };
 
   const loadSmsThread = async (lead: Lead) => {
     if (!token || !lead.phone) return;
@@ -677,6 +712,34 @@ export default function AdminPage() {
                     <div className="text-sm">
                       <p className="font-semibold text-[#00c853]">{lead.quote || "—"}</p>
                       <p className="text-[#666] text-xs">{lead.payout}</p>
+                      {adjustingId !== lead.id && (
+                        <button type="button" onClick={() => { setAdjustingId(lead.id); setAdjustQuote(""); setAdjustReason(""); }} className="text-[10px] text-[#666] hover:text-[#aaa] mt-1 cursor-pointer">✏️ Adjust quote</button>
+                      )}
+                      {adjustingId === lead.id && (
+                        <div className="mt-2 p-2.5 bg-yellow-500/10 border border-yellow-500/30 rounded-lg space-y-2 max-w-[240px]">
+                          <p className="text-[10px] text-yellow-300 font-bold uppercase tracking-wider">Adjust offer</p>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[#aaa] text-sm font-bold">$</span>
+                            <input type="text" inputMode="numeric" value={adjustQuote} onChange={(e) => setAdjustQuote(e.target.value.replace(/\D/g, ""))} placeholder="New $" className="flex-1 bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400" autoFocus />
+                          </div>
+                          <select value={adjustReason} onChange={(e) => setAdjustReason(e.target.value)} className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400 cursor-pointer">
+                            <option value="">— pick a reason —</option>
+                            <option>damage worse than disclosed</option>
+                            <option>screen previously replaced</option>
+                            <option>battery health below threshold</option>
+                            <option>missing accessories</option>
+                            <option>condition better than expected — bonus added</option>
+                            <option>Other</option>
+                          </select>
+                          {adjustReason === "Other" && (
+                            <input type="text" placeholder="Custom reason…" onChange={(e) => setAdjustReason(e.target.value)} className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400" />
+                          )}
+                          <div className="flex gap-1.5">
+                            <button type="button" disabled={!adjustQuote || !adjustReason.trim() || adjustReason === "Other" || adjustSavingId === lead.id} onClick={() => saveAdjust(lead)} className="flex-1 px-2 py-1.5 bg-yellow-500 text-black rounded text-[11px] font-bold hover:bg-yellow-400 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">{adjustSavingId === lead.id ? "Sending…" : "Send to customer"}</button>
+                            <button type="button" onClick={() => { setAdjustingId(null); setAdjustQuote(""); setAdjustReason(""); }} className="px-2 py-1.5 bg-white/5 border border-white/10 rounded text-[11px] text-[#aaa] hover:bg-white/10 transition cursor-pointer">Cancel</button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <div>
                       <select
