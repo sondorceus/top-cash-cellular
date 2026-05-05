@@ -83,7 +83,7 @@ export default function AdminPage() {
       setNoteSavingId(null);
     }
   };
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("active");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Hydrate token from URL or localStorage
@@ -254,9 +254,16 @@ export default function AdminPage() {
             <h1 className="text-2xl font-bold">TCC Staff Ops</h1>
             <p className="text-[#888] text-sm">
               {(() => {
-                const statusFiltered = filteredLeads.filter((l) => statusFilter === "all" || l.status === statusFilter);
+                const statusFiltered = filteredLeads.filter((l) => {
+                  if (statusFilter === "all") return true;
+                  if (statusFilter === "active") return l.status !== "paid" && l.status !== "rejected";
+                  if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
+                  return l.status === statusFilter;
+                });
                 if (statusFilter === "all" && !searchQuery) return `${leads.length} lead${leads.length === 1 ? "" : "s"} · last 50 from MC comms`;
-                return `${statusFiltered.length} of ${leads.length}${searchQuery ? ` · matching "${searchQuery}"` : ""}`;
+                const labels: Record<string, string> = { active: "active", completed: "completed", all: "all" };
+                const label = labels[statusFilter] || statusFilter.replace("_", " ");
+                return `${statusFiltered.length} of ${leads.length} · ${label}${searchQuery ? ` · matching "${searchQuery}"` : ""}`;
               })()}
             </p>
           </div>
@@ -322,12 +329,17 @@ export default function AdminPage() {
         {leads.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
             {(() => {
-              const counts: Record<string, number> = { all: filteredLeads.length };
+              const isCompleted = (s: string) => s === "paid" || s === "rejected";
+              const counts: Record<string, number> = {
+                all: filteredLeads.length,
+                active: filteredLeads.filter((l) => !isCompleted(l.status)).length,
+                completed: filteredLeads.filter((l) => isCompleted(l.status)).length,
+              };
               for (const l of filteredLeads) counts[l.status] = (counts[l.status] || 0) + 1;
               const chip = (value: string, label: string, color?: string) => {
                 const active = statusFilter === value;
                 const count = counts[value] || 0;
-                if (value !== "all" && count === 0) return null;
+                if (value !== "all" && value !== "active" && count === 0) return null;
                 return (
                   <button
                     key={value}
@@ -337,7 +349,7 @@ export default function AdminPage() {
                         ? "bg-[#00c853] text-white border-[#00c853]"
                         : "bg-white/5 text-[#aaa] border-white/10 hover:bg-white/10"
                     }`}
-                    style={active && value !== "all" && color ? { backgroundColor: color, borderColor: color } : undefined}
+                    style={active && value !== "all" && value !== "active" && color ? { backgroundColor: color, borderColor: color } : undefined}
                   >
                     <span>{label}</span>
                     <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${active ? "bg-white/20" : "bg-white/10"}`}>{count}</span>
@@ -346,8 +358,14 @@ export default function AdminPage() {
               };
               return (
                 <>
+                  {chip("active", "🟢 Active")}
+                  {STATUS_OPTIONS.filter((o) => o.value !== "paid" && o.value !== "rejected").map((opt) => chip(opt.value, opt.label, opt.color))}
+                  <span className="w-px bg-white/10 self-stretch mx-1" aria-hidden />
+                  {chip("completed", "✅ Completed")}
+                  {chip("paid", "💵 Paid", "#00c853")}
+                  {chip("rejected", "❌ Rejected", "#ef5350")}
+                  <span className="w-px bg-white/10 self-stretch mx-1" aria-hidden />
                   {chip("all", "All")}
-                  {STATUS_OPTIONS.map((opt) => chip(opt.value, opt.label, opt.color))}
                 </>
               );
             })()}
@@ -370,7 +388,12 @@ export default function AdminPage() {
               <div>Status</div>
             </div>
             <ul className="divide-y divide-white/5">
-              {filteredLeads.filter((l) => statusFilter === "all" || l.status === statusFilter).map((lead) => {
+              {filteredLeads.filter((l) => {
+                if (statusFilter === "all") return true;
+                if (statusFilter === "active") return l.status !== "paid" && l.status !== "rejected";
+                if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
+                return l.status === statusFilter;
+              }).map((lead) => {
                 const current = pendingStatus[lead.id] ?? lead.status;
                 const meta = statusMeta(current);
                 return (
