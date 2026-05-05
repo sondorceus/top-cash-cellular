@@ -69,6 +69,21 @@ export default function AdminPage() {
   const [bulkStatus, setBulkStatus] = useState<string>("");
   const [bulkSaving, setBulkSaving] = useState(false);
   const [bulkProgress, setBulkProgress] = useState<{ done: number; total: number } | null>(null);
+  const [smsOpenId, setSmsOpenId] = useState<string | null>(null);
+  const [smsThreads, setSmsThreads] = useState<Record<string, { loading: boolean; messages?: { sid: string; body: string; direction: string; timestamp: string }[]; error?: string }>>({});
+
+  const loadSmsThread = async (lead: Lead) => {
+    if (!token || !lead.phone) return;
+    setSmsThreads((prev) => ({ ...prev, [lead.id]: { loading: true } }));
+    try {
+      const r = await fetch(`/api/admin/leads/sms?token=${encodeURIComponent(token)}&phone=${encodeURIComponent(lead.phone)}`, { cache: "no-store" });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const d = await r.json();
+      setSmsThreads((prev) => ({ ...prev, [lead.id]: { loading: false, messages: d.messages || [] } }));
+    } catch (e) {
+      setSmsThreads((prev) => ({ ...prev, [lead.id]: { loading: false, error: e instanceof Error ? e.message : "Load failed" } }));
+    }
+  };
 
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => {
@@ -529,7 +544,25 @@ export default function AdminPage() {
                       <p className="text-[#666] text-xs">{timeAgo(lead.timestamp)}</p>
                     </div>
                     <div className="text-xs text-[#aaa] space-y-0.5">
-                      {lead.phone && <p>{lead.phone}</p>}
+                      {lead.phone && (
+                        <p className="flex items-center gap-2 flex-wrap">
+                          <span>{lead.phone}</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (smsOpenId === lead.id) {
+                                setSmsOpenId(null);
+                              } else {
+                                setSmsOpenId(lead.id);
+                                if (!smsThreads[lead.id]) loadSmsThread(lead);
+                              }
+                            }}
+                            className="text-[10px] px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[#aaa] hover:bg-white/10 cursor-pointer transition"
+                          >
+                            💬 {smsOpenId === lead.id ? "Hide" : "SMS"}
+                          </button>
+                        </p>
+                      )}
                       {lead.email && <p className="text-[#888] truncate" title={lead.email}>{lead.email}</p>}
                     </div>
                     <div className="text-sm">
@@ -668,6 +701,31 @@ export default function AdminPage() {
                         </div>
                       )}
                     </div>
+                    {smsOpenId === lead.id && (
+                      <div className="md:col-span-6 mt-3 mx-1 px-3 py-2 bg-black/40 border border-white/10 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold">💬 SMS thread · {lead.phone}</p>
+                          <button onClick={() => loadSmsThread(lead)} className="text-[10px] text-[#666] hover:text-[#aaa] cursor-pointer">↻ Refresh</button>
+                        </div>
+                        {smsThreads[lead.id]?.loading && <p className="text-xs text-[#666] py-2">Loading…</p>}
+                        {smsThreads[lead.id]?.error && <p className="text-xs text-red-400 py-2">{smsThreads[lead.id]!.error}</p>}
+                        {smsThreads[lead.id]?.messages && smsThreads[lead.id]!.messages!.length === 0 && (
+                          <p className="text-xs text-[#666] py-2 italic">No SMS history yet for this number.</p>
+                        )}
+                        {smsThreads[lead.id]?.messages && smsThreads[lead.id]!.messages!.length > 0 && (
+                          <div className="space-y-1.5 max-h-72 overflow-y-auto">
+                            {smsThreads[lead.id]!.messages!.map((m) => (
+                              <div key={m.sid} className={`flex ${m.direction === "in" ? "justify-start" : "justify-end"}`}>
+                                <div className={`max-w-[80%] px-3 py-2 rounded-2xl text-xs ${m.direction === "in" ? "bg-white/10 text-white rounded-bl-sm" : "bg-[#00c853]/20 text-white rounded-br-sm"}`}>
+                                  <p className="whitespace-pre-wrap break-words">{m.body}</p>
+                                  <p className="text-[9px] text-[#888] mt-1 font-mono">{new Date(m.timestamp).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </li>
                 );
               })}
