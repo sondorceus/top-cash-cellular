@@ -129,6 +129,39 @@ export default function AdminPage() {
 
   const filteredLeads = leads.filter((l) => matchesSearch(l, searchQuery));
 
+  const computeStats = (list: Lead[]) => {
+    const now = Date.now();
+    const weekAgo = now - 7 * 24 * 3600 * 1000;
+    const monthAgo = now - 30 * 24 * 3600 * 1000;
+    let thisWeek = 0;
+    let thisMonth = 0;
+    let paidCount = 0;
+    let nonRejectedCount = 0;
+    let quoteSum = 0;
+    let quoteN = 0;
+    const payoutTally: Record<string, number> = {};
+    for (const l of list) {
+      const ts = new Date(l.timestamp).getTime();
+      if (ts >= weekAgo) thisWeek++;
+      if (ts >= monthAgo) thisMonth++;
+      if (l.status === "paid") paidCount++;
+      if (l.status !== "rejected") nonRejectedCount++;
+      const dollars = l.quote?.match(/\d+/)?.[0];
+      if (dollars) {
+        const n = parseInt(dollars, 10);
+        if (!isNaN(n) && n > 0) { quoteSum += n; quoteN++; }
+      }
+      if (l.payout && l.payout !== "TBD") {
+        payoutTally[l.payout] = (payoutTally[l.payout] || 0) + 1;
+      }
+    }
+    const avgQuote = quoteN > 0 ? Math.round(quoteSum / quoteN) : 0;
+    const conversionRate = nonRejectedCount > 0 ? Math.round((paidCount / nonRejectedCount) * 100) : 0;
+    const topPayouts = Object.entries(payoutTally).sort((a, b) => b[1] - a[1]).slice(0, 3);
+    return { total: list.length, thisWeek, thisMonth, conversionRate, avgQuote, topPayouts };
+  };
+  const stats = computeStats(leads);
+
   const saveStatus = async (lead: Lead, newStatus: string) => {
     if (!token || newStatus === lead.status) return;
     setSavingId(lead.id);
@@ -207,6 +240,37 @@ export default function AdminPage() {
             </button>
           </div>
         </div>
+
+        {leads.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+              <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">This week</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.thisWeek}</p>
+            </div>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+              <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">This month</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.thisMonth}</p>
+            </div>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+              <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">Total leads</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.total}</p>
+            </div>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+              <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">Conversion</p>
+              <p className="text-2xl font-extrabold text-[#00c853] mt-0.5">{stats.conversionRate}%</p>
+              <p className="text-[10px] text-[#666] mt-0.5">paid / non-rejected</p>
+            </div>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3 col-span-2 md:col-span-1">
+              <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">Avg quote</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">${stats.avgQuote}</p>
+              {stats.topPayouts.length > 0 && (
+                <p className="text-[10px] text-[#888] mt-0.5 truncate" title={stats.topPayouts.map(([p, n]) => `${p} (${n})`).join(", ")}>
+                  Top payout: {stats.topPayouts[0][0]}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
 
         {leads.length > 0 && (
           <div className="relative mb-3">
