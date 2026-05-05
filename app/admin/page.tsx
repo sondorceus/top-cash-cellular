@@ -207,16 +207,24 @@ export default function AdminPage() {
     return hay.includes(needle);
   };
 
-  // Client-side de-dupe: collapse near-identical lead submissions (same contact +
-  // same device + same quote within 24h) into a single row, with a count of
-  // earlier duplicates attached to the canonical (newest) lead.
+  // Client-side de-dupe: collapse near-identical lead submissions from the same
+  // contact within 24h into a single row, with a count of earlier duplicates
+  // attached to the canonical (newest) lead.
+  //
+  // Custom-quote flows (quote = "TBD (custom)") use device-category only since
+  // the "model" field is free-text from the customer and varies between submits.
+  // Regular instant-quote flows use the full model name.
   const dedupeLeads = (list: Lead[]): Lead[] => {
     const sorted = [...list].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
     const dayMs = 24 * 3600 * 1000;
     const groups = new Map<string, Lead & { duplicateCount?: number; duplicateIds?: string[] }>();
     for (const lead of sorted) {
       const contact = (lead.email || lead.phone || "").toLowerCase().replace(/\D/g, "");
-      const key = `${contact}|${(lead.model || lead.device || "").toLowerCase()}|${(lead.quote || "").toLowerCase()}`;
+      const isCustom = !lead.quote || /custom|tbd/i.test(lead.quote);
+      const productKey = isCustom
+        ? (lead.device || "").toLowerCase()
+        : `${(lead.device || "").toLowerCase()}|${(lead.model || "").toLowerCase()}`;
+      const key = `${contact}|${productKey}|${isCustom ? "custom" : "regular"}`;
       const existing = groups.get(key);
       if (!existing) {
         groups.set(key, { ...lead });
@@ -227,9 +235,6 @@ export default function AdminPage() {
       if (Math.abs(existingTs - leadTs) < dayMs) {
         existing.duplicateCount = (existing.duplicateCount || 0) + 1;
         existing.duplicateIds = [...(existing.duplicateIds || []), lead.id];
-        // If the older one is "completed" (paid/rejected) and current is also
-        // a dupe, prefer keeping that completion status visible — already handled
-        // since `existing` is the newest by sort.
       } else {
         // Outside dedup window — treat as separate
         groups.set(`${key}|${lead.id}`, { ...lead });
