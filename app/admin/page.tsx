@@ -356,6 +356,10 @@ export default function AdminPage() {
     let nonRejectedCount = 0;
     let quoteSum = 0;
     let quoteN = 0;
+    let revenue = 0;
+    let revenueMonth = 0;
+    let payoutLatencySum = 0;
+    let payoutLatencyN = 0;
     const payoutTally: Record<string, number> = {};
     for (const l of list) {
       const ts = new Date(l.timestamp).getTime();
@@ -364,9 +368,17 @@ export default function AdminPage() {
       if (l.status === "paid") paidCount++;
       if (l.status !== "rejected") nonRejectedCount++;
       const dollars = l.quote?.match(/\d+/)?.[0];
-      if (dollars) {
-        const n = parseInt(dollars, 10);
-        if (!isNaN(n) && n > 0) { quoteSum += n; quoteN++; }
+      const dollarValue = dollars ? parseInt(dollars, 10) : 0;
+      if (dollarValue > 0) { quoteSum += dollarValue; quoteN++; }
+      // Revenue = sum of paid quotes (all-time and this-month)
+      if (l.status === "paid" && dollarValue > 0) {
+        revenue += dollarValue;
+        if (l.statusUpdatedAt && new Date(l.statusUpdatedAt).getTime() >= monthAgo) revenueMonth += dollarValue;
+      }
+      // Payout latency = lead created → status "paid" timestamp, in hours
+      if (l.status === "paid" && l.statusUpdatedAt) {
+        const hours = (new Date(l.statusUpdatedAt).getTime() - ts) / 3600000;
+        if (hours > 0 && hours < 24 * 90) { payoutLatencySum += hours; payoutLatencyN++; }
       }
       if (l.payout && l.payout !== "TBD") {
         payoutTally[l.payout] = (payoutTally[l.payout] || 0) + 1;
@@ -375,9 +387,31 @@ export default function AdminPage() {
     const avgQuote = quoteN > 0 ? Math.round(quoteSum / quoteN) : 0;
     const conversionRate = nonRejectedCount > 0 ? Math.round((paidCount / nonRejectedCount) * 100) : 0;
     const topPayouts = Object.entries(payoutTally).sort((a, b) => b[1] - a[1]).slice(0, 3);
-    return { total: list.length, thisWeek, thisMonth, conversionRate, avgQuote, topPayouts };
+    const avgPayoutHours = payoutLatencyN > 0 ? payoutLatencySum / payoutLatencyN : 0;
+    return { total: list.length, thisWeek, thisMonth, conversionRate, avgQuote, topPayouts, revenue, revenueMonth, avgPayoutHours, paidCount };
   };
   const stats = computeStats(dedupedLeads);
+
+  // Stale-lead detection. Each status has a target SLA + a louder alert
+  // threshold. Active leads past either get badged. Tested → paid is the
+  // legal/promised window so we keep that one tight.
+  const SLA_HOURS: Record<string, { target: number; alert: number }> = {
+    quote_requested: { target: 1, alert: 4 },
+    shipped: { target: 72, alert: 168 }, // 3d / 7d
+    received: { target: 24, alert: 48 },
+    tested: { target: 24, alert: 72 },
+  };
+  const stalenessFor = (lead: Lead): "ok" | "yellow" | "red" => {
+    const sla = SLA_HOURS[lead.status];
+    if (!sla) return "ok";
+    const lastChange = new Date(lead.statusUpdatedAt || lead.timestamp).getTime();
+    const hoursElapsed = (Date.now() - lastChange) / 3600000;
+    if (hoursElapsed >= sla.alert) return "red";
+    if (hoursElapsed >= sla.target) return "yellow";
+    return "ok";
+  };
+  const isStale = (lead: Lead) => stalenessFor(lead) !== "ok";
+  const staleCount = dedupedLeads.filter(isStale).length;
 
   const saveStatus = async (lead: Lead, newStatus: string, reason?: string) => {
     if (!token || newStatus === lead.status) return;
@@ -477,7 +511,12 @@ export default function AdminPage() {
         </div>
 
         {leads.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+          <div className="grid grid-cols-2 md:grid-cols-7 gap-3 mb-4">
+            <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-3 col-span-2 md:col-span-2">
+              <p className="text-[10px] uppercase tracking-wider text-[#00c853] font-bold">💵 Revenue (this month)</p>
+              <p className="text-2xl font-extrabold text-[#00c853] mt-0.5">${stats.revenueMonth.toLocaleString()}</p>
+              <p className="text-[10px] text-[#888] mt-0.5">${stats.revenue.toLocaleString()} all-time · {stats.paidCount} paid</p>
+            </div>
             <div className="bg-white/5 border border-white/10 rounded-xl p-3">
               <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">This week</p>
               <p className="text-2xl font-extrabold text-white mt-0.5">{stats.thisWeek}</p>
@@ -487,13 +526,14 @@ export default function AdminPage() {
               <p className="text-2xl font-extrabold text-white mt-0.5">{stats.thisMonth}</p>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-              <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">Total leads</p>
-              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.total}</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
               <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">Conversion</p>
               <p className="text-2xl font-extrabold text-[#00c853] mt-0.5">{stats.conversionRate}%</p>
               <p className="text-[10px] text-[#666] mt-0.5">paid / non-rejected</p>
+            </div>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+              <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">Avg payout</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.avgPayoutHours > 0 ? (stats.avgPayoutHours < 48 ? `${Math.round(stats.avgPayoutHours)}h` : `${(stats.avgPayoutHours / 24).toFixed(1)}d`) : "—"}</p>
+              <p className="text-[10px] text-[#666] mt-0.5">created → paid</p>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-xl p-3 col-span-2 md:col-span-1">
               <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">Avg quote</p>
@@ -533,6 +573,7 @@ export default function AdminPage() {
                 all: filteredLeads.length,
                 active: filteredLeads.filter((l) => !isCompleted(l.status)).length,
                 completed: filteredLeads.filter((l) => isCompleted(l.status)).length,
+                stale: filteredLeads.filter(isStale).length,
               };
               for (const l of filteredLeads) counts[l.status] = (counts[l.status] || 0) + 1;
               const chip = (value: string, label: string, color?: string) => {
@@ -558,6 +599,7 @@ export default function AdminPage() {
               return (
                 <>
                   {chip("active", "🟢 Active")}
+                  {staleCount > 0 && chip("stale", "⚠️ Needs attention")}
                   {STATUS_OPTIONS.filter((o) => o.value !== "paid" && o.value !== "rejected").map((opt) => chip(opt.value, opt.label, opt.color))}
                   <span className="w-px bg-white/10 self-stretch mx-1" aria-hidden />
                   {chip("completed", "✅ Completed")}
@@ -589,6 +631,7 @@ export default function AdminPage() {
                       if (statusFilter === "all") return true;
                       if (statusFilter === "active") return l.status !== "paid" && l.status !== "rejected";
                       if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
+                      if (statusFilter === "stale") return isStale(l);
                       return l.status === statusFilter;
                     });
                     return visible.length > 0 && visible.every((l) => selectedIds.has(l.id));
@@ -598,6 +641,7 @@ export default function AdminPage() {
                       if (statusFilter === "all") return true;
                       if (statusFilter === "active") return l.status !== "paid" && l.status !== "rejected";
                       if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
+                      if (statusFilter === "stale") return isStale(l);
                       return l.status === statusFilter;
                     });
                     if (e.target.checked) setSelectedIds(new Set(visible.map((l) => l.id)));
@@ -617,6 +661,7 @@ export default function AdminPage() {
                 if (statusFilter === "all") return true;
                 if (statusFilter === "active") return l.status !== "paid" && l.status !== "rejected";
                 if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
+                if (statusFilter === "stale") return isStale(l);
                 return l.status === statusFilter;
               }).map((lead) => {
                 const current = pendingStatus[lead.id] ?? lead.status;
@@ -629,6 +674,20 @@ export default function AdminPage() {
                     <div>
                       <p className="font-semibold text-sm flex items-center gap-1.5 flex-wrap">
                         {lead.name || "—"}
+                        {(() => {
+                          const stale = stalenessFor(lead);
+                          if (stale === "ok") return null;
+                          const isRed = stale === "red";
+                          const sla = SLA_HOURS[lead.status];
+                          const last = new Date(lead.statusUpdatedAt || lead.timestamp).getTime();
+                          const hrs = Math.floor((Date.now() - last) / 3600000);
+                          return (
+                            <span
+                              title={`In "${lead.status}" for ${hrs}h — target ${sla.target}h, alert ${sla.alert}h`}
+                              className={`px-1.5 py-0.5 rounded text-[9px] font-bold cursor-help border ${isRed ? "bg-red-500/15 text-red-300 border-red-500/40" : "bg-yellow-500/15 text-yellow-300 border-yellow-500/40"}`}
+                            >{isRed ? "🔴" : "🟡"} {hrs}h</span>
+                          );
+                        })()}
                         {lead.duplicateCount && lead.duplicateCount > 0 && (
                           <span title={`${lead.duplicateCount} earlier submission${lead.duplicateCount === 1 ? "" : "s"} merged into this row`} className="px-1.5 py-0.5 rounded text-[9px] bg-white/10 text-[#888] border border-white/10 font-bold cursor-help">+{lead.duplicateCount} dupe{lead.duplicateCount === 1 ? "" : "s"}</span>
                         )}
