@@ -318,8 +318,17 @@ export default function AdminPage() {
     const sorted = [...list].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
     const dayMs = 24 * 3600 * 1000;
     const groups = new Map<string, Lead & { duplicateCount?: number; duplicateIds?: string[] }>();
+    const normalizeContact = (lead: Lead): string => {
+      // Prefer email (full lowercased), fall back to digits-only phone.
+      // Previous version did .replace(/\D/g, "") on the email which collapsed
+      // distinct customers whose emails happened to share digits.
+      const email = (lead.email || "").toLowerCase().trim();
+      if (email) return email;
+      const phone = (lead.phone || "").replace(/\D/g, "");
+      return phone || "—";
+    };
     for (const lead of sorted) {
-      const contact = (lead.email || lead.phone || "").toLowerCase().replace(/\D/g, "");
+      const contact = normalizeContact(lead);
       const isCustom = !lead.quote || /custom|tbd/i.test(lead.quote);
       const productKey = isCustom
         ? (lead.device || "").toLowerCase()
