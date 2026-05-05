@@ -1376,6 +1376,7 @@ export default function Home() {
   const promoApplies = !!(promo?.active && deviceType && (promo.appliesTo === "all" || promo.appliesTo === deviceType) && (!promo.minQuantity || quantity >= promo.minQuantity));
   const promoMultiplier = promoApplies && promo ? 1 + (promo.percent / 100) : 1;
 
+  const [accessoriesIncluded, setAccessoriesIncluded] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [couponPercent, setCouponPercent] = useState(0);
   const [couponLabel, setCouponLabel] = useState("");
@@ -1396,7 +1397,12 @@ export default function Home() {
     } catch { setCouponError("Couldn't verify code, try again"); }
   };
 
-  const quote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * promoMultiplier * couponMultiplier) : 0;
+  // Accessory bonus: +$15 flat when customer confirms all original accessories
+  // for "new" tiers (Brand New / Flawless). Skywalker's call.
+  const isNewTier = condition?.id === "brandnew" || condition?.id === "flawless";
+  const accessoryBonus = isNewTier && accessoriesIncluded ? 15 : 0;
+  const baseQuote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * promoMultiplier * couponMultiplier) : 0;
+  const quote = baseQuote + accessoryBonus;
 
   const maxQuoteFor = (v: { id: string; base: number }) => {
     const sids = STORAGE_MAP[v.id];
@@ -2946,6 +2952,24 @@ export default function Home() {
             </div>
             {quantity > 1 && <p className="text-[#888] text-sm mb-2">${quote} each × {quantity}</p>}
             {quantity === 1 && <div className="mb-3" />}
+
+            {/* Accessory bonus — Brand New / Flawless only */}
+            {isNewTier && (
+              <div className="max-w-md mx-auto mb-4">
+                <button
+                  type="button"
+                  onClick={() => setAccessoriesIncluded((v) => !v)}
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl border transition cursor-pointer text-left ${accessoriesIncluded ? "bg-[#00c853]/10 border-[#00c853]/40" : "bg-white/5 border-white/10 hover:bg-white/10"}`}
+                >
+                  <span className={`w-5 h-5 rounded border-2 flex items-center justify-center text-xs font-bold transition ${accessoriesIncluded ? "bg-[#00c853] border-[#00c853] text-white" : "border-white/30 text-transparent"}`}>✓</span>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-white">All original accessories included</p>
+                    <p className="text-[11px] text-[#888]">Charger, cable, original box{condition?.id === "brandnew" ? ", manuals" : ""}</p>
+                  </div>
+                  <span className="text-[#00c853] font-bold text-sm whitespace-nowrap">+$15</span>
+                </button>
+              </div>
+            )}
 
             <div className="flex items-center justify-center gap-3 mb-4">
               <span className="text-[#888] text-sm">Quantity:</span>
