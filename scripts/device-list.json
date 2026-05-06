@@ -58,5 +58,9 @@
   {"id": "px5a", "label": "Pixel 5a (5G)", "gsmarena_slug": "google-pixel-5a-5g", "gsmarena_brand": "google", "query": "Google Pixel 5a 5G"},
   {"id": "px10pfold", "label": "Pixel 10 Pro Fold", "gsmarena_url": "https://fdn2.gsmarena.com/vv/bigpic/google-pixel-10-pro-fold--.jpg", "query": "Google Pixel 10 Pro Fold"},
   {"id": "px9pfold", "label": "Pixel 9 Pro Fold", "gsmarena_slug": "google-pixel-9-pro-fold", "gsmarena_brand": "google", "query": "Google Pixel 9 Pro Fold"},
-  {"id": "pxfold", "label": "Pixel Fold", "gsmarena_slug": "google-pixel-fold", "gsmarena_brand": "google", "query": "Google Pixel Fold"}
+  {"id": "pxfold", "label": "Pixel Fold", "gsmarena_slug": "google-pixel-fold", "gsmarena_brand": "google", "query": "Google Pixel Fold"},
+  {"id": "lenovo-thinkpad-x1", "label": "Lenovo ThinkPad X1 Carbon", "query": "ThinkPad X1 Carbon"},
+  {"id": "lenovo-yoga", "label": "Lenovo Yoga", "query": "Lenovo Yoga"},
+  {"id": "lenovo-ideapad", "label": "Lenovo IdeaPad", "query": "Lenovo IdeaPad"},
+  {"id": "lenovo-legion", "label": "Lenovo Legion", "query": "Lenovo Legion (laptop)"}
 ]

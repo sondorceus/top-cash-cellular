@@ -184,16 +184,16 @@ const SAMSUNG_PC_MODELS = [
 ];
 
 const LENOVO_MODELS = [
-  { id: "lntp14g5", label: "ThinkPad X1 Carbon Gen 12", base: 700 },
-  { id: "lntp14g4", label: "ThinkPad X1 Carbon Gen 11", base: 550 },
-  { id: "lntp14g3", label: "ThinkPad X1 Carbon Gen 10", base: 400 },
-  { id: "lnyoga9", label: "Yoga 9i 14\" Gen 9", base: 600 },
-  { id: "lnyoga7", label: "Yoga 7i 16\" Gen 9", base: 450 },
-  { id: "lnslim7", label: "IdeaPad Slim 7 Pro", base: 380 },
-  { id: "lnslim5", label: "IdeaPad Slim 5", base: 250 },
-  { id: "lnlegion7", label: "Legion Pro 7i Gen 9", base: 850 },
-  { id: "lnlegion5", label: "Legion 5i Gen 9", base: 550 },
-  { id: "lnlegion5g8", label: "Legion 5i Gen 8", base: 400 },
+  { id: "lntp14g5", label: "ThinkPad X1 Carbon Gen 12", base: 700, image: "/devices/lenovo-thinkpad-x1.jpg" },
+  { id: "lntp14g4", label: "ThinkPad X1 Carbon Gen 11", base: 550, image: "/devices/lenovo-thinkpad-x1.jpg" },
+  { id: "lntp14g3", label: "ThinkPad X1 Carbon Gen 10", base: 400, image: "/devices/lenovo-thinkpad-x1.jpg" },
+  { id: "lnyoga9", label: "Yoga 9i 14\" Gen 9", base: 600, image: "/devices/lenovo-yoga.jpg" },
+  { id: "lnyoga7", label: "Yoga 7i 16\" Gen 9", base: 450, image: "/devices/lenovo-yoga.jpg" },
+  { id: "lnslim7", label: "IdeaPad Slim 7 Pro", base: 380, image: "/devices/lenovo-ideapad.jpg" },
+  { id: "lnslim5", label: "IdeaPad Slim 5", base: 250, image: "/devices/lenovo-ideapad.jpg" },
+  { id: "lnlegion7", label: "Legion Pro 7i Gen 9", base: 850, image: "/devices/lenovo-legion.jpg" },
+  { id: "lnlegion5", label: "Legion 5i Gen 9", base: 550, image: "/devices/lenovo-legion.jpg" },
+  { id: "lnlegion5g8", label: "Legion 5i Gen 8", base: 400, image: "/devices/lenovo-legion.jpg" },
 ];
 
 const DELL_MODELS = [
@@ -2675,12 +2675,17 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-2 md:hidden">
                   {models.map((m) => {
                     const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
+                    const mImg = (m as { image?: string }).image;
                     return (
                       <button key={m.id} onClick={() => {
                         if (inq) { setInquiryCategory(category === "computers" ? "Laptop" : "Desktop"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
                         else { setModel(m); setStep("storage"); pushHistory("storage"); }
                       }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition tap-press">
-                        <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
+                        {mImg ? (
+                          <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain mb-1.5" />
+                        ) : (
+                          <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
+                        )}
                         <p className="font-bold text-sm text-center leading-tight">{m.label}</p>
                         <p className="text-[#00c853] font-bold text-xs mt-0.5">{inq ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</p>
                       </button>
@@ -2691,12 +2696,18 @@ export default function Home() {
                 <div className="hidden md:block space-y-2">
                   {models.map((m) => {
                     const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
+                    const mImg = (m as { image?: string }).image;
                     return (
                       <button key={m.id} onClick={() => {
                         if (inq) { setInquiryCategory(category === "computers" ? "Laptop" : "Desktop"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
                         else { setModel(m); setStep("storage"); pushHistory("storage"); }
-                      }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                        <p className="font-semibold text-[15px]">{m.label}</p>
+                      }} className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                        {mImg ? (
+                          <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
+                        ) : (
+                          <div className="w-12 h-9 shrink-0" />
+                        )}
+                        <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                         <div className="flex items-center gap-2">
                           <span className="text-[#00c853] font-bold text-sm">{inq ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</span>
                           <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
