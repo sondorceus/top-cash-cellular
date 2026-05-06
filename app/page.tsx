@@ -209,50 +209,70 @@ const DELL_MODELS = [
   { id: "dinsp14", label: "Inspiron 14", base: 200 },
 ];
 
-const ALIENWARE_FLAGSHIP_VARIANTS = [
-  { id: "aw18_a51_2026", label: "Alienware 18 Area-51 (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
-  { id: "aw16_a51_2026", label: "Alienware 16 Area-51 (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
-  { id: "awm18r2", label: "Alienware m18 R2", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
-  { id: "awm18r1", label: "Alienware m18 R1", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
-  { id: "aw_a51m_r2", label: "Alienware Area-51m R2", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
-  { id: "aw_a51m_r1", label: "Alienware Area-51m R1", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+// Alienware laptop categories restructured 2026-05-06 to mirror itsworthmore.com
+// All variants inquiry-only; per-SKU images sourced from IWM product pages
+const ALIENWARE_M_SERIES_VARIANTS = [
+  { id: "awm18r2", label: "Alienware m18 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-m18.jpg" },
+  { id: "awm18r1", label: "Alienware m18 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-m18.jpg" },
+  { id: "awm17r5", label: "Alienware m17 R5 (AMD flagship)", base: 0, inquiryOnly: true, image: "/devices/alienware-m17.jpg" },
+  { id: "awm16r2", label: "Alienware m16 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-m16.jpg" },
+  { id: "awm16r1", label: "Alienware m16 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-m16.jpg" },
+  { id: "awm15r7", label: "Alienware m15 R7", base: 0, inquiryOnly: true, image: "/devices/alienware-m15.jpg" },
+  { id: "awm15r6", label: "Alienware m15 R6", base: 0, inquiryOnly: true, image: "/devices/alienware-m15.jpg" },
+  { id: "awm15r5_ryzen", label: "Alienware m15 R5 (Ryzen)", base: 0, inquiryOnly: true, image: "/devices/alienware-m15.jpg" },
 ];
-const ALIENWARE_AURORA_VARIANTS = [
-  { id: "aw16x_aurora_2026", label: "Alienware 16X Aurora (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-m-laptop.jpg" },
-  { id: "aw16_aurora_2026", label: "Alienware 16 Aurora (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-m-laptop.jpg" },
-  { id: "awx16r2", label: "Alienware x16 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-m-laptop.jpg" },
-  { id: "awx16r1", label: "Alienware x16 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-m-laptop.jpg" },
-  { id: "awx14r2", label: "Alienware x14 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-m-laptop.jpg" },
-  { id: "awx14r1", label: "Alienware x14 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-m-laptop.jpg" },
-  { id: "awx17r2", label: "Alienware x17 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-m-laptop.jpg" },
-  { id: "awx17r1", label: "Alienware x17 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-m-laptop.jpg" },
-  { id: "awx15r2", label: "Alienware x15 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-m-laptop.jpg" },
-  { id: "awx15r1", label: "Alienware x15 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-m-laptop.jpg" },
+const ALIENWARE_X_SERIES_VARIANTS = [
+  { id: "awx17r2", label: "Alienware x17 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-x17.jpg" },
+  { id: "awx17r1", label: "Alienware x17 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-x17.jpg" },
+  { id: "awx16r2", label: "Alienware x16 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-x16.jpg" },
+  { id: "awx16r1", label: "Alienware x16 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-x16.jpg" },
+  { id: "awx15r2", label: "Alienware x15 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-x15.jpg" },
+  { id: "awx15r1", label: "Alienware x15 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-x15.jpg" },
+  { id: "awx14r2", label: "Alienware x14 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-x14.jpg" },
+  { id: "awx14r1", label: "Alienware x14 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-x14.jpg" },
 ];
-const ALIENWARE_ULTRASLIM_VARIANTS = [
-  { id: "aw16_ultraslim_2026", label: "Alienware 16 Ultraslim (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-thin-laptop.jpg" },
-  { id: "aw14_ultraslim_2026", label: "Alienware 14 Ultraslim (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-thin-laptop.jpg" },
+const ALIENWARE_AREA_SERIES_VARIANTS = [
+  { id: "aw18_a51_2026", label: "Alienware 18 Area-51 (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-18-area-51.jpg" },
+  { id: "aw16_a51_2026", label: "Alienware 16 Area-51 (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-16-area-51.jpg" },
+  { id: "aw_a51m_r2", label: "Alienware Area-51m R2", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51m.jpg" },
+  { id: "aw_a51m_r1", label: "Alienware Area-51m R1", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51m.jpg" },
 ];
-const ALIENWARE_MAINSTREAM_VARIANTS = [
-  { id: "aw_entry_2026", label: "Alienware Entry-Level (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-mainstream.jpg" },
-  { id: "awm16r2", label: "Alienware m16 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-mainstream.jpg" },
-  { id: "awm16r1", label: "Alienware m16 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-mainstream.jpg" },
-  { id: "awm17r5", label: "Alienware m17 R5 (AMD flagship)", base: 0, inquiryOnly: true, image: "/devices/alienware-mainstream.jpg" },
-  { id: "awm15r7", label: "Alienware m15 R7", base: 0, inquiryOnly: true, image: "/devices/alienware-mainstream.jpg" },
-  { id: "awm15r6", label: "Alienware m15 R6", base: 0, inquiryOnly: true, image: "/devices/alienware-mainstream.jpg" },
-  { id: "awm15r5_ryzen", label: "Alienware m15 R5 (Ryzen)", base: 0, inquiryOnly: true, image: "/devices/alienware-mainstream.jpg" },
+const ALIENWARE_AURORA_LAPTOP_VARIANTS = [
+  { id: "aw16x_aurora_2026", label: "Alienware 16X Aurora (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-16x-aurora.jpg" },
+  { id: "aw16_aurora_2026", label: "Alienware 16 Aurora (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-16-aurora.jpg" },
+];
+const ALIENWARE_17_VARIANTS = [
+  { id: "aw17r5", label: "Alienware 17 R5", base: 0, inquiryOnly: true, image: "/devices/alienware-17-r5.jpg" },
+  { id: "aw17r4", label: "Alienware 17 R4", base: 0, inquiryOnly: true, image: "/devices/alienware-17-r4.jpg" },
+  { id: "aw17r3", label: "Alienware 17 R3", base: 0, inquiryOnly: true, image: "/devices/alienware-17-r3.jpg" },
+  { id: "aw17r2", label: "Alienware 17 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-17-r2.jpg" },
+];
+const ALIENWARE_15_VARIANTS = [
+  { id: "aw15r4", label: "Alienware 15 R4", base: 0, inquiryOnly: true, image: "/devices/alienware-15-r4.jpg" },
+  { id: "aw15r3", label: "Alienware 15 R3", base: 0, inquiryOnly: true, image: "/devices/alienware-15-r3.jpg" },
+  { id: "aw15r2", label: "Alienware 15 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-15-r2.jpg" },
+];
+const ALIENWARE_13_VARIANTS = [
+  { id: "aw13r3", label: "Alienware 13 R3", base: 0, inquiryOnly: true, image: "/devices/alienware-13-r3.jpg" },
+  { id: "aw13r2", label: "Alienware 13 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-13-r2.jpg" },
 ];
 const ALIENWARE_SERIES = [
-  { id: "aw_flagship", label: "Flagship", year: "Area-51 / m18", topPrice: 0, variants: ALIENWARE_FLAGSHIP_VARIANTS, inquiryOnly: true },
-  { id: "aw_aurora", label: "Aurora & X", year: "Premium Slim", topPrice: 0, variants: ALIENWARE_AURORA_VARIANTS, inquiryOnly: true },
-  { id: "aw_ultraslim", label: "Ultraslim", year: "2026 — New", topPrice: 0, variants: ALIENWARE_ULTRASLIM_VARIANTS, inquiryOnly: true },
-  { id: "aw_mainstream", label: "M-Series & Entry", year: "All-rounder", topPrice: 0, variants: ALIENWARE_MAINSTREAM_VARIANTS, inquiryOnly: true },
+  { id: "aw_m_series", label: "M Series", year: "m15 / m16 / m17 / m18", topPrice: 0, variants: ALIENWARE_M_SERIES_VARIANTS, inquiryOnly: true },
+  { id: "aw_x_series", label: "X Series", year: "x14 / x15 / x16 / x17", topPrice: 0, variants: ALIENWARE_X_SERIES_VARIANTS, inquiryOnly: true },
+  { id: "aw_area_series", label: "Area Series", year: "Area-51m / Area-51", topPrice: 0, variants: ALIENWARE_AREA_SERIES_VARIANTS, inquiryOnly: true },
+  { id: "aw_aurora_laptop", label: "Aurora Laptop", year: "2026 — New", topPrice: 0, variants: ALIENWARE_AURORA_LAPTOP_VARIANTS, inquiryOnly: true },
+  { id: "aw_17", label: "Alienware 17", year: "Legacy 17\"", topPrice: 0, variants: ALIENWARE_17_VARIANTS, inquiryOnly: true },
+  { id: "aw_15", label: "Alienware 15", year: "Legacy 15\"", topPrice: 0, variants: ALIENWARE_15_VARIANTS, inquiryOnly: true },
+  { id: "aw_13", label: "Alienware 13", year: "Legacy 13\"", topPrice: 0, variants: ALIENWARE_13_VARIANTS, inquiryOnly: true },
 ];
 const ALIENWARE_MODELS = [
-  ...ALIENWARE_FLAGSHIP_VARIANTS,
-  ...ALIENWARE_AURORA_VARIANTS,
-  ...ALIENWARE_ULTRASLIM_VARIANTS,
-  ...ALIENWARE_MAINSTREAM_VARIANTS,
+  ...ALIENWARE_M_SERIES_VARIANTS,
+  ...ALIENWARE_X_SERIES_VARIANTS,
+  ...ALIENWARE_AREA_SERIES_VARIANTS,
+  ...ALIENWARE_AURORA_LAPTOP_VARIANTS,
+  ...ALIENWARE_17_VARIANTS,
+  ...ALIENWARE_15_VARIANTS,
+  ...ALIENWARE_13_VARIANTS,
 ];
 
 const HP_MODELS = [
@@ -411,9 +431,13 @@ const ASUS_DESKTOP_MODELS = [
 ];
 
 const ALIENWARE_DESKTOP_MODELS = [
-  { id: "awaurorar16", label: "Aurora R16", base: 800, image: "/devices/alienware-aurora-desktop.jpg" },
-  { id: "awaurorar15", label: "Aurora R15", base: 600, image: "/devices/alienware-aurora-desktop.jpg" },
-  { id: "awaurorar13", label: "Aurora R13", base: 450, image: "/devices/alienware-aurora-desktop.jpg" },
+  { id: "awaurorar16", label: "Aurora R16", base: 800, image: "/devices/alienware-aurora-r16.jpg" },
+  { id: "awaurorar15", label: "Aurora R15", base: 600, image: "/devices/alienware-aurora-r15.jpg" },
+  { id: "awaurorar14", label: "Aurora R14", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r14.jpg" },
+  { id: "awaurorar13", label: "Aurora R13", base: 450, image: "/devices/alienware-aurora-r13.jpg" },
+  { id: "awaurorar12", label: "Aurora R12", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r12.jpg" },
+  { id: "awaurorar10", label: "Aurora R10", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r10.jpg" },
+  { id: "awarea51desktop", label: "Area-51 Desktop", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51-desktop.jpg" },
 ];
 
 const MSI_DESKTOP_MODELS = [
