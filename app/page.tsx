@@ -269,14 +269,14 @@ const HP_MODELS = [
 ];
 
 const ACER_MODELS = [
-  { id: "acswx14", label: "Swift X 14 (2024)", base: 480 },
-  { id: "acsw14", label: "Swift Go 14 (2024)", base: 380 },
-  { id: "acpred16", label: "Predator Helios 16 (2024)", base: 750 },
-  { id: "acpred18", label: "Predator Helios 18 (2024)", base: 900 },
+  { id: "acswx14", label: "Swift X 14 (2024)", base: 480, image: "/devices/acer-swift.jpg" },
+  { id: "acsw14", label: "Swift Go 14 (2024)", base: 380, image: "/devices/acer-swift.jpg" },
+  { id: "acpred16", label: "Predator Helios 16 (2024)", base: 750, image: "/devices/acer-predator.jpg" },
+  { id: "acpred18", label: "Predator Helios 18 (2024)", base: 900, image: "/devices/acer-predator.jpg" },
   { id: "acnit16", label: "Nitro V 16 (2024)", base: 400 },
   { id: "acnit15", label: "Nitro 5 (2023)", base: 300 },
-  { id: "acasp15", label: "Aspire 5", base: 200 },
-  { id: "acasp3", label: "Aspire 3", base: 150 },
+  { id: "acasp15", label: "Aspire 5", base: 200, image: "/devices/acer-aspire.jpg" },
+  { id: "acasp3", label: "Aspire 3", base: 150, image: "/devices/acer-aspire.jpg" },
 ];
 
 const LG_GRAM_STANDARD_VARIANTS = [
