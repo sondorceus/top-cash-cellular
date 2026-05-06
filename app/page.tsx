@@ -257,13 +257,13 @@ const ALIENWARE_13_VARIANTS = [
   { id: "aw13r2", label: "Alienware 13 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-13-r2.webp" },
 ];
 const ALIENWARE_SERIES = [
-  { id: "aw_m_series", label: "M Series", year: "m15 / m16 / m17 / m18", topPrice: 0, variants: ALIENWARE_M_SERIES_VARIANTS, inquiryOnly: true },
-  { id: "aw_x_series", label: "X Series", year: "x14 / x15 / x16 / x17", topPrice: 0, variants: ALIENWARE_X_SERIES_VARIANTS, inquiryOnly: true },
-  { id: "aw_area_series", label: "Area Series", year: "Area-51m / Area-51", topPrice: 0, variants: ALIENWARE_AREA_SERIES_VARIANTS, inquiryOnly: true },
-  { id: "aw_aurora_laptop", label: "Aurora Laptop", year: "2026 — New", topPrice: 0, variants: ALIENWARE_AURORA_LAPTOP_VARIANTS, inquiryOnly: true },
-  { id: "aw_17", label: "Alienware 17", year: "Legacy 17\"", topPrice: 0, variants: ALIENWARE_17_VARIANTS, inquiryOnly: true },
-  { id: "aw_15", label: "Alienware 15", year: "Legacy 15\"", topPrice: 0, variants: ALIENWARE_15_VARIANTS, inquiryOnly: true },
-  { id: "aw_13", label: "Alienware 13", year: "Legacy 13\"", topPrice: 0, variants: ALIENWARE_13_VARIANTS, inquiryOnly: true },
+  { id: "aw_m_series", label: "M Series", year: "m15 / m16 / m17 / m18", topPrice: 0, variants: ALIENWARE_M_SERIES_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-m.webp" },
+  { id: "aw_x_series", label: "X Series", year: "x14 / x15 / x16 / x17", topPrice: 0, variants: ALIENWARE_X_SERIES_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-x.webp" },
+  { id: "aw_area_series", label: "Area Series", year: "Area-51m / Area-51", topPrice: 0, variants: ALIENWARE_AREA_SERIES_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-area.webp" },
+  { id: "aw_aurora_laptop", label: "Aurora Laptop", year: "2026 — New", topPrice: 0, variants: ALIENWARE_AURORA_LAPTOP_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-aurora.webp" },
+  { id: "aw_17", label: "Alienware 17", year: "Legacy 17\"", topPrice: 0, variants: ALIENWARE_17_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-17.webp" },
+  { id: "aw_15", label: "Alienware 15", year: "Legacy 15\"", topPrice: 0, variants: ALIENWARE_15_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-15.webp" },
+  { id: "aw_13", label: "Alienware 13", year: "Legacy 13\"", topPrice: 0, variants: ALIENWARE_13_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-13.webp" },
 ];
 const ALIENWARE_MODELS = [
   ...ALIENWARE_M_SERIES_VARIANTS,
@@ -2643,22 +2643,19 @@ export default function Home() {
               </>
             )}
 
-            {/* Alienware: 4 family boxes (Flagship / Aurora & X / Ultraslim / M-Series) */}
+            {/* Alienware: 7 series boxes mirroring IWM (M / X / Area / Aurora / 17 / 15 / 13) */}
             {deviceType === "alienware" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Alienware</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your tier</p>
+                <p className="text-[#888] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {ALIENWARE_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
-                      <svg className="w-12 h-9 mb-2 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="2" y="2" width="28" height="18" rx="3" />
-                        <line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" />
-                        {s.id === "aw_flagship" && <text x="16" y="14" fill="#00c853" fontSize="6" fontWeight="bold" textAnchor="middle" stroke="none">FLAG</text>}
-                        {s.id === "aw_aurora" && <text x="16" y="14" fill="#00c853" fontSize="6" fontWeight="bold" textAnchor="middle" stroke="none">AURORA</text>}
-                        {s.id === "aw_ultraslim" && <text x="16" y="14" fill="#00c853" fontSize="5" fontWeight="bold" textAnchor="middle" stroke="none">ULTRA</text>}
-                        {s.id === "aw_mainstream" && <text x="16" y="14" fill="#00c853" fontSize="6" fontWeight="bold" textAnchor="middle" stroke="none">M-SERIES</text>}
-                      </svg>
+                      {(s as { image?: string }).image ? (
+                        <img src={(s as { image?: string }).image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1.5" />
+                      ) : (
+                        <svg className="w-12 h-9 mb-2 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
+                      )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#888] text-[10px]">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
