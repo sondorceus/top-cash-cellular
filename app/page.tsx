@@ -484,39 +484,39 @@ const NINTENDO_MODELS = [
 const CONSOLE_MODELS = [...SONY_MODELS, ...MICROSOFT_MODELS, ...NINTENDO_MODELS];
 
 const APPLEWATCH_MODELS = [
-  { id: "awu2", label: "Apple Watch Ultra 2", base: 450 },
-  { id: "awu1", label: "Apple Watch Ultra", base: 350 },
-  { id: "aws10", label: "Apple Watch Series 10", base: 280 },
-  { id: "aws9", label: "Apple Watch Series 9", base: 220 },
-  { id: "aws8", label: "Apple Watch Series 8", base: 170 },
-  { id: "aws7", label: "Apple Watch Series 7", base: 120 },
-  { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 130 },
-  { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 80 },
+  { id: "awu2", label: "Apple Watch Ultra 2", base: 450, image: "/devices/apple-watch-ultra.jpg" },
+  { id: "awu1", label: "Apple Watch Ultra", base: 350, image: "/devices/apple-watch-ultra.jpg" },
+  { id: "aws10", label: "Apple Watch Series 10", base: 280, image: "/devices/apple-watch.jpg" },
+  { id: "aws9", label: "Apple Watch Series 9", base: 220, image: "/devices/apple-watch.jpg" },
+  { id: "aws8", label: "Apple Watch Series 8", base: 170, image: "/devices/apple-watch.jpg" },
+  { id: "aws7", label: "Apple Watch Series 7", base: 120, image: "/devices/apple-watch.jpg" },
+  { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 130, image: "/devices/apple-watch.jpg" },
+  { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 80, image: "/devices/apple-watch.jpg" },
 ];
 
 const PIXELWATCH_MODELS = [
-  { id: "pw3", label: "Pixel Watch 3", base: 200 },
-  { id: "pw2", label: "Pixel Watch 2", base: 130 },
-  { id: "pw1", label: "Pixel Watch", base: 80 },
+  { id: "pw3", label: "Pixel Watch 3", base: 200, image: "/devices/pixel-watch.jpg" },
+  { id: "pw2", label: "Pixel Watch 2", base: 130, image: "/devices/pixel-watch.jpg" },
+  { id: "pw1", label: "Pixel Watch", base: 80, image: "/devices/pixel-watch.jpg" },
 ];
 
 const GARMIN_MODELS = [
-  { id: "gfenix7", label: "Fenix 7", base: 300 },
-  { id: "gfenix7s", label: "Fenix 7S", base: 250 },
-  { id: "gepix2", label: "Epix Gen 2", base: 280 },
-  { id: "gfr965", label: "Forerunner 965", base: 250 },
-  { id: "gfr265", label: "Forerunner 265", base: 180 },
+  { id: "gfenix7", label: "Fenix 7", base: 300, image: "/devices/garmin-fenix.jpg" },
+  { id: "gfenix7s", label: "Fenix 7S", base: 250, image: "/devices/garmin-fenix.jpg" },
+  { id: "gepix2", label: "Epix Gen 2", base: 280, image: "/devices/garmin-fenix.jpg" },
+  { id: "gfr965", label: "Forerunner 965", base: 250, image: "/devices/garmin-forerunner.jpg" },
+  { id: "gfr265", label: "Forerunner 265", base: 180, image: "/devices/garmin-forerunner.jpg" },
   { id: "gvenu3", label: "Venu 3", base: 220 },
   { id: "gvenu2", label: "Venu 2", base: 130 },
 ];
 
 const SAMSUNGWATCH_MODELS = [
-  { id: "sgwu", label: "Galaxy Watch Ultra", base: 350 },
-  { id: "sgw7", label: "Galaxy Watch 7", base: 150 },
-  { id: "sgw6c", label: "Galaxy Watch 6 Classic", base: 160 },
-  { id: "sgw6", label: "Galaxy Watch 6", base: 110 },
-  { id: "sgw5p", label: "Galaxy Watch 5 Pro", base: 130 },
-  { id: "sgw5", label: "Galaxy Watch 5", base: 80 },
+  { id: "sgwu", label: "Galaxy Watch Ultra", base: 350, image: "/devices/galaxy-watch-7.jpg" },
+  { id: "sgw7", label: "Galaxy Watch 7", base: 150, image: "/devices/galaxy-watch-7.jpg" },
+  { id: "sgw6c", label: "Galaxy Watch 6 Classic", base: 160, image: "/devices/galaxy-watch-6.jpg" },
+  { id: "sgw6", label: "Galaxy Watch 6", base: 110, image: "/devices/galaxy-watch-6.jpg" },
+  { id: "sgw5p", label: "Galaxy Watch 5 Pro", base: 130, image: "/devices/galaxy-watch-6.jpg" },
+  { id: "sgw5", label: "Galaxy Watch 5", base: 80, image: "/devices/galaxy-watch-6.jpg" },
 ];
 
 const DJI_MODELS = [
