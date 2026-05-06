@@ -37,7 +37,7 @@ function isDuplicate(email: string, contact: string, device: string, model: stri
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const { name, phone, email, device, model, storage, condition, quote, payout, photos, imei, imeiWarnings } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings } = data;
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
 
   // Dedup check — wider window for custom-quote flows (free-text descriptions)
@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
     email ? `Email: ${email}` : null,
     `Device: ${device} — ${model}`,
     storage ? `Storage: ${storage}` : null,
+    carrier ? `Carrier: ${carrier}` : null,
     `Condition: ${condition}`,
     quote ? `Quote: $${quote}` : `Quote: TBD (custom)`,
     `Payout: ${payout}`,

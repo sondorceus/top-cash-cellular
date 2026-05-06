@@ -3304,7 +3304,7 @@ export default function Home() {
                 const res = await fetch("/api/lead", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: photoUrls, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined }),
+                  body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: photoUrls, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined }),
                 });
                 if (!res.ok) throw new Error('Failed');
                 if (email || phone) {
