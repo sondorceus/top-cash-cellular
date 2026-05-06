@@ -100,32 +100,32 @@ const SAMSUNG_SERIES = [
 
 const PIXEL_SERIES = [
   { id: "pproseries", label: "Pro Series", year: "Pixel 6 Pro–10 Pro XL", topPrice: 530, image: "/pixel-pro-series.webp", variants: [
-    { id: "px10pxl", label: "Pixel 10 Pro XL", base: 530 },
-    { id: "px10p", label: "Pixel 10 Pro", base: 440 },
-    { id: "px9pxl", label: "Pixel 9 Pro XL", base: 375 },
-    { id: "px9p", label: "Pixel 9 Pro", base: 305 },
-    { id: "px8p", label: "Pixel 8 Pro", base: 240 },
-    { id: "px7p", label: "Pixel 7 Pro", base: 85 },
-    { id: "px6p", label: "Pixel 6 Pro", base: 50 },
+    { id: "px10pxl", label: "Pixel 10 Pro XL", base: 530, image: "/devices/px10pxl.jpg" },
+    { id: "px10p", label: "Pixel 10 Pro", base: 440, image: "/devices/px10p.jpg" },
+    { id: "px9pxl", label: "Pixel 9 Pro XL", base: 375, image: "/devices/px9pxl.jpg" },
+    { id: "px9p", label: "Pixel 9 Pro", base: 305, image: "/devices/px9p.jpg" },
+    { id: "px8p", label: "Pixel 8 Pro", base: 240, image: "/devices/px8p.jpg" },
+    { id: "px7p", label: "Pixel 7 Pro", base: 85, image: "/devices/px7p.jpg" },
+    { id: "px6p", label: "Pixel 6 Pro", base: 50, image: "/devices/px6p.jpg" },
   ]},
   { id: "pstandard", label: "Standard Series", year: "Pixel 5–10 + a-series", topPrice: 325, image: "/pixel-standard-series.webp", variants: [
-    { id: "px10", label: "Pixel 10", base: 325 },
-    { id: "px10a", label: "Pixel 10a", base: 145 },
-    { id: "px9", label: "Pixel 9", base: 185 },
-    { id: "px9a", label: "Pixel 9a", base: 135 },
-    { id: "px8", label: "Pixel 8", base: 120 },
-    { id: "px8a", label: "Pixel 8a", base: 90 },
-    { id: "px7", label: "Pixel 7", base: 45 },
-    { id: "px7a", label: "Pixel 7a", base: 10 },
-    { id: "px6", label: "Pixel 6", base: 40 },
-    { id: "px6a", label: "Pixel 6a", base: 30 },
-    { id: "px5", label: "Pixel 5", base: 50 },
-    { id: "px5a", label: "Pixel 5a (5G)", base: 30 },
+    { id: "px10", label: "Pixel 10", base: 325, image: "/devices/px10.jpg" },
+    { id: "px10a", label: "Pixel 10a", base: 145, image: "/devices/px10a.jpg" },
+    { id: "px9", label: "Pixel 9", base: 185, image: "/devices/px9.jpg" },
+    { id: "px9a", label: "Pixel 9a", base: 135, image: "/devices/px9a.jpg" },
+    { id: "px8", label: "Pixel 8", base: 120, image: "/devices/px8.jpg" },
+    { id: "px8a", label: "Pixel 8a", base: 90, image: "/devices/px8a.jpg" },
+    { id: "px7", label: "Pixel 7", base: 45, image: "/devices/px7.jpg" },
+    { id: "px7a", label: "Pixel 7a", base: 10, image: "/devices/px7a.jpg" },
+    { id: "px6", label: "Pixel 6", base: 40, image: "/devices/px6.jpg" },
+    { id: "px6a", label: "Pixel 6a", base: 30, image: "/devices/px6a.jpg" },
+    { id: "px5", label: "Pixel 5", base: 50, image: "/devices/px5.jpg" },
+    { id: "px5a", label: "Pixel 5a (5G)", base: 30, image: "/devices/px5a.jpg" },
   ]},
   { id: "pfoldseries", label: "Fold Series", year: "Pixel Fold lineup", topPrice: 755, image: "/pixel-fold-series.webp", variants: [
-    { id: "px10pfold", label: "Pixel 10 Pro Fold", base: 755 },
-    { id: "px9pfold", label: "Pixel 9 Pro Fold", base: 575 },
-    { id: "pxfold", label: "Pixel Fold", base: 280 },
+    { id: "px10pfold", label: "Pixel 10 Pro Fold", base: 755, image: "/devices/px10pfold.jpg" },
+    { id: "px9pfold", label: "Pixel 9 Pro Fold", base: 575, image: "/devices/px9pfold.jpg" },
+    { id: "pxfold", label: "Pixel Fold", base: 280, image: "/devices/pxfold.jpg" },
   ]},
 ];
 
@@ -2370,15 +2370,22 @@ export default function Home() {
                 <h2 className="text-2xl font-bold mb-1">{PIXEL_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
                 <p className="text-[#888] text-sm mb-6">Pick your model — we&apos;ll send you a custom offer</p>
                 <div className="space-y-2">
-                  {models.map((m) => (
+                  {models.map((m) => {
+                    const mImage = (m as { image?: string }).image;
+                    return (
                     <button key={m.id} onClick={() => { setInquiryCategory("Google Pixel"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                      {mImage ? (
+                        <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
+                      ) : (
+                        <div className="w-10 h-10 shrink-0" />
+                      )}
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get an offer</span>
                         <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
-                  ))}
+                  )})}
                 </div>
               </>
             )}
