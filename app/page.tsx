@@ -212,49 +212,49 @@ const DELL_MODELS = [
 // Alienware laptop categories restructured 2026-05-06 to mirror itsworthmore.com
 // All variants inquiry-only; per-SKU images sourced from IWM product pages
 const ALIENWARE_M_SERIES_VARIANTS = [
-  { id: "awm18r2", label: "Alienware m18 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-m18.jpg" },
-  { id: "awm18r1", label: "Alienware m18 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-m18.jpg" },
-  { id: "awm17r5", label: "Alienware m17 R5 (AMD flagship)", base: 0, inquiryOnly: true, image: "/devices/alienware-m17.jpg" },
-  { id: "awm16r2", label: "Alienware m16 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-m16.jpg" },
-  { id: "awm16r1", label: "Alienware m16 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-m16.jpg" },
-  { id: "awm15r7", label: "Alienware m15 R7", base: 0, inquiryOnly: true, image: "/devices/alienware-m15.jpg" },
-  { id: "awm15r6", label: "Alienware m15 R6", base: 0, inquiryOnly: true, image: "/devices/alienware-m15.jpg" },
-  { id: "awm15r5_ryzen", label: "Alienware m15 R5 (Ryzen)", base: 0, inquiryOnly: true, image: "/devices/alienware-m15.jpg" },
+  { id: "awm18r2", label: "Alienware m18 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-m18.webp" },
+  { id: "awm18r1", label: "Alienware m18 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-m18.webp" },
+  { id: "awm17r5", label: "Alienware m17 R5 (AMD flagship)", base: 0, inquiryOnly: true, image: "/devices/alienware-m17.webp" },
+  { id: "awm16r2", label: "Alienware m16 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-m16.webp" },
+  { id: "awm16r1", label: "Alienware m16 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-m16.webp" },
+  { id: "awm15r7", label: "Alienware m15 R7", base: 0, inquiryOnly: true, image: "/devices/alienware-m15.webp" },
+  { id: "awm15r6", label: "Alienware m15 R6", base: 0, inquiryOnly: true, image: "/devices/alienware-m15.webp" },
+  { id: "awm15r5_ryzen", label: "Alienware m15 R5 (Ryzen)", base: 0, inquiryOnly: true, image: "/devices/alienware-m15.webp" },
 ];
 const ALIENWARE_X_SERIES_VARIANTS = [
-  { id: "awx17r2", label: "Alienware x17 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-x17.jpg" },
-  { id: "awx17r1", label: "Alienware x17 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-x17.jpg" },
-  { id: "awx16r2", label: "Alienware x16 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-x16.jpg" },
-  { id: "awx16r1", label: "Alienware x16 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-x16.jpg" },
-  { id: "awx15r2", label: "Alienware x15 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-x15.jpg" },
-  { id: "awx15r1", label: "Alienware x15 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-x15.jpg" },
-  { id: "awx14r2", label: "Alienware x14 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-x14.jpg" },
-  { id: "awx14r1", label: "Alienware x14 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-x14.jpg" },
+  { id: "awx17r2", label: "Alienware x17 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-x17.webp" },
+  { id: "awx17r1", label: "Alienware x17 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-x17.webp" },
+  { id: "awx16r2", label: "Alienware x16 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-x16.webp" },
+  { id: "awx16r1", label: "Alienware x16 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-x16.webp" },
+  { id: "awx15r2", label: "Alienware x15 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-x15.webp" },
+  { id: "awx15r1", label: "Alienware x15 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-x15.webp" },
+  { id: "awx14r2", label: "Alienware x14 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-x14.webp" },
+  { id: "awx14r1", label: "Alienware x14 R1", base: 0, inquiryOnly: true, image: "/devices/alienware-x14.webp" },
 ];
 const ALIENWARE_AREA_SERIES_VARIANTS = [
-  { id: "aw18_a51_2026", label: "Alienware 18 Area-51 (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-18-area-51.jpg" },
-  { id: "aw16_a51_2026", label: "Alienware 16 Area-51 (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-16-area-51.jpg" },
-  { id: "aw_a51m_r2", label: "Alienware Area-51m R2", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51m.jpg" },
-  { id: "aw_a51m_r1", label: "Alienware Area-51m R1", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51m.jpg" },
+  { id: "aw18_a51_2026", label: "Alienware 18 Area-51 (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-18-area-51.webp" },
+  { id: "aw16_a51_2026", label: "Alienware 16 Area-51 (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-16-area-51.webp" },
+  { id: "aw_a51m_r2", label: "Alienware Area-51m R2", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51m.webp" },
+  { id: "aw_a51m_r1", label: "Alienware Area-51m R1", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51m.webp" },
 ];
 const ALIENWARE_AURORA_LAPTOP_VARIANTS = [
-  { id: "aw16x_aurora_2026", label: "Alienware 16X Aurora (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-16x-aurora.jpg" },
-  { id: "aw16_aurora_2026", label: "Alienware 16 Aurora (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-16-aurora.jpg" },
+  { id: "aw16x_aurora_2026", label: "Alienware 16X Aurora (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-16x-aurora.webp" },
+  { id: "aw16_aurora_2026", label: "Alienware 16 Aurora (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware-16-aurora.webp" },
 ];
 const ALIENWARE_17_VARIANTS = [
-  { id: "aw17r5", label: "Alienware 17 R5", base: 0, inquiryOnly: true, image: "/devices/alienware-17-r5.jpg" },
-  { id: "aw17r4", label: "Alienware 17 R4", base: 0, inquiryOnly: true, image: "/devices/alienware-17-r4.jpg" },
-  { id: "aw17r3", label: "Alienware 17 R3", base: 0, inquiryOnly: true, image: "/devices/alienware-17-r3.jpg" },
-  { id: "aw17r2", label: "Alienware 17 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-17-r2.jpg" },
+  { id: "aw17r5", label: "Alienware 17 R5", base: 0, inquiryOnly: true, image: "/devices/alienware-17-r5.webp" },
+  { id: "aw17r4", label: "Alienware 17 R4", base: 0, inquiryOnly: true, image: "/devices/alienware-17-r4.webp" },
+  { id: "aw17r3", label: "Alienware 17 R3", base: 0, inquiryOnly: true, image: "/devices/alienware-17-r3.webp" },
+  { id: "aw17r2", label: "Alienware 17 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-17-r2.webp" },
 ];
 const ALIENWARE_15_VARIANTS = [
-  { id: "aw15r4", label: "Alienware 15 R4", base: 0, inquiryOnly: true, image: "/devices/alienware-15-r4.jpg" },
-  { id: "aw15r3", label: "Alienware 15 R3", base: 0, inquiryOnly: true, image: "/devices/alienware-15-r3.jpg" },
-  { id: "aw15r2", label: "Alienware 15 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-15-r2.jpg" },
+  { id: "aw15r4", label: "Alienware 15 R4", base: 0, inquiryOnly: true, image: "/devices/alienware-15-r4.webp" },
+  { id: "aw15r3", label: "Alienware 15 R3", base: 0, inquiryOnly: true, image: "/devices/alienware-15-r3.webp" },
+  { id: "aw15r2", label: "Alienware 15 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-15-r2.webp" },
 ];
 const ALIENWARE_13_VARIANTS = [
-  { id: "aw13r3", label: "Alienware 13 R3", base: 0, inquiryOnly: true, image: "/devices/alienware-13-r3.jpg" },
-  { id: "aw13r2", label: "Alienware 13 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-13-r2.jpg" },
+  { id: "aw13r3", label: "Alienware 13 R3", base: 0, inquiryOnly: true, image: "/devices/alienware-13-r3.webp" },
+  { id: "aw13r2", label: "Alienware 13 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-13-r2.webp" },
 ];
 const ALIENWARE_SERIES = [
   { id: "aw_m_series", label: "M Series", year: "m15 / m16 / m17 / m18", topPrice: 0, variants: ALIENWARE_M_SERIES_VARIANTS, inquiryOnly: true },
@@ -431,13 +431,13 @@ const ASUS_DESKTOP_MODELS = [
 ];
 
 const ALIENWARE_DESKTOP_MODELS = [
-  { id: "awaurorar16", label: "Aurora R16", base: 800, image: "/devices/alienware-aurora-r16.jpg" },
-  { id: "awaurorar15", label: "Aurora R15", base: 600, image: "/devices/alienware-aurora-r15.jpg" },
-  { id: "awaurorar14", label: "Aurora R14", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r14.jpg" },
-  { id: "awaurorar13", label: "Aurora R13", base: 450, image: "/devices/alienware-aurora-r13.jpg" },
-  { id: "awaurorar12", label: "Aurora R12", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r12.jpg" },
-  { id: "awaurorar10", label: "Aurora R10", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r10.jpg" },
-  { id: "awarea51desktop", label: "Area-51 Desktop", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51-desktop.jpg" },
+  { id: "awaurorar16", label: "Aurora R16", base: 800, image: "/devices/alienware-aurora-r16.webp" },
+  { id: "awaurorar15", label: "Aurora R15", base: 600, image: "/devices/alienware-aurora-r15.webp" },
+  { id: "awaurorar14", label: "Aurora R14", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r14.webp" },
+  { id: "awaurorar13", label: "Aurora R13", base: 450, image: "/devices/alienware-aurora-r13.webp" },
+  { id: "awaurorar12", label: "Aurora R12", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r12.webp" },
+  { id: "awaurorar10", label: "Aurora R10", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r10.webp" },
+  { id: "awarea51desktop", label: "Area-51 Desktop", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51-desktop.webp" },
 ];
 
 const MSI_DESKTOP_MODELS = [
@@ -450,26 +450,26 @@ const MSI_DESKTOP_MODELS = [
 
 const IPAD_SERIES = [
   { id: "ipadpro", label: "iPad Pro", topPrice: 610, image: "/ipadpro.png", variants: [
-    { id: "ipadpro13m5", label: "iPad Pro 13\" M5", base: 610, image: "/devices/ipad-pro-13-m5.jpg" },
-    { id: "ipadpro11m5", label: "iPad Pro 11\" M5", base: 475, image: "/devices/ipad-pro-11-m5.jpg" },
-    { id: "ipadpro13m4", label: "iPad Pro 13\" M4", base: 500, image: "/devices/ipad-pro-13-m4.jpg" },
-    { id: "ipadpro11m4", label: "iPad Pro 11\" M4", base: 350, image: "/devices/ipad-pro-11-m4.jpg" },
-    { id: "ipadpro129g6", label: "iPad Pro 12.9\" 6th Gen", base: 270, image: "/devices/ipad-pro-12-9.jpg" },
-    { id: "ipadpro11g4", label: "iPad Pro 11\" 4th Gen", base: 225, image: "/devices/ipad-pro-11-4g.jpg" },
+    { id: "ipadpro13m5", label: "iPad Pro 13\" M5", base: 610, image: "/devices/ipad-pro-13-m5.webp" },
+    { id: "ipadpro11m5", label: "iPad Pro 11\" M5", base: 475, image: "/devices/ipad-pro-11-m5.webp" },
+    { id: "ipadpro13m4", label: "iPad Pro 13\" M4", base: 500, image: "/devices/ipad-pro-13-m4.webp" },
+    { id: "ipadpro11m4", label: "iPad Pro 11\" M4", base: 350, image: "/devices/ipad-pro-11-m4.webp" },
+    { id: "ipadpro129g6", label: "iPad Pro 12.9\" 6th Gen", base: 270, image: "/devices/ipad-pro-12-9.webp" },
+    { id: "ipadpro11g4", label: "iPad Pro 11\" 4th Gen", base: 225, image: "/devices/ipad-pro-11-4g.webp" },
   ]},
   { id: "ipadair", label: "iPad Air", topPrice: 360, image: "/ipadair.png", variants: [
-    { id: "ipadair13m3", label: "iPad Air 13\" M3", base: 360, image: "/devices/ipad-air-13-m3.jpg" },
-    { id: "ipadair11m3", label: "iPad Air 11\" M3", base: 275, image: "/devices/ipad-air-11-m3.jpg" },
-    { id: "ipadair13m2", label: "iPad Air 13\" M2", base: 275, image: "/devices/ipad-air-13-m2.jpg" },
-    { id: "ipadair11m2", label: "iPad Air 11\" M2", base: 200, image: "/devices/ipad-air-11-m2.jpg" },
+    { id: "ipadair13m3", label: "iPad Air 13\" M3", base: 360, image: "/devices/ipad-air-13-m3.webp" },
+    { id: "ipadair11m3", label: "iPad Air 11\" M3", base: 275, image: "/devices/ipad-air-11-m3.webp" },
+    { id: "ipadair13m2", label: "iPad Air 13\" M2", base: 275, image: "/devices/ipad-air-13-m2.webp" },
+    { id: "ipadair11m2", label: "iPad Air 11\" M2", base: 200, image: "/devices/ipad-air-11-m2.webp" },
   ]},
   { id: "ipadmini", label: "iPad Mini", topPrice: 225, image: "/ipadmini.png", variants: [
-    { id: "ipadmini7", label: "iPad Mini 7th Gen", base: 225, image: "/devices/ipad-mini-7.jpg" },
-    { id: "ipadmini6", label: "iPad Mini 6th Gen", base: 150, image: "/devices/ipad-mini-6.jpg" },
+    { id: "ipadmini7", label: "iPad Mini 7th Gen", base: 225, image: "/devices/ipad-mini-7.webp" },
+    { id: "ipadmini6", label: "iPad Mini 6th Gen", base: 150, image: "/devices/ipad-mini-6.webp" },
   ]},
   { id: "ipadbase", label: "iPad", topPrice: 150, image: "/ipadbase.png", variants: [
-    { id: "ipad10", label: "iPad 10th Gen", base: 150, image: "/devices/ipad-10.jpg" },
-    { id: "ipad9", label: "iPad 9th Gen", base: 100, image: "/devices/ipad-9.jpg" },
+    { id: "ipad10", label: "iPad 10th Gen", base: 150, image: "/devices/ipad-10.webp" },
+    { id: "ipad9", label: "iPad 9th Gen", base: 100, image: "/devices/ipad-9.webp" },
   ]},
 ];
 
