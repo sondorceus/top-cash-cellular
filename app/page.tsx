@@ -171,16 +171,16 @@ const MACBOOK_SERIES = [
 ];
 
 const SAMSUNG_PC_MODELS = [
-  { id: "sgbk4u", label: "Galaxy Book 4 Ultra", base: 750 },
-  { id: "sgbk4p", label: "Galaxy Book 4 Pro 360", base: 600 },
-  { id: "sgbk4pro", label: "Galaxy Book 4 Pro", base: 520 },
-  { id: "sgbk4", label: "Galaxy Book 4", base: 350 },
-  { id: "sgbk3u", label: "Galaxy Book 3 Ultra", base: 580 },
-  { id: "sgbk3p", label: "Galaxy Book 3 Pro 360", base: 450 },
-  { id: "sgbk3pro", label: "Galaxy Book 3 Pro", base: 380 },
-  { id: "sgbk3", label: "Galaxy Book 3", base: 250 },
-  { id: "sgbk2p", label: "Galaxy Book 2 Pro", base: 280 },
-  { id: "sgbk2", label: "Galaxy Book 2", base: 180 },
+  { id: "sgbk4u", label: "Galaxy Book 4 Ultra", base: 750, image: "/devices/galaxy-book.jpg" },
+  { id: "sgbk4p", label: "Galaxy Book 4 Pro 360", base: 600, image: "/devices/galaxy-book.jpg" },
+  { id: "sgbk4pro", label: "Galaxy Book 4 Pro", base: 520, image: "/devices/galaxy-book.jpg" },
+  { id: "sgbk4", label: "Galaxy Book 4", base: 350, image: "/devices/galaxy-book.jpg" },
+  { id: "sgbk3u", label: "Galaxy Book 3 Ultra", base: 580, image: "/devices/galaxy-book.jpg" },
+  { id: "sgbk3p", label: "Galaxy Book 3 Pro 360", base: 450, image: "/devices/galaxy-book.jpg" },
+  { id: "sgbk3pro", label: "Galaxy Book 3 Pro", base: 380, image: "/devices/galaxy-book.jpg" },
+  { id: "sgbk3", label: "Galaxy Book 3", base: 250, image: "/devices/galaxy-book.jpg" },
+  { id: "sgbk2p", label: "Galaxy Book 2 Pro", base: 280, image: "/devices/galaxy-book.jpg" },
+  { id: "sgbk2", label: "Galaxy Book 2", base: 180, image: "/devices/galaxy-book.jpg" },
 ];
 
 const LENOVO_MODELS = [
@@ -210,37 +210,37 @@ const DELL_MODELS = [
 ];
 
 const ALIENWARE_FLAGSHIP_VARIANTS = [
-  { id: "aw18_a51_2026", label: "Alienware 18 Area-51 (2026)", base: 0, inquiryOnly: true },
-  { id: "aw16_a51_2026", label: "Alienware 16 Area-51 (2026)", base: 0, inquiryOnly: true },
-  { id: "awm18r2", label: "Alienware m18 R2", base: 0, inquiryOnly: true },
-  { id: "awm18r1", label: "Alienware m18 R1", base: 0, inquiryOnly: true },
-  { id: "aw_a51m_r2", label: "Alienware Area-51m R2", base: 0, inquiryOnly: true },
-  { id: "aw_a51m_r1", label: "Alienware Area-51m R1", base: 0, inquiryOnly: true },
+  { id: "aw18_a51_2026", label: "Alienware 18 Area-51 (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "aw16_a51_2026", label: "Alienware 16 Area-51 (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awm18r2", label: "Alienware m18 R2", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awm18r1", label: "Alienware m18 R1", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "aw_a51m_r2", label: "Alienware Area-51m R2", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "aw_a51m_r1", label: "Alienware Area-51m R1", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
 ];
 const ALIENWARE_AURORA_VARIANTS = [
-  { id: "aw16x_aurora_2026", label: "Alienware 16X Aurora (2026)", base: 0, inquiryOnly: true },
-  { id: "aw16_aurora_2026", label: "Alienware 16 Aurora (2026)", base: 0, inquiryOnly: true },
-  { id: "awx16r2", label: "Alienware x16 R2", base: 0, inquiryOnly: true },
-  { id: "awx16r1", label: "Alienware x16 R1", base: 0, inquiryOnly: true },
-  { id: "awx14r2", label: "Alienware x14 R2", base: 0, inquiryOnly: true },
-  { id: "awx14r1", label: "Alienware x14 R1", base: 0, inquiryOnly: true },
-  { id: "awx17r2", label: "Alienware x17 R2", base: 0, inquiryOnly: true },
-  { id: "awx17r1", label: "Alienware x17 R1", base: 0, inquiryOnly: true },
-  { id: "awx15r2", label: "Alienware x15 R2", base: 0, inquiryOnly: true },
-  { id: "awx15r1", label: "Alienware x15 R1", base: 0, inquiryOnly: true },
+  { id: "aw16x_aurora_2026", label: "Alienware 16X Aurora (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "aw16_aurora_2026", label: "Alienware 16 Aurora (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awx16r2", label: "Alienware x16 R2", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awx16r1", label: "Alienware x16 R1", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awx14r2", label: "Alienware x14 R2", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awx14r1", label: "Alienware x14 R1", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awx17r2", label: "Alienware x17 R2", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awx17r1", label: "Alienware x17 R1", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awx15r2", label: "Alienware x15 R2", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awx15r1", label: "Alienware x15 R1", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
 ];
 const ALIENWARE_ULTRASLIM_VARIANTS = [
-  { id: "aw16_ultraslim_2026", label: "Alienware 16 Ultraslim (2026)", base: 0, inquiryOnly: true },
-  { id: "aw14_ultraslim_2026", label: "Alienware 14 Ultraslim (2026)", base: 0, inquiryOnly: true },
+  { id: "aw16_ultraslim_2026", label: "Alienware 16 Ultraslim (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "aw14_ultraslim_2026", label: "Alienware 14 Ultraslim (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
 ];
 const ALIENWARE_MAINSTREAM_VARIANTS = [
-  { id: "aw_entry_2026", label: "Alienware Entry-Level (2026)", base: 0, inquiryOnly: true },
-  { id: "awm16r2", label: "Alienware m16 R2", base: 0, inquiryOnly: true },
-  { id: "awm16r1", label: "Alienware m16 R1", base: 0, inquiryOnly: true },
-  { id: "awm17r5", label: "Alienware m17 R5 (AMD flagship)", base: 0, inquiryOnly: true },
-  { id: "awm15r7", label: "Alienware m15 R7", base: 0, inquiryOnly: true },
-  { id: "awm15r6", label: "Alienware m15 R6", base: 0, inquiryOnly: true },
-  { id: "awm15r5_ryzen", label: "Alienware m15 R5 (Ryzen)", base: 0, inquiryOnly: true },
+  { id: "aw_entry_2026", label: "Alienware Entry-Level (2026)", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awm16r2", label: "Alienware m16 R2", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awm16r1", label: "Alienware m16 R1", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awm17r5", label: "Alienware m17 R5 (AMD flagship)", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awm15r7", label: "Alienware m15 R7", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awm15r6", label: "Alienware m15 R6", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
+  { id: "awm15r5_ryzen", label: "Alienware m15 R5 (Ryzen)", base: 0, inquiryOnly: true, image: "/devices/alienware.jpg" },
 ];
 const ALIENWARE_SERIES = [
   { id: "aw_flagship", label: "Flagship", year: "Area-51 / m18", topPrice: 0, variants: ALIENWARE_FLAGSHIP_VARIANTS, inquiryOnly: true },
@@ -280,44 +280,44 @@ const ACER_MODELS = [
 ];
 
 const LG_GRAM_STANDARD_VARIANTS = [
-  { id: "lg_gr17_24", label: "LG Gram 17 (17Z90S, 2024)", base: 0, inquiryOnly: true },
-  { id: "lg_gr16_24", label: "LG Gram 16 (16Z90S, 2024)", base: 0, inquiryOnly: true },
-  { id: "lg_gr14_24", label: "LG Gram 14 (14Z90S, 2024)", base: 0, inquiryOnly: true },
-  { id: "lg_gr17_23", label: "LG Gram 17 (17Z90R, 2023)", base: 0, inquiryOnly: true },
-  { id: "lg_gr16_23", label: "LG Gram 16 (16Z90R, 2023)", base: 0, inquiryOnly: true },
-  { id: "lg_gr15_23", label: "LG Gram 15 (15Z90R, 2023)", base: 0, inquiryOnly: true },
-  { id: "lg_gr14_23", label: "LG Gram 14 (14Z90R, 2023)", base: 0, inquiryOnly: true },
+  { id: "lg_gr17_24", label: "LG Gram 17 (17Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_gr16_24", label: "LG Gram 16 (16Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_gr14_24", label: "LG Gram 14 (14Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_gr17_23", label: "LG Gram 17 (17Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_gr16_23", label: "LG Gram 16 (16Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_gr15_23", label: "LG Gram 15 (15Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_gr14_23", label: "LG Gram 14 (14Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
 ];
 const LG_GRAM_2IN1_VARIANTS = [
-  { id: "lg_gr16t_24", label: "LG Gram 16 2-in-1 (16T90S, 2024)", base: 0, inquiryOnly: true },
-  { id: "lg_gr14t_24", label: "LG Gram 14 2-in-1 (14T90S, 2024)", base: 0, inquiryOnly: true },
-  { id: "lg_gr16t_23", label: "LG Gram 16 2-in-1 (16T90R, 2023)", base: 0, inquiryOnly: true },
-  { id: "lg_gr14t_23", label: "LG Gram 14 2-in-1 (14T90R, 2023)", base: 0, inquiryOnly: true },
+  { id: "lg_gr16t_24", label: "LG Gram 16 2-in-1 (16T90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_gr14t_24", label: "LG Gram 14 2-in-1 (14T90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_gr16t_23", label: "LG Gram 16 2-in-1 (16T90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_gr14t_23", label: "LG Gram 14 2-in-1 (14T90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
 ];
 const LG_GRAM_STYLE_VARIANTS = [
-  { id: "lg_grstyle16", label: "LG Gram Style 16 (16Z90RS, 2023)", base: 0, inquiryOnly: true },
-  { id: "lg_grstyle14", label: "LG Gram Style 14 (14Z90RS, 2023)", base: 0, inquiryOnly: true },
+  { id: "lg_grstyle16", label: "LG Gram Style 16 (16Z90RS, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_grstyle14", label: "LG Gram Style 14 (14Z90RS, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
 ];
 const LG_GRAM_ULTRASLIM_VARIANTS = [
-  { id: "lg_grultra15", label: "LG Gram Ultraslim 15 (15Z90RT, 2023)", base: 0, inquiryOnly: true },
+  { id: "lg_grultra15", label: "LG Gram Ultraslim 15 (15Z90RT, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
 ];
 const LG_GRAM_PRO_VARIANTS = [
-  { id: "lg_grpro17_25", label: "LG Gram Pro 17 (17Z90TR, 2025)", base: 0, inquiryOnly: true },
-  { id: "lg_grpro16_25", label: "LG Gram Pro 16 (16Z90TR, 2025)", base: 0, inquiryOnly: true },
-  { id: "lg_grpro17_24", label: "LG Gram Pro 17 (17Z90SP, 2024)", base: 0, inquiryOnly: true },
-  { id: "lg_grpro16_24", label: "LG Gram Pro 16 (16Z90SP, 2024)", base: 0, inquiryOnly: true },
+  { id: "lg_grpro17_25", label: "LG Gram Pro 17 (17Z90TR, 2025)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_grpro16_25", label: "LG Gram Pro 16 (16Z90TR, 2025)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_grpro17_24", label: "LG Gram Pro 17 (17Z90SP, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_grpro16_24", label: "LG Gram Pro 16 (16Z90SP, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
 ];
 const LG_GRAM_PRO_2IN1_VARIANTS = [
-  { id: "lg_grpro16t_24", label: "LG Gram Pro 16 2-in-1 (16T90SP, 2024)", base: 0, inquiryOnly: true },
+  { id: "lg_grpro16t_24", label: "LG Gram Pro 16 2-in-1 (16T90SP, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
 ];
 const LG_GRAM_BOOK_VARIANTS = [
-  { id: "lg_grbook16", label: "LG Gram Book 16 (2024–2025)", base: 0, inquiryOnly: true },
-  { id: "lg_grbook15", label: "LG Gram Book 15.6 (2024–2025)", base: 0, inquiryOnly: true },
+  { id: "lg_grbook16", label: "LG Gram Book 16 (2024–2025)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_grbook15", label: "LG Gram Book 15.6 (2024–2025)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
 ];
 const LG_ULTRAGEAR_VARIANTS = [
-  { id: "lg_ultragear16_24", label: "LG UltraGear 16 (16G90S, 2024)", base: 0, inquiryOnly: true },
-  { id: "lg_ultragear16_23", label: "LG UltraGear 16 (16G90R, 2023)", base: 0, inquiryOnly: true },
-  { id: "lg_ultragear16_22", label: "LG UltraGear 16 (16G90Q, 2022)", base: 0, inquiryOnly: true },
+  { id: "lg_ultragear16_24", label: "LG UltraGear 16 (16G90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_ultragear16_23", label: "LG UltraGear 16 (16G90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_ultragear16_22", label: "LG UltraGear 16 (16G90Q, 2022)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
 ];
 const LG_PC_SERIES = [
   { id: "lg_gram", label: "Gram", year: "Standard", topPrice: 0, variants: LG_GRAM_STANDARD_VARIANTS, inquiryOnly: true },
@@ -402,12 +402,12 @@ const HP_DESKTOP_MODELS = [
 ];
 
 const ASUS_DESKTOP_MODELS = [
-  { id: "asrogstrix", label: "ROG Strix G16CH", base: 700 },
-  { id: "asroghyper", label: "ROG Hyperion", base: 1200 },
-  { id: "asrogflow", label: "ROG NUC", base: 500 },
-  { id: "astufgaming", label: "TUF Gaming Desktop", base: 450 },
-  { id: "asexperpro", label: "ExpertCenter D5", base: 300 },
-  { id: "asnuc14", label: "NUC 14 Pro", base: 350 },
+  { id: "asrogstrix", label: "ROG Strix G16CH", base: 700, image: "/devices/asus-rog-desktop.jpg" },
+  { id: "asroghyper", label: "ROG Hyperion", base: 1200, image: "/devices/asus-rog-desktop.jpg" },
+  { id: "asrogflow", label: "ROG NUC", base: 500, image: "/devices/asus-rog-desktop.jpg" },
+  { id: "astufgaming", label: "TUF Gaming Desktop", base: 450, image: "/devices/asus-rog-desktop.jpg" },
+  { id: "asexperpro", label: "ExpertCenter D5", base: 300, image: "/devices/asus-rog-desktop.jpg" },
+  { id: "asnuc14", label: "NUC 14 Pro", base: 350, image: "/devices/asus-rog-desktop.jpg" },
 ];
 
 const ALIENWARE_DESKTOP_MODELS = [
@@ -417,11 +417,11 @@ const ALIENWARE_DESKTOP_MODELS = [
 ];
 
 const MSI_DESKTOP_MODELS = [
-  { id: "msiinfinity", label: "MEG Trident X2", base: 900 },
-  { id: "msitrident", label: "MAG Trident S5", base: 550 },
-  { id: "msinightblade", label: "MAG Codex 6", base: 650 },
-  { id: "msicodex5", label: "MAG Codex 5", base: 450 },
-  { id: "msipro", label: "PRO DP180", base: 300 },
+  { id: "msiinfinity", label: "MEG Trident X2", base: 900, image: "/devices/msi-laptop.jpg" },
+  { id: "msitrident", label: "MAG Trident S5", base: 550, image: "/devices/msi-laptop.jpg" },
+  { id: "msinightblade", label: "MAG Codex 6", base: 650, image: "/devices/msi-laptop.jpg" },
+  { id: "msicodex5", label: "MAG Codex 5", base: 450, image: "/devices/msi-laptop.jpg" },
+  { id: "msipro", label: "PRO DP180", base: 300, image: "/devices/msi-laptop.jpg" },
 ];
 
 const IPAD_SERIES = [
@@ -559,13 +559,13 @@ const PSVR_MODELS = [
 ];
 
 const SAMSUNG_TAB_MODELS = [
-  { id: "stabs9u", label: "Galaxy Tab S9 Ultra" },
-  { id: "stabs9p", label: "Galaxy Tab S9+" },
-  { id: "stabs9", label: "Galaxy Tab S9" },
-  { id: "stabs8u", label: "Galaxy Tab S8 Ultra" },
-  { id: "stabs8p", label: "Galaxy Tab S8+" },
-  { id: "stabs8", label: "Galaxy Tab S8" },
-  { id: "staba9", label: "Galaxy Tab A9+" },
+  { id: "stabs9u", label: "Galaxy Tab S9 Ultra", image: "/devices/galaxy-tab.jpg" },
+  { id: "stabs9p", label: "Galaxy Tab S9+", image: "/devices/galaxy-tab.jpg" },
+  { id: "stabs9", label: "Galaxy Tab S9", image: "/devices/galaxy-tab.jpg" },
+  { id: "stabs8u", label: "Galaxy Tab S8 Ultra", image: "/devices/galaxy-tab.jpg" },
+  { id: "stabs8p", label: "Galaxy Tab S8+", image: "/devices/galaxy-tab.jpg" },
+  { id: "stabs8", label: "Galaxy Tab S8", image: "/devices/galaxy-tab.jpg" },
+  { id: "staba9", label: "Galaxy Tab A9+", image: "/devices/galaxy-tab.jpg" },
 ];
 
 const SURFACE_PRO_VARIANTS = [
