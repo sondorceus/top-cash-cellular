@@ -197,16 +197,16 @@ const LENOVO_MODELS = [
 ];
 
 const DELL_MODELS = [
-  { id: "dxps17", label: "XPS 17 (2024)", base: 750 },
-  { id: "dxps15", label: "XPS 15 (2024)", base: 620 },
-  { id: "dxps13", label: "XPS 13 (2024)", base: 480 },
-  { id: "dxps15g23", label: "XPS 15 (2023)", base: 500 },
-  { id: "dxps13g23", label: "XPS 13 (2023)", base: 380 },
-  { id: "dlat7440", label: "Latitude 7440", base: 420 },
-  { id: "dlat5540", label: "Latitude 5540", base: 300 },
-  { id: "dinsp16p", label: "Inspiron 16 Plus", base: 350 },
-  { id: "dinsp15", label: "Inspiron 15", base: 220 },
-  { id: "dinsp14", label: "Inspiron 14", base: 200 },
+  { id: "dxps17", label: "XPS 17 (2024)", base: 750, image: "/devices/dell-xps.jpg" },
+  { id: "dxps15", label: "XPS 15 (2024)", base: 620, image: "/devices/dell-xps.jpg" },
+  { id: "dxps13", label: "XPS 13 (2024)", base: 480, image: "/devices/dell-xps.jpg" },
+  { id: "dxps15g23", label: "XPS 15 (2023)", base: 500, image: "/devices/dell-xps.jpg" },
+  { id: "dxps13g23", label: "XPS 13 (2023)", base: 380, image: "/devices/dell-xps.jpg" },
+  { id: "dlat7440", label: "Latitude 7440", base: 420, image: "/devices/dell-latitude.jpg" },
+  { id: "dlat5540", label: "Latitude 5540", base: 300, image: "/devices/dell-latitude.jpg" },
+  { id: "dinsp16p", label: "Inspiron 16 Plus", base: 350, image: "/devices/dell-inspiron.jpg" },
+  { id: "dinsp15", label: "Inspiron 15", base: 220, image: "/devices/dell-inspiron.jpg" },
+  { id: "dinsp14", label: "Inspiron 14", base: 200, image: "/devices/dell-inspiron.jpg" },
 ];
 
 const ALIENWARE_FLAGSHIP_VARIANTS = [
