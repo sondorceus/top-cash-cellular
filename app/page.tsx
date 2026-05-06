@@ -396,27 +396,27 @@ const APPLE_DESKTOP_MODELS = [
 ];
 
 const DELL_DESKTOP_MODELS = [
-  { id: "doptiplex7010", label: "OptiPlex 7010", base: 350, image: "/devices/dell-optiplex.jpg" },
-  { id: "doptiplex5000", label: "OptiPlex 5000", base: 280, image: "/devices/dell-optiplex.jpg" },
-  { id: "dxps8960", label: "XPS Desktop 8960", base: 500, image: "/devices/dell-xps-desktop.webp" },
-  { id: "dxps8950", label: "XPS Desktop 8950", base: 380, image: "/devices/dell-xps-desktop.webp" },
+  { id: "doptiplex7010", label: "OptiPlex 7010", base: 350, image: "/devices/dell-optiplex-tower.webp" },
+  { id: "doptiplex5000", label: "OptiPlex 5000", base: 280, image: "/devices/dell-optiplex-sff.webp" },
+  { id: "dxps8960", label: "XPS Desktop 8960", base: 500, image: "/devices/dell-xps-8960.webp" },
+  { id: "dxps8950", label: "XPS Desktop 8950", base: 380, image: "/devices/dell-xps-8950.webp" },
   { id: "dinsp3030", label: "Inspiron 3030 Desktop", base: 250 },
-  { id: "dprecision3680", label: "Precision 3680", base: 550, image: "/devices/dell-precision.jpg" },
+  { id: "dprecision3680", label: "Precision 3680", base: 550, image: "/devices/dell-optiplex-tower.webp" },
 ];
 
 const LENOVO_DESKTOP_MODELS = [
-  { id: "lnthinkm", label: "ThinkCentre M920", base: 300 },
-  { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 350 },
-  { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 550 },
-  { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 750 },
-  { id: "lnideactower", label: "IdeaCentre 5i", base: 250 },
+  { id: "lnthinkm", label: "ThinkCentre M920", base: 300, image: "/devices/lenovo-thinkcentre-tower.webp" },
+  { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 350, image: "/devices/lenovo-thinkcentre-tiny.webp" },
+  { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 550, image: "/devices/lenovo-thinkcentre-tower.webp" },
+  { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 750, image: "/devices/lenovo-thinkcentre-tower.webp" },
+  { id: "lnideactower", label: "IdeaCentre 5i", base: 250, image: "/devices/lenovo-thinkcentre-sff.webp" },
 ];
 
 const HP_DESKTOP_MODELS = [
   { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 400 },
   { id: "hpprodesk", label: "ProDesk 400 G9", base: 280 },
-  { id: "hpomendsk", label: "OMEN 45L Desktop", base: 650 },
-  { id: "hpomen40", label: "OMEN 40L Desktop", base: 500 },
+  { id: "hpomendsk", label: "OMEN 45L Desktop", base: 650, image: "/devices/hp-omen-45l.webp" },
+  { id: "hpomen40", label: "OMEN 40L Desktop", base: 500, image: "/devices/hp-omen-35l.webp" },
   { id: "hpenvy34", label: "Envy 34 All-in-One", base: 550 },
   { id: "hppav32", label: "Pavilion 32 All-in-One", base: 380 },
 ];
@@ -441,11 +441,11 @@ const ALIENWARE_DESKTOP_MODELS = [
 ];
 
 const MSI_DESKTOP_MODELS = [
-  { id: "msiinfinity", label: "MEG Trident X2", base: 900, image: "/devices/msi-laptop.jpg" },
-  { id: "msitrident", label: "MAG Trident S5", base: 550, image: "/devices/msi-laptop.jpg" },
-  { id: "msinightblade", label: "MAG Codex 6", base: 650, image: "/devices/msi-laptop.jpg" },
-  { id: "msicodex5", label: "MAG Codex 5", base: 450, image: "/devices/msi-laptop.jpg" },
-  { id: "msipro", label: "PRO DP180", base: 300, image: "/devices/msi-laptop.jpg" },
+  { id: "msiinfinity", label: "MEG Trident X2", base: 900, image: "/devices/msi-trident.webp" },
+  { id: "msitrident", label: "MAG Trident S5", base: 550, image: "/devices/msi-trident.webp" },
+  { id: "msinightblade", label: "MAG Codex 6", base: 650, image: "/devices/msi-codex.webp" },
+  { id: "msicodex5", label: "MAG Codex 5", base: 450, image: "/devices/msi-codex.webp" },
+  { id: "msipro", label: "PRO DP180", base: 300, image: "/devices/msi-aegis.webp" },
 ];
 
 const IPAD_SERIES = [
