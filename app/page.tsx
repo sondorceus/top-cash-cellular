@@ -452,16 +452,16 @@ const IPAD_SERIES = [
 const IPAD_MODELS = IPAD_SERIES.flatMap(s => s.variants);
 
 const PS5_VARIANTS = [
-  { id: "ps5pro", label: "PlayStation 5 Pro (2024)", base: 0, inquiryOnly: true, image: "/devices/ps5.jpg" },
+  { id: "ps5pro", label: "PlayStation 5 Pro (2024)", base: 0, inquiryOnly: true, image: "/devices/ps5pro.jpg" },
   { id: "ps5", label: "PlayStation 5 (Standard, Disc)", base: 300, image: "/devices/ps5.jpg" },
   { id: "ps5d", label: "PlayStation 5 Digital", base: 250, image: "/devices/ps5.jpg" },
   { id: "ps5slim", label: "PlayStation 5 Slim (Disc)", base: 0, inquiryOnly: true, image: "/devices/ps5.jpg" },
   { id: "ps5slim_d", label: "PlayStation 5 Slim Digital", base: 0, inquiryOnly: true, image: "/devices/ps5.jpg" },
 ];
 const PS4_VARIANTS = [
-  { id: "ps4pro", label: "PlayStation 4 Pro", base: 150, image: "/devices/ps4.jpg" },
+  { id: "ps4pro", label: "PlayStation 4 Pro", base: 150, image: "/devices/ps4pro.jpg" },
   { id: "ps4", label: "PlayStation 4 (Standard)", base: 100, image: "/devices/ps4.jpg" },
-  { id: "ps4slim", label: "PlayStation 4 Slim", base: 0, inquiryOnly: true, image: "/devices/ps4.jpg" },
+  { id: "ps4slim", label: "PlayStation 4 Slim", base: 0, inquiryOnly: true, image: "/devices/ps4slim.jpg" },
 ];
 const SONY_SERIES = [
   { id: "ps5_family", label: "PlayStation 5", year: "Pro · Std · Slim", topPrice: 300, image: "/ps5-series.webp", variants: PS5_VARIANTS },
@@ -476,9 +476,9 @@ const MICROSOFT_MODELS = [
 ];
 
 const NINTENDO_MODELS = [
-  { id: "switch", label: "Nintendo Switch OLED", base: 180, image: "/devices/nintendo-switch.jpg" },
+  { id: "switch", label: "Nintendo Switch OLED", base: 180, image: "/devices/switch-oled.jpg" },
   { id: "switchv2", label: "Nintendo Switch V2", base: 130, image: "/devices/nintendo-switch.jpg" },
-  { id: "switchlite", label: "Nintendo Switch Lite", base: 90, image: "/devices/nintendo-switch.jpg" },
+  { id: "switchlite", label: "Nintendo Switch Lite", base: 90, image: "/devices/switch-lite.jpg" },
 ];
 
 const CONSOLE_MODELS = [...SONY_MODELS, ...MICROSOFT_MODELS, ...NINTENDO_MODELS];
