@@ -426,26 +426,26 @@ const MSI_DESKTOP_MODELS = [
 
 const IPAD_SERIES = [
   { id: "ipadpro", label: "iPad Pro", topPrice: 610, image: "/ipadpro.png", variants: [
-    { id: "ipadpro13m5", label: "iPad Pro 13\" M5", base: 610 },
-    { id: "ipadpro11m5", label: "iPad Pro 11\" M5", base: 475 },
-    { id: "ipadpro13m4", label: "iPad Pro 13\" M4", base: 500 },
-    { id: "ipadpro11m4", label: "iPad Pro 11\" M4", base: 350 },
-    { id: "ipadpro129g6", label: "iPad Pro 12.9\" 6th Gen", base: 270 },
-    { id: "ipadpro11g4", label: "iPad Pro 11\" 4th Gen", base: 225 },
+    { id: "ipadpro13m5", label: "iPad Pro 13\" M5", base: 610, image: "/devices/ipad-pro-13-m5.jpg" },
+    { id: "ipadpro11m5", label: "iPad Pro 11\" M5", base: 475, image: "/devices/ipad-pro-11-m5.jpg" },
+    { id: "ipadpro13m4", label: "iPad Pro 13\" M4", base: 500, image: "/devices/ipad-pro-m4.jpg" },
+    { id: "ipadpro11m4", label: "iPad Pro 11\" M4", base: 350, image: "/devices/ipad-pro-m4.jpg" },
+    { id: "ipadpro129g6", label: "iPad Pro 12.9\" 6th Gen", base: 270, image: "/devices/ipad-pro-12-9.jpg" },
+    { id: "ipadpro11g4", label: "iPad Pro 11\" 4th Gen", base: 225, image: "/devices/ipad-pro-11-4g.jpg" },
   ]},
   { id: "ipadair", label: "iPad Air", topPrice: 360, image: "/ipadair.png", variants: [
-    { id: "ipadair13m3", label: "iPad Air 13\" M3", base: 360 },
-    { id: "ipadair11m3", label: "iPad Air 11\" M3", base: 275 },
-    { id: "ipadair13m2", label: "iPad Air 13\" M2", base: 275 },
-    { id: "ipadair11m2", label: "iPad Air 11\" M2", base: 200 },
+    { id: "ipadair13m3", label: "iPad Air 13\" M3", base: 360, image: "/devices/ipad-air-m3.jpg" },
+    { id: "ipadair11m3", label: "iPad Air 11\" M3", base: 275, image: "/devices/ipad-air-m3.jpg" },
+    { id: "ipadair13m2", label: "iPad Air 13\" M2", base: 275, image: "/devices/ipad-air-m2.jpg" },
+    { id: "ipadair11m2", label: "iPad Air 11\" M2", base: 200, image: "/devices/ipad-air-m2.jpg" },
   ]},
   { id: "ipadmini", label: "iPad Mini", topPrice: 225, image: "/ipadmini.png", variants: [
-    { id: "ipadmini7", label: "iPad Mini 7th Gen", base: 225 },
-    { id: "ipadmini6", label: "iPad Mini 6th Gen", base: 150 },
+    { id: "ipadmini7", label: "iPad Mini 7th Gen", base: 225, image: "/devices/ipad-mini-7.jpg" },
+    { id: "ipadmini6", label: "iPad Mini 6th Gen", base: 150, image: "/devices/ipad-mini-7.jpg" },
   ]},
   { id: "ipadbase", label: "iPad", topPrice: 150, image: "/ipadbase.png", variants: [
-    { id: "ipad10", label: "iPad 10th Gen", base: 150 },
-    { id: "ipad9", label: "iPad 9th Gen", base: 100 },
+    { id: "ipad10", label: "iPad 10th Gen", base: 150, image: "/devices/ipad-10.jpg" },
+    { id: "ipad9", label: "iPad 9th Gen", base: 100, image: "/devices/ipad-9.jpg" },
   ]},
 ];
 
@@ -2474,15 +2474,23 @@ export default function Home() {
                   </div>
                 ) : null; })()}
                 <div className="space-y-2">
-                  {models.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                      <p className="font-semibold text-[15px]">{m.label}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">up to ${maxQuoteFor(m)}</span>
-                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                      </div>
-                    </button>
-                  ))}
+                  {models.map((m) => {
+                    const mImg = (m as { image?: string }).image;
+                    return (
+                      <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                        {mImg ? (
+                          <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-12 object-contain shrink-0" />
+                        ) : (
+                          <div className="w-12 h-12 shrink-0" />
+                        )}
+                        <p className="font-semibold text-[15px] flex-1">{m.label}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[#00c853] font-bold text-sm">up to ${maxQuoteFor(m)}</span>
+                          <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </>
             )}
