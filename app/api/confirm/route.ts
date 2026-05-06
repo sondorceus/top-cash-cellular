@@ -119,9 +119,9 @@ ${phone ? `<tr><td style="padding:5px 0;color:#888;font-size:13px">Phone</td><td
 
 <!-- Footer -->
 <tr><td style="background:#0a0a0a;padding:20px;text-align:center;border-top:1px solid #222">
-<div style="margin-bottom:6px"><a href="tel:+18775492056" style="color:#00c853;text-decoration:none;font-size:15px;font-weight:700">(877) 549-2056</a></div>
+<div style="margin-bottom:6px"><a href="mailto:topcashcellular@gmail.com" style="color:#00c853;text-decoration:none;font-size:15px;font-weight:700">topcashcellular@gmail.com</a></div>
 <div style="font-size:12px;color:#555;line-height:1.5">Top Cash Cellular · Austin, TX</div>
-<div style="font-size:11px;color:#444;margin-top:6px">Questions? Call or reply to this email.</div>
+<div style="font-size:11px;color:#444;margin-top:6px">Questions? Just reply to this email.</div>
 </td></tr>
 
 </table>
@@ -129,7 +129,7 @@ ${phone ? `<tr><td style="padding:5px 0;color:#888;font-size:13px">Phone</td><td
 </table>
 </body></html>`;
 
-    const textFallback = `Hi ${name || "there"}, your $${quote} quote for ${model} (${condition}, ${storage || "N/A"}) is locked for 7 days. We'll contact you within the hour. Call (877) 549-2056 — Top Cash Cellular, Austin TX`;
+    const textFallback = `Hi ${name || "there"}, your $${quote} quote for ${model} (${condition}, ${storage || "N/A"}) is locked for 7 days. We'll contact you within the hour. Reply to this email or write to topcashcellular@gmail.com — Top Cash Cellular, Austin TX`;
 
     try {
       const { Resend } = await import("resend");

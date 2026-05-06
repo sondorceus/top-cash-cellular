@@ -55,10 +55,10 @@ async function emailAdjust(to: string, name: string | undefined, device: string 
 </div>
 <div style="font-size:14px;color:#aaa;line-height:1.5;margin-bottom:16px"><strong style="color:#fff">Reason:</strong> ${reason}</div>
 <div style="font-size:13px;color:#888;border-top:1px solid #222;padding-top:16px">
-Questions? Call <a href="tel:+18775492056" style="color:#00c853">(877) 549-2056</a> or just reply to this email.
+Questions? Just reply to this email or write to <a href="mailto:topcashcellular@gmail.com" style="color:#00c853">topcashcellular@gmail.com</a>.
 </div>
 </td></tr></table></body></html>`;
-    const text = `Top Cash Cellular: After in-person inspection, we've adjusted your offer for ${dev} to $${newQuote}. Reason: ${reason}. Questions? Call (877) 549-2056 or reply to this email.`;
+    const text = `Top Cash Cellular: After in-person inspection, we've adjusted your offer for ${dev} to $${newQuote}. Reason: ${reason}. Questions? Reply to this email or write to topcashcellular@gmail.com.`;
     const r = await resend.emails.send({
       from: "Top Cash Cellular <topcash@resend.dev>",
       replyTo: "topcashcellular@gmail.com",
@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
 
   const first = name?.split(" ")[0] || "there";
   const dev = device || "your device";
-  const smsBody = `Top Cash: Hi ${first}, your offer for ${dev} was adjusted to $${newQuote} — ${reason}. Reply or call (877) 549-2056 with questions.`;
+  const smsBody = `Top Cash: Hi ${first}, your offer for ${dev} was adjusted to $${newQuote} — ${reason}. Reply or email topcashcellular@gmail.com with questions.`;
 
   const [smsSent, emailSent] = await Promise.all([
     phone ? sendSms(phone, smsBody) : Promise.resolve(false),

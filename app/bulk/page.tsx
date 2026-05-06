@@ -129,7 +129,7 @@ export default function BulkPage() {
             <textarea value={details} onChange={(e) => setDetails(e.target.value)} required rows={5} placeholder="Mix of devices? Brands, models, conditions — anything you can describe. e.g. '20 iPhone 13 Pro 256GB, 10 MacBook Air M2, all flawless.'" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] resize-none" />
             {error && <p className="text-sm text-red-400">{error}</p>}
             <button onClick={submit} disabled={submitting} className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-base font-semibold hover:bg-[#00e676] transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">{submitting ? "Sending…" : "Get a custom quote →"}</button>
-            <p className="text-xs text-[#888] text-center">Or text us a list at <a href="tel:+18775492056" className="text-white hover:text-[#00c853] transition">(877) 549-2056</a> for the fastest response.</p>
+            <p className="text-xs text-[#888] text-center">Or email us a list at <a href="mailto:topcashcellular@gmail.com" className="text-white hover:text-[#00c853] transition">topcashcellular@gmail.com</a> for the fastest response.</p>
           </div>
         )}
       </div>

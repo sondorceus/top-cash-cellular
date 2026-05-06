@@ -38,20 +38,20 @@ function smsTemplate(status: string, ctx: { name?: string; device?: string; quot
   const first = ctx.name?.split(" ")[0] || "there";
   switch (status) {
     case "shipped":
-      return `Top Cash: Hi ${first}, your shipping label is on the way. Drop ${dev} at any USPS — we'll text you when it arrives. (877) 549-2056`;
+      return `Top Cash: Hi ${first}, your shipping label is on the way. Drop ${dev} at any USPS — we'll text you when it arrives. Questions? Email topcashcellular@gmail.com`;
     case "received":
-      return `Top Cash: We got ${dev}, ${first}! Testing now — payout within 24 hrs. Questions? (877) 549-2056`;
+      return `Top Cash: We got ${dev}, ${first}! Testing now — payout within 24 hrs. Questions? Email topcashcellular@gmail.com`;
     case "tested":
       return `Top Cash: ${dev} passed inspection ✅ Finalizing your ${ctx.quote || "payout"} via ${ctx.payout || "your chosen method"} now.`;
     case "paid":
       return `Top Cash: ${ctx.quote || "Payment"} sent via ${ctx.payout || "your method"}! Thanks for selling with us, ${first}. — TCC Austin`;
     case "rejected":
       if (ctx.rejectionReason) {
-        return `Top Cash: Hi ${first}, we couldn't accept ${dev} — ${ctx.rejectionReason}. Call (877) 549-2056 if you'd like to discuss.`;
+        return `Top Cash: Hi ${first}, we couldn't accept ${dev} — ${ctx.rejectionReason}. Email topcashcellular@gmail.com if you'd like to discuss.`;
       }
-      return `Top Cash: There's an issue with ${dev}, ${first}. Please call (877) 549-2056 — we'll work it out.`;
+      return `Top Cash: There's an issue with ${dev}, ${first}. Please email topcashcellular@gmail.com — we'll work it out.`;
     default:
-      return `Top Cash: Status update on your ${dev} — ${status}. Call (877) 549-2056 with questions.`;
+      return `Top Cash: Status update on your ${dev} — ${status}. Email topcashcellular@gmail.com with questions.`;
   }
 }
 
@@ -79,7 +79,7 @@ async function emailStatus(to: string, status: string, ctx: { name?: string; dev
 <div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:12px">Hi ${first},</div>
 <div style="font-size:15px;color:#ccc;line-height:1.6;margin-bottom:20px">${body}</div>
 <div style="font-size:13px;color:#888;border-top:1px solid #222;padding-top:16px">
-Questions? Call <a href="tel:+18775492056" style="color:#00c853">(877) 549-2056</a> or just reply to this email.
+Questions? Just reply to this email or write to <a href="mailto:topcashcellular@gmail.com" style="color:#00c853">topcashcellular@gmail.com</a>.
 </div>
 </td></tr></table></body></html>`;
     const r = await resend.emails.send({

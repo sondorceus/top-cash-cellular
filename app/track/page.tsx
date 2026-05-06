@@ -47,7 +47,7 @@ function ProgressBar({ status }: { status: string }) {
     return (
       <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 my-3">
         <p className="text-red-400 text-sm font-semibold flex items-center gap-2">
-          <span>⚠️</span> Issue with this device — please call (877) 549-2056
+          <span>⚠️</span> Issue with this device — please email topcashcellular@gmail.com
         </p>
       </div>
     );

@@ -2,8 +2,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
 const BRAND = "Top Cash Cellular";
-const PHONE = "(877) 549-2056";
-const PHONE_TEL = "+18775492056";
+const EMAIL = "topcashcellular@gmail.com";
+const EMAIL_HREF = "mailto:topcashcellular@gmail.com";
 
 const IPHONE_SERIES = [
   { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 825, variants: [
@@ -1572,8 +1572,8 @@ export default function Home() {
             <a href="/bulk" className="hidden md:inline text-xs text-[#888] hover:text-white transition">Bulk</a>
             <button onClick={() => setLookupOpen(true)} className="hidden sm:inline text-xs text-[#00c853] hover:text-[#00e676] font-semibold transition cursor-pointer">Returning?</button>
             <a href="/reviews" className="hidden sm:inline-flex items-center gap-1 text-xs text-[#ffb400] hover:text-[#ffd54f] font-semibold transition"><svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.5 5.9.7-4.4 4.1 1.2 5.8L10 14.7l-5.3 2.9 1.2-5.8L1.5 7.7l5.9-.7L10 1.5z"/></svg>Reviews</a>
-            <a href={`tel:${PHONE_TEL}`} aria-label="Call us" className="bg-[#00c853] text-white px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
-              Call Us
+            <a href={EMAIL_HREF} aria-label="Email us" className="bg-[#00c853] text-white px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
+              Email Us
             </a>
           </div>
         </div>
@@ -1715,7 +1715,7 @@ export default function Home() {
             </div>
 
             <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-              <p className="text-[#888] text-sm">Don&apos;t see your device? <a href={`tel:${PHONE_TEL}`} className="text-[#00c853] font-semibold hover:underline">Contact us</a> and we&apos;ll make you an offer!</p>
+              <p className="text-[#888] text-sm">Don&apos;t see your device? <a href={EMAIL_HREF} className="text-[#00c853] font-semibold hover:underline">Email us</a> and we&apos;ll make you an offer!</p>
             </div>
 
             <div className="mt-6 flex flex-wrap items-center gap-2 hero-fade-up hero-d-4">
@@ -3890,8 +3890,8 @@ export default function Home() {
               </div>
 
               <div className="mt-8 text-center">
-                <p className="text-[#888] text-sm mb-1">Questions? Call us anytime.</p>
-                <a href={`tel:${PHONE_TEL}`} className="text-[#00c853] font-bold text-lg">{PHONE}</a>
+                <p className="text-[#888] text-sm mb-1">Questions? Email us anytime.</p>
+                <a href={EMAIL_HREF} className="text-[#00c853] font-bold text-lg break-all">{EMAIL}</a>
               </div>
             </div>}
 
@@ -3902,7 +3902,7 @@ export default function Home() {
                   <p>Top Cash Cellular respects your privacy. We collect only the information needed to process your device sale: name, phone number, email, device details, and payout preference.</p>
                   <p>We do not sell, share, or distribute your personal information to third parties. Your data is used solely to complete your transaction and communicate with you about your sale.</p>
                   <p>Device data (photos, files) is your responsibility to remove before selling. We recommend a factory reset before handoff. We are not responsible for any data left on sold devices.</p>
-                  <p>For questions about your data, contact us at {PHONE}.</p>
+                  <p>For questions about your data, contact us at {EMAIL}.</p>
                 </div>
               </div>
             )}
@@ -3933,7 +3933,7 @@ export default function Home() {
               <div className="space-y-2">
                 <button onClick={() => { setPage("about"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer">About Us</button>
                 <a href="/reviews" className="block text-xs hover:text-[#00c853] transition">Reviews</a>
-                <a href={`tel:${PHONE_TEL}`} className="block text-xs hover:text-[#00c853] transition">Contact</a>
+                <a href={EMAIL_HREF} className="block text-xs hover:text-[#00c853] transition">Contact</a>
                 <a href="/privacy" className="block text-xs hover:text-[#00c853] transition">Privacy Policy</a>
                 <button onClick={() => { setPage("terms"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer">Terms of Service</button>
               </div>
@@ -4003,7 +4003,7 @@ export default function Home() {
               {chatMode === "call" && (
                 <div className="text-center py-2">
                   <button onClick={() => setChatMode("choose")} className="text-[#888] text-xs mb-3 cursor-pointer hover:text-white block mx-auto">← Back</button>
-                  <a href={`tel:${PHONE_TEL}`} className="block w-full bg-[#00c853] text-white py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2">📞 Call {PHONE}</a>
+                  <a href={EMAIL_HREF} className="block w-full bg-[#00c853] text-white py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2">📧 Email Us</a>
                   <p className="text-[#888] text-xs">Mon-Sat 8AM-8PM</p>
                 </div>
               )}
