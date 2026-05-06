@@ -53,44 +53,44 @@ const IPHONE_SERIES = [
 
 const SAMSUNG_SERIES = [
   { id: "sseries", label: "S Series", year: "Galaxy S20–S26", topPrice: 510, image: "/s-series.webp", variants: [
-    { id: "gs26u", label: "Galaxy S26 Ultra", base: 510 },
-    { id: "gs25u", label: "Galaxy S25 Ultra", base: 330 },
-    { id: "gs24u", label: "Galaxy S24 Ultra", base: 460 },
-    { id: "gs23u", label: "Galaxy S23 Ultra", base: 300 },
-    { id: "gs22u", label: "Galaxy S22 Ultra", base: 180 },
-    { id: "gs21u", label: "Galaxy S21 Ultra", base: 130 },
-    { id: "gs20u", label: "Galaxy S20 Ultra", base: 80 },
-    { id: "gs25edge", label: "Galaxy S25 Edge", base: 120 },
-    { id: "gs26p", label: "Galaxy S26+", base: 275 },
-    { id: "gs25p", label: "Galaxy S25+", base: 210 },
-    { id: "gs24p", label: "Galaxy S24+", base: 240 },
-    { id: "gs23p", label: "Galaxy S23+", base: 190 },
-    { id: "gs22p", label: "Galaxy S22+", base: 115 },
-    { id: "gs21p", label: "Galaxy S21+", base: 65 },
-    { id: "gs20p", label: "Galaxy S20+", base: 70 },
-    { id: "gs26", label: "Galaxy S26", base: 200 },
-    { id: "gs25", label: "Galaxy S25", base: 125 },
-    { id: "gs24", label: "Galaxy S24", base: 170 },
-    { id: "gs23", label: "Galaxy S23", base: 120 },
-    { id: "gs22", label: "Galaxy S22", base: 70 },
-    { id: "gs21", label: "Galaxy S21", base: 40 },
-    { id: "gs20", label: "Galaxy S20", base: 35 },
-    { id: "gs25fe", label: "Galaxy S25 FE", base: 95 },
+    { id: "gs26u", label: "Galaxy S26 Ultra", base: 510, image: "/devices/gs26u.jpg" },
+    { id: "gs25u", label: "Galaxy S25 Ultra", base: 330, image: "/devices/gs25u.jpg" },
+    { id: "gs24u", label: "Galaxy S24 Ultra", base: 460, image: "/devices/gs24u.jpg" },
+    { id: "gs23u", label: "Galaxy S23 Ultra", base: 300, image: "/devices/gs23u.jpg" },
+    { id: "gs22u", label: "Galaxy S22 Ultra", base: 180, image: "/devices/gs22u.jpg" },
+    { id: "gs21u", label: "Galaxy S21 Ultra", base: 130, image: "/devices/gs21u.jpg" },
+    { id: "gs20u", label: "Galaxy S20 Ultra", base: 80, image: "/devices/gs20u.jpg" },
+    { id: "gs25edge", label: "Galaxy S25 Edge", base: 120, image: "/devices/gs25edge.jpg" },
+    { id: "gs26p", label: "Galaxy S26+", base: 275, image: "/devices/gs26p.jpg" },
+    { id: "gs25p", label: "Galaxy S25+", base: 210, image: "/devices/gs25p.jpg" },
+    { id: "gs24p", label: "Galaxy S24+", base: 240, image: "/devices/gs24p.jpg" },
+    { id: "gs23p", label: "Galaxy S23+", base: 190, image: "/devices/gs23p.jpg" },
+    { id: "gs22p", label: "Galaxy S22+", base: 115, image: "/devices/gs22p.jpg" },
+    { id: "gs21p", label: "Galaxy S21+", base: 65, image: "/devices/gs21p.jpg" },
+    { id: "gs20p", label: "Galaxy S20+", base: 70, image: "/devices/gs20p.jpg" },
+    { id: "gs26", label: "Galaxy S26", base: 200, image: "/devices/gs26.jpg" },
+    { id: "gs25", label: "Galaxy S25", base: 125, image: "/devices/gs25.jpg" },
+    { id: "gs24", label: "Galaxy S24", base: 170, image: "/devices/gs24.jpg" },
+    { id: "gs23", label: "Galaxy S23", base: 120, image: "/devices/gs23.jpg" },
+    { id: "gs22", label: "Galaxy S22", base: 70, image: "/devices/gs22.jpg" },
+    { id: "gs21", label: "Galaxy S21", base: 40, image: "/devices/gs21.jpg" },
+    { id: "gs20", label: "Galaxy S20", base: 35, image: "/devices/gs20.jpg" },
+    { id: "gs25fe", label: "Galaxy S25 FE", base: 95, image: "/devices/gs25fe.jpg" },
   ]},
   { id: "foldseries", label: "Fold Series", year: "Z TriFold + Z Fold lineup", topPrice: 1475, image: "/fold-series.webp", variants: [
-    { id: "gztrifold", label: "Galaxy Z TriFold", base: 1475 },
-    { id: "gzfold7", label: "Galaxy Z Fold 7", base: 630 },
-    { id: "gzfold6", label: "Galaxy Z Fold 6", base: 325 },
-    { id: "gzfold5", label: "Galaxy Z Fold 5", base: 400 },
-    { id: "gzfold4", label: "Galaxy Z Fold 4", base: 300 },
+    { id: "gztrifold", label: "Galaxy Z TriFold", base: 1475, image: "/devices/gztrifold.jpg" },
+    { id: "gzfold7", label: "Galaxy Z Fold 7", base: 630, image: "/devices/gzfold7.jpg" },
+    { id: "gzfold6", label: "Galaxy Z Fold 6", base: 325, image: "/devices/gzfold6.jpg" },
+    { id: "gzfold5", label: "Galaxy Z Fold 5", base: 400, image: "/devices/gzfold5.jpg" },
+    { id: "gzfold4", label: "Galaxy Z Fold 4", base: 300, image: "/devices/gzfold4.jpg" },
     { id: "gzfold3", label: "Galaxy Z Fold 3", base: 190 },
   ]},
   { id: "flipseries", label: "Flip Series", year: "Z Flip lineup", topPrice: 300, image: "/flip-series.webp", variants: [
-    { id: "gzflip7", label: "Galaxy Z Flip 7", base: 160 },
-    { id: "gzflip6", label: "Galaxy Z Flip 6", base: 300 },
-    { id: "gzflip5", label: "Galaxy Z Flip 5", base: 240 },
-    { id: "gzflip4", label: "Galaxy Z Flip 4", base: 150 },
-    { id: "gzflip3", label: "Galaxy Z Flip 3", base: 70 },
+    { id: "gzflip7", label: "Galaxy Z Flip 7", base: 160, image: "/devices/gzflip7.jpg" },
+    { id: "gzflip6", label: "Galaxy Z Flip 6", base: 300, image: "/devices/gzflip6.jpg" },
+    { id: "gzflip5", label: "Galaxy Z Flip 5", base: 240, image: "/devices/gzflip5.jpg" },
+    { id: "gzflip4", label: "Galaxy Z Flip 4", base: 150, image: "/devices/gzflip4.jpg" },
+    { id: "gzflip3", label: "Galaxy Z Flip 3", base: 70, image: "/devices/gzflip3.jpg" },
   ]},
 ];
 
@@ -2319,15 +2319,22 @@ export default function Home() {
                 <h2 className="text-2xl font-bold mb-1">{SAMSUNG_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
                 <p className="text-[#888] text-sm mb-6">Pick your exact model</p>
                 <div className="space-y-2">
-                  {models.map((m) => (
+                  {models.map((m) => {
+                    const mImage = (m as { image?: string }).image;
+                    return (
                     <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                      {mImage ? (
+                        <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
+                      ) : (
+                        <div className="w-10 h-10 shrink-0" />
+                      )}
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">up to ${maxQuoteFor(m as { id: string; base: number })}</span>
                         <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
-                  ))}
+                  )})}
                 </div>
               </>
             )}
