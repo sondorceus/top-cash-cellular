@@ -520,31 +520,31 @@ const SAMSUNGWATCH_MODELS = [
 ];
 
 const DJI_MODELS = [
-  { id: "djimavic", label: "DJI Mavic" },
-  { id: "djiinspire", label: "DJI Inspire" },
-  { id: "djiavata", label: "DJI Avata" },
-  { id: "djifpv", label: "DJI FPV" },
-  { id: "djiair", label: "DJI Air" },
-  { id: "djimini", label: "DJI Mini" },
-  { id: "djiphantom", label: "DJI Phantom" },
-  { id: "djiflip", label: "DJI Flip" },
-  { id: "djispark", label: "DJI Spark" },
+  { id: "djimavic", label: "DJI Mavic", image: "/devices/dji-drone.jpg" },
+  { id: "djiinspire", label: "DJI Inspire", image: "/devices/dji-drone.jpg" },
+  { id: "djiavata", label: "DJI Avata", image: "/devices/dji-drone.jpg" },
+  { id: "djifpv", label: "DJI FPV", image: "/devices/dji-drone.jpg" },
+  { id: "djiair", label: "DJI Air", image: "/devices/dji-drone.jpg" },
+  { id: "djimini", label: "DJI Mini", image: "/devices/dji-drone.jpg" },
+  { id: "djiphantom", label: "DJI Phantom", image: "/devices/dji-drone.jpg" },
+  { id: "djiflip", label: "DJI Flip", image: "/devices/dji-drone.jpg" },
+  { id: "djispark", label: "DJI Spark", image: "/devices/dji-drone.jpg" },
 ];
 
 const APPLE_VR_MODELS = [
-  { id: "avp1tb", label: "Apple Vision Pro (1TB)" },
-  { id: "avp512", label: "Apple Vision Pro (512GB)" },
-  { id: "avp256", label: "Apple Vision Pro (256GB)" },
+  { id: "avp1tb", label: "Apple Vision Pro (1TB)", image: "/devices/apple-vision-pro.jpg" },
+  { id: "avp512", label: "Apple Vision Pro (512GB)", image: "/devices/apple-vision-pro.jpg" },
+  { id: "avp256", label: "Apple Vision Pro (256GB)", image: "/devices/apple-vision-pro.jpg" },
 ];
 
 const META_VR_MODELS = [
-  { id: "mq3512", label: "Meta Quest 3S (512GB)" },
-  { id: "mq3128", label: "Meta Quest 3S (128GB)" },
-  { id: "mq3", label: "Meta Quest 3 (512GB)" },
-  { id: "mq3b", label: "Meta Quest 3 (128GB)" },
-  { id: "mq2256", label: "Meta Quest 2 (256GB)" },
-  { id: "mq2128", label: "Meta Quest 2 (128GB)" },
-  { id: "mqpro", label: "Meta Quest Pro" },
+  { id: "mq3512", label: "Meta Quest 3S (512GB)", image: "/devices/meta-quest-3.jpg" },
+  { id: "mq3128", label: "Meta Quest 3S (128GB)", image: "/devices/meta-quest-3.jpg" },
+  { id: "mq3", label: "Meta Quest 3 (512GB)", image: "/devices/meta-quest-3.jpg" },
+  { id: "mq3b", label: "Meta Quest 3 (128GB)", image: "/devices/meta-quest-3.jpg" },
+  { id: "mq2256", label: "Meta Quest 2 (256GB)", image: "/devices/meta-quest-2.jpg" },
+  { id: "mq2128", label: "Meta Quest 2 (128GB)", image: "/devices/meta-quest-2.jpg" },
+  { id: "mqpro", label: "Meta Quest Pro", image: "/devices/meta-quest-2.jpg" },
 ];
 
 const VALVE_VR_MODELS = [
@@ -571,28 +571,28 @@ const SAMSUNG_TAB_MODELS = [
 const SURFACE_PRO_VARIANTS = [
   { id: "surfpro12_13", label: "Surface Pro 12 13\" (2026)", base: 0, inquiryOnly: true },
   { id: "surfpro12_12", label: "Surface Pro 12 12\" (2026)", base: 0, inquiryOnly: true },
-  { id: "surfpro11", label: "Surface Pro 11th Ed (Copilot+ / Snapdragon X)", base: 0, inquiryOnly: true },
-  { id: "surfpro10biz", label: "Surface Pro 10 for Business", base: 0, inquiryOnly: true },
-  { id: "surfpro9", label: "Surface Pro 9", base: 0, inquiryOnly: true },
-  { id: "surfpro8", label: "Surface Pro 8", base: 0, inquiryOnly: true },
-  { id: "surfpro7p", label: "Surface Pro 7+", base: 0, inquiryOnly: true },
-  { id: "surfpro7", label: "Surface Pro 7", base: 0, inquiryOnly: true },
-  { id: "surfpro6", label: "Surface Pro 6", base: 0, inquiryOnly: true },
-  { id: "surfpro5_2017", label: "Surface Pro 5 (2017)", base: 0, inquiryOnly: true },
-  { id: "surfpro4", label: "Surface Pro 4", base: 0, inquiryOnly: true },
-  { id: "surfpro3", label: "Surface Pro 3", base: 0, inquiryOnly: true },
-  { id: "surfpro2", label: "Surface Pro 2", base: 0, inquiryOnly: true },
-  { id: "surfpro1", label: "Surface Pro (2013)", base: 0, inquiryOnly: true },
+  { id: "surfpro11", label: "Surface Pro 11th Ed (Copilot+ / Snapdragon X)", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfpro10biz", label: "Surface Pro 10 for Business", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfpro9", label: "Surface Pro 9", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfpro8", label: "Surface Pro 8", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfpro7p", label: "Surface Pro 7+", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfpro7", label: "Surface Pro 7", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfpro6", label: "Surface Pro 6", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfpro5_2017", label: "Surface Pro 5 (2017)", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfpro4", label: "Surface Pro 4", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfpro3", label: "Surface Pro 3", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfpro2", label: "Surface Pro 2", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfpro1", label: "Surface Pro (2013)", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
 ];
 const SURFACE_GO_VARIANTS = [
-  { id: "surfgo4", label: "Surface Go 4 (Business)", base: 0, inquiryOnly: true },
-  { id: "surfgo3", label: "Surface Go 3", base: 0, inquiryOnly: true },
-  { id: "surfgo2", label: "Surface Go 2", base: 0, inquiryOnly: true },
-  { id: "surfgo1", label: "Surface Go (2018)", base: 0, inquiryOnly: true },
+  { id: "surfgo4", label: "Surface Go 4 (Business)", base: 0, inquiryOnly: true, image: "/devices/surface-go.jpg" },
+  { id: "surfgo3", label: "Surface Go 3", base: 0, inquiryOnly: true, image: "/devices/surface-go.jpg" },
+  { id: "surfgo2", label: "Surface Go 2", base: 0, inquiryOnly: true, image: "/devices/surface-go.jpg" },
+  { id: "surfgo1", label: "Surface Go (2018)", base: 0, inquiryOnly: true, image: "/devices/surface-go.jpg" },
 ];
 const SURFACE_X_VARIANTS = [
-  { id: "surfprox2020", label: "Surface Pro X (2020 Refresh)", base: 0, inquiryOnly: true },
-  { id: "surfprox2019", label: "Surface Pro X (2019)", base: 0, inquiryOnly: true },
+  { id: "surfprox2020", label: "Surface Pro X (2020 Refresh)", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfprox2019", label: "Surface Pro X (2019)", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
 ];
 const SURFACE_BOOKSTUDIO_VARIANTS = [
   { id: "surfstudio2", label: "Surface Laptop Studio 2", base: 0, inquiryOnly: true },
