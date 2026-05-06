@@ -300,54 +300,54 @@ const ACER_MODELS = [
 ];
 
 const LG_GRAM_STANDARD_VARIANTS = [
-  { id: "lg_gr17_24", label: "LG Gram 17 (17Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_gr16_24", label: "LG Gram 16 (16Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_gr14_24", label: "LG Gram 14 (14Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_gr17_23", label: "LG Gram 17 (17Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_gr16_23", label: "LG Gram 16 (16Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_gr15_23", label: "LG Gram 15 (15Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_gr14_23", label: "LG Gram 14 (14Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_gr17_24", label: "LG Gram 17 (17Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_gr16_24", label: "LG Gram 16 (16Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_gr14_24", label: "LG Gram 14 (14Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_gr17_23", label: "LG Gram 17 (17Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_gr16_23", label: "LG Gram 16 (16Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_gr15_23", label: "LG Gram 15 (15Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_gr14_23", label: "LG Gram 14 (14Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
 ];
 const LG_GRAM_2IN1_VARIANTS = [
-  { id: "lg_gr16t_24", label: "LG Gram 16 2-in-1 (16T90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_gr14t_24", label: "LG Gram 14 2-in-1 (14T90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_gr16t_23", label: "LG Gram 16 2-in-1 (16T90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_gr14t_23", label: "LG Gram 14 2-in-1 (14T90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_gr16t_24", label: "LG Gram 16 2-in-1 (16T90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_gr14t_24", label: "LG Gram 14 2-in-1 (14T90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_gr16t_23", label: "LG Gram 16 2-in-1 (16T90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_gr14t_23", label: "LG Gram 14 2-in-1 (14T90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
 ];
 const LG_GRAM_STYLE_VARIANTS = [
-  { id: "lg_grstyle16", label: "LG Gram Style 16 (16Z90RS, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_grstyle14", label: "LG Gram Style 14 (14Z90RS, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_grstyle16", label: "LG Gram Style 16 (16Z90RS, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-superslim.webp" },
+  { id: "lg_grstyle14", label: "LG Gram Style 14 (14Z90RS, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-superslim.webp" },
 ];
 const LG_GRAM_ULTRASLIM_VARIANTS = [
-  { id: "lg_grultra15", label: "LG Gram Ultraslim 15 (15Z90RT, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_grultra15", label: "LG Gram Ultraslim 15 (15Z90RT, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-superslim.webp" },
 ];
 const LG_GRAM_PRO_VARIANTS = [
-  { id: "lg_grpro17_25", label: "LG Gram Pro 17 (17Z90TR, 2025)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_grpro16_25", label: "LG Gram Pro 16 (16Z90TR, 2025)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_grpro17_24", label: "LG Gram Pro 17 (17Z90SP, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_grpro16_24", label: "LG Gram Pro 16 (16Z90SP, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_grpro17_25", label: "LG Gram Pro 17 (17Z90TR, 2025)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-pro.webp" },
+  { id: "lg_grpro16_25", label: "LG Gram Pro 16 (16Z90TR, 2025)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-pro.webp" },
+  { id: "lg_grpro17_24", label: "LG Gram Pro 17 (17Z90SP, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-pro.webp" },
+  { id: "lg_grpro16_24", label: "LG Gram Pro 16 (16Z90SP, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-pro.webp" },
 ];
 const LG_GRAM_PRO_2IN1_VARIANTS = [
-  { id: "lg_grpro16t_24", label: "LG Gram Pro 16 2-in-1 (16T90SP, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_grpro16t_24", label: "LG Gram Pro 16 2-in-1 (16T90SP, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-pro.webp" },
 ];
 const LG_GRAM_BOOK_VARIANTS = [
-  { id: "lg_grbook16", label: "LG Gram Book 16 (2024–2025)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_grbook15", label: "LG Gram Book 15.6 (2024–2025)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_grbook16", label: "LG Gram Book 16 (2024–2025)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_grbook15", label: "LG Gram Book 15.6 (2024–2025)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
 ];
 const LG_ULTRAGEAR_VARIANTS = [
-  { id: "lg_ultragear16_24", label: "LG UltraGear 16 (16G90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_ultragear16_23", label: "LG UltraGear 16 (16G90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
-  { id: "lg_ultragear16_22", label: "LG UltraGear 16 (16G90Q, 2022)", base: 0, inquiryOnly: true, image: "/devices/lg-gram.jpg" },
+  { id: "lg_ultragear16_24", label: "LG UltraGear 16 (16G90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_ultragear16_23", label: "LG UltraGear 16 (16G90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_ultragear16_22", label: "LG UltraGear 16 (16G90Q, 2022)", base: 0, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
 ];
 const LG_PC_SERIES = [
-  { id: "lg_gram", label: "Gram", year: "Standard", topPrice: 0, variants: LG_GRAM_STANDARD_VARIANTS, inquiryOnly: true },
-  { id: "lg_gram2in1", label: "Gram 2-in-1", year: "Convertible", topPrice: 0, variants: LG_GRAM_2IN1_VARIANTS, inquiryOnly: true },
-  { id: "lg_gramstyle", label: "Gram Style", year: "OLED", topPrice: 0, variants: LG_GRAM_STYLE_VARIANTS, inquiryOnly: true },
-  { id: "lg_gramultra", label: "Gram Ultraslim", year: "Super-thin", topPrice: 0, variants: LG_GRAM_ULTRASLIM_VARIANTS, inquiryOnly: true },
-  { id: "lg_grampro", label: "Gram Pro", year: "Performance", topPrice: 0, variants: LG_GRAM_PRO_VARIANTS, inquiryOnly: true },
-  { id: "lg_grampro2in1", label: "Gram Pro 2-in-1", year: "Pro Convertible", topPrice: 0, variants: LG_GRAM_PRO_2IN1_VARIANTS, inquiryOnly: true },
-  { id: "lg_grambook", label: "Gram Book", year: "Budget", topPrice: 0, variants: LG_GRAM_BOOK_VARIANTS, inquiryOnly: true },
-  { id: "lg_ultragear", label: "UltraGear", year: "Gaming", topPrice: 0, variants: LG_ULTRAGEAR_VARIANTS, inquiryOnly: true },
+  { id: "lg_gram", label: "Gram", year: "Standard", topPrice: 0, variants: LG_GRAM_STANDARD_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_gram2in1", label: "Gram 2-in-1", year: "Convertible", topPrice: 0, variants: LG_GRAM_2IN1_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_gramstyle", label: "Gram Style", year: "OLED", topPrice: 0, variants: LG_GRAM_STYLE_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-superslim.webp" },
+  { id: "lg_gramultra", label: "Gram Ultraslim", year: "Super-thin", topPrice: 0, variants: LG_GRAM_ULTRASLIM_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-superslim.webp" },
+  { id: "lg_grampro", label: "Gram Pro", year: "Performance", topPrice: 0, variants: LG_GRAM_PRO_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-pro.webp" },
+  { id: "lg_grampro2in1", label: "Gram Pro 2-in-1", year: "Pro Convertible", topPrice: 0, variants: LG_GRAM_PRO_2IN1_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-pro.webp" },
+  { id: "lg_grambook", label: "Gram Book", year: "Budget", topPrice: 0, variants: LG_GRAM_BOOK_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
+  { id: "lg_ultragear", label: "UltraGear", year: "Gaming", topPrice: 0, variants: LG_ULTRAGEAR_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-pro.webp" },
 ];
 const LG_PC_MODELS = [
   ...LG_GRAM_STANDARD_VARIANTS,
@@ -3179,7 +3179,7 @@ export default function Home() {
                   <input type="email" value={quoteEmail} onChange={(e) => setQuoteEmail(e.target.value)} placeholder="your@email.com" aria-label="Email for quote" className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition" />
                   <button onClick={async () => {
                     if (!quoteEmail) return;
-                    try { await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "", phone: "", email: quoteEmail, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote, payout: "TBD" }) }); } catch {}
+                    try { await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "", phone: "", email: quoteEmail, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote, payout: "TBD" }) }); } catch {}
                     setQuoteSaved(true);
                   }} className="bg-white/10 text-white px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-white/15 transition tap-press">
                     Save
@@ -3228,7 +3228,7 @@ export default function Home() {
               <form onSubmit={(e) => {
                 e.preventDefault();
                 if (!email) return;
-                fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Guest", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
+                fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Guest", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-4">
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
@@ -3242,7 +3242,7 @@ export default function Home() {
               <form onSubmit={(e) => {
                 e.preventDefault();
                 if (!email) return;
-                fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Returning User", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
+                fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Returning User", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-2">
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
@@ -3259,7 +3259,7 @@ export default function Home() {
               <button
                 onClick={() => {
                   if (!email) return;
-                  fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Google User", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
+                  fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Google User", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
                   setStep("payout"); pushHistory("payout");
                 }}
                 className="w-full flex items-center justify-center gap-3 bg-white/5 border border-white/10 text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-white/10 transition tap-press"
@@ -3369,7 +3369,7 @@ export default function Home() {
                   fetch("/api/confirm", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, quote: quote * quantity, payout: payout?.label, quantity }),
+                    body: JSON.stringify({ name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity }),
                   }).catch(() => {});
                 }
                 localStorage.removeItem("tcc-session"); setStep("done"); pushHistory("done");
