@@ -264,8 +264,8 @@ const HP_MODELS = [
   { id: "hpomen17", label: "OMEN 17\" (2024)", base: 0, inquiryOnly: true },
   { id: "hpomen16", label: "OMEN 16\" (2024)", base: 0, inquiryOnly: true },
   { id: "hppav15", label: "Pavilion 15\"", base: 0, inquiryOnly: true },
-  { id: "hpelite840", label: "EliteBook 840 G10", base: 0, inquiryOnly: true },
-  { id: "hpprobook", label: "ProBook 450 G10", base: 0, inquiryOnly: true },
+  { id: "hpelite840", label: "EliteBook 840 G10", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook.jpg" },
+  { id: "hpprobook", label: "ProBook 450 G10", base: 0, inquiryOnly: true, image: "/devices/hp-probook.jpg" },
 ];
 
 const ACER_MODELS = [
