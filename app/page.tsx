@@ -477,10 +477,10 @@ const IPAD_MODELS = IPAD_SERIES.flatMap(s => s.variants);
 
 const PS5_VARIANTS = [
   { id: "ps5pro", label: "PlayStation 5 Pro (2024)", base: 0, inquiryOnly: true, image: "/devices/ps5pro.jpg" },
-  { id: "ps5", label: "PlayStation 5 (Standard, Disc)", base: 300, image: "/devices/ps5.jpg" },
-  { id: "ps5d", label: "PlayStation 5 Digital", base: 250, image: "/devices/ps5.jpg" },
-  { id: "ps5slim", label: "PlayStation 5 Slim (Disc)", base: 0, inquiryOnly: true, image: "/devices/ps5.jpg" },
-  { id: "ps5slim_d", label: "PlayStation 5 Slim Digital", base: 0, inquiryOnly: true, image: "/devices/ps5.jpg" },
+  { id: "ps5", label: "PlayStation 5 (Standard, Disc)", base: 300, image: "/devices/ps5.webp" },
+  { id: "ps5d", label: "PlayStation 5 Digital", base: 250, image: "/devices/ps5.webp" },
+  { id: "ps5slim", label: "PlayStation 5 Slim (Disc)", base: 0, inquiryOnly: true, image: "/devices/ps5.webp" },
+  { id: "ps5slim_d", label: "PlayStation 5 Slim Digital", base: 0, inquiryOnly: true, image: "/devices/ps5.webp" },
 ];
 const PS4_VARIANTS = [
   { id: "ps4pro", label: "PlayStation 4 Pro", base: 150, image: "/devices/ps4pro.webp" },
@@ -502,7 +502,7 @@ const MICROSOFT_MODELS = [
 const NINTENDO_MODELS = [
   { id: "switch", label: "Nintendo Switch OLED", base: 180, image: "/devices/switch-oled.webp" },
   { id: "switchv2", label: "Nintendo Switch V2", base: 130, image: "/devices/nintendo-switch.webp" },
-  { id: "switchlite", label: "Nintendo Switch Lite", base: 90, image: "/devices/switch-lite.jpg" },
+  { id: "switchlite", label: "Nintendo Switch Lite", base: 90, image: "/devices/switch-lite.webp" },
 ];
 
 const CONSOLE_MODELS = [...SONY_MODELS, ...MICROSOFT_MODELS, ...NINTENDO_MODELS];
