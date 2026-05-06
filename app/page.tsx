@@ -76,6 +76,10 @@ const SAMSUNG_SERIES = [
     { id: "gs21", label: "Galaxy S21", base: 40, image: "/devices/gs21.jpg" },
     { id: "gs20", label: "Galaxy S20", base: 35, image: "/devices/gs20.jpg" },
     { id: "gs25fe", label: "Galaxy S25 FE", base: 95, image: "/devices/gs25fe.jpg" },
+    { id: "gs24fe", label: "Galaxy S24 FE", base: 80, image: "/devices/gs24fe.jpg" },
+    { id: "gs23fe", label: "Galaxy S23 FE", base: 50, image: "/devices/gs23fe.jpg" },
+    { id: "gs21fe", label: "Galaxy S21 FE", base: 30, image: "/devices/gs21fe.jpg" },
+    { id: "gs20fe", label: "Galaxy S20 FE", base: 20, image: "/devices/gs20fe.jpg" },
   ]},
   { id: "foldseries", label: "Fold Series", year: "Z TriFold + Z Fold lineup", topPrice: 1475, image: "/fold-series.webp", variants: [
     { id: "gztrifold", label: "Galaxy Z TriFold", base: 1475, image: "/devices/gztrifold.jpg" },
