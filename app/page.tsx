@@ -171,16 +171,16 @@ const MACBOOK_SERIES = [
 ];
 
 const SAMSUNG_PC_MODELS = [
-  { id: "sgbk4u", label: "Galaxy Book 4 Ultra", base: 750, image: "/devices/galaxy-book.jpg" },
-  { id: "sgbk4p", label: "Galaxy Book 4 Pro 360", base: 600, image: "/devices/galaxy-book.jpg" },
-  { id: "sgbk4pro", label: "Galaxy Book 4 Pro", base: 520, image: "/devices/galaxy-book.jpg" },
-  { id: "sgbk4", label: "Galaxy Book 4", base: 350, image: "/devices/galaxy-book.jpg" },
-  { id: "sgbk3u", label: "Galaxy Book 3 Ultra", base: 580, image: "/devices/galaxy-book.jpg" },
-  { id: "sgbk3p", label: "Galaxy Book 3 Pro 360", base: 450, image: "/devices/galaxy-book.jpg" },
-  { id: "sgbk3pro", label: "Galaxy Book 3 Pro", base: 380, image: "/devices/galaxy-book.jpg" },
-  { id: "sgbk3", label: "Galaxy Book 3", base: 250, image: "/devices/galaxy-book.jpg" },
-  { id: "sgbk2p", label: "Galaxy Book 2 Pro", base: 280, image: "/devices/galaxy-book.jpg" },
-  { id: "sgbk2", label: "Galaxy Book 2", base: 180, image: "/devices/galaxy-book.jpg" },
+  { id: "sgbk4u", label: "Galaxy Book 4 Ultra", base: 750 },
+  { id: "sgbk4p", label: "Galaxy Book 4 Pro 360", base: 600 },
+  { id: "sgbk4pro", label: "Galaxy Book 4 Pro", base: 520 },
+  { id: "sgbk4", label: "Galaxy Book 4", base: 350 },
+  { id: "sgbk3u", label: "Galaxy Book 3 Ultra", base: 580 },
+  { id: "sgbk3p", label: "Galaxy Book 3 Pro 360", base: 450 },
+  { id: "sgbk3pro", label: "Galaxy Book 3 Pro", base: 380 },
+  { id: "sgbk3", label: "Galaxy Book 3", base: 250 },
+  { id: "sgbk2p", label: "Galaxy Book 2 Pro", base: 280 },
+  { id: "sgbk2", label: "Galaxy Book 2", base: 180 },
 ];
 
 const LENOVO_MODELS = [
@@ -204,9 +204,9 @@ const DELL_MODELS = [
   { id: "dxps13g23", label: "XPS 13 (2023)", base: 380, image: "/devices/dell-xps.jpg" },
   { id: "dlat7440", label: "Latitude 7440", base: 420, image: "/devices/dell-latitude.jpg" },
   { id: "dlat5540", label: "Latitude 5540", base: 300, image: "/devices/dell-latitude.jpg" },
-  { id: "dinsp16p", label: "Inspiron 16 Plus", base: 350, image: "/devices/dell-inspiron.jpg" },
-  { id: "dinsp15", label: "Inspiron 15", base: 220, image: "/devices/dell-inspiron.jpg" },
-  { id: "dinsp14", label: "Inspiron 14", base: 200, image: "/devices/dell-inspiron.jpg" },
+  { id: "dinsp16p", label: "Inspiron 16 Plus", base: 350 },
+  { id: "dinsp15", label: "Inspiron 15", base: 220 },
+  { id: "dinsp14", label: "Inspiron 14", base: 200 },
 ];
 
 const ALIENWARE_FLAGSHIP_VARIANTS = [
@@ -343,9 +343,9 @@ const LG_PC_MODELS = [
 // Apple Desktops — 4 family boxes (iMac / Mac Mini / Mac Studio / Mac Pro)
 // Prices reduced 20% per Skywalker's competitor-research directive 2026-05-04
 const APPLE_IMAC_VARIANTS = [
-  { id: "imac24m4", label: "iMac 24\" M4", base: 720, image: "/devices/imac.jpg" },
-  { id: "imac24m3", label: "iMac 24\" M3", base: 560, image: "/devices/imac.jpg" },
-  { id: "imac24m1", label: "iMac 24\" M1", base: 360, image: "/devices/imac.jpg" },
+  { id: "imac24m4", label: "iMac 24\" M4", base: 720 },
+  { id: "imac24m3", label: "iMac 24\" M3", base: 560 },
+  { id: "imac24m1", label: "iMac 24\" M1", base: 360 },
 ];
 const APPLE_MACMINI_VARIANTS = [
   { id: "macminim4p", label: "Mac Mini M4 Pro", base: 480 },
@@ -354,10 +354,10 @@ const APPLE_MACMINI_VARIANTS = [
   { id: "macminim1", label: "Mac Mini M1", base: 175 },
 ];
 const APPLE_MACSTUDIO_VARIANTS = [
-  { id: "macstudiom4u", label: "Mac Studio M4 Ultra", base: 1760, image: "/devices/mac-studio.jpg" },
-  { id: "macstudiom4m", label: "Mac Studio M4 Max", base: 1120, image: "/devices/mac-studio.jpg" },
-  { id: "macstudiom2u", label: "Mac Studio M2 Ultra", base: 1280, image: "/devices/mac-studio.jpg" },
-  { id: "macstudiom2m", label: "Mac Studio M2 Max", base: 800, image: "/devices/mac-studio.jpg" },
+  { id: "macstudiom4u", label: "Mac Studio M4 Ultra", base: 1760 },
+  { id: "macstudiom4m", label: "Mac Studio M4 Max", base: 1120 },
+  { id: "macstudiom2u", label: "Mac Studio M2 Ultra", base: 1280 },
+  { id: "macstudiom2m", label: "Mac Studio M2 Max", base: 800 },
 ];
 const APPLE_MACPRO_VARIANTS = [
   { id: "macprom2u", label: "Mac Pro M2 Ultra", base: 2240 },
@@ -380,21 +380,21 @@ const DELL_DESKTOP_MODELS = [
   { id: "doptiplex5000", label: "OptiPlex 5000", base: 280, image: "/devices/dell-optiplex.jpg" },
   { id: "dxps8960", label: "XPS Desktop 8960", base: 500, image: "/devices/dell-xps-desktop.jpg" },
   { id: "dxps8950", label: "XPS Desktop 8950", base: 380, image: "/devices/dell-xps-desktop.jpg" },
-  { id: "dinsp3030", label: "Inspiron 3030 Desktop", base: 250, image: "/devices/dell-inspiron.jpg" },
+  { id: "dinsp3030", label: "Inspiron 3030 Desktop", base: 250 },
   { id: "dprecision3680", label: "Precision 3680", base: 550, image: "/devices/dell-precision.jpg" },
 ];
 
 const LENOVO_DESKTOP_MODELS = [
-  { id: "lnthinkm", label: "ThinkCentre M920", base: 300, image: "/devices/lenovo-thinkcentre.jpg" },
-  { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 350, image: "/devices/lenovo-thinkcentre.jpg" },
-  { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 550, image: "/devices/lenovo-legion-tower.jpg" },
-  { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 750, image: "/devices/lenovo-legion-tower.jpg" },
-  { id: "lnideactower", label: "IdeaCentre 5i", base: 250, image: "/devices/lenovo-thinkcentre.jpg" },
+  { id: "lnthinkm", label: "ThinkCentre M920", base: 300 },
+  { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 350 },
+  { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 550 },
+  { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 750 },
+  { id: "lnideactower", label: "IdeaCentre 5i", base: 250 },
 ];
 
 const HP_DESKTOP_MODELS = [
-  { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 400, image: "/devices/hp-elitedesk.jpg" },
-  { id: "hpprodesk", label: "ProDesk 400 G9", base: 280, image: "/devices/hp-elitedesk.jpg" },
+  { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 400 },
+  { id: "hpprodesk", label: "ProDesk 400 G9", base: 280 },
   { id: "hpomendsk", label: "OMEN 45L Desktop", base: 650 },
   { id: "hpomen40", label: "OMEN 40L Desktop", base: 500 },
   { id: "hpenvy34", label: "Envy 34 All-in-One", base: 550 },
@@ -501,34 +501,34 @@ const PIXELWATCH_MODELS = [
 ];
 
 const GARMIN_MODELS = [
-  { id: "gfenix7", label: "Fenix 7", base: 300, image: "/devices/garmin-fenix.jpg" },
-  { id: "gfenix7s", label: "Fenix 7S", base: 250, image: "/devices/garmin-fenix.jpg" },
-  { id: "gepix2", label: "Epix Gen 2", base: 280, image: "/devices/garmin-fenix.jpg" },
-  { id: "gfr965", label: "Forerunner 965", base: 250, image: "/devices/garmin-forerunner.jpg" },
-  { id: "gfr265", label: "Forerunner 265", base: 180, image: "/devices/garmin-forerunner.jpg" },
+  { id: "gfenix7", label: "Fenix 7", base: 300 },
+  { id: "gfenix7s", label: "Fenix 7S", base: 250 },
+  { id: "gepix2", label: "Epix Gen 2", base: 280 },
+  { id: "gfr965", label: "Forerunner 965", base: 250 },
+  { id: "gfr265", label: "Forerunner 265", base: 180 },
   { id: "gvenu3", label: "Venu 3", base: 220 },
   { id: "gvenu2", label: "Venu 2", base: 130 },
 ];
 
 const SAMSUNGWATCH_MODELS = [
-  { id: "sgwu", label: "Galaxy Watch Ultra", base: 350, image: "/devices/galaxy-watch-7.jpg" },
-  { id: "sgw7", label: "Galaxy Watch 7", base: 150, image: "/devices/galaxy-watch-7.jpg" },
-  { id: "sgw6c", label: "Galaxy Watch 6 Classic", base: 160, image: "/devices/galaxy-watch-6.jpg" },
-  { id: "sgw6", label: "Galaxy Watch 6", base: 110, image: "/devices/galaxy-watch-6.jpg" },
-  { id: "sgw5p", label: "Galaxy Watch 5 Pro", base: 130, image: "/devices/galaxy-watch-6.jpg" },
-  { id: "sgw5", label: "Galaxy Watch 5", base: 80, image: "/devices/galaxy-watch-6.jpg" },
+  { id: "sgwu", label: "Galaxy Watch Ultra", base: 350 },
+  { id: "sgw7", label: "Galaxy Watch 7", base: 150 },
+  { id: "sgw6c", label: "Galaxy Watch 6 Classic", base: 160 },
+  { id: "sgw6", label: "Galaxy Watch 6", base: 110 },
+  { id: "sgw5p", label: "Galaxy Watch 5 Pro", base: 130 },
+  { id: "sgw5", label: "Galaxy Watch 5", base: 80 },
 ];
 
 const DJI_MODELS = [
-  { id: "djimavic", label: "DJI Mavic", image: "/devices/dji-drone.jpg" },
-  { id: "djiinspire", label: "DJI Inspire", image: "/devices/dji-drone.jpg" },
-  { id: "djiavata", label: "DJI Avata", image: "/devices/dji-drone.jpg" },
-  { id: "djifpv", label: "DJI FPV", image: "/devices/dji-drone.jpg" },
-  { id: "djiair", label: "DJI Air", image: "/devices/dji-drone.jpg" },
-  { id: "djimini", label: "DJI Mini", image: "/devices/dji-drone.jpg" },
-  { id: "djiphantom", label: "DJI Phantom", image: "/devices/dji-drone.jpg" },
-  { id: "djiflip", label: "DJI Flip", image: "/devices/dji-drone.jpg" },
-  { id: "djispark", label: "DJI Spark", image: "/devices/dji-drone.jpg" },
+  { id: "djimavic", label: "DJI Mavic" },
+  { id: "djiinspire", label: "DJI Inspire" },
+  { id: "djiavata", label: "DJI Avata" },
+  { id: "djifpv", label: "DJI FPV" },
+  { id: "djiair", label: "DJI Air" },
+  { id: "djimini", label: "DJI Mini" },
+  { id: "djiphantom", label: "DJI Phantom" },
+  { id: "djiflip", label: "DJI Flip" },
+  { id: "djispark", label: "DJI Spark" },
 ];
 
 const APPLE_VR_MODELS = [
@@ -542,9 +542,9 @@ const META_VR_MODELS = [
   { id: "mq3128", label: "Meta Quest 3S (128GB)", image: "/devices/meta-quest-3.jpg" },
   { id: "mq3", label: "Meta Quest 3 (512GB)", image: "/devices/meta-quest-3.jpg" },
   { id: "mq3b", label: "Meta Quest 3 (128GB)", image: "/devices/meta-quest-3.jpg" },
-  { id: "mq2256", label: "Meta Quest 2 (256GB)", image: "/devices/meta-quest-2.jpg" },
-  { id: "mq2128", label: "Meta Quest 2 (128GB)", image: "/devices/meta-quest-2.jpg" },
-  { id: "mqpro", label: "Meta Quest Pro", image: "/devices/meta-quest-2.jpg" },
+  { id: "mq2256", label: "Meta Quest 2 (256GB)" },
+  { id: "mq2128", label: "Meta Quest 2 (128GB)" },
+  { id: "mqpro", label: "Meta Quest Pro" },
 ];
 
 const VALVE_VR_MODELS = [
@@ -559,40 +559,40 @@ const PSVR_MODELS = [
 ];
 
 const SAMSUNG_TAB_MODELS = [
-  { id: "stabs9u", label: "Galaxy Tab S9 Ultra", image: "/devices/galaxy-tab.jpg" },
-  { id: "stabs9p", label: "Galaxy Tab S9+", image: "/devices/galaxy-tab.jpg" },
-  { id: "stabs9", label: "Galaxy Tab S9", image: "/devices/galaxy-tab.jpg" },
-  { id: "stabs8u", label: "Galaxy Tab S8 Ultra", image: "/devices/galaxy-tab.jpg" },
-  { id: "stabs8p", label: "Galaxy Tab S8+", image: "/devices/galaxy-tab.jpg" },
-  { id: "stabs8", label: "Galaxy Tab S8", image: "/devices/galaxy-tab.jpg" },
-  { id: "staba9", label: "Galaxy Tab A9+", image: "/devices/galaxy-tab.jpg" },
+  { id: "stabs9u", label: "Galaxy Tab S9 Ultra" },
+  { id: "stabs9p", label: "Galaxy Tab S9+" },
+  { id: "stabs9", label: "Galaxy Tab S9" },
+  { id: "stabs8u", label: "Galaxy Tab S8 Ultra" },
+  { id: "stabs8p", label: "Galaxy Tab S8+" },
+  { id: "stabs8", label: "Galaxy Tab S8" },
+  { id: "staba9", label: "Galaxy Tab A9+" },
 ];
 
 const SURFACE_PRO_VARIANTS = [
   { id: "surfpro12_13", label: "Surface Pro 12 13\" (2026)", base: 0, inquiryOnly: true },
   { id: "surfpro12_12", label: "Surface Pro 12 12\" (2026)", base: 0, inquiryOnly: true },
-  { id: "surfpro11", label: "Surface Pro 11th Ed (Copilot+ / Snapdragon X)", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
-  { id: "surfpro10biz", label: "Surface Pro 10 for Business", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
-  { id: "surfpro9", label: "Surface Pro 9", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
-  { id: "surfpro8", label: "Surface Pro 8", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
-  { id: "surfpro7p", label: "Surface Pro 7+", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
-  { id: "surfpro7", label: "Surface Pro 7", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
-  { id: "surfpro6", label: "Surface Pro 6", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
-  { id: "surfpro5_2017", label: "Surface Pro 5 (2017)", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
-  { id: "surfpro4", label: "Surface Pro 4", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
-  { id: "surfpro3", label: "Surface Pro 3", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
-  { id: "surfpro2", label: "Surface Pro 2", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
-  { id: "surfpro1", label: "Surface Pro (2013)", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfpro11", label: "Surface Pro 11th Ed (Copilot+ / Snapdragon X)", base: 0, inquiryOnly: true },
+  { id: "surfpro10biz", label: "Surface Pro 10 for Business", base: 0, inquiryOnly: true },
+  { id: "surfpro9", label: "Surface Pro 9", base: 0, inquiryOnly: true },
+  { id: "surfpro8", label: "Surface Pro 8", base: 0, inquiryOnly: true },
+  { id: "surfpro7p", label: "Surface Pro 7+", base: 0, inquiryOnly: true },
+  { id: "surfpro7", label: "Surface Pro 7", base: 0, inquiryOnly: true },
+  { id: "surfpro6", label: "Surface Pro 6", base: 0, inquiryOnly: true },
+  { id: "surfpro5_2017", label: "Surface Pro 5 (2017)", base: 0, inquiryOnly: true },
+  { id: "surfpro4", label: "Surface Pro 4", base: 0, inquiryOnly: true },
+  { id: "surfpro3", label: "Surface Pro 3", base: 0, inquiryOnly: true },
+  { id: "surfpro2", label: "Surface Pro 2", base: 0, inquiryOnly: true },
+  { id: "surfpro1", label: "Surface Pro (2013)", base: 0, inquiryOnly: true },
 ];
 const SURFACE_GO_VARIANTS = [
-  { id: "surfgo4", label: "Surface Go 4 (Business)", base: 0, inquiryOnly: true, image: "/devices/surface-go.jpg" },
-  { id: "surfgo3", label: "Surface Go 3", base: 0, inquiryOnly: true, image: "/devices/surface-go.jpg" },
-  { id: "surfgo2", label: "Surface Go 2", base: 0, inquiryOnly: true, image: "/devices/surface-go.jpg" },
-  { id: "surfgo1", label: "Surface Go (2018)", base: 0, inquiryOnly: true, image: "/devices/surface-go.jpg" },
+  { id: "surfgo4", label: "Surface Go 4 (Business)", base: 0, inquiryOnly: true },
+  { id: "surfgo3", label: "Surface Go 3", base: 0, inquiryOnly: true },
+  { id: "surfgo2", label: "Surface Go 2", base: 0, inquiryOnly: true },
+  { id: "surfgo1", label: "Surface Go (2018)", base: 0, inquiryOnly: true },
 ];
 const SURFACE_X_VARIANTS = [
-  { id: "surfprox2020", label: "Surface Pro X (2020 Refresh)", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
-  { id: "surfprox2019", label: "Surface Pro X (2019)", base: 0, inquiryOnly: true, image: "/devices/surface-pro.jpg" },
+  { id: "surfprox2020", label: "Surface Pro X (2020 Refresh)", base: 0, inquiryOnly: true },
+  { id: "surfprox2019", label: "Surface Pro X (2019)", base: 0, inquiryOnly: true },
 ];
 const SURFACE_BOOKSTUDIO_VARIANTS = [
   { id: "surfstudio2", label: "Surface Laptop Studio 2", base: 0, inquiryOnly: true },
