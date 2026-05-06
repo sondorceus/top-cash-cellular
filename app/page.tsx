@@ -343,9 +343,9 @@ const LG_PC_MODELS = [
 // Apple Desktops — 4 family boxes (iMac / Mac Mini / Mac Studio / Mac Pro)
 // Prices reduced 20% per Skywalker's competitor-research directive 2026-05-04
 const APPLE_IMAC_VARIANTS = [
-  { id: "imac24m4", label: "iMac 24\" M4", base: 720 },
-  { id: "imac24m3", label: "iMac 24\" M3", base: 560 },
-  { id: "imac24m1", label: "iMac 24\" M1", base: 360 },
+  { id: "imac24m4", label: "iMac 24\" M4", base: 720, image: "/devices/imac.jpg" },
+  { id: "imac24m3", label: "iMac 24\" M3", base: 560, image: "/devices/imac.jpg" },
+  { id: "imac24m1", label: "iMac 24\" M1", base: 360, image: "/devices/imac.jpg" },
 ];
 const APPLE_MACMINI_VARIANTS = [
   { id: "macminim4p", label: "Mac Mini M4 Pro", base: 480 },
@@ -354,10 +354,10 @@ const APPLE_MACMINI_VARIANTS = [
   { id: "macminim1", label: "Mac Mini M1", base: 175 },
 ];
 const APPLE_MACSTUDIO_VARIANTS = [
-  { id: "macstudiom4u", label: "Mac Studio M4 Ultra", base: 1760 },
-  { id: "macstudiom4m", label: "Mac Studio M4 Max", base: 1120 },
-  { id: "macstudiom2u", label: "Mac Studio M2 Ultra", base: 1280 },
-  { id: "macstudiom2m", label: "Mac Studio M2 Max", base: 800 },
+  { id: "macstudiom4u", label: "Mac Studio M4 Ultra", base: 1760, image: "/devices/mac-studio.jpg" },
+  { id: "macstudiom4m", label: "Mac Studio M4 Max", base: 1120, image: "/devices/mac-studio.jpg" },
+  { id: "macstudiom2u", label: "Mac Studio M2 Ultra", base: 1280, image: "/devices/mac-studio.jpg" },
+  { id: "macstudiom2m", label: "Mac Studio M2 Max", base: 800, image: "/devices/mac-studio.jpg" },
 ];
 const APPLE_MACPRO_VARIANTS = [
   { id: "macprom2u", label: "Mac Pro M2 Ultra", base: 2240 },
@@ -376,25 +376,25 @@ const APPLE_DESKTOP_MODELS = [
 ];
 
 const DELL_DESKTOP_MODELS = [
-  { id: "doptiplex7010", label: "OptiPlex 7010", base: 350 },
-  { id: "doptiplex5000", label: "OptiPlex 5000", base: 280 },
-  { id: "dxps8960", label: "XPS Desktop 8960", base: 500 },
-  { id: "dxps8950", label: "XPS Desktop 8950", base: 380 },
-  { id: "dinsp3030", label: "Inspiron 3030 Desktop", base: 250 },
-  { id: "dprecision3680", label: "Precision 3680", base: 550 },
+  { id: "doptiplex7010", label: "OptiPlex 7010", base: 350, image: "/devices/dell-optiplex.jpg" },
+  { id: "doptiplex5000", label: "OptiPlex 5000", base: 280, image: "/devices/dell-optiplex.jpg" },
+  { id: "dxps8960", label: "XPS Desktop 8960", base: 500, image: "/devices/dell-xps-desktop.jpg" },
+  { id: "dxps8950", label: "XPS Desktop 8950", base: 380, image: "/devices/dell-xps-desktop.jpg" },
+  { id: "dinsp3030", label: "Inspiron 3030 Desktop", base: 250, image: "/devices/dell-inspiron.jpg" },
+  { id: "dprecision3680", label: "Precision 3680", base: 550, image: "/devices/dell-precision.jpg" },
 ];
 
 const LENOVO_DESKTOP_MODELS = [
-  { id: "lnthinkm", label: "ThinkCentre M920", base: 300 },
-  { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 350 },
-  { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 550 },
-  { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 750 },
-  { id: "lnideactower", label: "IdeaCentre 5i", base: 250 },
+  { id: "lnthinkm", label: "ThinkCentre M920", base: 300, image: "/devices/lenovo-thinkcentre.jpg" },
+  { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 350, image: "/devices/lenovo-thinkcentre.jpg" },
+  { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 550, image: "/devices/lenovo-legion-tower.jpg" },
+  { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 750, image: "/devices/lenovo-legion-tower.jpg" },
+  { id: "lnideactower", label: "IdeaCentre 5i", base: 250, image: "/devices/lenovo-thinkcentre.jpg" },
 ];
 
 const HP_DESKTOP_MODELS = [
-  { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 400 },
-  { id: "hpprodesk", label: "ProDesk 400 G9", base: 280 },
+  { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 400, image: "/devices/hp-elitedesk.jpg" },
+  { id: "hpprodesk", label: "ProDesk 400 G9", base: 280, image: "/devices/hp-elitedesk.jpg" },
   { id: "hpomendsk", label: "OMEN 45L Desktop", base: 650 },
   { id: "hpomen40", label: "OMEN 40L Desktop", base: 500 },
   { id: "hpenvy34", label: "Envy 34 All-in-One", base: 550 },
