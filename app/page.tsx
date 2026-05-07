@@ -7,36 +7,36 @@ const EMAIL_HREF = "mailto:topcashcellular@gmail.com";
 
 const IPHONE_SERIES = [
   { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 825, variants: [
-    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 825 },
-    { id: "ip17p", label: "iPhone 17 Pro", base: 715 },
-    { id: "ip17air", label: "iPhone 17 Air", base: 475 },
-    { id: "ip17plus", label: "iPhone 17 Plus", base: 500 },
-    { id: "ip17", label: "iPhone 17", base: 455 },
-    { id: "ip17e", label: "iPhone 17E", base: 190 },
+    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 825, image: "/devices/iphone-17-pro-max.webp" },
+    { id: "ip17p", label: "iPhone 17 Pro", base: 715, image: "/devices/iphone-17-pro.webp" },
+    { id: "ip17air", label: "iPhone 17 Air", base: 475, image: "/devices/iphone-17.webp" },
+    { id: "ip17plus", label: "iPhone 17 Plus", base: 500, image: "/devices/iphone-17.webp" },
+    { id: "ip17", label: "iPhone 17", base: 455, image: "/devices/iphone-17.webp" },
+    { id: "ip17e", label: "iPhone 17E", base: 190, image: "/devices/iphone-17.webp" },
   ]},
   { id: "16", label: "iPhone 16", image: "/iphone16.png", year: "2024", topPrice: 490, variants: [
-    { id: "ip16pm", label: "iPhone 16 Pro Max", base: 490 },
-    { id: "ip16p", label: "iPhone 16 Pro", base: 390 },
-    { id: "ip16plus", label: "iPhone 16 Plus", base: 320 },
-    { id: "ip16", label: "iPhone 16", base: 300 },
-    { id: "ip16e", label: "iPhone 16E", base: 145 },
+    { id: "ip16pm", label: "iPhone 16 Pro Max", base: 490, image: "/devices/iphone-16-pro-max.webp" },
+    { id: "ip16p", label: "iPhone 16 Pro", base: 390, image: "/devices/iphone-16-pro.webp" },
+    { id: "ip16plus", label: "iPhone 16 Plus", base: 320, image: "/devices/iphone-16-plus.webp" },
+    { id: "ip16", label: "iPhone 16", base: 300, image: "/devices/iphone-16.webp" },
+    { id: "ip16e", label: "iPhone 16E", base: 145, image: "/devices/iphone-16e.webp" },
   ]},
   { id: "15", label: "iPhone 15", image: "/iphone15.png", year: "2023", topPrice: 290, variants: [
-    { id: "ip15pm", label: "iPhone 15 Pro Max", base: 290 },
-    { id: "ip15p", label: "iPhone 15 Pro", base: 235 },
-    { id: "ip15plus", label: "iPhone 15 Plus", base: 180 },
-    { id: "ip15", label: "iPhone 15", base: 160 },
+    { id: "ip15pm", label: "iPhone 15 Pro Max", base: 290, image: "/devices/iphone-15-pro-max.webp" },
+    { id: "ip15p", label: "iPhone 15 Pro", base: 235, image: "/devices/iphone-15-pro.webp" },
+    { id: "ip15plus", label: "iPhone 15 Plus", base: 180, image: "/devices/iphone-15-plus.webp" },
+    { id: "ip15", label: "iPhone 15", base: 160, image: "/devices/iphone-15.webp" },
   ]},
   { id: "14", label: "iPhone 14", image: "/iphone14.png", year: "2022", topPrice: 170, variants: [
-    { id: "ip14pm", label: "iPhone 14 Pro Max", base: 170 },
-    { id: "ip14p", label: "iPhone 14 Pro", base: 140 },
-    { id: "ip14plus", label: "iPhone 14 Plus", base: 110 },
-    { id: "ip14", label: "iPhone 14", base: 100 },
+    { id: "ip14pm", label: "iPhone 14 Pro Max", base: 170, image: "/devices/iphone-14-pro-max.webp" },
+    { id: "ip14p", label: "iPhone 14 Pro", base: 140, image: "/devices/iphone-14-pro.webp" },
+    { id: "ip14plus", label: "iPhone 14 Plus", base: 110, image: "/devices/iphone-14-plus.webp" },
+    { id: "ip14", label: "iPhone 14", base: 100, image: "/devices/iphone-14.webp" },
   ]},
   { id: "13", label: "iPhone 13", image: "/iphone13.png", year: "2021", topPrice: 130, variants: [
-    { id: "ip13pm", label: "iPhone 13 Pro Max", base: 130 },
-    { id: "ip13p", label: "iPhone 13 Pro", base: 100 },
-    { id: "ip13", label: "iPhone 13", base: 75 },
+    { id: "ip13pm", label: "iPhone 13 Pro Max", base: 130, image: "/devices/iphone-13-pro-max.webp" },
+    { id: "ip13p", label: "iPhone 13 Pro", base: 100, image: "/devices/iphone-13-pro.webp" },
+    { id: "ip13", label: "iPhone 13", base: 75, image: "/devices/iphone-13.webp" },
   ]},
   { id: "12", label: "iPhone 12", image: "/iphone12.png", year: "2020", topPrice: 130, variants: [
     { id: "ip12pm", label: "iPhone 12 Pro Max", base: 130 },
@@ -108,23 +108,23 @@ const PIXEL_SERIES = [
   { id: "pproseries", label: "Pro Series", year: "Pixel 6 Pro–10 Pro XL", topPrice: 530, image: "/pixel-pro-series.webp", variants: [
     { id: "px10pxl", label: "Pixel 10 Pro XL", base: 530, image: "/devices/px10pxl.webp" },
     { id: "px10p", label: "Pixel 10 Pro", base: 440, image: "/devices/px10p.webp" },
-    { id: "px9pxl", label: "Pixel 9 Pro XL", base: 375, image: "/devices/px9pxl.webp" },
-    { id: "px9p", label: "Pixel 9 Pro", base: 305, image: "/devices/px9p.webp" },
-    { id: "px8p", label: "Pixel 8 Pro", base: 240, image: "/devices/px8p.webp" },
-    { id: "px7p", label: "Pixel 7 Pro", base: 85, image: "/devices/px7p.webp" },
-    { id: "px6p", label: "Pixel 6 Pro", base: 50, image: "/devices/px6p.webp" },
+    { id: "px9pxl", label: "Pixel 9 Pro XL", base: 375, image: "/devices/pixel-9-pro-xl.webp" },
+    { id: "px9p", label: "Pixel 9 Pro", base: 305, image: "/devices/pixel-9-pro.webp" },
+    { id: "px8p", label: "Pixel 8 Pro", base: 240, image: "/devices/pixel-8-pro.webp" },
+    { id: "px7p", label: "Pixel 7 Pro", base: 85, image: "/devices/pixel-7-pro.webp" },
+    { id: "px6p", label: "Pixel 6 Pro", base: 50, image: "/devices/pixel-6-pro.webp" },
   ]},
   { id: "pstandard", label: "Standard Series", year: "Pixel 5–10 + a-series", topPrice: 325, image: "/pixel-standard-series.webp", variants: [
     { id: "px10", label: "Pixel 10", base: 325, image: "/devices/px10.webp" },
     { id: "px10a", label: "Pixel 10a", base: 145, image: "/devices/px10a.webp" },
-    { id: "px9", label: "Pixel 9", base: 185, image: "/devices/px9.webp" },
-    { id: "px9a", label: "Pixel 9a", base: 135, image: "/devices/px9a.webp" },
-    { id: "px8", label: "Pixel 8", base: 120, image: "/devices/px8.webp" },
-    { id: "px8a", label: "Pixel 8a", base: 90, image: "/devices/px8a.webp" },
-    { id: "px7", label: "Pixel 7", base: 45, image: "/devices/px7.webp" },
-    { id: "px7a", label: "Pixel 7a", base: 10, image: "/devices/px7a.webp" },
-    { id: "px6", label: "Pixel 6", base: 40, image: "/devices/px6.webp" },
-    { id: "px6a", label: "Pixel 6a", base: 30, image: "/devices/px6a.webp" },
+    { id: "px9", label: "Pixel 9", base: 185, image: "/devices/pixel-9.webp" },
+    { id: "px9a", label: "Pixel 9a", base: 135, image: "/devices/pixel-9a.webp" },
+    { id: "px8", label: "Pixel 8", base: 120, image: "/devices/pixel-8.webp" },
+    { id: "px8a", label: "Pixel 8a", base: 90, image: "/devices/pixel-8a.webp" },
+    { id: "px7", label: "Pixel 7", base: 45, image: "/devices/pixel-7.webp" },
+    { id: "px7a", label: "Pixel 7a", base: 10, image: "/devices/pixel-7a.webp" },
+    { id: "px6", label: "Pixel 6", base: 40, image: "/devices/pixel-6.webp" },
+    { id: "px6a", label: "Pixel 6a", base: 30, image: "/devices/pixel-6a.webp" },
     { id: "px5", label: "Pixel 5", base: 50, image: "/devices/px5.webp" },
     { id: "px5a", label: "Pixel 5a (5G)", base: 30, image: "/devices/px5a.webp" },
   ]},
@@ -482,16 +482,16 @@ const IPAD_SERIES = [
 const IPAD_MODELS = IPAD_SERIES.flatMap(s => s.variants);
 
 const PS5_VARIANTS = [
-  { id: "ps5pro", label: "PlayStation 5 Pro (2024)", base: 0, inquiryOnly: true, image: "/devices/ps5pro.jpg" },
+  { id: "ps5pro", label: "PlayStation 5 Pro (2024)", base: 0, inquiryOnly: true, image: "/devices/ps5.webp" },
   { id: "ps5", label: "PlayStation 5 (Standard, Disc)", base: 300, image: "/devices/ps5.webp" },
-  { id: "ps5d", label: "PlayStation 5 Digital", base: 250, image: "/devices/ps5.webp" },
-  { id: "ps5slim", label: "PlayStation 5 Slim (Disc)", base: 0, inquiryOnly: true, image: "/devices/ps5.webp" },
-  { id: "ps5slim_d", label: "PlayStation 5 Slim Digital", base: 0, inquiryOnly: true, image: "/devices/ps5.webp" },
+  { id: "ps5d", label: "PlayStation 5 Digital", base: 250, image: "/devices/ps5-digital.webp" },
+  { id: "ps5slim", label: "PlayStation 5 Slim (Disc)", base: 0, inquiryOnly: true, image: "/devices/ps5-slim-disc.webp" },
+  { id: "ps5slim_d", label: "PlayStation 5 Slim Digital", base: 0, inquiryOnly: true, image: "/devices/ps5-slim-digital.webp" },
 ];
 const PS4_VARIANTS = [
-  { id: "ps4pro", label: "PlayStation 4 Pro", base: 150, image: "/devices/ps4pro.webp" },
+  { id: "ps4pro", label: "PlayStation 4 Pro", base: 150, image: "/devices/ps4-pro.webp" },
   { id: "ps4", label: "PlayStation 4 (Standard)", base: 100, image: "/devices/ps4.webp" },
-  { id: "ps4slim", label: "PlayStation 4 Slim", base: 0, inquiryOnly: true, image: "/devices/ps4slim.webp" },
+  { id: "ps4slim", label: "PlayStation 4 Slim", base: 0, inquiryOnly: true, image: "/devices/ps4-slim.webp" },
 ];
 const SONY_SERIES = [
   { id: "ps5_family", label: "PlayStation 5", year: "Pro · Std · Slim", topPrice: 300, image: "/ps5-series.webp", variants: PS5_VARIANTS },
@@ -500,28 +500,28 @@ const SONY_SERIES = [
 const SONY_MODELS = [...PS5_VARIANTS, ...PS4_VARIANTS];
 
 const MICROSOFT_MODELS = [
-  { id: "xsx", label: "Xbox Series X", base: 280, image: "/devices/xbox-series-x.jpg" },
+  { id: "xsx", label: "Xbox Series X", base: 280, image: "/devices/xbox-series-x.webp" },
   { id: "xss", label: "Xbox Series S", base: 150, image: "/devices/xbox-series-s.webp" },
   { id: "xone", label: "Xbox One", base: 80, image: "/devices/xbox-one.webp" },
 ];
 
 const NINTENDO_MODELS = [
   { id: "switch", label: "Nintendo Switch OLED", base: 180, image: "/devices/switch-oled.webp" },
-  { id: "switchv2", label: "Nintendo Switch V2", base: 130, image: "/devices/nintendo-switch.webp" },
+  { id: "switchv2", label: "Nintendo Switch V2", base: 130, image: "/devices/switch-oled.webp" },
   { id: "switchlite", label: "Nintendo Switch Lite", base: 90, image: "/devices/switch-lite.webp" },
 ];
 
 const CONSOLE_MODELS = [...SONY_MODELS, ...MICROSOFT_MODELS, ...NINTENDO_MODELS];
 
 const APPLEWATCH_MODELS = [
-  { id: "awu2", label: "Apple Watch Ultra 2", base: 450, image: "/devices/apple-watch-ultra.jpg" },
-  { id: "awu1", label: "Apple Watch Ultra", base: 350, image: "/devices/apple-watch-ultra.jpg" },
-  { id: "aws10", label: "Apple Watch Series 10", base: 280, image: "/devices/apple-watch.jpg" },
-  { id: "aws9", label: "Apple Watch Series 9", base: 220, image: "/devices/apple-watch.jpg" },
-  { id: "aws8", label: "Apple Watch Series 8", base: 170, image: "/devices/apple-watch.jpg" },
-  { id: "aws7", label: "Apple Watch Series 7", base: 120, image: "/devices/apple-watch.jpg" },
-  { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 130, image: "/devices/apple-watch.jpg" },
-  { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 80, image: "/devices/apple-watch.jpg" },
+  { id: "awu2", label: "Apple Watch Ultra 2", base: 450, image: "/devices/apple-watch-ultra-2.webp" },
+  { id: "awu1", label: "Apple Watch Ultra", base: 350, image: "/devices/apple-watch-ultra.webp" },
+  { id: "aws10", label: "Apple Watch Series 10", base: 280, image: "/devices/apple-watch-series-10.webp" },
+  { id: "aws9", label: "Apple Watch Series 9", base: 220, image: "/devices/apple-watch-series-9.webp" },
+  { id: "aws8", label: "Apple Watch Series 8", base: 170, image: "/devices/apple-watch-series-8.webp" },
+  { id: "aws7", label: "Apple Watch Series 7", base: 120, image: "/devices/apple-watch-series-7.webp" },
+  { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 130, image: "/devices/apple-watch-se-2.webp" },
+  { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 80, image: "/devices/apple-watch-se-1.webp" },
 ];
 
 const PIXELWATCH_MODELS = [
@@ -541,12 +541,12 @@ const GARMIN_MODELS = [
 ];
 
 const SAMSUNGWATCH_MODELS = [
-  { id: "sgwu", label: "Galaxy Watch Ultra", base: 350 },
-  { id: "sgw7", label: "Galaxy Watch 7", base: 150 },
-  { id: "sgw6c", label: "Galaxy Watch 6 Classic", base: 160 },
-  { id: "sgw6", label: "Galaxy Watch 6", base: 110 },
-  { id: "sgw5p", label: "Galaxy Watch 5 Pro", base: 130 },
-  { id: "sgw5", label: "Galaxy Watch 5", base: 80 },
+  { id: "sgwu", label: "Galaxy Watch Ultra", base: 350, image: "/devices/samsung-watch-7.webp" },
+  { id: "sgw7", label: "Galaxy Watch 7", base: 150, image: "/devices/samsung-watch-7.webp" },
+  { id: "sgw6c", label: "Galaxy Watch 6 Classic", base: 160, image: "/devices/samsung-watch-6-classic.webp" },
+  { id: "sgw6", label: "Galaxy Watch 6", base: 110, image: "/devices/samsung-watch-6.webp" },
+  { id: "sgw5p", label: "Galaxy Watch 5 Pro", base: 130, image: "/devices/samsung-watch-5-pro.webp" },
+  { id: "sgw5", label: "Galaxy Watch 5", base: 80, image: "/devices/samsung-watch-5.webp" },
 ];
 
 const DJI_MODELS = [
@@ -589,13 +589,13 @@ const PSVR_MODELS = [
 ];
 
 const SAMSUNG_TAB_MODELS = [
-  { id: "stabs9u", label: "Galaxy Tab S9 Ultra" },
-  { id: "stabs9p", label: "Galaxy Tab S9+" },
-  { id: "stabs9", label: "Galaxy Tab S9" },
-  { id: "stabs8u", label: "Galaxy Tab S8 Ultra" },
-  { id: "stabs8p", label: "Galaxy Tab S8+" },
-  { id: "stabs8", label: "Galaxy Tab S8" },
-  { id: "staba9", label: "Galaxy Tab A9+" },
+  { id: "stabs9u", label: "Galaxy Tab S9 Ultra", image: "/devices/galaxy-tab-s9-ultra.webp" },
+  { id: "stabs9p", label: "Galaxy Tab S9+", image: "/devices/galaxy-tab-s9-plus.webp" },
+  { id: "stabs9", label: "Galaxy Tab S9", image: "/devices/galaxy-tab-s9.webp" },
+  { id: "stabs8u", label: "Galaxy Tab S8 Ultra", image: "/devices/galaxy-tab-s8-ultra.webp" },
+  { id: "stabs8p", label: "Galaxy Tab S8+", image: "/devices/galaxy-tab-s8-plus.webp" },
+  { id: "stabs8", label: "Galaxy Tab S8", image: "/devices/galaxy-tab-s8.webp" },
+  { id: "staba9", label: "Galaxy Tab A9+", image: "/devices/galaxy-tab-a9-plus.webp" },
 ];
 
 const SURFACE_PRO_VARIANTS = [
@@ -2368,7 +2368,7 @@ export default function Home() {
                 <div className="space-y-2">
                   {models.map((m) => {
                     const seriesImg = IPHONE_SERIES.find(s => s.id === selectedSeries);
-                    const imgSrc = ({ip17pm:"/iphone17.png",ip17p:"/iphone17.png",ip17air:"/iphone17air.png",ip17plus:"/iphone17plus.png",ip17:"/iphone17base.png",ip17e:"/iphone17e.png",ip16pm:"/iphone16.png",ip16p:"/iphone16.png",ip16plus:"/iphone16plus.png",ip16:"/iphone16base.png",ip16e:"/iphone16e.png",ip15pm:"/iphone15.png",ip15p:"/iphone15.png",ip15plus:"/iphone15.png",ip15:"/iphone15base.png",ip14pm:"/iphone14.png",ip14p:"/iphone14.png",ip14plus:"/iphone14plus.png",ip14:"/iphone14base.png",ip13pm:"/iphone13.png",ip13p:"/iphone13.png",ip13:"/iphone13base.png",ip12pm:"/iphone12.png",ip12p:"/iphone12.png",ip12:"/iphone12base.png",ip12mini:"/iphone12mini.png",ip11pm:"/iphone11.png",ip11p:"/iphone11.png",ip11:"/iphone11base.png"} as Record<string,string>)[m.id] || (seriesImg as {image?:string})?.image || null;
+                    const imgSrc = (m as { image?: string }).image || ({ip17pm:"/iphone17.png",ip17p:"/iphone17.png",ip17air:"/iphone17air.png",ip17plus:"/iphone17plus.png",ip17:"/iphone17base.png",ip17e:"/iphone17e.png",ip16pm:"/iphone16.png",ip16p:"/iphone16.png",ip16plus:"/iphone16plus.png",ip16:"/iphone16base.png",ip16e:"/iphone16e.png",ip15pm:"/iphone15.png",ip15p:"/iphone15.png",ip15plus:"/iphone15.png",ip15:"/iphone15base.png",ip14pm:"/iphone14.png",ip14p:"/iphone14.png",ip14plus:"/iphone14plus.png",ip14:"/iphone14base.png",ip13pm:"/iphone13.png",ip13p:"/iphone13.png",ip13:"/iphone13base.png",ip12pm:"/iphone12.png",ip12p:"/iphone12.png",ip12:"/iphone12base.png",ip12mini:"/iphone12mini.png",ip11pm:"/iphone11.png",ip11p:"/iphone11.png",ip11:"/iphone11base.png"} as Record<string,string>)[m.id] || (seriesImg as {image?:string})?.image || null;
                     return (
                     <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       {imgSrc && <img src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
