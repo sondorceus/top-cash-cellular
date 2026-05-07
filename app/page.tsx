@@ -81,20 +81,26 @@ const SAMSUNG_SERIES = [
     { id: "gs21fe", label: "Galaxy S21 FE", base: 30, image: "/devices/gs21fe.webp" },
     { id: "gs20fe", label: "Galaxy S20 FE", base: 20, image: "/devices/gs20fe.webp" },
   ]},
-  { id: "foldseries", label: "Fold Series", year: "Z TriFold + Z Fold lineup", topPrice: 1475, image: "/fold-series.webp", variants: [
+  { id: "zseries", label: "Z Series", year: "Z Fold + Z Flip + TriFold", topPrice: 1475, image: "/fold-series.webp", variants: [
     { id: "gztrifold", label: "Galaxy Z TriFold", base: 1475, image: "/devices/gztrifold.webp" },
     { id: "gzfold7", label: "Galaxy Z Fold 7", base: 630, image: "/devices/gzfold7.webp" },
     { id: "gzfold6", label: "Galaxy Z Fold 6", base: 325, image: "/devices/gzfold6.webp" },
     { id: "gzfold5", label: "Galaxy Z Fold 5", base: 400, image: "/devices/gzfold5.webp" },
     { id: "gzfold4", label: "Galaxy Z Fold 4", base: 300, image: "/devices/gzfold4.webp" },
     { id: "gzfold3", label: "Galaxy Z Fold 3", base: 190 },
-  ]},
-  { id: "flipseries", label: "Flip Series", year: "Z Flip lineup", topPrice: 300, image: "/flip-series.webp", variants: [
     { id: "gzflip7", label: "Galaxy Z Flip 7", base: 160, image: "/devices/gzflip7.webp" },
     { id: "gzflip6", label: "Galaxy Z Flip 6", base: 300, image: "/devices/gzflip6.webp" },
     { id: "gzflip5", label: "Galaxy Z Flip 5", base: 240, image: "/devices/gzflip5.webp" },
     { id: "gzflip4", label: "Galaxy Z Flip 4", base: 150, image: "/devices/gzflip4.webp" },
     { id: "gzflip3", label: "Galaxy Z Flip 3", base: 70, image: "/devices/gzflip3.webp" },
+  ]},
+  { id: "noteseries", label: "Note Series", year: "Note 9 / 10 / 20", topPrice: 200, image: "/devices/gnote20u.webp", variants: [
+    { id: "gnote20u", label: "Galaxy Note 20 Ultra 5G", base: 200, image: "/devices/gnote20u.webp" },
+    { id: "gnote20", label: "Galaxy Note 20 5G", base: 130, image: "/devices/gnote20.webp" },
+    { id: "gnote10p5g", label: "Galaxy Note 10+ 5G", base: 110, image: "/devices/gnote10p5g.webp" },
+    { id: "gnote10p", label: "Galaxy Note 10+", base: 90, image: "/devices/gnote10p.webp" },
+    { id: "gnote10", label: "Galaxy Note 10", base: 70, image: "/devices/gnote10.webp" },
+    { id: "gnote9", label: "Galaxy Note 9", base: 40, image: "/devices/gnote9.webp" },
   ]},
 ];
 
