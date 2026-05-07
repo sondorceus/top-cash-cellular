@@ -139,13 +139,13 @@ const MACBOOK_PRO_MODELS = [
   { id: "mbp16_m5pmax_2026", label: "MacBook Pro 16\" M5 Pro/Max (2026)", base: 0, inquiryOnly: true },
   { id: "mbp14_m5pmax_2026", label: "MacBook Pro 14\" M5 Pro/Max (2026)", base: 0, inquiryOnly: true },
   { id: "mbp14_m5_2025", label: "MacBook Pro 14\" M5 (2025)", base: 0, inquiryOnly: true },
-  { id: "mbp16m4", label: "MacBook Pro 16\" M4 (2024)", base: 1200 },
-  { id: "mbp14m4", label: "MacBook Pro 14\" M4 (2024)", base: 1000 },
-  { id: "mbp16m3", label: "MacBook Pro 16\" M3 (2023)", base: 950 },
-  { id: "mbp14m3", label: "MacBook Pro 14\" M3 (2023)", base: 800 },
-  { id: "mbp16m2", label: "MacBook Pro 16\" M2 (2023)", base: 750 },
-  { id: "mbp14m2", label: "MacBook Pro 14\" M2 (2023)", base: 650 },
-  { id: "mbp13m1", label: "MacBook Pro 13\" M1 (2020)", base: 400 },
+  { id: "mbp16m4", label: "MacBook Pro 16\" M4 (2024)", base: 1200, image: "/devices/macbook-pro-m3.webp" },
+  { id: "mbp14m4", label: "MacBook Pro 14\" M4 (2024)", base: 1000, image: "/devices/macbook-pro-m3.webp" },
+  { id: "mbp16m3", label: "MacBook Pro 16\" M3 (2023)", base: 950, image: "/devices/macbook-pro-m3.webp" },
+  { id: "mbp14m3", label: "MacBook Pro 14\" M3 (2023)", base: 800, image: "/devices/macbook-pro-m3.webp" },
+  { id: "mbp16m2", label: "MacBook Pro 16\" M2 (2023)", base: 750, image: "/devices/macbook-pro-m1.webp" },
+  { id: "mbp14m2", label: "MacBook Pro 14\" M2 (2023)", base: 650, image: "/devices/macbook-pro-m1.webp" },
+  { id: "mbp13m1", label: "MacBook Pro 13\" M1 (2020)", base: 400, image: "/devices/macbook-pro-m1.webp" },
   { id: "mbp13_intel_2020", label: "MacBook Pro 13\" Intel (2020)", base: 0, inquiryOnly: true },
   { id: "mbp16_intel_2019", label: "MacBook Pro 16\" Intel (2019)", base: 0, inquiryOnly: true },
   { id: "mbp_tb_2018_2019", label: "MacBook Pro Touch Bar 13\"/15\" (2018–2019)", base: 0, inquiryOnly: true },
@@ -155,11 +155,11 @@ const MACBOOK_PRO_MODELS = [
 ];
 const MACBOOK_AIR_MODELS = [
   { id: "mba_m5_2026", label: "MacBook Air M5 (13\" & 15\", 2026)", base: 0, inquiryOnly: true },
-  { id: "mba15m3", label: "MacBook Air 15\" M3 (2024)", base: 700 },
-  { id: "mba13m3", label: "MacBook Air 13\" M3 (2024)", base: 600 },
-  { id: "mba15m2", label: "MacBook Air 15\" M2 (2023)", base: 550 },
-  { id: "mba13m2", label: "MacBook Air 13\" M2 (2022)", base: 480 },
-  { id: "mba13m1", label: "MacBook Air 13\" M1 (2020)", base: 350 },
+  { id: "mba15m3", label: "MacBook Air 15\" M3 (2024)", base: 700, image: "/devices/macbook-air-m1.webp" },
+  { id: "mba13m3", label: "MacBook Air 13\" M3 (2024)", base: 600, image: "/devices/macbook-air-m1.webp" },
+  { id: "mba15m2", label: "MacBook Air 15\" M2 (2023)", base: 550, image: "/devices/macbook-air-m1.webp" },
+  { id: "mba13m2", label: "MacBook Air 13\" M2 (2022)", base: 480, image: "/devices/macbook-air-m1.webp" },
+  { id: "mba13m1", label: "MacBook Air 13\" M1 (2020)", base: 350, image: "/devices/macbook-air-m1.webp" },
   { id: "mba_intel_2020", label: "MacBook Air Intel (2020)", base: 0, inquiryOnly: true },
   { id: "mba_retina_2018_2019", label: "MacBook Air Retina (2018–2019)", base: 0, inquiryOnly: true },
   { id: "mba_2017", label: "MacBook Air (2017)", base: 0, inquiryOnly: true },
@@ -2516,11 +2516,17 @@ export default function Home() {
                   <div className="space-y-2">
                     {models.map((m) => {
                       const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
+                      const mImg = (m as { image?: string }).image;
                       return (
                         <button key={m.id} onClick={() => {
                           if (inq) { setInquiryCategory("MacBook"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
                           else { setModel(m); setStep("storage"); pushHistory("storage"); }
                         }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                          {mImg ? (
+                            <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
+                          ) : (
+                            <div className="w-12 h-9 shrink-0" />
+                          )}
                           <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                           <div className="flex items-center gap-2">
                             <span className="text-[#00c853] font-bold text-sm">{inq ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</span>
