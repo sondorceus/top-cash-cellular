@@ -1691,16 +1691,10 @@ export default function Home() {
               </div>
             </div>
           )}
-          {/* HERO: Phone → Cash Visual */}
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-8 pb-4">
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <img src="/iphone17.png" alt="Phone" width={64} height={64} loading="eager" fetchPriority="high" decoding="async" className="w-16 h-16 object-contain" />
-              <div className="flex items-center gap-0.5 animate-pulse">
-                <svg className="w-6 h-6 text-[#00c853]" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-                <svg className="w-6 h-6 text-[#00c853]/60" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-                <svg className="w-6 h-6 text-[#00c853]/30" fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-              </div>
-              <span className="text-4xl">💰</span>
+          {/* HERO: Sell-for-cash photo (Skywalker upload) */}
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-4">
+            <div className="rounded-3xl overflow-hidden shadow-xl shadow-black/30">
+              <img src="/sell-hero.jpg" alt="Sell your device for cash" loading="eager" fetchPriority="high" decoding="async" className="w-full h-auto block" />
             </div>
           </div>
 
