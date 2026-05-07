@@ -184,16 +184,16 @@ const SAMSUNG_PC_MODELS = [
 ];
 
 const LENOVO_MODELS = [
-  { id: "lntp14g5", label: "ThinkPad X1 Carbon Gen 12", base: 700, image: "/devices/lenovo-thinkpad-x1.jpg" },
-  { id: "lntp14g4", label: "ThinkPad X1 Carbon Gen 11", base: 550, image: "/devices/lenovo-thinkpad-x1.jpg" },
-  { id: "lntp14g3", label: "ThinkPad X1 Carbon Gen 10", base: 400, image: "/devices/lenovo-thinkpad-x1.jpg" },
-  { id: "lnyoga9", label: "Yoga 9i 14\" Gen 9", base: 600, image: "/devices/lenovo-yoga.jpg" },
-  { id: "lnyoga7", label: "Yoga 7i 16\" Gen 9", base: 450, image: "/devices/lenovo-yoga.jpg" },
+  { id: "lntp14g5", label: "ThinkPad X1 Carbon Gen 12", base: 700, image: "/devices/lenovo-thinkpad-x1.webp" },
+  { id: "lntp14g4", label: "ThinkPad X1 Carbon Gen 11", base: 550, image: "/devices/lenovo-thinkpad-x1.webp" },
+  { id: "lntp14g3", label: "ThinkPad X1 Carbon Gen 10", base: 400, image: "/devices/lenovo-thinkpad-x1.webp" },
+  { id: "lnyoga9", label: "Yoga 9i 14\" Gen 9", base: 600, image: "/devices/lenovo-yoga.webp" },
+  { id: "lnyoga7", label: "Yoga 7i 16\" Gen 9", base: 450, image: "/devices/lenovo-yoga.webp" },
   { id: "lnslim7", label: "IdeaPad Slim 7 Pro", base: 380, image: "/devices/lenovo-ideapad.webp" },
   { id: "lnslim5", label: "IdeaPad Slim 5", base: 250, image: "/devices/lenovo-ideapad.webp" },
-  { id: "lnlegion7", label: "Legion Pro 7i Gen 9", base: 850, image: "/devices/lenovo-legion.jpg" },
-  { id: "lnlegion5", label: "Legion 5i Gen 9", base: 550, image: "/devices/lenovo-legion.jpg" },
-  { id: "lnlegion5g8", label: "Legion 5i Gen 8", base: 400, image: "/devices/lenovo-legion.jpg" },
+  { id: "lnlegion7", label: "Legion Pro 7i Gen 9", base: 850, image: "/devices/lenovo-legion.webp" },
+  { id: "lnlegion5", label: "Legion 5i Gen 9", base: 550, image: "/devices/lenovo-legion.webp" },
+  { id: "lnlegion5g8", label: "Legion 5i Gen 8", base: 400, image: "/devices/lenovo-legion.webp" },
 ];
 
 const DELL_MODELS = [
