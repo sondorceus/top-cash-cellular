@@ -1190,6 +1190,10 @@ export default function Home() {
     { from: "bot", text: "Hey! I'm here to help you sell your device. Ask me anything about pricing, how it works, or what we buy!" }
   ]);
   const [chatLoading, setChatLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Flat search index across all device categories — populated once at module scope below
+  // (see SEARCH_INDEX const further down)
 
   const sendChat = async () => {
     if (!chatMsg.trim()) return;
@@ -1905,7 +1909,67 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">What are you selling?</h2>
-            <p className="text-[#888] text-sm mb-6">Select a category</p>
+            <p className="text-[#888] text-sm mb-4">Select a category, or search for your device</p>
+
+            {/* Search bar — fuzzy-matches across all variants in IPHONE_SERIES, SAMSUNG_SERIES, PIXEL_SERIES, IPAD_SERIES, MACBOOK_SERIES, etc. */}
+            <div className="relative mb-6">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search device — iPhone 15 Pro, Galaxy S24 Ultra, MacBook Pro M4..."
+                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition"
+              />
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
+              {searchQuery.trim().length >= 2 && (() => {
+                const q = searchQuery.toLowerCase().trim();
+                type Hit = { label: string; deviceType: DeviceType; seriesId: string; modelId: string; category: typeof category; base: number };
+                const hits: Hit[] = [];
+                const collectFrom = (list: { id: string; label: string; variants: { id: string; label: string; base: number }[] }[], deviceType: DeviceType, cat: typeof category) => {
+                  for (const s of list) {
+                    for (const v of s.variants) {
+                      if (v.label.toLowerCase().includes(q)) {
+                        hits.push({ label: v.label, deviceType, seriesId: s.id, modelId: v.id, category: cat, base: v.base || 0 });
+                      }
+                    }
+                  }
+                };
+                collectFrom(IPHONE_SERIES, "iphone", "phones");
+                collectFrom(SAMSUNG_SERIES, "android", "phones");
+                collectFrom(PIXEL_SERIES, "pixel", "phones");
+                collectFrom(IPAD_SERIES, "ipad", "tablets");
+                collectFrom(MACBOOK_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number }[]})), "macbook", "computers");
+                collectFrom(APPLE_DESKTOP_SERIES, "apple_desktop", "desktops");
+                collectFrom(SONY_SERIES, "sony", "consoles");
+                collectFrom(SURFACE_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number }[]})), "surface", "tablets");
+                const top = hits.slice(0, 8);
+                return (
+                  <div className="absolute z-10 left-0 right-0 mt-2 bg-[#111] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+                    {top.length === 0 ? (
+                      <div className="px-4 py-3 text-sm text-[#888]">No matches. Try a different name or pick a category below.</div>
+                    ) : top.map((h, i) => (
+                      <button
+                        key={`${h.deviceType}-${h.seriesId}-${h.modelId}-${i}`}
+                        onClick={() => {
+                          setCategory(h.category);
+                          setDeviceType(h.deviceType);
+                          setSelectedSeries(h.seriesId);
+                          setModel({ id: h.modelId, label: h.label, base: h.base });
+                          setSearchQuery("");
+                          setStep("storage");
+                          pushHistory("storage");
+                        }}
+                        className="w-full text-left px-4 py-3 hover:bg-white/5 transition flex items-center justify-between border-b border-white/5 last:border-0 cursor-pointer"
+                      >
+                        <span className="text-sm font-semibold">{h.label}</span>
+                        {h.base > 0 && <span className="text-[#00c853] text-xs font-bold">up to ${h.base}</span>}
+                      </button>
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
+
             <div className="grid grid-cols-4 md:grid-cols-5 gap-2 md:gap-3">
               {[
                 { id: "phones" as const, label: "Sell Phone", icon: "📱" },
