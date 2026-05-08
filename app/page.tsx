@@ -1693,8 +1693,8 @@ export default function Home() {
           )}
           {/* HERO: Sell-for-cash photo (Skywalker upload) */}
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-4">
-            <div className="rounded-3xl overflow-hidden shadow-xl shadow-black/30">
-              <img src="/sell-hero.jpg" alt="Sell your device for cash" loading="eager" fetchPriority="high" decoding="async" className="w-full h-auto block" />
+            <div className="rounded-3xl overflow-hidden shadow-xl shadow-black/30 aspect-[16/5] md:aspect-[21/6]">
+              <img src="/sell-hero.jpg" alt="Sell your device for cash" loading="eager" fetchPriority="high" decoding="async" className="w-full h-full object-cover block" />
             </div>
           </div>
 
