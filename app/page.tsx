@@ -1691,12 +1691,7 @@ export default function Home() {
               </div>
             </div>
           )}
-          {/* HERO: Sell-for-cash photo (Skywalker upload) */}
-          <div className="max-w-md md:max-w-xl lg:max-w-2xl mx-auto px-4 pt-6 pb-4">
-            <div className="rounded-3xl overflow-hidden shadow-xl shadow-black/30">
-              <img src="/sell-hero.jpg" alt="Sell your device for cash" loading="eager" fetchPriority="high" decoding="async" className="w-full h-auto block" />
-            </div>
-          </div>
+          {/* Hero photo removed per Skywalker 2026-05-08 */}
 
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pb-8">
             <h1 className="text-4xl font-bold tracking-tight leading-[1.08] mb-3 hero-fade-up">
