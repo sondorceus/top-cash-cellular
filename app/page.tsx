@@ -210,9 +210,9 @@ const DELL_MODELS = [
   { id: "dxps13g23", label: "XPS 13 (2023)", base: 380, image: "/devices/dell-xps.webp" },
   { id: "dlat7440", label: "Latitude 7440", base: 420, image: "/devices/dell-latitude.jpg" },
   { id: "dlat5540", label: "Latitude 5540", base: 300, image: "/devices/dell-latitude.jpg" },
-  { id: "dinsp16p", label: "Inspiron 16 Plus", base: 350 },
-  { id: "dinsp15", label: "Inspiron 15", base: 220 },
-  { id: "dinsp14", label: "Inspiron 14", base: 200 },
+  { id: "dinsp16p", label: "Inspiron 16 Plus", base: 350, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dinsp15", label: "Inspiron 15", base: 220, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dinsp14", label: "Inspiron 14", base: 200, image: "/devices/dell-inspiron-15.webp" },
 ];
 
 // Alienware laptop categories restructured 2026-05-06 to mirror itsworthmore.com
@@ -282,27 +282,27 @@ const ALIENWARE_MODELS = [
 ];
 
 const HP_MODELS = [
-  { id: "hpspec16", label: "Spectre x360 16\" (2024)", base: 0, inquiryOnly: true },
-  { id: "hpspec14", label: "Spectre x360 14\" (2024)", base: 0, inquiryOnly: true },
-  { id: "hpspec16g23", label: "Spectre x360 16\" (2023)", base: 0, inquiryOnly: true },
-  { id: "hpenvy16", label: "Envy 16\" (2024)", base: 0, inquiryOnly: true },
-  { id: "hpenvy15", label: "Envy x360 15\" (2024)", base: 0, inquiryOnly: true },
-  { id: "hpomen17", label: "OMEN 17\" (2024)", base: 0, inquiryOnly: true },
-  { id: "hpomen16", label: "OMEN 16\" (2024)", base: 0, inquiryOnly: true },
-  { id: "hppav15", label: "Pavilion 15\"", base: 0, inquiryOnly: true },
+  { id: "hpspec16", label: "Spectre x360 16\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
+  { id: "hpspec14", label: "Spectre x360 14\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
+  { id: "hpspec16g23", label: "Spectre x360 16\" (2023)", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
+  { id: "hpenvy16", label: "Envy 16\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hp-envy-16.webp" },
+  { id: "hpenvy15", label: "Envy x360 15\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hp-envy-15.webp" },
+  { id: "hpomen17", label: "OMEN 17\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hp-victus-15.webp" },
+  { id: "hpomen16", label: "OMEN 16\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hp-victus-15.webp" },
+  { id: "hppav15", label: "Pavilion 15\"", base: 0, inquiryOnly: true, image: "/devices/hp-pavilion-15.webp" },
   { id: "hpelite840", label: "EliteBook 840 G10", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook.jpg" },
   { id: "hpprobook", label: "ProBook 450 G10", base: 0, inquiryOnly: true, image: "/devices/hp-probook.jpg" },
 ];
 
 const ACER_MODELS = [
-  { id: "acswx14", label: "Swift X 14 (2024)", base: 480, image: "/devices/acer-swift.jpg" },
-  { id: "acsw14", label: "Swift Go 14 (2024)", base: 380, image: "/devices/acer-swift.jpg" },
-  { id: "acpred16", label: "Predator Helios 16 (2024)", base: 750, image: "/devices/acer-predator.jpg" },
-  { id: "acpred18", label: "Predator Helios 18 (2024)", base: 900, image: "/devices/acer-predator.jpg" },
-  { id: "acnit16", label: "Nitro V 16 (2024)", base: 400 },
-  { id: "acnit15", label: "Nitro 5 (2023)", base: 300 },
-  { id: "acasp15", label: "Aspire 5", base: 200, image: "/devices/acer-aspire.jpg" },
-  { id: "acasp3", label: "Aspire 3", base: 150, image: "/devices/acer-aspire.jpg" },
+  { id: "acswx14", label: "Swift X 14 (2024)", base: 480, image: "/devices/acer-swift.webp" },
+  { id: "acsw14", label: "Swift Go 14 (2024)", base: 380, image: "/devices/acer-swift.webp" },
+  { id: "acpred16", label: "Predator Helios 16 (2024)", base: 750, image: "/devices/acer-predator.webp" },
+  { id: "acpred18", label: "Predator Helios 18 (2024)", base: 900, image: "/devices/acer-predator.webp" },
+  { id: "acnit16", label: "Nitro V 16 (2024)", base: 400, image: "/devices/acer-nitro-5.webp" },
+  { id: "acnit15", label: "Nitro 5 (2023)", base: 300, image: "/devices/acer-nitro-5.webp" },
+  { id: "acasp15", label: "Aspire 5", base: 200, image: "/devices/acer-aspire.webp" },
+  { id: "acasp3", label: "Aspire 3", base: 150, image: "/devices/acer-aspire.webp" },
 ];
 
 const LG_GRAM_STANDARD_VARIANTS = [
@@ -369,24 +369,24 @@ const LG_PC_MODELS = [
 // Apple Desktops — 4 family boxes (iMac / Mac Mini / Mac Studio / Mac Pro)
 // Prices reduced 20% per Skywalker's competitor-research directive 2026-05-04
 const APPLE_IMAC_VARIANTS = [
-  { id: "imac24m4", label: "iMac 24\" M4", base: 720 },
-  { id: "imac24m3", label: "iMac 24\" M3", base: 560 },
-  { id: "imac24m1", label: "iMac 24\" M1", base: 360 },
+  { id: "imac24m4", label: "iMac 24\" M4", base: 720, image: "/devices/imac-24-m4.webp" },
+  { id: "imac24m3", label: "iMac 24\" M3", base: 560, image: "/devices/imac-24-m3.webp" },
+  { id: "imac24m1", label: "iMac 24\" M1", base: 360, image: "/devices/imac-24-m1.webp" },
 ];
 const APPLE_MACMINI_VARIANTS = [
-  { id: "macminim4p", label: "Mac Mini M4 Pro", base: 480 },
-  { id: "macminim4", label: "Mac Mini M4", base: 320 },
-  { id: "macminim2", label: "Mac Mini M2", base: 240 },
-  { id: "macminim1", label: "Mac Mini M1", base: 175 },
+  { id: "macminim4p", label: "Mac Mini M4 Pro", base: 480, image: "/devices/mac-mini-m2.webp" },
+  { id: "macminim4", label: "Mac Mini M4", base: 320, image: "/devices/mac-mini-m2.webp" },
+  { id: "macminim2", label: "Mac Mini M2", base: 240, image: "/devices/mac-mini-m2.webp" },
+  { id: "macminim1", label: "Mac Mini M1", base: 175, image: "/devices/mac-mini-m1.webp" },
 ];
 const APPLE_MACSTUDIO_VARIANTS = [
-  { id: "macstudiom4u", label: "Mac Studio M4 Ultra", base: 1760 },
-  { id: "macstudiom4m", label: "Mac Studio M4 Max", base: 1120 },
-  { id: "macstudiom2u", label: "Mac Studio M2 Ultra", base: 1280 },
-  { id: "macstudiom2m", label: "Mac Studio M2 Max", base: 800 },
+  { id: "macstudiom4u", label: "Mac Studio M4 Ultra", base: 1760, image: "/devices/mac-studio-m2.webp" },
+  { id: "macstudiom4m", label: "Mac Studio M4 Max", base: 1120, image: "/devices/mac-studio-m2.webp" },
+  { id: "macstudiom2u", label: "Mac Studio M2 Ultra", base: 1280, image: "/devices/mac-studio-m2.webp" },
+  { id: "macstudiom2m", label: "Mac Studio M2 Max", base: 800, image: "/devices/mac-studio-m2.webp" },
 ];
 const APPLE_MACPRO_VARIANTS = [
-  { id: "macprom2u", label: "Mac Pro M2 Ultra", base: 2240 },
+  { id: "macprom2u", label: "Mac Pro M2 Ultra", base: 2240, image: "/devices/mac-studio-m2.webp" },
 ];
 const APPLE_DESKTOP_SERIES = [
   { id: "ad_imac", label: "iMac", year: "All-in-one", topPrice: 720, variants: APPLE_IMAC_VARIANTS },
@@ -419,12 +419,12 @@ const LENOVO_DESKTOP_MODELS = [
 ];
 
 const HP_DESKTOP_MODELS = [
-  { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 400 },
-  { id: "hpprodesk", label: "ProDesk 400 G9", base: 280 },
+  { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 400, image: "/devices/hp-elitedesk-800.webp" },
+  { id: "hpprodesk", label: "ProDesk 400 G9", base: 280, image: "/devices/hp-prodesk-400.webp" },
   { id: "hpomendsk", label: "OMEN 45L Desktop", base: 650, image: "/devices/hp-omen-45l.webp" },
   { id: "hpomen40", label: "OMEN 40L Desktop", base: 500, image: "/devices/hp-omen-35l.webp" },
-  { id: "hpenvy34", label: "Envy 34 All-in-One", base: 550 },
-  { id: "hppav32", label: "Pavilion 32 All-in-One", base: 380 },
+  { id: "hpenvy34", label: "Envy 34 All-in-One", base: 550, image: "/devices/lenovo-ideacentre.webp" },
+  { id: "hppav32", label: "Pavilion 32 All-in-One", base: 380, image: "/devices/lenovo-ideacentre.webp" },
 ];
 
 const ASUS_DESKTOP_MODELS = [
