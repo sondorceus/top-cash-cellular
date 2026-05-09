@@ -2835,15 +2835,22 @@ export default function Home() {
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your device</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your model</p>
                 <div className="space-y-2">
-                  {(deviceType === "apple_vr" ? APPLE_VR_MODELS : deviceType === "meta_vr" ? META_VR_MODELS : deviceType === "valve_vr" ? VALVE_VR_MODELS : deviceType === "psvr" ? PSVR_MODELS : deviceType === "samsung_tab" ? SAMSUNG_TAB_MODELS : deviceType === "oneplus_tab" ? ONEPLUS_TAB_MODELS : GOOGLE_TAB_MODELS).map((m) => (
-                    <button key={m.id} onClick={() => { setInquiryCategory(deviceType?.includes("vr") || deviceType === "psvr" ? "VR Headset" : "Tablet"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                      <p className="font-semibold text-[15px]">{m.label}</p>
+                  {(deviceType === "apple_vr" ? APPLE_VR_MODELS : deviceType === "meta_vr" ? META_VR_MODELS : deviceType === "valve_vr" ? VALVE_VR_MODELS : deviceType === "psvr" ? PSVR_MODELS : deviceType === "samsung_tab" ? SAMSUNG_TAB_MODELS : deviceType === "oneplus_tab" ? ONEPLUS_TAB_MODELS : GOOGLE_TAB_MODELS).map((m) => {
+                    const mImage = (m as { image?: string }).image;
+                    return (
+                    <button key={m.id} onClick={() => { setInquiryCategory(deviceType?.includes("vr") || deviceType === "psvr" ? "VR Headset" : "Tablet"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                      {mImage ? (
+                        <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
+                      ) : (
+                        <div className="w-10 h-10 shrink-0" />
+                      )}
+                      <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
                         <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
-                  ))}
+                  )})}
                 </div>
               </>
             )}
