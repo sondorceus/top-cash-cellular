@@ -9,6 +9,7 @@ saves as PNG. The phone shape sits cleanly on whatever bg the page uses.
 import os
 import sys
 from collections import deque
+import numpy as np
 from PIL import Image
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -24,9 +25,10 @@ PHONES = [
     "gs20u", "gs20p", "gs20fe", "gs20",
 ]
 
-BG_CUTOFF = 230  # min_rgb >= this -> definitely bg
-SOFT_FLOOR = 215  # min_rgb in [SOFT_FLOOR, BG_CUTOFF) -> anti-aliased edge
-FLOOD_THRESHOLD = 200  # corner flood-fill catches bg pixels above this
+BG_CUTOFF = 220  # min_rgb >= this -> bg, alpha 0
+FLOOD_THRESHOLD = 180  # corner flood-fill catches bg pixels above this
+# Binary alpha (no soft falloff) — soft anti-aliased edges turned into
+# semi-transparent grey halos on the dark site bg, so we hard-cut instead.
 
 def alpha_key(img: Image.Image) -> Image.Image:
     """Return RGBA image with bg pixels made transparent.
@@ -45,16 +47,14 @@ def alpha_key(img: Image.Image) -> Image.Image:
     w, h = rgba.size
     px = rgba.load()
 
-    # pass 1
+    # pass 1: binary alpha — pixels are either fully transparent or fully opaque
     for y in range(h):
         for x in range(w):
             r, g, b, _ = px[x, y]
-            min_rgb = min(r, g, b)
-            if min_rgb >= BG_CUTOFF:
+            if min(r, g, b) >= BG_CUTOFF:
                 px[x, y] = (r, g, b, 0)
-            elif min_rgb >= SOFT_FLOOR:
-                alpha = int(255 * (BG_CUTOFF - min_rgb) / (BG_CUTOFF - SOFT_FLOOR))
-                px[x, y] = (r, g, b, alpha)
+            else:
+                px[x, y] = (r, g, b, 255)
 
     # pass 2: flood-fill from corners
     visited = [[False] * w for _ in range(h)]
@@ -75,6 +75,40 @@ def alpha_key(img: Image.Image) -> Image.Image:
         q.append((x - 1, y))
         q.append((x, y + 1))
         q.append((x, y - 1))
+
+    # pass 3: keep only the largest connected component of opaque pixels.
+    # Tiny isolated noise specks (JPG artifacts dark enough to escape the
+    # flood-fill) get killed off so they don't show as dots on dark bg.
+    arr = np.array(rgba)
+    opaque = arr[:, :, 3] > 50  # binary mask: where the phone (and any noise) is
+    labels = np.zeros_like(opaque, dtype=np.int32)
+    next_label = 0
+    sizes: dict[int, int] = {}
+    for sy in range(h):
+        for sx in range(w):
+            if not opaque[sy, sx] or labels[sy, sx] != 0:
+                continue
+            next_label += 1
+            size = 0
+            cq: deque = deque([(sx, sy)])
+            while cq:
+                cx, cy = cq.popleft()
+                if cx < 0 or cx >= w or cy < 0 or cy >= h:
+                    continue
+                if not opaque[cy, cx] or labels[cy, cx] != 0:
+                    continue
+                labels[cy, cx] = next_label
+                size += 1
+                cq.append((cx + 1, cy))
+                cq.append((cx - 1, cy))
+                cq.append((cx, cy + 1))
+                cq.append((cx, cy - 1))
+            sizes[next_label] = size
+    if sizes:
+        biggest = max(sizes, key=sizes.get)
+        kill_mask = (labels != 0) & (labels != biggest)
+        arr[kill_mask, 3] = 0
+    rgba = Image.fromarray(arr, "RGBA")
 
     return rgba
 
