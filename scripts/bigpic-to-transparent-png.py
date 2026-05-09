@@ -8,6 +8,7 @@ saves as PNG. The phone shape sits cleanly on whatever bg the page uses.
 """
 import os
 import sys
+from collections import deque
 from PIL import Image
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -23,29 +24,58 @@ PHONES = [
     "gs20u", "gs20p", "gs20fe", "gs20",
 ]
 
-WHITE_THRESHOLD = 240  # pixels with all RGB >= this become transparent
+BG_CUTOFF = 230  # min_rgb >= this -> definitely bg
+SOFT_FLOOR = 215  # min_rgb in [SOFT_FLOOR, BG_CUTOFF) -> anti-aliased edge
+FLOOD_THRESHOLD = 200  # corner flood-fill catches bg pixels above this
 
 def alpha_key(img: Image.Image) -> Image.Image:
-    """Return RGBA image with near-white pixels made transparent.
+    """Return RGBA image with bg pixels made transparent.
 
-    Soft alpha is applied based on how close to white the pixel is, so
-    the phone's anti-aliased edges blend cleanly instead of looking jagged.
+    Two-pass:
+      1. Per-pixel: pixels with min(R,G,B) >= BG_CUTOFF -> alpha 0;
+         pixels in [SOFT_FLOOR, BG_CUTOFF) get soft alpha for clean
+         anti-aliased phone edges.
+      2. Corner flood-fill with looser threshold (FLOOD_THRESHOLD)
+         catches JPG-compression noise in the bg that pass-1 missed.
+         Only pixels reachable from the image corners get killed —
+         interior near-white phone areas (silver bodies, screen
+         highlights) stay opaque.
     """
     rgba = img.convert("RGBA")
-    px = rgba.load()
     w, h = rgba.size
+    px = rgba.load()
+
+    # pass 1
     for y in range(h):
         for x in range(w):
             r, g, b, _ = px[x, y]
-            # how close to white (0=pure white, higher=more colored)
             min_rgb = min(r, g, b)
-            if min_rgb >= WHITE_THRESHOLD:
-                # full transparent for very white pixels
+            if min_rgb >= BG_CUTOFF:
                 px[x, y] = (r, g, b, 0)
-            elif min_rgb >= 220:
-                # soft falloff for near-white anti-aliased edges
-                alpha = int(255 * (WHITE_THRESHOLD - min_rgb) / (WHITE_THRESHOLD - 220))
+            elif min_rgb >= SOFT_FLOOR:
+                alpha = int(255 * (BG_CUTOFF - min_rgb) / (BG_CUTOFF - SOFT_FLOOR))
                 px[x, y] = (r, g, b, alpha)
+
+    # pass 2: flood-fill from corners
+    visited = [[False] * w for _ in range(h)]
+    q: deque = deque()
+    for cx, cy in ((0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)):
+        q.append((cx, cy))
+    while q:
+        x, y = q.popleft()
+        if x < 0 or x >= w or y < 0 or y >= h or visited[y][x]:
+            continue
+        visited[y][x] = True
+        r, g, b, _ = px[x, y]
+        if min(r, g, b) < FLOOD_THRESHOLD:
+            continue  # hit phone body, stop
+        # this pixel is bg-connected -> force transparent
+        px[x, y] = (r, g, b, 0)
+        q.append((x + 1, y))
+        q.append((x - 1, y))
+        q.append((x, y + 1))
+        q.append((x, y - 1))
+
     return rgba
 
 def process(phone_id: str) -> bool:
