@@ -589,12 +589,28 @@ const PSVR_MODELS = [
 ];
 
 const SAMSUNG_TAB_MODELS = [
+  { id: "stabs11u", label: "Galaxy Tab S11 Ultra", image: "/devices/galaxy-tab-s11-ultra.webp" },
+  { id: "stabs11", label: "Galaxy Tab S11", image: "/devices/galaxy-tab-s11.webp" },
+  { id: "stabs10u", label: "Galaxy Tab S10 Ultra", image: "/devices/galaxy-tab-s10-ultra.png" },
+  { id: "stabs10p", label: "Galaxy Tab S10+", image: "/devices/galaxy-tab-s10-plus.webp" },
+  { id: "stabs10fep", label: "Galaxy Tab S10 FE+", image: "/devices/galaxy-tab-s10-fe-plus.webp" },
+  { id: "stabs10fe", label: "Galaxy Tab S10 FE", image: "/devices/galaxy-tab-s10-fe.webp" },
+  { id: "stabs10l", label: "Galaxy Tab S10 Lite", image: "/devices/galaxy-tab-s10-lite.webp" },
   { id: "stabs9u", label: "Galaxy Tab S9 Ultra", image: "/devices/galaxy-tab-s9-ultra.webp" },
   { id: "stabs9p", label: "Galaxy Tab S9+", image: "/devices/galaxy-tab-s9-plus.webp" },
   { id: "stabs9", label: "Galaxy Tab S9", image: "/devices/galaxy-tab-s9.webp" },
+  { id: "stabs9fep", label: "Galaxy Tab S9 FE+", image: "/devices/galaxy-tab-s9-fe-plus.webp" },
+  { id: "stabs9fe", label: "Galaxy Tab S9 FE", image: "/devices/galaxy-tab-s9-fe.webp" },
   { id: "stabs8u", label: "Galaxy Tab S8 Ultra", image: "/devices/galaxy-tab-s8-ultra.webp" },
   { id: "stabs8p", label: "Galaxy Tab S8+", image: "/devices/galaxy-tab-s8-plus.webp" },
   { id: "stabs8", label: "Galaxy Tab S8", image: "/devices/galaxy-tab-s8.webp" },
+  { id: "stabs7p", label: "Galaxy Tab S7+", image: "/devices/galaxy-tab-s7-plus.webp" },
+  { id: "stabs7fe", label: "Galaxy Tab S7 FE", image: "/devices/galaxy-tab-s7-fe.png" },
+  { id: "stabs7", label: "Galaxy Tab S7", image: "/devices/galaxy-tab-s7.webp" },
+  { id: "stabs6l", label: "Galaxy Tab S6 Lite", image: "/devices/galaxy-tab-s6-lite.webp" },
+  { id: "stabs6", label: "Galaxy Tab S6", image: "/devices/galaxy-tab-s6.webp" },
+  { id: "stabs5e", label: "Galaxy Tab S5e", image: "/devices/galaxy-tab-s5e.webp" },
+  { id: "stabs4", label: "Galaxy Tab S4 10.5", image: "/devices/galaxy-tab-s4-105.webp" },
   { id: "staba9", label: "Galaxy Tab A9+", image: "/devices/galaxy-tab-a9-plus.webp" },
 ];
 
