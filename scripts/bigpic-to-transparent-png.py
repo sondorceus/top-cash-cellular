@@ -23,6 +23,12 @@ PHONES = [
     "gs22u", "gs22p", "gs22",
     "gs21u", "gs21p", "gs21fe", "gs21",
     "gs20u", "gs20p", "gs20fe", "gs20",
+    # Note series
+    "gnote20u", "gnote20", "gnote10p5g", "gnote10p", "gnote10", "gnote9",
+    # Z Fold/Flip series
+    "gztrifold",
+    "gzfold7", "gzfold6", "gzfold5", "gzfold4", "gzfold3",
+    "gzflip7", "gzflip6", "gzflip5", "gzflip4", "gzflip3",
 ]
 
 BG_CUTOFF = 220  # min_rgb >= this -> bg, alpha 0

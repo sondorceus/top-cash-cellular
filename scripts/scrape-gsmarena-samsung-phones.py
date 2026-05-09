@@ -50,6 +50,25 @@ PHONES = [
     ("gs20p",   "samsung galaxy s20+",       "Samsung Galaxy S20+"),
     ("gs20fe",  "samsung galaxy s20 fe",     "Samsung Galaxy S20 FE"),
     ("gs20",    "samsung galaxy s20",        "Samsung Galaxy S20"),
+    # Note series
+    ("gnote20u",   "samsung galaxy note 20 ultra 5g",  "Samsung Galaxy Note20 Ultra 5G"),
+    ("gnote20",    "samsung galaxy note 20 5g",        "Samsung Galaxy Note20 5G"),
+    ("gnote10p5g", "samsung galaxy note 10 plus 5g",   "Samsung Galaxy Note10+ 5G"),
+    ("gnote10p",   "samsung galaxy note 10 plus",      "Samsung Galaxy Note10+"),
+    ("gnote10",    "samsung galaxy note 10",           "Samsung Galaxy Note10"),
+    ("gnote9",     "samsung galaxy note 9",            "Samsung Galaxy Note9"),
+    # Z Fold/Flip series
+    ("gztrifold",  "samsung galaxy z trifold",         "Samsung Galaxy Z TriFold"),
+    ("gzfold7",    "samsung galaxy z fold7",           "Samsung Galaxy Z Fold7"),
+    ("gzfold6",    "samsung galaxy z fold6",           "Samsung Galaxy Z Fold6"),
+    ("gzfold5",    "samsung galaxy z fold5",           "Samsung Galaxy Z Fold5"),
+    ("gzfold4",    "samsung galaxy z fold4",           "Samsung Galaxy Z Fold4"),
+    ("gzfold3",    "samsung galaxy z fold3 5g",        "Samsung Galaxy Z Fold3 5G"),
+    ("gzflip7",    "samsung galaxy z flip7",           "Samsung Galaxy Z Flip7"),
+    ("gzflip6",    "samsung galaxy z flip6",           "Samsung Galaxy Z Flip6"),
+    ("gzflip5",    "samsung galaxy z flip5",           "Samsung Galaxy Z Flip5"),
+    ("gzflip4",    "samsung galaxy z flip4",           "Samsung Galaxy Z Flip4"),
+    ("gzflip3",    "samsung galaxy z flip3 5g",        "Samsung Galaxy Z Flip3 5G"),
 ]
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
