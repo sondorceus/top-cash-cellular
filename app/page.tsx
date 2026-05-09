@@ -1933,7 +1933,7 @@ export default function Home() {
                 collectFrom(SURFACE_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number }[]})), "surface", "tablets");
                 const top = hits.slice(0, 8);
                 return (
-                  <div className="absolute z-10 left-0 right-0 mt-2 bg-[#111] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+                  <div className="absolute z-50 left-0 right-0 mt-2 bg-[#111] border border-white/10 rounded-2xl shadow-2xl overflow-y-auto max-h-[60vh]">
                     {top.length === 0 ? (
                       <div className="px-4 py-3 text-sm text-[#888]">No matches. Try a different name or pick a category below.</div>
                     ) : top.map((h, i) => (
