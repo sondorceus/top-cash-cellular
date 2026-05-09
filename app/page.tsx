@@ -52,7 +52,7 @@ const IPHONE_SERIES = [
 ];
 
 const SAMSUNG_SERIES = [
-  { id: "sseries", label: "S Series", year: "Galaxy S20–S26", topPrice: 510, image: "/s-series.webp", variants: [
+  { id: "sseries", label: "S Series", year: "Galaxy S20–S26", topPrice: 510, image: "/s-series.png", variants: [
     { id: "gs26u", label: "Galaxy S26 Ultra", base: 510, image: "/devices/gs26u.png" },
     { id: "gs25u", label: "Galaxy S25 Ultra", base: 330, image: "/devices/gs25u.png" },
     { id: "gs24u", label: "Galaxy S24 Ultra", base: 460, image: "/devices/gs24u.png" },
@@ -136,9 +136,9 @@ const PIXEL_SERIES = [
 ];
 
 const MACBOOK_PRO_MODELS = [
-  { id: "mbp16_m5pmax_2026", label: "MacBook Pro 16\" M5 Pro/Max (2026)", base: 0, inquiryOnly: true },
-  { id: "mbp14_m5pmax_2026", label: "MacBook Pro 14\" M5 Pro/Max (2026)", base: 0, inquiryOnly: true },
-  { id: "mbp14_m5_2025", label: "MacBook Pro 14\" M5 (2025)", base: 0, inquiryOnly: true },
+  { id: "mbp16_m5pmax_2026", label: "MacBook Pro 16\" M5 Pro/Max (2026)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m4.webp" },
+  { id: "mbp14_m5pmax_2026", label: "MacBook Pro 14\" M5 Pro/Max (2026)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m4.webp" },
+  { id: "mbp14_m5_2025", label: "MacBook Pro 14\" M5 (2025)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m4.webp" },
   { id: "mbp16m4", label: "MacBook Pro 16\" M4 (2024)", base: 1200, image: "/devices/macbook-pro-m4.webp" },
   { id: "mbp14m4", label: "MacBook Pro 14\" M4 (2024)", base: 1000, image: "/devices/macbook-pro-m4.webp" },
   { id: "mbp16m3", label: "MacBook Pro 16\" M3 (2023)", base: 950, image: "/devices/macbook-pro-m3.webp" },
@@ -146,12 +146,12 @@ const MACBOOK_PRO_MODELS = [
   { id: "mbp16m2", label: "MacBook Pro 16\" M2 (2023)", base: 750, image: "/devices/macbook-pro-m2.webp" },
   { id: "mbp14m2", label: "MacBook Pro 14\" M2 (2023)", base: 650, image: "/devices/macbook-pro-m2.webp" },
   { id: "mbp13m1", label: "MacBook Pro 13\" M1 (2020)", base: 400, image: "/devices/macbook-pro-m1.webp" },
-  { id: "mbp13_intel_2020", label: "MacBook Pro 13\" Intel (2020)", base: 0, inquiryOnly: true },
-  { id: "mbp16_intel_2019", label: "MacBook Pro 16\" Intel (2019)", base: 0, inquiryOnly: true },
-  { id: "mbp_tb_2018_2019", label: "MacBook Pro Touch Bar 13\"/15\" (2018–2019)", base: 0, inquiryOnly: true },
-  { id: "mbp_tb_2016_2017", label: "MacBook Pro Touch Bar 13\"/15\" (2016–2017)", base: 0, inquiryOnly: true },
-  { id: "mbp_retina_2015", label: "MacBook Pro Retina 13\"/15\" (2015)", base: 0, inquiryOnly: true },
-  { id: "mbp_retina_2014", label: "MacBook Pro Retina 13\"/15\" (2014)", base: 0, inquiryOnly: true },
+  { id: "mbp13_intel_2020", label: "MacBook Pro 13\" Intel (2020)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m1.webp" },
+  { id: "mbp16_intel_2019", label: "MacBook Pro 16\" Intel (2019)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m1.webp" },
+  { id: "mbp_tb_2018_2019", label: "MacBook Pro Touch Bar 13\"/15\" (2018–2019)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m1.webp" },
+  { id: "mbp_tb_2016_2017", label: "MacBook Pro Touch Bar 13\"/15\" (2016–2017)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m1.webp" },
+  { id: "mbp_retina_2015", label: "MacBook Pro Retina 13\"/15\" (2015)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m1.webp" },
+  { id: "mbp_retina_2014", label: "MacBook Pro Retina 13\"/15\" (2014)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m1.webp" },
 ];
 const MACBOOK_AIR_MODELS = [
   { id: "mba_m5_2026", label: "MacBook Air M5 (13\" & 15\", 2026)", base: 0, inquiryOnly: true },
