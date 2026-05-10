@@ -2744,15 +2744,14 @@ export default function Home() {
               <span className="text-base font-semibold text-[#00c853]">Login</span>
             </button>
 
-            {/* Bottom CTA */}
+            {/* Bottom CTA — Sell Now (Email Us already lives under Support) */}
             <div className="p-5">
-              <a
-                href={EMAIL_HREF}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] text-center font-bold py-3 rounded-full transition tap-press"
+              <button
+                onClick={() => { setMobileMenuOpen(false); setStep("category"); pushHistory("category"); }}
+                className="block w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] text-center font-bold py-3 rounded-full transition tap-press cursor-pointer"
               >
-                Email Us
-              </a>
+                Sell Now
+              </button>
               <p className="text-center text-[10px] text-[#999] mt-3">Austin, TX · Same-day payout</p>
             </div>
           </div>
