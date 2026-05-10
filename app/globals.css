@@ -1,5 +1,75 @@
 @import "tailwindcss";
 
+/* TCC HERO WORDMARK — engineered logotype for the home headline.
+   Combines self-hosted Anton (condensed display) for the anchor word
+   with Manrope for supporting text, plus a custom integrated $ glyph
+   in cash-green. Layout itself is bespoke — staircase indent + green
+   accent bar — so the mark reads as TCC and not a generic font crop. */
+.tcc-wordmark {
+  display: block;
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 0.6rem;
+}
+.tcc-wordmark::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14%;
+  bottom: 22%;
+  width: 6px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #00c853 0%, #00e676 60%, transparent 100%);
+  box-shadow: 0 0 14px rgba(0,200,83,0.55);
+}
+.tcc-wordmark__lead {
+  display: block;
+  font-family: var(--font-anton), 'Impact', 'Arial Narrow', sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.6rem, 5.5vw, 2.6rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.78);
+  margin-left: 4px;
+}
+.tcc-wordmark__anchor {
+  display: block;
+  font-family: var(--font-anton), 'Impact', 'Arial Narrow', sans-serif;
+  font-weight: 400;
+  font-size: clamp(3.6rem, 14vw, 6.4rem);
+  line-height: 0.88;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-top: 2px;
+  text-shadow: 0 2px 24px rgba(0,200,83,0.18);
+}
+.tcc-wordmark__dollar {
+  color: #00c853;
+  font-family: var(--font-anton), 'Impact', 'Arial Narrow', sans-serif;
+  display: inline-block;
+  transform: translateY(0.04em) skewX(-6deg);
+  margin-right: 0.04em;
+  text-shadow: 0 0 18px rgba(0,200,83,0.45);
+}
+.tcc-wordmark__tail {
+  display: block;
+  font-family: var(--font-manrope), -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 600;
+  font-size: clamp(0.95rem, 2.6vw, 1.2rem);
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  color: rgba(255,255,255,0.55);
+  margin-top: 0.55rem;
+  font-style: italic;
+}
+.tcc-wordmark__tail em {
+  font-style: normal;
+  color: #00c853;
+  font-weight: 700;
+}
+
 body {
   color: #0a0a0a;
   background: #ffffff;

@@ -9,6 +9,13 @@ const manrope = localFont({
   display: "swap",
 });
 
+const anton = localFont({
+  src: "../public/fonts/Anton-Regular.woff2",
+  variable: "--font-anton",
+  weight: "400",
+  display: "swap",
+});
+
 export const viewport: Viewport = {
   themeColor: "#00c853",
 };
@@ -49,7 +56,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`h-full antialiased ${manrope.variable}`}>
+    <html lang="en" className={`h-full antialiased ${manrope.variable} ${anton.variable}`}>
       <head>
         <link rel="preload" as="image" href="/iphone17.png" fetchPriority="high" />
         <script
