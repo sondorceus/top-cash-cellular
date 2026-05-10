@@ -2366,9 +2366,6 @@ export default function Home() {
           </a>
           {/* MOBILE + TABLET: hamburger button (drawer with same menu as desktop) */}
           <div className="flex items-center gap-2 lg:hidden">
-            <a href={EMAIL_HREF} aria-label="Email us" className="bg-[#00c853] text-[#0a0a0a] px-3 py-1.5 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
-              Email
-            </a>
             <button
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open menu"
@@ -2391,7 +2388,7 @@ export default function Home() {
                 Sell
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
-              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-150 absolute top-full left-0 pt-3 z-50 w-[560px]">
+              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[560px] max-w-[calc(100vw-2rem)]">
                 <div className="bg-[#111] border border-white/10 rounded-2xl shadow-2xl p-4">
                   <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em] mb-3 px-2">Sell your device</p>
                   <div className="grid grid-cols-4 gap-2">
@@ -2432,7 +2429,7 @@ export default function Home() {
                 Bulk
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </a>
-              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-150 absolute top-full left-0 pt-3 z-50 w-[260px]">
+              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full left-0 pt-3 z-50 w-[260px]">
                 <div className="bg-[#111] border border-white/10 rounded-2xl shadow-2xl p-2">
                   <a href="/bulk" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">📦</span>
@@ -2460,7 +2457,7 @@ export default function Home() {
                 Support
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
-              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-150 absolute top-full right-0 pt-3 z-50 w-[280px]">
+              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full right-0 pt-3 z-50 w-[280px]">
                 <div className="bg-[#111] border border-white/10 rounded-2xl shadow-2xl p-2">
                   <a href="/how-it-works" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">🧭</span>
@@ -2510,10 +2507,6 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
               Login
             </button>
-
-            <a href={EMAIL_HREF} className="ml-2 bg-[#00c853] text-[#0a0a0a] px-4 py-2 rounded-full text-sm font-bold hover:bg-[#00e676] transition">
-              Email Us
-            </a>
           </div>
         </div>
       </nav>
@@ -2522,7 +2515,7 @@ export default function Home() {
           discovery flow (category → brand → model → storage). Same UX as IWM:
           one box always available so the user can jump straight to any device. */}
       {page === "home" && (step === "category" || step === "brand" || step === "model" || step === "storage") && (
-        <div className="sticky top-[58px] z-30 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
+        <div className="hidden lg:block sticky top-[58px] z-30 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-2.5">
             <div className="relative">
               <input
