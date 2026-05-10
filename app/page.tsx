@@ -351,19 +351,35 @@ const LENOVO_YOGA_VARIANTS = [
   { id: "ln_yoga_710", label: "Yoga 710", base: 0, inquiryOnly: true, image: "/devices/lenovo-yoga-lenovo-yoga-710.png" },
 ];
 
+// Flattened to match IWM's exact 15-card display (Skywalker pasted the list).
+// Each ThinkPad sub-series is a top-level card. ThinkBook also flat (combined
+// from former Book 13/14/15/16 sub-series into one variant list).
+const LENOVO_THINKBOOK_VARIANTS = [
+  ...LENOVO_TB_13_VARIANTS,
+  ...LENOVO_TB_14_VARIANTS,
+  ...LENOVO_TB_15_VARIANTS,
+  ...LENOVO_TB_16_VARIANTS,
+];
 const LENOVO_PC_SERIES = [
-  { id: "lenovo_thinkpad", label: "ThinkPad", year: "Business workhorse", topPrice: 0, subSeries: LENOVO_THINKPAD_SUB_SERIES, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
-  { id: "lenovo_thinkbook", label: "ThinkBook", year: "Business mid-range", topPrice: 0, subSeries: LENOVO_THINKBOOK_SUB_SERIES, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
+  { id: "lenovo_tp_x1", label: "ThinkPad X1", year: "Premium ultrabook", topPrice: 0, variants: LENOVO_TP_X1_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
+  { id: "lenovo_tp_x9", label: "ThinkPad X9", year: "Aura Edition", topPrice: 0, variants: LENOVO_TP_X9_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_x9_14.png" },
+  { id: "lenovo_tp_x13", label: "ThinkPad X13", year: "13-inch business", topPrice: 0, variants: LENOVO_TP_X13_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13.png" },
+  { id: "lenovo_tp_x390", label: "ThinkPad X390", year: "Legacy 13.3-inch", topPrice: 0, variants: LENOVO_TP_X390_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_x390.png" },
+  { id: "lenovo_tp_t", label: "ThinkPad T", year: "Workhorse business", topPrice: 0, variants: LENOVO_TP_T_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_t.png" },
+  { id: "lenovo_tp_p", label: "ThinkPad P", year: "Mobile workstation", topPrice: 0, variants: LENOVO_TP_P_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p51.png" },
+  { id: "lenovo_tp_l", label: "ThinkPad L", year: "Mainstream business", topPrice: 0, variants: LENOVO_TP_L_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_l-lenovo-thinkpad-l14-series.png" },
+  { id: "lenovo_tp_e", label: "ThinkPad E", year: "Essential business", topPrice: 0, variants: LENOVO_TP_E_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_e14_g7.png" },
+  { id: "lenovo_tp_z", label: "ThinkPad Z", year: "Modern design", topPrice: 0, variants: LENOVO_TP_Z_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_z-lenovo-thinkpad-z16.png" },
+  { id: "lenovo_thinkbook", label: "ThinkBook", year: "Business mid-range", topPrice: 0, variants: LENOVO_THINKBOOK_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
   { id: "lenovo_ideapad", label: "IdeaPad", year: "Everyday", topPrice: 0, variants: LENOVO_IDEAPAD_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-ideapad-lenovo-ideapad-5.png" },
   { id: "lenovo_legion", label: "Legion", year: "Gaming", topPrice: 0, variants: LENOVO_LEGION_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-legion-lenovo-legion-5-pro.png" },
   { id: "lenovo_loq", label: "LOQ", year: "Entry gaming", topPrice: 0, variants: LENOVO_LOQ_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-loq-lenovo-loq-15.png" },
   { id: "lenovo_slim", label: "Slim", year: "Slim creator", topPrice: 0, variants: LENOVO_SLIM_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-slim-lenovo-slim-7.png" },
   { id: "lenovo_yoga", label: "Yoga", year: "2-in-1 / convertible", topPrice: 0, variants: LENOVO_YOGA_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-yoga-lenovo-yoga-9i.png" },
 ];
-const LENOVO_PC_ALL_SUB_SERIES = [
-  ...LENOVO_THINKPAD_SUB_SERIES,
-  ...LENOVO_THINKBOOK_SUB_SERIES,
-];
+// Lenovo no longer uses sub-series — kept as empty array so the breadcrumb
+// resolver doesn't break when checking against it.
+const LENOVO_PC_ALL_SUB_SERIES: { id: string; label: string; variants: { id: string; label: string; base: number }[] }[] = [];
 
 const DELL_MODELS = [
   { id: "dxps17", label: "XPS 17 (2024)", base: 750, image: "/devices/dell-xps.webp" },
@@ -3824,33 +3840,6 @@ export default function Home() {
               </>
             )}
 
-            {/* Lenovo Laptops: sub-series picker — only ThinkPad and ThinkBook have subSeries */}
-            {deviceType === "lenovo" && selectedSeries && !selectedSubSeries && (() => {
-              const ser = LENOVO_PC_SERIES.find(s => s.id === selectedSeries);
-              const subs = (ser as { subSeries?: typeof LENOVO_THINKPAD_SUB_SERIES })?.subSeries;
-              if (!subs) return null;  // flat series fall through to catch-all
-              return (
-                <>
-                  <h2 className="text-2xl md:text-3xl font-bold mb-1">Lenovo — {ser?.label}</h2>
-                  <p className="text-[#888] text-sm mb-6">Pick your sub-line</p>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {subs.map((s) => (
-                      <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[160px]">
-                        {s.image ? (
-                          <img src={s.image} alt={s.label} loading="eager" className="w-20 h-14 object-contain mb-1" />
-                        ) : (
-                          <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg>
-                        )}
-                        <p className="font-bold text-sm text-center">{s.label}</p>
-                        <p className="text-[#888] text-[11px] text-center">{s.year}</p>
-                        <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
-                      </button>
-                    ))}
-                  </div>
-                </>
-              );
-            })()}
-
             {/* Dell Laptops: top-level series picker (8 cards mirroring IWM) */}
             {deviceType === "dell" && !selectedSeries && (
               <>
@@ -4079,9 +4068,9 @@ export default function Home() {
               </>
             )}
 
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "lg_pc" && selectedSeries && !selectedSubSeries) && !(deviceType === "apple_desktop" && !selectedSeries) && !(deviceType === "asus_pc" && !selectedSeries) && !(deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries) && !(deviceType === "dell" && !selectedSeries) && !(deviceType === "dell" && selectedSeries && !selectedSubSeries) && !(deviceType === "lenovo" && !selectedSeries) && !(deviceType === "lenovo" && (selectedSeries === "lenovo_thinkpad" || selectedSeries === "lenovo_thinkbook") && !selectedSubSeries) && !(deviceType === "hp" && !selectedSeries) && !(deviceType === "hp" && (selectedSeries === "hp_elitebook" || selectedSeries === "hp_omen") && !selectedSubSeries) && !(deviceType === "acer" && !selectedSeries) && !(deviceType === "samsung_pc" && !selectedSeries) && (
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "lg_pc" && selectedSeries && !selectedSubSeries) && !(deviceType === "apple_desktop" && !selectedSeries) && !(deviceType === "asus_pc" && !selectedSeries) && !(deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries) && !(deviceType === "dell" && !selectedSeries) && !(deviceType === "dell" && selectedSeries && !selectedSubSeries) && !(deviceType === "lenovo" && !selectedSeries) && !(deviceType === "hp" && !selectedSeries) && !(deviceType === "hp" && (selectedSeries === "hp_elitebook" || selectedSeries === "hp_omen") && !selectedSubSeries) && !(deviceType === "acer" && !selectedSeries) && !(deviceType === "samsung_pc" && !selectedSeries) && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSubSeries ? `LG ${LG_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "asus_pc" && selectedSubSeries ? `ASUS — ${ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "asus_pc" && selectedSeries ? `ASUS — ${ASUS_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "dell" && selectedSubSeries ? `Dell — ${DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "lenovo" && selectedSubSeries ? `Lenovo ${LENOVO_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "lenovo" && selectedSeries ? `Lenovo ${LENOVO_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "hp" && selectedSubSeries ? `HP ${HP_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "hp" && selectedSeries ? `HP ${HP_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "acer" && selectedSeries ? `Acer ${ACER_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "samsung_pc" && selectedSeries ? `Samsung ${SAMSUNG_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSubSeries ? `LG ${LG_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "asus_pc" && selectedSubSeries ? `ASUS — ${ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "asus_pc" && selectedSeries ? `ASUS — ${ASUS_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "dell" && selectedSubSeries ? `Dell — ${DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "lenovo" && selectedSeries ? `Lenovo ${LENOVO_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "hp" && selectedSubSeries ? `HP ${HP_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "hp" && selectedSeries ? `HP ${HP_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "acer" && selectedSeries ? `Acer ${ACER_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "samsung_pc" && selectedSeries ? `Samsung ${SAMSUNG_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 {/* Mobile: grid cards */}
                 <div className="grid grid-cols-2 gap-2 md:hidden">
