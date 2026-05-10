@@ -200,12 +200,12 @@ const LENOVO_TP_X13_VARIANTS = [
   { id: "ln_tp_x13s", label: "ThinkPad X13s", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13s.png" },
 ];
 const LENOVO_TP_X390_VARIANTS = [
-  { id: "ln_tp_x390", label: "ThinkPad X390", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
-  { id: "ln_tp_x390_yoga", label: "ThinkPad X390 Yoga", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-yoga.png" },
+  { id: "ln_tp_x390", label: "ThinkPad X390", base: 0, inquiryOnly: true, image: "/devices/ln_tp_x390.png" },
+  { id: "ln_tp_x390_yoga", label: "ThinkPad X390 Yoga", base: 0, inquiryOnly: true, image: "/devices/ln_tp_x390_yoga.png" },
 ];
 const LENOVO_TP_X9_VARIANTS = [
-  { id: "ln_tp_x9_14", label: "ThinkPad X9 14", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
-  { id: "ln_tp_x9_15", label: "ThinkPad X9 15", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
+  { id: "ln_tp_x9_14", label: "ThinkPad X9 14", base: 0, inquiryOnly: true, image: "/devices/ln_tp_x9_14.png" },
+  { id: "ln_tp_x9_15", label: "ThinkPad X9 15", base: 0, inquiryOnly: true, image: "/devices/ln_tp_x9_15.png" },
 ];
 const LENOVO_TP_Z_VARIANTS = [
   { id: "ln_tp_z16", label: "ThinkPad Z16", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_z-lenovo-thinkpad-z16.png" },
@@ -231,16 +231,16 @@ const LENOVO_TP_L_VARIANTS = [
 const LENOVO_THINKPAD_SUB_SERIES = [
   { id: "ln_tp_x1", label: "ThinkPad X1", year: "Premium ultrabook", topPrice: 0, variants: LENOVO_TP_X1_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
   { id: "ln_tp_x13", label: "ThinkPad X13", year: "13-inch business", topPrice: 0, variants: LENOVO_TP_X13_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13.png" },
-  { id: "ln_tp_x390", label: "ThinkPad X390", year: "Legacy 13.3-inch", topPrice: 0, variants: LENOVO_TP_X390_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
-  { id: "ln_tp_x9", label: "ThinkPad X9", year: "Aura Edition", topPrice: 0, variants: LENOVO_TP_X9_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
+  { id: "ln_tp_x390", label: "ThinkPad X390", year: "Legacy 13.3-inch", topPrice: 0, variants: LENOVO_TP_X390_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_x390.png" },
+  { id: "ln_tp_x9", label: "ThinkPad X9", year: "Aura Edition", topPrice: 0, variants: LENOVO_TP_X9_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_x9_14.png" },
   { id: "ln_tp_z", label: "ThinkPad Z", year: "Modern design", topPrice: 0, variants: LENOVO_TP_Z_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_z-lenovo-thinkpad-z16.png" },
   { id: "ln_tp_p", label: "ThinkPad P", year: "Mobile workstation", topPrice: 0, variants: LENOVO_TP_P_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p51.png" },
   { id: "ln_tp_l", label: "ThinkPad L", year: "Mainstream business", topPrice: 0, variants: LENOVO_TP_L_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_l-lenovo-thinkpad-l14-series.png" },
 ];
 
 const LENOVO_TB_13_VARIANTS = [
-  { id: "ln_tb_13x", label: "ThinkBook 13x", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
-  { id: "ln_tb_13s", label: "ThinkBook 13s", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
+  { id: "ln_tb_13x", label: "ThinkBook 13x", base: 0, inquiryOnly: true, image: "/devices/ln_tb_13x.png" },
+  { id: "ln_tb_13s", label: "ThinkBook 13s", base: 0, inquiryOnly: true, image: "/devices/ln_tb_13s.png" },
 ];
 const LENOVO_TB_14_VARIANTS = [
   { id: "ln_tb_14", label: "ThinkBook 14", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
@@ -249,18 +249,18 @@ const LENOVO_TB_14_VARIANTS = [
   { id: "ln_tb_14s_yoga", label: "ThinkBook 14s Yoga", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
 ];
 const LENOVO_TB_15_VARIANTS = [
-  { id: "ln_tb_15", label: "ThinkBook 15", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
-  { id: "ln_tb_15p", label: "ThinkBook 15p", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
+  { id: "ln_tb_15", label: "ThinkBook 15", base: 0, inquiryOnly: true, image: "/devices/ln_tb_15.png" },
+  { id: "ln_tb_15p", label: "ThinkBook 15p", base: 0, inquiryOnly: true, image: "/devices/ln_tb_15p.png" },
 ];
 const LENOVO_TB_16_VARIANTS = [
-  { id: "ln_tb_16", label: "ThinkBook 16", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
-  { id: "ln_tb_16p", label: "ThinkBook 16p", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
+  { id: "ln_tb_16", label: "ThinkBook 16", base: 0, inquiryOnly: true, image: "/devices/ln_tb_16.png" },
+  { id: "ln_tb_16p", label: "ThinkBook 16p", base: 0, inquiryOnly: true, image: "/devices/ln_tb_16p.png" },
 ];
 const LENOVO_THINKBOOK_SUB_SERIES = [
-  { id: "ln_tb_13", label: "ThinkBook 13", year: "13-inch", topPrice: 0, variants: LENOVO_TB_13_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
+  { id: "ln_tb_13", label: "ThinkBook 13", year: "13-inch", topPrice: 0, variants: LENOVO_TB_13_VARIANTS, inquiryOnly: true, image: "/devices/ln_tb_13x.png" },
   { id: "ln_tb_14", label: "ThinkBook 14", year: "14-inch", topPrice: 0, variants: LENOVO_TB_14_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
-  { id: "ln_tb_15", label: "ThinkBook 15", year: "15-inch", topPrice: 0, variants: LENOVO_TB_15_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
-  { id: "ln_tb_16", label: "ThinkBook 16", year: "16-inch", topPrice: 0, variants: LENOVO_TB_16_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
+  { id: "ln_tb_15", label: "ThinkBook 15", year: "15-inch", topPrice: 0, variants: LENOVO_TB_15_VARIANTS, inquiryOnly: true, image: "/devices/ln_tb_15.png" },
+  { id: "ln_tb_16", label: "ThinkBook 16", year: "16-inch", topPrice: 0, variants: LENOVO_TB_16_VARIANTS, inquiryOnly: true, image: "/devices/ln_tb_16.png" },
 ];
 
 const LENOVO_IDEAPAD_VARIANTS = [
@@ -472,10 +472,10 @@ const HP_OMEN_TRANSCEND_VARIANTS = [
   { id: "hp_omen_trans_14", label: "OMEN Transcend 14", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_trans-hp-omen-transcend-14.png" },
 ];
 const HP_OMEN_MAX_VARIANTS = [
-  { id: "hp_omen_max", label: "OMEN Max", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_omen_max", label: "OMEN Max", base: 0, inquiryOnly: true, image: "/devices/hp_omen_max.png" },
 ];
 const HP_OMEN_SLIM_VARIANTS = [
-  { id: "hp_omen_slim", label: "OMEN Slim", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_omen_slim", label: "OMEN Slim", base: 0, inquiryOnly: true, image: "/devices/hp_omen_slim.png" },
 ];
 const HP_OMEN_SUB_SERIES = [
   { id: "hp_omen_std_sub", label: "OMEN", year: "Standard gaming", topPrice: 0, variants: HP_OMEN_STD_VARIANTS, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
@@ -514,8 +514,8 @@ const HP_SPECTRE_VARIANTS = [
   { id: "hp_spec_16", label: "Spectre x360 16", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-hp-spectre-16-x360.png" },
 ];
 const HP_VICTUS_VARIANTS = [
-  { id: "hp_victus_15", label: "Victus 15", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
-  { id: "hp_victus_16", label: "Victus 16", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
+  { id: "hp_victus_15", label: "Victus 15", base: 0, inquiryOnly: true, image: "/devices/hp_victus_15.png" },
+  { id: "hp_victus_16", label: "Victus 16", base: 0, inquiryOnly: true, image: "/devices/hp_victus_16.png" },
 ];
 const HP_ZBOOK_VARIANTS = [
   { id: "hp_zb_g11", label: "ZBook G11", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g11.png" },
