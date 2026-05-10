@@ -3,6 +3,11 @@
 /* Cabinet Grotesk is the brand-wide font, applied via CSS variable
    from next/font/local in layout.tsx. Set once on body so every
    component inherits — no per-element font overrides needed. */
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
 body {
   color: #0a0a0a;
   background: #ffffff;

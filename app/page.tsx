@@ -1639,6 +1639,8 @@ export default function Home() {
 
   // Returning-customer lookup (Option A login)
   const [lookupOpen, setLookupOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuExpanded, setMobileMenuExpanded] = useState<"sell" | "bulk" | "support" | null>("sell");
   const [lookupContact, setLookupContact] = useState("");
   const [lookupLoading, setLookupLoading] = useState(false);
   const [lookupResult, setLookupResult] = useState<{ found: boolean; name?: string; lastQuote?: string; leadCount?: number; leads?: Array<{ name?: string; device?: string; model?: string; quote?: string; timestamp: string }> } | null>(null);
@@ -1978,16 +1980,20 @@ export default function Home() {
               </div>
             </span>
           </button>
-          {/* MOBILE + TABLET (md): keep the simple link row */}
-          <div className="flex items-center gap-3 lg:hidden">
-            <a href="/how-it-works" className="hidden md:inline text-xs text-[#888] hover:text-white transition">How it works</a>
-            <a href="/faq" className="hidden md:inline text-xs text-[#888] hover:text-white transition">FAQ</a>
-            <a href="/bulk" className="hidden md:inline text-xs text-[#888] hover:text-white transition">Bulk</a>
-            <button onClick={() => setLookupOpen(true)} className="hidden sm:inline text-xs text-[#00c853] hover:text-[#00e676] font-semibold transition cursor-pointer">Returning?</button>
-            <a href="/reviews" className="hidden sm:inline-flex items-center gap-1 text-xs text-[#ffb400] hover:text-[#ffd54f] font-semibold transition"><svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.5 5.9.7-4.4 4.1 1.2 5.8L10 14.7l-5.3 2.9 1.2-5.8L1.5 7.7l5.9-.7L10 1.5z"/></svg>Reviews</a>
-            <a href={EMAIL_HREF} aria-label="Email us" className="bg-[#00c853] text-[#0a0a0a] px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
-              Email Us
+          {/* MOBILE + TABLET: hamburger button (drawer with same menu as desktop) */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <a href={EMAIL_HREF} aria-label="Email us" className="bg-[#00c853] text-[#0a0a0a] px-3 py-1.5 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
+              Email
             </a>
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open menu"
+              className="w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press transition"
+            >
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           </div>
 
           {/* DESKTOP (lg+): mega-menu nav */}
@@ -2127,6 +2133,164 @@ export default function Home() {
           </div>
         </div>
       </nav>
+
+      {/* MOBILE MENU DRAWER — same Sell/Bulk/Support/Login structure as the desktop mega-menu, accordion-style */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-[60] lg:hidden animate-[fadeIn_0.15s_ease-out]" onClick={() => setMobileMenuOpen(false)}>
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+          <div
+            className="absolute right-0 top-0 bottom-0 w-[88vw] max-w-md bg-[#0a0a0a] border-l border-white/10 shadow-2xl overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+            style={{ animation: "slideInRight 0.22s cubic-bezier(0.2,0.8,0.2,1)" }}
+          >
+            {/* Drawer header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 sticky top-0 bg-[#0a0a0a] z-10">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Menu</p>
+              <button onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center tap-press">
+                <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            {/* SELL section */}
+            <div className="border-b border-white/5">
+              <button
+                onClick={() => setMobileMenuExpanded(mobileMenuExpanded === "sell" ? null : "sell")}
+                className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/[0.03] transition tap-press"
+              >
+                <span className="text-base font-semibold text-white">Sell</span>
+                <svg className={`w-4 h-4 text-white/50 transition ${mobileMenuExpanded === "sell" ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+              </button>
+              {mobileMenuExpanded === "sell" && (
+                <div className="px-3 pb-4 grid grid-cols-3 gap-2">
+                  {[
+                    { id: "phones" as const, label: "Phone", icon: "📱" },
+                    { id: "tablets" as const, label: "Tablet", icon: "⬜", customIcon: true },
+                    { id: "computers" as const, label: "Laptop", icon: "💻" },
+                    { id: "desktops" as const, label: "Desktop", icon: "🖥️" },
+                    { id: "watches" as const, label: "Smartwatch", icon: "⌚" },
+                    { id: "consoles" as const, label: "Console", icon: "🎮" },
+                    { id: "drones" as const, label: "Drone", icon: "🛸" },
+                    { id: "vr" as const, label: "VR", icon: "🥽" },
+                  ].map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => { setMobileMenuOpen(false); setCategory(cat.id); setStep("brand"); pushHistory("brand"); }}
+                      className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press"
+                    >
+                      {cat.customIcon ? (
+                        <svg className="w-7 h-5 mb-1 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
+                      ) : (
+                        <span className="text-xl mb-1">{cat.icon}</span>
+                      )}
+                      <p className="text-[11px] font-semibold text-white">{cat.label}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* BULK section */}
+            <div className="border-b border-white/5">
+              <button
+                onClick={() => setMobileMenuExpanded(mobileMenuExpanded === "bulk" ? null : "bulk")}
+                className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/[0.03] transition tap-press"
+              >
+                <span className="text-base font-semibold text-white">Bulk</span>
+                <svg className={`w-4 h-4 text-white/50 transition ${mobileMenuExpanded === "bulk" ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+              </button>
+              {mobileMenuExpanded === "bulk" && (
+                <div className="px-3 pb-3 space-y-1">
+                  <a href="/bulk" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
+                    <span className="text-xl">📦</span>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Get a bulk quote</p>
+                      <p className="text-[11px] text-[#888]">10+ devices? Volume pricing.</p>
+                    </div>
+                  </a>
+                  <a href={EMAIL_HREF} onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
+                    <span className="text-xl">✉️</span>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Talk to bulk team</p>
+                      <p className="text-[11px] text-[#888]">Custom contracts welcome.</p>
+                    </div>
+                  </a>
+                </div>
+              )}
+            </div>
+
+            {/* SUPPORT section */}
+            <div className="border-b border-white/5">
+              <button
+                onClick={() => setMobileMenuExpanded(mobileMenuExpanded === "support" ? null : "support")}
+                className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/[0.03] transition tap-press"
+              >
+                <span className="text-base font-semibold text-white">Support</span>
+                <svg className={`w-4 h-4 text-white/50 transition ${mobileMenuExpanded === "support" ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+              </button>
+              {mobileMenuExpanded === "support" && (
+                <div className="px-3 pb-3 space-y-1">
+                  <a href="/how-it-works" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
+                    <span className="text-xl">🧭</span>
+                    <div>
+                      <p className="text-sm font-semibold text-white">How it works</p>
+                      <p className="text-[11px] text-[#888]">From drawer to dollars in 3 steps.</p>
+                    </div>
+                  </a>
+                  <a href="/faq" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
+                    <span className="text-xl">❓</span>
+                    <div>
+                      <p className="text-sm font-semibold text-white">FAQ</p>
+                      <p className="text-[11px] text-[#888]">Common questions, plain answers.</p>
+                    </div>
+                  </a>
+                  <a href="/reviews" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
+                    <span className="text-xl text-[#ffb400]">★</span>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Reviews</p>
+                      <p className="text-[11px] text-[#888]">4.9 — read what customers say.</p>
+                    </div>
+                  </a>
+                  <a href={EMAIL_HREF} onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
+                    <span className="text-xl">✉️</span>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Email us</p>
+                      <p className="text-[11px] text-[#888]">We reply same business day.</p>
+                    </div>
+                  </a>
+                  <a href="tel:+18775492056" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
+                    <span className="text-xl">📞</span>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Call us</p>
+                      <p className="text-[11px] text-[#888]">(877) 549-2056</p>
+                    </div>
+                  </a>
+                </div>
+              )}
+            </div>
+
+            {/* LOGIN — opens lookup modal */}
+            <button
+              onClick={() => { setMobileMenuOpen(false); setLookupOpen(true); }}
+              className="w-full flex items-center gap-3 px-5 py-4 hover:bg-white/[0.03] transition tap-press border-b border-white/5"
+            >
+              <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+              <span className="text-base font-semibold text-[#00c853]">Login</span>
+            </button>
+
+            {/* Bottom CTA */}
+            <div className="p-5">
+              <a
+                href={EMAIL_HREF}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] text-center font-bold py-3 rounded-full transition tap-press"
+              >
+                Email Us
+              </a>
+              <p className="text-center text-[10px] text-[#666] mt-3">Austin, TX · Same-day payout</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* RETURNING-CUSTOMER LOOKUP MODAL */}
       {lookupOpen && (
