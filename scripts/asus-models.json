@@ -1,0 +1,154 @@
+[
+  {
+    "id": "asus-tuf-tuf-a18-laptop",
+    "series_id": "tuf",
+    "series_label": "TUF Gaming",
+    "model_slug": "tuf-a18-laptop",
+    "label": "TUF A18\nCash in up to $1,025",
+    "image": "/devices/asus-tuf-tuf-a18-laptop.png"
+  },
+  {
+    "id": "asus-tuf-tuf-a17-laptop",
+    "series_id": "tuf",
+    "series_label": "TUF Gaming",
+    "model_slug": "tuf-a17-laptop",
+    "label": "TUF A17\nCash in up to $675",
+    "image": "/devices/asus-tuf-tuf-a17-laptop.png"
+  },
+  {
+    "id": "asus-tuf-tuf-a16-laptop",
+    "series_id": "tuf",
+    "series_label": "TUF Gaming",
+    "model_slug": "tuf-a16-laptop",
+    "label": "TUF A16\nCash in up to $1,015",
+    "image": "/devices/asus-tuf-tuf-a16-laptop.png"
+  },
+  {
+    "id": "asus-tuf-tuf-a15-laptop",
+    "series_id": "tuf",
+    "series_label": "TUF Gaming",
+    "model_slug": "tuf-a15-laptop",
+    "label": "TUF A15\nCash in up to $590",
+    "image": "/devices/asus-tuf-tuf-a15-laptop.png"
+  },
+  {
+    "id": "asus-tuf-tuf-a14-laptop",
+    "series_id": "tuf",
+    "series_label": "TUF Gaming",
+    "model_slug": "tuf-a14-laptop",
+    "label": "TUF A14\nCash in up to $860",
+    "image": "/devices/asus-tuf-tuf-a14-laptop.png"
+  },
+  {
+    "id": "asus-tuf-tuf-f17-laptop",
+    "series_id": "tuf",
+    "series_label": "TUF Gaming",
+    "model_slug": "tuf-f17-laptop",
+    "label": "TUF F17\nCash in up to $570",
+    "image": "/devices/asus-tuf-tuf-f17-laptop.png"
+  },
+  {
+    "id": "asus-tuf-tuf-f16-laptop",
+    "series_id": "tuf",
+    "series_label": "TUF Gaming",
+    "model_slug": "tuf-f16-laptop",
+    "label": "TUF F16\nCash in up to $900",
+    "image": "/devices/asus-tuf-tuf-f16-laptop.png"
+  },
+  {
+    "id": "asus-tuf-tuf-f15-laptop",
+    "series_id": "tuf",
+    "series_label": "TUF Gaming",
+    "model_slug": "tuf-f15-laptop",
+    "label": "TUF F15\nCash in up to $800",
+    "image": "/devices/asus-tuf-tuf-f15-laptop.png"
+  },
+  {
+    "id": "asus-proart-proart-studiobook-pro-16",
+    "series_id": "proart",
+    "series_label": "ProArt",
+    "model_slug": "proart-studiobook-pro-16",
+    "label": "ProArt Studiobook Pro 16\nCash in up to $1,615",
+    "image": "/devices/asus-proart-proart-studiobook-pro-16.png"
+  },
+  {
+    "id": "asus-proart-proart-studiobook-16",
+    "series_id": "proart",
+    "series_label": "ProArt",
+    "model_slug": "proart-studiobook-16",
+    "label": "ProArt Studiobook 16\nCash in up to $1,265",
+    "image": "/devices/asus-proart-proart-studiobook-16.png"
+  },
+  {
+    "id": "asus-proart-proart-px13",
+    "series_id": "proart",
+    "series_label": "ProArt",
+    "model_slug": "proart-px13",
+    "label": "ProArt PX13\nCash in up to $1,120",
+    "image": "/devices/asus-proart-proart-px13.png"
+  },
+  {
+    "id": "asus-proart-proart-pz13",
+    "series_id": "proart",
+    "series_label": "ProArt",
+    "model_slug": "proart-pz13",
+    "label": "ProArt PZ13\nCash in up to $600",
+    "image": "/devices/asus-proart-proart-pz13.png"
+  },
+  {
+    "id": "asus-expertbook-expertbook-p1",
+    "series_id": "expertbook",
+    "series_label": "ExpertBook",
+    "model_slug": "expertbook-p1",
+    "label": "ExpertBook P1\nCash in up to $510",
+    "image": "/devices/asus-expertbook-expertbook-p1.png"
+  },
+  {
+    "id": "asus-expertbook-expertbook-p5",
+    "series_id": "expertbook",
+    "series_label": "ExpertBook",
+    "model_slug": "expertbook-p5",
+    "label": "ExpertBook P5\nCash in up to $425",
+    "image": "/devices/asus-expertbook-expertbook-p5.png"
+  },
+  {
+    "id": "asus-expertbook-expertbook-b9",
+    "series_id": "expertbook",
+    "series_label": "ExpertBook",
+    "model_slug": "expertbook-b9",
+    "label": "ExpertBook B9\nCash in up to $475",
+    "image": "/devices/asus-expertbook-expertbook-b9.png"
+  },
+  {
+    "id": "asus-expertbook-expertbook-b5",
+    "series_id": "expertbook",
+    "series_label": "ExpertBook",
+    "model_slug": "expertbook-b5",
+    "label": "ExpertBook B5\nCash in up to $400",
+    "image": "/devices/asus-expertbook-expertbook-b5.png"
+  },
+  {
+    "id": "asus-expertbook-expertbook-b3",
+    "series_id": "expertbook",
+    "series_label": "ExpertBook",
+    "model_slug": "expertbook-b3",
+    "label": "ExpertBook B3\nCash in up to $585",
+    "image": "/devices/asus-expertbook-expertbook-b3.png"
+  },
+  {
+    "id": "asus-expertbook-expertbook-b2",
+    "series_id": "expertbook",
+    "series_label": "ExpertBook",
+    "model_slug": "expertbook-b2",
+    "label": "ExpertBook B2\nCash in up to $255",
+    "image": "/devices/asus-expertbook-expertbook-b2.png"
+  },
+  {
+    "id": "asus-expertbook-expertbook-b1",
+    "series_id": "expertbook",
+    "series_label": "ExpertBook",
+    "model_slug": "expertbook-b1",
+    "label": "ExpertBook B1\nCash in up to $365",
+    "image": "/devices/asus-expertbook-expertbook-b1.png"
+  }
+]
