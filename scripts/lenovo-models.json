@@ -1,0 +1,62 @@
+[
+  {
+    "id": "lntp14g5",
+    "label": "ThinkPad X1 Carbon Gen 12",
+    "image": "/devices/lntp14g5.png",
+    "brand": "lenovo"
+  },
+  {
+    "id": "lntp14g4",
+    "label": "ThinkPad X1 Carbon Gen 11",
+    "image": "/devices/lntp14g4.png",
+    "brand": "lenovo"
+  },
+  {
+    "id": "lntp14g3",
+    "label": "ThinkPad X1 Carbon Gen 10",
+    "image": "/devices/lntp14g3.png",
+    "brand": "lenovo"
+  },
+  {
+    "id": "lnyoga9",
+    "label": "Yoga 9i 14\\",
+    "image": "/devices/lnyoga9.png",
+    "brand": "lenovo"
+  },
+  {
+    "id": "lnyoga7",
+    "label": "Yoga 7i 16\\",
+    "image": "/devices/lnyoga7.png",
+    "brand": "lenovo"
+  },
+  {
+    "id": "lnslim7",
+    "label": "IdeaPad Slim 7 Pro",
+    "image": "/devices/lnslim7.png",
+    "brand": "lenovo"
+  },
+  {
+    "id": "lnslim5",
+    "label": "IdeaPad Slim 5",
+    "image": "/devices/lnslim5.png",
+    "brand": "lenovo"
+  },
+  {
+    "id": "lnlegion7",
+    "label": "Legion Pro 7i Gen 9",
+    "image": "/devices/lnlegion7.png",
+    "brand": "lenovo"
+  },
+  {
+    "id": "lnlegion5",
+    "label": "Legion 5i Gen 9",
+    "image": "/devices/lnlegion5.png",
+    "brand": "lenovo"
+  },
+  {
+    "id": "lnlegion5g8",
+    "label": "Legion 5i Gen 8",
+    "image": "/devices/lnlegion5g8.png",
+    "brand": "lenovo"
+  }
+]

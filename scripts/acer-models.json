@@ -1,0 +1,50 @@
+[
+  {
+    "id": "acswx14",
+    "label": "Swift X 14 (2024)",
+    "image": "/devices/acswx14.png",
+    "brand": "acer"
+  },
+  {
+    "id": "acsw14",
+    "label": "Swift Go 14 (2024)",
+    "image": "/devices/acsw14.png",
+    "brand": "acer"
+  },
+  {
+    "id": "acpred16",
+    "label": "Predator Helios 16 (2024)",
+    "image": "/devices/acpred16.png",
+    "brand": "acer"
+  },
+  {
+    "id": "acpred18",
+    "label": "Predator Helios 18 (2024)",
+    "image": "/devices/acpred18.png",
+    "brand": "acer"
+  },
+  {
+    "id": "acnit16",
+    "label": "Nitro V 16 (2024)",
+    "image": "/devices/acnit16.png",
+    "brand": "acer"
+  },
+  {
+    "id": "acnit15",
+    "label": "Nitro 5 (2023)",
+    "image": "/devices/acnit15.png",
+    "brand": "acer"
+  },
+  {
+    "id": "acasp15",
+    "label": "Aspire 5",
+    "image": "/devices/acasp15.png",
+    "brand": "acer"
+  },
+  {
+    "id": "acasp3",
+    "label": "Aspire 3",
+    "image": "/devices/acasp3.png",
+    "brand": "acer"
+  }
+]

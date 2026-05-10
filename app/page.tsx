@@ -177,29 +177,29 @@ const MACBOOK_SERIES = [
 ];
 
 const SAMSUNG_PC_MODELS = [
-  { id: "sgbk4u", label: "Galaxy Book 4 Ultra", base: 750 },
-  { id: "sgbk4p", label: "Galaxy Book 4 Pro 360", base: 600 },
-  { id: "sgbk4pro", label: "Galaxy Book 4 Pro", base: 520 },
-  { id: "sgbk4", label: "Galaxy Book 4", base: 350 },
-  { id: "sgbk3u", label: "Galaxy Book 3 Ultra", base: 580 },
-  { id: "sgbk3p", label: "Galaxy Book 3 Pro 360", base: 450 },
-  { id: "sgbk3pro", label: "Galaxy Book 3 Pro", base: 380 },
-  { id: "sgbk3", label: "Galaxy Book 3", base: 250 },
-  { id: "sgbk2p", label: "Galaxy Book 2 Pro", base: 280 },
-  { id: "sgbk2", label: "Galaxy Book 2", base: 180 },
+  { id: "sgbk4u", label: "Galaxy Book 4 Ultra", base: 750, image: "/devices/sgbk4u.png" },
+  { id: "sgbk4p", label: "Galaxy Book 4 Pro 360", base: 600, image: "/devices/sgbk4p.png" },
+  { id: "sgbk4pro", label: "Galaxy Book 4 Pro", base: 520, image: "/devices/sgbk4pro.png" },
+  { id: "sgbk4", label: "Galaxy Book 4", base: 350, image: "/devices/sgbk4.png" },
+  { id: "sgbk3u", label: "Galaxy Book 3 Ultra", base: 580, image: "/devices/sgbk3u.png" },
+  { id: "sgbk3p", label: "Galaxy Book 3 Pro 360", base: 450, image: "/devices/sgbk3p.png" },
+  { id: "sgbk3pro", label: "Galaxy Book 3 Pro", base: 380, image: "/devices/sgbk3pro.png" },
+  { id: "sgbk3", label: "Galaxy Book 3", base: 250, image: "/devices/sgbk3.png" },
+  { id: "sgbk2p", label: "Galaxy Book 2 Pro", base: 280, image: "/devices/sgbk2p.png" },
+  { id: "sgbk2", label: "Galaxy Book 2", base: 180, image: "/devices/sgbk2.png" },
 ];
 
 const LENOVO_MODELS = [
-  { id: "lntp14g5", label: "ThinkPad X1 Carbon Gen 12", base: 700, image: "/devices/lenovo-thinkpad-x1.webp" },
-  { id: "lntp14g4", label: "ThinkPad X1 Carbon Gen 11", base: 550, image: "/devices/lenovo-thinkpad-x1.webp" },
-  { id: "lntp14g3", label: "ThinkPad X1 Carbon Gen 10", base: 400, image: "/devices/lenovo-thinkpad-x1.webp" },
-  { id: "lnyoga9", label: "Yoga 9i 14\" Gen 9", base: 600, image: "/devices/lenovo-yoga.webp" },
-  { id: "lnyoga7", label: "Yoga 7i 16\" Gen 9", base: 450, image: "/devices/lenovo-yoga.webp" },
-  { id: "lnslim7", label: "IdeaPad Slim 7 Pro", base: 380, image: "/devices/lenovo-ideapad.webp" },
-  { id: "lnslim5", label: "IdeaPad Slim 5", base: 250, image: "/devices/lenovo-ideapad.webp" },
-  { id: "lnlegion7", label: "Legion Pro 7i Gen 9", base: 850, image: "/devices/lenovo-legion.webp" },
-  { id: "lnlegion5", label: "Legion 5i Gen 9", base: 550, image: "/devices/lenovo-legion.webp" },
-  { id: "lnlegion5g8", label: "Legion 5i Gen 8", base: 400, image: "/devices/lenovo-legion.webp" },
+  { id: "lntp14g5", label: "ThinkPad X1 Carbon Gen 12", base: 700, image: "/devices/lntp14g5.png" },
+  { id: "lntp14g4", label: "ThinkPad X1 Carbon Gen 11", base: 550, image: "/devices/lntp14g4.png" },
+  { id: "lntp14g3", label: "ThinkPad X1 Carbon Gen 10", base: 400, image: "/devices/lntp14g3.png" },
+  { id: "lnyoga9", label: "Yoga 9i 14\" Gen 9", base: 600, image: "/devices/lnyoga9.png" },
+  { id: "lnyoga7", label: "Yoga 7i 16\" Gen 9", base: 450, image: "/devices/lnyoga7.png" },
+  { id: "lnslim7", label: "IdeaPad Slim 7 Pro", base: 380, image: "/devices/lnslim7.png" },
+  { id: "lnslim5", label: "IdeaPad Slim 5", base: 250, image: "/devices/lnslim5.png" },
+  { id: "lnlegion7", label: "Legion Pro 7i Gen 9", base: 850, image: "/devices/lnlegion7.png" },
+  { id: "lnlegion5", label: "Legion 5i Gen 9", base: 550, image: "/devices/lnlegion5.png" },
+  { id: "lnlegion5g8", label: "Legion 5i Gen 8", base: 400, image: "/devices/lnlegion5g8.png" },
 ];
 
 const DELL_MODELS = [
@@ -282,27 +282,27 @@ const ALIENWARE_MODELS = [
 ];
 
 const HP_MODELS = [
-  { id: "hpspec16", label: "Spectre x360 16\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
-  { id: "hpspec14", label: "Spectre x360 14\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
-  { id: "hpspec16g23", label: "Spectre x360 16\" (2023)", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
-  { id: "hpenvy16", label: "Envy 16\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hp-envy-16.webp" },
-  { id: "hpenvy15", label: "Envy x360 15\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hp-envy-15.webp" },
-  { id: "hpomen17", label: "OMEN 17\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hp-victus-15.webp" },
-  { id: "hpomen16", label: "OMEN 16\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hp-victus-15.webp" },
-  { id: "hppav15", label: "Pavilion 15\"", base: 0, inquiryOnly: true, image: "/devices/hp-pavilion-15.webp" },
-  { id: "hpelite840", label: "EliteBook 840 G10", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook.jpg" },
-  { id: "hpprobook", label: "ProBook 450 G10", base: 0, inquiryOnly: true, image: "/devices/hp-probook.jpg" },
+  { id: "hpspec16", label: "Spectre x360 16\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hpspec16.png" },
+  { id: "hpspec14", label: "Spectre x360 14\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hpspec14.png" },
+  { id: "hpspec16g23", label: "Spectre x360 16\" (2023)", base: 0, inquiryOnly: true, image: "/devices/hpspec16g23.png" },
+  { id: "hpenvy16", label: "Envy 16\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hpenvy16.png" },
+  { id: "hpenvy15", label: "Envy x360 15\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hpenvy15.png" },
+  { id: "hpomen17", label: "OMEN 17\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hpomen17.png" },
+  { id: "hpomen16", label: "OMEN 16\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hpomen16.png" },
+  { id: "hppav15", label: "Pavilion 15\"", base: 0, inquiryOnly: true, image: "/devices/hppav15.png" },
+  { id: "hpelite840", label: "EliteBook 840 G10", base: 0, inquiryOnly: true, image: "/devices/hpelite840.png" },
+  { id: "hpprobook", label: "ProBook 450 G10", base: 0, inquiryOnly: true, image: "/devices/hpprobook.png" },
 ];
 
 const ACER_MODELS = [
-  { id: "acswx14", label: "Swift X 14 (2024)", base: 480, image: "/devices/acer-swift.webp" },
-  { id: "acsw14", label: "Swift Go 14 (2024)", base: 380, image: "/devices/acer-swift.webp" },
-  { id: "acpred16", label: "Predator Helios 16 (2024)", base: 750, image: "/devices/acer-predator.webp" },
-  { id: "acpred18", label: "Predator Helios 18 (2024)", base: 900, image: "/devices/acer-predator.webp" },
-  { id: "acnit16", label: "Nitro V 16 (2024)", base: 400, image: "/devices/acer-nitro-5.webp" },
-  { id: "acnit15", label: "Nitro 5 (2023)", base: 300, image: "/devices/acer-nitro-5.webp" },
-  { id: "acasp15", label: "Aspire 5", base: 200, image: "/devices/acer-aspire.webp" },
-  { id: "acasp3", label: "Aspire 3", base: 150, image: "/devices/acer-aspire.webp" },
+  { id: "acswx14", label: "Swift X 14 (2024)", base: 480, image: "/devices/acswx14.png" },
+  { id: "acsw14", label: "Swift Go 14 (2024)", base: 380, image: "/devices/acsw14.png" },
+  { id: "acpred16", label: "Predator Helios 16 (2024)", base: 750, image: "/devices/acpred16.png" },
+  { id: "acpred18", label: "Predator Helios 18 (2024)", base: 900, image: "/devices/acpred18.png" },
+  { id: "acnit16", label: "Nitro V 16 (2024)", base: 400, image: "/devices/acnit16.png" },
+  { id: "acnit15", label: "Nitro 5 (2023)", base: 300, image: "/devices/acnit15.png" },
+  { id: "acasp15", label: "Aspire 5", base: 200, image: "/devices/acasp15.png" },
+  { id: "acasp3", label: "Aspire 3", base: 150, image: "/devices/acasp3.png" },
 ];
 
 const LG_GRAM_STANDARD_VARIANTS = [

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "hpspec16",
+    "label": "Spectre x360 16\\",
+    "image": "/devices/hpspec16.png",
+    "brand": "hp"
+  },
+  {
+    "id": "hpspec14",
+    "label": "Spectre x360 14\\",
+    "image": "/devices/hpspec14.png",
+    "brand": "hp"
+  },
+  {
+    "id": "hpspec16g23",
+    "label": "Spectre x360 16\\",
+    "image": "/devices/hpspec16g23.png",
+    "brand": "hp"
+  },
+  {
+    "id": "hpenvy16",
+    "label": "Envy 16\\",
+    "image": "/devices/hpenvy16.png",
+    "brand": "hp"
+  },
+  {
+    "id": "hpenvy15",
+    "label": "Envy x360 15\\",
+    "image": "/devices/hpenvy15.png",
+    "brand": "hp"
+  },
+  {
+    "id": "hpomen17",
+    "label": "OMEN 17\\",
+    "image": "/devices/hpomen17.png",
+    "brand": "hp"
+  },
+  {
+    "id": "hpomen16",
+    "label": "OMEN 16\\",
+    "image": "/devices/hpomen16.png",
+    "brand": "hp"
+  },
+  {
+    "id": "hppav15",
+    "label": "Pavilion 15\\",
+    "image": "/devices/hppav15.png",
+    "brand": "hp"
+  },
+  {
+    "id": "hpelite840",
+    "label": "EliteBook 840 G10",
+    "image": "/devices/hpelite840.png",
+    "brand": "hp"
+  },
+  {
+    "id": "hpprobook",
+    "label": "ProBook 450 G10",
+    "image": "/devices/hpprobook.png",
+    "brand": "hp"
+  }
+]

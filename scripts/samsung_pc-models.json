@@ -1,0 +1,62 @@
+[
+  {
+    "id": "sgbk4u",
+    "label": "Galaxy Book 4 Ultra",
+    "image": "/devices/sgbk4u.png",
+    "brand": "samsung_pc"
+  },
+  {
+    "id": "sgbk4p",
+    "label": "Galaxy Book 4 Pro 360",
+    "image": "/devices/sgbk4p.png",
+    "brand": "samsung_pc"
+  },
+  {
+    "id": "sgbk4pro",
+    "label": "Galaxy Book 4 Pro",
+    "image": "/devices/sgbk4pro.png",
+    "brand": "samsung_pc"
+  },
+  {
+    "id": "sgbk4",
+    "label": "Galaxy Book 4",
+    "image": "/devices/sgbk4.png",
+    "brand": "samsung_pc"
+  },
+  {
+    "id": "sgbk3u",
+    "label": "Galaxy Book 3 Ultra",
+    "image": "/devices/sgbk3u.png",
+    "brand": "samsung_pc"
+  },
+  {
+    "id": "sgbk3p",
+    "label": "Galaxy Book 3 Pro 360",
+    "image": "/devices/sgbk3p.png",
+    "brand": "samsung_pc"
+  },
+  {
+    "id": "sgbk3pro",
+    "label": "Galaxy Book 3 Pro",
+    "image": "/devices/sgbk3pro.png",
+    "brand": "samsung_pc"
+  },
+  {
+    "id": "sgbk3",
+    "label": "Galaxy Book 3",
+    "image": "/devices/sgbk3.png",
+    "brand": "samsung_pc"
+  },
+  {
+    "id": "sgbk2p",
+    "label": "Galaxy Book 2 Pro",
+    "image": "/devices/sgbk2p.png",
+    "brand": "samsung_pc"
+  },
+  {
+    "id": "sgbk2",
+    "label": "Galaxy Book 2",
+    "image": "/devices/sgbk2.png",
+    "brand": "samsung_pc"
+  }
+]
