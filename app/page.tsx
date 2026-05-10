@@ -2969,20 +2969,8 @@ export default function Home() {
               </button>
             </div>
 
-            {/* PRICE-MATCH BAND — direct challenge to mail-in competitors */}
-            <div className="mt-5 bg-gradient-to-br from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/40 rounded-2xl p-4 flex items-start gap-3">
-              <span className="text-2xl shrink-0">💰</span>
-              <div className="flex-1">
-                <p className="text-white text-sm font-bold leading-snug">Have a higher quote from a mail-in site?</p>
-                <p className="text-[#bbb] text-xs mt-0.5">Show us. We&apos;ll match or beat it — in cash, today.</p>
-              </div>
-              <button onClick={() => { setStep("category"); pushHistory("category"); }} className="shrink-0 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] text-xs font-bold px-3 py-2 rounded-full cursor-pointer transition tap-press whitespace-nowrap">
-                Beat it →
-              </button>
-            </div>
-
             {/* NEIGHBORHOODS — Austin SEO + local trust */}
-            <div className="mt-3 text-center text-[11px] text-[#888] font-medium">
+            <div className="mt-5 text-center text-[11px] text-[#888] font-medium">
               <span className="text-[#00c853]">📍</span> Serving <span className="text-[#bbb]">Westlake · Bee Cave · Lakeway · Downtown Austin · Dripping Springs</span>
             </div>
 
