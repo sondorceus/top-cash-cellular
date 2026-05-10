@@ -62,8 +62,8 @@ function ProgressBar({ status }: { status: string }) {
           return (
             <div key={step.value} className="flex-1 flex flex-col items-center gap-1.5 min-w-0">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-base transition ${
-                done ? "bg-[#00c853] text-white" :
-                current ? "bg-[#00c853] text-white ring-4 ring-[#00c853]/30 animate-pulse" :
+                done ? "bg-[#00c853] text-[#0a0a0a]" :
+                current ? "bg-[#00c853] text-[#0a0a0a] ring-4 ring-[#00c853]/30 animate-pulse" :
                 "bg-white/5 border border-white/10 text-[#666]"
               }`}>
                 {done ? "✓" : step.icon}
@@ -163,7 +163,7 @@ function TrackInner() {
             placeholder="Phone or email"
             className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition"
           />
-          <button type="submit" disabled={loading || !contact.trim()} className="px-5 py-3 bg-[#00c853] text-white rounded-xl text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed">
+          <button type="submit" disabled={loading || !contact.trim()} className="px-5 py-3 bg-[#00c853] text-[#0a0a0a] rounded-xl text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed">
             {loading ? "…" : "Track"}
           </button>
         </form>

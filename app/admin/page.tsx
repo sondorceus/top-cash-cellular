@@ -470,7 +470,7 @@ export default function AdminPage() {
             autoFocus
           />
           {error && <p className="text-[#ef5350] text-xs mb-3">{error}</p>}
-          <button type="submit" className="w-full bg-[#00c853] text-white py-3 rounded-xl text-sm font-semibold cursor-pointer hover:bg-[#00e676] transition">
+          <button type="submit" className="w-full bg-[#00c853] text-[#0a0a0a] py-3 rounded-xl text-sm font-semibold cursor-pointer hover:bg-[#00e676] transition">
             Sign in
           </button>
         </form>
@@ -595,7 +595,7 @@ export default function AdminPage() {
                     onClick={() => setStatusFilter(value)}
                     className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition flex items-center gap-1.5 cursor-pointer ${
                       active
-                        ? "bg-[#00c853] text-white border-[#00c853]"
+                        ? "bg-[#00c853] text-[#0a0a0a] border-[#00c853]"
                         : "bg-white/5 text-[#aaa] border-white/10 hover:bg-white/10"
                     }`}
                     style={active && value !== "all" && value !== "active" && color ? { backgroundColor: color, borderColor: color } : undefined}
@@ -768,7 +768,7 @@ export default function AdminPage() {
                               className="w-full px-2 py-1.5 bg-white/5 border border-white/10 rounded text-xs text-white placeholder:text-[#666] focus:outline-none focus:border-[#00c853] resize-none"
                             />
                             <div className="flex gap-1.5">
-                              <button type="button" disabled={!noteDraft.trim() || noteSavingId === lead.id} onClick={() => saveNote(lead)} className="px-2.5 py-1 bg-[#00c853] text-white rounded text-[11px] font-bold hover:bg-[#00e676] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">{noteSavingId === lead.id ? "Saving…" : "Save"}</button>
+                              <button type="button" disabled={!noteDraft.trim() || noteSavingId === lead.id} onClick={() => saveNote(lead)} className="px-2.5 py-1 bg-[#00c853] text-[#0a0a0a] rounded text-[11px] font-bold hover:bg-[#00e676] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">{noteSavingId === lead.id ? "Saving…" : "Save"}</button>
                               <button type="button" onClick={() => { setNoteOpenId(null); setNoteDraft(""); }} className="px-2.5 py-1 bg-white/5 border border-white/10 rounded text-[11px] text-[#aaa] hover:bg-white/10 cursor-pointer">Cancel</button>
                             </div>
                           </div>
@@ -904,7 +904,7 @@ export default function AdminPage() {
                           <div className="space-y-1.5 max-h-72 overflow-y-auto">
                             {smsThreads[lead.id]!.messages!.map((m) => (
                               <div key={m.sid} className={`flex ${m.direction === "in" ? "justify-start" : "justify-end"}`}>
-                                <div className={`max-w-[80%] px-3 py-2 rounded-2xl text-xs ${m.direction === "in" ? "bg-white/10 text-white rounded-bl-sm" : "bg-[#00c853]/20 text-white rounded-br-sm"}`}>
+                                <div className={`max-w-[80%] px-3 py-2 rounded-2xl text-xs ${m.direction === "in" ? "bg-white/10 text-white rounded-bl-sm" : "bg-[#00c853]/20 text-[#0a0a0a] rounded-br-sm"}`}>
                                   <p className="whitespace-pre-wrap break-words">{m.body}</p>
                                   <p className="text-[9px] text-[#888] mt-1 font-mono">{new Date(m.timestamp).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</p>
                                 </div>
@@ -948,7 +948,7 @@ export default function AdminPage() {
               <button
                 onClick={() => bulkStatus && runBulkStatus(bulkStatus)}
                 disabled={!bulkStatus || bulkSaving}
-                className="px-4 py-2 bg-[#00c853] text-white rounded-lg text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-[#00c853] text-[#0a0a0a] rounded-lg text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {bulkSaving ? "Updating…" : "Apply"}
               </button>

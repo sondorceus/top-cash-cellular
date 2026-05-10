@@ -80,7 +80,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
               <span className="text-[9px] font-semibold tracking-[0.15em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="bg-[#00c853] text-white px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
+          <Link href="/" className="bg-[#00c853] text-[#0a0a0a] px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
             Get Quote
           </Link>
         </div>
@@ -99,7 +99,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
           Get up to <span className="text-[#00c853] font-bold">${device.price}</span> — Austin TX
         </p>
 
-        <Link href="/" className="block w-full bg-[#00c853] text-white py-5 rounded-2xl text-xl font-bold text-center hover:bg-[#00e676] transition shadow-lg shadow-[#00c853]/20 mb-8">
+        <Link href="/" className="block w-full bg-[#00c853] text-[#0a0a0a] py-5 rounded-2xl text-xl font-bold text-center hover:bg-[#00e676] transition shadow-lg shadow-[#00c853]/20 mb-8">
           Get My Quote Now
         </Link>
 
@@ -164,7 +164,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
           </div>
         )}
 
-        <Link href="/" className="block w-full bg-[#00c853] text-white py-4 rounded-2xl text-base font-bold text-center hover:bg-[#00e676] transition mb-4">
+        <Link href="/" className="block w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-bold text-center hover:bg-[#00e676] transition mb-4">
           Sell My {device.name}
         </Link>
 

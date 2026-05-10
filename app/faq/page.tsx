@@ -100,7 +100,7 @@ export default function FAQPage() {
         <div className="mt-12 bg-[#00c853]/10 border border-[#00c853]/30 rounded-2xl p-6 text-center">
           <p className="text-white font-semibold mb-2">Didn&apos;t see your question?</p>
           <p className="text-[#ccc] text-sm mb-4">Email us — we usually reply within an hour during business hours.</p>
-          <Link href="/" className="inline-block bg-[#00c853] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition">Get a quote →</Link>
+          <Link href="/" className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition">Get a quote →</Link>
         </div>
       </div>
     </main>

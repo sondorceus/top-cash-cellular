@@ -23,7 +23,7 @@ export default function ThankYou() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
             href="/reviews/new"
-            className="inline-block bg-[#00c853] text-white px-6 py-3 rounded-2xl font-semibold hover:bg-[#00e676] transition"
+            className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-2xl font-semibold hover:bg-[#00e676] transition"
           >
             Leave a review
           </a>

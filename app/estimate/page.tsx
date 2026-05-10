@@ -155,7 +155,7 @@ export default function EstimatePage() {
             <button
               type="submit"
               disabled={loading || !deviceSlug || !storage || !condition}
-              className="w-full bg-[#00c853] disabled:bg-[#00c853]/40 text-white py-4 rounded-2xl text-base font-bold hover:bg-[#00e676] transition"
+              className="w-full bg-[#00c853] disabled:bg-[#00c853]/40 text-[#0a0a0a] py-4 rounded-2xl text-base font-bold hover:bg-[#00e676] transition"
             >
               {loading ? "Calculating…" : "Get My Quote"}
             </button>

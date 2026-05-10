@@ -1599,7 +1599,7 @@ export default function Home() {
             <a href="/bulk" className="hidden md:inline text-xs text-[#888] hover:text-white transition">Bulk</a>
             <button onClick={() => setLookupOpen(true)} className="hidden sm:inline text-xs text-[#00c853] hover:text-[#00e676] font-semibold transition cursor-pointer">Returning?</button>
             <a href="/reviews" className="hidden sm:inline-flex items-center gap-1 text-xs text-[#ffb400] hover:text-[#ffd54f] font-semibold transition"><svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.5 5.9.7-4.4 4.1 1.2 5.8L10 14.7l-5.3 2.9 1.2-5.8L1.5 7.7l5.9-.7L10 1.5z"/></svg>Reviews</a>
-            <a href={EMAIL_HREF} aria-label="Email us" className="bg-[#00c853] text-white px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
+            <a href={EMAIL_HREF} aria-label="Email us" className="bg-[#00c853] text-[#0a0a0a] px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
               Email Us
             </a>
           </div>
@@ -1735,7 +1735,7 @@ export default function Home() {
               Login
             </button>
 
-            <a href={EMAIL_HREF} className="ml-2 bg-[#00c853] text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-[#00e676] transition">
+            <a href={EMAIL_HREF} className="ml-2 bg-[#00c853] text-[#0a0a0a] px-4 py-2 rounded-full text-sm font-bold hover:bg-[#00e676] transition">
               Email Us
             </a>
           </div>
@@ -1773,7 +1773,7 @@ export default function Home() {
                   <button
                     onClick={handleLookup}
                     disabled={lookupLoading || !lookupContact.trim()}
-                    className="w-full mt-3 bg-[#00c853] hover:bg-[#00e676] disabled:bg-white/10 disabled:text-white/40 text-white font-bold py-3 rounded-xl transition tap-press cursor-pointer"
+                    className="w-full mt-3 bg-[#00c853] hover:bg-[#00e676] disabled:bg-white/10 disabled:text-white/40 text-[#0a0a0a] font-bold py-3 rounded-xl transition tap-press cursor-pointer"
                   >
                     {lookupLoading ? "Looking up..." : "Find my info"}
                   </button>
@@ -1797,7 +1797,7 @@ export default function Home() {
                       ))}
                     </div>
                   )}
-                  <button onClick={applyLookup} className="w-full bg-[#00c853] hover:bg-[#00e676] text-white font-bold py-3 rounded-xl transition tap-press cursor-pointer">Use this info →</button>
+                  <button onClick={applyLookup} className="w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold py-3 rounded-xl transition tap-press cursor-pointer">Use this info →</button>
                 </>
               )}
               {lookupResult && !lookupResult.found && (
@@ -1806,7 +1806,7 @@ export default function Home() {
                     <p className="text-white font-semibold mb-1">No past trades found</p>
                     <p className="text-[#888] text-sm">First time? No worries — start a fresh quote and we&apos;ll save it for next time.</p>
                   </div>
-                  <button onClick={() => { setLookupOpen(false); setStep("category"); pushHistory("category"); }} className="w-full bg-[#00c853] hover:bg-[#00e676] text-white font-bold py-3 rounded-xl transition tap-press cursor-pointer">Start fresh quote</button>
+                  <button onClick={() => { setLookupOpen(false); setStep("category"); pushHistory("category"); }} className="w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold py-3 rounded-xl transition tap-press cursor-pointer">Start fresh quote</button>
                 </>
               )}
             </div>
@@ -1860,7 +1860,7 @@ export default function Home() {
             <div className="glow-border mb-6 p-[3px] hero-scale-in hero-d-3">
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
-                className="w-full bg-[#00c853] text-white py-5 rounded-[14px] text-xl font-bold cursor-pointer hover:bg-[#00e676] transition tap-press shadow-lg shadow-[#00c853]/20 relative z-10"
+                className="w-full bg-[#00c853] text-[#0a0a0a] py-5 rounded-[14px] text-xl font-bold cursor-pointer hover:bg-[#00e676] transition tap-press shadow-lg shadow-[#00c853]/20 relative z-10"
               >
                 Sell Your Device
               </button>
@@ -1928,7 +1928,7 @@ export default function Home() {
               { n: 3, icon: "💵", title: "Get paid same-day", body: "Cash, Cash App, Zelle, or BTC. Most payouts hit within 24 hours of arrival." },
             ].map((s, i) => (
               <div key={s.n} className="relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
-                <div className="absolute -top-3 -left-2 w-9 h-9 rounded-full bg-[#00c853] text-white text-sm font-bold flex items-center justify-center shadow-lg shadow-[#00c853]/30">{s.n}</div>
+                <div className="absolute -top-3 -left-2 w-9 h-9 rounded-full bg-[#00c853] text-[#0a0a0a] text-sm font-bold flex items-center justify-center shadow-lg shadow-[#00c853]/30">{s.n}</div>
                 <div className="text-4xl mb-3">{s.icon}</div>
                 <h3 className="font-bold text-lg mb-1.5">{s.title}</h3>
                 <p className="text-[#888] text-sm leading-relaxed">{s.body}</p>
@@ -1970,7 +1970,7 @@ export default function Home() {
           <div className="bg-gradient-to-r from-[#00c853]/[0.18] via-[#00c853]/[0.10] to-[#00c853]/[0.18] border border-[#00c853]/30 rounded-3xl p-7 md:p-9 text-center reveal">
             <h2 className="text-2xl md:text-3xl font-bold mb-2 leading-tight">Still sitting on that old tech?</h2>
             <p className="text-[#aaa] text-sm md:text-base mb-5">Turn it into cash today. Quote in 30 seconds.</p>
-            <button onClick={() => { setStep("category"); pushHistory("category"); }} className="bg-[#00c853] hover:bg-[#00e676] text-white font-bold px-8 py-3.5 rounded-full shadow-lg shadow-[#00c853]/30 transition tap-press cursor-pointer">
+            <button onClick={() => { setStep("category"); pushHistory("category"); }} className="bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold px-8 py-3.5 rounded-full shadow-lg shadow-[#00c853]/30 transition tap-press cursor-pointer">
               Get my quote →
             </button>
           </div>
@@ -2034,7 +2034,7 @@ export default function Home() {
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">Swap your old tech for cash today.</h2>
               <p className="text-[#bbb] text-base md:text-lg mb-6">Instant quote · Same-day payout · No signup needed</p>
-              <button onClick={() => { setStep("category"); pushHistory("category"); }} className="bg-[#00c853] hover:bg-[#00e676] text-white font-bold text-lg px-10 py-4 rounded-full shadow-lg shadow-[#00c853]/40 transition tap-press cursor-pointer">
+              <button onClick={() => { setStep("category"); pushHistory("category"); }} className="bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold text-lg px-10 py-4 rounded-full shadow-lg shadow-[#00c853]/40 transition tap-press cursor-pointer">
                 Sell Your Device
               </button>
             </div>
@@ -2209,7 +2209,7 @@ export default function Home() {
                   <button
                     onClick={() => { if (inquiryDesc.trim()) { setModel({ id: "custom", label: inquiryDesc.trim(), base: 0 }); } }}
                     disabled={!inquiryDesc.trim()}
-                    className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Next: Select Condition
                   </button>
@@ -2315,7 +2315,7 @@ export default function Home() {
                       </div>
                     )}
                   </div>
-                  <button type="submit" disabled={uploading} className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press disabled:opacity-40 disabled:cursor-not-allowed">
+                  <button type="submit" disabled={uploading} className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press disabled:opacity-40 disabled:cursor-not-allowed">
                     Get My Custom Quote
                   </button>
                 </form>
@@ -3245,7 +3245,7 @@ export default function Home() {
                   onClick={() => setAccessoriesIncluded((v) => !v)}
                   className={`w-full flex items-center gap-3 p-3 rounded-xl border transition cursor-pointer text-left ${accessoriesIncluded ? "bg-[#00c853]/10 border-[#00c853]/40" : "bg-white/5 border-white/10 hover:bg-white/10"}`}
                 >
-                  <span className={`w-5 h-5 rounded border-2 flex items-center justify-center text-xs font-bold transition ${accessoriesIncluded ? "bg-[#00c853] border-[#00c853] text-white" : "border-white/30 text-transparent"}`}>✓</span>
+                  <span className={`w-5 h-5 rounded border-2 flex items-center justify-center text-xs font-bold transition ${accessoriesIncluded ? "bg-[#00c853] border-[#00c853] text-[#0a0a0a]" : "border-white/30 text-transparent"}`}>✓</span>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-white">All original accessories included</p>
                     <p className="text-[11px] text-[#888]">Charger, cable, original box{condition?.id === "brandnew" ? ", manuals" : ""}</p>
@@ -3296,7 +3296,7 @@ export default function Home() {
                 <>
                   <div className="flex gap-2">
                     <input type="text" value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} placeholder="ENTER CODE" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#666] focus:outline-none focus:border-[#00c853] transition uppercase tracking-wide" />
-                    <button onClick={applyCoupon} className="px-4 py-2 bg-[#00c853] text-white rounded-xl text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition">Apply</button>
+                    <button onClick={applyCoupon} className="px-4 py-2 bg-[#00c853] text-[#0a0a0a] rounded-xl text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition">Apply</button>
                   </div>
                   {couponError && <p className="text-xs text-red-400 mt-1.5">{couponError}</p>}
                 </>
@@ -3324,7 +3324,7 @@ export default function Home() {
                   }
                   setStep("checkout"); pushHistory("checkout");
                 }}
-                className="flex-[2] bg-[#00c853] text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press"
+                className="flex-[2] bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press"
               >
                 Add to Cart
               </button>
@@ -3457,7 +3457,7 @@ export default function Home() {
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-4">
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
-                <button type="submit" className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">Continue As Guest</button>
+                <button type="submit" className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">Continue As Guest</button>
               </form>
 
               <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#777] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
@@ -3699,7 +3699,7 @@ export default function Home() {
                 )}
               </div>
               <p className="text-[#666] text-[11px] text-center leading-relaxed">By submitting, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
-              <button type="submit" className="w-full bg-[#00c853] text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">
+              <button type="submit" className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">
                 Submit &amp; Get Paid
               </button>
             </form>
@@ -3793,7 +3793,7 @@ export default function Home() {
                 {["Device", "Condition", "Offer"].map((label, i) => (
                   <div key={label} className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-[#00c853] flex items-center justify-center text-white text-xs font-bold">{i + 1}</div>
+                      <div className="w-7 h-7 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-xs font-bold">{i + 1}</div>
                       <span className="text-white text-xs font-semibold">{label}</span>
                     </div>
                     {i < 2 && <svg className="w-4 h-4 text-[#777]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>}
@@ -3915,7 +3915,7 @@ export default function Home() {
                 <h2 className="text-3xl font-bold mb-2">Still sitting on old tech?</h2>
                 <p className="text-[#888] text-base mb-2">That phone in your drawer is losing value every day.</p>
                 <p className="text-white/70 text-sm mb-6">Get your instant quote — it takes 30 seconds.</p>
-                <button onClick={() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; setStep("category"); pushHistory("category"); requestAnimationFrame(() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }); }} className="bg-[#00c853] text-white px-10 py-4 rounded-2xl text-lg font-bold cursor-pointer hover:bg-[#00e676] transition tap-press shadow-lg shadow-[#00c853]/20">
+                <button onClick={() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; setStep("category"); pushHistory("category"); requestAnimationFrame(() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }); }} className="bg-[#00c853] text-[#0a0a0a] px-10 py-4 rounded-2xl text-lg font-bold cursor-pointer hover:bg-[#00e676] transition tap-press shadow-lg shadow-[#00c853]/20">
                   Get Your Quote Now
                 </button>
                 <p className="text-[#777] text-xs mt-4">No account required · Free instant quote · No obligation</p>
@@ -3944,7 +3944,7 @@ export default function Home() {
                     setNewsletterSubmitted(true);
                   }} className="flex gap-2">
                     <input type="email" value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} placeholder="your@email.com" required aria-label="Email for newsletter" className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition" />
-                    <button type="submit" className="bg-[#00c853] text-white px-6 py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition tap-press whitespace-nowrap">
+                    <button type="submit" className="bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition tap-press whitespace-nowrap">
                       Sign Up
                     </button>
                   </form>
@@ -4022,7 +4022,7 @@ export default function Home() {
                 </div>
                 <button
                   onClick={() => { setInquiryCategory("Bulk / Business"); setInquirySent(false); setInquiryDesc(""); setModel(null); setCondition(null); setStep("inquiry"); pushHistory("inquiry"); }}
-                  className="w-full bg-[#00c853] text-white py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition tap-press"
+                  className="w-full bg-[#00c853] text-[#0a0a0a] py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition tap-press"
                 >
                   Get a Bulk Quote
                 </button>
@@ -4097,7 +4097,7 @@ export default function Home() {
                   { num: "3", title: "Get paid instantly", desc: "We verify your device and pay you on the spot. Cash, Cash App, Zelle, or BTC." },
                 ].map((step) => (
                   <div key={step.num} className="flex items-start gap-4 bg-white/5 rounded-2xl p-4 border border-white/10">
-                    <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center text-white text-sm font-bold shrink-0">{step.num}</div>
+                    <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-sm font-bold shrink-0">{step.num}</div>
                     <div>
                       <p className="font-semibold text-sm mb-0.5">{step.title}</p>
                       <p className="text-[#888] text-sm leading-relaxed">{step.desc}</p>
@@ -4109,7 +4109,7 @@ export default function Home() {
               <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-6 text-center">
                 <p className="text-lg font-bold mb-2">Ready to sell?</p>
                 <p className="text-[#888] text-sm mb-4">Get your instant quote in 30 seconds.</p>
-                <button onClick={() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; setPage("home"); setStep("category"); pushHistory("category"); requestAnimationFrame(() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }); }} className="bg-[#00c853] text-white px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">
+                <button onClick={() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; setPage("home"); setStep("category"); pushHistory("category"); requestAnimationFrame(() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }); }} className="bg-[#00c853] text-[#0a0a0a] px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">
                   Get My Quote
                 </button>
               </div>
@@ -4214,28 +4214,28 @@ export default function Home() {
                   <div className="h-[200px] overflow-y-auto space-y-2 mb-2 pr-1">
                     {chatMessages.map((m, i) => (
                       <div key={i} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[85%] px-3 py-2 rounded-xl text-xs ${m.from === "user" ? "bg-[#00c853] text-white" : "bg-white/10 text-white/90"}`}>{m.text}</div>
+                        <div className={`max-w-[85%] px-3 py-2 rounded-xl text-xs ${m.from === "user" ? "bg-[#00c853] text-[#0a0a0a]" : "bg-white/10 text-white/90"}`}>{m.text}</div>
                       </div>
                     ))}
                     {chatLoading && <div className="flex justify-start"><div className="bg-white/10 text-white/60 px-3 py-2 rounded-xl text-xs">Typing...</div></div>}
                   </div>
                   <div className="flex gap-2">
                     <input value={chatMsg} onChange={(e) => setChatMsg(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendChat()} placeholder="Ask me anything..." aria-label="Chat message" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
-                    <button onClick={sendChat} disabled={chatLoading} aria-label="Send message" className="bg-[#00c853] text-white px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer hover:bg-[#00e676] transition disabled:opacity-50">Send</button>
+                    <button onClick={sendChat} disabled={chatLoading} aria-label="Send message" className="bg-[#00c853] text-[#0a0a0a] px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer hover:bg-[#00e676] transition disabled:opacity-50">Send</button>
                   </div>
                 </>
               )}
               {chatMode === "call" && (
                 <div className="text-center py-2">
                   <button onClick={() => setChatMode("choose")} className="text-[#888] text-xs mb-3 cursor-pointer hover:text-white block mx-auto">← Back</button>
-                  <a href={EMAIL_HREF} className="block w-full bg-[#00c853] text-white py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2">📧 Email Us</a>
+                  <a href={EMAIL_HREF} className="block w-full bg-[#00c853] text-[#0a0a0a] py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2">📧 Email Us</a>
                   <p className="text-[#888] text-xs">Mon-Sat 8AM-8PM</p>
                 </div>
               )}
             </div>
           </div>
         )}
-        <button onClick={() => setChatOpen(!chatOpen)} className="w-14 h-14 rounded-full bg-[#00c853] text-white flex items-center justify-center shadow-lg hover:bg-[#00e676] transition cursor-pointer tap-press">
+        <button onClick={() => setChatOpen(!chatOpen)} className="w-14 h-14 rounded-full bg-[#00c853] text-[#0a0a0a] flex items-center justify-center shadow-lg hover:bg-[#00e676] transition cursor-pointer tap-press">
           {chatOpen ? (
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           ) : (
@@ -4314,7 +4314,7 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto flex items-center gap-3">
             <p className="text-white/80 text-[11px] flex-1">We use cookies to improve your experience.</p>
             <button onClick={() => { localStorage.setItem("cookie-consent", "essential"); setCookieConsent("essential"); }} className="text-white/60 text-[11px] font-medium cursor-pointer hover:text-white transition whitespace-nowrap">Essential</button>
-            <button onClick={() => { localStorage.setItem("cookie-consent", "full"); setCookieConsent("full"); }} className="bg-[#00c853] text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer hover:bg-[#00e676] transition whitespace-nowrap">Accept All</button>
+            <button onClick={() => { localStorage.setItem("cookie-consent", "full"); setCookieConsent("full"); }} className="bg-[#00c853] text-[#0a0a0a] px-3 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer hover:bg-[#00e676] transition whitespace-nowrap">Accept All</button>
           </div>
         </div>
       )}
