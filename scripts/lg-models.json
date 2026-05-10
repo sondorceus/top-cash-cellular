@@ -1,0 +1,146 @@
+[
+  {
+    "id": "lg_gr17_24",
+    "label": "LG Gram 17 (17Z90S, 2024)",
+    "sub_id": "gram_standard",
+    "image": "/devices/lg_gr17_24.png"
+  },
+  {
+    "id": "lg_gr16_24",
+    "label": "LG Gram 16 (16Z90S, 2024)",
+    "sub_id": "gram_standard",
+    "image": "/devices/lg_gr16_24.png"
+  },
+  {
+    "id": "lg_gr14_24",
+    "label": "LG Gram 14 (14Z90S, 2024)",
+    "sub_id": "gram_standard",
+    "image": "/devices/lg_gr14_24.png"
+  },
+  {
+    "id": "lg_gr17_23",
+    "label": "LG Gram 17 (17Z90R, 2023)",
+    "sub_id": "gram_standard",
+    "image": "/devices/lg_gr17_23.png"
+  },
+  {
+    "id": "lg_gr16_23",
+    "label": "LG Gram 16 (16Z90R, 2023)",
+    "sub_id": "gram_standard",
+    "image": "/devices/lg_gr16_23.png"
+  },
+  {
+    "id": "lg_gr15_23",
+    "label": "LG Gram 15 (15Z90R, 2023)",
+    "sub_id": "gram_standard",
+    "image": "/devices/lg_gr15_23.png"
+  },
+  {
+    "id": "lg_gr14_23",
+    "label": "LG Gram 14 (14Z90R, 2023)",
+    "sub_id": "gram_standard",
+    "image": "/devices/lg_gr14_23.png"
+  },
+  {
+    "id": "lg_gr16t_24",
+    "label": "LG Gram 16 2-in-1 (16T90S, 2024)",
+    "sub_id": "gram_2in1",
+    "image": "/devices/lg_gr16t_24.png"
+  },
+  {
+    "id": "lg_gr14t_24",
+    "label": "LG Gram 14 2-in-1 (14T90S, 2024)",
+    "sub_id": "gram_2in1",
+    "image": "/devices/lg_gr14t_24.png"
+  },
+  {
+    "id": "lg_gr16t_23",
+    "label": "LG Gram 16 2-in-1 (16T90R, 2023)",
+    "sub_id": "gram_2in1",
+    "image": "/devices/lg_gr16t_23.png"
+  },
+  {
+    "id": "lg_gr14t_23",
+    "label": "LG Gram 14 2-in-1 (14T90R, 2023)",
+    "sub_id": "gram_2in1",
+    "image": "/devices/lg_gr14t_23.png"
+  },
+  {
+    "id": "lg_grstyle16",
+    "label": "LG Gram Style 16 (16Z90RS, 2023)",
+    "sub_id": "gram_style",
+    "image": "/devices/lg_grstyle16.png"
+  },
+  {
+    "id": "lg_grstyle14",
+    "label": "LG Gram Style 14 (14Z90RS, 2023)",
+    "sub_id": "gram_style",
+    "image": "/devices/lg_grstyle14.png"
+  },
+  {
+    "id": "lg_grultra15",
+    "label": "LG Gram Ultraslim 15 (15Z90RT, 2023)",
+    "sub_id": "gram_ultraslim",
+    "image": "/devices/lg_grultra15.png"
+  },
+  {
+    "id": "lg_grpro17_25",
+    "label": "LG Gram Pro 17 (17Z90TR, 2025)",
+    "sub_id": "gram_pro",
+    "image": "/devices/lg_grpro17_25.png"
+  },
+  {
+    "id": "lg_grpro16_25",
+    "label": "LG Gram Pro 16 (16Z90TR, 2025)",
+    "sub_id": "gram_pro",
+    "image": "/devices/lg_grpro16_25.png"
+  },
+  {
+    "id": "lg_grpro17_24",
+    "label": "LG Gram Pro 17 (17Z90SP, 2024)",
+    "sub_id": "gram_pro",
+    "image": "/devices/lg_grpro17_24.png"
+  },
+  {
+    "id": "lg_grpro16_24",
+    "label": "LG Gram Pro 16 (16Z90SP, 2024)",
+    "sub_id": "gram_pro",
+    "image": "/devices/lg_grpro16_24.png"
+  },
+  {
+    "id": "lg_grpro16t_24",
+    "label": "LG Gram Pro 16 2-in-1 (16T90SP, 2024)",
+    "sub_id": "gram_pro_2in1",
+    "image": "/devices/lg_grpro16t_24.png"
+  },
+  {
+    "id": "lg_grbook16",
+    "label": "LG Gram Book 16 (2024\u20132025)",
+    "sub_id": "gram_book",
+    "image": "/devices/lg_grbook16.png"
+  },
+  {
+    "id": "lg_grbook15",
+    "label": "LG Gram Book 15.6 (2024\u20132025)",
+    "sub_id": "gram_book",
+    "image": "/devices/lg_grbook15.png"
+  },
+  {
+    "id": "lg_ultragear16_24",
+    "label": "LG UltraGear 16 (16G90S, 2024)",
+    "sub_id": "ultragear",
+    "image": "/devices/lg_ultragear16_24.png"
+  },
+  {
+    "id": "lg_ultragear16_23",
+    "label": "LG UltraGear 16 (16G90R, 2023)",
+    "sub_id": "ultragear",
+    "image": "/devices/lg_ultragear16_23.png"
+  },
+  {
+    "id": "lg_ultragear16_22",
+    "label": "LG UltraGear 16 (16G90Q, 2022)",
+    "sub_id": "ultragear",
+    "image": "/devices/lg_ultragear16_22.png"
+  }
+]
