@@ -2513,9 +2513,9 @@ export default function Home() {
 
       {/* PERSISTENT SEARCH BAR — in-flow (scrolls with the page like IWM,
           not sticky), visible during the device-discovery flow
-          (category → brand → model → storage). */}
+          (category → brand → model → storage). Mobile + desktop. */}
       {page === "home" && (step === "category" || step === "brand" || step === "model" || step === "storage") && (
-        <div className="hidden lg:block bg-[#0a0a0a] border-b border-white/10">
+        <div className="bg-[#0a0a0a] border-b border-white/10">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-2.5">
             <div className="relative">
               <input
@@ -2523,7 +2523,7 @@ export default function Home() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Escape") setSearchQuery(""); }}
-                placeholder="Search for your device — iPhone 15 Pro, Galaxy S24 Ultra, MacBook Pro M4..."
+                placeholder="Search device — iPhone, Galaxy, MacBook..."
                 className="w-full pl-10 pr-10 py-2.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition"
               />
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#bbb] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
