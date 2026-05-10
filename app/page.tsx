@@ -2935,7 +2935,7 @@ export default function Home() {
               Get top dollar<br />for your device.
             </h1>
             <p className="text-[#bbb] text-lg mb-2 font-medium hero-fade-up hero-d-1">
-              Skip the 5-day mail-in wait. Quote online, meet us in <strong className="text-white">Austin or Dripping Springs</strong>, get paid via <strong className="text-white">Zelle in 15 minutes</strong>.
+              Skip the 5-day mail-in wait. Quote online, meet us in <strong className="text-white">Austin or Dripping Springs</strong>, get paid in <strong className="text-white">cash in 15 minutes</strong>.
             </p>
             <p className="text-[#bbb] text-sm mb-6 font-medium hero-fade-up hero-d-2 flex items-center gap-2">
               <span className="text-[#00c853]">🔒</span>
@@ -2986,8 +2986,21 @@ export default function Home() {
               <span className="text-[#00c853]">📍</span> Serving <span className="text-[#bbb]">Westlake · Bee Cave · Lakeway · Downtown Austin · Dripping Springs</span>
             </div>
 
-            <div className="mt-3 bg-white/5 border border-white/10 rounded-2xl p-3 text-center">
-              <p className="text-[#bbb] text-xs">Don&apos;t see your device? <a href={EMAIL_HREF} className="text-[#00c853] font-semibold hover:underline">Email us</a> and we&apos;ll make you an offer.</p>
+            {/* PAYMENT METHODS — small chip strip */}
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5">
+              <span className="text-[10px] text-[#888] uppercase tracking-[0.18em] font-bold mr-1">Paid via</span>
+              {[
+                { label: "Cash", icon: "💵" },
+                { label: "Zelle", icon: "⚡" },
+                { label: "Cash App", icon: "💚" },
+                { label: "Venmo", icon: "🟦" },
+                { label: "BTC", icon: "₿" },
+              ].map(p => (
+                <span key={p.label} className="inline-flex items-center gap-1 bg-white/5 border border-white/10 text-[#bbb] text-[11px] font-semibold px-2 py-1 rounded-full">
+                  <span className="text-[12px] leading-none">{p.icon}</span>
+                  {p.label}
+                </span>
+              ))}
             </div>
 
             <div className="mt-6 flex flex-wrap items-center gap-2 hero-fade-up hero-d-4">
