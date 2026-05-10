@@ -1,5 +1,13 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
+
+const manrope = localFont({
+  src: "../public/fonts/Manrope-Variable.woff2",
+  variable: "--font-manrope",
+  weight: "200 800",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   themeColor: "#00c853",
@@ -41,7 +49,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className={`h-full antialiased ${manrope.variable}`}>
       <head>
         <link rel="preload" as="image" href="/iphone17.png" fetchPriority="high" />
         <script

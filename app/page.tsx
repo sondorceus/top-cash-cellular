@@ -1710,7 +1710,7 @@ export default function Home() {
           {/* Hero photo removed per Skywalker 2026-05-08 */}
 
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pb-8">
-            <h1 className="text-4xl font-bold tracking-tight leading-[1.08] mb-3 hero-fade-up">
+            <h1 className="text-4xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up" style={{ fontFamily: "var(--font-manrope), -apple-system, BlinkMacSystemFont, sans-serif", letterSpacing: "-0.025em" }}>
               Get top dollar<br />for your device.
             </h1>
             <p className="text-[#888] text-lg mb-1 font-medium hero-fade-up hero-d-1">
