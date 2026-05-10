@@ -2511,11 +2511,11 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* PERSISTENT SEARCH BAR — sticky just below nav, visible during the device-
-          discovery flow (category → brand → model → storage). Same UX as IWM:
-          one box always available so the user can jump straight to any device. */}
+      {/* PERSISTENT SEARCH BAR — in-flow (scrolls with the page like IWM,
+          not sticky), visible during the device-discovery flow
+          (category → brand → model → storage). */}
       {page === "home" && (step === "category" || step === "brand" || step === "model" || step === "storage") && (
-        <div className="hidden lg:block sticky top-[58px] z-30 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
+        <div className="hidden lg:block bg-[#0a0a0a] border-b border-white/10">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-2.5">
             <div className="relative">
               <input
