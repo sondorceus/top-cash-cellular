@@ -1560,7 +1560,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#0a0a0a] text-white">
       {/* NAV */}
       <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between">
           <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer group tap-press rounded-xl">
             <span className="flex items-center gap-2">
               <span className="relative w-9 h-9 rounded-xl tcc-logo-card flex items-center justify-center">
