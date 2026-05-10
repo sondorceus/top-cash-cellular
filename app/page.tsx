@@ -2969,9 +2969,17 @@ export default function Home() {
               </button>
             </div>
 
+            {/* MOBILE TECH MEETUP — small detail, not a full section */}
+            <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 flex items-start gap-3">
+              <span className="text-xl shrink-0 leading-tight">🚗</span>
+              <p className="text-[#bbb] text-xs leading-relaxed">
+                <strong className="text-white">Or have us come to you.</strong> Our mobile tech meets you at Starbucks, your office, or a local Safe Exchange zone — marked vehicle, ETA text, watch the wipe, paid before we walk back to the car.
+              </p>
+            </div>
+
             {/* NEIGHBORHOODS — Austin SEO + local trust */}
-            <div className="mt-5 text-center text-[11px] text-[#888] font-medium">
-              <span className="text-[#00c853]">📍</span> Serving <span className="text-[#bbb]">Westlake · Bee Cave · Lakeway · Downtown Austin · Dripping Springs</span>
+            <div className="mt-4 text-center text-[11px] text-[#888] font-medium">
+              <span className="text-[#00c853]">📍</span> Mobile techs in <span className="text-[#bbb]">Downtown Austin · South Congress · Westlake · Bee Cave · Lakeway · Buda · Dripping Springs</span>
             </div>
 
             {/* PAYMENT METHODS — small chip strip */}
