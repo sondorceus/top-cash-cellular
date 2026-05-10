@@ -43,11 +43,11 @@ export default function BulkPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white">
-      <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
+    <main className="min-h-screen bg-white text-[#0a0a0a]">
+      <nav className="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-black/15">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="w-9 h-9 rounded-xl bg-black border border-white/15 flex items-center justify-center">
+            <span className="w-9 h-9 rounded-xl bg-black border border-black/20 flex items-center justify-center">
               <span className="w-6 h-6 rounded-lg bg-[#00c853] flex items-center justify-center">
                 <svg viewBox="0 0 24 24" className="w-3.5 h-5" fill="none" stroke="#fff" strokeWidth="2">
                   <rect x="6" y="2" width="12" height="20" rx="2.5" />
@@ -56,11 +56,11 @@ export default function BulkPage() {
               </span>
             </span>
             <div className="flex flex-col leading-none">
-              <span className="text-[14px] font-extrabold tracking-tight text-white">TOP CASH</span>
+              <span className="text-[14px] font-extrabold tracking-tight text-[#0a0a0a]">TOP CASH</span>
               <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="text-xs text-[#888] hover:text-white">← Single device?</Link>
+          <Link href="/" className="text-xs text-[#888] hover:text-[#0a0a0a]">← Single device?</Link>
         </div>
       </nav>
 
@@ -69,20 +69,20 @@ export default function BulkPage() {
         <p className="text-[#888] mb-8">5+ devices? Get a custom quote, free pickup in Austin, and 24-hour payment.</p>
 
         <div className="grid grid-cols-3 gap-2 mb-8">
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+          <div className="bg-black/5 border border-black/15 rounded-xl p-4 text-center">
             <div className="text-2xl mb-1">📦</div>
             <p className="text-[10px] font-bold text-[#888] uppercase">Free pickup</p>
-            <p className="text-xs text-white mt-1">Austin metro area</p>
+            <p className="text-xs text-[#0a0a0a] mt-1">Austin metro area</p>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+          <div className="bg-black/5 border border-black/15 rounded-xl p-4 text-center">
             <div className="text-2xl mb-1">⚡</div>
             <p className="text-[10px] font-bold text-[#888] uppercase">24-hr payout</p>
-            <p className="text-xs text-white mt-1">After verification</p>
+            <p className="text-xs text-[#0a0a0a] mt-1">After verification</p>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+          <div className="bg-black/5 border border-black/15 rounded-xl p-4 text-center">
             <div className="text-2xl mb-1">🔒</div>
             <p className="text-[10px] font-bold text-[#888] uppercase">Data wipe</p>
-            <p className="text-xs text-white mt-1">NIST 800-88</p>
+            <p className="text-xs text-[#0a0a0a] mt-1">NIST 800-88</p>
           </div>
         </div>
 
@@ -93,16 +93,16 @@ export default function BulkPage() {
             <h2 className="text-sm font-bold uppercase tracking-wider text-[#00c853]">Volume bonus pricing</h2>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-center">
-              <p className="text-2xl font-extrabold text-white">+5%</p>
+            <div className="bg-black/5 border border-black/15 rounded-xl px-3 py-3 text-center">
+              <p className="text-2xl font-extrabold text-[#0a0a0a]">+5%</p>
               <p className="text-[11px] text-[#888] mt-0.5 leading-tight">10+ devices</p>
             </div>
             <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl px-3 py-3 text-center">
               <p className="text-2xl font-extrabold text-[#00c853]">+10%</p>
-              <p className="text-[11px] text-[#aaa] mt-0.5 leading-tight">50+ devices</p>
+              <p className="text-[11px] text-[#555] mt-0.5 leading-tight">50+ devices</p>
             </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-center">
-              <p className="text-lg font-extrabold text-white leading-none mt-1">Custom</p>
+            <div className="bg-black/5 border border-black/15 rounded-xl px-3 py-3 text-center">
+              <p className="text-lg font-extrabold text-[#0a0a0a] leading-none mt-1">Custom</p>
               <p className="text-[11px] text-[#888] mt-1 leading-tight">100+ devices · we&apos;ll call you</p>
             </div>
           </div>
@@ -117,19 +117,19 @@ export default function BulkPage() {
             <Link href="/" className="inline-block mt-6 text-[#00c853] hover:underline text-sm">← Back to home</Link>
           </div>
         ) : (
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4">
+          <div className="bg-black/5 border border-black/15 rounded-2xl p-6 space-y-4">
             <h2 className="text-lg font-bold mb-2">Tell us about your devices</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name *" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
-              <input value={company} onChange={(e) => setCompany(e.target.value)} placeholder="Company (optional)" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email *" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
-              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (recommended)" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
+              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name *" className="px-4 py-3 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
+              <input value={company} onChange={(e) => setCompany(e.target.value)} placeholder="Company (optional)" className="px-4 py-3 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email *" className="px-4 py-3 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (recommended)" className="px-4 py-3 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
             </div>
-            <input value={count} onChange={(e) => setCount(e.target.value)} placeholder="Approx number of devices (e.g. 25)" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
-            <textarea value={details} onChange={(e) => setDetails(e.target.value)} required rows={5} placeholder="Mix of devices? Brands, models, conditions — anything you can describe. e.g. '20 iPhone 13 Pro 256GB, 10 MacBook Air M2, all flawless.'" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] resize-none" />
+            <input value={count} onChange={(e) => setCount(e.target.value)} placeholder="Approx number of devices (e.g. 25)" className="w-full px-4 py-3 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
+            <textarea value={details} onChange={(e) => setDetails(e.target.value)} required rows={5} placeholder="Mix of devices? Brands, models, conditions — anything you can describe. e.g. '20 iPhone 13 Pro 256GB, 10 MacBook Air M2, all flawless.'" className="w-full px-4 py-3 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] resize-none" />
             {error && <p className="text-sm text-red-400">{error}</p>}
             <button onClick={submit} disabled={submitting} className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-semibold hover:bg-[#00e676] transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">{submitting ? "Sending…" : "Get a custom quote →"}</button>
-            <p className="text-xs text-[#888] text-center">Or email us a list at <a href="mailto:topcashcellular@gmail.com" className="text-white hover:text-[#00c853] transition">topcashcellular@gmail.com</a> for the fastest response.</p>
+            <p className="text-xs text-[#888] text-center">Or email us a list at <a href="mailto:topcashcellular@gmail.com" className="text-[#0a0a0a] hover:text-[#00c853] transition">topcashcellular@gmail.com</a> for the fastest response.</p>
           </div>
         )}
       </div>

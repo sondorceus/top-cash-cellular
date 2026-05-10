@@ -59,7 +59,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
   const device = DEVICES.find((d) => d.slug === slug);
   if (!device) {
     return (
-      <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center">
+      <main className="min-h-screen bg-white text-[#0a0a0a] flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Device not found</h1>
           <Link href="/" className="text-[#00c853] hover:underline">Back to Home</Link>
@@ -71,12 +71,12 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
   const related = DEVICES.filter((d) => d.category === device.category && d.slug !== device.slug).slice(0, 4);
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white">
-      <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
+    <main className="min-h-screen bg-white text-[#0a0a0a]">
+      <nav className="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-black/15">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <div className="flex flex-col leading-none">
-              <span className="text-[13px] font-extrabold tracking-tight text-white">TOP CASH</span>
+              <span className="text-[13px] font-extrabold tracking-tight text-[#0a0a0a]">TOP CASH</span>
               <span className="text-[9px] font-semibold tracking-[0.15em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
@@ -87,7 +87,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
       </nav>
 
       <section className="max-w-lg mx-auto px-4 pt-10 pb-8">
-        <Link href="/" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition">
+        <Link href="/" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-black/5 border border-black/15 hover:bg-black/[0.06] transition">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
           All Devices
         </Link>
@@ -104,21 +104,21 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
         </Link>
 
         <div className="grid grid-cols-3 gap-3 mb-8">
-          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
+          <div className="bg-black/5 border border-black/15 rounded-xl p-3 text-center">
             <p className="text-[#00c853] text-lg font-bold">${device.price}</p>
             <p className="text-[#888] text-[10px]">Up to</p>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
-            <p className="text-white text-lg font-bold">Same Day</p>
+          <div className="bg-black/5 border border-black/15 rounded-xl p-3 text-center">
+            <p className="text-[#0a0a0a] text-lg font-bold">Same Day</p>
             <p className="text-[#888] text-[10px]">Payout</p>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
-            <p className="text-white text-lg font-bold">4.9★</p>
+          <div className="bg-black/5 border border-black/15 rounded-xl p-3 text-center">
+            <p className="text-[#0a0a0a] text-lg font-bold">4.9★</p>
             <p className="text-[#888] text-[10px]">Rating</p>
           </div>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8">
+        <div className="bg-black/5 border border-black/15 rounded-2xl p-5 mb-8">
           <h2 className="text-lg font-bold mb-4">How It Works</h2>
           <div className="space-y-4">
             {[
@@ -131,7 +131,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
                   <span className="text-[#00c853] text-sm font-bold">{s.num}</span>
                 </div>
                 <div>
-                  <p className="text-white text-sm font-semibold">{s.title}</p>
+                  <p className="text-[#0a0a0a] text-sm font-semibold">{s.title}</p>
                   <p className="text-[#888] text-xs">{s.desc}</p>
                 </div>
               </div>
@@ -139,7 +139,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
           </div>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8">
+        <div className="bg-black/5 border border-black/15 rounded-2xl p-5 mb-8">
           <h2 className="text-lg font-bold mb-3">Why Sell to Top Cash Cellular?</h2>
           <ul className="space-y-2 text-sm text-[#ccc]">
             <li className="flex items-start gap-2"><span className="text-[#00c853]">✓</span> We pay more than Apple/Samsung trade-in</li>
@@ -155,8 +155,8 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
             <h2 className="text-lg font-bold mb-3">Also Buying</h2>
             <div className="grid grid-cols-2 gap-2">
               {related.map((d) => (
-                <Link key={d.slug} href={`/sell/${d.slug}`} className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 hover:bg-white/10 transition">
-                  <span className="text-white text-xs font-medium">{d.name}</span>
+                <Link key={d.slug} href={`/sell/${d.slug}`} className="flex items-center justify-between bg-black/5 border border-black/15 rounded-xl px-3 py-2.5 hover:bg-black/[0.06] transition">
+                  <span className="text-[#0a0a0a] text-xs font-medium">{d.name}</span>
                   <span className="text-[#00c853] text-xs font-bold">${d.price}</span>
                 </Link>
               ))}

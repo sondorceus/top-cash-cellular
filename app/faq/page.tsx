@@ -60,11 +60,11 @@ const FAQ = [
 
 export default function FAQPage() {
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white">
-      <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
+    <main className="min-h-screen bg-white text-[#0a0a0a]">
+      <nav className="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-black/15">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="w-9 h-9 rounded-xl bg-black border border-white/15 flex items-center justify-center">
+            <span className="w-9 h-9 rounded-xl bg-black border border-black/20 flex items-center justify-center">
               <span className="w-6 h-6 rounded-lg bg-[#00c853] flex items-center justify-center">
                 <svg viewBox="0 0 24 24" className="w-3.5 h-5" fill="none" stroke="#fff" strokeWidth="2">
                   <rect x="6" y="2" width="12" height="20" rx="2.5" />
@@ -73,11 +73,11 @@ export default function FAQPage() {
               </span>
             </span>
             <div className="flex flex-col leading-none">
-              <span className="text-[14px] font-extrabold tracking-tight text-white">TOP CASH</span>
+              <span className="text-[14px] font-extrabold tracking-tight text-[#0a0a0a]">TOP CASH</span>
               <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="text-xs text-[#888] hover:text-white">← Sell now</Link>
+          <Link href="/" className="text-xs text-[#888] hover:text-[#0a0a0a]">← Sell now</Link>
         </div>
       </nav>
 
@@ -87,9 +87,9 @@ export default function FAQPage() {
 
         <div className="space-y-3">
           {FAQ.map((item, i) => (
-            <details key={i} className="group bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.07] transition open:bg-white/[0.07]">
+            <details key={i} className="group bg-black/5 border border-black/15 rounded-2xl p-5 hover:bg-black/[0.05] transition open:bg-black/[0.05]">
               <summary className="flex items-center justify-between cursor-pointer list-none">
-                <span className="font-semibold text-white pr-4">{item.q}</span>
+                <span className="font-semibold text-[#0a0a0a] pr-4">{item.q}</span>
                 <span className="text-[#00c853] text-xl flex-shrink-0 group-open:rotate-45 transition-transform">+</span>
               </summary>
               <p className="text-[#ccc] text-sm mt-3 leading-relaxed">{item.a}</p>
@@ -98,7 +98,7 @@ export default function FAQPage() {
         </div>
 
         <div className="mt-12 bg-[#00c853]/10 border border-[#00c853]/30 rounded-2xl p-6 text-center">
-          <p className="text-white font-semibold mb-2">Didn&apos;t see your question?</p>
+          <p className="text-[#0a0a0a] font-semibold mb-2">Didn&apos;t see your question?</p>
           <p className="text-[#ccc] text-sm mb-4">Email us — we usually reply within an hour during business hours.</p>
           <Link href="/" className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition">Get a quote →</Link>
         </div>

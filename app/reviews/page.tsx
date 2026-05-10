@@ -60,8 +60,8 @@ export default async function ReviewsPage() {
   const avg = count ? reviews.reduce((s, r) => s + r.rating, 0) / count : 4.9;
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white">
-      <header className="px-4 sm:px-6 py-4 flex items-center justify-between border-b border-white/10 sticky top-0 bg-[#0a0a0a]/95 backdrop-blur z-10">
+    <main className="min-h-screen bg-white text-[#0a0a0a]">
+      <header className="px-4 sm:px-6 py-4 flex items-center justify-between border-b border-black/15 sticky top-0 bg-white/85 backdrop-blur z-10">
         <Link href="/" className="text-xl font-bold tracking-tight">
           Top Cash <span className="text-[#00c853]">Cellular</span>
         </Link>
@@ -79,7 +79,7 @@ export default async function ReviewsPage() {
           <p className="text-[#888] text-lg">Real Austin sellers. Real experiences.</p>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 mb-8 text-center">
+        <div className="bg-black/5 border border-black/15 rounded-3xl p-6 sm:p-8 mb-8 text-center">
           <div className="text-6xl font-bold text-[#00c853]">{avg.toFixed(1)}</div>
           <div className="my-1 flex justify-center"><Stars rating={Math.round(avg)} /></div>
           <div className="text-[#888] text-sm">{count || 127} reviews</div>
@@ -88,17 +88,17 @@ export default async function ReviewsPage() {
         {count === 0 ? null : (
           <ul className="space-y-4">
             {reviews.map((r) => (
-              <li key={r.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6">
+              <li key={r.id} className="bg-black/5 border border-black/15 rounded-2xl p-5 sm:p-6">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div>
                     <div className="font-semibold">{r.name}{r.city ? <span className="text-[#888] font-normal"> · {r.city}</span> : null}</div>
                     <div className="flex items-center gap-2 mt-1">
                       <Stars rating={r.rating} />
-                      <span className="text-[#666] text-xs">{timeAgo(r.createdAt)}</span>
+                      <span className="text-[#777] text-xs">{timeAgo(r.createdAt)}</span>
                     </div>
                   </div>
                   {r.device ? (
-                    <span className="text-xs text-[#888] bg-white/5 border border-white/10 rounded-full px-3 py-1 shrink-0">
+                    <span className="text-xs text-[#888] bg-black/5 border border-black/15 rounded-full px-3 py-1 shrink-0">
                       Sold: {r.device}
                     </span>
                   ) : null}
@@ -119,7 +119,7 @@ export default async function ReviewsPage() {
           </Link>
         </div>
 
-        <div className="text-center mt-12 pt-8 border-t border-white/10">
+        <div className="text-center mt-12 pt-8 border-t border-black/15">
           <Link href="/" className="text-[#00c853] hover:text-[#00e676] font-semibold">
             ← Back to home
           </Link>
