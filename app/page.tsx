@@ -2917,13 +2917,32 @@ export default function Home() {
               Get top dollar<br />for your device.
             </h1>
             <p className="text-[#bbb] text-lg mb-1 font-medium hero-fade-up hero-d-1">
-              Instant quote. Same-day payout available.
+              Instant quote. Same-day payout. Local Austin pickup or free shipping.
             </p>
-            <p className="text-[#bbb] text-lg mb-6 font-medium hero-fade-up hero-d-2">
-              Cash, Cash App, Zelle, or BTC.
+            <p className="text-[#bbb] text-sm mb-6 font-medium hero-fade-up hero-d-2 flex items-center gap-2">
+              <span className="text-[#00c853]">🔒</span>
+              <span><strong className="text-white">Military-grade data wipe in your presence</strong> before we pay you.</span>
             </p>
 
-            <div className="glow-border mb-6 p-[3px] hero-scale-in hero-d-3">
+            {/* DUAL-PATH ENTRY — local vs. shipping */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 hero-scale-in hero-d-3">
+              <button
+                onClick={() => { setStep("category"); pushHistory("category"); }}
+                className="w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] py-4 rounded-2xl text-base font-bold cursor-pointer transition tap-press cta-pulse flex flex-col items-center gap-0.5"
+              >
+                <span className="flex items-center gap-2"><span>📍</span>I&apos;m in Austin: Meet Today</span>
+                <span className="text-[11px] font-medium opacity-80">Local pickup · Cash on the spot</span>
+              </button>
+              <button
+                onClick={() => { setStep("category"); pushHistory("category"); }}
+                className="w-full bg-white/10 hover:bg-white/15 border-2 border-[#00c853]/40 text-white py-4 rounded-2xl text-base font-bold cursor-pointer transition tap-press flex flex-col items-center gap-0.5"
+              >
+                <span className="flex items-center gap-2"><span>📦</span>I&apos;m Shipping: Get a Label</span>
+                <span className="text-[11px] font-medium text-[#bbb]">Free prepaid label · Same-day payout on arrival</span>
+              </button>
+            </div>
+
+            <div className="glow-border mb-6 p-[3px] hero-scale-in hero-d-3 hidden">
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
                 className="w-full bg-[#00c853] text-[#0a0a0a] py-5 rounded-[14px] text-xl font-bold cursor-pointer hover:bg-[#00e676] transition tap-press cta-pulse relative z-10"
@@ -4766,55 +4785,43 @@ export default function Home() {
       {/* TRUST + TESTIMONIALS + FAQ (only on home) */}
       {step === "device" && page === "home" && (
         <>
-          {/* HOW IT WORKS — Visual persona example */}
+          {/* WHY CASH IS BETTER — 3-col comparison */}
           <section className="py-12 bg-[#0d0d0d]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
-              <h2 className="text-xl font-bold text-center mb-2">Get your instant quote</h2>
-              <p className="text-[#bbb] text-sm text-center mb-8">Select your device and condition, and get your offer before you say &ldquo;goodbye, clutter&rdquo;</p>
-
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8">
-                <p className="text-[#bbb] text-xs font-medium mb-4 uppercase tracking-wider">Jenny wants to sell her iPhone</p>
-                <div className="grid grid-cols-3 gap-4 mb-5">
-                  <div className="text-center">
-                    <div className="w-12 h-12 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
-                      <span className="text-xl">📱</span>
-                    </div>
-                    <p className="text-[#bbb] text-[11px] uppercase tracking-wider font-medium">Device</p>
-                    <p className="text-white text-sm font-bold">iPhone 13</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-12 h-12 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
-                      <span className="text-xl">✨</span>
-                    </div>
-                    <p className="text-[#bbb] text-[11px] uppercase tracking-wider font-medium">Condition</p>
-                    <p className="text-white text-sm font-bold">Good</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-12 h-12 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
-                      <span className="text-xl">💰</span>
-                    </div>
-                    <p className="text-[#bbb] text-[11px] uppercase tracking-wider font-medium">Offer</p>
-                    <p className="text-[#00c853] text-sm font-bold">$190.00</p>
-                  </div>
+              <div className="text-center mb-8">
+                <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">The math</p>
+                <h2 className="text-2xl md:text-3xl font-bold leading-tight reveal" data-stagger="1">Why cash beats trade-in</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 reveal" data-stagger="2">
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#888] mb-1">Apple Trade-In</p>
+                  <p className="text-white text-2xl font-bold mb-2">Lowball</p>
+                  <ul className="text-[#bbb] text-sm space-y-1 list-disc list-inside">
+                    <li>Bottom-of-market quotes</li>
+                    <li>Store credit only</li>
+                    <li>No cash option</li>
+                  </ul>
                 </div>
-                <div className="flex items-center justify-between bg-[#00c853]/10 border border-[#00c853]/20 rounded-xl px-4 py-3">
-                  <span className="text-white text-sm font-semibold">Jenny&apos;s payout</span>
-                  <span className="text-[#00c853] text-lg font-bold">$190.00</span>
+                <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 reveal" data-stagger="3">
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#888] mb-1">Carrier Trade-In</p>
+                  <p className="text-white text-2xl font-bold mb-2">36-Month Drip</p>
+                  <ul className="text-[#bbb] text-sm space-y-1 list-disc list-inside">
+                    <li>Looks high — paid over 3 years</li>
+                    <li>Stuck on the same carrier</li>
+                    <li>Lose value if you leave</li>
+                  </ul>
+                </div>
+                <div className="bg-gradient-to-br from-[#00c853]/15 to-transparent border border-[#00c853]/40 rounded-2xl p-5 reveal" data-stagger="4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#00c853] mb-1">Top Cash Cellular</p>
+                  <p className="text-[#00c853] text-2xl font-bold mb-2">Instant Cash</p>
+                  <ul className="text-white text-sm space-y-1 list-disc list-inside">
+                    <li>Competitive, fair pricing</li>
+                    <li><strong>Cash, Zelle, or Venmo</strong> — same day</li>
+                    <li>No strings, no carrier lock-in</li>
+                  </ul>
                 </div>
               </div>
-
-              <div className="flex items-center justify-center gap-3 mb-2">
-                {["Device", "Condition", "Offer"].map((label, i) => (
-                  <div key={label} className="flex items-center gap-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-xs font-bold">{i + 1}</div>
-                      <span className="text-white text-xs font-semibold">{label}</span>
-                    </div>
-                    {i < 2 && <svg className="w-4 h-4 text-[#aaa]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>}
-                  </div>
-                ))}
-              </div>
-              <p className="text-[#aaa] text-xs text-center">3 steps. 30 seconds. Done.</p>
+              <p className="text-[#bbb] text-xs text-center mt-4">Compare anywhere. We&apos;ll match or beat.</p>
             </div>
           </section>
 
