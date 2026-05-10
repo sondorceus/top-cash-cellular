@@ -2237,19 +2237,23 @@ export default function Home() {
     setEmail("");
   };
 
-  const iphoneVariants = selectedSeries ? IPHONE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const ipadVariants = selectedSeries ? IPAD_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const samsungVariants = selectedSeries ? SAMSUNG_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const pixelVariants = selectedSeries ? PIXEL_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const macbookVariants = selectedSeries ? MACBOOK_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const sonyVariants = selectedSeries ? SONY_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
+  // Brand → flat variant lists (the series intermediate step was removed
+  // 2026-05-10 per Skywalker — pick brand, see all models directly so search
+  // works at every level).
+  type FlatVariant = { id: string; label: string; base: number; image?: string; inquiryOnly?: boolean };
+  const iphoneVariants: FlatVariant[] = IPHONE_SERIES.flatMap(s => s.variants as FlatVariant[]);
+  const ipadVariants: FlatVariant[] = IPAD_SERIES.flatMap(s => s.variants as FlatVariant[]);
+  const samsungVariants: FlatVariant[] = SAMSUNG_SERIES.flatMap(s => s.variants as FlatVariant[]);
+  const pixelVariants: FlatVariant[] = PIXEL_SERIES.flatMap(s => s.variants as FlatVariant[]);
+  const macbookVariants: FlatVariant[] = MACBOOK_SERIES.flatMap(s => s.variants as FlatVariant[]);
+  const sonyVariants: FlatVariant[] = SONY_SERIES.flatMap(s => s.variants as FlatVariant[]);
   const alienwareVariants = selectedSeries ? ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const lgPcVariants = selectedSubSeries
     ? LG_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.variants || []
     : [];
-  const lenovoTabVariants = selectedSeries ? LENOVO_TAB_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const surfaceVariants = selectedSeries ? SURFACE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const appleDesktopVariants = selectedSeries ? APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
+  const lenovoTabVariants: FlatVariant[] = LENOVO_TAB_SERIES.flatMap(s => s.variants as FlatVariant[]);
+  const surfaceVariants: FlatVariant[] = SURFACE_SERIES.flatMap(s => s.variants as FlatVariant[]);
+  const appleDesktopVariants: FlatVariant[] = APPLE_DESKTOP_SERIES.flatMap(s => s.variants as FlatVariant[]);
   const asusPcVariants = selectedSubSeries
     ? ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.variants || []
     : selectedSeries
@@ -3497,27 +3501,10 @@ export default function Home() {
 
             {searchBar}
 
-            {/* iPhone: Series grid → Variant list */}
-            {deviceType === "iphone" && !selectedSeries && (
+            {/* iPhone: All variants flat (series intermediate removed) */}
+            {deviceType === "iphone" && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your iPhone</h2>
-                <p className="text-[#bbb] text-sm mb-6">Choose your series</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {IPHONE_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
-                      {(s as { image?: string }).image && <img src={(s as { image?: string }).image} alt={s.label} width={56} height={56} loading="eager" decoding="async" fetchPriority="high" className="w-14 h-14 object-contain mb-1" />}
-                      <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get a quote</p>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* iPhone: Variant list (after series selected) */}
-            {deviceType === "iphone" && selectedSeries && (
-              <>
-                <h2 className="text-2xl font-bold mb-1">{IPHONE_SERIES.find(s => s.id === selectedSeries)?.label} Series</h2>
                 <p className="text-[#bbb] text-sm mb-6">Pick your exact model</p>
                 <div className="space-y-2">
                   {models.map((m) => {
@@ -3538,31 +3525,10 @@ export default function Home() {
               </>
             )}
 
-            {/* Samsung: Series grid → Variant list */}
-            {deviceType === "android" && !selectedSeries && (
+            {/* Samsung Galaxy: All variants flat */}
+            {deviceType === "android" && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Galaxy</h2>
-                <p className="text-[#bbb] text-sm mb-6">Choose your series</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {SAMSUNG_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
-                      {(s as { image?: string }).image ? (
-                        <img src={(s as { image?: string }).image} alt={s.label} width={s.id === "sseries" ? 71 : 64} height={s.id === "sseries" ? 71 : 64} loading="eager" decoding="async" fetchPriority="high" className={`${s.id === "sseries" ? "w-[71px] h-[71px]" : "w-16 h-16"} object-contain mb-1`} />
-                      ) : (
-                        <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg>
-                      )}
-                      <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get a quote</p>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* Samsung: Variant list (after series selected) */}
-            {deviceType === "android" && selectedSeries && (
-              <>
-                <h2 className="text-2xl font-bold mb-1">{SAMSUNG_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
                 <p className="text-[#bbb] text-sm mb-6">Pick your exact model</p>
                 <div className="space-y-2">
                   {models.map((m) => {
@@ -3585,31 +3551,10 @@ export default function Home() {
               </>
             )}
 
-            {/* Pixel: Series grid */}
-            {deviceType === "pixel" && !selectedSeries && (
+            {/* Google Pixel: All variants flat */}
+            {deviceType === "pixel" && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Pixel</h2>
-                <p className="text-[#bbb] text-sm mb-6">Choose your series — we&apos;ll send you a custom offer</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {PIXEL_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
-                      {(s as { image?: string }).image ? (
-                        <img src={(s as { image?: string }).image} alt={s.label} width={64} height={64} loading="eager" decoding="async" fetchPriority="high" className="w-16 h-16 object-contain mb-1" />
-                      ) : (
-                        <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#4285F4" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="0"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#EA4335" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-15"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#FBBC05" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-30"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#34A853" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-45"/><text x="20" y="24" textAnchor="middle" fill="#4285F4" fontSize="11" fontWeight="bold" fontFamily="Arial">G</text></svg>
-                      )}
-                      <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* Pixel: Variant list (after series selected) */}
-            {deviceType === "pixel" && selectedSeries && (
-              <>
-                <h2 className="text-2xl font-bold mb-1">{PIXEL_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
                 <p className="text-[#bbb] text-sm mb-6">Pick your model — we&apos;ll send you a custom offer</p>
                 <div className="space-y-2">
                   {models.map((m) => {
@@ -3632,34 +3577,11 @@ export default function Home() {
               </>
             )}
 
-            {/* MacBook: Series grid (Pro / Air / 12" Classic) */}
-            {deviceType === "macbook" && !selectedSeries && (
-              <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your MacBook</h2>
-                <p className="text-[#bbb] text-sm mb-6">Choose your family</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {MACBOOK_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px]">
-                      {(s as { image?: string }).image ? (
-                        <img src={(s as { image?: string }).image} alt={s.label} width={64} height={48} loading="eager" decoding="async" fetchPriority="high" className="w-16 h-12 object-contain mb-1" style={{ backgroundColor: "transparent" }} />
-                      ) : (
-                        <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg>
-                      )}
-                      <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#bbb] text-[10px]">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">"Get a quote"</p>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* MacBook: Variant list (after series selected) */}
-            {deviceType === "macbook" && selectedSeries && (() => {
-              const ser = MACBOOK_SERIES.find(s => s.id === selectedSeries);
+            {/* MacBook: All variants flat */}
+            {deviceType === "macbook" && (() => {
               return (
                 <>
-                  <h2 className="text-2xl font-bold mb-1">{ser?.label}</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your MacBook</h2>
                   <p className="text-[#bbb] text-sm mb-6">Pick your exact model</p>
                   <div className="space-y-2">
                     {models.map((m) => {
@@ -3688,39 +3610,11 @@ export default function Home() {
               );
             })()}
 
-            {/* iPad: Series grid → Variant list */}
-            {deviceType === "ipad" && !selectedSeries && (
+            {/* iPad: All variants flat */}
+            {deviceType === "ipad" && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your iPad</h2>
-                <p className="text-[#bbb] text-sm mb-6">Choose your model line</p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {IPAD_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
-                      {(s as { image?: string }).image ? (
-                        <img src={(s as { image?: string }).image} alt={s.label} width={56} height={56} loading="eager" decoding="async" fetchPriority="high" className="w-14 h-14 object-contain mb-1" />
-                      ) : (
-                        <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
-                      )}
-                      <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get a quote</p>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* iPad: Variant list (after series selected) */}
-            {deviceType === "ipad" && selectedSeries && (
-              <>
-                {(() => { const series = IPAD_SERIES.find(s => s.id === selectedSeries); return series ? (
-                  <div className="flex items-center gap-4 mb-6">
-                    {(series as { image?: string }).image && <img src={(series as { image?: string }).image!} alt={series.label} className="w-20 h-20 object-contain" />}
-                    <div>
-                      <h2 className="text-2xl font-bold">{series.label}</h2>
-                      <p className="text-[#bbb] text-sm">Pick your exact model</p>
-                    </div>
-                  </div>
-                ) : null; })()}
+                <p className="text-[#bbb] text-sm mb-6">Pick your exact model</p>
                 <div className="space-y-2">
                   {models.map((m) => {
                     const mImg = (m as { image?: string }).image;
@@ -4013,28 +3907,10 @@ export default function Home() {
               </>
             )}
 
-            {/* Lenovo Tab: 5 family boxes (Legion / Idea Tab / Tab P&K / Tab M&Plus / ThinkTab) */}
-            {deviceType === "lenovo_tab" && !selectedSeries && (
+            {/* Lenovo Tab: All variants flat */}
+            {deviceType === "lenovo_tab" && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Lenovo tablet</h2>
-                <p className="text-[#bbb] text-sm mb-6">Choose your line</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {LENOVO_TAB_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
-                      <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg>
-                      <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#bbb] text-[10px]">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* Lenovo Tab: variant list when a series is selected */}
-            {deviceType === "lenovo_tab" && selectedSeries && (
-              <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Lenovo {LENOVO_TAB_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
                 <p className="text-[#bbb] text-sm mb-6">Choose your model</p>
                 <div className="space-y-2">
                   {lenovoTabVariants.map((m) => (
@@ -4050,36 +3926,10 @@ export default function Home() {
               </>
             )}
 
-            {/* Surface: 6 family boxes (Pro / Go / Pro X / Book & Studio / Original / Duo) */}
-            {deviceType === "surface" && !selectedSeries && (
+            {/* Surface: All variants flat */}
+            {deviceType === "surface" && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Surface</h2>
-                <p className="text-[#bbb] text-sm mb-6">Choose your line</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {SURFACE_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
-                      {s.id === "surf_pro" ? (
-                        <img src="/surface-pro-series.webp" alt="Surface Pro" width={64} height={48} loading="eager" decoding="async" fetchPriority="high" className="w-16 h-12 object-contain mb-1" style={{ backgroundColor: "transparent" }} />
-                      ) : s.id === "surf_x" ? (
-                        <img src="/surface-x-series.webp" alt="Surface Pro X" width={64} height={48} loading="eager" decoding="async" fetchPriority="high" className="w-16 h-12 object-contain mb-1" style={{ backgroundColor: "transparent" }} />
-                      ) : s.id === "surf_go" ? (
-                        <img src="/surface-go-series.webp" alt="Surface Go" width={64} height={48} loading="eager" decoding="async" fetchPriority="high" className="w-16 h-12 object-contain mb-1" style={{ backgroundColor: "transparent" }} />
-                      ) : (
-                        <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#00a4ef"/><rect x="11" y="11" width="8" height="8" fill="#f25022"/><rect x="21" y="11" width="8" height="8" fill="#7fba00"/><rect x="11" y="21" width="8" height="8" fill="#00a4ef"/><rect x="21" y="21" width="8" height="8" fill="#ffb900"/></svg>
-                      )}
-                      <p className="font-bold text-sm text-center px-1 leading-tight">{s.label}</p>
-                      <p className="text-[#bbb] text-[10px]">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* Surface: variant list when a series is selected */}
-            {deviceType === "surface" && selectedSeries && (
-              <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Surface {SURFACE_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
                 <p className="text-[#bbb] text-sm mb-6">Choose your model</p>
                 <div className="space-y-2">
                   {surfaceVariants.map((m) => (
@@ -4117,38 +3967,7 @@ export default function Home() {
               </>
             )}
 
-            {/* Apple Desktops: 4 family boxes (iMac / Mac Mini / Mac Studio / Mac Pro) */}
-            {deviceType === "apple_desktop" && !selectedSeries && (
-              <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Mac</h2>
-                <p className="text-[#bbb] text-sm mb-6">Choose your line</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {APPLE_DESKTOP_SERIES.map((s) => {
-                    const imgMap: Record<string, string> = {
-                      ad_imac: "/imac-series.webp",
-                      ad_macmini: "/macmini-series.webp",
-                      ad_macstudio: "/macstudio-series.webp",
-                      ad_macpro: "/macpro-series.webp",
-                    };
-                    const img = imgMap[s.id];
-                    return (
-                      <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
-                        {img ? (
-                          <img src={img} alt={s.label} width={64} height={48} loading="eager" decoding="async" fetchPriority="high" className="w-16 h-12 object-contain mb-1" style={{ backgroundColor: "transparent" }} />
-                        ) : (
-                          <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg>
-                        )}
-                        <p className="font-bold text-sm">{s.label}</p>
-                        <p className="text-[#bbb] text-[10px]">{s.year}</p>
-                        <p className="text-[#00c853] font-bold text-xs mt-0.5">Get a quote</p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "lg_pc" && selectedSeries && !selectedSubSeries) && !(deviceType === "apple_desktop" && !selectedSeries) && !(deviceType === "asus_pc" && !selectedSeries) && !(deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries) && !(deviceType === "dell" && !selectedSeries) && !(deviceType === "dell" && selectedSeries && !selectedSubSeries) && !(deviceType === "lenovo" && !selectedSeries) && !(deviceType === "hp" && !selectedSeries) && !(deviceType === "hp" && (selectedSeries === "hp_elitebook" || selectedSeries === "hp_omen") && !selectedSubSeries) && !(deviceType === "acer" && !selectedSeries) && !(deviceType === "samsung_pc" && !selectedSeries) && (
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "lg_pc" && selectedSeries && !selectedSubSeries) && !(deviceType === "asus_pc" && !selectedSeries) && !(deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries) && !(deviceType === "dell" && !selectedSeries) && !(deviceType === "dell" && selectedSeries && !selectedSubSeries) && !(deviceType === "lenovo" && !selectedSeries) && !(deviceType === "hp" && !selectedSeries) && !(deviceType === "hp" && (selectedSeries === "hp_elitebook" || selectedSeries === "hp_omen") && !selectedSubSeries) && !(deviceType === "acer" && !selectedSeries) && !(deviceType === "samsung_pc" && !selectedSeries) && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSubSeries ? `LG ${LG_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "asus_pc" && selectedSubSeries ? `ASUS — ${ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "asus_pc" && selectedSeries ? `ASUS — ${ASUS_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "dell" && selectedSubSeries ? `Dell — ${DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "lenovo" && selectedSeries ? `Lenovo ${LENOVO_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "hp" && selectedSubSeries ? `HP ${HP_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "hp" && selectedSeries ? `HP ${HP_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "acer" && selectedSeries ? `Acer ${ACER_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "samsung_pc" && selectedSeries ? `Samsung ${SAMSUNG_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
                 <p className="text-[#bbb] text-sm mb-6">Choose your exact device</p>
@@ -4226,33 +4045,11 @@ export default function Home() {
               </>
             )}
 
-            {/* Sony: PlayStation 5 / PlayStation 4 family picker */}
-            {deviceType === "sony" && !selectedSeries && (
+            {/* Other categories (consoles incl. Sony, watches): Flat model list */}
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "android" && deviceType !== "pixel" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && deviceType !== "samsung_tab" && deviceType !== "surface" && deviceType !== "lenovo_tab" && deviceType !== "oneplus_tab" && deviceType !== "google_tab" && category !== "computers" && category !== "desktops" && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your PlayStation</h2>
-                <p className="text-[#bbb] text-sm mb-6">Choose your console family</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {SONY_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
-                      {(s as { image?: string }).image ? (
-                        <img src={(s as { image?: string }).image} alt={s.label} width={56} height={56} loading="eager" decoding="async" fetchPriority="high" className="w-14 h-14 object-contain mb-1" style={{ backgroundColor: "transparent" }} />
-                      ) : (
-                        <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#003087"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">{s.id === "ps5_family" ? "PS5" : "PS4"}</text></svg>
-                      )}
-                      <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#bbb] text-[10px]">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get a quote</p>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* Other categories (consoles, watches): Flat model list */}
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "android" && deviceType !== "pixel" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && deviceType !== "samsung_tab" && deviceType !== "surface" && deviceType !== "lenovo_tab" && deviceType !== "oneplus_tab" && deviceType !== "google_tab" && category !== "computers" && category !== "desktops" && !(deviceType === "sony" && !selectedSeries) && (
-              <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "sony" ? (SONY_SERIES.find(s => s.id === selectedSeries)?.label || "Select your model") : "Select your model"}</h2>
-                <p className="text-[#bbb] text-sm mb-6">{deviceType === "sony" ? "Pick your exact variant" : "Choose your exact device"}</p>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "sony" ? "Select your PlayStation" : "Select your model"}</h2>
+                <p className="text-[#bbb] text-sm mb-6">Pick your exact model</p>
                 <div className="space-y-2">
                   {models.map((m) => {
                     const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
