@@ -14,11 +14,11 @@ export default function ThankYou() {
           <span className="text-4xl">✅</span>
         </div>
         <h1 className="text-3xl font-bold mb-3">Quote received!</h1>
-        <p className="text-[#888] text-lg mb-6">
+        <p className="text-[#bbb] text-lg mb-6">
           We&apos;ll contact you within the hour to arrange pickup and payment.
         </p>
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
-          <p className="text-sm text-[#888]">Your price is locked for 7 days. Same-day payout available.</p>
+          <p className="text-sm text-[#bbb]">Your price is locked for 7 days. Same-day payout available.</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a

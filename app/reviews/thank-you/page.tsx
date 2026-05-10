@@ -14,7 +14,7 @@ export default function ReviewThankYou() {
           <span className="text-4xl">★</span>
         </div>
         <h1 className="text-3xl font-bold mb-3">Thanks for the review!</h1>
-        <p className="text-[#888] text-lg mb-6">
+        <p className="text-[#bbb] text-lg mb-6">
           You just helped the next Austin seller make a confident decision. We appreciate you.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">

@@ -1787,11 +1787,11 @@ function FairPromise() {
     <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5">
       <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-1">Our Promise</h3>
       <p className="text-base font-bold text-white mb-1">Fair Evaluation Promise</p>
-      <p className="text-[#888] text-xs mb-3">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
+      <p className="text-[#bbb] text-xs mb-3">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
       <div className="space-y-3">
-        <div className="flex gap-3"><span className="text-lg">🎯</span><div><p className="text-sm font-semibold text-[#ccc]">Consistent grading</p><p className="text-xs text-[#888]">Every device is evaluated using a standardized process based on the condition you select.</p></div></div>
-        <div className="flex gap-3"><span className="text-lg">🤝</span><div><p className="text-sm font-semibold text-[#ccc]">Clear explanations</p><p className="text-xs text-[#888]">If your device differs from what was described, we&apos;ll explain what we found before adjusting your offer.</p></div></div>
-        <div className="flex gap-3"><span className="text-lg">🔄</span><div><p className="text-sm font-semibold text-[#ccc]">Your choice</p><p className="text-xs text-[#888]">Don&apos;t agree with the updated offer? We&apos;ll return your device — no questions asked.</p></div></div>
+        <div className="flex gap-3"><span className="text-lg">🎯</span><div><p className="text-sm font-semibold text-[#ccc]">Consistent grading</p><p className="text-xs text-[#bbb]">Every device is evaluated using a standardized process based on the condition you select.</p></div></div>
+        <div className="flex gap-3"><span className="text-lg">🤝</span><div><p className="text-sm font-semibold text-[#ccc]">Clear explanations</p><p className="text-xs text-[#bbb]">If your device differs from what was described, we&apos;ll explain what we found before adjusting your offer.</p></div></div>
+        <div className="flex gap-3"><span className="text-lg">🔄</span><div><p className="text-sm font-semibold text-[#ccc]">Your choice</p><p className="text-xs text-[#bbb]">Don&apos;t agree with the updated offer? We&apos;ll return your device — no questions asked.</p></div></div>
       </div>
     </div>
   );
@@ -1799,7 +1799,7 @@ function FairPromise() {
 
 function TrustBadge() {
   return (
-    <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[#888] text-xs">
+    <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[#bbb] text-xs">
       <span>⭐ Thousands of happy sellers</span>
       <span>·</span>
       <span>🔒 7-day price lock</span>
@@ -1887,7 +1887,7 @@ function ReviewsCarousel({ reviews }: { reviews: { name: string; loc: string; te
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00c853] to-[#00a039] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">{r.name[0]}</div>
                 <div className="min-w-0">
                   <div className="text-white text-sm font-semibold leading-tight truncate">{r.name}</div>
-                  <div className="text-[#888] text-xs truncate">{r.loc}</div>
+                  <div className="text-[#bbb] text-xs truncate">{r.loc}</div>
                 </div>
               </div>
             </div>
@@ -2435,14 +2435,14 @@ export default function Home() {
                     <span className="text-xl">📦</span>
                     <div>
                       <p className="text-sm font-semibold text-white">Get a bulk quote</p>
-                      <p className="text-[11px] text-[#888]">10+ devices? Volume pricing.</p>
+                      <p className="text-[11px] text-[#bbb]">10+ devices? Volume pricing.</p>
                     </div>
                   </a>
                   <a href={EMAIL_HREF} className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">✉️</span>
                     <div>
                       <p className="text-sm font-semibold text-white">Talk to bulk team</p>
-                      <p className="text-[11px] text-[#888]">Custom contracts welcome.</p>
+                      <p className="text-[11px] text-[#bbb]">Custom contracts welcome.</p>
                     </div>
                   </a>
                 </div>
@@ -2463,35 +2463,35 @@ export default function Home() {
                     <span className="text-xl">🧭</span>
                     <div>
                       <p className="text-sm font-semibold text-white">How it works</p>
-                      <p className="text-[11px] text-[#888]">From drawer to dollars in 3 steps.</p>
+                      <p className="text-[11px] text-[#bbb]">From drawer to dollars in 3 steps.</p>
                     </div>
                   </a>
                   <a href="/faq" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">❓</span>
                     <div>
                       <p className="text-sm font-semibold text-white">FAQ</p>
-                      <p className="text-[11px] text-[#888]">Common questions, plain answers.</p>
+                      <p className="text-[11px] text-[#bbb]">Common questions, plain answers.</p>
                     </div>
                   </a>
                   <a href="/reviews" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl text-[#ffb400]">★</span>
                     <div>
                       <p className="text-sm font-semibold text-white">Reviews</p>
-                      <p className="text-[11px] text-[#888]">4.9 — read what customers say.</p>
+                      <p className="text-[11px] text-[#bbb]">4.9 — read what customers say.</p>
                     </div>
                   </a>
                   <a href={EMAIL_HREF} className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">✉️</span>
                     <div>
                       <p className="text-sm font-semibold text-white">Email us</p>
-                      <p className="text-[11px] text-[#888]">We reply same business day.</p>
+                      <p className="text-[11px] text-[#bbb]">We reply same business day.</p>
                     </div>
                   </a>
                   <a href="tel:+18775492056" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">📞</span>
                     <div>
                       <p className="text-sm font-semibold text-white">Call us</p>
-                      <p className="text-[11px] text-[#888]">(877) 549-2056</p>
+                      <p className="text-[11px] text-[#bbb]">(877) 549-2056</p>
                     </div>
                   </a>
                 </div>
@@ -2523,9 +2523,9 @@ export default function Home() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for your device — iPhone 15 Pro, Galaxy S24 Ultra, MacBook Pro M4..."
-                className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition"
+                className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition"
               />
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
               {searchQuery.trim().length >= 2 && (() => {
                 const q = searchQuery.toLowerCase().trim();
                 type Hit = { label: string; deviceType: DeviceType; seriesId: string; modelId: string; category: typeof category; base: number };
@@ -2574,7 +2574,7 @@ export default function Home() {
                 return (
                   <div className="absolute z-50 left-0 right-0 mt-2 bg-[#111] border border-white/10 rounded-2xl shadow-2xl overflow-y-auto max-h-[60vh]">
                     {top.length === 0 ? (
-                      <div className="px-4 py-3 text-sm text-[#888]">No matches. Try a different name or pick a category below.</div>
+                      <div className="px-4 py-3 text-sm text-[#bbb]">No matches. Try a different name or pick a category below.</div>
                     ) : top.map((h, i) => (
                       <button
                         key={`${h.deviceType}-${h.seriesId}-${h.modelId}-${i}`}
@@ -2590,7 +2590,7 @@ export default function Home() {
                         className="w-full text-left px-4 py-3 hover:bg-white/5 transition flex items-center justify-between border-b border-white/5 last:border-0 cursor-pointer"
                       >
                         <span className="text-sm font-semibold">{h.label}</span>
-                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        <svg className="w-4 h-4 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </button>
                     ))}
                   </div>
@@ -2671,14 +2671,14 @@ export default function Home() {
                     <span className="text-xl">📦</span>
                     <div>
                       <p className="text-sm font-semibold text-white">Get a bulk quote</p>
-                      <p className="text-[11px] text-[#888]">10+ devices? Volume pricing.</p>
+                      <p className="text-[11px] text-[#bbb]">10+ devices? Volume pricing.</p>
                     </div>
                   </a>
                   <a href={EMAIL_HREF} onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">✉️</span>
                     <div>
                       <p className="text-sm font-semibold text-white">Talk to bulk team</p>
-                      <p className="text-[11px] text-[#888]">Custom contracts welcome.</p>
+                      <p className="text-[11px] text-[#bbb]">Custom contracts welcome.</p>
                     </div>
                   </a>
                 </div>
@@ -2700,35 +2700,35 @@ export default function Home() {
                     <span className="text-xl">🧭</span>
                     <div>
                       <p className="text-sm font-semibold text-white">How it works</p>
-                      <p className="text-[11px] text-[#888]">From drawer to dollars in 3 steps.</p>
+                      <p className="text-[11px] text-[#bbb]">From drawer to dollars in 3 steps.</p>
                     </div>
                   </a>
                   <a href="/faq" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">❓</span>
                     <div>
                       <p className="text-sm font-semibold text-white">FAQ</p>
-                      <p className="text-[11px] text-[#888]">Common questions, plain answers.</p>
+                      <p className="text-[11px] text-[#bbb]">Common questions, plain answers.</p>
                     </div>
                   </a>
                   <a href="/reviews" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl text-[#ffb400]">★</span>
                     <div>
                       <p className="text-sm font-semibold text-white">Reviews</p>
-                      <p className="text-[11px] text-[#888]">4.9 — read what customers say.</p>
+                      <p className="text-[11px] text-[#bbb]">4.9 — read what customers say.</p>
                     </div>
                   </a>
                   <a href={EMAIL_HREF} onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">✉️</span>
                     <div>
                       <p className="text-sm font-semibold text-white">Email us</p>
-                      <p className="text-[11px] text-[#888]">We reply same business day.</p>
+                      <p className="text-[11px] text-[#bbb]">We reply same business day.</p>
                     </div>
                   </a>
                   <a href="tel:+18775492056" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">📞</span>
                     <div>
                       <p className="text-sm font-semibold text-white">Call us</p>
-                      <p className="text-[11px] text-[#888]">(877) 549-2056</p>
+                      <p className="text-[11px] text-[#bbb]">(877) 549-2056</p>
                     </div>
                   </a>
                 </div>
@@ -2753,7 +2753,7 @@ export default function Home() {
               >
                 Email Us
               </a>
-              <p className="text-center text-[10px] text-[#666] mt-3">Austin, TX · Same-day payout</p>
+              <p className="text-center text-[10px] text-[#999] mt-3">Austin, TX · Same-day payout</p>
             </div>
           </div>
         </div>
@@ -2784,7 +2784,7 @@ export default function Home() {
                     placeholder="Phone or email"
                     autoFocus
                     onKeyDown={(e) => { if (e.key === "Enter") handleLookup(); }}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-[#666] focus:outline-none focus:border-[#00c853]/50 focus:bg-white/[0.07] transition"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-[#999] focus:outline-none focus:border-[#00c853]/50 focus:bg-white/[0.07] transition"
                   />
                   {lookupError && <p className="text-[#ff4d4d] text-xs mt-2">{lookupError}</p>}
                   <button
@@ -2802,14 +2802,14 @@ export default function Home() {
                     <p className="text-[#00c853] text-xs font-semibold uppercase tracking-wider mb-1">Welcome back</p>
                     <p className="text-white text-lg font-bold">{lookupResult.name || "Hi there"}</p>
                     {lookupResult.lastQuote && <p className="text-[#aaa] text-sm mt-1">Last quote: <span className="text-white font-semibold">{lookupResult.lastQuote}</span></p>}
-                    <p className="text-[#888] text-xs mt-1">{lookupResult.leadCount} past trade{lookupResult.leadCount === 1 ? "" : "s"}</p>
+                    <p className="text-[#bbb] text-xs mt-1">{lookupResult.leadCount} past trade{lookupResult.leadCount === 1 ? "" : "s"}</p>
                   </div>
                   {lookupResult.leads && lookupResult.leads.length > 0 && (
                     <div className="space-y-1.5 mb-4 max-h-48 overflow-y-auto">
                       {lookupResult.leads.slice(0, 5).map((l, i) => (
                         <div key={i} className="text-xs bg-white/[0.03] border border-white/5 rounded-lg px-3 py-2">
                           <div className="text-white font-medium">{l.device || "Device"} {l.model ? `— ${l.model}` : ""}</div>
-                          <div className="text-[#888]">{l.quote || "—"} · {new Date(l.timestamp).toLocaleDateString()}</div>
+                          <div className="text-[#bbb]">{l.quote || "—"} · {new Date(l.timestamp).toLocaleDateString()}</div>
                         </div>
                       ))}
                     </div>
@@ -2821,7 +2821,7 @@ export default function Home() {
                 <>
                   <div className="bg-white/[0.03] border border-white/10 rounded-xl p-4 mb-4 text-center">
                     <p className="text-white font-semibold mb-1">No past trades found</p>
-                    <p className="text-[#888] text-sm">First time? No worries — start a fresh quote and we&apos;ll save it for next time.</p>
+                    <p className="text-[#bbb] text-sm">First time? No worries — start a fresh quote and we&apos;ll save it for next time.</p>
                   </div>
                   <button onClick={() => { setLookupOpen(false); setStep("category"); pushHistory("category"); }} className="w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold py-3 rounded-xl transition tap-press cursor-pointer">Start fresh quote</button>
                 </>
@@ -2841,7 +2841,7 @@ export default function Home() {
                 {i === breadcrumbs.length - 1 ? (
                   <span className="text-white font-semibold">{c.label}</span>
                 ) : (
-                  <button onClick={c.onClick} className="text-[#888] hover:text-white hover:underline cursor-pointer transition">{c.label}</button>
+                  <button onClick={c.onClick} className="text-[#bbb] hover:text-white hover:underline cursor-pointer transition">{c.label}</button>
                 )}
               </span>
             ))}
@@ -2857,10 +2857,10 @@ export default function Home() {
             <h1 className="text-4xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up" style={{ letterSpacing: "-0.03em" }}>
               Get top dollar<br />for your device.
             </h1>
-            <p className="text-[#888] text-lg mb-1 font-medium hero-fade-up hero-d-1">
+            <p className="text-[#bbb] text-lg mb-1 font-medium hero-fade-up hero-d-1">
               Instant quote. Same-day payout available.
             </p>
-            <p className="text-[#888] text-lg mb-6 font-medium hero-fade-up hero-d-2">
+            <p className="text-[#bbb] text-lg mb-6 font-medium hero-fade-up hero-d-2">
               Cash, Cash App, Zelle, or BTC.
             </p>
 
@@ -2874,7 +2874,7 @@ export default function Home() {
             </div>
 
             <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-              <p className="text-[#888] text-sm">Don&apos;t see your device? <a href={EMAIL_HREF} className="text-[#00c853] font-semibold hover:underline">Email us</a> and we&apos;ll make you an offer!</p>
+              <p className="text-[#bbb] text-sm">Don&apos;t see your device? <a href={EMAIL_HREF} className="text-[#00c853] font-semibold hover:underline">Email us</a> and we&apos;ll make you an offer!</p>
             </div>
 
             <div className="mt-6 flex flex-wrap items-center gap-2 hero-fade-up hero-d-4">
@@ -2886,16 +2886,16 @@ export default function Home() {
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                 Best Price Guarantee
               </span>
-              <span className="inline-flex items-center gap-1.5 bg-white/5 text-[#888] text-xs font-medium px-3 py-1.5 rounded-full border border-white/10">
+              <span className="inline-flex items-center gap-1.5 bg-white/5 text-[#bbb] text-xs font-medium px-3 py-1.5 rounded-full border border-white/10">
                 Same-Day Payout
               </span>
-              <span className="inline-flex items-center gap-1.5 bg-white/5 text-[#888] text-xs font-medium px-3 py-1.5 rounded-full border border-white/10">
+              <span className="inline-flex items-center gap-1.5 bg-white/5 text-[#bbb] text-xs font-medium px-3 py-1.5 rounded-full border border-white/10">
                 Austin Local + Shipping
               </span>
             </div>
 
             <div className="mt-8 -mx-4">
-              <p className="text-[#888] text-xs font-semibold uppercase tracking-wider mb-3 px-4">Popular devices — sell yours today</p>
+              <p className="text-[#bbb] text-xs font-semibold uppercase tracking-wider mb-3 px-4">Popular devices — sell yours today</p>
               <div className="overflow-hidden tcc-marquee-mask">
                 <div className="flex gap-3 w-max animate-[marquee_28s_linear_infinite] hover:[animation-play-state:paused]">
                   {(() => {
@@ -2938,7 +2938,7 @@ export default function Home() {
                 <div className="absolute -top-3 -left-2 w-9 h-9 rounded-full bg-[#00c853] text-[#0a0a0a] text-sm font-bold flex items-center justify-center shadow-lg shadow-[#00c853]/30">{s.n}</div>
                 <div className="text-4xl mb-3">{s.icon}</div>
                 <h3 className="font-bold text-lg mb-1.5">{s.title}</h3>
-                <p className="text-[#888] text-sm leading-relaxed">{s.body}</p>
+                <p className="text-[#bbb] text-sm leading-relaxed">{s.body}</p>
               </div>
             ))}
           </div>
@@ -2964,7 +2964,7 @@ export default function Home() {
               <div key={i} className="bg-gradient-to-br from-white/[0.08] to-white/[0.03] border border-white/10 rounded-2xl p-5 text-center hover:border-[#00c853]/30 hover:from-white/[0.12] transition reveal" data-stagger={Math.min(i + 2, 8)}>
                 <div className="text-3xl mb-2">{t.icon}</div>
                 <div className="text-2xl font-extrabold text-[#00c853] mb-1 leading-none">{t.stat}</div>
-                <div className="text-[#888] text-xs font-medium leading-tight">{t.label}</div>
+                <div className="text-[#bbb] text-xs font-medium leading-tight">{t.label}</div>
               </div>
             ))}
           </div>
@@ -3058,7 +3058,7 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">What are you selling?</h2>
-            <p className="text-[#888] text-sm mb-6">Pick a category, or use the search bar above to jump straight to a device</p>
+            <p className="text-[#bbb] text-sm mb-6">Pick a category, or use the search bar above to jump straight to a device</p>
 
             <div className="grid grid-cols-4 md:grid-cols-5 gap-2 md:gap-3">
               {[
@@ -3099,7 +3099,7 @@ export default function Home() {
                 </button>
               ))}
             </div>
-            <p className="text-[#777] text-[11px] text-center mt-3">Some categories will connect you to our team for a custom quote</p>
+            <p className="text-[#aaa] text-[11px] text-center mt-3">Some categories will connect you to our team for a custom quote</p>
             <div className="text-center mt-2">
               <button
                 onClick={() => {
@@ -3109,7 +3109,7 @@ export default function Home() {
                   setStep("inquiry");
                   pushHistory("inquiry");
                 }}
-                className="text-[#888] text-[11px] underline underline-offset-2 hover:text-[#00c853] cursor-pointer transition"
+                className="text-[#bbb] text-[11px] underline underline-offset-2 hover:text-[#00c853] cursor-pointer transition"
               >
                 Sell other
               </button>
@@ -3134,11 +3134,11 @@ export default function Home() {
             {/* Step 1: Device details */}
             {!condition && !inquirySent && (
               <>
-                <p className="text-[#888] text-sm mb-6">Tell us about your device, then we&apos;ll walk you through the same quick process.</p>
+                <p className="text-[#bbb] text-sm mb-6">Tell us about your device, then we&apos;ll walk you through the same quick process.</p>
 
                 {inquiryCategory === "Smartwatch" && (
                   <div className="mb-4">
-                    <p className="text-xs font-medium text-[#888] mb-2 uppercase tracking-wider">Select Brand</p>
+                    <p className="text-xs font-medium text-[#bbb] mb-2 uppercase tracking-wider">Select Brand</p>
                     <div className="grid grid-cols-3 gap-2">
                       {["Apple Watch", "Google Pixel Watch", "Garmin"].map((brand) => (
                         <button key={brand} onClick={() => setInquiryDesc(prev => prev.includes(brand) ? prev : brand + (prev ? ' - ' + prev : ''))} className={`p-3 rounded-xl text-xs font-semibold text-center cursor-pointer transition ${inquiryDesc.includes(brand) ? 'bg-[#00c853] text-black' : 'bg-white/5 border border-white/10 text-white hover:bg-white/10'}`}>
@@ -3151,8 +3151,8 @@ export default function Home() {
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Device Details</label>
-                    <textarea value={inquiryDesc} onChange={(e) => setInquiryDesc(e.target.value)} required placeholder={`Brand, model, storage size, any issues (e.g. "Samsung Galaxy S24, 256GB, small crack on back")`} rows={3} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition resize-none" />
+                    <label className="block text-xs font-medium text-[#bbb] mb-1.5 uppercase tracking-wider">Device Details</label>
+                    <textarea value={inquiryDesc} onChange={(e) => setInquiryDesc(e.target.value)} required placeholder={`Brand, model, storage size, any issues (e.g. "Samsung Galaxy S24, 256GB, small crack on back")`} rows={3} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition resize-none" />
                   </div>
                   <button
                     onClick={() => { if (inquiryDesc.trim()) { setModel({ id: "custom", label: inquiryDesc.trim(), base: 0 }); } }}
@@ -3168,7 +3168,7 @@ export default function Home() {
             {/* Step 2: Condition selection */}
             {model && !condition && !inquirySent && (
               <>
-                <p className="text-[#888] text-sm mb-6">What condition is your device in?</p>
+                <p className="text-[#bbb] text-sm mb-6">What condition is your device in?</p>
                 <div className="space-y-2">
                   {CONDITIONS.map((c) => (
                     <button
@@ -3179,23 +3179,23 @@ export default function Home() {
                       <span className="text-2xl">{c.icon}</span>
                       <div className="flex-1">
                         <p className="font-semibold text-sm">{c.label}</p>
-                        <p className="text-[#888] text-xs">{c.desc}</p>
+                        <p className="text-[#bbb] text-xs">{c.desc}</p>
                       </div>
                     </button>
                   ))}
                 </div>
-                <button onClick={() => setModel(null)} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-white transition">← Change device details</button>
+                <button onClick={() => setModel(null)} className="mt-4 text-[#bbb] text-sm cursor-pointer hover:text-white transition">← Change device details</button>
               </>
             )}
 
             {/* Step 3: Contact + Submit (replaces checkout for custom devices) */}
             {model && condition && !inquirySent && (
               <>
-                <p className="text-[#888] text-sm mb-2">Almost done! We&apos;ll review your device and send you a quote.</p>
+                <p className="text-[#bbb] text-sm mb-2">Almost done! We&apos;ll review your device and send you a quote.</p>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
-                  <p className="text-xs text-[#888] uppercase tracking-wider font-medium mb-2">Your device</p>
+                  <p className="text-xs text-[#bbb] uppercase tracking-wider font-medium mb-2">Your device</p>
                   <p className="text-white font-semibold text-sm">{model.label}</p>
-                  <p className="text-[#888] text-xs mt-1">Condition: {condition.label} ({condition.desc})</p>
+                  <p className="text-[#bbb] text-xs mt-1">Condition: {condition.label} ({condition.desc})</p>
                 </div>
                 <form onSubmit={async (e) => {
                   e.preventDefault();
@@ -3209,11 +3209,11 @@ export default function Home() {
                   setInquirySent(true);
                 }} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Name</label>
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                    <label className="block text-xs font-medium text-[#bbb] mb-1.5 uppercase tracking-wider">Name</label>
+                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Phone</label>
+                    <label className="block text-xs font-medium text-[#bbb] mb-1.5 uppercase tracking-wider">Phone</label>
                     <input type="tel" value={phone} onChange={(e) => {
                       const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
                       if (!digits) { setPhone(""); return; }
@@ -3222,18 +3222,18 @@ export default function Home() {
                       if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
                       else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                       else setPhone(digits);
-                    }} required placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
-                    <p className="text-[#888] text-[11px] leading-relaxed mt-1.5">By submitting, you agree to receive SMS updates about your trade-in from Top Cash Cellular. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</p>
+                    }} required placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                    <p className="text-[#bbb] text-[11px] leading-relaxed mt-1.5">By submitting, you agree to receive SMS updates about your trade-in from Top Cash Cellular. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</p>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Email</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                    <label className="block text-xs font-medium text-[#bbb] mb-1.5 uppercase tracking-wider">Email</label>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Photos (optional)</label>
+                    <label className="block text-xs font-medium text-[#bbb] mb-1.5 uppercase tracking-wider">Photos (optional)</label>
                     <label className={`flex items-center justify-center gap-2 w-full px-4 py-3.5 bg-white/5 border border-white/10 border-dashed rounded-xl text-sm cursor-pointer hover:bg-white/10 transition ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
-                      <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                      <span className="text-[#888]">{uploading ? "Uploading..." : photoUrls.length ? `${photoUrls.length} photo${photoUrls.length > 1 ? "s" : ""} added` : "Add photos of your device"}</span>
+                      <svg className="w-5 h-5 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                      <span className="text-[#bbb]">{uploading ? "Uploading..." : photoUrls.length ? `${photoUrls.length} photo${photoUrls.length > 1 ? "s" : ""} added` : "Add photos of your device"}</span>
                       <input type="file" accept="image/*" multiple className="hidden" onChange={async (e) => {
                         const files = e.target.files;
                         if (!files?.length) return;
@@ -3267,7 +3267,7 @@ export default function Home() {
                     Get My Custom Quote
                   </button>
                 </form>
-                <button onClick={() => setCondition(null)} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-white transition">← Change condition</button>
+                <button onClick={() => setCondition(null)} className="mt-4 text-[#bbb] text-sm cursor-pointer hover:text-white transition">← Change condition</button>
               </>
             )}
 
@@ -3278,8 +3278,8 @@ export default function Home() {
                   <span className="text-3xl">✅</span>
                 </div>
                 <h3 className="text-xl font-bold mb-2">Submitted!</h3>
-                <p className="text-[#888] text-sm mb-2">We&apos;re reviewing your {inquiryCategory === "Other" ? "item" : inquiryCategory.toLowerCase()} and will send you a personalized quote shortly.</p>
-                <p className="text-[#888] text-xs mb-6">Most quotes are sent within a few hours.</p>
+                <p className="text-[#bbb] text-sm mb-2">We&apos;re reviewing your {inquiryCategory === "Other" ? "item" : inquiryCategory.toLowerCase()} and will send you a personalized quote shortly.</p>
+                <p className="text-[#bbb] text-xs mb-6">Most quotes are sent within a few hours.</p>
                 <button onClick={reset} className="text-[#00c853] font-semibold text-sm cursor-pointer hover:underline">
                   Sell another device
                 </button>
@@ -3301,7 +3301,7 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your brand</h2>
-            <p className="text-[#888] text-sm mb-6">{category === "phones" ? "Phone brands" : category === "tablets" ? "Tablet brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : category === "watches" ? "Smartwatch brands" : category === "drones" ? "Drone brands" : category === "vr" ? "VR headset brands" : "Console brands"}</p>
+            <p className="text-[#bbb] text-sm mb-6">{category === "phones" ? "Phone brands" : category === "tablets" ? "Tablet brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : category === "watches" ? "Smartwatch brands" : category === "drones" ? "Drone brands" : category === "vr" ? "VR headset brands" : "Console brands"}</p>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {category === "phones" && [
                 { id: "iphone" as const, label: "Apple iPhone", sub: "iPhone 11 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg> },
@@ -3311,7 +3311,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press reveal" data-stagger={Math.min(i + 1, 8)}>
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
-                  <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
+                  <p className="text-[#bbb] text-xs text-center mt-0.5">{b.sub}</p>
                 </button>
               ))}
               {category === "tablets" && [
@@ -3329,7 +3329,7 @@ export default function Home() {
                 }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
-                  <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
+                  <p className="text-[#bbb] text-xs text-center mt-0.5">{b.sub}</p>
                 </button>
               ))}
               {category === "computers" && [
@@ -3350,7 +3350,7 @@ export default function Home() {
                 }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
-                  <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
+                  <p className="text-[#bbb] text-xs text-center mt-0.5">{b.sub}</p>
                 </button>
               ))}
               {category === "desktops" && [
@@ -3369,7 +3369,7 @@ export default function Home() {
                 }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
-                  <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
+                  <p className="text-[#bbb] text-xs text-center mt-0.5">{b.sub}</p>
                 </button>
               ))}
               {category === "vr" && [
@@ -3385,7 +3385,7 @@ export default function Home() {
                 }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
-                  <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
+                  <p className="text-[#bbb] text-xs text-center mt-0.5">{b.sub}</p>
                 </button>
               ))}
               {category === "drones" && [
@@ -3396,7 +3396,7 @@ export default function Home() {
                 }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
-                  <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
+                  <p className="text-[#bbb] text-xs text-center mt-0.5">{b.sub}</p>
                 </button>
               ))}
               {category === "watches" && [
@@ -3412,7 +3412,7 @@ export default function Home() {
                 }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
-                  <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
+                  <p className="text-[#bbb] text-xs text-center mt-0.5">{b.sub}</p>
                 </button>
               ))}
               {category === "consoles" && [
@@ -3423,7 +3423,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
-                  <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
+                  <p className="text-[#bbb] text-xs text-center mt-0.5">{b.sub}</p>
                 </button>
               ))}
             </div>
@@ -3444,7 +3444,7 @@ export default function Home() {
             {deviceType === "iphone" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your iPhone</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your series</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your series</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {IPHONE_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
@@ -3461,7 +3461,7 @@ export default function Home() {
             {deviceType === "iphone" && selectedSeries && (
               <>
                 <h2 className="text-2xl font-bold mb-1">{IPHONE_SERIES.find(s => s.id === selectedSeries)?.label} Series</h2>
-                <p className="text-[#888] text-sm mb-6">Pick your exact model</p>
+                <p className="text-[#bbb] text-sm mb-6">Pick your exact model</p>
                 <div className="space-y-2">
                   {models.map((m) => {
                     const seriesImg = IPHONE_SERIES.find(s => s.id === selectedSeries);
@@ -3472,7 +3472,7 @@ export default function Home() {
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get a quote</span>
-                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        <svg className="w-4 h-4 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
                     );
@@ -3485,7 +3485,7 @@ export default function Home() {
             {deviceType === "android" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Galaxy</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your series</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your series</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {SAMSUNG_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
@@ -3506,7 +3506,7 @@ export default function Home() {
             {deviceType === "android" && selectedSeries && (
               <>
                 <h2 className="text-2xl font-bold mb-1">{SAMSUNG_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
-                <p className="text-[#888] text-sm mb-6">Pick your exact model</p>
+                <p className="text-[#bbb] text-sm mb-6">Pick your exact model</p>
                 <div className="space-y-2">
                   {models.map((m) => {
                     const mImage = (m as { image?: string }).image;
@@ -3520,7 +3520,7 @@ export default function Home() {
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get a quote</span>
-                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        <svg className="w-4 h-4 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
                   )})}
@@ -3532,7 +3532,7 @@ export default function Home() {
             {deviceType === "pixel" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Pixel</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your series — we&apos;ll send you a custom offer</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your series — we&apos;ll send you a custom offer</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {PIXEL_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
@@ -3553,7 +3553,7 @@ export default function Home() {
             {deviceType === "pixel" && selectedSeries && (
               <>
                 <h2 className="text-2xl font-bold mb-1">{PIXEL_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
-                <p className="text-[#888] text-sm mb-6">Pick your model — we&apos;ll send you a custom offer</p>
+                <p className="text-[#bbb] text-sm mb-6">Pick your model — we&apos;ll send you a custom offer</p>
                 <div className="space-y-2">
                   {models.map((m) => {
                     const mImage = (m as { image?: string }).image;
@@ -3567,7 +3567,7 @@ export default function Home() {
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get an offer</span>
-                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        <svg className="w-4 h-4 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
                   )})}
@@ -3579,7 +3579,7 @@ export default function Home() {
             {deviceType === "macbook" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your MacBook</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your family</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your family</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {MACBOOK_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px]">
@@ -3589,7 +3589,7 @@ export default function Home() {
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#888] text-[10px]">{s.year}</p>
+                      <p className="text-[#bbb] text-[10px]">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">"Get a quote"</p>
                     </button>
                   ))}
@@ -3603,7 +3603,7 @@ export default function Home() {
               return (
                 <>
                   <h2 className="text-2xl font-bold mb-1">{ser?.label}</h2>
-                  <p className="text-[#888] text-sm mb-6">Pick your exact model</p>
+                  <p className="text-[#bbb] text-sm mb-6">Pick your exact model</p>
                   <div className="space-y-2">
                     {models.map((m) => {
                       const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
@@ -3621,7 +3621,7 @@ export default function Home() {
                           <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                           <div className="flex items-center gap-2">
                             <span className="text-[#00c853] font-bold text-sm">"Get a quote"</span>
-                            <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                            <svg className="w-4 h-4 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                           </div>
                         </button>
                       );
@@ -3635,7 +3635,7 @@ export default function Home() {
             {deviceType === "ipad" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your iPad</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your model line</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your model line</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {IPAD_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
@@ -3660,7 +3660,7 @@ export default function Home() {
                     {(series as { image?: string }).image && <img src={(series as { image?: string }).image!} alt={series.label} className="w-20 h-20 object-contain" />}
                     <div>
                       <h2 className="text-2xl font-bold">{series.label}</h2>
-                      <p className="text-[#888] text-sm">Pick your exact model</p>
+                      <p className="text-[#bbb] text-sm">Pick your exact model</p>
                     </div>
                   </div>
                 ) : null; })()}
@@ -3677,7 +3677,7 @@ export default function Home() {
                         <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                         <div className="flex items-center gap-2">
                           <span className="text-[#00c853] font-bold text-sm">Get a quote</span>
-                          <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                          <svg className="w-4 h-4 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
                       </button>
                     );
@@ -3690,14 +3690,14 @@ export default function Home() {
             {deviceType === "dji" && (
               <>
                 <h2 className="text-2xl font-bold mb-1">Select your drone</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your DJI model</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your DJI model</p>
                 <div className="space-y-2">
                   {DJI_MODELS.map((m) => (
                     <button key={m.id} onClick={() => { setInquiryCategory("Drone"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Quote</span>
-                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        <svg className="w-4 h-4 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
                   ))}
@@ -3711,7 +3711,7 @@ export default function Home() {
             {deviceType === "lg_pc" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your LG laptop</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {LG_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
@@ -3721,7 +3721,7 @@ export default function Home() {
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#a50034"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">LG</text></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#888] text-[10px] text-center px-1 leading-tight">{s.year}</p>
+                      <p className="text-[#bbb] text-[10px] text-center px-1 leading-tight">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
                   ))}
@@ -3737,7 +3737,7 @@ export default function Home() {
               return (
                 <>
                   <h2 className="text-2xl md:text-3xl font-bold mb-1">LG — {ser?.label}</h2>
-                  <p className="text-[#888] text-sm mb-6">Pick your size</p>
+                  <p className="text-[#bbb] text-sm mb-6">Pick your size</p>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {subs.map((s) => (
                       <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[160px]">
@@ -3747,7 +3747,7 @@ export default function Home() {
                           <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#a50034"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">LG</text></svg>
                         )}
                         <p className="font-bold text-sm text-center">{s.label}</p>
-                        <p className="text-[#888] text-[11px] text-center">{s.year}</p>
+                        <p className="text-[#bbb] text-[11px] text-center">{s.year}</p>
                         <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                       </button>
                     ))}
@@ -3760,13 +3760,13 @@ export default function Home() {
             {deviceType === "acer" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Acer laptop</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {ACER_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
                       <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#888] text-[10px] text-center">{s.year}</p>
+                      <p className="text-[#bbb] text-[10px] text-center">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
                   ))}
@@ -3778,13 +3778,13 @@ export default function Home() {
             {deviceType === "samsung_pc" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Samsung Galaxy Book</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your generation</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your generation</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {SAMSUNG_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
                       <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#888] text-[10px] text-center">{s.year}</p>
+                      <p className="text-[#bbb] text-[10px] text-center">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
                   ))}
@@ -3796,7 +3796,7 @@ export default function Home() {
             {deviceType === "hp" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your HP laptop</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {HP_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
@@ -3806,7 +3806,7 @@ export default function Home() {
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#0096d6"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">hp</text></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#888] text-[10px] text-center px-1 leading-tight">{s.year}</p>
+                      <p className="text-[#bbb] text-[10px] text-center px-1 leading-tight">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
                   ))}
@@ -3822,7 +3822,7 @@ export default function Home() {
               return (
                 <>
                   <h2 className="text-2xl md:text-3xl font-bold mb-1">HP — {ser?.label}</h2>
-                  <p className="text-[#888] text-sm mb-6">Pick your sub-line</p>
+                  <p className="text-[#bbb] text-sm mb-6">Pick your sub-line</p>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {subs.map((s) => (
                       <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[160px]">
@@ -3832,7 +3832,7 @@ export default function Home() {
                           <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#0096d6"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">hp</text></svg>
                         )}
                         <p className="font-bold text-sm text-center">{s.label}</p>
-                        <p className="text-[#888] text-[11px] text-center">{s.year}</p>
+                        <p className="text-[#bbb] text-[11px] text-center">{s.year}</p>
                         <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                       </button>
                     ))}
@@ -3845,7 +3845,7 @@ export default function Home() {
             {deviceType === "lenovo" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Lenovo laptop</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {LENOVO_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
@@ -3855,7 +3855,7 @@ export default function Home() {
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#888] text-[10px] text-center px-1 leading-tight">{s.year}</p>
+                      <p className="text-[#bbb] text-[10px] text-center px-1 leading-tight">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
                   ))}
@@ -3867,7 +3867,7 @@ export default function Home() {
             {deviceType === "dell" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Dell laptop</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {DELL_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
@@ -3877,7 +3877,7 @@ export default function Home() {
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#007db8"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">DELL</text></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#888] text-[10px] text-center px-1 leading-tight">{s.year}</p>
+                      <p className="text-[#bbb] text-[10px] text-center px-1 leading-tight">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
                   ))}
@@ -3893,7 +3893,7 @@ export default function Home() {
               return (
                 <>
                   <h2 className="text-2xl md:text-3xl font-bold mb-1">Dell — {ser?.label}</h2>
-                  <p className="text-[#888] text-sm mb-6">Pick your sub-line</p>
+                  <p className="text-[#bbb] text-sm mb-6">Pick your sub-line</p>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {subs.map((s) => (
                       <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
@@ -3903,7 +3903,7 @@ export default function Home() {
                           <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#007db8"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">DELL</text></svg>
                         )}
                         <p className="font-bold text-sm text-center">{s.label}</p>
-                        <p className="text-[#888] text-[10px] text-center">{s.year}</p>
+                        <p className="text-[#bbb] text-[10px] text-center">{s.year}</p>
                         <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                       </button>
                     ))}
@@ -3916,7 +3916,7 @@ export default function Home() {
             {deviceType === "asus_pc" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your ASUS laptop</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {ASUS_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
@@ -3926,7 +3926,7 @@ export default function Home() {
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">ASUS</text></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#888] text-[10px]">{s.year}</p>
+                      <p className="text-[#bbb] text-[10px]">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
                   ))}
@@ -3938,7 +3938,7 @@ export default function Home() {
             {deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">ROG — Republic of Gamers</h2>
-                <p className="text-[#888] text-sm mb-6">Pick your sub-line</p>
+                <p className="text-[#bbb] text-sm mb-6">Pick your sub-line</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {ASUS_ROG_SUB_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[160px]">
@@ -3948,7 +3948,7 @@ export default function Home() {
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">ASUS</text></svg>
                       )}
                       <p className="font-bold text-base">{s.label}</p>
-                      <p className="text-[#888] text-[11px]">{s.year}</p>
+                      <p className="text-[#bbb] text-[11px]">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
                   ))}
@@ -3960,13 +3960,13 @@ export default function Home() {
             {deviceType === "lenovo_tab" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Lenovo tablet</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {LENOVO_TAB_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
                       <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg>
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#888] text-[10px]">{s.year}</p>
+                      <p className="text-[#bbb] text-[10px]">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
                   ))}
@@ -3978,14 +3978,14 @@ export default function Home() {
             {deviceType === "lenovo_tab" && selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Lenovo {LENOVO_TAB_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your model</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your model</p>
                 <div className="space-y-2">
                   {lenovoTabVariants.map((m) => (
                     <button key={m.id} onClick={() => { setInquiryCategory("Tablet"); setInquiryDesc(`Lenovo ${m.label}`); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
-                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        <svg className="w-4 h-4 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
                   ))}
@@ -3997,7 +3997,7 @@ export default function Home() {
             {deviceType === "surface" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Surface</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {SURFACE_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
@@ -4011,7 +4011,7 @@ export default function Home() {
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#00a4ef"/><rect x="11" y="11" width="8" height="8" fill="#f25022"/><rect x="21" y="11" width="8" height="8" fill="#7fba00"/><rect x="11" y="21" width="8" height="8" fill="#00a4ef"/><rect x="21" y="21" width="8" height="8" fill="#ffb900"/></svg>
                       )}
                       <p className="font-bold text-sm text-center px-1 leading-tight">{s.label}</p>
-                      <p className="text-[#888] text-[10px]">{s.year}</p>
+                      <p className="text-[#bbb] text-[10px]">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
                   ))}
@@ -4023,14 +4023,14 @@ export default function Home() {
             {deviceType === "surface" && selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Surface {SURFACE_SERIES.find(s => s.id === selectedSeries)?.label}</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your model</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your model</p>
                 <div className="space-y-2">
                   {surfaceVariants.map((m) => (
                     <button key={m.id} onClick={() => { setInquiryCategory("Tablet"); setInquiryDesc(`Microsoft ${m.label}`); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
-                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        <svg className="w-4 h-4 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
                   ))}
@@ -4042,7 +4042,7 @@ export default function Home() {
             {deviceType === "alienware" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Alienware</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {ALIENWARE_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
@@ -4052,7 +4052,7 @@ export default function Home() {
                         <svg className="w-12 h-9 mb-2 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#888] text-[10px]">{s.year}</p>
+                      <p className="text-[#bbb] text-[10px]">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
                   ))}
@@ -4064,7 +4064,7 @@ export default function Home() {
             {deviceType === "apple_desktop" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Mac</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {APPLE_DESKTOP_SERIES.map((s) => {
                     const imgMap: Record<string, string> = {
@@ -4082,7 +4082,7 @@ export default function Home() {
                           <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg>
                         )}
                         <p className="font-bold text-sm">{s.label}</p>
-                        <p className="text-[#888] text-[10px]">{s.year}</p>
+                        <p className="text-[#bbb] text-[10px]">{s.year}</p>
                         <p className="text-[#00c853] font-bold text-xs mt-0.5">Get a quote</p>
                       </button>
                     );
@@ -4094,7 +4094,7 @@ export default function Home() {
             {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "lg_pc" && selectedSeries && !selectedSubSeries) && !(deviceType === "apple_desktop" && !selectedSeries) && !(deviceType === "asus_pc" && !selectedSeries) && !(deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries) && !(deviceType === "dell" && !selectedSeries) && !(deviceType === "dell" && selectedSeries && !selectedSubSeries) && !(deviceType === "lenovo" && !selectedSeries) && !(deviceType === "hp" && !selectedSeries) && !(deviceType === "hp" && (selectedSeries === "hp_elitebook" || selectedSeries === "hp_omen") && !selectedSubSeries) && !(deviceType === "acer" && !selectedSeries) && !(deviceType === "samsung_pc" && !selectedSeries) && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSubSeries ? `LG ${LG_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "asus_pc" && selectedSubSeries ? `ASUS — ${ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "asus_pc" && selectedSeries ? `ASUS — ${ASUS_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "dell" && selectedSubSeries ? `Dell — ${DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "lenovo" && selectedSeries ? `Lenovo ${LENOVO_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "hp" && selectedSubSeries ? `HP ${HP_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "hp" && selectedSeries ? `HP ${HP_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "acer" && selectedSeries ? `Acer ${ACER_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "samsung_pc" && selectedSeries ? `Samsung ${SAMSUNG_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your exact device</p>
                 {/* Mobile: grid cards */}
                 <div className="grid grid-cols-2 gap-2 md:hidden">
                   {models.map((m) => {
@@ -4134,7 +4134,7 @@ export default function Home() {
                         <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                         <div className="flex items-center gap-2">
                           <span className="text-[#00c853] font-bold text-sm">"Get a quote"</span>
-                          <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                          <svg className="w-4 h-4 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
                       </button>
                     );
@@ -4147,7 +4147,7 @@ export default function Home() {
             {(deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" || deviceType === "samsung_tab" || deviceType === "oneplus_tab" || deviceType === "google_tab") && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your device</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your model</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your model</p>
                 <div className="space-y-2">
                   {(deviceType === "apple_vr" ? APPLE_VR_MODELS : deviceType === "meta_vr" ? META_VR_MODELS : deviceType === "valve_vr" ? VALVE_VR_MODELS : deviceType === "psvr" ? PSVR_MODELS : deviceType === "samsung_tab" ? SAMSUNG_TAB_MODELS : deviceType === "oneplus_tab" ? ONEPLUS_TAB_MODELS : GOOGLE_TAB_MODELS).map((m) => {
                     const mImage = (m as { image?: string }).image;
@@ -4161,7 +4161,7 @@ export default function Home() {
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
-                        <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        <svg className="w-4 h-4 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
                   )})}
@@ -4173,7 +4173,7 @@ export default function Home() {
             {deviceType === "sony" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your PlayStation</h2>
-                <p className="text-[#888] text-sm mb-6">Choose your console family</p>
+                <p className="text-[#bbb] text-sm mb-6">Choose your console family</p>
                 <div className="grid grid-cols-2 gap-3">
                   {SONY_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
@@ -4183,7 +4183,7 @@ export default function Home() {
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#003087"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">{s.id === "ps5_family" ? "PS5" : "PS4"}</text></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#888] text-[10px]">{s.year}</p>
+                      <p className="text-[#bbb] text-[10px]">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get a quote</p>
                     </button>
                   ))}
@@ -4195,7 +4195,7 @@ export default function Home() {
             {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "android" && deviceType !== "pixel" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && deviceType !== "samsung_tab" && deviceType !== "surface" && deviceType !== "lenovo_tab" && deviceType !== "oneplus_tab" && deviceType !== "google_tab" && category !== "computers" && category !== "desktops" && !(deviceType === "sony" && !selectedSeries) && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "sony" ? (SONY_SERIES.find(s => s.id === selectedSeries)?.label || "Select your model") : "Select your model"}</h2>
-                <p className="text-[#888] text-sm mb-6">{deviceType === "sony" ? "Pick your exact variant" : "Choose your exact device"}</p>
+                <p className="text-[#bbb] text-sm mb-6">{deviceType === "sony" ? "Pick your exact variant" : "Choose your exact device"}</p>
                 <div className="space-y-2">
                   {models.map((m) => {
                     const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
@@ -4207,7 +4207,7 @@ export default function Home() {
                         <p className="font-semibold text-[15px]">{m.label}</p>
                         <div className="flex items-center gap-2">
                           <span className="text-[#00c853] font-bold text-sm">"Get a quote"</span>
-                          <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                          <svg className="w-4 h-4 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
                       </button>
                     );
@@ -4230,7 +4230,7 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">Storage capacity?</h2>
-            <p className="text-[#888] text-sm mb-6">{model.label}</p>
+            <p className="text-[#bbb] text-sm mb-6">{model.label}</p>
             <div className="space-y-2">
               {getStoragesForModel(model.id).map((s) => (
                 <button
@@ -4239,7 +4239,7 @@ export default function Home() {
                   className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press"
                 >
                   <p className="font-semibold text-[15px]">{s.label}</p>
-                  <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  <svg className="w-4 h-4 text-[#bbb]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
               ))}
             </div>
@@ -4258,7 +4258,7 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">Select Condition</h2>
-            <p className="text-[#888] text-sm mb-2">{model.label}</p>
+            <p className="text-[#bbb] text-sm mb-2">{model.label}</p>
             <button className="text-[#00c853] text-xs font-medium mb-4 cursor-pointer hover:underline" onClick={() => { const el = document.getElementById('condition-guide'); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }}>How to assess condition</button>
             <div id="condition-guide" style={{ display: 'none' }} className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-xs text-[#aaa] space-y-2">
               <p><strong className="text-white">Brand New:</strong> Sealed in original packaging, never opened</p>
@@ -4281,7 +4281,7 @@ export default function Home() {
                   <span className="text-2xl">{c.icon}</span>
                   <div className="flex-1">
                     <p className="font-semibold text-lg">{c.label}</p>
-                    <p className="text-[#888] text-sm">{c.desc}</p>
+                    <p className="text-[#bbb] text-sm">{c.desc}</p>
                     {(c as { details?: string[] }).details && (
                       <details className="mt-2">
                         <summary className="text-[#00c853] text-xs cursor-pointer hover:underline">ℹ️ What qualifies?</summary>
@@ -4291,7 +4291,7 @@ export default function Home() {
                       </details>
                     )}
                   </div>
-                  <svg className="w-4 h-4 text-[#888] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  <svg className="w-4 h-4 text-[#bbb] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
               ))}
             </div>
@@ -4299,19 +4299,19 @@ export default function Home() {
             <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5">
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-1">Our Promise</h3>
               <p className="text-base font-bold text-white mb-1">The Top Cash Guarantee</p>
-              <p className="text-[#888] text-xs mb-4">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
+              <p className="text-[#bbb] text-xs mb-4">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
               <div className="space-y-3">
                 <div className="flex gap-3">
                   <span className="text-lg">🎯</span>
-                  <div><p className="text-sm font-semibold text-[#ccc]">Transparent Pricing</p><p className="text-xs text-[#888]">What you see is what you get. Your quote is based on the condition you select — no surprise deductions.</p></div>
+                  <div><p className="text-sm font-semibold text-[#ccc]">Transparent Pricing</p><p className="text-xs text-[#bbb]">What you see is what you get. Your quote is based on the condition you select — no surprise deductions.</p></div>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-lg">🤝</span>
-                  <div><p className="text-sm font-semibold text-[#ccc]">Honest Inspections</p><p className="text-xs text-[#888]">If anything differs from your description, we&apos;ll walk you through our findings before adjusting.</p></div>
+                  <div><p className="text-sm font-semibold text-[#ccc]">Honest Inspections</p><p className="text-xs text-[#bbb]">If anything differs from your description, we&apos;ll walk you through our findings before adjusting.</p></div>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-lg">🔄</span>
-                  <div><p className="text-sm font-semibold text-[#ccc]">No Pressure, No Strings</p><p className="text-xs text-[#888]">Not happy with the final offer? We&apos;ll return your device — no questions asked.</p></div>
+                  <div><p className="text-sm font-semibold text-[#ccc]">No Pressure, No Strings</p><p className="text-xs text-[#bbb]">Not happy with the final offer? We&apos;ll return your device — no questions asked.</p></div>
                 </div>
               </div>
             </div>
@@ -4321,19 +4321,19 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-xl font-bold text-[#00c853]">⭐</p>
-                  <p className="text-xs text-[#888] mt-1">Thousands of happy sellers</p>
+                  <p className="text-xs text-[#bbb] mt-1">Thousands of happy sellers</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-xl font-bold text-[#00c853]">⚡</p>
-                  <p className="text-xs text-[#888] mt-1">Get paid the same day</p>
+                  <p className="text-xs text-[#bbb] mt-1">Get paid the same day</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-xl font-bold text-[#00c853]">🔒</p>
-                  <p className="text-xs text-[#888] mt-1">Your price is locked 7 days</p>
+                  <p className="text-xs text-[#bbb] mt-1">Your price is locked 7 days</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-xl font-bold text-[#00c853]">🏠</p>
-                  <p className="text-xs text-[#888] mt-1">We meet locally in Austin</p>
+                  <p className="text-xs text-[#bbb] mt-1">We meet locally in Austin</p>
                 </div>
               </div>
             </div>
@@ -4350,7 +4350,7 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">Carrier status?</h2>
-            <p className="text-[#888] text-sm mb-6">Is your phone unlocked or locked to a carrier?</p>
+            <p className="text-[#bbb] text-sm mb-6">Is your phone unlocked or locked to a carrier?</p>
             <div className="space-y-2">
               {CARRIERS.map((c) => (
                 <button
@@ -4401,7 +4401,7 @@ export default function Home() {
                 return <img src={src} alt={model.label} className={`${sizeClass} object-contain`} />;
               })()}
               <div>
-                <p className="text-[#888] text-sm font-medium">{model.label} · {storage?.label} · {condition.label}</p>
+                <p className="text-[#bbb] text-sm font-medium">{model.label} · {storage?.label} · {condition.label}</p>
                 <p className="text-5xl font-bold text-[#00c853] mt-1">${quote * quantity}</p>
                 {promoApplies && promo && (
                   <p className="text-[10px] mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎉 +{promo.percent}% promo applied</p>
@@ -4411,7 +4411,7 @@ export default function Home() {
                 )}
               </div>
             </div>
-            {quantity > 1 && <p className="text-[#888] text-sm mb-2">${quote} each × {quantity}</p>}
+            {quantity > 1 && <p className="text-[#bbb] text-sm mb-2">${quote} each × {quantity}</p>}
             {quantity === 1 && <div className="mb-3" />}
 
             {/* Accessory bonus — Brand New / Flawless only */}
@@ -4425,7 +4425,7 @@ export default function Home() {
                   <span className={`w-5 h-5 rounded border-2 flex items-center justify-center text-xs font-bold transition ${accessoriesIncluded ? "bg-[#00c853] border-[#00c853] text-[#0a0a0a]" : "border-white/30 text-transparent"}`}>✓</span>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-white">All original accessories included</p>
-                    <p className="text-[11px] text-[#888]">Charger, cable, original box{condition?.id === "brandnew" ? ", manuals" : ""}</p>
+                    <p className="text-[11px] text-[#bbb]">Charger, cable, original box{condition?.id === "brandnew" ? ", manuals" : ""}</p>
                   </div>
                   <span className="text-[#00c853] font-bold text-sm whitespace-nowrap">+$15</span>
                 </button>
@@ -4433,7 +4433,7 @@ export default function Home() {
             )}
 
             <div className="flex items-center justify-center gap-3 mb-4">
-              <span className="text-[#888] text-sm">Quantity:</span>
+              <span className="text-[#bbb] text-sm">Quantity:</span>
               <div className="flex items-center bg-white/5 border border-white/10 rounded-xl overflow-hidden">
                 <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-3 py-2 text-white hover:bg-white/10 transition cursor-pointer text-lg font-bold">−</button>
                 <span className="px-4 py-2 text-white font-semibold text-sm min-w-[2rem] text-center">{quantity}</span>
@@ -4442,17 +4442,17 @@ export default function Home() {
             </div>
 
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 text-left">
-              <p className="text-xs font-semibold text-[#888] uppercase tracking-wider mb-3">How we compare</p>
+              <p className="text-xs font-semibold text-[#bbb] uppercase tracking-wider mb-3">How we compare</p>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-[#00c853]">Top Cash Cellular</span>
                   <span className="text-lg font-bold text-[#00c853]">${quote * quantity}</span>
                 </div>
-                <div className="flex items-center justify-between text-[#888]">
+                <div className="flex items-center justify-between text-[#bbb]">
                   <span className="text-sm">Apple Trade-In</span>
                   <span className="text-sm">${Math.round(quote * 0.62 * quantity)}</span>
                 </div>
-                <div className="flex items-center justify-between text-[#888]">
+                <div className="flex items-center justify-between text-[#bbb]">
                   <span className="text-sm">Carrier Trade-In</span>
                   <span className="text-sm">${Math.round(quote * 0.7 * quantity)}</span>
                 </div>
@@ -4463,16 +4463,16 @@ export default function Home() {
 
             {/* Coupon code */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-left">
-              <p className="text-xs font-semibold text-[#888] uppercase tracking-wider mb-2">Have a coupon code?</p>
+              <p className="text-xs font-semibold text-[#bbb] uppercase tracking-wider mb-2">Have a coupon code?</p>
               {couponLabel ? (
                 <div className="flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00c853]/15 border border-[#00c853]/30 text-[#00c853] text-xs font-bold">🎟️ {couponLabel} · +{couponPercent}% applied</span>
-                  <button onClick={() => { setCouponPercent(0); setCouponLabel(""); setCouponCode(""); }} className="text-[#888] hover:text-white text-xs underline cursor-pointer">Remove</button>
+                  <button onClick={() => { setCouponPercent(0); setCouponLabel(""); setCouponCode(""); }} className="text-[#bbb] hover:text-white text-xs underline cursor-pointer">Remove</button>
                 </div>
               ) : (
                 <>
                   <div className="flex gap-2">
-                    <input type="text" value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} placeholder="ENTER CODE" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#666] focus:outline-none focus:border-[#00c853] transition uppercase tracking-wide" />
+                    <input type="text" value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} placeholder="ENTER CODE" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#999] focus:outline-none focus:border-[#00c853] transition uppercase tracking-wide" />
                     <button onClick={applyCoupon} className="px-4 py-2 bg-[#00c853] text-[#0a0a0a] rounded-xl text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition">Apply</button>
                   </div>
                   {couponError && <p className="text-xs text-red-400 mt-1.5">{couponError}</p>}
@@ -4528,23 +4528,23 @@ export default function Home() {
 
             <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5 text-left">
               <h3 className="text-base font-bold text-white mb-1">The Top Cash Guarantee</h3>
-              <p className="text-[#888] text-xs mb-4">Your device, your terms. Here&apos;s what we stand behind.</p>
+              <p className="text-[#bbb] text-xs mb-4">Your device, your terms. Here&apos;s what we stand behind.</p>
               <div className="space-y-4">
                 <div>
                   <p className="text-sm font-semibold text-[#ccc]">🎯 Transparent Pricing</p>
-                  <p className="text-xs text-[#888] mt-1">What you see is what you get. No surprise deductions, no bait-and-switch. Your quote is based on the condition you select.</p>
+                  <p className="text-xs text-[#bbb] mt-1">What you see is what you get. No surprise deductions, no bait-and-switch. Your quote is based on the condition you select.</p>
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-[#ccc]">🤝 Honest Inspections</p>
-                  <p className="text-xs text-[#888] mt-1">If anything differs from your description, we&apos;ll walk you through our findings before adjusting — no silent changes.</p>
+                  <p className="text-xs text-[#bbb] mt-1">If anything differs from your description, we&apos;ll walk you through our findings before adjusting — no silent changes.</p>
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-[#ccc]">🔄 No Pressure, No Strings</p>
-                  <p className="text-xs text-[#888] mt-1">Changed your mind? Not happy with the final offer? We&apos;ll return your device — no questions asked.</p>
+                  <p className="text-xs text-[#bbb] mt-1">Changed your mind? Not happy with the final offer? We&apos;ll return your device — no questions asked.</p>
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-[#ccc]">⚡ Same-Day Payout</p>
-                  <p className="text-xs text-[#888] mt-1">Austin local? Get paid on the spot. Cash, Cash App, Zelle, or BTC — your call.</p>
+                  <p className="text-xs text-[#bbb] mt-1">Austin local? Get paid on the spot. Cash, Cash App, Zelle, or BTC — your call.</p>
                 </div>
               </div>
             </div>
@@ -4554,31 +4554,31 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-2xl">⭐</p>
-                  <p className="text-xs text-[#888] mt-1">Thousands of happy sellers</p>
+                  <p className="text-xs text-[#bbb] mt-1">Thousands of happy sellers</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-2xl">⚡</p>
-                  <p className="text-xs text-[#888] mt-1">Get paid the same day</p>
+                  <p className="text-xs text-[#bbb] mt-1">Get paid the same day</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-2xl">🔒</p>
-                  <p className="text-xs text-[#888] mt-1">Your price is locked 7 days</p>
+                  <p className="text-xs text-[#bbb] mt-1">Your price is locked 7 days</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-2xl">🏠</p>
-                  <p className="text-xs text-[#888] mt-1">We meet locally in Austin</p>
+                  <p className="text-xs text-[#bbb] mt-1">We meet locally in Austin</p>
                 </div>
               </div>
               <div className="mt-4 text-center">
-                <p className="text-xs text-[#888]">Trusted by Austin sellers</p>
+                <p className="text-xs text-[#bbb]">Trusted by Austin sellers</p>
               </div>
             </div>
 
             {!quoteSaved ? (
               <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4">
-                <p className="text-[#888] text-xs font-medium mb-3">Not ready yet? Save this quote for later.</p>
+                <p className="text-[#bbb] text-xs font-medium mb-3">Not ready yet? Save this quote for later.</p>
                 <div className="flex gap-2">
-                  <input type="email" value={quoteEmail} onChange={(e) => setQuoteEmail(e.target.value)} placeholder="your@email.com" aria-label="Email for quote" className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition" />
+                  <input type="email" value={quoteEmail} onChange={(e) => setQuoteEmail(e.target.value)} placeholder="your@email.com" aria-label="Email for quote" className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] transition" />
                   <button onClick={async () => {
                     if (!quoteEmail) return;
                     try { await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "", phone: "", email: quoteEmail, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote, payout: "TBD" }) }); } catch {}
@@ -4592,7 +4592,7 @@ export default function Home() {
               <p className="mt-5 text-[#00c853] text-sm font-medium">Quote saved! Check your inbox.</p>
             )}
 
-            <button onClick={reset} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-white transition">
+            <button onClick={reset} className="mt-4 text-[#bbb] text-sm cursor-pointer hover:text-white transition">
               Start new quote
             </button>
           </div>
@@ -4612,7 +4612,7 @@ export default function Home() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-semibold text-sm">{model.label}</p>
-                  <p className="text-[#888] text-xs">{storage?.label} · {condition.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
+                  <p className="text-[#bbb] text-xs">{storage?.label} · {condition.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
                 </div>
                 <p className="text-[#00c853] font-bold text-xl">${quote * quantity}</p>
               </div>
@@ -4623,39 +4623,39 @@ export default function Home() {
             {/* SECTION 1: ACCOUNT */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-4">
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-1">Account</h3>
-              <p className="text-[#888] text-sm mb-4">You&apos;re one step away from getting paid.</p>
+              <p className="text-[#bbb] text-sm mb-4">You&apos;re one step away from getting paid.</p>
 
               {/* Guest Checkout */}
-              <p className="text-xs font-semibold text-[#888] uppercase tracking-wider mb-2">Guest Checkout</p>
+              <p className="text-xs font-semibold text-[#bbb] uppercase tracking-wider mb-2">Guest Checkout</p>
               <form onSubmit={(e) => {
                 e.preventDefault();
                 if (!email) return;
                 fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Guest", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-4">
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
                 <button type="submit" className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">Continue As Guest</button>
               </form>
 
-              <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#777] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
+              <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#aaa] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
 
               {/* Customer Login */}
-              <p className="text-xs font-semibold text-[#888] uppercase tracking-wider mb-2">Customer Login</p>
+              <p className="text-xs font-semibold text-[#bbb] uppercase tracking-wider mb-2">Customer Login</p>
               <form onSubmit={(e) => {
                 e.preventDefault();
                 if (!email) return;
                 fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Returning User", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-2">
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
-                <input type="password" placeholder="Password" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                <input type="password" placeholder="Password" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
                 <button type="button" className="text-[#00c853] text-xs cursor-pointer hover:underline">Forgot Your Password?</button>
                 <button type="submit" className="w-full bg-white/10 text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-white/15 transition tap-press">Login</button>
               </form>
 
-              <p className="text-center text-[#777] text-xs my-2">Create An Account</p>
+              <p className="text-center text-[#aaa] text-xs my-2">Create An Account</p>
 
-              <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#777] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
+              <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#aaa] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
 
               {/* Continue with Google */}
               <button
@@ -4674,19 +4674,19 @@ export default function Home() {
             {/* SECTION 2: PAYMENT */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-4">
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Payment</h3>
-              <p className="text-[#888] text-xs">Select your payout method after completing account setup.</p>
+              <p className="text-[#bbb] text-xs">Select your payout method after completing account setup.</p>
             </div>
 
             {/* SECTION 3: SHIPPING */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-4">
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Shipping</h3>
-              <p className="text-[#888] text-xs">Austin local? We meet locally! Or reply for a free prepaid shipping label.</p>
+              <p className="text-[#bbb] text-xs">Austin local? We meet locally! Or reply for a free prepaid shipping label.</p>
             </div>
 
             {/* SECTION 4: OPTIONS & TERMS */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-4">
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Options &amp; Terms</h3>
-              <p className="text-[#888] text-xs">By proceeding, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
+              <p className="text-[#bbb] text-xs">By proceeding, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
             </div>
           </div>
         </section>
@@ -4701,17 +4701,17 @@ export default function Home() {
               Back
             </button>
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
-              <p className="text-xs font-semibold text-[#888] uppercase tracking-wider mb-2">Your Cart</p>
+              <p className="text-xs font-semibold text-[#bbb] uppercase tracking-wider mb-2">Your Cart</p>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-semibold text-sm">{model?.label}</p>
-                  <p className="text-[#888] text-xs">{storage?.label} · {condition?.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
+                  <p className="text-[#bbb] text-xs">{storage?.label} · {condition?.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
                 </div>
                 <p className="text-[#00c853] font-bold text-xl">${quote * quantity}</p>
               </div>
             </div>
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
-            <p className="text-[#888] text-sm mb-6">Select your preferred payout method</p>
+            <p className="text-[#bbb] text-sm mb-6">Select your preferred payout method</p>
             <div className="grid grid-cols-2 gap-3">
               {PAYOUTS.map((p) => (
                 <button
@@ -4742,7 +4742,7 @@ export default function Home() {
                 <p className="font-semibold">{model.label}</p>
                 <p className="text-[#00c853] font-bold text-xl">${quote * quantity}</p>
               </div>
-              <p className="text-[#888] text-sm">{storage?.label} · {condition.label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
+              <p className="text-[#bbb] text-sm">{storage?.label} · {condition.label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
             </div>
 
             {returningHint && returningHint.leadCount > 0 && (
@@ -4756,7 +4756,7 @@ export default function Home() {
             )}
 
             <h2 className="text-xl font-bold mb-1">Almost done</h2>
-            <p className="text-[#888] text-sm mb-6">We&apos;ll contact you to arrange pickup &amp; payment</p>
+            <p className="text-[#bbb] text-sm mb-6">We&apos;ll contact you to arrange pickup &amp; payment</p>
 
             <form onSubmit={async (e) => {
               e.preventDefault();
@@ -4778,22 +4778,22 @@ export default function Home() {
               } catch { alert("Something went wrong. Please try again or call us directly."); }
             }} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Name</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={50} placeholder="Your name" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                <label className="block text-xs font-medium text-[#bbb] mb-1.5 uppercase tracking-wider">Name</label>
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={50} placeholder="Your name" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Phone</label>
+                <label className="block text-xs font-medium text-[#bbb] mb-1.5 uppercase tracking-wider">Phone</label>
                 <input type="tel" value={phone} onChange={(e) => {
                   const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
                   if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
                   else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                   else setPhone(digits);
-                }} required pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
-                <p className="text-[#888] text-[11px] leading-relaxed mt-1.5">By submitting, you agree to receive SMS updates about your trade-in from Top Cash Cellular. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</p>
+                }} required pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                <p className="text-[#bbb] text-[11px] leading-relaxed mt-1.5">By submitting, you agree to receive SMS updates about your trade-in from Top Cash Cellular. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</p>
               </div>
-              {email && <p className="text-[#888] text-xs">Email: {email}</p>}
+              {email && <p className="text-[#bbb] text-xs">Email: {email}</p>}
               <div>
-                <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">
+                <label className="block text-xs font-medium text-[#bbb] mb-1.5 uppercase tracking-wider">
                   IMEI / Serial <span className="normal-case text-[12px]">(optional — speeds up verification, dial *#06#)</span>
                 </label>
                 <div className="flex gap-2">
@@ -4804,7 +4804,7 @@ export default function Home() {
                     onChange={(e) => { setImeiInput(e.target.value); if (imeiState !== "idle") { setImeiState("idle"); setImeiResult(null); } }}
                     placeholder="15-digit IMEI"
                     maxLength={20}
-                    className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition tracking-wider"
+                    className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] transition tracking-wider"
                   />
                   <button
                     type="button"
@@ -4833,13 +4833,13 @@ export default function Home() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">
+                <label className="block text-xs font-medium text-[#bbb] mb-1.5 uppercase tracking-wider">
                   Device Photos <span className="normal-case text-[12px]">(optional — up to 3, speeds up payout)</span>
                 </label>
                 {photoUrls.length < 3 && (
                   <label className={`flex flex-col items-center justify-center w-full h-28 bg-white/5 border-2 border-dashed border-white/15 rounded-xl cursor-pointer hover:bg-white/10 hover:border-[#00c853]/30 transition ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
-                    <svg className="w-8 h-8 text-[#777] mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    <span className="text-[#777] text-xs">
+                    <svg className="w-8 h-8 text-[#aaa] mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    <span className="text-[#aaa] text-xs">
                       {uploading ? "Uploading…" : photoUrls.length === 0 ? "Tap to add front, back & screen-on photos" : `Add another (${photoUrls.length}/3)`}
                     </span>
                     <input type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={async (e) => {
@@ -4875,7 +4875,7 @@ export default function Home() {
                   </div>
                 )}
               </div>
-              <p className="text-[#666] text-[11px] text-center leading-relaxed">By submitting, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
+              <p className="text-[#999] text-[11px] text-center leading-relaxed">By submitting, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
               <button type="submit" className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">
                 Submit &amp; Get Paid
               </button>
@@ -4893,24 +4893,24 @@ export default function Home() {
                 <span className="text-4xl">✅</span>
               </div>
               <h2 className="text-2xl font-bold mb-1">Okay, I sold! Now what?</h2>
-              <p className="text-[#888] text-sm">We&apos;ll contact you within the hour. Here&apos;s your summary:</p>
+              <p className="text-[#bbb] text-sm">We&apos;ll contact you within the hour. Here&apos;s your summary:</p>
             </div>
 
             <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6 text-left">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="font-semibold">{model.label}</p>
-                  <p className="text-[#888] text-xs">{storage?.label} · {condition.label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
+                  <p className="text-[#bbb] text-xs">{storage?.label} · {condition.label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
                 </div>
                 <p className="text-[#00c853] font-bold text-2xl">${quote * quantity}</p>
               </div>
-              <div className="border-t border-white/10 pt-3 text-sm text-[#888]">
+              <div className="border-t border-white/10 pt-3 text-sm text-[#bbb]">
                 <p>{name} · {phone}{email ? ` · ${email}` : ''}</p>
               </div>
             </div>
 
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 text-center">
-              <p className="text-[#888] text-sm">📦 Need to ship? You&apos;ll receive an email with shipping instructions shortly.</p>
+              <p className="text-[#bbb] text-sm">📦 Need to ship? You&apos;ll receive an email with shipping instructions shortly.</p>
             </div>
 
             <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-4 mb-6 text-center">
@@ -4933,30 +4933,30 @@ export default function Home() {
           <section className="py-12 bg-[#0d0d0d]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <h2 className="text-xl font-bold text-center mb-2">Get your instant quote</h2>
-              <p className="text-[#888] text-sm text-center mb-8">Select your device and condition, and get your offer before you say &ldquo;goodbye, clutter&rdquo;</p>
+              <p className="text-[#bbb] text-sm text-center mb-8">Select your device and condition, and get your offer before you say &ldquo;goodbye, clutter&rdquo;</p>
 
               <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8">
-                <p className="text-[#888] text-xs font-medium mb-4 uppercase tracking-wider">Jenny wants to sell her iPhone</p>
+                <p className="text-[#bbb] text-xs font-medium mb-4 uppercase tracking-wider">Jenny wants to sell her iPhone</p>
                 <div className="grid grid-cols-3 gap-4 mb-5">
                   <div className="text-center">
                     <div className="w-12 h-12 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
                       <span className="text-xl">📱</span>
                     </div>
-                    <p className="text-[#888] text-[11px] uppercase tracking-wider font-medium">Device</p>
+                    <p className="text-[#bbb] text-[11px] uppercase tracking-wider font-medium">Device</p>
                     <p className="text-white text-sm font-bold">iPhone 13</p>
                   </div>
                   <div className="text-center">
                     <div className="w-12 h-12 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
                       <span className="text-xl">✨</span>
                     </div>
-                    <p className="text-[#888] text-[11px] uppercase tracking-wider font-medium">Condition</p>
+                    <p className="text-[#bbb] text-[11px] uppercase tracking-wider font-medium">Condition</p>
                     <p className="text-white text-sm font-bold">Good</p>
                   </div>
                   <div className="text-center">
                     <div className="w-12 h-12 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
                       <span className="text-xl">💰</span>
                     </div>
-                    <p className="text-[#888] text-[11px] uppercase tracking-wider font-medium">Offer</p>
+                    <p className="text-[#bbb] text-[11px] uppercase tracking-wider font-medium">Offer</p>
                     <p className="text-[#00c853] text-sm font-bold">$190.00</p>
                   </div>
                 </div>
@@ -4973,11 +4973,11 @@ export default function Home() {
                       <div className="w-7 h-7 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-xs font-bold">{i + 1}</div>
                       <span className="text-white text-xs font-semibold">{label}</span>
                     </div>
-                    {i < 2 && <svg className="w-4 h-4 text-[#777]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>}
+                    {i < 2 && <svg className="w-4 h-4 text-[#aaa]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>}
                   </div>
                 ))}
               </div>
-              <p className="text-[#777] text-xs text-center">3 steps. 30 seconds. Done.</p>
+              <p className="text-[#aaa] text-xs text-center">3 steps. 30 seconds. Done.</p>
             </div>
           </section>
 
@@ -4985,7 +4985,7 @@ export default function Home() {
           <section className="py-12 bg-[#0a0a0a]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <h2 className="text-xl font-bold text-center mb-2">Not in Austin? Ship to us</h2>
-              <p className="text-[#888] text-sm text-center mb-8">Mail your device from anywhere in the US. We pay shipping.</p>
+              <p className="text-[#bbb] text-sm text-center mb-8">Mail your device from anywhere in the US. We pay shipping.</p>
               <div className="grid grid-cols-3 gap-3">
                 {[
                   { num: "1", icon: "📦", title: "Pack", desc: "We send you a free prepaid shipping label" },
@@ -4997,7 +4997,7 @@ export default function Home() {
                       <span className="text-lg">{s.icon}</span>
                     </div>
                     <p className="text-white text-sm font-bold mb-1">{s.title}</p>
-                    <p className="text-[#888] text-[11px] leading-relaxed">{s.desc}</p>
+                    <p className="text-[#bbb] text-[11px] leading-relaxed">{s.desc}</p>
                   </div>
                 ))}
               </div>
@@ -5007,22 +5007,22 @@ export default function Home() {
           {/* BOLD STATS COUNTER */}
           <section className="py-14 bg-[#111]" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
-              <p className="text-[#888] text-xs font-semibold uppercase tracking-wider text-center mb-8">Top Cash Cellular by the numbers</p>
+              <p className="text-[#bbb] text-xs font-semibold uppercase tracking-wider text-center mb-8">Top Cash Cellular by the numbers</p>
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
                   <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">{animatedStats.devices}+</p>
                   <p className="text-white text-xs font-semibold mt-1">Devices Bought</p>
-                  <p className="text-[#888] text-[10px] mt-0.5">and counting</p>
+                  <p className="text-[#bbb] text-[10px] mt-0.5">and counting</p>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
                   <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">${animatedStats.payout}K+</p>
                   <p className="text-white text-xs font-semibold mt-1">Paid Out</p>
-                  <p className="text-[#888] text-[10px] mt-0.5">to Austin sellers</p>
+                  <p className="text-[#bbb] text-[10px] mt-0.5">to Austin sellers</p>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
                   <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">&lt;{animatedStats.time}h</p>
                   <p className="text-white text-xs font-semibold mt-1">Avg Payout</p>
-                  <p className="text-[#888] text-[10px] mt-0.5">from quote to cash</p>
+                  <p className="text-[#bbb] text-[10px] mt-0.5">from quote to cash</p>
                 </div>
               </div>
             </div>
@@ -5047,7 +5047,7 @@ export default function Home() {
                 ].map((r, i) => (
                   <div key={i} className="flex-shrink-0 w-[260px] bg-white/5 rounded-2xl p-4 border border-white/10">
                     <p className="text-sm text-white/85 font-medium mb-2">&ldquo;{r.text}&rdquo;</p>
-                    <p className="text-xs text-[#888]">— {r.name}</p>
+                    <p className="text-xs text-[#bbb]">— {r.name}</p>
                   </div>
                 ))}
               </div>
@@ -5058,7 +5058,7 @@ export default function Home() {
           <section className="py-12 bg-[#0d0d0d]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto">
               <h2 className="text-xl font-bold text-center mb-2 px-4">When do I get paid?</h2>
-              <p className="text-[#888] text-sm text-center mb-8 px-4">Transparent timelines. No surprises.</p>
+              <p className="text-[#bbb] text-sm text-center mb-8 px-4">Transparent timelines. No surprises.</p>
               <div className="overflow-hidden tcc-marquee-mask">
                 <div className="flex gap-3 w-max animate-[marquee_32s_linear_infinite] hover:[animation-play-state:paused]">
                   {[...Array(2)].flatMap((_, dup) => [
@@ -5075,7 +5075,7 @@ export default function Home() {
                           <p className="text-white text-sm font-bold">{p.method}</p>
                           <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${p.highlight ? "bg-[#00c853]/20 text-[#00c853]" : "bg-white/10 text-[#aaa]"}`}>{p.timeline}</span>
                         </div>
-                        <p className="text-[#888] text-xs leading-snug">{p.desc}</p>
+                        <p className="text-[#bbb] text-xs leading-snug">{p.desc}</p>
                       </div>
                     </div>
                   )))}
@@ -5090,12 +5090,12 @@ export default function Home() {
               <div className="bg-gradient-to-br from-[#00c853]/10 to-transparent border border-[#00c853]/20 rounded-3xl p-8">
                 <p className="text-4xl mb-3">💸</p>
                 <h2 className="text-3xl font-bold mb-2">Still sitting on old tech?</h2>
-                <p className="text-[#888] text-base mb-2">That phone in your drawer is losing value every day.</p>
+                <p className="text-[#bbb] text-base mb-2">That phone in your drawer is losing value every day.</p>
                 <p className="text-white/70 text-sm mb-6">Get your instant quote — it takes 30 seconds.</p>
                 <button onClick={() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; setStep("category"); pushHistory("category"); requestAnimationFrame(() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }); }} className="bg-[#00c853] text-[#0a0a0a] px-10 py-4 rounded-2xl text-lg font-bold cursor-pointer hover:bg-[#00e676] transition tap-press shadow-lg shadow-[#00c853]/20">
                   Get Your Quote Now
                 </button>
-                <p className="text-[#777] text-xs mt-4">No account required · Free instant quote · No obligation</p>
+                <p className="text-[#aaa] text-xs mt-4">No account required · Free instant quote · No obligation</p>
               </div>
             </div>
           </section>
@@ -5106,7 +5106,7 @@ export default function Home() {
               <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
                 <p className="text-xl mb-2">📬</p>
                 <h3 className="text-lg font-bold mb-1">Get price alerts &amp; deals</h3>
-                <p className="text-[#888] text-sm mb-4">We&apos;ll let you know when buyback prices go up or we run a promo. No spam — just money.</p>
+                <p className="text-[#bbb] text-sm mb-4">We&apos;ll let you know when buyback prices go up or we run a promo. No spam — just money.</p>
                 {newsletterSubmitted ? (
                   <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-xl p-4">
                     <p className="text-[#00c853] font-semibold text-sm">You&apos;re in! We&apos;ll keep you posted.</p>
@@ -5120,13 +5120,13 @@ export default function Home() {
                     } catch {}
                     setNewsletterSubmitted(true);
                   }} className="flex gap-2">
-                    <input type="email" value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} placeholder="your@email.com" required aria-label="Email for newsletter" className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition" />
+                    <input type="email" value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} placeholder="your@email.com" required aria-label="Email for newsletter" className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] transition" />
                     <button type="submit" className="bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition tap-press whitespace-nowrap">
                       Sign Up
                     </button>
                   </form>
                 )}
-                <p className="text-[#777] text-[11px] mt-3">Unsubscribe anytime. We respect your inbox.</p>
+                <p className="text-[#aaa] text-[11px] mt-3">Unsubscribe anytime. We respect your inbox.</p>
               </div>
             </div>
           </section>
@@ -5140,11 +5140,11 @@ export default function Home() {
                   <div key={i} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
                     <button onClick={() => setExpandedFaq(expandedFaq === i ? null : i)} className="w-full flex items-center justify-between p-4 cursor-pointer text-left">
                       <p className="font-semibold text-sm pr-4">{faq.q}</p>
-                      <svg className={`w-4 h-4 text-[#888] shrink-0 transition-transform ${expandedFaq === i ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                      <svg className={`w-4 h-4 text-[#bbb] shrink-0 transition-transform ${expandedFaq === i ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                     </button>
                     {expandedFaq === i && (
                       <div className="px-4 pb-4 animate-[fadeIn_0.2s_ease-out]">
-                        <p className="text-[#888] text-sm">{faq.a}</p>
+                        <p className="text-[#bbb] text-sm">{faq.a}</p>
                       </div>
                     )}
                   </div>
@@ -5159,7 +5159,7 @@ export default function Home() {
               <div className="bg-[#00c853]/5 border border-[#00c853]/15 rounded-2xl p-6 text-center">
                 <p className="text-2xl mb-2">♻️</p>
                 <h3 className="text-lg font-bold mb-1">Good for your wallet. Better for the planet.</h3>
-                <p className="text-[#888] text-sm leading-relaxed">Every device we buy gets a second life — refurbished and reused, not dumped in a landfill. Selling your old tech with Top Cash Cellular keeps electronics out of waste streams and puts cash in your pocket.</p>
+                <p className="text-[#bbb] text-sm leading-relaxed">Every device we buy gets a second life — refurbished and reused, not dumped in a landfill. Selling your old tech with Top Cash Cellular keeps electronics out of waste streams and puts cash in your pocket.</p>
               </div>
             </div>
           </section>
@@ -5195,7 +5195,7 @@ export default function Home() {
                 <div className="text-center mb-4">
                   <p className="text-2xl mb-2">🏢</p>
                   <h3 className="text-lg font-bold">Selling in bulk?</h3>
-                  <p className="text-[#888] text-sm">Upgrading your office, school, or fleet? We buy devices in bulk with custom pricing.</p>
+                  <p className="text-[#bbb] text-sm">Upgrading your office, school, or fleet? We buy devices in bulk with custom pricing.</p>
                 </div>
                 <button
                   onClick={() => { setInquiryCategory("Bulk / Business"); setInquirySent(false); setInquiryDesc(""); setModel(null); setCondition(null); setStep("inquiry"); pushHistory("inquiry"); }}
@@ -5203,7 +5203,7 @@ export default function Home() {
                 >
                   Get a Bulk Quote
                 </button>
-                <p className="text-[#777] text-[11px] text-center mt-3">10+ devices? We&apos;ll make you a custom offer.</p>
+                <p className="text-[#aaa] text-[11px] text-center mt-3">10+ devices? We&apos;ll make you a custom offer.</p>
               </div>
             </div>
           </section>
@@ -5224,25 +5224,25 @@ export default function Home() {
 
               <div className="bg-gradient-to-br from-[#00c853]/10 to-transparent border border-[#00c853]/20 rounded-2xl p-6 mb-8">
                 <p className="text-white text-lg font-medium leading-relaxed mb-3">We started Top Cash Cellular with a simple idea: selling your phone shouldn&apos;t be a hassle.</p>
-                <p className="text-[#888] text-sm leading-relaxed">No lowball carrier trade-ins. No mailing your device and waiting weeks for a check. No haggling with strangers on marketplace apps. Just a fair price, paid fast, from a team you can trust.</p>
+                <p className="text-[#bbb] text-sm leading-relaxed">No lowball carrier trade-ins. No mailing your device and waiting weeks for a check. No haggling with strangers on marketplace apps. Just a fair price, paid fast, from a team you can trust.</p>
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-8">
                 <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
                   <p className="text-3xl font-bold text-[#00c853]">500+</p>
-                  <p className="text-[#888] text-xs mt-1">Devices Purchased</p>
+                  <p className="text-[#bbb] text-xs mt-1">Devices Purchased</p>
                 </div>
                 <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
                   <p className="text-3xl font-bold text-[#00c853]">4.9★</p>
-                  <p className="text-[#888] text-xs mt-1">Customer Rating</p>
+                  <p className="text-[#bbb] text-xs mt-1">Customer Rating</p>
                 </div>
                 <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
                   <p className="text-3xl font-bold text-[#00c853]">Same Day</p>
-                  <p className="text-[#888] text-xs mt-1">Payment</p>
+                  <p className="text-[#bbb] text-xs mt-1">Payment</p>
                 </div>
                 <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
                   <p className="text-3xl font-bold text-[#00c853]">38%</p>
-                  <p className="text-[#888] text-xs mt-1">More Than Trade-In</p>
+                  <p className="text-[#bbb] text-xs mt-1">More Than Trade-In</p>
                 </div>
               </div>
 
@@ -5260,7 +5260,7 @@ export default function Home() {
                     <span className="text-2xl shrink-0">{item.icon}</span>
                     <div>
                       <p className="font-semibold text-sm mb-0.5">{item.title}</p>
-                      <p className="text-[#888] text-sm leading-relaxed">{item.desc}</p>
+                      <p className="text-[#bbb] text-sm leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -5277,7 +5277,7 @@ export default function Home() {
                     <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-sm font-bold shrink-0">{step.num}</div>
                     <div>
                       <p className="font-semibold text-sm mb-0.5">{step.title}</p>
-                      <p className="text-[#888] text-sm leading-relaxed">{step.desc}</p>
+                      <p className="text-[#bbb] text-sm leading-relaxed">{step.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -5285,14 +5285,14 @@ export default function Home() {
 
               <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-6 text-center">
                 <p className="text-lg font-bold mb-2">Ready to sell?</p>
-                <p className="text-[#888] text-sm mb-4">Get your instant quote in 30 seconds.</p>
+                <p className="text-[#bbb] text-sm mb-4">Get your instant quote in 30 seconds.</p>
                 <button onClick={() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; setPage("home"); setStep("category"); pushHistory("category"); requestAnimationFrame(() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }); }} className="bg-[#00c853] text-[#0a0a0a] px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">
                   Get My Quote
                 </button>
               </div>
 
               <div className="mt-8 text-center">
-                <p className="text-[#888] text-sm mb-1">Questions? Email us anytime.</p>
+                <p className="text-[#bbb] text-sm mb-1">Questions? Email us anytime.</p>
                 <a href={EMAIL_HREF} className="text-[#00c853] font-bold text-lg break-all">{EMAIL}</a>
               </div>
             </div>}
@@ -5300,7 +5300,7 @@ export default function Home() {
             {page === "privacy" && (
               <div className="animate-[fadeIn_0.3s_ease-out]">
                 <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
-                <div className="text-[#888] text-sm space-y-4 leading-relaxed">
+                <div className="text-[#bbb] text-sm space-y-4 leading-relaxed">
                   <p>Top Cash Cellular respects your privacy. We collect only the information needed to process your device sale: name, phone number, email, device details, and payout preference.</p>
                   <p>We do not sell, share, or distribute your personal information to third parties. Your data is used solely to complete your transaction and communicate with you about your sale.</p>
                   <p>Device data (photos, files) is your responsibility to remove before selling. We recommend a factory reset before handoff. We are not responsible for any data left on sold devices.</p>
@@ -5312,7 +5312,7 @@ export default function Home() {
             {page === "terms" && (
               <div className="animate-[fadeIn_0.3s_ease-out]">
                 <h1 className="text-3xl font-bold mb-4">Terms of Service</h1>
-                <div className="text-[#888] text-sm space-y-4 leading-relaxed">
+                <div className="text-[#bbb] text-sm space-y-4 leading-relaxed">
                   <p>By using Top Cash Cellular, you agree to these terms. Quotes provided on our site are estimates based on the condition and model you select. Final pricing is confirmed during in-person inspection.</p>
                   <p>All devices sold to us must be legally owned by the seller. Stolen devices will be reported to law enforcement. Sellers must provide valid identification at the time of sale.</p>
                   <p>Payouts are processed via your selected method (Cash, Cash App, Zelle, BTC) at the time of device inspection and acceptance. We reserve the right to adjust offers if the device condition differs from the online assessment.</p>
@@ -5376,18 +5376,18 @@ export default function Home() {
                   <div className="space-y-2">
                     <button onClick={() => setChatMode("chat")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left tap-press">
                       <span className="text-xl">💬</span>
-                      <div><p className="font-semibold text-sm">Live Chat</p><p className="text-[#888] text-xs">Send us a message</p></div>
+                      <div><p className="font-semibold text-sm">Live Chat</p><p className="text-[#bbb] text-xs">Send us a message</p></div>
                     </button>
                     <button onClick={() => setChatMode("call")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left tap-press">
                       <span className="text-xl">📞</span>
-                      <div><p className="font-semibold text-sm">Talk to a Human</p><p className="text-[#888] text-xs">Call or get a callback</p></div>
+                      <div><p className="font-semibold text-sm">Talk to a Human</p><p className="text-[#bbb] text-xs">Call or get a callback</p></div>
                     </button>
                   </div>
                 </>
               )}
               {chatMode === "chat" && (
                 <>
-                  <button onClick={() => setChatMode("choose")} className="text-[#888] text-xs mb-2 cursor-pointer hover:text-white">← Back</button>
+                  <button onClick={() => setChatMode("choose")} className="text-[#bbb] text-xs mb-2 cursor-pointer hover:text-white">← Back</button>
                   <div className="h-[200px] overflow-y-auto space-y-2 mb-2 pr-1">
                     {chatMessages.map((m, i) => (
                       <div key={i} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
@@ -5397,16 +5397,16 @@ export default function Home() {
                     {chatLoading && <div className="flex justify-start"><div className="bg-white/10 text-white/60 px-3 py-2 rounded-xl text-xs">Typing...</div></div>}
                   </div>
                   <div className="flex gap-2">
-                    <input value={chatMsg} onChange={(e) => setChatMsg(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendChat()} placeholder="Ask me anything..." aria-label="Chat message" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
+                    <input value={chatMsg} onChange={(e) => setChatMsg(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendChat()} placeholder="Ask me anything..." aria-label="Chat message" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853]" />
                     <button onClick={sendChat} disabled={chatLoading} aria-label="Send message" className="bg-[#00c853] text-[#0a0a0a] px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer hover:bg-[#00e676] transition disabled:opacity-50">Send</button>
                   </div>
                 </>
               )}
               {chatMode === "call" && (
                 <div className="text-center py-2">
-                  <button onClick={() => setChatMode("choose")} className="text-[#888] text-xs mb-3 cursor-pointer hover:text-white block mx-auto">← Back</button>
+                  <button onClick={() => setChatMode("choose")} className="text-[#bbb] text-xs mb-3 cursor-pointer hover:text-white block mx-auto">← Back</button>
                   <a href={EMAIL_HREF} className="block w-full bg-[#00c853] text-[#0a0a0a] py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2">📧 Email Us</a>
-                  <p className="text-[#888] text-xs">Mon-Sat 8AM-8PM</p>
+                  <p className="text-[#bbb] text-xs">Mon-Sat 8AM-8PM</p>
                 </div>
               )}
             </div>
@@ -5432,8 +5432,8 @@ export default function Home() {
             <div className="p-4 max-h-[300px] overflow-y-auto">
               {cartItems.length === 0 ? (
                 <div className="text-center py-6">
-                  <p className="text-[#888] text-sm">Your cart is empty</p>
-                  <p className="text-[#777] text-xs mt-2">Get a quote and add a device!</p>
+                  <p className="text-[#bbb] text-sm">Your cart is empty</p>
+                  <p className="text-[#aaa] text-xs mt-2">Get a quote and add a device!</p>
                 </div>
               ) : (
                 <>
@@ -5442,9 +5442,9 @@ export default function Home() {
                       <div key={i} className="bg-white/5 rounded-xl p-3 border border-white/10">
                         <div className="flex items-center justify-between mb-1">
                           <p className="font-semibold text-sm text-white">{item.model}</p>
-                          <button onClick={() => setCartItems(prev => prev.filter((_, idx) => idx !== i))} className="text-[#888] hover:text-red-400 text-xs cursor-pointer">Remove</button>
+                          <button onClick={() => setCartItems(prev => prev.filter((_, idx) => idx !== i))} className="text-[#bbb] hover:text-red-400 text-xs cursor-pointer">Remove</button>
                         </div>
-                        <p className="text-[#888] text-xs">{item.storage} · {item.condition}</p>
+                        <p className="text-[#bbb] text-xs">{item.storage} · {item.condition}</p>
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center gap-2">
                             <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it))} className="w-6 h-6 rounded bg-white/10 text-white text-xs flex items-center justify-center cursor-pointer hover:bg-white/20">−</button>
@@ -5457,7 +5457,7 @@ export default function Home() {
                     ))}
                   </div>
                   <div className="border-t border-white/10 mt-3 pt-3 flex items-center justify-between">
-                    <p className="text-[#888] text-sm">Total</p>
+                    <p className="text-[#bbb] text-sm">Total</p>
                     <p className="text-[#00c853] font-bold text-lg">${cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0)}</p>
                   </div>
                   <button

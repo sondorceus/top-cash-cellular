@@ -60,28 +60,28 @@ export default function BulkPage() {
               <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="text-xs text-[#888] hover:text-white">← Single device?</Link>
+          <Link href="/" className="text-xs text-[#bbb] hover:text-white">← Single device?</Link>
         </div>
       </nav>
 
       <div className="max-w-2xl mx-auto px-4 pt-10 pb-16">
         <h1 className="text-4xl font-bold mb-3">Bulk Trade-In</h1>
-        <p className="text-[#888] mb-8">5+ devices? Get a custom quote, free pickup in Austin, and 24-hour payment.</p>
+        <p className="text-[#bbb] mb-8">5+ devices? Get a custom quote, free pickup in Austin, and 24-hour payment.</p>
 
         <div className="grid grid-cols-3 gap-2 mb-8">
           <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
             <div className="text-2xl mb-1">📦</div>
-            <p className="text-[10px] font-bold text-[#888] uppercase">Free pickup</p>
+            <p className="text-[10px] font-bold text-[#bbb] uppercase">Free pickup</p>
             <p className="text-xs text-white mt-1">Austin metro area</p>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
             <div className="text-2xl mb-1">⚡</div>
-            <p className="text-[10px] font-bold text-[#888] uppercase">24-hr payout</p>
+            <p className="text-[10px] font-bold text-[#bbb] uppercase">24-hr payout</p>
             <p className="text-xs text-white mt-1">After verification</p>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
             <div className="text-2xl mb-1">🔒</div>
-            <p className="text-[10px] font-bold text-[#888] uppercase">Data wipe</p>
+            <p className="text-[10px] font-bold text-[#bbb] uppercase">Data wipe</p>
             <p className="text-xs text-white mt-1">NIST 800-88</p>
           </div>
         </div>
@@ -95,7 +95,7 @@ export default function BulkPage() {
           <div className="grid grid-cols-3 gap-2">
             <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-center">
               <p className="text-2xl font-extrabold text-white">+5%</p>
-              <p className="text-[11px] text-[#888] mt-0.5 leading-tight">10+ devices</p>
+              <p className="text-[11px] text-[#bbb] mt-0.5 leading-tight">10+ devices</p>
             </div>
             <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl px-3 py-3 text-center">
               <p className="text-2xl font-extrabold text-[#00c853]">+10%</p>
@@ -103,10 +103,10 @@ export default function BulkPage() {
             </div>
             <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-center">
               <p className="text-lg font-extrabold text-white leading-none mt-1">Custom</p>
-              <p className="text-[11px] text-[#888] mt-1 leading-tight">100+ devices · we&apos;ll call you</p>
+              <p className="text-[11px] text-[#bbb] mt-1 leading-tight">100+ devices · we&apos;ll call you</p>
             </div>
           </div>
-          <p className="text-[11px] text-[#888] text-center mt-3 leading-relaxed">Bonus stacks on top of your base per-device quote. Mixed device types qualify together.</p>
+          <p className="text-[11px] text-[#bbb] text-center mt-3 leading-relaxed">Bonus stacks on top of your base per-device quote. Mixed device types qualify together.</p>
         </div>
 
         {submitted ? (
@@ -120,16 +120,16 @@ export default function BulkPage() {
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4">
             <h2 className="text-lg font-bold mb-2">Tell us about your devices</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name *" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
-              <input value={company} onChange={(e) => setCompany(e.target.value)} placeholder="Company (optional)" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email *" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
-              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (recommended)" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
+              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name *" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853]" />
+              <input value={company} onChange={(e) => setCompany(e.target.value)} placeholder="Company (optional)" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853]" />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email *" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853]" />
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (recommended)" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853]" />
             </div>
-            <input value={count} onChange={(e) => setCount(e.target.value)} placeholder="Approx number of devices (e.g. 25)" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
-            <textarea value={details} onChange={(e) => setDetails(e.target.value)} required rows={5} placeholder="Mix of devices? Brands, models, conditions — anything you can describe. e.g. '20 iPhone 13 Pro 256GB, 10 MacBook Air M2, all flawless.'" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] resize-none" />
+            <input value={count} onChange={(e) => setCount(e.target.value)} placeholder="Approx number of devices (e.g. 25)" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853]" />
+            <textarea value={details} onChange={(e) => setDetails(e.target.value)} required rows={5} placeholder="Mix of devices? Brands, models, conditions — anything you can describe. e.g. '20 iPhone 13 Pro 256GB, 10 MacBook Air M2, all flawless.'" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] resize-none" />
             {error && <p className="text-sm text-red-400">{error}</p>}
             <button onClick={submit} disabled={submitting} className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-semibold hover:bg-[#00e676] transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">{submitting ? "Sending…" : "Get a custom quote →"}</button>
-            <p className="text-xs text-[#888] text-center">Or email us a list at <a href="mailto:topcashcellular@gmail.com" className="text-white hover:text-[#00c853] transition">topcashcellular@gmail.com</a> for the fastest response.</p>
+            <p className="text-xs text-[#bbb] text-center">Or email us a list at <a href="mailto:topcashcellular@gmail.com" className="text-white hover:text-[#00c853] transition">topcashcellular@gmail.com</a> for the fastest response.</p>
           </div>
         )}
       </div>

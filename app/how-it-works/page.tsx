@@ -54,13 +54,13 @@ export default function HowItWorksPage() {
               <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="text-xs text-[#888] hover:text-white">← Sell now</Link>
+          <Link href="/" className="text-xs text-[#bbb] hover:text-white">← Sell now</Link>
         </div>
       </nav>
 
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-16">
         <h1 className="text-4xl font-bold mb-3">How It Works</h1>
-        <p className="text-[#888] mb-10">From quote to cash in 3 simple steps.</p>
+        <p className="text-[#bbb] mb-10">From quote to cash in 3 simple steps.</p>
 
         <div className="space-y-4 mb-12">
           {STEPS.map(s => (
@@ -83,7 +83,7 @@ export default function HowItWorksPage() {
             <div key={p.title} className="bg-white/5 border border-white/10 rounded-2xl p-5">
               <div className="text-2xl mb-2">{p.icon}</div>
               <p className="font-semibold text-white text-sm mb-1">{p.title}</p>
-              <p className="text-xs text-[#888] leading-relaxed">{p.body}</p>
+              <p className="text-xs text-[#bbb] leading-relaxed">{p.body}</p>
             </div>
           ))}
         </div>

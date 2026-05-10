@@ -77,13 +77,13 @@ export default function FAQPage() {
               <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="text-xs text-[#888] hover:text-white">← Sell now</Link>
+          <Link href="/" className="text-xs text-[#bbb] hover:text-white">← Sell now</Link>
         </div>
       </nav>
 
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-16">
         <h1 className="text-4xl font-bold mb-3">Frequently Asked Questions</h1>
-        <p className="text-[#888] mb-10">Everything you need to know before trading in.</p>
+        <p className="text-[#bbb] mb-10">Everything you need to know before trading in.</p>
 
         <div className="space-y-3">
           {FAQ.map((item, i) => (

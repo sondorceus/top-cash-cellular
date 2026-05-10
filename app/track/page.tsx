@@ -64,12 +64,12 @@ function ProgressBar({ status }: { status: string }) {
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-base transition ${
                 done ? "bg-[#00c853] text-[#0a0a0a]" :
                 current ? "bg-[#00c853] text-[#0a0a0a] ring-4 ring-[#00c853]/30 animate-pulse" :
-                "bg-white/5 border border-white/10 text-[#666]"
+                "bg-white/5 border border-white/10 text-[#999]"
               }`}>
                 {done ? "✓" : step.icon}
               </div>
               <p className={`text-[10px] text-center leading-tight ${
-                done || current ? "text-white font-semibold" : "text-[#666]"
+                done || current ? "text-white font-semibold" : "text-[#999]"
               }`}>{step.label}</p>
             </div>
           );
@@ -147,13 +147,13 @@ function TrackInner() {
               <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="text-xs text-[#888] hover:text-white">← Home</Link>
+          <Link href="/" className="text-xs text-[#bbb] hover:text-white">← Home</Link>
         </div>
       </nav>
 
       <div className="max-w-2xl mx-auto px-4 pt-10 pb-16">
         <h1 className="text-3xl md:text-4xl font-bold mb-2">Track your trade-in</h1>
-        <p className="text-[#888] mb-8 text-sm">Enter the phone or email you used when submitting. No password — we'll show you every device you've sold to us and where it stands.</p>
+        <p className="text-[#bbb] mb-8 text-sm">Enter the phone or email you used when submitting. No password — we'll show you every device you've sold to us and where it stands.</p>
 
         <form onSubmit={(e) => { e.preventDefault(); lookup(contact); }} className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6 flex gap-2">
           <input
@@ -161,7 +161,7 @@ function TrackInner() {
             value={contact}
             onChange={(e) => setContact(e.target.value)}
             placeholder="Phone or email"
-            className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition"
+            className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] transition"
           />
           <button type="submit" disabled={loading || !contact.trim()} className="px-5 py-3 bg-[#00c853] text-[#0a0a0a] rounded-xl text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed">
             {loading ? "…" : "Track"}
@@ -174,7 +174,7 @@ function TrackInner() {
           <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
             <p className="text-2xl mb-2">🔍</p>
             <p className="text-white font-semibold mb-1">No trade-ins found</p>
-            <p className="text-[#888] text-sm">Double-check the contact info, or <Link href="/" className="text-[#00c853] hover:underline">start a new quote</Link>.</p>
+            <p className="text-[#bbb] text-sm">Double-check the contact info, or <Link href="/" className="text-[#00c853] hover:underline">start a new quote</Link>.</p>
           </div>
         )}
 
@@ -185,15 +185,15 @@ function TrackInner() {
                 <div className="flex items-start justify-between mb-1">
                   <div>
                     <p className="font-semibold">{lead.model || lead.device || "Trade-in"}</p>
-                    <p className="text-[#666] text-xs">{[lead.storage, lead.condition].filter(Boolean).join(" · ")}</p>
+                    <p className="text-[#999] text-xs">{[lead.storage, lead.condition].filter(Boolean).join(" · ")}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-[#00c853] font-bold text-lg">{lead.quote}</p>
-                    <p className="text-[#666] text-[10px]">{timeAgo(lead.timestamp)}</p>
+                    <p className="text-[#999] text-[10px]">{timeAgo(lead.timestamp)}</p>
                   </div>
                 </div>
                 <ProgressBar status={lead.status} />
-                <p className="text-[#666] text-[11px] text-center">
+                <p className="text-[#999] text-[11px] text-center">
                   {lead.statusUpdatedAt
                     ? `Last update ${timeAgo(lead.statusUpdatedAt)} · ${lead.payout || "TBD"}`
                     : `Submitted · awaiting first update · ${lead.payout || "TBD"}`}
