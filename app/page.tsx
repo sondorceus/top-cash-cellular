@@ -228,14 +228,28 @@ const LENOVO_TP_L_VARIANTS = [
   { id: "ln_tp_l15", label: "ThinkPad L15 Series", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_l-lenovo-thinkpad-l15-series.png" },
   { id: "ln_tp_l16", label: "ThinkPad L16 Series", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_l-lenovo-thinkpad-l16-series.png" },
 ];
+const LENOVO_TP_T_VARIANTS = [
+  { id: "ln_tp_t", label: "ThinkPad T-Series", base: 0, inquiryOnly: true, image: "/devices/ln_tp_t.png" },
+];
+const LENOVO_TP_E_VARIANTS = [
+  { id: "ln_tp_e14_g7", label: "ThinkPad E14 Gen 7", base: 0, inquiryOnly: true, image: "/devices/ln_tp_e14_g7.png" },
+  { id: "ln_tp_e14_g6", label: "ThinkPad E14 Gen 6", base: 0, inquiryOnly: true, image: "/devices/ln_tp_e14_g6.png" },
+  { id: "ln_tp_e14_g5", label: "ThinkPad E14 Gen 5", base: 0, inquiryOnly: true, image: "/devices/ln_tp_e14_g5.png" },
+  { id: "ln_tp_e15", label: "ThinkPad E15", base: 0, inquiryOnly: true, image: "/devices/ln_tp_e15.png" },
+  { id: "ln_tp_e16_g3", label: "ThinkPad E16 Gen 3", base: 0, inquiryOnly: true, image: "/devices/ln_tp_e16_g3.png" },
+  { id: "ln_tp_e16_g2", label: "ThinkPad E16 Gen 2", base: 0, inquiryOnly: true, image: "/devices/ln_tp_e16_g2.png" },
+  { id: "ln_tp_e16_g1", label: "ThinkPad E16 Gen 1", base: 0, inquiryOnly: true, image: "/devices/ln_tp_e16_g1.png" },
+];
 const LENOVO_THINKPAD_SUB_SERIES = [
   { id: "ln_tp_x1", label: "ThinkPad X1", year: "Premium ultrabook", topPrice: 0, variants: LENOVO_TP_X1_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
   { id: "ln_tp_x13", label: "ThinkPad X13", year: "13-inch business", topPrice: 0, variants: LENOVO_TP_X13_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13.png" },
   { id: "ln_tp_x390", label: "ThinkPad X390", year: "Legacy 13.3-inch", topPrice: 0, variants: LENOVO_TP_X390_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_x390.png" },
   { id: "ln_tp_x9", label: "ThinkPad X9", year: "Aura Edition", topPrice: 0, variants: LENOVO_TP_X9_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_x9_14.png" },
   { id: "ln_tp_z", label: "ThinkPad Z", year: "Modern design", topPrice: 0, variants: LENOVO_TP_Z_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_z-lenovo-thinkpad-z16.png" },
+  { id: "ln_tp_t_sub", label: "ThinkPad T", year: "Workhorse business", topPrice: 0, variants: LENOVO_TP_T_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_t.png" },
   { id: "ln_tp_p", label: "ThinkPad P", year: "Mobile workstation", topPrice: 0, variants: LENOVO_TP_P_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p51.png" },
   { id: "ln_tp_l", label: "ThinkPad L", year: "Mainstream business", topPrice: 0, variants: LENOVO_TP_L_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_l-lenovo-thinkpad-l14-series.png" },
+  { id: "ln_tp_e_sub", label: "ThinkPad E", year: "Essential business", topPrice: 0, variants: LENOVO_TP_E_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_e14_g7.png" },
 ];
 
 const LENOVO_TB_13_VARIANTS = [
