@@ -2948,7 +2948,7 @@ export default function Home() {
                 onClick={() => { setStep("category"); pushHistory("category"); }}
                 className="w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] py-4 rounded-2xl text-base font-bold cursor-pointer transition tap-press cta-pulse flex flex-col items-center gap-0.5"
               >
-                <span className="flex items-center gap-2"><span>📍</span>I&apos;m in Austin: Meet Today</span>
+                <span className="flex items-center gap-2"><span>📍</span>Sell Local Today</span>
                 <span className="text-[11px] font-medium opacity-80">Local pickup · Cash on the spot</span>
               </button>
               <button
