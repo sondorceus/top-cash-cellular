@@ -2925,7 +2925,7 @@ export default function Home() {
             <div className="glow-border mb-6 p-[3px] hero-scale-in hero-d-3">
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
-                className="w-full bg-[#00c853] text-[#0a0a0a] py-5 rounded-[14px] text-xl font-bold cursor-pointer hover:bg-[#00e676] transition tap-press shadow-lg shadow-[#00c853]/20 relative z-10"
+                className="w-full bg-[#00c853] text-[#0a0a0a] py-5 rounded-[14px] text-xl font-bold cursor-pointer hover:bg-[#00e676] transition tap-press cta-pulse relative z-10"
               >
                 Sell Your Device
               </button>
