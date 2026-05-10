@@ -4216,7 +4216,7 @@ export default function Home() {
                   className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press"
                 >
                   <p className="font-semibold text-[15px]">{s.label}</p>
-                  <span className="text-[#00c853] font-bold text-sm">up to ${Math.round(model.base * s.multiplier * 1.15)}</span>
+                  <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
               ))}
             </div>
@@ -4268,7 +4268,7 @@ export default function Home() {
                       </details>
                     )}
                   </div>
-                  <span className="text-[#00c853] font-bold text-sm">${Math.round(model.base * storageMultiplier * c.multiplier)}</span>
+                  <svg className="w-4 h-4 text-[#888] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
               ))}
             </div>
