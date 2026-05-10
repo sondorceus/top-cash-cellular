@@ -436,6 +436,108 @@ const ASUS_DESKTOP_MODELS = [
   { id: "asnuc14", label: "NUC 14 Pro", base: 350, image: "/devices/asus-rog-desktop.webp" },
 ];
 
+// ASUS LAPTOPS — three-level tree mirroring itsworthmore.com.
+// ROG splits into Strix/Zephyrus/Flow sub-series; TUF/ProArt/Vivobook/
+// ExpertBook are flat. All inquiry-only (per Skywalker — ASUS pricing
+// will be set on a per-quote basis until we have validated comp data).
+const ASUS_ROG_STRIX_VARIANTS = [
+  { id: "as_rog_strix_scar_18_g835", label: "ROG Strix Scar 18 G835", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-scar-18-g835.png" },
+  { id: "as_rog_strix_scar_16_g635", label: "ROG Strix Scar 16 G635", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-scar-16-g635.png" },
+  { id: "as_rog_strix_g16_g615", label: "ROG Strix G16 G615", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-g16-g615.png" },
+  { id: "as_rog_strix_scar_18_g834", label: "ROG Strix Scar 18 G834", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-scar-18-g834.png" },
+  { id: "as_rog_strix_g18_g815", label: "ROG Strix G18 G815", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-g18-g815.png" },
+  { id: "as_rog_strix_scar_16_g634", label: "ROG Strix Scar 16 G634", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-scar-16-g634.png" },
+  { id: "as_rog_strix_scar_17_g733", label: "ROG Strix Scar 17 G733", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-scar-17-g733.png" },
+  { id: "as_rog_strix_g18_g814", label: "ROG Strix G18 G814", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-g18-g814.png" },
+  { id: "as_rog_strix_scar_17_se_g733", label: "ROG Strix Scar 17 SE G733", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-scar-17-se-g733.png" },
+  { id: "as_rog_strix_g16_g614", label: "ROG Strix G16 G614", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-g16-g614.png" },
+  { id: "as_rog_strix_g17_g713", label: "ROG Strix G17 G713", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-g17-g713.png" },
+  { id: "as_rog_strix_scar_15_g533", label: "ROG Strix Scar 15 G533", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-scar-15-g533.png" },
+  { id: "as_rog_strix_g15_g513", label: "ROG Strix G15 G513", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-g15-g513.png" },
+  { id: "as_rog_strix_scar_15_g532", label: "ROG Strix Scar 15 G532", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-scar-15-g532.png" },
+  { id: "as_rog_strix_scar_17_g732", label: "ROG Strix Scar 17 G732", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-scar-17-g732.png" },
+  { id: "as_rog_strix_g17_g712", label: "ROG Strix G17 G712", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-g17-g712.png" },
+  { id: "as_rog_strix_g15_g512", label: "ROG Strix G15 G512", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-g15-g512.png" },
+  { id: "as_rog_strix_g531", label: "ROG Strix G531", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-g531.png" },
+  { id: "as_rog_strix_g731", label: "ROG Strix G731", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-strix-g731.png" },
+];
+const ASUS_ROG_ZEPHYRUS_VARIANTS = [
+  { id: "as_rog_zephyrus_g16_gu605", label: "ROG Zephyrus G16 GU605", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-g16-gu605.png" },
+  { id: "as_rog_zephyrus_duo_16_gx650", label: "ROG Zephyrus Duo 16 GX650", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-duo-16-gx650.png" },
+  { id: "as_rog_zephyrus_g14_ga403", label: "ROG Zephyrus G14 GA403", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-g14-ga403.png" },
+  { id: "as_rog_zephyrus_m16_gu604", label: "ROG Zephyrus M16 GU604", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-m16-gu604.png" },
+  { id: "as_rog_zephyrus_duo_15_se_gx551", label: "ROG Zephyrus Duo 15 SE GX551", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-duo-15-se-gx551.png" },
+  { id: "as_rog_zephyrus_g14_ga402", label: "ROG Zephyrus G14 GA402", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-g14-ga402.png" },
+  { id: "as_rog_zephyrus_g16_ga605", label: "ROG Zephyrus G16 GA605", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-g16-ga605.png" },
+  { id: "as_rog_zephyrus_g16_gu603", label: "ROG Zephyrus G16 GU603", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-g16-gu603.png" },
+  { id: "as_rog_zephyrus_duo_15_gx550", label: "ROG Zephyrus Duo 15 GX550", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-duo-15-gx550.png" },
+  { id: "as_rog_zephyrus_s17_gx703", label: "ROG Zephyrus S17 GX703", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-s17-gx703.png" },
+  { id: "as_rog_zephyrus_m16_gu603", label: "ROG Zephyrus M16 GU603", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-m16-gu603.png" },
+  { id: "as_rog_zephyrus_g15_ga503", label: "ROG Zephyrus G15 GA503", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-g15-ga503.png" },
+  { id: "as_rog_zephyrus_g14_ga401", label: "ROG Zephyrus G14 GA401", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-g14-ga401.png" },
+  { id: "as_rog_zephyrus_m15_gu502", label: "ROG Zephyrus M15 GU502", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-m15-gu502.png" },
+  { id: "as_rog_zephyrus_s15_gx502", label: "ROG Zephyrus S15 GX502", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-s15-gx502.png" },
+  { id: "as_rog_zephyrus_s17_gx701", label: "ROG Zephyrus S17 GX701", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-s17-gx701.png" },
+  { id: "as_rog_zephyrus_s_gx531", label: "ROG Zephyrus S GX531", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-s-gx531.png" },
+  { id: "as_rog_zephyrus_g15_ga502", label: "ROG Zephyrus G15 GA502", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-g15-ga502.png" },
+  { id: "as_rog_zephyrus_m_gm501", label: "ROG Zephyrus M GM501", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-m-gm501.png" },
+];
+const ASUS_ROG_FLOW_VARIANTS = [
+  { id: "as_rog_flow_x16_gv601", label: "ROG Flow X16 GV601", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-flow-x16-gv601.png" },
+  { id: "as_rog_flow_z13_gz302", label: "ROG Flow Z13 GZ302", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-flow-z13-gz302.png" },
+  { id: "as_rog_flow_z13_acrnm", label: "ROG Flow Z13 ACRNM RMT02 GZ301", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-flow-z13-acrnm-rmt02-gz301.png" },
+  { id: "as_rog_flow_z13_kjp_gz302", label: "ROG Flow Z13-KJP GZ302", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-flow-z13-kjp-gz302.png" },
+  { id: "as_rog_flow_z13_gz301", label: "ROG Flow Z13 GZ301", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-flow-z13-gz301.png" },
+  { id: "as_rog_flow_x13_gv302", label: "ROG Flow X13 GV302", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-flow-x13-gv302.png" },
+  { id: "as_rog_flow_x13_gv301", label: "ROG Flow X13 GV301", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-flow-x13-gv301.png" },
+];
+const ASUS_ROG_SUB_SERIES = [
+  { id: "asus_rog_strix", label: "ROG Strix", year: "Tournament-grade", topPrice: 0, variants: ASUS_ROG_STRIX_VARIANTS, inquiryOnly: true, image: "/devices/asus-rog-strix.webp" },
+  { id: "asus_rog_zephyrus", label: "ROG Zephyrus", year: "Slim performance", topPrice: 0, variants: ASUS_ROG_ZEPHYRUS_VARIANTS, inquiryOnly: true, image: "/devices/asus-rog-zephyrus.webp" },
+  { id: "asus_rog_flow", label: "ROG Flow", year: "Convertible / 2-in-1", topPrice: 0, variants: ASUS_ROG_FLOW_VARIANTS, inquiryOnly: true, image: "/devices/asus-rog-zephyrus.webp" },
+];
+const ASUS_TUF_VARIANTS = [
+  { id: "as_tuf_a18", label: "TUF A18", base: 0, inquiryOnly: true, image: "/devices/asus-tuf-tuf-a18-laptop.png" },
+  { id: "as_tuf_a17", label: "TUF A17", base: 0, inquiryOnly: true, image: "/devices/asus-tuf-tuf-a17-laptop.png" },
+  { id: "as_tuf_a16", label: "TUF A16", base: 0, inquiryOnly: true, image: "/devices/asus-tuf-tuf-a16-laptop.png" },
+  { id: "as_tuf_a15", label: "TUF A15", base: 0, inquiryOnly: true, image: "/devices/asus-tuf-tuf-a15-laptop.png" },
+  { id: "as_tuf_a14", label: "TUF A14", base: 0, inquiryOnly: true, image: "/devices/asus-tuf-tuf-a14-laptop.png" },
+  { id: "as_tuf_f17", label: "TUF F17", base: 0, inquiryOnly: true, image: "/devices/asus-tuf-tuf-f17-laptop.png" },
+  { id: "as_tuf_f16", label: "TUF F16", base: 0, inquiryOnly: true, image: "/devices/asus-tuf-tuf-f16-laptop.png" },
+  { id: "as_tuf_f15", label: "TUF F15", base: 0, inquiryOnly: true, image: "/devices/asus-tuf-tuf-f15-laptop.png" },
+];
+const ASUS_PROART_VARIANTS = [
+  { id: "as_proart_studiobook_pro_16", label: "ProArt Studiobook Pro 16", base: 0, inquiryOnly: true, image: "/devices/asus-proart-proart-studiobook-pro-16.png" },
+  { id: "as_proart_studiobook_16", label: "ProArt Studiobook 16", base: 0, inquiryOnly: true, image: "/devices/asus-proart-proart-studiobook-16.png" },
+  { id: "as_proart_p16", label: "ProArt P16", base: 0, inquiryOnly: true, image: "/devices/asus-proart-proart-p16.png" },
+  { id: "as_proart_px13", label: "ProArt PX13", base: 0, inquiryOnly: true, image: "/devices/asus-proart-proart-px13.png" },
+  { id: "as_proart_pz13", label: "ProArt PZ13", base: 0, inquiryOnly: true, image: "/devices/asus-proart-proart-pz13.png" },
+];
+const ASUS_VIVOBOOK_VARIANTS = [
+  { id: "as_vivobook_16", label: "Vivobook 16", base: 0, inquiryOnly: true, image: "/devices/asus-vivobook.webp" },
+  { id: "as_vivobook_15", label: "Vivobook 15", base: 0, inquiryOnly: true, image: "/devices/asus-vivobook.webp" },
+  { id: "as_vivobook_14", label: "Vivobook 14", base: 0, inquiryOnly: true, image: "/devices/asus-vivobook.webp" },
+];
+const ASUS_EXPERTBOOK_VARIANTS = [
+  { id: "as_expertbook_p1", label: "ExpertBook P1", base: 0, inquiryOnly: true, image: "/devices/asus-expertbook-expertbook-p1.png" },
+  { id: "as_expertbook_p5", label: "ExpertBook P5", base: 0, inquiryOnly: true, image: "/devices/asus-expertbook-expertbook-p5.png" },
+  { id: "as_expertbook_b9", label: "ExpertBook B9", base: 0, inquiryOnly: true, image: "/devices/asus-expertbook-expertbook-b9.png" },
+  { id: "as_expertbook_b5", label: "ExpertBook B5", base: 0, inquiryOnly: true, image: "/devices/asus-expertbook-expertbook-b5.png" },
+  { id: "as_expertbook_b3", label: "ExpertBook B3", base: 0, inquiryOnly: true, image: "/devices/asus-expertbook-expertbook-b3.png" },
+  { id: "as_expertbook_b2", label: "ExpertBook B2", base: 0, inquiryOnly: true, image: "/devices/asus-expertbook-expertbook-b2.png" },
+];
+const ASUS_PC_SERIES = [
+  { id: "asus_rog", label: "ROG", year: "Republic of Gamers", topPrice: 0, subSeries: ASUS_ROG_SUB_SERIES, inquiryOnly: true, image: "/devices/asus-rog-strix.webp" },
+  { id: "asus_tuf", label: "TUF Gaming", year: "The Ultimate Force", topPrice: 0, variants: ASUS_TUF_VARIANTS, inquiryOnly: true, image: "/devices/asus-tuf-gaming.webp" },
+  { id: "asus_proart", label: "ProArt", year: "Creator / Studiobook", topPrice: 0, variants: ASUS_PROART_VARIANTS, inquiryOnly: true, image: "/devices/asus-proart-proart-p16.png" },
+  { id: "asus_vivobook", label: "Vivobook", year: "Everyday", topPrice: 0, variants: ASUS_VIVOBOOK_VARIANTS, inquiryOnly: true, image: "/devices/asus-vivobook.webp" },
+  { id: "asus_expertbook", label: "ExpertBook", year: "Business", topPrice: 0, variants: ASUS_EXPERTBOOK_VARIANTS, inquiryOnly: true, image: "/devices/asus-expertbook-expertbook-b9.png" },
+];
+const ASUS_PC_MODELS = [
+  ...ASUS_ROG_STRIX_VARIANTS, ...ASUS_ROG_ZEPHYRUS_VARIANTS, ...ASUS_ROG_FLOW_VARIANTS,
+  ...ASUS_TUF_VARIANTS, ...ASUS_PROART_VARIANTS, ...ASUS_VIVOBOOK_VARIANTS, ...ASUS_EXPERTBOOK_VARIANTS,
+];
+
 const ALIENWARE_DESKTOP_MODELS = [
   { id: "awaurorar16", label: "Aurora R16", base: 800, image: "/devices/alienware-aurora-r16.webp" },
   { id: "awaurorar15", label: "Aurora R15", base: 600, image: "/devices/alienware-aurora-r15.webp" },
@@ -1044,7 +1146,7 @@ type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" 
 const BRAND_LABELS: Record<string, string> = {
   iphone: "iPhone", android: "Samsung", pixel: "Pixel", ipad: "iPad",
   macbook: "MacBook", samsung_pc: "Samsung", lenovo: "Lenovo", dell: "Dell",
-  alienware: "Alienware", hp: "HP", acer: "Acer", lg_pc: "LG",
+  alienware: "Alienware", hp: "HP", acer: "Acer", lg_pc: "LG", asus_pc: "ASUS",
   apple_desktop: "Apple", dell_desktop: "Dell", lenovo_desktop: "Lenovo",
   hp_desktop: "HP", asus_desktop: "ASUS", alienware_desktop: "Alienware",
   msi_desktop: "MSI", console: "Console", sony: "PlayStation",
@@ -1055,7 +1157,7 @@ const BRAND_LABELS: Record<string, string> = {
   meta_vr: "Meta Quest", valve_vr: "Valve Index", psvr: "PSVR",
 };
 
-type DeviceType = "iphone" | "android" | "pixel" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "sony" | "microsoft" | "nintendo" | "applewatch" | "pixelwatch" | "garmin" | "samsungwatch" | "dji" | "samsung_tab" | "surface" | "lenovo_tab" | "oneplus_tab" | "google_tab" | "apple_vr" | "meta_vr" | "valve_vr" | "psvr" | "ipad" | null;
+type DeviceType = "iphone" | "android" | "pixel" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "asus_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "sony" | "microsoft" | "nintendo" | "applewatch" | "pixelwatch" | "garmin" | "samsungwatch" | "dji" | "samsung_tab" | "surface" | "lenovo_tab" | "oneplus_tab" | "google_tab" | "apple_vr" | "meta_vr" | "valve_vr" | "psvr" | "ipad" | null;
 
 function FairPromise() {
   return (
@@ -1191,6 +1293,7 @@ export default function Home() {
   const [category, setCategory] = useState<"phones" | "tablets" | "computers" | "desktops" | "consoles" | "watches" | "drones" | "vr" | null>(null);
   const [deviceType, setDeviceType] = useState<DeviceType>(null);
   const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
+  const [selectedSubSeries, setSelectedSubSeries] = useState<string | null>(null);
   const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
   const [page, setPage] = useState<"home" | "about" | "privacy" | "terms">("home");
   const [model, setModel] = useState<{ id: string; label: string; base: number } | null>(null);
@@ -1476,6 +1579,7 @@ export default function Home() {
   });
 
   const handleBack = () => {
+    if (step === "model" && selectedSubSeries) { setSelectedSubSeries(null); return; }
     if (step === "model" && selectedSeries) { setSelectedSeries(null); return; }
     if (step === "model") { if (category) { setStep("brand"); } else { setStep("category"); } setDeviceType(null); }
     else if (step === "brand") { setStep("category"); setCategory(null); }
@@ -1494,6 +1598,7 @@ export default function Home() {
     setCategory(null);
     setDeviceType(null);
     setSelectedSeries(null);
+    setSelectedSubSeries(null);
     setModel(null);
     setStorage(null);
     setCondition(null);
@@ -1518,6 +1623,11 @@ export default function Home() {
   const lenovoTabVariants = selectedSeries ? LENOVO_TAB_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const surfaceVariants = selectedSeries ? SURFACE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const appleDesktopVariants = selectedSeries ? APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
+  const asusPcVariants = selectedSubSeries
+    ? ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.variants || []
+    : selectedSeries
+      ? (ASUS_PC_SERIES.find(s => s.id === selectedSeries) as { variants?: { id: string; label: string; base: number }[] })?.variants || []
+      : [];
 
   type Crumb = { label: string; onClick: () => void };
   const breadcrumbs: Crumb[] = [
@@ -1526,14 +1636,21 @@ export default function Home() {
   if (deviceType) {
     breadcrumbs.push({
       label: BRAND_LABELS[deviceType] || deviceType,
-      onClick: () => { setSelectedSeries(null); setModel(null); setStorage(null); setCondition(null); setCarrier(null); setStep("model"); pushHistory("model"); },
+      onClick: () => { setSelectedSeries(null); setSelectedSubSeries(null); setModel(null); setStorage(null); setCondition(null); setCarrier(null); setStep("model"); pushHistory("model"); },
     });
   }
   if (selectedSeries) {
-    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : deviceType === "lg_pc" ? LG_PC_SERIES : deviceType === "lenovo_tab" ? LENOVO_TAB_SERIES : deviceType === "surface" ? SURFACE_SERIES : deviceType === "apple_desktop" ? APPLE_DESKTOP_SERIES : null;
+    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : deviceType === "lg_pc" ? LG_PC_SERIES : deviceType === "lenovo_tab" ? LENOVO_TAB_SERIES : deviceType === "surface" ? SURFACE_SERIES : deviceType === "apple_desktop" ? APPLE_DESKTOP_SERIES : deviceType === "asus_pc" ? ASUS_PC_SERIES : null;
     const ser = seriesList?.find(s => s.id === selectedSeries);
     if (ser) breadcrumbs.push({
       label: ser.label,
+      onClick: () => { setSelectedSubSeries(null); setModel(null); setStorage(null); setCondition(null); setCarrier(null); setStep("model"); pushHistory("model"); },
+    });
+  }
+  if (selectedSubSeries) {
+    const sub = ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries);
+    if (sub) breadcrumbs.push({
+      label: sub.label,
       onClick: () => { setModel(null); setStorage(null); setCondition(null); setCarrier(null); setStep("model"); pushHistory("model"); },
     });
   }
@@ -1554,7 +1671,7 @@ export default function Home() {
     onClick: () => { setStep("quote"); pushHistory("quote"); },
   });
   const showBreadcrumbs = breadcrumbs.length > 1 && step !== "device" && step !== "category" && page === "home";
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_pc" ? asusPcVariants : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -2393,6 +2510,7 @@ export default function Home() {
                 { id: "lenovo" as const, label: "Lenovo", sub: "ThinkPad, Yoga, Legion, IdeaPad", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg> },
                 { id: "acer" as const, label: "Acer", sub: "Swift, Predator, Nitro, Aspire", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#83b81a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold" fontFamily="Arial">acer</text></svg> },
                 { id: "lg_pc" as const, label: "LG", sub: "Gram, Gram Pro, UltraGear", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#a50034"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">LG</text></svg> },
+                { id: "asus_pc" as const, label: "ASUS", sub: "ROG, TUF, ProArt, Vivobook, ExpertBook", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">ASUS</text></svg> },
                 { id: "other_pc" as const, label: "Other Brand", sub: "Any other computer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#444"/><rect x="11" y="10" width="18" height="14" rx="2" fill="none" stroke="#fff" strokeWidth="1.5"/><line x1="15" y1="28" x2="25" y2="28" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/><line x1="20" y1="24" x2="20" y2="28" stroke="#fff" strokeWidth="1.5"/></svg> },
               ].map((b) => (
                 <button key={b.id} onClick={() => {
@@ -2779,6 +2897,50 @@ export default function Home() {
               </>
             )}
 
+            {/* ASUS Laptops: top-level series picker (5 cards) */}
+            {deviceType === "asus_pc" && !selectedSeries && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your ASUS laptop</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {ASUS_PC_SERIES.map((s) => (
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                      {s.image ? (
+                        <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                      ) : (
+                        <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">ASUS</text></svg>
+                      )}
+                      <p className="font-bold text-sm">{s.label}</p>
+                      <p className="text-[#888] text-[10px]">{s.year}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* ASUS ROG: sub-series picker (Strix / Zephyrus / Flow) — third level only for ROG */}
+            {deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">ROG — Republic of Gamers</h2>
+                <p className="text-[#888] text-sm mb-6">Pick your sub-line</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {ASUS_ROG_SUB_SERIES.map((s) => (
+                    <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[160px]">
+                      {s.image ? (
+                        <img src={s.image} alt={s.label} loading="eager" className="w-20 h-14 object-contain mb-1" />
+                      ) : (
+                        <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">ASUS</text></svg>
+                      )}
+                      <p className="font-bold text-base">{s.label}</p>
+                      <p className="text-[#888] text-[11px]">{s.year}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
             {/* Lenovo Tab: 5 family boxes (Legion / Idea Tab / Tab P&K / Tab M&Plus / ThinkTab) */}
             {deviceType === "lenovo_tab" && !selectedSeries && (
               <>
@@ -2914,9 +3076,9 @@ export default function Home() {
               </>
             )}
 
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "apple_desktop" && !selectedSeries) && (
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "apple_desktop" && !selectedSeries) && !(deviceType === "asus_pc" && !selectedSeries) && !(deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries) && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSeries ? `LG ${LG_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSeries ? `LG ${LG_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "asus_pc" && selectedSubSeries ? `ASUS — ${ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "asus_pc" && selectedSeries ? `ASUS — ${ASUS_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 {/* Mobile: grid cards */}
                 <div className="grid grid-cols-2 gap-2 md:hidden">
