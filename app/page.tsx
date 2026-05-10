@@ -2355,6 +2355,15 @@ export default function Home() {
               </div>
             </span>
           </button>
+          {/* TOP-NAV PROMO STRIP — between logo and menu, mobile + desktop */}
+          <a
+            href="/bulk"
+            className="flex-1 min-w-0 mx-2 sm:mx-4 px-2 sm:px-3 py-1.5 rounded-full bg-gradient-to-r from-[#00c853]/20 via-[#00e676]/25 to-[#00c853]/20 border border-[#00c853]/40 hover:from-[#00c853]/30 hover:via-[#00e676]/35 hover:to-[#00c853]/30 transition flex items-center justify-center overflow-hidden"
+            style={{ backgroundSize: "200% 100%", animation: "promoGradient 6s ease-in-out infinite" }}
+          >
+            <span className="hidden sm:inline text-[#00c853] text-xs font-extrabold whitespace-nowrap tracking-wide">🚀 Trade 2+ devices · get +10% extra cash</span>
+            <span className="sm:hidden text-[#00c853] text-[10px] font-extrabold whitespace-nowrap tracking-wide">🚀 +10% on 2+ devices</span>
+          </a>
           {/* MOBILE + TABLET: hamburger button (drawer with same menu as desktop) */}
           <div className="flex items-center gap-2 lg:hidden">
             <a href={EMAIL_HREF} aria-label="Email us" className="bg-[#00c853] text-[#0a0a0a] px-3 py-1.5 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
@@ -2760,18 +2769,8 @@ export default function Home() {
       {/* STEP: DEVICE TYPE */}
       {step === "device" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          {/* PROMO BANNER (config: public/promo.json) */}
-          {promo?.active && promo.text && (
-            <div className="px-3 pt-3 pb-1">
-              <div className="relative overflow-hidden rounded-full text-center py-2 px-5 mx-auto max-w-fit" style={{ background: "linear-gradient(90deg, #00c853 0%, #00e5ff 50%, #7c4dff 100%)", backgroundSize: "200% 100%", animation: "promoGradient 6s ease-in-out infinite, promoPulse 2.4s ease-in-out infinite" }}>
-                <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 50%, transparent 100%)", animation: "promoShimmer 3s ease-in-out infinite" }}></div>
-                <p className="relative text-white text-xs font-extrabold tracking-wide drop-shadow whitespace-nowrap">{promo.text}</p>
-              </div>
-            </div>
-          )}
-          {/* Hero photo removed per Skywalker 2026-05-08 */}
-
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pb-8">
+          {/* Promo banner moved into the top nav (between logo and menu). */}
+          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
             <h1 className="text-4xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up" style={{ letterSpacing: "-0.03em" }}>
               Get top dollar<br />for your device.
             </h1>
