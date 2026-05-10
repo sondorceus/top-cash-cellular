@@ -2317,6 +2317,149 @@ export default function Home() {
     onClick: () => { setStep("quote"); pushHistory("quote"); },
   });
   const showBreadcrumbs = breadcrumbs.length > 1 && step !== "device" && step !== "category" && page === "home";
+
+  // SEARCH BAR — extracted JSX so it can be rendered inline inside each
+  // device-discovery step right above the selection grid (instead of as
+  // a separate strip below the nav). Closer to where the eye lands.
+  const searchBar = (
+    <div className="relative mb-6">
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Escape") setSearchQuery(""); }}
+        placeholder="Search device — iPhone, Galaxy, MacBook..."
+        className="w-full pl-10 pr-10 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition"
+      />
+      <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#bbb] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
+      {searchQuery.length > 0 && (
+        <button
+          type="button"
+          onClick={() => setSearchQuery("")}
+          aria-label="Clear search"
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition cursor-pointer"
+        >
+          <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      )}
+      {searchQuery.trim().length >= 2 && (() => {
+        const q = searchQuery.toLowerCase().trim();
+        type Hit = { label: string; deviceType: DeviceType; seriesId: string; modelId: string; category: typeof category; base: number; image: string };
+        const hits: Hit[] = [];
+        const catFallback = (cat: typeof category): string => ({
+          phones: "📱", tablets: "📲", computers: "💻", desktops: "🖥️",
+          watches: "⌚", consoles: "🎮", drones: "🛸", vr: "🥽",
+        } as Record<string, string>)[cat || ""] || "📦";
+        const collectFromSeries = (list: { id: string; label: string; image?: string; variants: { id: string; label: string; base: number; image?: string }[] }[], deviceType: DeviceType, cat: typeof category) => {
+          for (const s of list) {
+            for (const v of s.variants) {
+              if (v.label.toLowerCase().includes(q)) {
+                hits.push({ label: v.label, deviceType, seriesId: s.id, modelId: v.id, category: cat, base: v.base || 0, image: v.image || s.image || "" });
+              }
+            }
+          }
+        };
+        collectFromSeries(IPHONE_SERIES, "iphone", "phones");
+        collectFromSeries(SAMSUNG_SERIES, "android", "phones");
+        collectFromSeries(PIXEL_SERIES, "pixel", "phones");
+        collectFromSeries(IPAD_SERIES, "ipad", "tablets");
+        collectFromSeries(MACBOOK_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "macbook", "computers");
+        collectFromSeries(APPLE_DESKTOP_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "apple_desktop", "desktops");
+        collectFromSeries(SONY_SERIES, "sony", "consoles");
+        collectFromSeries(SURFACE_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "surface", "tablets");
+        const flatLists: { list: { id: string; label: string; base: number; image?: string }[]; dt: DeviceType; cat: typeof category }[] = [
+          { list: ASUS_PC_MODELS, dt: "asus_pc", cat: "computers" },
+          { list: LENOVO_THINKBOOK_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_IDEAPAD_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_LEGION_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_LOQ_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_SLIM_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_YOGA_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_TP_X1_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_TP_X13_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_TP_X390_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_TP_X9_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_TP_T_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_TP_P_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_TP_L_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_TP_E_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: LENOVO_TP_Z_VARIANTS, dt: "lenovo", cat: "computers" },
+          { list: DELL_PC_ALL_SUB_SERIES.flatMap(s => s.variants), dt: "dell", cat: "computers" },
+          { list: HP_ENVY_VARIANTS, dt: "hp", cat: "computers" },
+          { list: HP_PAVILION_VARIANTS, dt: "hp", cat: "computers" },
+          { list: HP_PROBOOK_VARIANTS, dt: "hp", cat: "computers" },
+          { list: HP_SPECTRE_VARIANTS, dt: "hp", cat: "computers" },
+          { list: HP_VICTUS_VARIANTS, dt: "hp", cat: "computers" },
+          { list: HP_ZBOOK_VARIANTS, dt: "hp", cat: "computers" },
+          { list: HP_NOTEBOOK_VARIANTS, dt: "hp", cat: "computers" },
+          { list: HP_OMNIBOOK_VARIANTS, dt: "hp", cat: "computers" },
+          { list: HP_ELITEBOOK_STD_VARIANTS, dt: "hp", cat: "computers" },
+          { list: HP_ELITEBOOK_ULTRA_VARIANTS, dt: "hp", cat: "computers" },
+          { list: HP_OMEN_STD_VARIANTS, dt: "hp", cat: "computers" },
+          { list: HP_OMEN_TRANSCEND_VARIANTS, dt: "hp", cat: "computers" },
+          { list: ACER_NITRO_VARIANTS, dt: "acer", cat: "computers" },
+          { list: ACER_PREDATOR_VARIANTS, dt: "acer", cat: "computers" },
+          { list: SAMSUNG_BOOK5_VARIANTS, dt: "samsung_pc", cat: "computers" },
+          { list: SAMSUNG_BOOK4_VARIANTS, dt: "samsung_pc", cat: "computers" },
+          { list: SAMSUNG_BOOK3_VARIANTS, dt: "samsung_pc", cat: "computers" },
+          { list: SAMSUNG_BOOK2_VARIANTS, dt: "samsung_pc", cat: "computers" },
+          { list: SAMSUNG_BOOK1_VARIANTS, dt: "samsung_pc", cat: "computers" },
+          { list: LG_GRAM_14_VARIANTS, dt: "lg_pc", cat: "computers" },
+          { list: LG_GRAM_14_2IN1_VARIANTS, dt: "lg_pc", cat: "computers" },
+          { list: LG_GRAM_15_VARIANTS, dt: "lg_pc", cat: "computers" },
+          { list: LG_GRAM_16_VARIANTS, dt: "lg_pc", cat: "computers" },
+          { list: LG_GRAM_16_2IN1_VARIANTS, dt: "lg_pc", cat: "computers" },
+          { list: LG_GRAM_17_VARIANTS, dt: "lg_pc", cat: "computers" },
+          { list: LG_GRAM_PRO_16_VARIANTS, dt: "lg_pc", cat: "computers" },
+          { list: LG_GRAM_PRO_16_2IN1_VARIANTS, dt: "lg_pc", cat: "computers" },
+          { list: LG_GRAM_PRO_17_VARIANTS, dt: "lg_pc", cat: "computers" },
+          { list: LG_GRAM_SUPERSLIM_15_VARIANTS, dt: "lg_pc", cat: "computers" },
+        ];
+        for (const fl of flatLists) {
+          for (const v of fl.list) {
+            if (v.label.toLowerCase().includes(q)) {
+              hits.push({ label: v.label, deviceType: fl.dt, seriesId: "", modelId: v.id, category: fl.cat, base: v.base || 0, image: v.image || "" });
+            }
+          }
+        }
+        const top = hits.slice(0, 12);
+        return (
+          <div className="absolute z-50 left-0 right-0 mt-2 bg-[#111] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+            {top.length === 0 ? (
+              <div className="px-4 py-4 text-sm text-[#bbb] text-center">No matches for &ldquo;{searchQuery}&rdquo;. Try a different name.</div>
+            ) : (
+              <div className="overflow-y-auto max-h-[60vh]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] px-4 pt-3 pb-2">{hits.length} {hits.length === 1 ? "match" : "matches"}{hits.length > 12 ? " — showing top 12" : ""}</p>
+                {top.map((h, i) => (
+                  <button
+                    key={`${h.deviceType}-${h.seriesId}-${h.modelId}-${i}`}
+                    onClick={() => {
+                      setCategory(h.category);
+                      setDeviceType(h.deviceType);
+                      if (h.seriesId) setSelectedSeries(h.seriesId);
+                      setModel({ id: h.modelId, label: h.label, base: h.base });
+                      setSearchQuery("");
+                      setStep("storage");
+                      pushHistory("storage");
+                    }}
+                    className="w-full text-left px-4 py-2.5 hover:bg-white/5 transition flex items-center gap-3 border-b border-white/5 last:border-0 cursor-pointer"
+                  >
+                    {h.image ? (
+                      <img src={h.image} alt={h.label} loading="lazy" className="w-10 h-10 object-contain flex-shrink-0 rounded-md bg-white/5" />
+                    ) : (
+                      <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 rounded-md bg-white/5 text-lg">{catFallback(h.category)}</div>
+                    )}
+                    <span className="text-sm font-semibold text-white flex-1 truncate">{h.label}</span>
+                    <svg className="w-4 h-4 text-[#bbb] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })()}
+    </div>
+  );
   const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? samsungBookVariants : deviceType === "lenovo" ? lenovoPcVariants : deviceType === "dell" ? dellPcVariants : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? hpPcVariants : deviceType === "acer" ? acerPcVariants : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_pc" ? asusPcVariants : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
@@ -2511,154 +2654,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* PERSISTENT SEARCH BAR — in-flow (scrolls with the page like IWM,
-          not sticky), visible during the device-discovery flow
-          (category → brand → model → storage). Mobile + desktop. */}
-      {page === "home" && (step === "category" || step === "brand" || step === "model" || step === "storage") && (
-        <div className="bg-[#0a0a0a] border-b border-white/10">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-2.5">
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Escape") setSearchQuery(""); }}
-                placeholder="Search device — iPhone, Galaxy, MacBook..."
-                className="w-full pl-10 pr-10 py-2.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-[#aaa] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition"
-              />
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#bbb] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
-              {searchQuery.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  aria-label="Clear search"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition cursor-pointer"
-                >
-                  <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
-              )}
-              {searchQuery.trim().length >= 2 && (() => {
-                const q = searchQuery.toLowerCase().trim();
-                type Hit = { label: string; deviceType: DeviceType; seriesId: string; modelId: string; category: typeof category; base: number; image: string };
-                const hits: Hit[] = [];
-                // Per-category fallback icon for entries with no per-model image
-                const catFallback = (cat: typeof category): string => ({
-                  phones: "📱", tablets: "📲", computers: "💻", desktops: "🖥️",
-                  watches: "⌚", consoles: "🎮", drones: "🛸", vr: "🥽",
-                } as Record<string, string>)[cat || ""] || "📦";
-                const collectFromSeries = (list: { id: string; label: string; image?: string; variants: { id: string; label: string; base: number; image?: string }[] }[], deviceType: DeviceType, cat: typeof category) => {
-                  for (const s of list) {
-                    for (const v of s.variants) {
-                      if (v.label.toLowerCase().includes(q)) {
-                        hits.push({ label: v.label, deviceType, seriesId: s.id, modelId: v.id, category: cat, base: v.base || 0, image: v.image || s.image || "" });
-                      }
-                    }
-                  }
-                };
-                collectFromSeries(IPHONE_SERIES, "iphone", "phones");
-                collectFromSeries(SAMSUNG_SERIES, "android", "phones");
-                collectFromSeries(PIXEL_SERIES, "pixel", "phones");
-                collectFromSeries(IPAD_SERIES, "ipad", "tablets");
-                collectFromSeries(MACBOOK_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "macbook", "computers");
-                collectFromSeries(APPLE_DESKTOP_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "apple_desktop", "desktops");
-                collectFromSeries(SONY_SERIES, "sony", "consoles");
-                collectFromSeries(SURFACE_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "surface", "tablets");
-                // Laptop flat lists (each variant carries its own image)
-                const flatLists: { list: { id: string; label: string; base: number; image?: string }[]; dt: DeviceType; cat: typeof category }[] = [
-                  { list: ASUS_PC_MODELS, dt: "asus_pc", cat: "computers" },
-                  { list: LENOVO_THINKBOOK_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_IDEAPAD_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_LEGION_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_LOQ_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_SLIM_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_YOGA_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_TP_X1_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_TP_X13_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_TP_X390_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_TP_X9_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_TP_T_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_TP_P_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_TP_L_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_TP_E_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: LENOVO_TP_Z_VARIANTS, dt: "lenovo", cat: "computers" },
-                  { list: DELL_PC_ALL_SUB_SERIES.flatMap(s => s.variants), dt: "dell", cat: "computers" },
-                  { list: HP_ENVY_VARIANTS, dt: "hp", cat: "computers" },
-                  { list: HP_PAVILION_VARIANTS, dt: "hp", cat: "computers" },
-                  { list: HP_PROBOOK_VARIANTS, dt: "hp", cat: "computers" },
-                  { list: HP_SPECTRE_VARIANTS, dt: "hp", cat: "computers" },
-                  { list: HP_VICTUS_VARIANTS, dt: "hp", cat: "computers" },
-                  { list: HP_ZBOOK_VARIANTS, dt: "hp", cat: "computers" },
-                  { list: HP_NOTEBOOK_VARIANTS, dt: "hp", cat: "computers" },
-                  { list: HP_OMNIBOOK_VARIANTS, dt: "hp", cat: "computers" },
-                  { list: HP_ELITEBOOK_STD_VARIANTS, dt: "hp", cat: "computers" },
-                  { list: HP_ELITEBOOK_ULTRA_VARIANTS, dt: "hp", cat: "computers" },
-                  { list: HP_OMEN_STD_VARIANTS, dt: "hp", cat: "computers" },
-                  { list: HP_OMEN_TRANSCEND_VARIANTS, dt: "hp", cat: "computers" },
-                  { list: ACER_NITRO_VARIANTS, dt: "acer", cat: "computers" },
-                  { list: ACER_PREDATOR_VARIANTS, dt: "acer", cat: "computers" },
-                  { list: SAMSUNG_BOOK5_VARIANTS, dt: "samsung_pc", cat: "computers" },
-                  { list: SAMSUNG_BOOK4_VARIANTS, dt: "samsung_pc", cat: "computers" },
-                  { list: SAMSUNG_BOOK3_VARIANTS, dt: "samsung_pc", cat: "computers" },
-                  { list: SAMSUNG_BOOK2_VARIANTS, dt: "samsung_pc", cat: "computers" },
-                  { list: SAMSUNG_BOOK1_VARIANTS, dt: "samsung_pc", cat: "computers" },
-                  { list: LG_GRAM_14_VARIANTS, dt: "lg_pc", cat: "computers" },
-                  { list: LG_GRAM_14_2IN1_VARIANTS, dt: "lg_pc", cat: "computers" },
-                  { list: LG_GRAM_15_VARIANTS, dt: "lg_pc", cat: "computers" },
-                  { list: LG_GRAM_16_VARIANTS, dt: "lg_pc", cat: "computers" },
-                  { list: LG_GRAM_16_2IN1_VARIANTS, dt: "lg_pc", cat: "computers" },
-                  { list: LG_GRAM_17_VARIANTS, dt: "lg_pc", cat: "computers" },
-                  { list: LG_GRAM_PRO_16_VARIANTS, dt: "lg_pc", cat: "computers" },
-                  { list: LG_GRAM_PRO_16_2IN1_VARIANTS, dt: "lg_pc", cat: "computers" },
-                  { list: LG_GRAM_PRO_17_VARIANTS, dt: "lg_pc", cat: "computers" },
-                  { list: LG_GRAM_SUPERSLIM_15_VARIANTS, dt: "lg_pc", cat: "computers" },
-                ];
-                for (const fl of flatLists) {
-                  for (const v of fl.list) {
-                    if (v.label.toLowerCase().includes(q)) {
-                      hits.push({ label: v.label, deviceType: fl.dt, seriesId: "", modelId: v.id, category: fl.cat, base: v.base || 0, image: v.image || "" });
-                    }
-                  }
-                }
-                const top = hits.slice(0, 12);
-                return (
-                  <div className="absolute z-50 left-0 right-0 mt-2 bg-[#111] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-                    {top.length === 0 ? (
-                      <div className="px-4 py-4 text-sm text-[#bbb] text-center">No matches for &ldquo;{searchQuery}&rdquo;. Try a different name.</div>
-                    ) : (
-                      <div className="overflow-y-auto max-h-[60vh]">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] px-4 pt-3 pb-2">{hits.length} {hits.length === 1 ? "match" : "matches"}{hits.length > 12 ? " — showing top 12" : ""}</p>
-                        {top.map((h, i) => (
-                          <button
-                            key={`${h.deviceType}-${h.seriesId}-${h.modelId}-${i}`}
-                            onClick={() => {
-                              setCategory(h.category);
-                              setDeviceType(h.deviceType);
-                              if (h.seriesId) setSelectedSeries(h.seriesId);
-                              setModel({ id: h.modelId, label: h.label, base: h.base });
-                              setSearchQuery("");
-                              setStep("storage");
-                              pushHistory("storage");
-                            }}
-                            className="w-full text-left px-4 py-2.5 hover:bg-white/5 transition flex items-center gap-3 border-b border-white/5 last:border-0 cursor-pointer"
-                          >
-                            {h.image ? (
-                              <img src={h.image} alt={h.label} loading="lazy" className="w-10 h-10 object-contain flex-shrink-0 rounded-md bg-white/5" />
-                            ) : (
-                              <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 rounded-md bg-white/5 text-lg">{catFallback(h.category)}</div>
-                            )}
-                            <span className="text-sm font-semibold text-white flex-1 truncate">{h.label}</span>
-                            <svg className="w-4 h-4 text-[#bbb] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })()}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Search bar JSX is defined as the `searchBar` const above and rendered inline inside each device-discovery step section, right above the selection grid (close to where the eye lands). */}
 
       {/* MOBILE MENU DRAWER — same Sell/Bulk/Support/Login structure as the desktop mega-menu, accordion-style */}
       {mobileMenuOpen && (
@@ -3116,8 +3112,8 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">What are you selling?</h2>
-            <p className="text-[#bbb] text-sm mb-6">Pick a category, or use the search bar above to jump straight to a device</p>
-
+            <p className="text-[#bbb] text-sm mb-4">Search by name, or pick a category below</p>
+            {searchBar}
             <div className="grid grid-cols-4 md:grid-cols-5 gap-2 md:gap-3">
               {[
                 { id: "phones" as const, label: "Sell Phone", icon: "📱" },
@@ -3359,7 +3355,8 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your brand</h2>
-            <p className="text-[#bbb] text-sm mb-6">{category === "phones" ? "Phone brands" : category === "tablets" ? "Tablet brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : category === "watches" ? "Smartwatch brands" : category === "drones" ? "Drone brands" : category === "vr" ? "VR headset brands" : "Console brands"}</p>
+            <p className="text-[#bbb] text-sm mb-4">{category === "phones" ? "Phone brands" : category === "tablets" ? "Tablet brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : category === "watches" ? "Smartwatch brands" : category === "drones" ? "Drone brands" : category === "vr" ? "VR headset brands" : "Console brands"}</p>
+            {searchBar}
             <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {category === "phones" && [
                 { id: "iphone" as const, label: "Apple iPhone", sub: "iPhone 11 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg> },
@@ -3497,6 +3494,8 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
+
+            {searchBar}
 
             {/* iPhone: Series grid → Variant list */}
             {deviceType === "iphone" && !selectedSeries && (
