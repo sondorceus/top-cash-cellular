@@ -305,65 +305,82 @@ const ACER_MODELS = [
   { id: "acasp3", label: "Aspire 3", base: 150, image: "/devices/acasp3.png" },
 ];
 
-const LG_GRAM_STANDARD_VARIANTS = [
-  { id: "lg_gr17_24", label: "LG Gram 17 (17Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_gr17_24.png" },
-  { id: "lg_gr16_24", label: "LG Gram 16 (16Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_gr16_24.png" },
+// LG LAPTOPS — three-level tree mirroring itsworthmore.com.
+// IWM splits LG into 3 series (Gram / Gram Pro / Gram SuperSlim) and
+// each series into size sub-categories (Gram 14, Gram 16 (2-in-1), etc.).
+// Our 24 existing model variants map cleanly into this. Gram Book and
+// UltraGear (gaming) aren't on IWM, so they're dropped per the
+// comp-mirror request.
+const LG_GRAM_14_VARIANTS = [
   { id: "lg_gr14_24", label: "LG Gram 14 (14Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_gr14_24.png" },
-  { id: "lg_gr17_23", label: "LG Gram 17 (17Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_gr17_23.png" },
-  { id: "lg_gr16_23", label: "LG Gram 16 (16Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_gr16_23.png" },
-  { id: "lg_gr15_23", label: "LG Gram 15 (15Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_gr15_23.png" },
   { id: "lg_gr14_23", label: "LG Gram 14 (14Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_gr14_23.png" },
-];
-const LG_GRAM_2IN1_VARIANTS = [
-  { id: "lg_gr16t_24", label: "LG Gram 16 2-in-1 (16T90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_gr16t_24.png" },
-  { id: "lg_gr14t_24", label: "LG Gram 14 2-in-1 (14T90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_gr14t_24.png" },
-  { id: "lg_gr16t_23", label: "LG Gram 16 2-in-1 (16T90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_gr16t_23.png" },
-  { id: "lg_gr14t_23", label: "LG Gram 14 2-in-1 (14T90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_gr14t_23.png" },
-];
-const LG_GRAM_STYLE_VARIANTS = [
-  { id: "lg_grstyle16", label: "LG Gram Style 16 (16Z90RS, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_grstyle16.png" },
   { id: "lg_grstyle14", label: "LG Gram Style 14 (14Z90RS, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_grstyle14.png" },
 ];
-const LG_GRAM_ULTRASLIM_VARIANTS = [
-  { id: "lg_grultra15", label: "LG Gram Ultraslim 15 (15Z90RT, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_grultra15.png" },
+const LG_GRAM_14_2IN1_VARIANTS = [
+  { id: "lg_gr14t_24", label: "LG Gram 14 2-in-1 (14T90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_gr14t_24.png" },
+  { id: "lg_gr14t_23", label: "LG Gram 14 2-in-1 (14T90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_gr14t_23.png" },
 ];
-const LG_GRAM_PRO_VARIANTS = [
-  { id: "lg_grpro17_25", label: "LG Gram Pro 17 (17Z90TR, 2025)", base: 0, inquiryOnly: true, image: "/devices/lg_grpro17_25.png" },
+const LG_GRAM_15_VARIANTS = [
+  { id: "lg_gr15_23", label: "LG Gram 15 (15Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_gr15_23.png" },
+];
+const LG_GRAM_16_VARIANTS = [
+  { id: "lg_gr16_24", label: "LG Gram 16 (16Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_gr16_24.png" },
+  { id: "lg_gr16_23", label: "LG Gram 16 (16Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_gr16_23.png" },
+  { id: "lg_grstyle16", label: "LG Gram Style 16 (16Z90RS, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_grstyle16.png" },
+];
+const LG_GRAM_16_2IN1_VARIANTS = [
+  { id: "lg_gr16t_24", label: "LG Gram 16 2-in-1 (16T90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_gr16t_24.png" },
+  { id: "lg_gr16t_23", label: "LG Gram 16 2-in-1 (16T90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_gr16t_23.png" },
+];
+const LG_GRAM_17_VARIANTS = [
+  { id: "lg_gr17_24", label: "LG Gram 17 (17Z90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_gr17_24.png" },
+  { id: "lg_gr17_23", label: "LG Gram 17 (17Z90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_gr17_23.png" },
+];
+const LG_GRAM_PRO_16_VARIANTS = [
   { id: "lg_grpro16_25", label: "LG Gram Pro 16 (16Z90TR, 2025)", base: 0, inquiryOnly: true, image: "/devices/lg_grpro16_25.png" },
-  { id: "lg_grpro17_24", label: "LG Gram Pro 17 (17Z90SP, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_grpro17_24.png" },
   { id: "lg_grpro16_24", label: "LG Gram Pro 16 (16Z90SP, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_grpro16_24.png" },
 ];
-const LG_GRAM_PRO_2IN1_VARIANTS = [
+const LG_GRAM_PRO_16_2IN1_VARIANTS = [
   { id: "lg_grpro16t_24", label: "LG Gram Pro 16 2-in-1 (16T90SP, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_grpro16t_24.png" },
 ];
-const LG_GRAM_BOOK_VARIANTS = [
-  { id: "lg_grbook16", label: "LG Gram Book 16 (2024–2025)", base: 0, inquiryOnly: true, image: "/devices/lg_grbook16.png" },
-  { id: "lg_grbook15", label: "LG Gram Book 15.6 (2024–2025)", base: 0, inquiryOnly: true, image: "/devices/lg_grbook15.png" },
+const LG_GRAM_PRO_17_VARIANTS = [
+  { id: "lg_grpro17_25", label: "LG Gram Pro 17 (17Z90TR, 2025)", base: 0, inquiryOnly: true, image: "/devices/lg_grpro17_25.png" },
+  { id: "lg_grpro17_24", label: "LG Gram Pro 17 (17Z90SP, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_grpro17_24.png" },
 ];
-const LG_ULTRAGEAR_VARIANTS = [
-  { id: "lg_ultragear16_24", label: "LG UltraGear 16 (16G90S, 2024)", base: 0, inquiryOnly: true, image: "/devices/lg_ultragear16_24.png" },
-  { id: "lg_ultragear16_23", label: "LG UltraGear 16 (16G90R, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_ultragear16_23.png" },
-  { id: "lg_ultragear16_22", label: "LG UltraGear 16 (16G90Q, 2022)", base: 0, inquiryOnly: true, image: "/devices/lg_ultragear16_22.png" },
+const LG_GRAM_SUPERSLIM_15_VARIANTS = [
+  { id: "lg_grultra15", label: "LG Gram SuperSlim 15 (15Z90RT, 2023)", base: 0, inquiryOnly: true, image: "/devices/lg_grultra15.png" },
 ];
+
+const LG_GRAM_SUB_SERIES = [
+  { id: "lg_gram_14", label: "Gram 14", year: "14-inch", topPrice: 0, variants: LG_GRAM_14_VARIANTS, inquiryOnly: true, image: "/devices/lg_gr14_24.png" },
+  { id: "lg_gram_14_2in1", label: "Gram 14 (2-in-1)", year: "14-inch convertible", topPrice: 0, variants: LG_GRAM_14_2IN1_VARIANTS, inquiryOnly: true, image: "/devices/lg_gr14t_24.png" },
+  { id: "lg_gram_15", label: "Gram 15", year: "15-inch", topPrice: 0, variants: LG_GRAM_15_VARIANTS, inquiryOnly: true, image: "/devices/lg_gr15_23.png" },
+  { id: "lg_gram_16", label: "Gram 16", year: "16-inch", topPrice: 0, variants: LG_GRAM_16_VARIANTS, inquiryOnly: true, image: "/devices/lg_gr16_24.png" },
+  { id: "lg_gram_16_2in1", label: "Gram 16 (2-in-1)", year: "16-inch convertible", topPrice: 0, variants: LG_GRAM_16_2IN1_VARIANTS, inquiryOnly: true, image: "/devices/lg_gr16t_24.png" },
+  { id: "lg_gram_17", label: "Gram 17", year: "17-inch", topPrice: 0, variants: LG_GRAM_17_VARIANTS, inquiryOnly: true, image: "/devices/lg_gr17_24.png" },
+];
+const LG_GRAM_PRO_SUB_SERIES = [
+  { id: "lg_grampro_16", label: "Gram Pro 16", year: "16-inch", topPrice: 0, variants: LG_GRAM_PRO_16_VARIANTS, inquiryOnly: true, image: "/devices/lg_grpro16_25.png" },
+  { id: "lg_grampro_16_2in1", label: "Gram Pro 16 (2-in-1)", year: "16-inch convertible", topPrice: 0, variants: LG_GRAM_PRO_16_2IN1_VARIANTS, inquiryOnly: true, image: "/devices/lg_grpro16t_24.png" },
+  { id: "lg_grampro_17", label: "Gram Pro 17", year: "17-inch", topPrice: 0, variants: LG_GRAM_PRO_17_VARIANTS, inquiryOnly: true, image: "/devices/lg_grpro17_25.png" },
+];
+const LG_GRAM_SUPERSLIM_SUB_SERIES = [
+  { id: "lg_superslim_15", label: "Gram SuperSlim 15", year: "Ultra-thin", topPrice: 0, variants: LG_GRAM_SUPERSLIM_15_VARIANTS, inquiryOnly: true, image: "/devices/lg_grultra15.png" },
+];
+
 const LG_PC_SERIES = [
-  { id: "lg_gram", label: "Gram", year: "Standard", topPrice: 0, variants: LG_GRAM_STANDARD_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
-  { id: "lg_gram2in1", label: "Gram 2-in-1", year: "Convertible", topPrice: 0, variants: LG_GRAM_2IN1_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
-  { id: "lg_gramstyle", label: "Gram Style", year: "OLED", topPrice: 0, variants: LG_GRAM_STYLE_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-superslim.webp" },
-  { id: "lg_gramultra", label: "Gram Ultraslim", year: "Super-thin", topPrice: 0, variants: LG_GRAM_ULTRASLIM_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-superslim.webp" },
-  { id: "lg_grampro", label: "Gram Pro", year: "Performance", topPrice: 0, variants: LG_GRAM_PRO_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-pro.webp" },
-  { id: "lg_grampro2in1", label: "Gram Pro 2-in-1", year: "Pro Convertible", topPrice: 0, variants: LG_GRAM_PRO_2IN1_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-pro.webp" },
-  { id: "lg_grambook", label: "Gram Book", year: "Budget", topPrice: 0, variants: LG_GRAM_BOOK_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-standard.webp" },
-  { id: "lg_ultragear", label: "UltraGear", year: "Gaming", topPrice: 0, variants: LG_ULTRAGEAR_VARIANTS, inquiryOnly: true, image: "/devices/lg-gram-pro.webp" },
+  { id: "lg_gram", label: "Gram", year: "Standard ultraportable", topPrice: 0, subSeries: LG_GRAM_SUB_SERIES, inquiryOnly: true, image: "/devices/lg_gr16_24.png" },
+  { id: "lg_grampro", label: "Gram Pro", year: "Performance", topPrice: 0, subSeries: LG_GRAM_PRO_SUB_SERIES, inquiryOnly: true, image: "/devices/lg_grpro16_25.png" },
+  { id: "lg_superslim", label: "Gram SuperSlim", year: "Ultra-thin", topPrice: 0, subSeries: LG_GRAM_SUPERSLIM_SUB_SERIES, inquiryOnly: true, image: "/devices/lg_grultra15.png" },
+];
+const LG_PC_ALL_SUB_SERIES = [
+  ...LG_GRAM_SUB_SERIES, ...LG_GRAM_PRO_SUB_SERIES, ...LG_GRAM_SUPERSLIM_SUB_SERIES,
 ];
 const LG_PC_MODELS = [
-  ...LG_GRAM_STANDARD_VARIANTS,
-  ...LG_GRAM_2IN1_VARIANTS,
-  ...LG_GRAM_STYLE_VARIANTS,
-  ...LG_GRAM_ULTRASLIM_VARIANTS,
-  ...LG_GRAM_PRO_VARIANTS,
-  ...LG_GRAM_PRO_2IN1_VARIANTS,
-  ...LG_GRAM_BOOK_VARIANTS,
-  ...LG_ULTRAGEAR_VARIANTS,
+  ...LG_GRAM_14_VARIANTS, ...LG_GRAM_14_2IN1_VARIANTS, ...LG_GRAM_15_VARIANTS,
+  ...LG_GRAM_16_VARIANTS, ...LG_GRAM_16_2IN1_VARIANTS, ...LG_GRAM_17_VARIANTS,
+  ...LG_GRAM_PRO_16_VARIANTS, ...LG_GRAM_PRO_16_2IN1_VARIANTS, ...LG_GRAM_PRO_17_VARIANTS,
+  ...LG_GRAM_SUPERSLIM_15_VARIANTS,
 ];
 
 // Apple Desktops — 4 family boxes (iMac / Mac Mini / Mac Studio / Mac Pro)
@@ -1886,7 +1903,9 @@ export default function Home() {
   const macbookVariants = selectedSeries ? MACBOOK_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const sonyVariants = selectedSeries ? SONY_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const alienwareVariants = selectedSeries ? ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
-  const lgPcVariants = selectedSeries ? LG_PC_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
+  const lgPcVariants = selectedSubSeries
+    ? LG_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.variants || []
+    : [];
   const lenovoTabVariants = selectedSeries ? LENOVO_TAB_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const surfaceVariants = selectedSeries ? SURFACE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const appleDesktopVariants = selectedSeries ? APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
@@ -1919,7 +1938,8 @@ export default function Home() {
   }
   if (selectedSubSeries) {
     const sub = ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)
-      || DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries);
+      || DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)
+      || LG_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries);
     if (sub) breadcrumbs.push({
       label: sub.label,
       onClick: () => { setModel(null); setStorage(null); setCondition(null); setCarrier(null); setStep("model"); pushHistory("model"); },
@@ -3309,26 +3329,54 @@ export default function Home() {
 
             {/* Laptop/Desktop: Grid on mobile, list on desktop */}
             {/* LG: 8 family boxes (Gram / 2-in-1 / Style / Ultraslim / Pro / Pro 2-in-1 / Book / UltraGear) */}
+            {/* LG Laptops: top-level series picker (Gram / Gram Pro / SuperSlim — mirroring IWM) */}
             {deviceType === "lg_pc" && !selectedSeries && (
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your LG laptop</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your line</p>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {LG_PC_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
-                      <svg className="w-12 h-9 mb-2 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="2" y="2" width="28" height="18" rx="3" />
-                        <line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" />
-                        <text x="16" y="14" fill="#a50034" fontSize="6" fontWeight="bold" textAnchor="middle" stroke="none">LG</text>
-                      </svg>
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                      {s.image ? (
+                        <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                      ) : (
+                        <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#a50034"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">LG</text></svg>
+                      )}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#888] text-[10px]">{s.year}</p>
+                      <p className="text-[#888] text-[10px] text-center px-1 leading-tight">{s.year}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
                     </button>
                   ))}
                 </div>
               </>
             )}
+
+            {/* LG Laptops: sub-series picker (every LG series has subSeries — Gram by size etc.) */}
+            {deviceType === "lg_pc" && selectedSeries && !selectedSubSeries && (() => {
+              const ser = LG_PC_SERIES.find(s => s.id === selectedSeries);
+              const subs = (ser as { subSeries?: typeof LG_GRAM_SUB_SERIES })?.subSeries;
+              if (!subs) return null;
+              return (
+                <>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-1">LG — {ser?.label}</h2>
+                  <p className="text-[#888] text-sm mb-6">Pick your size</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {subs.map((s) => (
+                      <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[160px]">
+                        {s.image ? (
+                          <img src={s.image} alt={s.label} loading="eager" className="w-20 h-14 object-contain mb-1" />
+                        ) : (
+                          <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#a50034"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">LG</text></svg>
+                        )}
+                        <p className="font-bold text-sm text-center">{s.label}</p>
+                        <p className="text-[#888] text-[11px] text-center">{s.year}</p>
+                        <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              );
+            })()}
 
             {/* Dell Laptops: top-level series picker (8 cards mirroring IWM) */}
             {deviceType === "dell" && !selectedSeries && (
@@ -3558,9 +3606,9 @@ export default function Home() {
               </>
             )}
 
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "apple_desktop" && !selectedSeries) && !(deviceType === "asus_pc" && !selectedSeries) && !(deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries) && !(deviceType === "dell" && !selectedSeries) && !(deviceType === "dell" && selectedSeries && !selectedSubSeries) && (
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "lg_pc" && selectedSeries && !selectedSubSeries) && !(deviceType === "apple_desktop" && !selectedSeries) && !(deviceType === "asus_pc" && !selectedSeries) && !(deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries) && !(deviceType === "dell" && !selectedSeries) && !(deviceType === "dell" && selectedSeries && !selectedSubSeries) && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSeries ? `LG ${LG_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "asus_pc" && selectedSubSeries ? `ASUS — ${ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "asus_pc" && selectedSeries ? `ASUS — ${ASUS_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "dell" && selectedSubSeries ? `Dell — ${DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : "Select your model"}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSubSeries ? `LG ${LG_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "asus_pc" && selectedSubSeries ? `ASUS — ${ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "asus_pc" && selectedSeries ? `ASUS — ${ASUS_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "dell" && selectedSubSeries ? `Dell — ${DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : "Select your model"}</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 {/* Mobile: grid cards */}
                 <div className="grid grid-cols-2 gap-2 md:hidden">
