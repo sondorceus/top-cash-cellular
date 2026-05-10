@@ -2934,12 +2934,12 @@ export default function Home() {
             <h1 className="text-4xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up" style={{ letterSpacing: "-0.03em" }}>
               Get top dollar<br />for your device.
             </h1>
-            <p className="text-[#bbb] text-lg mb-1 font-medium hero-fade-up hero-d-1">
-              Instant quote. Same-day payout. Local Austin pickup or free shipping.
+            <p className="text-[#bbb] text-lg mb-2 font-medium hero-fade-up hero-d-1">
+              Skip the 5-day mail-in wait. Quote online, meet us in <strong className="text-white">Austin or Dripping Springs</strong>, get paid via <strong className="text-white">Zelle in 15 minutes</strong>.
             </p>
             <p className="text-[#bbb] text-sm mb-6 font-medium hero-fade-up hero-d-2 flex items-center gap-2">
               <span className="text-[#00c853]">🔒</span>
-              <span><strong className="text-white">Military-grade data wipe in your presence</strong> before we pay you.</span>
+              <span><strong className="text-white">On-site data wipe in your presence</strong> before we pay you.</span>
             </p>
 
             {/* DUAL-PATH ENTRY — local vs. shipping */}
@@ -2969,8 +2969,25 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-              <p className="text-[#bbb] text-sm">Don&apos;t see your device? <a href={EMAIL_HREF} className="text-[#00c853] font-semibold hover:underline">Email us</a> and we&apos;ll make you an offer!</p>
+            {/* PRICE-MATCH BAND — direct challenge to mail-in competitors */}
+            <div className="mt-5 bg-gradient-to-br from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/40 rounded-2xl p-4 flex items-start gap-3">
+              <span className="text-2xl shrink-0">💰</span>
+              <div className="flex-1">
+                <p className="text-white text-sm font-bold leading-snug">Have a higher quote from a mail-in site?</p>
+                <p className="text-[#bbb] text-xs mt-0.5">Show us. We&apos;ll match or beat it — in cash, today.</p>
+              </div>
+              <button onClick={() => { setStep("category"); pushHistory("category"); }} className="shrink-0 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] text-xs font-bold px-3 py-2 rounded-full cursor-pointer transition tap-press whitespace-nowrap">
+                Beat it →
+              </button>
+            </div>
+
+            {/* NEIGHBORHOODS — Austin SEO + local trust */}
+            <div className="mt-3 text-center text-[11px] text-[#888] font-medium">
+              <span className="text-[#00c853]">📍</span> Serving <span className="text-[#bbb]">Westlake · Bee Cave · Lakeway · Downtown Austin · Dripping Springs</span>
+            </div>
+
+            <div className="mt-3 bg-white/5 border border-white/10 rounded-2xl p-3 text-center">
+              <p className="text-[#bbb] text-xs">Don&apos;t see your device? <a href={EMAIL_HREF} className="text-[#00c853] font-semibold hover:underline">Email us</a> and we&apos;ll make you an offer.</p>
             </div>
 
             <div className="mt-6 flex flex-wrap items-center gap-2 hero-fade-up hero-d-4">
