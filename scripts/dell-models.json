@@ -1,0 +1,1271 @@
+[
+  {
+    "id": "dell_xps_13_xps-13-7390",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 7390",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-7390-2-in-1",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 7390 2-in-1",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-9300",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 9300",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-9305",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 9305",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-9310",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 9310",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-9310-2-in-1",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 9310 2-in-1",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-9315",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 9315",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-9315-2-in-1",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 9315 2-in-1",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-plus-9320",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 Plus 9320",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-9340",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 9340",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-9345",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 9345",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-9350",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 9350",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-9360",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 9360",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-9365-2-in-1",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 9365 2-in-1",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-9370",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 9370",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_13_xps-13-9380",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_13",
+    "sub_label": "XPS 13",
+    "label": "XPS 13 9380",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_14_xps-14-9440",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_14",
+    "sub_label": "XPS 14",
+    "label": "XPS 14 9440",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_14_xps-14-da14260",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_14",
+    "sub_label": "XPS 14",
+    "label": "XPS 14 DA14260",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_15_xps-15-7590",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_15",
+    "sub_label": "XPS 15",
+    "label": "XPS 15 7590",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_15_xps-15-9500",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_15",
+    "sub_label": "XPS 15",
+    "label": "XPS 15 9500",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_15_xps-15-9510",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_15",
+    "sub_label": "XPS 15",
+    "label": "XPS 15 9510",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_15_xps-15-9520",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_15",
+    "sub_label": "XPS 15",
+    "label": "XPS 15 9520",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_15_xps-15-9530",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_15",
+    "sub_label": "XPS 15",
+    "label": "XPS 15 9530",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_15_xps-15-9550",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_15",
+    "sub_label": "XPS 15",
+    "label": "XPS 15 9550",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_15_xps-15-9560",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_15",
+    "sub_label": "XPS 15",
+    "label": "XPS 15 9560",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_15_xps-15-9570",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_15",
+    "sub_label": "XPS 15",
+    "label": "XPS 15 9570",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_15_xps-15-9575-2-in-1",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_15",
+    "sub_label": "XPS 15",
+    "label": "XPS 15 9575 2-in-1",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_16_xps-16-9640",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_16",
+    "sub_label": "XPS 16",
+    "label": "XPS 16 9640",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_16_xps-16-da16260",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_16",
+    "sub_label": "XPS 16",
+    "label": "XPS 16 DA16260",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_17_xps-17-9700",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_17",
+    "sub_label": "XPS 17",
+    "label": "XPS 17 9700",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_17_xps-17-9710",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_17",
+    "sub_label": "XPS 17",
+    "label": "XPS 17 9710",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_17_xps-17-9720",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_17",
+    "sub_label": "XPS 17",
+    "label": "XPS 17 9720",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_xps_17_xps-17-9730",
+    "series_id": "xps",
+    "series_label": "XPS",
+    "sub_id": "xps_17",
+    "sub_label": "XPS 17",
+    "label": "XPS 17 9730",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_latitude_3000_latitude-3000-15",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_3000",
+    "sub_label": "Latitude 3000",
+    "label": "Latitude 3500 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_3000_latitude-3000-14",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_3000",
+    "sub_label": "Latitude 3000",
+    "label": "Latitude 3400 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_3000_latitude-3000-13",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_3000",
+    "sub_label": "Latitude 3000",
+    "label": "Latitude 3300 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_5000_latitude-5000-15",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_5000",
+    "sub_label": "Latitude 5000",
+    "label": "Latitude 5500 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_5000_latitude-5000-14",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_5000",
+    "sub_label": "Latitude 5000",
+    "label": "Latitude 5400 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_5000_latitude-5000-13",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_5000",
+    "sub_label": "Latitude 5000",
+    "label": "Latitude 5300 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_5000_latitude-5000-12",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_5000",
+    "sub_label": "Latitude 5000",
+    "label": "Latitude 5200 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_7000_latitude-7000-16",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_7000",
+    "sub_label": "Latitude 7000",
+    "label": "Latitude 7600 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_7000_latitude-7000-15",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_7000",
+    "sub_label": "Latitude 7000",
+    "label": "Latitude 7500 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_7000_latitude-7000-14",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_7000",
+    "sub_label": "Latitude 7000",
+    "label": "Latitude 7400 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_7000_latitude-7000-13",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_7000",
+    "sub_label": "Latitude 7000",
+    "label": "Latitude 7300 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_7000_latitude-7000-12",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_7000",
+    "sub_label": "Latitude 7000",
+    "label": "Latitude 7200 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_9000_latitude-9000-15",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_9000",
+    "sub_label": "Latitude 9000",
+    "label": "Latitude 9500 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_9000_latitude-9000-14",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_9000",
+    "sub_label": "Latitude 9000",
+    "label": "Latitude 9400 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_9000_latitude-9000-13",
+    "series_id": "latitude",
+    "series_label": "Latitude",
+    "sub_id": "latitude_9000",
+    "sub_label": "Latitude 9000",
+    "label": "Latitude 9300 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_inspiron_3000_inspiron-3000-17",
+    "series_id": "inspiron",
+    "series_label": "Inspiron",
+    "sub_id": "inspiron_3000",
+    "sub_label": "Inspiron 3000",
+    "label": "Inspiron 3700 Series",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_inspiron_3000_inspiron-3000-15",
+    "series_id": "inspiron",
+    "series_label": "Inspiron",
+    "sub_id": "inspiron_3000",
+    "sub_label": "Inspiron 3000",
+    "label": "Inspiron 3500 Series",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_inspiron_3000_inspiron-3000-14",
+    "series_id": "inspiron",
+    "series_label": "Inspiron",
+    "sub_id": "inspiron_3000",
+    "sub_label": "Inspiron 3000",
+    "label": "Inspiron 3400 Series",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_inspiron_5000_inspiron-5000-17",
+    "series_id": "inspiron",
+    "series_label": "Inspiron",
+    "sub_id": "inspiron_5000",
+    "sub_label": "Inspiron 5000",
+    "label": "Inspiron 5700 Series",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_inspiron_5000_inspiron-5000-16",
+    "series_id": "inspiron",
+    "series_label": "Inspiron",
+    "sub_id": "inspiron_5000",
+    "sub_label": "Inspiron 5000",
+    "label": "Inspiron 5600 Series",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_inspiron_5000_inspiron-5000-15",
+    "series_id": "inspiron",
+    "series_label": "Inspiron",
+    "sub_id": "inspiron_5000",
+    "sub_label": "Inspiron 5000",
+    "label": "Inspiron 5500 Series",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_inspiron_5000_inspiron-5000-14",
+    "series_id": "inspiron",
+    "series_label": "Inspiron",
+    "sub_id": "inspiron_5000",
+    "sub_label": "Inspiron 5000",
+    "label": "Inspiron 5400 Series",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_inspiron_5000_inspiron-5000-13",
+    "series_id": "inspiron",
+    "series_label": "Inspiron",
+    "sub_id": "inspiron_5000",
+    "sub_label": "Inspiron 5000",
+    "label": "Inspiron 5300 Series",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_inspiron_7000_inspiron-7000-17",
+    "series_id": "inspiron",
+    "series_label": "Inspiron",
+    "sub_id": "inspiron_7000",
+    "sub_label": "Inspiron 7000",
+    "label": "Inspiron 7700 Series",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_inspiron_7000_inspiron-7000-16",
+    "series_id": "inspiron",
+    "series_label": "Inspiron",
+    "sub_id": "inspiron_7000",
+    "sub_label": "Inspiron 7000",
+    "label": "Inspiron 7600 Series",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_inspiron_7000_inspiron-7000-15",
+    "series_id": "inspiron",
+    "series_label": "Inspiron",
+    "sub_id": "inspiron_7000",
+    "sub_label": "Inspiron 7000",
+    "label": "Inspiron 7500 Series",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_inspiron_7000_inspiron-7000-14",
+    "series_id": "inspiron",
+    "series_label": "Inspiron",
+    "sub_id": "inspiron_7000",
+    "sub_label": "Inspiron 7000",
+    "label": "Inspiron 7400 Series",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_inspiron_7000_inspiron-7000-13",
+    "series_id": "inspiron",
+    "series_label": "Inspiron",
+    "sub_id": "inspiron_7000",
+    "sub_label": "Inspiron 7000",
+    "label": "Inspiron 7300 Series",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_precision_3000_precision-3000-series-15",
+    "series_id": "precision",
+    "series_label": "Precision",
+    "sub_id": "precision_3000",
+    "sub_label": "Precision 3000",
+    "label": "Precision 3500 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_precision_3000_precision-3000-series-14",
+    "series_id": "precision",
+    "series_label": "Precision",
+    "sub_id": "precision_3000",
+    "sub_label": "Precision 3000",
+    "label": "Precision 3400 Series",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_vostro_3000_3420",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_3000",
+    "sub_label": "Vostro 3000",
+    "label": "3420",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_3000_3500",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_3000",
+    "sub_label": "Vostro 3000",
+    "label": "3500",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_3000_3510",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_3000",
+    "sub_label": "Vostro 3000",
+    "label": "3510",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_3000_3520",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_3000",
+    "sub_label": "Vostro 3000",
+    "label": "3520",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_3000_3590",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_3000",
+    "sub_label": "Vostro 3000",
+    "label": "3590",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_3000_3591",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_3000",
+    "sub_label": "Vostro 3000",
+    "label": "3591",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_3000_3430",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_3000",
+    "sub_label": "Vostro 3000",
+    "label": "3430",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_3000_3530",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_3000",
+    "sub_label": "Vostro 3000",
+    "label": "3530",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_3000_3535",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_3000",
+    "sub_label": "Vostro 3000",
+    "label": "3535",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_5000_5301",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_5000",
+    "sub_label": "Vostro 5000",
+    "label": "5301",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_5000_5401",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_5000",
+    "sub_label": "Vostro 5000",
+    "label": "5401",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_5000_5402",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_5000",
+    "sub_label": "Vostro 5000",
+    "label": "5402",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_5000_5410",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_5000",
+    "sub_label": "Vostro 5000",
+    "label": "5410",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_5000_5490",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_5000",
+    "sub_label": "Vostro 5000",
+    "label": "5490",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_5000_5501",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_5000",
+    "sub_label": "Vostro 5000",
+    "label": "5501",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_5000_5502",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_5000",
+    "sub_label": "Vostro 5000",
+    "label": "5502",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_5000_5510",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_5000",
+    "sub_label": "Vostro 5000",
+    "label": "5510",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_5000_5581",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_5000",
+    "sub_label": "Vostro 5000",
+    "label": "5581",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_5000_5590",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_5000",
+    "sub_label": "Vostro 5000",
+    "label": "5590",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_5000_5620",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_5000",
+    "sub_label": "Vostro 5000",
+    "label": "5620",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_5000_5630",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_5000",
+    "sub_label": "Vostro 5000",
+    "label": "5630",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_7000_7500",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_7000",
+    "sub_label": "Vostro 7000",
+    "label": "7500",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_7000_7510",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_7000",
+    "sub_label": "Vostro 7000",
+    "label": "7510",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_7000_7590",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_7000",
+    "sub_label": "Vostro 7000",
+    "label": "7590",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_vostro_7000_7620",
+    "series_id": "vostro",
+    "series_label": "Vostro",
+    "sub_id": "vostro_7000",
+    "sub_label": "Vostro 7000",
+    "label": "7620",
+    "image": "/devices/dell-inspiron-15.webp"
+  },
+  {
+    "id": "dell_g3_3579",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g3",
+    "sub_label": "G3",
+    "label": "3579",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g3_3779",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g3",
+    "sub_label": "G3",
+    "label": "3779",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g3_3590",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g3",
+    "sub_label": "G3",
+    "label": "3590",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g3_3500",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g3",
+    "sub_label": "G3",
+    "label": "3500",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g5_5500",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g5",
+    "sub_label": "G5",
+    "label": "5500",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g5_5505-se",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g5",
+    "sub_label": "G5",
+    "label": "5505 SE",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g5_5587",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g5",
+    "sub_label": "G5",
+    "label": "5587",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g5_5590",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g5",
+    "sub_label": "G5",
+    "label": "5590",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g7_7500",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g7",
+    "sub_label": "G7",
+    "label": "7500",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g7_7588",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g7",
+    "sub_label": "G7",
+    "label": "7588",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g7_7590",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g7",
+    "sub_label": "G7",
+    "label": "7590",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g7_7790",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g7",
+    "sub_label": "G7",
+    "label": "7790",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g7_7700",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g7",
+    "sub_label": "G7",
+    "label": "7700",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g15_5510",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g15",
+    "sub_label": "G15",
+    "label": "5510",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g15_5511",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g15",
+    "sub_label": "G15",
+    "label": "5511",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g15_5515",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g15",
+    "sub_label": "G15",
+    "label": "5515",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g15_5520",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g15",
+    "sub_label": "G15",
+    "label": "5520",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g15_5521",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g15",
+    "sub_label": "G15",
+    "label": "5521",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g15_5525",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g15",
+    "sub_label": "G15",
+    "label": "5525",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g15_5530",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g15",
+    "sub_label": "G15",
+    "label": "5530",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g15_5535",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g15",
+    "sub_label": "G15",
+    "label": "5535",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g16_7620",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g16",
+    "sub_label": "G16",
+    "label": "7620",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_g16_7630",
+    "series_id": "g_series",
+    "series_label": "G Series",
+    "sub_id": "g16",
+    "sub_label": "G16",
+    "label": "7630",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_13_dell-pro-13-plus-pb13255",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_13",
+    "sub_label": "Dell Pro 13",
+    "label": "Dell Pro 13 Plus PB13255",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_13_dell-pro-13-plus--2-in-1-pb13255",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_13",
+    "sub_label": "Dell Pro 13",
+    "label": "Dell Pro 13 Plus (2-in1) PB13255",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_13_dell-pro-13-plus--2-in-1-pb13250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_13",
+    "sub_label": "Dell Pro 13",
+    "label": "Dell Pro 13 Plus (2-in1) PB13250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_13_dell-pro-13-plus-pb13250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_13",
+    "sub_label": "Dell Pro 13",
+    "label": "Dell Pro 13 Plus PB13250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_13_dell-pro-13-premium-pa13250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_13",
+    "sub_label": "Dell Pro 13",
+    "label": "Dell Pro 13 Premium PA13250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_14_dell-pro-14-essential-pv14250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_14",
+    "sub_label": "Dell Pro 14",
+    "label": "Dell Pro 14 Essential PV14250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_14_dell-pro-14-essential-pv14255",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_14",
+    "sub_label": "Dell Pro 14",
+    "label": "Dell Pro 14 Essential PV14255",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_14_dell-pro-max-14-premium-ma14250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_14",
+    "sub_label": "Dell Pro 14",
+    "label": "Dell Pro Max 14 Premium MA14250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_14_dell-pro-14-plus-pb14255",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_14",
+    "sub_label": "Dell Pro 14",
+    "label": "Dell Pro 14 Plus PB14255",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_14_dell-pro-14-plus-2-in-1-pb14255",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_14",
+    "sub_label": "Dell Pro 14",
+    "label": "Dell Pro 14 Plus (2-in-1) PB14255",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_14_dell-pro-max-14-mc14255",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_14",
+    "sub_label": "Dell Pro 14",
+    "label": "Dell Pro Max 14 MC14255",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_14_dell-pro-max-14-mc14250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_14",
+    "sub_label": "Dell Pro 14",
+    "label": "Dell Pro Max 14 MC14250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_14_dell-pro-14-premium-pa14250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_14",
+    "sub_label": "Dell Pro 14",
+    "label": "Dell Pro 14 Premium PA14250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_14_dell-pro-14-plus-2-in-1-pb14250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_14",
+    "sub_label": "Dell Pro 14",
+    "label": "Dell Pro 14 Plus (2-in-1) PB14250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_14_dell-pro-14-plus-pb14250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_14",
+    "sub_label": "Dell Pro 14",
+    "label": "Dell Pro 14 Plus PB14250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_14_dell-pro-14-pc14250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_14",
+    "sub_label": "Dell Pro 14",
+    "label": "Dell Pro 14 PC14250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_14_dell-pro-14-pc14255",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_14",
+    "sub_label": "Dell Pro 14",
+    "label": "Dell Pro 14 PC14255",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_16_dell-pro-max-16-mc16255",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_16",
+    "sub_label": "Dell Pro 16",
+    "label": "Dell Pro Max 16 MC16255",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_16_dell-pro-max-16-premium-ma16250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_16",
+    "sub_label": "Dell Pro 16",
+    "label": "Dell Pro Max 16 Premium MA16250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_16_dell-pro-max-16-plus-mb16250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_16",
+    "sub_label": "Dell Pro 16",
+    "label": "Dell Pro Max 16 Plus MB16250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_16_dell-pro-max-16-mc16250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_16",
+    "sub_label": "Dell Pro 16",
+    "label": "Dell Pro Max 16 MC16250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_16_dell-pro-16-plus-pb16255",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_16",
+    "sub_label": "Dell Pro 16",
+    "label": "Dell Pro 16 Plus PB16255",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_16_dell-pro-16-pc16255",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_16",
+    "sub_label": "Dell Pro 16",
+    "label": "Dell Pro 16 PC16255",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_16_dell-pro-16-pc16250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_16",
+    "sub_label": "Dell Pro 16",
+    "label": "Dell Pro 16 PC16250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_16_dell-pro-16-plus-pb16250",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_16",
+    "sub_label": "Dell Pro 16",
+    "label": "Dell Pro 16 Plus PB16250",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_18_intel-core-ultra-5-series-2",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_18",
+    "sub_label": "Dell Pro 18",
+    "label": "Intel Core Ultra 5 Series 2",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_18_intel-core-ultra-7-series-2",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_18",
+    "sub_label": "Dell Pro 18",
+    "label": "Intel Core Ultra 7 Series 2",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_dell_pro_18_intel-core-ultra-9-series-2",
+    "series_id": "dell_pro",
+    "series_label": "Dell Pro",
+    "sub_id": "dell_pro_18",
+    "sub_label": "Dell Pro 18",
+    "label": "Intel Core Ultra 9 Series 2",
+    "image": "/devices/dell-xps.webp"
+  },
+  {
+    "id": "dell_latitude_rugged_latitude-5430-rugged",
+    "series_id": "rugged",
+    "series_label": "Rugged",
+    "sub_id": "latitude_rugged",
+    "sub_label": "Latitude Rugged",
+    "label": "Latitude 5430 Rugged",
+    "image": "/devices/dell-latitude.jpg"
+  },
+  {
+    "id": "dell_latitude_rugged_latitude-7330-rugged-extreme",
+    "series_id": "rugged",
+    "series_label": "Rugged",
+    "sub_id": "latitude_rugged",
+    "sub_label": "Latitude Rugged",
+    "label": "Latitude 7330 Rugged Extreme",
+    "image": "/devices/dell-latitude.jpg"
+  }
+]

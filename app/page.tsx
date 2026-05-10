@@ -538,6 +538,271 @@ const ASUS_PC_MODELS = [
   ...ASUS_TUF_VARIANTS, ...ASUS_PROART_VARIANTS, ...ASUS_VIVOBOOK_VARIANTS, ...ASUS_EXPERTBOOK_VARIANTS,
 ];
 
+// DELL LAPTOPS — three-level tree mirroring itsworthmore.com.
+// All 8 Dell laptop series have sub-series (XPS by size, Latitude/Inspiron/
+// Precision/Vostro by 3000/5000/7000 line, G Series by model number,
+// Dell Pro by size, Rugged by chassis). 138 models scraped 2026-05-09;
+// images are series-level placeholders (per-model photos are not on IWM
+// for Dell — they use a quiz UI rather than product detail pages).
+const DELL_XPS_13_VARIANTS = [
+  { id: "d_xps_13_9345", label: "XPS 13 9345", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_9340", label: "XPS 13 9340", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_plus_9320", label: "XPS 13 Plus 9320", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_9315", label: "XPS 13 9315", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_9315_2in1", label: "XPS 13 9315 2-in-1", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_9310", label: "XPS 13 9310", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_9310_2in1", label: "XPS 13 9310 2-in-1", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_9305", label: "XPS 13 9305", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_9300", label: "XPS 13 9300", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_7390", label: "XPS 13 7390", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_7390_2in1", label: "XPS 13 7390 2-in-1", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_9380", label: "XPS 13 9380", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_9370", label: "XPS 13 9370", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_9365_2in1", label: "XPS 13 9365 2-in-1", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_9360", label: "XPS 13 9360", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_13_9350", label: "XPS 13 9350", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_XPS_14_VARIANTS = [
+  { id: "d_xps_14_9440", label: "XPS 14 9440", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_14_da14260", label: "XPS 14 DA14260", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_XPS_15_VARIANTS = [
+  { id: "d_xps_15_9530", label: "XPS 15 9530", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_15_9520", label: "XPS 15 9520", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_15_9510", label: "XPS 15 9510", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_15_9500", label: "XPS 15 9500", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_15_7590", label: "XPS 15 7590", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_15_9575_2in1", label: "XPS 15 9575 2-in-1", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_15_9570", label: "XPS 15 9570", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_15_9560", label: "XPS 15 9560", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_15_9550", label: "XPS 15 9550", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_XPS_16_VARIANTS = [
+  { id: "d_xps_16_9640", label: "XPS 16 9640", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_16_da16260", label: "XPS 16 DA16260", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_XPS_17_VARIANTS = [
+  { id: "d_xps_17_9730", label: "XPS 17 9730", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_17_9720", label: "XPS 17 9720", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_17_9710", label: "XPS 17 9710", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_xps_17_9700", label: "XPS 17 9700", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_LATITUDE_3000_VARIANTS = [
+  { id: "d_lat_3500", label: "Latitude 3500 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_lat_3400", label: "Latitude 3400 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_lat_3300", label: "Latitude 3300 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+];
+const DELL_LATITUDE_5000_VARIANTS = [
+  { id: "d_lat_5500", label: "Latitude 5500 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_lat_5400", label: "Latitude 5400 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_lat_5300", label: "Latitude 5300 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_lat_5200", label: "Latitude 5200 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+];
+const DELL_LATITUDE_7000_VARIANTS = [
+  { id: "d_lat_7600", label: "Latitude 7600 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_lat_7500", label: "Latitude 7500 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_lat_7400", label: "Latitude 7400 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_lat_7300", label: "Latitude 7300 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_lat_7200", label: "Latitude 7200 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+];
+const DELL_LATITUDE_9000_VARIANTS = [
+  { id: "d_lat_9500", label: "Latitude 9500 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_lat_9400", label: "Latitude 9400 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_lat_9300", label: "Latitude 9300 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+];
+const DELL_INSPIRON_3000_VARIANTS = [
+  { id: "d_insp_3700", label: "Inspiron 3700 Series", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_insp_3500", label: "Inspiron 3500 Series", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_insp_3400", label: "Inspiron 3400 Series", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+];
+const DELL_INSPIRON_5000_VARIANTS = [
+  { id: "d_insp_5700", label: "Inspiron 5700 Series", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_insp_5600", label: "Inspiron 5600 Series", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_insp_5500", label: "Inspiron 5500 Series", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_insp_5400", label: "Inspiron 5400 Series", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_insp_5300", label: "Inspiron 5300 Series", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+];
+const DELL_INSPIRON_7000_VARIANTS = [
+  { id: "d_insp_7700", label: "Inspiron 7700 Series", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_insp_7600", label: "Inspiron 7600 Series", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_insp_7500", label: "Inspiron 7500 Series", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_insp_7400", label: "Inspiron 7400 Series", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_insp_7300", label: "Inspiron 7300 Series", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+];
+const DELL_PRECISION_3000_VARIANTS = [
+  { id: "d_prec_3500", label: "Precision 3500 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_prec_3400", label: "Precision 3400 Series", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+];
+const DELL_PRECISION_5000_VARIANTS = [
+  { id: "d_prec_5560", label: "Precision 5560", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_prec_5550", label: "Precision 5550", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_prec_5540", label: "Precision 5540", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+];
+const DELL_PRECISION_7000_VARIANTS = [
+  { id: "d_prec_7780", label: "Precision 7780", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_prec_7770", label: "Precision 7770", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_prec_7760", label: "Precision 7760", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_prec_7560", label: "Precision 7560", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+];
+const DELL_VOSTRO_3000_VARIANTS = [
+  { id: "d_vostro_3535", label: "Vostro 3535", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_3530", label: "Vostro 3530", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_3520", label: "Vostro 3520", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_3510", label: "Vostro 3510", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_3500", label: "Vostro 3500", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_3430", label: "Vostro 3430", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_3420", label: "Vostro 3420", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_3591", label: "Vostro 3591", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_3590", label: "Vostro 3590", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+];
+const DELL_VOSTRO_5000_VARIANTS = [
+  { id: "d_vostro_5630", label: "Vostro 5630", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_5620", label: "Vostro 5620", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_5590", label: "Vostro 5590", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_5581", label: "Vostro 5581", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_5510", label: "Vostro 5510", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_5502", label: "Vostro 5502", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_5501", label: "Vostro 5501", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_5490", label: "Vostro 5490", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_5410", label: "Vostro 5410", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_5402", label: "Vostro 5402", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_5401", label: "Vostro 5401", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_5301", label: "Vostro 5301", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+];
+const DELL_VOSTRO_7000_VARIANTS = [
+  { id: "d_vostro_7620", label: "Vostro 7620", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_7590", label: "Vostro 7590", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_7510", label: "Vostro 7510", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "d_vostro_7500", label: "Vostro 7500", base: 0, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+];
+const DELL_G3_VARIANTS = [
+  { id: "d_g3_3779", label: "G3 3779", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g3_3590", label: "G3 3590", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g3_3579", label: "G3 3579", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g3_3500", label: "G3 3500", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_G5_VARIANTS = [
+  { id: "d_g5_5590", label: "G5 5590", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g5_5587", label: "G5 5587", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g5_5505_se", label: "G5 5505 SE", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g5_5500", label: "G5 5500", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_G7_VARIANTS = [
+  { id: "d_g7_7790", label: "G7 7790", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g7_7700", label: "G7 7700", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g7_7590", label: "G7 7590", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g7_7588", label: "G7 7588", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g7_7500", label: "G7 7500", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_G15_VARIANTS = [
+  { id: "d_g15_5535", label: "G15 5535", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g15_5530", label: "G15 5530", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g15_5525", label: "G15 5525", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g15_5521", label: "G15 5521", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g15_5520", label: "G15 5520", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g15_5515", label: "G15 5515", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g15_5511", label: "G15 5511", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g15_5510", label: "G15 5510", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_G16_VARIANTS = [
+  { id: "d_g16_7630", label: "G16 7630", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_g16_7620", label: "G16 7620", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_PRO_13_VARIANTS = [
+  { id: "d_pro_13_premium_pa13250", label: "Dell Pro 13 Premium PA13250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_13_plus_pb13255", label: "Dell Pro 13 Plus PB13255", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_13_plus_pb13250", label: "Dell Pro 13 Plus PB13250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_13_plus_2in1_pb13255", label: "Dell Pro 13 Plus (2-in-1) PB13255", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_13_plus_2in1_pb13250", label: "Dell Pro 13 Plus (2-in-1) PB13250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_PRO_14_VARIANTS = [
+  { id: "d_pro_14_premium_pa14250", label: "Dell Pro 14 Premium PA14250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_14_plus_pb14255", label: "Dell Pro 14 Plus PB14255", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_14_plus_pb14250", label: "Dell Pro 14 Plus PB14250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_14_plus_2in1_pb14255", label: "Dell Pro 14 Plus (2-in-1) PB14255", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_14_plus_2in1_pb14250", label: "Dell Pro 14 Plus (2-in-1) PB14250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_14_pc14255", label: "Dell Pro 14 PC14255", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_14_pc14250", label: "Dell Pro 14 PC14250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_14_essential_pv14255", label: "Dell Pro 14 Essential PV14255", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_14_essential_pv14250", label: "Dell Pro 14 Essential PV14250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_max_14_premium_ma14250", label: "Dell Pro Max 14 Premium MA14250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_max_14_mc14255", label: "Dell Pro Max 14 MC14255", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_max_14_mc14250", label: "Dell Pro Max 14 MC14250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_PRO_16_VARIANTS = [
+  { id: "d_pro_max_16_premium_ma16250", label: "Dell Pro Max 16 Premium MA16250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_max_16_plus_mb16250", label: "Dell Pro Max 16 Plus MB16250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_max_16_mc16255", label: "Dell Pro Max 16 MC16255", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_max_16_mc16250", label: "Dell Pro Max 16 MC16250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_16_plus_pb16255", label: "Dell Pro 16 Plus PB16255", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_16_plus_pb16250", label: "Dell Pro 16 Plus PB16250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_16_pc16255", label: "Dell Pro 16 PC16255", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "d_pro_16_pc16250", label: "Dell Pro 16 PC16250", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_LAT_RUGGED_VARIANTS = [
+  { id: "d_lat_rugged_5430", label: "Latitude 5430 Rugged", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "d_lat_rugged_7330_extreme", label: "Latitude 7330 Rugged Extreme", base: 0, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+];
+
+const DELL_XPS_SUB_SERIES = [
+  { id: "dell_xps_13", label: "XPS 13", year: "13-inch", topPrice: 0, variants: DELL_XPS_13_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_xps_14", label: "XPS 14", year: "14-inch", topPrice: 0, variants: DELL_XPS_14_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_xps_15", label: "XPS 15", year: "15-inch", topPrice: 0, variants: DELL_XPS_15_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_xps_16", label: "XPS 16", year: "16-inch", topPrice: 0, variants: DELL_XPS_16_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_xps_17", label: "XPS 17", year: "17-inch", topPrice: 0, variants: DELL_XPS_17_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_LATITUDE_SUB_SERIES = [
+  { id: "dell_lat_3000", label: "Latitude 3000", year: "Entry business", topPrice: 0, variants: DELL_LATITUDE_3000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_lat_5000", label: "Latitude 5000", year: "Mainstream", topPrice: 0, variants: DELL_LATITUDE_5000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_lat_7000", label: "Latitude 7000", year: "Premium", topPrice: 0, variants: DELL_LATITUDE_7000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_lat_9000", label: "Latitude 9000", year: "Ultra-premium", topPrice: 0, variants: DELL_LATITUDE_9000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+];
+const DELL_INSPIRON_SUB_SERIES = [
+  { id: "dell_insp_3000", label: "Inspiron 3000", year: "Essential", topPrice: 0, variants: DELL_INSPIRON_3000_VARIANTS, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dell_insp_5000", label: "Inspiron 5000", year: "Mainstream", topPrice: 0, variants: DELL_INSPIRON_5000_VARIANTS, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dell_insp_7000", label: "Inspiron 7000", year: "Performance", topPrice: 0, variants: DELL_INSPIRON_7000_VARIANTS, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+];
+const DELL_PRECISION_SUB_SERIES = [
+  { id: "dell_prec_3000", label: "Precision 3000", year: "Entry mobile WS", topPrice: 0, variants: DELL_PRECISION_3000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_prec_5000", label: "Precision 5000", year: "Performance mobile", topPrice: 0, variants: DELL_PRECISION_5000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_prec_7000", label: "Precision 7000", year: "Ultimate mobile", topPrice: 0, variants: DELL_PRECISION_7000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+];
+const DELL_VOSTRO_SUB_SERIES = [
+  { id: "dell_vostro_3000", label: "Vostro 3000", year: "Small business", topPrice: 0, variants: DELL_VOSTRO_3000_VARIANTS, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dell_vostro_5000", label: "Vostro 5000", year: "Mid-range", topPrice: 0, variants: DELL_VOSTRO_5000_VARIANTS, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dell_vostro_7000", label: "Vostro 7000", year: "Performance", topPrice: 0, variants: DELL_VOSTRO_7000_VARIANTS, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+];
+const DELL_G_SUB_SERIES = [
+  { id: "dell_g3", label: "G3", year: "Entry gaming", topPrice: 0, variants: DELL_G3_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_g5", label: "G5", year: "Mid gaming", topPrice: 0, variants: DELL_G5_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_g7", label: "G7", year: "Performance gaming", topPrice: 0, variants: DELL_G7_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_g15", label: "G15", year: "15-inch gaming", topPrice: 0, variants: DELL_G15_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_g16", label: "G16", year: "16-inch gaming", topPrice: 0, variants: DELL_G16_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_PRO_SUB_SERIES = [
+  { id: "dell_pro_13", label: "Dell Pro 13", year: "13-inch", topPrice: 0, variants: DELL_PRO_13_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_pro_14", label: "Dell Pro 14", year: "14-inch", topPrice: 0, variants: DELL_PRO_14_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_pro_16", label: "Dell Pro 16", year: "16-inch", topPrice: 0, variants: DELL_PRO_16_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+];
+const DELL_RUGGED_SUB_SERIES = [
+  { id: "dell_lat_rugged", label: "Latitude Rugged", year: "Field-tough", topPrice: 0, variants: DELL_LAT_RUGGED_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+];
+const DELL_PC_SERIES = [
+  { id: "dell_xps", label: "XPS", year: "Premium consumer", topPrice: 0, subSeries: DELL_XPS_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_latitude", label: "Latitude", year: "Business", topPrice: 0, subSeries: DELL_LATITUDE_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_inspiron", label: "Inspiron", year: "Everyday", topPrice: 0, subSeries: DELL_INSPIRON_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dell_precision", label: "Precision", year: "Mobile workstation", topPrice: 0, subSeries: DELL_PRECISION_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_vostro", label: "Vostro", year: "Small-business", topPrice: 0, subSeries: DELL_VOSTRO_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dell_g", label: "G Series", year: "Gaming", topPrice: 0, subSeries: DELL_G_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_pro", label: "Dell Pro", year: "AI-class business", topPrice: 0, subSeries: DELL_PRO_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_rugged", label: "Rugged", year: "Field/military", topPrice: 0, subSeries: DELL_RUGGED_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+];
+const DELL_PC_ALL_SUB_SERIES = [
+  ...DELL_XPS_SUB_SERIES, ...DELL_LATITUDE_SUB_SERIES, ...DELL_INSPIRON_SUB_SERIES,
+  ...DELL_PRECISION_SUB_SERIES, ...DELL_VOSTRO_SUB_SERIES, ...DELL_G_SUB_SERIES,
+  ...DELL_PRO_SUB_SERIES, ...DELL_RUGGED_SUB_SERIES,
+];
+
 const ALIENWARE_DESKTOP_MODELS = [
   { id: "awaurorar16", label: "Aurora R16", base: 800, image: "/devices/alienware-aurora-r16.webp" },
   { id: "awaurorar15", label: "Aurora R15", base: 600, image: "/devices/alienware-aurora-r15.webp" },
@@ -1628,6 +1893,9 @@ export default function Home() {
     : selectedSeries
       ? (ASUS_PC_SERIES.find(s => s.id === selectedSeries) as { variants?: { id: string; label: string; base: number }[] })?.variants || []
       : [];
+  const dellPcVariants = selectedSubSeries
+    ? DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.variants || []
+    : [];
 
   type Crumb = { label: string; onClick: () => void };
   const breadcrumbs: Crumb[] = [
@@ -1640,7 +1908,7 @@ export default function Home() {
     });
   }
   if (selectedSeries) {
-    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : deviceType === "lg_pc" ? LG_PC_SERIES : deviceType === "lenovo_tab" ? LENOVO_TAB_SERIES : deviceType === "surface" ? SURFACE_SERIES : deviceType === "apple_desktop" ? APPLE_DESKTOP_SERIES : deviceType === "asus_pc" ? ASUS_PC_SERIES : null;
+    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : deviceType === "lg_pc" ? LG_PC_SERIES : deviceType === "lenovo_tab" ? LENOVO_TAB_SERIES : deviceType === "surface" ? SURFACE_SERIES : deviceType === "apple_desktop" ? APPLE_DESKTOP_SERIES : deviceType === "asus_pc" ? ASUS_PC_SERIES : deviceType === "dell" ? DELL_PC_SERIES : null;
     const ser = seriesList?.find(s => s.id === selectedSeries);
     if (ser) breadcrumbs.push({
       label: ser.label,
@@ -1648,7 +1916,8 @@ export default function Home() {
     });
   }
   if (selectedSubSeries) {
-    const sub = ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries);
+    const sub = ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)
+      || DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries);
     if (sub) breadcrumbs.push({
       label: sub.label,
       onClick: () => { setModel(null); setStorage(null); setCondition(null); setCarrier(null); setStep("model"); pushHistory("model"); },
@@ -1671,7 +1940,7 @@ export default function Home() {
     onClick: () => { setStep("quote"); pushHistory("quote"); },
   });
   const showBreadcrumbs = breadcrumbs.length > 1 && step !== "device" && step !== "category" && page === "home";
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_pc" ? asusPcVariants : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? dellPcVariants : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_pc" ? asusPcVariants : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -2504,7 +2773,7 @@ export default function Home() {
               {category === "computers" && [
                 { id: "macbook" as const, label: "Apple MacBook", sub: "MacBook Air & Pro, M1+", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg> },
                 { id: "samsung_pc" as const, label: "Samsung", sub: "Galaxy Book 2, 3, 4 series", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="bold" fontFamily="Arial">S</text></svg> },
-                { id: "dell" as const, label: "Dell", sub: "XPS, Latitude, Inspiron", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#007db8"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">DELL</text></svg> },
+                { id: "dell" as const, label: "Dell", sub: "XPS, Latitude, Inspiron, Vostro, Precision, G, Rugged", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#007db8"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">DELL</text></svg> },
                 { id: "alienware" as const, label: "Alienware", sub: "m16, m18, x14, x16", brandIcon: <span className="text-[40px] leading-none">👽</span> },
                 { id: "hp" as const, label: "HP", sub: "Spectre, Envy, OMEN, EliteBook", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#0096d6"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">hp</text></svg> },
                 { id: "lenovo" as const, label: "Lenovo", sub: "ThinkPad, Yoga, Legion, IdeaPad", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg> },
@@ -2897,6 +3166,55 @@ export default function Home() {
               </>
             )}
 
+            {/* Dell Laptops: top-level series picker (8 cards mirroring IWM) */}
+            {deviceType === "dell" && !selectedSeries && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Dell laptop</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {DELL_PC_SERIES.map((s) => (
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                      {s.image ? (
+                        <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                      ) : (
+                        <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#007db8"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">DELL</text></svg>
+                      )}
+                      <p className="font-bold text-sm">{s.label}</p>
+                      <p className="text-[#888] text-[10px] text-center px-1 leading-tight">{s.year}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Dell Laptops: sub-series picker — every Dell series has subSeries */}
+            {deviceType === "dell" && selectedSeries && !selectedSubSeries && (() => {
+              const ser = DELL_PC_SERIES.find(s => s.id === selectedSeries);
+              const subs = (ser as { subSeries?: typeof DELL_XPS_SUB_SERIES })?.subSeries;
+              if (!subs) return null;
+              return (
+                <>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-1">Dell — {ser?.label}</h2>
+                  <p className="text-[#888] text-sm mb-6">Pick your sub-line</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {subs.map((s) => (
+                      <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                        {s.image ? (
+                          <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                        ) : (
+                          <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#007db8"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">DELL</text></svg>
+                        )}
+                        <p className="font-bold text-sm text-center">{s.label}</p>
+                        <p className="text-[#888] text-[10px] text-center">{s.year}</p>
+                        <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              );
+            })()}
+
             {/* ASUS Laptops: top-level series picker (5 cards) */}
             {deviceType === "asus_pc" && !selectedSeries && (
               <>
@@ -3076,9 +3394,9 @@ export default function Home() {
               </>
             )}
 
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "apple_desktop" && !selectedSeries) && !(deviceType === "asus_pc" && !selectedSeries) && !(deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries) && (
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "apple_desktop" && !selectedSeries) && !(deviceType === "asus_pc" && !selectedSeries) && !(deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries) && !(deviceType === "dell" && !selectedSeries) && !(deviceType === "dell" && selectedSeries && !selectedSubSeries) && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSeries ? `LG ${LG_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "asus_pc" && selectedSubSeries ? `ASUS — ${ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "asus_pc" && selectedSeries ? `ASUS — ${ASUS_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSeries ? `LG ${LG_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "asus_pc" && selectedSubSeries ? `ASUS — ${ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "asus_pc" && selectedSeries ? `ASUS — ${ASUS_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "dell" && selectedSubSeries ? `Dell — ${DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : "Select your model"}</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 {/* Mobile: grid cards */}
                 <div className="grid grid-cols-2 gap-2 md:hidden">
