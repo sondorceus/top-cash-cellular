@@ -2,17 +2,12 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
-const manrope = localFont({
-  src: "../public/fonts/Manrope-Variable.woff2",
-  variable: "--font-manrope",
-  weight: "200 800",
-  display: "swap",
-});
-
-const anton = localFont({
-  src: "../public/fonts/Anton-Regular.woff2",
-  variable: "--font-anton",
-  weight: "400",
+// Cabinet Grotesk Variable — single brand font for the entire site.
+// Self-hosted woff2 (41 KB), ITF Free Font License (commercial use OK).
+const cabinet = localFont({
+  src: "../public/fonts/CabinetGrotesk-Variable.woff2",
+  variable: "--font-cabinet",
+  weight: "100 900",
   display: "swap",
 });
 
@@ -56,7 +51,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`h-full antialiased ${manrope.variable} ${anton.variable}`}>
+    <html lang="en" className={`h-full antialiased ${cabinet.variable}`}>
       <head>
         <link rel="preload" as="image" href="/iphone17.png" fetchPriority="high" />
         <script
