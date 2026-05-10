@@ -2972,23 +2972,35 @@ export default function Home() {
               </span>
             </div>
 
+            {/* TOP PAYOUTS TICKER — what we're paying today, no duplicates */}
             <div className="mt-8 -mx-4">
-              <p className="text-[#bbb] text-xs font-semibold uppercase tracking-wider mb-3 px-4">Popular devices — sell yours today</p>
+              <div className="flex items-center justify-between px-4 mb-3">
+                <p className="text-[#bbb] text-xs font-semibold uppercase tracking-wider">Today&apos;s top payouts</p>
+                <span className="inline-flex items-center gap-1.5 text-[10px] text-[#00c853] font-bold uppercase tracking-wider">
+                  <span className="relative flex h-1.5 w-1.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00c853] opacity-75"></span><span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00c853]"></span></span>
+                  Live
+                </span>
+              </div>
               <div className="overflow-hidden tcc-marquee-mask">
-                <div className="flex gap-3 w-max animate-[marquee_28s_linear_infinite] hover:[animation-play-state:paused]">
+                <div className="flex gap-3 w-max animate-[marquee_36s_linear_infinite] hover:[animation-play-state:paused]">
                   {(() => {
                     const devices = [
-                      { name: "iPhone 16 Pro Max", price: 789, brand: "iphone" as const },
-                      { name: "iPhone 15 Pro Max", price: 467, brand: "iphone" as const },
-                      { name: "Samsung S24 Ultra", price: 805, brand: "android" as const },
-                      { name: "MacBook Pro 16\" M4", price: 1932, brand: "macbook" as const },
-                      { name: "PlayStation 5", price: 345, brand: "sony" as const },
-                      { name: "iPhone 14 Pro", price: 225, brand: "iphone" as const },
+                      { name: "iPhone 17 Pro Max", price: 850, brand: "iphone" as const },
+                      { name: "iPhone 16 Pro Max", price: 720, brand: "iphone" as const },
+                      { name: "Samsung S24 Ultra", price: 500, brand: "android" as const },
+                      { name: "MacBook Pro 16\" M4", price: 1200, brand: "macbook" as const },
+                      { name: "iPhone 15 Pro Max", price: 470, brand: "iphone" as const },
+                      { name: "Galaxy Z Fold 5", price: 500, brand: "android" as const },
+                      { name: "MacBook Air M3", price: 600, brand: "macbook" as const },
+                      { name: "PlayStation 5", price: 300, brand: "sony" as const },
+                      { name: "iPhone 14 Pro Max", price: 250, brand: "iphone" as const },
+                      { name: "iPad Pro M4 13\"", price: 700, brand: "ipad" as const },
                     ];
+                    // Single set duplicated only for the marquee loop infinite-scroll
                     return [...devices, ...devices].map((d, i) => (
-                      <button key={i} onClick={() => { setDeviceType(d.brand); setStep("model"); pushHistory("model"); }} className="flex-shrink-0 w-[260px] flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-4 py-3 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left tap-press">
-                        <span className="text-white text-xs font-semibold truncate pr-2">{d.name}</span>
-                        <span className="text-[#00c853] text-xs font-bold whitespace-nowrap">→</span>
+                      <button key={i} onClick={() => { setDeviceType(d.brand); setStep("model"); pushHistory("model"); }} className="flex-shrink-0 w-[280px] flex items-center justify-between gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left tap-press">
+                        <span className="text-white text-xs font-semibold truncate flex-1">{d.name}</span>
+                        <span className="text-[#00c853] text-xs font-bold whitespace-nowrap">up to ${d.price}</span>
                       </button>
                     ));
                   })()}
@@ -2996,6 +3008,67 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </section>
+      )}
+
+      {/* WE BUY BROKEN — capture damaged-device market */}
+      {step === "device" && page === "home" && (
+        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-10">
+          <div className="bg-gradient-to-br from-[#ff5722]/10 via-[#00c853]/5 to-[#00c853]/15 border border-[#00c853]/30 rounded-3xl p-6 md:p-8">
+            <div className="flex items-start gap-4">
+              <span className="text-5xl shrink-0">🔧</span>
+              <div className="flex-1">
+                <p className="text-[#ff5722] text-xs font-bold uppercase tracking-[0.18em] mb-1">Cracked, dented, dead?</p>
+                <h2 className="text-2xl md:text-3xl font-bold mb-2 leading-tight">Yes, we buy broken devices.</h2>
+                <p className="text-[#bbb] text-sm mb-4">Cracked screen, smashed back glass, water damage, dead battery, no power — bring it. Most assume nobody buys damaged phones. We do. Honest quote, no walk-away gimmicks.</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+                  {[
+                    { icon: "📱", t: "Cracked screen" },
+                    { icon: "💧", t: "Water damage" },
+                    { icon: "🔋", t: "Dead battery" },
+                    { icon: "⚡", t: "Won't power on" },
+                  ].map(item => (
+                    <div key={item.t} className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
+                      <p className="text-xl mb-1">{item.icon}</p>
+                      <p className="text-[11px] font-semibold text-white leading-tight">{item.t}</p>
+                    </div>
+                  ))}
+                </div>
+                <button onClick={() => { setStep("category"); pushHistory("category"); }} className="inline-flex items-center gap-2 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] px-5 py-2.5 rounded-full text-sm font-bold cursor-pointer transition tap-press">
+                  Get a quote for your broken device →
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* PREP CHECKLIST — Before you meet us */}
+      {step === "device" && page === "home" && (
+        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-10">
+          <div className="text-center mb-6">
+            <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">Before you meet us</p>
+            <h2 className="text-2xl md:text-3xl font-bold leading-tight reveal" data-stagger="1">5-minute prep checklist</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-3xl mx-auto">
+            {[
+              { num: "1", title: "Back up your data", body: "iCloud, Google One, or your computer — whatever works. Takes minutes." },
+              { num: "2", title: "Turn off Find My iPhone", body: "Settings → [your name] → Find My → Find My iPhone → off. Required before we can pay." },
+              { num: "3", title: "Charge to at least 20%", body: "We need to power-on test the device. 20% is plenty." },
+              { num: "4", title: "Bring your ID", body: "Texas DL or US passport. Required by Austin's pawn / secondhand-goods ordinance." },
+            ].map((item, i) => (
+              <div key={item.num} className="flex items-start gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 reveal" data-stagger={Math.min(i + 2, 8)}>
+                <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-sm font-bold shrink-0">{item.num}</div>
+                <div>
+                  <p className="font-semibold text-base mb-0.5">{item.title}</p>
+                  <p className="text-[#bbb] text-sm leading-relaxed">{item.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-[#888] text-xs text-center mt-6">
+            Not sure where to find your model/storage? <a href="/how-it-works" className="text-[#00c853] hover:underline font-semibold">Find your iPhone info →</a>
+          </p>
         </section>
       )}
 
@@ -5204,6 +5277,16 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* TEXT US FAB — mobile-only, opens SMS app pre-filled */}
+      <a
+        href="sms:+18775492056?body=Hi%2C%20I%20want%20a%20quote%20for%20my%20"
+        aria-label="Text us for a quote"
+        className="lg:hidden fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-[#00c853] text-[#0a0a0a] px-4 py-3 rounded-full shadow-lg hover:bg-[#00e676] transition tap-press font-bold text-sm"
+      >
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+        Text us a quote
+      </a>
 
       {/* CHAT WIDGET */}
       <div className="fixed bottom-6 left-6 z-50">
