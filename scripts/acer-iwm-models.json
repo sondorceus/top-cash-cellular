@@ -1,0 +1,58 @@
+[
+  {
+    "id": "acer-nitro-acer-nitro-16",
+    "series_id": "nitro",
+    "series_label": "Nitro",
+    "model_slug": "acer-nitro-16",
+    "label": "Acer Nitro 16",
+    "image": "/devices/acer-nitro-acer-nitro-16.png"
+  },
+  {
+    "id": "acer-nitro-acer-nitro-v",
+    "series_id": "nitro",
+    "series_label": "Nitro",
+    "model_slug": "acer-nitro-v",
+    "label": "Acer Nitro V",
+    "image": "/devices/acer-nitro-acer-nitro-v.png"
+  },
+  {
+    "id": "acer-nitro-acer-nitro-17",
+    "series_id": "nitro",
+    "series_label": "Nitro",
+    "model_slug": "acer-nitro-17",
+    "label": "Acer Nitro 17",
+    "image": "/devices/acer-nitro-acer-nitro-17.png"
+  },
+  {
+    "id": "acer-nitro-acer-nitro-7",
+    "series_id": "nitro",
+    "series_label": "Nitro",
+    "model_slug": "acer-nitro-7",
+    "label": "Acer Nitro 7",
+    "image": "/devices/acer-nitro-acer-nitro-7.png"
+  },
+  {
+    "id": "acer-nitro-acer-nitro-5",
+    "series_id": "nitro",
+    "series_label": "Nitro",
+    "model_slug": "acer-nitro-5",
+    "label": "Acer Nitro 5",
+    "image": "/devices/acer-nitro-acer-nitro-5.png"
+  },
+  {
+    "id": "acer-predator-acer-predator-triton",
+    "series_id": "predator",
+    "series_label": "Predator",
+    "model_slug": "acer-predator-triton",
+    "label": "Acer Predator Triton",
+    "image": "/devices/acer-predator-acer-predator-triton.png"
+  },
+  {
+    "id": "acer-predator-acer-predator-helios",
+    "series_id": "predator",
+    "series_label": "Predator",
+    "model_slug": "acer-predator-helios",
+    "label": "Acer Predator Helios",
+    "image": "/devices/acer-predator-acer-predator-helios.png"
+  }
+]
