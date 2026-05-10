@@ -3504,8 +3504,6 @@ export default function Home() {
             {/* iPhone: All variants flat (series intermediate removed) */}
             {deviceType === "iphone" && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your iPhone</h2>
-                <p className="text-[#bbb] text-sm mb-6">Pick your exact model</p>
                 <div className="space-y-2">
                   {models.map((m) => {
                     const seriesImg = IPHONE_SERIES.find(s => s.id === selectedSeries);
@@ -3528,8 +3526,6 @@ export default function Home() {
             {/* Samsung Galaxy: All variants flat */}
             {deviceType === "android" && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Galaxy</h2>
-                <p className="text-[#bbb] text-sm mb-6">Pick your exact model</p>
                 <div className="space-y-2">
                   {models.map((m) => {
                     const mImage = (m as { image?: string }).image;
@@ -3554,8 +3550,6 @@ export default function Home() {
             {/* Google Pixel: All variants flat */}
             {deviceType === "pixel" && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Pixel</h2>
-                <p className="text-[#bbb] text-sm mb-6">Pick your model — we&apos;ll send you a custom offer</p>
                 <div className="space-y-2">
                   {models.map((m) => {
                     const mImage = (m as { image?: string }).image;
@@ -3581,8 +3575,6 @@ export default function Home() {
             {deviceType === "macbook" && (() => {
               return (
                 <>
-                  <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your MacBook</h2>
-                  <p className="text-[#bbb] text-sm mb-6">Pick your exact model</p>
                   <div className="space-y-2">
                     {models.map((m) => {
                       const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
@@ -3613,8 +3605,6 @@ export default function Home() {
             {/* iPad: All variants flat */}
             {deviceType === "ipad" && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your iPad</h2>
-                <p className="text-[#bbb] text-sm mb-6">Pick your exact model</p>
                 <div className="space-y-2">
                   {models.map((m) => {
                     const mImg = (m as { image?: string }).image;
@@ -3910,8 +3900,6 @@ export default function Home() {
             {/* Lenovo Tab: All variants flat */}
             {deviceType === "lenovo_tab" && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Lenovo tablet</h2>
-                <p className="text-[#bbb] text-sm mb-6">Choose your model</p>
                 <div className="space-y-2">
                   {lenovoTabVariants.map((m) => (
                     <button key={m.id} onClick={() => { setInquiryCategory("Tablet"); setInquiryDesc(`Lenovo ${m.label}`); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
@@ -3929,8 +3917,6 @@ export default function Home() {
             {/* Surface: All variants flat */}
             {deviceType === "surface" && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Surface</h2>
-                <p className="text-[#bbb] text-sm mb-6">Choose your model</p>
                 <div className="space-y-2">
                   {surfaceVariants.map((m) => (
                     <button key={m.id} onClick={() => { setInquiryCategory("Tablet"); setInquiryDesc(`Microsoft ${m.label}`); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
@@ -3969,8 +3955,6 @@ export default function Home() {
 
             {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "lg_pc" && selectedSeries && !selectedSubSeries) && !(deviceType === "asus_pc" && !selectedSeries) && !(deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries) && !(deviceType === "dell" && !selectedSeries) && !(deviceType === "dell" && selectedSeries && !selectedSubSeries) && !(deviceType === "lenovo" && !selectedSeries) && !(deviceType === "hp" && !selectedSeries) && !(deviceType === "hp" && (selectedSeries === "hp_elitebook" || selectedSeries === "hp_omen") && !selectedSubSeries) && !(deviceType === "acer" && !selectedSeries) && !(deviceType === "samsung_pc" && !selectedSeries) && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSubSeries ? `LG ${LG_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "asus_pc" && selectedSubSeries ? `ASUS — ${ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "asus_pc" && selectedSeries ? `ASUS — ${ASUS_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "dell" && selectedSubSeries ? `Dell — ${DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "lenovo" && selectedSeries ? `Lenovo ${LENOVO_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "hp" && selectedSubSeries ? `HP ${HP_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "hp" && selectedSeries ? `HP ${HP_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "acer" && selectedSeries ? `Acer ${ACER_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "samsung_pc" && selectedSeries ? `Samsung ${SAMSUNG_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
-                <p className="text-[#bbb] text-sm mb-6">Choose your exact device</p>
                 {/* Mobile: grid cards */}
                 <div className="grid grid-cols-2 gap-2 md:hidden">
                   {models.map((m) => {
@@ -4048,8 +4032,6 @@ export default function Home() {
             {/* Other categories (consoles incl. Sony, watches): Flat model list */}
             {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "android" && deviceType !== "pixel" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && deviceType !== "samsung_tab" && deviceType !== "surface" && deviceType !== "lenovo_tab" && deviceType !== "oneplus_tab" && deviceType !== "google_tab" && category !== "computers" && category !== "desktops" && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "sony" ? "Select your PlayStation" : "Select your model"}</h2>
-                <p className="text-[#bbb] text-sm mb-6">Pick your exact model</p>
                 <div className="space-y-2">
                   {models.map((m) => {
                     const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
