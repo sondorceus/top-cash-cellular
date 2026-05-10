@@ -3029,31 +3029,32 @@ export default function Home() {
         </section>
       )}
 
-      {/* WE BUY BROKEN — capture damaged-device market */}
+      {/* USED + LIGHTLY-USED FOCUS — top dollar leans on good condition; minor wear still welcome */}
       {step === "device" && page === "home" && (
         <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-10">
-          <div className="bg-gradient-to-br from-[#ff5722]/10 via-[#00c853]/5 to-[#00c853]/15 border border-[#00c853]/30 rounded-3xl p-6 md:p-8">
+          <div className="bg-gradient-to-br from-[#00c853]/15 via-[#00c853]/5 to-[#00c853]/15 border border-[#00c853]/30 rounded-3xl p-6 md:p-8">
             <div className="flex items-start gap-4">
-              <span className="text-5xl shrink-0">🔧</span>
+              <span className="text-5xl shrink-0">📱</span>
               <div className="flex-1">
-                <p className="text-[#ff5722] text-xs font-bold uppercase tracking-[0.18em] mb-1">Cracked, dented, dead?</p>
-                <h2 className="text-2xl md:text-3xl font-bold mb-2 leading-tight">Yes, we buy broken devices.</h2>
-                <p className="text-[#bbb] text-sm mb-4">Cracked screen, smashed back glass, water damage, dead battery, no power — bring it. Most assume nobody buys damaged phones. We do. Honest quote, no walk-away gimmicks.</p>
+                <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-1">Used, gently worn, like-new</p>
+                <h2 className="text-2xl md:text-3xl font-bold mb-2 leading-tight">Working devices get top dollar.</h2>
+                <p className="text-[#bbb] text-sm mb-4">Where we pay best: phones that turn on, hold a charge, and have a clean screen. Minor scratches or a faded battery are fine — that&apos;s normal wear. We&apos;ll still look at devices with bigger issues, but the quote reflects the condition. No surprise deductions and no walk-away gimmicks.</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
                   {[
-                    { icon: "📱", t: "Cracked screen" },
-                    { icon: "💧", t: "Water damage" },
-                    { icon: "🔋", t: "Dead battery" },
-                    { icon: "⚡", t: "Won't power on" },
+                    { icon: "✨", t: "Like new", note: "Best payout" },
+                    { icon: "👍", t: "Light wear", note: "Top tier" },
+                    { icon: "🪙", t: "Visible wear", note: "Still fair" },
+                    { icon: "🔧", t: "Bigger issues", note: "Honest quote" },
                   ].map(item => (
                     <div key={item.t} className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
                       <p className="text-xl mb-1">{item.icon}</p>
                       <p className="text-[11px] font-semibold text-white leading-tight">{item.t}</p>
+                      <p className="text-[10px] text-[#00c853] mt-0.5">{item.note}</p>
                     </div>
                   ))}
                 </div>
                 <button onClick={() => { setStep("category"); pushHistory("category"); }} className="inline-flex items-center gap-2 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] px-5 py-2.5 rounded-full text-sm font-bold cursor-pointer transition tap-press">
-                  Get a quote for your broken device →
+                  See what your device is worth →
                 </button>
               </div>
             </div>
