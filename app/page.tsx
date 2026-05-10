@@ -2481,7 +2481,7 @@ export default function Home() {
         </a>
         <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between relative">
           {/* LEFT: logo */}
-          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer group tap-press rounded-xl shrink-0">
+          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer group tap-press rounded-full shrink-0 bg-white/[0.04] border border-white/10 hover:bg-white/[0.07] pl-1.5 pr-3 py-1 transition">
             <span className="flex items-center gap-2">
               <span className="relative w-9 h-9 rounded-xl tcc-logo-card flex items-center justify-center">
                 <span className="absolute inset-0 rounded-xl pointer-events-none" style={{ background: "radial-gradient(circle at 28% 25%, rgba(0,230,118,0.18), transparent 65%)" }}></span>
@@ -2629,13 +2629,13 @@ export default function Home() {
             </div>
           </div>
 
-          {/* RIGHT: cart + login/name (desktop) | cart + hamburger (mobile) */}
-          <div className="flex items-center gap-2 shrink-0">
+          {/* RIGHT: cart + login/name (desktop) | cart + hamburger (mobile) — wrapped in matching pill */}
+          <div className="flex items-center gap-1 shrink-0 bg-white/[0.04] border border-white/10 rounded-full px-1.5 py-1">
             {/* CART — always visible on every screen size */}
             <button
               onClick={() => setCartOpen(!cartOpen)}
               aria-label="Cart"
-              className="relative w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 flex items-center justify-center cursor-pointer tap-press transition"
+              className="relative w-9 h-9 rounded-full hover:bg-white/10 hover:text-[#00c853] flex items-center justify-center cursor-pointer tap-press transition"
             >
               <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
@@ -2647,11 +2647,11 @@ export default function Home() {
               )}
             </button>
 
-            {/* DESKTOP login/name (lg+ only) */}
-            <span className="hidden lg:inline-block mx-1 h-5 w-px bg-white/10" />
+            {/* DESKTOP divider + login/name (lg+ only) */}
+            <span className="hidden lg:inline-block h-5 w-px bg-white/10" />
             <button
               onClick={() => setLookupOpen(true)}
-              className="hidden lg:flex items-center gap-2 px-3 py-2 text-sm font-semibold text-[#00c853] hover:text-[#00e676] transition cursor-pointer tap-press rounded-full"
+              className="hidden lg:flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-[#00c853] hover:text-[#00e676] hover:bg-white/5 transition cursor-pointer tap-press rounded-full"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
               {lookupResult?.found && lookupResult.name
@@ -2663,7 +2663,7 @@ export default function Home() {
             <button
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open menu"
-              className="lg:hidden w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press transition"
+              className="lg:hidden w-9 h-9 rounded-full hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press transition"
             >
               <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
