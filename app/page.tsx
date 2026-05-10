@@ -2827,7 +2827,7 @@ export default function Home() {
                     return [...devices, ...devices].map((d, i) => (
                       <button key={i} onClick={() => { setDeviceType(d.brand); setStep("model"); pushHistory("model"); }} className="flex-shrink-0 w-[260px] flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-4 py-3 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left tap-press">
                         <span className="text-white text-xs font-semibold truncate pr-2">{d.name}</span>
-                        <span className="text-[#00c853] text-xs font-bold whitespace-nowrap">up to ${d.price.toLocaleString()}</span>
+                        <span className="text-[#00c853] text-xs font-bold whitespace-nowrap">→</span>
                       </button>
                     ));
                   })()}
@@ -3028,7 +3028,7 @@ export default function Home() {
                         className="w-full text-left px-4 py-3 hover:bg-white/5 transition flex items-center justify-between border-b border-white/5 last:border-0 cursor-pointer"
                       >
                         <span className="text-sm font-semibold">{h.label}</span>
-                        {h.base > 0 && <span className="text-[#00c853] text-xs font-bold">up to ${h.base}</span>}
+                        
                       </button>
                     ))}
                   </div>
@@ -3426,7 +3426,7 @@ export default function Home() {
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                       {(s as { image?: string }).image && <img src={(s as { image?: string }).image} alt={s.label} width={56} height={56} loading="eager" decoding="async" fetchPriority="high" className="w-14 h-14 object-contain mb-1" />}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${maxQuoteForSeries(s.variants)}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get a quote</p>
                     </button>
                   ))}
                 </div>
@@ -3447,7 +3447,7 @@ export default function Home() {
                       {imgSrc && <img src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">up to ${maxQuoteFor(m)}</span>
+                        <span className="text-[#00c853] font-bold text-sm">Get a quote</span>
                         <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
@@ -3471,7 +3471,7 @@ export default function Home() {
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${maxQuoteForSeries(s.variants)}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get a quote</p>
                     </button>
                   ))}
                 </div>
@@ -3495,7 +3495,7 @@ export default function Home() {
                       )}
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">up to ${maxQuoteFor(m as { id: string; base: number })}</span>
+                        <span className="text-[#00c853] font-bold text-sm">Get a quote</span>
                         <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
@@ -3566,7 +3566,7 @@ export default function Home() {
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#888] text-[10px]">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">{(s as { inquiryOnly?: boolean }).inquiryOnly ? "Get an offer" : `up to $${maxQuoteForSeries(s.variants)}`}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">"Get a quote"</p>
                     </button>
                   ))}
                 </div>
@@ -3596,7 +3596,7 @@ export default function Home() {
                           )}
                           <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                           <div className="flex items-center gap-2">
-                            <span className="text-[#00c853] font-bold text-sm">{inq ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</span>
+                            <span className="text-[#00c853] font-bold text-sm">"Get a quote"</span>
                             <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                           </div>
                         </button>
@@ -3621,7 +3621,7 @@ export default function Home() {
                         <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${maxQuoteForSeries(s.variants)}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get a quote</p>
                     </button>
                   ))}
                 </div>
@@ -3652,7 +3652,7 @@ export default function Home() {
                         )}
                         <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                         <div className="flex items-center gap-2">
-                          <span className="text-[#00c853] font-bold text-sm">up to ${maxQuoteFor(m)}</span>
+                          <span className="text-[#00c853] font-bold text-sm">Get a quote</span>
                           <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
                       </button>
@@ -4059,7 +4059,7 @@ export default function Home() {
                         )}
                         <p className="font-bold text-sm">{s.label}</p>
                         <p className="text-[#888] text-[10px]">{s.year}</p>
-                        <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${s.topPrice}</p>
+                        <p className="text-[#00c853] font-bold text-xs mt-0.5">Get a quote</p>
                       </button>
                     );
                   })}
@@ -4087,7 +4087,7 @@ export default function Home() {
                           <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
                         )}
                         <p className="font-bold text-sm text-center leading-tight">{m.label}</p>
-                        <p className="text-[#00c853] font-bold text-xs mt-0.5">{inq ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</p>
+                        <p className="text-[#00c853] font-bold text-xs mt-0.5">"Get a quote"</p>
                       </button>
                     );
                   })}
@@ -4109,7 +4109,7 @@ export default function Home() {
                         )}
                         <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                         <div className="flex items-center gap-2">
-                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</span>
+                          <span className="text-[#00c853] font-bold text-sm">"Get a quote"</span>
                           <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
                       </button>
@@ -4160,7 +4160,7 @@ export default function Home() {
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#888] text-[10px]">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${maxQuoteForSeries(s.variants)}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get a quote</p>
                     </button>
                   ))}
                 </div>
@@ -4182,7 +4182,7 @@ export default function Home() {
                       }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         <p className="font-semibold text-[15px]">{m.label}</p>
                         <div className="flex items-center gap-2">
-                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</span>
+                          <span className="text-[#00c853] font-bold text-sm">"Get a quote"</span>
                           <svg className="w-4 h-4 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
                       </button>
