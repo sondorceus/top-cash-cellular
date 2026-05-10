@@ -257,10 +257,10 @@ const LENOVO_TB_13_VARIANTS = [
   { id: "ln_tb_13s", label: "ThinkBook 13s", base: 0, inquiryOnly: true, image: "/devices/ln_tb_13s.png" },
 ];
 const LENOVO_TB_14_VARIANTS = [
-  { id: "ln_tb_14", label: "ThinkBook 14", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
-  { id: "ln_tb_14p", label: "ThinkBook 14p", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
-  { id: "ln_tb_14s", label: "ThinkBook 14s", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
-  { id: "ln_tb_14s_yoga", label: "ThinkBook 14s Yoga", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
+  { id: "ln_tb_14", label: "ThinkBook 14", base: 0, inquiryOnly: true, image: "/devices/ln_tb_14.png" },
+  { id: "ln_tb_14p", label: "ThinkBook 14p", base: 0, inquiryOnly: true, image: "/devices/ln_tb_14p.png" },
+  { id: "ln_tb_14s", label: "ThinkBook 14s", base: 0, inquiryOnly: true, image: "/devices/ln_tb_14s.png" },
+  { id: "ln_tb_14s_yoga", label: "ThinkBook 14s Yoga", base: 0, inquiryOnly: true, image: "/devices/ln_tb_14s_yoga.png" },
 ];
 const LENOVO_TB_15_VARIANTS = [
   { id: "ln_tb_15", label: "ThinkBook 15", base: 0, inquiryOnly: true, image: "/devices/ln_tb_15.png" },
@@ -370,7 +370,7 @@ const LENOVO_PC_SERIES = [
   { id: "lenovo_tp_l", label: "ThinkPad L", year: "Mainstream business", topPrice: 0, variants: LENOVO_TP_L_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_l-lenovo-thinkpad-l14-series.png" },
   { id: "lenovo_tp_e", label: "ThinkPad E", year: "Essential business", topPrice: 0, variants: LENOVO_TP_E_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_e14_g7.png" },
   { id: "lenovo_tp_z", label: "ThinkPad Z", year: "Modern design", topPrice: 0, variants: LENOVO_TP_Z_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_z-lenovo-thinkpad-z16.png" },
-  { id: "lenovo_thinkbook", label: "ThinkBook", year: "Business mid-range", topPrice: 0, variants: LENOVO_THINKBOOK_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
+  { id: "lenovo_thinkbook", label: "ThinkBook", year: "Business mid-range", topPrice: 0, variants: LENOVO_THINKBOOK_VARIANTS, inquiryOnly: true, image: "/devices/ln_tb_14.png" },
   { id: "lenovo_ideapad", label: "IdeaPad", year: "Everyday", topPrice: 0, variants: LENOVO_IDEAPAD_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-ideapad-lenovo-ideapad-5.png" },
   { id: "lenovo_legion", label: "Legion", year: "Gaming", topPrice: 0, variants: LENOVO_LEGION_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-legion-lenovo-legion-5-pro.png" },
   { id: "lenovo_loq", label: "LOQ", year: "Entry gaming", topPrice: 0, variants: LENOVO_LOQ_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-loq-lenovo-loq-15.png" },
