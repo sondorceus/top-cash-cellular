@@ -1,62 +1,1002 @@
 [
   {
-    "id": "lntp14g5",
-    "label": "ThinkPad X1 Carbon Gen 12",
-    "image": "/devices/lntp14g5.png",
-    "brand": "lenovo"
+    "id": "lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x1",
+    "sub_label": "ThinkPad X1",
+    "model_slug": "lenovo-thinkpad-x1-carbon",
+    "label": "Lenovo ThinkPad X1 Carbon",
+    "image": "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png"
   },
   {
-    "id": "lntp14g4",
-    "label": "ThinkPad X1 Carbon Gen 11",
-    "image": "/devices/lntp14g4.png",
-    "brand": "lenovo"
+    "id": "lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-extreme",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x1",
+    "sub_label": "ThinkPad X1",
+    "model_slug": "lenovo-thinkpad-x1-extreme",
+    "label": "Lenovo ThinkPad X1 Extreme",
+    "image": "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-extreme.png"
   },
   {
-    "id": "lntp14g3",
-    "label": "ThinkPad X1 Carbon Gen 10",
-    "image": "/devices/lntp14g3.png",
-    "brand": "lenovo"
+    "id": "lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-fold",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x1",
+    "sub_label": "ThinkPad X1",
+    "model_slug": "lenovo-thinkpad-x1-fold",
+    "label": "Lenovo ThinkPad X1 Fold",
+    "image": "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-fold.png"
   },
   {
-    "id": "lnyoga9",
-    "label": "Yoga 9i 14\\",
-    "image": "/devices/lnyoga9.png",
-    "brand": "lenovo"
+    "id": "lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-nano",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x1",
+    "sub_label": "ThinkPad X1",
+    "model_slug": "lenovo-thinkpad-x1-nano",
+    "label": "Lenovo ThinkPad X1 Nano",
+    "image": "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-nano.png"
   },
   {
-    "id": "lnyoga7",
-    "label": "Yoga 7i 16\\",
-    "image": "/devices/lnyoga7.png",
-    "brand": "lenovo"
+    "id": "lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-yoga",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x1",
+    "sub_label": "ThinkPad X1",
+    "model_slug": "lenovo-thinkpad-x1-yoga",
+    "label": "Lenovo ThinkPad X1 Yoga",
+    "image": "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-yoga.png"
   },
   {
-    "id": "lnslim7",
-    "label": "IdeaPad Slim 7 Pro",
-    "image": "/devices/lnslim7.png",
-    "brand": "lenovo"
+    "id": "lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-2-in-1",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x1",
+    "sub_label": "ThinkPad X1",
+    "model_slug": "lenovo-thinkpad-x1-2-in-1",
+    "label": "Lenovo ThinkPad X1 2-in-1",
+    "image": "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-2-in-1.png"
   },
   {
-    "id": "lnslim5",
-    "label": "IdeaPad Slim 5",
-    "image": "/devices/lnslim5.png",
-    "brand": "lenovo"
+    "id": "lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-titanium-yoga",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x1",
+    "sub_label": "ThinkPad X1",
+    "model_slug": "lenovo-thinkpad-x1-titanium-yoga",
+    "label": "Lenovo ThinkPad X1 Titanium Yoga",
+    "image": "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-titanium-yoga.png"
   },
   {
-    "id": "lnlegion7",
-    "label": "Legion Pro 7i Gen 9",
-    "image": "/devices/lnlegion7.png",
-    "brand": "lenovo"
+    "id": "lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13-2-in-1",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x13",
+    "sub_label": "ThinkPad X13",
+    "model_slug": "lenovo-thinkpad-x13-2-in-1",
+    "label": "Lenovo ThinkPad X13 2-in-1",
+    "image": "/devices/lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13-2-in-1.png"
   },
   {
-    "id": "lnlegion5",
-    "label": "Legion 5i Gen 9",
-    "image": "/devices/lnlegion5.png",
-    "brand": "lenovo"
+    "id": "lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x13",
+    "sub_label": "ThinkPad X13",
+    "model_slug": "lenovo-thinkpad-x13",
+    "label": "Lenovo ThinkPad X13",
+    "image": "/devices/lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13.png"
   },
   {
-    "id": "lnlegion5g8",
-    "label": "Legion 5i Gen 8",
-    "image": "/devices/lnlegion5g8.png",
-    "brand": "lenovo"
+    "id": "lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13s",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x13",
+    "sub_label": "ThinkPad X13",
+    "model_slug": "lenovo-thinkpad-x13s",
+    "label": "Lenovo ThinkPad X13s",
+    "image": "/devices/lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13s.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13-yoga",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x13",
+    "sub_label": "ThinkPad X13",
+    "model_slug": "lenovo-thinkpad-x13-yoga",
+    "label": "Lenovo ThinkPad X13 Yoga",
+    "image": "/devices/lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13-yoga.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_x390-x390",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x390",
+    "sub_label": "ThinkPad X390",
+    "model_slug": "x390",
+    "label": "ThinkPad X390 X390",
+    "image": ""
+  },
+  {
+    "id": "lenovo-thinkpad-tp_x390-x390-yoga",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x390",
+    "sub_label": "ThinkPad X390",
+    "model_slug": "x390-yoga",
+    "label": "ThinkPad X390 X390 Yoga",
+    "image": ""
+  },
+  {
+    "id": "lenovo-thinkpad-tp_x9-x9-14",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x9",
+    "sub_label": "ThinkPad X9",
+    "model_slug": "x9-14",
+    "label": "ThinkPad X9 X9 14",
+    "image": ""
+  },
+  {
+    "id": "lenovo-thinkpad-tp_x9-x9-15",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_x9",
+    "sub_label": "ThinkPad X9",
+    "model_slug": "x9-15",
+    "label": "ThinkPad X9 X9 15",
+    "image": ""
+  },
+  {
+    "id": "lenovo-thinkpad-tp_z-lenovo-thinkpad-z16",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_z",
+    "sub_label": "ThinkPad Z",
+    "model_slug": "lenovo-thinkpad-z16",
+    "label": "Lenovo ThinkPad Z16",
+    "image": "/devices/lenovo-thinkpad-tp_z-lenovo-thinkpad-z16.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_z-lenovo-thinkpad-z13",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_z",
+    "sub_label": "ThinkPad Z",
+    "model_slug": "lenovo-thinkpad-z13",
+    "label": "Lenovo ThinkPad Z13",
+    "image": "/devices/lenovo-thinkpad-tp_z-lenovo-thinkpad-z13.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_p-lenovo-thinkpad-p43",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_p",
+    "sub_label": "ThinkPad P",
+    "model_slug": "lenovo-thinkpad-p43",
+    "label": "Lenovo ThinkPad P43",
+    "image": "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p43.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_p-lenovo-thinkpad-p50",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_p",
+    "sub_label": "ThinkPad P",
+    "model_slug": "lenovo-thinkpad-p50",
+    "label": "Lenovo ThinkPad P50",
+    "image": "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p50.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_p-lenovo-thinkpad-p51",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_p",
+    "sub_label": "ThinkPad P",
+    "model_slug": "lenovo-thinkpad-p51",
+    "label": "Lenovo ThinkPad P51",
+    "image": "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p51.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_p-lenovo-thinkpad-p52",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_p",
+    "sub_label": "ThinkPad P",
+    "model_slug": "lenovo-thinkpad-p52",
+    "label": "Lenovo ThinkPad P52",
+    "image": "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p52.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_p-lenovo-thinkpad-p53",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_p",
+    "sub_label": "ThinkPad P",
+    "model_slug": "lenovo-thinkpad-p53",
+    "label": "Lenovo ThinkPad P53",
+    "image": "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p53.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_p-lenovo-thinkpad-p70",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_p",
+    "sub_label": "ThinkPad P",
+    "model_slug": "lenovo-thinkpad-p70",
+    "label": "Lenovo ThinkPad P70",
+    "image": "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p70.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_p-lenovo-thinkpad-p71",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_p",
+    "sub_label": "ThinkPad P",
+    "model_slug": "lenovo-thinkpad-p71",
+    "label": "Lenovo ThinkPad P71",
+    "image": "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p71.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_p-lenovo-thinkpad-p72",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_p",
+    "sub_label": "ThinkPad P",
+    "model_slug": "lenovo-thinkpad-p72",
+    "label": "Lenovo ThinkPad P72",
+    "image": "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p72.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_p-lenovo-thinkpad-p73",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_p",
+    "sub_label": "ThinkPad P",
+    "model_slug": "lenovo-thinkpad-p73",
+    "label": "Lenovo ThinkPad P73",
+    "image": "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p73.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_l-lenovo-thinkpad-l16-series",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_l",
+    "sub_label": "ThinkPad L",
+    "model_slug": "lenovo-thinkpad-l16-series",
+    "label": "Lenovo ThinkPad L16 Series",
+    "image": "/devices/lenovo-thinkpad-tp_l-lenovo-thinkpad-l16-series.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_l-lenovo-thinkpad-l15-series",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_l",
+    "sub_label": "ThinkPad L",
+    "model_slug": "lenovo-thinkpad-l15-series",
+    "label": "Lenovo ThinkPad L15 Series",
+    "image": "/devices/lenovo-thinkpad-tp_l-lenovo-thinkpad-l15-series.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_l-lenovo-thinkpad-l14-series",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_l",
+    "sub_label": "ThinkPad L",
+    "model_slug": "lenovo-thinkpad-l14-series",
+    "label": "Lenovo ThinkPad L14 Series",
+    "image": "/devices/lenovo-thinkpad-tp_l-lenovo-thinkpad-l14-series.png"
+  },
+  {
+    "id": "lenovo-thinkpad-tp_l-lenovo-thinkpad-l13-series",
+    "series_id": "thinkpad",
+    "series_label": "ThinkPad",
+    "sub_id": "tp_l",
+    "sub_label": "ThinkPad L",
+    "model_slug": "lenovo-thinkpad-l13-series",
+    "label": "Lenovo ThinkPad L13 Series",
+    "image": "/devices/lenovo-thinkpad-tp_l-lenovo-thinkpad-l13-series.png"
+  },
+  {
+    "id": "lenovo-thinkbook-tb_13-thinkbook-13x",
+    "series_id": "thinkbook",
+    "series_label": "ThinkBook",
+    "sub_id": "tb_13",
+    "sub_label": "ThinkBook 13",
+    "model_slug": "thinkbook-13x",
+    "label": "ThinkBook 13x",
+    "image": ""
+  },
+  {
+    "id": "lenovo-thinkbook-tb_13-thinkbook-13s",
+    "series_id": "thinkbook",
+    "series_label": "ThinkBook",
+    "sub_id": "tb_13",
+    "sub_label": "ThinkBook 13",
+    "model_slug": "thinkbook-13s",
+    "label": "ThinkBook 13s",
+    "image": ""
+  },
+  {
+    "id": "lenovo-thinkbook-tb_14-thinkbook-14",
+    "series_id": "thinkbook",
+    "series_label": "ThinkBook",
+    "sub_id": "tb_14",
+    "sub_label": "ThinkBook 14",
+    "model_slug": "thinkbook-14",
+    "label": "ThinkBook 14",
+    "image": ""
+  },
+  {
+    "id": "lenovo-thinkbook-tb_14-thinkbook-14p",
+    "series_id": "thinkbook",
+    "series_label": "ThinkBook",
+    "sub_id": "tb_14",
+    "sub_label": "ThinkBook 14",
+    "model_slug": "thinkbook-14p",
+    "label": "ThinkBook 14p",
+    "image": ""
+  },
+  {
+    "id": "lenovo-thinkbook-tb_14-thinkbook-14s",
+    "series_id": "thinkbook",
+    "series_label": "ThinkBook",
+    "sub_id": "tb_14",
+    "sub_label": "ThinkBook 14",
+    "model_slug": "thinkbook-14s",
+    "label": "ThinkBook 14s",
+    "image": ""
+  },
+  {
+    "id": "lenovo-thinkbook-tb_14-thinkbook-14s-yoga",
+    "series_id": "thinkbook",
+    "series_label": "ThinkBook",
+    "sub_id": "tb_14",
+    "sub_label": "ThinkBook 14",
+    "model_slug": "thinkbook-14s-yoga",
+    "label": "ThinkBook 14s Yoga",
+    "image": ""
+  },
+  {
+    "id": "lenovo-thinkbook-tb_15-thinkbook-15",
+    "series_id": "thinkbook",
+    "series_label": "ThinkBook",
+    "sub_id": "tb_15",
+    "sub_label": "ThinkBook 15",
+    "model_slug": "thinkbook-15",
+    "label": "ThinkBook 15",
+    "image": ""
+  },
+  {
+    "id": "lenovo-thinkbook-tb_15-thinkbook-15p",
+    "series_id": "thinkbook",
+    "series_label": "ThinkBook",
+    "sub_id": "tb_15",
+    "sub_label": "ThinkBook 15",
+    "model_slug": "thinkbook-15p",
+    "label": "ThinkBook 15p",
+    "image": ""
+  },
+  {
+    "id": "lenovo-thinkbook-tb_16-thinkbook-16p",
+    "series_id": "thinkbook",
+    "series_label": "ThinkBook",
+    "sub_id": "tb_16",
+    "sub_label": "ThinkBook 16",
+    "model_slug": "thinkbook-16p",
+    "label": "ThinkBook 16p",
+    "image": ""
+  },
+  {
+    "id": "lenovo-thinkbook-tb_16-thinkbook-16",
+    "series_id": "thinkbook",
+    "series_label": "ThinkBook",
+    "sub_id": "tb_16",
+    "sub_label": "ThinkBook 16",
+    "model_slug": "thinkbook-16",
+    "label": "ThinkBook 16",
+    "image": ""
+  },
+  {
+    "id": "lenovo-ideapad-lenovo-ideapad-gaming-3",
+    "series_id": "ideapad",
+    "series_label": "IdeaPad",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-ideapad-gaming-3",
+    "label": "Lenovo IdeaPad Gaming 3",
+    "image": "/devices/lenovo-ideapad-lenovo-ideapad-gaming-3.png"
+  },
+  {
+    "id": "lenovo-ideapad-lenovo-ideapad-gaming-3i",
+    "series_id": "ideapad",
+    "series_label": "IdeaPad",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-ideapad-gaming-3i",
+    "label": "Lenovo IdeaPad Gaming 3i",
+    "image": "/devices/lenovo-ideapad-lenovo-ideapad-gaming-3i.png"
+  },
+  {
+    "id": "lenovo-ideapad-lenovo-ideapad-3",
+    "series_id": "ideapad",
+    "series_label": "IdeaPad",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-ideapad-3",
+    "label": "Lenovo IdeaPad 3",
+    "image": "/devices/lenovo-ideapad-lenovo-ideapad-3.png"
+  },
+  {
+    "id": "lenovo-ideapad-lenovo-ideapad-3i",
+    "series_id": "ideapad",
+    "series_label": "IdeaPad",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-ideapad-3i",
+    "label": "Lenovo IdeaPad 3i",
+    "image": "/devices/lenovo-ideapad-lenovo-ideapad-3i.png"
+  },
+  {
+    "id": "lenovo-ideapad-lenovo-ideapad-5i-2-in-1",
+    "series_id": "ideapad",
+    "series_label": "IdeaPad",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-ideapad-5i-2-in-1",
+    "label": "Lenovo IdeaPad 5i 2-in-1",
+    "image": "/devices/lenovo-ideapad-lenovo-ideapad-5i-2-in-1.png"
+  },
+  {
+    "id": "lenovo-ideapad-lenovo-ideapad-5",
+    "series_id": "ideapad",
+    "series_label": "IdeaPad",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-ideapad-5",
+    "label": "Lenovo IdeaPad 5",
+    "image": "/devices/lenovo-ideapad-lenovo-ideapad-5.png"
+  },
+  {
+    "id": "lenovo-ideapad-lenovo-ideapad-flex-5",
+    "series_id": "ideapad",
+    "series_label": "IdeaPad",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-ideapad-flex-5",
+    "label": "Lenovo IdeaPad Flex 5",
+    "image": "/devices/lenovo-ideapad-lenovo-ideapad-flex-5.png"
+  },
+  {
+    "id": "lenovo-ideapad-lenovo-ideapad-flex-5i",
+    "series_id": "ideapad",
+    "series_label": "IdeaPad",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-ideapad-flex-5i",
+    "label": "Lenovo IdeaPad Flex 5i",
+    "image": "/devices/lenovo-ideapad-lenovo-ideapad-flex-5i.png"
+  },
+  {
+    "id": "lenovo-ideapad-lenovo-ideapad-slim-7",
+    "series_id": "ideapad",
+    "series_label": "IdeaPad",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-ideapad-slim-7",
+    "label": "Lenovo IdeaPad Slim 7",
+    "image": "/devices/lenovo-ideapad-lenovo-ideapad-slim-7.png"
+  },
+  {
+    "id": "lenovo-ideapad-lenovo-ideapad-330s",
+    "series_id": "ideapad",
+    "series_label": "IdeaPad",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-ideapad-330s",
+    "label": "Lenovo IdeaPad 330s",
+    "image": "/devices/lenovo-ideapad-lenovo-ideapad-330s.png"
+  },
+  {
+    "id": "lenovo-ideapad-lenovo-ideapad-l340",
+    "series_id": "ideapad",
+    "series_label": "IdeaPad",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-ideapad-l340",
+    "label": "Lenovo IdeaPad L340",
+    "image": "/devices/lenovo-ideapad-lenovo-ideapad-l340.png"
+  },
+  {
+    "id": "lenovo-ideapad-lenovo-ideapad-s340",
+    "series_id": "ideapad",
+    "series_label": "IdeaPad",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-ideapad-s340",
+    "label": "Lenovo IdeaPad S340",
+    "image": "/devices/lenovo-ideapad-lenovo-ideapad-s340.png"
+  },
+  {
+    "id": "lenovo-ideapad-lenovo-ideapad-s540",
+    "series_id": "ideapad",
+    "series_label": "IdeaPad",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-ideapad-s540",
+    "label": "Lenovo IdeaPad S540",
+    "image": "/devices/lenovo-ideapad-lenovo-ideapad-s540.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-9i",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-9i",
+    "label": "Lenovo Legion 9i",
+    "image": "/devices/lenovo-legion-lenovo-legion-9i.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-5",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-5",
+    "label": "Lenovo Legion 5",
+    "image": "/devices/lenovo-legion-lenovo-legion-5.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-5i",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-5i",
+    "label": "Lenovo Legion 5i",
+    "image": "/devices/lenovo-legion-lenovo-legion-5i.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-5-pro",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-5-pro",
+    "label": "Lenovo Legion 5 Pro",
+    "image": "/devices/lenovo-legion-lenovo-legion-5-pro.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-5i-pro",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-5i-pro",
+    "label": "Lenovo Legion 5i Pro",
+    "image": "/devices/lenovo-legion-lenovo-legion-5i-pro.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-slim-5",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-slim-5",
+    "label": "Lenovo Legion Slim 5",
+    "image": "/devices/lenovo-legion-lenovo-legion-slim-5.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-slim-5i",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-slim-5i",
+    "label": "Lenovo Legion Slim 5i",
+    "image": "/devices/lenovo-legion-lenovo-legion-slim-5i.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-7",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-7",
+    "label": "Lenovo Legion 7",
+    "image": "/devices/lenovo-legion-lenovo-legion-7.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-7i",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-7i",
+    "label": "Lenovo Legion 7i",
+    "image": "/devices/lenovo-legion-lenovo-legion-7i.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-7-pro",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-7-pro",
+    "label": "Lenovo Legion 7 Pro",
+    "image": "/devices/lenovo-legion-lenovo-legion-7-pro.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-7i-pro",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-7i-pro",
+    "label": "Lenovo Legion 7i Pro",
+    "image": "/devices/lenovo-legion-lenovo-legion-7i-pro.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-slim-7",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-slim-7",
+    "label": "Lenovo Legion Slim 7",
+    "image": "/devices/lenovo-legion-lenovo-legion-slim-7.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-slim-7i",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-slim-7i",
+    "label": "Lenovo Legion Slim 7i",
+    "image": "/devices/lenovo-legion-lenovo-legion-slim-7i.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-y520",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-y520",
+    "label": "Lenovo Legion Y520",
+    "image": "/devices/lenovo-legion-lenovo-legion-y520.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-y530",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-y530",
+    "label": "Lenovo Legion Y530",
+    "image": "/devices/lenovo-legion-lenovo-legion-y530.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-y540",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-y540",
+    "label": "Lenovo Legion Y540",
+    "image": "/devices/lenovo-legion-lenovo-legion-y540.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-y545",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-y545",
+    "label": "Lenovo Legion Y545",
+    "image": "/devices/lenovo-legion-lenovo-legion-y545.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-y720",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-y720",
+    "label": "Lenovo Legion Y720",
+    "image": "/devices/lenovo-legion-lenovo-legion-y720.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-y730",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-y730",
+    "label": "Lenovo Legion Y730",
+    "image": "/devices/lenovo-legion-lenovo-legion-y730.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-y740",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-y740",
+    "label": "Lenovo Legion Y740",
+    "image": "/devices/lenovo-legion-lenovo-legion-y740.png"
+  },
+  {
+    "id": "lenovo-legion-lenovo-legion-y7000p",
+    "series_id": "legion",
+    "series_label": "Legion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-legion-y7000p",
+    "label": "Lenovo Legion Y7000P",
+    "image": "/devices/lenovo-legion-lenovo-legion-y7000p.png"
+  },
+  {
+    "id": "lenovo-loq-lenovo-loq-17",
+    "series_id": "loq",
+    "series_label": "LOQ",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-loq-17",
+    "label": "Lenovo LOQ 17",
+    "image": "/devices/lenovo-loq-lenovo-loq-17.png"
+  },
+  {
+    "id": "lenovo-loq-lenovo-loq-15",
+    "series_id": "loq",
+    "series_label": "LOQ",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-loq-15",
+    "label": "Lenovo LOQ 15",
+    "image": "/devices/lenovo-loq-lenovo-loq-15.png"
+  },
+  {
+    "id": "lenovo-slim-lenovo-slim-pro-9i",
+    "series_id": "slim",
+    "series_label": "Slim",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-slim-pro-9i",
+    "label": "Lenovo Slim Pro 9i",
+    "image": "/devices/lenovo-slim-lenovo-slim-pro-9i.png"
+  },
+  {
+    "id": "lenovo-slim-lenovo-slim-7i-pro-x",
+    "series_id": "slim",
+    "series_label": "Slim",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-slim-7i-pro-x",
+    "label": "Lenovo Slim 7i Pro X",
+    "image": "/devices/lenovo-slim-lenovo-slim-7i-pro-x.png"
+  },
+  {
+    "id": "lenovo-slim-lenovo-slim-7-pro-x",
+    "series_id": "slim",
+    "series_label": "Slim",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-slim-7-pro-x",
+    "label": "Lenovo Slim 7 Pro X",
+    "image": "/devices/lenovo-slim-lenovo-slim-7-pro-x.png"
+  },
+  {
+    "id": "lenovo-slim-lenovo-slim-pro-7",
+    "series_id": "slim",
+    "series_label": "Slim",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-slim-pro-7",
+    "label": "Lenovo Slim Pro 7",
+    "image": "/devices/lenovo-slim-lenovo-slim-pro-7.png"
+  },
+  {
+    "id": "lenovo-slim-lenovo-slim-7i",
+    "series_id": "slim",
+    "series_label": "Slim",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-slim-7i",
+    "label": "Lenovo Slim 7i",
+    "image": "/devices/lenovo-slim-lenovo-slim-7i.png"
+  },
+  {
+    "id": "lenovo-slim-lenovo-slim-7",
+    "series_id": "slim",
+    "series_label": "Slim",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-slim-7",
+    "label": "Lenovo Slim 7",
+    "image": "/devices/lenovo-slim-lenovo-slim-7.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-6",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-6",
+    "label": "Lenovo Yoga 6",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-6.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-pro-7",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-pro-7",
+    "label": "Lenovo Yoga Pro 7",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-pro-7.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-slim-7i",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-slim-7i",
+    "label": "Lenovo Yoga Slim 7i",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-slim-7i.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-slim-7x",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-slim-7x",
+    "label": "Lenovo Yoga Slim 7x",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-slim-7x.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-7",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-7",
+    "label": "Lenovo Yoga 7",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-7.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-7i",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-7i",
+    "label": "Lenovo Yoga 7i",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-7i.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-pro-9i",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-pro-9i",
+    "label": "Lenovo Yoga Pro 9i",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-pro-9i.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-slim-9i",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-slim-9i",
+    "label": "Lenovo Yoga Slim 9i",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-slim-9i.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-book-9i",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-book-9i",
+    "label": "Lenovo Yoga Book 9i",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-book-9i.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-9i",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-9i",
+    "label": "Lenovo Yoga 9i",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-9i.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-710",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-710",
+    "label": "Lenovo Yoga 710",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-710.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-720",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-720",
+    "label": "Lenovo Yoga 720",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-720.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-920",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-920",
+    "label": "Lenovo Yoga 920",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-920.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-c630",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-c630",
+    "label": "Lenovo Yoga C630",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-c630.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-c640",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-c640",
+    "label": "Lenovo Yoga C640",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-c640.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-c740",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-c740",
+    "label": "Lenovo Yoga C740",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-c740.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-c930",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-c930",
+    "label": "Lenovo Yoga C930",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-c930.png"
+  },
+  {
+    "id": "lenovo-yoga-lenovo-yoga-c940",
+    "series_id": "yoga",
+    "series_label": "Yoga",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "lenovo-yoga-c940",
+    "label": "Lenovo Yoga C940",
+    "image": "/devices/lenovo-yoga-lenovo-yoga-c940.png"
   }
 ]
