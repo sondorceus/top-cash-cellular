@@ -2479,24 +2479,19 @@ export default function Home() {
           <span className="hidden sm:inline text-[#00c853] text-xs font-extrabold tracking-wide">🚀 Trade 2+ devices · get +10% extra cash</span>
           <span className="sm:hidden text-[#00c853] text-[11px] font-extrabold tracking-wide">🚀 Trade 2+ devices · +10% extra cash</span>
         </a>
-        <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between">
-          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer group tap-press rounded-xl">
+        <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between relative">
+          {/* LEFT: logo */}
+          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer group tap-press rounded-xl shrink-0">
             <span className="flex items-center gap-2">
               <span className="relative w-9 h-9 rounded-xl tcc-logo-card flex items-center justify-center">
                 <span className="absolute inset-0 rounded-xl pointer-events-none" style={{ background: "radial-gradient(circle at 28% 25%, rgba(0,230,118,0.18), transparent 65%)" }}></span>
                 <span className="relative w-6 h-6 rounded-lg tcc-logo-tile flex items-center justify-center">
                   <svg viewBox="0 0 24 24" className="w-3.5 h-5" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 1px 0 rgba(0,0,0,0.35))" }}>
-                    {/* phone body */}
                     <rect x="6" y="1.5" width="12" height="21" rx="3" />
-                    {/* dynamic island */}
                     <rect x="10" y="3" width="4" height="1.4" rx="0.7" fill="#fff" stroke="none" />
-                    {/* speaker grille */}
                     <line x1="10.8" y1="3.7" x2="13.2" y2="3.7" strokeWidth="0.6" stroke="#00a039" />
-                    {/* screen frame */}
                     <rect x="7.5" y="5.5" width="9" height="13.5" rx="1" stroke="rgba(255,255,255,0.4)" strokeWidth="0.7" />
-                    {/* home indicator */}
                     <line x1="10" y1="20.3" x2="14" y2="20.3" strokeWidth="1.6" />
-                    {/* side button */}
                     <line x1="5.6" y1="9" x2="5.6" y2="12" strokeWidth="1" />
                   </svg>
                 </span>
@@ -2511,23 +2506,10 @@ export default function Home() {
               </div>
             </span>
           </button>
-          {/* (Promo strip moved to its own row above this flex row.) */}
-          {/* MOBILE + TABLET: hamburger button (drawer with same menu as desktop) */}
-          <div className="flex items-center gap-2 lg:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              aria-label="Open menu"
-              className="w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press transition"
-            >
-              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
 
-          {/* DESKTOP (lg+): mega-menu nav */}
-          <div className="hidden lg:flex items-center gap-1">
-            {/* SELL — mega menu with all device categories */}
+          {/* CENTER (lg+ only, absolutely centered relative to the nav row): Sell / Bulk / Support */}
+          <div className="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+            {/* SELL — mega menu, dropdown centered under the trigger */}
             <div className="group relative">
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
@@ -2536,9 +2518,9 @@ export default function Home() {
                 Sell
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
-              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full left-auto right-0 pt-3 z-50 w-[560px] max-w-[calc(100vw-2rem)]">
+              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[560px] max-w-[calc(100vw-2rem)]">
                 <div className="bg-[#111] border border-white/10 rounded-2xl shadow-2xl p-4">
-                  <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em] mb-3 px-2">Sell your device</p>
+                  <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em] mb-3 px-2 text-center">Sell your device</p>
                   <div className="grid grid-cols-4 gap-2">
                     {[
                       { id: "phones" as const, label: "Phone", icon: "📱" },
@@ -2577,7 +2559,7 @@ export default function Home() {
                 Bulk
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </a>
-              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full left-0 pt-3 z-50 w-[260px]">
+              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[260px]">
                 <div className="bg-[#111] border border-white/10 rounded-2xl shadow-2xl p-2">
                   <a href="/bulk" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">📦</span>
@@ -2605,7 +2587,7 @@ export default function Home() {
                 Support
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
-              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full right-0 pt-3 z-50 w-[280px]">
+              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[280px]">
                 <div className="bg-[#111] border border-white/10 rounded-2xl shadow-2xl p-2">
                   <a href="/how-it-works" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">🧭</span>
@@ -2645,15 +2627,47 @@ export default function Home() {
                 </div>
               </div>
             </div>
+          </div>
 
-            <span className="mx-2 h-5 w-px bg-white/10" />
+          {/* RIGHT: cart + login/name (desktop) | cart + hamburger (mobile) */}
+          <div className="flex items-center gap-2 shrink-0">
+            {/* CART — always visible on every screen size */}
+            <button
+              onClick={() => setCartOpen(!cartOpen)}
+              aria-label="Cart"
+              className="relative w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 flex items-center justify-center cursor-pointer tap-press transition"
+            >
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+              </svg>
+              {cartItems.length > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#00c853] text-[#0a0a0a] text-[10px] font-extrabold flex items-center justify-center shadow-[0_0_8px_rgba(0,200,83,0.6)]">
+                  {cartItems.reduce((sum, i) => sum + i.quantity, 0)}
+                </span>
+              )}
+            </button>
 
+            {/* DESKTOP login/name (lg+ only) */}
+            <span className="hidden lg:inline-block mx-1 h-5 w-px bg-white/10" />
             <button
               onClick={() => setLookupOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#00c853] hover:text-[#00e676] transition cursor-pointer"
+              className="hidden lg:flex items-center gap-2 px-3 py-2 text-sm font-semibold text-[#00c853] hover:text-[#00e676] transition cursor-pointer tap-press rounded-full"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-              Login
+              {lookupResult?.found && lookupResult.name
+                ? `Hi, ${lookupResult.name.split(" ")[0]}`
+                : "Login"}
+            </button>
+
+            {/* MOBILE/TABLET: hamburger */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open menu"
+              className="lg:hidden w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press transition"
+            >
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
             </button>
           </div>
         </div>
@@ -2795,13 +2809,17 @@ export default function Home() {
               )}
             </div>
 
-            {/* LOGIN — opens lookup modal */}
+            {/* LOGIN — opens lookup modal. Shows first name if a past lookup matched. */}
             <button
               onClick={() => { setMobileMenuOpen(false); setLookupOpen(true); }}
               className="w-full flex items-center gap-3 px-5 py-4 hover:bg-white/[0.03] transition tap-press border-b border-white/5"
             >
               <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-              <span className="text-base font-semibold text-[#00c853]">Login</span>
+              <span className="text-base font-semibold text-[#00c853]">
+                {lookupResult?.found && lookupResult.name
+                  ? `Hi, ${lookupResult.name.split(" ")[0]}`
+                  : "Login"}
+              </span>
             </button>
 
             {/* Bottom CTA — Sell Now (Email Us already lives under Support) */}
@@ -5348,19 +5366,26 @@ export default function Home() {
         </button>
       </div>
 
-      {/* CART WIDGET — only visible when items in cart */}
-      {cartItems.length > 0 && <div className="fixed bottom-6 right-6 z-50">
-        {cartOpen && (
-          <div className="mb-3 w-[320px] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+      {/* CART POPUP — opens from the nav cart icon. Backdrop closes on click outside. */}
+      {cartOpen && (
+        <>
+          <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px]" onClick={() => setCartOpen(false)} />
+          <div className="fixed top-[68px] right-3 lg:right-8 z-50 w-[340px] max-w-[calc(100vw-1.5rem)] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
             <div className="bg-[#00c853] px-4 py-3 flex items-center justify-between">
-              <p className="text-black font-semibold text-sm">Your Cart ({cartItems.reduce((sum, i) => sum + i.quantity, 0)} items)</p>
-              <button onClick={() => setCartOpen(false)} aria-label="Close cart" className="text-black/60 hover:text-black cursor-pointer text-lg font-bold">×</button>
+              <p className="text-black font-semibold text-sm">
+                Your Cart ({cartItems.reduce((sum, i) => sum + i.quantity, 0)} {cartItems.reduce((sum, i) => sum + i.quantity, 0) === 1 ? "item" : "items"})
+              </p>
+              <button onClick={() => setCartOpen(false)} aria-label="Close cart" className="text-black/70 hover:text-black cursor-pointer text-xl font-bold leading-none">×</button>
             </div>
-            <div className="p-4 max-h-[300px] overflow-y-auto">
+            <div className="p-4 max-h-[60vh] overflow-y-auto">
               {cartItems.length === 0 ? (
-                <div className="text-center py-6">
-                  <p className="text-[#bbb] text-sm">Your cart is empty</p>
-                  <p className="text-[#aaa] text-xs mt-2">Get a quote and add a device!</p>
+                <div className="text-center py-8">
+                  <div className="text-4xl mb-2">🛒</div>
+                  <p className="text-white text-sm font-semibold">Your cart is empty</p>
+                  <p className="text-[#aaa] text-xs mt-1">Get a quote and add a device to stack the +10% bulk bonus.</p>
+                  <button onClick={() => { setCartOpen(false); setStep("category"); pushHistory("category"); }} className="mt-4 inline-flex items-center gap-2 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] px-4 py-2 rounded-full text-sm font-bold cursor-pointer transition tap-press">
+                    Get a quote →
+                  </button>
                 </div>
               ) : (
                 <>
@@ -5397,14 +5422,8 @@ export default function Home() {
               )}
             </div>
           </div>
-        )}
-        <button onClick={() => setCartOpen(!cartOpen)} className="w-14 h-14 rounded-full bg-[#00c853] text-black flex items-center justify-center shadow-lg hover:bg-[#00e676] transition cursor-pointer tap-press relative">
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>
-          {cartItems.length > 0 && (
-            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center">{cartItems.reduce((sum, i) => sum + i.quantity, 0)}</span>
-          )}
-        </button>
-      </div>}
+        </>
+      )}
 
       {/* PROGRESS BAR — shows during flow */}
       {step !== "device" && step !== "done" && page === "home" && (
