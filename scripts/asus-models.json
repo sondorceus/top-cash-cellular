@@ -1,5 +1,365 @@
 [
   {
+    "id": "asus-rog-republic-of-gamers-strix-scar-18-g835",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-scar-18-g835",
+    "label": "ROG Strix Scar 18 G835\nCash in up to $2,525",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-scar-18-g835.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-scar-18-g834",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-scar-18-g834",
+    "label": "ROG Strix Scar 18 G834\nCash in up to $1,925",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-scar-18-g834.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-scar-17-se-g733",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-scar-17-se-g733",
+    "label": "ROG Strix Scar 17 SE G733\nCash in up to $1,190",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-scar-17-se-g733.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-scar-17-g733",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-scar-17-g733",
+    "label": "ROG Strix Scar 17 G733\nCash in up to $1,700",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-scar-17-g733.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-scar-17-g732",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-scar-17-g732",
+    "label": "ROG Strix Scar 17 G732\nCash in up to $485",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-scar-17-g732.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-scar-16-g635",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-scar-16-g635",
+    "label": "ROG Strix Scar 16 G635\nCash in up to $2,375",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-scar-16-g635.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-scar-16-g634",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-scar-16-g634",
+    "label": "ROG Strix Scar 16 G634\nCash in up to $1,750",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-scar-16-g634.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-scar-15-g533",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-scar-15-g533",
+    "label": "ROG Strix Scar 15 G533\nCash in up to $950",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-scar-15-g533.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-scar-15-g532",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-scar-15-g532",
+    "label": "ROG Strix Scar 15 G532\nCash in up to $495",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-scar-15-g532.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-g18-g815",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-g18-g815",
+    "label": "ROG Strix G18 G815\nCash in up to $1,875",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-g18-g815.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-g18-g814",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-g18-g814",
+    "label": "ROG Strix G18 G814\nCash in up to $1,350",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-g18-g814.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-g17-g713",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-g17-g713",
+    "label": "ROG Strix G17 G713\nCash in up to $1,080",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-g17-g713.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-g17-g712",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-g17-g712",
+    "label": "ROG Strix G17 G712\nCash in up to $430",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-g17-g712.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-g16-g615",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-g16-g615",
+    "label": "ROG Strix G16 G615\nCash in up to $1,950",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-g16-g615.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-g16-g614",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-g16-g614",
+    "label": "ROG Strix G16 G614\nCash in up to $1,175",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-g16-g614.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-g15-g513",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-g15-g513",
+    "label": "ROG Strix G15 G513\nCash in up to $750",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-g15-g513.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-g15-g512",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-g15-g512",
+    "label": "ROG Strix G15 G512\nCash in up to $425",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-g15-g512.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-g731",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-g731",
+    "label": "ROG Strix G731\nCash in up to $325",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-g731.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-strix-g531",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-strix-g531",
+    "label": "ROG Strix G531\nCash in up to $345",
+    "image": "/devices/asus-rog-republic-of-gamers-strix-g531.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-flow-z13-kjp-gz302",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-flow-z13-kjp-gz302",
+    "label": "ROG Flow Z13-KJP GZ302\nCash in up to $1,350",
+    "image": "/devices/asus-rog-republic-of-gamers-flow-z13-kjp-gz302.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-flow-z13-gz302",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-flow-z13-gz302",
+    "label": "ROG Flow Z13 GZ302\nCash in up to $1,400",
+    "image": "/devices/asus-rog-republic-of-gamers-flow-z13-gz302.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-flow-z13-gz301",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-flow-z13-gz301",
+    "label": "ROG Flow Z13 GZ301\nCash in up to $1,300",
+    "image": "/devices/asus-rog-republic-of-gamers-flow-z13-gz301.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-flow-z13-acrnm-rmt02-gz301",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-flow-z13-acrnm-rmt02-gz301",
+    "label": "ROG Flow Z13 ACRNM RMT02 GZ301\nCash in up to $1,400",
+    "image": "/devices/asus-rog-republic-of-gamers-flow-z13-acrnm-rmt02-gz301.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-flow-x16-gv601",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-flow-x16-gv601",
+    "label": "ROG Flow X16 GV601\nCash in up to $1,440",
+    "image": "/devices/asus-rog-republic-of-gamers-flow-x16-gv601.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-flow-x13-gv302",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-flow-x13-gv302",
+    "label": "ROG Flow X13 GV302\nCash in up to $1,290",
+    "image": "/devices/asus-rog-republic-of-gamers-flow-x13-gv302.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-flow-x13-gv301",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-flow-x13-gv301",
+    "label": "ROG Flow X13 GV301\nCash in up to $585",
+    "image": "/devices/asus-rog-republic-of-gamers-flow-x13-gv301.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-duo-15-gx550",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-duo-15-gx550",
+    "label": "ROG Zephyrus Duo 15 GX550\nCash in up to $845",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-duo-15-gx550.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-duo-15-se-gx551",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-duo-15-se-gx551",
+    "label": "ROG Zephyrus Duo 15 SE GX551\nCash in up to $1,300",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-duo-15-se-gx551.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-duo-16-gx650",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-duo-16-gx650",
+    "label": "ROG Zephyrus Duo 16 GX650\nCash in up to $2,125",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-duo-16-gx650.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-g14-ga401",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-g14-ga401",
+    "label": "ROG Zephyrus G14 GA401\nCash in up to $630",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-g14-ga401.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-g14-ga402",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-g14-ga402",
+    "label": "ROG Zephyrus G14 GA402\nCash in up to $1,250",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-g14-ga402.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-g14-ga403",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-g14-ga403",
+    "label": "ROG Zephyrus G14 GA403\nCash in up to $1,690",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-g14-ga403.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-g15-ga502",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-g15-ga502",
+    "label": "ROG Zephyrus G15 GA502\nCash in up to $395",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-g15-ga502.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-g15-ga503",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-g15-ga503",
+    "label": "ROG Zephyrus G15 GA503\nCash in up to $760",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-g15-ga503.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-g16-ga605",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-g16-ga605",
+    "label": "ROG Zephyrus G16 GA605\nCash in up to $1,175",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-g16-ga605.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-g16-gu603",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-g16-gu603",
+    "label": "ROG Zephyrus G16 GU603\nCash in up to $1,010",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-g16-gu603.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-g16-gu605",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-g16-gu605",
+    "label": "ROG Zephyrus G16 GU605\nCash in up to $2,575",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-g16-gu605.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-m-gm501",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-m-gm501",
+    "label": "ROG Zephyrus M GM501\nCash in up to $265",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-m-gm501.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-m15-gu502",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-m15-gu502",
+    "label": "ROG Zephyrus M15 GU502\nCash in up to $530",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-m15-gu502.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-m16-gu603",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-m16-gu603",
+    "label": "ROG Zephyrus M16 GU603\nCash in up to $770",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-m16-gu603.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-m16-gu604",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-m16-gu604",
+    "label": "ROG Zephyrus M16 GU604\nCash in up to $1,600",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-m16-gu604.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-s-gx531",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-s-gx531",
+    "label": "ROG Zephyrus S GX531\nCash in up to $410",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-s-gx531.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-s15-gx502",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-s15-gx502",
+    "label": "ROG Zephyrus S15 GX502\nCash in up to $445",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-s15-gx502.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-s17-gx701",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-s17-gx701",
+    "label": "ROG Zephyrus S17 GX701\nCash in up to $420",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-s17-gx701.png"
+  },
+  {
+    "id": "asus-rog-republic-of-gamers-zephyrus-s17-gx703",
+    "series_id": "rog",
+    "series_label": "Republic of Gamers",
+    "model_slug": "republic-of-gamers-zephyrus-s17-gx703",
+    "label": "ROG Zephyrus S17 GX703\nCash in up to $835",
+    "image": "/devices/asus-rog-republic-of-gamers-zephyrus-s17-gx703.png"
+  },
+  {
     "id": "asus-tuf-tuf-a18-laptop",
     "series_id": "tuf",
     "series_label": "TUF Gaming",
@@ -80,6 +440,14 @@
     "image": "/devices/asus-proart-proart-studiobook-16.png"
   },
   {
+    "id": "asus-proart-proart-p16",
+    "series_id": "proart",
+    "series_label": "ProArt",
+    "model_slug": "proart-p16",
+    "label": "ProArt P16\nCash in up to $1,940",
+    "image": "/devices/asus-proart-proart-p16.png"
+  },
+  {
     "id": "asus-proart-proart-px13",
     "series_id": "proart",
     "series_label": "ProArt",
@@ -118,22 +486,6 @@
     "model_slug": "expertbook-b9",
     "label": "ExpertBook B9\nCash in up to $475",
     "image": "/devices/asus-expertbook-expertbook-b9.png"
-  },
-  {
-    "id": "asus-expertbook-expertbook-b5",
-    "series_id": "expertbook",
-    "series_label": "ExpertBook",
-    "model_slug": "expertbook-b5",
-    "label": "ExpertBook B5\nCash in up to $400",
-    "image": "/devices/asus-expertbook-expertbook-b5.png"
-  },
-  {
-    "id": "asus-expertbook-expertbook-b3",
-    "series_id": "expertbook",
-    "series_label": "ExpertBook",
-    "model_slug": "expertbook-b3",
-    "label": "ExpertBook B3\nCash in up to $585",
-    "image": "/devices/asus-expertbook-expertbook-b3.png"
   },
   {
     "id": "asus-expertbook-expertbook-b2",

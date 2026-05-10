@@ -25,13 +25,16 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 DEV_DIR = os.path.join(ROOT, "public", "devices")
 OUT_JSON = os.path.join(os.path.dirname(__file__), "asus-models.json")
 
+# IWM has irregular nesting per series — some are flat, some need
+# 2 levels (republic-of-gamers-strix has the actual models). Each
+# entry is (series_id, label, [list of leaf-category-slugs]).
 SERIES = [
-    ("rog",       "Republic of Gamers", "republic-of-gamers-laptop"),
-    ("tuf",       "TUF Gaming",         "the-ultimate-force-laptop"),
-    ("proart",    "ProArt",             "proart-laptop"),
-    ("vivobook",  "Vivobook",           "vivobook"),
-    ("zenbook",   "Zenbook",            "zenbook-laptop"),
-    ("expertbook","ExpertBook",         "expert-laptop"),
+    ("rog",        "Republic of Gamers", ["republic-of-gamers-strix", "republic-of-gamers-flow", "republic-of-gamers-zephyrus"]),
+    ("tuf",        "TUF Gaming",         ["the-ultimate-force-laptop"]),
+    ("proart",     "ProArt",             ["proart-laptop"]),
+    ("vivobook",   "Vivobook",           ["vivobook-14-laptop", "vivobook-15-laptop", "vivobook-16-laptop"]),
+    ("zenbook",    "Zenbook",            ["zenbook-laptop"]),
+    ("expertbook", "ExpertBook",         ["expert-laptop"]),
 ]
 
 BG_CUTOFF = 240
@@ -122,34 +125,33 @@ def main():
         ctx = browser.new_context(ignore_https_errors=True, user_agent=UA)
         page = ctx.new_page()
 
-        for series_id, series_label, series_slug in SERIES:
-            print(f"\n=== {series_label} ({series_slug}) ===")
-            try:
-                page.goto(
-                    f"https://www.itsworthmore.com/sell/{series_slug}",
-                    wait_until="networkidle", timeout=60000,
-                )
-            except Exception as e:
-                print(f"  ! page fetch failed: {e}")
-                continue
-
-            # Get all model links
-            links = page.evaluate(
-                f"""() => {{
-                    const re = new RegExp('/sell/{series_slug}/[a-z0-9-]+$');
-                    return Array.from(document.querySelectorAll('a[href]'))
-                        .map(a => ({{ href: a.getAttribute('href'),
-                                       text: (a.innerText || a.textContent || '').trim().slice(0, 80) }}))
-                        .filter(x => x.href && re.test(x.href));
-                }}"""
-            )
-            seen = set()
+        for series_id, series_label, leaf_slugs in SERIES:
+            print(f"\n=== {series_label} ===")
             unique_links = []
-            for l in links:
-                if l["href"] not in seen:
-                    seen.add(l["href"])
-                    unique_links.append(l)
-            print(f"  found {len(unique_links)} models")
+            seen = set()
+            for leaf in leaf_slugs:
+                try:
+                    page.goto(
+                        f"https://www.itsworthmore.com/sell/{leaf}",
+                        wait_until="networkidle", timeout=60000,
+                    )
+                except Exception as e:
+                    print(f"  ! {leaf}: {e}")
+                    continue
+                links = page.evaluate(
+                    f"""() => {{
+                        const re = new RegExp('/sell/{leaf}/[a-z0-9-]+$');
+                        return Array.from(document.querySelectorAll('a[href]'))
+                            .map(a => ({{ href: a.getAttribute('href'),
+                                           text: (a.innerText || a.textContent || '').trim().slice(0, 80) }}))
+                            .filter(x => x.href && re.test(x.href));
+                    }}"""
+                )
+                for l in links:
+                    if l["href"] not in seen:
+                        seen.add(l["href"])
+                        unique_links.append(l)
+            print(f"  found {len(unique_links)} models across {len(leaf_slugs)} sub-cat(s)")
 
             for ml in unique_links:
                 model_slug = ml["href"].split("/")[-1]
