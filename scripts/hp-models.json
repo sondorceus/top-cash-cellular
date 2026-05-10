@@ -1,62 +1,642 @@
 [
   {
-    "id": "hpspec16",
-    "label": "Spectre x360 16\\",
-    "image": "/devices/hpspec16.png",
-    "brand": "hp"
+    "id": "hp-elitebook-eb_std-hp-elitebook-g1a",
+    "series_id": "elitebook",
+    "series_label": "EliteBook",
+    "sub_id": "eb_std",
+    "sub_label": "EliteBook",
+    "model_slug": "hp-elitebook-g1a",
+    "label": "HP Elitebook G1a",
+    "image": "/devices/hp-elitebook-eb_std-hp-elitebook-g1a.png"
   },
   {
-    "id": "hpspec14",
-    "label": "Spectre x360 14\\",
-    "image": "/devices/hpspec14.png",
-    "brand": "hp"
+    "id": "hp-elitebook-eb_std-hp-elitebook-g1i",
+    "series_id": "elitebook",
+    "series_label": "EliteBook",
+    "sub_id": "eb_std",
+    "sub_label": "EliteBook",
+    "model_slug": "hp-elitebook-g1i",
+    "label": "HP Elitebook G1i",
+    "image": "/devices/hp-elitebook-eb_std-hp-elitebook-g1i.png"
   },
   {
-    "id": "hpspec16g23",
-    "label": "Spectre x360 16\\",
-    "image": "/devices/hpspec16g23.png",
-    "brand": "hp"
+    "id": "hp-elitebook-eb_std-hp-elitebook-g1q",
+    "series_id": "elitebook",
+    "series_label": "EliteBook",
+    "sub_id": "eb_std",
+    "sub_label": "EliteBook",
+    "model_slug": "hp-elitebook-g1q",
+    "label": "HP Elitebook G1q",
+    "image": "/devices/hp-elitebook-eb_std-hp-elitebook-g1q.png"
   },
   {
-    "id": "hpenvy16",
-    "label": "Envy 16\\",
-    "image": "/devices/hpenvy16.png",
-    "brand": "hp"
+    "id": "hp-elitebook-eb_std-hp-elitebook-g11",
+    "series_id": "elitebook",
+    "series_label": "EliteBook",
+    "sub_id": "eb_std",
+    "sub_label": "EliteBook",
+    "model_slug": "hp-elitebook-g11",
+    "label": "HP Elitebook G11",
+    "image": "/devices/hp-elitebook-eb_std-hp-elitebook-g11.png"
   },
   {
-    "id": "hpenvy15",
-    "label": "Envy x360 15\\",
-    "image": "/devices/hpenvy15.png",
-    "brand": "hp"
+    "id": "hp-elitebook-eb_std-hp-elitebook-g10",
+    "series_id": "elitebook",
+    "series_label": "EliteBook",
+    "sub_id": "eb_std",
+    "sub_label": "EliteBook",
+    "model_slug": "hp-elitebook-g10",
+    "label": "HP Elitebook G10",
+    "image": "/devices/hp-elitebook-eb_std-hp-elitebook-g10.png"
   },
   {
-    "id": "hpomen17",
-    "label": "OMEN 17\\",
-    "image": "/devices/hpomen17.png",
-    "brand": "hp"
+    "id": "hp-elitebook-eb_std-hp-elitebook-g9",
+    "series_id": "elitebook",
+    "series_label": "EliteBook",
+    "sub_id": "eb_std",
+    "sub_label": "EliteBook",
+    "model_slug": "hp-elitebook-g9",
+    "label": "HP Elitebook G9",
+    "image": "/devices/hp-elitebook-eb_std-hp-elitebook-g9.png"
   },
   {
-    "id": "hpomen16",
-    "label": "OMEN 16\\",
-    "image": "/devices/hpomen16.png",
-    "brand": "hp"
+    "id": "hp-elitebook-eb_std-hp-elitebook-g8",
+    "series_id": "elitebook",
+    "series_label": "EliteBook",
+    "sub_id": "eb_std",
+    "sub_label": "EliteBook",
+    "model_slug": "hp-elitebook-g8",
+    "label": "HP Elitebook G8",
+    "image": "/devices/hp-elitebook-eb_std-hp-elitebook-g8.png"
   },
   {
-    "id": "hppav15",
-    "label": "Pavilion 15\\",
-    "image": "/devices/hppav15.png",
-    "brand": "hp"
+    "id": "hp-elitebook-eb_std-hp-elitebook-g7",
+    "series_id": "elitebook",
+    "series_label": "EliteBook",
+    "sub_id": "eb_std",
+    "sub_label": "EliteBook",
+    "model_slug": "hp-elitebook-g7",
+    "label": "HP Elitebook G7",
+    "image": "/devices/hp-elitebook-eb_std-hp-elitebook-g7.png"
   },
   {
-    "id": "hpelite840",
-    "label": "EliteBook 840 G10",
-    "image": "/devices/hpelite840.png",
-    "brand": "hp"
+    "id": "hp-elitebook-eb_std-hp-elitebook-g6",
+    "series_id": "elitebook",
+    "series_label": "EliteBook",
+    "sub_id": "eb_std",
+    "sub_label": "EliteBook",
+    "model_slug": "hp-elitebook-g6",
+    "label": "HP Elitebook G6",
+    "image": "/devices/hp-elitebook-eb_std-hp-elitebook-g6.png"
   },
   {
-    "id": "hpprobook",
-    "label": "ProBook 450 G10",
-    "image": "/devices/hpprobook.png",
-    "brand": "hp"
+    "id": "hp-elitebook-eb_std-hp-elitebook-g5",
+    "series_id": "elitebook",
+    "series_label": "EliteBook",
+    "sub_id": "eb_std",
+    "sub_label": "EliteBook",
+    "model_slug": "hp-elitebook-g5",
+    "label": "HP Elitebook G5",
+    "image": "/devices/hp-elitebook-eb_std-hp-elitebook-g5.png"
+  },
+  {
+    "id": "hp-elitebook-eb_std-hp-elitebook-g4",
+    "series_id": "elitebook",
+    "series_label": "EliteBook",
+    "sub_id": "eb_std",
+    "sub_label": "EliteBook",
+    "model_slug": "hp-elitebook-g4",
+    "label": "HP Elitebook G4",
+    "image": "/devices/hp-elitebook-eb_std-hp-elitebook-g4.png"
+  },
+  {
+    "id": "hp-elitebook-eb_ultra-hp-elitebook-ultra-g1q",
+    "series_id": "elitebook",
+    "series_label": "EliteBook",
+    "sub_id": "eb_ultra",
+    "sub_label": "EliteBook Ultra",
+    "model_slug": "hp-elitebook-ultra-g1q",
+    "label": "HP Elitebook Ultra G1q",
+    "image": "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1q.png"
+  },
+  {
+    "id": "hp-elitebook-eb_ultra-hp-elitebook-ultra-g1i",
+    "series_id": "elitebook",
+    "series_label": "EliteBook",
+    "sub_id": "eb_ultra",
+    "sub_label": "EliteBook Ultra",
+    "model_slug": "hp-elitebook-ultra-g1i",
+    "label": "HP Elitebook Ultra G1i",
+    "image": "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1i.png"
+  },
+  {
+    "id": "hp-envy-hp-envy-13",
+    "series_id": "envy",
+    "series_label": "Envy",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-envy-13",
+    "label": "HP Envy 13",
+    "image": "/devices/hp-envy-hp-envy-13.png"
+  },
+  {
+    "id": "hp-envy-hp-envy-15",
+    "series_id": "envy",
+    "series_label": "Envy",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-envy-15",
+    "label": "HP Envy 15",
+    "image": "/devices/hp-envy-hp-envy-15.png"
+  },
+  {
+    "id": "hp-envy-hp-envy-17",
+    "series_id": "envy",
+    "series_label": "Envy",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-envy-17",
+    "label": "HP Envy 17",
+    "image": "/devices/hp-envy-hp-envy-17.png"
+  },
+  {
+    "id": "hp-envy-hp-envy-x360",
+    "series_id": "envy",
+    "series_label": "Envy",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-envy-x360",
+    "label": "HP Envy x360",
+    "image": "/devices/hp-envy-hp-envy-x360.png"
+  },
+  {
+    "id": "hp-omen-omen_std-hp-omen-17",
+    "series_id": "omen",
+    "series_label": "OMEN",
+    "sub_id": "omen_std",
+    "sub_label": "OMEN",
+    "model_slug": "hp-omen-17",
+    "label": "HP Omen 17",
+    "image": "/devices/hp-omen-omen_std-hp-omen-17.png"
+  },
+  {
+    "id": "hp-omen-omen_std-hp-omen-16",
+    "series_id": "omen",
+    "series_label": "OMEN",
+    "sub_id": "omen_std",
+    "sub_label": "OMEN",
+    "model_slug": "hp-omen-16",
+    "label": "HP Omen 16",
+    "image": "/devices/hp-omen-omen_std-hp-omen-16.png"
+  },
+  {
+    "id": "hp-omen-omen_std-hp-omen-15",
+    "series_id": "omen",
+    "series_label": "OMEN",
+    "sub_id": "omen_std",
+    "sub_label": "OMEN",
+    "model_slug": "hp-omen-15",
+    "label": "HP Omen 15",
+    "image": "/devices/hp-omen-omen_std-hp-omen-15.png"
+  },
+  {
+    "id": "hp-omen-omen_max-amd-ryzen-ai-7-h-350",
+    "series_id": "omen",
+    "series_label": "OMEN",
+    "sub_id": "omen_max",
+    "sub_label": "OMEN Max",
+    "model_slug": "amd-ryzen-ai-7-h-350",
+    "label": "OMEN AMD Ryzen AI 7 H 350",
+    "image": ""
+  },
+  {
+    "id": "hp-omen-omen_max-amd-ryzen-ai-9-hx-375",
+    "series_id": "omen",
+    "series_label": "OMEN",
+    "sub_id": "omen_max",
+    "sub_label": "OMEN Max",
+    "model_slug": "amd-ryzen-ai-9-hx-375",
+    "label": "OMEN AMD Ryzen AI 9 HX 375",
+    "image": ""
+  },
+  {
+    "id": "hp-omen-omen_max-intel-core-ultra-7-series-2",
+    "series_id": "omen",
+    "series_label": "OMEN",
+    "sub_id": "omen_max",
+    "sub_label": "OMEN Max",
+    "model_slug": "intel-core-ultra-7-series-2",
+    "label": "OMEN Intel Core Ultra 7 Series 2",
+    "image": ""
+  },
+  {
+    "id": "hp-omen-omen_max-intel-core-ultra-9-series-2",
+    "series_id": "omen",
+    "series_label": "OMEN",
+    "sub_id": "omen_max",
+    "sub_label": "OMEN Max",
+    "model_slug": "intel-core-ultra-9-series-2",
+    "label": "OMEN Intel Core Ultra 9 Series 2",
+    "image": ""
+  },
+  {
+    "id": "hp-omen-omen_slim-intel-core-ultra-5-series-2",
+    "series_id": "omen",
+    "series_label": "OMEN",
+    "sub_id": "omen_slim",
+    "sub_label": "OMEN Slim",
+    "model_slug": "intel-core-ultra-5-series-2",
+    "label": "OMEN Intel Core Ultra 5 Series 2",
+    "image": ""
+  },
+  {
+    "id": "hp-omen-omen_slim-intel-core-ultra-7-series-2",
+    "series_id": "omen",
+    "series_label": "OMEN",
+    "sub_id": "omen_slim",
+    "sub_label": "OMEN Slim",
+    "model_slug": "intel-core-ultra-7-series-2",
+    "label": "OMEN Intel Core Ultra 7 Series 2",
+    "image": ""
+  },
+  {
+    "id": "hp-omen-omen_slim-intel-core-ultra-9-series-2",
+    "series_id": "omen",
+    "series_label": "OMEN",
+    "sub_id": "omen_slim",
+    "sub_label": "OMEN Slim",
+    "model_slug": "intel-core-ultra-9-series-2",
+    "label": "OMEN Intel Core Ultra 9 Series 2",
+    "image": ""
+  },
+  {
+    "id": "hp-omen-omen_trans-hp-omen-transcend-16",
+    "series_id": "omen",
+    "series_label": "OMEN",
+    "sub_id": "omen_trans",
+    "sub_label": "OMEN Transcend",
+    "model_slug": "hp-omen-transcend-16",
+    "label": "HP Omen Transcend 16",
+    "image": "/devices/hp-omen-omen_trans-hp-omen-transcend-16.png"
+  },
+  {
+    "id": "hp-omen-omen_trans-hp-omen-transcend-14",
+    "series_id": "omen",
+    "series_label": "OMEN",
+    "sub_id": "omen_trans",
+    "sub_label": "OMEN Transcend",
+    "model_slug": "hp-omen-transcend-14",
+    "label": "HP Omen Transcend 14",
+    "image": "/devices/hp-omen-omen_trans-hp-omen-transcend-14.png"
+  },
+  {
+    "id": "hp-omnibook-hp-omnibook-3",
+    "series_id": "omnibook",
+    "series_label": "OmniBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-omnibook-3",
+    "label": "HP OmniBook 3",
+    "image": "/devices/hp-omnibook-hp-omnibook-3.png"
+  },
+  {
+    "id": "hp-omnibook-hp-omnibook-7-aero",
+    "series_id": "omnibook",
+    "series_label": "OmniBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-omnibook-7-aero",
+    "label": "HP OmniBook 7 Aero",
+    "image": "/devices/hp-omnibook-hp-omnibook-7-aero.png"
+  },
+  {
+    "id": "hp-omnibook-hp-omnibook-7-flip",
+    "series_id": "omnibook",
+    "series_label": "OmniBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-omnibook-7-flip",
+    "label": "HP OmniBook 7 Flip",
+    "image": "/devices/hp-omnibook-hp-omnibook-7-flip.png"
+  },
+  {
+    "id": "hp-omnibook-hp-omnibook-7",
+    "series_id": "omnibook",
+    "series_label": "OmniBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-omnibook-7",
+    "label": "HP OmniBook 7",
+    "image": "/devices/hp-omnibook-hp-omnibook-7.png"
+  },
+  {
+    "id": "hp-omnibook-hp-omnibook-x-flip",
+    "series_id": "omnibook",
+    "series_label": "OmniBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-omnibook-x-flip",
+    "label": "HP OmniBook X Flip",
+    "image": "/devices/hp-omnibook-hp-omnibook-x-flip.png"
+  },
+  {
+    "id": "hp-omnibook-hp-omnibook-x",
+    "series_id": "omnibook",
+    "series_label": "OmniBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-omnibook-x",
+    "label": "HP OmniBook X",
+    "image": "/devices/hp-omnibook-hp-omnibook-x.png"
+  },
+  {
+    "id": "hp-pavilion-hp-pavilion-gaming",
+    "series_id": "pavilion",
+    "series_label": "Pavilion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-pavilion-gaming",
+    "label": "HP Pavilion Gaming",
+    "image": "/devices/hp-pavilion-hp-pavilion-gaming.png"
+  },
+  {
+    "id": "hp-pavilion-hp-pavilion-14",
+    "series_id": "pavilion",
+    "series_label": "Pavilion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-pavilion-14",
+    "label": "HP Pavilion 14",
+    "image": "/devices/hp-pavilion-hp-pavilion-14.png"
+  },
+  {
+    "id": "hp-pavilion-hp-pavilion-15",
+    "series_id": "pavilion",
+    "series_label": "Pavilion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-pavilion-15",
+    "label": "HP Pavilion 15",
+    "image": "/devices/hp-pavilion-hp-pavilion-15.png"
+  },
+  {
+    "id": "hp-pavilion-hp-pavilion-16",
+    "series_id": "pavilion",
+    "series_label": "Pavilion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-pavilion-16",
+    "label": "HP Pavilion 16",
+    "image": "/devices/hp-pavilion-hp-pavilion-16.png"
+  },
+  {
+    "id": "hp-pavilion-hp-pavilion-x360",
+    "series_id": "pavilion",
+    "series_label": "Pavilion",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-pavilion-x360",
+    "label": "HP Pavilion x360",
+    "image": "/devices/hp-pavilion-hp-pavilion-x360.png"
+  },
+  {
+    "id": "hp-probook-hp-probook-g11",
+    "series_id": "probook",
+    "series_label": "ProBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-probook-g11",
+    "label": "HP ProBook G11",
+    "image": "/devices/hp-probook-hp-probook-g11.png"
+  },
+  {
+    "id": "hp-probook-hp-probook-g10",
+    "series_id": "probook",
+    "series_label": "ProBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-probook-g10",
+    "label": "HP ProBook G10",
+    "image": "/devices/hp-probook-hp-probook-g10.png"
+  },
+  {
+    "id": "hp-probook-hp-probook-g9",
+    "series_id": "probook",
+    "series_label": "ProBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-probook-g9",
+    "label": "HP ProBook G9",
+    "image": "/devices/hp-probook-hp-probook-g9.png"
+  },
+  {
+    "id": "hp-probook-hp-probook-g8",
+    "series_id": "probook",
+    "series_label": "ProBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-probook-g8",
+    "label": "HP ProBook G8",
+    "image": "/devices/hp-probook-hp-probook-g8.png"
+  },
+  {
+    "id": "hp-probook-hp-probook-g7",
+    "series_id": "probook",
+    "series_label": "ProBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-probook-g7",
+    "label": "HP ProBook G7",
+    "image": "/devices/hp-probook-hp-probook-g7.png"
+  },
+  {
+    "id": "hp-probook-hp-probook-g6",
+    "series_id": "probook",
+    "series_label": "ProBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-probook-g6",
+    "label": "HP ProBook G6",
+    "image": "/devices/hp-probook-hp-probook-g6.png"
+  },
+  {
+    "id": "hp-probook-hp-probook-g5",
+    "series_id": "probook",
+    "series_label": "ProBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-probook-g5",
+    "label": "HP ProBook G5",
+    "image": "/devices/hp-probook-hp-probook-g5.png"
+  },
+  {
+    "id": "hp-spectre-hp-spectre-13-x360",
+    "series_id": "spectre",
+    "series_label": "Spectre",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-spectre-13-x360",
+    "label": "HP Spectre 13 x360",
+    "image": "/devices/hp-spectre-hp-spectre-13-x360.png"
+  },
+  {
+    "id": "hp-spectre-hp-spectre-14-x360",
+    "series_id": "spectre",
+    "series_label": "Spectre",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-spectre-14-x360",
+    "label": "HP Spectre 14 x360",
+    "image": "/devices/hp-spectre-hp-spectre-14-x360.png"
+  },
+  {
+    "id": "hp-spectre-hp-spectre-15-x360",
+    "series_id": "spectre",
+    "series_label": "Spectre",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-spectre-15-x360",
+    "label": "HP Spectre 15 x360",
+    "image": "/devices/hp-spectre-hp-spectre-15-x360.png"
+  },
+  {
+    "id": "hp-spectre-hp-spectre-16-x360",
+    "series_id": "spectre",
+    "series_label": "Spectre",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-spectre-16-x360",
+    "label": "HP Spectre 16 x360",
+    "image": "/devices/hp-spectre-hp-spectre-16-x360.png"
+  },
+  {
+    "id": "hp-victus-156",
+    "series_id": "victus",
+    "series_label": "Victus",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "156",
+    "label": "Victus 15.6\"",
+    "image": ""
+  },
+  {
+    "id": "hp-victus-161",
+    "series_id": "victus",
+    "series_label": "Victus",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "161",
+    "label": "Victus 16.1\"",
+    "image": ""
+  },
+  {
+    "id": "hp-zbook-hp-zbook-g11",
+    "series_id": "zbook",
+    "series_label": "ZBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-zbook-g11",
+    "label": "HP ZBook G11",
+    "image": "/devices/hp-zbook-hp-zbook-g11.png"
+  },
+  {
+    "id": "hp-zbook-hp-zbook-g10",
+    "series_id": "zbook",
+    "series_label": "ZBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-zbook-g10",
+    "label": "HP ZBook G10",
+    "image": "/devices/hp-zbook-hp-zbook-g10.png"
+  },
+  {
+    "id": "hp-zbook-hp-zbook-g9",
+    "series_id": "zbook",
+    "series_label": "ZBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-zbook-g9",
+    "label": "HP ZBook G9",
+    "image": "/devices/hp-zbook-hp-zbook-g9.png"
+  },
+  {
+    "id": "hp-zbook-hp-zbook-g8",
+    "series_id": "zbook",
+    "series_label": "ZBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-zbook-g8",
+    "label": "HP ZBook G8",
+    "image": "/devices/hp-zbook-hp-zbook-g8.png"
+  },
+  {
+    "id": "hp-zbook-hp-zbook-g7",
+    "series_id": "zbook",
+    "series_label": "ZBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-zbook-g7",
+    "label": "HP ZBook G7",
+    "image": "/devices/hp-zbook-hp-zbook-g7.png"
+  },
+  {
+    "id": "hp-zbook-hp-zbook-g6",
+    "series_id": "zbook",
+    "series_label": "ZBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-zbook-g6",
+    "label": "HP ZBook G6",
+    "image": "/devices/hp-zbook-hp-zbook-g6.png"
+  },
+  {
+    "id": "hp-zbook-hp-zbook-g5",
+    "series_id": "zbook",
+    "series_label": "ZBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-zbook-g5",
+    "label": "HP ZBook G5",
+    "image": "/devices/hp-zbook-hp-zbook-g5.png"
+  },
+  {
+    "id": "hp-zbook-hp-zbook-g4",
+    "series_id": "zbook",
+    "series_label": "ZBook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-zbook-g4",
+    "label": "HP ZBook G4",
+    "image": "/devices/hp-zbook-hp-zbook-g4.png"
+  },
+  {
+    "id": "hp-notebook-hp-notebook-14",
+    "series_id": "notebook",
+    "series_label": "Notebook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-notebook-14",
+    "label": "HP Notebook 14",
+    "image": "/devices/hp-notebook-hp-notebook-14.png"
+  },
+  {
+    "id": "hp-notebook-hp-notebook-15",
+    "series_id": "notebook",
+    "series_label": "Notebook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-notebook-15",
+    "label": "HP Notebook 15",
+    "image": "/devices/hp-notebook-hp-notebook-15.png"
+  },
+  {
+    "id": "hp-notebook-hp-notebook-17",
+    "series_id": "notebook",
+    "series_label": "Notebook",
+    "sub_id": "",
+    "sub_label": "",
+    "model_slug": "hp-notebook-17",
+    "label": "HP Notebook 17",
+    "image": "/devices/hp-notebook-hp-notebook-17.png"
   }
 ]

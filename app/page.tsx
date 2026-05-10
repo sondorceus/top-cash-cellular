@@ -440,17 +440,124 @@ const ALIENWARE_MODELS = [
   ...ALIENWARE_13_VARIANTS,
 ];
 
-const HP_MODELS = [
-  { id: "hpspec16", label: "Spectre x360 16\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hpspec16.png" },
-  { id: "hpspec14", label: "Spectre x360 14\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hpspec14.png" },
-  { id: "hpspec16g23", label: "Spectre x360 16\" (2023)", base: 0, inquiryOnly: true, image: "/devices/hpspec16g23.png" },
-  { id: "hpenvy16", label: "Envy 16\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hpenvy16.png" },
-  { id: "hpenvy15", label: "Envy x360 15\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hpenvy15.png" },
-  { id: "hpomen17", label: "OMEN 17\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hpomen17.png" },
-  { id: "hpomen16", label: "OMEN 16\" (2024)", base: 0, inquiryOnly: true, image: "/devices/hpomen16.png" },
-  { id: "hppav15", label: "Pavilion 15\"", base: 0, inquiryOnly: true, image: "/devices/hppav15.png" },
-  { id: "hpelite840", label: "EliteBook 840 G10", base: 0, inquiryOnly: true, image: "/devices/hpelite840.png" },
-  { id: "hpprobook", label: "ProBook 450 G10", base: 0, inquiryOnly: true, image: "/devices/hpprobook.png" },
+// HP LAPTOPS — three-level tree mirroring itsworthmore.com.
+// 64 models scraped 2026-05-10, 51 with per-product photos. EliteBook
+// and OMEN have sub-series; the rest are flat. OMEN Max / OMEN Slim
+// dropped from sub-series — IWM serves CPU-spec options instead of
+// model names there. Victus left as 2 size buckets.
+const HP_ELITEBOOK_STD_VARIANTS = [
+  { id: "hp_eb_g1a", label: "EliteBook G1a", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g1a.png" },
+  { id: "hp_eb_g1i", label: "EliteBook G1i", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g1i.png" },
+  { id: "hp_eb_g1q", label: "EliteBook G1q", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g1q.png" },
+  { id: "hp_eb_g11", label: "EliteBook G11", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g11.png" },
+  { id: "hp_eb_g10", label: "EliteBook G10", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g10.png" },
+  { id: "hp_eb_g9", label: "EliteBook G9", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g9.png" },
+  { id: "hp_eb_g8", label: "EliteBook G8", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g8.png" },
+  { id: "hp_eb_g7", label: "EliteBook G7", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g7.png" },
+  { id: "hp_eb_g6", label: "EliteBook G6", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g6.png" },
+  { id: "hp_eb_g5", label: "EliteBook G5", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g5.png" },
+  { id: "hp_eb_g4", label: "EliteBook G4", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g4.png" },
+];
+const HP_ELITEBOOK_ULTRA_VARIANTS = [
+  { id: "hp_eb_ultra_g1q", label: "EliteBook Ultra G1q", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1q.png" },
+  { id: "hp_eb_ultra_g1i", label: "EliteBook Ultra G1i", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1i.png" },
+];
+const HP_ELITEBOOK_SUB_SERIES = [
+  { id: "hp_eb_std", label: "EliteBook", year: "Standard line", topPrice: 0, variants: HP_ELITEBOOK_STD_VARIANTS, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g1a.png" },
+  { id: "hp_eb_ultra", label: "EliteBook Ultra", year: "Premium ultraportable", topPrice: 0, variants: HP_ELITEBOOK_ULTRA_VARIANTS, inquiryOnly: true, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1q.png" },
+];
+const HP_ENVY_VARIANTS = [
+  { id: "hp_envy_13", label: "Envy 13", base: 0, inquiryOnly: true, image: "/devices/hp-envy-hp-envy-13.png" },
+  { id: "hp_envy_15", label: "Envy 15", base: 0, inquiryOnly: true, image: "/devices/hp-envy-hp-envy-15.png" },
+  { id: "hp_envy_17", label: "Envy 17", base: 0, inquiryOnly: true, image: "/devices/hp-envy-hp-envy-17.png" },
+  { id: "hp_envy_x360", label: "Envy x360", base: 0, inquiryOnly: true, image: "/devices/hp-envy-hp-envy-x360.png" },
+];
+const HP_OMEN_STD_VARIANTS = [
+  { id: "hp_omen_17", label: "OMEN 17", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_omen_16", label: "OMEN 16", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-16.png" },
+  { id: "hp_omen_15", label: "OMEN 15", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-15.png" },
+];
+const HP_OMEN_TRANSCEND_VARIANTS = [
+  { id: "hp_omen_trans_16", label: "OMEN Transcend 16", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_trans-hp-omen-transcend-16.png" },
+  { id: "hp_omen_trans_14", label: "OMEN Transcend 14", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_trans-hp-omen-transcend-14.png" },
+];
+const HP_OMEN_MAX_VARIANTS = [
+  { id: "hp_omen_max", label: "OMEN Max", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+];
+const HP_OMEN_SLIM_VARIANTS = [
+  { id: "hp_omen_slim", label: "OMEN Slim", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+];
+const HP_OMEN_SUB_SERIES = [
+  { id: "hp_omen_std_sub", label: "OMEN", year: "Standard gaming", topPrice: 0, variants: HP_OMEN_STD_VARIANTS, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_omen_max_sub", label: "OMEN Max", year: "Top-tier", topPrice: 0, variants: HP_OMEN_MAX_VARIANTS, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_omen_slim_sub", label: "OMEN Slim", year: "Slim gaming", topPrice: 0, variants: HP_OMEN_SLIM_VARIANTS, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_omen_trans_sub", label: "OMEN Transcend", year: "Premium gaming", topPrice: 0, variants: HP_OMEN_TRANSCEND_VARIANTS, inquiryOnly: true, image: "/devices/hp-omen-omen_trans-hp-omen-transcend-16.png" },
+];
+const HP_OMNIBOOK_VARIANTS = [
+  { id: "hp_omni_x", label: "OmniBook X", base: 0, inquiryOnly: true, image: "/devices/hp-omnibook-hp-omnibook-x.png" },
+  { id: "hp_omni_x_flip", label: "OmniBook X Flip", base: 0, inquiryOnly: true, image: "/devices/hp-omnibook-hp-omnibook-x-flip.png" },
+  { id: "hp_omni_7", label: "OmniBook 7", base: 0, inquiryOnly: true, image: "/devices/hp-omnibook-hp-omnibook-7.png" },
+  { id: "hp_omni_7_aero", label: "OmniBook 7 Aero", base: 0, inquiryOnly: true, image: "/devices/hp-omnibook-hp-omnibook-7-aero.png" },
+  { id: "hp_omni_7_flip", label: "OmniBook 7 Flip", base: 0, inquiryOnly: true, image: "/devices/hp-omnibook-hp-omnibook-7-flip.png" },
+  { id: "hp_omni_3", label: "OmniBook 3", base: 0, inquiryOnly: true, image: "/devices/hp-omnibook-hp-omnibook-3.png" },
+];
+const HP_PAVILION_VARIANTS = [
+  { id: "hp_pav_gaming", label: "Pavilion Gaming", base: 0, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-gaming.png" },
+  { id: "hp_pav_14", label: "Pavilion 14", base: 0, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-14.png" },
+  { id: "hp_pav_15", label: "Pavilion 15", base: 0, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-15.png" },
+  { id: "hp_pav_16", label: "Pavilion 16", base: 0, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-16.png" },
+  { id: "hp_pav_x360", label: "Pavilion x360", base: 0, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-x360.png" },
+];
+const HP_PROBOOK_VARIANTS = [
+  { id: "hp_pb_g11", label: "ProBook G11", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g11.png" },
+  { id: "hp_pb_g10", label: "ProBook G10", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g10.png" },
+  { id: "hp_pb_g9", label: "ProBook G9", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g9.png" },
+  { id: "hp_pb_g8", label: "ProBook G8", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g8.png" },
+  { id: "hp_pb_g7", label: "ProBook G7", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g7.png" },
+  { id: "hp_pb_g6", label: "ProBook G6", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g6.png" },
+  { id: "hp_pb_g5", label: "ProBook G5", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g5.png" },
+];
+const HP_SPECTRE_VARIANTS = [
+  { id: "hp_spec_13", label: "Spectre x360 13", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-hp-spectre-13-x360.png" },
+  { id: "hp_spec_14", label: "Spectre x360 14", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-hp-spectre-14-x360.png" },
+  { id: "hp_spec_15", label: "Spectre x360 15", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-hp-spectre-15-x360.png" },
+  { id: "hp_spec_16", label: "Spectre x360 16", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-hp-spectre-16-x360.png" },
+];
+const HP_VICTUS_VARIANTS = [
+  { id: "hp_victus_15", label: "Victus 15", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
+  { id: "hp_victus_16", label: "Victus 16", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
+];
+const HP_ZBOOK_VARIANTS = [
+  { id: "hp_zb_g11", label: "ZBook G11", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g11.png" },
+  { id: "hp_zb_g10", label: "ZBook G10", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g10.png" },
+  { id: "hp_zb_g9", label: "ZBook G9", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g9.png" },
+  { id: "hp_zb_g8", label: "ZBook G8", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g8.png" },
+  { id: "hp_zb_g7", label: "ZBook G7", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g7.png" },
+  { id: "hp_zb_g6", label: "ZBook G6", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g6.png" },
+  { id: "hp_zb_g5", label: "ZBook G5", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g5.png" },
+  { id: "hp_zb_g4", label: "ZBook G4", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g4.png" },
+];
+const HP_NOTEBOOK_VARIANTS = [
+  { id: "hp_nb_14", label: "Notebook 14", base: 0, inquiryOnly: true, image: "/devices/hp-notebook-hp-notebook-14.png" },
+  { id: "hp_nb_15", label: "Notebook 15", base: 0, inquiryOnly: true, image: "/devices/hp-notebook-hp-notebook-15.png" },
+  { id: "hp_nb_17", label: "Notebook 17", base: 0, inquiryOnly: true, image: "/devices/hp-notebook-hp-notebook-17.png" },
+];
+
+const HP_PC_SERIES = [
+  { id: "hp_elitebook", label: "EliteBook", year: "Premium business", topPrice: 0, subSeries: HP_ELITEBOOK_SUB_SERIES, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g11.png" },
+  { id: "hp_envy", label: "Envy", year: "Mainstream consumer", topPrice: 0, variants: HP_ENVY_VARIANTS, inquiryOnly: true, image: "/devices/hp-envy-hp-envy-x360.png" },
+  { id: "hp_omen", label: "OMEN", year: "Gaming", topPrice: 0, subSeries: HP_OMEN_SUB_SERIES, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_omnibook", label: "OmniBook", year: "AI productivity", topPrice: 0, variants: HP_OMNIBOOK_VARIANTS, inquiryOnly: true, image: "/devices/hp-omnibook-hp-omnibook-x.png" },
+  { id: "hp_pavilion", label: "Pavilion", year: "Everyday", topPrice: 0, variants: HP_PAVILION_VARIANTS, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-15.png" },
+  { id: "hp_probook", label: "ProBook", year: "SMB business", topPrice: 0, variants: HP_PROBOOK_VARIANTS, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g11.png" },
+  { id: "hp_spectre", label: "Spectre", year: "Premium consumer", topPrice: 0, variants: HP_SPECTRE_VARIANTS, inquiryOnly: true, image: "/devices/hp-spectre-hp-spectre-14-x360.png" },
+  { id: "hp_victus", label: "Victus", year: "Entry gaming", topPrice: 0, variants: HP_VICTUS_VARIANTS, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
+  { id: "hp_zbook", label: "ZBook", year: "Mobile workstation", topPrice: 0, variants: HP_ZBOOK_VARIANTS, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g11.png" },
+  { id: "hp_notebook", label: "Notebook", year: "Budget", topPrice: 0, variants: HP_NOTEBOOK_VARIANTS, inquiryOnly: true, image: "/devices/hp-notebook-hp-notebook-15.png" },
+];
+const HP_PC_ALL_SUB_SERIES = [
+  ...HP_ELITEBOOK_SUB_SERIES,
+  ...HP_OMEN_SUB_SERIES,
 ];
 
 const ACER_MODELS = [
@@ -2081,6 +2188,11 @@ export default function Home() {
     : selectedSeries
       ? (LENOVO_PC_SERIES.find(s => s.id === selectedSeries) as { variants?: { id: string; label: string; base: number }[] })?.variants || []
       : [];
+  const hpPcVariants = selectedSubSeries
+    ? HP_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.variants || []
+    : selectedSeries
+      ? (HP_PC_SERIES.find(s => s.id === selectedSeries) as { variants?: { id: string; label: string; base: number }[] })?.variants || []
+      : [];
 
   type Crumb = { label: string; onClick: () => void };
   const breadcrumbs: Crumb[] = [
@@ -2093,7 +2205,7 @@ export default function Home() {
     });
   }
   if (selectedSeries) {
-    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : deviceType === "lg_pc" ? LG_PC_SERIES : deviceType === "lenovo_tab" ? LENOVO_TAB_SERIES : deviceType === "surface" ? SURFACE_SERIES : deviceType === "apple_desktop" ? APPLE_DESKTOP_SERIES : deviceType === "asus_pc" ? ASUS_PC_SERIES : deviceType === "dell" ? DELL_PC_SERIES : deviceType === "lenovo" ? LENOVO_PC_SERIES : null;
+    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : deviceType === "lg_pc" ? LG_PC_SERIES : deviceType === "lenovo_tab" ? LENOVO_TAB_SERIES : deviceType === "surface" ? SURFACE_SERIES : deviceType === "apple_desktop" ? APPLE_DESKTOP_SERIES : deviceType === "asus_pc" ? ASUS_PC_SERIES : deviceType === "dell" ? DELL_PC_SERIES : deviceType === "lenovo" ? LENOVO_PC_SERIES : deviceType === "hp" ? HP_PC_SERIES : null;
     const ser = seriesList?.find(s => s.id === selectedSeries);
     if (ser) breadcrumbs.push({
       label: ser.label,
@@ -2104,7 +2216,8 @@ export default function Home() {
     const sub = ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)
       || DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)
       || LG_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)
-      || LENOVO_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries);
+      || LENOVO_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)
+      || HP_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries);
     if (sub) breadcrumbs.push({
       label: sub.label,
       onClick: () => { setModel(null); setStorage(null); setCondition(null); setCarrier(null); setStep("model"); pushHistory("model"); },
@@ -2127,7 +2240,7 @@ export default function Home() {
     onClick: () => { setStep("quote"); pushHistory("quote"); },
   });
   const showBreadcrumbs = breadcrumbs.length > 1 && step !== "device" && step !== "category" && page === "home";
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? lenovoPcVariants : deviceType === "dell" ? dellPcVariants : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_pc" ? asusPcVariants : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? lenovoPcVariants : deviceType === "dell" ? dellPcVariants : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? hpPcVariants : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_pc" ? asusPcVariants : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -3124,7 +3237,7 @@ export default function Home() {
                 { id: "samsung_pc" as const, label: "Samsung", sub: "Galaxy Book 2, 3, 4 series", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="bold" fontFamily="Arial">S</text></svg> },
                 { id: "dell" as const, label: "Dell", sub: "XPS, Latitude, Inspiron, Vostro, Precision, G, Rugged", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#007db8"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">DELL</text></svg> },
                 { id: "alienware" as const, label: "Alienware", sub: "m16, m18, x14, x16", brandIcon: <span className="text-[40px] leading-none">👽</span> },
-                { id: "hp" as const, label: "HP", sub: "Spectre, Envy, OMEN, EliteBook", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#0096d6"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">hp</text></svg> },
+                { id: "hp" as const, label: "HP", sub: "EliteBook, Envy, OMEN, OmniBook, Pavilion, ProBook, Spectre, Victus, ZBook, Notebook", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#0096d6"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">hp</text></svg> },
                 { id: "lenovo" as const, label: "Lenovo", sub: "ThinkPad, ThinkBook, IdeaPad, Legion, LOQ, Slim, Yoga", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg> },
                 { id: "acer" as const, label: "Acer", sub: "Swift, Predator, Nitro, Aspire", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#83b81a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold" fontFamily="Arial">acer</text></svg> },
                 { id: "lg_pc" as const, label: "LG", sub: "Gram, Gram Pro, UltraGear", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#a50034"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">LG</text></svg> },
@@ -3543,6 +3656,55 @@ export default function Home() {
               );
             })()}
 
+            {/* HP Laptops: top-level series picker (10 cards mirroring IWM) */}
+            {deviceType === "hp" && !selectedSeries && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your HP laptop</h2>
+                <p className="text-[#888] text-sm mb-6">Choose your line</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {HP_PC_SERIES.map((s) => (
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                      {s.image ? (
+                        <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                      ) : (
+                        <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#0096d6"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">hp</text></svg>
+                      )}
+                      <p className="font-bold text-sm">{s.label}</p>
+                      <p className="text-[#888] text-[10px] text-center px-1 leading-tight">{s.year}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* HP Laptops: sub-series picker — only EliteBook and OMEN have subSeries */}
+            {deviceType === "hp" && selectedSeries && !selectedSubSeries && (() => {
+              const ser = HP_PC_SERIES.find(s => s.id === selectedSeries);
+              const subs = (ser as { subSeries?: typeof HP_ELITEBOOK_SUB_SERIES })?.subSeries;
+              if (!subs) return null;
+              return (
+                <>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-1">HP — {ser?.label}</h2>
+                  <p className="text-[#888] text-sm mb-6">Pick your sub-line</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {subs.map((s) => (
+                      <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[160px]">
+                        {s.image ? (
+                          <img src={s.image} alt={s.label} loading="eager" className="w-20 h-14 object-contain mb-1" />
+                        ) : (
+                          <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#0096d6"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">hp</text></svg>
+                        )}
+                        <p className="font-bold text-sm text-center">{s.label}</p>
+                        <p className="text-[#888] text-[11px] text-center">{s.year}</p>
+                        <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              );
+            })()}
+
             {/* Lenovo Laptops: top-level series picker (7 cards mirroring IWM) */}
             {deviceType === "lenovo" && !selectedSeries && (
               <>
@@ -3820,9 +3982,9 @@ export default function Home() {
               </>
             )}
 
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "lg_pc" && selectedSeries && !selectedSubSeries) && !(deviceType === "apple_desktop" && !selectedSeries) && !(deviceType === "asus_pc" && !selectedSeries) && !(deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries) && !(deviceType === "dell" && !selectedSeries) && !(deviceType === "dell" && selectedSeries && !selectedSubSeries) && !(deviceType === "lenovo" && !selectedSeries) && !(deviceType === "lenovo" && (selectedSeries === "lenovo_thinkpad" || selectedSeries === "lenovo_thinkbook") && !selectedSubSeries) && (
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "dji" && deviceType !== "macbook" && (category === "computers" || category === "desktops") && !(deviceType === "alienware" && !selectedSeries) && !(deviceType === "lg_pc" && !selectedSeries) && !(deviceType === "lg_pc" && selectedSeries && !selectedSubSeries) && !(deviceType === "apple_desktop" && !selectedSeries) && !(deviceType === "asus_pc" && !selectedSeries) && !(deviceType === "asus_pc" && selectedSeries === "asus_rog" && !selectedSubSeries) && !(deviceType === "dell" && !selectedSeries) && !(deviceType === "dell" && selectedSeries && !selectedSubSeries) && !(deviceType === "lenovo" && !selectedSeries) && !(deviceType === "lenovo" && (selectedSeries === "lenovo_thinkpad" || selectedSeries === "lenovo_thinkbook") && !selectedSubSeries) && !(deviceType === "hp" && !selectedSeries) && !(deviceType === "hp" && (selectedSeries === "hp_elitebook" || selectedSeries === "hp_omen") && !selectedSubSeries) && (
               <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSubSeries ? `LG ${LG_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "asus_pc" && selectedSubSeries ? `ASUS — ${ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "asus_pc" && selectedSeries ? `ASUS — ${ASUS_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "dell" && selectedSubSeries ? `Dell — ${DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "lenovo" && selectedSubSeries ? `Lenovo ${LENOVO_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "lenovo" && selectedSeries ? `Lenovo ${LENOVO_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">{deviceType === "alienware" && selectedSeries ? `Alienware — ${ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "lg_pc" && selectedSubSeries ? `LG ${LG_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "apple_desktop" && selectedSeries ? `${APPLE_DESKTOP_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "asus_pc" && selectedSubSeries ? `ASUS — ${ASUS_ROG_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "asus_pc" && selectedSeries ? `ASUS — ${ASUS_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "dell" && selectedSubSeries ? `Dell — ${DELL_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "lenovo" && selectedSubSeries ? `Lenovo ${LENOVO_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "lenovo" && selectedSeries ? `Lenovo ${LENOVO_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : deviceType === "hp" && selectedSubSeries ? `HP ${HP_PC_ALL_SUB_SERIES.find(s => s.id === selectedSubSeries)?.label}` : deviceType === "hp" && selectedSeries ? `HP ${HP_PC_SERIES.find(s => s.id === selectedSeries)?.label}` : "Select your model"}</h2>
                 <p className="text-[#888] text-sm mb-6">Choose your exact device</p>
                 {/* Mobile: grid cards */}
                 <div className="grid grid-cols-2 gap-2 md:hidden">
