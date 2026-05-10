@@ -37,11 +37,11 @@ const PROMISES = [
 
 export default function HowItWorksPage() {
   return (
-    <main className="min-h-screen bg-white text-[#0a0a0a]">
-      <nav className="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-black/15">
+    <main className="min-h-screen bg-[#0a0a0a] text-white">
+      <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="w-9 h-9 rounded-xl bg-black border border-black/20 flex items-center justify-center">
+            <span className="w-9 h-9 rounded-xl bg-black border border-white/15 flex items-center justify-center">
               <span className="w-6 h-6 rounded-lg bg-[#00c853] flex items-center justify-center">
                 <svg viewBox="0 0 24 24" className="w-3.5 h-5" fill="none" stroke="#fff" strokeWidth="2">
                   <rect x="6" y="2" width="12" height="20" rx="2.5" />
@@ -50,11 +50,11 @@ export default function HowItWorksPage() {
               </span>
             </span>
             <div className="flex flex-col leading-none">
-              <span className="text-[14px] font-extrabold tracking-tight text-[#0a0a0a]">TOP CASH</span>
+              <span className="text-[14px] font-extrabold tracking-tight text-white">TOP CASH</span>
               <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="text-xs text-[#888] hover:text-[#0a0a0a]">← Sell now</Link>
+          <Link href="/" className="text-xs text-[#888] hover:text-white">← Sell now</Link>
         </div>
       </nav>
 
@@ -64,7 +64,7 @@ export default function HowItWorksPage() {
 
         <div className="space-y-4 mb-12">
           {STEPS.map(s => (
-            <div key={s.n} className="flex gap-5 bg-black/5 border border-black/15 rounded-2xl p-6">
+            <div key={s.n} className="flex gap-5 bg-white/5 border border-white/10 rounded-2xl p-6">
               <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-[#00c853]/15 border border-[#00c853]/30 flex items-center justify-center text-3xl">{s.icon}</div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
@@ -80,16 +80,16 @@ export default function HowItWorksPage() {
         <h2 className="text-2xl font-bold mb-6">What we promise</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-12">
           {PROMISES.map(p => (
-            <div key={p.title} className="bg-black/5 border border-black/15 rounded-2xl p-5">
+            <div key={p.title} className="bg-white/5 border border-white/10 rounded-2xl p-5">
               <div className="text-2xl mb-2">{p.icon}</div>
-              <p className="font-semibold text-[#0a0a0a] text-sm mb-1">{p.title}</p>
+              <p className="font-semibold text-white text-sm mb-1">{p.title}</p>
               <p className="text-xs text-[#888] leading-relaxed">{p.body}</p>
             </div>
           ))}
         </div>
 
         <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-2xl p-6 text-center">
-          <p className="text-[#0a0a0a] text-lg font-bold mb-1">Ready when you are.</p>
+          <p className="text-white text-lg font-bold mb-1">Ready when you are.</p>
           <p className="text-[#ccc] text-sm mb-4">Get an instant quote in under 60 seconds.</p>
           <Link href="/" className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition">Sell my device →</Link>
         </div>

@@ -457,8 +457,8 @@ export default function AdminPage() {
   // Token gate
   if (!token) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-black text-[#0a0a0a] px-4">
-        <form onSubmit={handleLogin} className="w-full max-w-sm bg-black/5 border border-black/15 rounded-2xl p-6">
+      <main className="min-h-screen flex items-center justify-center bg-black text-white px-4">
+        <form onSubmit={handleLogin} className="w-full max-w-sm bg-white/5 border border-white/10 rounded-2xl p-6">
           <h1 className="text-xl font-bold mb-1">TCC Staff Ops</h1>
           <p className="text-[#888] text-sm mb-5">Enter admin token to continue.</p>
           <input
@@ -466,7 +466,7 @@ export default function AdminPage() {
             value={tokenInput}
             onChange={(e) => setTokenInput(e.target.value)}
             placeholder="admin token"
-            className="w-full px-4 py-3 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition mb-3"
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition mb-3"
             autoFocus
           />
           {error && <p className="text-[#ef5350] text-xs mb-3">{error}</p>}
@@ -479,7 +479,7 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-[#0a0a0a]">
+    <main className="min-h-screen bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -506,14 +506,14 @@ export default function AdminPage() {
             <button
               onClick={() => setAutoRefresh((v) => !v)}
               title={autoRefresh ? "Auto-refresh ON (every 15s)" : "Auto-refresh OFF"}
-              className={`px-3 py-2 border rounded-lg text-xs font-semibold transition cursor-pointer ${autoRefresh ? "bg-[#00c853]/15 border-[#00c853]/40 text-[#00c853]" : "bg-black/5 border-black/15 text-[#888] hover:bg-black/[0.06]"}`}
+              className={`px-3 py-2 border rounded-lg text-xs font-semibold transition cursor-pointer ${autoRefresh ? "bg-[#00c853]/15 border-[#00c853]/40 text-[#00c853]" : "bg-white/5 border-white/10 text-[#888] hover:bg-white/10"}`}
             >
               {autoRefresh ? "🟢 Live" : "⏸ Paused"}
             </button>
-            <button onClick={fetchLeads} disabled={loading} className="px-4 py-2 bg-black/5 border border-black/15 rounded-lg text-sm hover:bg-black/[0.06] transition disabled:opacity-50 cursor-pointer">
+            <button onClick={fetchLeads} disabled={loading} className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm hover:bg-white/10 transition disabled:opacity-50 cursor-pointer">
               {loading ? "Loading…" : "Refresh"}
             </button>
-            <button onClick={handleLogout} className="px-4 py-2 bg-black/5 border border-black/15 rounded-lg text-sm hover:bg-black/[0.06] transition cursor-pointer">
+            <button onClick={handleLogout} className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm hover:bg-white/10 transition cursor-pointer">
               Sign out
             </button>
           </div>
@@ -526,27 +526,27 @@ export default function AdminPage() {
               <p className="text-2xl font-extrabold text-[#00c853] mt-0.5">${stats.revenueMonth.toLocaleString()}</p>
               <p className="text-[10px] text-[#888] mt-0.5">${stats.revenue.toLocaleString()} all-time · {stats.paidCount} paid</p>
             </div>
-            <div className="bg-black/5 border border-black/15 rounded-xl p-3">
-              <p className="text-[10px] uppercase tracking-wider text-[#777] font-bold">This week</p>
-              <p className="text-2xl font-extrabold text-[#0a0a0a] mt-0.5">{stats.thisWeek}</p>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+              <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">This week</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.thisWeek}</p>
             </div>
-            <div className="bg-black/5 border border-black/15 rounded-xl p-3">
-              <p className="text-[10px] uppercase tracking-wider text-[#777] font-bold">This month</p>
-              <p className="text-2xl font-extrabold text-[#0a0a0a] mt-0.5">{stats.thisMonth}</p>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+              <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">This month</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.thisMonth}</p>
             </div>
-            <div className="bg-black/5 border border-black/15 rounded-xl p-3">
-              <p className="text-[10px] uppercase tracking-wider text-[#777] font-bold">Conversion</p>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+              <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">Conversion</p>
               <p className="text-2xl font-extrabold text-[#00c853] mt-0.5">{stats.conversionRate}%</p>
-              <p className="text-[10px] text-[#777] mt-0.5">paid / non-rejected</p>
+              <p className="text-[10px] text-[#666] mt-0.5">paid / non-rejected</p>
             </div>
-            <div className="bg-black/5 border border-black/15 rounded-xl p-3">
-              <p className="text-[10px] uppercase tracking-wider text-[#777] font-bold">Avg payout</p>
-              <p className="text-2xl font-extrabold text-[#0a0a0a] mt-0.5">{stats.avgPayoutHours > 0 ? (stats.avgPayoutHours < 48 ? `${Math.round(stats.avgPayoutHours)}h` : `${(stats.avgPayoutHours / 24).toFixed(1)}d`) : "—"}</p>
-              <p className="text-[10px] text-[#777] mt-0.5">created → paid</p>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+              <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">Avg payout</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.avgPayoutHours > 0 ? (stats.avgPayoutHours < 48 ? `${Math.round(stats.avgPayoutHours)}h` : `${(stats.avgPayoutHours / 24).toFixed(1)}d`) : "—"}</p>
+              <p className="text-[10px] text-[#666] mt-0.5">created → paid</p>
             </div>
-            <div className="bg-black/5 border border-black/15 rounded-xl p-3 col-span-2 md:col-span-1">
-              <p className="text-[10px] uppercase tracking-wider text-[#777] font-bold">Avg quote</p>
-              <p className="text-2xl font-extrabold text-[#0a0a0a] mt-0.5">${stats.avgQuote}</p>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3 col-span-2 md:col-span-1">
+              <p className="text-[10px] uppercase tracking-wider text-[#666] font-bold">Avg quote</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">${stats.avgQuote}</p>
               {stats.topPayouts.length > 0 && (
                 <p className="text-[10px] text-[#888] mt-0.5 truncate" title={stats.topPayouts.map(([p, n]) => `${p} (${n})`).join(", ")}>
                   Top payout: {stats.topPayouts[0][0]}
@@ -558,16 +558,16 @@ export default function AdminPage() {
 
         {leads.length > 0 && (
           <div className="relative mb-3">
-            <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#777]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z" /></svg>
+            <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#666]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z" /></svg>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search name, phone, email, device, IMEI…"
-              className="w-full pl-10 pr-10 py-2.5 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-2 focus:ring-[#00c853]/20 transition"
+              className="w-full pl-10 pr-10 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-2 focus:ring-[#00c853]/20 transition"
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery("")} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-black/[0.06] text-[#555] text-xs hover:bg-black/[0.12] cursor-pointer">×</button>
+              <button onClick={() => setSearchQuery("")} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white/10 text-[#aaa] text-xs hover:bg-white/20 cursor-pointer">×</button>
             )}
           </div>
         )}
@@ -596,12 +596,12 @@ export default function AdminPage() {
                     className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition flex items-center gap-1.5 cursor-pointer ${
                       active
                         ? "bg-[#00c853] text-[#0a0a0a] border-[#00c853]"
-                        : "bg-black/5 text-[#555] border-black/15 hover:bg-black/[0.06]"
+                        : "bg-white/5 text-[#aaa] border-white/10 hover:bg-white/10"
                     }`}
                     style={active && value !== "all" && value !== "active" && color ? { backgroundColor: color, borderColor: color } : undefined}
                   >
                     <span>{label}</span>
-                    <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${active ? "bg-black/[0.12]" : "bg-black/[0.06]"}`}>{count}</span>
+                    <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${active ? "bg-white/20" : "bg-white/10"}`}>{count}</span>
                   </button>
                 );
               };
@@ -610,11 +610,11 @@ export default function AdminPage() {
                   {chip("active", "🟢 Active")}
                   {staleCount > 0 && chip("stale", "⚠️ Needs attention")}
                   {STATUS_OPTIONS.filter((o) => o.value !== "paid" && o.value !== "rejected").map((opt) => chip(opt.value, opt.label, opt.color))}
-                  <span className="w-px bg-black/[0.06] self-stretch mx-1" aria-hidden />
+                  <span className="w-px bg-white/10 self-stretch mx-1" aria-hidden />
                   {chip("completed", "✅ Completed")}
                   {chip("paid", "💵 Paid", "#00c853")}
                   {chip("rejected", "❌ Rejected", "#ef5350")}
-                  <span className="w-px bg-black/[0.06] self-stretch mx-1" aria-hidden />
+                  <span className="w-px bg-white/10 self-stretch mx-1" aria-hidden />
                   {chip("all", "All")}
                 </>
               );
@@ -623,14 +623,14 @@ export default function AdminPage() {
         )}
 
         {leads.length === 0 && !loading && !error && (
-          <div className="bg-black/5 border border-black/15 rounded-2xl p-12 text-center">
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center">
             <p className="text-[#888]">No leads yet.</p>
           </div>
         )}
 
         {leads.length > 0 && (
-          <div className="bg-black/5 border border-black/15 rounded-2xl overflow-hidden">
-            <div className="hidden md:grid grid-cols-[auto_1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 px-5 py-3 bg-black/5 text-xs font-semibold text-[#888] uppercase tracking-wider border-b border-black/15 items-center">
+          <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+            <div className="hidden md:grid grid-cols-[auto_1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 px-5 py-3 bg-white/5 text-xs font-semibold text-[#888] uppercase tracking-wider border-b border-white/10 items-center">
               <div className="w-4">
                 <input
                   type="checkbox"
@@ -698,12 +698,12 @@ export default function AdminPage() {
                           );
                         })()}
                         {lead.duplicateCount && lead.duplicateCount > 0 && (
-                          <span title={`${lead.duplicateCount} earlier submission${lead.duplicateCount === 1 ? "" : "s"} merged into this row`} className="px-1.5 py-0.5 rounded text-[9px] bg-black/[0.06] text-[#888] border border-black/15 font-bold cursor-help">+{lead.duplicateCount} dupe{lead.duplicateCount === 1 ? "" : "s"}</span>
+                          <span title={`${lead.duplicateCount} earlier submission${lead.duplicateCount === 1 ? "" : "s"} merged into this row`} className="px-1.5 py-0.5 rounded text-[9px] bg-white/10 text-[#888] border border-white/10 font-bold cursor-help">+{lead.duplicateCount} dupe{lead.duplicateCount === 1 ? "" : "s"}</span>
                         )}
                       </p>
-                      <p className="text-[#777] text-xs">{timeAgo(lead.timestamp)}</p>
+                      <p className="text-[#666] text-xs">{timeAgo(lead.timestamp)}</p>
                     </div>
-                    <div className="text-xs text-[#555] space-y-0.5">
+                    <div className="text-xs text-[#aaa] space-y-0.5">
                       {lead.phone && (
                         <p className="flex items-center gap-2 flex-wrap">
                           <span>{lead.phone}</span>
@@ -717,7 +717,7 @@ export default function AdminPage() {
                                 if (!smsThreads[lead.id]) loadSmsThread(lead);
                               }
                             }}
-                            className="text-[10px] px-1.5 py-0.5 bg-black/5 border border-black/15 rounded text-[#555] hover:bg-black/[0.06] cursor-pointer transition"
+                            className="text-[10px] px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[#aaa] hover:bg-white/10 cursor-pointer transition"
                           >
                             💬 {smsOpenId === lead.id ? "Hide" : "SMS"}
                           </button>
@@ -732,27 +732,27 @@ export default function AdminPage() {
                           <span title={lead.imeiWarnings.join(" · ")} className="px-1.5 py-0.5 rounded text-[10px] bg-yellow-500/15 text-yellow-300 border border-yellow-500/30 font-bold cursor-help">⚠️ IMEI</span>
                         )}
                       </p>
-                      <p className="text-[#777] text-xs">
+                      <p className="text-[#666] text-xs">
                         {[lead.storage, lead.condition].filter(Boolean).join(" · ")}
                         {lead.imei && <span className="ml-1 text-[#777] font-mono">· {lead.imei.slice(-6)}</span>}
                       </p>
                       {lead.photos && lead.photos.length > 0 && (
                         <div className="flex gap-1 mt-1.5">
                           {lead.photos.slice(0, 3).map((url, i) => (
-                            <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="block w-10 h-10 rounded overflow-hidden border border-black/15 hover:border-[#00c853] transition">
+                            <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="block w-10 h-10 rounded overflow-hidden border border-white/10 hover:border-[#00c853] transition">
                               <img src={url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
                             </a>
                           ))}
                           {lead.photos.length > 3 && (
-                            <span className="w-10 h-10 rounded bg-black/5 border border-black/15 flex items-center justify-center text-[10px] text-[#888]">+{lead.photos.length - 3}</span>
+                            <span className="w-10 h-10 rounded bg-white/5 border border-white/10 flex items-center justify-center text-[10px] text-[#888]">+{lead.photos.length - 3}</span>
                           )}
                         </div>
                       )}
                       {/* Notes */}
                       <div className="mt-1.5">
                         {lead.latestNote && (
-                          <div className="text-[11px] text-[#555] bg-black/[0.03] border-l-2 border-[#00c853]/40 pl-2 py-1 rounded-sm" title={lead.latestNote}>
-                            <span className="text-[9px] uppercase tracking-wider text-[#777] font-bold">Note{lead.noteCount && lead.noteCount > 1 ? ` (${lead.noteCount})` : ""}: </span>
+                          <div className="text-[11px] text-[#aaa] bg-white/[0.03] border-l-2 border-[#00c853]/40 pl-2 py-1 rounded-sm" title={lead.latestNote}>
+                            <span className="text-[9px] uppercase tracking-wider text-[#666] font-bold">Note{lead.noteCount && lead.noteCount > 1 ? ` (${lead.noteCount})` : ""}: </span>
                             <span className="break-words">{lead.latestNote.length > 80 ? lead.latestNote.slice(0, 80) + "…" : lead.latestNote}</span>
                           </div>
                         )}
@@ -765,32 +765,32 @@ export default function AdminPage() {
                               rows={2}
                               maxLength={500}
                               autoFocus
-                              className="w-full px-2 py-1.5 bg-black/5 border border-black/15 rounded text-xs text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] resize-none"
+                              className="w-full px-2 py-1.5 bg-white/5 border border-white/10 rounded text-xs text-white placeholder:text-[#666] focus:outline-none focus:border-[#00c853] resize-none"
                             />
                             <div className="flex gap-1.5">
                               <button type="button" disabled={!noteDraft.trim() || noteSavingId === lead.id} onClick={() => saveNote(lead)} className="px-2.5 py-1 bg-[#00c853] text-[#0a0a0a] rounded text-[11px] font-bold hover:bg-[#00e676] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">{noteSavingId === lead.id ? "Saving…" : "Save"}</button>
-                              <button type="button" onClick={() => { setNoteOpenId(null); setNoteDraft(""); }} className="px-2.5 py-1 bg-black/5 border border-black/15 rounded text-[11px] text-[#555] hover:bg-black/[0.06] cursor-pointer">Cancel</button>
+                              <button type="button" onClick={() => { setNoteOpenId(null); setNoteDraft(""); }} className="px-2.5 py-1 bg-white/5 border border-white/10 rounded text-[11px] text-[#aaa] hover:bg-white/10 cursor-pointer">Cancel</button>
                             </div>
                           </div>
                         ) : (
-                          <button type="button" onClick={() => { setNoteOpenId(lead.id); setNoteDraft(""); }} className="text-[10px] text-[#777] hover:text-[#555] transition mt-1 cursor-pointer">+ {lead.latestNote ? "Add another note" : "Add internal note"}</button>
+                          <button type="button" onClick={() => { setNoteOpenId(lead.id); setNoteDraft(""); }} className="text-[10px] text-[#666] hover:text-[#aaa] transition mt-1 cursor-pointer">+ {lead.latestNote ? "Add another note" : "Add internal note"}</button>
                         )}
                       </div>
                     </div>
                     <div className="text-sm">
                       <p className="font-semibold text-[#00c853]">{lead.quote || "—"}</p>
-                      <p className="text-[#777] text-xs">{lead.payout}</p>
+                      <p className="text-[#666] text-xs">{lead.payout}</p>
                       {adjustingId !== lead.id && (
-                        <button type="button" onClick={() => { setAdjustingId(lead.id); setAdjustQuote(""); setAdjustReason(""); }} className="text-[10px] text-[#777] hover:text-[#555] mt-1 cursor-pointer">✏️ Adjust quote</button>
+                        <button type="button" onClick={() => { setAdjustingId(lead.id); setAdjustQuote(""); setAdjustReason(""); }} className="text-[10px] text-[#666] hover:text-[#aaa] mt-1 cursor-pointer">✏️ Adjust quote</button>
                       )}
                       {adjustingId === lead.id && (
                         <div className="mt-2 p-2.5 bg-yellow-500/10 border border-yellow-500/30 rounded-lg space-y-2 max-w-[240px]">
                           <p className="text-[10px] text-yellow-300 font-bold uppercase tracking-wider">Adjust offer</p>
                           <div className="flex items-center gap-1.5">
-                            <span className="text-[#555] text-sm font-bold">$</span>
-                            <input type="text" inputMode="numeric" value={adjustQuote} onChange={(e) => setAdjustQuote(e.target.value.replace(/\D/g, ""))} placeholder="New $" className="flex-1 bg-black/40 border border-black/15 rounded px-2 py-1.5 text-xs text-[#0a0a0a] focus:outline-none focus:border-yellow-400" autoFocus />
+                            <span className="text-[#aaa] text-sm font-bold">$</span>
+                            <input type="text" inputMode="numeric" value={adjustQuote} onChange={(e) => setAdjustQuote(e.target.value.replace(/\D/g, ""))} placeholder="New $" className="flex-1 bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400" autoFocus />
                           </div>
-                          <select value={adjustReason} onChange={(e) => setAdjustReason(e.target.value)} className="w-full bg-black/40 border border-black/15 rounded px-2 py-1.5 text-xs text-[#0a0a0a] focus:outline-none focus:border-yellow-400 cursor-pointer">
+                          <select value={adjustReason} onChange={(e) => setAdjustReason(e.target.value)} className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400 cursor-pointer">
                             <option value="">— pick a reason —</option>
                             <option>damage worse than disclosed</option>
                             <option>screen previously replaced</option>
@@ -800,11 +800,11 @@ export default function AdminPage() {
                             <option>Other</option>
                           </select>
                           {adjustReason === "Other" && (
-                            <input type="text" placeholder="Custom reason…" onChange={(e) => setAdjustReason(e.target.value)} className="w-full bg-black/40 border border-black/15 rounded px-2 py-1.5 text-xs text-[#0a0a0a] focus:outline-none focus:border-yellow-400" />
+                            <input type="text" placeholder="Custom reason…" onChange={(e) => setAdjustReason(e.target.value)} className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400" />
                           )}
                           <div className="flex gap-1.5">
                             <button type="button" disabled={!adjustQuote || !adjustReason.trim() || adjustReason === "Other" || adjustSavingId === lead.id} onClick={() => saveAdjust(lead)} className="flex-1 px-2 py-1.5 bg-yellow-500 text-black rounded text-[11px] font-bold hover:bg-yellow-400 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">{adjustSavingId === lead.id ? "Sending…" : "Send to customer"}</button>
-                            <button type="button" onClick={() => { setAdjustingId(null); setAdjustQuote(""); setAdjustReason(""); }} className="px-2 py-1.5 bg-black/5 border border-black/15 rounded text-[11px] text-[#555] hover:bg-black/[0.06] transition cursor-pointer">Cancel</button>
+                            <button type="button" onClick={() => { setAdjustingId(null); setAdjustQuote(""); setAdjustReason(""); }} className="px-2 py-1.5 bg-white/5 border border-white/10 rounded text-[11px] text-[#aaa] hover:bg-white/10 transition cursor-pointer">Cancel</button>
                           </div>
                         </div>
                       )}
@@ -824,7 +824,7 @@ export default function AdminPage() {
                           setPendingStatus((p) => ({ ...p, [lead.id]: v }));
                           saveStatus(lead, v);
                         }}
-                        className="bg-black/5 border border-black/15 rounded-lg px-3 py-2 text-xs text-[#0a0a0a] focus:outline-none focus:border-[#00c853] cursor-pointer disabled:opacity-60"
+                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00c853] cursor-pointer disabled:opacity-60"
                         style={{ borderColor: meta.color + "55" }}
                       >
                         {STATUS_OPTIONS.map((opt) => (
@@ -845,7 +845,7 @@ export default function AdminPage() {
                           <select
                             value={rejectionReason}
                             onChange={(e) => setRejectionReason(e.target.value)}
-                            className="w-full bg-black/40 border border-black/15 rounded px-2 py-1.5 text-xs text-[#0a0a0a] focus:outline-none focus:border-red-400 cursor-pointer"
+                            className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-red-400 cursor-pointer"
                           >
                             <option value="">— pick a reason —</option>
                             <option>iCloud / Find My is locked</option>
@@ -863,7 +863,7 @@ export default function AdminPage() {
                               autoFocus
                               placeholder="Type the reason…"
                               onChange={(e) => setRejectionReason(e.target.value)}
-                              className="w-full bg-black/40 border border-black/15 rounded px-2 py-1.5 text-xs text-[#0a0a0a] focus:outline-none focus:border-red-400"
+                              className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-red-400"
                             />
                           )}
                           <div className="flex gap-1.5">
@@ -874,14 +874,14 @@ export default function AdminPage() {
                                 saveStatus(lead, "rejected", rejectionReason);
                                 setRejectingId(null);
                               }}
-                              className="flex-1 px-2 py-1.5 bg-red-500 text-[#0a0a0a] rounded text-[11px] font-bold hover:bg-red-600 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                              className="flex-1 px-2 py-1.5 bg-red-500 text-white rounded text-[11px] font-bold hover:bg-red-600 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                             >
                               Confirm
                             </button>
                             <button
                               type="button"
                               onClick={() => { setRejectingId(null); setRejectionReason(""); setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; }); }}
-                              className="px-2 py-1.5 bg-black/5 border border-black/15 rounded text-[11px] text-[#555] hover:bg-black/[0.06] transition cursor-pointer"
+                              className="px-2 py-1.5 bg-white/5 border border-white/10 rounded text-[11px] text-[#aaa] hover:bg-white/10 transition cursor-pointer"
                             >
                               Cancel
                             </button>
@@ -890,21 +890,21 @@ export default function AdminPage() {
                       )}
                     </div>
                     {smsOpenId === lead.id && (
-                      <div className="md:col-span-6 mt-3 mx-1 px-3 py-2 bg-black/40 border border-black/15 rounded-lg">
+                      <div className="md:col-span-6 mt-3 mx-1 px-3 py-2 bg-black/40 border border-white/10 rounded-lg">
                         <div className="flex items-center justify-between mb-2">
                           <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold">💬 SMS thread · {lead.phone}</p>
-                          <button onClick={() => loadSmsThread(lead)} className="text-[10px] text-[#777] hover:text-[#555] cursor-pointer">↻ Refresh</button>
+                          <button onClick={() => loadSmsThread(lead)} className="text-[10px] text-[#666] hover:text-[#aaa] cursor-pointer">↻ Refresh</button>
                         </div>
-                        {smsThreads[lead.id]?.loading && <p className="text-xs text-[#777] py-2">Loading…</p>}
+                        {smsThreads[lead.id]?.loading && <p className="text-xs text-[#666] py-2">Loading…</p>}
                         {smsThreads[lead.id]?.error && <p className="text-xs text-red-400 py-2">{smsThreads[lead.id]!.error}</p>}
                         {smsThreads[lead.id]?.messages && smsThreads[lead.id]!.messages!.length === 0 && (
-                          <p className="text-xs text-[#777] py-2 italic">No SMS history yet for this number.</p>
+                          <p className="text-xs text-[#666] py-2 italic">No SMS history yet for this number.</p>
                         )}
                         {smsThreads[lead.id]?.messages && smsThreads[lead.id]!.messages!.length > 0 && (
                           <div className="space-y-1.5 max-h-72 overflow-y-auto">
                             {smsThreads[lead.id]!.messages!.map((m) => (
                               <div key={m.sid} className={`flex ${m.direction === "in" ? "justify-start" : "justify-end"}`}>
-                                <div className={`max-w-[80%] px-3 py-2 rounded-2xl text-xs ${m.direction === "in" ? "bg-black/[0.06] text-[#0a0a0a] rounded-bl-sm" : "bg-[#00c853]/20 text-[#0a0a0a] rounded-br-sm"}`}>
+                                <div className={`max-w-[80%] px-3 py-2 rounded-2xl text-xs ${m.direction === "in" ? "bg-white/10 text-white rounded-bl-sm" : "bg-[#00c853]/20 text-[#0a0a0a] rounded-br-sm"}`}>
                                   <p className="whitespace-pre-wrap break-words">{m.body}</p>
                                   <p className="text-[9px] text-[#888] mt-1 font-mono">{new Date(m.timestamp).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</p>
                                 </div>
@@ -924,11 +924,11 @@ export default function AdminPage() {
 
       {/* Bulk-action sticky bar */}
       {selectedIds.size > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white/85 backdrop-blur-xl border-t border-black/15 px-4 py-3 z-40">
+        <div className="fixed bottom-0 left-0 right-0 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-white/10 px-4 py-3 z-40">
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-3">
-              <p className="text-sm font-semibold text-[#0a0a0a]">{selectedIds.size} selected</p>
-              <button onClick={() => setSelectedIds(new Set())} className="text-xs text-[#888] hover:text-[#0a0a0a] cursor-pointer">Clear</button>
+              <p className="text-sm font-semibold text-white">{selectedIds.size} selected</p>
+              <button onClick={() => setSelectedIds(new Set())} className="text-xs text-[#888] hover:text-white cursor-pointer">Clear</button>
               {bulkProgress && (
                 <p className="text-xs text-[#00c853]">{bulkProgress.done}/{bulkProgress.total} updated</p>
               )}
@@ -938,7 +938,7 @@ export default function AdminPage() {
                 value={bulkStatus}
                 disabled={bulkSaving}
                 onChange={(e) => setBulkStatus(e.target.value)}
-                className="bg-black/5 border border-black/15 rounded-lg px-3 py-2 text-sm text-[#0a0a0a] focus:outline-none focus:border-[#00c853] cursor-pointer disabled:opacity-50"
+                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#00c853] cursor-pointer disabled:opacity-50"
               >
                 <option value="">Mark selected as…</option>
                 {STATUS_OPTIONS.map((opt) => (

@@ -71,14 +71,14 @@ export default function EstimatePage() {
 
   if (!catalog) {
     return (
-      <main className="min-h-screen bg-white text-[#0a0a0a] flex items-center justify-center">
+      <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center">
         <p className="text-[#888]">Loading catalog…</p>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-white text-[#0a0a0a] px-4 py-8">
+    <main className="min-h-screen bg-[#0a0a0a] text-white px-4 py-8">
       <div className="max-w-md mx-auto">
         <h1 className="text-2xl font-bold mb-2">Instant Trade-In Quote</h1>
         <p className="text-[#888] text-sm mb-6">Pick your device and 3 details — get a quote in seconds.</p>
@@ -89,7 +89,7 @@ export default function EstimatePage() {
               required
               value={deviceSlug}
               onChange={(e) => setDeviceSlug(e.target.value)}
-              className="w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 text-[#0a0a0a]"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
               disabled={!!result}
             >
               <option value="">Choose a device…</option>
@@ -106,7 +106,7 @@ export default function EstimatePage() {
               required
               value={storage}
               onChange={(e) => setStorage(e.target.value)}
-              className="w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 text-[#0a0a0a]"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
               disabled={!!result}
             >
               <option value="">Choose storage…</option>
@@ -123,7 +123,7 @@ export default function EstimatePage() {
               required
               value={condition}
               onChange={(e) => setCondition(e.target.value)}
-              className="w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 text-[#0a0a0a]"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
               disabled={!!result}
             >
               <option value="">Choose condition…</option>
@@ -140,7 +140,7 @@ export default function EstimatePage() {
               required
               value={carrier}
               onChange={(e) => setCarrier(e.target.value)}
-              className="w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 text-[#0a0a0a]"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
               disabled={!!result}
             >
               {catalog.carriers.map((c) => (
@@ -171,14 +171,14 @@ export default function EstimatePage() {
         {result && (
           <div className="mt-8 bg-[#00c853]/10 border border-[#00c853]/40 rounded-2xl p-6">
             <p className="text-[#00c853] text-sm font-semibold uppercase tracking-wide mb-2">Your Quote</p>
-            <p className="text-5xl font-bold text-[#0a0a0a] mb-1">${result.quote}</p>
+            <p className="text-5xl font-bold text-white mb-1">${result.quote}</p>
             <p className="text-[#888] text-sm">
               {selectedDevice?.name} — {catalog.storage.find((s) => s.id === result.inputs.storage)?.label} —{" "}
               {catalog.conditions.find((c) => c.id === result.inputs.condition)?.label}
             </p>
             <button
               onClick={reset}
-              className="mt-5 w-full bg-black/[0.06] border border-black/20 text-[#0a0a0a] py-3 rounded-xl text-sm font-semibold hover:bg-black/[0.12] transition"
+              className="mt-5 w-full bg-white/10 border border-white/20 text-white py-3 rounded-xl text-sm font-semibold hover:bg-white/20 transition"
             >
               Reset & Try Another
             </button>
@@ -192,7 +192,7 @@ export default function EstimatePage() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="block text-sm font-semibold text-[#0a0a0a] mb-2">{label}</span>
+      <span className="block text-sm font-semibold text-white mb-2">{label}</span>
       {children}
     </label>
   );

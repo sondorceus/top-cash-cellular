@@ -43,12 +43,12 @@ export default function NewReviewPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white text-[#0a0a0a]">
-      <header className="px-4 sm:px-6 py-4 flex items-center justify-between border-b border-black/15 sticky top-0 bg-white/85 backdrop-blur z-10">
+    <main className="min-h-screen bg-[#0a0a0a] text-white">
+      <header className="px-4 sm:px-6 py-4 flex items-center justify-between border-b border-white/10 sticky top-0 bg-[#0a0a0a]/95 backdrop-blur z-10">
         <Link href="/" className="text-xl font-bold tracking-tight">
           Top Cash <span className="text-[#00c853]">Cellular</span>
         </Link>
-        <Link href="/reviews" className="text-sm text-[#888] hover:text-[#0a0a0a] transition">
+        <Link href="/reviews" className="text-sm text-[#888] hover:text-white transition">
           ← Reviews
         </Link>
       </header>
@@ -84,43 +84,43 @@ export default function NewReviewPage() {
               onChange={(e) => setName(e.target.value)}
               maxLength={60}
               placeholder="First name + last initial is fine"
-              className="w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00c853] transition"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00c853] transition"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">City <span className="text-[#777] font-normal">(optional)</span></label>
+            <label className="block text-sm font-semibold mb-2">City <span className="text-[#666] font-normal">(optional)</span></label>
             <input
               type="text"
               value={city}
               onChange={(e) => setCity(e.target.value)}
               maxLength={60}
               placeholder="Austin, TX"
-              className="w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00c853] transition"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00c853] transition"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Device you sold <span className="text-[#777] font-normal">(optional)</span></label>
+            <label className="block text-sm font-semibold mb-2">Device you sold <span className="text-[#666] font-normal">(optional)</span></label>
             <input
               type="text"
               value={device}
               onChange={(e) => setDevice(e.target.value)}
               maxLength={80}
               placeholder="iPhone 15 Pro Max, MacBook Pro 16, etc."
-              className="w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00c853] transition"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00c853] transition"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Title <span className="text-[#777] font-normal">(optional)</span></label>
+            <label className="block text-sm font-semibold mb-2">Title <span className="text-[#666] font-normal">(optional)</span></label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               maxLength={100}
               placeholder="Fast, fair, easy"
-              className="w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00c853] transition"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00c853] transition"
             />
           </div>
 
@@ -132,9 +132,9 @@ export default function NewReviewPage() {
               maxLength={1000}
               rows={5}
               placeholder="How was the process? Did you get a fair price? Would you sell again?"
-              className="w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00c853] transition resize-none"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00c853] transition resize-none"
             />
-            <div className="text-right text-xs text-[#777] mt-1">{body.length}/1000</div>
+            <div className="text-right text-xs text-[#666] mt-1">{body.length}/1000</div>
           </div>
 
           {error ? (

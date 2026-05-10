@@ -1059,9 +1059,9 @@ type DeviceType = "iphone" | "android" | "pixel" | "macbook" | "samsung_pc" | "l
 
 function FairPromise() {
   return (
-    <div className="mt-6 bg-black/5 border border-black/15 rounded-2xl p-5">
+    <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5">
       <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-1">Our Promise</h3>
-      <p className="text-base font-bold text-[#0a0a0a] mb-1">Fair Evaluation Promise</p>
+      <p className="text-base font-bold text-white mb-1">Fair Evaluation Promise</p>
       <p className="text-[#888] text-xs mb-3">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
       <div className="space-y-3">
         <div className="flex gap-3"><span className="text-lg">🎯</span><div><p className="text-sm font-semibold text-[#ccc]">Consistent grading</p><p className="text-xs text-[#888]">Every device is evaluated using a standardized process based on the condition you select.</p></div></div>
@@ -1155,13 +1155,13 @@ function ReviewsCarousel({ reviews }: { reviews: { name: string; loc: string; te
       <div ref={trackRef} className="overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-smooth">
         <div className="flex gap-3 snap-x snap-mandatory">
           {reviews.map((r, i) => (
-            <div key={i} className="snap-start flex-shrink-0 w-[280px] md:w-[320px] bg-black/5 border border-black/15 rounded-2xl p-5 hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
+            <div key={i} className="snap-start flex-shrink-0 w-[280px] md:w-[320px] bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
               <div className="flex gap-0.5 mb-3 text-[#ffb400] text-sm">{"★".repeat(r.stars)}</div>
-              <p className="text-[#0a0a0a] text-sm leading-relaxed mb-4 min-h-[80px]">&ldquo;{r.text}&rdquo;</p>
-              <div className="flex items-center gap-2 pt-3 border-t border-black/10">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00c853] to-[#00a039] text-[#0a0a0a] text-xs font-bold flex items-center justify-center flex-shrink-0">{r.name[0]}</div>
+              <p className="text-white text-sm leading-relaxed mb-4 min-h-[80px]">&ldquo;{r.text}&rdquo;</p>
+              <div className="flex items-center gap-2 pt-3 border-t border-white/5">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00c853] to-[#00a039] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">{r.name[0]}</div>
                 <div className="min-w-0">
-                  <div className="text-[#0a0a0a] text-sm font-semibold leading-tight truncate">{r.name}</div>
+                  <div className="text-white text-sm font-semibold leading-tight truncate">{r.name}</div>
                   <div className="text-[#888] text-xs truncate">{r.loc}</div>
                 </div>
               </div>
@@ -1170,16 +1170,16 @@ function ReviewsCarousel({ reviews }: { reviews: { name: string; loc: string; te
         </div>
       </div>
       {/* Prev/Next arrow buttons (hidden on small screens since swipe works) */}
-      <button onClick={() => scrollBy(-1)} aria-label="Previous review" className="hidden md:flex absolute left-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 backdrop-blur border border-black/20 hover:bg-black/80 hover:border-[#00c853]/40 items-center justify-center cursor-pointer tap-press">
-        <svg className="w-5 h-5 text-[#0a0a0a]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+      <button onClick={() => scrollBy(-1)} aria-label="Previous review" className="hidden md:flex absolute left-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 backdrop-blur border border-white/15 hover:bg-black/80 hover:border-[#00c853]/40 items-center justify-center cursor-pointer tap-press">
+        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
       </button>
-      <button onClick={() => scrollBy(1)} aria-label="Next review" className="hidden md:flex absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 backdrop-blur border border-black/20 hover:bg-black/80 hover:border-[#00c853]/40 items-center justify-center cursor-pointer tap-press">
-        <svg className="w-5 h-5 text-[#0a0a0a]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+      <button onClick={() => scrollBy(1)} aria-label="Next review" className="hidden md:flex absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 backdrop-blur border border-white/15 hover:bg-black/80 hover:border-[#00c853]/40 items-center justify-center cursor-pointer tap-press">
+        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
       </button>
       {/* Dot indicators */}
       <div className="flex justify-center gap-2 mt-4">
         {reviews.map((_, i) => (
-          <button key={i} onClick={() => scrollTo(i)} aria-label={`Go to review ${i + 1}`} className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${i === activeIdx ? "w-6 bg-[#00c853]" : "w-2 bg-black/[0.12] hover:bg-white/40"}`} />
+          <button key={i} onClick={() => scrollTo(i)} aria-label={`Go to review ${i + 1}`} className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${i === activeIdx ? "w-6 bg-[#00c853]" : "w-2 bg-white/20 hover:bg-white/40"}`} />
         ))}
       </div>
     </div>
@@ -1557,9 +1557,9 @@ export default function Home() {
   const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? SAMSUNG_PC_MODELS : deviceType === "lenovo" ? LENOVO_MODELS : deviceType === "dell" ? DELL_MODELS : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? HP_MODELS : deviceType === "acer" ? ACER_MODELS : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
-    <main className="min-h-screen bg-white text-[#0a0a0a]">
+    <main className="min-h-screen bg-[#0a0a0a] text-white">
       {/* NAV */}
-      <nav className="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-black/15">
+      <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between">
           <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer group tap-press rounded-xl">
             <span className="flex items-center gap-2">
@@ -1584,7 +1584,7 @@ export default function Home() {
                 <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-extrabold text-[#1a1100] tcc-logo-coin" style={{ background: "radial-gradient(circle at 30% 30%, #ffe066, #ffb400 70%, #c08a00)", boxShadow: "0 1px 2px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.7)" }}>$</span>
               </span>
               <div className="flex flex-col leading-none">
-                <span className="text-[15px] font-black tracking-[-0.02em] text-transparent bg-clip-text bg-gradient-to-b from-[#0a0a0a] via-[#0a0a0a] to-[#444] group-hover:from-[#00c853] group-hover:via-[#00c853] group-hover:to-[#00803a] transition" style={{ fontFeatureSettings: '"ss01", "cv11"' }}>TOP CASH</span>
+                <span className="text-[15px] font-black tracking-[-0.02em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-[#bdbdbd] group-hover:from-[#00e676] group-hover:via-[#00e676] group-hover:to-[#00a039] transition" style={{ fontFeatureSettings: '"ss01", "cv11"' }}>TOP CASH</span>
                 <span className="flex items-center gap-1.5 text-[9px] font-bold tracking-[0.32em] uppercase">
                   <span className="block w-1 h-1 rounded-full bg-[#00c853] shadow-[0_0_4px_#00c853]"></span>
                   <span className="text-[#00c853]">Cellular</span>
@@ -1594,9 +1594,9 @@ export default function Home() {
           </button>
           {/* MOBILE + TABLET (md): keep the simple link row */}
           <div className="flex items-center gap-3 lg:hidden">
-            <a href="/how-it-works" className="hidden md:inline text-xs text-[#888] hover:text-[#0a0a0a] transition">How it works</a>
-            <a href="/faq" className="hidden md:inline text-xs text-[#888] hover:text-[#0a0a0a] transition">FAQ</a>
-            <a href="/bulk" className="hidden md:inline text-xs text-[#888] hover:text-[#0a0a0a] transition">Bulk</a>
+            <a href="/how-it-works" className="hidden md:inline text-xs text-[#888] hover:text-white transition">How it works</a>
+            <a href="/faq" className="hidden md:inline text-xs text-[#888] hover:text-white transition">FAQ</a>
+            <a href="/bulk" className="hidden md:inline text-xs text-[#888] hover:text-white transition">Bulk</a>
             <button onClick={() => setLookupOpen(true)} className="hidden sm:inline text-xs text-[#00c853] hover:text-[#00e676] font-semibold transition cursor-pointer">Returning?</button>
             <a href="/reviews" className="hidden sm:inline-flex items-center gap-1 text-xs text-[#ffb400] hover:text-[#ffd54f] font-semibold transition"><svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.5 5.9.7-4.4 4.1 1.2 5.8L10 14.7l-5.3 2.9 1.2-5.8L1.5 7.7l5.9-.7L10 1.5z"/></svg>Reviews</a>
             <a href={EMAIL_HREF} aria-label="Email us" className="bg-[#00c853] text-[#0a0a0a] px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
@@ -1610,13 +1610,13 @@ export default function Home() {
             <div className="group relative">
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
-                className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-[#0a0a0a] hover:text-[#00c853] transition cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white hover:text-[#00c853] transition cursor-pointer"
               >
                 Sell
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
               <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-150 absolute top-full left-0 pt-3 z-50 w-[560px]">
-                <div className="bg-white border border-black/15 rounded-2xl shadow-2xl p-4">
+                <div className="bg-[#111] border border-white/10 rounded-2xl shadow-2xl p-4">
                   <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em] mb-3 px-2">Sell your device</p>
                   <div className="grid grid-cols-4 gap-2">
                     {[
@@ -1632,14 +1632,14 @@ export default function Home() {
                       <button
                         key={cat.id}
                         onClick={() => { setCategory(cat.id); setStep("brand"); pushHistory("brand"); }}
-                        className="flex flex-col items-center justify-center p-3 rounded-xl bg-black/[0.03] border border-black/10 hover:bg-black/[0.06] hover:border-[#00c853]/40 transition cursor-pointer tap-press"
+                        className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press"
                       >
                         {cat.customIcon ? (
-                          <svg className="w-7 h-5 mb-1 text-[#0a0a0a]" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
+                          <svg className="w-7 h-5 mb-1 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
                         ) : (
                           <span className="text-xl mb-1">{cat.icon}</span>
                         )}
-                        <p className="text-xs font-semibold text-[#0a0a0a]">{cat.label}</p>
+                        <p className="text-xs font-semibold text-white">{cat.label}</p>
                       </button>
                     ))}
                   </div>
@@ -1651,24 +1651,24 @@ export default function Home() {
             <div className="group relative">
               <a
                 href="/bulk"
-                className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-[#0a0a0a] hover:text-[#00c853] transition cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white hover:text-[#00c853] transition cursor-pointer"
               >
                 Bulk
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </a>
               <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-150 absolute top-full left-0 pt-3 z-50 w-[260px]">
-                <div className="bg-white border border-black/15 rounded-2xl shadow-2xl p-2">
-                  <a href="/bulk" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 transition">
+                <div className="bg-[#111] border border-white/10 rounded-2xl shadow-2xl p-2">
+                  <a href="/bulk" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">📦</span>
                     <div>
-                      <p className="text-sm font-semibold text-[#0a0a0a]">Get a bulk quote</p>
+                      <p className="text-sm font-semibold text-white">Get a bulk quote</p>
                       <p className="text-[11px] text-[#888]">10+ devices? Volume pricing.</p>
                     </div>
                   </a>
-                  <a href={EMAIL_HREF} className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 transition">
+                  <a href={EMAIL_HREF} className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">✉️</span>
                     <div>
-                      <p className="text-sm font-semibold text-[#0a0a0a]">Talk to bulk team</p>
+                      <p className="text-sm font-semibold text-white">Talk to bulk team</p>
                       <p className="text-[11px] text-[#888]">Custom contracts welcome.</p>
                     </div>
                   </a>
@@ -1679,45 +1679,45 @@ export default function Home() {
             {/* SUPPORT */}
             <div className="group relative">
               <button
-                className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-[#0a0a0a] hover:text-[#00c853] transition cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white hover:text-[#00c853] transition cursor-pointer"
               >
                 Support
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
               <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-150 absolute top-full right-0 pt-3 z-50 w-[280px]">
-                <div className="bg-white border border-black/15 rounded-2xl shadow-2xl p-2">
-                  <a href="/how-it-works" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 transition">
+                <div className="bg-[#111] border border-white/10 rounded-2xl shadow-2xl p-2">
+                  <a href="/how-it-works" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">🧭</span>
                     <div>
-                      <p className="text-sm font-semibold text-[#0a0a0a]">How it works</p>
+                      <p className="text-sm font-semibold text-white">How it works</p>
                       <p className="text-[11px] text-[#888]">From drawer to dollars in 3 steps.</p>
                     </div>
                   </a>
-                  <a href="/faq" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 transition">
+                  <a href="/faq" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">❓</span>
                     <div>
-                      <p className="text-sm font-semibold text-[#0a0a0a]">FAQ</p>
+                      <p className="text-sm font-semibold text-white">FAQ</p>
                       <p className="text-[11px] text-[#888]">Common questions, plain answers.</p>
                     </div>
                   </a>
-                  <a href="/reviews" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 transition">
+                  <a href="/reviews" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl text-[#ffb400]">★</span>
                     <div>
-                      <p className="text-sm font-semibold text-[#0a0a0a]">Reviews</p>
+                      <p className="text-sm font-semibold text-white">Reviews</p>
                       <p className="text-[11px] text-[#888]">4.9 — read what customers say.</p>
                     </div>
                   </a>
-                  <a href={EMAIL_HREF} className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 transition">
+                  <a href={EMAIL_HREF} className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">✉️</span>
                     <div>
-                      <p className="text-sm font-semibold text-[#0a0a0a]">Email us</p>
+                      <p className="text-sm font-semibold text-white">Email us</p>
                       <p className="text-[11px] text-[#888]">We reply same business day.</p>
                     </div>
                   </a>
-                  <a href="tel:+18775492056" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-black/5 transition">
+                  <a href="tel:+18775492056" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">📞</span>
                     <div>
-                      <p className="text-sm font-semibold text-[#0a0a0a]">Call us</p>
+                      <p className="text-sm font-semibold text-white">Call us</p>
                       <p className="text-[11px] text-[#888]">(877) 549-2056</p>
                     </div>
                   </a>
@@ -1725,7 +1725,7 @@ export default function Home() {
               </div>
             </div>
 
-            <span className="mx-2 h-5 w-px bg-black/[0.06]" />
+            <span className="mx-2 h-5 w-px bg-white/10" />
 
             <button
               onClick={() => setLookupOpen(true)}
@@ -1745,20 +1745,20 @@ export default function Home() {
       {/* RETURNING-CUSTOMER LOOKUP MODAL */}
       {lookupOpen && (
         <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setLookupOpen(false)}>
-          <div className="bg-white border border-black/15 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <div className="px-5 py-4 border-b border-black/15 flex items-center justify-between">
+          <div className="bg-[#111] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
               <div>
                 <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em]">Returning customer</p>
-                <h3 className="text-[#0a0a0a] text-lg font-bold">Find your info</h3>
+                <h3 className="text-white text-lg font-bold">Find your info</h3>
               </div>
-              <button onClick={() => setLookupOpen(false)} aria-label="Close" className="w-8 h-8 rounded-full bg-black/5 hover:bg-black/[0.06] flex items-center justify-center cursor-pointer tap-press">
-                <svg className="w-4 h-4 text-black/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+              <button onClick={() => setLookupOpen(false)} aria-label="Close" className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press">
+                <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
             <div className="p-5">
               {!lookupResult && (
                 <>
-                  <p className="text-[#555] text-sm mb-4">Enter the phone number or email you used last time. We&apos;ll pull up your past quotes — no password needed.</p>
+                  <p className="text-[#aaa] text-sm mb-4">Enter the phone number or email you used last time. We&apos;ll pull up your past quotes — no password needed.</p>
                   <input
                     type="text"
                     inputMode="email"
@@ -1767,13 +1767,13 @@ export default function Home() {
                     placeholder="Phone or email"
                     autoFocus
                     onKeyDown={(e) => { if (e.key === "Enter") handleLookup(); }}
-                    className="w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 text-[#0a0a0a] text-sm placeholder-[#999] focus:outline-none focus:border-[#00c853]/50 focus:bg-black/[0.05] transition"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-[#666] focus:outline-none focus:border-[#00c853]/50 focus:bg-white/[0.07] transition"
                   />
                   {lookupError && <p className="text-[#ff4d4d] text-xs mt-2">{lookupError}</p>}
                   <button
                     onClick={handleLookup}
                     disabled={lookupLoading || !lookupContact.trim()}
-                    className="w-full mt-3 bg-[#00c853] hover:bg-[#00e676] disabled:bg-black/[0.06] disabled:text-black/40 text-[#0a0a0a] font-bold py-3 rounded-xl transition tap-press cursor-pointer"
+                    className="w-full mt-3 bg-[#00c853] hover:bg-[#00e676] disabled:bg-white/10 disabled:text-white/40 text-[#0a0a0a] font-bold py-3 rounded-xl transition tap-press cursor-pointer"
                   >
                     {lookupLoading ? "Looking up..." : "Find my info"}
                   </button>
@@ -1783,15 +1783,15 @@ export default function Home() {
                 <>
                   <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-4 mb-4">
                     <p className="text-[#00c853] text-xs font-semibold uppercase tracking-wider mb-1">Welcome back</p>
-                    <p className="text-[#0a0a0a] text-lg font-bold">{lookupResult.name || "Hi there"}</p>
-                    {lookupResult.lastQuote && <p className="text-[#555] text-sm mt-1">Last quote: <span className="text-[#0a0a0a] font-semibold">{lookupResult.lastQuote}</span></p>}
+                    <p className="text-white text-lg font-bold">{lookupResult.name || "Hi there"}</p>
+                    {lookupResult.lastQuote && <p className="text-[#aaa] text-sm mt-1">Last quote: <span className="text-white font-semibold">{lookupResult.lastQuote}</span></p>}
                     <p className="text-[#888] text-xs mt-1">{lookupResult.leadCount} past trade{lookupResult.leadCount === 1 ? "" : "s"}</p>
                   </div>
                   {lookupResult.leads && lookupResult.leads.length > 0 && (
                     <div className="space-y-1.5 mb-4 max-h-48 overflow-y-auto">
                       {lookupResult.leads.slice(0, 5).map((l, i) => (
-                        <div key={i} className="text-xs bg-black/[0.03] border border-black/10 rounded-lg px-3 py-2">
-                          <div className="text-[#0a0a0a] font-medium">{l.device || "Device"} {l.model ? `— ${l.model}` : ""}</div>
+                        <div key={i} className="text-xs bg-white/[0.03] border border-white/5 rounded-lg px-3 py-2">
+                          <div className="text-white font-medium">{l.device || "Device"} {l.model ? `— ${l.model}` : ""}</div>
                           <div className="text-[#888]">{l.quote || "—"} · {new Date(l.timestamp).toLocaleDateString()}</div>
                         </div>
                       ))}
@@ -1802,8 +1802,8 @@ export default function Home() {
               )}
               {lookupResult && !lookupResult.found && (
                 <>
-                  <div className="bg-black/[0.03] border border-black/15 rounded-xl p-4 mb-4 text-center">
-                    <p className="text-[#0a0a0a] font-semibold mb-1">No past trades found</p>
+                  <div className="bg-white/[0.03] border border-white/10 rounded-xl p-4 mb-4 text-center">
+                    <p className="text-white font-semibold mb-1">No past trades found</p>
                     <p className="text-[#888] text-sm">First time? No worries — start a fresh quote and we&apos;ll save it for next time.</p>
                   </div>
                   <button onClick={() => { setLookupOpen(false); setStep("category"); pushHistory("category"); }} className="w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold py-3 rounded-xl transition tap-press cursor-pointer">Start fresh quote</button>
@@ -1816,15 +1816,15 @@ export default function Home() {
 
       {/* BREADCRUMB */}
       {showBreadcrumbs && (
-        <div className="bg-white border-b border-black/10">
+        <div className="bg-[#0a0a0a] border-b border-white/5">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-2 flex items-center gap-1.5 text-xs overflow-x-auto whitespace-nowrap scrollbar-hide">
             {breadcrumbs.map((c, i) => (
               <span key={i} className="flex items-center gap-1.5 flex-shrink-0">
                 {i > 0 && <span className="text-[#444]">/</span>}
                 {i === breadcrumbs.length - 1 ? (
-                  <span className="text-[#0a0a0a] font-semibold">{c.label}</span>
+                  <span className="text-white font-semibold">{c.label}</span>
                 ) : (
-                  <button onClick={c.onClick} className="text-[#888] hover:text-[#0a0a0a] hover:underline cursor-pointer transition">{c.label}</button>
+                  <button onClick={c.onClick} className="text-[#888] hover:text-white hover:underline cursor-pointer transition">{c.label}</button>
                 )}
               </span>
             ))}
@@ -1840,7 +1840,7 @@ export default function Home() {
             <div className="px-3 pt-3 pb-1">
               <div className="relative overflow-hidden rounded-full text-center py-2 px-5 mx-auto max-w-fit" style={{ background: "linear-gradient(90deg, #00c853 0%, #00e5ff 50%, #7c4dff 100%)", backgroundSize: "200% 100%", animation: "promoGradient 6s ease-in-out infinite, promoPulse 2.4s ease-in-out infinite" }}>
                 <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 50%, transparent 100%)", animation: "promoShimmer 3s ease-in-out infinite" }}></div>
-                <p className="relative text-[#0a0a0a] text-xs font-extrabold tracking-wide drop-shadow whitespace-nowrap">{promo.text}</p>
+                <p className="relative text-white text-xs font-extrabold tracking-wide drop-shadow whitespace-nowrap">{promo.text}</p>
               </div>
             </div>
           )}
@@ -1866,7 +1866,7 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="mt-5 bg-black/5 border border-black/15 rounded-2xl p-4 text-center">
+            <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
               <p className="text-[#888] text-sm">Don&apos;t see your device? <a href={EMAIL_HREF} className="text-[#00c853] font-semibold hover:underline">Email us</a> and we&apos;ll make you an offer!</p>
             </div>
 
@@ -1879,10 +1879,10 @@ export default function Home() {
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                 Best Price Guarantee
               </span>
-              <span className="inline-flex items-center gap-1.5 bg-black/5 text-[#888] text-xs font-medium px-3 py-1.5 rounded-full border border-black/15">
+              <span className="inline-flex items-center gap-1.5 bg-white/5 text-[#888] text-xs font-medium px-3 py-1.5 rounded-full border border-white/10">
                 Same-Day Payout
               </span>
-              <span className="inline-flex items-center gap-1.5 bg-black/5 text-[#888] text-xs font-medium px-3 py-1.5 rounded-full border border-black/15">
+              <span className="inline-flex items-center gap-1.5 bg-white/5 text-[#888] text-xs font-medium px-3 py-1.5 rounded-full border border-white/10">
                 Austin Local + Shipping
               </span>
             </div>
@@ -1901,8 +1901,8 @@ export default function Home() {
                       { name: "iPhone 14 Pro", price: 225, brand: "iphone" as const },
                     ];
                     return [...devices, ...devices].map((d, i) => (
-                      <button key={i} onClick={() => { setDeviceType(d.brand); setStep("model"); pushHistory("model"); }} className="flex-shrink-0 w-[260px] flex items-center justify-between bg-black/5 border border-black/15 rounded-xl px-4 py-3 hover:bg-black/[0.06] hover:border-[#00c853]/40 transition cursor-pointer text-left tap-press">
-                        <span className="text-[#0a0a0a] text-xs font-semibold truncate pr-2">{d.name}</span>
+                      <button key={i} onClick={() => { setDeviceType(d.brand); setStep("model"); pushHistory("model"); }} className="flex-shrink-0 w-[260px] flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-4 py-3 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left tap-press">
+                        <span className="text-white text-xs font-semibold truncate pr-2">{d.name}</span>
                         <span className="text-[#00c853] text-xs font-bold whitespace-nowrap">up to ${d.price.toLocaleString()}</span>
                       </button>
                     ));
@@ -1927,7 +1927,7 @@ export default function Home() {
               { n: 2, icon: "📦", title: "Ship free or drop off", body: "Print our prepaid label, or drop off in Austin. We pay shipping. Insured up to $1,000." },
               { n: 3, icon: "💵", title: "Get paid same-day", body: "Cash, Cash App, Zelle, or BTC. Most payouts hit within 24 hours of arrival." },
             ].map((s, i) => (
-              <div key={s.n} className="relative bg-black/5 border border-black/15 rounded-2xl p-6 hover:bg-black/[0.05] hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
+              <div key={s.n} className="relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
                 <div className="absolute -top-3 -left-2 w-9 h-9 rounded-full bg-[#00c853] text-[#0a0a0a] text-sm font-bold flex items-center justify-center shadow-lg shadow-[#00c853]/30">{s.n}</div>
                 <div className="text-4xl mb-3">{s.icon}</div>
                 <h3 className="font-bold text-lg mb-1.5">{s.title}</h3>
@@ -1954,7 +1954,7 @@ export default function Home() {
               { stat: "Higher", label: "Offer than Apple trade-in", icon: "💰" },
               { stat: "Local", label: "Austin-based, real humans", icon: "🤠" },
             ].map((t, i) => (
-              <div key={i} className="bg-gradient-to-br from-white/[0.08] to-white/[0.03] border border-black/15 rounded-2xl p-5 text-center hover:border-[#00c853]/30 hover:from-white/[0.12] transition reveal" data-stagger={Math.min(i + 2, 8)}>
+              <div key={i} className="bg-gradient-to-br from-white/[0.08] to-white/[0.03] border border-white/10 rounded-2xl p-5 text-center hover:border-[#00c853]/30 hover:from-white/[0.12] transition reveal" data-stagger={Math.min(i + 2, 8)}>
                 <div className="text-3xl mb-2">{t.icon}</div>
                 <div className="text-2xl font-extrabold text-[#00c853] mb-1 leading-none">{t.stat}</div>
                 <div className="text-[#888] text-xs font-medium leading-tight">{t.label}</div>
@@ -1969,7 +1969,7 @@ export default function Home() {
         <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-8">
           <div className="bg-gradient-to-r from-[#00c853]/[0.18] via-[#00c853]/[0.10] to-[#00c853]/[0.18] border border-[#00c853]/30 rounded-3xl p-7 md:p-9 text-center reveal">
             <h2 className="text-2xl md:text-3xl font-bold mb-2 leading-tight">Still sitting on that old tech?</h2>
-            <p className="text-[#555] text-sm md:text-base mb-5">Turn it into cash today. Quote in 30 seconds.</p>
+            <p className="text-[#aaa] text-sm md:text-base mb-5">Turn it into cash today. Quote in 30 seconds.</p>
             <button onClick={() => { setStep("category"); pushHistory("category"); }} className="bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold px-8 py-3.5 rounded-full shadow-lg shadow-[#00c853]/30 transition tap-press cursor-pointer">
               Get my quote →
             </button>
@@ -2014,12 +2014,12 @@ export default function Home() {
               { q: "How fast is the quote?", a: "Instant. Pick your device, condition, and storage and we show you the offer right then. No signup, no email required." },
               { q: "Is my data safe?", a: "We do a certified factory wipe on every device. We also recommend you sign out of iCloud/Google and remove screen locks before shipping." },
             ].map((f, i) => (
-              <details key={i} className="group bg-black/5 border border-black/15 rounded-xl overflow-hidden hover:border-black/20 transition reveal" data-stagger={Math.min(i + 1, 8)}>
+              <details key={i} className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-white/20 transition reveal" data-stagger={Math.min(i + 1, 8)}>
                 <summary className="cursor-pointer px-5 py-4 flex items-center justify-between font-semibold list-none [&::-webkit-details-marker]:hidden">
                   <span className="pr-3">{f.q}</span>
                   <svg className="w-5 h-5 text-[#00c853] flex-shrink-0 group-open:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
                 </summary>
-                <div className="px-5 pb-4 text-[#555] text-sm leading-relaxed">{f.a}</div>
+                <div className="px-5 pb-4 text-[#aaa] text-sm leading-relaxed">{f.a}</div>
               </details>
             ))}
           </div>
@@ -2033,7 +2033,7 @@ export default function Home() {
             <div className="absolute inset-0 opacity-30 pointer-events-none" style={{ background: "radial-gradient(circle at 30% 20%, rgba(0, 200, 83, 0.4), transparent 60%), radial-gradient(circle at 70% 80%, rgba(0, 230, 118, 0.3), transparent 50%)" }} />
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">Swap your old tech for cash today.</h2>
-              <p className="text-[#555] text-base md:text-lg mb-6">Instant quote · Same-day payout · No signup needed</p>
+              <p className="text-[#bbb] text-base md:text-lg mb-6">Instant quote · Same-day payout · No signup needed</p>
               <button onClick={() => { setStep("category"); pushHistory("category"); }} className="bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold text-lg px-10 py-4 rounded-full shadow-lg shadow-[#00c853]/40 transition tap-press cursor-pointer">
                 Sell Your Device
               </button>
@@ -2046,7 +2046,7 @@ export default function Home() {
       {step === "category" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-black/5 border border-black/15 hover:bg-black/[0.06] cursor-pointer transition tap-press">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -2060,7 +2060,7 @@ export default function Home() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search device — iPhone 15 Pro, Galaxy S24 Ultra, MacBook Pro M4..."
-                className="w-full pl-10 pr-4 py-3 bg-black/5 border border-black/15 rounded-2xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition"
+                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition"
               />
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
               {searchQuery.trim().length >= 2 && (() => {
@@ -2086,7 +2086,7 @@ export default function Home() {
                 collectFrom(SURFACE_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number }[]})), "surface", "tablets");
                 const top = hits.slice(0, 8);
                 return (
-                  <div className="absolute z-50 left-0 right-0 mt-2 bg-white border border-black/15 rounded-2xl shadow-2xl overflow-y-auto max-h-[60vh]">
+                  <div className="absolute z-50 left-0 right-0 mt-2 bg-[#111] border border-white/10 rounded-2xl shadow-2xl overflow-y-auto max-h-[60vh]">
                     {top.length === 0 ? (
                       <div className="px-4 py-3 text-sm text-[#888]">No matches. Try a different name or pick a category below.</div>
                     ) : top.map((h, i) => (
@@ -2101,7 +2101,7 @@ export default function Home() {
                           setStep("storage");
                           pushHistory("storage");
                         }}
-                        className="w-full text-left px-4 py-3 hover:bg-black/5 transition flex items-center justify-between border-b border-black/10 last:border-0 cursor-pointer"
+                        className="w-full text-left px-4 py-3 hover:bg-white/5 transition flex items-center justify-between border-b border-white/5 last:border-0 cursor-pointer"
                       >
                         <span className="text-sm font-semibold">{h.label}</span>
                         {h.base > 0 && <span className="text-[#00c853] text-xs font-bold">up to ${h.base}</span>}
@@ -2139,15 +2139,15 @@ export default function Home() {
                     if (dt) { setDeviceType(dt as DeviceType); setStep("model"); pushHistory("model"); return; }
                     setCategory(cat.id); setStep("brand"); pushHistory("brand");
                   }}
-                  className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 transition cursor-pointer tap-press reveal"
+                  className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press reveal"
                   data-stagger={Math.min(idx + 1, 8)}
                 >
                   {(cat as { customIcon?: boolean }).customIcon ? (
-                    <svg className="w-8 h-6 mb-1.5 text-[#0a0a0a]" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
+                    <svg className="w-8 h-6 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
                   ) : (
                     <span className="text-2xl mb-1.5">{cat.icon}</span>
                   )}
-                  <p className="font-semibold text-[#0a0a0a] text-xs text-center">{cat.label}</p>
+                  <p className="font-semibold text-white text-xs text-center">{cat.label}</p>
                 </button>
               ))}
             </div>
@@ -2177,7 +2177,7 @@ export default function Home() {
       {step === "inquiry" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={() => { setStep("category"); pushHistory("category"); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-black/5 border border-black/15 hover:bg-black/[0.06] cursor-pointer transition tap-press">
+            <button onClick={() => { setStep("category"); pushHistory("category"); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -2193,7 +2193,7 @@ export default function Home() {
                     <p className="text-xs font-medium text-[#888] mb-2 uppercase tracking-wider">Select Brand</p>
                     <div className="grid grid-cols-3 gap-2">
                       {["Apple Watch", "Google Pixel Watch", "Garmin"].map((brand) => (
-                        <button key={brand} onClick={() => setInquiryDesc(prev => prev.includes(brand) ? prev : brand + (prev ? ' - ' + prev : ''))} className={`p-3 rounded-xl text-xs font-semibold text-center cursor-pointer transition ${inquiryDesc.includes(brand) ? 'bg-[#00c853] text-black' : 'bg-black/5 border border-black/15 text-[#0a0a0a] hover:bg-black/[0.06]'}`}>
+                        <button key={brand} onClick={() => setInquiryDesc(prev => prev.includes(brand) ? prev : brand + (prev ? ' - ' + prev : ''))} className={`p-3 rounded-xl text-xs font-semibold text-center cursor-pointer transition ${inquiryDesc.includes(brand) ? 'bg-[#00c853] text-black' : 'bg-white/5 border border-white/10 text-white hover:bg-white/10'}`}>
                           {brand}
                         </button>
                       ))}
@@ -2204,7 +2204,7 @@ export default function Home() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Device Details</label>
-                    <textarea value={inquiryDesc} onChange={(e) => setInquiryDesc(e.target.value)} required placeholder={`Brand, model, storage size, any issues (e.g. "Samsung Galaxy S24, 256GB, small crack on back")`} rows={3} className="w-full px-4 py-3 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition resize-none" />
+                    <textarea value={inquiryDesc} onChange={(e) => setInquiryDesc(e.target.value)} required placeholder={`Brand, model, storage size, any issues (e.g. "Samsung Galaxy S24, 256GB, small crack on back")`} rows={3} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition resize-none" />
                   </div>
                   <button
                     onClick={() => { if (inquiryDesc.trim()) { setModel({ id: "custom", label: inquiryDesc.trim(), base: 0 }); } }}
@@ -2226,7 +2226,7 @@ export default function Home() {
                     <button
                       key={c.id}
                       onClick={() => setCondition(c)}
-                      className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/30 cursor-pointer transition text-left tap-press"
+                      className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/30 cursor-pointer transition text-left tap-press"
                     >
                       <span className="text-2xl">{c.icon}</span>
                       <div className="flex-1">
@@ -2236,7 +2236,7 @@ export default function Home() {
                     </button>
                   ))}
                 </div>
-                <button onClick={() => setModel(null)} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-[#0a0a0a] transition">← Change device details</button>
+                <button onClick={() => setModel(null)} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-white transition">← Change device details</button>
               </>
             )}
 
@@ -2244,9 +2244,9 @@ export default function Home() {
             {model && condition && !inquirySent && (
               <>
                 <p className="text-[#888] text-sm mb-2">Almost done! We&apos;ll review your device and send you a quote.</p>
-                <div className="bg-black/5 border border-black/15 rounded-2xl p-4 mb-6">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
                   <p className="text-xs text-[#888] uppercase tracking-wider font-medium mb-2">Your device</p>
-                  <p className="text-[#0a0a0a] font-semibold text-sm">{model.label}</p>
+                  <p className="text-white font-semibold text-sm">{model.label}</p>
                   <p className="text-[#888] text-xs mt-1">Condition: {condition.label} ({condition.desc})</p>
                 </div>
                 <form onSubmit={async (e) => {
@@ -2262,7 +2262,7 @@ export default function Home() {
                 }} className="space-y-4">
                   <div>
                     <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Name</label>
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Phone</label>
@@ -2274,16 +2274,16 @@ export default function Home() {
                       if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
                       else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                       else setPhone(digits);
-                    }} required placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                    }} required placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
                     <p className="text-[#888] text-[11px] leading-relaxed mt-1.5">By submitting, you agree to receive SMS updates about your trade-in from Top Cash Cellular. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</p>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Email</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Photos (optional)</label>
-                    <label className={`flex items-center justify-center gap-2 w-full px-4 py-3.5 bg-black/5 border border-black/15 border-dashed rounded-xl text-sm cursor-pointer hover:bg-black/[0.06] transition ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
+                    <label className={`flex items-center justify-center gap-2 w-full px-4 py-3.5 bg-white/5 border border-white/10 border-dashed rounded-xl text-sm cursor-pointer hover:bg-white/10 transition ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
                       <svg className="w-5 h-5 text-[#888]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                       <span className="text-[#888]">{uploading ? "Uploading..." : photoUrls.length ? `${photoUrls.length} photo${photoUrls.length > 1 ? "s" : ""} added` : "Add photos of your device"}</span>
                       <input type="file" accept="image/*" multiple className="hidden" onChange={async (e) => {
@@ -2308,8 +2308,8 @@ export default function Home() {
                       <div className="flex gap-2 mt-2 flex-wrap">
                         {photoUrls.map((url, i) => (
                           <div key={i} className="relative">
-                            <img src={url} alt={`Photo ${i + 1}`} className="w-16 h-16 object-cover rounded-lg border border-black/15" />
-                            <button type="button" onClick={() => setPhotoUrls(photoUrls.filter((_, j) => j !== i))} className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-[#0a0a0a] text-xs flex items-center justify-center cursor-pointer">×</button>
+                            <img src={url} alt={`Photo ${i + 1}`} className="w-16 h-16 object-cover rounded-lg border border-white/10" />
+                            <button type="button" onClick={() => setPhotoUrls(photoUrls.filter((_, j) => j !== i))} className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center cursor-pointer">×</button>
                           </div>
                         ))}
                       </div>
@@ -2319,7 +2319,7 @@ export default function Home() {
                     Get My Custom Quote
                   </button>
                 </form>
-                <button onClick={() => setCondition(null)} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-[#0a0a0a] transition">← Change condition</button>
+                <button onClick={() => setCondition(null)} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-white transition">← Change condition</button>
               </>
             )}
 
@@ -2348,7 +2348,7 @@ export default function Home() {
       {step === "brand" && page === "home" && category && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-black/5 border border-black/15 hover:bg-black/[0.06] cursor-pointer transition tap-press">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -2360,7 +2360,7 @@ export default function Home() {
                 { id: "android" as const, label: "Samsung Galaxy", sub: "Galaxy S21 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg> },
                 { id: "pixel" as const, label: "Google Pixel", sub: "Pixel 5 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#4285F4" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="0"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#EA4335" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-15"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#FBBC05" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-30"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#34A853" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-45"/><text x="20" y="24" textAnchor="middle" fill="#4285F4" fontSize="11" fontWeight="bold" fontFamily="Arial">G</text></svg> },
               ].map((b, i) => (
-                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press reveal" data-stagger={Math.min(i + 1, 8)}>
+                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press reveal" data-stagger={Math.min(i + 1, 8)}>
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
@@ -2378,7 +2378,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_tab") { setInquiryCategory("Tablet"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
@@ -2398,7 +2398,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_pc") { setInquiryCategory("Computer"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
@@ -2417,7 +2417,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_desktop") { setInquiryCategory("Desktop"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
@@ -2433,7 +2433,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_vr") { setInquiryCategory("VR Headset"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
@@ -2444,7 +2444,7 @@ export default function Home() {
               ].map((b) => (
                 <button key={b.id} onClick={() => {
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
@@ -2460,7 +2460,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_watch") { setInquiryCategory("Smartwatch"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
@@ -2471,7 +2471,7 @@ export default function Home() {
                 { id: "microsoft" as const, label: "Microsoft", sub: "Xbox One, Series S, Series X", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#107c10"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold" fontFamily="Arial">XBOX</text></svg> },
                 { id: "nintendo" as const, label: "Nintendo", sub: "Switch OLED, Switch V2, Switch Lite", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#e60012"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">Nintendo</text></svg> },
               ].map((b) => (
-                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#888] text-xs text-center mt-0.5">{b.sub}</p>
@@ -2486,7 +2486,7 @@ export default function Home() {
       {step === "model" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-black/5 border border-black/15 hover:bg-black/[0.06] cursor-pointer transition tap-press">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -2498,7 +2498,7 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your series</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {IPHONE_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                       {(s as { image?: string }).image && <img src={(s as { image?: string }).image} alt={s.label} width={56} height={56} loading="eager" decoding="async" fetchPriority="high" className="w-14 h-14 object-contain mb-1" />}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${maxQuoteForSeries(s.variants)}</p>
@@ -2518,7 +2518,7 @@ export default function Home() {
                     const seriesImg = IPHONE_SERIES.find(s => s.id === selectedSeries);
                     const imgSrc = (m as { image?: string }).image || ({ip17pm:"/iphone17.png",ip17p:"/iphone17.png",ip17air:"/iphone17air.png",ip17plus:"/iphone17plus.png",ip17:"/iphone17base.png",ip17e:"/iphone17e.png",ip16pm:"/iphone16.png",ip16p:"/iphone16.png",ip16plus:"/iphone16plus.png",ip16:"/iphone16base.png",ip16e:"/iphone16e.png",ip15pm:"/iphone15.png",ip15p:"/iphone15.png",ip15plus:"/iphone15.png",ip15:"/iphone15base.png",ip14pm:"/iphone14.png",ip14p:"/iphone14.png",ip14plus:"/iphone14plus.png",ip14:"/iphone14base.png",ip13pm:"/iphone13.png",ip13p:"/iphone13.png",ip13:"/iphone13base.png",ip12pm:"/iphone12.png",ip12p:"/iphone12.png",ip12:"/iphone12base.png",ip12mini:"/iphone12mini.png",ip11pm:"/iphone11.png",ip11p:"/iphone11.png",ip11:"/iphone11base.png"} as Record<string,string>)[m.id] || (seriesImg as {image?:string})?.image || null;
                     return (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       {imgSrc && <img src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
@@ -2539,7 +2539,7 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your series</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {SAMSUNG_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                       {(s as { image?: string }).image ? (
                         <img src={(s as { image?: string }).image} alt={s.label} width={s.id === "sseries" ? 71 : 64} height={s.id === "sseries" ? 71 : 64} loading="eager" decoding="async" fetchPriority="high" className={`${s.id === "sseries" ? "w-[71px] h-[71px]" : "w-16 h-16"} object-contain mb-1`} />
                       ) : (
@@ -2562,7 +2562,7 @@ export default function Home() {
                   {models.map((m) => {
                     const mImage = (m as { image?: string }).image;
                     return (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       {mImage ? (
                         <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                       ) : (
@@ -2586,7 +2586,7 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your series — we&apos;ll send you a custom offer</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {PIXEL_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                       {(s as { image?: string }).image ? (
                         <img src={(s as { image?: string }).image} alt={s.label} width={64} height={64} loading="eager" decoding="async" fetchPriority="high" className="w-16 h-16 object-contain mb-1" />
                       ) : (
@@ -2609,7 +2609,7 @@ export default function Home() {
                   {models.map((m) => {
                     const mImage = (m as { image?: string }).image;
                     return (
-                    <button key={m.id} onClick={() => { setInquiryCategory("Google Pixel"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setInquiryCategory("Google Pixel"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       {mImage ? (
                         <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                       ) : (
@@ -2633,7 +2633,7 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your family</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {MACBOOK_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-3 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[130px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px]">
                       {(s as { image?: string }).image ? (
                         <img src={(s as { image?: string }).image} alt={s.label} width={64} height={48} loading="eager" decoding="async" fetchPriority="high" className="w-16 h-12 object-contain mb-1" style={{ backgroundColor: "transparent" }} />
                       ) : (
@@ -2663,7 +2663,7 @@ export default function Home() {
                         <button key={m.id} onClick={() => {
                           if (inq) { setInquiryCategory("MacBook"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
                           else { setModel(m); setStep("storage"); pushHistory("storage"); }
-                        }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press">
+                        }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                           {mImg ? (
                             <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
                           ) : (
@@ -2689,11 +2689,11 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your model line</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {IPAD_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
                       {(s as { image?: string }).image ? (
                         <img src={(s as { image?: string }).image} alt={s.label} width={56} height={56} loading="eager" decoding="async" fetchPriority="high" className="w-14 h-14 object-contain mb-1" />
                       ) : (
-                        <svg className="w-10 h-7 mb-1.5 text-[#0a0a0a]" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
+                        <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#00c853] font-bold text-xs mt-0.5">up to ${maxQuoteForSeries(s.variants)}</p>
@@ -2719,7 +2719,7 @@ export default function Home() {
                   {models.map((m) => {
                     const mImg = (m as { image?: string }).image;
                     return (
-                      <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press">
+                      <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         {mImg ? (
                           <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-12 object-contain shrink-0" />
                         ) : (
@@ -2744,7 +2744,7 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your DJI model</p>
                 <div className="space-y-2">
                   {DJI_MODELS.map((m) => (
-                    <button key={m.id} onClick={() => { setInquiryCategory("Drone"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setInquiryCategory("Drone"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Quote</span>
@@ -2764,8 +2764,8 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {LG_PC_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
-                      <svg className="w-12 h-9 mb-2 text-[#0a0a0a]" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
+                      <svg className="w-12 h-9 mb-2 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <rect x="2" y="2" width="28" height="18" rx="3" />
                         <line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" />
                         <text x="16" y="14" fill="#a50034" fontSize="6" fontWeight="bold" textAnchor="middle" stroke="none">LG</text>
@@ -2786,7 +2786,7 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {LENOVO_TAB_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
                       <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg>
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#888] text-[10px]">{s.year}</p>
@@ -2804,7 +2804,7 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your model</p>
                 <div className="space-y-2">
                   {lenovoTabVariants.map((m) => (
-                    <button key={m.id} onClick={() => { setInquiryCategory("Tablet"); setInquiryDesc(`Lenovo ${m.label}`); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setInquiryCategory("Tablet"); setInquiryDesc(`Lenovo ${m.label}`); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
@@ -2823,7 +2823,7 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {SURFACE_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
                       {s.id === "surf_pro" ? (
                         <img src="/surface-pro-series.webp" alt="Surface Pro" width={64} height={48} loading="eager" decoding="async" fetchPriority="high" className="w-16 h-12 object-contain mb-1" style={{ backgroundColor: "transparent" }} />
                       ) : s.id === "surf_x" ? (
@@ -2849,7 +2849,7 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your model</p>
                 <div className="space-y-2">
                   {surfaceVariants.map((m) => (
-                    <button key={m.id} onClick={() => { setInquiryCategory("Tablet"); setInquiryDesc(`Microsoft ${m.label}`); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setInquiryCategory("Tablet"); setInquiryDesc(`Microsoft ${m.label}`); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
@@ -2868,11 +2868,11 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {ALIENWARE_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
                       {(s as { image?: string }).image ? (
                         <img src={(s as { image?: string }).image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1.5" />
                       ) : (
-                        <svg className="w-12 h-9 mb-2 text-[#0a0a0a]" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
+                        <svg className="w-12 h-9 mb-2 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#888] text-[10px]">{s.year}</p>
@@ -2898,7 +2898,7 @@ export default function Home() {
                     };
                     const img = imgMap[s.id];
                     return (
-                      <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
+                      <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
                         {img ? (
                           <img src={img} alt={s.label} width={64} height={48} loading="eager" decoding="async" fetchPriority="high" className="w-16 h-12 object-contain mb-1" style={{ backgroundColor: "transparent" }} />
                         ) : (
@@ -2927,11 +2927,11 @@ export default function Home() {
                       <button key={m.id} onClick={() => {
                         if (inq) { setInquiryCategory(category === "computers" ? "Laptop" : "Desktop"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
                         else { setModel(m); setStep("storage"); pushHistory("storage"); }
-                      }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition tap-press">
+                      }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition tap-press">
                         {mImg ? (
                           <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain mb-1.5" />
                         ) : (
-                          <svg className="w-10 h-7 mb-1.5 text-[#0a0a0a]" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
+                          <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
                         )}
                         <p className="font-bold text-sm text-center leading-tight">{m.label}</p>
                         <p className="text-[#00c853] font-bold text-xs mt-0.5">{inq ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</p>
@@ -2948,7 +2948,7 @@ export default function Home() {
                       <button key={m.id} onClick={() => {
                         if (inq) { setInquiryCategory(category === "computers" ? "Laptop" : "Desktop"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
                         else { setModel(m); setStep("storage"); pushHistory("storage"); }
-                      }} className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press">
+                      }} className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         {mImg ? (
                           <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
                         ) : (
@@ -2975,7 +2975,7 @@ export default function Home() {
                   {(deviceType === "apple_vr" ? APPLE_VR_MODELS : deviceType === "meta_vr" ? META_VR_MODELS : deviceType === "valve_vr" ? VALVE_VR_MODELS : deviceType === "psvr" ? PSVR_MODELS : deviceType === "samsung_tab" ? SAMSUNG_TAB_MODELS : deviceType === "oneplus_tab" ? ONEPLUS_TAB_MODELS : GOOGLE_TAB_MODELS).map((m) => {
                     const mImage = (m as { image?: string }).image;
                     return (
-                    <button key={m.id} onClick={() => { setInquiryCategory(deviceType?.includes("vr") || deviceType === "psvr" ? "VR Headset" : "Tablet"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setInquiryCategory(deviceType?.includes("vr") || deviceType === "psvr" ? "VR Headset" : "Tablet"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       {mImage ? (
                         <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                       ) : (
@@ -2999,7 +2999,7 @@ export default function Home() {
                 <p className="text-[#888] text-sm mb-6">Choose your console family</p>
                 <div className="grid grid-cols-2 gap-3">
                   {SONY_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-3 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
                       {(s as { image?: string }).image ? (
                         <img src={(s as { image?: string }).image} alt={s.label} width={56} height={56} loading="eager" decoding="async" fetchPriority="high" className="w-14 h-14 object-contain mb-1" style={{ backgroundColor: "transparent" }} />
                       ) : (
@@ -3026,7 +3026,7 @@ export default function Home() {
                       <button key={m.id} onClick={() => {
                         if (inq) { setInquiryCategory(deviceType === "sony" ? "PlayStation" : "Console"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
                         else { setModel(m); const ns = (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" || deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch") ? "condition" : "storage"; setStep(ns); pushHistory(ns); }
-                      }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press">
+                      }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         <p className="font-semibold text-[15px]">{m.label}</p>
                         <div className="flex items-center gap-2">
                           <span className="text-[#00c853] font-bold text-sm">{inq ? "Get an offer" : `up to $${maxQuoteFor(m as { id: string; base: number })}`}</span>
@@ -3048,7 +3048,7 @@ export default function Home() {
       {step === "storage" && page === "home" && model && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-black/5 border border-black/15 hover:bg-black/[0.06] cursor-pointer transition tap-press">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -3059,7 +3059,7 @@ export default function Home() {
                 <button
                   key={s.id}
                   onClick={() => { setStorage(s); setStep("condition"); pushHistory("condition"); }}
-                  className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press"
+                  className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press"
                 >
                   <p className="font-semibold text-[15px]">{s.label}</p>
                   <span className="text-[#00c853] font-bold text-sm">up to ${Math.round(model.base * s.multiplier * 1.15)}</span>
@@ -3076,20 +3076,20 @@ export default function Home() {
       {step === "condition" && page === "home" && model && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-black/5 border border-black/15 hover:bg-black/[0.06] cursor-pointer transition tap-press">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">Select Condition</h2>
             <p className="text-[#888] text-sm mb-2">{model.label}</p>
             <button className="text-[#00c853] text-xs font-medium mb-4 cursor-pointer hover:underline" onClick={() => { const el = document.getElementById('condition-guide'); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }}>How to assess condition</button>
-            <div id="condition-guide" style={{ display: 'none' }} className="bg-black/5 border border-black/15 rounded-2xl p-4 mb-4 text-xs text-[#555] space-y-2">
-              <p><strong className="text-[#0a0a0a]">Brand New:</strong> Sealed in original packaging, never opened</p>
-              <p><strong className="text-[#0a0a0a]">Flawless:</strong> Opened but looks brand new — zero scratches, scuffs, or marks</p>
-              <p><strong className="text-[#0a0a0a]">Very Good:</strong> Minimal signs of use, no scratches visible at arm&apos;s length</p>
-              <p><strong className="text-[#0a0a0a]">Good:</strong> Light scratches on screen or body, fully functional</p>
-              <p><strong className="text-[#0a0a0a]">Fair:</strong> Noticeable wear — scuffs, dents, or cosmetic damage</p>
-              <p><strong className="text-[#0a0a0a]">Broken:</strong> Cracked screen, water damage, or not fully functional</p>
+            <div id="condition-guide" style={{ display: 'none' }} className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-xs text-[#aaa] space-y-2">
+              <p><strong className="text-white">Brand New:</strong> Sealed in original packaging, never opened</p>
+              <p><strong className="text-white">Flawless:</strong> Opened but looks brand new — zero scratches, scuffs, or marks</p>
+              <p><strong className="text-white">Very Good:</strong> Minimal signs of use, no scratches visible at arm&apos;s length</p>
+              <p><strong className="text-white">Good:</strong> Light scratches on screen or body, fully functional</p>
+              <p><strong className="text-white">Fair:</strong> Noticeable wear — scuffs, dents, or cosmetic damage</p>
+              <p><strong className="text-white">Broken:</strong> Cracked screen, water damage, or not fully functional</p>
             </div>
             <div className="space-y-3">
               {CONDITIONS.map((c) => (
@@ -3099,7 +3099,7 @@ export default function Home() {
                     if ((e.target as HTMLElement).closest('details') || (e.target as HTMLElement).closest('summary')) return;
                     setCondition(c); const cs = (deviceType === "iphone" || deviceType === "android" || deviceType === "pixel") ? "carrier" : "quote"; if (cs === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); } setStep(cs); pushHistory(cs);
                   }}
-                  className="group w-full flex items-center gap-4 p-5 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press"
+                  className="group w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press"
                 >
                   <span className="text-2xl">{c.icon}</span>
                   <div className="flex-1">
@@ -3119,9 +3119,9 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="mt-6 bg-black/5 border border-black/15 rounded-2xl p-5">
+            <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5">
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-1">Our Promise</h3>
-              <p className="text-base font-bold text-[#0a0a0a] mb-1">The Top Cash Guarantee</p>
+              <p className="text-base font-bold text-white mb-1">The Top Cash Guarantee</p>
               <p className="text-[#888] text-xs mb-4">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
               <div className="space-y-3">
                 <div className="flex gap-3">
@@ -3139,22 +3139,22 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-4 bg-black/5 border border-black/15 rounded-2xl p-5">
-              <h3 className="text-base font-bold text-[#0a0a0a] mb-3">Why Sellers Choose Top Cash</h3>
+            <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl p-5">
+              <h3 className="text-base font-bold text-white mb-3">Why Sellers Choose Top Cash</h3>
               <div className="grid grid-cols-2 gap-3">
-                <div className="text-center p-3 bg-black/5 rounded-xl">
+                <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-xl font-bold text-[#00c853]">⭐</p>
                   <p className="text-xs text-[#888] mt-1">Thousands of happy sellers</p>
                 </div>
-                <div className="text-center p-3 bg-black/5 rounded-xl">
+                <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-xl font-bold text-[#00c853]">⚡</p>
                   <p className="text-xs text-[#888] mt-1">Get paid the same day</p>
                 </div>
-                <div className="text-center p-3 bg-black/5 rounded-xl">
+                <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-xl font-bold text-[#00c853]">🔒</p>
                   <p className="text-xs text-[#888] mt-1">Your price is locked 7 days</p>
                 </div>
-                <div className="text-center p-3 bg-black/5 rounded-xl">
+                <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-xl font-bold text-[#00c853]">🏠</p>
                   <p className="text-xs text-[#888] mt-1">We meet locally in Austin</p>
                 </div>
@@ -3168,7 +3168,7 @@ export default function Home() {
       {step === "carrier" && page === "home" && model && condition && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-black/5 border border-black/15 hover:bg-black/[0.06] cursor-pointer transition tap-press">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -3179,7 +3179,7 @@ export default function Home() {
                 <button
                   key={c.id}
                   onClick={() => { setCarrier(c); setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote"); }}
-                  className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-black/20 cursor-pointer transition text-left tap-press"
+                  className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press"
                 >
                   <span className="text-xl">{c.icon}</span>
                   <p className="font-semibold text-[15px] flex-1">{c.label}</p>
@@ -3243,11 +3243,11 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setAccessoriesIncluded((v) => !v)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-xl border transition cursor-pointer text-left ${accessoriesIncluded ? "bg-[#00c853]/10 border-[#00c853]/40" : "bg-black/5 border-black/15 hover:bg-black/[0.06]"}`}
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl border transition cursor-pointer text-left ${accessoriesIncluded ? "bg-[#00c853]/10 border-[#00c853]/40" : "bg-white/5 border-white/10 hover:bg-white/10"}`}
                 >
-                  <span className={`w-5 h-5 rounded border-2 flex items-center justify-center text-xs font-bold transition ${accessoriesIncluded ? "bg-[#00c853] border-[#00c853] text-[#0a0a0a]" : "border-black/30 text-transparent"}`}>✓</span>
+                  <span className={`w-5 h-5 rounded border-2 flex items-center justify-center text-xs font-bold transition ${accessoriesIncluded ? "bg-[#00c853] border-[#00c853] text-[#0a0a0a]" : "border-white/30 text-transparent"}`}>✓</span>
                   <div className="flex-1">
-                    <p className="text-sm font-semibold text-[#0a0a0a]">All original accessories included</p>
+                    <p className="text-sm font-semibold text-white">All original accessories included</p>
                     <p className="text-[11px] text-[#888]">Charger, cable, original box{condition?.id === "brandnew" ? ", manuals" : ""}</p>
                   </div>
                   <span className="text-[#00c853] font-bold text-sm whitespace-nowrap">+$15</span>
@@ -3257,14 +3257,14 @@ export default function Home() {
 
             <div className="flex items-center justify-center gap-3 mb-4">
               <span className="text-[#888] text-sm">Quantity:</span>
-              <div className="flex items-center bg-black/5 border border-black/15 rounded-xl overflow-hidden">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-3 py-2 text-[#0a0a0a] hover:bg-black/[0.06] transition cursor-pointer text-lg font-bold">−</button>
-                <span className="px-4 py-2 text-[#0a0a0a] font-semibold text-sm min-w-[2rem] text-center">{quantity}</span>
-                <button onClick={() => setQuantity(Math.min(10, quantity + 1))} className="px-3 py-2 text-[#0a0a0a] hover:bg-black/[0.06] transition cursor-pointer text-lg font-bold">+</button>
+              <div className="flex items-center bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-3 py-2 text-white hover:bg-white/10 transition cursor-pointer text-lg font-bold">−</button>
+                <span className="px-4 py-2 text-white font-semibold text-sm min-w-[2rem] text-center">{quantity}</span>
+                <button onClick={() => setQuantity(Math.min(10, quantity + 1))} className="px-3 py-2 text-white hover:bg-white/10 transition cursor-pointer text-lg font-bold">+</button>
               </div>
             </div>
 
-            <div className="bg-black/5 border border-black/15 rounded-2xl p-4 mb-6 text-left">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 text-left">
               <p className="text-xs font-semibold text-[#888] uppercase tracking-wider mb-3">How we compare</p>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -3285,17 +3285,17 @@ export default function Home() {
             </div>
 
             {/* Coupon code */}
-            <div className="bg-black/5 border border-black/15 rounded-2xl p-4 mb-4 text-left">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-left">
               <p className="text-xs font-semibold text-[#888] uppercase tracking-wider mb-2">Have a coupon code?</p>
               {couponLabel ? (
                 <div className="flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00c853]/15 border border-[#00c853]/30 text-[#00c853] text-xs font-bold">🎟️ {couponLabel} · +{couponPercent}% applied</span>
-                  <button onClick={() => { setCouponPercent(0); setCouponLabel(""); setCouponCode(""); }} className="text-[#888] hover:text-[#0a0a0a] text-xs underline cursor-pointer">Remove</button>
+                  <button onClick={() => { setCouponPercent(0); setCouponLabel(""); setCouponCode(""); }} className="text-[#888] hover:text-white text-xs underline cursor-pointer">Remove</button>
                 </div>
               ) : (
                 <>
                   <div className="flex gap-2">
-                    <input type="text" value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} placeholder="ENTER CODE" className="flex-1 px-3 py-2 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition uppercase tracking-wide" />
+                    <input type="text" value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} placeholder="ENTER CODE" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#666] focus:outline-none focus:border-[#00c853] transition uppercase tracking-wide" />
                     <button onClick={applyCoupon} className="px-4 py-2 bg-[#00c853] text-[#0a0a0a] rounded-xl text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition">Apply</button>
                   </div>
                   {couponError && <p className="text-xs text-red-400 mt-1.5">{couponError}</p>}
@@ -3309,7 +3309,7 @@ export default function Home() {
             </div>
 
             <div className="flex gap-3">
-              <button onClick={handleBack} className="flex-1 bg-black/[0.06] text-[#0a0a0a] py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-white/15 transition tap-press">
+              <button onClick={handleBack} className="flex-1 bg-white/10 text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-white/15 transition tap-press">
                 Back
               </button>
               <button
@@ -3340,17 +3340,17 @@ export default function Home() {
                 <div className="flex-1">
                   <p className="text-sm text-[#ccc] mb-2">Get paid your way</p>
                   <div className="flex flex-wrap gap-1.5">
-                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-black/[0.06] text-[#0a0a0a] text-[10px] font-bold">💵 Cash</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#00d54b] text-[#0a0a0a] text-[10px] font-bold">Cash App</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#6D1ED4] text-[#0a0a0a] text-[10px] font-bold">Zelle</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#f7931a] text-[#0a0a0a] text-[10px] font-bold">₿ BTC</span>
+                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-bold">💵 Cash</span>
+                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#00d54b] text-white text-[10px] font-bold">Cash App</span>
+                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#6D1ED4] text-white text-[10px] font-bold">Zelle</span>
+                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#f7931a] text-white text-[10px] font-bold">₿ BTC</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 bg-black/5 border border-black/15 rounded-2xl p-5 text-left">
-              <h3 className="text-base font-bold text-[#0a0a0a] mb-1">The Top Cash Guarantee</h3>
+            <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5 text-left">
+              <h3 className="text-base font-bold text-white mb-1">The Top Cash Guarantee</h3>
               <p className="text-[#888] text-xs mb-4">Your device, your terms. Here&apos;s what we stand behind.</p>
               <div className="space-y-4">
                 <div>
@@ -3372,22 +3372,22 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-6 bg-black/5 border border-black/15 rounded-2xl p-5 text-left">
-              <h3 className="text-base font-bold text-[#0a0a0a] mb-4">Why Sellers Choose Top Cash</h3>
+            <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5 text-left">
+              <h3 className="text-base font-bold text-white mb-4">Why Sellers Choose Top Cash</h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-black/5 rounded-xl">
+                <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-2xl">⭐</p>
                   <p className="text-xs text-[#888] mt-1">Thousands of happy sellers</p>
                 </div>
-                <div className="text-center p-3 bg-black/5 rounded-xl">
+                <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-2xl">⚡</p>
                   <p className="text-xs text-[#888] mt-1">Get paid the same day</p>
                 </div>
-                <div className="text-center p-3 bg-black/5 rounded-xl">
+                <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-2xl">🔒</p>
                   <p className="text-xs text-[#888] mt-1">Your price is locked 7 days</p>
                 </div>
-                <div className="text-center p-3 bg-black/5 rounded-xl">
+                <div className="text-center p-3 bg-white/5 rounded-xl">
                   <p className="text-2xl">🏠</p>
                   <p className="text-xs text-[#888] mt-1">We meet locally in Austin</p>
                 </div>
@@ -3398,15 +3398,15 @@ export default function Home() {
             </div>
 
             {!quoteSaved ? (
-              <div className="mt-5 bg-black/5 border border-black/15 rounded-2xl p-4">
+              <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4">
                 <p className="text-[#888] text-xs font-medium mb-3">Not ready yet? Save this quote for later.</p>
                 <div className="flex gap-2">
-                  <input type="email" value={quoteEmail} onChange={(e) => setQuoteEmail(e.target.value)} placeholder="your@email.com" aria-label="Email for quote" className="flex-1 px-3 py-2.5 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition" />
+                  <input type="email" value={quoteEmail} onChange={(e) => setQuoteEmail(e.target.value)} placeholder="your@email.com" aria-label="Email for quote" className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition" />
                   <button onClick={async () => {
                     if (!quoteEmail) return;
                     try { await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "", phone: "", email: quoteEmail, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote, payout: "TBD" }) }); } catch {}
                     setQuoteSaved(true);
-                  }} className="bg-black/[0.06] text-[#0a0a0a] px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-white/15 transition tap-press">
+                  }} className="bg-white/10 text-white px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-white/15 transition tap-press">
                     Save
                   </button>
                 </div>
@@ -3415,7 +3415,7 @@ export default function Home() {
               <p className="mt-5 text-[#00c853] text-sm font-medium">Quote saved! Check your inbox.</p>
             )}
 
-            <button onClick={reset} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-[#0a0a0a] transition">
+            <button onClick={reset} className="mt-4 text-[#888] text-sm cursor-pointer hover:text-white transition">
               Start new quote
             </button>
           </div>
@@ -3426,12 +3426,12 @@ export default function Home() {
       {step === "checkout" && page === "home" && model && condition && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-black/5 border border-black/15 hover:bg-black/[0.06] cursor-pointer transition tap-press">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
 
-            <div className="bg-black/5 border border-black/15 rounded-2xl p-4 mb-6">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-semibold text-sm">{model.label}</p>
@@ -3444,7 +3444,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold mb-1">Checkout</h2>
 
             {/* SECTION 1: ACCOUNT */}
-            <div className="bg-black/5 border border-black/15 rounded-2xl p-5 mb-4">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-4">
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-1">Account</h3>
               <p className="text-[#888] text-sm mb-4">You&apos;re one step away from getting paid.</p>
 
@@ -3456,11 +3456,11 @@ export default function Home() {
                 fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Guest", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-4">
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
                 <button type="submit" className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">Continue As Guest</button>
               </form>
 
-              <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-black/[0.06]" /><span className="text-[#777] text-xs">or</span><div className="flex-1 h-px bg-black/[0.06]" /></div>
+              <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#777] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
 
               {/* Customer Login */}
               <p className="text-xs font-semibold text-[#888] uppercase tracking-wider mb-2">Customer Login</p>
@@ -3470,15 +3470,15 @@ export default function Home() {
                 fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Returning User", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-2">
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
-                <input type="password" placeholder="Password" className="w-full px-4 py-3.5 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                <input type="password" placeholder="Password" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
                 <button type="button" className="text-[#00c853] text-xs cursor-pointer hover:underline">Forgot Your Password?</button>
-                <button type="submit" className="w-full bg-black/[0.06] text-[#0a0a0a] py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-white/15 transition tap-press">Login</button>
+                <button type="submit" className="w-full bg-white/10 text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-white/15 transition tap-press">Login</button>
               </form>
 
               <p className="text-center text-[#777] text-xs my-2">Create An Account</p>
 
-              <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-black/[0.06]" /><span className="text-[#777] text-xs">or</span><div className="flex-1 h-px bg-black/[0.06]" /></div>
+              <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#777] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
 
               {/* Continue with Google */}
               <button
@@ -3487,7 +3487,7 @@ export default function Home() {
                   fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Google User", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
                   setStep("payout"); pushHistory("payout");
                 }}
-                className="w-full flex items-center justify-center gap-3 bg-black/5 border border-black/15 text-[#0a0a0a] py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-black/[0.06] transition tap-press"
+                className="w-full flex items-center justify-center gap-3 bg-white/5 border border-white/10 text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-white/10 transition tap-press"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
                 Continue With Google
@@ -3495,19 +3495,19 @@ export default function Home() {
             </div>
 
             {/* SECTION 2: PAYMENT */}
-            <div className="bg-black/5 border border-black/15 rounded-2xl p-5 mb-4">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-4">
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Payment</h3>
               <p className="text-[#888] text-xs">Select your payout method after completing account setup.</p>
             </div>
 
             {/* SECTION 3: SHIPPING */}
-            <div className="bg-black/5 border border-black/15 rounded-2xl p-5 mb-4">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-4">
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Shipping</h3>
               <p className="text-[#888] text-xs">Austin local? We meet locally! Or reply for a free prepaid shipping label.</p>
             </div>
 
             {/* SECTION 4: OPTIONS & TERMS */}
-            <div className="bg-black/5 border border-black/15 rounded-2xl p-5 mb-4">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-4">
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Options &amp; Terms</h3>
               <p className="text-[#888] text-xs">By proceeding, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
             </div>
@@ -3519,11 +3519,11 @@ export default function Home() {
       {step === "payout" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-black/5 border border-black/15 hover:bg-black/[0.06] cursor-pointer transition tap-press">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            <div className="bg-black/5 border border-black/15 rounded-2xl p-4 mb-6">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
               <p className="text-xs font-semibold text-[#888] uppercase tracking-wider mb-2">Your Cart</p>
               <div className="flex items-center justify-between">
                 <div>
@@ -3540,7 +3540,7 @@ export default function Home() {
                 <button
                   key={p.id}
                   onClick={() => { setPayout(p); setStep("contact"); pushHistory("contact"); }}
-                  className="flex flex-col items-center justify-center p-5 rounded-2xl bg-black/5 border border-black/15 hover:bg-black/[0.06] hover:border-[#00c853]/40 cursor-pointer transition h-[100px] tap-press"
+                  className="flex flex-col items-center justify-center p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[100px] tap-press"
                 >
                   <span className="text-3xl mb-2">{p.icon}</span>
                   <p className="font-semibold text-sm">{p.label}</p>
@@ -3555,12 +3555,12 @@ export default function Home() {
       {step === "contact" && page === "home" && model && condition && payout && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-black/5 border border-black/15 hover:bg-black/[0.06] cursor-pointer transition tap-press">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
 
-            <div className="bg-black/5 border border-black/15 rounded-2xl p-5 mb-6">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
               <div className="flex items-center justify-between mb-2">
                 <p className="font-semibold">{model.label}</p>
                 <p className="text-[#00c853] font-bold text-xl">${quote * quantity}</p>
@@ -3572,8 +3572,8 @@ export default function Home() {
               <div className="bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 mb-5 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
                 <span className="text-2xl">👋</span>
                 <div className="flex-1 text-sm">
-                  <p className="text-[#0a0a0a] font-semibold">Welcome back{returningHint.name ? `, ${returningHint.name.split(" ")[0]}` : ""}!</p>
-                  <p className="text-[#555] text-xs">You&apos;ve sold to us {returningHint.leadCount} time{returningHint.leadCount === 1 ? "" : "s"} before — thanks for coming back.</p>
+                  <p className="text-white font-semibold">Welcome back{returningHint.name ? `, ${returningHint.name.split(" ")[0]}` : ""}!</p>
+                  <p className="text-[#aaa] text-xs">You&apos;ve sold to us {returningHint.leadCount} time{returningHint.leadCount === 1 ? "" : "s"} before — thanks for coming back.</p>
                 </div>
               </div>
             )}
@@ -3602,7 +3602,7 @@ export default function Home() {
             }} className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Name</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={50} placeholder="Your name" className="w-full px-4 py-3.5 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={50} placeholder="Your name" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wider">Phone</label>
@@ -3611,7 +3611,7 @@ export default function Home() {
                   if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
                   else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                   else setPhone(digits);
-                }} required pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                }} required pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
                 <p className="text-[#888] text-[11px] leading-relaxed mt-1.5">By submitting, you agree to receive SMS updates about your trade-in from Top Cash Cellular. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</p>
               </div>
               {email && <p className="text-[#888] text-xs">Email: {email}</p>}
@@ -3627,13 +3627,13 @@ export default function Home() {
                     onChange={(e) => { setImeiInput(e.target.value); if (imeiState !== "idle") { setImeiState("idle"); setImeiResult(null); } }}
                     placeholder="15-digit IMEI"
                     maxLength={20}
-                    className="flex-1 px-4 py-3 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition tracking-wider"
+                    className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition tracking-wider"
                   />
                   <button
                     type="button"
                     onClick={checkImei}
                     disabled={imeiState === "checking" || imeiInput.replace(/\D/g, "").length < 15}
-                    className="px-4 py-3 bg-black/5 border border-black/15 rounded-xl text-sm font-semibold hover:bg-black/[0.06] transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-semibold hover:bg-white/10 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {imeiState === "checking" ? "…" : "Verify"}
                   </button>
@@ -3647,7 +3647,7 @@ export default function Home() {
                     {imeiResult.warnings.map((w, i) => (
                       <p key={i} className="text-[11px] text-yellow-200">• {w}</p>
                     ))}
-                    <p className="text-[11px] text-[#555] mt-1">Quote still valid — staff will work it out at handoff.</p>
+                    <p className="text-[11px] text-[#aaa] mt-1">Quote still valid — staff will work it out at handoff.</p>
                   </div>
                 )}
                 {imeiState === "error" && imeiResult?.error && (
@@ -3660,7 +3660,7 @@ export default function Home() {
                   Device Photos <span className="normal-case text-[12px]">(optional — up to 3, speeds up payout)</span>
                 </label>
                 {photoUrls.length < 3 && (
-                  <label className={`flex flex-col items-center justify-center w-full h-28 bg-black/5 border-2 border-dashed border-black/20 rounded-xl cursor-pointer hover:bg-black/[0.06] hover:border-[#00c853]/30 transition ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
+                  <label className={`flex flex-col items-center justify-center w-full h-28 bg-white/5 border-2 border-dashed border-white/15 rounded-xl cursor-pointer hover:bg-white/10 hover:border-[#00c853]/30 transition ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
                     <svg className="w-8 h-8 text-[#777] mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     <span className="text-[#777] text-xs">
                       {uploading ? "Uploading…" : photoUrls.length === 0 ? "Tap to add front, back & screen-on photos" : `Add another (${photoUrls.length}/3)`}
@@ -3691,14 +3691,14 @@ export default function Home() {
                   <div className="flex gap-2 mt-2 flex-wrap">
                     {photoUrls.map((url, i) => (
                       <div key={i} className="relative">
-                        <img src={url} alt={`Device photo ${i + 1}`} className="w-20 h-20 object-cover rounded-lg border border-black/15" />
-                        <button type="button" onClick={() => setPhotoUrls(photoUrls.filter((_, j) => j !== i))} aria-label="Remove photo" className="absolute -top-1.5 -right-1.5 w-6 h-6 bg-red-500 rounded-full text-[#0a0a0a] text-xs font-bold flex items-center justify-center cursor-pointer hover:bg-red-600">×</button>
+                        <img src={url} alt={`Device photo ${i + 1}`} className="w-20 h-20 object-cover rounded-lg border border-white/10" />
+                        <button type="button" onClick={() => setPhotoUrls(photoUrls.filter((_, j) => j !== i))} aria-label="Remove photo" className="absolute -top-1.5 -right-1.5 w-6 h-6 bg-red-500 rounded-full text-white text-xs font-bold flex items-center justify-center cursor-pointer hover:bg-red-600">×</button>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
-              <p className="text-[#777] text-[11px] text-center leading-relaxed">By submitting, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
+              <p className="text-[#666] text-[11px] text-center leading-relaxed">By submitting, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
               <button type="submit" className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">
                 Submit &amp; Get Paid
               </button>
@@ -3719,7 +3719,7 @@ export default function Home() {
               <p className="text-[#888] text-sm">We&apos;ll contact you within the hour. Here&apos;s your summary:</p>
             </div>
 
-            <div className="bg-black/5 border border-black/15 rounded-2xl p-5 mb-6 text-left">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6 text-left">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="font-semibold">{model.label}</p>
@@ -3727,12 +3727,12 @@ export default function Home() {
                 </div>
                 <p className="text-[#00c853] font-bold text-2xl">${quote * quantity}</p>
               </div>
-              <div className="border-t border-black/15 pt-3 text-sm text-[#888]">
+              <div className="border-t border-white/10 pt-3 text-sm text-[#888]">
                 <p>{name} · {phone}{email ? ` · ${email}` : ''}</p>
               </div>
             </div>
 
-            <div className="bg-black/5 border border-black/15 rounded-2xl p-4 mb-6 text-center">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 text-center">
               <p className="text-[#888] text-sm">📦 Need to ship? You&apos;ll receive an email with shipping instructions shortly.</p>
             </div>
 
@@ -3753,12 +3753,12 @@ export default function Home() {
       {step === "device" && page === "home" && (
         <>
           {/* HOW IT WORKS — Visual persona example */}
-          <section className="py-12 bg-white">
+          <section className="py-12 bg-[#0d0d0d]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <h2 className="text-xl font-bold text-center mb-2">Get your instant quote</h2>
               <p className="text-[#888] text-sm text-center mb-8">Select your device and condition, and get your offer before you say &ldquo;goodbye, clutter&rdquo;</p>
 
-              <div className="bg-black/5 border border-black/15 rounded-2xl p-6 mb-8">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8">
                 <p className="text-[#888] text-xs font-medium mb-4 uppercase tracking-wider">Jenny wants to sell her iPhone</p>
                 <div className="grid grid-cols-3 gap-4 mb-5">
                   <div className="text-center">
@@ -3766,14 +3766,14 @@ export default function Home() {
                       <span className="text-xl">📱</span>
                     </div>
                     <p className="text-[#888] text-[11px] uppercase tracking-wider font-medium">Device</p>
-                    <p className="text-[#0a0a0a] text-sm font-bold">iPhone 13</p>
+                    <p className="text-white text-sm font-bold">iPhone 13</p>
                   </div>
                   <div className="text-center">
                     <div className="w-12 h-12 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
                       <span className="text-xl">✨</span>
                     </div>
                     <p className="text-[#888] text-[11px] uppercase tracking-wider font-medium">Condition</p>
-                    <p className="text-[#0a0a0a] text-sm font-bold">Good</p>
+                    <p className="text-white text-sm font-bold">Good</p>
                   </div>
                   <div className="text-center">
                     <div className="w-12 h-12 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
@@ -3784,7 +3784,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between bg-[#00c853]/10 border border-[#00c853]/20 rounded-xl px-4 py-3">
-                  <span className="text-[#0a0a0a] text-sm font-semibold">Jenny&apos;s payout</span>
+                  <span className="text-white text-sm font-semibold">Jenny&apos;s payout</span>
                   <span className="text-[#00c853] text-lg font-bold">$190.00</span>
                 </div>
               </div>
@@ -3794,7 +3794,7 @@ export default function Home() {
                   <div key={label} className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
                       <div className="w-7 h-7 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-xs font-bold">{i + 1}</div>
-                      <span className="text-[#0a0a0a] text-xs font-semibold">{label}</span>
+                      <span className="text-white text-xs font-semibold">{label}</span>
                     </div>
                     {i < 2 && <svg className="w-4 h-4 text-[#777]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>}
                   </div>
@@ -3805,7 +3805,7 @@ export default function Home() {
           </section>
 
           {/* SHIP TO US */}
-          <section className="py-12 bg-white">
+          <section className="py-12 bg-[#0a0a0a]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <h2 className="text-xl font-bold text-center mb-2">Not in Austin? Ship to us</h2>
               <p className="text-[#888] text-sm text-center mb-8">Mail your device from anywhere in the US. We pay shipping.</p>
@@ -3815,11 +3815,11 @@ export default function Home() {
                   { num: "2", icon: "✈️", title: "Ship", desc: "Drop it off at any USPS or UPS location" },
                   { num: "3", icon: "💸", title: "Get Paid", desc: "Payment sent same day we receive it" },
                 ].map((s) => (
-                  <div key={s.num} className="bg-black/5 border border-black/15 rounded-2xl p-4 text-center">
+                  <div key={s.num} className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
                     <div className="w-10 h-10 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
                       <span className="text-lg">{s.icon}</span>
                     </div>
-                    <p className="text-[#0a0a0a] text-sm font-bold mb-1">{s.title}</p>
+                    <p className="text-white text-sm font-bold mb-1">{s.title}</p>
                     <p className="text-[#888] text-[11px] leading-relaxed">{s.desc}</p>
                   </div>
                 ))}
@@ -3828,23 +3828,23 @@ export default function Home() {
           </section>
 
           {/* BOLD STATS COUNTER */}
-          <section className="py-14 bg-white" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
+          <section className="py-14 bg-[#111]" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <p className="text-[#888] text-xs font-semibold uppercase tracking-wider text-center mb-8">Top Cash Cellular by the numbers</p>
               <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="bg-black/5 border border-black/15 rounded-2xl p-3 overflow-hidden">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
                   <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">{animatedStats.devices}+</p>
-                  <p className="text-[#0a0a0a] text-xs font-semibold mt-1">Devices Bought</p>
+                  <p className="text-white text-xs font-semibold mt-1">Devices Bought</p>
                   <p className="text-[#888] text-[10px] mt-0.5">and counting</p>
                 </div>
-                <div className="bg-black/5 border border-black/15 rounded-2xl p-3 overflow-hidden">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
                   <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">${animatedStats.payout}K+</p>
-                  <p className="text-[#0a0a0a] text-xs font-semibold mt-1">Paid Out</p>
+                  <p className="text-white text-xs font-semibold mt-1">Paid Out</p>
                   <p className="text-[#888] text-[10px] mt-0.5">to Austin sellers</p>
                 </div>
-                <div className="bg-black/5 border border-black/15 rounded-2xl p-3 overflow-hidden">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
                   <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">&lt;{animatedStats.time}h</p>
-                  <p className="text-[#0a0a0a] text-xs font-semibold mt-1">Avg Payout</p>
+                  <p className="text-white text-xs font-semibold mt-1">Avg Payout</p>
                   <p className="text-[#888] text-[10px] mt-0.5">from quote to cash</p>
                 </div>
               </div>
@@ -3852,8 +3852,8 @@ export default function Home() {
           </section>
 
           {/* TESTIMONIALS */}
-          <section className="py-10 overflow-hidden bg-white">
-            <p className="text-[#0a0a0a] font-semibold text-lg text-center mb-6">What sellers say</p>
+          <section className="py-10 overflow-hidden bg-[#0a0a0a]">
+            <p className="text-white font-semibold text-lg text-center mb-6">What sellers say</p>
             <div className="relative">
               <div className="flex animate-[marquee_25s_linear_infinite] gap-4 w-max">
                 {[
@@ -3868,8 +3868,8 @@ export default function Home() {
                   { text: "Sold my old Galaxy S23 in 5 minutes. Easy money.", name: "Sarah K." },
                   { text: "Best price I found anywhere in Austin. Highly recommend.", name: "Chris M." },
                 ].map((r, i) => (
-                  <div key={i} className="flex-shrink-0 w-[260px] bg-black/5 rounded-2xl p-4 border border-black/15">
-                    <p className="text-sm text-black/85 font-medium mb-2">&ldquo;{r.text}&rdquo;</p>
+                  <div key={i} className="flex-shrink-0 w-[260px] bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <p className="text-sm text-white/85 font-medium mb-2">&ldquo;{r.text}&rdquo;</p>
                     <p className="text-xs text-[#888]">— {r.name}</p>
                   </div>
                 ))}
@@ -3878,7 +3878,7 @@ export default function Home() {
           </section>
 
           {/* PAYMENT TIMELINE */}
-          <section className="py-12 bg-white">
+          <section className="py-12 bg-[#0d0d0d]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto">
               <h2 className="text-xl font-bold text-center mb-2 px-4">When do I get paid?</h2>
               <p className="text-[#888] text-sm text-center mb-8 px-4">Transparent timelines. No surprises.</p>
@@ -3891,12 +3891,12 @@ export default function Home() {
                     { method: "Bitcoin (BTC)", icon: "₿", timeline: "Under 30 min", desc: "Sent on-chain to your wallet. Confirmation in minutes.", highlight: false },
                     { method: "Ship To Us", icon: "📦", timeline: "Same day received", desc: "We inspect and pay within hours of receiving your device.", highlight: false },
                   ].map((p, i) => (
-                    <div key={`${dup}-${i}`} className={`flex-shrink-0 w-[280px] flex items-start gap-3 rounded-2xl p-4 border ${p.highlight ? "bg-[#00c853]/10 border-[#00c853]/30" : "bg-black/5 border-black/15"}`}>
+                    <div key={`${dup}-${i}`} className={`flex-shrink-0 w-[280px] flex items-start gap-3 rounded-2xl p-4 border ${p.highlight ? "bg-[#00c853]/10 border-[#00c853]/30" : "bg-white/5 border-white/10"}`}>
                       <span className="text-2xl shrink-0">{p.icon}</span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <p className="text-[#0a0a0a] text-sm font-bold">{p.method}</p>
-                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${p.highlight ? "bg-[#00c853]/20 text-[#00c853]" : "bg-black/[0.06] text-[#555]"}`}>{p.timeline}</span>
+                          <p className="text-white text-sm font-bold">{p.method}</p>
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${p.highlight ? "bg-[#00c853]/20 text-[#00c853]" : "bg-white/10 text-[#aaa]"}`}>{p.timeline}</span>
                         </div>
                         <p className="text-[#888] text-xs leading-snug">{p.desc}</p>
                       </div>
@@ -3908,13 +3908,13 @@ export default function Home() {
           </section>
 
           {/* CTA SECTION */}
-          <section className="py-16 bg-white text-center">
+          <section className="py-16 bg-[#0a0a0a] text-center">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <div className="bg-gradient-to-br from-[#00c853]/10 to-transparent border border-[#00c853]/20 rounded-3xl p-8">
                 <p className="text-4xl mb-3">💸</p>
                 <h2 className="text-3xl font-bold mb-2">Still sitting on old tech?</h2>
                 <p className="text-[#888] text-base mb-2">That phone in your drawer is losing value every day.</p>
-                <p className="text-black/70 text-sm mb-6">Get your instant quote — it takes 30 seconds.</p>
+                <p className="text-white/70 text-sm mb-6">Get your instant quote — it takes 30 seconds.</p>
                 <button onClick={() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; setStep("category"); pushHistory("category"); requestAnimationFrame(() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }); }} className="bg-[#00c853] text-[#0a0a0a] px-10 py-4 rounded-2xl text-lg font-bold cursor-pointer hover:bg-[#00e676] transition tap-press shadow-lg shadow-[#00c853]/20">
                   Get Your Quote Now
                 </button>
@@ -3924,9 +3924,9 @@ export default function Home() {
           </section>
 
           {/* NEWSLETTER CAPTURE */}
-          <section className="py-12 bg-white">
+          <section className="py-12 bg-[#0d0d0d]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
-              <div className="bg-black/5 border border-black/15 rounded-2xl p-6 text-center">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
                 <p className="text-xl mb-2">📬</p>
                 <h3 className="text-lg font-bold mb-1">Get price alerts &amp; deals</h3>
                 <p className="text-[#888] text-sm mb-4">We&apos;ll let you know when buyback prices go up or we run a promo. No spam — just money.</p>
@@ -3943,7 +3943,7 @@ export default function Home() {
                     } catch {}
                     setNewsletterSubmitted(true);
                   }} className="flex gap-2">
-                    <input type="email" value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} placeholder="your@email.com" required aria-label="Email for newsletter" className="flex-1 px-4 py-3 bg-black/5 border border-black/15 rounded-xl text-sm text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition" />
+                    <input type="email" value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} placeholder="your@email.com" required aria-label="Email for newsletter" className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] transition" />
                     <button type="submit" className="bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition tap-press whitespace-nowrap">
                       Sign Up
                     </button>
@@ -3955,12 +3955,12 @@ export default function Home() {
           </section>
 
           {/* FAQ */}
-          <section className="py-12 bg-white">
+          <section className="py-12 bg-[#111]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
               <div className="space-y-2">
                 {FAQS.map((faq, i) => (
-                  <div key={i} className="bg-black/5 border border-black/15 rounded-2xl overflow-hidden">
+                  <div key={i} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
                     <button onClick={() => setExpandedFaq(expandedFaq === i ? null : i)} className="w-full flex items-center justify-between p-4 cursor-pointer text-left">
                       <p className="font-semibold text-sm pr-4">{faq.q}</p>
                       <svg className={`w-4 h-4 text-[#888] shrink-0 transition-transform ${expandedFaq === i ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -3977,7 +3977,7 @@ export default function Home() {
           </section>
 
           {/* GREEN / SUSTAINABILITY */}
-          <section className="py-12 bg-white">
+          <section className="py-12 bg-[#0a0a0a]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <div className="bg-[#00c853]/5 border border-[#00c853]/15 rounded-2xl p-6 text-center">
                 <p className="text-2xl mb-2">♻️</p>
@@ -3988,33 +3988,33 @@ export default function Home() {
           </section>
 
           {/* LOCAL CREDIBILITY */}
-          <section className="py-8 bg-white">
+          <section className="py-8 bg-[#111]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
               <div className="flex flex-wrap items-center justify-center gap-4 text-center">
-                <div className="flex items-center gap-2 bg-black/5 border border-black/15 rounded-full px-4 py-2">
+                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
                   <span className="text-sm">📍</span>
-                  <span className="text-[#0a0a0a] text-xs font-semibold">Austin-Based Business</span>
+                  <span className="text-white text-xs font-semibold">Austin-Based Business</span>
                 </div>
-                <div className="flex items-center gap-2 bg-black/5 border border-black/15 rounded-full px-4 py-2">
+                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
                   <span className="text-sm">🤝</span>
-                  <span className="text-[#0a0a0a] text-xs font-semibold">Real People, Local Meetups</span>
+                  <span className="text-white text-xs font-semibold">Real People, Local Meetups</span>
                 </div>
-                <div className="flex items-center gap-2 bg-black/5 border border-black/15 rounded-full px-4 py-2">
+                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
                   <span className="text-sm">⚡</span>
-                  <span className="text-[#0a0a0a] text-xs font-semibold">Same-Day Payout</span>
+                  <span className="text-white text-xs font-semibold">Same-Day Payout</span>
                 </div>
-                <div className="flex items-center gap-2 bg-black/5 border border-black/15 rounded-full px-4 py-2">
+                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
                   <span className="text-sm">🔒</span>
-                  <span className="text-[#0a0a0a] text-xs font-semibold">Secure Transactions</span>
+                  <span className="text-white text-xs font-semibold">Secure Transactions</span>
                 </div>
               </div>
             </div>
           </section>
 
           {/* BULK / BUSINESS SELLING */}
-          <section className="py-12 bg-white">
+          <section className="py-12 bg-[#0a0a0a]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
-              <div className="bg-black/5 border border-black/15 rounded-2xl p-6">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                 <div className="text-center mb-4">
                   <p className="text-2xl mb-2">🏢</p>
                   <h3 className="text-lg font-bold">Selling in bulk?</h3>
@@ -4037,7 +4037,7 @@ export default function Home() {
       {(page === "about" || page === "privacy" || page === "terms") && (
         <section className="min-h-[60vh] animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-16">
-            <button onClick={() => { setPage("home"); window.scrollTo({ top: 0 }); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-black/5 border border-black/15 hover:bg-black/[0.06] cursor-pointer transition tap-press">
+            <button onClick={() => { setPage("home"); window.scrollTo({ top: 0 }); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Home
             </button>
@@ -4046,24 +4046,24 @@ export default function Home() {
               <p className="text-[#00c853] text-sm font-semibold mb-6">Austin&apos;s #1 Device Buyback Service</p>
 
               <div className="bg-gradient-to-br from-[#00c853]/10 to-transparent border border-[#00c853]/20 rounded-2xl p-6 mb-8">
-                <p className="text-[#0a0a0a] text-lg font-medium leading-relaxed mb-3">We started Top Cash Cellular with a simple idea: selling your phone shouldn&apos;t be a hassle.</p>
+                <p className="text-white text-lg font-medium leading-relaxed mb-3">We started Top Cash Cellular with a simple idea: selling your phone shouldn&apos;t be a hassle.</p>
                 <p className="text-[#888] text-sm leading-relaxed">No lowball carrier trade-ins. No mailing your device and waiting weeks for a check. No haggling with strangers on marketplace apps. Just a fair price, paid fast, from a team you can trust.</p>
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-8">
-                <div className="bg-black/5 rounded-2xl p-5 border border-black/15 text-center">
+                <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
                   <p className="text-3xl font-bold text-[#00c853]">500+</p>
                   <p className="text-[#888] text-xs mt-1">Devices Purchased</p>
                 </div>
-                <div className="bg-black/5 rounded-2xl p-5 border border-black/15 text-center">
+                <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
                   <p className="text-3xl font-bold text-[#00c853]">4.9★</p>
                   <p className="text-[#888] text-xs mt-1">Customer Rating</p>
                 </div>
-                <div className="bg-black/5 rounded-2xl p-5 border border-black/15 text-center">
+                <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
                   <p className="text-3xl font-bold text-[#00c853]">Same Day</p>
                   <p className="text-[#888] text-xs mt-1">Payment</p>
                 </div>
-                <div className="bg-black/5 rounded-2xl p-5 border border-black/15 text-center">
+                <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
                   <p className="text-3xl font-bold text-[#00c853]">38%</p>
                   <p className="text-[#888] text-xs mt-1">More Than Trade-In</p>
                 </div>
@@ -4079,7 +4079,7 @@ export default function Home() {
                   { icon: "📱", title: "We buy everything", desc: "iPhones, Samsung Galaxy, MacBooks, PS5, Xbox, Nintendo Switch. Working, cracked, or water damaged." },
                   { icon: "🔒", title: "7-day price lock", desc: "Your quote is locked for 7 days. Take your time deciding — the price won't change." },
                 ].map((item) => (
-                  <div key={item.title} className="flex items-start gap-4 bg-black/5 rounded-2xl p-4 border border-black/15">
+                  <div key={item.title} className="flex items-start gap-4 bg-white/5 rounded-2xl p-4 border border-white/10">
                     <span className="text-2xl shrink-0">{item.icon}</span>
                     <div>
                       <p className="font-semibold text-sm mb-0.5">{item.title}</p>
@@ -4096,7 +4096,7 @@ export default function Home() {
                   { num: "2", title: "Choose how to sell", desc: "Meet us locally in Austin or ship your device for free from anywhere in the US." },
                   { num: "3", title: "Get paid instantly", desc: "We verify your device and pay you on the spot. Cash, Cash App, Zelle, or BTC." },
                 ].map((step) => (
-                  <div key={step.num} className="flex items-start gap-4 bg-black/5 rounded-2xl p-4 border border-black/15">
+                  <div key={step.num} className="flex items-start gap-4 bg-white/5 rounded-2xl p-4 border border-white/10">
                     <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-sm font-bold shrink-0">{step.num}</div>
                     <div>
                       <p className="font-semibold text-sm mb-0.5">{step.title}</p>
@@ -4154,7 +4154,7 @@ export default function Home() {
         <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div>
-              <p className="text-[#0a0a0a] font-semibold text-xs uppercase tracking-wider mb-3">Company</p>
+              <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Company</p>
               <div className="space-y-2">
                 <button onClick={() => { setPage("about"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer">About Us</button>
                 <a href="/reviews" className="block text-xs hover:text-[#00c853] transition">Reviews</a>
@@ -4164,7 +4164,7 @@ export default function Home() {
               </div>
             </div>
             <div>
-              <p className="text-[#0a0a0a] font-semibold text-xs uppercase tracking-wider mb-3">Service</p>
+              <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Service</p>
               <div className="space-y-2">
                 <p className="text-xs">Austin, TX</p>
                 <p className="text-xs">Mon-Sat 8AM-8PM</p>
@@ -4187,21 +4187,21 @@ export default function Home() {
       {/* CHAT WIDGET */}
       <div className="fixed bottom-6 left-6 z-50">
         {chatOpen && (
-          <div className="mb-3 w-[300px] bg-white border border-black/20 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+          <div className="mb-3 w-[300px] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
             <div className="bg-[#00c853] px-4 py-3 flex items-center justify-between">
-              <p className="text-[#0a0a0a] font-semibold text-sm">Top Cash Cellular</p>
-              <button onClick={() => setChatOpen(false)} aria-label="Close chat" className="text-black/80 hover:text-[#0a0a0a] cursor-pointer text-lg">×</button>
+              <p className="text-white font-semibold text-sm">Top Cash Cellular</p>
+              <button onClick={() => setChatOpen(false)} aria-label="Close chat" className="text-white/80 hover:text-white cursor-pointer text-lg">×</button>
             </div>
             <div className="p-4">
               {chatMode === "choose" && (
                 <>
-                  <p className="text-[#0a0a0a] text-sm mb-4">Hey! Got a device to sell? How can we help?</p>
+                  <p className="text-white text-sm mb-4">Hey! Got a device to sell? How can we help?</p>
                   <div className="space-y-2">
-                    <button onClick={() => setChatMode("chat")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-black/5 border border-black/15 hover:bg-black/[0.06] cursor-pointer transition text-left tap-press">
+                    <button onClick={() => setChatMode("chat")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left tap-press">
                       <span className="text-xl">💬</span>
                       <div><p className="font-semibold text-sm">Live Chat</p><p className="text-[#888] text-xs">Send us a message</p></div>
                     </button>
-                    <button onClick={() => setChatMode("call")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-black/5 border border-black/15 hover:bg-black/[0.06] cursor-pointer transition text-left tap-press">
+                    <button onClick={() => setChatMode("call")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left tap-press">
                       <span className="text-xl">📞</span>
                       <div><p className="font-semibold text-sm">Talk to a Human</p><p className="text-[#888] text-xs">Call or get a callback</p></div>
                     </button>
@@ -4210,24 +4210,24 @@ export default function Home() {
               )}
               {chatMode === "chat" && (
                 <>
-                  <button onClick={() => setChatMode("choose")} className="text-[#888] text-xs mb-2 cursor-pointer hover:text-[#0a0a0a]">← Back</button>
+                  <button onClick={() => setChatMode("choose")} className="text-[#888] text-xs mb-2 cursor-pointer hover:text-white">← Back</button>
                   <div className="h-[200px] overflow-y-auto space-y-2 mb-2 pr-1">
                     {chatMessages.map((m, i) => (
                       <div key={i} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[85%] px-3 py-2 rounded-xl text-xs ${m.from === "user" ? "bg-[#00c853] text-[#0a0a0a]" : "bg-black/[0.06] text-black/90"}`}>{m.text}</div>
+                        <div className={`max-w-[85%] px-3 py-2 rounded-xl text-xs ${m.from === "user" ? "bg-[#00c853] text-[#0a0a0a]" : "bg-white/10 text-white/90"}`}>{m.text}</div>
                       </div>
                     ))}
-                    {chatLoading && <div className="flex justify-start"><div className="bg-black/[0.06] text-black/60 px-3 py-2 rounded-xl text-xs">Typing...</div></div>}
+                    {chatLoading && <div className="flex justify-start"><div className="bg-white/10 text-white/60 px-3 py-2 rounded-xl text-xs">Typing...</div></div>}
                   </div>
                   <div className="flex gap-2">
-                    <input value={chatMsg} onChange={(e) => setChatMsg(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendChat()} placeholder="Ask me anything..." aria-label="Chat message" className="flex-1 px-3 py-2 bg-black/5 border border-black/15 rounded-xl text-xs text-[#0a0a0a] placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
+                    <input value={chatMsg} onChange={(e) => setChatMsg(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendChat()} placeholder="Ask me anything..." aria-label="Chat message" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]" />
                     <button onClick={sendChat} disabled={chatLoading} aria-label="Send message" className="bg-[#00c853] text-[#0a0a0a] px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer hover:bg-[#00e676] transition disabled:opacity-50">Send</button>
                   </div>
                 </>
               )}
               {chatMode === "call" && (
                 <div className="text-center py-2">
-                  <button onClick={() => setChatMode("choose")} className="text-[#888] text-xs mb-3 cursor-pointer hover:text-[#0a0a0a] block mx-auto">← Back</button>
+                  <button onClick={() => setChatMode("choose")} className="text-[#888] text-xs mb-3 cursor-pointer hover:text-white block mx-auto">← Back</button>
                   <a href={EMAIL_HREF} className="block w-full bg-[#00c853] text-[#0a0a0a] py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2">📧 Email Us</a>
                   <p className="text-[#888] text-xs">Mon-Sat 8AM-8PM</p>
                 </div>
@@ -4247,7 +4247,7 @@ export default function Home() {
       {/* CART WIDGET — only visible when items in cart */}
       {cartItems.length > 0 && <div className="fixed bottom-6 right-6 z-50">
         {cartOpen && (
-          <div className="mb-3 w-[320px] bg-white border border-black/20 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+          <div className="mb-3 w-[320px] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
             <div className="bg-[#00c853] px-4 py-3 flex items-center justify-between">
               <p className="text-black font-semibold text-sm">Your Cart ({cartItems.reduce((sum, i) => sum + i.quantity, 0)} items)</p>
               <button onClick={() => setCartOpen(false)} aria-label="Close cart" className="text-black/60 hover:text-black cursor-pointer text-lg font-bold">×</button>
@@ -4262,24 +4262,24 @@ export default function Home() {
                 <>
                   <div className="space-y-3">
                     {cartItems.map((item, i) => (
-                      <div key={i} className="bg-black/5 rounded-xl p-3 border border-black/15">
+                      <div key={i} className="bg-white/5 rounded-xl p-3 border border-white/10">
                         <div className="flex items-center justify-between mb-1">
-                          <p className="font-semibold text-sm text-[#0a0a0a]">{item.model}</p>
+                          <p className="font-semibold text-sm text-white">{item.model}</p>
                           <button onClick={() => setCartItems(prev => prev.filter((_, idx) => idx !== i))} className="text-[#888] hover:text-red-400 text-xs cursor-pointer">Remove</button>
                         </div>
                         <p className="text-[#888] text-xs">{item.storage} · {item.condition}</p>
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center gap-2">
-                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it))} className="w-6 h-6 rounded bg-black/[0.06] text-[#0a0a0a] text-xs flex items-center justify-center cursor-pointer hover:bg-black/[0.12]">−</button>
-                            <span className="text-[#0a0a0a] text-sm font-semibold">{item.quantity}</span>
-                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it))} className="w-6 h-6 rounded bg-black/[0.06] text-[#0a0a0a] text-xs flex items-center justify-center cursor-pointer hover:bg-black/[0.12]">+</button>
+                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it))} className="w-6 h-6 rounded bg-white/10 text-white text-xs flex items-center justify-center cursor-pointer hover:bg-white/20">−</button>
+                            <span className="text-white text-sm font-semibold">{item.quantity}</span>
+                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it))} className="w-6 h-6 rounded bg-white/10 text-white text-xs flex items-center justify-center cursor-pointer hover:bg-white/20">+</button>
                           </div>
                           <p className="text-[#00c853] font-bold text-sm">${item.price * item.quantity}</p>
                         </div>
                       </div>
                     ))}
                   </div>
-                  <div className="border-t border-black/15 mt-3 pt-3 flex items-center justify-between">
+                  <div className="border-t border-white/10 mt-3 pt-3 flex items-center justify-between">
                     <p className="text-[#888] text-sm">Total</p>
                     <p className="text-[#00c853] font-bold text-lg">${cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0)}</p>
                   </div>
@@ -4297,23 +4297,23 @@ export default function Home() {
         <button onClick={() => setCartOpen(!cartOpen)} className="w-14 h-14 rounded-full bg-[#00c853] text-black flex items-center justify-center shadow-lg hover:bg-[#00e676] transition cursor-pointer tap-press relative">
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>
           {cartItems.length > 0 && (
-            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-[#0a0a0a] text-[11px] font-bold flex items-center justify-center">{cartItems.reduce((sum, i) => sum + i.quantity, 0)}</span>
+            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center">{cartItems.reduce((sum, i) => sum + i.quantity, 0)}</span>
           )}
         </button>
       </div>}
 
       {/* PROGRESS BAR — shows during flow */}
       {step !== "device" && step !== "done" && page === "home" && (
-        <div className="fixed top-[52px] left-0 right-0 z-30 h-1 bg-black/[0.06]">
+        <div className="fixed top-[52px] left-0 right-0 z-30 h-1 bg-white/10">
           <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${({category: 8, brand: 15, model: 22, storage: 32, condition: 42, carrier: 52, quote: 62, checkout: 72, payout: 82, contact: 92} as Record<string,number>)[step] ?? 0}%` }} />
         </div>
       )}
 
       {cookieConsent === null && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-t border-black/15 px-3 py-2 animate-[fadeIn_0.3s_ease-out]">
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111]/95 backdrop-blur-sm border-t border-white/10 px-3 py-2 animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto flex items-center gap-3">
-            <p className="text-black/80 text-[11px] flex-1">We use cookies to improve your experience.</p>
-            <button onClick={() => { localStorage.setItem("cookie-consent", "essential"); setCookieConsent("essential"); }} className="text-black/60 text-[11px] font-medium cursor-pointer hover:text-[#0a0a0a] transition whitespace-nowrap">Essential</button>
+            <p className="text-white/80 text-[11px] flex-1">We use cookies to improve your experience.</p>
+            <button onClick={() => { localStorage.setItem("cookie-consent", "essential"); setCookieConsent("essential"); }} className="text-white/60 text-[11px] font-medium cursor-pointer hover:text-white transition whitespace-nowrap">Essential</button>
             <button onClick={() => { localStorage.setItem("cookie-consent", "full"); setCookieConsent("full"); }} className="bg-[#00c853] text-[#0a0a0a] px-3 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer hover:bg-[#00e676] transition whitespace-nowrap">Accept All</button>
           </div>
         </div>
