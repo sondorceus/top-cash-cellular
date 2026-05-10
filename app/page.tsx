@@ -2470,6 +2470,15 @@ export default function Home() {
     <main className="min-h-screen bg-[#0a0a0a] text-white">
       {/* NAV */}
       <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
+        {/* PROMO STRIP — own row above the logo + menu so it never feels squeezed */}
+        <a
+          href="/bulk"
+          className="block w-full text-center px-3 py-2 bg-gradient-to-r from-[#00c853]/15 via-[#00e676]/25 to-[#00c853]/15 hover:from-[#00c853]/25 hover:via-[#00e676]/35 hover:to-[#00c853]/25 transition border-b border-[#00c853]/20"
+          style={{ backgroundSize: "200% 100%", animation: "promoGradient 6s ease-in-out infinite" }}
+        >
+          <span className="hidden sm:inline text-[#00c853] text-xs font-extrabold tracking-wide">🚀 Trade 2+ devices · get +10% extra cash</span>
+          <span className="sm:hidden text-[#00c853] text-[11px] font-extrabold tracking-wide">🚀 Trade 2+ devices · +10% extra cash</span>
+        </a>
         <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between">
           <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer group tap-press rounded-xl">
             <span className="flex items-center gap-2">
@@ -2502,15 +2511,7 @@ export default function Home() {
               </div>
             </span>
           </button>
-          {/* TOP-NAV PROMO STRIP — between logo and menu, mobile + desktop */}
-          <a
-            href="/bulk"
-            className="flex-1 min-w-0 mx-2 sm:mx-4 px-2 sm:px-3 py-1.5 rounded-full bg-gradient-to-r from-[#00c853]/20 via-[#00e676]/25 to-[#00c853]/20 border border-[#00c853]/40 hover:from-[#00c853]/30 hover:via-[#00e676]/35 hover:to-[#00c853]/30 transition flex items-center justify-center overflow-hidden"
-            style={{ backgroundSize: "200% 100%", animation: "promoGradient 6s ease-in-out infinite" }}
-          >
-            <span className="hidden sm:inline text-[#00c853] text-xs font-extrabold whitespace-nowrap tracking-wide">🚀 Trade 2+ devices · get +10% extra cash</span>
-            <span className="sm:hidden text-[#00c853] text-[10px] font-extrabold whitespace-nowrap tracking-wide">🚀 +10% on 2+ devices</span>
-          </a>
+          {/* (Promo strip moved to its own row above this flex row.) */}
           {/* MOBILE + TABLET: hamburger button (drawer with same menu as desktop) */}
           <div className="flex items-center gap-2 lg:hidden">
             <button
