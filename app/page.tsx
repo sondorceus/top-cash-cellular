@@ -2448,6 +2448,30 @@ export default function Home() {
   // storage / condition / carrier steps so they can always see what they're
   // selling. Inspired by IWM but with our spin: bordered card, soft green
   // accent border, selected fields go bold-green as they're picked.
+  // Mobile counterpart — compact horizontal summary card that mirrors the
+  // sidebar but fits in one row above the step content. Same glass spec
+  // so it visually belongs to the design system.
+  const selectionPanelMobile = model && (
+    <div className="lg:hidden rounded-2xl bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-3 mb-4 flex items-center gap-3">
+      <div className="w-12 h-12 rounded-lg bg-[rgba(45,45,45,0.6)] border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
+        {model.image ? (
+          <img src={model.image} alt={model.label} className="max-w-full max-h-full object-contain" />
+        ) : (
+          <span className="text-xl opacity-50">📱</span>
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-white font-extrabold text-sm truncate">{model.label}</p>
+        <p className="text-[#a0a0a0] text-[11px] truncate">
+          {[storage?.label, condition?.label, carrier?.label, payout?.label].filter(Boolean).join(" · ") || (step === "storage" ? "Picking storage…" : step === "condition" ? "Picking condition…" : step === "carrier" ? "Picking carrier…" : "")}
+        </p>
+      </div>
+      {(step === "quote" || step === "checkout" || step === "payout" || step === "contact") && (
+        <p className="text-[#00c853] font-extrabold text-base shrink-0">${quote * quantity}</p>
+      )}
+    </div>
+  );
+
   const selectionPanel = model && (
     <aside className="hidden lg:block lg:w-[300px] shrink-0">
       <div className="sticky top-24 bg-[rgba(45,45,45,0.6)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
@@ -4423,8 +4447,8 @@ export default function Home() {
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                 Back
               </button>
+              {selectionPanelMobile}
               <h2 className="text-2xl font-bold mb-1">Storage capacity?</h2>
-              <p className="text-[#dcdcdc] text-sm mb-6 lg:hidden">{model.label}</p>
               <div className="space-y-2">
                 {getStoragesForModel(model.id).map((s) => (
                   <button
@@ -4454,8 +4478,8 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
+            {selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">Select Condition</h2>
-            <p className="text-[#dcdcdc] text-sm mb-2 lg:hidden">{model.label}</p>
             <button className="text-[#00c853] text-xs font-medium mb-4 cursor-pointer hover:underline" onClick={() => { const el = document.getElementById('condition-guide'); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }}>How to assess condition</button>
             <div id="condition-guide" style={{ display: 'none' }} className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-xs text-[#d4d4d4] space-y-2">
               <p><strong className="text-white">Brand New:</strong> Sealed in original packaging, never opened</p>
@@ -4549,6 +4573,7 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
+            {selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">Carrier status?</h2>
             <p className="text-[#dcdcdc] text-sm mb-6">Is your phone unlocked or locked to a carrier?</p>
             <div className="space-y-2">
@@ -4817,15 +4842,7 @@ export default function Home() {
               Back
             </button>
 
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 lg:hidden">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-sm">{model.label}</p>
-                  <p className="text-[#dcdcdc] text-xs">{storage?.label} · {condition.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
-                </div>
-                <p className="text-[#00c853] font-bold text-xl">${quote * quantity}</p>
-              </div>
-            </div>
+            {selectionPanelMobile}
 
             <h2 className="text-2xl font-bold mb-1">Checkout</h2>
 
@@ -4912,16 +4929,7 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 lg:hidden">
-              <p className="text-xs font-semibold text-[#dcdcdc] uppercase tracking-wider mb-2">Your Cart</p>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-sm">{model?.label}</p>
-                  <p className="text-[#dcdcdc] text-xs">{storage?.label} · {condition?.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
-                </div>
-                <p className="text-[#00c853] font-bold text-xl">${quote * quantity}</p>
-              </div>
-            </div>
+            {selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
             <p className="text-[#dcdcdc] text-sm mb-6">Select your preferred payout method</p>
             <div className="grid grid-cols-2 gap-3">
@@ -4952,13 +4960,7 @@ export default function Home() {
               Back
             </button>
 
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6 lg:hidden">
-              <div className="flex items-center justify-between mb-2">
-                <p className="font-semibold">{model.label}</p>
-                <p className="text-[#00c853] font-bold text-xl">${quote * quantity}</p>
-              </div>
-              <p className="text-[#dcdcdc] text-sm">{storage?.label} · {condition.label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
-            </div>
+            {selectionPanelMobile}
 
             {returningHint && returningHint.leadCount > 0 && (
               <div className="bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 mb-5 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
