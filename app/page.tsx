@@ -2298,6 +2298,49 @@ export default function Home() {
   const [quoteSaved, setQuoteSaved] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [showConfetti, setShowConfetti] = useState(false);
+  // After-submit delivery fork — user has finished the funnel and now picks
+  // between shipping (we send a prepaid label) or a local Austin meetup.
+  const [doneSubStep, setDoneSubStep] = useState<"choose" | "shipping" | "local" | "confirmed">("choose");
+  const [shipStreet, setShipStreet] = useState("");
+  const [shipUnit, setShipUnit] = useState("");
+  const [shipCity, setShipCity] = useState("");
+  const [shipState, setShipState] = useState("TX");
+  const [shipZip, setShipZip] = useState("");
+  const [localArea, setLocalArea] = useState<string | null>(null);
+  const [deliverySubmitting, setDeliverySubmitting] = useState(false);
+  const submitDelivery = async (method: "shipping" | "local") => {
+    setDeliverySubmitting(true);
+    try {
+      await fetch("/api/delivery", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          method,
+          name, phone, email,
+          model: model?.label,
+          quote: quote * quantity,
+          payout: payout?.label,
+          address: method === "shipping" ? { street: shipStreet, unit: shipUnit, city: shipCity, state: shipState, zip: shipZip } : undefined,
+          area: method === "local" ? localArea : undefined,
+        }),
+      });
+      setDoneSubStep("confirmed");
+    } catch {
+      alert("Couldn't save that — please call us at (877) 549-2056 or email topcashcellular@gmail.com.");
+    } finally {
+      setDeliverySubmitting(false);
+    }
+  };
+  const AUSTIN_AREAS = [
+    { id: "south", label: "South Austin", desc: "South Lamar, 78704, Bouldin" },
+    { id: "north", label: "North Austin", desc: "Domain, Anderson Lane, 78758" },
+    { id: "central", label: "Central / Downtown", desc: "Downtown, UT, East 6th" },
+    { id: "east", label: "East Austin", desc: "Mueller, Manor Rd, 78702/23" },
+    { id: "west", label: "West Austin", desc: "Westlake, Bee Cave, 78746" },
+    { id: "rr", label: "Round Rock / Pflugerville", desc: "Round Rock, Pflugerville" },
+    { id: "cp", label: "Cedar Park / Leander", desc: "Cedar Park, Leander, 78613" },
+    { id: "georgetown", label: "Georgetown / North", desc: "Georgetown + further north" },
+  ];
   // IMEI / serial validator (optional, contact step)
   const [imeiInput, setImeiInput] = useState("");
   const [imeiState, setImeiState] = useState<"idle" | "checking" | "ok" | "warn" | "error">("idle");
@@ -2598,6 +2641,9 @@ export default function Home() {
     setName("");
     setPhone("");
     setEmail("");
+    setDoneSubStep("choose");
+    setShipStreet(""); setShipUnit(""); setShipCity(""); setShipState("TX"); setShipZip("");
+    setLocalArea(null);
   };
 
   // Brand → flat variant lists (the series intermediate step was removed
@@ -5957,34 +6003,145 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Two-up info cards (stack on mobile, side-by-side on sm+) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-              <div className="tcc-card rounded-2xl p-4 flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                  <svg className="w-5 h-5 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7h13l4 4v6a1 1 0 01-1 1h-2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+            {/* DELIVERY FORK — two big tap-targets, then a sub-form */}
+            {doneSubStep === "choose" && (
+              <>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold text-center mb-3">How would you like to hand off?</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                  <button
+                    onClick={() => setDoneSubStep("shipping")}
+                    className="tcc-card rounded-2xl p-4 flex items-start gap-3 text-left cursor-pointer tap-press"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                      <svg className="w-5 h-5 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7h13l4 4v6a1 1 0 01-1 1h-2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-white text-sm font-bold mb-0.5">Ship It</p>
+                      <p className="text-[#bdbdbd] text-xs leading-snug">Enter your address → we email a free prepaid label.</p>
+                    </div>
+                    <svg className="w-4 h-4 text-[#00c853] shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  </button>
+                  <button
+                    onClick={() => setDoneSubStep("local")}
+                    className="tcc-card rounded-2xl p-4 flex items-start gap-3 text-left cursor-pointer tap-press"
+                    style={{ borderColor: "rgba(0, 200, 83, 0.3)" }}
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-[#00c853]/15 border border-[#00c853]/30 flex items-center justify-center shrink-0">
+                      <svg className="w-5 h-5 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-white text-sm font-bold mb-0.5">Local Meetup</p>
+                      <p className="text-[#bdbdbd] text-xs leading-snug">Pick an Austin area — we&apos;ll arrange a meet & pay on the spot.</p>
+                    </div>
+                    <svg className="w-4 h-4 text-[#00c853] shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  </button>
                 </div>
-                <div className="min-w-0">
-                  <p className="text-white text-sm font-bold mb-0.5">Shipping</p>
-                  <p className="text-[#bdbdbd] text-xs leading-snug">Label arrives by email within the hour.</p>
+                <div className="text-center">
+                  <button onClick={reset} className="inline-flex items-center gap-2 text-[#888] font-semibold text-xs cursor-pointer hover:underline px-4 py-2">
+                    Decide later — sell another device first
+                  </button>
                 </div>
-              </div>
-              <div className="tcc-card rounded-2xl p-4 flex items-start gap-3" style={{ borderColor: "rgba(0, 200, 83, 0.25)" }}>
-                <div className="w-9 h-9 rounded-lg bg-[#00c853]/15 border border-[#00c853]/30 flex items-center justify-center shrink-0">
-                  <svg className="w-5 h-5 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
-                </div>
-                <div className="min-w-0">
-                  <p className="text-white text-sm font-bold mb-0.5">Local in Austin?</p>
-                  <p className="text-[#bdbdbd] text-xs leading-snug">We meet you — no shipping needed.</p>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
 
-            <div className="text-center">
-              <button onClick={reset} className="inline-flex items-center gap-2 text-[#00c853] font-semibold text-sm cursor-pointer hover:underline px-4 py-2">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14"/></svg>
-                Sell another device
-              </button>
-            </div>
+            {/* SHIPPING ADDRESS FORM */}
+            {doneSubStep === "shipping" && (
+              <div className="tcc-card rounded-2xl p-5 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Ship It</p>
+                    <p className="text-white text-base font-bold">Where should we send the label?</p>
+                  </div>
+                  <button onClick={() => setDoneSubStep("choose")} className="text-[#888] text-xs underline hover:text-white cursor-pointer">Change</button>
+                </div>
+                <form onSubmit={(e) => { e.preventDefault(); submitDelivery("shipping"); }} className="space-y-3">
+                  <input required value={shipStreet} onChange={e => setShipStreet(e.target.value)} placeholder="Street address" autoComplete="address-line1" className="w-full px-4 py-3 tcc-input" />
+                  <input value={shipUnit} onChange={e => setShipUnit(e.target.value)} placeholder="Apt / Suite (optional)" autoComplete="address-line2" className="w-full px-4 py-3 tcc-input" />
+                  <div className="grid grid-cols-2 gap-2">
+                    <input required value={shipCity} onChange={e => setShipCity(e.target.value)} placeholder="City" autoComplete="address-level2" className="w-full px-4 py-3 tcc-input" />
+                    <input required maxLength={2} value={shipState} onChange={e => setShipState(e.target.value.toUpperCase().slice(0,2))} placeholder="State" autoComplete="address-level1" className="w-full px-4 py-3 tcc-input uppercase" />
+                  </div>
+                  <input required inputMode="numeric" pattern="\d{5}" maxLength={5} value={shipZip} onChange={e => setShipZip(e.target.value.replace(/\D/g, "").slice(0,5))} placeholder="ZIP code" autoComplete="postal-code" className="w-full px-4 py-3 tcc-input" />
+                  <p className="text-[#888] text-[11px] leading-relaxed">We&apos;ll email a USPS prepaid label to <span className="text-[#e6e6e6] font-semibold">{email || "your email"}</span> within the hour. Drop the box at any USPS — we cover return shipping too.</p>
+                  <button type="submit" disabled={deliverySubmitting} className="tcc-button-primary w-full py-3.5 text-base font-extrabold disabled:opacity-60">
+                    {deliverySubmitting ? "Saving…" : "Get my shipping label"}
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {/* LOCAL MEETUP AREA PICKER */}
+            {doneSubStep === "local" && (
+              <div className="tcc-card rounded-2xl p-5 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Local Meetup</p>
+                    <p className="text-white text-base font-bold">Pick your area — we&apos;ll come to you</p>
+                  </div>
+                  <button onClick={() => setDoneSubStep("choose")} className="text-[#888] text-xs underline hover:text-white cursor-pointer">Change</button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+                  {AUSTIN_AREAS.map(a => {
+                    const active = localArea === a.label;
+                    return (
+                      <button
+                        key={a.id}
+                        type="button"
+                        onClick={() => setLocalArea(a.label)}
+                        className="flex items-start gap-3 px-3 py-3 rounded-xl border cursor-pointer text-left tap-press transition"
+                        style={{
+                          background: active ? "rgba(0,200,83,0.10)" : "rgba(255,255,255,0.03)",
+                          borderColor: active ? "#00c853" : "rgba(255,255,255,0.10)",
+                          boxShadow: active ? "0 0 0 1px rgba(0,200,83,0.4), 0 0 18px rgba(0,200,83,0.18)" : "none",
+                        }}
+                      >
+                        <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: active ? "#00c853" : "rgba(255,255,255,0.06)", border: active ? "none" : "1px solid rgba(255,255,255,0.12)" }}>
+                          {active ? (
+                            <svg className="w-4 h-4 text-[#0a0a0a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                          ) : null}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-white text-sm font-bold leading-tight">{a.label}</p>
+                          <p className="text-[#888] text-[11px] leading-snug mt-0.5">{a.desc}</p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="text-[#888] text-[11px] leading-relaxed mb-3">We&apos;ll text or email you within the hour to lock in a time and a public spot you&apos;re comfortable with (coffee shop, parking lot, etc).</p>
+                <button
+                  type="button"
+                  onClick={() => localArea && submitDelivery("local")}
+                  disabled={!localArea || deliverySubmitting}
+                  className="tcc-button-primary w-full py-3.5 text-base font-extrabold disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {deliverySubmitting ? "Saving…" : localArea ? `Confirm — ${localArea}` : "Pick an area to continue"}
+                </button>
+              </div>
+            )}
+
+            {/* CONFIRMED — second 'all set' state with delivery details locked in */}
+            {doneSubStep === "confirmed" && (
+              <>
+                <div className="tcc-card rounded-2xl p-5 mb-6 text-center">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Confirmed</p>
+                  <p className="text-white text-base font-bold mb-1">
+                    {shipStreet ? "Your label is on the way" : localArea ? `Meetup in ${localArea}` : "We&apos;ve got it"}
+                  </p>
+                  <p className="text-[#bdbdbd] text-xs leading-relaxed">
+                    {shipStreet
+                      ? `USPS prepaid label will hit ${email || "your email"} within the hour. Drop the box at any post office — we cover return shipping.`
+                      : `We'll text or email to schedule a time. Most meetups happen same-day or next-day.`}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <button onClick={reset} className="inline-flex items-center gap-2 text-[#00c853] font-semibold text-sm cursor-pointer hover:underline px-4 py-2">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14"/></svg>
+                    Sell another device
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </section>
       )}
