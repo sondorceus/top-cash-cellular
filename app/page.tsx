@@ -2059,7 +2059,7 @@ export default function Home() {
       <div className="flex items-center gap-3 mb-1.5">
         <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Step {funnelStepNum} of {funnelTotal}</span>
         <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden max-w-[180px]">
-          <div className="h-full bg-[#00c853] shadow-[0_0_8px_rgba(0,200,83,0.6)] transition-all duration-500" style={{ width: `${(funnelStepNum / funnelTotal) * 100}%` }} />
+          <div className="h-full bg-gradient-to-r from-[#00c853] via-[#00e676] to-[#00c853] shadow-[0_0_10px_rgba(0,230,118,0.9),0_0_4px_rgba(0,230,118,0.6)] transition-all duration-500" style={{ width: `${(funnelStepNum / funnelTotal) * 100}%` }} />
         </div>
       </div>
     </div>
