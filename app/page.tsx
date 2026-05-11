@@ -2448,27 +2448,33 @@ export default function Home() {
   // storage / condition / carrier steps so they can always see what they're
   // selling. Inspired by IWM but with our spin: bordered card, soft green
   // accent border, selected fields go bold-green as they're picked.
-  // Mobile counterpart — compact horizontal summary card that mirrors the
-  // sidebar but fits in one row above the step content. Same glass spec
-  // so it visually belongs to the design system.
+  // Mobile counterpart — full-width horizontal summary card that mirrors
+  // the sidebar but fits in one row. Glassmorphic surface with a soft
+  // green-tinted gradient border so it pops without competing with the
+  // step content. Placed BELOW the step options instead of above so it
+  // doesn't compete with the question 'Storage capacity?' etc. Bigger
+  // thumbnail + larger type for easy reading on a phone.
   const selectionPanelMobile = model && (
-    <div className="lg:hidden rounded-2xl bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-3 mb-4 flex items-center gap-3">
-      <div className="w-12 h-12 rounded-lg bg-[rgba(45,45,45,0.6)] border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
-        {model.image ? (
-          <img src={model.image} alt={model.label} className="max-w-full max-h-full object-contain" />
-        ) : (
-          <span className="text-xl opacity-50">📱</span>
+    <div className="lg:hidden mt-6 rounded-2xl bg-gradient-to-br from-[#00c853]/12 via-[#00c853]/3 to-[#00c853]/12 p-[1px]">
+      <div className="rounded-2xl bg-[rgba(15,15,15,0.85)] backdrop-blur-[12px] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-4 flex items-center gap-4">
+        <div className="w-16 h-16 rounded-xl bg-[rgba(45,45,45,0.7)] border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
+          {model.image ? (
+            <img src={model.image} alt={model.label} className="max-w-full max-h-full object-contain" />
+          ) : (
+            <span className="text-2xl opacity-50">📱</span>
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-0.5">Selling</p>
+          <p className="text-white font-extrabold text-base leading-tight truncate">{model.label}</p>
+          <p className="text-[#a0a0a0] text-sm truncate mt-0.5">
+            {[storage?.label, condition?.label, carrier?.label, payout?.label].filter(Boolean).join(" · ") || (step === "storage" ? "Picking storage…" : step === "condition" ? "Picking condition…" : step === "carrier" ? "Picking carrier…" : "")}
+          </p>
+        </div>
+        {(step === "quote" || step === "checkout" || step === "payout" || step === "contact") && (
+          <p className="text-[#00c853] font-extrabold text-xl shrink-0">${quote * quantity}</p>
         )}
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-white font-extrabold text-sm truncate">{model.label}</p>
-        <p className="text-[#a0a0a0] text-[11px] truncate">
-          {[storage?.label, condition?.label, carrier?.label, payout?.label].filter(Boolean).join(" · ") || (step === "storage" ? "Picking storage…" : step === "condition" ? "Picking condition…" : step === "carrier" ? "Picking carrier…" : "")}
-        </p>
-      </div>
-      {(step === "quote" || step === "checkout" || step === "payout" || step === "contact") && (
-        <p className="text-[#00c853] font-extrabold text-base shrink-0">${quote * quantity}</p>
-      )}
     </div>
   );
 
@@ -4447,7 +4453,6 @@ export default function Home() {
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                 Back
               </button>
-              {selectionPanelMobile}
               <h2 className="text-2xl font-bold mb-1">Storage capacity?</h2>
               <div className="space-y-2">
                 {getStoragesForModel(model.id).map((s) => (
@@ -4461,6 +4466,7 @@ export default function Home() {
                   </button>
                 ))}
               </div>
+              {selectionPanelMobile}
               <FairPromise />
               <TrustBadge />
             </div>
@@ -4478,7 +4484,6 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            {selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">Select Condition</h2>
             <button className="text-[#00c853] text-xs font-medium mb-4 cursor-pointer hover:underline" onClick={() => { const el = document.getElementById('condition-guide'); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }}>How to assess condition</button>
             <div id="condition-guide" style={{ display: 'none' }} className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-xs text-[#d4d4d4] space-y-2">
@@ -4516,6 +4521,7 @@ export default function Home() {
                 </button>
               ))}
             </div>
+            {selectionPanelMobile}
 
             <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5">
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-1">Our Promise</h3>
@@ -4573,7 +4579,6 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            {selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">Carrier status?</h2>
             <p className="text-[#dcdcdc] text-sm mb-6">Is your phone unlocked or locked to a carrier?</p>
             <div className="space-y-2">
@@ -4589,6 +4594,7 @@ export default function Home() {
                 </button>
               ))}
             </div>
+            {selectionPanelMobile}
             <TrustBadge />
             </div>
           </div>
@@ -4842,8 +4848,6 @@ export default function Home() {
               Back
             </button>
 
-            {selectionPanelMobile}
-
             <h2 className="text-2xl font-bold mb-1">Checkout</h2>
 
             {/* SECTION 1: ACCOUNT */}
@@ -4914,6 +4918,7 @@ export default function Home() {
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Options &amp; Terms</h3>
               <p className="text-[#dcdcdc] text-xs">By proceeding, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
             </div>
+            {selectionPanelMobile}
             </div>
           </div>
         </section>
@@ -4929,7 +4934,6 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            {selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
             <p className="text-[#dcdcdc] text-sm mb-6">Select your preferred payout method</p>
             <div className="grid grid-cols-2 gap-3">
@@ -4944,6 +4948,7 @@ export default function Home() {
                 </button>
               ))}
             </div>
+            {selectionPanelMobile}
             </div>
           </div>
         </section>
@@ -4959,8 +4964,6 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-
-            {selectionPanelMobile}
 
             {returningHint && returningHint.leadCount > 0 && (
               <div className="bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 mb-5 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
@@ -5097,6 +5100,7 @@ export default function Home() {
                 Submit &amp; Get Paid
               </button>
             </form>
+            {selectionPanelMobile}
             </div>
           </div>
         </section>
