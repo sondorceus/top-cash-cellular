@@ -6026,8 +6026,9 @@ export default function Home() {
       {/* (Text Us pill was here; moved into the mobile nav next to cart so it
           doesn't crowd the bottom of the screen.) */}
 
-      {/* CHAT WIDGET */}
-      <div className="fixed bottom-6 left-6 z-50">
+      {/* CHAT WIDGET — hidden while any 'Help me choose' modal is open so
+          it doesn't sit on top of the modal close button on mobile. */}
+      <div className={`fixed bottom-6 left-6 z-40 ${conditionHelpId || storageHelpId || connectivityHelpOpen || helpTopic ? "hidden" : ""}`}>
         {chatOpen && (
           <div className="mb-3 w-[300px] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
             <div className="bg-[#00c853] px-4 py-3 flex items-center justify-between">
