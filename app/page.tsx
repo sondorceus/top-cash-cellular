@@ -2253,6 +2253,149 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
     ],
     hasNanoGlass: false,
   },
+  // 2026 MacBook Air M5 — Skywalker has 13 + 15 combined as one catalog
+  // entry, so screen size lives on the processor step (M5 chip is the
+  // same across sizes; the 15-inch just commands a price premium).
+  mba_m5_2026: {
+    processors: [
+      { id: "m5_13",       label: "M5 (13-inch)", sub: "10-Core CPU / 8-10C GPU",  multiplier: 0.85 },
+      { id: "m5_15",       label: "M5 (15-inch)", sub: "10-Core CPU / 10-Core GPU", multiplier: 1.05 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2024 MacBook Air 15" M3
+  mba15m3: {
+    processors: [
+      { id: "m3_8_10", label: "M3", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92 },
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2024 MacBook Air 13" M3
+  mba13m3: {
+    processors: [
+      { id: "m3_8_8",  label: "M3", sub: "8-Core CPU / 8-Core GPU",  multiplier: 1.00 },
+      { id: "m3_8_10", label: "M3", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.05 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92 },
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2023 MacBook Air 15" M2
+  mba15m2: {
+    processors: [
+      { id: "m2_8_10", label: "M2", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92 },
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2022 MacBook Air 13" M2
+  mba13m2: {
+    processors: [
+      { id: "m2_8_8",  label: "M2", sub: "8-Core CPU / 8-Core GPU",  multiplier: 1.00 },
+      { id: "m2_8_10", label: "M2", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.05 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92 },
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2020 MacBook Air 13" M1 — first Apple Silicon Mac, simpler config
+  mba13m1: {
+    processors: [
+      { id: "m1_8_7", label: "M1", sub: "8-Core CPU / 7-Core GPU", multiplier: 1.00 },
+      { id: "m1_8_8", label: "M1", sub: "8-Core CPU / 8-Core GPU", multiplier: 1.05 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92 },
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2020 MacBook Pro 13" M1 — same chip as Air M1 but with active cooling
+  mbp13m1: {
+    processors: [
+      { id: "m1_8_8", label: "M1", sub: "8-Core CPU / 8-Core GPU", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92 },
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2026 MacBook Neo 13" — entry-level A18 Pro chip
+  mbneo13: {
+    processors: [
+      { id: "a18pro", label: "A18 Pro", sub: "iPhone-class chip", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8", label: "8 GB", sub: "Unified Memory", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.05 },
+    ],
+    hasNanoGlass: false,
+  },
 };
 const DISPLAY_GLASS_OPTIONS: MacSpecOption[] = [
   { id: "standard", label: "Standard Glass", multiplier: 1.00 },
