@@ -4852,13 +4852,10 @@ export default function Home() {
                 Back
               </button>
               {selectionPanelMobile}
-              <div className="flex items-center justify-between gap-3 mb-2">
-                <h2 className="text-2xl lg:text-3xl font-extrabold">Storage capacity?</h2>
-                <button type="button" onClick={() => setHelpTopic("storage")} className="inline-flex items-center gap-1.5 text-[#00c853] text-xs font-extrabold hover:underline cursor-pointer shrink-0">
-                  <span className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none">i</span>
-                  How to find
-                </button>
-              </div>
+              <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Storage capacity?</h2>
+              <p className="text-[#a0a0a0] text-xs mb-3">
+                Not sure? <button type="button" onClick={() => setHelpTopic("storage")} className="text-[#00c853] font-semibold hover:underline cursor-pointer">Help me choose</button>
+              </p>
               {stepProgress}
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
@@ -4915,17 +4912,11 @@ export default function Home() {
               Back
             </button>
             {selectionPanelMobile}
-            <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Select Condition</h2>
+            <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Select Condition</h2>
+            <p className="text-[#a0a0a0] text-xs mb-3">
+              Not sure? <button type="button" onClick={() => setConditionHelpId(getConditionsFor(deviceType)[0]?.id || "flawless")} className="text-[#00c853] font-semibold hover:underline cursor-pointer">Help me choose</button>
+            </p>
             {stepProgress}
-            <button className="text-[#00c853] text-xs font-medium mb-4 cursor-pointer hover:underline" onClick={() => { const el = document.getElementById('condition-guide'); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }}>How to assess condition</button>
-            <div id="condition-guide" style={{ display: 'none' }} className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-xs text-[#d4d4d4] space-y-2">
-              <p><strong className="text-white">Brand New:</strong> Sealed in original packaging, never opened</p>
-              <p><strong className="text-white">Flawless:</strong> Opened but looks brand new — zero scratches, scuffs, or marks</p>
-              <p><strong className="text-white">Very Good:</strong> Minimal signs of use, no scratches visible at arm&apos;s length</p>
-              <p><strong className="text-white">Good:</strong> Light scratches on screen or body, fully functional</p>
-              <p><strong className="text-white">Fair:</strong> Noticeable wear — scuffs, dents, or cosmetic damage</p>
-              <p><strong className="text-white">Broken:</strong> Cracked screen, water damage, or not fully functional</p>
-            </div>
             <div className="tcc-selection-frame">
             <div className="space-y-2">
               {getConditionsFor(deviceType).map((c) => (
@@ -5016,7 +5007,10 @@ export default function Home() {
               Back
             </button>
             {selectionPanelMobile}
-            <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Carrier status?</h2>
+            <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Carrier status?</h2>
+            <p className="text-[#a0a0a0] text-xs mb-3">
+              Not sure? <button type="button" onClick={() => setHelpTopic("carrier")} className="text-[#00c853] font-semibold hover:underline cursor-pointer">Help me choose</button>
+            </p>
             {stepProgress}
             <p className="text-[#dcdcdc] text-sm mb-6">{deviceType === "ipad" ? "Is your iPad unlocked or locked to a carrier?" : "Is your phone unlocked or locked to a carrier?"}</p>
             <div className="tcc-selection-frame">
