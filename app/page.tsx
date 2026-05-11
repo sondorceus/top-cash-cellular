@@ -2470,31 +2470,29 @@ export default function Home() {
   // storage / condition / carrier steps so they can always see what they're
   // selling. Inspired by IWM but with our spin: bordered card, soft green
   // accent border, selected fields go bold-green as they're picked.
-  // Mobile counterpart — full-width horizontal summary card that mirrors
-  // the sidebar but fits in one row. Glassmorphic surface with a soft
-  // green-tinted gradient border so it pops without competing with the
-  // step content. Placed BELOW the step options instead of above so it
-  // doesn't compete with the question 'Storage capacity?' etc. Bigger
-  // thumbnail + larger type for easy reading on a phone.
+  // Mobile counterpart — compact right-aligned chip pinned at the TOP of
+  // each funnel step (right under the Back button), not the bottom.
+  // No 'Storage / Condition / Carrier' labels — just the values, dot-
+  // separated, so it reads as a single quick reference. Keeps the
+  // glass-rim look so it matches the rest of the system.
   const selectionPanelMobile = model && (
-    <div className="lg:hidden mt-6 rounded-2xl bg-gradient-to-br from-[#00c853]/12 via-[#00c853]/3 to-[#00c853]/12 p-[1px]">
-      <div className="rounded-2xl bg-[rgba(15,15,15,0.85)] backdrop-blur-[12px] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-4 flex items-center gap-4">
-        <div className="w-16 h-16 rounded-xl bg-[rgba(45,45,45,0.7)] border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
+    <div className="lg:hidden flex justify-end mb-3">
+      <div className="inline-flex items-center gap-3 rounded-full bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/12 shadow-[inset_1px_1px_0_rgba(255,255,255,0.06),0_6px_18px_rgba(0,0,0,0.5)] pl-1.5 pr-3 py-1.5 max-w-full">
+        <div className="w-9 h-9 rounded-full bg-[rgba(45,45,45,0.7)] border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
           {model.image ? (
-            <img src={model.image} alt={model.label} className="max-w-full max-h-full object-contain" />
+            <img src={model.image} alt="" className="max-w-full max-h-full object-contain" />
           ) : (
-            <span className="text-2xl opacity-50">📱</span>
+            <span className="text-base opacity-50">📱</span>
           )}
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-0.5">Selling</p>
-          <p className="text-white font-extrabold text-base leading-tight truncate">{model.label}</p>
-          <p className="text-[#a0a0a0] text-sm truncate mt-0.5">
-            {[storage?.label, condition?.label, carrier?.label, payout?.label].filter(Boolean).join(" · ") || (step === "storage" ? "Picking storage…" : step === "condition" ? "Picking condition…" : step === "carrier" ? "Picking carrier…" : "")}
+        <div className="min-w-0">
+          <p className="text-white font-extrabold text-[13px] leading-tight truncate">{model.label}</p>
+          <p className="text-[#a0a0a0] text-[11px] truncate leading-tight mt-0.5">
+            {[storage?.label, condition?.label, carrier?.label, payout?.label].filter(Boolean).join(" · ") || "Selecting…"}
           </p>
         </div>
         {(step === "quote" || step === "checkout" || step === "payout" || step === "contact") && (
-          <p className="text-[#00c853] font-extrabold text-xl shrink-0">${quote * quantity}</p>
+          <p className="text-[#00c853] font-extrabold text-base shrink-0 pl-2 border-l border-white/10">${quote * quantity}</p>
         )}
       </div>
     </div>
@@ -4485,10 +4483,13 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
-              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                Back
-              </button>
+              <div className="flex items-center justify-between gap-3 mb-6">
+                <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                  Back
+                </button>
+                {selectionPanelMobile}
+              </div>
               <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Storage capacity?</h2>
               {stepProgress}
               <div className="space-y-2">
@@ -4503,7 +4504,6 @@ export default function Home() {
                   </button>
                 ))}
               </div>
-              {selectionPanelMobile}
               <FairPromise />
               <TrustBadge />
             </div>
@@ -4517,10 +4517,13 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-              Back
-            </button>
+            <div className="flex items-center justify-between gap-3 mb-6">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+            </div>
             <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Select Condition</h2>
             {stepProgress}
             <button className="text-[#00c853] text-xs font-medium mb-4 cursor-pointer hover:underline" onClick={() => { const el = document.getElementById('condition-guide'); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }}>How to assess condition</button>
@@ -4558,7 +4561,6 @@ export default function Home() {
                 </button>
               ))}
             </div>
-            {selectionPanelMobile}
 
             <div className="mt-6 bg-[rgba(20,28,40,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
               <h3 className="text-sm font-extrabold text-[#00c853] uppercase tracking-wider mb-1">Our Promise</h3>
@@ -4612,10 +4614,13 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-              Back
-            </button>
+            <div className="flex items-center justify-between gap-3 mb-6">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+            </div>
             <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Carrier status?</h2>
             {stepProgress}
             <p className="text-[#dcdcdc] text-sm mb-6">Is your phone unlocked or locked to a carrier?</p>
@@ -4633,7 +4638,6 @@ export default function Home() {
                 </button>
               ))}
             </div>
-            {selectionPanelMobile}
             <TrustBadge />
             </div>
           </div>
@@ -4884,10 +4888,13 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-              Back
-            </button>
+            <div className="flex items-center justify-between gap-3 mb-6">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+            </div>
 
             <h2 className="text-2xl font-bold mb-1">Checkout</h2>
 
@@ -4978,7 +4985,6 @@ export default function Home() {
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Options &amp; Terms</h3>
               <p className="text-[#dcdcdc] text-xs">By proceeding, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
             </div>
-            {selectionPanelMobile}
             </div>
           </div>
         </section>
@@ -4990,10 +4996,13 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-              Back
-            </button>
+            <div className="flex items-center justify-between gap-3 mb-6">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+            </div>
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
             <p className="text-[#dcdcdc] text-sm mb-6">Select your preferred payout method</p>
             <div className="grid grid-cols-2 gap-3">
@@ -5008,7 +5017,6 @@ export default function Home() {
                 </button>
               ))}
             </div>
-            {selectionPanelMobile}
             </div>
           </div>
         </section>
@@ -5020,10 +5028,13 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-              Back
-            </button>
+            <div className="flex items-center justify-between gap-3 mb-6">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+            </div>
 
             {returningHint && returningHint.leadCount > 0 && (
               <div className="bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 mb-5 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
@@ -5160,7 +5171,6 @@ export default function Home() {
                 Submit &amp; Get Paid
               </button>
             </form>
-            {selectionPanelMobile}
             </div>
           </div>
         </section>
