@@ -131,7 +131,6 @@ const IPHONE_SERIES = [
     { id: "ip17pm", label: "iPhone 17 Pro Max", base: 825, image: "/devices/iphone-17-pro-max-test.png" },
     { id: "ip17p", label: "iPhone 17 Pro", base: 715, image: "/devices/iphone-17-pro-test.png" },
     { id: "ip17air", label: "iPhone 17 Air", base: 475, image: "/devices/iphone-17-air-test.png" },
-    { id: "ip17plus", label: "iPhone 17 Plus", base: 500, image: "/devices/iphone-17-plus-test.png" },
     { id: "ip17", label: "iPhone 17", base: 455, image: "/devices/iphone-17-test.png" },
     { id: "ip17e", label: "iPhone 17E", base: 190, image: "/iphone17e.png" },
   ]},
@@ -1592,7 +1591,6 @@ const STORAGE_MAP: Record<string, string[]> = {
   ip17pm: ["256", "512", "1tb", "2tb"],
   ip17p: ["256", "512", "1tb"],
   ip17air: ["256", "512", "1tb"],
-  ip17plus: ["256", "512"],
   ip17: ["256", "512"],
   ip17e: ["256"],
   // iPhone 16 series
@@ -2240,7 +2238,7 @@ export default function Home() {
   useEffect(() => {
     const imgs = ["/ipadpro.png", "/ipadair.png", "/ipadmini.png", "/ipadbase.png", "/ipad.png",
       "/iphone17.png", "/iphone16.png", "/iphone15.png", "/iphone14.png", "/iphone13.png", "/iphone12.png", "/iphone11.png",
-      "/iphone17air.png", "/iphone17plus.png", "/iphone17e.png", "/iphone17base.png",
+      "/iphone17air.png", "/iphone17e.png", "/iphone17base.png",
       "/iphone16plus.png", "/iphone16base.png", "/iphone16e.png", "/iphone15base.png",
       "/iphone14base.png", "/iphone14plus.png", "/iphone13base.png", "/iphone12base.png", "/iphone12mini.png", "/iphone11base.png"];
     imgs.forEach(src => { const img = new Image(); img.src = src; });
@@ -4002,7 +4000,7 @@ export default function Home() {
                 <div className="space-y-2">
                   {models.map((m) => {
                     const seriesImg = IPHONE_SERIES.find(s => s.id === selectedSeries);
-                    const imgSrc = (m as { image?: string }).image || ({ip17pm:"/iphone17.png",ip17p:"/iphone17.png",ip17air:"/iphone17air.png",ip17plus:"/iphone17plus.png",ip17:"/iphone17base.png",ip17e:"/iphone17e.png",ip16pm:"/iphone16.png",ip16p:"/iphone16.png",ip16plus:"/iphone16plus.png",ip16:"/iphone16base.png",ip16e:"/iphone16e.png",ip15pm:"/iphone15.png",ip15p:"/iphone15.png",ip15plus:"/iphone15.png",ip15:"/iphone15base.png",ip14pm:"/iphone14.png",ip14p:"/iphone14.png",ip14plus:"/iphone14plus.png",ip14:"/iphone14base.png",ip13pm:"/iphone13.png",ip13p:"/iphone13.png",ip13:"/iphone13base.png",ip12pm:"/iphone12.png",ip12p:"/iphone12.png",ip12:"/iphone12base.png",ip12mini:"/iphone12mini.png",ip11pm:"/iphone11.png",ip11p:"/iphone11.png",ip11:"/iphone11base.png"} as Record<string,string>)[m.id] || (seriesImg as {image?:string})?.image || null;
+                    const imgSrc = (m as { image?: string }).image || ({ip17pm:"/iphone17.png",ip17p:"/iphone17.png",ip17air:"/iphone17air.png",ip17:"/iphone17base.png",ip17e:"/iphone17e.png",ip16pm:"/iphone16.png",ip16p:"/iphone16.png",ip16plus:"/iphone16plus.png",ip16:"/iphone16base.png",ip16e:"/iphone16e.png",ip15pm:"/iphone15.png",ip15p:"/iphone15.png",ip15plus:"/iphone15.png",ip15:"/iphone15base.png",ip14pm:"/iphone14.png",ip14p:"/iphone14.png",ip14plus:"/iphone14plus.png",ip14:"/iphone14base.png",ip13pm:"/iphone13.png",ip13p:"/iphone13.png",ip13:"/iphone13base.png",ip12pm:"/iphone12.png",ip12p:"/iphone12.png",ip12:"/iphone12base.png",ip12mini:"/iphone12mini.png",ip11pm:"/iphone11.png",ip11p:"/iphone11.png",ip11:"/iphone11base.png"} as Record<string,string>)[m.id] || (seriesImg as {image?:string})?.image || null;
                     return (
                     <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       {imgSrc && <img src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
