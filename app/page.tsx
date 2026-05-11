@@ -5,96 +5,154 @@ const BRAND = "Top Cash Cellular";
 const EMAIL = "topcashcellular@gmail.com";
 const EMAIL_HREF = "mailto:topcashcellular@gmail.com";
 
-// Category icons — custom hand-drawn-looking line art for the device grid /
-// mega-menu. Style is monochrome with currentColor stroke so they inherit
-// whatever text color the parent sets. Slight rounded-end-cap line work +
-// one small green accent dot per icon to keep our brand mark in the family.
+// Category icons — bold filled silhouette style inspired by IWM but with our
+// own twist: a chunky body shape in soft white/15 fill, a 2px currentColor
+// outline, and an inset detail (screen, keyboard, etc) plus a bright green
+// brand-mark accent. Looks "stickery" and recognizable at small sizes.
 type CatIconId = "phones" | "tablets" | "computers" | "desktops" | "watches" | "consoles" | "drones" | "vr";
 function CategoryIcon({ id, className = "" }: { id: CatIconId; className?: string }) {
   const accent = "#00c853";
   const stroke = "currentColor";
-  const common = { fill: "none", stroke, strokeWidth: 1.6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  const body = { fill: "currentColor", fillOpacity: 0.14, stroke, strokeWidth: 1.9, strokeLinejoin: "round" as const, strokeLinecap: "round" as const };
+  const detail = { fill: "none", stroke, strokeWidth: 1.6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
   switch (id) {
     case "phones":
       return (
         <svg viewBox="0 0 32 32" className={className}>
-          <rect x="9" y="3" width="14" height="26" rx="3" {...common} />
-          <rect x="13" y="5.5" width="6" height="1.4" rx="0.7" fill={stroke} stroke="none" />
-          <line x1="13.5" y1="25.5" x2="18.5" y2="25.5" {...common} strokeWidth={1.8} />
-          <circle cx="24.6" cy="14" r="0.9" fill={accent} stroke="none" />
+          <rect x="9" y="2.5" width="14" height="27" rx="3.2" {...body} />
+          <rect x="11" y="6" width="10" height="17" rx="1.2" {...detail} />
+          <rect x="13" y="4.2" width="6" height="1.2" rx="0.6" fill={stroke} />
+          <line x1="13.5" y1="26" x2="18.5" y2="26" stroke={stroke} strokeWidth={1.9} strokeLinecap="round" />
+          <circle cx="16" cy="14.5" r="2" fill={accent} />
         </svg>
       );
     case "tablets":
       return (
         <svg viewBox="0 0 32 32" className={className}>
-          <rect x="5" y="5" width="22" height="22" rx="2.5" {...common} />
-          <circle cx="16" cy="6.5" r="0.55" fill={stroke} stroke="none" />
-          <line x1="13" y1="25" x2="19" y2="25" {...common} strokeWidth={1.8} />
-          <circle cx="6.5" cy="25.5" r="0.9" fill={accent} stroke="none" />
+          <rect x="4" y="4" width="24" height="24" rx="2.6" {...body} />
+          <rect x="6.5" y="7.5" width="19" height="14.5" rx="1" {...detail} />
+          <circle cx="16" cy="25.5" r="1" {...detail} strokeWidth={1.4} />
+          <rect x="14.5" y="5.4" width="3" height="0.9" rx="0.4" fill={stroke} />
+          <circle cx="9" cy="10.5" r="1.6" fill={accent} />
         </svg>
       );
     case "computers":
       return (
         <svg viewBox="0 0 32 32" className={className}>
-          <path d="M7 7.5 h18 a1.4 1.4 0 0 1 1.4 1.4 v12.6 h-20.8 v-12.6 a1.4 1.4 0 0 1 1.4 -1.4 z" {...common} />
-          <line x1="9" y1="10" x2="23" y2="10" {...common} strokeWidth={0.9} stroke="rgba(255,255,255,0.35)" />
-          <path d="M3 22 h26 l-1.3 2.6 a1.5 1.5 0 0 1 -1.35 0.9 h-20.7 a1.5 1.5 0 0 1 -1.35 -0.9 z" {...common} />
-          <line x1="13" y1="24" x2="19" y2="24" {...common} strokeWidth={1.4} />
-          <circle cx="16" cy="14.7" r="0.9" fill={accent} stroke="none" />
+          <path d="M7 7 h18 a1.4 1.4 0 0 1 1.4 1.4 v12.6 h-20.8 v-12.6 a1.4 1.4 0 0 1 1.4 -1.4 z" {...body} />
+          <rect x="7.6" y="9" width="16.8" height="10.4" rx="0.8" {...detail} />
+          <path d="M2.5 21.5 h27 l-1.4 3 a1.5 1.5 0 0 1 -1.36 0.9 h-21.48 a1.5 1.5 0 0 1 -1.36 -0.9 z" {...body} />
+          <line x1="13" y1="23.5" x2="19" y2="23.5" stroke={stroke} strokeWidth={1.6} strokeLinecap="round" />
+          <circle cx="16" cy="14.2" r="2" fill={accent} />
         </svg>
       );
     case "desktops":
       return (
         <svg viewBox="0 0 32 32" className={className}>
-          <rect x="4" y="5" width="24" height="16" rx="2" {...common} />
-          <line x1="13" y1="25" x2="19" y2="25" {...common} strokeWidth={1.6} />
-          <line x1="16" y1="21" x2="16" y2="25" {...common} strokeWidth={1.6} />
-          <line x1="10" y1="28" x2="22" y2="28" {...common} strokeWidth={1.8} />
-          <circle cx="22.4" cy="9.5" r="0.9" fill={accent} stroke="none" />
+          <rect x="3" y="4" width="26" height="17" rx="2" {...body} />
+          <rect x="5" y="6" width="22" height="13" rx="1" {...detail} />
+          <line x1="13" y1="24.5" x2="19" y2="24.5" stroke={stroke} strokeWidth={1.7} strokeLinecap="round" />
+          <line x1="16" y1="21" x2="16" y2="24.5" stroke={stroke} strokeWidth={1.7} strokeLinecap="round" />
+          <line x1="9" y1="28" x2="23" y2="28" stroke={stroke} strokeWidth={2.2} strokeLinecap="round" />
+          <circle cx="16" cy="12.5" r="2.2" fill={accent} />
         </svg>
       );
     case "watches":
       return (
         <svg viewBox="0 0 32 32" className={className}>
-          <rect x="9" y="9" width="14" height="14" rx="3" {...common} />
-          <path d="M11 9 l1.2 -4 h7.6 l1.2 4" {...common} />
-          <path d="M11 23 l1.2 4 h7.6 l1.2 -4" {...common} />
-          <line x1="24" y1="14" x2="25.5" y2="14" {...common} strokeWidth={2} />
-          <line x1="24" y1="17.5" x2="25" y2="17.5" {...common} strokeWidth={1.6} />
-          <circle cx="16" cy="16" r="0.9" fill={accent} stroke="none" />
+          <rect x="9" y="9" width="14" height="14" rx="3.2" {...body} />
+          <path d="M11.5 9 l1.5 -4.5 h6 l1.5 4.5" {...body} fillOpacity={0.08} />
+          <path d="M11.5 23 l1.5 4.5 h6 l1.5 -4.5" {...body} fillOpacity={0.08} />
+          <rect x="11.5" y="11.5" width="9" height="9" rx="1.4" {...detail} />
+          <line x1="24" y1="14" x2="26" y2="14" stroke={stroke} strokeWidth={2.2} strokeLinecap="round" />
+          <line x1="24" y1="17.5" x2="25.5" y2="17.5" stroke={stroke} strokeWidth={1.6} strokeLinecap="round" />
+          <circle cx="16" cy="16" r="2" fill={accent} />
         </svg>
       );
     case "consoles":
       return (
         <svg viewBox="0 0 32 32" className={className}>
-          <path d="M9 11 h14 a4 4 0 0 1 4 4 v3 a4 4 0 0 1 -4 4 c-2 0 -2.5 -1.2 -3.5 -2.2 h-7 c-1 1 -1.5 2.2 -3.5 2.2 a4 4 0 0 1 -4 -4 v-3 a4 4 0 0 1 4 -4 z" {...common} />
-          <line x1="11" y1="15.5" x2="11" y2="18.5" {...common} strokeWidth={2} />
-          <line x1="9.5" y1="17" x2="12.5" y2="17" {...common} strokeWidth={2} />
-          <circle cx="20.5" cy="15.5" r="0.9" fill={accent} stroke="none" />
-          <circle cx="22.5" cy="18" r="0.9" fill={stroke} stroke="none" />
+          <path d="M9 10.5 h14 a5 5 0 0 1 5 5 v3.5 a4 4 0 0 1 -4 4 c-2.4 0 -3 -1.6 -4 -2.7 h-8 c-1 1.1 -1.6 2.7 -4 2.7 a4 4 0 0 1 -4 -4 v-3.5 a5 5 0 0 1 5 -5 z" {...body} />
+          <line x1="11" y1="15.2" x2="11" y2="18.8" stroke={stroke} strokeWidth={2.2} strokeLinecap="round" />
+          <line x1="9.2" y1="17" x2="12.8" y2="17" stroke={stroke} strokeWidth={2.2} strokeLinecap="round" />
+          <circle cx="20.5" cy="15.4" r="1.3" fill={accent} />
+          <circle cx="23" cy="17.8" r="1.2" fill={stroke} />
+          <circle cx="20.5" cy="20" r="1.2" fill={stroke} fillOpacity={0.6} />
+          <circle cx="18" cy="17.8" r="1.2" fill={stroke} fillOpacity={0.6} />
         </svg>
       );
     case "drones":
       return (
         <svg viewBox="0 0 32 32" className={className}>
-          <rect x="12" y="12" width="8" height="8" rx="1.4" {...common} />
-          <circle cx="7" cy="7" r="3.2" {...common} />
-          <circle cx="25" cy="7" r="3.2" {...common} />
-          <circle cx="7" cy="25" r="3.2" {...common} />
-          <circle cx="25" cy="25" r="3.2" {...common} />
-          <line x1="9.3" y1="9.3" x2="12.5" y2="12.5" {...common} />
-          <line x1="22.7" y1="9.3" x2="19.5" y2="12.5" {...common} />
-          <line x1="9.3" y1="22.7" x2="12.5" y2="19.5" {...common} />
-          <line x1="22.7" y1="22.7" x2="19.5" y2="19.5" {...common} />
-          <circle cx="16" cy="16" r="0.9" fill={accent} stroke="none" />
+          <line x1="9" y1="9" x2="13" y2="13" stroke={stroke} strokeWidth={2.4} strokeLinecap="round" />
+          <line x1="23" y1="9" x2="19" y2="13" stroke={stroke} strokeWidth={2.4} strokeLinecap="round" />
+          <line x1="9" y1="23" x2="13" y2="19" stroke={stroke} strokeWidth={2.4} strokeLinecap="round" />
+          <line x1="23" y1="23" x2="19" y2="19" stroke={stroke} strokeWidth={2.4} strokeLinecap="round" />
+          <circle cx="7" cy="7" r="3.4" {...body} />
+          <circle cx="25" cy="7" r="3.4" {...body} />
+          <circle cx="7" cy="25" r="3.4" {...body} />
+          <circle cx="25" cy="25" r="3.4" {...body} />
+          <rect x="12" y="12" width="8" height="8" rx="1.6" {...body} fillOpacity={0.22} />
+          <circle cx="16" cy="16" r="1.8" fill={accent} />
         </svg>
       );
     case "vr":
       return (
         <svg viewBox="0 0 32 32" className={className}>
-          <path d="M5 11 h22 a2 2 0 0 1 2 2 v6 a2 2 0 0 1 -2 2 h-5 c-1 0 -1.4 -0.5 -2 -1.4 l-1.2 -1.8 a2 2 0 0 0 -3.6 0 l-1.2 1.8 c-0.6 0.9 -1 1.4 -2 1.4 h-5 a2 2 0 0 1 -2 -2 v-6 a2 2 0 0 1 2 -2 z" {...common} />
-          <circle cx="11" cy="15.5" r="1.6" fill={accent} stroke="none" opacity="0.85" />
-          <circle cx="21" cy="15.5" r="1.6" fill={stroke} stroke="none" opacity="0.4" />
+          <path d="M5 10 h22 a2.2 2.2 0 0 1 2.2 2.2 v7.2 a2.2 2.2 0 0 1 -2.2 2.2 h-5 c-1.1 0 -1.6 -0.5 -2.2 -1.5 l-1.3 -2.1 a2.2 2.2 0 0 0 -3.9 0 l-1.3 2.1 c-0.6 1 -1.1 1.5 -2.2 1.5 h-5 a2.2 2.2 0 0 1 -2.2 -2.2 v-7.2 a2.2 2.2 0 0 1 2.2 -2.2 z" {...body} />
+          <ellipse cx="11" cy="15.5" rx="2.6" ry="2.2" fill={accent} />
+          <ellipse cx="21" cy="15.5" rx="2.6" ry="2.2" fill={stroke} fillOpacity={0.55} />
+        </svg>
+      );
+  }
+}
+
+// Carrier icons — custom brand-evocative marks (not trademarked logos) for
+// the carrier selection step. Each carrier gets a distinctive shape + the
+// carrier's signature brand color so it reads instantly without infringing.
+type CarrierIconId = "unlocked" | "att" | "tmobile" | "verizon" | "other";
+function CarrierIcon({ id, className = "" }: { id: CarrierIconId; className?: string }) {
+  switch (id) {
+    case "att":
+      return (
+        <svg viewBox="0 0 32 32" className={className}>
+          <circle cx="16" cy="16" r="13" fill="#00a8e0" />
+          <path d="M16 5 a11 11 0 0 1 0 22 a11 11 0 0 1 0 -22 z M7 11 q9 -3 18 0 M5 16 q11 -4 22 0 M7 21 q9 3 18 0" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      );
+    case "tmobile":
+      return (
+        <svg viewBox="0 0 32 32" className={className}>
+          <rect x="3" y="3" width="26" height="26" rx="6" fill="#e20074" />
+          <path d="M9 12 h14 v3 h-5.5 v8 h-3 v-8 h-5.5 z" fill="#fff" />
+        </svg>
+      );
+    case "verizon":
+      return (
+        <svg viewBox="0 0 32 32" className={className}>
+          <rect x="3" y="3" width="26" height="26" rx="6" fill="#0a0a0a" stroke="#cd040b" strokeWidth="2" />
+          <path d="M8 11 l5.5 11 h2.5 l5.5 -11 h-3 l-3.75 8 l-3.75 -8 z" fill="#fff" />
+          <path d="M20 8.5 l4 4 l-1.4 1.4 l-2.6 -2.6 z" fill="#cd040b" />
+        </svg>
+      );
+    case "unlocked":
+      return (
+        <svg viewBox="0 0 32 32" className={className}>
+          <rect x="3" y="3" width="26" height="26" rx="6" fill="#00c853" fillOpacity="0.15" stroke="#00c853" strokeWidth="1.8" />
+          <path d="M11 16 v-3 a5 5 0 0 1 9 -3" fill="none" stroke="#00c853" strokeWidth="2.2" strokeLinecap="round" />
+          <rect x="9" y="16" width="14" height="9" rx="1.6" fill="#00c853" />
+          <circle cx="16" cy="20" r="1.4" fill="#0a0a0a" />
+          <line x1="16" y1="20.6" x2="16" y2="23" stroke="#0a0a0a" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      );
+    case "other":
+      return (
+        <svg viewBox="0 0 32 32" className={className}>
+          <rect x="3" y="3" width="26" height="26" rx="6" fill="currentColor" fillOpacity="0.08" stroke="currentColor" strokeWidth="1.6" />
+          <path d="M11 16 v-3 a5 5 0 0 1 10 0 v3" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+          <rect x="9" y="16" width="14" height="9" rx="1.6" fill="currentColor" fillOpacity="0.7" stroke="currentColor" strokeWidth="1.6" />
+          <circle cx="16" cy="20" r="1.4" fill="#0a0a0a" />
+          <line x1="16" y1="20.6" x2="16" y2="23" stroke="#0a0a0a" strokeWidth="1.6" strokeLinecap="round" />
         </svg>
       );
   }
@@ -4415,7 +4473,7 @@ export default function Home() {
                   onClick={() => { setCarrier(c); setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote"); }}
                   className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press"
                 >
-                  <span className="text-xl">{c.icon}</span>
+                  <CarrierIcon id={c.id as CarrierIconId} className="w-9 h-9 shrink-0" />
                   <p className="font-semibold text-[15px] flex-1">{c.label}</p>
                   {c.id === "unlocked" && <span className="text-[#00c853] text-xs font-medium">Best value</span>}
                 </button>
