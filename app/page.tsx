@@ -5249,8 +5249,13 @@ export default function Home() {
               </span>
             </div>
 
-            <div className="flex gap-3">
-              <button onClick={handleBack} className="flex-1 bg-white/10 text-white py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-white/15 transition tap-press">
+            {/* Back / Add to Cart row — kept inline on desktop, pinned to
+                the bottom of the viewport on mobile so the primary CTA is
+                always visible while the user scrolls the rest of the
+                quote details. The Add to Cart button uses tcc-button-primary
+                for the brand-green gradient + glow. */}
+            <div className="lg:static fixed bottom-0 left-0 right-0 z-30 lg:z-auto lg:bg-transparent bg-[rgba(10,10,10,0.95)] lg:backdrop-blur-0 backdrop-blur-md lg:border-t-0 border-t border-white/10 lg:p-0 p-4 lg:rounded-none flex gap-3">
+              <button onClick={handleBack} className="flex-1 bg-white/10 text-white py-5 rounded-2xl text-base lg:text-lg font-extrabold cursor-pointer hover:bg-white/15 transition tap-press">
                 Back
               </button>
               <button
@@ -5271,11 +5276,14 @@ export default function Home() {
                   // of being forced straight into the login form.
                   setCartOpen(true);
                 }}
-                className="flex-[2] bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press"
+                className="tcc-button-primary flex-[2] py-5 text-base lg:text-lg font-extrabold"
               >
-                Add to Cart
+                Add to Cart →
               </button>
             </div>
+            {/* Spacer so the sticky CTA row on mobile doesn't sit on top of
+                the trust strip below. Disabled on lg+ where the row is inline. */}
+            <div className="lg:hidden h-24" />
 
             <div className="mt-6 space-y-3 text-left">
               <div className="flex items-center gap-3"><span className="text-lg">💰</span><span className="text-sm text-[#e5e5e5]">No selling fees</span></div>
@@ -6235,12 +6243,7 @@ export default function Home() {
                           </div>
                           <button onClick={() => setCartItems(prev => prev.filter((_, idx) => idx !== i))} aria-label="Remove from cart" className="text-[#b8b8b8] hover:text-red-400 text-xs font-bold underline-offset-2 hover:underline transition cursor-pointer shrink-0">Remove</button>
                         </div>
-                        <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t border-white/10">
-                          <div className="inline-flex items-center gap-2 bg-white/5 rounded-full px-1 py-1">
-                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it))} className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm font-bold flex items-center justify-center cursor-pointer transition">−</button>
-                            <span className="text-white text-sm font-extrabold min-w-[20px] text-center">{item.quantity}</span>
-                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it))} className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm font-bold flex items-center justify-center cursor-pointer transition">+</button>
-                          </div>
+                        <div className="flex items-center justify-end gap-3 mt-3 pt-3 border-t border-white/10">
                           <p className="text-[#00c853] font-extrabold text-xl" style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price * item.quantity}</p>
                         </div>
                       </div>
