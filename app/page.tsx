@@ -1872,8 +1872,8 @@ const CARRIERS = [
 // because they include the LTE/5G modem + GPS chip. Multiplier applies
 // only on the iPad flow.
 const CONNECTIVITY = [
-  { id: "wifi", label: "Wi-Fi Only", desc: "Internet only when you're on Wi-Fi", multiplier: 1.0, icon: "📶" },
-  { id: "cellular", label: "Wi-Fi + Cellular", desc: "Adds 4G LTE / 5G + true GPS", multiplier: 1.15, icon: "📡" },
+  { id: "wifi", label: "Wi-Fi Only", desc: "Internet only when you're on Wi-Fi", multiplier: 1.0 },
+  { id: "cellular", label: "Wi-Fi + Cellular", desc: "Adds 4G LTE / 5G + true GPS", multiplier: 1.15 },
 ];
 
 // Top multipliers — used by `getMaxPrice` to render the true ceiling
@@ -4811,18 +4811,16 @@ export default function Home() {
                     <button
                       key={c.id}
                       onClick={() => { setConnectivity(c); setStep("storage"); pushHistory("storage"); }}
-                      className="tcc-card w-full flex items-center justify-between gap-4 px-5 py-4 rounded-2xl cursor-pointer text-left"
+                      className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <span className="text-2xl shrink-0">{c.icon}</span>
-                        <div className="min-w-0">
-                          <p className="font-extrabold text-[16px] text-white leading-tight">{c.label}</p>
-                          <p className="text-[#b0b0b0] text-[12px] leading-snug mt-0.5">{c.desc}</p>
-                        </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-extrabold text-[15px] text-white leading-tight">{c.label}</p>
+                        <p className="text-[#b0b0b0] text-[12px] leading-snug mt-0.5">{c.desc}</p>
                       </div>
                       {c.id === "cellular" && (
-                        <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-full shrink-0">Worth more</span>
+                        <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-full shrink-0">Worth more</span>
                       )}
+                      <svg className="w-4 h-4 text-[#dcdcdc] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                     </button>
                   ))}
                 </div>
