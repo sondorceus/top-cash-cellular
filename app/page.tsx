@@ -2715,19 +2715,21 @@ export default function Home() {
           </div>
         </div>
       )}
-      <div className="lg:hidden mb-4 rounded-2xl bg-[rgba(15,15,15,0.78)] backdrop-blur-[12px] border border-white/15 p-4 shadow-[inset_1px_1px_0_rgba(255,255,255,0.1),0_18px_45px_rgba(0,0,0,0.75),0_0_0_1px_rgba(0,200,83,0.08)]">
-        {/* TOP — device thumb + 'Sell Your X' header */}
-        <div className="flex items-center gap-4">
-          <div className="w-20 h-20 rounded-xl bg-[rgba(15,15,15,0.5)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden shadow-[inset_1px_1px_0_rgba(255,255,255,0.08),0_4px_10px_rgba(0,0,0,0.45)]">
+      <div className="lg:hidden mb-3 rounded-2xl bg-[rgba(15,15,15,0.78)] backdrop-blur-[12px] border border-white/15 p-3 shadow-[inset_1px_1px_0_rgba(255,255,255,0.1),0_18px_45px_rgba(0,0,0,0.75),0_0_0_1px_rgba(0,200,83,0.08)]">
+        {/* TOP — compact device thumb + model name (no 'Sell Your' label
+            on mobile — selections are already implied by the breadcrumbs
+            and the current funnel step, so we keep this hero tight to
+            leave room for the actual step content below) */}
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-lg bg-[rgba(15,15,15,0.5)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden shadow-[inset_1px_1px_0_rgba(255,255,255,0.08),0_4px_10px_rgba(0,0,0,0.45)]">
             {model.image ? (
-              <img src={model.image} alt="" className="max-w-full max-h-full object-contain" style={{ filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.5))" }} />
+              <img src={model.image} alt="" className="max-w-full max-h-full object-contain" style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.5))" }} />
             ) : (
-              <span className="text-3xl opacity-50">📱</span>
+              <span className="text-xl opacity-50">📱</span>
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[#b8b8b8] text-xs font-medium">Sell Your</p>
-            <p className="text-white font-extrabold text-xl leading-tight mt-0.5">{model.label}</p>
+            <p className="text-white font-extrabold text-[15px] leading-tight truncate">{model.label}</p>
           </div>
         </div>
         {/* ROWS — only render rows that have a value. Box grows as more
@@ -2735,49 +2737,49 @@ export default function Home() {
             jumps back to that step so the user can change a pick without
             resetting the flow. */}
         {(storage || condition || carrier || carrierLock || connectivity) && (
-          <div className="divide-y divide-white/10 border-t border-white/10 mt-4">
+          <div className="divide-y divide-white/10 border-t border-white/10 mt-3">
             {condition && (
-              <div className="flex items-center justify-between py-3">
-                <span className="text-[#b8b8b8] text-sm">Condition</span>
-                <button onClick={editRow("condition")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+              <div className="flex items-center justify-between py-1.5">
+                <span className="text-[#b8b8b8] text-xs">Condition</span>
+                <button onClick={editRow("condition")} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
                   {condition.label}
-                  <svg className="w-3.5 h-3.5 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                  <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                 </button>
               </div>
             )}
             {connectivity && (
-              <div className="flex items-center justify-between py-3">
-                <span className="text-[#b8b8b8] text-sm">Connectivity</span>
-                <button onClick={editRow("connectivity")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+              <div className="flex items-center justify-between py-1.5">
+                <span className="text-[#b8b8b8] text-xs">Connectivity</span>
+                <button onClick={editRow("connectivity")} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
                   {connectivity.label}
-                  <svg className="w-3.5 h-3.5 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                  <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                 </button>
               </div>
             )}
             {storage && (
-              <div className="flex items-center justify-between py-3">
-                <span className="text-[#b8b8b8] text-sm">Storage Size</span>
-                <button onClick={editRow("storage")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+              <div className="flex items-center justify-between py-1.5">
+                <span className="text-[#b8b8b8] text-xs">Storage</span>
+                <button onClick={editRow("storage")} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
                   {storage.label}
-                  <svg className="w-3.5 h-3.5 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                  <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                 </button>
               </div>
             )}
             {carrier && (
-              <div className="flex items-center justify-between py-3">
-                <span className="text-[#b8b8b8] text-sm">Carrier</span>
-                <button onClick={editRow("carrier")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+              <div className="flex items-center justify-between py-1.5">
+                <span className="text-[#b8b8b8] text-xs">Carrier</span>
+                <button onClick={editRow("carrier")} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
                   {carrier.label}
-                  <svg className="w-3.5 h-3.5 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                  <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                 </button>
               </div>
             )}
             {carrierLock && (
-              <div className="flex items-center justify-between py-3">
-                <span className="text-[#b8b8b8] text-sm">Carrier Lock</span>
-                <button onClick={editRow("carrier-lock")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+              <div className="flex items-center justify-between py-1.5">
+                <span className="text-[#b8b8b8] text-xs">Carrier Lock</span>
+                <button onClick={editRow("carrier-lock")} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
                   {carrierLock.label}
-                  <svg className="w-3.5 h-3.5 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                  <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                 </button>
               </div>
             )}
@@ -5290,14 +5292,14 @@ export default function Home() {
               Back
             </button>
             {selectionPanelMobile}
-            <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Carrier status?</h2>
-            <p className="text-[#b8b8b8] text-xs mb-3">
+            <h2 className="text-xl lg:text-3xl font-extrabold mb-1">Carrier status?</h2>
+            <p className="text-[#b8b8b8] text-xs mb-2">
               Not sure? <button type="button" onClick={() => setHelpTopic("carrier")} className="text-[#00c853] font-semibold hover:underline cursor-pointer">Help me choose</button>
             </p>
             {stepProgress}
-            <p className="text-[#e6e6e6] text-sm mb-6">{deviceType === "ipad" ? "Is your iPad unlocked or locked to a carrier?" : "Is your phone unlocked or locked to a carrier?"}</p>
+            <p className="text-[#e6e6e6] text-xs lg:text-sm mb-3">{deviceType === "ipad" ? "Is your iPad unlocked or locked to a carrier?" : "Is your phone unlocked or locked to a carrier?"}</p>
             <div className="tcc-selection-frame">
-              <div className="space-y-2">
+              <div className="space-y-1.5 lg:space-y-2">
                 {CARRIERS.map((c) => (
                   <button
                     key={c.id}
@@ -5316,9 +5318,9 @@ export default function Home() {
                         setStep("quote"); pushHistory("quote");
                       }
                     }}
-                    className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                    className="tcc-card group w-full flex items-center gap-3 px-4 py-2.5 lg:py-3 rounded-xl cursor-pointer text-left"
                   >
-                    <p className="font-extrabold text-[15px] text-white flex-1 leading-tight">{c.label}</p>
+                    <p className="font-extrabold text-[14px] lg:text-[15px] text-white flex-1 leading-tight">{c.label}</p>
                     <svg className="w-4 h-4 text-[#e6e6e6] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                   </button>
                 ))}
