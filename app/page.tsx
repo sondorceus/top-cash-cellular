@@ -2042,6 +2042,26 @@ export default function Home() {
   const [page, setPage] = useState<"home" | "about" | "privacy" | "terms">("home");
   const [model, setModel] = useState<{ id: string; label: string; base: number; image?: string } | null>(null);
   const [helpTopic, setHelpTopic] = useState<"storage" | "carrier" | null>(null);
+
+  // Funnel progress indicator data — mapped from current step to (n / total).
+  // Phones go through carrier (4 steps), other devices skip it (3 steps).
+  const isPhoneFlow = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
+  const funnelTotal = isPhoneFlow ? 4 : 3;
+  const funnelStepNum =
+    step === "storage" ? 1 :
+    step === "condition" ? 2 :
+    step === "carrier" ? 3 :
+    step === "quote" ? (isPhoneFlow ? 4 : 3) : 0;
+  const stepProgress = funnelStepNum > 0 && (
+    <div className="mb-4">
+      <div className="flex items-center gap-3 mb-1.5">
+        <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Step {funnelStepNum} of {funnelTotal}</span>
+        <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden max-w-[180px]">
+          <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${(funnelStepNum / funnelTotal) * 100}%` }} />
+        </div>
+      </div>
+    </div>
+  );
   const [storage, setStorage] = useState<typeof ALL_STORAGES[0] | null>(null);
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
@@ -2480,8 +2500,8 @@ export default function Home() {
 
   const selectionPanel = model && (
     <aside className="hidden lg:block lg:w-[300px] shrink-0">
-      <div className="sticky top-24 bg-[rgba(45,45,45,0.6)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-        <div className="bg-[rgba(45,45,45,0.6)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-4 mb-4 aspect-square flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+      <div className="sticky top-24 bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+        <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-4 mb-4 aspect-square flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
           {model.image ? (
             <img src={model.image} alt={model.label} className="max-w-full max-h-full object-contain" />
           ) : (
@@ -2496,15 +2516,15 @@ export default function Home() {
             { label: "Condition", value: condition?.label,  active: step === "condition", helpId: null       as null   },
             { label: "Carrier",   value: carrier?.label,    active: step === "carrier",   helpId: "carrier"  as const },
           ].map(row => (
-            <div key={row.label} className={`text-sm rounded-lg px-3 py-2 transition-all duration-[250ms] ease-out ${row.active ? "bg-[#00c853]/12 border border-[#00c853]" : row.value ? "bg-[rgba(45,45,45,0.6)] border border-white/10" : "border border-transparent"}`}>
-              <div className="flex items-center justify-between">
-                <span className={`font-bold inline-flex items-center gap-1.5 ${row.active ? "text-[#00c853]" : "text-[#b0b0b0]"}`}>
+            <div key={row.label} className={`rounded-lg px-3 py-2.5 transition-all duration-[250ms] ease-out ${row.active ? "bg-[#00c853]/12 border border-[#00c853]" : row.value ? "bg-[rgba(15,15,15,0.5)] border border-white/10" : "border border-transparent"}`}>
+              <div className="flex items-center justify-between gap-2">
+                <span className={`text-[11px] font-medium uppercase tracking-wider inline-flex items-center gap-1.5 ${row.active ? "text-[#00c853]" : "text-[#a0a0a0]"}`}>
                   {row.label}
                   {row.helpId && (
                     <button type="button" onClick={() => setHelpTopic(helpTopic === row.helpId ? null : row.helpId)} aria-label={`How to find ${row.label}`} className="w-4 h-4 rounded-full bg-white/10 hover:bg-[#00c853] hover:text-[#0a0a0a] flex items-center justify-center text-[10px] font-bold leading-none cursor-pointer transition">i</button>
                   )}
                 </span>
-                <span className={`text-right font-bold ${row.value ? (row.active ? "text-[#00c853]" : "text-white") : "text-[#b0b0b0]"}`}>
+                <span className={`text-right text-[15px] font-extrabold ${row.value ? (row.active ? "text-[#00c853]" : "text-white") : "text-[#888]"}`}>
                   {row.value || (row.active ? "Selecting…" : "—")}
                 </span>
               </div>
@@ -4453,7 +4473,8 @@ export default function Home() {
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                 Back
               </button>
-              <h2 className="text-2xl font-bold mb-1">Storage capacity?</h2>
+              <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Storage capacity?</h2>
+              {stepProgress}
               <div className="space-y-2">
                 {getStoragesForModel(model.id).map((s) => (
                   <button
@@ -4484,7 +4505,8 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            <h2 className="text-2xl font-bold mb-1">Select Condition</h2>
+            <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Select Condition</h2>
+            {stepProgress}
             <button className="text-[#00c853] text-xs font-medium mb-4 cursor-pointer hover:underline" onClick={() => { const el = document.getElementById('condition-guide'); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }}>How to assess condition</button>
             <div id="condition-guide" style={{ display: 'none' }} className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-xs text-[#d4d4d4] space-y-2">
               <p><strong className="text-white">Brand New:</strong> Sealed in original packaging, never opened</p>
@@ -4579,7 +4601,8 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            <h2 className="text-2xl font-bold mb-1">Carrier status?</h2>
+            <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Carrier status?</h2>
+            {stepProgress}
             <p className="text-[#dcdcdc] text-sm mb-6">Is your phone unlocked or locked to a carrier?</p>
             <div className="space-y-2">
               {CARRIERS.map((c) => (
