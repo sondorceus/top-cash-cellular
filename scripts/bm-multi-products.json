@@ -1,0 +1,1984 @@
+{
+  "iphone": [
+    {
+      "name": "iPhone 15 Plus • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-15-plus",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/05142a1a-d99b-428c-8ba6-4b085c329e18-1_91e31bae-b37c-4ee8-8724-df7c2a3cbedb.jpg"
+    },
+    {
+      "name": "iPhone 16 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-16",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e1f677d3-a38e-4a1e-8f3f-efab1fa4b933-1_82c87fb3-6cdc-489e-8d82-edf5e6cfe308.jpg"
+    },
+    {
+      "name": "iPhone 16 Plus • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-16-plus",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/799ae60a-e61e-4ff6-96dd-edd14bf20a37-1_63f96138-c6c7-4a61-b086-0b7113e68da9.jpg"
+    },
+    {
+      "name": "iPhone 15 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-15",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c8fc0d62-5daa-48f0-ba1e-4c41b4612249-1_b831dc7b-9336-4962-a25e-34d8c23e324d.jpg"
+    },
+    {
+      "name": "iPhone 16 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-16-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/884dad19-0db0-4c79-954d-b88e078cec19-1_b5a9b20b-ee5d-4e44-b2a1-f2da6ab0579a.jpg"
+    },
+    {
+      "name": "iPhone 16 Pro Max • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-16-pro-max",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/9b7b992c-fbdc-4a9b-bcb2-058ee3108644-1_547a4d22-f6e4-443c-8795-8d83b903d813.jpg"
+    },
+    {
+      "name": "iPhone 15 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-15-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/245e5764-e159-4527-8c95-2388189fa473-1_5033077a-ab7f-4762-a30d-cda17e6f8657.jpg"
+    },
+    {
+      "name": "iPhone 15 Pro Max • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-15-pro-max",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/de1fc6b3-ee1d-4d89-8db9-e382102a8528-1_bf1331e2-9f77-4f1a-a094-8b258be45b53.jpg"
+    },
+    {
+      "name": "iPhone 16e • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-16e",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/41659c34-8100-4837-8052-6aaffc542055-1_7702a1c0-40eb-4990-bef8-dbf039d5584d.jpg"
+    },
+    {
+      "name": "iPhone 17 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-17",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d881c5dd-b99e-4673-989a-defc19823f31-1_46b7c38f-0add-4350-a2c0-735abf3f8c70.jpg"
+    },
+    {
+      "name": "iPhone 17 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-17-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/180a19b9-e9c0-4a4d-91d5-9f1c402b2dd4-1_cdc1eb18-eda5-4cb4-b71f-d049015bc9d8.jpg"
+    },
+    {
+      "name": "iPhone 17 Pro Max • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-17-pro-max",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/8dd4ae90-6b57-4a54-9623-fda1849e88ac-1_d836b456-9eac-4ff3-9b5b-2c9d2a37bcc3.jpg"
+    },
+    {
+      "name": "iPhone 14 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-14",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/76c5d05a-79cc-42ed-91e4-7d35c710a85b-1_e7a95469-3f34-4b9b-8b1f-28dfe4c1ce4c.jpg"
+    },
+    {
+      "name": "iPhone 13 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-13",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/fb844a75-3143-49ea-aced-7f426a9bd57f-1_cdcc8fe9-5600-4bb8-a751-e1d1eb0bd97b.jpg"
+    },
+    {
+      "name": "iPhone 14 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-14-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/18374fe3-57fc-4aa8-8377-821b255d6349-1_bbea4e73-1ef0-4ded-8c7c-c71d124a082d.jpg"
+    },
+    {
+      "name": "iPhone 13 mini • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-13-mini",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e38f7949-8aaf-4e5e-9041-e2c5392c4bc3-1_c317c0ee-4607-4a72-8203-bf76b74136d5.jpg"
+    },
+    {
+      "name": "iPhone 14 Plus • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-14-plus",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/fe0c1c7a-84af-4f95-a17b-e172f4a26fd6-1_399511f5-3007-4fa3-b505-cbb6e24ecea9.jpg"
+    },
+    {
+      "name": "iPhone 14 Pro Max • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-14-pro-max",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d384e509-3376-4405-995a-06dab8996a39-1_1e5bdda1-962b-48df-b2c3-978a4764b511.jpg"
+    },
+    {
+      "name": "iPhone 13 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-13-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/2ac2a826-ea5d-48fb-89c1-e0c7c12462b7-1_6dc26ba7-5609-4b49-9cb0-349d9b3160be.jpg"
+    },
+    {
+      "name": "iPhone 13 Pro Max • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-13-pro-max",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/117f5832-7269-4982-8b6b-2143442dfeba-1_c08ecd05-4bbd-4d62-8ea2-8783aaa6f434.jpg"
+    },
+    {
+      "name": "iPhone 12 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/233eb774-20da-4381-8392-04d3e945b9da-1_e5b3beae-eccd-47f7-be64-1ea2767c89e8.jpg"
+    },
+    {
+      "name": "iPhone SE (2022) • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-se-2022",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/862f8c1b-4826-44f4-8805-e50136af893e-1_e51cc142-dca3-474f-90a8-5698e683ea6c.jpg"
+    },
+    {
+      "name": "iPhone 11 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b5303639-e51f-47e0-b766-a42fc9e794e8-1_67e194dc-77c2-4ef6-8348-45b532b2a004.jpg"
+    },
+    {
+      "name": "iPhone 12 mini • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-12-mini",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/60012175-0180-4341-8f6e-1af9f8cdf523-1_b56e7022-faf5-4a49-9579-3782433d984e.jpg"
+    },
+    {
+      "name": "iPhone SE (2020) • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-se-2020",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/aa9551de-d3f1-4037-a2d4-5fc1893b2301-1_77178ac9-53fa-4245-861f-27da06c88f34.jpg"
+    },
+    {
+      "name": "iPhone XR • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-xr",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/bc0a29f6-2e77-4e45-b731-2c42d2246ae6-1_c21f1b43-9520-4645-beed-d4faadf9ed35.jpg"
+    },
+    {
+      "name": "iPhone 12 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-12-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e19e0bad-531b-4bcc-af24-d6a066359f76-1_ba1bca26-fc42-47be-b8b7-36e83cbd7cf7.jpg"
+    },
+    {
+      "name": "iPhone 12 Pro Max • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-12-pro-max",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/90846aff-b4d1-494f-b174-12b5752d70ea-1_376bc85a-56f2-4ff1-82c9-fbcd7a19dc3a.jpg"
+    },
+    {
+      "name": "iPhone 6s • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-6s",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/70050177-6391-4ee3-814b-166fcb63e13b-1_6ac45284-cc09-4a72-9982-1b74700730a8.jpg"
+    },
+    {
+      "name": "iPhone 11 Pro Max • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-11-pro-max",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/70135bb2-cdc4-4ef4-9de4-4afc58f16860-1_1eb31fbf-e26a-4809-bd6d-33d21ecddc28.jpg"
+    },
+    {
+      "name": "iPhone 7 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-7",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f49c257d-c882-4c56-86e8-7af11d32f9b0-1_385a2867-cbe9-49fe-8552-d66e9f98f144.jpg"
+    },
+    {
+      "name": "iPhone 14 Pro Max • UnlockedExcellent • Space Black • 1000 GB • eSIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-14-pro-max-1024-gb-space-black-fully-unlocked-gsm-cdma/ad438db5-e8f0-4379-8841-add90c807905?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ad438db5-e8f0-4379-8841-add90c807905-1_5b78730e-4c29-4b93-9e44-24e95fa928d3.jpg"
+    },
+    {
+      "name": "iPhone SE (2020) • UnlockedFair • Red • 128 GB • Physical SIM + eSIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-se-2020-128-gb-productred-unlocked/d916deac-18c7-4d86-84e7-ea07b6a8aff7?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d916deac-18c7-4d86-84e7-ea07b6a8aff7-1_29d76da5-1a93-4034-b1f8-4f6a8de51ced.jpg"
+    },
+    {
+      "name": "iPhone 8 Plus • UnlockedFair • Gold • 64 GB • Physical SIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-8-plus-64-gb-gold-unlocked/8941566c-408f-490f-9d5a-171adde3bb0c?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/8941566c-408f-490f-9d5a-171adde3bb0c-1_defbd358-186e-43d3-a5a3-5e3f0ace0a78.jpg"
+    },
+    {
+      "name": "iPhone XR • Locked AT&TExcellent • Black • 64 GB • Physical SIM + eSIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-xr-64-gb-black-att/d9abc3df-c2ed-4cba-bdf5-543930be9ce2?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d9abc3df-c2ed-4cba-bdf5-543930be9ce2-1_54c02a3e-90fb-4ca3-aef7-310f53c678c0.jpg"
+    },
+    {
+      "name": "iPhone 8 Plus • UnlockedExcellent • Gold • 256 GB • Physical SIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-8-plus-256-gb-gold-unlocked/cf1e9f56-6aa9-45b2-9b5d-6c68af93905b?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/cf1e9f56-6aa9-45b2-9b5d-6c68af93905b-1_4b62b161-1f3c-4413-8048-9762c7b763b4.jpg"
+    },
+    {
+      "name": "iPhone XS • UnlockedExcellent • Space Gray • 256 GB • Physical SIM + eSIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-xs-256-gb-space-gray-unlocked/0f0163bb-0dc7-4e16-bd83-b863bb3a8a5f?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0f0163bb-0dc7-4e16-bd83-b863bb3a8a5f-1_0e2f97b7-de64-40d5-98bb-47ea239b43a6.jpg"
+    },
+    {
+      "name": "iPhone 16 • Locked AT&TFair • Black • 128 GB • eSIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-16-128-gb-black-att/7ce9d61b-5b6f-4488-87ab-67a2c369f801?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7ce9d61b-5b6f-4488-87ab-67a2c369f801-1_29869a7a-a0c6-4c58-a066-e5138e979a8e.jpg"
+    },
+    {
+      "name": "iPhone 6s • Locked T-MobileFair • Space Gray • 64 GB • Physical SIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-6s-64-gb-space-gray-t-mobile/33fd56a8-c94d-47cd-876b-644be57837e2?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/33fd56a8-c94d-47cd-876b-644be57837e2-1_4b206ec0-24e9-41cf-86ff-08a74d04aac1.jpg"
+    },
+    {
+      "name": "iPhone 7 Plus • Locked AT&TGood • Black • 32 GB • Physical SIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-7-plus-32-gb-black-att/5fdacf0a-95d8-449a-97e1-5aeb848c2eca?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5fdacf0a-95d8-449a-97e1-5aeb848c2eca-1_31c2768f-d6e8-413b-b004-a2431175fa8d.jpg"
+    },
+    {
+      "name": "iPhone SE (2022) • Locked T-MobileGood • Midnight • 128 GB • Physical SIM + eSIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-se-2022-128-gb-starlight-t-mobile/71348890-78c3-40f2-b9f7-8f8e90f93e9e?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/71348890-78c3-40f2-b9f7-8f8e90f93e9e-1_e36e5b33-bac5-4046-acf9-15037b1ebea2.jpg"
+    },
+    {
+      "name": "iPhone 12 • Locked VerizonFair • Black • 64 GB • Physical SIM + eSIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-12-64-gb-black-verizon/31a050e9-5109-4223-b994-09632852e27f?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/31a050e9-5109-4223-b994-09632852e27f-1_a4e4517f-caba-4a7f-b47b-e3d7faeca6b1.jpg"
+    },
+    {
+      "name": "iPhone 8 Plus • UnlockedExcellent • Silver • 256 GB • Physical SIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-8-plus-256-gb-silver-unlocked/b1a0a9e7-f26a-4d48-8009-a19a6486a03f?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b1a0a9e7-f26a-4d48-8009-a19a6486a03f-1_e2a809c7-6797-41aa-bbed-67f314ab6cd5.jpg"
+    },
+    {
+      "name": "iPhone 13 • Locked T-MobileExcellent • Blue • 128 GB • Physical SIM + eSIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-13-128-gb-blue-t-mobile/e0814af9-a07b-4509-887b-8bcd6d9d940a?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e0814af9-a07b-4509-887b-8bcd6d9d940a-1_33882f58-fa47-4534-a524-77af27d4a06e.jpg"
+    },
+    {
+      "name": "iPhone 12 Pro Max • Locked T-MobileFair • Gold • 128 GB • Physical SIM + eSIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-12-pro-max-128-gb-gold-t-mobile/e3f5067e-64bd-409b-ac84-59fcf4f806aa?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e3f5067e-64bd-409b-ac84-59fcf4f806aa-1_a9c53bb6-e09a-4b10-92d5-9329c70b966a.jpg"
+    },
+    {
+      "name": "iPhone 11 Pro Max • UnlockedFair • Silver • 512 GB • Physical SIM + eSIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-11-pro-max-512-gb-silver-unlocked/e3ace91a-2280-462a-9e3b-96e251ee4371?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e3ace91a-2280-462a-9e3b-96e251ee4371-1_3f51ec02-34c5-4278-9a9c-f3979760b5f8.jpg"
+    },
+    {
+      "name": "iPhone 16 • Locked T-MobileExcellent • Black • 128 GB • eSIM",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-16-128-gb-black-t-mobile/cbeb84f5-6403-4d4e-8e61-91a227e43396?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/cbeb84f5-6403-4d4e-8e61-91a227e43396-1_4945b906-bb75-4027-a87a-33b32c8c925c.jpg"
+    }
+  ],
+  "ipad": [
+    {
+      "name": "iPad Air 5 (2022, M1 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-air-2022-m1-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/a111d46c-f63d-4a46-a2ad-d111b02b7a79-1_3466da41-687d-4eca-89d6-a00f098cf59d.jpg"
+    },
+    {
+      "name": "iPad Air 6 (2024, M2 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-air-2024-m2-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4d36d66a-1b74-4b56-995a-29bf91fea67d-1_9edba1a8-057e-4344-9890-90ded271f1e9.jpg"
+    },
+    {
+      "name": "iPad Pro (2022, M2 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-2022-m2-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d097ec04-c146-4d32-8935-958abcfe1b1c-1_273d79cd-8969-4394-a232-6c3adf3850a4.jpg"
+    },
+    {
+      "name": "iPad 10 (2022, A14 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-2022-a14-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/8969b4d5-5f01-440b-8eb0-4ae93ea453bb-1_1f5fa756-4a11-484b-9188-46bb03cef943.jpg"
+    },
+    {
+      "name": "iPad Pro (2024, M4 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-2024-m4-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/96be1166-a4f9-4a5c-9808-cc6db621d179-1_7ba9a284-7d42-4e13-9a96-98d618ec745a.jpg"
+    },
+    {
+      "name": "iPad 9 (2021, A13 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-2021-a13-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/59e7ba38-eb08-4662-8d65-470c01570b36-1_e047cb3f-878a-41d0-9b7f-340ddb3eff83.jpg"
+    },
+    {
+      "name": "iPad mini 7 (2024, A17 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-mini-2024-a17-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4827ba7e-96ac-46fa-b547-ae4f6cac673b-1_0bd1dbcd-578f-4b6f-a6d2-1c13e7f7364e.jpg"
+    },
+    {
+      "name": "iPad Pro (2021, M1 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-2021-m1-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/edbabc69-2e59-42d9-804f-36ae7355a9fd-1_f52e9b96-b10c-4b09-99e9-4a854aff554c.jpg"
+    },
+    {
+      "name": "iPad 11 (2025, A16 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-2025-a16-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/48bcd908-9cf6-4e54-a05d-ccf960565e67-1_b42447a1-4663-4e1f-8b91-c9cf2dcaf31d.jpg"
+    },
+    {
+      "name": "iPad 8 (2020, A12 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-2020-a12-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/49585bdc-8fe2-4761-9422-5df69d37b9f1-1_9d3ae3b8-26cc-4e1b-9b5e-25b1e5a861c0.jpg"
+    },
+    {
+      "name": "iPad Air 4 (2020, A14 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-air-2020-a14-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/954f5c93-224c-48b0-8a6d-6f44811a1733-1_912fe587-c6c4-4658-82ba-d660e9a390f5.jpg"
+    },
+    {
+      "name": "iPad mini 6 (2021, A15 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-mini-2021-a15-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b0cdb4a9-dddd-4937-9f3a-7a421e374026-1_421582f4-20d4-43b9-a75f-62cbb92f786a.jpg"
+    },
+    {
+      "name": "iPad Air 7 (2025, M3 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-air-2025-m3-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/94d6e21f-d797-4222-b21e-be0f0112d8b4-1_f56c4338-f1d2-47a5-8e19-c90ff06a8c31.jpg"
+    },
+    {
+      "name": "iPad Pro (2020, A12 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-2020-a12-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/1d383a71-444a-4e31-9a85-55931aa5d0c8-1_d84e8761-8bcd-4386-9052-d0e23ce80b45.jpg"
+    },
+    {
+      "name": "iPad 6 (2018, A10 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-2018-a10-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/819ab04c-0455-4e12-a120-4fea694b4263-1_bf7c463d-19de-4344-bdc5-0e7c198a230f.jpg"
+    },
+    {
+      "name": "iPad 7 (2019, A10 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-2019-a10-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/dde56f07-d78a-4413-a0a9-9ef7ac945ede-1_52044cc9-7abc-4510-b190-5cceff9ecc5c.jpg"
+    },
+    {
+      "name": "iPad 5 (2017, A9 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-2017-a9-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/93cf294b-5b4b-4da8-bc9a-450dd264db79-1_13651dbc-525b-4227-b570-1312f8c97e3d.jpg"
+    },
+    {
+      "name": "iPad Pro (2017, A10 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-2017-a10-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/979362c9-6148-454e-8ad6-517d05f0c98a-1_7a6f811a-064a-46da-9dce-d6ea3b57ace4.jpg"
+    },
+    {
+      "name": "iPad mini 4 (2015, A8 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-mini-2015-a8-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/88d7b9bd-fbe5-4fd7-8729-4466c1d077be-1_a612b649-4f14-41dc-b0cd-b70677865abf.jpg"
+    },
+    {
+      "name": "iPad mini 5 (2019, A12 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-mini-2019-a12-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/63909290-e167-4823-9557-d2c38c82c31f-1_ce5a9042-fcb9-4a4d-be52-ff6bb728450f.jpg"
+    },
+    {
+      "name": "iPad Air 3 (2019, A12 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-air-2019-a12-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/002cccc7-76f6-452d-8bef-b32458131126-1_701d90a6-70fa-43dd-9002-afbf1a8dc6a6.jpg"
+    },
+    {
+      "name": "iPad Pro (2018, A12 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-2018-a12-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5a3a261b-02e0-4a0b-905a-a92a2e276bf0-1_840f599b-85da-44cd-a9bf-92f5c4aecf0b.jpg"
+    },
+    {
+      "name": "iPad Pro (2016, A9 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-2016-a9-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/475a41ba-d663-4982-adb0-10de88edabb7-1_422bc5ef-83ae-4cb6-b827-8029ff3a150d.jpg"
+    },
+    {
+      "name": "iPad Pro (2015, A9 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-2015-a9-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f41d8395-51d5-4354-a892-4c3826a7c325-1_b5cdbd59-753b-413a-809f-911341b89599.jpg"
+    },
+    {
+      "name": "iPad Pro (2025, M5 series)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-2025-m5-series",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0dcb216e-2571-4ea4-8ec6-13e72bc54655-1_72f04f04-4797-44fd-ae72-b59563daacf8.jpg"
+    },
+    {
+      "name": "iPad Air 8 (2026)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-air-13-inches-2026-7th-gen-128-gb-wi-fi-space-gray/cd9a1583-58dd-486f-b1cc-c4e3917d188c?l=9",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/cd9a1583-58dd-486f-b1cc-c4e3917d188c-1_3e311ecb-5ebd-4066-b236-ed554e07011a.jpg"
+    },
+    {
+      "name": "iPad Pro 6 (2022)",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-129-inches-2022-6th-gen-128-gb-wi-fi-space-gray/8276741c-ecf8-401c-b54a-35bec9d85217?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/8276741c-ecf8-401c-b54a-35bec9d85217-1_71d262a7-1959-4d3e-a7ea-55c5f13a711a.jpg"
+    },
+    {
+      "name": "iPad Air 5 (2022, M1 series)Fair • Blue • 64 GB • Wi-Fi",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-air-5-2022-64gb-blue-wi-fi/a111d46c-f63d-4a46-a2ad-d111b02b7a79?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/a111d46c-f63d-4a46-a2ad-d111b02b7a79-1_3466da41-687d-4eca-89d6-a00f098cf59d.jpg"
+    },
+    {
+      "name": "iPad mini 7 (2024, A17 series)Premium • Space Gray • 128 GB • Wi-Fi",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-mini-2024-128gb-space-gray-wi-fi/4827ba7e-96ac-46fa-b547-ae4f6cac673b?l=9",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4827ba7e-96ac-46fa-b547-ae4f6cac673b-1_0bd1dbcd-578f-4b6f-a6d2-1c13e7f7364e.jpg"
+    },
+    {
+      "name": "iPad Pro (2024, M4 series)Fair • Space Black • 256 GB • Wi-Fi + 5G",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-13-m4-2024-256gb-space-black-wi-fi-5g/8f8e27df-c20a-4670-94e4-766243d9f9bd?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/8f8e27df-c20a-4670-94e4-766243d9f9bd-1_8eaf8ec9-364b-4926-bf05-b790a39f96db.jpg"
+    },
+    {
+      "name": "iPad mini 5 (2019, A12 series)Fair • Gold • 64 GB • Wi-Fi",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-mini-5-march-2019-64gb-gold-wi-fi/689077fd-a989-4acb-b598-92504d0f9a42?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/689077fd-a989-4acb-b598-92504d0f9a42-1_93f40946-4225-4203-abd1-628a2ddf45d1.jpg"
+    },
+    {
+      "name": "iPad Air 5 (2022, M1 series)Fair • Pink • 64 GB • Wi-Fi",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-air-5-2022-64gb-pink-wi-fi/8459f7f9-b06b-4110-9d84-d7ea2b37e4e8?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/8459f7f9-b06b-4110-9d84-d7ea2b37e4e8-1_e1ff5440-c0f3-483b-8f22-46b449fbe39d.jpg"
+    },
+    {
+      "name": "iPad Air 5 (2022, M1 series)Fair • Blue • 64 GB • Wi-Fi + 5G",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-air-5-2022-64gb-blue-wi-fi-gsmcdma-5g/2fcfb7ec-7197-44a2-a3f0-69dd3f3948ab?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/2fcfb7ec-7197-44a2-a3f0-69dd3f3948ab-1_ea043e9d-f807-4752-9d41-6060911a1d25.jpg"
+    },
+    {
+      "name": "iPad 10 (2022, A14 series)Good • Silver • 256 GB • Wi-Fi + 5G",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-109-2022-256gb-silver-wi-fi-gsmcdma-5g/7715cf0e-6822-4c72-8dad-b238e56f51f5?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7715cf0e-6822-4c72-8dad-b238e56f51f5-1_725ab011-4103-4fca-8b8f-420d83c549ed.jpg"
+    },
+    {
+      "name": "iPad 11 (2025, A16 series)Premium • Yellow • 128 GB • Wi-Fi + 5G",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-11-2025-128gb-yellow-wi-fi-5g/419ea2ec-fe1c-470b-9c8b-d740ef543aba?l=9",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/419ea2ec-fe1c-470b-9c8b-d740ef543aba-1_df467fb7-973d-4ec9-ad05-f6cfc3ff6ee4.jpg"
+    },
+    {
+      "name": "iPad Pro (2020, A12 series)Excellent • Space Gray • 128 GB • Wi-Fi",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-11-inch-2nd-gen-march-2020-128gb-space-gray-wi-fi/1d383a71-444a-4e31-9a85-55931aa5d0c8?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/1d383a71-444a-4e31-9a85-55931aa5d0c8-1_d84e8761-8bcd-4386-9052-d0e23ce80b45.jpg"
+    },
+    {
+      "name": "iPad Pro (2021, M1 series)Fair • Space Gray • 256 GB • Wi-Fi",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-11-inch-3rd-gen-april-2021-256gb-space-gray-wi-fi/94a30e05-c724-4413-931e-c2ae5108e6a7?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/94a30e05-c724-4413-931e-c2ae5108e6a7-1_5be7ccd4-0ad9-481e-a8a4-d1a93f068238.jpg"
+    },
+    {
+      "name": "iPad 10 (2022, A14 series)Premium • Silver • 256 GB • Wi-Fi + 5G",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-109-2022-256gb-silver-wi-fi-gsmcdma-5g/7715cf0e-6822-4c72-8dad-b238e56f51f5?l=9",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7715cf0e-6822-4c72-8dad-b238e56f51f5-1_725ab011-4103-4fca-8b8f-420d83c549ed.jpg"
+    },
+    {
+      "name": "iPad Pro (2022, M2 series)Fair • Space Gray • 128 GB • Wi-Fi",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-129-2022-128gb-space-gray-wi-fi/71dc2a15-fd94-4a6e-a8bd-82e4c668b9e7?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/71dc2a15-fd94-4a6e-a8bd-82e4c668b9e7-1_2d3425d3-ca78-4472-b9d6-6ed39003b17d.jpg"
+    },
+    {
+      "name": "iPad Pro (2017, A10 series)Good • Gold • 64 GB • Wi-Fi",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-105-inch-june-2017-64gb-gold-wi-fi/86c85533-e128-434f-8bf6-eac2aaa598b0?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/86c85533-e128-434f-8bf6-eac2aaa598b0-1_b3d030b4-7145-44ea-b071-4d6c33ee2cb4.jpg"
+    },
+    {
+      "name": "iPad Pro (2017, A10 series)Excellent • Silver • 64 GB • Wi-Fi + 4G",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-pro-105-inch-june-2017-64gb-silver-wi-fi-gsmcdma-lte/5ad92ef3-32d1-49e5-959b-dcee7163520a?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5ad92ef3-32d1-49e5-959b-dcee7163520a-1_133bafa3-9c59-4e52-8e2e-cab3d3bf0717.jpg"
+    },
+    {
+      "name": "iPad 7 (2019, A10 series)Excellent • Gold • 128 GB • Wi-Fi",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-102-inch-7th-gen-september-2019-128gb-gold-wi-fi/f1c16272-c160-42a6-8a83-9ed38f1eb547?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f1c16272-c160-42a6-8a83-9ed38f1eb547-1_a7971945-72cc-4fcd-83d2-e8c6c5a4f240.jpg"
+    },
+    {
+      "name": "iPad 10 (2022, A14 series)Good • Pink • 256 GB • Wi-Fi + 5G",
+      "productUrl": "https://www.backmarket.com/en-us/p/ipad-109-2022-256gb-pink-wi-fi-gsmcdma-5g/ebfd739d-a8ad-4bdc-affe-b96257176124?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ebfd739d-a8ad-4bdc-affe-b96257176124-1_63e3a6d9-6905-4af7-89ee-1719436d583e.jpg"
+    }
+  ],
+  "pixel": [
+    {
+      "name": "Google Pixel 8 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-8",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b4b36a92-646b-4d14-8835-e8426e39934b.jpg"
+    },
+    {
+      "name": "Google Pixel 8 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-8-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5e4375e5-d152-44a0-8e17-3aab2cfa320c.jpg"
+    },
+    {
+      "name": "Google Pixel 7 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-7",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/35fef6fb-df24-484b-b4d0-95b235303cf2.jpg"
+    },
+    {
+      "name": "Google Pixel 8a • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-8a",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4c4b3689-6017-4fb9-b33d-e52fac3bb236-1_74522eec-b9c4-4246-82d1-4ee87218b14c.jpg"
+    },
+    {
+      "name": "Google Pixel 9 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-9",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c7092a5f-eaf9-402b-b303-2eafd941df3e.jpg"
+    },
+    {
+      "name": "Google Pixel 7 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-7-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f55622df-2241-4e5d-aae2-0196df7a8319.jpg"
+    },
+    {
+      "name": "Google Pixel 9 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-9-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/323f3e57-54ba-408a-b55e-dc05916292da-1_3c3d74f2-d9a5-4ff3-a352-a3e440638232.jpg"
+    },
+    {
+      "name": "Google Pixel 9a • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-9a",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4e80477e-99d0-4fec-8609-0f43c897e70f-1_712ee1b4-f5ef-4938-8734-fe9f04a640ef.jpg"
+    },
+    {
+      "name": "Google Pixel 9 Pro XL • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-9-pro-xl",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d6814d0d-25a5-45fb-836e-508deebd3cb1.jpg"
+    },
+    {
+      "name": "Google Pixel 6 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-6",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/9257268d-5c3d-423d-a09e-4073f75c32d4-1_b5c9fcc6-8e44-4b4e-8fc0-99412c0d5916.jpg"
+    },
+    {
+      "name": "Google Pixel 6a • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-6a",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5a2c877a-023a-4f67-a46e-d38b84501b8a-1_8ea402f1-77a8-40a4-8042-c0432ba58aef.jpg"
+    },
+    {
+      "name": "Google Pixel 6 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-6-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b233003d-97a1-4fec-88af-8f567319d569-1_69e6f061-f8f9-4ab0-80bc-271e13b3862f.jpg"
+    },
+    {
+      "name": "Google Pixel 7a • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-7a",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/635e1627-303a-4266-852d-862089f7dbc3-1_cd741c3e-b7c0-4ee7-aea7-29964a8748e0.jpg"
+    },
+    {
+      "name": "Google Pixel 10 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-10-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d87585ed-a934-4673-92dc-9e36305a4921-1_645e53fc-3a84-4ba3-8f64-73114da71882.jpg"
+    },
+    {
+      "name": "Google Pixel 10 Pro XL • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-10-pro-xl",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ac111365-87b4-4493-bb02-18462c342706-1_7fd28105-2cc3-4795-9fb0-2e979a562c8e.jpg"
+    },
+    {
+      "name": "Google Pixel 10 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e2f521bc-0ff9-43be-a9b3-36bf6e0f5074-1_2d98cba6-9cff-499f-a70f-ee3bafb3bed1.jpg"
+    },
+    {
+      "name": "Google Pixel 7 • Locked Verizon",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-7-verizon",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0473a311-4cfc-4433-bac4-f5be85c3b60f-1_c4e97431-9366-4a74-b54f-7b28284ef88e.jpg"
+    },
+    {
+      "name": "Google Pixel Fold • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-fold",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b9271678-6afa-495b-ad49-845372212c13-1_736730f3-b640-4fea-a07c-344590eafa95.jpg"
+    },
+    {
+      "name": "Google Pixel XL • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-xl",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/eb3d574c-f1ad-4946-ac86-a0cdc1de7b2d-1_c0d52395-7b9e-4c90-8393-915e81d6b6f2.jpg"
+    },
+    {
+      "name": "Google Pixel 4 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-4",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/77e6397e-4005-4b99-b182-3d47aa1e6f8e-1_ba3a18b2-0e70-4537-8fa5-b36af874a018.jpg"
+    },
+    {
+      "name": "Google Pixel 8 Pro • Locked Verizon",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-8-pro-verizon",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/939772c2-bb6b-4023-b3b9-594d5c21e4a2-1_5c6400e8-baff-45b5-a58f-f9d506d06a52.jpg"
+    },
+    {
+      "name": "Google Pixel 10 Pro Fold • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-10-pro-fold",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/16b42745-28c9-44da-b292-ff746a805572-1_5c2b088e-656c-4588-884b-c8cbf723140c.jpg"
+    },
+    {
+      "name": "Google Pixel 6a • Locked Verizon",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-6a-verizon",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7e4bdc98-e239-4405-9258-b0980cdca626-1_9f240c1a-d0a4-4315-bce1-fd73e5dbcf09.jpg"
+    },
+    {
+      "name": "Google Pixel 3 XL • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-3-xl",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b8c3b3c3-b6e4-493f-a5c5-32f346e2d93c-1_0179078b-0003-4ed6-91bd-30848df55a33.jpg"
+    },
+    {
+      "name": "Google Pixel 4 XL • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-4-xl",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ea60ad38-fa2f-4f49-b817-ec5f7d6b5b52-1_d84131f3-9c0a-48f7-8503-bb225be87453.jpg"
+    },
+    {
+      "name": "Google Pixel 6 Pro • Locked Verizon",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-6-pro-verizon",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ff1f2ea8-f970-49b2-ad06-66c85b3bb789-1_003313e3-bd22-48ed-b2a9-3e46c5ca16d4.jpg"
+    },
+    {
+      "name": "Google Pixel 7 • Locked AT&T",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-7-at-t",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/00365ffb-a071-452b-a7b2-d8b8cf8ed4ef-1_9cf5388d-9ce3-460f-a2e2-5122feee0751.jpg"
+    },
+    {
+      "name": "Google Pixel 7 Pro • Locked Verizon",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-7-pro-verizon",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/8f99ecdc-dcd3-4889-a111-5169bf337337-1_9b728722-9483-4d27-9a95-bf6a3ea9f280.jpg"
+    },
+    {
+      "name": "Google Pixel 8a • Locked Verizon",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-8a-verizon",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4eadaef8-cfc7-4a75-b47f-afce24edcf98-1_fddc7a2b-0e14-4f9e-8936-271e7b2251c6.jpg"
+    },
+    {
+      "name": "Google Pixel 8 • Locked AT&T",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-8-at-t",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5f9b15a3-e4b4-48ac-b1c1-76ec178b3f48-1_e130d449-1ab8-4674-b093-68390724711a.jpg"
+    },
+    {
+      "name": "Google Pixel 8 • Locked Verizon",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-8-verizon",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/fe804dcc-d52b-4ea1-b9fc-9a50b542a667-1_39395d9d-2012-4b11-a5ab-fb0c0837a4cb.jpg"
+    }
+  ],
+  "apple-watch": [
+    {
+      "name": "Apple Watch Series 10",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-10-2024-gps-42-mm-aluminium-silver-sport-band-blue/94424bd5-bbb5-4567-9d78-9605c1bae836?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/94424bd5-bbb5-4567-9d78-9605c1bae836-1_7e36a3aa-cf0c-4333-98b4-2c178244c01e.jpg"
+    },
+    {
+      "name": "Apple Watch Series 11",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-11-2025-gps-42-mm-aluminium-space-gray-sport-band-black/66adaed1-a65c-41c4-a0a2-068646ed2c02?l=9",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/66adaed1-a65c-41c4-a0a2-068646ed2c02-1_44f5defb-3c69-4f34-86ef-d93215329b86.jpg"
+    },
+    {
+      "name": "Apple Watch SE Series 3",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-se-3-2025-gps-cellular-40-mm-aluminium-midnight-sport-band-black/4d36e9fd-9d46-4ba7-b000-ccd4a1bfa827?l=9",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4d36e9fd-9d46-4ba7-b000-ccd4a1bfa827-1_e6b769dc-c71b-48b2-a366-053eb9dd4ef2.jpg"
+    },
+    {
+      "name": "Apple Watch Ultra",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-ultra-september-2022-cellular-49-mm-titanium-titanium-sport-band-midnight-ocean-band/428f6600-3b81-4bbb-aa74-d877fc9fd03a?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/428f6600-3b81-4bbb-aa74-d877fc9fd03a-1_4438f443-ba7c-4a4f-907b-6ce4f45aa575.jpg"
+    },
+    {
+      "name": "Apple Watch Ultra 2",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-ultra-2-2023-gps-cellular-49-mm-titanium-natural-titanium-trail-loop-black/a1fb48ea-2208-42c6-b7fb-925796377d38?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/a1fb48ea-2208-42c6-b7fb-925796377d38-1_10897354-b04d-47d4-ae2a-d26560c84f16.jpg"
+    },
+    {
+      "name": "Apple Watch Ultra 2",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-ultra-2-2023-gps-cellular-49-mm-titanium-black-ocean-band-black/8d61f16b-19ff-483f-94ab-5b5cb4731898?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/8d61f16b-19ff-483f-94ab-5b5cb4731898-1_2add856d-91ec-4fb4-85f9-bf8c12cc5c97.jpg"
+    },
+    {
+      "name": "Apple Watch Ultra 3",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-ultra-3-2025-gps-cellular-49-mm-titanium-black-ocean-band-black/698bdb0e-afd9-4a8e-9a25-e99d93cb4b13?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/698bdb0e-afd9-4a8e-9a25-e99d93cb4b13-1_7d5b7dd4-b523-4d70-9f3b-1b6b22c8a789.jpg"
+    },
+    {
+      "name": "Apple Watch Series 8",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-8-september-2022-wifi-only-45-mm-aluminium-black-sport-loop-black/74acaaee-bad2-42dd-ade9-f757857e7737?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/74acaaee-bad2-42dd-ade9-f757857e7737-1_2a9a41c5-20c1-46f2-844b-a3c4a9735bf9.jpg"
+    },
+    {
+      "name": "Apple Watch Series 9",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-9-2023-wifi-only-45-aluminium-midnight-sport-band-midnight/adc0b74c-6036-424d-b863-85ffd82ece95?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/adc0b74c-6036-424d-b863-85ffd82ece95-1_7cfe99fb-8629-49df-9fca-c93ea69bc367.jpg"
+    },
+    {
+      "name": "Apple Watch SE Series 1",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-se-september-2020-40-mm-aluminium-gold-sport-band-pink-sand/61acd5cb-6698-4800-9d51-5d569b0341cb?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/61acd5cb-6698-4800-9d51-5d569b0341cb-1_b2bf7974-8284-47e2-92e5-9ff241c5feba.jpg"
+    },
+    {
+      "name": "Apple Watch Series 7",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-7-september-2021-cellular-45-mm-aluminium-midnight-sport-band-black/9ec50ce8-3b97-4a73-ab61-28ef3b6c8a23?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/9ec50ce8-3b97-4a73-ab61-28ef3b6c8a23-1_8c4efafb-5de6-44d5-81e4-b3a218c4cdf7.jpg"
+    },
+    {
+      "name": "Apple Watch Series 5",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-5-gps-cellular-44mm-aluminum-case-black-sport-band-space-gray/3f71233c-89a2-4aa2-ab38-d105a029116a?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/3f71233c-89a2-4aa2-ab38-d105a029116a-1_4cd27ef0-600b-486d-bdc0-6bff6dd7e7fe.jpg"
+    },
+    {
+      "name": "Apple Watch Series 6",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-6-september-2020-40-mm-aluminium-space-gray-sport-band-black/54ed269c-aa78-461e-9d6c-af7740be361e?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/54ed269c-aa78-461e-9d6c-af7740be361e-1_f34a79a3-647c-4336-a513-163747b9265c.jpg"
+    },
+    {
+      "name": "Apple Watch Series 3",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-3-42-mm-aluminium-space-gray-sport-band-black/fb81a481-28b9-4af9-8a88-5e2c3dd33c04?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/fb81a481-28b9-4af9-8a88-5e2c3dd33c04-1_698b4d82-6360-4d8a-8bb9-ae6eaae553b7.jpg"
+    },
+    {
+      "name": "Apple Watch Series 4",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-4-gps-40mm-pink-sport/9e00bec1-5d5b-49c0-bf7c-64ec75be1baa?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/9e00bec1-5d5b-49c0-bf7c-64ec75be1baa-1_ddf15924-cede-4b6e-bb2d-ac6a4861dd06.jpg"
+    },
+    {
+      "name": "Apple Watch SE Series 2",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-se-september-2022-cellular-40-aluminium-silver-sport-band-blue/d4e77d00-2ed9-4153-b190-20db7ed2295c?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d4e77d00-2ed9-4153-b190-20db7ed2295c-1_0b977229-21ba-4ce6-98a2-bf3e598c3bb4.jpg"
+    },
+    {
+      "name": "Apple Watch SE Series 2Excellent • 44mm • Aluminium • Silver • GPS + Cellular",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-se-2-2022-gps-cellular-44-mm-aluminium-silver-sport-band-blue/c7934bf3-6aa4-47b0-aa1b-9ec972776ce9?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c7934bf3-6aa4-47b0-aa1b-9ec972776ce9-1_cfb54d14-4fc7-445f-a46f-0a39b4515f93.jpg"
+    },
+    {
+      "name": "Apple Watch SE Series 1Fair • 40mm • Aluminium • Space Gray • GPS",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-se-september-2020-40-mm-aluminium-space-gray-sport-band-black/ea53d45f-902d-4e33-a08f-fb384543acf3?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ea53d45f-902d-4e33-a08f-fb384543acf3-1_b9a50f99-1d17-43c1-9afd-caaf18811f3c.jpg"
+    },
+    {
+      "name": "Apple Watch SE Series 1Excellent • 40mm • Aluminium • Gold • GPS",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-se-september-2020-40-mm-aluminium-gold-sport-band-pink-sand/61acd5cb-6698-4800-9d51-5d569b0341cb?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/61acd5cb-6698-4800-9d51-5d569b0341cb-1_b2bf7974-8284-47e2-92e5-9ff241c5feba.jpg"
+    },
+    {
+      "name": "Apple Watch Series 8Fair • 41mm • Stainless steel • Graphite • GPS + Cellular",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-8-september-2022-cellular-41-mm-stainless-steel-graphite-sport-band-black/2b62f99b-532f-441f-b168-cdaa0979e2c0?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/2b62f99b-532f-441f-b168-cdaa0979e2c0-1_9bbfbc7d-6db4-4f4a-b135-89a671767281.jpg"
+    },
+    {
+      "name": "Apple Watch Series 8Fair • 45mm • Stainless steel • Graphite • GPS + Cellular",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-8-2022-gps-cellular-45-mm-stainless-steel-graphite-sport-band-midnight/a43ac535-86fa-4cf1-823e-27bd0e6ac3ab?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/a43ac535-86fa-4cf1-823e-27bd0e6ac3ab-1_1aaaf26c-ecb4-43b4-9233-102bbc96c6c2.jpg"
+    },
+    {
+      "name": "Apple Watch SE Series 2Excellent • 44mm • Aluminium • Midnight • GPS",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-se-2-2022-gps-44-mm-aluminium-black-sport-band-midnight/ccff3c69-905d-4e1f-9786-19a17478a999?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ccff3c69-905d-4e1f-9786-19a17478a999-1_90edd45a-de59-44fc-980f-e7bf6b0c6fef.jpg"
+    },
+    {
+      "name": "Apple Watch Series 9Fair • 45mm • Stainless steel • Graphite • GPS + Cellular",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-9-2023-gps-cellular-45-mm-stainless-steel-graphite-milanese-loop-gray/12a36720-39e8-47f7-9024-1303719bda50?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/12a36720-39e8-47f7-9024-1303719bda50-1_b84ccfb8-8f73-408d-a968-e29350301ea1.jpg"
+    },
+    {
+      "name": "Apple Watch Series 9Excellent • 41mm • Stainless steel • Graphite • GPS + Cellular",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-series-9-2023-gps-cellular-41-mm-stainless-steel-graphite-sport-band-midnight/b6e1838c-8bb6-4598-a82a-794e7ed18b7d?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b6e1838c-8bb6-4598-a82a-794e7ed18b7d-1_52644ae6-7fef-4826-bc44-7e546ded6eb7.jpg"
+    },
+    {
+      "name": "Apple Watch UltraExcellent • 49mm • Titanium • Natural Titanium • GPS + Cellular",
+      "productUrl": "https://www.backmarket.com/en-us/p/apple-watch-ultra-2022-gps-cellular-49-mm-titanium-natural-titanium-sport-band-midnight/e0f3ad66-9e43-46dd-bc2c-351056f5fcb6?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e0f3ad66-9e43-46dd-bc2c-351056f5fcb6-1_3c86e855-f2b5-46af-a9a4-8f890ce3443d.jpg"
+    }
+  ],
+  "samsung-watch": [
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 7 HR GPS - Green",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-7-hr-gps-green/94c687c2-0733-48f3-8b9a-88011d556e02?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/94c687c2-0733-48f3-8b9a-88011d556e02-1_a0dc5411-8b39-4d1d-a9e2-14c0f04d1efc.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 7 HR GPS - Cream",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-7-hr-gps-cream/67a2007b-fb8c-4df0-907d-e29a8195277f?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/67a2007b-fb8c-4df0-907d-e29a8195277f-1_12ba5b91-e3cc-4101-8a02-9099436adeea.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 7 HR GPS - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-7-hr-gps-silver/ab488d25-5792-464e-8233-3f6010f745cf?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ab488d25-5792-464e-8233-3f6010f745cf-1_0b38848b-4518-4f10-b7d6-679ef11ac66d.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 7 HR GPS - Green",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-7-hr-gps-green/4e07707d-9651-45e7-ba5a-69670a696bdd?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4e07707d-9651-45e7-ba5a-69670a696bdd-1_aca7826a-d82d-4f26-aa1f-19434b44383e.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 7 HR GPS - Green",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-7-hr-gps-green/f7ef0690-f377-4c5d-b9cb-2f109befd804?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f7ef0690-f377-4c5d-b9cb-2f109befd804-1_0d62c8e1-6e51-4ece-b274-f536c759e3b9.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 7 HR GPS - Green",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-7-hr-gps-green/1725aa87-1081-4c59-be7a-fabd99cdddb8?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/1725aa87-1081-4c59-be7a-fabd99cdddb8-1_ea9aadcd-9da6-44d1-8fa1-cdcf9550b01a.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 7 HR GPS - Cream",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-7-hr-gps-cream/2d2d446f-d42f-432a-9b45-63d9ea9ce31c?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/2d2d446f-d42f-432a-9b45-63d9ea9ce31c-1_ecc17f4b-3dab-439c-9449-730c78326eeb.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 7 HR GPS - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-7-hr-gps-silver/f2b257b8-3660-4a41-abf0-b6c15c849c70?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f2b257b8-3660-4a41-abf0-b6c15c849c70-1_72863065-b3d9-46e7-bbff-aefc95d77485.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 5 Pro HR GPS - Gray",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-5-pro-hr-gps-gray/0a72c349-8691-4ea3-935c-c71ba9a9a845?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0a72c349-8691-4ea3-935c-c71ba9a9a845-1_a6522c51-b434-410b-9f94-edb26afde677.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch5 Pro HR GPS - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/smart-watch-samsung-galaxy-watch5-pro-gps-black/2496fe56-ba12-446b-983f-d3e59ad2a475?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/2496fe56-ba12-446b-983f-d3e59ad2a475-1_9c5c865e-3424-4dcf-b5e8-097d4a4229e8.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 6 HR GPS - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-6-hr-gps-black/fc4d9570-3745-4088-a607-4bf7e5a14f06?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/fc4d9570-3745-4088-a607-4bf7e5a14f06-1_3512f6da-afec-46b5-981f-89829804ed6f.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch8 HR GPS - Gray",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch8-hr-gps-gray/05c06eb6-2286-4935-8cd6-17f331a94783?l=9",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/05c06eb6-2286-4935-8cd6-17f331a94783-1_6b5686be-8bae-4e10-8874-e09ecb06c5bd.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 5 HR GPS - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-5-hr-gps-silver/57a43713-09b9-4e07-9e6c-38b127a23b1a?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/57a43713-09b9-4e07-9e6c-38b127a23b1a-1_86944468-4dd3-4638-84d7-9bf771106707.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 6 Classic HR - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-6-classic-hr-silver/4f3488c5-801e-445f-8b44-669b4346cf59?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4f3488c5-801e-445f-8b44-669b4346cf59-1_7e1f2497-6b92-4796-b4e1-1d05cc563536.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 5 Pro HR GPS - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-5-pro-hr-gps-black/d978412c-09c5-47d2-8888-22d440665d23?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d978412c-09c5-47d2-8888-22d440665d23-1_a64bed73-c1f2-4602-968e-121578ab8628.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch8 HR GPS - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch8-hr-gps-silver/5e37113e-7365-4920-8065-a214915bec4b?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5e37113e-7365-4920-8065-a214915bec4b-1_78512848-bfb0-4dab-b5bb-5690701e0688.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 5 HR GPS - Gray",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-5-hr-gps-gray/10201107-48f3-40b2-839f-01c71f1eab36?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/10201107-48f3-40b2-839f-01c71f1eab36-1_a40c92c2-97f6-465c-ac25-74d3d8bd3c47.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 4 HR - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-4-hr-silver/11c7fbd6-16ee-47b5-b716-8d7ab63161fa?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/11c7fbd6-16ee-47b5-b716-8d7ab63161fa-1_851a499a-e5cf-49c1-a8e2-2558375bda94.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 4 SM-R865 GPS - Pink",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-4-sm-r865-gps-pink/599ec8fa-5724-4d1d-ba3c-71d1d622d782?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/599ec8fa-5724-4d1d-ba3c-71d1d622d782-1_9d78e54e-4b51-4c12-8722-a2d43c1b6479.jpg"
+    },
+    {
+      "name": "Smart Watch Samsung Galaxy Watch4 HR GPS - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/smart-watch-samsung-galaxy-watch4-gps-black/f33b526d-111b-4f09-b92a-7ef1dda38137?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f33b526d-111b-4f09-b92a-7ef1dda38137-1_13fe4429-924d-49f9-aedd-94127562dd58.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 6 Classic HR - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-6-classic-hr-black/9ce28eb8-33de-4b09-b98e-5db937e09a3c?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/9ce28eb8-33de-4b09-b98e-5db937e09a3c-1_f8e2a412-0841-4a40-ae90-7849dec1158f.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 6 HR GPS - White",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-6-hr-gps-white/670e09eb-17a9-4a8a-90a6-0823aecc2a18?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/670e09eb-17a9-4a8a-90a6-0823aecc2a18-1_7789afd7-6158-4736-afa1-28a460b5f47e.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 6 HR GPS - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-6-hr-gps-black/dab48812-55cd-469b-bd3f-85874983eddf?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/dab48812-55cd-469b-bd3f-85874983eddf-1_1e5786cd-c11f-430e-8d58-607bc988edd4.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 6 Classic HR GPS - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-6-classic-hr-gps-silver/7adb9a3c-b1c9-44d8-a732-4c83bd19b652?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7adb9a3c-b1c9-44d8-a732-4c83bd19b652-1_1b5f6d25-4bfa-47d4-8ad8-fb8037debdc2.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 6 HR GPS - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-6-hr-gps-silver/4bca39d3-1fb6-4867-9d81-cd8adc90bb41?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4bca39d3-1fb6-4867-9d81-cd8adc90bb41-1_e7e51276-cc40-46e7-a770-f0db25f824d2.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch FE HR GPS - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-sm-r861nzkaxaa-hr-gps-black/a5009eb8-a010-45f9-a449-6f7aa6b07244?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/a5009eb8-a010-45f9-a449-6f7aa6b07244-1_686474f1-62cb-4ab5-b279-ffd8cdc6ff5e.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 6 Classic HR GPS - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-6-classic-hr-gps-black/3976be54-b51d-4c3c-ada4-ab9aa9f28237?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/3976be54-b51d-4c3c-ada4-ab9aa9f28237-1_f6fc1a7b-45d9-4280-a96f-9e3df558fc75.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 6 Classic HR GPS - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-6-classic-hr-gps-black/0cb30c1d-fcda-483f-b4b6-5df3832a4a03?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0cb30c1d-fcda-483f-b4b6-5df3832a4a03-1_ed3c7220-0583-4b20-977b-37f5931c7b8c.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 6 Classic HR GPS - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-6-classic-hr-gps-black/f00fecdd-a19e-44bc-8332-e4aaa81f0f69?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f00fecdd-a19e-44bc-8332-e4aaa81f0f69-1_2850462a-faed-41e5-9d82-63bba64d36d5.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 4 SM-R865 GPS - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-4-sm-r865-gps-silver/68f32285-81bc-4bae-885e-5cf37460104c?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/68f32285-81bc-4bae-885e-5cf37460104c-1_d8af6293-1e98-4c84-abc4-7fd725de3ce0.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 5 HR GPS - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-5-hr-gps-silver/fdcf41a6-c82d-4b7b-8d3c-1733bac68657?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/fdcf41a6-c82d-4b7b-8d3c-1733bac68657-1_87acbf44-c7ff-40a1-b5ca-932996288ec9.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 4 Classic HR GPS - BlackGood",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-4-classic-hr-gps-black/2dff1b03-8f20-4822-9a52-e5c9f7c15d4f?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/2dff1b03-8f20-4822-9a52-e5c9f7c15d4f-1_ecd75a2f-7b14-4b14-905b-560a66b3147b.jpg"
+    },
+    {
+      "name": "Samsung Smart Watch Galaxy Watch 6 Classic HR GPS - SilverGood",
+      "productUrl": "https://www.backmarket.com/en-us/p/samsung-smart-watch-galaxy-watch-6-classic-hr-gps-silver/e7fb34a1-4917-4a83-83cc-21243b984e9a?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e7fb34a1-4917-4a83-83cc-21243b984e9a-1_326a6832-f455-4c1b-80a3-fe194c80127b.jpg"
+    }
+  ],
+  "samsung-tab": [
+    {
+      "name": "Galaxy Tab A7 Lite (8.7\", 2021)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-a7-lite-2021-8-7",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/3b9bcb22-53eb-4818-9059-8b734d19d2e8-1_05e05593-ffc6-4b48-8006-d5491679254a.jpg"
+    },
+    {
+      "name": "Galaxy Tab A9+ (11.0\", 2023)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-a9plus-2023-11-0",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/bd7b82c9-10a1-41d3-b56a-fbe184995e52-1_7d00302d-f2f8-49e1-a4bf-8cc2d2056e7b.jpg"
+    },
+    {
+      "name": "Galaxy Tab S9 FE (10.9\", 2023)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s9-fe-2023-10-9",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/af0ef4df-1295-47ee-955c-3bbea36b3221-1_9b6c23e5-8e1f-4a7d-abbd-c164485af74e.jpg"
+    },
+    {
+      "name": "Galaxy Tab A (8.4\", 2020)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-a-2020-8-4",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/a5a998fc-5b8a-46cc-a6c6-1040960359d7-1_68ebffe5-e55e-4a35-a4a9-c28b10352df9.jpg"
+    },
+    {
+      "name": "Galaxy Tab A8 (10.5\", 2021)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-a8-2021-10-5",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/3c30bb06-190d-4ca5-993f-9decfa44be49-1_1a8c4a2a-fc94-44c8-8dc6-9a8a8493de53.jpg"
+    },
+    {
+      "name": "Galaxy Tab A11+ (11.0\", 2025)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-a11plus-2025-11-0",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0320ff09-687f-481e-8d9d-f77ed6e45727-1_0f8ee5a1-f777-4b48-bc8f-273f26beaefe.jpg"
+    },
+    {
+      "name": "Galaxy Tab S9+ (12.4\", 2023)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s9plus-2023-12-4",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/50a55172-ce86-4116-bdb8-8f9d4f42050e-1_d6122eed-3d5b-43bc-b6cd-826abb3cbd76.jpg"
+    },
+    {
+      "name": "Galaxy Tab A (10.1\", 2019)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-a-2019-10-1",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/73b050f2-ea95-472e-860a-cbc30e850a26-1_2b10ca65-25f5-42c6-82f4-5aebf73e4fc9.jpg"
+    },
+    {
+      "name": "Galaxy Tab S6 Lite (10.4\", 2024)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s6-lite-2024-10-4",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/1af7b809-8e77-48c3-8793-1fae66c1a6a7-1_6ef9b077-9ab6-4461-bb2b-adb4422706f9.jpg"
+    },
+    {
+      "name": "Galaxy Tab S8 (11.0\", 2022)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s8-2022-11-0",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/3c23f784-dab1-4b61-8186-034bbfb133c4-1_9738d7ab-069e-4c7c-a9ec-a95babeb3d0e.jpg"
+    },
+    {
+      "name": "Galaxy Tab S10 FE (10.9\", 2025)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s10-fe-2025-10-9",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/dccd0f56-f305-4821-ab49-f397b360f0dc-1_704392d8-f5bb-488c-aa3a-85594b3763a6.jpg"
+    },
+    {
+      "name": "Galaxy Tab S9 (11.0\", 2023)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s9-2023-11-0",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/eaab2747-b953-47dd-9bbd-3614351cffb7-1_58b64c49-ebf9-4dc6-80a8-5582d10ea8ee.jpg"
+    },
+    {
+      "name": "Galaxy Tab S9 Ultra (14.6\", 2023)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s9-ultra-2023-14-6",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/9a6ab945-4880-4164-b2d0-9a43acfdcfbb-1_eb4ac4dc-a559-49d2-8767-a15647a9632d.jpg"
+    },
+    {
+      "name": "Galaxy Tab Active3 (8.0\", 2020)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-active3-2020-8-0",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/55f81253-38f0-4a63-ae47-8eb5e2bd4e2b-1_bed76b31-123f-432b-84d4-1148d65b9671.jpg"
+    },
+    {
+      "name": "Galaxy Tab A7 (10.4\", 2020)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-a7-2020-10-4",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4a2bb5ad-3d82-4f84-b878-3159a68a90fa-1_58aef0f8-8795-460e-99d7-7bb01c350f6c.jpg"
+    },
+    {
+      "name": "Galaxy Tab S5e (10.5\", 2019)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s5e-2019-10-5",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/dc2900a6-1954-495e-9096-a082e4bc1fe1-1_eaef0e6e-f034-4ffc-a438-2364ec4b5edc.jpg"
+    },
+    {
+      "name": "Galaxy Tab Active Pro (10.1\", 2019)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-active-pro-2019-10-1",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/01e76444-7547-42cf-8216-bf0294c4c586-1_30125901-3807-402d-becb-0eae6c5c15e4.jpg"
+    },
+    {
+      "name": "Galaxy Tab S6 Lite (10.4\", 2022)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s6-lite-2022-10-4",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/65a33ef3-5c89-4e4f-9d8a-50506af48baa-1_1b15c7e0-9e1a-4404-a8be-8dbb5c4d8511.jpg"
+    },
+    {
+      "name": "Galaxy Tab S6 (10.5\", 2019)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s6-2019-10-5",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/58b5a170-739f-4f13-b5c1-5d0a2bb9b4e6-1_5e09c600-ead7-4b23-8dca-f27e296d36d2.jpg"
+    },
+    {
+      "name": "Galaxy Tab S7 (11.0\", 2020)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s7-2020-11-0",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4c520da8-3861-47bf-8f36-ed36a198310c-1_0dbf64f4-8d10-46bd-b748-e72f25191241.jpg"
+    },
+    {
+      "name": "Galaxy Tab S7 FE (12.4\", 2021)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s7-fe-2021-12-4",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/6be50cad-60df-4afd-b265-f140ab963c86-1_3bb19868-6880-4e6d-bb6b-03c40d228462.jpg"
+    },
+    {
+      "name": "Galaxy Tab S7+ (12.4\", 2020)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s7plus-2020-12-4",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/9e8f3490-b010-4954-9260-03551ddfd70d-1_a220ed7d-b429-4f27-a6c2-b5077cd1b2d4.jpg"
+    },
+    {
+      "name": "Galaxy Tab Active4 Pro (10.1\", 2022)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-active4-pro-2022-10-1",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/633447a9-ce0f-485c-aa39-8f2dd27e046c-1_11d1caf7-6826-4255-a144-8c8520491c33.jpg"
+    },
+    {
+      "name": "Galaxy Tab S9 FE+ (12.4\", 2023)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s9-feplus-2023-12-4",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f5d42e0c-1cc4-4435-b606-f243ad016764-1_3681c4b4-d99d-45c1-bf12-e111429359b2.jpg"
+    },
+    {
+      "name": "Galaxy Tab S8+ (12.4\", 2022)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s8plus-2022-12-4",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/3ca7a931-68a4-4d2e-9176-915cc48a6e3c-1_062ec1e8-9996-4726-90e1-7900ad4be9c8.jpg"
+    },
+    {
+      "name": "Galaxy Tab S8 Ultra (14.6\", 2022)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s8-ultra-2022-14-6",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/40c4cc80-f2bc-4022-8378-aba1aa9ef61e-1_b6ccd4f2-d703-4110-94f2-349243ea2d6e.jpg"
+    },
+    {
+      "name": "Galaxy Tab S10+ (12.4\", 2024)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s10plus-2024-12-4",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/17bcd41e-f7b9-4e84-8eba-5ead0f728472-1_1458e896-9d6d-4c76-baf7-72b73acee821.jpg"
+    },
+    {
+      "name": "Galaxy Tab S10 Ultra (14.6\", 2024)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s10-ultra-2024-14-6",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/14cc6d25-7787-4060-affd-96e789d296a1-1_e2dc9847-dd6b-4425-a244-7086b082c79a.jpg"
+    },
+    {
+      "name": "Galaxy Tab S10 Ultra (14.6\", 2025)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s10-ultra-2025-14-6",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/6de0b582-620a-4c61-8ccb-5932fc5d5df1-1_2692b1d0-5208-48cb-b1c1-52bd073b43f5.jpg"
+    },
+    {
+      "name": "Galaxy Tab A (8.0\", 2018)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-a-2018-8-0",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/20a587e8-7517-430b-ae3b-769339bd4255-1_84a49f51-46c7-4a7c-900b-39291befd8ec.jpg"
+    },
+    {
+      "name": "Galaxy Tab A (8.0\", 2017)",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-a-2017-8-0",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f5c734da-610d-46a5-977d-a12a416b0966-1_74f21bae-f23b-4f18-98b4-1c726c12bcb3.jpg"
+    },
+    {
+      "name": "Galaxy Tab A8 (10.5\", 2021)Excellent • Gray • 64 GB • Wi-Fi",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-a8-64gb-gray-wi-fi/55bd3d13-04c1-472d-aea1-d08ee1720ff8?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/55bd3d13-04c1-472d-aea1-d08ee1720ff8-1_6ed750fc-6dff-4121-a457-4ba15ac03622.jpg"
+    },
+    {
+      "name": "Galaxy Tab S8+ (12.4\", 2022)Good • Gray • 128 GB • Wi-Fi  + 5G",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s8-128gb-black-wi-fi-gsmcdma-5g/3ca7a931-68a4-4d2e-9176-915cc48a6e3c?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/3ca7a931-68a4-4d2e-9176-915cc48a6e3c-1_062ec1e8-9996-4726-90e1-7900ad4be9c8.jpg"
+    },
+    {
+      "name": "Galaxy Tab S10+ (12.4\", 2024)Good • Gray • 256 GB • Wi-Fi + 4G",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-tab-s10-256gb-gray-wi-fi-gsmcdma-lte/17bcd41e-f7b9-4e84-8eba-5ead0f728472?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/17bcd41e-f7b9-4e84-8eba-5ead0f728472-1_1458e896-9d6d-4c76-baf7-72b73acee821.jpg"
+    }
+  ],
+  "playstation": [
+    {
+      "name": "PlayStation 5 Slim • Limited Edition Slim Disc",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-5-slim-1000gb-white-slim-disc/917c20b2-010e-49ce-8509-df7dd846c789?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/917c20b2-010e-49ce-8509-df7dd846c789-1_3f22db19-3496-4411-9170-d1cef83841fd.jpg"
+    },
+    {
+      "name": "PlayStation 4",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-4-cuh-1215a-hdd-500-gb-black/068f88f0-0f36-4d7a-ad48-b6e3cc553250?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/068f88f0-0f36-4d7a-ad48-b6e3cc553250-1_67d75632-4ff1-4998-9809-bd781dcb7dd8.jpg"
+    },
+    {
+      "name": "PlayStation 4 Pro",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-4-pro-hdd-1-tb-black/90abbbb2-533c-4a97-bfe5-313d2f845e9e?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/90abbbb2-533c-4a97-bfe5-313d2f845e9e-1_a6596b0b-f1ab-4a68-9750-33c8bb80f7e4.jpg"
+    },
+    {
+      "name": "PlayStation 5 Slim Digital Edition",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-5-slim-digital-edition-1000gb-white/74142116-0f08-42d6-8061-e160a8290e9e?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/74142116-0f08-42d6-8061-e160a8290e9e-1_27d90b31-e97d-43f8-82dd-769c1a790cb2.jpg"
+    },
+    {
+      "name": "PlayStation 4 Slim",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-4-slim-playstation-4/ca7b24bf-e62c-4d1f-9da6-a035b30a3d30?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ca7b24bf-e62c-4d1f-9da6-a035b30a3d30-1_aed5db6f-092a-45ad-8fc2-6617dfe9a1fb.jpg"
+    },
+    {
+      "name": "PlayStation 5",
+      "productUrl": "https://www.backmarket.com/en-us/p/play-station-5/c4b15729-cfca-4a19-806b-9982a588ecd1?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c4b15729-cfca-4a19-806b-9982a588ecd1-1_ad631ccf-2562-4c1f-976e-d6c2c7dcbbe8.jpg"
+    },
+    {
+      "name": "PlayStation 2 Slim - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-2-slim-hdd-0-mb-black/ef8d31c7-ceab-4fb9-bea7-9d800e0d04ac?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ef8d31c7-ceab-4fb9-bea7-9d800e0d04ac-1_83e317ed-ffa3-42d4-a076-beded1af486d.jpg"
+    },
+    {
+      "name": "PlayStation 3 System Slim - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-3-system-slim-hdd-120-gb-black/43cd569c-dff2-42c1-8bf0-356ab7670f28?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/43cd569c-dff2-42c1-8bf0-356ab7670f28-1_a3344274-0326-43dd-9a23-78087a3e51a4.jpg"
+    },
+    {
+      "name": "PlayStation 5 Digital Edition",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-5-digital-edition-hdd-825-gb-white/bbc0cac5-7eac-4cc9-baa2-322ed5e02027?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/bbc0cac5-7eac-4cc9-baa2-322ed5e02027-1_55e71e43-9afd-46de-b41e-8db04a26adaf.jpg"
+    },
+    {
+      "name": "Playstation PS One - White",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-ps-one-white/c3e4833e-2627-4901-858b-c238438349e0?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c3e4833e-2627-4901-858b-c238438349e0-1_9c2a65fe-50a2-4f83-91d7-16d1da2e8e27.jpg"
+    },
+    {
+      "name": "Playstation 3 Slim - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/sony-playstation-3-slim-320gb-controller-black/5d049fa6-79d8-4f60-a774-cab15a433ca8?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5d049fa6-79d8-4f60-a774-cab15a433ca8-1_808f501b-6549-44d3-8910-d3ccf86650c5.jpg"
+    },
+    {
+      "name": "PlayStation 3 Slim - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-3-slim-hdd-250-gb-black/79381591-a562-406f-ab26-3bb6543bfe9d?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/79381591-a562-406f-ab26-3bb6543bfe9d-1_4f79b7ea-19b5-4a71-9e51-22ddcb0b3b6f.jpg"
+    },
+    {
+      "name": "PSP-2000 - White",
+      "productUrl": "https://www.backmarket.com/en-us/p/sony-playstation-portable-2000-hdd-0mb-ice-silver/f4458bbf-90d0-496f-8042-586b218f9980?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f4458bbf-90d0-496f-8042-586b218f9980-1_7230a829-affe-4e76-8d58-752a80f4d0b0.jpg"
+    },
+    {
+      "name": "PSP-3000 - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/sony-playstation-portable-psp-3000-mystic-silver/5c48c2f7-30a0-454d-924f-db66a6ba707e?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5c48c2f7-30a0-454d-924f-db66a6ba707e-1_884d3e35-38be-45b2-aaf5-f125864b1487.jpg"
+    },
+    {
+      "name": "PlayStation 3 Super Slim - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-3-super-slim-hdd-12-gb-black/3dd965d5-1ecc-44ff-b049-93386c94250f?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/3dd965d5-1ecc-44ff-b049-93386c94250f-1_cb597a57-645d-4b86-9ba5-ea747ddba924.jpg"
+    },
+    {
+      "name": "PSP-1000 - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/psp-1000-hdd-4-gb-black/26d83551-1ff6-4ec9-9833-442fc0998136?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/26d83551-1ff6-4ec9-9833-442fc0998136-1_7bfc2483-395c-46a2-a082-64c121828c0f.jpg"
+    },
+    {
+      "name": "PlayStation 3 Super Slim - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-3-super-slim-hdd-500-gb-black/8994d4ec-8cb7-4a9b-9b4f-b7da46ce3b9f?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/8994d4ec-8cb7-4a9b-9b4f-b7da46ce3b9f-1_c631d688-fcdf-4095-991f-cb4483dbf7dc.jpg"
+    },
+    {
+      "name": "PlayStation 2 - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-2-hdd-0-mb-black/144d8d56-b726-467d-93cf-effa2a4f304e?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/144d8d56-b726-467d-93cf-effa2a4f304e-1_fdbf50d6-707d-48b0-aeba-8601d77659c2.jpg"
+    },
+    {
+      "name": "PlayStation 2 Slim - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-2-slim-hdd-1-gb-black/e4bf2445-2c39-48ee-9df3-560c2d028326?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e4bf2445-2c39-48ee-9df3-560c2d028326-1_77ee3347-c9f2-442d-bede-f28d2a920019.jpg"
+    },
+    {
+      "name": "PlayStation 3 Slim - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-3-slim-hdd-500-gb-black/de063685-7b7b-49f2-8dd2-bd7317cede32?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/de063685-7b7b-49f2-8dd2-bd7317cede32-1_731e001a-a219-4517-89f3-f9e30a5251dc.jpg"
+    },
+    {
+      "name": "PlayStation One - Grey",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-one-white/03ed4015-0d9a-4c93-a785-52142b033049?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/03ed4015-0d9a-4c93-a785-52142b033049-1_2cbefca8-9e5e-4dd0-92d4-c91fb64989b5.jpg"
+    },
+    {
+      "name": "PlayStation 2 Slim - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/sony-playstation-2-slim-hdd-0-mb-satin-silver/076fc28b-3731-44f1-9d30-8532ed4c2876?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/076fc28b-3731-44f1-9d30-8532ed4c2876-1_8848f1fb-62ff-4552-8826-8347bc183a38.jpg"
+    },
+    {
+      "name": "PlayStation 3 - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-3-black/01cd9788-e136-4176-ada6-dfec6994c5dd?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/01cd9788-e136-4176-ada6-dfec6994c5dd-1_bac05ea7-e28f-40be-abcf-1e5ffab21941.jpg"
+    },
+    {
+      "name": "PlayStation 4 • Limited Edition Uncharted",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-4-500gb-blue-limited-edition-uncharted/14343419-794a-4978-850d-72c9a7b00a9e?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/14343419-794a-4978-850d-72c9a7b00a9e-1_62c5898f-487d-49f5-8fef-79609a71ff1e.jpg"
+    },
+    {
+      "name": "PSP-3000 - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/portable-psp-3000-hdd-0-mb-black/af667520-e1c2-4410-b455-a0ad76936552?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/af667520-e1c2-4410-b455-a0ad76936552-1_772b4368-e0bb-4ead-9a44-b90e5c82a6cf.jpg"
+    },
+    {
+      "name": "PlayStation 4 + The Last of Us Remastered",
+      "productUrl": "https://www.backmarket.com/en-us/p/sony-playstation-4-1tb-limited-edition-the-last-of-us-remastered-bundle-jet-black/5010008d-d539-4291-90c1-13d684c3ddd9?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5010008d-d539-4291-90c1-13d684c3ddd9-1_de18ebb8-a8c1-442b-bdfa-4713dd7f39b2.jpg"
+    },
+    {
+      "name": "PlayStation 4 Slim + Call of Duty: Black Ops",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-4-slim-1tb-games-call-of-duty-black-ops-4-bundle/764f3a51-e363-4824-9771-7f847a543aa5?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/764f3a51-e363-4824-9771-7f847a543aa5-1_514ae955-0c62-4519-a813-ef198d54956d.jpg"
+    },
+    {
+      "name": "PlayStation 4 Pro + Red Dead Redemption 2",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-4-pro-hdd-1-tb-black/a26423cc-c10d-4d94-b99c-9c774e0a63bd?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/a26423cc-c10d-4d94-b99c-9c774e0a63bd-1_8bc6a980-c188-4e1a-8f75-999a06f94dce.jpg"
+    },
+    {
+      "name": "PlayStation 4 Slim + Marvel’s Spider-Man",
+      "productUrl": "https://www.backmarket.com/en-us/p/sony-playstation-4-slim-1tb-black-spider-man/5e08fe0a-e2c8-4efa-9105-95963240d23f?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5e08fe0a-e2c8-4efa-9105-95963240d23f-1_c0afd8f3-3f80-4e03-9d07-fa94d5cd9a95.jpg"
+    },
+    {
+      "name": "PlayStation 4 Slim • Limited Edition Call of Duty: WWII + Call of Duty WWII",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-4-slim-hdd-1-tb-green/7f2bb94c-aadc-49ec-a95f-62a5b407243e?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7f2bb94c-aadc-49ec-a95f-62a5b407243e-1_6d35538c-4478-457f-bce4-4a8daae5a50d.jpg"
+    },
+    {
+      "name": "PlayStation 4 Pro • Limited Edition Marvel’s Spider-Man",
+      "productUrl": "https://www.backmarket.com/en-us/p/playstation-4-pro-hdd-1-tb-red/a7f43f2f-0e56-4f9d-852b-c97cbf83f39e?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/a7f43f2f-0e56-4f9d-852b-c97cbf83f39e-1_7618529f-caec-460a-b58f-368eada3fdc6.jpg"
+    }
+  ],
+  "xbox": [
+    {
+      "name": "Xbox Series X",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-series-x-hdd-1-tb-black/3250a708-f139-4e8e-9ab3-f15e71055a9f?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/3250a708-f139-4e8e-9ab3-f15e71055a9f-1_d6c2f4b0-a0cd-4738-9f6e-dbe8c2338a0e.jpg"
+    },
+    {
+      "name": "Xbox One S",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-one-s-hdd-500-gb-white/e6059b22-5dae-45b2-aac1-9097e8fa3d95?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e6059b22-5dae-45b2-aac1-9097e8fa3d95-1_6b1631cb-f7c5-4017-a7c0-fdc59c65108b.jpg"
+    },
+    {
+      "name": "Xbox One X",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-one-x-hdd-1-tb-black/340c746a-5ea1-46b5-8114-5a3f80109a62?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/340c746a-5ea1-46b5-8114-5a3f80109a62-1_1ee9da27-b727-4f00-b8ee-4e59fb1b5788.jpg"
+    },
+    {
+      "name": "Xbox 360 Slim - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-s-hdd-250-gb-black/6819cd8e-8022-4339-b1d4-18b97fc58d35?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/6819cd8e-8022-4339-b1d4-18b97fc58d35-1_2ed14d08-7d98-4c81-b0db-5c73de29ab04.jpg"
+    },
+    {
+      "name": "Xbox 360 - White",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-360-hdd-20-gb-white/cb04fb5c-0ea5-42fa-98e1-66ce9aeb383d?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/cb04fb5c-0ea5-42fa-98e1-66ce9aeb383d-1_47ca6f14-8672-43f4-b6c3-4647e97d63c8.jpg"
+    },
+    {
+      "name": "Xbox 360 E - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-360-e-hdd-4-gb-black/51ceba16-4a81-4bd6-a205-d0a7750fa811?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/51ceba16-4a81-4bd6-a205-d0a7750fa811-1_c05cdc39-478d-4091-ac68-2ee5fc948173.jpg"
+    },
+    {
+      "name": "Xbox 360E 1538 - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-360e-1538-hdd-250-gb-black/973f22e2-5f9a-41a2-8419-d8169cc1f7de?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/973f22e2-5f9a-41a2-8419-d8169cc1f7de-1_e904b89f-e94f-4a9c-8eb4-6d8f80c2da79.jpg"
+    },
+    {
+      "name": "Xbox One",
+      "productUrl": "https://www.backmarket.com/en-us/p/7uv00077-hdd-500-gb-black/b0f327d8-ca3b-4677-bb43-00fb80777092?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b0f327d8-ca3b-4677-bb43-00fb80777092-1_0740bdb0-67a1-4143-b172-06653343bb2b.jpg"
+    },
+    {
+      "name": "Xbox 360 System Model E - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-360-system-model-e-hdd-500-gb-black/00b78a4c-1802-4845-b595-1a9aacb0a787?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/00b78a4c-1802-4845-b595-1a9aacb0a787-1_b591fbad-92d1-4200-a29e-f98f5ab4b689.jpg"
+    },
+    {
+      "name": "Xbox 360 Slim - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/video-game-consoles-microsoft-xbox-360-slim-hdd-500-gb-black/8fd3bbf0-5475-4477-af9c-7b83e517f1c1?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/8fd3bbf0-5475-4477-af9c-7b83e517f1c1-1_821b2230-0e73-4d73-86cd-4cd4655802a8.jpg"
+    },
+    {
+      "name": "Xbox Original - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-original-hdd-8-gb-black/df0d7947-7246-4bb7-bce6-6f20327e153e?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/df0d7947-7246-4bb7-bce6-6f20327e153e-1_18a3b102-47f4-4c99-9d1e-2ddfacfdc921.jpg"
+    },
+    {
+      "name": "Xbox 360 Elite - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-360-elite-black/d3d6d854-1c27-4cd3-a72e-b2a3e3568fb5?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d3d6d854-1c27-4cd3-a72e-b2a3e3568fb5-1_7022786f-9463-43c4-b566-ec61db6dac34.jpg"
+    },
+    {
+      "name": "Xbox One • Limited Edition Sunset Overdrive + Sunset Overdrive",
+      "productUrl": "https://www.backmarket.com/en-us/p/microsoft-xbox-one-console-hdd-500-gb-sunset-overdrive-special-edition/835f122b-74fd-4312-9306-343e0ddf7426?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/835f122b-74fd-4312-9306-343e0ddf7426-1_db15fec4-084d-4e11-afbf-089aa1a6895b.jpg"
+    },
+    {
+      "name": "Xbox One S • Limited Edition All-Digital",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-one-s-1000gb-white-limited-edition-all-digital/5cb1c7fa-606d-4aa4-b3da-88331d6979a2?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5cb1c7fa-606d-4aa4-b3da-88331d6979a2-1_55f34b50-af45-4dea-83b0-4beb41a8c077.jpg"
+    },
+    {
+      "name": "Xbox One S • Limited Edition N/A",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-one-s-gray/dd1d4cd7-6af2-4df1-8b1b-a39956c4761b?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/dd1d4cd7-6af2-4df1-8b1b-a39956c4761b-1_4a3e4947-654f-416b-bc2f-305df57156a7.jpg"
+    },
+    {
+      "name": "Xbox One S • Limited Edition Fortnite Battle Royale",
+      "productUrl": "https://www.backmarket.com/en-us/p/microsoft-xbox-one-s-1tb-special-edition-purple/1d6c842f-0a97-40cf-ba75-853d809dbc48?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/1d6c842f-0a97-40cf-ba75-853d809dbc48-1_4d8221e1-633a-4ef4-9d47-6fc00d0d43a9.jpg"
+    },
+    {
+      "name": "Xbox One X • Limited Edition Project Scorpio",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-one-x-1000gb-limited-edition-limited-edition/051fb3ab-725d-4dbd-9149-d700aa9f79b8?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/051fb3ab-725d-4dbd-9149-d700aa9f79b8-1_bc8875c2-619c-4fbb-b79f-ae506fa0949e.jpg"
+    },
+    {
+      "name": "Xbox 360 Slim - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-360-slim-hdd-320-gb-black/b132dac9-2248-4a9f-8694-e5a8e0119f82?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b132dac9-2248-4a9f-8694-e5a8e0119f82-1_ccc6bc4f-b9a4-471a-88f2-525a9567fe99.jpg"
+    },
+    {
+      "name": "Xbox One • Limited Edition Halo 5 + Halo 5",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-one-hdd-1-tb-blackgray/25e68044-2549-490b-945f-cda3e2ccf75a?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/25e68044-2549-490b-945f-cda3e2ccf75a-1_7b14596e-ed55-4bd0-b53b-e7243739cf07.jpg"
+    },
+    {
+      "name": "Xbox One • Limited Edition Forza Motorsport 6 + Forza Motorsport 6",
+      "productUrl": "https://www.backmarket.com/en-us/p/microsoft-xbox-one-console-hdd-1tb-forza-6-edition/c32ca1fd-55ee-497c-9ec2-2525f19652a4?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c32ca1fd-55ee-497c-9ec2-2525f19652a4-1_95c06c07-fe0a-48af-9d57-df1f64747833.jpg"
+    },
+    {
+      "name": "Xbox One • Limited Edition Call of Duty: Advanced Warfare + Call of Duty: Advanced Warfare",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-one-1000gb-limited-edition-limited-edition-call-of-duty-advanced-warfare-call-of-duty-advanced-warfare/0a9d1e88-2d55-4835-b945-a6b9013c7ea8?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0a9d1e88-2d55-4835-b945-a6b9013c7ea8-1_32835458-0f6a-4132-b1b6-7076d5c60b3a.jpg"
+    },
+    {
+      "name": "Xbox One S • Limited Edition Minecraft",
+      "productUrl": "https://www.backmarket.com/en-us/p/microsoft-xbox-one-s-minecraft-bundle-hdd-1-tb-green/c5199785-1b93-4fb7-81f6-bfc6b51317b7?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c5199785-1b93-4fb7-81f6-bfc6b51317b7-1_fcb471cb-c10e-4536-ad5a-5485c97add87.jpg"
+    },
+    {
+      "name": "Xbox Series S • Limited Edition No",
+      "productUrl": "https://www.backmarket.com/en-us/p/xbox-series-s-500gb-white-no/1a15dbad-67e4-45a0-96ca-6c96796f6814?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/1a15dbad-67e4-45a0-96ca-6c96796f6814-1_99db10bf-7906-4621-89a5-ccff352123de.jpg"
+    }
+  ],
+  "nintendo": [
+    {
+      "name": "Switch OLED",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-switch-oled-hdd-32-gb-white/519c1731-badf-4e9f-a949-65ebdc7e0f5d?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/519c1731-badf-4e9f-a949-65ebdc7e0f5d-1_f048d043-4271-4b3b-b449-408450ee7284.jpg"
+    },
+    {
+      "name": "Switch Lite",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-switch-lite-gray/ac25787e-5ccf-4c20-95a3-7e91e4d02591?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ac25787e-5ccf-4c20-95a3-7e91e4d02591-1_9836251a-d895-486e-a326-ab41c188d61c.jpg"
+    },
+    {
+      "name": "Switch",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-switch-hdd-32-gb-black/32776099-091a-4cc5-9f73-dac166426df3?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/32776099-091a-4cc5-9f73-dac166426df3-1_92629454-2fdc-4331-946b-12959fc28b3a.jpg"
+    },
+    {
+      "name": "Switch",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-switch-version-2-with-neon-blue-and-neon-red-joycon-redblue/01edf683-778a-472c-9545-7907c47312f7?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/01edf683-778a-472c-9545-7907c47312f7-1_5f6bb4af-047e-4122-8867-54a158b69eed.jpg"
+    },
+    {
+      "name": "Nintendo Wii - White",
+      "productUrl": "https://www.backmarket.com/en-us/p/video-game-console-nintendo-wii-512gb-remote-controller-white/55ca8818-23fc-48a6-b0f7-9d11c3b8e7e5?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/55ca8818-23fc-48a6-b0f7-9d11c3b8e7e5-1_09c97bbd-dd85-43e9-b399-14b099e5ed51.jpg"
+    },
+    {
+      "name": "Switch",
+      "productUrl": "https://www.backmarket.com/en-us/p/switch-32gb-black/e009fd32-7679-49ad-9a40-b1125cd07252?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e009fd32-7679-49ad-9a40-b1125cd07252-1_f88e041b-38de-4ccb-97a1-159862103609.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Advance - Pink",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-advance-pink/b7f05c68-6699-4634-8d9f-c56df8df8d4c?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b7f05c68-6699-4634-8d9f-c56df8df8d4c-1_6b0b0289-88a9-40a3-beab-6814e0e4d1cd.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Advance - Gray",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-advance-console-in-glacier/1d1fa72e-edd7-4b17-92ab-adbc08feac77?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/1d1fa72e-edd7-4b17-92ab-adbc08feac77-1_c0c8c44d-baaf-4205-8ab5-c498e2b924d2.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Color - Gray",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-color-clear-purple/82e51567-6bbc-4719-a14f-0efb602c1e8c?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/82e51567-6bbc-4719-a14f-0efb602c1e8c-1_cec1b9d6-ee27-4ab0-bc27-9635daacea46.jpg"
+    },
+    {
+      "name": "Nintendo Wii - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/video-game-console-nintendo-wii-512gb-controller-black/0ee71356-889f-47ea-bfdc-cc87bf4f0e22?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0ee71356-889f-47ea-bfdc-cc87bf4f0e22-1_e696d811-a146-4d9b-9104-918adf634116.jpg"
+    },
+    {
+      "name": "Nintendo DS Lite - White",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-ds-lite-hdd-4-gb-white/e4814121-d5bf-4ca5-af91-77485c31e619?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e4814121-d5bf-4ca5-af91-77485c31e619-1_8ef5cf56-7efa-43c9-8658-1e91a777ce6b.jpg"
+    },
+    {
+      "name": "Nintendo DS Lite - Pink",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-ds-lite-pink/b9be09e1-b169-4955-82f2-d950ddb31da6?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b9be09e1-b169-4955-82f2-d950ddb31da6-1_72ee89ff-39d5-4139-a09b-3266f571bc6b.jpg"
+    },
+    {
+      "name": "Nintendo 3DS - Flame Red",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-3ds-hdd-2-gb-flame-red/caf886dd-f9d6-44ef-92ad-a62b26a48c41?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/caf886dd-f9d6-44ef-92ad-a62b26a48c41-1_95d080ab-6840-4e7f-8d98-1d21ed58706f.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Color - Blue",
+      "productUrl": "https://www.backmarket.com/en-us/p/game-boy-color-teal/94260770-5587-48fc-9255-eac4aee2149d?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/94260770-5587-48fc-9255-eac4aee2149d-1_fe3530d7-8e5e-4127-9c3f-199b1b3e2ff4.jpg"
+    },
+    {
+      "name": "Nintendo DS - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-ds-silver/20630a13-9657-481c-801c-0073f70031b8?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/20630a13-9657-481c-801c-0073f70031b8-1_bca47cf9-4de6-44fa-b6c2-187e08106e76.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Color - Berry",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-color-berry/fe173202-7beb-4e4b-b602-ebe13692bd68?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/fe173202-7beb-4e4b-b602-ebe13692bd68-1_349b2d42-1b49-4d8d-bb9c-7df180d9a28c.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Color - Purple",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-color-purple/e6ac5eb5-0317-42ff-92b5-985496a341ea?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e6ac5eb5-0317-42ff-92b5-985496a341ea-1_49a1350d-64e8-487c-b7be-a01f61b38698.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Advance - White",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-advance-white/0e775fb0-093b-4b0e-8490-048633518ccb?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0e775fb0-093b-4b0e-8490-048633518ccb-1_20937b51-6c94-4b52-abf6-640167e9b1f4.jpg"
+    },
+    {
+      "name": "Nintendo DS - Blue",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-ds-blue/8a7e2dc8-2224-4fd8-99d3-9925f83d47a9?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/8a7e2dc8-2224-4fd8-99d3-9925f83d47a9-1_b7a86778-b094-41a3-93e2-ff0c4a987e08.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Color - Yellow",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-color-yellow/de72385b-4d68-483a-a4f1-68113f621bfd?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/de72385b-4d68-483a-a4f1-68113f621bfd-1_33120587-3282-4dda-b9b1-eb16db9795a3.jpg"
+    },
+    {
+      "name": "Nintendo 64 - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/video-game-console-nintendo-64-controller-black/1f60926e-5bbf-454f-b715-95173f291d16?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/1f60926e-5bbf-454f-b715-95173f291d16-1_7579e115-de1d-4edb-918d-7ae3822995de.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Color - Green",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-color-green/7f8ce8a9-69e1-442f-bf3c-76831fc7ca6d?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7f8ce8a9-69e1-442f-bf3c-76831fc7ca6d-1_8d8fd4c2-2ff7-42e3-a401-c92de47c4b12.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Advance - Orange",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-advance-console-orange/efae219c-ec55-4e71-992b-c4f2291feef4?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/efae219c-ec55-4e71-992b-c4f2291feef4-1_fdd3a43d-e4fb-4fd3-a083-32c8a7a62374.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Advance - Silver",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-advance-console-platinum-silver/73ee3cf7-c259-45d8-a606-2648ab4ea3ce?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/73ee3cf7-c259-45d8-a606-2648ab4ea3ce-1_74b998fe-6c30-4be5-9a79-b5e15ffb76f2.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Advance - Indigo",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-advance-console-indigo/61c0b32a-3688-4979-bd11-2f39629a4413?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/61c0b32a-3688-4979-bd11-2f39629a4413-1_12fdd5e6-87f4-46ac-9682-c797068d6cdf.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Advance - Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-advance-black/7a6c041b-ea14-4bb6-8c80-2181b97cd2a8?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7a6c041b-ea14-4bb6-8c80-2181b97cd2a8-1_b1341760-94e3-4815-82a7-c9fe9c688380.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy - Gray",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-original/93b8747c-bf89-431e-b8c5-18cc389738da?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/93b8747c-bf89-431e-b8c5-18cc389738da-1_2e12bb9b-185b-4ec5-b475-794aaa9b973c.jpg"
+    },
+    {
+      "name": "Nintendo Wii - Blue",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-wii-hdd-0-mb-blue/619860b4-66ce-4f1a-871b-30fa159f235b?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/619860b4-66ce-4f1a-871b-30fa159f235b-1_9e5e2ffe-cca4-4436-91fe-fd756f05ebb8.jpg"
+    },
+    {
+      "name": "Nintendo DSi - Red",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-dsi-red/39b4f723-1304-4994-9d60-d065e23fdff1?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/39b4f723-1304-4994-9d60-d065e23fdff1-1_f4c68011-1c7f-4cd5-94fe-d87bf1c5137a.jpg"
+    },
+    {
+      "name": "Nintendo Game Boy Advance SP - Onyx Black",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-game-boy-advance-sp-onyx-black/cd6c861b-8e3d-49d1-a457-274f7b090094?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/cd6c861b-8e3d-49d1-a457-274f7b090094-1_44c82fa9-7fb3-4369-9514-8fd88716accf.jpg"
+    },
+    {
+      "name": "Nintendo Wii - Red",
+      "productUrl": "https://www.backmarket.com/en-us/p/nintendo-wii-hdd-512-gb-red/6b0f3871-80a3-4a38-ac2a-33c34b04bf04?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/6b0f3871-80a3-4a38-ac2a-33c34b04bf04-1_66caa91d-6f16-477b-b332-1ddaaf820055.jpg"
+    }
+  ],
+  "gaming-laptops": [
+    {
+      "name": "HP Victus 15-fa2013dx-ION 15-inch - Core i5-13420H - 8GB 512GB NVIDIA GeForce RTX 3050",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-victus-15-fa2013dx-ion-15-inch-2025-intel-8-gb-ssd-512-gb/9bfe9a23-5684-4632-bc86-6bb0e767b5f8?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/9bfe9a23-5684-4632-bc86-6bb0e767b5f8-1_363d23bf-1131-41d2-95ef-0d3b8130fc0f.jpg"
+    },
+    {
+      "name": "Asus TUF Gaming F15 15-inch - Core i5-11400H - 16GB 512GB NVIDIA GeForce RTX 3050 Ti",
+      "productUrl": "https://www.backmarket.com/en-us/p/asus-tuf-gaming-f15-15-inch-i5-11400h-16gb-0gb-nvidia-geforce-rtx-3050-ti-laptop-gpu-qwerty-english/d24160b0-2ac3-439b-8ee5-e4fa4430edd3?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d24160b0-2ac3-439b-8ee5-e4fa4430edd3-1_84c486d1-9c55-434d-9d7e-d797682f874e.jpg"
+    },
+    {
+      "name": "Acer Nitro AN515-57 15-inch - Core i5-11400H - 16GB 512GB Nvidia GeForce RTX 3050 Ti",
+      "productUrl": "https://www.backmarket.com/en-us/p/acer-an515-57-5700-156-inch-i5-11400h-16-gb-ssd-512-gb/0b67fa5a-2037-41a5-ae8c-1950805a6d6a?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0b67fa5a-2037-41a5-ae8c-1950805a6d6a-1_88c6bb58-17ac-4397-8146-d12a34b63064.jpg"
+    },
+    {
+      "name": "Lenovo LOQ 15IRH8 15-inch - Core i5-12450H - 16GB 512GB NVIDIA GeForce RTX 2050",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-loq-15irh8-15-inch-core-i5-12450h-16gb-512gb-nvidia-geforce-rtx-2050-qwerty-english/e5ba903d-e9f6-4c04-a905-7bebf2c687a3?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e5ba903d-e9f6-4c04-a905-7bebf2c687a3-1_b155f93a-b88e-44b7-bc9d-8d8a4fb7c6b4.jpg"
+    },
+    {
+      "name": "HP Victus 15-FA0010NR 15-inch - Core i7-12650H - 16GB 512GB NVIDIA GeForce RTX 3050 Ti",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-victus-15-fa0010nr-156-inch-core-i7-12650h-16gb-512gb-nvidia-geforce-rtx-3050-ti-qwerty-english-us/34e980e2-efc4-4d5c-ae11-1272308dee5e?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/34e980e2-efc4-4d5c-ae11-1272308dee5e-1_db24735e-1956-440a-b636-0abba0f6c068.jpg"
+    },
+    {
+      "name": "Razer Blade 15 15-inch - Core i7-9750H - 16GB 512GB NVIDIA GeForce RTX 2060",
+      "productUrl": "https://www.backmarket.com/en-us/p/razer-blade-15-156-inch-core-i7-9750h-16gb-512gb-nvidia-geforce-rtx-2060-qwerty-english-us/d3011f9b-3282-47e8-b3c9-41c2d3472477?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d3011f9b-3282-47e8-b3c9-41c2d3472477-1_58bb00c9-0b15-452c-ad9f-35054ddf4cb4.jpg"
+    },
+    {
+      "name": "Asus ROG Zephyrus G14 14-inch - Ryzen 9 4900HS - 16GB 1024GB NVIDIA GeForce RTX 2060",
+      "productUrl": "https://www.backmarket.com/en-us/p/asus-rog-zephyrus-g14-14-inch-ryzen-9-4900hs-16gb-1024gb-nvidia-geforce-rtx-2060-qwerty-english/25dbe8ec-f48d-4818-9e18-f3108583c226?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/25dbe8ec-f48d-4818-9e18-f3108583c226-1_ed704b22-bfc1-4c3e-83a7-c09f02233e82.jpg"
+    },
+    {
+      "name": "HP Omen 15-en1013dx 15-inch - Ryzen 7 5800H - 16GB 512GB NVIDIA GeForce RTX 3060",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-omen-laptop-15-en1013dx-15-inch-amd-ryzen-7-5800h-16gb-512gb-nvidia-geforce-rtx-3060-qwerty-english/3f0d59c4-9d79-4353-9d5e-8a9422cc0bdc?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/3f0d59c4-9d79-4353-9d5e-8a9422cc0bdc-1_635c7cbc-536b-420d-af04-2cbb55db40a6.jpg"
+    },
+    {
+      "name": "Asus ROG Zephyrus G14 14-inch - Ryzen 9 5900HS - 16GB 1024GB NVIDIA GeForce RTX 3060",
+      "productUrl": "https://www.backmarket.com/en-us/p/asus-rog-zephyrus-g14-14-inch-ryzen-9-5900hs-16gb-1024gb-nvidia-geforce-rtx-3060-qwerty-english-us/1b28ee92-a8f4-4839-acde-183ce3148a62?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/1b28ee92-a8f4-4839-acde-183ce3148a62-1_8fd5f8d6-55c2-4e6d-b287-a0f53a3299cb.jpg"
+    },
+    {
+      "name": "Lenovo LOQ-E 15-inch - Ryzen 7 7735HS - 16GB 512GB Nvidia GeForce RTX 4050",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-loq-e-15-inch-amd-ryzen-7-7735hs-16gb-512gb-nvidia-geforce/5c5d8d0b-5c26-4a4b-adbe-358809f4bad6?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5c5d8d0b-5c26-4a4b-adbe-358809f4bad6-1_68cccb35-97ae-409a-9c14-21940a3ef663.jpg"
+    },
+    {
+      "name": "Razer Blade Stealth 13 13-inch - Core i7-1165G7 - 16GB 512GB NVIDIA GeForce GTX 1650 Ti",
+      "productUrl": "https://www.backmarket.com/en-us/p/razer-blade-stealth-13-133-inch-core-i7-1165g7-16gb-512gb-nvidia-geforce-gtx-1650-ti-qwerty-english-us/6dd8eeb0-00d9-4acb-a944-bb8079219842?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/6dd8eeb0-00d9-4acb-a944-bb8079219842-1_3eab5d9a-c128-4f33-aa78-9951f3fce235.jpg"
+    },
+    {
+      "name": "MSI Stealth GS66 15-inch - Core i7-10750H - 16GB 1024GB NVIDIA GeForce RTX 3060",
+      "productUrl": "https://www.backmarket.com/en-us/p/msi-stealth-gs66-156-inch-intel-core-i7-10750h-16-gb-hdd-1-tb/beea4bbd-459a-44fe-8f6e-ada2485fb336?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/beea4bbd-459a-44fe-8f6e-ada2485fb336-1_57e79e10-256b-4a0e-8a07-58b379a0037c.jpg"
+    },
+    {
+      "name": "Lenovo LOQ 15IRH8 15-inch - Core i7-13700H - 16GB 512GB NVIDIA GeForce RTX 4050",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-loq-15irh8-15-inch-core-i7-13700h-16gb-512gb-nvidia-geforce-rtx-4050-qwerty-english/b6149a0c-8915-4975-a816-63795aacf8aa?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b6149a0c-8915-4975-a816-63795aacf8aa-1_61f4d2db-3216-4060-938a-1ab045dee44d.jpg"
+    },
+    {
+      "name": "Lenovo Legion 5 5 15ACH6 15-inch - Ryzen 7 5800H - 16GB 512GB NVIDIA GeForce RTX 3050 Ti",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-5-15ach6-156-inch-amd-ryzen-7-5800h-16-gb-hdd-512-gb/0279ae86-4903-430a-b237-245aec272d63?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0279ae86-4903-430a-b237-245aec272d63-1_a08eeefb-8ea8-420f-8dc3-43cff3238235.jpg"
+    },
+    {
+      "name": "Asus ROG Zephyrus M16 GU603ZM 16-inch - Core i7-12700H - 16GB 512GB NVIDIA GeForce RTX 3060",
+      "productUrl": "https://www.backmarket.com/en-us/p/asus-rog-zephyrus-m16-gu603zm-16-inch-core-i7-12700h-16gb-512gb-nvidia-geforce-rtx-3060-qwerty-english/5514f513-322a-4713-a54f-942d981b8694?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5514f513-322a-4713-a54f-942d981b8694-1_b176f001-3341-4b62-9463-ddac0115e735.jpg"
+    },
+    {
+      "name": "Asus ROG Zephyrus M16 GU603HM 16-inch - Core i9-11900H - 16GB 1024GB NVIDIA GeForce RTX 3060",
+      "productUrl": "https://www.backmarket.com/en-us/p/asus-rog-zephyrus-m16-gu603hm-16-inch-2020-intel-core-i9-11900h-16-gb-ssd-1000-gb/c09b2bda-e839-4279-be5f-3735f114e6bc?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c09b2bda-e839-4279-be5f-3735f114e6bc-1_6ef53744-49a5-4cc5-be87-51c49cbe7297.jpg"
+    },
+    {
+      "name": "Acer Predator Triton 300 SE PT316-51S 16-inch - Core i7-12700H - 16GB 1024GB Nvidia GeForce RTX 3070 Ti",
+      "productUrl": "https://www.backmarket.com/en-us/p/acer-pt316-51s-16-inch-2022-core-i7-16-gb-ssd-1000-gb/919ce755-e687-44e0-ba0a-5873e1cb128f?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/919ce755-e687-44e0-ba0a-5873e1cb128f-1_7e9a560e-fd8c-4620-a9a3-8c966b9e7759.jpg"
+    },
+    {
+      "name": "Asus ROG Zephyrus G15 GA503RM 15-inch - Ryzen 9 5900HS - 16GB 1024GB NVIDIA GeForce RTX 3070",
+      "productUrl": "https://www.backmarket.com/en-us/p/asus-rog-zephyrus-g15-ga503rm-15-inch-ryzen-9-5900hs-16gb-1000gb-nvidia-geforce-rtx-3070-qwerty-english/0489b127-b42f-4006-a857-68a568a952df?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0489b127-b42f-4006-a857-68a568a952df-1_13576690-fb74-497e-8b13-3a7d4503252a.jpg"
+    },
+    {
+      "name": "Asus TUF Gaming A14 14-inch - Ryzen AI 9 HX 370 - 16GB 1024GB NVIDIA GeForce RTX 4060",
+      "productUrl": "https://www.backmarket.com/en-us/p/asus-tuf-gaming-a14-14-inch-ryzen-ai-9-hx-370-16gb-1024gb-nvidia-geforce-rtx-4060/fc834a4e-98f4-4845-a789-046644be34b7?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/fc834a4e-98f4-4845-a789-046644be34b7-1_13066d0b-1988-4b12-b608-f71ddb94cb38.jpg"
+    },
+    {
+      "name": "Dell Alienware M17 R2 17-inch - Core i7-9750H - 16GB 1024GB NVIDIA GeForce RTX 2070",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-alienware-m17-r2-173-inch-core-i7-9750h-16gb-1024gb-nvidia-geforce-rtx-2070-qwerty-english-us/6627c6dd-931a-4d98-a993-91dd27f90d81?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/6627c6dd-931a-4d98-a993-91dd27f90d81-1_37eef6b9-887f-4760-92d4-213eb04d1d8d.jpg"
+    },
+    {
+      "name": "Lenovo LOQ-E 15-inch - Ryzen 7 250 - 16GB 512GB Nvidia GeForce RTX 5060",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-loq-e-15-inch-amd-ryzen-7-250-16gb-512gb-nvidia-geforce-rtx-5060/b3d0c44a-7efd-4840-b5f1-7d6aef419730?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b3d0c44a-7efd-4840-b5f1-7d6aef419730-1_2e405cc1-eadc-4c43-9fcb-6cb23a859bda.jpg"
+    },
+    {
+      "name": "Asus ROG Strix Advantage Edition 15-inch - Ryzen 9 5980HX - 16GB 512GB AMD Radeon RX 6800M",
+      "productUrl": "https://www.backmarket.com/en-us/p/asus-rog-strix-advantage-edition-15-inch-ryzen-9-5980hx-16gb-512gb-amd-radeon-rx-6800m-qwerty-english/31d6d312-6c5b-4e10-87ba-1ce5d7ae2af0?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/31d6d312-6c5b-4e10-87ba-1ce5d7ae2af0-1_2cc47173-1454-486f-be97-a5585aa95f91.jpg"
+    },
+    {
+      "name": "Lenovo Legion 5 15Arp8 15-inch - Ryzen 7 7735HS - 16GB 1024GB Nvidia GeForce RTX 4060",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-legion-5-15arp8-15-inch-2023-ryzen-7-7735hs-16-gb-ssd-1000-gb/273b4126-ad08-447e-bc44-127c4e8f7e41?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/273b4126-ad08-447e-bc44-127c4e8f7e41-1_66de613f-b55b-4c64-9fc3-8c762375d10a.jpg"
+    },
+    {
+      "name": "Dell G15 5525 15-inch - Ryzen 5 6600H - 16GB 512GB NVIDIA GeForce RTX 3050",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-g15-5525-laptop-15-inch-ryzen-5-6600h-16gb-0gb-nvidia-geforce-rtx-3050-qwerty-english/3cfea9ca-a5c1-455f-b84a-cc6e283c96b9?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/3cfea9ca-a5c1-455f-b84a-cc6e283c96b9-1_611952a2-25b1-4f85-b3db-73ea22f4bd6b.jpg"
+    },
+    {
+      "name": "Lenovo Legion 5 16IRX9 16-inch - Core i7-14650HX - 16GB 1024GB Nvidia GeForce RTX 4060",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-legion-5-16irx9-16-inch-2023-i7-14650hx-16-gb-ssd-1000-gb/3c9c1d55-4c94-4bfb-aebb-3bd4644388cf?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/3c9c1d55-4c94-4bfb-aebb-3bd4644388cf-1_9fcee370-f3b8-42d4-bb37-8678d9144042.jpg"
+    },
+    {
+      "name": "Lenovo Legion 5 Pro 16Iah7 16-inch - Core i7-12700H - 16GB 512GB NVIDIA GeForce RTX 3050 Ti",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-legion-5-pro-16iah7-16-inch-core-i7-12700h-16gb-512gb-nvidia-geforce-rtx-3050-ti-qwerty-english-us/ebf61591-3479-43f8-8653-3c052975169f?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ebf61591-3479-43f8-8653-3c052975169f-1_a2b54a04-1acd-407a-9d14-16cdf77d0334.jpg"
+    },
+    {
+      "name": "Asus ROG Strix G713PV-WS94 17-inch - Ryzen 9 7845HX - 16GB 1024GB Nvidia GeForce RTX 4060",
+      "productUrl": "https://www.backmarket.com/en-us/p/asus-g713pv-ws94-17-inch-ryzen-9-7845hx-16gb-0gb-nvidia-geforce-rtx-4060-qwerty-english/053bc5df-ba3d-4de6-9e3d-2a897f02a799?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/053bc5df-ba3d-4de6-9e3d-2a897f02a799-1_3de26d53-d907-4423-95f1-7f0df9497d7c.jpg"
+    },
+    {
+      "name": "Lenovo Legion 5 16Irx9 16-inch - Core i9-14900HX - 16GB 1024GB Nvidia GeForce RTX 4060",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-legion-5-16irx9-16-inch-2023-intel-i9-16-gb-ssd-1000-gb/929c1d08-fdfe-4ddc-b0f4-b8e74cad17aa?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/929c1d08-fdfe-4ddc-b0f4-b8e74cad17aa-1_51bf4726-315c-4e56-81e5-4abc055e1106.jpg"
+    },
+    {
+      "name": "Asus ROG Zephyrus M GU502GV-BI7N106 15-inch - Core i7-9750H - 16GB 1024GB NVIDIA GeForce RTX 2060",
+      "productUrl": "https://www.backmarket.com/en-us/p/asus-rog-zephyrus-m-gu502gv-bi7n106-15-inch-core-i7-9750h-16gb-1000gb-nvidia-geforce-rtx-2060-qwerty-english/b53cfa6f-03bf-41c0-93ef-cb73a85056f4?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b53cfa6f-03bf-41c0-93ef-cb73a85056f4-1_3332b7d6-158e-4bcc-9d3c-7bb5cfd3e4ab.jpg"
+    },
+    {
+      "name": "Lenovo LOQ 15IRH8 15-inch - Core i7-13700H - 16GB 512GB Nvidia GeForce RTX 4060 Ti",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-loq-15irh8-laptop-15-inch-i7-13700h-16gb-512gb-nvidia-geforce-rtx-4060-ti-qwerty-english/a5972c95-f8fa-41f2-a292-cb9c729fb724?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/a5972c95-f8fa-41f2-a292-cb9c729fb724-1_0cded4c1-32e8-473c-b6b6-07dceb476f82.jpg"
+    },
+    {
+      "name": "Lenovo Legion 5 15-inch - Ryzen 7 260 - 16GB 1024GB NVIDIA GeForce RTX 5060",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-legion-5-15-inch-ryzen-7-260-16gb-1024gb-nvidia-geforce-rtx-5060/b5218aee-b90c-496b-af97-8618761faf29?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b5218aee-b90c-496b-af97-8618761faf29-1_275aca8e-9d1e-4263-a574-a374a4fbcf25.jpg"
+    }
+  ],
+  "windows-laptops": {
+    "error": "page.goto: net::ERR_ABORTED at https://www.backmarket.com/en-us/l/windows-laptops/95d6f541-323f-4e25-bc85-5f567700354b\nCall log:\n\u001b[2m  - navigating to \"https://www.backmarket.com/en-us/l/windows-laptops/95d6f541-323f-4e25-bc85-5f567700354b\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  "desktop": [
+    {
+      "name": "Mac mini (Intel, 2018)",
+      "productUrl": "https://www.backmarket.com/en-us/p/mac-mini-late-2018-core-i7-8700b-32ghz-ssd-512gb-ram-16gb/69adebfb-8186-4d8e-b937-645b29a7feb1?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/69adebfb-8186-4d8e-b937-645b29a7feb1-1_a7a7c0e3-a670-4fc1-a237-176b10b6d6a3.jpg"
+    },
+    {
+      "name": "Dell OptiPlex 7460 23\" - Core i5-8500 - RAM 16 GB - SSD 256 GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-7460-23-core-i5-8500-ram-16-gb-ssd-256-gb/46009828-6e53-4ed4-880f-7d312a55bf1f?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/46009828-6e53-4ed4-880f-7d312a55bf1f-1_76aca831-870e-4279-aa32-eeee708eacac.jpg"
+    },
+    {
+      "name": "Mac mini (M1 series, 2020)",
+      "productUrl": "https://www.backmarket.com/en-us/p/mac-mini-2020-m1-32-ghz-hdd-1-tb-8gb/b066d719-e1b7-43ba-909f-eabaf20157b5?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b066d719-e1b7-43ba-909f-eabaf20157b5-1_c187541e-391f-483d-8e94-56076be4b171.jpg"
+    },
+    {
+      "name": "Dell OptiPlex 7050 Core i7 2.8 GHz - SSD 256 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-optiplex-7050-core-i7-28-ghz-ssd-256-gb-ram-8gb/ffcc6a42-2324-4ee2-8545-ca83590725b1?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ffcc6a42-2324-4ee2-8545-ca83590725b1-1_28b1bfeb-f04f-489c-a474-cceeda886b65.jpg"
+    },
+    {
+      "name": "HP ProDesk 400 G5 Core i3 3.6 GHz - SSD 256 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-prodesk-400-g5-core-i3-36-ghz-ssd-256-gb-ram-8gb/092b5d6d-20c0-48d3-ac52-e55bae79ff1e?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/092b5d6d-20c0-48d3-ac52-e55bae79ff1e-1_56ca9710-5c64-47d2-83e8-86597ad35ef0.jpg"
+    },
+    {
+      "name": "Dell OptiPlex 7050 Core i7 2.8 GHz - SSD 512 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-optiplex-7050-core-i7-28-ghz-ssd-512-gb-ram-8gb/2b9f06d0-5530-40b7-9d23-5dfa4b31774d?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/2b9f06d0-5530-40b7-9d23-5dfa4b31774d-1_bb55909e-34e4-4999-b8ca-c840592b16af.jpg"
+    },
+    {
+      "name": "Dell OptiPlex 3050 Core i3 3.4 GHz - SSD 512 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-optiplex-3050-core-i3-34-ghz-ssd-512-gb-ram-8gb/29cd3566-9f21-4056-a4a2-087971c7f67c?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/29cd3566-9f21-4056-a4a2-087971c7f67c-1_aed8e91b-497a-4781-b8ff-9b5566ce017a.jpg"
+    },
+    {
+      "name": "Lenovo IdeaCentre 3 07IAB7 Celeron 3.4 GHz - SSD 256 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-ideacentre-3-07iab7-celeron-34-ghz-ssd-256-gb-ram-8gb/9246d147-46bb-4deb-8f74-90e6c83f40d9?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/9246d147-46bb-4deb-8f74-90e6c83f40d9-1_90b5d5b5-3a58-4d2a-9152-0b058f672e42.jpg"
+    },
+    {
+      "name": "Dell OptiPlex 7050 Core i7 2.8 GHz - SSD 256 GB RAM 16GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-optiplex-7050-core-i7-28-ghz-ssd-256-gb-ram-16gb/487d16f1-652e-48a5-950e-9ec596368d54?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/487d16f1-652e-48a5-950e-9ec596368d54-1_d247e724-04d7-48e9-882c-7bddb0425ea1.jpg"
+    },
+    {
+      "name": "HP ProDesk 400 G4 Core i5 3.4 GHz - SSD 512 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-prodesk-400-g4-core-i5-34-ghz-ssd-512-gb-ram-8gb/6ce95298-06f4-4493-b6a7-2a09c7d36aaa?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/6ce95298-06f4-4493-b6a7-2a09c7d36aaa-1_4e48eb07-0b50-42d1-ae5b-b35307229872.jpg"
+    },
+    {
+      "name": "Dell OptiPlex 7050 Core i5 2.8 GHz - SSD 512 GB RAM 16GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-optiplex-7050-core-i5-28-ghz-ssd-512-gb-ram-16gb/c1ffe89e-9c89-49eb-8510-d995db7d601c?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c1ffe89e-9c89-49eb-8510-d995db7d601c-1_c427a919-26a6-493d-b0f2-e1a8554dfcd3.jpg"
+    },
+    {
+      "name": "HP EliteDesk 705 G4 Ryzen 5 PRO 3.2 GHz - SSD 256 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-elitedesk-705-g4-ghz-ssd-256-gb-ram-8gb/dee4639b-8c98-4262-8e21-8f4c18374086?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/dee4639b-8c98-4262-8e21-8f4c18374086-1_8fe1020e-996e-4ec7-ae49-0c702bf02391.jpg"
+    },
+    {
+      "name": "HP Prodesk 600 G5 Core i5 2.2 GHz - SSD 256 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-prodesk-600-g5-core-i5-22-ghz-ssd-256-gb-ram-8gb/c9291c50-40c5-4565-b38d-e76dd01c25e5?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c9291c50-40c5-4565-b38d-e76dd01c25e5-1_cd5a4999-05b7-45cb-9d5f-df91d13f33cc.jpg"
+    },
+    {
+      "name": "HP ProDesk 600 G3 Core i5 2.7 GHz - SSD 256 GB RAM 16GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-prodesk-600-g3-core-i5-27-ghz-ssd-256-gb-ram-16gb/08b5559e-4a09-43ec-8fae-6e4af57014a3?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/08b5559e-4a09-43ec-8fae-6e4af57014a3-1_14a7aed4-25e3-418a-89a3-17cb0596d619.jpg"
+    },
+    {
+      "name": "HP ProDesk 400 G6 Core i5 3 GHz - SSD 512 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-prodesk-400-g6-core-i5-3-ghz-ssd-512-gb-ram-8gb/be4bdb3b-3ea0-4a9d-991f-fa3ca3bf501d?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/be4bdb3b-3ea0-4a9d-991f-fa3ca3bf501d-1_c7d4ee91-d0cb-4986-9cc1-9593d8b6582c.jpg"
+    },
+    {
+      "name": "Dell OptiPlex 3060 Core i3 3.1 GHz - SSD 512 GB RAM 16GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-optiplex-3060-core-i3-31-ghz-ssd-512-gb-ram-16gb/c34b0f98-38b5-47ca-85ed-7f4552a73cb9?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c34b0f98-38b5-47ca-85ed-7f4552a73cb9-1_163048d1-6a65-4280-91d4-4784bb7473d4.jpg"
+    },
+    {
+      "name": "Dell OptiPlex 3050 Core i3 3.4 GHz - SSD 512 GB RAM 16GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-optiplex-3050-core-i3-34-ghz-ssd-512-gb-ram-16gb/6aa79686-58b2-4330-a9cc-4d4f760ecbc7?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/6aa79686-58b2-4330-a9cc-4d4f760ecbc7-1_66d498d2-5c1d-4f97-b094-64b13eb692c3.jpg"
+    },
+    {
+      "name": "Dell OptiPlex 3050 Core i3 3.2 GHz - SSD 512 GB RAM 16GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-optiplex-3050-core-i3-32-ghz-ssd-512-gb-ram-16gb/41d74e7d-9169-4c65-b7d6-fc2232b0bb49?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/41d74e7d-9169-4c65-b7d6-fc2232b0bb49-1_89be5b14-86ba-4702-8a19-998a61e33782.jpg"
+    },
+    {
+      "name": "HP Prodesk 600 G5 Core i5 2.2 GHz - SSD 256 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-prodesk-600-g5-core-i5-22-ghz-ssd-256-gb-ram-8gb/9f8130ff-0e21-45dd-bb6a-f3a7eba0e9e8?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/9f8130ff-0e21-45dd-bb6a-f3a7eba0e9e8-1_a896d71f-9de5-4eab-9532-fc59143e57e1.jpg"
+    },
+    {
+      "name": "Lenovo ThinkCentre M75n Ryzen 3 PRO 2.1 GHz - SSD 128 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-thinkcentre-m75n-ryzen-3-pro-21-ghz-ssd-128-gb-ram-8gb/bbf3e2c7-e897-4d08-b890-7164ede32b7b?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/bbf3e2c7-e897-4d08-b890-7164ede32b7b-1_33983839-35a1-4811-9ec1-3e6ea17fad7f.jpg"
+    },
+    {
+      "name": "Dell OptiPlex 3060 Core i5 2.1 GHz - SSD 512 GB RAM 16GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-optiplex-3060-core-i5-21-ghz-ssd-512-gb-ram-16gb/0e5d01c5-dcdd-454d-86e2-2463ddac2329?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0e5d01c5-dcdd-454d-86e2-2463ddac2329-1_d53147fd-4ed2-4915-9557-f0a481fa5774.jpg"
+    },
+    {
+      "name": "Lenovo ThinkCentre M920Q Core i5 2.1 GHz - SSD 256 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-thinkcentre-m920q-core-i5-21-ghz-ssd-256-gb-ram-8gb/a83058ea-ba98-42ab-8037-770b01ed4911?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/a83058ea-ba98-42ab-8037-770b01ed4911-1_8f6d932c-6815-437a-9eb7-d005c5f0740d.jpg"
+    },
+    {
+      "name": "HP ProDesk 400 G5 SFF Core i3 3.6 GHz - SSD 256 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-prodesk-400-g5-sff-core-i3-36-ghz-ssd-256-gb-ram-8gb/83da9ad5-f91d-4c81-9945-609d2ff985cf?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/83da9ad5-f91d-4c81-9945-609d2ff985cf-1_40c73772-8ddc-4460-b4c9-bfebbe8e27c4.jpg"
+    },
+    {
+      "name": "HP ProDesk 400 G5 Core i3 3.6 GHz - SSD 128 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-prodesk-400-g5-core-i3-36-ghz-ssd-128-gb-ram-8gb/6fa77cf7-83e1-4aa7-9c6e-fb49383ea613?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/6fa77cf7-83e1-4aa7-9c6e-fb49383ea613-1_bf230b2d-0d21-4efd-b715-fdda9add1a6a.jpg"
+    },
+    {
+      "name": "HP EliteDesk 705 G4 Ryzen 5 PRO 3.2 GHz - SSD 256 GB RAM 16GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-elitedesk-705-g4-ghz-ssd-256-gb-ram-16gb/418d4461-7245-4e4e-b1a2-f779ec403921?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/418d4461-7245-4e4e-b1a2-f779ec403921-1_e64a6452-22e9-41f0-a9ea-fb89828e3ad3.jpg"
+    },
+    {
+      "name": "Dell OptiPlex 3060 Core i3 3.6 GHz - HDD 500 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-optiplex-3060-core-i3-36-ghz-ghz-hdd-500-gb-ram-8gb/51d2f623-fd78-4e54-972f-31a49c9043b2?l=11",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/51d2f623-fd78-4e54-972f-31a49c9043b2-1_006dcd65-02c8-41b1-8b58-b68797e04f39.jpg"
+    },
+    {
+      "name": "Dell OptiPlex 3080 SFF Core i5 3.1 GHz - SSD 256 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/dell-optiplex-3080-sff-core-i5-31-ghz-ssd-256-gb-ram-8gb/1cce0ed4-d9d1-4204-9dc6-5f91e9c1e391?l=12",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/1cce0ed4-d9d1-4204-9dc6-5f91e9c1e391-1_d33740a6-7e00-4ff4-8a92-88c3f63c69a0.jpg"
+    },
+    {
+      "name": "Lenovo ThinkCentre M60Q Core i3 1.2 GHz - SSD 128 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/lenovo-thinkcentre-m60q-chromebox-core-i3-12-ghz-ssd-128-gb-ram-8gb/f0eb649a-c8ba-47dc-9c25-6520e03c7db6?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f0eb649a-c8ba-47dc-9c25-6520e03c7db6-1_764ba730-c8bf-47f0-8214-986d55d39305.jpg"
+    },
+    {
+      "name": "HP EliteDesk 800 G4 Core i5 2.1 GHz - SSD 256 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-elitedesk-800-g4-monitor-not-included-inch-8500t-8-gb-ssd-256-gb/d521c84c-329c-428e-b117-c552326b4a6e?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d521c84c-329c-428e-b117-c552326b4a6e-1_5230bb15-2f52-497a-95d3-3153fc39e9e2.jpg"
+    },
+    {
+      "name": "HP ProDesk 600 G4 Mini Core i5 2.1 GHz - HDD 500 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-prodesk-600-g4-core-i5-21-ghz-hdd-600-gb-ram-8gb/cb418a14-f1a9-4d74-af7b-c993c37257be?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/cb418a14-f1a9-4d74-af7b-c993c37257be-1_59f44561-23dc-4562-89c5-3efad771e0e0.jpg"
+    },
+    {
+      "name": "HP ProDesk 600 G4 Mini Core i5 1.8 GHz - HDD 500 GB RAM 8GB",
+      "productUrl": "https://www.backmarket.com/en-us/p/hp-prodesk-600-g4-8550u-300-ghz-ghz-hdd-500-gb-ram-8gb/5781f150-c1a9-403a-85bb-9c2a73e39c9a?l=10",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5781f150-c1a9-403a-85bb-9c2a73e39c9a-1_39efd831-1814-459d-8677-2a7adb70eab4.jpg"
+    }
+  ],
+  "unlocked-phones": [
+    {
+      "name": "iPhone 15 Plus • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-15-plus",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/05142a1a-d99b-428c-8ba6-4b085c329e18-1_91e31bae-b37c-4ee8-8724-df7c2a3cbedb.jpg"
+    },
+    {
+      "name": "iPhone 16 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-16",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e1f677d3-a38e-4a1e-8f3f-efab1fa4b933-1_82c87fb3-6cdc-489e-8d82-edf5e6cfe308.jpg"
+    },
+    {
+      "name": "Galaxy S23 Ultra • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s23-ultra",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/35179e28-6548-4ffe-9645-a48b6af4b020.jpg"
+    },
+    {
+      "name": "Galaxy S24 Ultra • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s24-ultra",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7aa5d430-d94d-4cf4-84d9-f6e860afa90f.jpg"
+    },
+    {
+      "name": "iPhone 16 Plus • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-16-plus",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/799ae60a-e61e-4ff6-96dd-edd14bf20a37-1_63f96138-c6c7-4a61-b086-0b7113e68da9.jpg"
+    },
+    {
+      "name": "Galaxy S24 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s24",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/dfeb062b-dd2b-40ff-a246-4d7b2f540d1b.jpg"
+    },
+    {
+      "name": "Galaxy S25 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s25",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/cd69fb2b-cd4f-48f8-8c37-3350c81363df-1_7fb2acc0-b4d6-4669-8a66-f8d916f390d6.jpg"
+    },
+    {
+      "name": "iPhone 15 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/iphone-15",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c8fc0d62-5daa-48f0-ba1e-4c41b4612249-1_b831dc7b-9336-4962-a25e-34d8c23e324d.jpg"
+    },
+    {
+      "name": "Galaxy S22 5G • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s22-5g",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/cb5b0b14-b5e2-4fbb-bbe6-fe5f374d0f64.jpg"
+    },
+    {
+      "name": "Galaxy S23 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s23",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/117dde2c-9317-4e96-9331-a4c9be7f5164.jpg"
+    },
+    {
+      "name": "Galaxy S22 Ultra 5G • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s22-ultra-5g",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/aa40b254-69dd-417d-8495-7d1cc02499a1.jpg"
+    },
+    {
+      "name": "Galaxy S22+ 5G • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s22plus-5g",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0e02e200-8644-459d-aaf1-7127e3de5543.jpg"
+    },
+    {
+      "name": "Galaxy S23+ • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s23plus",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/1f6ada3d-cb6f-4ada-9725-9714e4541795.jpg"
+    },
+    {
+      "name": "Galaxy Z Fold6 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-z-fold6",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/2dafab3b-d5cb-425e-94f3-f482853e2aa9-1_3443c803-19ff-425b-8655-798de463906e.jpg"
+    },
+    {
+      "name": "Galaxy S21 5G • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s21-5g",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/59e4f09a-f75e-4285-9500-4fa5e0761653.jpg"
+    },
+    {
+      "name": "Google Pixel 8 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-8",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b4b36a92-646b-4d14-8835-e8426e39934b.jpg"
+    },
+    {
+      "name": "Galaxy Z Flip6 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-z-flip6",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/db7e82b7-0825-42d9-8ab2-2a4be757a5b8-1_7957d279-35de-472e-ad89-e78a5b7d2247.jpg"
+    },
+    {
+      "name": "Galaxy S24+ • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s24plus",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/32fc2c8f-2fbe-4cf8-83eb-2754031a4e45-1_40aa6390-94cd-405e-86b9-fd1da3078768.jpg"
+    },
+    {
+      "name": "Galaxy S25 Ultra • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s25-ultra",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/9c423433-2d54-4144-9748-f10fb0f10ca7.jpg"
+    },
+    {
+      "name": "Galaxy Z Flip5 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-z-flip5",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7e425d36-541f-4c32-80e4-04c90be612ea.jpg"
+    },
+    {
+      "name": "Google Pixel 8 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-8-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5e4375e5-d152-44a0-8e17-3aab2cfa320c.jpg"
+    },
+    {
+      "name": "Galaxy Z Fold5 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-z-fold5",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e856f7a3-8b89-4241-a827-30ddd5b9edd5-1_647b8acb-1ad5-40ef-82be-668f97b52a70.jpg"
+    },
+    {
+      "name": "Galaxy S21+ 5G • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s21plus-5g",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/00c0e069-d844-4bbd-ae3e-251811f7c3c9-1_f2ae6fcc-0716-47cd-be41-9a9fd2b9152b.jpg"
+    },
+    {
+      "name": "Google Pixel 7 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-7",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/35fef6fb-df24-484b-b4d0-95b235303cf2.jpg"
+    },
+    {
+      "name": "Google Pixel 8a • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-8a",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4c4b3689-6017-4fb9-b33d-e52fac3bb236-1_74522eec-b9c4-4246-82d1-4ee87218b14c.jpg"
+    },
+    {
+      "name": "Galaxy S24 FE • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s24-fe",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/aa472033-0ac8-4404-a1da-f5ad28fe0678-1_6e851393-4e9c-4afb-bf7d-bfef5a86779a.jpg"
+    },
+    {
+      "name": "Google Pixel 9 • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-9",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c7092a5f-eaf9-402b-b303-2eafd941df3e.jpg"
+    },
+    {
+      "name": "Galaxy S25+ • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s25plus",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/dd0c2e39-640b-4828-b181-2e1e032c7bd1-1_f3d39edb-20a8-4005-ba09-6ef186928a88.jpg"
+    },
+    {
+      "name": "Galaxy S21 Ultra 5G • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/galaxy-s21-ultra-5g",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e7c232f6-156e-4145-997e-06fbc4666eef-1_60785892-1251-40dc-8731-b40e737881e0.jpg"
+    },
+    {
+      "name": "Google Pixel 7 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-7-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f55622df-2241-4e5d-aae2-0196df7a8319.jpg"
+    },
+    {
+      "name": "Google Pixel 9 Pro • Unlocked",
+      "productUrl": "https://www.backmarket.com/en-us/p/google-pixel-9-pro",
+      "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/323f3e57-54ba-408a-b55e-dc05916292da-1_3c3d74f2-d9a5-4ff3-a352-a3e440638232.jpg"
+    }
+  ]
+}

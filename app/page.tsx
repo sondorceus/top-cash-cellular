@@ -2804,6 +2804,90 @@ export default function Home() {
     </aside>
   );
 
+  // CHECKOUT SUMMARY — a stripped-down all-items list that replaces the
+  // hero device panel on the checkout step. Keeps the eye on finalizing
+  // the trade rather than admiring one device. Lists every cart item
+  // (or just the current funnel device if the cart is empty) as a tight
+  // row with a small thumb + qty + price, plus a grand total.
+  const checkoutLines: Array<{ label: string; sub: string; price: number; quantity: number; image?: string; isPending: boolean }> =
+    cartItems.length > 0
+      ? cartItems.map(it => ({
+          label: it.model,
+          sub: [it.storage, it.condition].filter(Boolean).join(" · "),
+          price: it.price,
+          quantity: it.quantity,
+          image: it.image,
+          isPending: !it.price,
+        }))
+      : model
+      ? [{
+          label: model.label,
+          sub: [storage?.label, condition?.label].filter(Boolean).join(" · "),
+          price: quote,
+          quantity,
+          image: model.image,
+          isPending: isPendingQuote,
+        }]
+      : [];
+  const checkoutItemCount = checkoutLines.reduce((s, l) => s + l.quantity, 0);
+  const checkoutTotal = checkoutLines.reduce((s, l) => s + l.price * l.quantity, 0);
+  const checkoutHasPending = checkoutLines.some(l => l.isPending);
+  const renderCheckoutRow = (l: typeof checkoutLines[number], i: number) => (
+    <div key={i} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
+      <div className="shrink-0 w-10 h-10 rounded-lg bg-[rgba(15,15,15,0.6)] border border-white/10 flex items-center justify-center overflow-hidden">
+        {l.image ? (
+          <img src={l.image} alt="" className="w-full h-full object-contain p-0.5" />
+        ) : (
+          <span className="text-lg opacity-40">📱</span>
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-[12px] font-bold text-white leading-tight truncate">{l.label}</p>
+        {l.sub && <p className="text-[10px] text-[#b8b8b8] leading-tight truncate">{l.sub}</p>}
+      </div>
+      <div className="shrink-0 text-right">
+        {l.isPending ? (
+          <p className="text-[10px] font-semibold text-[#e6e6e6] leading-tight">Quoted via<br/>email/text</p>
+        ) : (
+          <p className="text-[13px] font-extrabold text-[#00c853] leading-tight">${l.price * l.quantity}</p>
+        )}
+        {l.quantity > 1 && <p className="text-[10px] text-[#b8b8b8] leading-tight">x{l.quantity}</p>}
+      </div>
+    </div>
+  );
+  const checkoutSummary = checkoutLines.length > 0 && (
+    <aside className="hidden lg:block lg:w-[300px] shrink-0">
+      <div className="sticky top-24 bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Order summary</p>
+          <span className="text-[11px] text-[#b8b8b8]">{checkoutItemCount} device{checkoutItemCount === 1 ? "" : "s"}</span>
+        </div>
+        <div className="max-h-[60vh] overflow-y-auto pr-1 -mr-1">
+          {checkoutLines.map(renderCheckoutRow)}
+        </div>
+        <div className="mt-3 pt-3 border-t border-white/10 flex items-baseline justify-between gap-2">
+          <span className="text-[12px] font-semibold uppercase tracking-wider text-[#e6e6e6]">Total</span>
+          <span className="text-[20px] font-extrabold text-[#00c853]">${checkoutTotal}{checkoutHasPending && <span className="text-[10px] text-[#b8b8b8] font-semibold align-middle ml-1">+ quoted items</span>}</span>
+        </div>
+      </div>
+    </aside>
+  );
+  const checkoutSummaryMobile = checkoutLines.length > 0 && (
+    <div className="lg:hidden mb-4 bg-[rgba(15,15,15,0.7)] backdrop-blur-[8px] border border-white/10 rounded-2xl p-3">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Order summary</p>
+        <span className="text-[10px] text-[#b8b8b8]">{checkoutItemCount} device{checkoutItemCount === 1 ? "" : "s"}</span>
+      </div>
+      <div className="max-h-[40vh] overflow-y-auto pr-1 -mr-1">
+        {checkoutLines.map(renderCheckoutRow)}
+      </div>
+      <div className="mt-2 pt-2 border-t border-white/10 flex items-baseline justify-between gap-2">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-[#e6e6e6]">Total</span>
+        <span className="text-[18px] font-extrabold text-[#00c853]">${checkoutTotal}{checkoutHasPending && <span className="text-[9px] text-[#b8b8b8] font-semibold align-middle ml-1">+ quoted</span>}</span>
+      </div>
+    </div>
+  );
+
   // SEARCH BAR — extracted JSX so it can be rendered inline inside each
   // device-discovery step right above the selection grid (instead of as
   // a separate strip below the nav). Closer to where the eye lands.
@@ -5447,13 +5531,13 @@ export default function Home() {
       {step === "checkout" && page === "home" && model && condition && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
-            {selectionPanel}
+            {checkoutSummary}
             <div className="flex-1 min-w-0">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            {selectionPanelMobile}
+            {checkoutSummaryMobile}
 
             <h2 className="text-2xl font-bold mb-1">Checkout</h2>
 
