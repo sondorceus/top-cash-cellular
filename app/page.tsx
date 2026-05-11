@@ -6176,110 +6176,145 @@ export default function Home() {
           Default position is bottom-left; once dragged, the position is
           remembered in localStorage. On mobile the FAB is rendered as a
           translucent glass bubble so it never feels in the way of the
-          page content. */}
-      <div
-        className={`fixed z-40 select-none ${conditionHelpId || storageHelpId || connectivityHelpOpen || helpTopic ? "hidden" : ""}`}
-        style={fabPos ? { left: `${fabPos.x}px`, top: `${fabPos.y}px`, bottom: "auto" } : { left: "24px", bottom: "24px" }}>
-        {chatOpen && (
-          <div className="mb-3 w-[300px] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-            <div className="bg-[#00c853] px-4 py-3 flex items-center justify-between">
-              <p className="text-white font-semibold text-sm">Top Cash Cellular</p>
-              <button onClick={() => setChatOpen(false)} aria-label="Close chat" className="text-white/80 hover:text-white cursor-pointer text-lg">×</button>
-            </div>
-            <div className="p-4">
-              {chatMode === "choose" && (
-                <>
-                  <p className="text-white text-sm mb-4">Hey! Got a device to sell? How can we help?</p>
-                  <div className="space-y-2">
-                    <button onClick={() => setChatMode("chat")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left tap-press">
-                      <span className="text-xl">💬</span>
-                      <div><p className="font-semibold text-sm">Live Chat</p><p className="text-[#e6e6e6] text-xs">Send us a message</p></div>
-                    </button>
-                    <button onClick={() => setChatMode("call")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left tap-press">
-                      <span className="text-xl">📞</span>
-                      <div><p className="font-semibold text-sm">Talk to a Human</p><p className="text-[#e6e6e6] text-xs">Call or get a callback</p></div>
-                    </button>
-                  </div>
-                </>
-              )}
-              {chatMode === "chat" && (
-                <>
-                  <button onClick={() => setChatMode("choose")} className="text-[#e6e6e6] text-xs mb-2 cursor-pointer hover:text-white">← Back</button>
-                  <div className="h-[200px] overflow-y-auto space-y-2 mb-2 pr-1">
-                    {chatMessages.map((m, i) => (
-                      <div key={i} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[85%] px-3 py-2 rounded-xl text-xs ${m.from === "user" ? "bg-[#00c853] text-[#0a0a0a]" : "bg-white/10 text-white/90"}`}>{m.text}</div>
-                      </div>
-                    ))}
-                    {chatLoading && <div className="flex justify-start"><div className="bg-white/10 text-white/60 px-3 py-2 rounded-xl text-xs">Typing...</div></div>}
-                  </div>
-                  <div className="flex gap-2">
-                    <input value={chatMsg} onChange={(e) => setChatMsg(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendChat()} placeholder="Ask me anything..." aria-label="Chat message" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853]" />
-                    <button onClick={sendChat} disabled={chatLoading} aria-label="Send message" className="bg-[#00c853] text-[#0a0a0a] px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer hover:bg-[#00e676] transition disabled:opacity-50">Send</button>
-                  </div>
-                </>
-              )}
-              {chatMode === "call" && (
-                <div className="text-center py-2">
-                  <button onClick={() => setChatMode("choose")} className="text-[#e6e6e6] text-xs mb-3 cursor-pointer hover:text-white block mx-auto">← Back</button>
-                  <a href={EMAIL_HREF} className="block w-full bg-[#00c853] text-[#0a0a0a] py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2">📧 Email Us</a>
-                  <p className="text-[#e6e6e6] text-xs">Mon-Sat 8AM-8PM</p>
+          page content. Chat panel placement is computed from where the
+          FAB landed so it stays inside the viewport (opens below if
+          the FAB is near the top, above if it's near the bottom; flips
+          horizontally on the right edge). */}
+      {(() => {
+        const hidden = !!(conditionHelpId || storageHelpId || connectivityHelpOpen || helpTopic);
+        const fabSize = 56;
+        const vw = typeof window !== "undefined" ? window.innerWidth : 0;
+        const vh = typeof window !== "undefined" ? window.innerHeight : 0;
+        const fx = fabPos ? fabPos.x : 24;
+        const fy = fabPos ? fabPos.y : vh - 24 - fabSize;
+        const openDown = fy < vh / 2;
+        const openRight = fx < vw / 2;
+        const panelStyle: React.CSSProperties = openDown
+          ? { top: `${fy + fabSize + 12}px` }
+          : { bottom: `${Math.max(12, vh - fy + 12)}px` };
+        if (openRight) {
+          panelStyle.left = `${Math.max(12, Math.min(vw - 320 - 12, fx))}px`;
+        } else {
+          panelStyle.right = `${Math.max(12, Math.min(vw - 320 - 12, vw - fx - fabSize))}px`;
+        }
+        const fabContainerStyle: React.CSSProperties = fabPos
+          ? { left: `${fabPos.x}px`, top: `${fabPos.y}px`, bottom: "auto" }
+          : { left: "24px", bottom: "24px" };
+        return (
+          <>
+            {/* Chat panel — its own fixed element so we can flip it
+                above / below / left / right of the FAB to stay in
+                the viewport, regardless of where the user dragged
+                the FAB to. */}
+            {chatOpen && !hidden && (
+              <div
+                className="fixed z-40 w-[300px] max-w-[calc(100vw-24px)] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]"
+                style={panelStyle}
+              >
+                <div className="bg-[#00c853] px-4 py-3 flex items-center justify-between">
+                  <p className="text-white font-semibold text-sm">Top Cash Cellular</p>
+                  <button onClick={() => setChatOpen(false)} aria-label="Close chat" className="text-white/80 hover:text-white cursor-pointer text-lg">×</button>
                 </div>
-              )}
+                <div className="p-4">
+                  {chatMode === "choose" && (
+                    <>
+                      <p className="text-white text-sm mb-4">Hey! Got a device to sell? How can we help?</p>
+                      <div className="space-y-2">
+                        <button onClick={() => setChatMode("chat")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left tap-press">
+                          <span className="text-xl">💬</span>
+                          <div><p className="font-semibold text-sm">Live Chat</p><p className="text-[#e6e6e6] text-xs">Send us a message</p></div>
+                        </button>
+                        <button onClick={() => setChatMode("call")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left tap-press">
+                          <span className="text-xl">📞</span>
+                          <div><p className="font-semibold text-sm">Talk to a Human</p><p className="text-[#e6e6e6] text-xs">Call or get a callback</p></div>
+                        </button>
+                      </div>
+                    </>
+                  )}
+                  {chatMode === "chat" && (
+                    <>
+                      <button onClick={() => setChatMode("choose")} className="text-[#e6e6e6] text-xs mb-2 cursor-pointer hover:text-white">← Back</button>
+                      <div className="h-[200px] overflow-y-auto space-y-2 mb-2 pr-1">
+                        {chatMessages.map((m, i) => (
+                          <div key={i} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
+                            <div className={`max-w-[85%] px-3 py-2 rounded-xl text-xs ${m.from === "user" ? "bg-[#00c853] text-[#0a0a0a]" : "bg-white/10 text-white/90"}`}>{m.text}</div>
+                          </div>
+                        ))}
+                        {chatLoading && <div className="flex justify-start"><div className="bg-white/10 text-white/60 px-3 py-2 rounded-xl text-xs">Typing...</div></div>}
+                      </div>
+                      <div className="flex gap-2">
+                        <input value={chatMsg} onChange={(e) => setChatMsg(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendChat()} placeholder="Ask me anything..." aria-label="Chat message" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853]" />
+                        <button onClick={sendChat} disabled={chatLoading} aria-label="Send message" className="bg-[#00c853] text-[#0a0a0a] px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer hover:bg-[#00e676] transition disabled:opacity-50">Send</button>
+                      </div>
+                    </>
+                  )}
+                  {chatMode === "call" && (
+                    <div className="text-center py-2">
+                      <button onClick={() => setChatMode("choose")} className="text-[#e6e6e6] text-xs mb-3 cursor-pointer hover:text-white block mx-auto">← Back</button>
+                      <a href={EMAIL_HREF} className="block w-full bg-[#00c853] text-[#0a0a0a] py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2">📧 Email Us</a>
+                      <p className="text-[#e6e6e6] text-xs">Mon-Sat 8AM-8PM</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Draggable FAB button. Lives in its own fixed-position
+                container so the panel above can be placed independently. */}
+            <div className={`fixed z-40 select-none ${hidden ? "hidden" : ""}`} style={fabContainerStyle}>
+              <button
+                onPointerDown={(e) => {
+                  const target = e.currentTarget;
+                  const rect = target.getBoundingClientRect();
+                  fabDrag.current = {
+                    startX: e.clientX,
+                    startY: e.clientY,
+                    origX: rect.left,
+                    origY: rect.top,
+                    moved: false,
+                  };
+                  target.setPointerCapture(e.pointerId);
+                }}
+                onPointerMove={(e) => {
+                  const drag = fabDrag.current;
+                  if (!drag) return;
+                  const dx = e.clientX - drag.startX;
+                  const dy = e.clientY - drag.startY;
+                  if (!drag.moved && Math.abs(dx) + Math.abs(dy) < 6) return;
+                  drag.moved = true;
+                  const w = 56; const h = 56;
+                  const nx = Math.max(4, Math.min(window.innerWidth - w - 4, drag.origX + dx));
+                  const ny = Math.max(4, Math.min(window.innerHeight - h - 4, drag.origY + dy));
+                  setFabPos({ x: nx, y: ny });
+                }}
+                onPointerUp={(e) => {
+                  const drag = fabDrag.current;
+                  fabDrag.current = null;
+                  try { e.currentTarget.releasePointerCapture(e.pointerId); } catch {}
+                  if (!drag) return;
+                  if (drag.moved) {
+                    try {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      localStorage.setItem("tcc_fab_pos", JSON.stringify({ x: rect.left, y: rect.top }));
+                    } catch {}
+                    return;
+                  }
+                  setChatOpen(!chatOpen);
+                }}
+                aria-label={chatOpen ? "Close chat" : "Open chat — drag to move"}
+                className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-[rgba(0,200,83,0.45)] lg:bg-[#00c853] text-white lg:text-[#0a0a0a] flex items-center justify-center shadow-[0_8px_22px_rgba(0,0,0,0.45)] backdrop-blur-md border border-[#00c853]/40 lg:border-transparent hover:bg-[rgba(0,230,118,0.65)] lg:hover:bg-[#00e676] transition tap-press touch-none"
+                style={{ cursor: fabDrag.current?.moved ? "grabbing" : "grab" }}
+              >
+                {chatOpen ? (
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                ) : (
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                )}
+              </button>
             </div>
-          </div>
-        )}
-        <button
-          onPointerDown={(e) => {
-            const target = e.currentTarget;
-            const rect = target.getBoundingClientRect();
-            fabDrag.current = {
-              startX: e.clientX,
-              startY: e.clientY,
-              origX: rect.left,
-              origY: rect.top,
-              moved: false,
-            };
-            target.setPointerCapture(e.pointerId);
-          }}
-          onPointerMove={(e) => {
-            const drag = fabDrag.current;
-            if (!drag) return;
-            const dx = e.clientX - drag.startX;
-            const dy = e.clientY - drag.startY;
-            if (!drag.moved && Math.abs(dx) + Math.abs(dy) < 6) return;
-            drag.moved = true;
-            // Clamp within viewport so the FAB can't escape off-screen.
-            const w = 56; const h = 56;
-            const nx = Math.max(4, Math.min(window.innerWidth - w - 4, drag.origX + dx));
-            const ny = Math.max(4, Math.min(window.innerHeight - h - 4, drag.origY + dy));
-            setFabPos({ x: nx, y: ny });
-          }}
-          onPointerUp={(e) => {
-            const drag = fabDrag.current;
-            fabDrag.current = null;
-            try { e.currentTarget.releasePointerCapture(e.pointerId); } catch {}
-            if (!drag) return;
-            if (drag.moved) {
-              try {
-                const rect = e.currentTarget.getBoundingClientRect();
-                localStorage.setItem("tcc_fab_pos", JSON.stringify({ x: rect.left, y: rect.top }));
-              } catch {}
-              return; // suppress the tap → don't toggle chat after a drag
-            }
-            setChatOpen(!chatOpen);
-          }}
-          aria-label={chatOpen ? "Close chat" : "Open chat — drag to move"}
-          className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-[rgba(0,200,83,0.45)] lg:bg-[#00c853] text-white lg:text-[#0a0a0a] flex items-center justify-center shadow-[0_8px_22px_rgba(0,0,0,0.45)] backdrop-blur-md border border-[#00c853]/40 lg:border-transparent hover:bg-[rgba(0,230,118,0.65)] lg:hover:bg-[#00e676] transition tap-press touch-none"
-          style={{ cursor: fabDrag.current?.moved ? "grabbing" : "grab" }}
-        >
-          {chatOpen ? (
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-          ) : (
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-          )}
-        </button>
-      </div>
+          </>
+        );
+      })()}
 
       {/* CART DRAWER — full-height side panel that slides in from the right.
           Wider than the old popup, sticky header + sticky footer with the
