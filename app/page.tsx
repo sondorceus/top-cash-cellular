@@ -335,14 +335,24 @@ const MACBOOK_AIR_MODELS = [
   { id: "mba_2017", label: "MacBook Air (2017)", base: 0, inquiryOnly: true },
   { id: "mba_2014_2015", label: "MacBook Air (2014–2015)", base: 0, inquiryOnly: true },
 ];
+// MacBook Neo (2026) — new A18 Pro-chip entry-level laptop. Single 13"
+// SKU with 256/512 storage tiers covered by STORAGE_MAP. Base set to
+// the 256GB Atlas Open price (- $250); the storage multiplier on the
+// storage step bumps it for 512GB selections.
+const MACBOOK_NEO_MODELS = [
+  { id: "mbneo13", label: "MacBook Neo 13\" (A18 Pro, 2026)", base: 175 }, // Atlas 256GB $425 - $250
+];
 const MACBOOK_CLASSIC_MODELS = [
   { id: "mb12_2017", label: "MacBook 12\" (2017)", base: 0, inquiryOnly: true },
   { id: "mb12_2016", label: "MacBook 12\" (2016)", base: 0, inquiryOnly: true },
   { id: "mb12_2015", label: "MacBook 12\" (2015)", base: 0, inquiryOnly: true },
 ];
+// Mirrors IWM's MacBook categories: Pro, Air, Neo (new A-chip line),
+// classic 12-inch.
 const MACBOOK_SERIES = [
-  { id: "mbpro", label: "MacBook Pro", year: "M1–M4", topPrice: 1200, image: "/macbook-pro-series.webp", variants: MACBOOK_PRO_MODELS },
-  { id: "mbair", label: "MacBook Air", year: "M1–M3", topPrice: 700, image: "/macbook-air-series.webp", variants: MACBOOK_AIR_MODELS },
+  { id: "mbpro", label: "MacBook Pro", year: "M1–M5", topPrice: 1640, image: "/macbook-pro-series.webp", variants: MACBOOK_PRO_MODELS },
+  { id: "mbair", label: "MacBook Air", year: "M1–M5", topPrice: 700, image: "/macbook-air-series.webp", variants: MACBOOK_AIR_MODELS },
+  { id: "mbneo", label: "MacBook Neo", year: "A18 Pro · 2026", topPrice: 270, image: "/macbook-classic-series.webp", variants: MACBOOK_NEO_MODELS },
   { id: "mbclassic", label: "MacBook", year: "12-inch Retina", topPrice: 0, image: "/macbook-classic-series.webp", variants: MACBOOK_CLASSIC_MODELS, inquiryOnly: true },
 ];
 
@@ -1743,6 +1753,7 @@ const STORAGE_MAP: Record<string, string[]> = {
   mba13m2: ["256", "512"],
   mba13m1: ["256", "512"],
   mbp13m1: ["256", "512"],
+  mbneo13: ["256", "512"],
   // Samsung Computers
   sgbk4u: ["512", "1tb"],
   sgbk4p: ["512", "1tb"],
