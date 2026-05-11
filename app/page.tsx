@@ -2066,6 +2066,7 @@ export default function Home() {
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [expandedConditionTier, setExpandedConditionTier] = useState<number | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMode, setChatMode] = useState<"choose" | "chat" | "call">("choose");
   const [chatMsg, setChatMsg] = useState("");
@@ -3427,20 +3428,80 @@ export default function Home() {
                 <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-1">Used, gently worn, like-new</p>
                 <h2 className="text-2xl md:text-3xl font-bold mb-2 leading-tight">Working devices get top dollar.</h2>
                 <p className="text-[#dcdcdc] text-sm mb-4">Where we pay best: phones that turn on, hold a charge, and have a clean screen. Minor scratches or a faded battery are fine — that&apos;s normal wear. We&apos;ll still look at devices with bigger issues, but the quote reflects the condition. No surprise deductions and no walk-away gimmicks.</p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
-                  {[
-                    { icon: "✨", t: "Like new", note: "Best payout" },
-                    { icon: "👍", t: "Light wear", note: "Top tier" },
-                    { icon: "🪙", t: "Visible wear", note: "Still fair" },
-                    { icon: "🔧", t: "Bigger issues", note: "Honest quote" },
-                  ].map(item => (
-                    <div key={item.t} className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
-                      <p className="text-xl mb-1">{item.icon}</p>
-                      <p className="text-[11px] font-semibold text-white leading-tight">{item.t}</p>
-                      <p className="text-[10px] text-[#00c853] mt-0.5">{item.note}</p>
-                    </div>
-                  ))}
-                </div>
+                {(() => {
+                  const tiers = [
+                    {
+                      icon: "✨", t: "Like new", note: "Best payout",
+                      headline: "Sealed or flawless — the top tier.",
+                      body: "Box-fresh or opened-but-unused condition. No scratches, no scuffs, no display marks. Battery still above 80%. This is where the headline price lives.",
+                      bullets: ["Zero cosmetic wear", "Battery health ≥80%", "Powers on, no functional issues", "Quote pays at 100% of our top rate"],
+                    },
+                    {
+                      icon: "👍", t: "Light wear", note: "Top tier",
+                      headline: "Lived-in but still beautiful.",
+                      body: "Minor scratches visible only up close. Display is still clean — no cracks, no discolouration. Most phones older than 6 months land here, and we still pay close to the headline.",
+                      bullets: ["A few fine micro-scratches", "No cracks or dents", "Display lights up cleanly", "Pays ~85–95% of top rate"],
+                    },
+                    {
+                      icon: "🪙", t: "Visible wear", note: "Still fair",
+                      headline: "Honest wear, honest quote.",
+                      body: "You can see the marks from across the room — scuffs on the frame, deeper scratches on the back. Screen is still intact and the phone works. We&apos;ll buy it, just at a lower rate.",
+                      bullets: ["Scuffs / dents on the frame OK", "Back glass scratched but not cracked", "Screen still clean & functional", "Pays ~60–75% of top rate"],
+                    },
+                    {
+                      icon: "🔧", t: "Bigger issues", note: "Honest quote",
+                      headline: "Cracked, dead, or 'just take it'.",
+                      body: "Cracked display, won&apos;t turn on, water damage, missing parts — we still buy. The quote drops accordingly, but you walk out with cash same day. No salvage runaround.",
+                      bullets: ["Cracked screens fine", "Dead batteries fine", "Water-damaged fine", "Quote reflects the condition — no surprise deductions"],
+                    },
+                  ];
+                  return (
+                    <>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
+                        {tiers.map((item, i) => {
+                          const open = expandedConditionTier === i;
+                          return (
+                            <button
+                              key={item.t}
+                              type="button"
+                              onClick={() => setExpandedConditionTier(open ? null : i)}
+                              aria-expanded={open}
+                              className={`text-center rounded-xl p-3 transition cursor-pointer tap-press border ${open
+                                ? "bg-[#00c853]/15 border-[#00c853]/50 shadow-[0_0_14px_rgba(0,200,83,0.18)]"
+                                : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"}`}
+                            >
+                              <p className="text-xl mb-1">{item.icon}</p>
+                              <p className="text-[11px] font-semibold text-white leading-tight">{item.t}</p>
+                              <p className={`text-[10px] mt-0.5 ${open ? "text-[#00e676]" : "text-[#00c853]"}`}>{item.note}</p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {expandedConditionTier !== null && (() => {
+                        const t = tiers[expandedConditionTier];
+                        return (
+                          <div className="mb-4 bg-[rgba(15,15,15,0.55)] backdrop-blur-[10px] border border-[#00c853]/30 rounded-2xl p-4 animate-[fadeIn_0.25s_ease-out]">
+                            <div className="flex items-start gap-3 mb-2">
+                              <span className="text-3xl shrink-0">{t.icon}</span>
+                              <div className="min-w-0">
+                                <p className="text-white text-sm font-extrabold leading-tight">{t.headline}</p>
+                                <p className="text-[#dcdcdc] text-xs mt-1 leading-snug">{t.body}</p>
+                              </div>
+                            </div>
+                            <ul className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
+                              {t.bullets.map(b => (
+                                <li key={b} className="flex items-start gap-2 text-[#dcdcdc] text-xs leading-snug">
+                                  <span className="text-[#00c853] mt-0.5 shrink-0" style={{ filter: "drop-shadow(0 0 4px rgba(0,200,83,0.45))" }}>✓</span>
+                                  <span>{b}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        );
+                      })()}
+                    </>
+                  );
+                })()}
                 <button onClick={() => { setStep("category"); pushHistory("category"); }} className="inline-flex items-center gap-2 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] px-5 py-2.5 rounded-full text-sm font-bold cursor-pointer transition tap-press">
                   See what your device is worth →
                 </button>
