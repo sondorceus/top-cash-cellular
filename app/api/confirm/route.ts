@@ -175,7 +175,7 @@ ${phone ? `<tr><td style="padding:4px 0;color:#888;font-size:12px">Phone</td><td
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
       const result = await resend.emails.send({
-        from: "Top Cash Cellular <topcash@resend.dev>",
+        from: "Top Cash Cellular <noreply@topcashcellular.com>",
         replyTo: "topcashcellular@gmail.com",
         to: email,
         subject: `Your $${quote} quote for ${model} — Top Cash Cellular`,

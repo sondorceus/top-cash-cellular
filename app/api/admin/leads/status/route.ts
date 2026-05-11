@@ -160,7 +160,7 @@ async function emailStatus(to: string, status: string, ctx: { name?: string; dev
     // been paid. (Inviting at any earlier stage would feel premature.)
     const TRUSTPILOT_BCC = "topcashcellular.com+edf80bdc00@invite.trustpilot.com";
     const r = await resend.emails.send({
-      from: "Top Cash Cellular <topcash@resend.dev>",
+      from: "Top Cash Cellular <noreply@topcashcellular.com>",
       replyTo: "topcashcellular@gmail.com",
       to,
       ...(status === "paid" ? { bcc: TRUSTPILOT_BCC } : {}),
