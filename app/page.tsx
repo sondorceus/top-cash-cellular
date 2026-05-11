@@ -1946,10 +1946,10 @@ const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): numb
 };
 
 const PAYOUTS = [
-  { id: "cash", label: "Cash", icon: "💵" },
-  { id: "cashapp", label: "Cash App", icon: "💚" },
-  { id: "zelle", label: "Zelle", icon: "⚡" },
-  { id: "btc", label: "Bitcoin", icon: "₿" },
+  { id: "cash", label: "Cash" },
+  { id: "cashapp", label: "Cash App" },
+  { id: "zelle", label: "Zelle" },
+  { id: "btc", label: "Bitcoin" },
 ];
 
 const FAQS = [
@@ -5665,10 +5665,9 @@ export default function Home() {
                 <button
                   key={p.id}
                   onClick={() => { setPayout(p); setStep("contact"); pushHistory("contact"); }}
-                  className="flex flex-col items-center justify-center p-7 rounded-2xl tcc-card cursor-pointer min-h-[120px]"
+                  className="flex items-center justify-center p-7 rounded-2xl tcc-card cursor-pointer min-h-[88px]"
                 >
-                  <span className={`text-4xl mb-2.5 payglow-${p.id}`}>{p.icon}</span>
-                  <p className="font-extrabold text-[15px] text-white">{p.label}</p>
+                  <p className="font-extrabold text-[17px] text-white">{p.label}</p>
                 </button>
               ))}
             </div>
