@@ -2180,6 +2180,11 @@ export default function Home() {
   const [returningHint, setReturningHint] = useState<{ name?: string; leadCount: number } | null>(null);
   const [cartItems, setCartItems] = useState<Array<{ model: string; modelId: string; storage: string; condition: string; price: number; quantity: number }>>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  // Bump counter — increments every time an item is added so the cart
+  // icon + badge can re-animate (key change forces remount + keyframe).
+  const [cartBump, setCartBump] = useState(0);
+  // Toast — short-lived confirmation that shows what was just added.
+  const [cartToast, setCartToast] = useState<{ model: string; price: number } | null>(null);
   const [inquiryCategory, setInquiryCategory] = useState("");
   const [inquirySent, setInquirySent] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
@@ -2746,6 +2751,19 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
+      {/* ADD-TO-CART TOAST — fixed top-center on mobile, top-right on lg.
+          Slides up + fades. Auto-dismisses after 2.4s via setTimeout. */}
+      {cartToast && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 lg:left-auto lg:right-6 lg:translate-x-0 z-[60] toast-in-up">
+          <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-[rgba(15,15,15,0.92)] backdrop-blur-[14px] border border-[#00c853]/40 shadow-[0_18px_45px_rgba(0,0,0,0.6),0_0_18px_rgba(0,200,83,0.18)]">
+            <span className="w-7 h-7 rounded-full bg-[#00c853] text-[#0a0a0a] flex items-center justify-center font-extrabold text-sm shrink-0" style={{ boxShadow: "0 0 12px rgba(0,200,83,0.55)" }}>✓</span>
+            <div className="min-w-0">
+              <p className="text-white text-[13px] font-extrabold leading-tight">Added to cart</p>
+              <p className="text-[#dcdcdc] text-[12px] leading-snug truncate max-w-[220px]">{cartToast.model} — <span className="text-[#00c853] font-bold">${cartToast.price}</span></p>
+            </div>
+          </div>
+        </div>
+      )}
       {/* NAV */}
       <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         {/* PROMO STRIP — own row above the logo + menu so it never feels squeezed */}
@@ -2917,17 +2935,20 @@ export default function Home() {
               </svg>
             </a>
 
-            {/* CART — always visible on every screen size */}
+            {/* CART — always visible on every screen size. Bumps + glows
+                when items are added (cartBump key change retriggers the
+                cart-bump keyframe). */}
             <button
+              key={`cart-${cartBump}`}
               onClick={() => setCartOpen(!cartOpen)}
               aria-label="Cart"
-              className="relative w-9 h-9 rounded-full hover:bg-white/10 hover:text-[#00c853] flex items-center justify-center cursor-pointer tap-press transition"
+              className={`relative w-9 h-9 rounded-full hover:bg-white/10 hover:text-[#00c853] flex items-center justify-center cursor-pointer tap-press transition ${cartBump > 0 ? "cart-bump" : ""}`}
             >
               <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
               </svg>
               {cartItems.length > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#00c853] text-[#0a0a0a] text-[10px] font-extrabold flex items-center justify-center shadow-[0_0_5px_rgba(0,200,83,0.4)]">
+                <span key={`badge-${cartBump}`} className={`absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#00c853] text-[#0a0a0a] text-[10px] font-extrabold flex items-center justify-center shadow-[0_0_5px_rgba(0,200,83,0.4)] ${cartBump > 0 ? "badge-pop" : ""}`}>
                   {cartItems.reduce((sum, i) => sum + i.quantity, 0)}
                 </span>
               )}
@@ -4823,6 +4844,9 @@ export default function Home() {
                       if (existing) return prev.map(i => `${i.modelId}-${i.storage}-${i.condition}` === key ? { ...i, quantity: i.quantity + quantity } : i);
                       return [...prev, { model: model.label, modelId: model.id, storage: storage?.label || 'N/A', condition: condition.label, price: quote, quantity }];
                     });
+                    setCartBump(b => b + 1);
+                    setCartToast({ model: model.label, price: quote * quantity });
+                    setTimeout(() => setCartToast(null), 2400);
                   }
                   setStep("checkout"); pushHistory("checkout");
                 }}
