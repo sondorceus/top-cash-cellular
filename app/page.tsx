@@ -2041,6 +2041,7 @@ export default function Home() {
   const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
   const [page, setPage] = useState<"home" | "about" | "privacy" | "terms">("home");
   const [model, setModel] = useState<{ id: string; label: string; base: number; image?: string } | null>(null);
+  const [helpTopic, setHelpTopic] = useState<"storage" | "carrier" | null>(null);
   const [storage, setStorage] = useState<typeof ALL_STORAGES[0] | null>(null);
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
@@ -2461,17 +2462,32 @@ export default function Home() {
         <p className="text-[18px] font-bold text-white leading-tight mb-4">{model.label}</p>
         <div className="space-y-2 border-t border-white/10 pt-4">
           {[
-            { label: "Storage",   value: storage?.label,    active: step === "storage" },
-            { label: "Condition", value: condition?.label,  active: step === "condition" },
-            { label: "Carrier",   value: carrier?.label,    active: step === "carrier" },
+            { label: "Storage",   value: storage?.label,    active: step === "storage",   helpId: "storage"  as const },
+            { label: "Condition", value: condition?.label,  active: step === "condition", helpId: null       as null   },
+            { label: "Carrier",   value: carrier?.label,    active: step === "carrier",   helpId: "carrier"  as const },
           ].map(row => (
-            <div key={row.label} className={`flex items-center justify-between text-sm rounded-lg px-3 py-2 transition-all duration-[250ms] ease-out ${row.active ? "bg-[#00c853]/12 border border-[#00c853]" : row.value ? "bg-[rgba(45,45,45,0.6)] border border-white/10" : "border border-transparent"}`}>
-              <span className={`font-bold ${row.active ? "text-[#00c853]" : "text-[#b0b0b0]"}`}>{row.label}</span>
-              <span className={`text-right font-bold ${row.value ? (row.active ? "text-[#00c853]" : "text-white") : "text-[#b0b0b0]"}`}>
-                {row.value || (row.active ? "Selecting…" : "—")}
-              </span>
+            <div key={row.label} className={`text-sm rounded-lg px-3 py-2 transition-all duration-[250ms] ease-out ${row.active ? "bg-[#00c853]/12 border border-[#00c853]" : row.value ? "bg-[rgba(45,45,45,0.6)] border border-white/10" : "border border-transparent"}`}>
+              <div className="flex items-center justify-between">
+                <span className={`font-bold inline-flex items-center gap-1.5 ${row.active ? "text-[#00c853]" : "text-[#b0b0b0]"}`}>
+                  {row.label}
+                  {row.helpId && (
+                    <button type="button" onClick={() => setHelpTopic(helpTopic === row.helpId ? null : row.helpId)} aria-label={`How to find ${row.label}`} className="w-4 h-4 rounded-full bg-white/10 hover:bg-[#00c853] hover:text-[#0a0a0a] flex items-center justify-center text-[10px] font-bold leading-none cursor-pointer transition">i</button>
+                  )}
+                </span>
+                <span className={`text-right font-bold ${row.value ? (row.active ? "text-[#00c853]" : "text-white") : "text-[#b0b0b0]"}`}>
+                  {row.value || (row.active ? "Selecting…" : "—")}
+                </span>
+              </div>
             </div>
           ))}
+        </div>
+        {/* Accurate-quote guarantee badge */}
+        <div className="mt-4 pt-4 border-t border-white/10 flex items-start gap-2.5">
+          <span className="text-[#00c853] text-base leading-none mt-0.5">✓</span>
+          <div>
+            <p className="text-white text-xs font-bold leading-tight">Honored quote guarantee</p>
+            <p className="text-[#b0b0b0] text-[11px] leading-snug mt-0.5">If your device matches the description above, we pay the quoted price — no surprise deductions.</p>
+          </div>
         </div>
       </div>
     </aside>
@@ -2978,6 +2994,65 @@ export default function Home() {
                 Sell Now
               </button>
               <p className="text-center text-[10px] text-[#c5c5c5] mt-3">Austin, TX · Same-day payout</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* HELP MODAL — where to find storage / carrier on each platform */}
+      {helpTopic && (
+        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setHelpTopic(null)}>
+          <div className="bg-[rgba(45,45,45,0.95)] backdrop-blur-[12px] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)]" onClick={(e) => e.stopPropagation()}>
+            <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+              <div>
+                <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em]">How to find</p>
+                <h3 className="text-white text-lg font-bold">{helpTopic === "storage" ? "Your storage size" : "Your carrier status"}</h3>
+              </div>
+              <button onClick={() => setHelpTopic(null)} aria-label="Close" className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press">
+                <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="p-5 space-y-4 text-sm">
+              {helpTopic === "storage" && (
+                <>
+                  <div>
+                    <p className="text-white font-bold mb-1">iPhone</p>
+                    <p className="text-[#b0b0b0] leading-relaxed">Settings → General → About → scroll to <strong className="text-white">Capacity</strong>. The number next to it (e.g. 256 GB) is your storage size.</p>
+                  </div>
+                  <div>
+                    <p className="text-white font-bold mb-1">Samsung Galaxy</p>
+                    <p className="text-[#b0b0b0] leading-relaxed">Settings → Battery and device care → Storage. The total at the top (e.g. 128 GB) is your storage size.</p>
+                  </div>
+                  <div>
+                    <p className="text-white font-bold mb-1">Google Pixel</p>
+                    <p className="text-[#b0b0b0] leading-relaxed">Settings → Storage. The capacity bar shows your total (e.g. 128 GB or 256 GB).</p>
+                  </div>
+                  <div>
+                    <p className="text-white font-bold mb-1">If your phone is off</p>
+                    <p className="text-[#b0b0b0] leading-relaxed">The storage is printed on the original box, or you can look up your IMEI on the carrier&apos;s website.</p>
+                  </div>
+                </>
+              )}
+              {helpTopic === "carrier" && (
+                <>
+                  <div>
+                    <p className="text-white font-bold mb-1">iPhone</p>
+                    <p className="text-[#b0b0b0] leading-relaxed">Settings → General → About → look for <strong className="text-white">Carrier Lock</strong>. &ldquo;No SIM restrictions&rdquo; = Unlocked. Otherwise it shows the carrier name (AT&amp;T, Verizon, T-Mobile).</p>
+                  </div>
+                  <div>
+                    <p className="text-white font-bold mb-1">Samsung Galaxy</p>
+                    <p className="text-[#b0b0b0] leading-relaxed">Settings → Connections → Mobile Networks → Network Operators. If you can switch operators freely, it&apos;s unlocked. Or dial *#7465625# to see the lock status.</p>
+                  </div>
+                  <div>
+                    <p className="text-white font-bold mb-1">Google Pixel</p>
+                    <p className="text-[#b0b0b0] leading-relaxed">Settings → Network &amp; Internet → SIMs → tap your SIM → look at the carrier name. If you bought from Google Store directly, it&apos;s unlocked.</p>
+                  </div>
+                  <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-lg p-3">
+                    <p className="text-[#00c853] font-bold text-xs mb-1">💡 Quick way</p>
+                    <p className="text-[#dcdcdc] text-xs leading-relaxed">Pop in a SIM from a different carrier. If it works, it&apos;s unlocked. If it shows &ldquo;SIM not supported&rdquo;, it&apos;s locked.</p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -4514,8 +4589,11 @@ export default function Home() {
               ))}
             </div>
           )}
-          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-12 pb-8 text-center">
-            <div className="flex items-center justify-center gap-5 mb-2">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-12 pb-8 lg:flex lg:gap-8 lg:items-start lg:text-left text-center">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-center lg:justify-start gap-5 mb-2">
+              <div className="lg:hidden">
               {(() => {
                 const imgMap: Record<string, string> = { ip17e: "/iphone17e.png", ip17pm: "/iphone17.png", ip17p: "/iphone17.png", ip17air: "/iphone17air.png", ip17plus: "/iphone17plus.png", ip17: "/iphone17base.png", ip16pm: "/iphone16.png", ip16p: "/iphone16.png", ip16plus: "/iphone16plus.png", ip16: "/iphone16base.png", ip16e: "/iphone16e.png", ip15pm: "/iphone15.png", ip15p: "/iphone15.png", ip15plus: "/iphone15.png", ip15: "/iphone15base.png", ip14pm: "/iphone14.png", ip14p: "/iphone14.png", ip14plus: "/iphone14plus.png", ip14: "/iphone14base.png", ip13pm: "/iphone13.png", ip13p: "/iphone13.png", ip13: "/iphone13base.png", ip12pm: "/iphone12.png", ip12: "/iphone12base.png", ip12mini: "/iphone12mini.png", ip11pm: "/iphone11.png", ip11: "/iphone11base.png", ipadpro13m5: "/ipadpro.png", ipadpro11m5: "/ipadpro.png", ipad10: "/ipadbase.png", ipad9: "/ipadbase.png", ipadair13m3: "/ipadair.png", ipadair11m3: "/ipadair.png", ipadair13m2: "/ipadair.png", ipadair11m2: "/ipadair.png", ipadmini7: "/ipadmini.png", ipadmini6: "/ipadmini.png" };
                 const isTablet = deviceType === "ipad";
@@ -4526,9 +4604,11 @@ export default function Home() {
                 if (isTablet) return <img src={src} alt={model.label} className={`${sizeClass} object-contain`} />;
                 return <img src={src} alt={model.label} className={`${sizeClass} object-contain`} />;
               })()}
+              </div>
               <div>
-                <p className="text-[#dcdcdc] text-sm font-medium">{model.label} · {storage?.label} · {condition.label}</p>
-                <p className="text-5xl font-bold text-[#00c853] mt-1">${quote * quantity}</p>
+                <p className="text-[#dcdcdc] text-sm font-medium lg:hidden">{model.label} · {storage?.label} · {condition.label}</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1 hidden lg:block">Your offer</p>
+                <p className="text-5xl lg:text-6xl font-bold text-[#00c853] mt-1">${quote * quantity}</p>
                 {promoApplies && promo && (
                   <p className="text-[10px] mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎉 +{promo.percent}% promo applied</p>
                 )}
@@ -4721,6 +4801,7 @@ export default function Home() {
             <button onClick={reset} className="mt-4 text-[#dcdcdc] text-sm cursor-pointer hover:text-white transition">
               Start new quote
             </button>
+            </div>
           </div>
         </section>
       )}
