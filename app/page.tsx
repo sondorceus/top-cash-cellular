@@ -6340,6 +6340,20 @@ export default function Home() {
                 </button>
               </div>
 
+              {/* Bulk-tier suggestion — once the user has 4+ devices in the
+                  cart we surface the bulk-selling path. They might get better
+                  per-device terms or expedited processing for higher volume. */}
+              {itemCount >= 4 && (
+                <a
+                  href="/bulk"
+                  className="block mx-6 mt-4 rounded-2xl bg-[#00c853]/15 border border-[#00c853]/40 px-4 py-3 transition hover:bg-[#00c853]/22 shadow-[0_0_18px_rgba(0,200,83,0.18)]"
+                >
+                  <p className="text-[#00c853] text-[10px] font-extrabold uppercase tracking-[0.18em]">Looks like a bulk sell</p>
+                  <p className="text-white text-sm font-extrabold leading-tight mt-1">{itemCount} devices in your box — consider our bulk program</p>
+                  <p className="text-[#e6e6e6] text-xs mt-1 leading-snug">Higher volume can mean expedited processing and a dedicated rep. Tap to explore →</p>
+                </a>
+              )}
+
               {/* SCROLLABLE BODY */}
               <div className="flex-1 overflow-y-auto px-6 py-5">
                 {cartItems.length === 0 ? (
