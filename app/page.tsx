@@ -2096,6 +2096,10 @@ export default function Home() {
   const [helpTopic, setHelpTopic] = useState<"storage" | "carrier" | null>(null);
   const [loginError, setLoginError] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
+  // Declared up here (instead of next to the other funnel-selection states)
+  // because funnelTotal/funnelStepNum below need to read connectivity.id to
+  // know whether the iPad Cellular branch should count as 5 steps.
+  const [connectivity, setConnectivity] = useState<typeof CONNECTIVITY[0] | null>(null);
 
   // Funnel progress indicator data — mapped from current step to (n / total).
   // New order: condition -> storage -> carrier -> quote.
@@ -2109,16 +2113,22 @@ export default function Home() {
     deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch" ||
     deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" ||
     deviceType === "dji";
-  // Phones: condition -> storage -> carrier -> quote (4)
-  // iPads:  condition -> connectivity -> storage -> quote (4)
-  // Other:  condition -> storage -> quote (3)
-  // No-storage: condition -> quote (2)
-  const funnelTotal = isNoStorageDevice ? 2 : (isPhoneFlow || isIpadFlow ? 4 : 3);
+  // Phones:          condition -> storage -> carrier -> quote (4)
+  // iPad Wi-Fi:      condition -> connectivity -> storage -> quote (4)
+  // iPad Cellular:   condition -> connectivity -> storage -> carrier -> quote (5)
+  // Other:           condition -> storage -> quote (3)
+  // No-storage:      condition -> quote (2)
+  const isIpadCellular = isIpadFlow && connectivity?.id === "cellular";
+  const funnelTotal = isNoStorageDevice
+    ? 2
+    : isIpadCellular
+      ? 5
+      : (isPhoneFlow || isIpadFlow ? 4 : 3);
   const funnelStepNum =
     step === "condition" ? 1 :
     step === "connectivity" ? 2 :
     step === "storage" ? (isIpadFlow ? 3 : 2) :
-    step === "carrier" ? 3 :
+    step === "carrier" ? (isIpadFlow ? 4 : 3) :
     step === "quote" ? funnelTotal : 0;
   const stepProgress = funnelStepNum > 0 && (
     <div className="mb-4 hidden lg:block">
@@ -2132,7 +2142,6 @@ export default function Home() {
   );
   const [storage, setStorage] = useState<typeof ALL_STORAGES[0] | null>(null);
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
-  const [connectivity, setConnectivity] = useState<typeof CONNECTIVITY[0] | null>(null);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [expandedConditionTier, setExpandedConditionTier] = useState<number | null>(null);
@@ -4860,7 +4869,8 @@ export default function Home() {
                         key={s.id}
                         onClick={() => {
                           setStorage(s);
-                          const ns = (deviceType === "iphone" || deviceType === "android" || deviceType === "pixel") ? "carrier" : "quote";
+                          const isPhone = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
+                          const ns: Step = (isPhone || isIpadCellular) ? "carrier" : "quote";
                           if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
                           setStep(ns); pushHistory(ns);
                         }}
@@ -5008,7 +5018,7 @@ export default function Home() {
             {selectionPanelMobile}
             <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Carrier status?</h2>
             {stepProgress}
-            <p className="text-[#dcdcdc] text-sm mb-6">Is your phone unlocked or locked to a carrier?</p>
+            <p className="text-[#dcdcdc] text-sm mb-6">{deviceType === "ipad" ? "Is your iPad unlocked or locked to a carrier?" : "Is your phone unlocked or locked to a carrier?"}</p>
             <div className="tcc-selection-frame">
               <div className="space-y-2">
                 {CARRIERS.map((c) => (
