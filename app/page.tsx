@@ -296,11 +296,15 @@ const LG_PHONE_SERIES = [
 ];
 
 const MACBOOK_PRO_MODELS = [
-  { id: "mbp16_m5pmax_2026", label: "MacBook Pro 16\" M5 Pro/Max (2026)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m4.webp" },
-  { id: "mbp14_m5pmax_2026", label: "MacBook Pro 14\" M5 Pro/Max (2026)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m4.webp" },
-  { id: "mbp14_m5_2025", label: "MacBook Pro 14\" M5 (2025)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m4.webp" },
-  { id: "mbp16m4", label: "MacBook Pro 16\" M4 (2024)", base: 1200, image: "/devices/macbook-pro-m4.webp" },
-  { id: "mbp14m4", label: "MacBook Pro 14\" M4 (2024)", base: 1000, image: "/devices/macbook-pro-m4.webp" },
+  // Bases rebased 2026-05-11 against Atlas Mobile price sheet for MacBook
+  // — formula: Atlas's lowest 'Open' variant per model line minus $250
+  // (midpoint of Skywalker's $200-$300 rule). Older models (M3, M2 Pro/13,
+  // M1 Pro) are NOT on Atlas — left at prior bases pending comp study.
+  { id: "mbp16_m5pmax_2026", label: "MacBook Pro 16\" M5 Pro/Max (2026)", base: 1640, image: "/devices/macbook-pro-m4.webp" }, // Atlas $1,890
+  { id: "mbp14_m5pmax_2026", label: "MacBook Pro 14\" M5 Pro/Max (2026)", base: 1260, image: "/devices/macbook-pro-m4.webp" }, // Atlas $1,510
+  { id: "mbp14_m5_2025", label: "MacBook Pro 14\" M5 (2025)", base: 985, image: "/devices/macbook-pro-m4.webp" }, // Atlas $1,235
+  { id: "mbp16m4", label: "MacBook Pro 16\" M4 (2024)", base: 1375, image: "/devices/macbook-pro-m4.webp" }, // Atlas $1,625, was 1200
+  { id: "mbp14m4", label: "MacBook Pro 14\" M4 (2024)", base: 725, image: "/devices/macbook-pro-m4.webp" }, // Atlas $975, was 1000 (we were overpaying)
   { id: "mbp16m3", label: "MacBook Pro 16\" M3 (2023)", base: 950, image: "/devices/macbook-pro-m3.webp" },
   { id: "mbp14m3", label: "MacBook Pro 14\" M3 (2023)", base: 800, image: "/devices/macbook-pro-m3.webp" },
   { id: "mbp16m2", label: "MacBook Pro 16\" M2 (2023)", base: 750, image: "/devices/macbook-pro-m2.webp" },
@@ -314,12 +318,14 @@ const MACBOOK_PRO_MODELS = [
   { id: "mbp_retina_2014", label: "MacBook Pro Retina 13\"/15\" (2014)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m1.webp" },
 ];
 const MACBOOK_AIR_MODELS = [
-  { id: "mba_m5_2026", label: "MacBook Air M5 (13\" & 15\", 2026)", base: 0, inquiryOnly: true },
+  // Bases rebased 2026-05-11 against Atlas Mobile sheet — Atlas Open price
+  // minus $250. M3 Air not listed on Atlas; left at prior base.
+  { id: "mba_m5_2026", label: "MacBook Air M5 (13\" & 15\", 2026)", base: 625, image: "/devices/macbook-air-m3.webp" }, // Atlas avg M5 13/15 - 250
   { id: "mba15m3", label: "MacBook Air 15\" M3 (2024)", base: 700, image: "/devices/macbook-air-m3.webp" },
   { id: "mba13m3", label: "MacBook Air 13\" M3 (2024)", base: 600, image: "/devices/macbook-air-m3.webp" },
   { id: "mba15m2", label: "MacBook Air 15\" M2 (2023)", base: 550, image: "/devices/macbook-air-m2.webp" },
-  { id: "mba13m2", label: "MacBook Air 13\" M2 (2022)", base: 480, image: "/devices/macbook-air-m2.webp" },
-  { id: "mba13m1", label: "MacBook Air 13\" M1 (2020)", base: 350, image: "/devices/macbook-air-m1.webp" },
+  { id: "mba13m2", label: "MacBook Air 13\" M2 (2022)", base: 280, image: "/devices/macbook-air-m2.webp" }, // Atlas $530, was 480
+  { id: "mba13m1", label: "MacBook Air 13\" M1 (2020)", base: 200, image: "/devices/macbook-air-m1.webp" }, // Atlas $450, was 350
   { id: "mba_intel_2020", label: "MacBook Air Intel (2020)", base: 0, inquiryOnly: true },
   { id: "mba_retina_2018_2019", label: "MacBook Air Retina (2018–2019)", base: 0, inquiryOnly: true },
   { id: "mba_2017", label: "MacBook Air (2017)", base: 0, inquiryOnly: true },
