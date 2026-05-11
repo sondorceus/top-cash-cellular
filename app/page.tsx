@@ -4701,30 +4701,22 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-12 pb-8 lg:flex lg:gap-8 lg:items-start lg:text-left text-center">
             {selectionPanel}
             <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-center lg:justify-start gap-5 mb-2">
-              <div className="lg:hidden">
-              {(() => {
-                const imgMap: Record<string, string> = { ip17e: "/iphone17e.png", ip17pm: "/iphone17.png", ip17p: "/iphone17.png", ip17air: "/iphone17air.png", ip17plus: "/iphone17plus.png", ip17: "/iphone17base.png", ip16pm: "/iphone16.png", ip16p: "/iphone16.png", ip16plus: "/iphone16plus.png", ip16: "/iphone16base.png", ip16e: "/iphone16e.png", ip15pm: "/iphone15.png", ip15p: "/iphone15.png", ip15plus: "/iphone15.png", ip15: "/iphone15base.png", ip14pm: "/iphone14.png", ip14p: "/iphone14.png", ip14plus: "/iphone14plus.png", ip14: "/iphone14base.png", ip13pm: "/iphone13.png", ip13p: "/iphone13.png", ip13: "/iphone13base.png", ip12pm: "/iphone12.png", ip12: "/iphone12base.png", ip12mini: "/iphone12mini.png", ip11pm: "/iphone11.png", ip11: "/iphone11base.png", ipadpro13m5: "/ipadpro.png", ipadpro11m5: "/ipadpro.png", ipad10: "/ipadbase.png", ipad9: "/ipadbase.png", ipadair13m3: "/ipadair.png", ipadair11m3: "/ipadair.png", ipadair13m2: "/ipadair.png", ipadair11m2: "/ipadair.png", ipadmini7: "/ipadmini.png", ipadmini6: "/ipadmini.png" };
-                const isTablet = deviceType === "ipad";
-                const fallbackImg = isTablet ? "/ipad.png" : null;
-                const src = imgMap[model.id] || fallbackImg;
-                const sizeClass = isTablet ? "w-28 h-28" : "w-20 h-20";
-                if (!src) return null;
-                if (isTablet) return <img src={src} alt={model.label} className={`${sizeClass} object-contain`} />;
-                return <img src={src} alt={model.label} className={`${sizeClass} object-contain`} />;
-              })()}
-              </div>
-              <div>
-                <p className="text-[#dcdcdc] text-sm font-medium lg:hidden">{model.label} · {storage?.label} · {condition.label}</p>
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1 hidden lg:block">Your offer</p>
-                <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853] mt-1" style={{ textShadow: "0 0 15px rgba(0, 200, 83, 0.45), 0 0 30px rgba(0, 200, 83, 0.2)" }}>${quote * quantity}</p>
-                {promoApplies && promo && (
-                  <p className="text-[10px] mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎉 +{promo.percent}% promo applied</p>
-                )}
-                {couponPercent > 0 && (
-                  <p className="text-[10px] mt-1 ml-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎟️ {couponLabel} +{couponPercent}%</p>
-                )}
-              </div>
+            {/* Mobile: IWM-style 'Sell Your X' card (device thumb + editable
+                rows + 'Your device is valued at $X' price band) so the
+                quote step matches the same selectionPanelMobile pattern
+                used on every other funnel step. */}
+            {selectionPanelMobile}
+            <div className="hidden lg:block mb-2">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Your offer</p>
+              <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853] mt-1" style={{ textShadow: "0 0 15px rgba(0, 200, 83, 0.45), 0 0 30px rgba(0, 200, 83, 0.2)" }}>${quote * quantity}</p>
+            </div>
+            <div className="flex items-center justify-center lg:justify-start flex-wrap gap-1 mb-2">
+              {promoApplies && promo && (
+                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎉 +{promo.percent}% promo applied</p>
+              )}
+              {couponPercent > 0 && (
+                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎟️ {couponLabel} +{couponPercent}%</p>
+              )}
             </div>
             {quantity > 1 && <p className="text-[#dcdcdc] text-sm mb-2">${quote} each × {quantity}</p>}
             {quantity === 1 && <div className="mb-3" />}
