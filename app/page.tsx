@@ -2090,14 +2090,22 @@ export default function Home() {
   const [loginLoading, setLoginLoading] = useState(false);
 
   // Funnel progress indicator data — mapped from current step to (n / total).
-  // Phones go through carrier (4 steps), other devices skip it (3 steps).
+  // New order: condition -> storage -> carrier -> quote.
+  // Phones run the full 4 steps (have carrier). Non-phones skip carrier (3).
+  // No-storage devices (watches, consoles, vr, drones) skip storage AND
+  // carrier — only condition -> quote (2 steps).
   const isPhoneFlow = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
-  const funnelTotal = isPhoneFlow ? 4 : 3;
+  const isNoStorageDevice =
+    deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" ||
+    deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch" ||
+    deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" ||
+    deviceType === "dji";
+  const funnelTotal = isNoStorageDevice ? 2 : (isPhoneFlow ? 4 : 3);
   const funnelStepNum =
-    step === "storage" ? 1 :
-    step === "condition" ? 2 :
+    step === "condition" ? 1 :
+    step === "storage" ? 2 :
     step === "carrier" ? 3 :
-    step === "quote" ? (isPhoneFlow ? 4 : 3) : 0;
+    step === "quote" ? funnelTotal : 0;
   const stepProgress = funnelStepNum > 0 && (
     <div className="mb-4 hidden lg:block">
       <div className="flex items-center gap-3 mb-1.5">
@@ -2113,6 +2121,10 @@ export default function Home() {
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [expandedConditionTier, setExpandedConditionTier] = useState<number | null>(null);
+  // 'What qualifies?' modal — opened by clicking the small "i" on a
+  // condition tile. Modal shows the tier's bullet list without expanding
+  // the tile itself so all condition boxes stay the same height.
+  const [conditionHelpId, setConditionHelpId] = useState<string | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMode, setChatMode] = useState<"choose" | "chat" | "call">("choose");
   const [chatMsg, setChatMsg] = useState("");
@@ -2403,10 +2415,12 @@ export default function Home() {
     if (step === "model") { if (category) { setStep("brand"); } else { setStep("category"); } setDeviceType(null); }
     else if (step === "brand") { setStep("category"); setCategory(null); }
     else if (step === "category") { setStep("device"); }
-    else if (step === "storage") { setStep("model"); setModel(null); }
-    else if (step === "condition") { if (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" || deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch" || deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr") { setStep("model"); setModel(null); } else { setStep("storage"); setStorage(null); } }
-    else if (step === "carrier") { setStep("condition"); setCondition(null); }
-    else if (step === "quote") { if (carrier) { setStep("carrier"); setCarrier(null); } else { setStep("condition"); setCondition(null); } }
+    // New funnel order: model -> condition -> storage -> carrier -> quote
+    // (storage is skipped for no-storage devices; carrier is skipped for non-phones)
+    else if (step === "condition") { setStep("model"); setModel(null); }
+    else if (step === "storage") { setStep("condition"); setCondition(null); }
+    else if (step === "carrier") { setStep("storage"); setStorage(null); }
+    else if (step === "quote") { if (carrier) { setStep("carrier"); setCarrier(null); } else if (storage) { setStep("storage"); setStorage(null); } else { setStep("condition"); setCondition(null); } }
     else if (step === "checkout") setStep("quote");
     else if (step === "payout") setStep("checkout");
     else if (step === "contact") setStep("payout"); pushHistory("payout");
@@ -2498,16 +2512,17 @@ export default function Home() {
       onClick: () => { setModel(null); setStorage(null); setCondition(null); setCarrier(null); setStep("model"); pushHistory("model"); },
     });
   }
+  // New order: model -> condition -> storage -> carrier
   if (model) breadcrumbs.push({
     label: model.label,
-    onClick: () => { setStorage(null); setCondition(null); setCarrier(null); setStep("storage"); pushHistory("storage"); },
-  });
-  if (storage) breadcrumbs.push({
-    label: storage.label,
-    onClick: () => { setCondition(null); setCarrier(null); setStep("condition"); pushHistory("condition"); },
+    onClick: () => { setStorage(null); setCondition(null); setCarrier(null); setStep("condition"); pushHistory("condition"); },
   });
   if (condition) breadcrumbs.push({
     label: condition.label,
+    onClick: () => { setStorage(null); setCarrier(null); setStep("storage"); pushHistory("storage"); },
+  });
+  if (storage) breadcrumbs.push({
+    label: storage.label,
     onClick: () => { setCarrier(null); const next = (deviceType === "iphone" || deviceType === "android" || deviceType === "pixel") ? "carrier" : "quote"; setStep(next); pushHistory(next); },
   });
   if (carrier) breadcrumbs.push({
@@ -2574,20 +2589,20 @@ export default function Home() {
                 </button>
               </div>
             )}
-            {carrier && (
-              <div className="flex items-center justify-between py-3">
-                <span className="text-[#a0a0a0] text-sm">Carrier</span>
-                <button onClick={editRow("carrier")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
-                  {carrier.label}
-                  <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                </button>
-              </div>
-            )}
             {storage && (
               <div className="flex items-center justify-between py-3">
                 <span className="text-[#a0a0a0] text-sm">Storage Size</span>
                 <button onClick={editRow("storage")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
                   {storage.label}
+                  <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                </button>
+              </div>
+            )}
+            {carrier && (
+              <div className="flex items-center justify-between py-3">
+                <span className="text-[#a0a0a0] text-sm">Carrier</span>
+                <button onClick={editRow("carrier")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                  {carrier.label}
                   <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                 </button>
               </div>
@@ -2619,8 +2634,8 @@ export default function Home() {
         <p className="text-[22px] font-extrabold text-white leading-tight mb-4">{model.label}</p>
         <div className="space-y-2 border-t border-white/10 pt-4">
           {[
-            { label: "Storage",   value: storage?.label,    active: step === "storage",   helpId: "storage"  as const },
             { label: "Condition", value: condition?.label,  active: step === "condition", helpId: null       as null   },
+            { label: "Storage",   value: storage?.label,    active: step === "storage",   helpId: "storage"  as const },
             { label: "Carrier",   value: carrier?.label,    active: step === "carrier",   helpId: "carrier"  as const },
           ].map(row => (
             <div key={row.label} className={`rounded-lg px-3 py-2.5 transition-all duration-[250ms] ease-out ${row.active ? "bg-[#00c853]/12 border border-[#00c853]" : row.value ? "bg-[rgba(15,15,15,0.5)] border border-white/10" : "border border-transparent"}`}>
@@ -2771,8 +2786,8 @@ export default function Home() {
                       if (h.seriesId) setSelectedSeries(h.seriesId);
                       setModel({ id: h.modelId, label: h.label, base: h.base });
                       setSearchQuery("");
-                      setStep("storage");
-                      pushHistory("storage");
+                      setStep("condition");
+                      pushHistory("condition");
                     }}
                     className="w-full text-left px-4 py-2.5 hover:bg-white/5 transition flex items-center gap-3 border-b border-white/5 last:border-0 cursor-pointer"
                   >
@@ -3183,6 +3198,36 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* CONDITION HELP MODAL — 'What qualifies?' details for a condition
+          tier, triggered by the tiny "i" on each condition tile. */}
+      {conditionHelpId && (() => {
+        const c = CONDITIONS.find(x => x.id === conditionHelpId);
+        if (!c) return null;
+        return (
+          <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setConditionHelpId(null)}>
+            <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6),0_0_20px_rgba(0,200,83,0.15)]" onClick={(e) => e.stopPropagation()}>
+              <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+                <div className="min-w-0">
+                  <p className="text-[#00c853] text-[10px] font-extrabold uppercase tracking-[0.18em]">What qualifies as</p>
+                  <h3 className="text-white text-lg font-extrabold leading-tight mt-0.5">{c.label} <span className="text-[#dcdcdc] text-sm font-medium">— {c.desc}</span></h3>
+                </div>
+                <button onClick={() => setConditionHelpId(null)} aria-label="Close" className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press shrink-0">
+                  <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+              <ul className="p-5 space-y-2.5">
+                {(c as { details?: string[] }).details?.map((d, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-[#e8e8e8] text-sm leading-snug">
+                    <span className="text-[#00c853] mt-0.5 shrink-0" style={{ filter: "drop-shadow(0 0 4px rgba(0,200,83,0.5))" }}>✓</span>
+                    <span>{d}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* HELP MODAL — where to find storage / carrier on each platform */}
       {helpTopic && (
@@ -4109,7 +4154,7 @@ export default function Home() {
                     const seriesImg = IPHONE_SERIES.find(s => s.id === selectedSeries);
                     const imgSrc = (m as { image?: string }).image || ({ip17pm:"/iphone17.png",ip17p:"/iphone17.png",ip17air:"/iphone17air.png",ip17:"/iphone17base.png",ip17e:"/iphone17e.png",ip16pm:"/iphone16.png",ip16p:"/iphone16.png",ip16plus:"/iphone16plus.png",ip16:"/iphone16base.png",ip16e:"/iphone16e.png",ip15pm:"/iphone15.png",ip15p:"/iphone15.png",ip15plus:"/iphone15.png",ip15:"/iphone15base.png",ip14pm:"/iphone14.png",ip14p:"/iphone14.png",ip14plus:"/iphone14plus.png",ip14:"/iphone14base.png",ip13pm:"/iphone13.png",ip13p:"/iphone13.png",ip13:"/iphone13base.png",ip12pm:"/iphone12.png",ip12p:"/iphone12.png",ip12:"/iphone12base.png",ip12mini:"/iphone12mini.png",ip11pm:"/iphone11.png",ip11p:"/iphone11.png",ip11:"/iphone11base.png"} as Record<string,string>)[m.id] || (seriesImg as {image?:string})?.image || null;
                     return (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       {imgSrc && <img src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
@@ -4130,7 +4175,7 @@ export default function Home() {
                   {models.map((m) => {
                     const mImage = (m as { image?: string }).image;
                     return (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       {mImage ? (
                         <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                       ) : (
@@ -4182,7 +4227,7 @@ export default function Home() {
                       return (
                         <button key={m.id} onClick={() => {
                           if (inq) { setInquiryCategory("MacBook"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
-                          else { setModel(m); setStep("storage"); pushHistory("storage"); }
+                          else { setModel(m); setStep("condition"); pushHistory("condition"); }
                         }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                           {mImg ? (
                             <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
@@ -4209,7 +4254,7 @@ export default function Home() {
                   {models.map((m) => {
                     const mImg = (m as { image?: string }).image;
                     return (
-                      <button key={m.id} onClick={() => { setModel(m); setStep("storage"); pushHistory("storage"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                      <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         {mImg ? (
                           <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-12 object-contain shrink-0" />
                         ) : (
@@ -4563,7 +4608,7 @@ export default function Home() {
                     return (
                       <button key={m.id} onClick={() => {
                         if (inq) { setInquiryCategory(category === "computers" ? "Laptop" : "Desktop"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
-                        else { setModel(m); setStep("storage"); pushHistory("storage"); }
+                        else { setModel(m); setStep("condition"); pushHistory("condition"); }
                       }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer tap-press">
                         {mImg ? (
                           <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain mb-1.5" />
@@ -4584,7 +4629,7 @@ export default function Home() {
                     return (
                       <button key={m.id} onClick={() => {
                         if (inq) { setInquiryCategory(category === "computers" ? "Laptop" : "Desktop"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
-                        else { setModel(m); setStep("storage"); pushHistory("storage"); }
+                        else { setModel(m); setStep("condition"); pushHistory("condition"); }
                       }} className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         {mImg ? (
                           <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
@@ -4638,7 +4683,7 @@ export default function Home() {
                     return (
                       <button key={m.id} onClick={() => {
                         if (inq) { setInquiryCategory(deviceType === "sony" ? "PlayStation" : "Console"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
-                        else { setModel(m); const ns = (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" || deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch") ? "condition" : "storage"; setStep(ns); pushHistory(ns); }
+                        else { setModel(m); setStep("condition"); pushHistory("condition"); }
                       }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         <p className="font-semibold text-[15px]">{m.label}</p>
                         <div className="flex items-center gap-2">
@@ -4678,7 +4723,12 @@ export default function Home() {
                     return (
                       <button
                         key={s.id}
-                        onClick={() => { setStorage(s); setStep("condition"); pushHistory("condition"); }}
+                        onClick={() => {
+                          setStorage(s);
+                          const ns = (deviceType === "iphone" || deviceType === "android" || deviceType === "pixel") ? "carrier" : "quote";
+                          if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
+                          setStep(ns); pushHistory(ns);
+                        }}
                         className="tcc-card w-full flex items-center justify-between px-5 py-4 rounded-2xl cursor-pointer text-left"
                       >
                         <div className="flex items-center gap-3">
@@ -4727,26 +4777,27 @@ export default function Home() {
               {getConditionsFor(deviceType).map((c) => (
                 <button
                   key={c.id}
-                  onClick={(e) => {
-                    if ((e.target as HTMLElement).closest('details') || (e.target as HTMLElement).closest('summary')) return;
-                    setCondition(c); const cs = (deviceType === "iphone" || deviceType === "android" || deviceType === "pixel") ? "carrier" : "quote"; if (cs === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); } setStep(cs); pushHistory(cs);
+                  onClick={() => {
+                    setCondition(c);
+                    const ns = isNoStorageDevice ? "quote" : "storage";
+                    if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
+                    setStep(ns); pushHistory(ns);
                   }}
                   className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
                 >
-                  <div className="flex-1">
-                    <p className="font-extrabold text-[15px] text-white leading-tight">{c.label}</p>
-                    <p className="text-[#b0b0b0] text-[12px] leading-snug">{c.desc}</p>
-                    {(c as { details?: string[] }).details && (
-                      <details className="mt-2">
-                        <summary className="inline-flex items-center gap-1.5 text-[#00c853] text-xs cursor-pointer hover:underline list-none">
-                          <span className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none">i</span>
-                          What qualifies?
-                        </summary>
-                        <ul className="mt-1.5 space-y-1 text-[#c5c5c5] text-xs list-disc list-inside">
-                          {(c as { details?: string[] }).details!.map((d, i) => <li key={i}>{d}</li>)}
-                        </ul>
-                      </details>
-                    )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="font-extrabold text-[15px] text-white leading-tight">{c.label}</p>
+                      {(c as { details?: string[] }).details && (
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setConditionHelpId(c.id); }}
+                          aria-label={`What qualifies as ${c.label}`}
+                          className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none shrink-0 hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
+                        >i</button>
+                      )}
+                    </div>
+                    <p className="text-[#b0b0b0] text-[12px] leading-snug mt-0.5">{c.desc}</p>
                   </div>
                   <svg className="w-4 h-4 text-[#dcdcdc] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
