@@ -127,19 +127,24 @@ function CarrierIcon({ id, className = "" }: { id: CarrierIconId; className?: st
 }
 
 const IPHONE_SERIES = [
-  { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 825, variants: [
-    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 825, image: "/devices/iphone-17-pro-max-test.png" },
-    { id: "ip17p", label: "iPhone 17 Pro", base: 715, image: "/devices/iphone-17-pro-test.png" },
-    { id: "ip17air", label: "iPhone 17 Air", base: 475, image: "/devices/iphone-17-air-test.png" },
-    { id: "ip17", label: "iPhone 17", base: 455, image: "/devices/iphone-17-test.png" },
-    { id: "ip17e", label: "iPhone 17E", base: 190, image: "/iphone17e.png" },
+  // Bases refreshed 2026-05-11 against the Atlas weekly sheet. Rule:
+  // base = (sheet Open / Unlocked / max-storage price - \$175) / max_storage_mult.
+  // Net ceiling on each variant lands ~\$150-200 below Atlas's max payout —
+  // our margin per device. topPrice mirrors the new base for the legacy
+  // marquee display.
+  { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 929, variants: [
+    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 929, image: "/devices/iphone-17-pro-max-test.png" },
+    { id: "ip17p", label: "iPhone 17 Pro", base: 707, image: "/devices/iphone-17-pro-test.png" },
+    { id: "ip17air", label: "iPhone 17 Air", base: 489, image: "/devices/iphone-17-air-test.png" },
+    { id: "ip17", label: "iPhone 17", base: 428, image: "/devices/iphone-17-test.png" },
+    { id: "ip17e", label: "iPhone 17E", base: 212, image: "/iphone17e.png" },
   ]},
-  { id: "16", label: "iPhone 16", image: "/iphone16.png", year: "2024", topPrice: 490, variants: [
-    { id: "ip16pm", label: "iPhone 16 Pro Max", base: 490, image: "/devices/iphone-16-pro-max-test.png" },
-    { id: "ip16p", label: "iPhone 16 Pro", base: 390, image: "/devices/bm/iphone-16-pro.png" },
-    { id: "ip16plus", label: "iPhone 16 Plus", base: 320, image: "/devices/iphone-16-plus-test.png" },
-    { id: "ip16", label: "iPhone 16", base: 300, image: "/devices/bm/iphone-16.png" },
-    { id: "ip16e", label: "iPhone 16E", base: 145, image: "/devices/iphone-16e-test.png" },
+  { id: "16", label: "iPhone 16", image: "/iphone16.png", year: "2024", topPrice: 629, variants: [
+    { id: "ip16pm", label: "iPhone 16 Pro Max", base: 629, image: "/devices/iphone-16-pro-max-test.png" },
+    { id: "ip16p", label: "iPhone 16 Pro", base: 525, image: "/devices/bm/iphone-16-pro.png" },
+    { id: "ip16plus", label: "iPhone 16 Plus", base: 324, image: "/devices/iphone-16-plus-test.png" },
+    { id: "ip16", label: "iPhone 16", base: 276, image: "/devices/bm/iphone-16.png" },
+    { id: "ip16e", label: "iPhone 16E", base: 204, image: "/devices/iphone-16e-test.png" },
   ]},
   { id: "15", label: "iPhone 15", image: "/iphone15.png", year: "2023", topPrice: 290, variants: [
     { id: "ip15pm", label: "iPhone 15 Pro Max", base: 290, image: "/devices/bm/iphone-15-pro-max.png" },
