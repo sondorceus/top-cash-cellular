@@ -2470,31 +2470,72 @@ export default function Home() {
   // storage / condition / carrier steps so they can always see what they're
   // selling. Inspired by IWM but with our spin: bordered card, soft green
   // accent border, selected fields go bold-green as they're picked.
-  // Mobile counterpart — compact right-aligned chip pinned at the TOP of
-  // each funnel step (right under the Back button), not the bottom.
-  // No 'Storage / Condition / Carrier' labels — just the values, dot-
-  // separated, so it reads as a single quick reference. Keeps the
-  // glass-rim look so it matches the rest of the system.
+  // Mobile counterpart — full-width glass card laid out like IWM's mobile
+  // 'Sell Your X' panel. Device thumb top-left, 'Sell Your [model]' header
+  // top-right. Selection rows below (Condition / Carrier / Storage), each
+  // with a pencil edit button that jumps back to that step so the user
+  // can change a choice without resetting the whole flow. Heavy 3D outline:
+  // outer border + inset top-left highlight + deep drop shadow.
+  const editRow = (target: "storage" | "condition" | "carrier") => () => {
+    setStep(target);
+    pushHistory(target);
+  };
   const selectionPanelMobile = model && (
-    <div className="lg:hidden flex justify-end mb-3">
-      <div className="inline-flex items-center gap-3 rounded-full bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/12 shadow-[inset_1px_1px_0_rgba(255,255,255,0.06),0_6px_18px_rgba(0,0,0,0.5)] pl-1.5 pr-3 py-1.5 max-w-full">
-        <div className="w-9 h-9 rounded-full bg-[rgba(45,45,45,0.7)] border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
+    <div className="lg:hidden mb-4 rounded-2xl bg-[rgba(15,15,15,0.78)] backdrop-blur-[12px] border border-white/15 p-4 shadow-[inset_1px_1px_0_rgba(255,255,255,0.1),0_18px_45px_rgba(0,0,0,0.75),0_0_0_1px_rgba(0,200,83,0.08)]">
+      {/* TOP — device thumb + 'Sell Your X' header */}
+      <div className="flex items-center gap-4">
+        <div className="w-20 h-20 rounded-xl bg-[rgba(15,15,15,0.5)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden shadow-[inset_1px_1px_0_rgba(255,255,255,0.08),0_4px_10px_rgba(0,0,0,0.45)]">
           {model.image ? (
             <img src={model.image} alt="" className="max-w-full max-h-full object-contain" />
           ) : (
-            <span className="text-base opacity-50">📱</span>
+            <span className="text-3xl opacity-50">📱</span>
           )}
         </div>
-        <div className="min-w-0">
-          <p className="text-white font-extrabold text-[13px] leading-tight truncate">{model.label}</p>
-          <p className="text-[#a0a0a0] text-[11px] truncate leading-tight mt-0.5">
-            {[storage?.label, condition?.label, carrier?.label, payout?.label].filter(Boolean).join(" · ") || "Selecting…"}
-          </p>
+        <div className="flex-1 min-w-0">
+          <p className="text-[#a0a0a0] text-xs font-medium">Sell Your</p>
+          <p className="text-white font-extrabold text-xl leading-tight mt-0.5">{model.label}</p>
         </div>
-        {(step === "quote" || step === "checkout" || step === "payout" || step === "contact") && (
-          <p className="text-[#00c853] font-extrabold text-base shrink-0 pl-2 border-l border-white/10">${quote * quantity}</p>
-        )}
       </div>
+      {/* ROWS — only render rows that have a value. Each row has a pencil
+          edit button that jumps back to that step. */}
+      {(storage || condition || carrier) && (
+        <div className="divide-y divide-white/10 border-t border-white/10 mt-4">
+          {condition && (
+            <div className="flex items-center justify-between py-3">
+              <span className="text-[#a0a0a0] text-sm">Condition</span>
+              <button onClick={editRow("condition")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                {condition.label}
+                <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+              </button>
+            </div>
+          )}
+          {carrier && (
+            <div className="flex items-center justify-between py-3">
+              <span className="text-[#a0a0a0] text-sm">Carrier</span>
+              <button onClick={editRow("carrier")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                {carrier.label}
+                <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+              </button>
+            </div>
+          )}
+          {storage && (
+            <div className="flex items-center justify-between py-3">
+              <span className="text-[#a0a0a0] text-sm">Storage Size</span>
+              <button onClick={editRow("storage")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                {storage.label}
+                <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+      {/* BOTTOM — price reveal once we're past the carrier step */}
+      {(step === "quote" || step === "checkout" || step === "payout" || step === "contact") && (
+        <div className="border-t border-white/10 mt-2 pt-4 text-center">
+          <p className="text-[#a0a0a0] text-sm">Your device is valued at</p>
+          <p className="text-[#00c853] font-extrabold text-4xl mt-1" style={{ textShadow: "0 0 15px rgba(0,200,83,0.45)" }}>${quote * quantity}</p>
+        </div>
+      )}
     </div>
   );
 
@@ -4483,13 +4524,11 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-3 mb-6">
-                <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                  Back
-                </button>
-                {selectionPanelMobile}
-              </div>
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
               <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Storage capacity?</h2>
               {stepProgress}
               <div className="space-y-2">
@@ -4517,13 +4556,11 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-3 mb-6">
-              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                Back
-              </button>
-              {selectionPanelMobile}
-            </div>
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+            {selectionPanelMobile}
             <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Select Condition</h2>
             {stepProgress}
             <button className="text-[#00c853] text-xs font-medium mb-4 cursor-pointer hover:underline" onClick={() => { const el = document.getElementById('condition-guide'); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }}>How to assess condition</button>
@@ -4614,13 +4651,11 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-3 mb-6">
-              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                Back
-              </button>
-              {selectionPanelMobile}
-            </div>
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+            {selectionPanelMobile}
             <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Carrier status?</h2>
             {stepProgress}
             <p className="text-[#dcdcdc] text-sm mb-6">Is your phone unlocked or locked to a carrier?</p>
@@ -4888,13 +4923,11 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-3 mb-6">
-              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                Back
-              </button>
-              {selectionPanelMobile}
-            </div>
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+            {selectionPanelMobile}
 
             <h2 className="text-2xl font-bold mb-1">Checkout</h2>
 
@@ -4996,13 +5029,11 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-3 mb-6">
-              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                Back
-              </button>
-              {selectionPanelMobile}
-            </div>
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+            {selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
             <p className="text-[#dcdcdc] text-sm mb-6">Select your preferred payout method</p>
             <div className="grid grid-cols-2 gap-3">
@@ -5028,13 +5059,11 @@ export default function Home() {
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-3 mb-6">
-              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                Back
-              </button>
-              {selectionPanelMobile}
-            </div>
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+            {selectionPanelMobile}
 
             {returningHint && returningHint.leadCount > 0 && (
               <div className="bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 mb-5 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
