@@ -3124,7 +3124,7 @@ export default function Home() {
               </svg>
               {cartItems.length > 0 && (
                 <span key={`badge-${cartBump}`} className={`absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#00c853] text-[#0a0a0a] text-[10px] font-extrabold flex items-center justify-center shadow-[0_0_5px_rgba(0,200,83,0.4)] ${cartBump > 0 ? "badge-pop" : ""}`}>
-                  {cartItems.reduce((sum, i) => sum + i.quantity, 0)}
+                  {cartItems.length}
                 </span>
               )}
             </button>
@@ -5285,11 +5285,14 @@ export default function Home() {
                     setCartItems(prev => {
                       const key = `${model.id}-${storage?.label || ''}-${condition.label}`;
                       const existing = prev.find(i => `${i.modelId}-${i.storage}-${i.condition}` === key);
-                      if (existing) return prev.map(i => `${i.modelId}-${i.storage}-${i.condition}` === key ? { ...i, quantity: i.quantity + quantity } : i);
-                      return [...prev, { model: model.label, modelId: model.id, storage: storage?.label || 'N/A', condition: condition.label, price: quote, quantity }];
+                      // No more increment-on-readd — quantity is always 1
+                      // per cart line now that we removed the +/- controls.
+                      // Re-adding the same config just refreshes the price.
+                      if (existing) return prev.map(i => `${i.modelId}-${i.storage}-${i.condition}` === key ? { ...i, price: quote, quantity: 1 } : i);
+                      return [...prev, { model: model.label, modelId: model.id, storage: storage?.label || 'N/A', condition: condition.label, price: quote, quantity: 1 }];
                     });
                     setCartBump(b => b + 1);
-                    setCartToast({ model: model.label, price: quote * quantity });
+                    setCartToast({ model: model.label, price: quote });
                     setTimeout(() => setCartToast(null), 2400);
                   }
                   // Open the cart drawer first — IWM-style. The user can
@@ -6220,8 +6223,10 @@ export default function Home() {
           Wider than the old popup, sticky header + sticky footer with the
           total + Checkout CTA. Matches the rest of the site's glass aesthetic. */}
       {cartOpen && (() => {
-        const itemCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
-        const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+        const itemCount = cartItems.length;
+        // Quantity is always 1 per cart line now (no +/- controls). Each
+        // item contributes just its own price to the total.
+        const total = cartItems.reduce((sum, i) => sum + i.price, 0);
         return (
           <>
             <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]" onClick={() => setCartOpen(false)} />
@@ -6265,7 +6270,7 @@ export default function Home() {
                           <button onClick={() => setCartItems(prev => prev.filter((_, idx) => idx !== i))} aria-label="Remove from cart" className="text-[#b8b8b8] hover:text-red-400 text-xs font-bold underline-offset-2 hover:underline transition cursor-pointer shrink-0">Remove</button>
                         </div>
                         <div className="flex items-center justify-end gap-3 mt-3 pt-3 border-t border-white/10">
-                          <p className="text-[#00c853] font-extrabold text-xl" style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price * item.quantity}</p>
+                          <p className="text-[#00c853] font-extrabold text-xl" style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price}</p>
                         </div>
                       </div>
                     ))}
