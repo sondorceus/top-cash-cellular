@@ -1868,6 +1868,21 @@ const CARRIERS = [
   { id: "other", label: "Other / Locked", multiplier: 0.85, icon: "🔒" },
 ];
 
+// Top multipliers — used by `getMaxPrice` to render the true ceiling
+// price on each variant card. base is the lowest-config price; the
+// max quote multiplies by top storage × top condition × top carrier.
+const TOP_CONDITION_MULT = Math.max(...CONDITIONS.map(c => c.multiplier));
+const TOP_CARRIER_MULT = Math.max(...CARRIERS.map(c => c.multiplier));
+const getMaxStorageMult = (modelId: string): number => {
+  const sids = STORAGE_MAP[modelId];
+  if (!sids || sids.length === 0) return 1;
+  return Math.max(...sids.map(sid => ALL_STORAGES.find(s => s.id === sid)?.multiplier ?? 1));
+};
+const getMaxPrice = (m: { id: string; base?: number }): number => {
+  if (!m.base) return 0;
+  return Math.round(m.base * getMaxStorageMult(m.id) * TOP_CONDITION_MULT * TOP_CARRIER_MULT);
+};
+
 const PAYOUTS = [
   { id: "cash", label: "Cash", icon: "💵" },
   { id: "cashapp", label: "Cash App", icon: "💚" },
@@ -4076,7 +4091,7 @@ export default function Home() {
                       {imgSrc && <img src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">Up to ${m.base}</span>
+                        <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m)}</span>
                         <svg className="w-4 h-4 text-[#dcdcdc]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
@@ -4101,7 +4116,7 @@ export default function Home() {
                       )}
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">Up to ${m.base}</span>
+                        <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m)}</span>
                         <svg className="w-4 h-4 text-[#dcdcdc]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
@@ -4154,7 +4169,7 @@ export default function Home() {
                           )}
                           <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                           <div className="flex items-center gap-2">
-                            <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${m.base}`}</span>
+                            <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m)}`}</span>
                             <svg className="w-4 h-4 text-[#dcdcdc]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                           </div>
                         </button>
@@ -4180,7 +4195,7 @@ export default function Home() {
                         )}
                         <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                         <div className="flex items-center gap-2">
-                          <span className="text-[#00c853] font-bold text-sm">Up to ${m.base}</span>
+                          <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m)}</span>
                           <svg className="w-4 h-4 text-[#dcdcdc]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
                       </button>
@@ -4534,7 +4549,7 @@ export default function Home() {
                           <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
                         )}
                         <p className="font-bold text-sm text-center leading-tight">{m.label}</p>
-                        <p className="text-[#00c853] font-bold text-xs mt-0.5">{inq ? "Get a quote" : `Up to $${m.base}`}</p>
+                        <p className="text-[#00c853] font-bold text-xs mt-0.5">{inq ? "Get a quote" : `Up to $${getMaxPrice(m)}`}</p>
                       </button>
                     );
                   })}
@@ -4556,7 +4571,7 @@ export default function Home() {
                         )}
                         <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                         <div className="flex items-center gap-2">
-                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${m.base}`}</span>
+                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m)}`}</span>
                           <svg className="w-4 h-4 text-[#dcdcdc]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
                       </button>
@@ -4605,7 +4620,7 @@ export default function Home() {
                       }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         <p className="font-semibold text-[15px]">{m.label}</p>
                         <div className="flex items-center gap-2">
-                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${(m as { base?: number }).base ?? 0}`}</span>
+                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m as { id: string; base?: number })}`}</span>
                           <svg className="w-4 h-4 text-[#dcdcdc]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
                       </button>
