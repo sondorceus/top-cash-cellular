@@ -2144,18 +2144,25 @@ export default function Home() {
     deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch" ||
     deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" ||
     deviceType === "dji";
-  // Phones:          condition -> storage -> carrier -> carrier-lock -> quote (5)
-  // iPad Wi-Fi:      condition -> connectivity -> storage -> quote (4)
-  // iPad Cellular:   condition -> connectivity -> storage -> carrier -> carrier-lock -> quote (6)
-  // Other:           condition -> storage -> quote (3)
-  // No-storage:      condition -> quote (2)
+  // Carrier-lock step only fires for Verizon (only carrier with a real
+  // 60-day lock policy worth asking about). Other carriers skip it and
+  // are treated as unlocked. This makes the funnel one step shorter for
+  // most users.
   const isIpadCellular = isIpadFlow && connectivity?.id === "cellular";
+  const carrierAsksLock = carrier?.id === "verizon";
+  // Phones (non-Verizon): condition -> storage -> carrier -> quote (4)
+  // Phones (Verizon):     condition -> storage -> carrier -> carrier-lock -> quote (5)
+  // iPad Wi-Fi:           condition -> connectivity -> storage -> quote (4)
+  // iPad Cellular non-Vz: condition -> connectivity -> storage -> carrier -> quote (5)
+  // iPad Cellular Vz:     condition -> connectivity -> storage -> carrier -> carrier-lock -> quote (6)
+  // Other:                condition -> storage -> quote (3)
+  // No-storage:           condition -> quote (2)
   const funnelTotal = isNoStorageDevice
     ? 2
     : isPhoneFlow
-      ? 5
+      ? (carrierAsksLock ? 5 : 4)
       : isIpadCellular
-        ? 6
+        ? (carrierAsksLock ? 6 : 5)
         : isIpadFlow
           ? 4
           : 3;
@@ -5083,7 +5090,21 @@ export default function Home() {
                 {CARRIERS.map((c) => (
                   <button
                     key={c.id}
-                    onClick={() => { setCarrier(c); setStep("carrier-lock"); pushHistory("carrier-lock"); }}
+                    onClick={() => {
+                      setCarrier(c);
+                      // Only Verizon has a real 60-day lock policy worth asking
+                      // about; for any other carrier we skip the lock step and
+                      // treat the device as unlocked (multiplier = 1.0).
+                      if (c.id === "verizon") {
+                        setCarrierLock(null);
+                        setStep("carrier-lock"); pushHistory("carrier-lock");
+                      } else {
+                        setCarrierLock(null);
+                        setShowConfetti(true);
+                        setTimeout(() => setShowConfetti(false), 3000);
+                        setStep("quote"); pushHistory("quote");
+                      }
+                    }}
                     className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
                   >
                     <p className="font-extrabold text-[15px] text-white flex-1 leading-tight">{c.label}</p>
