@@ -3202,7 +3202,7 @@ export default function Home() {
   // with a pencil edit button that jumps back to that step so the user
   // can change a choice without resetting the whole flow. Heavy 3D outline:
   // outer border + inset top-left highlight + deep drop shadow.
-  const editRow = (target: "storage" | "condition" | "carrier" | "connectivity" | "carrier-lock") => () => {
+  const editRow = (target: "storage" | "condition" | "carrier" | "connectivity" | "carrier-lock" | "processor" | "memory" | "displayglass" | "batteryhealth" | "charger") => () => {
     setStep(target);
     pushHistory(target);
   };
@@ -3241,13 +3241,58 @@ export default function Home() {
             selections are made. Each row has a pencil edit button that
             jumps back to that step so the user can change a pick without
             resetting the flow. */}
-        {(storage || condition || carrier || carrierLock || connectivity) && (
+        {(storage || condition || carrier || carrierLock || connectivity || processor || memory || displayGlass || batteryHealth || charger) && (
           <div className="divide-y divide-white/10 border-t border-white/10 mt-3">
+            {processor && (
+              <div className="flex items-center justify-between py-1.5">
+                <span className="text-[#b8b8b8] text-xs">Processor</span>
+                <button onClick={editRow("processor")} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                  {processor.label}
+                  <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                </button>
+              </div>
+            )}
+            {memory && (
+              <div className="flex items-center justify-between py-1.5">
+                <span className="text-[#b8b8b8] text-xs">Memory</span>
+                <button onClick={editRow("memory")} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                  {memory.label}
+                  <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                </button>
+              </div>
+            )}
+            {displayGlass && (
+              <div className="flex items-center justify-between py-1.5">
+                <span className="text-[#b8b8b8] text-xs">Display</span>
+                <button onClick={editRow("displayglass")} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                  {displayGlass.label}
+                  <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                </button>
+              </div>
+            )}
             {condition && (
               <div className="flex items-center justify-between py-1.5">
                 <span className="text-[#b8b8b8] text-xs">Condition</span>
                 <button onClick={editRow("condition")} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
                   {condition.label}
+                  <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                </button>
+              </div>
+            )}
+            {batteryHealth && (
+              <div className="flex items-center justify-between py-1.5">
+                <span className="text-[#b8b8b8] text-xs">Battery</span>
+                <button onClick={editRow("batteryhealth")} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                  {batteryHealth.label}
+                  <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                </button>
+              </div>
+            )}
+            {charger && (
+              <div className="flex items-center justify-between py-1.5">
+                <span className="text-[#b8b8b8] text-xs">Charger</span>
+                <button onClick={editRow("charger")} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                  {charger.label}
                   <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                 </button>
               </div>
@@ -3324,9 +3369,14 @@ export default function Home() {
         <p className="text-[22px] font-extrabold text-white leading-tight mb-4">{model.label}</p>
         <div className="space-y-2 border-t border-white/10 pt-4">
           {[
-            { label: "Condition",    value: condition?.label,    active: step === "condition",    helpId: null       as null,    show: true },
-            { label: "Connectivity", value: connectivity?.label, active: step === "connectivity", helpId: null       as null,    show: deviceType === "ipad" },
+            { label: "Processor",    value: processor?.label,    active: step === "processor",    helpId: null       as null,    show: macSpecFlow },
+            { label: "Memory",       value: memory?.label,       active: step === "memory",       helpId: null       as null,    show: macSpecFlow },
             { label: "Storage",      value: storage?.label,      active: step === "storage",      helpId: "storage"  as const,   show: !isNoStorageDevice },
+            { label: "Display",      value: displayGlass?.label, active: step === "displayglass", helpId: null       as null,    show: macSpecFlow && macHasGlassStep },
+            { label: "Condition",    value: condition?.label,    active: step === "condition",    helpId: null       as null,    show: true },
+            { label: "Battery",      value: batteryHealth?.label, active: step === "batteryhealth", helpId: null     as null,    show: macSpecFlow },
+            { label: "Charger",      value: charger?.label,      active: step === "charger",      helpId: null       as null,    show: macSpecFlow },
+            { label: "Connectivity", value: connectivity?.label, active: step === "connectivity", helpId: null       as null,    show: deviceType === "ipad" },
             { label: "Carrier",      value: carrier?.label,      active: step === "carrier",      helpId: "carrier"  as const,   show: isPhoneFlow || isIpadCellular },
             { label: "Carrier Lock", value: carrierLock?.label,  active: step === "carrier-lock", helpId: null       as null,    show: isPhoneFlow || isIpadCellular },
           ].filter(row => row.show).map(row => (
