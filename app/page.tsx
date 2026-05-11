@@ -6115,64 +6115,101 @@ export default function Home() {
         </button>
       </div>
 
-      {/* CART POPUP — opens from the nav cart icon. Backdrop closes on click outside. */}
-      {cartOpen && (
-        <>
-          <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px]" onClick={() => setCartOpen(false)} />
-          <div className="fixed top-[68px] right-3 lg:right-8 z-50 w-[340px] max-w-[calc(100vw-1.5rem)] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-            <div className="bg-[#00c853] px-4 py-3 flex items-center justify-between">
-              <p className="text-black font-semibold text-sm">
-                Your Cart ({cartItems.reduce((sum, i) => sum + i.quantity, 0)} {cartItems.reduce((sum, i) => sum + i.quantity, 0) === 1 ? "item" : "items"})
-              </p>
-              <button onClick={() => setCartOpen(false)} aria-label="Close cart" className="text-black/70 hover:text-black cursor-pointer text-xl font-bold leading-none">×</button>
-            </div>
-            <div className="p-4 max-h-[60vh] overflow-y-auto">
-              {cartItems.length === 0 ? (
-                <div className="text-center py-8">
-                  <div className="text-4xl mb-2">🛒</div>
-                  <p className="text-white text-sm font-semibold">Your cart is empty</p>
-                  <p className="text-[#d4d4d4] text-xs mt-1">Get a quote and add a device to stack the +10% bulk bonus.</p>
-                  <button onClick={() => { setCartOpen(false); setStep("category"); pushHistory("category"); }} className="mt-4 inline-flex items-center gap-2 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] px-4 py-2 rounded-full text-sm font-bold cursor-pointer transition tap-press">
-                    Get a quote →
-                  </button>
+      {/* CART DRAWER — full-height side panel that slides in from the right.
+          Wider than the old popup, sticky header + sticky footer with the
+          total + Checkout CTA. Matches the rest of the site's glass aesthetic. */}
+      {cartOpen && (() => {
+        const itemCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
+        const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+        return (
+          <>
+            <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]" onClick={() => setCartOpen(false)} />
+            <aside
+              className="fixed top-0 right-0 bottom-0 z-50 w-full sm:w-[460px] lg:w-[520px] bg-[rgba(10,10,10,0.97)] backdrop-blur-[14px] border-l border-white/10 shadow-[0_0_60px_rgba(0,0,0,0.7)] flex flex-col"
+              style={{ animation: "slideInRight 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both" }}
+            >
+              {/* HEADER */}
+              <div className="px-6 py-5 border-b border-white/10 flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#00c853]">Your Box</p>
+                  <h2 className="text-white text-2xl font-extrabold leading-tight mt-0.5">{itemCount === 0 ? "Empty" : `${itemCount} ${itemCount === 1 ? "device" : "devices"}`}</h2>
                 </div>
-              ) : (
-                <>
+                <button onClick={() => setCartOpen(false)} aria-label="Close cart" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press shrink-0">
+                  <svg className="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+
+              {/* SCROLLABLE BODY */}
+              <div className="flex-1 overflow-y-auto px-6 py-5">
+                {cartItems.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-center px-4">
+                    <div className="w-20 h-20 rounded-full bg-[#00c853]/10 border border-[#00c853]/30 flex items-center justify-center mb-4">
+                      <svg className="w-10 h-10 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>
+                    </div>
+                    <p className="text-white text-lg font-extrabold mb-1">Your box is empty</p>
+                    <p className="text-[#c8c8c8] text-sm leading-snug mb-5">Add a device to lock in your quote — you can stack multiple devices in one box.</p>
+                    <button onClick={() => { setCartOpen(false); setStep("category"); pushHistory("category"); }} className="tcc-button-primary px-6 py-3 text-sm font-extrabold">
+                      Sell a device →
+                    </button>
+                  </div>
+                ) : (
                   <div className="space-y-3">
                     {cartItems.map((item, i) => (
-                      <div key={i} className="bg-white/5 rounded-xl p-3 border border-white/10">
-                        <div className="flex items-center justify-between mb-1">
-                          <p className="font-semibold text-sm text-white">{item.model}</p>
-                          <button onClick={() => setCartItems(prev => prev.filter((_, idx) => idx !== i))} className="text-[#e6e6e6] hover:text-red-400 text-xs cursor-pointer">Remove</button>
-                        </div>
-                        <p className="text-[#e6e6e6] text-xs">{item.storage} · {item.condition}</p>
-                        <div className="flex items-center justify-between mt-2">
-                          <div className="flex items-center gap-2">
-                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it))} className="w-6 h-6 rounded bg-white/10 text-white text-xs flex items-center justify-center cursor-pointer hover:bg-white/20">−</button>
-                            <span className="text-white text-sm font-semibold">{item.quantity}</span>
-                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it))} className="w-6 h-6 rounded bg-white/10 text-white text-xs flex items-center justify-center cursor-pointer hover:bg-white/20">+</button>
+                      <div key={i} className="tcc-card rounded-2xl p-4">
+                        <div className="flex items-start justify-between gap-3 mb-2">
+                          <div className="min-w-0">
+                            <p className="text-white font-extrabold text-[16px] leading-tight">{item.model}</p>
+                            <p className="text-[#c8c8c8] text-[12px] mt-1">{item.storage} · {item.condition}</p>
                           </div>
-                          <p className="text-[#00c853] font-bold text-sm">${item.price * item.quantity}</p>
+                          <button onClick={() => setCartItems(prev => prev.filter((_, idx) => idx !== i))} aria-label="Remove from cart" className="text-[#b8b8b8] hover:text-red-400 text-xs font-bold underline-offset-2 hover:underline transition cursor-pointer shrink-0">Remove</button>
+                        </div>
+                        <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t border-white/10">
+                          <div className="inline-flex items-center gap-2 bg-white/5 rounded-full px-1 py-1">
+                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it))} className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm font-bold flex items-center justify-center cursor-pointer transition">−</button>
+                            <span className="text-white text-sm font-extrabold min-w-[20px] text-center">{item.quantity}</span>
+                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it))} className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm font-bold flex items-center justify-center cursor-pointer transition">+</button>
+                          </div>
+                          <p className="text-[#00c853] font-extrabold text-xl" style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price * item.quantity}</p>
                         </div>
                       </div>
                     ))}
+
+                    {/* Add another device CTA */}
+                    <button onClick={() => { setCartOpen(false); setStep("category"); pushHistory("category"); }} className="w-full mt-2 px-4 py-3 rounded-2xl border border-dashed border-white/20 hover:border-[#00c853]/50 text-[#c8c8c8] hover:text-white text-sm font-bold cursor-pointer transition flex items-center justify-center gap-2">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
+                      Add another device
+                    </button>
                   </div>
-                  <div className="border-t border-white/10 mt-3 pt-3 flex items-center justify-between">
-                    <p className="text-[#e6e6e6] text-sm">Total</p>
-                    <p className="text-[#00c853] font-bold text-lg">${cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0)}</p>
+                )}
+              </div>
+
+              {/* STICKY FOOTER */}
+              {cartItems.length > 0 && (
+                <div className="border-t border-white/10 px-6 py-5 bg-[rgba(10,10,10,0.95)]">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="text-[#b8b8b8] text-[11px] font-bold uppercase tracking-wider">Total payout</p>
+                      <p className="text-[#00c853] font-extrabold text-4xl mt-1" style={{ textShadow: "0 0 10px rgba(0,200,83,0.3)" }}>${total}</p>
+                    </div>
+                    <p className="text-[#c8c8c8] text-xs text-right">{itemCount} {itemCount === 1 ? "device" : "devices"} · Free shipping</p>
                   </div>
                   <button
                     onClick={() => { setCartOpen(false); setStep("checkout"); pushHistory("checkout"); }}
-                    className="w-full mt-3 bg-[#00c853] text-black py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition tap-press"
+                    className="tcc-button-primary w-full py-4 text-base font-extrabold"
                   >
-                    Checkout
+                    Proceed to Checkout →
                   </button>
-                </>
+                  <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+                    <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight">⚡<br />Same-day<br />payout</div>
+                    <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight">🔒<br />On-site<br />data wipe</div>
+                    <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight">💵<br />Cash · Zelle<br />Cash App · BTC</div>
+                  </div>
+                </div>
               )}
-            </div>
-          </div>
-        </>
-      )}
+            </aside>
+          </>
+        );
+      })()}
 
       {/* PROGRESS BAR — shows during flow */}
       {step !== "device" && step !== "done" && page === "home" && (
