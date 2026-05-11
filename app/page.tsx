@@ -6320,32 +6320,57 @@ export default function Home() {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {cartItems.map((item, i) => (
-                      <div key={i} className="tcc-card rounded-2xl p-4">
-                        <div className="flex items-start gap-3 mb-2">
-                          {item.image ? (
-                            <div className="w-14 h-14 rounded-xl bg-[rgba(15,15,15,0.5)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden p-1.5">
-                              <img src={item.image} alt="" className="max-w-full max-h-full object-contain" style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.45))" }} />
+                    {(() => {
+                      // Dynamic shrinking — as more devices land in the cart,
+                      // each row gets a bit tighter so we don't run out of
+                      // viewport. Three tiers: 1 = lg, 2-3 = md, 4+ = sm.
+                      const lineCount = cartItems.length;
+                      const tier = lineCount <= 1 ? "lg" : lineCount <= 3 ? "md" : "sm";
+                      const pad   = tier === "lg" ? "p-4"   : tier === "md" ? "p-3"   : "p-2.5";
+                      const imgW  = tier === "lg" ? "w-14 h-14" : tier === "md" ? "w-12 h-12" : "w-10 h-10";
+                      const titleSz = tier === "lg" ? "text-[15px]" : tier === "md" ? "text-[14px]" : "text-[13px]";
+                      const subSz   = tier === "lg" ? "text-[12px]" : "text-[11px]";
+                      const priceSz = tier === "lg" ? "text-xl"  : tier === "md" ? "text-lg" : "text-base";
+                      const qtyBtn  = tier === "sm" ? "w-6 h-6 text-xs" : "w-7 h-7 text-sm";
+                      // Fallback: look up the device image by modelId in case
+                      // a cart item was stored before we started saving image.
+                      const lookupImage = (modelId: string): string | undefined => {
+                        for (const series of IPHONE_SERIES) {
+                          const v = series.variants.find(x => x.id === modelId);
+                          if (v?.image) return v.image;
+                        }
+                        return undefined;
+                      };
+                      return cartItems.map((item, i) => {
+                        const imgSrc = item.image || lookupImage(item.modelId);
+                        return (
+                          <div key={i} className={`tcc-card rounded-2xl ${pad}`}>
+                            <div className="flex items-start gap-3 mb-2">
+                              <div className={`${imgW} rounded-xl bg-[rgba(15,15,15,0.55)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden p-1.5`}>
+                                {imgSrc ? (
+                                  <img src={imgSrc} alt="" className="max-w-full max-h-full object-contain" style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.45))" }} />
+                                ) : (
+                                  <span className="text-2xl opacity-60">📱</span>
+                                )}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className={`text-white font-extrabold ${titleSz} leading-tight`}>{item.model}</p>
+                                <p className={`text-[#c8c8c8] ${subSz} mt-1`}>{item.storage} · {item.condition}</p>
+                              </div>
+                              <button onClick={() => setCartItems(prev => prev.filter((_, idx) => idx !== i))} aria-label="Remove from cart" className="text-[#b8b8b8] hover:text-red-400 text-xs font-bold underline-offset-2 hover:underline transition cursor-pointer shrink-0">Remove</button>
                             </div>
-                          ) : (
-                            <div className="w-14 h-14 rounded-xl bg-[rgba(15,15,15,0.5)] border border-white/12 flex items-center justify-center shrink-0 text-2xl opacity-60">📱</div>
-                          )}
-                          <div className="min-w-0 flex-1">
-                            <p className="text-white font-extrabold text-[15px] leading-tight">{item.model}</p>
-                            <p className="text-[#c8c8c8] text-[12px] mt-1">{item.storage} · {item.condition}</p>
+                            <div className="flex items-center justify-between gap-3 mt-2 pt-2 border-t border-white/10">
+                              <div className="inline-flex items-center gap-2 bg-white/5 rounded-full px-1 py-1">
+                                <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it))} aria-label="Decrease quantity" className={`${qtyBtn} rounded-full bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center cursor-pointer transition`}>−</button>
+                                <span className="text-white text-sm font-extrabold min-w-[20px] text-center">{item.quantity}</span>
+                                <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it))} aria-label="Increase quantity" className={`${qtyBtn} rounded-full bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center cursor-pointer transition`}>+</button>
+                              </div>
+                              <p className={`text-[#00c853] font-extrabold ${priceSz}`} style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price * item.quantity}</p>
+                            </div>
                           </div>
-                          <button onClick={() => setCartItems(prev => prev.filter((_, idx) => idx !== i))} aria-label="Remove from cart" className="text-[#b8b8b8] hover:text-red-400 text-xs font-bold underline-offset-2 hover:underline transition cursor-pointer shrink-0">Remove</button>
-                        </div>
-                        <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t border-white/10">
-                          <div className="inline-flex items-center gap-2 bg-white/5 rounded-full px-1 py-1">
-                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it))} aria-label="Decrease quantity" className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm font-bold flex items-center justify-center cursor-pointer transition">−</button>
-                            <span className="text-white text-sm font-extrabold min-w-[20px] text-center">{item.quantity}</span>
-                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it))} aria-label="Increase quantity" className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm font-bold flex items-center justify-center cursor-pointer transition">+</button>
-                          </div>
-                          <p className="text-[#00c853] font-extrabold text-xl" style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price * item.quantity}</p>
-                        </div>
-                      </div>
-                    ))}
+                        );
+                      });
+                    })()}
 
                     {/* Add another device CTA */}
                     <button onClick={() => { setCartOpen(false); setStep("category"); pushHistory("category"); }} className="w-full mt-2 px-4 py-3 rounded-2xl border border-dashed border-white/20 hover:border-[#00c853]/50 text-[#c8c8c8] hover:text-white text-sm font-bold cursor-pointer transition flex items-center justify-center gap-2">
