@@ -2061,6 +2061,53 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
     ],
     hasNanoGlass: true,
   },
+  // 2026 14-inch MacBook Pro M5 Pro/Max — same chip tiers as the 16,
+  // with the 15-16C base Pro chip configurable too. Smaller display, no
+  // 8TB SSD option on 14-inch.
+  mbp14_m5pmax_2026: {
+    processors: [
+      { id: "m5pro_15_16", label: "M5 Pro", sub: "15-Core CPU / 16-Core GPU", multiplier: 1.00 },
+      { id: "m5pro_18_20", label: "M5 Pro", sub: "18-Core CPU / 20-Core GPU", multiplier: 1.20 },
+      { id: "m5max_18_32", label: "M5 Max", sub: "18-Core CPU / 32-Core GPU", multiplier: 1.50 },
+      { id: "m5max_18_40", label: "M5 Max", sub: "18-Core CPU / 40-Core GPU", multiplier: 1.70 },
+    ],
+    memory: [
+      { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.00 },
+      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.10 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.18 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.30 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.50 },
+    ],
+    storage: [
+      { id: "1tb", label: "1 TB", sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB", sub: "SSD", multiplier: 1.15 },
+      { id: "4tb", label: "4 TB", sub: "SSD", multiplier: 1.40 },
+      { id: "8tb", label: "8 TB", sub: "SSD", multiplier: 1.75 },
+    ],
+    hasNanoGlass: true,
+  },
+  // 2025 14-inch MacBook Pro M5 (base chip line) — Atlas only lists M5
+  // Pro/Max variants for this gen but the base M5 is configurable too.
+  // No nano glass on the base M5 model.
+  mbp14_m5_2025: {
+    processors: [
+      { id: "m5_10_10",      label: "M5",     sub: "10-Core CPU / 10-Core GPU", multiplier: 1.00 },
+      { id: "m5pro_12_16",   label: "M5 Pro", sub: "12-Core CPU / 16-Core GPU", multiplier: 1.25 },
+      { id: "m5max_14_32",   label: "M5 Max", sub: "14-Core CPU / 32-Core GPU", multiplier: 1.55 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.08 },
+      { id: "36", label: "36 GB", sub: "Unified Memory", multiplier: 1.20 },
+      { id: "48", label: "48 GB", sub: "Unified Memory", multiplier: 1.28 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.20 },
+    ],
+    hasNanoGlass: false,
+  },
 };
 const DISPLAY_GLASS_OPTIONS: MacSpecOption[] = [
   { id: "standard", label: "Standard Glass", multiplier: 1.00 },
