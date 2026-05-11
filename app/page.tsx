@@ -1865,13 +1865,31 @@ function getStoragesForModel(modelId: string) {
   return ALL_STORAGES.filter(s => valid.includes(s.id));
 }
 
+// CARRIERS = which network the phone was bought / activated on. The
+// CARRIER_LOCKS toggle below tracks whether it's actually locked to
+// that network or unlocked. Multiplier comes from the combination —
+// see carrierMultiplierFor() — so the individual constants here just
+// carry the labels.
 const CARRIERS = [
-  { id: "unlocked", label: "Unlocked", multiplier: 1.0, icon: "🔓" },
-  { id: "att", label: "AT&T", multiplier: 0.95, icon: "📶" },
-  { id: "tmobile", label: "T-Mobile", multiplier: 0.95, icon: "📶" },
-  { id: "verizon", label: "Verizon", multiplier: 0.95, icon: "📶" },
-  { id: "other", label: "Other / Locked", multiplier: 0.85, icon: "🔒" },
+  { id: "att", label: "AT&T", icon: "📶" },
+  { id: "tmobile", label: "T-Mobile", icon: "📶" },
+  { id: "verizon", label: "Verizon", icon: "📶" },
+  { id: "other", label: "Other / Prepaid", icon: "📶" },
 ];
+
+const CARRIER_LOCKS = [
+  { id: "no", label: "No — Unlocked", desc: "Works on any carrier" },
+  { id: "yes", label: "Yes — Locked to carrier", desc: "Tied to the carrier above" },
+];
+
+// Combined multiplier: unlocked anything pays the most, big-3 locked
+// pays mid, locked-to-other pays the least.
+const carrierMultiplierFor = (carrierId: string | null | undefined, lockId: string | null | undefined): number => {
+  if (!lockId) return 1; // not picked yet, no penalty
+  if (lockId === "no") return 1.0;
+  if (carrierId === "other") return 0.85;
+  return 0.95;
+};
 
 // iPad connectivity tier — Wi-Fi + Cellular models retain more value
 // because they include the LTE/5G modem + GPS chip. Multiplier applies
@@ -1884,7 +1902,9 @@ const CONNECTIVITY = [
 // Top multipliers — used by `getMaxPrice` to render the true ceiling
 // price on each variant card. base is the lowest-config price; the
 // max quote multiplies by top storage × top condition × top carrier.
-const TOP_CARRIER_MULT = Math.max(...CARRIERS.map(c => c.multiplier));
+// Top carrier-related multiplier — best case is fully unlocked (1.0)
+// regardless of which provider was originally on the phone.
+const TOP_CARRIER_MULT = 1.0;
 
 // Brand New (+15%) only applies to device categories where we have
 // real profit margin — laptops / desktops. Phones, tablets, consoles,
@@ -1931,7 +1951,7 @@ const FAQS = [
   { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
 ];
 
-type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "connectivity" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
+type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "connectivity" | "carrier" | "carrier-lock" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
 const BRAND_LABELS: Record<string, string> = {
   iphone: "iPhone", android: "Samsung", pixel: "Pixel", ipad: "iPad",
   macbook: "MacBook", samsung_pc: "Samsung", lenovo: "Lenovo", dell: "Dell",
@@ -2096,6 +2116,7 @@ export default function Home() {
   const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
   const [selectedSubSeries, setSelectedSubSeries] = useState<string | null>(null);
   const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
+  const [carrierLock, setCarrierLock] = useState<typeof CARRIER_LOCKS[0] | null>(null);
   const [page, setPage] = useState<"home" | "about" | "privacy" | "terms">("home");
   const [model, setModel] = useState<{ id: string; label: string; base: number; image?: string } | null>(null);
   const [helpTopic, setHelpTopic] = useState<"storage" | "carrier" | null>(null);
@@ -2123,22 +2144,27 @@ export default function Home() {
     deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch" ||
     deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" ||
     deviceType === "dji";
-  // Phones:          condition -> storage -> carrier -> quote (4)
+  // Phones:          condition -> storage -> carrier -> carrier-lock -> quote (5)
   // iPad Wi-Fi:      condition -> connectivity -> storage -> quote (4)
-  // iPad Cellular:   condition -> connectivity -> storage -> carrier -> quote (5)
+  // iPad Cellular:   condition -> connectivity -> storage -> carrier -> carrier-lock -> quote (6)
   // Other:           condition -> storage -> quote (3)
   // No-storage:      condition -> quote (2)
   const isIpadCellular = isIpadFlow && connectivity?.id === "cellular";
   const funnelTotal = isNoStorageDevice
     ? 2
-    : isIpadCellular
+    : isPhoneFlow
       ? 5
-      : (isPhoneFlow || isIpadFlow ? 4 : 3);
+      : isIpadCellular
+        ? 6
+        : isIpadFlow
+          ? 4
+          : 3;
   const funnelStepNum =
     step === "condition" ? 1 :
     step === "connectivity" ? 2 :
     step === "storage" ? (isIpadFlow ? 3 : 2) :
     step === "carrier" ? (isIpadFlow ? 4 : 3) :
+    step === "carrier-lock" ? (isIpadFlow ? 5 : 4) :
     step === "quote" ? funnelTotal : 0;
   const stepProgress = funnelStepNum > 0 && (
     <div className="mb-4 hidden lg:block">
@@ -2390,7 +2416,7 @@ export default function Home() {
   }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email]);
 
   const storageMultiplier = storage?.multiplier ?? 1;
-  const carrierMultiplier = carrier?.multiplier ?? 1;
+  const carrierMultiplier = carrierMultiplierFor(carrier?.id, carrierLock?.id);
   const connectivityMultiplier = connectivity?.multiplier ?? 1;
 
   type Promo = { active: boolean; text: string; percent: number; appliesTo: string; minQuantity?: number; flatBonus?: number };
@@ -2459,8 +2485,10 @@ export default function Home() {
     else if (step === "connectivity") { setStep("condition"); setCondition(null); }
     else if (step === "storage") { if (deviceType === "ipad") { setStep("connectivity"); setConnectivity(null); } else { setStep("condition"); setCondition(null); } }
     else if (step === "carrier") { setStep("storage"); setStorage(null); }
+    else if (step === "carrier-lock") { setStep("carrier"); setCarrier(null); }
     else if (step === "quote") {
-      if (carrier) { setStep("carrier"); setCarrier(null); }
+      if (carrierLock) { setStep("carrier-lock"); setCarrierLock(null); }
+      else if (carrier) { setStep("carrier"); setCarrier(null); }
       else if (storage) { setStep("storage"); setStorage(null); }
       else if (connectivity) { setStep("connectivity"); setConnectivity(null); }
       else { setStep("condition"); setCondition(null); }
@@ -2480,6 +2508,7 @@ export default function Home() {
     setStorage(null);
     setCondition(null);
     setCarrier(null);
+    setCarrierLock(null);
     setConnectivity(null);
     setPayout(null);
     setQuantity(1);
@@ -2586,7 +2615,7 @@ export default function Home() {
   // with a pencil edit button that jumps back to that step so the user
   // can change a choice without resetting the whole flow. Heavy 3D outline:
   // outer border + inset top-left highlight + deep drop shadow.
-  const editRow = (target: "storage" | "condition" | "carrier" | "connectivity") => () => {
+  const editRow = (target: "storage" | "condition" | "carrier" | "connectivity" | "carrier-lock") => () => {
     setStep(target);
     pushHistory(target);
   };
@@ -2623,7 +2652,7 @@ export default function Home() {
             selections are made. Each row has a pencil edit button that
             jumps back to that step so the user can change a pick without
             resetting the flow. */}
-        {(storage || condition || carrier || connectivity) && (
+        {(storage || condition || carrier || carrierLock || connectivity) && (
           <div className="divide-y divide-white/10 border-t border-white/10 mt-4">
             {condition && (
               <div className="flex items-center justify-between py-3">
@@ -2661,6 +2690,15 @@ export default function Home() {
                 </button>
               </div>
             )}
+            {carrierLock && (
+              <div className="flex items-center justify-between py-3">
+                <span className="text-[#b8b8b8] text-sm">Carrier Lock</span>
+                <button onClick={editRow("carrier-lock")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                  {carrierLock.label}
+                  <svg className="w-3.5 h-3.5 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                </button>
+              </div>
+            )}
           </div>
         )}
         {/* BOTTOM — price reveal once we're past the carrier step */}
@@ -2692,6 +2730,7 @@ export default function Home() {
             { label: "Connectivity", value: connectivity?.label, active: step === "connectivity", helpId: null       as null,    show: deviceType === "ipad" },
             { label: "Storage",      value: storage?.label,      active: step === "storage",      helpId: "storage"  as const,   show: !isNoStorageDevice },
             { label: "Carrier",      value: carrier?.label,      active: step === "carrier",      helpId: "carrier"  as const,   show: isPhoneFlow || isIpadCellular },
+            { label: "Carrier Lock", value: carrierLock?.label,  active: step === "carrier-lock", helpId: null       as null,    show: isPhoneFlow || isIpadCellular },
           ].filter(row => row.show).map(row => (
             <div key={row.label} className={`rounded-lg px-3 py-2.5 transition-all duration-[250ms] ease-out ${row.active ? "bg-[#00c853]/12 border border-[#00c853]" : row.value ? "bg-[rgba(15,15,15,0.5)] border border-white/10" : "border border-transparent"}`}>
               <div className="flex items-center justify-between gap-2">
@@ -5044,19 +5083,61 @@ export default function Home() {
                 {CARRIERS.map((c) => (
                   <button
                     key={c.id}
-                    onClick={() => { setCarrier(c); setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote"); }}
+                    onClick={() => { setCarrier(c); setStep("carrier-lock"); pushHistory("carrier-lock"); }}
                     className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
                   >
                     <p className="font-extrabold text-[15px] text-white flex-1 leading-tight">{c.label}</p>
-                    {c.id === "unlocked" && (
-                      <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-full shadow-[0_0_8px_rgba(0,200,83,0.35)] shrink-0">Best value</span>
-                    )}
                     <svg className="w-4 h-4 text-[#e6e6e6] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                   </button>
                 ))}
               </div>
             </div>
             <TrustBadge />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: CARRIER LOCK — Yes/No after picking the carrier */}
+      {step === "carrier-lock" && page === "home" && model && condition && carrier && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+              <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Carrier Lock?</h2>
+              <p className="text-[#b8b8b8] text-xs mb-3">Is your {carrier.label} {deviceType === "ipad" ? "iPad" : "phone"} locked to that carrier, or has it been unlocked?</p>
+              {stepProgress}
+              <div className="tcc-selection-frame">
+                <div className="space-y-2">
+                  {CARRIER_LOCKS.map((lock) => (
+                    <button
+                      key={lock.id}
+                      onClick={() => {
+                        setCarrierLock(lock);
+                        setShowConfetti(true);
+                        setTimeout(() => setShowConfetti(false), 3000);
+                        setStep("quote"); pushHistory("quote");
+                      }}
+                      className="tcc-card group w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="font-extrabold text-[15px] text-white leading-tight">{lock.label}</p>
+                        <p className="text-[#b8b8b8] text-[12px] leading-snug mt-0.5">{lock.desc}</p>
+                      </div>
+                      {lock.id === "no" && (
+                        <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-full shadow-[0_0_8px_rgba(0,200,83,0.35)] shrink-0">Best value</span>
+                      )}
+                      <svg className="w-4 h-4 text-[#e6e6e6] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <TrustBadge />
             </div>
           </div>
         </section>
