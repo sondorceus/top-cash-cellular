@@ -128,7 +128,7 @@ function CarrierIcon({ id, className = "" }: { id: CarrierIconId; className?: st
 
 const IPHONE_SERIES = [
   { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 825, variants: [
-    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 825, image: "/devices/iphone-17-pro-max.webp" },
+    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 825, image: "/devices/iphone-17-pro-max-test.png" },
     { id: "ip17p", label: "iPhone 17 Pro", base: 715, image: "/devices/iphone-17-pro.webp" },
     { id: "ip17air", label: "iPhone 17 Air", base: 475, image: "/iphone17air.png" },
     { id: "ip17plus", label: "iPhone 17 Plus", base: 500, image: "/iphone17plus.png" },
