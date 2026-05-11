@@ -2318,7 +2318,7 @@ export default function Home() {
   };
   // Returning-customer hint at the contact step (Option A chunk 3 — server-side detection)
   const [returningHint, setReturningHint] = useState<{ name?: string; leadCount: number } | null>(null);
-  const [cartItems, setCartItems] = useState<Array<{ model: string; modelId: string; storage: string; condition: string; price: number; quantity: number }>>([]);
+  const [cartItems, setCartItems] = useState<Array<{ model: string; modelId: string; storage: string; condition: string; price: number; quantity: number; image?: string }>>([]);
   const [cartOpen, setCartOpen] = useState(false);
   // Bump counter — increments every time an item is added so the cart
   // icon + badge can re-animate (key change forces remount + keyframe).
@@ -3138,7 +3138,7 @@ export default function Home() {
               </svg>
               {cartItems.length > 0 && (
                 <span key={`badge-${cartBump}`} className={`absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#00c853] text-[#0a0a0a] text-[10px] font-extrabold flex items-center justify-center shadow-[0_0_5px_rgba(0,200,83,0.4)] ${cartBump > 0 ? "badge-pop" : ""}`}>
-                  {cartItems.length}
+                  {cartItems.reduce((sum, i) => sum + i.quantity, 0)}
                 </span>
               )}
             </button>
@@ -5299,11 +5299,11 @@ export default function Home() {
                     setCartItems(prev => {
                       const key = `${model.id}-${storage?.label || ''}-${condition.label}`;
                       const existing = prev.find(i => `${i.modelId}-${i.storage}-${i.condition}` === key);
-                      // No more increment-on-readd — quantity is always 1
-                      // per cart line now that we removed the +/- controls.
-                      // Re-adding the same config just refreshes the price.
-                      if (existing) return prev.map(i => `${i.modelId}-${i.storage}-${i.condition}` === key ? { ...i, price: quote, quantity: 1 } : i);
-                      return [...prev, { model: model.label, modelId: model.id, storage: storage?.label || 'N/A', condition: condition.label, price: quote, quantity: 1 }];
+                      // Re-adding the same config bumps the quantity by 1
+                      // and refreshes the price. The cart's +/- pills can
+                      // also adjust.
+                      if (existing) return prev.map(i => `${i.modelId}-${i.storage}-${i.condition}` === key ? { ...i, price: quote, quantity: i.quantity + 1, image: model.image ?? i.image } : i);
+                      return [...prev, { model: model.label, modelId: model.id, storage: storage?.label || 'N/A', condition: condition.label, price: quote, quantity: 1, image: model.image }];
                     });
                     setCartBump(b => b + 1);
                     setCartToast({ model: model.label, price: quote });
@@ -6284,15 +6284,13 @@ export default function Home() {
           Wider than the old popup, sticky header + sticky footer with the
           total + Checkout CTA. Matches the rest of the site's glass aesthetic. */}
       {cartOpen && (() => {
-        const itemCount = cartItems.length;
-        // Quantity is always 1 per cart line now (no +/- controls). Each
-        // item contributes just its own price to the total.
-        const total = cartItems.reduce((sum, i) => sum + i.price, 0);
+        const itemCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
+        const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
         return (
           <>
             <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]" onClick={() => setCartOpen(false)} />
             <aside
-              className="fixed top-0 right-0 bottom-0 z-50 w-full sm:w-[460px] lg:w-[520px] bg-[rgba(10,10,10,0.97)] backdrop-blur-[14px] border-l border-white/10 shadow-[0_0_60px_rgba(0,0,0,0.7)] flex flex-col"
+              className="fixed top-0 right-0 bottom-0 z-50 w-full sm:w-[460px] lg:w-[520px] bg-[rgba(46,46,52,0.97)] backdrop-blur-[14px] border-l border-white/15 shadow-[0_0_60px_rgba(0,0,0,0.7)] flex flex-col"
               style={{ animation: "slideInRight 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both" }}
             >
               {/* HEADER */}
@@ -6323,15 +6321,27 @@ export default function Home() {
                   <div className="space-y-3">
                     {cartItems.map((item, i) => (
                       <div key={i} className="tcc-card rounded-2xl p-4">
-                        <div className="flex items-start justify-between gap-3 mb-2">
-                          <div className="min-w-0">
-                            <p className="text-white font-extrabold text-[16px] leading-tight">{item.model}</p>
+                        <div className="flex items-start gap-3 mb-2">
+                          {item.image ? (
+                            <div className="w-14 h-14 rounded-xl bg-[rgba(15,15,15,0.5)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden p-1.5">
+                              <img src={item.image} alt="" className="max-w-full max-h-full object-contain" style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.45))" }} />
+                            </div>
+                          ) : (
+                            <div className="w-14 h-14 rounded-xl bg-[rgba(15,15,15,0.5)] border border-white/12 flex items-center justify-center shrink-0 text-2xl opacity-60">📱</div>
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="text-white font-extrabold text-[15px] leading-tight">{item.model}</p>
                             <p className="text-[#c8c8c8] text-[12px] mt-1">{item.storage} · {item.condition}</p>
                           </div>
                           <button onClick={() => setCartItems(prev => prev.filter((_, idx) => idx !== i))} aria-label="Remove from cart" className="text-[#b8b8b8] hover:text-red-400 text-xs font-bold underline-offset-2 hover:underline transition cursor-pointer shrink-0">Remove</button>
                         </div>
-                        <div className="flex items-center justify-end gap-3 mt-3 pt-3 border-t border-white/10">
-                          <p className="text-[#00c853] font-extrabold text-xl" style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price}</p>
+                        <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t border-white/10">
+                          <div className="inline-flex items-center gap-2 bg-white/5 rounded-full px-1 py-1">
+                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it))} aria-label="Decrease quantity" className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm font-bold flex items-center justify-center cursor-pointer transition">−</button>
+                            <span className="text-white text-sm font-extrabold min-w-[20px] text-center">{item.quantity}</span>
+                            <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it))} aria-label="Increase quantity" className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm font-bold flex items-center justify-center cursor-pointer transition">+</button>
+                          </div>
+                          <p className="text-[#00c853] font-extrabold text-xl" style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price * item.quantity}</p>
                         </div>
                       </div>
                     ))}
