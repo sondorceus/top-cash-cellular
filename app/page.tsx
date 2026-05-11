@@ -4843,8 +4843,13 @@ export default function Home() {
                 Back
               </button>
               {selectionPanelMobile}
-              <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Storage capacity?</h2>
-              <p className="text-[#a0a0a0] text-xs mb-3">Not sure? <span className="text-[#00c853] font-semibold">Settings &gt; General &gt; About</span> shows it under <span className="text-[#dcdcdc]">Capacity</span>.</p>
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <h2 className="text-2xl lg:text-3xl font-extrabold">Storage capacity?</h2>
+                <button type="button" onClick={() => setHelpTopic("storage")} className="inline-flex items-center gap-1.5 text-[#00c853] text-xs font-extrabold hover:underline cursor-pointer shrink-0">
+                  <span className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none">i</span>
+                  How to find
+                </button>
+              </div>
               {stepProgress}
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
