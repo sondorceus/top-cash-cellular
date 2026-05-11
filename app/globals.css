@@ -177,8 +177,12 @@ body:not(.at-top) nav.sticky { box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35); }
   background: rgba(15, 15, 15, 0.5);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  /* inset highlight at top-left simulates rim light catching the edge; outer
+     shadow gives the card depth against the dark page */
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.06),
+    0 10px 30px rgba(0, 0, 0, 0.5);
   transition: transform 300ms ease, background 300ms ease, border-color 300ms ease, box-shadow 300ms ease, filter 300ms ease;
 }
 .tcc-card:hover {

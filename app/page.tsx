@@ -2537,8 +2537,8 @@ export default function Home() {
         <div className="mt-4 pt-4 border-t border-white/10 flex items-start gap-2.5">
           <span className="text-[#00c853] text-base leading-none mt-0.5">✓</span>
           <div>
-            <p className="text-white text-xs font-bold leading-tight">Honored quote guarantee</p>
-            <p className="text-[#b0b0b0] text-[11px] leading-snug mt-0.5">If your device matches the description above, we pay the quoted price — no surprise deductions.</p>
+            <p className="text-white text-[13px] font-extrabold leading-tight">Honored quote guarantee</p>
+            <p className="text-[#cfcfcf] text-[12px] leading-snug mt-1">If your device matches the description above, we pay the quoted price — no surprise deductions.</p>
           </div>
         </div>
       </div>
@@ -4629,7 +4629,9 @@ export default function Home() {
                   className="tcc-card w-full flex items-center gap-4 px-5 py-4 rounded-2xl cursor-pointer text-left"
                 >
                   <p className="font-extrabold text-[17px] text-white flex-1">{c.label}</p>
-                  {c.id === "unlocked" && <span className="text-[#00c853] text-xs font-bold uppercase tracking-wider">Best value</span>}
+                  {c.id === "unlocked" && (
+                    <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-full shadow-[0_0_8px_rgba(0,200,83,0.35)]">Best value</span>
+                  )}
                 </button>
               ))}
             </div>
