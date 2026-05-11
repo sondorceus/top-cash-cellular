@@ -27,23 +27,10 @@ UA = (
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 )
 
-DECLUTTR_MODEL_LABELS: Dict[str, str] = {
-    "lgv60":    "LG V60 ThinQ",
-    "lgv50":    "LG V50 ThinQ",
-    "lgv40":    "LG V40 ThinQ",
-    "lgv35":    "LG V35 ThinQ",
-    "lgv30":    "LG V30",
-    "lgv20":    "LG V20",
-    "lgg8x":    "LG G8X ThinQ",
-    "lgg8":     "LG G8 ThinQ",
-    "lgg7":     "LG G7 ThinQ",
-    "lgg6":     "LG G6",
-    "lgwing":   "LG Wing",
-    "lgvelvet": "LG Velvet",
-    "lgstylo6": "LG Stylo 6",
-    "lgstylo5": "LG Stylo 5",
-    "lgk92":    "LG K92",
-}
+# LG phones were removed from the catalog 2026-05-12, so this map is
+# currently empty. Add LG laptops / other Decluttr-covered SKUs here
+# as we expand. The scraper is idempotent against an empty list.
+DECLUTTR_MODEL_LABELS: Dict[str, str] = {}
 
 DOLLAR_RE = re.compile(r"\$\s*([0-9]{1,4}(?:,[0-9]{3})*)")
 

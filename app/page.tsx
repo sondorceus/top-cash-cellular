@@ -266,35 +266,6 @@ const PIXEL_SERIES = [
   ]},
 ];
 
-// LG stopped making phones in 2021 — these are older flagships that still
-// trade on the used market. Bases are conservative against used-market
-// comps; image fields are omitted (we don't have LG art yet, falls back
-// to a blank tile like the older fallback path).
-const LG_PHONE_SERIES = [
-  { id: "lgvseries", label: "V Series", year: "V20–V60 ThinQ", topPrice: 90, variants: [
-    { id: "lgv60", label: "LG V60 ThinQ 5G", base: 90 },
-    { id: "lgv50", label: "LG V50 ThinQ 5G", base: 50 },
-    { id: "lgv40", label: "LG V40 ThinQ", base: 35 },
-    { id: "lgv35", label: "LG V35 ThinQ", base: 25 },
-    { id: "lgv30", label: "LG V30 / V30+", base: 25 },
-    { id: "lgv20", label: "LG V20", base: 20 },
-  ]},
-  { id: "lggseries", label: "G Series", year: "G6–G8X ThinQ", topPrice: 55, variants: [
-    { id: "lgg8x", label: "LG G8X ThinQ (Dual Screen)", base: 55 },
-    { id: "lgg8", label: "LG G8 ThinQ", base: 35 },
-    { id: "lgg7", label: "LG G7 ThinQ", base: 25 },
-    { id: "lgg6", label: "LG G6", base: 20 },
-  ]},
-  { id: "lgspec", label: "Specialty & Mid-range", year: "Wing, Velvet, Stylo", topPrice: 80, variants: [
-    { id: "lgwing", label: "LG Wing (Swivel)", base: 80 },
-    { id: "lgvelvet", label: "LG Velvet 5G", base: 40 },
-    { id: "lgstylo6", label: "LG Stylo 6", base: 20 },
-    { id: "lgstylo5", label: "LG Stylo 5", base: 15 },
-    { id: "lgk92", label: "LG K92 5G", base: 20 },
-    { id: "lgother", label: "Other LG phone (not listed)", base: 0, inquiryOnly: true },
-  ]},
-];
-
 const MACBOOK_PRO_MODELS = [
   // Bases rebased 2026-05-11 against Atlas Mobile price sheet for MacBook
   // — formula: Atlas's lowest 'Open' variant per model line minus $250
@@ -1914,22 +1885,6 @@ const STORAGE_MAP: Record<string, string[]> = {
   // Google
   gpixeltab: ["256"],
   gpixeltab128: ["128"],
-  // LG phones — capacity grades that actually shipped on each model.
-  lgv60: ["128", "256"],
-  lgv50: ["128"],
-  lgv40: ["64", "128"],
-  lgv35: ["64"],
-  lgv30: ["64", "128"],
-  lgv20: ["64"],
-  lgg8x: ["128"],
-  lgg8: ["128"],
-  lgg7: ["64"],
-  lgg6: ["64"],
-  lgwing: ["128", "256"],
-  lgvelvet: ["128"],
-  lgstylo6: ["64"],
-  lgstylo5: ["64"],
-  lgk92: ["64", "128"],
 };
 
 function getStoragesForModel(modelId: string) {
@@ -2320,7 +2275,6 @@ const COMP_SOURCES: Record<string, { name: string; percent: number }> = {
   pixelwatch: { name: "Google Store Trade-In", percent: 0.55 },
   google_tab: { name: "Google Store Trade-In", percent: 0.55 },
   // LG (no first-party trade-in left) -> Decluttr is the closest comp
-  lg_phone: { name: "Decluttr", percent: 0.72 },
   lg_pc: { name: "Decluttr", percent: 0.70 },
   // Console / gaming
   sony: { name: "PlayStation Direct / GameStop", percent: 0.55 },
@@ -2738,7 +2692,7 @@ const CHARGER_OPTIONS = [
 ] as const;
 const hasMacSpecs = (modelId: string | undefined | null): boolean => !!modelId && !!MACBOOK_SPECS[modelId];
 const BRAND_LABELS: Record<string, string> = {
-  iphone: "iPhone", android: "Samsung", pixel: "Pixel", lg_phone: "LG", ipad: "iPad",
+  iphone: "iPhone", android: "Samsung", pixel: "Pixel", ipad: "iPad",
   macbook: "MacBook", samsung_pc: "Samsung", lenovo: "Lenovo", dell: "Dell",
   alienware: "Alienware", hp: "HP", acer: "Acer", lg_pc: "LG", asus_pc: "ASUS",
   apple_desktop: "Apple", dell_desktop: "Dell", lenovo_desktop: "Lenovo",
@@ -2751,7 +2705,7 @@ const BRAND_LABELS: Record<string, string> = {
   meta_vr: "Meta Quest", valve_vr: "Valve Index", psvr: "PSVR",
 };
 
-type DeviceType = "iphone" | "android" | "pixel" | "lg_phone" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "asus_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "sony" | "microsoft" | "nintendo" | "applewatch" | "pixelwatch" | "garmin" | "samsungwatch" | "dji" | "samsung_tab" | "surface" | "lenovo_tab" | "oneplus_tab" | "google_tab" | "apple_vr" | "meta_vr" | "valve_vr" | "psvr" | "ipad" | null;
+type DeviceType = "iphone" | "android" | "pixel" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "asus_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "sony" | "microsoft" | "nintendo" | "applewatch" | "pixelwatch" | "garmin" | "samsungwatch" | "dji" | "samsung_tab" | "surface" | "lenovo_tab" | "oneplus_tab" | "google_tab" | "apple_vr" | "meta_vr" | "valve_vr" | "psvr" | "ipad" | null;
 
 function FairPromise() {
   return (
@@ -2936,7 +2890,7 @@ export default function Home() {
   // Phones run the full 4 steps (have carrier). Non-phones skip carrier (3).
   // No-storage devices (watches, consoles, vr, drones) skip storage AND
   // carrier — only condition -> quote (2 steps).
-  const isPhoneFlow = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel" || deviceType === "lg_phone";
+  const isPhoneFlow = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
   const isIpadFlow = deviceType === "ipad";
   const isNoStorageDevice =
     deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" ||
@@ -3493,7 +3447,6 @@ export default function Home() {
   const ipadVariants: FlatVariant[] = IPAD_SERIES.flatMap(s => s.variants as FlatVariant[]);
   const samsungVariants: FlatVariant[] = SAMSUNG_SERIES.flatMap(s => s.variants as FlatVariant[]);
   const pixelVariants: FlatVariant[] = PIXEL_SERIES.flatMap(s => s.variants as FlatVariant[]);
-  const lgPhoneVariants: FlatVariant[] = LG_PHONE_SERIES.flatMap(s => s.variants as FlatVariant[]);
   // MacBook now uses the same series-then-models pattern as Lenovo/Dell/HP.
   // When selectedSeries is set we expose only that series' variants; otherwise
   // we surface the full flat list so search across the whole MacBook catalog
@@ -3541,7 +3494,7 @@ export default function Home() {
     });
   }
   if (selectedSeries) {
-    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "lg_phone" ? LG_PHONE_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : deviceType === "lg_pc" ? LG_PC_SERIES : deviceType === "lenovo_tab" ? LENOVO_TAB_SERIES : deviceType === "surface" ? SURFACE_SERIES : deviceType === "apple_desktop" ? APPLE_DESKTOP_SERIES : deviceType === "asus_pc" ? ASUS_PC_SERIES : deviceType === "dell" ? DELL_PC_SERIES : deviceType === "lenovo" ? LENOVO_PC_SERIES : deviceType === "hp" ? HP_PC_SERIES : deviceType === "acer" ? ACER_PC_SERIES : deviceType === "samsung_pc" ? SAMSUNG_PC_SERIES : null;
+    const seriesList = deviceType === "iphone" ? IPHONE_SERIES : deviceType === "android" ? SAMSUNG_SERIES : deviceType === "pixel" ? PIXEL_SERIES : deviceType === "ipad" ? IPAD_SERIES : deviceType === "macbook" ? MACBOOK_SERIES : deviceType === "sony" ? SONY_SERIES : deviceType === "alienware" ? ALIENWARE_SERIES : deviceType === "lg_pc" ? LG_PC_SERIES : deviceType === "lenovo_tab" ? LENOVO_TAB_SERIES : deviceType === "surface" ? SURFACE_SERIES : deviceType === "apple_desktop" ? APPLE_DESKTOP_SERIES : deviceType === "asus_pc" ? ASUS_PC_SERIES : deviceType === "dell" ? DELL_PC_SERIES : deviceType === "lenovo" ? LENOVO_PC_SERIES : deviceType === "hp" ? HP_PC_SERIES : deviceType === "acer" ? ACER_PC_SERIES : deviceType === "samsung_pc" ? SAMSUNG_PC_SERIES : null;
     const ser = seriesList?.find(s => s.id === selectedSeries);
     if (ser) breadcrumbs.push({
       label: ser.label,
@@ -3570,7 +3523,7 @@ export default function Home() {
   });
   if (storage) breadcrumbs.push({
     label: storage.label,
-    onClick: () => { setCarrier(null); const next = (deviceType === "iphone" || deviceType === "android" || deviceType === "pixel" || deviceType === "lg_phone") ? "carrier" : "quote"; setStep(next); pushHistory(next); },
+    onClick: () => { setCarrier(null); const next = (deviceType === "iphone" || deviceType === "android" || deviceType === "pixel") ? "carrier" : "quote"; setStep(next); pushHistory(next); },
   });
   if (carrier) breadcrumbs.push({
     label: carrier.label,
@@ -3948,7 +3901,6 @@ export default function Home() {
         collectFromSeries(IPHONE_SERIES, "iphone", "phones");
         collectFromSeries(SAMSUNG_SERIES, "android", "phones");
         collectFromSeries(PIXEL_SERIES, "pixel", "phones");
-        collectFromSeries(LG_PHONE_SERIES, "lg_phone", "phones");
         collectFromSeries(IPAD_SERIES, "ipad", "tablets");
         collectFromSeries(MACBOOK_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "macbook", "computers");
         collectFromSeries(APPLE_DESKTOP_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "apple_desktop", "desktops");
@@ -4047,7 +3999,7 @@ export default function Home() {
       })()}
     </div>
   );
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "lg_phone" ? lgPhoneVariants : deviceType === "macbook" ? macbookSelectedVariants : deviceType === "samsung_pc" ? samsungBookVariants : deviceType === "lenovo" ? lenovoPcVariants : deviceType === "dell" ? dellPcVariants : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? hpPcVariants : deviceType === "acer" ? acerPcVariants : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_pc" ? asusPcVariants : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookSelectedVariants : deviceType === "samsung_pc" ? samsungBookVariants : deviceType === "lenovo" ? lenovoPcVariants : deviceType === "dell" ? dellPcVariants : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? hpPcVariants : deviceType === "acer" ? acerPcVariants : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_pc" ? asusPcVariants : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
@@ -5333,7 +5285,6 @@ export default function Home() {
                 { id: "iphone" as const, label: "Apple iPhone", sub: "iPhone 11 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg> },
                 { id: "android" as const, label: "Samsung Galaxy", sub: "Galaxy S21 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg> },
                 { id: "pixel" as const, label: "Google Pixel", sub: "Pixel 5 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#4285F4" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="0"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#EA4335" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-15"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#FBBC05" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-30"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#34A853" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-45"/><text x="20" y="24" textAnchor="middle" fill="#4285F4" fontSize="11" fontWeight="bold" fontFamily="Arial">G</text></svg> },
-                { id: "lg_phone" as const, label: "LG", sub: "V60, Wing, Velvet, G & V Series", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#a50034"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">LG</text></svg> },
               ].map((b, i) => (
                 <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[130px] tap-press reveal" data-stagger={Math.min(i + 1, 8)}>
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
@@ -5536,37 +5487,6 @@ export default function Home() {
                     </button>
                   )})}
                 </div>
-              </>
-            )}
-
-            {/* LG phones: flat list grouped visually by series via section labels */}
-            {deviceType === "lg_phone" && (
-              <>
-                {LG_PHONE_SERIES.map(series => (
-                  <div key={series.id} className="mb-5">
-                    <div className="flex items-baseline justify-between mb-2 px-1">
-                      <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#00c853]">{series.label}</p>
-                      <p className="text-[10px] text-[#8a8a8a]">{series.year}</p>
-                    </div>
-                    <div className="space-y-2">
-                      {series.variants.map((m) => {
-                        const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
-                        return (
-                          <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                            <div className="w-10 h-10 shrink-0 rounded-lg bg-[#a50034]/15 border border-[#a50034]/30 flex items-center justify-center">
-                              <span className="text-[11px] font-extrabold text-[#ff5277] tracking-wider">LG</span>
-                            </div>
-                            <p className="font-semibold text-[15px] flex-1">{m.label}</p>
-                            <div className="flex items-center gap-2">
-                              <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m, deviceType)}`}</span>
-                              <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
               </>
             )}
 
@@ -6389,7 +6309,7 @@ export default function Home() {
                           setStep(next); pushHistory(next);
                           return;
                         }
-                        const isPhone = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel" || deviceType === "lg_phone";
+                        const isPhone = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
                         const ns: Step = (isPhone || isIpadCellular) ? "carrier" : "quote";
                         if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
                         setStep(ns); pushHistory(ns);
@@ -6707,7 +6627,7 @@ export default function Home() {
                   const isApple = deviceType === "iphone" || deviceType === "ipad" || deviceType === "macbook" || deviceType === "apple_desktop" || deviceType === "applewatch" || deviceType === "apple_vr";
                   const isGoogle = deviceType === "pixel" || deviceType === "pixelwatch" || deviceType === "google_tab";
                   const isSamsung = deviceType === "android" || deviceType === "samsung_tab" || deviceType === "samsung_pc" || deviceType === "samsungwatch";
-                  const isDecluttr = deviceType === "lg_phone" || deviceType === "lg_pc";
+                  const isDecluttr = deviceType === "lg_pc";
                   const real =
                     (isApple && model && appleComps ? appleComps[model.id] : undefined) ??
                     (isGoogle && model && googleComps ? googleComps[model.id] : undefined) ??
@@ -6734,7 +6654,7 @@ export default function Home() {
                 const isApple = deviceType === "iphone" || deviceType === "ipad" || deviceType === "macbook" || deviceType === "apple_desktop" || deviceType === "applewatch" || deviceType === "apple_vr";
                 const isGoogle = deviceType === "pixel" || deviceType === "pixelwatch" || deviceType === "google_tab";
                 const isSamsung = deviceType === "android" || deviceType === "samsung_tab" || deviceType === "samsung_pc" || deviceType === "samsungwatch";
-                const isDecluttr = deviceType === "lg_phone" || deviceType === "lg_pc";
+                const isDecluttr = deviceType === "lg_pc";
                 const real =
                   (isApple && model && appleComps ? appleComps[model.id] : undefined) ??
                   (isGoogle && model && googleComps ? googleComps[model.id] : undefined) ??
