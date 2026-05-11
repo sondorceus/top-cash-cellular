@@ -64,10 +64,10 @@ export async function POST(req: NextRequest) {
       handoffLines.push("--- Handoff: SHIPPING ---");
       handoffLines.push(`Address: ${street}${unit ? `, ${unit}` : ""}, ${city}, ${state} ${zip}`);
       handoffLines.push("Action: Email USPS prepaid label.");
-    } else if (h.method === "local" && h.area) {
+    } else if (h.method === "local") {
       handoffLines.push("--- Handoff: LOCAL MEETUP ---");
-      handoffLines.push(`Area: ${h.area}`);
-      handoffLines.push("Action: Reach out to schedule meetup.");
+      if (h.area) handoffLines.push(`Area: ${h.area}`);
+      handoffLines.push("Action: Reach out to schedule meetup time and location.");
     }
   }
 

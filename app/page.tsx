@@ -5810,13 +5810,10 @@ export default function Home() {
               if (handoffMethod === "ship" && (!shipStreet || !shipCity || !shipState || !shipZip)) {
                 alert("Please fill in your full shipping address."); return;
               }
-              if (handoffMethod === "local" && !localArea) {
-                alert("Pick an Austin area for the meetup."); return;
-              }
               try {
                 const handoffPayload = handoffMethod === "ship"
                   ? { method: "ship", address: { street: shipStreet, unit: shipUnit, city: shipCity, state: shipState, zip: shipZip } }
-                  : { method: "local", area: localArea };
+                  : { method: "local" };
                 const res = await fetch("/api/lead", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
@@ -5883,26 +5880,14 @@ export default function Home() {
                 )}
 
                 {handoffMethod === "local" && (
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">Pick your Austin area</label>
-                      <button type="button" onClick={() => { setHandoffMethod("ship"); setShipStreet(""); setShipUnit(""); setShipCity(""); setShipZip(""); }} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to shipping instead</button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      {AUSTIN_AREAS.map(a => {
-                        const active = localArea === a.label;
-                        return (
-                          <button key={a.id} type="button" onClick={() => setLocalArea(a.label)} className="flex items-start gap-2 px-2.5 py-2 rounded-lg border cursor-pointer text-left tap-press transition" style={{ background: active ? "rgba(0,200,83,0.10)" : "rgba(255,255,255,0.03)", borderColor: active ? "#00c853" : "rgba(255,255,255,0.10)" }}>
-                            <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: active ? "#00c853" : "rgba(255,255,255,0.06)", border: active ? "none" : "1px solid rgba(255,255,255,0.12)" }}>
-                              {active ? (<svg className="w-3 h-3 text-[#0a0a0a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4"><polyline points="20 6 9 17 4 12"/></svg>) : null}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="text-white text-[12px] font-bold leading-tight">{a.label}</p>
-                              <p className="text-[#888] text-[10px] leading-snug mt-0.5">{a.desc}</p>
-                            </div>
-                          </button>
-                        );
-                      })}
+                  <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#00c853]/5 border border-[#00c853]/20">
+                    <svg className="w-5 h-5 text-[#00c853] shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <p className="text-white text-sm font-bold leading-tight">Local meetup</p>
+                        <button type="button" onClick={() => setHandoffMethod("ship")} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to shipping</button>
+                      </div>
+                      <p className="text-[#bdbdbd] text-xs leading-snug">We&apos;ll text or email you within the hour to coordinate a time and a public spot in Austin you&apos;re comfortable with.</p>
                     </div>
                   </div>
                 )}
@@ -6079,8 +6064,8 @@ export default function Home() {
               ) : handoffMethod === "local" ? (
                 <>
                   <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Local Meetup</p>
-                  <p className="text-white text-base font-bold mb-1">Meetup in {localArea}</p>
-                  <p className="text-[#bdbdbd] text-xs leading-relaxed">We&apos;ll text or email you within the hour to lock in a time and a public spot you&apos;re comfortable with (coffee shop, parking lot, your office, etc).</p>
+                  <p className="text-white text-base font-bold mb-1">We&apos;ll set up the meetup</p>
+                  <p className="text-[#bdbdbd] text-xs leading-relaxed">Expect a text or email within the hour to coordinate a time and a public spot in Austin you&apos;re comfortable with (coffee shop, parking lot, your office, etc).</p>
                 </>
               ) : (
                 <>
