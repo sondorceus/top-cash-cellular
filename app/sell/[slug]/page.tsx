@@ -95,7 +95,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
         <h1 className="text-3xl font-bold tracking-tight mb-2">
           Sell Your {device.name}
         </h1>
-        <p className="text-[#bbb] text-lg mb-6">
+        <p className="text-[#dcdcdc] text-lg mb-6">
           Get up to <span className="text-[#00c853] font-bold">${device.price}</span> — Austin TX
         </p>
 
@@ -106,15 +106,15 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
         <div className="grid grid-cols-3 gap-3 mb-8">
           <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
             <p className="text-[#00c853] text-lg font-bold">${device.price}</p>
-            <p className="text-[#bbb] text-[10px]">Up to</p>
+            <p className="text-[#dcdcdc] text-[10px]">Up to</p>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
             <p className="text-white text-lg font-bold">Same Day</p>
-            <p className="text-[#bbb] text-[10px]">Payout</p>
+            <p className="text-[#dcdcdc] text-[10px]">Payout</p>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
             <p className="text-white text-lg font-bold">4.9★</p>
-            <p className="text-[#bbb] text-[10px]">Rating</p>
+            <p className="text-[#dcdcdc] text-[10px]">Rating</p>
           </div>
         </div>
 
@@ -132,7 +132,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
                 </div>
                 <div>
                   <p className="text-white text-sm font-semibold">{s.title}</p>
-                  <p className="text-[#bbb] text-xs">{s.desc}</p>
+                  <p className="text-[#dcdcdc] text-xs">{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -141,7 +141,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
 
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8">
           <h2 className="text-lg font-bold mb-3">Why Sell to Top Cash Cellular?</h2>
-          <ul className="space-y-2 text-sm text-[#ccc]">
+          <ul className="space-y-2 text-sm text-[#e5e5e5]">
             <li className="flex items-start gap-2"><span className="text-[#00c853]">✓</span> We pay more than Apple/Samsung trade-in</li>
             <li className="flex items-start gap-2"><span className="text-[#00c853]">✓</span> Same-day payout — no waiting</li>
             <li className="flex items-start gap-2"><span className="text-[#00c853]">✓</span> We buy any condition — even cracked</li>

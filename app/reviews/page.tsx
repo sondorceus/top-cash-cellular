@@ -76,13 +76,13 @@ export default async function ReviewsPage() {
       <section className="px-4 sm:px-6 py-10 max-w-3xl mx-auto">
         <div className="text-center mb-10">
           <h1 className="text-4xl sm:text-5xl font-bold mb-3">Customer reviews</h1>
-          <p className="text-[#bbb] text-lg">Real Austin sellers. Real experiences.</p>
+          <p className="text-[#dcdcdc] text-lg">Real Austin sellers. Real experiences.</p>
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 mb-8 text-center">
           <div className="text-6xl font-bold text-[#00c853]">{avg.toFixed(1)}</div>
           <div className="my-1 flex justify-center"><Stars rating={Math.round(avg)} /></div>
-          <div className="text-[#bbb] text-sm">{count || 127} reviews</div>
+          <div className="text-[#dcdcdc] text-sm">{count || 127} reviews</div>
         </div>
 
         {count === 0 ? null : (
@@ -91,14 +91,14 @@ export default async function ReviewsPage() {
               <li key={r.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div>
-                    <div className="font-semibold">{r.name}{r.city ? <span className="text-[#bbb] font-normal"> · {r.city}</span> : null}</div>
+                    <div className="font-semibold">{r.name}{r.city ? <span className="text-[#dcdcdc] font-normal"> · {r.city}</span> : null}</div>
                     <div className="flex items-center gap-2 mt-1">
                       <Stars rating={r.rating} />
-                      <span className="text-[#999] text-xs">{timeAgo(r.createdAt)}</span>
+                      <span className="text-[#c5c5c5] text-xs">{timeAgo(r.createdAt)}</span>
                     </div>
                   </div>
                   {r.device ? (
-                    <span className="text-xs text-[#bbb] bg-white/5 border border-white/10 rounded-full px-3 py-1 shrink-0">
+                    <span className="text-xs text-[#dcdcdc] bg-white/5 border border-white/10 rounded-full px-3 py-1 shrink-0">
                       Sold: {r.device}
                     </span>
                   ) : null}

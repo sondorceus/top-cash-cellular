@@ -72,7 +72,7 @@ export default function EstimatePage() {
   if (!catalog) {
     return (
       <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center">
-        <p className="text-[#bbb]">Loading catalog…</p>
+        <p className="text-[#dcdcdc]">Loading catalog…</p>
       </main>
     );
   }
@@ -81,7 +81,7 @@ export default function EstimatePage() {
     <main className="min-h-screen bg-[#0a0a0a] text-white px-4 py-8">
       <div className="max-w-md mx-auto">
         <h1 className="text-2xl font-bold mb-2">Instant Trade-In Quote</h1>
-        <p className="text-[#bbb] text-sm mb-6">Pick your device and 3 details — get a quote in seconds.</p>
+        <p className="text-[#dcdcdc] text-sm mb-6">Pick your device and 3 details — get a quote in seconds.</p>
 
         <form onSubmit={submit} className="space-y-5">
           <Field label="1. Device">
@@ -172,7 +172,7 @@ export default function EstimatePage() {
           <div className="mt-8 bg-[#00c853]/10 border border-[#00c853]/40 rounded-2xl p-6">
             <p className="text-[#00c853] text-sm font-semibold uppercase tracking-wide mb-2">Your Quote</p>
             <p className="text-5xl font-bold text-white mb-1">${result.quote}</p>
-            <p className="text-[#bbb] text-sm">
+            <p className="text-[#dcdcdc] text-sm">
               {selectedDevice?.name} — {catalog.storage.find((s) => s.id === result.inputs.storage)?.label} —{" "}
               {catalog.conditions.find((c) => c.id === result.inputs.condition)?.label}
             </p>

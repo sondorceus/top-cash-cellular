@@ -1,1 +1,197 @@
-[]
+[
+  {
+    "name": "MacBook Pro (M1 series)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-m1-series",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e3361f3d-ab35-489c-924d-073da370db89-1_a16eefed-df48-4d75-b6d9-c995a7aec39c.jpg"
+  },
+  {
+    "name": "MacBook Air (M1 series)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-m1-series",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/a19cba9a-bda5-48bd-9e7b-031c76db393d-1_b8836ba4-aff3-48ca-89c9-0ec2d247cfa0.jpg"
+  },
+  {
+    "name": "MacBook Air (M2 series)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-m2-series",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7f783d1a-2f3a-4396-b079-b658ad12cccc-1_8f6dd278-4927-4c48-8138-acde4022576d.jpg"
+  },
+  {
+    "name": "MacBook Pro (M2 series)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-m2-series",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d17451ee-467e-4afc-ad1b-4d8787eaf564-1_7f321f6b-f258-414f-837c-350f01656dbd.jpg"
+  },
+  {
+    "name": "MacBook Pro (M3 series)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-m3-series",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/4dabc719-85e1-4c26-ac45-e047d269340b-1_1ebc2c94-cc13-4bb5-9c5c-37dbebdb850d.jpg"
+  },
+  {
+    "name": "MacBook Air (M3 series)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-m3-series",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b12b4651-d409-4c23-9017-efe3671d9559-1_f06067fa-7284-498a-b013-e9bb84933502.jpg"
+  },
+  {
+    "name": "MacBook Pro (M4 series)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-m4-series",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/97eeef5e-b6b3-41df-80b2-94a913ea0cb0-1_4a34f8e6-052d-41b0-8e67-3bebd04bffb6.jpg"
+  },
+  {
+    "name": "MacBook Air (M4 series)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-m4-series",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/20890718-bd9e-43eb-946f-6142e1ba539d-1_07e409c0-a565-4ebf-8b37-91badab1c7f4.jpg"
+  },
+  {
+    "name": "\"Obsolete\" MacBook Pro (2019,Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-retina-133-inch-2019-core-i5-16gb-ssd-256-gb/f30f81b1-7e21-4d3d-82a5-e804f97350d2?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f30f81b1-7e21-4d3d-82a5-e804f97350d2-1_0fad0dcd-8c69-41bd-9c2a-ff26449b384a.jpg"
+  },
+  {
+    "name": "MacBook Air (2020, Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-retina-133-inch-2020-core-i3-8gb-ssd-128gb/0e6256a1-c7c5-4aad-886a-0bd9da8c6ab8?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/0e6256a1-c7c5-4aad-886a-0bd9da8c6ab8-1_52c353dc-11ca-4fda-a714-35d446a2137c.jpg"
+  },
+  {
+    "name": "MacBook Pro (2020, Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-retina-133-inch-2020-core-i5-8gb-ssd-256-gb/d02bae4d-9a0b-42e6-96e1-1cb554b2e5de?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/d02bae4d-9a0b-42e6-96e1-1cb554b2e5de-1_cdab3df2-1d0d-44a2-99c8-1a2b86906b96.jpg"
+  },
+  {
+    "name": "\"Obsolete\" MacBook Air (2017,Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-133-inch-2017-core-i5-8gb-ssd-128-gb/5caea418-e82d-412e-8317-d7169502aec5?l=11",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/5caea418-e82d-412e-8317-d7169502aec5-1_d828f51b-728e-49d0-8b02-e089288aca0d.jpg"
+  },
+  {
+    "name": "\"Obsolete\" MacBook Pro (2015,Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-retina-133-inch-2015-core-i5-8gb-ssd-128gb/e53eb67c-109f-470d-889d-043c576b8af2?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e53eb67c-109f-470d-889d-043c576b8af2-1_d9bc012f-9a39-4b2c-bdee-9d612f68a9b7.jpg"
+  },
+  {
+    "name": "\"Obsolete\" MacBook Pro (2017,Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-retina-133-inch-2017-core-i5-8gb-ssd-256gb/567d0800-dd8e-46c5-94f4-ce782c4c442c?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/567d0800-dd8e-46c5-94f4-ce782c4c442c-1_27f0ce27-c818-4f2e-b509-870726bbc428.jpg"
+  },
+  {
+    "name": "\"Obsolete\" MacBook Air (2019,Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-kitchen-scales/ab7279be-4bf2-4d33-9443-61badbfff4e8?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ab7279be-4bf2-4d33-9443-61badbfff4e8-1_57d05985-58c3-44ee-b463-cf1fbc1a9d9b.jpg"
+  },
+  {
+    "name": "\"Obsolete\" MacBook Pro (2018,Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-retina-133-inch-2018-core-i5-16gb-ssd-256-gb/bde358f5-38f2-4f43-ab04-4ce8a419c0b2?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/bde358f5-38f2-4f43-ab04-4ce8a419c0b2-1_096247c3-e3be-4c74-9adc-51b024ae51f2.jpg"
+  },
+  {
+    "name": "\"Obsolete\" MacBook Air (2015,Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-133-inch-2015-core-i5-8gb-ssd-128-gb/70169a1c-6c12-4369-b0ca-b6bc4f28077d?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/70169a1c-6c12-4369-b0ca-b6bc4f28077d-1_73b14947-858e-4786-a5b3-e25fe3564906.jpg"
+  },
+  {
+    "name": "\"Obsolete\" MacBook Air (2018,Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-retina-133-inch-2018-core-i5-8gb-ssd-256-gb/02b7d208-0e91-4429-9917-46f664d1bb53?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/02b7d208-0e91-4429-9917-46f664d1bb53-1_8da1de4b-e94d-4d05-aa94-5b5cadef9140.jpg"
+  },
+  {
+    "name": "\"Obsolete\" MacBook Pro (2016,Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-retina-133-inch-2016-core-i5-8gb-ssd-512-gb/e09b1c5f-53a6-441f-9092-0b8adc1411f2?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e09b1c5f-53a6-441f-9092-0b8adc1411f2-1_1cf3ffdd-03dd-497c-a061-4f80a3430673.jpg"
+  },
+  {
+    "name": "\"Obsolete\" MacBook (2017,Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-retina-12-inch-2017-core-i5-8gb-ssd-512-gb/de95b600-3e79-4571-a5ae-80c39aae6a30?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/de95b600-3e79-4571-a5ae-80c39aae6a30-1_81662c35-b6da-4088-a86c-41d1741d3258.jpg"
+  },
+  {
+    "name": "\"Obsolete\" MacBook (2015,Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-retina-12-inch-2015-core-m-8gb-hdd-256-gb/7b4266c7-b66a-4c75-9e7e-57fd5c56b44c?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7b4266c7-b66a-4c75-9e7e-57fd5c56b44c-1_584d83b5-25a8-4a33-8109-3d8fbd4df8cc.jpg"
+  },
+  {
+    "name": "\"Obsolete\" MacBook (2016,Intel)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-retina-12-inch-2016-core-m3-8gb-ssd-256-gb/941eacc6-247a-47f4-ad19-9b7370a4deb6?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/941eacc6-247a-47f4-ad19-9b7370a4deb6-1_908bce45-1a76-40bf-8f83-47aa3256c47a.jpg"
+  },
+  {
+    "name": "MacBook Pro (M5 series)",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-m5-series",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ab6de264-b134-49f8-a860-fb6b63b74180-1_62a46ef9-6a84-4c30-a71c-6599ba31e2cb.jpg"
+  },
+  {
+    "name": "MacBook Pro (M4 series)Fair • 14\" • Apple M4 10-core - 10-core GPU • 512 GB • RAM 16GB • Space Black",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-2024-14-inch-m4-10-core-and-10-core-gpu-16gb-ram-ssd-512gb/1103807b-ab5b-49d3-bec6-d5e4e96e6844?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/97eeef5e-b6b3-41df-80b2-94a913ea0cb0-1_4a34f8e6-052d-41b0-8e67-3bebd04bffb6.jpg"
+  },
+  {
+    "name": "MacBook Pro (M2 series)Fair • 13\" • Apple M2 8-core - 10-core GPU • 512 GB • RAM 16GB • Space Gray",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-2022-13-inch-m2-8-core-and-10-core-gpu-16gb-ram-ssd-512gb/81376d80-79ef-47c4-b903-e2d6fcfe954e?l=12",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/81376d80-79ef-47c4-b903-e2d6fcfe954e-1_194b92a7-8cb1-4f57-9d7d-5c7c553ef961.jpg"
+  },
+  {
+    "name": "MacBook Air (M3 series)Premium • 15\" • Apple M3 8-core - 10-core GPU • 512 GB • RAM 16GB • Midnight",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-2024-153-inch-m3-8-core-and-10-core-gpu-16gb-ram-ssd-512gb/33d92f30-6d88-4083-9f3a-0318c0179d96?l=9",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/33d92f30-6d88-4083-9f3a-0318c0179d96-1_99f83602-076a-4912-9070-961aeeb79601.jpg"
+  },
+  {
+    "name": "MacBook Air (M2 series)Excellent • 13\" • Apple M2 8-core - 10-core GPU • 512 GB • RAM 16GB • Silver",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-2022-13-inch-m2-8-core-and-10-core-gpu-16gb-ram-ssd-512gb/82e489d6-75f7-4359-8915-99cf72f49150?l=10",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/82e489d6-75f7-4359-8915-99cf72f49150-1_c34a46e0-ab4c-4d4c-9db5-5f34ad7278ad.jpg"
+  },
+  {
+    "name": "MacBook Air (M2 series)Premium • 15\" • Apple M2 8-core - 10-core GPU • 512 GB • RAM 16GB • Space Gray",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-2023-153-inch-m2-8-core-and-10-core-gpu-16gb-ram-ssd-512gb/ced54115-723f-4eb0-bfcf-8be38396937b?l=9",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ced54115-723f-4eb0-bfcf-8be38396937b-1_63dd98db-f189-47be-8c53-e5b1fd4f6b20.jpg"
+  },
+  {
+    "name": "MacBook Air (M3 series)Good • 13\" • Apple M3 8-core - 10-core GPU • 512 GB • RAM 16GB • Silver",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-2024-136-inch-m3-8-core-and-10-core-gpu-16gb-ram-ssd-512gb/363a0797-b3dc-4296-9e48-fc48e59b0dc2?l=11",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/363a0797-b3dc-4296-9e48-fc48e59b0dc2-1_36fc63e2-5d63-430f-aeef-1a2b9ea72af0.jpg"
+  },
+  {
+    "name": "MacBook Air (M2 series)Excellent • 13\" • Apple M2 8-core - 8-core GPU • 512 GB • RAM 16GB • Midnight",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-2022-13-inch-m2-8-core-and-8-core-gpu-16gb-ram-ssd-512gb/ea64267e-2806-4197-8cfd-1d113593118c?l=10",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/ea64267e-2806-4197-8cfd-1d113593118c-1_07b264c5-1ba7-4027-9578-6d54fba7ab97.jpg"
+  },
+  {
+    "name": "MacBook Pro (M2 series)Premium • 16\" • Apple M2 Pro 12-core - 19-core GPU • 1000 GB • RAM 16GB • Space Gray",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-2023-162-inch-m2-pro-12-core-and-19-core-gpu-16gb-ram-ssd-1000gb/6f0de137-a4ac-4272-b388-0efbeb5d4abe?l=9",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/6f0de137-a4ac-4272-b388-0efbeb5d4abe-1_d8152961-9474-4dcd-86d5-07f5a8508206.jpg"
+  },
+  {
+    "name": "MacBook Pro (M5 series)Premium • 14\" • Apple M5 10-core - 10-core GPU • 1000 GB • RAM 16GB • Silver",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-2025-14-inch-m5-10-core-and-10-core-gpu-16gb-ram-ssd-1000gb/8e9e3fe1-87bb-42b0-b4bf-0ea89e3c5e7e?l=9",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/8e9e3fe1-87bb-42b0-b4bf-0ea89e3c5e7e-1_a4b09952-f85a-4570-892b-f2b3463ae475.jpg"
+  },
+  {
+    "name": "MacBook Pro (M3 series)Premium • 16\" • Apple M3 Pro 12-core - 18-core GPU • 512 GB • RAM 18GB • Silver",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-2023-162-inch-m3-pro-12-core-and-18-core-gpu-18gb-ram-ssd-512gb/e6ee9aa3-c86a-47d7-b1cb-7ece3d2da945?l=9",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/e6ee9aa3-c86a-47d7-b1cb-7ece3d2da945-1_7d207796-b62f-4fa6-a4be-79b2e7ced5c3.jpg"
+  },
+  {
+    "name": "MacBook Pro (M4 series)Excellent • 14\" • Apple M4 Pro 14-core - 20-core GPU • 1000 GB • RAM 24GB • Space Black",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-2024-14-inch-m4-pro-14-core-and-20-core-gpu-24gb-ram-ssd-1000gb/b8d61109-84c4-40d8-a9a9-114a36f33095?l=10",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7c2685e5-f772-4fb4-87ba-1ca45652b6ab-1_42f7aafd-2439-47b7-9a51-232f368b2633.jpg"
+  },
+  {
+    "name": "MacBook Pro (M4 series)Premium • 14\" • Apple M4 Pro 14-core - 20-core GPU • 1000 GB • RAM 24GB • Space Black",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-pro-2024-14-inch-m4-pro-14-core-and-20-core-gpu-24gb-ram-ssd-1000gb/b8d61109-84c4-40d8-a9a9-114a36f33095?l=9",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/7c2685e5-f772-4fb4-87ba-1ca45652b6ab-1_42f7aafd-2439-47b7-9a51-232f368b2633.jpg"
+  },
+  {
+    "name": "MacBook Air (M2 series)Good • 13\" • Apple M2 8-core - 8-core GPU • 256 GB • RAM 16GB • Silver",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-2022-13-inch-m2-8-core-and-8-core-gpu-16gb-ram-ssd-256gb/c9b3dbf0-abf2-4ccb-a534-4d4152e7469e?l=11",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/c9b3dbf0-abf2-4ccb-a534-4d4152e7469e-1_cef90773-ff8a-494f-b9f0-bd64183265bf.jpg"
+  },
+  {
+    "name": "MacBook Air (M2 series)Excellent • 13\" • Apple M2 8-core - 10-core GPU • 1000 GB • RAM 16GB • Starlight",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-2022-13-inch-m2-8-core-and-10-core-gpu-16gb-ram-ssd-1000gb/f89f6163-71b4-40c0-8616-4c525bb626ae?l=10",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f89f6163-71b4-40c0-8616-4c525bb626ae-1_efa0a250-916b-40c9-9168-e100ed99b4dd.jpg"
+  },
+  {
+    "name": "MacBook Air (M3 series)Good • 13\" • Apple M3 8-core - 8-core GPU • 256 GB • RAM 16GB • Starlight",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-2024-13-inch-m3-8-core-and-8-core-gpu-16gb-ram-ssd-256gb/f4ebb526-bbf9-48ee-8125-fe940cca282f?l=11",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/f4ebb526-bbf9-48ee-8125-fe940cca282f-1_68040108-e60d-44bd-ade7-078bb3a360cc.jpg"
+  },
+  {
+    "name": "MacBook Air (M2 series)Excellent • 13\" • Apple M2 8-core - 10-core GPU • 1000 GB • RAM 24GB • Silver",
+    "productUrl": "https://www.backmarket.com/en-us/p/macbook-air-2022-13-inch-m2-8-core-and-10-core-gpu-24gb-ram-ssd-1000gb/b6ea69a3-7167-42a5-86c5-ab7c9c094944?l=10",
+    "imageUrl": "https://www.backmarket.com/cdn-cgi/image/format%3Dauto%2Cquality%3D75%2Cwidth%3D260/https://d2e6ccujb3mkqf.cloudfront.net/b6ea69a3-7167-42a5-86c5-ab7c9c094944-1_e3912149-4038-4f43-939c-e91249fb5b35.jpg"
+  }
+]

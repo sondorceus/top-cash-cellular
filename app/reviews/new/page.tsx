@@ -48,14 +48,14 @@ export default function NewReviewPage() {
         <Link href="/" className="text-xl font-bold tracking-tight">
           Top Cash <span className="text-[#00c853]">Cellular</span>
         </Link>
-        <Link href="/reviews" className="text-sm text-[#bbb] hover:text-white transition">
+        <Link href="/reviews" className="text-sm text-[#dcdcdc] hover:text-white transition">
           ← Reviews
         </Link>
       </header>
 
       <section className="px-4 sm:px-6 py-8 sm:py-12 max-w-xl mx-auto">
         <h1 className="text-3xl sm:text-4xl font-bold mb-2">Leave a review</h1>
-        <p className="text-[#bbb] mb-8">Help other Austin sellers know what to expect.</p>
+        <p className="text-[#dcdcdc] mb-8">Help other Austin sellers know what to expect.</p>
 
         <form onSubmit={onSubmit} className="space-y-5">
           <div>
@@ -89,7 +89,7 @@ export default function NewReviewPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">City <span className="text-[#999] font-normal">(optional)</span></label>
+            <label className="block text-sm font-semibold mb-2">City <span className="text-[#c5c5c5] font-normal">(optional)</span></label>
             <input
               type="text"
               value={city}
@@ -101,7 +101,7 @@ export default function NewReviewPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Device you sold <span className="text-[#999] font-normal">(optional)</span></label>
+            <label className="block text-sm font-semibold mb-2">Device you sold <span className="text-[#c5c5c5] font-normal">(optional)</span></label>
             <input
               type="text"
               value={device}
@@ -113,7 +113,7 @@ export default function NewReviewPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Title <span className="text-[#999] font-normal">(optional)</span></label>
+            <label className="block text-sm font-semibold mb-2">Title <span className="text-[#c5c5c5] font-normal">(optional)</span></label>
             <input
               type="text"
               value={title}
@@ -134,7 +134,7 @@ export default function NewReviewPage() {
               placeholder="How was the process? Did you get a fair price? Would you sell again?"
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-[#00c853] transition resize-none"
             />
-            <div className="text-right text-xs text-[#999] mt-1">{body.length}/1000</div>
+            <div className="text-right text-xs text-[#c5c5c5] mt-1">{body.length}/1000</div>
           </div>
 
           {error ? (

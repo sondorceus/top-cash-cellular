@@ -77,13 +77,13 @@ export default function FAQPage() {
               <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="text-xs text-[#bbb] hover:text-white">← Sell now</Link>
+          <Link href="/" className="text-xs text-[#dcdcdc] hover:text-white">← Sell now</Link>
         </div>
       </nav>
 
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-16">
         <h1 className="text-4xl font-bold mb-3">Frequently Asked Questions</h1>
-        <p className="text-[#bbb] mb-10">Everything you need to know before trading in.</p>
+        <p className="text-[#dcdcdc] mb-10">Everything you need to know before trading in.</p>
 
         <div className="space-y-3">
           {FAQ.map((item, i) => (
@@ -92,14 +92,14 @@ export default function FAQPage() {
                 <span className="font-semibold text-white pr-4">{item.q}</span>
                 <span className="text-[#00c853] text-xl flex-shrink-0 group-open:rotate-45 transition-transform">+</span>
               </summary>
-              <p className="text-[#ccc] text-sm mt-3 leading-relaxed">{item.a}</p>
+              <p className="text-[#e5e5e5] text-sm mt-3 leading-relaxed">{item.a}</p>
             </details>
           ))}
         </div>
 
         <div className="mt-12 bg-[#00c853]/10 border border-[#00c853]/30 rounded-2xl p-6 text-center">
           <p className="text-white font-semibold mb-2">Didn&apos;t see your question?</p>
-          <p className="text-[#ccc] text-sm mb-4">Email us — we usually reply within an hour during business hours.</p>
+          <p className="text-[#e5e5e5] text-sm mb-4">Email us — we usually reply within an hour during business hours.</p>
           <Link href="/" className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition">Get a quote →</Link>
         </div>
       </div>

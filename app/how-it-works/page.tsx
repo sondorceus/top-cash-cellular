@@ -54,13 +54,13 @@ export default function HowItWorksPage() {
               <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="text-xs text-[#bbb] hover:text-white">← Sell now</Link>
+          <Link href="/" className="text-xs text-[#dcdcdc] hover:text-white">← Sell now</Link>
         </div>
       </nav>
 
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-16">
         <h1 className="text-4xl font-bold mb-3">How It Works</h1>
-        <p className="text-[#bbb] mb-10">From quote to cash in 3 simple steps.</p>
+        <p className="text-[#dcdcdc] mb-10">From quote to cash in 3 simple steps.</p>
 
         <div className="space-y-4 mb-12">
           {STEPS.map(s => (
@@ -71,7 +71,7 @@ export default function HowItWorksPage() {
                   <span className="text-xs font-bold text-[#00c853] tracking-widest uppercase">Step {s.n}</span>
                 </div>
                 <h2 className="text-lg font-bold mb-1">{s.title}</h2>
-                <p className="text-sm text-[#ccc] leading-relaxed">{s.body}</p>
+                <p className="text-sm text-[#e5e5e5] leading-relaxed">{s.body}</p>
               </div>
             </div>
           ))}
@@ -83,14 +83,14 @@ export default function HowItWorksPage() {
             <div key={p.title} className="bg-white/5 border border-white/10 rounded-2xl p-5">
               <div className="text-2xl mb-2">{p.icon}</div>
               <p className="font-semibold text-white text-sm mb-1">{p.title}</p>
-              <p className="text-xs text-[#bbb] leading-relaxed">{p.body}</p>
+              <p className="text-xs text-[#dcdcdc] leading-relaxed">{p.body}</p>
             </div>
           ))}
         </div>
 
         <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-2xl p-6 text-center">
           <p className="text-white text-lg font-bold mb-1">Ready when you are.</p>
-          <p className="text-[#ccc] text-sm mb-4">Get an instant quote in under 60 seconds.</p>
+          <p className="text-[#e5e5e5] text-sm mb-4">Get an instant quote in under 60 seconds.</p>
           <Link href="/" className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition">Sell my device →</Link>
         </div>
       </div>
