@@ -1377,12 +1377,9 @@ const SONY_SERIES = [
 const SONY_MODELS = [...PS5_VARIANTS, ...PS4_VARIANTS];
 
 const MICROSOFT_MODELS = [
-  { id: "xsx2tb",      label: "Xbox Series X (2 TB Galaxy Black Special Edition)", base: 380, image: "/devices/xbox-series-x.webp" },
-  { id: "xsx",         label: "Xbox Series X (1 TB)",                             base: 280, image: "/devices/xbox-series-x.webp" },
-  { id: "xsx_digital", label: "Xbox Series X Digital (1 TB)",                     base: 240, image: "/devices/xbox-series-x.webp" },
-  { id: "xss1tb",      label: "Xbox Series S (1 TB Carbon Black)",                base: 200, image: "/devices/xbox-series-s.webp" },
-  { id: "xss",         label: "Xbox Series S (512 GB)",                           base: 150, image: "/devices/xbox-series-s.webp" },
-  { id: "xone",        label: "Xbox One",                                         base: 80,  image: "/devices/xbox-one.webp" },
+  { id: "xsx",  label: "Xbox Series X", base: 280, image: "/devices/xbox-series-x.webp" },
+  { id: "xss",  label: "Xbox Series S", base: 150, image: "/devices/xbox-series-s.webp" },
+  { id: "xone", label: "Xbox One",      base: 80,  image: "/devices/xbox-one.webp" },
 ];
 
 const NINTENDO_MODELS = [
@@ -2140,6 +2137,11 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
     { id: "discdrive", question: "Disc drive?", helper: "Xbox Series S is always digital; Series X comes in both flavors.", options: [
       { id: "yes",     label: "Yes — has disc drive",    multiplier: 1.00 },
       { id: "digital", label: "No — digital edition",     multiplier: 0.92 },
+    ]},
+    { id: "storage", question: "Storage capacity?", helper: "Series S base is 512 GB. Series X / Series S Carbon Black is 1 TB. The 2 TB option is Series X Galaxy Black Special Edition or any Xbox with a Storage Expansion Card.", options: [
+      { id: "512", label: "512 GB",                       multiplier: 0.95 },
+      { id: "1tb", label: "1 TB",                         multiplier: 1.00 },
+      { id: "2tb", label: "2 TB (Galaxy Black SE / card)", multiplier: 1.15 },
     ]},
     { id: "controllers", question: "Controllers included?", options: [
       { id: "2", label: "2 controllers", multiplier: 1.05 },
