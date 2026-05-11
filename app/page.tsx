@@ -2663,7 +2663,13 @@ export default function Home() {
   const samsungVariants: FlatVariant[] = SAMSUNG_SERIES.flatMap(s => s.variants as FlatVariant[]);
   const pixelVariants: FlatVariant[] = PIXEL_SERIES.flatMap(s => s.variants as FlatVariant[]);
   const lgPhoneVariants: FlatVariant[] = LG_PHONE_SERIES.flatMap(s => s.variants as FlatVariant[]);
-  const macbookVariants: FlatVariant[] = MACBOOK_SERIES.flatMap(s => s.variants as FlatVariant[]);
+  // MacBook now uses the same series-then-models pattern as Lenovo/Dell/HP.
+  // When selectedSeries is set we expose only that series' variants; otherwise
+  // we surface the full flat list so search across the whole MacBook catalog
+  // still works on the model step.
+  const macbookSelectedVariants: FlatVariant[] = selectedSeries
+    ? (MACBOOK_SERIES.find(s => s.id === selectedSeries)?.variants as FlatVariant[] | undefined) || []
+    : MACBOOK_SERIES.flatMap(s => s.variants as FlatVariant[]);
   const sonyVariants: FlatVariant[] = SONY_SERIES.flatMap(s => s.variants as FlatVariant[]);
   const alienwareVariants = selectedSeries ? ALIENWARE_SERIES.find(s => s.id === selectedSeries)?.variants || [] : [];
   const lgPcVariants = selectedSubSeries
@@ -3141,7 +3147,7 @@ export default function Home() {
       })()}
     </div>
   );
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "lg_phone" ? lgPhoneVariants : deviceType === "macbook" ? macbookVariants : deviceType === "samsung_pc" ? samsungBookVariants : deviceType === "lenovo" ? lenovoPcVariants : deviceType === "dell" ? dellPcVariants : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? hpPcVariants : deviceType === "acer" ? acerPcVariants : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_pc" ? asusPcVariants : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "lg_phone" ? lgPhoneVariants : deviceType === "macbook" ? macbookSelectedVariants : deviceType === "samsung_pc" ? samsungBookVariants : deviceType === "lenovo" ? lenovoPcVariants : deviceType === "dell" ? dellPcVariants : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? hpPcVariants : deviceType === "acer" ? acerPcVariants : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_pc" ? asusPcVariants : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
@@ -4664,10 +4670,38 @@ export default function Home() {
               </>
             )}
 
-            {/* MacBook: All variants flat */}
-            {deviceType === "macbook" && (() => {
+            {/* MacBook: top-level series picker (Pro / Air / Neo / Classic) */}
+            {deviceType === "macbook" && !selectedSeries && (
+              <>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your MacBook</h2>
+                <p className="text-[#e6e6e6] text-sm mb-6">Choose your line</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {MACBOOK_SERIES.map((s) => {
+                    const seriesInq = !!(s as { inquiryOnly?: boolean }).inquiryOnly;
+                    return (
+                      <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
+                        {s.image ? (
+                          <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                        ) : (
+                          <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg>
+                        )}
+                        <p className="font-bold text-sm">{s.label}</p>
+                        <p className="text-[#e6e6e6] text-[10px] text-center px-1 leading-tight">{s.year}</p>
+                        <p className="text-[#00c853] font-bold text-xs mt-0.5">{seriesInq ? "Get a quote" : `Up to $${s.topPrice}`}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
+            {/* MacBook: variants of the picked series */}
+            {deviceType === "macbook" && selectedSeries && (() => {
+              const ser = MACBOOK_SERIES.find(s => s.id === selectedSeries);
               return (
                 <>
+                  <h2 className="text-2xl font-bold mb-1">{ser?.label}</h2>
+                  <p className="text-[#e6e6e6] text-sm mb-4">{ser?.year}</p>
                   <div className="space-y-2">
                     {models.map((m) => {
                       const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
