@@ -2131,6 +2131,20 @@ export default function Home() {
   // localStorage so a refresh doesn't make them claim it again.
   const [promoClaimed, setPromoClaimed] = useState(false);
   useEffect(() => { try { if (localStorage.getItem("tcc_promo_claimed") === "1") setPromoClaimed(true); } catch {} }, []);
+  // Draggable chat FAB position. Defaults to bottom-left if never moved
+  // (null = use the default CSS bottom/left). Once the user drags it, we
+  // store the absolute viewport position and remember it across sessions.
+  const [fabPos, setFabPos] = useState<{ x: number; y: number } | null>(null);
+  const fabDrag = useRef<{ startX: number; startY: number; origX: number; origY: number; moved: boolean } | null>(null);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("tcc_fab_pos");
+      if (raw) {
+        const p = JSON.parse(raw);
+        if (typeof p?.x === "number" && typeof p?.y === "number") setFabPos(p);
+      }
+    } catch {}
+  }, []);
 
   // Funnel progress indicator data — mapped from current step to (n / total).
   // New order: condition -> storage -> carrier -> quote.
@@ -6158,9 +6172,13 @@ export default function Home() {
       {/* (Text Us pill was here; moved into the mobile nav next to cart so it
           doesn't crowd the bottom of the screen.) */}
 
-      {/* CHAT WIDGET — hidden while any 'Help me choose' modal is open so
-          it doesn't sit on top of the modal close button on mobile. */}
-      <div className={`fixed bottom-6 left-6 z-40 ${conditionHelpId || storageHelpId || connectivityHelpOpen || helpTopic ? "hidden" : ""}`}>
+      {/* CHAT WIDGET — draggable FAB. Hidden while a help modal is open,
+          and on the quote step on mobile where the sticky Add to Cart bar
+          is using the bottom strip. Default position is bottom-left;
+          once dragged, the position is remembered in localStorage. */}
+      <div
+        className={`fixed z-40 select-none ${conditionHelpId || storageHelpId || connectivityHelpOpen || helpTopic ? "hidden" : ""} ${step === "quote" ? "hidden lg:block" : ""}`}
+        style={fabPos ? { left: `${fabPos.x}px`, top: `${fabPos.y}px`, bottom: "auto" } : { left: "24px", bottom: "24px" }}>
         {chatOpen && (
           <div className="mb-3 w-[300px] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
             <div className="bg-[#00c853] px-4 py-3 flex items-center justify-between">
@@ -6210,7 +6228,50 @@ export default function Home() {
             </div>
           </div>
         )}
-        <button onClick={() => setChatOpen(!chatOpen)} className="w-14 h-14 rounded-full bg-[#00c853] text-[#0a0a0a] flex items-center justify-center shadow-lg hover:bg-[#00e676] transition cursor-pointer tap-press">
+        <button
+          onPointerDown={(e) => {
+            const target = e.currentTarget;
+            const rect = target.getBoundingClientRect();
+            fabDrag.current = {
+              startX: e.clientX,
+              startY: e.clientY,
+              origX: rect.left,
+              origY: rect.top,
+              moved: false,
+            };
+            target.setPointerCapture(e.pointerId);
+          }}
+          onPointerMove={(e) => {
+            const drag = fabDrag.current;
+            if (!drag) return;
+            const dx = e.clientX - drag.startX;
+            const dy = e.clientY - drag.startY;
+            if (!drag.moved && Math.abs(dx) + Math.abs(dy) < 6) return;
+            drag.moved = true;
+            // Clamp within viewport so the FAB can't escape off-screen.
+            const w = 56; const h = 56;
+            const nx = Math.max(4, Math.min(window.innerWidth - w - 4, drag.origX + dx));
+            const ny = Math.max(4, Math.min(window.innerHeight - h - 4, drag.origY + dy));
+            setFabPos({ x: nx, y: ny });
+          }}
+          onPointerUp={(e) => {
+            const drag = fabDrag.current;
+            fabDrag.current = null;
+            try { e.currentTarget.releasePointerCapture(e.pointerId); } catch {}
+            if (!drag) return;
+            if (drag.moved) {
+              try {
+                const rect = e.currentTarget.getBoundingClientRect();
+                localStorage.setItem("tcc_fab_pos", JSON.stringify({ x: rect.left, y: rect.top }));
+              } catch {}
+              return; // suppress the tap → don't toggle chat after a drag
+            }
+            setChatOpen(!chatOpen);
+          }}
+          aria-label={chatOpen ? "Close chat" : "Open chat — drag to move"}
+          className="w-14 h-14 rounded-full bg-[#00c853] text-[#0a0a0a] flex items-center justify-center shadow-lg hover:bg-[#00e676] transition tap-press touch-none"
+          style={{ cursor: fabDrag.current?.moved ? "grabbing" : "grab" }}
+        >
           {chatOpen ? (
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           ) : (
