@@ -2476,42 +2476,83 @@ export default function Home() {
   // with a pencil edit button that jumps back to that step so the user
   // can change a choice without resetting the whole flow. Heavy 3D outline:
   // outer border + inset top-left highlight + deep drop shadow.
+  const editRow = (target: "storage" | "condition" | "carrier") => () => {
+    setStep(target);
+    pushHistory(target);
+  };
   const selectionPanelMobile = model && (
-    <div className="lg:hidden mb-4 rounded-2xl bg-[rgba(15,15,15,0.78)] backdrop-blur-[12px] border border-white/15 p-4 shadow-[inset_1px_1px_0_rgba(255,255,255,0.1),0_18px_45px_rgba(0,0,0,0.75),0_0_0_1px_rgba(0,200,83,0.08)]">
-      {/* TOP — device thumb + 'Sell Your X' header. Progress bar lives top-right. */}
-      <div className="flex items-center gap-4">
-        <div className="w-20 h-20 rounded-xl bg-[rgba(15,15,15,0.5)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden shadow-[inset_1px_1px_0_rgba(255,255,255,0.08),0_4px_10px_rgba(0,0,0,0.45)]">
-          {model.image ? (
-            <img src={model.image} alt="" className="max-w-full max-h-full object-contain" />
-          ) : (
-            <span className="text-3xl opacity-50">📱</span>
-          )}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <p className="text-[#a0a0a0] text-xs font-medium">Sell Your</p>
-              <p className="text-white font-extrabold text-xl leading-tight mt-0.5 truncate">{model.label}</p>
+    <>
+      {/* Mobile progress chip — lives OUTSIDE the picture box, top-right of page.
+          Picture menu below it grows as more rows get added. */}
+      {funnelStepNum > 0 && (
+        <div className="lg:hidden flex justify-end mb-3">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgba(15,15,15,0.78)] backdrop-blur-[8px] border border-white/15 shadow-[0_4px_10px_rgba(0,0,0,0.4)]">
+            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] leading-none">Step {funnelStepNum}/{funnelTotal}</span>
+            <div className="w-14 h-1 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_4px_rgba(0,200,83,0.5)] transition-all duration-500" style={{ width: `${(funnelStepNum / funnelTotal) * 100}%` }} />
             </div>
-            {funnelStepNum > 0 && (
-              <div className="shrink-0 text-right">
-                <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#00c853] leading-none">{funnelStepNum}/{funnelTotal}</p>
-                <div className="mt-1.5 w-14 h-1 bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_4px_rgba(0,200,83,0.5)] transition-all duration-500" style={{ width: `${(funnelStepNum / funnelTotal) * 100}%` }} />
-                </div>
+          </div>
+        </div>
+      )}
+      <div className="lg:hidden mb-4 rounded-2xl bg-[rgba(15,15,15,0.78)] backdrop-blur-[12px] border border-white/15 p-4 shadow-[inset_1px_1px_0_rgba(255,255,255,0.1),0_18px_45px_rgba(0,0,0,0.75),0_0_0_1px_rgba(0,200,83,0.08)]">
+        {/* TOP — device thumb + 'Sell Your X' header */}
+        <div className="flex items-center gap-4">
+          <div className="w-20 h-20 rounded-xl bg-[rgba(15,15,15,0.5)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden shadow-[inset_1px_1px_0_rgba(255,255,255,0.08),0_4px_10px_rgba(0,0,0,0.45)]">
+            {model.image ? (
+              <img src={model.image} alt="" className="max-w-full max-h-full object-contain" />
+            ) : (
+              <span className="text-3xl opacity-50">📱</span>
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[#a0a0a0] text-xs font-medium">Sell Your</p>
+            <p className="text-white font-extrabold text-xl leading-tight mt-0.5">{model.label}</p>
+          </div>
+        </div>
+        {/* ROWS — only render rows that have a value. Box grows as more
+            selections are made. Each row has a pencil edit button that
+            jumps back to that step so the user can change a pick without
+            resetting the flow. */}
+        {(storage || condition || carrier) && (
+          <div className="divide-y divide-white/10 border-t border-white/10 mt-4">
+            {condition && (
+              <div className="flex items-center justify-between py-3">
+                <span className="text-[#a0a0a0] text-sm">Condition</span>
+                <button onClick={editRow("condition")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                  {condition.label}
+                  <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                </button>
+              </div>
+            )}
+            {carrier && (
+              <div className="flex items-center justify-between py-3">
+                <span className="text-[#a0a0a0] text-sm">Carrier</span>
+                <button onClick={editRow("carrier")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                  {carrier.label}
+                  <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                </button>
+              </div>
+            )}
+            {storage && (
+              <div className="flex items-center justify-between py-3">
+                <span className="text-[#a0a0a0] text-sm">Storage Size</span>
+                <button onClick={editRow("storage")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                  {storage.label}
+                  <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                </button>
               </div>
             )}
           </div>
-        </div>
+        )}
+        {/* BOTTOM — price reveal once we're past the carrier step */}
+        {(step === "quote" || step === "checkout" || step === "payout" || step === "contact") && (
+          <div className="border-t border-white/10 mt-2 pt-4 text-center">
+            <p className="text-[#a0a0a0] text-sm">Your device is valued at</p>
+            <p className="text-[#00c853] font-extrabold text-4xl mt-1" style={{ textShadow: "0 0 8px rgba(0,200,83,0.22)" }}>${quote * quantity}</p>
+          </div>
+        )}
       </div>
-      {/* BOTTOM — price reveal once we're past the carrier step */}
-      {(step === "quote" || step === "checkout" || step === "payout" || step === "contact") && (
-        <div className="border-t border-white/10 mt-3 pt-3 text-center">
-          <p className="text-[#a0a0a0] text-sm">Your device is valued at</p>
-          <p className="text-[#00c853] font-extrabold text-4xl mt-1" style={{ textShadow: "0 0 8px rgba(0,200,83,0.22)" }}>${quote * quantity}</p>
-        </div>
-      )}
-    </div>
+    </>
   );
 
   const selectionPanel = model && (
