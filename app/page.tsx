@@ -4901,17 +4901,14 @@ export default function Home() {
                       }}
                       className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
                     >
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="font-extrabold text-[15px] text-white leading-tight">{s.label}</p>
-                          <button
-                            type="button"
-                            onClick={(e) => { e.stopPropagation(); setStorageHelpId(s.id); }}
-                            aria-label={`What ${s.label} is good for`}
-                            className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none shrink-0 hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
-                          >i</button>
-                        </div>
-                        <p className="text-[#b0b0b0] text-[12px] leading-snug mt-0.5">{s.desc}</p>
+                      <div className="flex-1 min-w-0 flex items-center gap-2">
+                        <p className="font-extrabold text-[15px] text-white leading-tight">{s.label}</p>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setStorageHelpId(s.id); }}
+                          aria-label={`What ${s.label} is good for`}
+                          className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none shrink-0 hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
+                        >i</button>
                       </div>
                       <svg className="w-4 h-4 text-[#dcdcdc] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                     </button>
