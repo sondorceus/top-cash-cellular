@@ -107,55 +107,23 @@ function CategoryIcon({ id, className = "" }: { id: CatIconId; className?: strin
   }
 }
 
-// Carrier icons — custom brand-evocative marks (not trademarked logos) for
-// the carrier selection step. Each carrier gets a distinctive shape + the
-// carrier's signature brand color so it reads instantly without infringing.
+// Carrier icons — real brand logos that Skywalker provided live under
+// /public/carriers/. Each carrier card just renders the supplied PNG.
+// 'other' has no logo so it still falls back to a neutral padlock SVG.
 type CarrierIconId = "unlocked" | "att" | "tmobile" | "verizon" | "other";
 function CarrierIcon({ id, className = "" }: { id: CarrierIconId; className?: string }) {
-  switch (id) {
-    case "att":
-      return (
-        <svg viewBox="0 0 32 32" className={className}>
-          <circle cx="16" cy="16" r="13" fill="#00a8e0" />
-          <path d="M16 5 a11 11 0 0 1 0 22 a11 11 0 0 1 0 -22 z M7 11 q9 -3 18 0 M5 16 q11 -4 22 0 M7 21 q9 3 18 0" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      );
-    case "tmobile":
-      return (
-        <svg viewBox="0 0 32 32" className={className}>
-          <rect x="3" y="3" width="26" height="26" rx="6" fill="#e20074" />
-          <path d="M9 12 h14 v3 h-5.5 v8 h-3 v-8 h-5.5 z" fill="#fff" />
-        </svg>
-      );
-    case "verizon":
-      return (
-        <svg viewBox="0 0 32 32" className={className}>
-          <rect x="3" y="3" width="26" height="26" rx="6" fill="#0a0a0a" stroke="#cd040b" strokeWidth="2" />
-          <path d="M8 11 l5.5 11 h2.5 l5.5 -11 h-3 l-3.75 8 l-3.75 -8 z" fill="#fff" />
-          <path d="M20 8.5 l4 4 l-1.4 1.4 l-2.6 -2.6 z" fill="#cd040b" />
-        </svg>
-      );
-    case "unlocked":
-      return (
-        <svg viewBox="0 0 32 32" className={className}>
-          <rect x="3" y="3" width="26" height="26" rx="6" fill="#00c853" fillOpacity="0.15" stroke="#00c853" strokeWidth="1.8" />
-          <path d="M11 16 v-3 a5 5 0 0 1 9 -3" fill="none" stroke="#00c853" strokeWidth="2.2" strokeLinecap="round" />
-          <rect x="9" y="16" width="14" height="9" rx="1.6" fill="#00c853" />
-          <circle cx="16" cy="20" r="1.4" fill="#0a0a0a" />
-          <line x1="16" y1="20.6" x2="16" y2="23" stroke="#0a0a0a" strokeWidth="1.6" strokeLinecap="round" />
-        </svg>
-      );
-    case "other":
-      return (
-        <svg viewBox="0 0 32 32" className={className}>
-          <rect x="3" y="3" width="26" height="26" rx="6" fill="currentColor" fillOpacity="0.08" stroke="currentColor" strokeWidth="1.6" />
-          <path d="M11 16 v-3 a5 5 0 0 1 10 0 v3" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-          <rect x="9" y="16" width="14" height="9" rx="1.6" fill="currentColor" fillOpacity="0.7" stroke="currentColor" strokeWidth="1.6" />
-          <circle cx="16" cy="20" r="1.4" fill="#0a0a0a" />
-          <line x1="16" y1="20.6" x2="16" y2="23" stroke="#0a0a0a" strokeWidth="1.6" strokeLinecap="round" />
-        </svg>
-      );
+  if (id === "other") {
+    return (
+      <svg viewBox="0 0 32 32" className={className}>
+        <rect x="3" y="3" width="26" height="26" rx="6" fill="currentColor" fillOpacity="0.08" stroke="currentColor" strokeWidth="1.6" />
+        <path d="M11 16 v-3 a5 5 0 0 1 10 0 v3" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+        <rect x="9" y="16" width="14" height="9" rx="1.6" fill="currentColor" fillOpacity="0.7" stroke="currentColor" strokeWidth="1.6" />
+        <circle cx="16" cy="20" r="1.4" fill="#0a0a0a" />
+        <line x1="16" y1="20.6" x2="16" y2="23" stroke="#0a0a0a" strokeWidth="1.6" strokeLinecap="round" />
+      </svg>
+    );
   }
+  return <img src={`/carriers/${id}.png`} alt="" className={`${className} object-contain`} loading="lazy" />;
 }
 
 const IPHONE_SERIES = [
@@ -168,39 +136,39 @@ const IPHONE_SERIES = [
     { id: "ip17e", label: "iPhone 17E", base: 190, image: "/iphone17e.png" },
   ]},
   { id: "16", label: "iPhone 16", image: "/iphone16.png", year: "2024", topPrice: 490, variants: [
-    { id: "ip16pm", label: "iPhone 16 Pro Max", base: 490, image: "/devices/iphone-16-pro-max.webp" },
-    { id: "ip16p", label: "iPhone 16 Pro", base: 390, image: "/devices/iphone-16-pro.webp" },
-    { id: "ip16plus", label: "iPhone 16 Plus", base: 320, image: "/devices/iphone-16-plus.webp" },
-    { id: "ip16", label: "iPhone 16", base: 300, image: "/devices/iphone-16.webp" },
-    { id: "ip16e", label: "iPhone 16E", base: 145, image: "/devices/iphone-16e.webp" },
+    { id: "ip16pm", label: "iPhone 16 Pro Max", base: 490, image: "/devices/bm/iphone-16-pro-max.png" },
+    { id: "ip16p", label: "iPhone 16 Pro", base: 390, image: "/devices/bm/iphone-16-pro.png" },
+    { id: "ip16plus", label: "iPhone 16 Plus", base: 320, image: "/devices/bm/iphone-16-plus.png" },
+    { id: "ip16", label: "iPhone 16", base: 300, image: "/devices/bm/iphone-16.png" },
+    { id: "ip16e", label: "iPhone 16E", base: 145, image: "/devices/bm/iphone-16e.png" },
   ]},
   { id: "15", label: "iPhone 15", image: "/iphone15.png", year: "2023", topPrice: 290, variants: [
-    { id: "ip15pm", label: "iPhone 15 Pro Max", base: 290, image: "/devices/iphone-15-pro-max.webp" },
-    { id: "ip15p", label: "iPhone 15 Pro", base: 235, image: "/devices/iphone-15-pro.webp" },
-    { id: "ip15plus", label: "iPhone 15 Plus", base: 180, image: "/devices/iphone-15-plus.webp" },
-    { id: "ip15", label: "iPhone 15", base: 160, image: "/devices/iphone-15.webp" },
+    { id: "ip15pm", label: "iPhone 15 Pro Max", base: 290, image: "/devices/bm/iphone-15-pro-max.png" },
+    { id: "ip15p", label: "iPhone 15 Pro", base: 235, image: "/devices/bm/iphone-15-pro.png" },
+    { id: "ip15plus", label: "iPhone 15 Plus", base: 180, image: "/devices/bm/iphone-15-plus.png" },
+    { id: "ip15", label: "iPhone 15", base: 160, image: "/devices/bm/iphone-15.png" },
   ]},
   { id: "14", label: "iPhone 14", image: "/iphone14.png", year: "2022", topPrice: 170, variants: [
-    { id: "ip14pm", label: "iPhone 14 Pro Max", base: 170, image: "/devices/iphone-14-pro-max.webp" },
-    { id: "ip14p", label: "iPhone 14 Pro", base: 140, image: "/devices/iphone-14-pro.webp" },
-    { id: "ip14plus", label: "iPhone 14 Plus", base: 110, image: "/devices/iphone-14-plus.webp" },
-    { id: "ip14", label: "iPhone 14", base: 100, image: "/devices/iphone-14.webp" },
+    { id: "ip14pm", label: "iPhone 14 Pro Max", base: 170, image: "/devices/bm/iphone-14-pro-max.png" },
+    { id: "ip14p", label: "iPhone 14 Pro", base: 140, image: "/devices/bm/iphone-14-pro.png" },
+    { id: "ip14plus", label: "iPhone 14 Plus", base: 110, image: "/devices/bm/iphone-14-plus.png" },
+    { id: "ip14", label: "iPhone 14", base: 100, image: "/devices/bm/iphone-14.png" },
   ]},
   { id: "13", label: "iPhone 13", image: "/iphone13.png", year: "2021", topPrice: 130, variants: [
-    { id: "ip13pm", label: "iPhone 13 Pro Max", base: 130, image: "/devices/iphone-13-pro-max.webp" },
-    { id: "ip13p", label: "iPhone 13 Pro", base: 100, image: "/devices/iphone-13-pro.webp" },
-    { id: "ip13", label: "iPhone 13", base: 75, image: "/devices/iphone-13.webp" },
+    { id: "ip13pm", label: "iPhone 13 Pro Max", base: 130, image: "/devices/bm/iphone-13-pro-max.png" },
+    { id: "ip13p", label: "iPhone 13 Pro", base: 100, image: "/devices/bm/iphone-13-pro.png" },
+    { id: "ip13", label: "iPhone 13", base: 75, image: "/devices/bm/iphone-13.png" },
   ]},
   { id: "12", label: "iPhone 12", image: "/iphone12.png", year: "2020", topPrice: 130, variants: [
-    { id: "ip12pm", label: "iPhone 12 Pro Max", base: 130 },
-    { id: "ip12p", label: "iPhone 12 Pro", base: 110 },
-    { id: "ip12", label: "iPhone 12", base: 80 },
-    { id: "ip12mini", label: "iPhone 12 Mini", base: 60 },
+    { id: "ip12pm", label: "iPhone 12 Pro Max", base: 130, image: "/devices/bm/iphone-12-pro-max.png" },
+    { id: "ip12p", label: "iPhone 12 Pro", base: 110, image: "/devices/bm/iphone-12-pro.png" },
+    { id: "ip12", label: "iPhone 12", base: 80, image: "/devices/bm/iphone-12.png" },
+    { id: "ip12mini", label: "iPhone 12 Mini", base: 60, image: "/devices/bm/iphone-12-mini.png" },
   ]},
   { id: "11", label: "iPhone 11", image: "/iphone11.png", year: "2019", topPrice: 100, variants: [
-    { id: "ip11pm", label: "iPhone 11 Pro Max", base: 100 },
-    { id: "ip11p", label: "iPhone 11 Pro", base: 85 },
-    { id: "ip11", label: "iPhone 11", base: 60 },
+    { id: "ip11pm", label: "iPhone 11 Pro Max", base: 100, image: "/devices/bm/iphone-11-pro-max.png" },
+    { id: "ip11p", label: "iPhone 11 Pro", base: 85, image: "/devices/bm/iphone-11-pro.png" },
+    { id: "ip11", label: "iPhone 11", base: 60, image: "/devices/bm/iphone-11.png" },
   ]},
 ];
 
