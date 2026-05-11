@@ -200,6 +200,36 @@ body:not(.at-top) nav.sticky { box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35); }
   .tcc-card:hover { transform: none; }
 }
 
+/* Animated gradient ring — slow-rotating green-cyan conic gradient that
+   sits around the hero dual-path buttons. Wrap any element with
+   .tcc-ring-wrap to apply (the parent reserves 2px of padding for the
+   ring, and the rotating conic is rendered on a ::before pseudo).
+   Premium 'live' feel; pauses for prefers-reduced-motion. */
+@keyframes tccRingSpin { to { transform: rotate(360deg); } }
+.tcc-ring-wrap {
+  position: relative;
+  padding: 2px;
+  border-radius: 1.25rem;
+  isolation: isolate;
+}
+.tcc-ring-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(from 0deg, transparent 0deg, #00c853 60deg, #00e5ff 180deg, #00c853 300deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: tccRingSpin 6s linear infinite;
+  z-index: -1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tcc-ring-wrap::before { animation: none; }
+}
+
 /* Cyber-style input field — darker glass, 1px bottom border that lights
    up bright green on focus. No full box border (sleeker, more "techy").
    Placeholder text recedes; typed text pumps to pure white. */

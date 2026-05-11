@@ -3228,21 +3228,25 @@ export default function Home() {
               <span><strong className="text-white">On-site data wipe in your presence</strong> before we pay you.</span>
             </p>
 
-            {/* DUAL-PATH ENTRY — local vs. shipping */}
+            {/* DUAL-PATH ENTRY — local vs. shipping. Local path gets the animated
+                conic ring + beveled button; shipping is the secondary outline.
+                Same on mobile and desktop. */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 hero-scale-in hero-d-3">
+              <div className="tcc-ring-wrap">
+                <button
+                  onClick={() => { setStep("category"); pushHistory("category"); }}
+                  className="tcc-button-primary w-full py-4 text-base font-extrabold flex flex-col items-center gap-0.5"
+                >
+                  <span className="flex items-center gap-2"><span>📍</span>Sell Local Today</span>
+                  <span className="text-[11px] font-medium opacity-80">Local pickup · Cash on the spot</span>
+                </button>
+              </div>
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
-                className="w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] py-4 rounded-2xl text-base font-bold cursor-pointer transition tap-press cta-pulse flex flex-col items-center gap-0.5"
-              >
-                <span className="flex items-center gap-2"><span>📍</span>Sell Local Today</span>
-                <span className="text-[11px] font-medium opacity-80">Local pickup · Cash on the spot</span>
-              </button>
-              <button
-                onClick={() => { setStep("category"); pushHistory("category"); }}
-                className="w-full bg-white/10 hover:bg-white/15 border-2 border-[#00c853]/40 text-white py-4 rounded-2xl text-base font-bold cursor-pointer transition tap-press flex flex-col items-center gap-0.5"
+                className="w-full bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] hover:bg-[rgba(15,15,15,0.85)] hover:border-[#00c853] border border-white/15 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-300 ease-out shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex flex-col items-center gap-0.5"
               >
                 <span className="flex items-center gap-2"><span>📦</span>I&apos;m Shipping: Get a Label</span>
-                <span className="text-[11px] font-medium text-[#dcdcdc]">Free prepaid label · Same-day payout on arrival</span>
+                <span className="text-[11px] font-medium text-[#a0a0a0]">Free prepaid label · Same-day payout on arrival</span>
               </button>
             </div>
 
@@ -4540,9 +4544,8 @@ export default function Home() {
                   }}
                   className="tcc-card group w-full flex items-center gap-4 p-5 rounded-2xl cursor-pointer text-left"
                 >
-                  <span className={`text-2xl cond-glow-${c.id}`}>{c.icon}</span>
                   <div className="flex-1">
-                    <p className="font-bold text-[18px] text-white">{c.label}</p>
+                    <p className="font-extrabold text-[18px] text-white">{c.label}</p>
                     <p className="text-[#b0b0b0] text-[13px]">{c.desc}</p>
                     {(c as { details?: string[] }).details && (
                       <details className="mt-2">
@@ -4625,9 +4628,8 @@ export default function Home() {
                   onClick={() => { setCarrier(c); setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote"); }}
                   className="tcc-card w-full flex items-center gap-4 px-5 py-4 rounded-2xl cursor-pointer text-left"
                 >
-                  <CarrierIcon id={c.id as CarrierIconId} className="w-9 h-9 shrink-0" />
-                  <p className="font-bold text-[17px] text-white flex-1">{c.label}</p>
-                  {c.id === "unlocked" && <span className="text-[#00c853] text-xs font-medium">Best value</span>}
+                  <p className="font-extrabold text-[17px] text-white flex-1">{c.label}</p>
+                  {c.id === "unlocked" && <span className="text-[#00c853] text-xs font-bold uppercase tracking-wider">Best value</span>}
                 </button>
               ))}
             </div>
