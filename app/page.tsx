@@ -2333,8 +2333,8 @@ export default function Home() {
   // Bump counter — increments every time an item is added so the cart
   // icon + badge can re-animate (key change forces remount + keyframe).
   const [cartBump, setCartBump] = useState(0);
-  // Toast — short-lived confirmation that shows what was just added.
-  const [cartToast, setCartToast] = useState<{ model: string; price: number } | null>(null);
+  // Toast — short-lived confirmation that shows what was just added / removed.
+  const [cartToast, setCartToast] = useState<{ model: string; price: number; kind?: "add" | "remove" } | null>(null);
   const [inquiryCategory, setInquiryCategory] = useState("");
   const [inquirySent, setInquirySent] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
@@ -3042,19 +3042,25 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
-      {/* ADD-TO-CART TOAST — fixed top-center on mobile, top-right on lg.
-          Slides up + fades. Auto-dismisses after 2.4s via setTimeout. */}
-      {cartToast && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 lg:left-auto lg:right-6 lg:translate-x-0 z-[60] toast-in-up">
-          <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-[rgba(15,15,15,0.92)] backdrop-blur-[14px] border border-[#00c853]/40 shadow-[0_18px_45px_rgba(0,0,0,0.6),0_0_18px_rgba(0,200,83,0.18)]">
-            <span className="w-7 h-7 rounded-full bg-[#00c853] text-[#0a0a0a] flex items-center justify-center font-extrabold text-sm shrink-0" style={{ boxShadow: "0 0 12px rgba(0,200,83,0.55)" }}>✓</span>
-            <div className="min-w-0">
-              <p className="text-white text-[13px] font-extrabold leading-tight">Added to cart</p>
-              <p className="text-[#e6e6e6] text-[12px] leading-snug truncate max-w-[220px]">{cartToast.model} — <span className="text-[#00c853] font-bold">${cartToast.price}</span></p>
+      {/* CART TOAST — fixed top-center on mobile, top-right on lg.
+          Slides up + fades. Auto-dismisses after 2.4s. Two variants:
+          'add' (green check, ✓) and 'remove' (red minus, ×). */}
+      {cartToast && (() => {
+        const isRemove = cartToast.kind === "remove";
+        const accent = isRemove ? "#ff5566" : "#00c853";
+        const accentRgba = isRemove ? "rgba(255,85,102," : "rgba(0,200,83,";
+        return (
+          <div className="fixed top-20 left-1/2 -translate-x-1/2 lg:left-auto lg:right-6 lg:translate-x-0 z-[60] toast-in-up">
+            <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-[rgba(15,15,15,0.92)] backdrop-blur-[14px]" style={{ border: `1px solid ${accentRgba}0.4)`, boxShadow: `0 18px 45px rgba(0,0,0,0.6), 0 0 18px ${accentRgba}0.18)` }}>
+              <span className="w-7 h-7 rounded-full flex items-center justify-center font-extrabold text-sm shrink-0 text-[#0a0a0a]" style={{ background: accent, boxShadow: `0 0 12px ${accentRgba}0.55)` }}>{isRemove ? "×" : "✓"}</span>
+              <div className="min-w-0">
+                <p className="text-white text-[13px] font-extrabold leading-tight">{isRemove ? "Removed from cart" : "Added to cart"}</p>
+                <p className="text-[#e6e6e6] text-[12px] leading-snug truncate max-w-[220px]">{cartToast.model}{cartToast.price ? <> — <span className="font-bold" style={{ color: accent }}>${cartToast.price}</span></> : null}</p>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
       {/* NAV */}
       <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         {/* PROMO STRIP — own row above the logo + menu so it never feels squeezed.
@@ -6525,7 +6531,7 @@ export default function Home() {
                                 <p className={`text-white font-extrabold ${titleSz} leading-tight`}>{item.model}</p>
                                 <p className={`text-[#c8c8c8] ${subSz} mt-1`}>{item.storage} · {item.condition}</p>
                               </div>
-                              <button onClick={() => setCartItems(prev => prev.filter((_, idx) => idx !== i))} aria-label="Remove from cart" className="text-[#b8b8b8] hover:text-red-400 text-xs font-bold underline-offset-2 hover:underline transition cursor-pointer shrink-0">Remove</button>
+                              <button onClick={() => { setCartItems(prev => prev.filter((_, idx) => idx !== i)); setCartToast({ model: item.model, price: item.price * item.quantity, kind: "remove" }); setTimeout(() => setCartToast(null), 2400); }} aria-label="Remove from cart" className="text-[#b8b8b8] hover:text-red-400 text-xs font-bold underline-offset-2 hover:underline transition cursor-pointer shrink-0">Remove</button>
                             </div>
                             <div className="flex items-center justify-between gap-3 mt-2 pt-2 border-t border-white/10">
                               <div className="inline-flex items-center gap-2 bg-white/5 rounded-full px-1 py-1">
