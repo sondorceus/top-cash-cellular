@@ -1,0 +1,22 @@
+{
+  "_doc": "Decluttr max published values per model id. Refreshed monthly by scripts/refresh-decluttr-comps.py via .github/workflows/refresh-comps.yml. Decluttr is our configured comp for LG phones, LG laptops, and the fallback for Windows laptops (Lenovo/Dell/HP/Acer/Asus). Frontend reads this at runtime and falls back to COMP_SOURCES percentage if the model id isn't here.",
+  "source": "https://www.decluttr.com/",
+  "updatedAt": "2026-05-12T03:59:00Z",
+  "values": {
+    "lgv60":    120,
+    "lgv50":    60,
+    "lgv40":    45,
+    "lgv35":    30,
+    "lgv30":    30,
+    "lgv20":    20,
+    "lgg8x":    65,
+    "lgg8":     40,
+    "lgg7":     25,
+    "lgg6":     20,
+    "lgwing":   95,
+    "lgvelvet": 45,
+    "lgstylo6": 25,
+    "lgstylo5": 15,
+    "lgk92":    25
+  }
+}

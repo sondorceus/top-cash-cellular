@@ -122,6 +122,58 @@ jobs:
           branch: refresh-comps/samsung
           delete-branch: true
 
+  decluttr:
+    name: Refresh Decluttr values
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install playwright + chromium
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          playwright install chromium --with-deps
+      - name: Run Decluttr refresh
+        id: refresh
+        run: |
+          python scripts/refresh-decluttr-comps.py | tee /tmp/refresh-decluttr.log
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          tail -200 /tmp/refresh-decluttr.log >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet public/comps/decluttr.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      - name: Open PR with refreshed values
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: refresh Decluttr comps (monthly)"
+          title: "Monthly Decluttr comp refresh"
+          body: |
+            Automated monthly refresh of `public/comps/decluttr.json`.
+            <details><summary>Refresh log</summary>
+
+            ```
+            ${{ steps.refresh.outputs.log }}
+            ```
+
+            </details>
+          branch: refresh-comps/decluttr
+          delete-branch: true
+
   google:
     name: Refresh Google Store Trade-In values
     runs-on: ubuntu-latest

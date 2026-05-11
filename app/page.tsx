@@ -3291,6 +3291,7 @@ export default function Home() {
   const [appleComps, setAppleComps] = useState<Record<string, number> | null>(null);
   const [googleComps, setGoogleComps] = useState<Record<string, number> | null>(null);
   const [samsungComps, setSamsungComps] = useState<Record<string, number> | null>(null);
+  const [decluttrComps, setDecluttrComps] = useState<Record<string, number> | null>(null);
   useEffect(() => {
     fetch("/comps/apple-trade-in.json", { cache: "no-store" })
       .then(r => r.ok ? r.json() : null)
@@ -3304,6 +3305,10 @@ export default function Home() {
       .then(r => r.ok ? r.json() : null)
       .then((d: { values?: Record<string, number> } | null) => setSamsungComps(d?.values || null))
       .catch(() => setSamsungComps(null));
+    fetch("/comps/decluttr.json", { cache: "no-store" })
+      .then(r => r.ok ? r.json() : null)
+      .then((d: { values?: Record<string, number> } | null) => setDecluttrComps(d?.values || null))
+      .catch(() => setDecluttrComps(null));
   }, []);
   const promoApplies = !!(promoClaimed && promo?.active && deviceType && (promo.appliesTo === "all" || promo.appliesTo === deviceType) && (!promo.minQuantity || quantity >= promo.minQuantity));
   const promoMultiplier = promoApplies && promo && promo.percent ? 1 + (promo.percent / 100) : 1;
@@ -6696,10 +6701,12 @@ export default function Home() {
                   const isApple = deviceType === "iphone" || deviceType === "ipad" || deviceType === "macbook" || deviceType === "apple_desktop" || deviceType === "applewatch" || deviceType === "apple_vr";
                   const isGoogle = deviceType === "pixel" || deviceType === "pixelwatch" || deviceType === "google_tab";
                   const isSamsung = deviceType === "android" || deviceType === "samsung_tab" || deviceType === "samsung_pc" || deviceType === "samsungwatch";
+                  const isDecluttr = deviceType === "lg_phone" || deviceType === "lg_pc";
                   const real =
                     (isApple && model && appleComps ? appleComps[model.id] : undefined) ??
                     (isGoogle && model && googleComps ? googleComps[model.id] : undefined) ??
-                    (isSamsung && model && samsungComps ? samsungComps[model.id] : undefined);
+                    (isSamsung && model && samsungComps ? samsungComps[model.id] : undefined) ??
+                    (isDecluttr && model && decluttrComps ? decluttrComps[model.id] : undefined);
                   const compValue = typeof real === "number"
                     ? real * quantity
                     : Math.round(quote * comp.percent * quantity);
@@ -6721,10 +6728,12 @@ export default function Home() {
                 const isApple = deviceType === "iphone" || deviceType === "ipad" || deviceType === "macbook" || deviceType === "apple_desktop" || deviceType === "applewatch" || deviceType === "apple_vr";
                 const isGoogle = deviceType === "pixel" || deviceType === "pixelwatch" || deviceType === "google_tab";
                 const isSamsung = deviceType === "android" || deviceType === "samsung_tab" || deviceType === "samsung_pc" || deviceType === "samsungwatch";
+                const isDecluttr = deviceType === "lg_phone" || deviceType === "lg_pc";
                 const real =
                   (isApple && model && appleComps ? appleComps[model.id] : undefined) ??
                   (isGoogle && model && googleComps ? googleComps[model.id] : undefined) ??
-                  (isSamsung && model && samsungComps ? samsungComps[model.id] : undefined);
+                  (isSamsung && model && samsungComps ? samsungComps[model.id] : undefined) ??
+                  (isDecluttr && model && decluttrComps ? decluttrComps[model.id] : undefined);
                 const compPer = typeof real === "number" ? real : Math.round(quote * getCompSource(deviceType).percent);
                 const savings = (quote - compPer) * quantity;
                 return <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${savings > 0 ? savings : 0} more with us</p>;
