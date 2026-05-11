@@ -2086,6 +2086,151 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
     ],
     hasNanoGlass: true,
   },
+  // 2024 16-inch MacBook Pro M4 Pro/Max
+  mbp16m4: {
+    processors: [
+      { id: "m4pro_14_20", label: "M4 Pro", sub: "14-Core CPU / 20-Core GPU", multiplier: 1.00 },
+      { id: "m4max_14_32", label: "M4 Max", sub: "14-Core CPU / 32-Core GPU", multiplier: 1.30 },
+      { id: "m4max_16_40", label: "M4 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 1.50 },
+    ],
+    memory: [
+      { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.00 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.10 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.20 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.40 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70 },
+    ],
+    hasNanoGlass: true,
+  },
+  // 2024 14-inch MacBook Pro M4
+  mbp14m4: {
+    processors: [
+      { id: "m4_10_10",    label: "M4",     sub: "10-Core CPU / 10-Core GPU", multiplier: 1.00 },
+      { id: "m4pro_12_16", label: "M4 Pro", sub: "12-Core CPU / 16-Core GPU", multiplier: 1.30 },
+      { id: "m4pro_14_20", label: "M4 Pro", sub: "14-Core CPU / 20-Core GPU", multiplier: 1.45 },
+      { id: "m4max_14_32", label: "M4 Max", sub: "14-Core CPU / 32-Core GPU", multiplier: 1.70 },
+      { id: "m4max_16_40", label: "M4 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 1.90 },
+    ],
+    memory: [
+      { id: "16",  label: "16 GB",  sub: "Unified Memory", multiplier: 1.00 },
+      { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.06 },
+      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.14 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.20 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.30 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.50 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70 },
+    ],
+    hasNanoGlass: true,
+  },
+  // 2023 16-inch MacBook Pro M3 Pro/Max
+  mbp16m3: {
+    processors: [
+      { id: "m3pro_12_18", label: "M3 Pro", sub: "12-Core CPU / 18-Core GPU", multiplier: 1.00 },
+      { id: "m3max_14_30", label: "M3 Max", sub: "14-Core CPU / 30-Core GPU", multiplier: 1.30 },
+      { id: "m3max_16_40", label: "M3 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 1.50 },
+    ],
+    memory: [
+      { id: "18",  label: "18 GB",  sub: "Unified Memory", multiplier: 1.00 },
+      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.10 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.18 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.28 },
+      { id: "96",  label: "96 GB",  sub: "Unified Memory", multiplier: 1.38 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.50 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70 },
+    ],
+    hasNanoGlass: true,
+  },
+  // 2023 14-inch MacBook Pro M3 / Pro / Max
+  mbp14m3: {
+    processors: [
+      { id: "m3_8_10",     label: "M3",     sub: "8-Core CPU / 10-Core GPU",  multiplier: 1.00 },
+      { id: "m3pro_11_14", label: "M3 Pro", sub: "11-Core CPU / 14-Core GPU", multiplier: 1.25 },
+      { id: "m3pro_12_18", label: "M3 Pro", sub: "12-Core CPU / 18-Core GPU", multiplier: 1.40 },
+      { id: "m3max_14_30", label: "M3 Max", sub: "14-Core CPU / 30-Core GPU", multiplier: 1.65 },
+      { id: "m3max_16_40", label: "M3 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 1.85 },
+    ],
+    memory: [
+      { id: "8",   label: "8 GB",   sub: "Unified Memory", multiplier: 0.92 },
+      { id: "16",  label: "16 GB",  sub: "Unified Memory", multiplier: 1.00 },
+      { id: "18",  label: "18 GB",  sub: "Unified Memory", multiplier: 1.04 },
+      { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.08 },
+      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.16 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.30 },
+      { id: "96",  label: "96 GB",  sub: "Unified Memory", multiplier: 1.42 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.55 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70 },
+    ],
+    hasNanoGlass: true,
+  },
+  // 2023 16-inch MacBook Pro M2 Pro/Max (no nano-texture this gen)
+  mbp16m2: {
+    processors: [
+      { id: "m2pro_12_19", label: "M2 Pro", sub: "12-Core CPU / 19-Core GPU", multiplier: 1.00 },
+      { id: "m2max_12_30", label: "M2 Max", sub: "12-Core CPU / 30-Core GPU", multiplier: 1.30 },
+      { id: "m2max_12_38", label: "M2 Max", sub: "12-Core CPU / 38-Core GPU", multiplier: 1.45 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00 },
+      { id: "32", label: "32 GB", sub: "Unified Memory", multiplier: 1.12 },
+      { id: "64", label: "64 GB", sub: "Unified Memory", multiplier: 1.28 },
+      { id: "96", label: "96 GB", sub: "Unified Memory", multiplier: 1.40 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2023 14-inch MacBook Pro M2 Pro/Max
+  mbp14m2: {
+    processors: [
+      { id: "m2pro_10_16", label: "M2 Pro", sub: "10-Core CPU / 16-Core GPU", multiplier: 1.00 },
+      { id: "m2pro_12_19", label: "M2 Pro", sub: "12-Core CPU / 19-Core GPU", multiplier: 1.15 },
+      { id: "m2max_12_30", label: "M2 Max", sub: "12-Core CPU / 30-Core GPU", multiplier: 1.40 },
+      { id: "m2max_12_38", label: "M2 Max", sub: "12-Core CPU / 38-Core GPU", multiplier: 1.55 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00 },
+      { id: "32", label: "32 GB", sub: "Unified Memory", multiplier: 1.12 },
+      { id: "64", label: "64 GB", sub: "Unified Memory", multiplier: 1.28 },
+      { id: "96", label: "96 GB", sub: "Unified Memory", multiplier: 1.40 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70 },
+    ],
+    hasNanoGlass: false,
+  },
   // 2025 14-inch MacBook Pro M5 (base chip line) — Atlas only lists M5
   // Pro/Max variants for this gen but the base M5 is configurable too.
   // No nano glass on the base M5 model.
