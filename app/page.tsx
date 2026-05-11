@@ -2196,6 +2196,16 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "handheld", label: "N/A — Switch Lite",   multiplier: 1.00 },
     ]},
   ],
+  // iPad accessory bundling
+  ipad: [
+    { id: "pencil", question: "Apple Pencil included?", helper: "Generation matters — 2nd gen and Pro pair to Pro/Air; USB-C is the budget one.", options: [
+      { id: "pro",      label: "Yes — Apple Pencil Pro",          multiplier: 1.07 },
+      { id: "gen2",     label: "Yes — Apple Pencil (2nd gen)",    multiplier: 1.05 },
+      { id: "gen1",     label: "Yes — Apple Pencil (1st gen)",    multiplier: 1.02 },
+      { id: "usbc",     label: "Yes — Apple Pencil (USB-C)",      multiplier: 1.02 },
+      { id: "none",     label: "No Pencil",                       multiplier: 1.00 },
+    ]},
+  ],
   // Drones
   dji: [
     { id: "hours", question: "Hours flown?", helper: "Check the DJI Fly app log if you're not sure.", options: [
@@ -2241,6 +2251,11 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
   ],
   // VR — accessories matter a lot
   meta_vr: [
+    { id: "storage", question: "Storage capacity?", helper: "Quest 3 ships in 128 / 512; Quest 3S in 128 / 256; Quest 2 in 128 / 256.", options: [
+      { id: "128", label: "128 GB", multiplier: 1.00 },
+      { id: "256", label: "256 GB", multiplier: 1.12 },
+      { id: "512", label: "512 GB", multiplier: 1.25 },
+    ]},
     { id: "controllers", question: "Touch controllers included?", options: [
       { id: "both", label: "Both controllers", multiplier: 1.00 },
       { id: "one",  label: "One controller",   multiplier: 0.88 },
@@ -2262,6 +2277,11 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
     ]},
   ],
   apple_vr: [
+    { id: "storage", question: "Storage capacity?", helper: "Vision Pro ships in 256 / 512 / 1 TB.", options: [
+      { id: "256", label: "256 GB", multiplier: 1.00 },
+      { id: "512", label: "512 GB", multiplier: 1.10 },
+      { id: "1tb", label: "1 TB",   multiplier: 1.22 },
+    ]},
     { id: "battery", question: "External battery included?", options: [
       { id: "yes", label: "Yes — original Apple battery", multiplier: 1.00 },
       { id: "no",  label: "No battery",                   multiplier: 0.85 },
@@ -3395,7 +3415,17 @@ export default function Home() {
         setStep("model"); setModel(null);
       }
     }
-    else if (step === "connectivity") { setStep("condition"); setCondition(null); }
+    else if (step === "connectivity") {
+      // If this device has brand extras, back through the last question instead
+      // of jumping straight to condition.
+      const ex = getBrandExtras(deviceType);
+      if (ex.length > 0) {
+        setExtrasIndex(ex.length - 1);
+        setStep("extras"); // keep last answer until they re-pick
+      } else {
+        setStep("condition"); setCondition(null);
+      }
+    }
     else if (step === "storage") {
       if (model && hasMacSpecs(model.id)) { setStep("memory"); setMemory(null); }
       else if (deviceType === "ipad") { setStep("connectivity"); setConnectivity(null); }
@@ -6288,7 +6318,13 @@ export default function Home() {
                             setExtrasIndex(nextIdx);
                           } else {
                             // All extras answered — route to next funnel step.
-                            const ns: Step = isNoStorageDevice ? "quote" : "storage";
+                            // iPad has its connectivity step before storage; everything
+                            // else with storage goes straight to storage.
+                            const ns: Step = isNoStorageDevice
+                              ? "quote"
+                              : deviceType === "ipad"
+                                ? "connectivity"
+                                : "storage";
                             if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
                             setStep(ns); pushHistory(ns);
                           }
