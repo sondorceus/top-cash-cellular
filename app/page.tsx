@@ -2449,8 +2449,8 @@ export default function Home() {
   // accent border, selected fields go bold-green as they're picked.
   const selectionPanel = model && (
     <aside className="hidden lg:block lg:w-[300px] shrink-0">
-      <div className="sticky top-24 bg-white/[0.04] border-2 border-[#00c853]/25 rounded-3xl p-5 shadow-[0_8px_30px_rgba(0,200,83,0.08)]">
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 aspect-square flex items-center justify-center">
+      <div className="sticky top-24 bg-[rgba(45,45,45,0.6)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+        <div className="bg-[rgba(45,45,45,0.6)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-4 mb-4 aspect-square flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
           {model.image ? (
             <img src={model.image} alt={model.label} className="max-w-full max-h-full object-contain" />
           ) : (
@@ -2458,16 +2458,16 @@ export default function Home() {
           )}
         </div>
         <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Selling</p>
-        <p className="text-lg font-bold text-white leading-tight mb-4">{model.label}</p>
+        <p className="text-[18px] font-bold text-white leading-tight mb-4">{model.label}</p>
         <div className="space-y-2 border-t border-white/10 pt-4">
           {[
             { label: "Storage",   value: storage?.label,    active: step === "storage" },
             { label: "Condition", value: condition?.label,  active: step === "condition" },
             { label: "Carrier",   value: carrier?.label,    active: step === "carrier" },
           ].map(row => (
-            <div key={row.label} className={`flex items-center justify-between text-sm rounded-lg px-3 py-2 transition ${row.active ? "bg-[#00c853]/12 border border-[#00c853]/40" : row.value ? "bg-white/5" : ""}`}>
-              <span className={`font-medium ${row.active ? "text-[#00c853]" : "text-[#dcdcdc]"}`}>{row.label}</span>
-              <span className={`text-right font-bold ${row.value ? (row.active ? "text-[#00c853]" : "text-white") : "text-[#888]"}`}>
+            <div key={row.label} className={`flex items-center justify-between text-sm rounded-lg px-3 py-2 transition-all duration-[250ms] ease-out ${row.active ? "bg-[#00c853]/12 border border-[#00c853]" : row.value ? "bg-[rgba(45,45,45,0.6)] border border-white/10" : "border border-transparent"}`}>
+              <span className={`font-bold ${row.active ? "text-[#00c853]" : "text-[#b0b0b0]"}`}>{row.label}</span>
+              <span className={`text-right font-bold ${row.value ? (row.active ? "text-[#00c853]" : "text-white") : "text-[#b0b0b0]"}`}>
                 {row.value || (row.active ? "Selecting…" : "—")}
               </span>
             </div>
@@ -4355,7 +4355,7 @@ export default function Home() {
                   <button
                     key={s.id}
                     onClick={() => { setStorage(s); setStep("condition"); pushHistory("condition"); }}
-                    className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-[rgba(45,45,45,0.6)] backdrop-blur-[12px] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:bg-[rgba(60,60,60,0.65)] hover:border-[#00c853] hover:scale-[1.02] cursor-pointer transition-all duration-[250ms] ease-out text-left"
+                    className="tcc-card w-full flex items-center justify-between px-5 py-4 rounded-2xl cursor-pointer text-left"
                   >
                     <p className="font-bold text-[17px] text-white">{s.label}</p>
                     <svg className="w-4 h-4 text-[#b0b0b0]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
@@ -4398,9 +4398,9 @@ export default function Home() {
                     if ((e.target as HTMLElement).closest('details') || (e.target as HTMLElement).closest('summary')) return;
                     setCondition(c); const cs = (deviceType === "iphone" || deviceType === "android" || deviceType === "pixel") ? "carrier" : "quote"; if (cs === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); } setStep(cs); pushHistory(cs);
                   }}
-                  className="group w-full flex items-center gap-4 p-5 rounded-2xl bg-[rgba(45,45,45,0.6)] backdrop-blur-[12px] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:bg-[rgba(60,60,60,0.65)] hover:border-[#00c853] hover:scale-[1.02] cursor-pointer transition-all duration-[250ms] ease-out text-left"
+                  className="tcc-card group w-full flex items-center gap-4 p-5 rounded-2xl cursor-pointer text-left"
                 >
-                  <span className="text-2xl">{c.icon}</span>
+                  <span className={`text-2xl cond-glow-${c.id}`}>{c.icon}</span>
                   <div className="flex-1">
                     <p className="font-bold text-[18px] text-white">{c.label}</p>
                     <p className="text-[#b0b0b0] text-[13px]">{c.desc}</p>
@@ -4481,7 +4481,7 @@ export default function Home() {
                 <button
                   key={c.id}
                   onClick={() => { setCarrier(c); setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote"); }}
-                  className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl bg-[rgba(45,45,45,0.6)] backdrop-blur-[12px] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:bg-[rgba(60,60,60,0.65)] hover:border-[#00c853] hover:scale-[1.02] cursor-pointer transition-all duration-[250ms] ease-out text-left"
+                  className="tcc-card w-full flex items-center gap-4 px-5 py-4 rounded-2xl cursor-pointer text-left"
                 >
                   <CarrierIcon id={c.id as CarrierIconId} className="w-9 h-9 shrink-0" />
                   <p className="font-bold text-[17px] text-white flex-1">{c.label}</p>
