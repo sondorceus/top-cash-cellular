@@ -2027,7 +2027,127 @@ const FAQS = [
   { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
 ];
 
-type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "condition" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
+type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "condition" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "extras" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
+
+// Brand-specific extra questions. A device family can declare a list of
+// follow-up questions (disc drive / controllers / hours flown / band
+// included / shutter count, etc) that the funnel asks via a single
+// generic 'extras' step that advances an index between questions.
+// Each option carries a multiplier that folds into the quote alongside
+// storage / condition / etc.
+type ExtraOption = { id: string; label: string; sub?: string; multiplier: number };
+type BrandExtra = { id: string; question: string; helper?: string; options: ExtraOption[] };
+const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
+  // Consoles — single ask: disc drive yes/no (digital editions trade lower)
+  // and how many controllers are in the box.
+  sony: [
+    { id: "discdrive", question: "Disc drive?", helper: "Digital-only consoles trade for a bit less.", options: [
+      { id: "yes",     label: "Yes — has disc drive",    multiplier: 1.00 },
+      { id: "digital", label: "No — digital edition",     multiplier: 0.92 },
+    ]},
+    { id: "controllers", question: "Controllers included?", options: [
+      { id: "2", label: "2 controllers", multiplier: 1.05 },
+      { id: "1", label: "1 controller",  multiplier: 1.00 },
+      { id: "0", label: "No controllers", multiplier: 0.92 },
+    ]},
+  ],
+  microsoft: [
+    { id: "discdrive", question: "Disc drive?", helper: "Xbox Series S is always digital; Series X comes in both flavors.", options: [
+      { id: "yes",     label: "Yes — has disc drive",    multiplier: 1.00 },
+      { id: "digital", label: "No — digital edition",     multiplier: 0.92 },
+    ]},
+    { id: "controllers", question: "Controllers included?", options: [
+      { id: "2", label: "2 controllers", multiplier: 1.05 },
+      { id: "1", label: "1 controller",  multiplier: 1.00 },
+      { id: "0", label: "No controllers", multiplier: 0.92 },
+    ]},
+  ],
+  nintendo: [
+    { id: "joycons", question: "Joy-Cons / Pro Controller?", options: [
+      { id: "pro_plus", label: "Both Joy-Cons + Pro Controller", multiplier: 1.08 },
+      { id: "both",     label: "Both Joy-Cons",                  multiplier: 1.00 },
+      { id: "one",      label: "One Joy-Con",                    multiplier: 0.92 },
+      { id: "none",     label: "No controllers",                 multiplier: 0.85 },
+    ]},
+    { id: "dock", question: "Dock included?", options: [
+      { id: "yes",     label: "Yes — original dock",  multiplier: 1.00 },
+      { id: "no",      label: "No dock",              multiplier: 0.90 },
+      { id: "handheld", label: "N/A — Switch Lite",   multiplier: 1.00 },
+    ]},
+  ],
+  // Drones
+  dji: [
+    { id: "hours", question: "Hours flown?", helper: "Check the DJI Fly app log if you're not sure.", options: [
+      { id: "low",   label: "Under 10 hours",     multiplier: 1.05 },
+      { id: "mid",   label: "10 - 50 hours",      multiplier: 1.00 },
+      { id: "high",  label: "50 - 200 hours",     multiplier: 0.92 },
+      { id: "heavy", label: "200+ hours",         multiplier: 0.80 },
+    ]},
+    { id: "crashes", question: "Crashes or hard landings?", options: [
+      { id: "none", label: "Zero — pristine flight history", multiplier: 1.05 },
+      { id: "soft", label: "1-2 soft / non-damage",          multiplier: 1.00 },
+      { id: "hard", label: "1+ crash with repair / replacement parts", multiplier: 0.85 },
+    ]},
+  ],
+  // Smartwatches — band makes a big resale difference
+  applewatch: [
+    { id: "band", question: "Band included?", options: [
+      { id: "oem",   label: "Yes — original Apple band",   multiplier: 1.05 },
+      { id: "third", label: "Yes — 3rd-party band",        multiplier: 1.00 },
+      { id: "none",  label: "No band",                     multiplier: 0.90 },
+    ]},
+  ],
+  samsungwatch: [
+    { id: "band", question: "Band included?", options: [
+      { id: "oem",   label: "Yes — original Samsung band", multiplier: 1.05 },
+      { id: "third", label: "Yes — 3rd-party band",        multiplier: 1.00 },
+      { id: "none",  label: "No band",                     multiplier: 0.90 },
+    ]},
+  ],
+  pixelwatch: [
+    { id: "band", question: "Band included?", options: [
+      { id: "oem",   label: "Yes — original Google band",  multiplier: 1.05 },
+      { id: "third", label: "Yes — 3rd-party band",        multiplier: 1.00 },
+      { id: "none",  label: "No band",                     multiplier: 0.90 },
+    ]},
+  ],
+  garmin: [
+    { id: "band", question: "Band included?", options: [
+      { id: "oem",   label: "Yes — original Garmin band",  multiplier: 1.05 },
+      { id: "third", label: "Yes — 3rd-party band",        multiplier: 1.00 },
+      { id: "none",  label: "No band",                     multiplier: 0.90 },
+    ]},
+  ],
+  // VR — accessories matter a lot
+  meta_vr: [
+    { id: "controllers", question: "Touch controllers included?", options: [
+      { id: "both", label: "Both controllers", multiplier: 1.00 },
+      { id: "one",  label: "One controller",   multiplier: 0.88 },
+      { id: "none", label: "No controllers",   multiplier: 0.70 },
+    ]},
+  ],
+  valve_vr: [
+    { id: "kit", question: "What's in the box?", options: [
+      { id: "fullkit",  label: "Full Kit (headset + base stations + controllers)", multiplier: 1.00 },
+      { id: "headset",  label: "Headset only",                                     multiplier: 0.55 },
+      { id: "partial",  label: "Headset + controllers, no base stations",          multiplier: 0.75 },
+    ]},
+  ],
+  psvr: [
+    { id: "controllers", question: "Controllers included?", options: [
+      { id: "both", label: "Both Sense controllers", multiplier: 1.00 },
+      { id: "one",  label: "One controller",         multiplier: 0.88 },
+      { id: "none", label: "No controllers",         multiplier: 0.70 },
+    ]},
+  ],
+  apple_vr: [
+    { id: "battery", question: "External battery included?", options: [
+      { id: "yes", label: "Yes — original Apple battery", multiplier: 1.00 },
+      { id: "no",  label: "No battery",                   multiplier: 0.85 },
+    ]},
+  ],
+};
+const getBrandExtras = (dt: string | null | undefined): BrandExtra[] => (dt && BRAND_EXTRAS[dt]) || [];
 
 // Brand-aware competitor reference. The 'How we compare' card on the
 // quote page used to hardcode 'Apple Trade-In' for every device, which
@@ -2744,6 +2864,10 @@ export default function Home() {
   const [batteryHealth, setBatteryHealth] = useState<(typeof BATTERY_HEALTH_OPTIONS)[number] | null>(null);
   const [charger, setCharger] = useState<(typeof CHARGER_OPTIONS)[number] | null>(null);
   const [brokenPhotoUrl, setBrokenPhotoUrl] = useState<string | null>(null);
+  // Brand-specific extra answers (PS5 disc drive, DJI hours flown, etc).
+  // Keyed by the extra's id; value is the option that was picked.
+  const [extras, setExtras] = useState<Record<string, ExtraOption>>({});
+  const [extrasIndex, setExtrasIndex] = useState(0);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [expandedConditionTier, setExpandedConditionTier] = useState<number | null>(null);
   // 'What qualifies?' modal — opened by clicking the small "i" on a
@@ -3076,13 +3200,16 @@ export default function Home() {
   const displayGlassMultiplier = displayGlass?.multiplier ?? 1;
   const batteryHealthMultiplier = batteryHealth?.multiplier ?? 1;
   const chargerMultiplier = charger?.multiplier ?? 1;
+  // Compound multiplier from all brand-specific extras the user has
+  // picked so far (1.0x for anything they haven't answered).
+  const extrasMultiplier = Object.values(extras).reduce((acc, opt) => acc * (opt?.multiplier ?? 1), 1);
   const baseQuote = model && condition && model.base
     ? Math.round(
         model.base
           * storageMultiplier * condition.multiplier * carrierMultiplier
           * connectivityMultiplier * promoMultiplier * couponMultiplier
           * processorMultiplier * memoryMultiplier * displayGlassMultiplier
-          * batteryHealthMultiplier * chargerMultiplier
+          * batteryHealthMultiplier * chargerMultiplier * extrasMultiplier
       ) + promoFlatBonus
     : 0;
   const quote = baseQuote + accessoryBonus;
@@ -3123,6 +3250,21 @@ export default function Home() {
     else if (step === "displayglass") { setStep("storage"); setStorage(null); }
     else if (step === "batteryhealth") { setStep("condition"); setCondition(null); }
     else if (step === "charger") { setStep("batteryhealth"); setBatteryHealth(null); }
+    else if (step === "extras") {
+      if (extrasIndex > 0) {
+        // Back up one question within the extras flow.
+        const ex = getBrandExtras(deviceType);
+        const prev = ex[extrasIndex - 1];
+        if (prev) {
+          const next = { ...extras };
+          delete next[prev.id];
+          setExtras(next);
+        }
+        setExtrasIndex(extrasIndex - 1);
+      } else {
+        setStep("condition"); setCondition(null);
+      }
+    }
     else if (step === "condition") {
       if (model && hasMacSpecs(model.id)) {
         // Mac flow has condition AFTER storage/displayglass — go back accordingly
@@ -3178,6 +3320,7 @@ export default function Home() {
     setLocalArea(null);
     setProcessor(null); setMemory(null); setDisplayGlass(null);
     setBatteryHealth(null); setCharger(null); setBrokenPhotoUrl(null);
+    setExtras({}); setExtrasIndex(0);
   };
 
   // Brand → flat variant lists (the series intermediate step was removed
@@ -3322,7 +3465,7 @@ export default function Home() {
             selections are made. Each row has a pencil edit button that
             jumps back to that step so the user can change a pick without
             resetting the flow. */}
-        {(storage || condition || carrier || carrierLock || connectivity || processor || memory || displayGlass || batteryHealth || charger) && (
+        {(storage || condition || carrier || carrierLock || connectivity || processor || memory || displayGlass || batteryHealth || charger || Object.keys(extras).length > 0) && (
           <div className="divide-y divide-white/10 border-t border-white/10 mt-3">
             {processor && (
               <div className="flex items-center justify-between py-1.5">
@@ -3378,6 +3521,15 @@ export default function Home() {
                 </button>
               </div>
             )}
+            {getBrandExtras(deviceType).filter(q => extras[q.id]).map((q) => (
+              <div key={q.id} className="flex items-center justify-between py-1.5">
+                <span className="text-[#b8b8b8] text-xs">{q.question.replace(/\?$/, "")}</span>
+                <button onClick={() => { setExtrasIndex(getBrandExtras(deviceType).findIndex(x => x.id === q.id)); setStep("extras"); pushHistory("extras"); }} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                  {extras[q.id]?.label}
+                  <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                </button>
+              </div>
+            ))}
             {connectivity && (
               <div className="flex items-center justify-between py-1.5">
                 <span className="text-[#b8b8b8] text-xs">Connectivity</span>
@@ -3457,6 +3609,16 @@ export default function Home() {
             { label: "Condition",    value: condition?.label,    active: step === "condition",    helpId: null       as null,    show: true },
             { label: "Battery",      value: batteryHealth?.label, active: step === "batteryhealth", helpId: null     as null,    show: macSpecFlow },
             { label: "Charger",      value: charger?.label,      active: step === "charger",      helpId: null       as null,    show: macSpecFlow },
+            // Brand extras (PS5 disc / drone hours / watch band etc) get
+            // one row per answered question, only shown for device types
+            // that declare extras in BRAND_EXTRAS.
+            ...getBrandExtras(deviceType).map(q => ({
+              label: q.question.replace(/\?$/, ""),
+              value: extras[q.id]?.label,
+              active: step === "extras" && getBrandExtras(deviceType)[extrasIndex]?.id === q.id,
+              helpId: null as null,
+              show: true,
+            })),
             { label: "Connectivity", value: connectivity?.label, active: step === "connectivity", helpId: null       as null,    show: deviceType === "ipad" },
             { label: "Carrier",      value: carrier?.label,      active: step === "carrier",      helpId: "carrier"  as const,   show: isPhoneFlow || isIpadCellular },
             { label: "Carrier Lock", value: carrierLock?.label,  active: step === "carrier-lock", helpId: null       as null,    show: isPhoneFlow || isIpadCellular },
@@ -5960,6 +6122,73 @@ export default function Home() {
         </section>
       )}
 
+      {/* STEP: EXTRAS — brand-specific follow-up questions. One step that
+          iterates through BRAND_EXTRAS[deviceType] via extrasIndex; on each
+          answer we advance the index and re-render. When all questions are
+          answered, route to the next funnel step (storage / quote). */}
+      {step === "extras" && page === "home" && model && deviceType && (() => {
+        const list = getBrandExtras(deviceType);
+        const q = list[extrasIndex];
+        if (!q) {
+          // Defensive — shouldn't render in this state because the answer
+          // handler routes onward when extrasIndex hits the end. If we do
+          // somehow land here, kick to the next step.
+          setTimeout(() => {
+            const ns: Step = isNoStorageDevice ? "quote" : "storage";
+            setStep(ns); pushHistory(ns);
+          }, 0);
+          return null;
+        }
+        return (
+          <section className="animate-[fadeIn_0.3s_ease-out]">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+              {selectionPanel}
+              <div className="flex-1 min-w-0">
+                <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                  Back
+                </button>
+                {selectionPanelMobile}
+                <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">{q.question}</h2>
+                {q.helper && <p className="text-[#b8b8b8] text-xs mb-3">{q.helper}</p>}
+                {list.length > 1 && (
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Step {extrasIndex + 1} of {list.length}</p>
+                )}
+                <div className="tcc-selection-frame">
+                  <div className="space-y-2">
+                    {q.options.map((opt) => (
+                      <button
+                        key={opt.id}
+                        onClick={() => {
+                          const nextExtras = { ...extras, [q.id]: opt };
+                          setExtras(nextExtras);
+                          const nextIdx = extrasIndex + 1;
+                          if (nextIdx < list.length) {
+                            setExtrasIndex(nextIdx);
+                          } else {
+                            // All extras answered — route to next funnel step.
+                            const ns: Step = isNoStorageDevice ? "quote" : "storage";
+                            if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
+                            setStep(ns); pushHistory(ns);
+                          }
+                        }}
+                        className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className="font-extrabold text-[15px] text-white leading-tight">{opt.label}</p>
+                          {opt.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{opt.sub}</p>}
+                        </div>
+                        <svg className="w-4 h-4 text-[#e6e6e6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      })()}
+
       {step === "storage" && page === "home" && model && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
@@ -6050,6 +6279,14 @@ export default function Home() {
                     // step is battery health.
                     if (model && hasMacSpecs(model.id)) {
                       setStep("batteryhealth"); pushHistory("batteryhealth");
+                      return;
+                    }
+                    // Brand-specific extras (PS5 disc drive, DJI hours flown,
+                    // smartwatch band etc) fire BEFORE the quote so the
+                    // pricing reflects them.
+                    if (getBrandExtras(deviceType).length > 0) {
+                      setExtras({}); setExtrasIndex(0);
+                      setStep("extras"); pushHistory("extras");
                       return;
                     }
                     const ns: Step = isNoStorageDevice ? "quote" : (deviceType === "ipad" ? "connectivity" : "storage");
