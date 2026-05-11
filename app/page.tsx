@@ -2058,8 +2058,8 @@ export default function Home() {
     <div className="mb-4">
       <div className="flex items-center gap-3 mb-1.5">
         <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Step {funnelStepNum} of {funnelTotal}</span>
-        <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden max-w-[180px]">
-          <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${(funnelStepNum / funnelTotal) * 100}%` }} />
+        <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden max-w-[180px]">
+          <div className="h-full bg-[#00c853] shadow-[0_0_8px_rgba(0,200,83,0.6)] transition-all duration-500" style={{ width: `${(funnelStepNum / funnelTotal) * 100}%` }} />
         </div>
       </div>
     </div>
@@ -4484,7 +4484,7 @@ export default function Home() {
                     onClick={() => { setStorage(s); setStep("condition"); pushHistory("condition"); }}
                     className="tcc-card w-full flex items-center justify-between px-5 py-4 rounded-2xl cursor-pointer text-left"
                   >
-                    <p className="font-bold text-[17px] text-white">{s.label}</p>
+                    <p className="font-extrabold text-[17px] text-white">{s.label}</p>
                     <svg className="w-4 h-4 text-[#b0b0b0]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                   </button>
                 ))}
@@ -4547,22 +4547,22 @@ export default function Home() {
             </div>
             {selectionPanelMobile}
 
-            <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5">
-              <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-1">Our Promise</h3>
-              <p className="text-base font-bold text-white mb-1">The Top Cash Guarantee</p>
+            <div className="mt-6 bg-[rgba(20,28,40,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+              <h3 className="text-sm font-extrabold text-[#00c853] uppercase tracking-wider mb-1">Our Promise</h3>
+              <p className="text-base font-extrabold text-white mb-1">The Top Cash Guarantee</p>
               <p className="text-[#dcdcdc] text-xs mb-4">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
               <div className="space-y-3">
                 <div className="flex gap-3">
-                  <span className="text-lg">🎯</span>
-                  <div><p className="text-sm font-semibold text-[#e5e5e5]">Transparent Pricing</p><p className="text-xs text-[#dcdcdc]">What you see is what you get. Your quote is based on the condition you select — no surprise deductions.</p></div>
+                  <span className="text-lg" style={{filter:"drop-shadow(0 0 8px rgba(0,200,83,0.55))"}}>🎯</span>
+                  <div><p className="text-sm font-bold text-white">Transparent Pricing</p><p className="text-xs text-[#dcdcdc]">What you see is what you get. Your quote is based on the condition you select — no surprise deductions.</p></div>
                 </div>
                 <div className="flex gap-3">
-                  <span className="text-lg">🤝</span>
-                  <div><p className="text-sm font-semibold text-[#e5e5e5]">Honest Inspections</p><p className="text-xs text-[#dcdcdc]">If anything differs from your description, we&apos;ll walk you through our findings before adjusting.</p></div>
+                  <span className="text-lg" style={{filter:"drop-shadow(0 0 8px rgba(255,140,140,0.55))"}}>🤝</span>
+                  <div><p className="text-sm font-bold text-white">Honest Inspections</p><p className="text-xs text-[#dcdcdc]">If anything differs from your description, we&apos;ll walk you through our findings before adjusting.</p></div>
                 </div>
                 <div className="flex gap-3">
-                  <span className="text-lg">🔄</span>
-                  <div><p className="text-sm font-semibold text-[#e5e5e5]">No Pressure, No Strings</p><p className="text-xs text-[#dcdcdc]">Not happy with the final offer? We&apos;ll return your device — no questions asked.</p></div>
+                  <span className="text-lg" style={{filter:"drop-shadow(0 0 8px rgba(120,200,255,0.55))"}}>🔄</span>
+                  <div><p className="text-sm font-bold text-white">No Pressure, No Strings</p><p className="text-xs text-[#dcdcdc]">Not happy with the final offer? We&apos;ll return your device — no questions asked.</p></div>
                 </div>
               </div>
             </div>
@@ -4985,10 +4985,10 @@ export default function Home() {
                 <button
                   key={p.id}
                   onClick={() => { setPayout(p); setStep("contact"); pushHistory("contact"); }}
-                  className="flex flex-col items-center justify-center p-5 rounded-2xl tcc-card cursor-pointer h-[100px] tap-press"
+                  className="flex flex-col items-center justify-center p-5 rounded-2xl tcc-card cursor-pointer h-[100px]"
                 >
-                  <span className="text-3xl mb-2">{p.icon}</span>
-                  <p className="font-semibold text-sm">{p.label}</p>
+                  <span className={`text-3xl mb-2 payglow-${p.id}`}>{p.icon}</span>
+                  <p className="font-extrabold text-[15px] text-white">{p.label}</p>
                 </button>
               ))}
             </div>
