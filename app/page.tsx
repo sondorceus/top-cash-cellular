@@ -2850,6 +2850,18 @@ export default function Home() {
 
           {/* RIGHT: cart + login/name (desktop) | cart + hamburger (mobile) — wrapped in matching pill */}
           <div className="flex items-center gap-1 shrink-0 bg-white/[0.04] border border-white/10 rounded-full px-1.5 py-1">
+            {/* TEXT US — mobile-only quick SMS button. Was a floating bottom-right
+                FAB; moved here so the bottom of the screen stays clean. */}
+            <a
+              href="sms:+18775492056?body=Hi%2C%20I%20want%20a%20quote%20for%20my%20"
+              aria-label="Text us for a quote"
+              className="lg:hidden w-9 h-9 rounded-full hover:bg-white/10 hover:text-[#00c853] flex items-center justify-center cursor-pointer tap-press transition"
+            >
+              <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </a>
+
             {/* CART — always visible on every screen size */}
             <button
               onClick={() => setCartOpen(!cartOpen)}
@@ -3165,7 +3177,7 @@ export default function Home() {
                       ))}
                     </div>
                   )}
-                  <button onClick={applyLookup} className="w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold py-3 rounded-xl transition tap-press cursor-pointer">Use this info →</button>
+                  <button onClick={applyLookup} className="tcc-button-primary w-full py-3 font-bold">Use this info →</button>
                 </>
               )}
               {lookupResult && !lookupResult.found && (
@@ -3174,7 +3186,7 @@ export default function Home() {
                     <p className="text-white font-semibold mb-1">No past trades found</p>
                     <p className="text-[#dcdcdc] text-sm">First time? No worries — start a fresh quote and we&apos;ll save it for next time.</p>
                   </div>
-                  <button onClick={() => { setLookupOpen(false); setStep("category"); pushHistory("category"); }} className="w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold py-3 rounded-xl transition tap-press cursor-pointer">Start fresh quote</button>
+                  <button onClick={() => { setLookupOpen(false); setStep("category"); pushHistory("category"); }} className="tcc-button-primary w-full py-3 font-bold">Start fresh quote</button>
                 </>
               )}
             </div>
@@ -3618,7 +3630,7 @@ export default function Home() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-medium text-[#dcdcdc] mb-1.5 uppercase tracking-wider">Device Details</label>
-                    <textarea value={inquiryDesc} onChange={(e) => setInquiryDesc(e.target.value)} required placeholder={`Brand, model, storage size, any issues (e.g. "Samsung Galaxy S24, 256GB, small crack on back")`} rows={3} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition resize-none" />
+                    <textarea value={inquiryDesc} onChange={(e) => setInquiryDesc(e.target.value)} required placeholder={`Brand, model, storage size, any issues (e.g. "Samsung Galaxy S24, 256GB, small crack on back")`} rows={3} className="w-full px-4 py-3 tcc-input text-sm resize-none" />
                   </div>
                   <button
                     onClick={() => { if (inquiryDesc.trim()) { setModel({ id: "custom", label: inquiryDesc.trim(), base: 0 }); } }}
@@ -3676,7 +3688,7 @@ export default function Home() {
                 }} className="space-y-4">
                   <div>
                     <label className="block text-xs font-medium text-[#dcdcdc] mb-1.5 uppercase tracking-wider">Name</label>
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 tcc-input text-sm" />
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#dcdcdc] mb-1.5 uppercase tracking-wider">Phone</label>
@@ -3688,12 +3700,12 @@ export default function Home() {
                       if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
                       else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                       else setPhone(digits);
-                    }} required placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                    }} required placeholder="(512) 555-0000" className="w-full px-4 py-3.5 tcc-input text-sm" />
                     <p className="text-[#dcdcdc] text-[11px] leading-relaxed mt-1.5">By submitting, you agree to receive SMS updates about your trade-in from Top Cash Cellular. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</p>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#dcdcdc] mb-1.5 uppercase tracking-wider">Email</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 tcc-input text-sm" />
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#dcdcdc] mb-1.5 uppercase tracking-wider">Photos (optional)</label>
@@ -4888,8 +4900,8 @@ export default function Home() {
                 fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Guest", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-4">
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
-                <button type="submit" className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">Continue As Guest</button>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                <button type="submit" className="tcc-button-primary w-full py-4 text-base font-extrabold">Continue As Guest</button>
               </form>
 
               <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#d4d4d4] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
@@ -4919,7 +4931,7 @@ export default function Home() {
                   setLoginLoading(false);
                 }
               }} className="space-y-3 mb-2">
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email from past trade" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email from past trade" className="w-full px-4 py-3.5 tcc-input text-sm" />
                 {loginError && <p className="text-[#ff5566] text-xs font-semibold">{loginError}</p>}
                 <button type="submit" disabled={loginLoading} className="w-full bg-white/10 text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed transition tap-press">
                   {loginLoading ? "Verifying…" : "Look up my info"}
@@ -5043,7 +5055,7 @@ export default function Home() {
             }} className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-[#dcdcdc] mb-1.5 uppercase tracking-wider">Name</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={50} placeholder="Your name" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={50} placeholder="Your name" className="w-full px-4 py-3.5 tcc-input text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-[#dcdcdc] mb-1.5 uppercase tracking-wider">Phone</label>
@@ -5052,7 +5064,7 @@ export default function Home() {
                   if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
                   else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                   else setPhone(digits);
-                }} required pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                }} required pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 tcc-input text-sm" />
                 <p className="text-[#dcdcdc] text-[11px] leading-relaxed mt-1.5">By submitting, you agree to receive SMS updates about your trade-in from Top Cash Cellular. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</p>
               </div>
               {email && <p className="text-[#dcdcdc] text-xs">Email: {email}</p>}
@@ -5140,7 +5152,7 @@ export default function Home() {
                 )}
               </div>
               <p className="text-[#c5c5c5] text-[11px] text-center leading-relaxed">By submitting, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
-              <button type="submit" className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">
+              <button type="submit" className="tcc-button-primary w-full py-4 text-base font-extrabold">
                 Submit &amp; Get Paid
               </button>
             </form>
@@ -5615,15 +5627,8 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* TEXT US FAB — mobile-only, opens SMS app pre-filled */}
-      <a
-        href="sms:+18775492056?body=Hi%2C%20I%20want%20a%20quote%20for%20my%20"
-        aria-label="Text us for a quote"
-        className="lg:hidden fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-[#00c853] text-[#0a0a0a] px-4 py-3 rounded-full shadow-lg hover:bg-[#00e676] transition tap-press font-bold text-sm"
-      >
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-        Text us a quote
-      </a>
+      {/* (Text Us pill was here; moved into the mobile nav next to cart so it
+          doesn't crowd the bottom of the screen.) */}
 
       {/* CHAT WIDGET */}
       <div className="fixed bottom-6 left-6 z-50">
