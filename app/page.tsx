@@ -2127,7 +2127,7 @@ export default function Home() {
   const [selectedSubSeries, setSelectedSubSeries] = useState<string | null>(null);
   const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
   const [carrierLock, setCarrierLock] = useState<typeof CARRIER_LOCKS[0] | null>(null);
-  const [page, setPage] = useState<"home" | "about" | "privacy" | "terms">("home");
+  const [page, setPage] = useState<"home" | "about" | "privacy" | "terms" | "grading" | "shipping">("home");
   const [model, setModel] = useState<{ id: string; label: string; base?: number; image?: string } | null>(null);
   const [helpTopic, setHelpTopic] = useState<"storage" | "carrier" | null>(null);
   const [loginError, setLoginError] = useState("");
@@ -6144,7 +6144,7 @@ export default function Home() {
       )}
 
       {/* INNER PAGES */}
-      {(page === "about" || page === "privacy" || page === "terms") && (
+      {(page === "about" || page === "privacy" || page === "terms" || page === "grading" || page === "shipping") && (
         <section className="min-h-[60vh] animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-16">
             <button onClick={() => { setPage("home"); window.scrollTo({ top: 0 }); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
@@ -6244,12 +6244,125 @@ export default function Home() {
 
             {page === "terms" && (
               <div className="animate-[fadeIn_0.3s_ease-out]">
-                <h1 className="text-3xl font-bold mb-4">Terms of Service</h1>
-                <div className="text-[#e6e6e6] text-sm space-y-4 leading-relaxed">
-                  <p>By using Top Cash Cellular, you agree to these terms. Quotes provided on our site are estimates based on the condition and model you select. Final pricing is confirmed during in-person inspection.</p>
-                  <p>All devices sold to us must be legally owned by the seller. Stolen devices will be reported to law enforcement. Sellers must provide valid identification at the time of sale.</p>
-                  <p>Payouts are processed via your selected method (Cash, Cash App, Zelle, BTC) at the time of device inspection and acceptance. We reserve the right to adjust offers if the device condition differs from the online assessment.</p>
-                  <p>All sales are final once payment is issued. Top Cash Cellular is not responsible for data left on sold devices. Please factory reset your device before selling.</p>
+                <h1 className="text-3xl font-bold mb-2">Terms of Service</h1>
+                <p className="text-[#b8b8b8] text-xs mb-6">Last updated May 11, 2026</p>
+                <div className="text-[#e6e6e6] text-sm space-y-5 leading-relaxed">
+                  <div>
+                    <p className="text-white font-bold mb-1">1. Quotes & final pricing</p>
+                    <p>Quotes on our site are estimates based on the device model and condition tier you select. The price you see is locked for 7 days from the time of quote. Final pricing is confirmed at inspection — if your device matches the condition you selected, we honor the quoted price.</p>
+                  </div>
+                  <div>
+                    <p className="text-white font-bold mb-1">2. Eligibility</p>
+                    <p>You must be 18 or older to sell to us. Devices must be legally owned by you — stolen, fraudulently obtained, or financed-but-unpaid devices will be refused and reported to law enforcement. We may require valid government-issued photo ID at handoff.</p>
+                  </div>
+                  <div>
+                    <p className="text-white font-bold mb-1">3. Inspection & condition adjustments</p>
+                    <p>Every device is inspected before payment. If the actual condition is materially worse than what you selected — broken glass on a &quot;Like New&quot; quote, water damage indicators tripped, blacklisted IMEI, etc. — we will show you the issue, explain the adjustment, and offer a revised price. You can accept it or have the device returned at no cost.</p>
+                  </div>
+                  <div>
+                    <p className="text-white font-bold mb-1">4. Return / rejection policy</p>
+                    <p>If you ship a device and don&apos;t like the final offer, we will mail it back to you free of charge via the same carrier we used for the inbound label. No restocking fee. You have 7 days from our revised-offer email to request a return; after that we assume acceptance.</p>
+                  </div>
+                  <div>
+                    <p className="text-white font-bold mb-1">5. Payouts</p>
+                    <p>Payouts are issued the same business day we receive and verify the device. Cash App and Zelle typically land within minutes; Bitcoin sends on-chain within ~30 minutes; local Austin pickups are cash on the spot. Payments are made only to the legal owner of the device.</p>
+                  </div>
+                  <div>
+                    <p className="text-white font-bold mb-1">6. Data on your device</p>
+                    <p>You are responsible for backing up and removing your personal data before selling. We recommend a factory reset and sign-out from Find My iPhone / Google Account / Samsung Account. We perform a NIST 800-88 compliant wipe before resale or recycling, but we&apos;re not liable for any data left on your device prior to handoff.</p>
+                  </div>
+                  <div>
+                    <p className="text-white font-bold mb-1">7. Finality</p>
+                    <p>Once payment has been issued and accepted, the sale is final. We cannot reverse a completed transaction.</p>
+                  </div>
+                  <div>
+                    <p className="text-white font-bold mb-1">8. Contact</p>
+                    <p>Questions about these terms? Email {EMAIL} and we will respond within one business day.</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {page === "grading" && (
+              <div className="animate-[fadeIn_0.3s_ease-out]">
+                <h1 className="text-3xl font-bold mb-2">Inspection &amp; grading guide</h1>
+                <p className="text-[#b8b8b8] text-sm mb-6">Exactly what we look for so there are no surprises at handoff.</p>
+                <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-5 mb-8">
+                  <p className="text-white font-bold text-sm mb-1">Honored-quote guarantee</p>
+                  <p className="text-[#e6e6e6] text-sm leading-relaxed">If your device matches the tier you select below, we pay the quoted price — no surprise deductions. If the condition is materially worse, we&apos;ll show you the issue and offer a revised price; you can accept it or have the device returned free.</p>
+                </div>
+                <div className="space-y-4 mb-10">
+                  {[
+                    { tier: "Brand New", icon: "✨", color: "#00c853", desc: "Sealed in the box, never activated. Receipt strongly preferred. We verify the seal and confirm the IMEI is clean. Brand New only applies to computers/laptops/desktops, not phones." },
+                    { tier: "Like New", icon: "🌟", color: "#00c853", desc: "Indistinguishable from new — zero scratches on screen or body under bright light, original accessories present, battery health ≥ 95% on phones. Powers on cleanly, all sensors and buttons work, Face ID / Touch ID enrolled and functioning." },
+                    { tier: "Good", icon: "👍", color: "#88dd66", desc: "Light micro-scratches on the screen or frame visible only at certain angles. No cracks, no dents, no chips. Battery health ≥ 85% on phones. All functions work normally." },
+                    { tier: "Fair", icon: "🛠️", color: "#ffb400", desc: "Visible scratches or scuffs but no cracks in the glass. Frame may have small dings. Screen powers on with full color, no dead pixels, no shadow burn-in. All buttons and ports work." },
+                    { tier: "Damaged", icon: "💥", color: "#ff6b6b", desc: "Cracked glass, chipped corners, dented frame, dead pixels, or non-working components. We still buy damaged devices — the price just reflects the repair cost." },
+                  ].map((g) => (
+                    <div key={g.tier} className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-2xl">{g.icon}</span>
+                        <p className="font-extrabold text-lg" style={{ color: g.color }}>{g.tier}</p>
+                      </div>
+                      <p className="text-[#e6e6e6] text-sm leading-relaxed">{g.desc}</p>
+                    </div>
+                  ))}
+                </div>
+                <h2 className="text-xl font-bold mb-4">What else we check</h2>
+                <ul className="space-y-2 mb-8 text-sm text-[#e6e6e6]">
+                  <li className="flex gap-2"><span className="text-[#00c853] shrink-0">•</span><span><strong className="text-white">IMEI / serial number</strong> — runs against carrier blacklist and Apple/Samsung activation lock databases. Locked or blacklisted devices are still purchased but priced separately.</span></li>
+                  <li className="flex gap-2"><span className="text-[#00c853] shrink-0">•</span><span><strong className="text-white">Activation lock</strong> — Find My iPhone, Google FRP, Samsung Reactivation Lock must be off. We&apos;ll guide you through removing them at handoff if needed.</span></li>
+                  <li className="flex gap-2"><span className="text-[#00c853] shrink-0">•</span><span><strong className="text-white">Battery health</strong> — on iPhones we read Settings &gt; Battery &gt; Battery Health; on Samsung/Android we run a diagnostic.</span></li>
+                  <li className="flex gap-2"><span className="text-[#00c853] shrink-0">•</span><span><strong className="text-white">Water damage indicators</strong> — Apple LCI in the SIM tray and Samsung indicators are checked. Tripped indicators move a device to Damaged tier.</span></li>
+                  <li className="flex gap-2"><span className="text-[#00c853] shrink-0">•</span><span><strong className="text-white">Function test</strong> — screen, speakers, mics, cameras, charging port, Wi-Fi, Bluetooth, biometric sensor. Any failing component is noted.</span></li>
+                </ul>
+                <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-6 text-center">
+                  <p className="text-lg font-bold mb-2">Ready when you are</p>
+                  <p className="text-[#e6e6e6] text-sm mb-4">Get a quote in 30 seconds — no inspection needed up front.</p>
+                  <button onClick={() => { window.scrollTo(0, 0); setPage("home"); setStep("category"); pushHistory("category"); }} className="bg-[#00c853] text-[#0a0a0a] px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">Get My Quote</button>
+                </div>
+              </div>
+            )}
+
+            {page === "shipping" && (
+              <div className="animate-[fadeIn_0.3s_ease-out]">
+                <h1 className="text-3xl font-bold mb-2">Shipping &amp; returns</h1>
+                <p className="text-[#b8b8b8] text-sm mb-6">Local Austin? We meet you. Out of town? Ship free.</p>
+                <div className="space-y-4 mb-10">
+                  {[
+                    { step: "1", title: "Get your quote", body: "Accept the price on our site. We email you a confirmation with a prepaid FedEx or UPS shipping label, insured up to the full quoted value." },
+                    { step: "2", title: "Pack &amp; drop off", body: "Use any padded box you have at home. Wrap the device, drop it at any FedEx or UPS location, and keep your receipt. Tracking number arrives in our system automatically." },
+                    { step: "3", title: "We inspect within 1 business day", body: "Once the device arrives we test it against the tier you selected. You get an email with the result the same day." },
+                    { step: "4", title: "Same-day payout", body: "If the inspection matches your quote, we pay you that same business day — Cash App or Zelle in minutes, Bitcoin on-chain in ~30 min, or check via mail." },
+                  ].map((s) => (
+                    <div key={s.step} className="flex items-start gap-4 bg-white/5 rounded-2xl p-5 border border-white/10">
+                      <div className="w-9 h-9 rounded-full bg-[#00c853] text-[#0a0a0a] font-extrabold flex items-center justify-center shrink-0">{s.step}</div>
+                      <div>
+                        <p className="font-bold text-white mb-1">{s.title}</p>
+                        <p className="text-[#e6e6e6] text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: s.body }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <h2 className="text-xl font-bold mb-3">If we change the offer</h2>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8 space-y-3 text-sm text-[#e6e6e6] leading-relaxed">
+                  <p>If the device&apos;s actual condition is different from the tier you selected, we&apos;ll show you what we found (with photos), explain the adjustment, and email a revised offer. You have 7 days to decide.</p>
+                  <p><strong className="text-white">Accept it</strong> — we pay you that same business day.</p>
+                  <p><strong className="text-white">Reject it</strong> — we ship the device back to you free of charge via the same carrier. No restocking fee, no questions.</p>
+                  <p>If you don&apos;t respond within 7 days of the revised-offer email, we assume acceptance.</p>
+                </div>
+
+                <h2 className="text-xl font-bold mb-3">Local Austin</h2>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8 space-y-2 text-sm text-[#e6e6e6] leading-relaxed">
+                  <p>Inside the Austin metro? Skip shipping. We meet at a public location — coffee shop, parking lot, your office — inspect on the spot, and pay cash or your preferred digital method. Most local meetups take under 10 minutes door-to-door.</p>
+                  <p>Pickup hours: Mon–Sat, 8 AM – 8 PM CT.</p>
+                </div>
+
+                <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-6 text-center">
+                  <p className="text-lg font-bold mb-2">Ready to ship or meet?</p>
+                  <p className="text-[#e6e6e6] text-sm mb-4">Lock in your quote — you pick local or shipping at checkout.</p>
+                  <button onClick={() => { window.scrollTo(0, 0); setPage("home"); setStep("category"); pushHistory("category"); }} className="bg-[#00c853] text-[#0a0a0a] px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">Get My Quote</button>
                 </div>
               </div>
             )}
@@ -6274,10 +6387,13 @@ export default function Home() {
               </div>
             </div>
             <div>
-              <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Service</p>
+              <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Process</p>
               <div className="space-y-2">
-                <p className="text-xs">Austin, TX</p>
-                <p className="text-xs">Mon-Sat 8AM-8PM</p>
+                <a href="/how-it-works" className="block text-xs hover:text-[#00c853] transition">How It Works</a>
+                <button onClick={() => { setPage("grading"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Grading Guide</button>
+                <button onClick={() => { setPage("shipping"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Shipping &amp; Returns</button>
+                <a href="/faq" className="block text-xs hover:text-[#00c853] transition">FAQ</a>
+                <p className="text-xs text-[#9a9a9a] pt-2">Austin, TX · Mon–Sat 8 AM–8 PM</p>
               </div>
             </div>
           </div>
