@@ -1903,14 +1903,23 @@ type DeviceType = "iphone" | "android" | "pixel" | "macbook" | "samsung_pc" | "l
 
 function FairPromise() {
   return (
-    <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5">
-      <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-1">Our Promise</h3>
-      <p className="text-base font-bold text-white mb-1">Fair Evaluation Promise</p>
-      <p className="text-[#dcdcdc] text-xs mb-3">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
+    <div className="mt-6 bg-[rgba(20,28,40,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+      <h3 className="text-sm font-extrabold text-[#00c853] uppercase tracking-wider mb-1">Our Promise</h3>
+      <p className="text-base font-extrabold text-white mb-1">Fair Evaluation Promise</p>
+      <p className="text-[#e8e8e8] text-xs mb-4">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
       <div className="space-y-3">
-        <div className="flex gap-3"><span className="text-lg">🎯</span><div><p className="text-sm font-semibold text-[#e5e5e5]">Consistent grading</p><p className="text-xs text-[#dcdcdc]">Every device is evaluated using a standardized process based on the condition you select.</p></div></div>
-        <div className="flex gap-3"><span className="text-lg">🤝</span><div><p className="text-sm font-semibold text-[#e5e5e5]">Clear explanations</p><p className="text-xs text-[#dcdcdc]">If your device differs from what was described, we&apos;ll explain what we found before adjusting your offer.</p></div></div>
-        <div className="flex gap-3"><span className="text-lg">🔄</span><div><p className="text-sm font-semibold text-[#e5e5e5]">Your choice</p><p className="text-xs text-[#dcdcdc]">Don&apos;t agree with the updated offer? We&apos;ll return your device — no questions asked.</p></div></div>
+        <div className="flex gap-3">
+          <span className="text-lg" style={{filter:"drop-shadow(0 0 8px rgba(0,200,83,0.55))"}}>🎯</span>
+          <div><p className="text-sm font-extrabold text-white">Consistent grading</p><p className="text-xs text-[#e8e8e8] leading-snug mt-0.5">Every device is evaluated using a standardized process based on the condition you select.</p></div>
+        </div>
+        <div className="flex gap-3">
+          <span className="text-lg" style={{filter:"drop-shadow(0 0 8px rgba(255,170,90,0.55))"}}>🤝</span>
+          <div><p className="text-sm font-extrabold text-white">Clear explanations</p><p className="text-xs text-[#e8e8e8] leading-snug mt-0.5">If your device differs from what was described, we&apos;ll explain what we found before adjusting your offer.</p></div>
+        </div>
+        <div className="flex gap-3">
+          <span className="text-lg" style={{filter:"drop-shadow(0 0 8px rgba(120,200,255,0.55))"}}>🔄</span>
+          <div><p className="text-sm font-extrabold text-white">Your choice</p><p className="text-xs text-[#e8e8e8] leading-snug mt-0.5">Don&apos;t agree with the updated offer? We&apos;ll return your device — no questions asked.</p></div>
+        </div>
       </div>
     </div>
   );
