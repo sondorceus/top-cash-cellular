@@ -2055,7 +2055,7 @@ export default function Home() {
     step === "carrier" ? 3 :
     step === "quote" ? (isPhoneFlow ? 4 : 3) : 0;
   const stepProgress = funnelStepNum > 0 && (
-    <div className="mb-4">
+    <div className="mb-4 hidden lg:block">
       <div className="flex items-center gap-3 mb-1.5">
         <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Step {funnelStepNum} of {funnelTotal}</span>
         <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden max-w-[180px]">
@@ -2476,13 +2476,9 @@ export default function Home() {
   // with a pencil edit button that jumps back to that step so the user
   // can change a choice without resetting the whole flow. Heavy 3D outline:
   // outer border + inset top-left highlight + deep drop shadow.
-  const editRow = (target: "storage" | "condition" | "carrier") => () => {
-    setStep(target);
-    pushHistory(target);
-  };
   const selectionPanelMobile = model && (
     <div className="lg:hidden mb-4 rounded-2xl bg-[rgba(15,15,15,0.78)] backdrop-blur-[12px] border border-white/15 p-4 shadow-[inset_1px_1px_0_rgba(255,255,255,0.1),0_18px_45px_rgba(0,0,0,0.75),0_0_0_1px_rgba(0,200,83,0.08)]">
-      {/* TOP — device thumb + 'Sell Your X' header */}
+      {/* TOP — device thumb + 'Sell Your X' header. Progress bar lives top-right. */}
       <div className="flex items-center gap-4">
         <div className="w-20 h-20 rounded-xl bg-[rgba(15,15,15,0.5)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden shadow-[inset_1px_1px_0_rgba(255,255,255,0.08),0_4px_10px_rgba(0,0,0,0.45)]">
           {model.image ? (
@@ -2492,46 +2488,25 @@ export default function Home() {
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[#a0a0a0] text-xs font-medium">Sell Your</p>
-          <p className="text-white font-extrabold text-xl leading-tight mt-0.5">{model.label}</p>
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-[#a0a0a0] text-xs font-medium">Sell Your</p>
+              <p className="text-white font-extrabold text-xl leading-tight mt-0.5 truncate">{model.label}</p>
+            </div>
+            {funnelStepNum > 0 && (
+              <div className="shrink-0 text-right">
+                <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#00c853] leading-none">{funnelStepNum}/{funnelTotal}</p>
+                <div className="mt-1.5 w-14 h-1 bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_4px_rgba(0,200,83,0.5)] transition-all duration-500" style={{ width: `${(funnelStepNum / funnelTotal) * 100}%` }} />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-      {/* ROWS — only render rows that have a value. Each row has a pencil
-          edit button that jumps back to that step. */}
-      {(storage || condition || carrier) && (
-        <div className="divide-y divide-white/10 border-t border-white/10 mt-4">
-          {condition && (
-            <div className="flex items-center justify-between py-3">
-              <span className="text-[#a0a0a0] text-sm">Condition</span>
-              <button onClick={editRow("condition")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
-                {condition.label}
-                <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-              </button>
-            </div>
-          )}
-          {carrier && (
-            <div className="flex items-center justify-between py-3">
-              <span className="text-[#a0a0a0] text-sm">Carrier</span>
-              <button onClick={editRow("carrier")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
-                {carrier.label}
-                <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-              </button>
-            </div>
-          )}
-          {storage && (
-            <div className="flex items-center justify-between py-3">
-              <span className="text-[#a0a0a0] text-sm">Storage Size</span>
-              <button onClick={editRow("storage")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
-                {storage.label}
-                <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-              </button>
-            </div>
-          )}
-        </div>
-      )}
       {/* BOTTOM — price reveal once we're past the carrier step */}
       {(step === "quote" || step === "checkout" || step === "payout" || step === "contact") && (
-        <div className="border-t border-white/10 mt-2 pt-4 text-center">
+        <div className="border-t border-white/10 mt-3 pt-3 text-center">
           <p className="text-[#a0a0a0] text-sm">Your device is valued at</p>
           <p className="text-[#00c853] font-extrabold text-4xl mt-1" style={{ textShadow: "0 0 8px rgba(0,200,83,0.22)" }}>${quote * quantity}</p>
         </div>
@@ -2574,10 +2549,10 @@ export default function Home() {
         </div>
         {/* Accurate-quote guarantee badge */}
         <div className="mt-4 pt-4 border-t border-white/10 flex items-start gap-2.5">
-          <span className="text-[#00c853] text-base leading-none mt-0.5">✓</span>
+          <span className="text-[#00c853] text-lg leading-none mt-0.5" style={{ filter: "drop-shadow(0 0 4px rgba(0,200,83,0.55))" }}>✓</span>
           <div>
             <p className="text-white text-[13px] font-extrabold leading-tight">Honored quote guarantee</p>
-            <p className="text-[#cfcfcf] text-[12px] leading-snug mt-1">If your device matches the description above, we pay the quoted price — no surprise deductions.</p>
+            <p className="text-[#dcdcdc] text-[12px] leading-snug mt-1">If your device matches the description above, we pay the quoted price — no surprise deductions.</p>
           </div>
         </div>
       </div>
@@ -3438,9 +3413,6 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <p className="text-[#bdbdbd] text-xs text-center mt-6">
-            Not sure where to find your model/storage? <a href="/how-it-works" className="text-[#00c853] hover:underline font-semibold">Find your iPhone info →</a>
-          </p>
         </section>
       )}
 
@@ -4572,7 +4544,7 @@ export default function Home() {
               <p><strong className="text-white">Fair:</strong> Noticeable wear — scuffs, dents, or cosmetic damage</p>
               <p><strong className="text-white">Broken:</strong> Cracked screen, water damage, or not fully functional</p>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {CONDITIONS.map((c) => (
                 <button
                   key={c.id}
@@ -4580,11 +4552,11 @@ export default function Home() {
                     if ((e.target as HTMLElement).closest('details') || (e.target as HTMLElement).closest('summary')) return;
                     setCondition(c); const cs = (deviceType === "iphone" || deviceType === "android" || deviceType === "pixel") ? "carrier" : "quote"; if (cs === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); } setStep(cs); pushHistory(cs);
                   }}
-                  className="tcc-card group w-full flex items-center gap-4 p-5 rounded-2xl cursor-pointer text-left"
+                  className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
                 >
                   <div className="flex-1">
-                    <p className="font-extrabold text-[18px] text-white">{c.label}</p>
-                    <p className="text-[#b0b0b0] text-[13px]">{c.desc}</p>
+                    <p className="font-extrabold text-[15px] text-white leading-tight">{c.label}</p>
+                    <p className="text-[#b0b0b0] text-[12px] leading-snug">{c.desc}</p>
                     {(c as { details?: string[] }).details && (
                       <details className="mt-2">
                         <summary className="text-[#00c853] text-xs cursor-pointer hover:underline">ℹ️ What qualifies?</summary>
@@ -5033,9 +5005,9 @@ export default function Home() {
                 <button
                   key={p.id}
                   onClick={() => { setPayout(p); setStep("contact"); pushHistory("contact"); }}
-                  className="flex flex-col items-center justify-center p-5 rounded-2xl tcc-card cursor-pointer h-[100px]"
+                  className="flex flex-col items-center justify-center p-7 rounded-2xl tcc-card cursor-pointer min-h-[120px]"
                 >
-                  <span className={`text-3xl mb-2 payglow-${p.id}`}>{p.icon}</span>
+                  <span className={`text-4xl mb-2.5 payglow-${p.id}`}>{p.icon}</span>
                   <p className="font-extrabold text-[15px] text-white">{p.label}</p>
                 </button>
               ))}
