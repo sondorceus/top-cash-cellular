@@ -2576,7 +2576,7 @@ export default function Home() {
   // with a pencil edit button that jumps back to that step so the user
   // can change a choice without resetting the whole flow. Heavy 3D outline:
   // outer border + inset top-left highlight + deep drop shadow.
-  const editRow = (target: "storage" | "condition" | "carrier") => () => {
+  const editRow = (target: "storage" | "condition" | "carrier" | "connectivity") => () => {
     setStep(target);
     pushHistory(target);
   };
@@ -2613,13 +2613,22 @@ export default function Home() {
             selections are made. Each row has a pencil edit button that
             jumps back to that step so the user can change a pick without
             resetting the flow. */}
-        {(storage || condition || carrier) && (
+        {(storage || condition || carrier || connectivity) && (
           <div className="divide-y divide-white/10 border-t border-white/10 mt-4">
             {condition && (
               <div className="flex items-center justify-between py-3">
                 <span className="text-[#a0a0a0] text-sm">Condition</span>
                 <button onClick={editRow("condition")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
                   {condition.label}
+                  <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                </button>
+              </div>
+            )}
+            {connectivity && (
+              <div className="flex items-center justify-between py-3">
+                <span className="text-[#a0a0a0] text-sm">Connectivity</span>
+                <button onClick={editRow("connectivity")} className="inline-flex items-center gap-2 text-white text-sm font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                  {connectivity.label}
                   <svg className="w-3.5 h-3.5 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                 </button>
               </div>
@@ -2669,10 +2678,11 @@ export default function Home() {
         <p className="text-[22px] font-extrabold text-white leading-tight mb-4">{model.label}</p>
         <div className="space-y-2 border-t border-white/10 pt-4">
           {[
-            { label: "Condition", value: condition?.label,  active: step === "condition", helpId: null       as null   },
-            { label: "Storage",   value: storage?.label,    active: step === "storage",   helpId: "storage"  as const },
-            { label: "Carrier",   value: carrier?.label,    active: step === "carrier",   helpId: "carrier"  as const },
-          ].map(row => (
+            { label: "Condition",    value: condition?.label,    active: step === "condition",    helpId: null       as null,    show: true },
+            { label: "Connectivity", value: connectivity?.label, active: step === "connectivity", helpId: null       as null,    show: deviceType === "ipad" },
+            { label: "Storage",      value: storage?.label,      active: step === "storage",      helpId: "storage"  as const,   show: !isNoStorageDevice },
+            { label: "Carrier",      value: carrier?.label,      active: step === "carrier",      helpId: "carrier"  as const,   show: isPhoneFlow || isIpadCellular },
+          ].filter(row => row.show).map(row => (
             <div key={row.label} className={`rounded-lg px-3 py-2.5 transition-all duration-[250ms] ease-out ${row.active ? "bg-[#00c853]/12 border border-[#00c853]" : row.value ? "bg-[rgba(15,15,15,0.5)] border border-white/10" : "border border-transparent"}`}>
               <div className="flex items-center justify-between gap-2">
                 <span className={`text-[11px] font-medium uppercase tracking-wider inline-flex items-center gap-1.5 ${row.active ? "text-[#00c853]" : "text-[#a0a0a0]"}`}>
