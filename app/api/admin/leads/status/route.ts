@@ -71,17 +71,90 @@ async function emailStatus(to: string, status: string, ctx: { name?: string; dev
   try {
     const { Resend } = await import("resend");
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const html = `<!DOCTYPE html><html><body style="margin:0;padding:24px;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,sans-serif">
-<table width="600" style="max-width:600px;margin:0 auto;background:#111;border:1px solid #222;border-radius:12px;padding:24px">
-<tr><td>
-<div style="font-size:22px;font-weight:800;color:#00c853;margin-bottom:8px">💰 Top Cash Cellular</div>
-<div style="font-size:14px;color:#888;margin-bottom:20px">Austin's #1 Device Buyback</div>
-<div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:12px">Hi ${first},</div>
-<div style="font-size:15px;color:#ccc;line-height:1.6;margin-bottom:20px">${body}</div>
-<div style="font-size:13px;color:#888;border-top:1px solid #222;padding-top:16px">
-Questions? Just reply to this email or write to <a href="mailto:topcashcellular@gmail.com" style="color:#00c853">topcashcellular@gmail.com</a>.
-</div>
-</td></tr></table></body></html>`;
+    const accentLabel = (() => {
+      const map: Record<string, string> = {
+        shipped: "Label on the way",
+        received: "Device received",
+        tested: "Inspection passed",
+        paid: "Payment sent",
+        rejected: "Action needed",
+      };
+      return map[status] || "Status update";
+    })();
+    const html = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
+  <div style="background:#0a0a0a;padding:32px 16px">
+    <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;border-collapse:separate;border-spacing:0;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
+      <tr>
+        <td style="padding:0">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td style="background:linear-gradient(135deg,#00e676 0%,#00a039 100%);padding:24px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="vertical-align:middle">
+                      <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#0a0a0a;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div>
+                      <div style="font-size:22px;font-weight:800;color:#0a0a0a;line-height:1.1">${accentLabel}</div>
+                    </td>
+                    <td style="vertical-align:middle;text-align:right">
+                      <div style="display:inline-block;padding:8px 14px;background:rgba(10,10,10,0.18);border:1px solid rgba(10,10,10,0.22);border-radius:999px;font-size:11px;font-weight:800;color:#0a0a0a;letter-spacing:0.1em;text-transform:uppercase">Austin, TX</div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:28px 28px 8px 28px">
+          <div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:14px">Hi ${first},</div>
+          <div style="font-size:15px;color:#e6e6e6;line-height:1.65">${body}</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:16px 28px 8px 28px">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.10);border-left:3px solid #00c853;border-radius:14px">
+            <tr>
+              <td style="padding:18px 20px">
+                <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#00c853;font-weight:800;margin-bottom:8px">Your trade</div>
+                ${ctx.device ? `<div style="font-size:16px;color:#fff;font-weight:700;margin-bottom:4px">${ctx.device}</div>` : ""}
+                <div style="font-size:13px;color:#b8b8b8">
+                  ${ctx.quote ? `Quote: <span style="color:#00c853;font-weight:700">${ctx.quote}</span>` : ""}
+                  ${ctx.quote && ctx.payout ? "  ·  " : ""}
+                  ${ctx.payout ? `Payout: <span style="color:#e6e6e6;font-weight:600">${ctx.payout}</span>` : ""}
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:24px 28px 20px 28px">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td style="text-align:center">
+                <a href="mailto:topcashcellular@gmail.com" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply to this email</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0 28px 28px 28px">
+          <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:18px"></div>
+          <div style="font-size:12px;color:#888;line-height:1.6;text-align:center">
+            Questions? Reply directly or write to <a href="mailto:topcashcellular@gmail.com" style="color:#00c853;text-decoration:none;font-weight:600">topcashcellular@gmail.com</a><br>
+            <span style="color:#666">Top Cash Cellular · Austin, TX · <a href="https://topcashcellular.com" style="color:#666;text-decoration:none">topcashcellular.com</a></span>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>`;
     // BCC Trustpilot's invite address only on the final 'paid' email so
     // they auto-send a review invitation once the customer has actually
     // been paid. (Inviting at any earlier stage would feel premature.)

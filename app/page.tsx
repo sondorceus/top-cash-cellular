@@ -5831,38 +5831,76 @@ export default function Home() {
       {/* STEP: DONE */}
       {step === "done" && page === "home" && model && condition && payout && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-10 pb-8">
-            <div className="text-center mb-6">
-              <div className="w-20 h-20 rounded-full bg-[#00c853]/10 flex items-center justify-center mx-auto mb-4">
-                <span className="text-4xl">✅</span>
+          <div className="max-w-lg md:max-w-3xl mx-auto px-4 pt-10 pb-12">
+            {/* Hero — beveled green tile with checkmark + glow rim */}
+            <div className="text-center mb-8">
+              <div
+                className="relative w-24 h-24 rounded-full mx-auto mb-5 flex items-center justify-center"
+                style={{
+                  background: "linear-gradient(180deg, #00e676 0%, #00c853 60%, #00a039 100%)",
+                  boxShadow:
+                    "inset 0 2px 0 rgba(255,255,255,0.55), inset 0 -3px 6px rgba(0,0,0,0.28), 0 0 32px rgba(0, 200, 83, 0.5), 0 10px 30px rgba(0,0,0,0.5)",
+                }}
+              >
+                <svg className="w-12 h-12 text-[#0a0a0a]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="4 12 10 18 20 6" />
+                </svg>
+                <span className="absolute inset-0 rounded-full pointer-events-none" style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.18)" }} />
               </div>
-              <h2 className="text-2xl font-bold mb-1">Okay, I sold! Now what?</h2>
-              <p className="text-[#e6e6e6] text-sm">We&apos;ll contact you within the hour. Here&apos;s your summary:</p>
+              <h2 className="text-3xl font-extrabold mb-2 tracking-tight">You&apos;re all set</h2>
+              <p className="text-[#d4d4d4] text-sm max-w-md mx-auto">We&apos;ll reach out within the hour. Here&apos;s your receipt:</p>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6 text-left">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <p className="font-semibold">{model.label}</p>
-                  <p className="text-[#e6e6e6] text-xs">{storage?.label} · {condition.label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
+            {/* Receipt card — glass + inset rim + green accent line */}
+            <div className="tcc-card rounded-2xl p-6 mb-5 text-left relative overflow-hidden">
+              <span aria-hidden className="absolute left-0 top-0 bottom-0 w-1" style={{ background: "linear-gradient(180deg, #00e676 0%, #00a039 100%)" }} />
+              <div className="flex items-start justify-between gap-4 mb-4">
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Quoted</p>
+                  <p className="font-extrabold text-[18px] text-white leading-tight truncate">{model.label}</p>
+                  <p className="text-[#d4d4d4] text-xs mt-1">{storage?.label} · {condition.label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
                 </div>
-                <p className="text-[#00c853] font-bold text-2xl">${quote * quantity}</p>
+                <div className="text-right shrink-0">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Payout</p>
+                  <p className="text-[#00c853] font-extrabold text-3xl leading-none" style={{ textShadow: "0 0 18px rgba(0,200,83,0.4)" }}>${quote * quantity}</p>
+                </div>
               </div>
-              <div className="border-t border-white/10 pt-3 text-sm text-[#e6e6e6]">
-                <p>{name} · {phone}{email ? ` · ${email}` : ''}</p>
+              <div className="border-t border-white/10 pt-4 flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[#00c853] text-xs font-bold shrink-0">
+                  {name.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0 text-sm">
+                  <p className="text-white font-semibold truncate">{name}</p>
+                  <p className="text-[#a8a8a8] text-xs truncate">{phone}{email ? ` · ${email}` : ''}</p>
+                </div>
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 text-center">
-              <p className="text-[#e6e6e6] text-sm">📦 Need to ship? You&apos;ll receive an email with shipping instructions shortly.</p>
-            </div>
-
-            <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-4 mb-6 text-center">
-              <p className="text-[#00c853] font-semibold text-sm">🏠 Austin local? We meet locally — no shipping needed!</p>
+            {/* Two-up info cards */}
+            <div className="grid sm:grid-cols-2 gap-3 mb-6">
+              <div className="tcc-card rounded-2xl p-4 flex items-start gap-3">
+                <div className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7h13l4 4v6a1 1 0 01-1 1h-2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+                </div>
+                <div className="min-w-0">
+                  <p className="text-white text-sm font-bold mb-0.5">Shipping</p>
+                  <p className="text-[#bdbdbd] text-xs leading-snug">Label arrives by email within the hour.</p>
+                </div>
+              </div>
+              <div className="tcc-card rounded-2xl p-4 flex items-start gap-3" style={{ borderColor: "rgba(0, 200, 83, 0.25)" }}>
+                <div className="w-9 h-9 rounded-lg bg-[#00c853]/15 border border-[#00c853]/30 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
+                </div>
+                <div className="min-w-0">
+                  <p className="text-white text-sm font-bold mb-0.5">Local in Austin?</p>
+                  <p className="text-[#bdbdbd] text-xs leading-snug">We meet you — no shipping needed.</p>
+                </div>
+              </div>
             </div>
 
             <div className="text-center">
-              <button onClick={reset} className="text-[#00c853] font-semibold text-sm cursor-pointer hover:underline">
+              <button onClick={reset} className="inline-flex items-center gap-2 text-[#00c853] font-semibold text-sm cursor-pointer hover:underline px-4 py-2">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14"/></svg>
                 Sell another device
               </button>
             </div>
