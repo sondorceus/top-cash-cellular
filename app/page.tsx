@@ -1943,16 +1943,19 @@ function FairPromise() {
       <p className="text-[#e8e8e8] text-xs mb-4">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
       <div className="space-y-3">
         <div className="flex gap-3">
-          <span className="text-lg" style={{filter:"drop-shadow(0 0 8px rgba(0,200,83,0.55))"}}>🎯</span>
+          <span className="text-2xl leading-none" style={{filter:"drop-shadow(0 0 8px rgba(0,200,83,0.55))"}}>🎯</span>
           <div><p className="text-sm font-extrabold text-white">Consistent grading</p><p className="text-xs text-[#e8e8e8] leading-snug mt-0.5">Every device is evaluated using a standardized process based on the condition you select.</p></div>
         </div>
         <div className="flex gap-3">
-          <span className="text-lg" style={{filter:"drop-shadow(0 0 8px rgba(255,170,90,0.55))"}}>🤝</span>
+          <span className="text-2xl leading-none" style={{filter:"drop-shadow(0 0 8px rgba(255,170,90,0.55))"}}>🤝</span>
           <div><p className="text-sm font-extrabold text-white">Clear explanations</p><p className="text-xs text-[#e8e8e8] leading-snug mt-0.5">If your device differs from what was described, we&apos;ll explain what we found before adjusting your offer.</p></div>
         </div>
         <div className="flex gap-3">
-          <span className="text-lg" style={{filter:"drop-shadow(0 0 8px rgba(120,200,255,0.55))"}}>🔄</span>
-          <div><p className="text-sm font-extrabold text-white">Your choice</p><p className="text-xs text-[#e8e8e8] leading-snug mt-0.5">Don&apos;t agree with the updated offer? We&apos;ll return your device — no questions asked.</p></div>
+          <span className="text-2xl leading-none" style={{filter:"drop-shadow(0 0 8px rgba(120,200,255,0.55))"}}>🔄</span>
+          <div>
+            <p className="text-sm font-extrabold text-white">Your choice</p>
+            <p className="text-xs text-white font-bold leading-snug mt-0.5">Don&apos;t like the final offer? <span className="text-[#00c853]">We ship it back for free — no questions asked.</span></p>
+          </div>
         </div>
       </div>
     </div>
@@ -4639,7 +4642,7 @@ export default function Home() {
                       }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         <p className="font-semibold text-[15px]">{m.label}</p>
                         <div className="flex items-center gap-2">
-                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m as { id: string; base?: number })}`}</span>
+                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m as { id: string; base?: number }, deviceType)}`}</span>
                           <svg className="w-4 h-4 text-[#dcdcdc]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
                       </button>
@@ -4665,20 +4668,29 @@ export default function Home() {
                 Back
               </button>
               {selectionPanelMobile}
-              <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Storage capacity?</h2>
+              <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Storage capacity?</h2>
+              <p className="text-[#a0a0a0] text-xs mb-3">Not sure? <span className="text-[#00c853] font-semibold">Settings &gt; General &gt; About</span> shows it under <span className="text-[#dcdcdc]">Capacity</span>.</p>
               {stepProgress}
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
-                  {getStoragesForModel(model.id).map((s) => (
-                    <button
-                      key={s.id}
-                      onClick={() => { setStorage(s); setStep("condition"); pushHistory("condition"); }}
-                      className="tcc-card w-full flex items-center justify-between px-5 py-4 rounded-2xl cursor-pointer text-left"
-                    >
-                      <p className="font-extrabold text-[17px] text-white">{s.label}</p>
-                      <svg className="w-4 h-4 text-[#b0b0b0]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                    </button>
-                  ))}
+                  {getStoragesForModel(model.id).map((s) => {
+                    const isPremium = s.id === "1tb" || s.id === "2tb";
+                    return (
+                      <button
+                        key={s.id}
+                        onClick={() => { setStorage(s); setStep("condition"); pushHistory("condition"); }}
+                        className="tcc-card w-full flex items-center justify-between px-5 py-4 rounded-2xl cursor-pointer text-left"
+                      >
+                        <div className="flex items-center gap-3">
+                          <p className="font-extrabold text-[17px] text-white">{s.label}</p>
+                          {isPremium && (
+                            <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full">Premium</span>
+                          )}
+                        </div>
+                        <svg className="w-4 h-4 text-[#b0b0b0]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
               <FairPromise />
