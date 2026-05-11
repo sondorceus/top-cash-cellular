@@ -2042,6 +2042,8 @@ export default function Home() {
   const [page, setPage] = useState<"home" | "about" | "privacy" | "terms">("home");
   const [model, setModel] = useState<{ id: string; label: string; base: number; image?: string } | null>(null);
   const [helpTopic, setHelpTopic] = useState<"storage" | "carrier" | null>(null);
+  const [loginError, setLoginError] = useState("");
+  const [loginLoading, setLoginLoading] = useState(false);
 
   // Funnel progress indicator data — mapped from current step to (n / total).
   // Phones go through carrier (4 steps), other devices skip it (3 steps).
@@ -4892,18 +4894,37 @@ export default function Home() {
 
               <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#d4d4d4] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
 
-              {/* Customer Login */}
-              <p className="text-xs font-semibold text-[#dcdcdc] uppercase tracking-wider mb-2">Customer Login</p>
-              <form onSubmit={(e) => {
+              {/* Customer Login — verifies the email against past leads via /api/lookup.
+                  If the email has a prior trade, we prefill the name from history;
+                  otherwise we surface an inline error nudging them to Guest above. */}
+              <p className="text-xs font-semibold text-[#dcdcdc] uppercase tracking-wider mb-2">Returning Customer</p>
+              <form onSubmit={async (e) => {
                 e.preventDefault();
-                if (!email) return;
-                fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Returning User", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
-                setStep("payout"); pushHistory("payout");
+                if (!email) { setLoginError("Enter the email you used last time."); return; }
+                setLoginLoading(true);
+                setLoginError("");
+                try {
+                  const r = await fetch("/api/lookup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
+                  const d = await r.json();
+                  if (!d.found) {
+                    setLoginError("We don't see a past trade for that email — try Guest Checkout above.");
+                    return;
+                  }
+                  if (d.name) setName(d.name);
+                  await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: d.name || "Returning Customer", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
+                  setStep("payout"); pushHistory("payout");
+                } catch {
+                  setLoginError("Couldn't verify — try again or use Guest Checkout above.");
+                } finally {
+                  setLoginLoading(false);
+                }
               }} className="space-y-3 mb-2">
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
-                <input type="password" placeholder="Password" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
-                <button type="button" className="text-[#00c853] text-xs cursor-pointer hover:underline">Forgot Your Password?</button>
-                <button type="submit" className="w-full bg-white/10 text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-white/15 transition tap-press">Login</button>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email from past trade" className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition" />
+                {loginError && <p className="text-[#ff5566] text-xs font-semibold">{loginError}</p>}
+                <button type="submit" disabled={loginLoading} className="w-full bg-white/10 text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed transition tap-press">
+                  {loginLoading ? "Verifying…" : "Look up my info"}
+                </button>
+                <p className="text-[10px] text-[#a0a0a0] text-center">We only check that the email matches a past order. No password needed.</p>
               </form>
 
               <p className="text-center text-[#d4d4d4] text-xs my-2">Create An Account</p>
