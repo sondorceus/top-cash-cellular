@@ -140,7 +140,7 @@ const IPHONE_SERIES = [
     { id: "ip16p", label: "iPhone 16 Pro", base: 390, image: "/devices/bm/iphone-16-pro.png" },
     { id: "ip16plus", label: "iPhone 16 Plus", base: 320, image: "/devices/bm/iphone-16-plus.png" },
     { id: "ip16", label: "iPhone 16", base: 300, image: "/devices/bm/iphone-16.png" },
-    { id: "ip16e", label: "iPhone 16E", base: 145, image: "/devices/bm/iphone-16e.png" },
+    { id: "ip16e", label: "iPhone 16E", base: 145, image: "/devices/iphone-16e-test.png" },
   ]},
   { id: "15", label: "iPhone 15", image: "/iphone15.png", year: "2023", topPrice: 290, variants: [
     { id: "ip15pm", label: "iPhone 15 Pro Max", base: 290, image: "/devices/bm/iphone-15-pro-max.png" },
