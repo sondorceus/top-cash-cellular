@@ -305,11 +305,14 @@ const MACBOOK_PRO_MODELS = [
   { id: "mbp14_m5_2025", label: "MacBook Pro 14\" M5 (2025)", base: 985, image: "/devices/macbook-pro-m4.webp" }, // Atlas $1,235
   { id: "mbp16m4", label: "MacBook Pro 16\" M4 (2024)", base: 1375, image: "/devices/macbook-pro-m4.webp" }, // Atlas $1,625, was 1200
   { id: "mbp14m4", label: "MacBook Pro 14\" M4 (2024)", base: 725, image: "/devices/macbook-pro-m4.webp" }, // Atlas $975, was 1000 (we were overpaying)
-  { id: "mbp16m3", label: "MacBook Pro 16\" M3 (2023)", base: 950, image: "/devices/macbook-pro-m3.webp" },
-  { id: "mbp14m3", label: "MacBook Pro 14\" M3 (2023)", base: 800, image: "/devices/macbook-pro-m3.webp" },
-  { id: "mbp16m2", label: "MacBook Pro 16\" M2 (2023)", base: 750, image: "/devices/macbook-pro-m2.webp" },
-  { id: "mbp14m2", label: "MacBook Pro 14\" M2 (2023)", base: 650, image: "/devices/macbook-pro-m2.webp" },
-  { id: "mbp13m1", label: "MacBook Pro 13\" M1 (2020)", base: 400, image: "/devices/macbook-pro-m1.webp" },
+  // Models below NOT on Atlas — bases set against competition ceilings
+  // (IWM / Decluttr / Backflip avg ~10-20% above Apple Trade-In) minus
+  // \$250 per Skywalker's rule. 2026-05-11.
+  { id: "mbp16m3", label: "MacBook Pro 16\" M3 (2023)", base: 800, image: "/devices/macbook-pro-m3.webp" }, // comp ~\$1,050, was 950
+  { id: "mbp14m3", label: "MacBook Pro 14\" M3 (2023)", base: 600, image: "/devices/macbook-pro-m3.webp" }, // comp ~\$850, was 800
+  { id: "mbp16m2", label: "MacBook Pro 16\" M2 (2023)", base: 570, image: "/devices/macbook-pro-m2.webp" }, // comp ~\$820, was 750
+  { id: "mbp14m2", label: "MacBook Pro 14\" M2 (2023)", base: 420, image: "/devices/macbook-pro-m2.webp" }, // comp ~\$670, was 650
+  { id: "mbp13m1", label: "MacBook Pro 13\" M1 (2020)", base: 170, image: "/devices/macbook-pro-m1.webp" }, // comp ~\$420, was 400
   { id: "mbp13_intel_2020", label: "MacBook Pro 13\" Intel (2020)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m1.webp" },
   { id: "mbp16_intel_2019", label: "MacBook Pro 16\" Intel (2019)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m1.webp" },
   { id: "mbp_tb_2018_2019", label: "MacBook Pro Touch Bar 13\"/15\" (2018–2019)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m1.webp" },
@@ -321,9 +324,10 @@ const MACBOOK_AIR_MODELS = [
   // Bases rebased 2026-05-11 against Atlas Mobile sheet — Atlas Open price
   // minus $250. M3 Air not listed on Atlas; left at prior base.
   { id: "mba_m5_2026", label: "MacBook Air M5 (13\" & 15\", 2026)", base: 625, image: "/devices/macbook-air-m3.webp" }, // Atlas avg M5 13/15 - 250
-  { id: "mba15m3", label: "MacBook Air 15\" M3 (2024)", base: 700, image: "/devices/macbook-air-m3.webp" },
-  { id: "mba13m3", label: "MacBook Air 13\" M3 (2024)", base: 600, image: "/devices/macbook-air-m3.webp" },
-  { id: "mba15m2", label: "MacBook Air 15\" M2 (2023)", base: 550, image: "/devices/macbook-air-m2.webp" },
+  // Competition-anchored (IWM/Decluttr avg) minus \$250 — Atlas didn't list these.
+  { id: "mba15m3", label: "MacBook Air 15\" M3 (2024)", base: 510, image: "/devices/macbook-air-m3.webp" }, // comp ~\$760, was 700
+  { id: "mba13m3", label: "MacBook Air 13\" M3 (2024)", base: 345, image: "/devices/macbook-air-m3.webp" }, // comp ~\$595, was 600
+  { id: "mba15m2", label: "MacBook Air 15\" M2 (2023)", base: 310, image: "/devices/macbook-air-m2.webp" }, // comp ~\$560, was 550
   { id: "mba13m2", label: "MacBook Air 13\" M2 (2022)", base: 280, image: "/devices/macbook-air-m2.webp" }, // Atlas $530, was 480
   { id: "mba13m1", label: "MacBook Air 13\" M1 (2020)", base: 200, image: "/devices/macbook-air-m1.webp" }, // Atlas $450, was 350
   { id: "mba_intel_2020", label: "MacBook Air Intel (2020)", base: 0, inquiryOnly: true },
