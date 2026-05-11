@@ -4559,7 +4559,10 @@ export default function Home() {
                     <p className="text-[#b0b0b0] text-[12px] leading-snug">{c.desc}</p>
                     {(c as { details?: string[] }).details && (
                       <details className="mt-2">
-                        <summary className="text-[#00c853] text-xs cursor-pointer hover:underline">ℹ️ What qualifies?</summary>
+                        <summary className="inline-flex items-center gap-1.5 text-[#00c853] text-xs cursor-pointer hover:underline list-none">
+                          <span className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none">i</span>
+                          What qualifies?
+                        </summary>
                         <ul className="mt-1.5 space-y-1 text-[#c5c5c5] text-xs list-disc list-inside">
                           {(c as { details?: string[] }).details!.map((d, i) => <li key={i}>{d}</li>)}
                         </ul>
