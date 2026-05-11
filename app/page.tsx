@@ -3058,7 +3058,7 @@ export default function Home() {
       {/* BREADCRUMB */}
       {showBreadcrumbs && (
         <div className="bg-[#0a0a0a] border-b border-white/5">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-2 flex items-center gap-1.5 text-xs overflow-x-auto whitespace-nowrap scrollbar-hide">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-2 flex items-center gap-1.5 text-xs overflow-x-auto whitespace-nowrap scrollbar-hide">
             {breadcrumbs.map((c, i) => (
               <span key={i} className="flex items-center gap-1.5 flex-shrink-0">
                 {i > 0 && <span className="text-[#444]">/</span>}
@@ -3077,11 +3077,11 @@ export default function Home() {
       {step === "device" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           {/* Promo banner moved into the top nav (between logo and menu). */}
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <h1 className="text-4xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up" style={{ letterSpacing: "-0.03em" }}>
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
+            <h1 className="text-4xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up" style={{ letterSpacing: "-0.03em" }}>
               Get top dollar<br />for your device.
             </h1>
-            <p className="text-[#dcdcdc] text-lg mb-2 font-medium hero-fade-up hero-d-1">
+            <p className="text-[#dcdcdc] text-lg lg:text-xl mb-2 font-medium hero-fade-up hero-d-1">
               Skip the 5-day mail-in wait. Quote online, meet us in <strong className="text-white">Austin or Dripping Springs</strong>, get paid in <strong className="text-white">cash in 15 minutes</strong>.
             </p>
             <p className="text-[#dcdcdc] text-sm mb-6 font-medium hero-fade-up hero-d-2 flex items-center gap-2">
@@ -3204,7 +3204,7 @@ export default function Home() {
 
       {/* USED + LIGHTLY-USED FOCUS — top dollar leans on good condition; minor wear still welcome */}
       {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-10">
+        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-10">
           <div className="bg-gradient-to-br from-[#00c853]/15 via-[#00c853]/5 to-[#00c853]/15 border border-[#00c853]/30 rounded-3xl p-6 md:p-8">
             <div className="flex items-start gap-4">
               <span className="text-5xl shrink-0">📱</span>
@@ -3237,7 +3237,7 @@ export default function Home() {
 
       {/* PREP CHECKLIST — Before you meet us */}
       {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-10">
+        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-10">
           <div className="text-center mb-6">
             <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">Before you meet us</p>
             <h2 className="text-2xl md:text-3xl font-bold leading-tight reveal" data-stagger="1">5-minute prep checklist</h2>
@@ -3266,7 +3266,7 @@ export default function Home() {
 
       {/* HOMEPAGE: How it works (3 steps) */}
       {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-10">
+        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-10">
           <div className="text-center mb-8">
             <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">How it works</p>
             <h2 className="text-3xl md:text-4xl font-bold leading-tight reveal" data-stagger="1">From drawer to dollars in 3 steps</h2>
@@ -3290,12 +3290,12 @@ export default function Home() {
 
       {/* HOMEPAGE: Why people choose us (6-tile trust grid) */}
       {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-10">
+        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-10">
           <div className="text-center mb-8">
             <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">Why Austin chooses us</p>
             <h2 className="text-3xl md:text-4xl font-bold leading-tight reveal" data-stagger="1">Trusted by thousands of locals</h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {[
               { stat: <CountUp end={5000} suffix="+" />, label: "Devices bought", icon: "📲" },
               { stat: <CountUp end={4.9} decimals={1} suffix="★" />, label: "Average review rating", icon: "⭐" },
@@ -3316,7 +3316,7 @@ export default function Home() {
 
       {/* HOMEPAGE: Mid-page reinforcement CTA */}
       {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-8">
+        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-8">
           <div className="bg-gradient-to-r from-[#00c853]/[0.18] via-[#00c853]/[0.10] to-[#00c853]/[0.18] border border-[#00c853]/30 rounded-3xl p-7 md:p-9 text-center reveal">
             <h2 className="text-2xl md:text-3xl font-bold mb-2 leading-tight">Still sitting on that old tech?</h2>
             <p className="text-[#d4d4d4] text-sm md:text-base mb-5">Turn it into cash today. Quote in 30 seconds.</p>
@@ -3329,7 +3329,7 @@ export default function Home() {
 
       {/* HOMEPAGE: Customer reviews carousel */}
       {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto py-10">
+        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto py-10">
           <div className="px-4 flex items-end justify-between mb-6">
             <div>
               <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-1 reveal">Real Austin customers</p>
@@ -3378,7 +3378,7 @@ export default function Home() {
 
       {/* HOMEPAGE: Closing CTA banner */}
       {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-10">
+        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-10">
           <div className="relative overflow-hidden bg-gradient-to-br from-[#0a3d20] via-[#003d1a] to-[#012812] border border-[#00c853]/30 rounded-3xl p-8 md:p-12 text-center reveal">
             <div className="absolute inset-0 opacity-30 pointer-events-none" style={{ background: "radial-gradient(circle at 30% 20%, rgba(0, 200, 83, 0.4), transparent 60%), radial-gradient(circle at 70% 80%, rgba(0, 230, 118, 0.3), transparent 50%)" }} />
             <div className="relative z-10">
@@ -3395,7 +3395,7 @@ export default function Home() {
       {/* STEP: CATEGORY */}
       {step === "category" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -3463,7 +3463,7 @@ export default function Home() {
       {/* STEP: INQUIRY (unknown categories) — full quote flow */}
       {step === "inquiry" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={() => { setStep("category"); pushHistory("category"); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -3634,7 +3634,7 @@ export default function Home() {
       {/* STEP: BRAND */}
       {step === "brand" && page === "home" && category && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -3774,7 +3774,7 @@ export default function Home() {
       {/* STEP: MODEL SELECTION */}
       {step === "model" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -3934,7 +3934,7 @@ export default function Home() {
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your LG laptop</h2>
                 <p className="text-[#dcdcdc] text-sm mb-6">Choose your line</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {LG_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
                       {s.image ? (
@@ -3960,7 +3960,7 @@ export default function Home() {
                 <>
                   <h2 className="text-2xl md:text-3xl font-bold mb-1">LG — {ser?.label}</h2>
                   <p className="text-[#dcdcdc] text-sm mb-6">Pick your size</p>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {subs.map((s) => (
                       <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[160px]">
                         {s.image ? (
@@ -4001,7 +4001,7 @@ export default function Home() {
               <>
                 <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Samsung Galaxy Book</h2>
                 <p className="text-[#dcdcdc] text-sm mb-6">Choose your generation</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {SAMSUNG_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
                       <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
@@ -4045,7 +4045,7 @@ export default function Home() {
                 <>
                   <h2 className="text-2xl md:text-3xl font-bold mb-1">HP — {ser?.label}</h2>
                   <p className="text-[#dcdcdc] text-sm mb-6">Pick your sub-line</p>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {subs.map((s) => (
                       <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[160px]">
                         {s.image ? (
@@ -4116,7 +4116,7 @@ export default function Home() {
                 <>
                   <h2 className="text-2xl md:text-3xl font-bold mb-1">Dell — {ser?.label}</h2>
                   <p className="text-[#dcdcdc] text-sm mb-6">Pick your sub-line</p>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {subs.map((s) => (
                       <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
                         {s.image ? (
@@ -4514,7 +4514,7 @@ export default function Home() {
               ))}
             </div>
           )}
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-12 pb-8 text-center">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-12 pb-8 text-center">
             <div className="flex items-center justify-center gap-5 mb-2">
               {(() => {
                 const imgMap: Record<string, string> = { ip17e: "/iphone17e.png", ip17pm: "/iphone17.png", ip17p: "/iphone17.png", ip17air: "/iphone17air.png", ip17plus: "/iphone17plus.png", ip17: "/iphone17base.png", ip16pm: "/iphone16.png", ip16p: "/iphone16.png", ip16plus: "/iphone16plus.png", ip16: "/iphone16base.png", ip16e: "/iphone16e.png", ip15pm: "/iphone15.png", ip15p: "/iphone15.png", ip15plus: "/iphone15.png", ip15: "/iphone15base.png", ip14pm: "/iphone14.png", ip14p: "/iphone14.png", ip14plus: "/iphone14plus.png", ip14: "/iphone14base.png", ip13pm: "/iphone13.png", ip13p: "/iphone13.png", ip13: "/iphone13base.png", ip12pm: "/iphone12.png", ip12: "/iphone12base.png", ip12mini: "/iphone12mini.png", ip11pm: "/iphone11.png", ip11: "/iphone11base.png", ipadpro13m5: "/ipadpro.png", ipadpro11m5: "/ipadpro.png", ipad10: "/ipadbase.png", ipad9: "/ipadbase.png", ipadair13m3: "/ipadair.png", ipadair11m3: "/ipadair.png", ipadair13m2: "/ipadair.png", ipadair11m2: "/ipadair.png", ipadmini7: "/ipadmini.png", ipadmini6: "/ipadmini.png" };
@@ -4728,7 +4728,7 @@ export default function Home() {
       {/* STEP: CHECKOUT (email capture) */}
       {step === "checkout" && page === "home" && model && condition && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -4821,7 +4821,7 @@ export default function Home() {
       {/* STEP: PAYOUT METHOD */}
       {step === "payout" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -4857,7 +4857,7 @@ export default function Home() {
       {/* STEP: CONTACT INFO */}
       {step === "contact" && page === "home" && model && condition && payout && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -5013,7 +5013,7 @@ export default function Home() {
       {/* STEP: DONE */}
       {step === "done" && page === "home" && model && condition && payout && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-10 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-10 pb-8">
             <div className="text-center mb-6">
               <div className="w-20 h-20 rounded-full bg-[#00c853]/10 flex items-center justify-center mx-auto mb-4">
                 <span className="text-4xl">✅</span>
@@ -5057,7 +5057,7 @@ export default function Home() {
         <>
           {/* WHY CASH IS BETTER — 3-col comparison */}
           <section className="py-12 bg-[#0d0d0d]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <div className="text-center mb-8">
                 <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">The math</p>
                 <h2 className="text-2xl md:text-3xl font-bold leading-tight reveal" data-stagger="1">Why cash beats trade-in</h2>
@@ -5097,7 +5097,7 @@ export default function Home() {
 
           {/* SHIP TO US */}
           <section className="py-12 bg-[#0a0a0a]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <h2 className="text-xl font-bold text-center mb-2">Not in Austin? Ship to us</h2>
               <p className="text-[#dcdcdc] text-sm text-center mb-8">Mail your device from anywhere in the US. We pay shipping.</p>
               <div className="grid grid-cols-3 gap-3">
@@ -5120,7 +5120,7 @@ export default function Home() {
 
           {/* BOLD STATS COUNTER */}
           <section className="py-14 bg-[#111]" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
-            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <p className="text-[#dcdcdc] text-xs font-semibold uppercase tracking-wider text-center mb-8">Top Cash Cellular by the numbers</p>
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
@@ -5170,7 +5170,7 @@ export default function Home() {
 
           {/* PAYMENT TIMELINE */}
           <section className="py-12 bg-[#0d0d0d]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto">
               <h2 className="text-xl font-bold text-center mb-2 px-4">When do I get paid?</h2>
               <p className="text-[#dcdcdc] text-sm text-center mb-8 px-4">Transparent timelines. No surprises.</p>
               <div className="overflow-hidden tcc-marquee-mask">
@@ -5200,7 +5200,7 @@ export default function Home() {
 
           {/* CTA SECTION */}
           <section className="py-16 bg-[#0a0a0a] text-center">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <div className="bg-gradient-to-br from-[#00c853]/10 to-transparent border border-[#00c853]/20 rounded-3xl p-8">
                 <p className="text-4xl mb-3">💸</p>
                 <h2 className="text-3xl font-bold mb-2">Still sitting on old tech?</h2>
@@ -5216,7 +5216,7 @@ export default function Home() {
 
           {/* NEWSLETTER CAPTURE */}
           <section className="py-12 bg-[#0d0d0d]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
                 <p className="text-xl mb-2">📬</p>
                 <h3 className="text-lg font-bold mb-1">Get price alerts &amp; deals</h3>
@@ -5247,7 +5247,7 @@ export default function Home() {
 
           {/* FAQ */}
           <section className="py-12 bg-[#111]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
               <div className="space-y-2">
                 {FAQS.map((faq, i) => (
@@ -5269,7 +5269,7 @@ export default function Home() {
 
           {/* GREEN / SUSTAINABILITY */}
           <section className="py-12 bg-[#0a0a0a]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <div className="bg-[#00c853]/5 border border-[#00c853]/15 rounded-2xl p-6 text-center">
                 <p className="text-2xl mb-2">♻️</p>
                 <h3 className="text-lg font-bold mb-1">Good for your wallet. Better for the planet.</h3>
@@ -5280,7 +5280,7 @@ export default function Home() {
 
           {/* LOCAL CREDIBILITY */}
           <section className="py-8 bg-[#111]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <div className="flex flex-wrap items-center justify-center gap-4 text-center">
                 <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
                   <span className="text-sm">📍</span>
@@ -5304,7 +5304,7 @@ export default function Home() {
 
           {/* BULK / BUSINESS SELLING */}
           <section className="py-12 bg-[#0a0a0a]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                 <div className="text-center mb-4">
                   <p className="text-2xl mb-2">🏢</p>
@@ -5327,7 +5327,7 @@ export default function Home() {
       {/* INNER PAGES */}
       {(page === "about" || page === "privacy" || page === "terms") && (
         <section className="min-h-[60vh] animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-16">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-16">
             <button onClick={() => { setPage("home"); window.scrollTo({ top: 0 }); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Home
@@ -5442,7 +5442,7 @@ export default function Home() {
       <footer className="mt-auto bg-gradient-to-b from-[#0d1f15] via-[#0a1812] to-[#070d0a] text-[#cfcfcf] py-10 relative">
         {/* Green accent stripe at top — signals end-of-page + brand color */}
         <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-[#00c853]/60 to-transparent" />
-        <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4">
+        <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div>
               <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Company</p>
@@ -5613,7 +5613,7 @@ export default function Home() {
 
       {cookieConsent === null && (
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111]/95 backdrop-blur-sm border-t border-white/10 px-3 py-2 animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto flex items-center gap-3">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto flex items-center gap-3">
             <p className="text-white/80 text-[11px] flex-1">We use cookies to improve your experience.</p>
             <button onClick={() => { localStorage.setItem("cookie-consent", "essential"); setCookieConsent("essential"); }} className="text-white/60 text-[11px] font-medium cursor-pointer hover:text-white transition whitespace-nowrap">Essential</button>
             <button onClick={() => { localStorage.setItem("cookie-consent", "full"); setCookieConsent("full"); }} className="bg-[#00c853] text-[#0a0a0a] px-3 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer hover:bg-[#00e676] transition whitespace-nowrap">Accept All</button>
