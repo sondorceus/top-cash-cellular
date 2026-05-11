@@ -131,7 +131,7 @@ const IPHONE_SERIES = [
     { id: "ip17pm", label: "iPhone 17 Pro Max", base: 825, image: "/devices/iphone-17-pro-max-test.png" },
     { id: "ip17p", label: "iPhone 17 Pro", base: 715, image: "/devices/iphone-17-pro-test.png" },
     { id: "ip17air", label: "iPhone 17 Air", base: 475, image: "/devices/iphone-17-air-test.png" },
-    { id: "ip17plus", label: "iPhone 17 Plus", base: 500, image: "/iphone17plus.png" },
+    { id: "ip17plus", label: "iPhone 17 Plus", base: 500, image: "/devices/iphone-17-plus-test.png" },
     { id: "ip17", label: "iPhone 17", base: 455, image: "/devices/iphone-17-test.png" },
     { id: "ip17e", label: "iPhone 17E", base: 190, image: "/iphone17e.png" },
   ]},
