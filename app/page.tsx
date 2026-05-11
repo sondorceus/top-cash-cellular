@@ -2027,7 +2027,54 @@ const FAQS = [
   { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
 ];
 
-type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "connectivity" | "carrier" | "carrier-lock" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
+type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "condition" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
+
+// MacBook-specific spec catalog. Per-model dictionary of processor /
+// memory / storage / display-glass options that the new MacBook flow
+// (Wave 1) asks for one at a time. Models WITHOUT an entry in this
+// dict keep the legacy flow (model -> condition -> storage -> ...).
+// Each option carries a `multiplier` against the model's base price.
+type MacSpecOption = { id: string; label: string; multiplier: number; sub?: string };
+type MacSpec = {
+  processors: MacSpecOption[];
+  memory: MacSpecOption[];
+  storage: MacSpecOption[];
+  hasNanoGlass?: boolean;
+};
+const MACBOOK_SPECS: Record<string, MacSpec> = {
+  // 2026 16-inch MacBook Pro M5 Pro/Max (Skywalker's example reference).
+  mbp16_m5pmax_2026: {
+    processors: [
+      { id: "m5pro_18_20", label: "M5 Pro", sub: "18-Core CPU / 20-Core GPU", multiplier: 1.00 },
+      { id: "m5max_18_32", label: "M5 Max", sub: "18-Core CPU / 32-Core GPU", multiplier: 1.35 },
+      { id: "m5max_18_40", label: "M5 Max", sub: "18-Core CPU / 40-Core GPU", multiplier: 1.50 },
+    ],
+    memory: [
+      { id: "48",  label: "48 GB", sub: "Unified Memory",  multiplier: 1.00 },
+      { id: "64",  label: "64 GB", sub: "Unified Memory",  multiplier: 1.12 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.30 },
+    ],
+    storage: [
+      { id: "2tb", label: "2 TB",  sub: "SSD", multiplier: 1.00 },
+      { id: "4tb", label: "4 TB",  sub: "SSD", multiplier: 1.25 },
+      { id: "8tb", label: "8 TB",  sub: "SSD", multiplier: 1.60 },
+    ],
+    hasNanoGlass: true,
+  },
+};
+const DISPLAY_GLASS_OPTIONS: MacSpecOption[] = [
+  { id: "standard", label: "Standard Glass", multiplier: 1.00 },
+  { id: "nano",     label: "Nano-texture Glass", sub: "Anti-glare matte finish", multiplier: 1.08 },
+];
+const BATTERY_HEALTH_OPTIONS = [
+  { id: "good", label: "Good", sub: "80% or higher and 'Normal' status", multiplier: 1.00 },
+  { id: "poor", label: "Poor", sub: "Below 80% or 'Service / Replace' warning", multiplier: 0.80 },
+] as const;
+const CHARGER_OPTIONS = [
+  { id: "yes", label: "Yes — OEM charger included", multiplier: 1.05 },
+  { id: "no",  label: "No charger", multiplier: 1.00 },
+] as const;
+const hasMacSpecs = (modelId: string | undefined | null): boolean => !!modelId && !!MACBOOK_SPECS[modelId];
 const BRAND_LABELS: Record<string, string> = {
   iphone: "iPhone", android: "Samsung", pixel: "Pixel", lg_phone: "LG", ipad: "iPad",
   macbook: "MacBook", samsung_pc: "Samsung", lenovo: "Lenovo", dell: "Dell",
@@ -2276,6 +2323,15 @@ export default function Home() {
   const [storage, setStorage] = useState<typeof ALL_STORAGES[0] | null>(null);
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
+  // MacBook-specific picks (Wave 1). Only used when the picked model
+  // has a MACBOOK_SPECS entry; otherwise these stay null and the legacy
+  // flow runs unchanged.
+  const [processor, setProcessor] = useState<MacSpecOption | null>(null);
+  const [memory, setMemory] = useState<MacSpecOption | null>(null);
+  const [displayGlass, setDisplayGlass] = useState<MacSpecOption | null>(null);
+  const [batteryHealth, setBatteryHealth] = useState<(typeof BATTERY_HEALTH_OPTIONS)[number] | null>(null);
+  const [charger, setCharger] = useState<(typeof CHARGER_OPTIONS)[number] | null>(null);
+  const [brokenPhotoUrl, setBrokenPhotoUrl] = useState<string | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [expandedConditionTier, setExpandedConditionTier] = useState<number | null>(null);
   // 'What qualifies?' modal — opened by clicking the small "i" on a
@@ -2652,6 +2708,8 @@ export default function Home() {
     setHandoffMethod(null);
     setShipStreet(""); setShipUnit(""); setShipCity(""); setShipState("TX"); setShipZip("");
     setLocalArea(null);
+    setProcessor(null); setMemory(null); setDisplayGlass(null);
+    setBatteryHealth(null); setCharger(null); setBrokenPhotoUrl(null);
   };
 
   // Brand → flat variant lists (the series intermediate step was removed
