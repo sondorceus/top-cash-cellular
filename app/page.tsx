@@ -2128,7 +2128,7 @@ export default function Home() {
   const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
   const [carrierLock, setCarrierLock] = useState<typeof CARRIER_LOCKS[0] | null>(null);
   const [page, setPage] = useState<"home" | "about" | "privacy" | "terms">("home");
-  const [model, setModel] = useState<{ id: string; label: string; base: number; image?: string } | null>(null);
+  const [model, setModel] = useState<{ id: string; label: string; base?: number; image?: string } | null>(null);
   const [helpTopic, setHelpTopic] = useState<"storage" | "carrier" | null>(null);
   const [loginError, setLoginError] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
@@ -2484,8 +2484,13 @@ export default function Home() {
   // for "new" tiers (Brand New / Flawless). Skywalker's call.
   const isNewTier = condition?.id === "brandnew" || condition?.id === "flawless";
   const accessoryBonus = isNewTier && accessoriesIncluded ? 15 : 0;
-  const baseQuote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * connectivityMultiplier * promoMultiplier * couponMultiplier) + promoFlatBonus : 0;
+  const baseQuote = model && condition && model.base ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * connectivityMultiplier * promoMultiplier * couponMultiplier) + promoFlatBonus : 0;
   const quote = baseQuote + accessoryBonus;
+  // Inquiry-only models have no base price (or 0). We still let the
+  // user walk the funnel + add to cart; the quote step shows
+  // 'Quote pending' instead of a number, and the cart marks the line
+  // 'Pending quote'.
+  const isPendingQuote = !model?.base;
 
   const maxQuoteFor = (v: { id: string; base: number }) => {
     const sids = STORAGE_MAP[v.id];
@@ -2735,8 +2740,17 @@ export default function Home() {
         {/* BOTTOM — price reveal once we're past the carrier step */}
         {(step === "quote" || step === "checkout" || step === "payout" || step === "contact") && (
           <div className="border-t border-white/10 mt-2 pt-4 text-center">
-            <p className="text-[#b8b8b8] text-sm">Your device is valued at</p>
-            <p className="text-[#00c853] font-extrabold text-4xl mt-1" style={{ textShadow: "0 0 8px rgba(0,200,83,0.22)" }}>${quote * quantity}</p>
+            {isPendingQuote ? (
+              <>
+                <p className="text-[#b8b8b8] text-sm">Your device will be</p>
+                <p className="text-white font-extrabold text-3xl mt-1">Quoted at pickup</p>
+              </>
+            ) : (
+              <>
+                <p className="text-[#b8b8b8] text-sm">Your device is valued at</p>
+                <p className="text-[#00c853] font-extrabold text-4xl mt-1" style={{ textShadow: "0 0 8px rgba(0,200,83,0.22)" }}>${quote * quantity}</p>
+              </>
+            )}
           </div>
         )}
       </div>
@@ -4400,7 +4414,7 @@ export default function Home() {
                   {models.map((m) => {
                     const mImage = (m as { image?: string }).image;
                     return (
-                    <button key={m.id} onClick={() => { setInquiryCategory("Google Pixel"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       {mImage ? (
                         <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                       ) : (
@@ -4427,8 +4441,7 @@ export default function Home() {
                       const mImg = (m as { image?: string }).image;
                       return (
                         <button key={m.id} onClick={() => {
-                          if (inq) { setInquiryCategory("MacBook"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
-                          else { setModel(m); setStep("condition"); pushHistory("condition"); }
+                          setModel(m); setStep("condition"); pushHistory("condition");
                         }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                           {mImg ? (
                             <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
@@ -4480,7 +4493,7 @@ export default function Home() {
                 <p className="text-[#e6e6e6] text-sm mb-6">Choose your DJI model</p>
                 <div className="space-y-2">
                   {DJI_MODELS.map((m) => (
-                    <button key={m.id} onClick={() => { setInquiryCategory("Drone"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Quote</span>
@@ -4748,7 +4761,7 @@ export default function Home() {
               <>
                 <div className="space-y-2">
                   {lenovoTabVariants.map((m) => (
-                    <button key={m.id} onClick={() => { setInquiryCategory("Tablet"); setInquiryDesc(`Lenovo ${m.label}`); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
@@ -4765,7 +4778,7 @@ export default function Home() {
               <>
                 <div className="space-y-2">
                   {surfaceVariants.map((m) => (
-                    <button key={m.id} onClick={() => { setInquiryCategory("Tablet"); setInquiryDesc(`Microsoft ${m.label}`); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
@@ -4808,8 +4821,7 @@ export default function Home() {
                     const mImg = (m as { image?: string }).image;
                     return (
                       <button key={m.id} onClick={() => {
-                        if (inq) { setInquiryCategory(category === "computers" ? "Laptop" : "Desktop"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
-                        else { setModel(m); setStep("condition"); pushHistory("condition"); }
+                        setModel(m); setStep("condition"); pushHistory("condition");
                       }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer tap-press">
                         {mImg ? (
                           <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain mb-1.5" />
@@ -4829,8 +4841,7 @@ export default function Home() {
                     const mImg = (m as { image?: string }).image;
                     return (
                       <button key={m.id} onClick={() => {
-                        if (inq) { setInquiryCategory(category === "computers" ? "Laptop" : "Desktop"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
-                        else { setModel(m); setStep("condition"); pushHistory("condition"); }
+                        setModel(m); setStep("condition"); pushHistory("condition");
                       }} className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         {mImg ? (
                           <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
@@ -4858,7 +4869,7 @@ export default function Home() {
                   {(deviceType === "apple_vr" ? APPLE_VR_MODELS : deviceType === "meta_vr" ? META_VR_MODELS : deviceType === "valve_vr" ? VALVE_VR_MODELS : deviceType === "psvr" ? PSVR_MODELS : deviceType === "samsung_tab" ? SAMSUNG_TAB_MODELS : deviceType === "oneplus_tab" ? ONEPLUS_TAB_MODELS : GOOGLE_TAB_MODELS).map((m) => {
                     const mImage = (m as { image?: string }).image;
                     return (
-                    <button key={m.id} onClick={() => { setInquiryCategory(deviceType?.includes("vr") || deviceType === "psvr" ? "VR Headset" : "Tablet"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       {mImage ? (
                         <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                       ) : (
@@ -4883,8 +4894,7 @@ export default function Home() {
                     const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
                     return (
                       <button key={m.id} onClick={() => {
-                        if (inq) { setInquiryCategory(deviceType === "sony" ? "PlayStation" : "Console"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
-                        else { setModel(m); setStep("condition"); pushHistory("condition"); }
+                        setModel(m); setStep("condition"); pushHistory("condition");
                       }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         <p className="font-semibold text-[15px]">{m.label}</p>
                         <div className="flex items-center gap-2">
@@ -5217,7 +5227,14 @@ export default function Home() {
             {selectionPanelMobile}
             <div className="hidden lg:block mb-2">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Your offer</p>
-              <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853] mt-1" style={{ textShadow: "0 0 8px rgba(0, 200, 83, 0.22)" }}>${quote * quantity}</p>
+              {isPendingQuote ? (
+                <>
+                  <p className="text-4xl lg:text-5xl font-extrabold text-white mt-1">Quote at pickup</p>
+                  <p className="text-[#c8c8c8] text-sm mt-2 leading-snug max-w-md">This device isn&apos;t on our standard price list. Add it to your box and we&apos;ll review and quote it when we inspect — same day, same place.</p>
+                </>
+              ) : (
+                <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853] mt-1" style={{ textShadow: "0 0 8px rgba(0, 200, 83, 0.22)" }}>${quote * quantity}</p>
+              )}
             </div>
             <div className="flex items-center justify-center lg:justify-start flex-wrap gap-1 mb-2">
               {promoApplies && promo && (
@@ -6424,7 +6441,11 @@ export default function Home() {
                                 <span className="text-white text-sm font-extrabold min-w-[20px] text-center">{item.quantity}</span>
                                 <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it))} aria-label="Increase quantity" className={`${qtyBtn} rounded-full bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center cursor-pointer transition`}>+</button>
                               </div>
-                              <p className={`text-[#00c853] font-extrabold ${priceSz}`} style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price * item.quantity}</p>
+                              {item.price > 0 ? (
+                                <p className={`text-[#00c853] font-extrabold ${priceSz}`} style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price * item.quantity}</p>
+                              ) : (
+                                <p className={`text-white font-extrabold ${priceSz} opacity-90`}>Quote at pickup</p>
+                              )}
                             </div>
                           </div>
                         );
