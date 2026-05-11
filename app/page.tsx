@@ -2502,7 +2502,7 @@ export default function Home() {
         <div className="flex items-center gap-4">
           <div className="w-20 h-20 rounded-xl bg-[rgba(15,15,15,0.5)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden shadow-[inset_1px_1px_0_rgba(255,255,255,0.08),0_4px_10px_rgba(0,0,0,0.45)]">
             {model.image ? (
-              <img src={model.image} alt="" className="max-w-full max-h-full object-contain" />
+              <img src={model.image} alt="" className="max-w-full max-h-full object-contain" style={{ filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.5))" }} />
             ) : (
               <span className="text-3xl opacity-50">📱</span>
             )}
@@ -2563,7 +2563,7 @@ export default function Home() {
       <div className="sticky top-24 bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
         <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl mb-4 h-72 flex items-center justify-center overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-3">
           {model.image ? (
-            <img src={model.image} alt={model.label} className="w-full h-full object-contain" />
+            <img src={model.image} alt={model.label} className="w-full h-full object-contain" style={{ filter: "drop-shadow(0 18px 22px rgba(0,0,0,0.55)) drop-shadow(0 4px 8px rgba(0,0,0,0.35))" }} />
           ) : (
             <div className="text-6xl opacity-30">📱</div>
           )}
