@@ -13,6 +13,13 @@ const cabinet = localFont({
 
 export const viewport: Viewport = {
   themeColor: "#00c853",
+  // Without these, Next.js drops the default viewport meta when you
+  // declare any viewport export — which makes mobile Safari render the
+  // page at desktop width and zoom in, cropping the content. Lock the
+  // page to device width at 1.0 scale so the funnel actually fits.
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {

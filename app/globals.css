@@ -288,6 +288,14 @@ body:not(.at-top) nav.sticky { box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35); }
   color: #fff;
   transition: background 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
   border-radius: 0.75rem;
+  /* iOS Safari auto-zooms whenever an input's computed font-size is below
+     16px on focus. We force 16px on mobile so the contact/IMEI page
+     doesn't yank the viewport when the user taps in. Desktop keeps the
+     14px (text-sm) look via the media query below. */
+  font-size: 16px;
+}
+@media (min-width: 1024px) {
+  .tcc-input { font-size: 0.875rem; }
 }
 .tcc-input:hover { background: rgba(0, 0, 0, 0.5); border-bottom-color: rgba(255, 255, 255, 0.28); }
 .tcc-input:focus { outline: none; border-bottom-color: #00c853; box-shadow: 0 4px 12px -4px rgba(0, 200, 83, 0.5); background: rgba(0, 0, 0, 0.55); }
