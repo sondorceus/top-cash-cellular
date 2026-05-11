@@ -1868,6 +1868,14 @@ const CARRIERS = [
   { id: "other", label: "Other / Locked", multiplier: 0.85, icon: "🔒" },
 ];
 
+// iPad connectivity tier — Wi-Fi + Cellular models retain more value
+// because they include the LTE/5G modem + GPS chip. Multiplier applies
+// only on the iPad flow.
+const CONNECTIVITY = [
+  { id: "wifi", label: "Wi-Fi Only", desc: "Internet only when you're on Wi-Fi", multiplier: 1.0, icon: "📶" },
+  { id: "cellular", label: "Wi-Fi + Cellular", desc: "Adds 4G LTE / 5G + true GPS", multiplier: 1.15, icon: "📡" },
+];
+
 // Top multipliers — used by `getMaxPrice` to render the true ceiling
 // price on each variant card. base is the lowest-config price; the
 // max quote multiplies by top storage × top condition × top carrier.
@@ -1918,7 +1926,7 @@ const FAQS = [
   { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
 ];
 
-type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
+type Step = "device" | "category" | "brand" | "model" | "storage" | "condition" | "connectivity" | "carrier" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
 const BRAND_LABELS: Record<string, string> = {
   iphone: "iPhone", android: "Samsung", pixel: "Pixel", ipad: "iPad",
   macbook: "MacBook", samsung_pc: "Samsung", lenovo: "Lenovo", dell: "Dell",
@@ -2095,15 +2103,21 @@ export default function Home() {
   // No-storage devices (watches, consoles, vr, drones) skip storage AND
   // carrier — only condition -> quote (2 steps).
   const isPhoneFlow = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
+  const isIpadFlow = deviceType === "ipad";
   const isNoStorageDevice =
     deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" ||
     deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch" ||
     deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" ||
     deviceType === "dji";
-  const funnelTotal = isNoStorageDevice ? 2 : (isPhoneFlow ? 4 : 3);
+  // Phones: condition -> storage -> carrier -> quote (4)
+  // iPads:  condition -> connectivity -> storage -> quote (4)
+  // Other:  condition -> storage -> quote (3)
+  // No-storage: condition -> quote (2)
+  const funnelTotal = isNoStorageDevice ? 2 : (isPhoneFlow || isIpadFlow ? 4 : 3);
   const funnelStepNum =
     step === "condition" ? 1 :
-    step === "storage" ? 2 :
+    step === "connectivity" ? 2 :
+    step === "storage" ? (isIpadFlow ? 3 : 2) :
     step === "carrier" ? 3 :
     step === "quote" ? funnelTotal : 0;
   const stepProgress = funnelStepNum > 0 && (
@@ -2118,6 +2132,7 @@ export default function Home() {
   );
   const [storage, setStorage] = useState<typeof ALL_STORAGES[0] | null>(null);
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
+  const [connectivity, setConnectivity] = useState<typeof CONNECTIVITY[0] | null>(null);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [expandedConditionTier, setExpandedConditionTier] = useState<number | null>(null);
@@ -2125,6 +2140,7 @@ export default function Home() {
   // condition tile. Modal shows the tier's bullet list without expanding
   // the tile itself so all condition boxes stay the same height.
   const [conditionHelpId, setConditionHelpId] = useState<string | null>(null);
+  const [connectivityHelpOpen, setConnectivityHelpOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMode, setChatMode] = useState<"choose" | "chat" | "call">("choose");
   const [chatMsg, setChatMsg] = useState("");
@@ -2355,6 +2371,7 @@ export default function Home() {
 
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrier?.multiplier ?? 1;
+  const connectivityMultiplier = connectivity?.multiplier ?? 1;
 
   type Promo = { active: boolean; text: string; percent: number; appliesTo: string; minQuantity?: number };
   const [promo, setPromo] = useState<Promo | null>(null);
@@ -2389,7 +2406,7 @@ export default function Home() {
   // for "new" tiers (Brand New / Flawless). Skywalker's call.
   const isNewTier = condition?.id === "brandnew" || condition?.id === "flawless";
   const accessoryBonus = isNewTier && accessoriesIncluded ? 15 : 0;
-  const baseQuote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * promoMultiplier * couponMultiplier) : 0;
+  const baseQuote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * connectivityMultiplier * promoMultiplier * couponMultiplier) : 0;
   const quote = baseQuote + accessoryBonus;
 
   const maxQuoteFor = (v: { id: string; base: number }) => {
@@ -2415,12 +2432,18 @@ export default function Home() {
     if (step === "model") { if (category) { setStep("brand"); } else { setStep("category"); } setDeviceType(null); }
     else if (step === "brand") { setStep("category"); setCategory(null); }
     else if (step === "category") { setStep("device"); }
-    // New funnel order: model -> condition -> storage -> carrier -> quote
-    // (storage is skipped for no-storage devices; carrier is skipped for non-phones)
+    // New funnel order: model -> condition -> [connectivity (ipad)] -> storage -> [carrier (phone)] -> quote
+    // (no-storage devices skip storage; non-phones skip carrier; only ipads have connectivity)
     else if (step === "condition") { setStep("model"); setModel(null); }
-    else if (step === "storage") { setStep("condition"); setCondition(null); }
+    else if (step === "connectivity") { setStep("condition"); setCondition(null); }
+    else if (step === "storage") { if (deviceType === "ipad") { setStep("connectivity"); setConnectivity(null); } else { setStep("condition"); setCondition(null); } }
     else if (step === "carrier") { setStep("storage"); setStorage(null); }
-    else if (step === "quote") { if (carrier) { setStep("carrier"); setCarrier(null); } else if (storage) { setStep("storage"); setStorage(null); } else { setStep("condition"); setCondition(null); } }
+    else if (step === "quote") {
+      if (carrier) { setStep("carrier"); setCarrier(null); }
+      else if (storage) { setStep("storage"); setStorage(null); }
+      else if (connectivity) { setStep("connectivity"); setConnectivity(null); }
+      else { setStep("condition"); setCondition(null); }
+    }
     else if (step === "checkout") setStep("quote");
     else if (step === "payout") setStep("checkout");
     else if (step === "contact") setStep("payout"); pushHistory("payout");
@@ -2436,6 +2459,7 @@ export default function Home() {
     setStorage(null);
     setCondition(null);
     setCarrier(null);
+    setConnectivity(null);
     setPayout(null);
     setQuantity(1);
     setExpandedFaq(null);
@@ -3228,6 +3252,37 @@ export default function Home() {
           </div>
         );
       })()}
+
+      {/* CONNECTIVITY HELP MODAL — 'Help me choose' for WiFi vs Cellular */}
+      {connectivityHelpOpen && (
+        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setConnectivityHelpOpen(false)}>
+          <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6),0_0_20px_rgba(0,200,83,0.15)]" onClick={(e) => e.stopPropagation()}>
+            <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+              <div className="min-w-0">
+                <p className="text-[#00c853] text-[10px] font-extrabold uppercase tracking-[0.18em]">Help me choose</p>
+                <h3 className="text-white text-lg font-extrabold leading-tight mt-0.5">Wi-Fi or Cellular?</h3>
+              </div>
+              <button onClick={() => setConnectivityHelpOpen(false)} aria-label="Close" className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press shrink-0">
+                <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="p-5 space-y-4 text-sm">
+              <div>
+                <p className="text-white font-extrabold mb-1">Check the back of the iPad</p>
+                <p className="text-[#e8e8e8] leading-snug">If it says <strong className="text-white">&quot;Wi-Fi + Cellular&quot;</strong> on the back near the bottom, it&apos;s the cellular model. If it only says <strong className="text-white">&quot;Wi-Fi&quot;</strong>, it&apos;s the Wi-Fi-only model.</p>
+              </div>
+              <div>
+                <p className="text-white font-extrabold mb-1">Or check Settings</p>
+                <p className="text-[#e8e8e8] leading-snug">Open <span className="text-[#00c853]">Settings &gt; Cellular</span>. If you see Cellular options, it&apos;s a Cellular model. If that menu is missing entirely, it&apos;s Wi-Fi only.</p>
+              </div>
+              <div>
+                <p className="text-white font-extrabold mb-1">Why it matters for your quote</p>
+                <p className="text-[#e8e8e8] leading-snug">Cellular iPads include an LTE/5G modem and a real GPS chip — they hold more resale value, so you get a higher payout.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* HELP MODAL — where to find storage / carrier on each platform */}
       {helpTopic && (
@@ -4702,6 +4757,51 @@ export default function Home() {
         </section>
       )}
 
+      {/* STEP: CONNECTIVITY (iPad only) — Wi-Fi vs Wi-Fi + Cellular */}
+      {step === "connectivity" && page === "home" && model && deviceType === "ipad" && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+              <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Select Connectivity</h2>
+              <p className="text-[#a0a0a0] text-xs mb-3">
+                Not sure? <button type="button" onClick={() => setConnectivityHelpOpen(true)} className="text-[#00c853] font-semibold hover:underline cursor-pointer">Help me choose</button>
+              </p>
+              {stepProgress}
+              <div className="tcc-selection-frame">
+                <div className="space-y-2">
+                  {CONNECTIVITY.map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => { setConnectivity(c); setStep("storage"); pushHistory("storage"); }}
+                      className="tcc-card w-full flex items-center justify-between gap-4 px-5 py-4 rounded-2xl cursor-pointer text-left"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className="text-2xl shrink-0">{c.icon}</span>
+                        <div className="min-w-0">
+                          <p className="font-extrabold text-[16px] text-white leading-tight">{c.label}</p>
+                          <p className="text-[#b0b0b0] text-[12px] leading-snug mt-0.5">{c.desc}</p>
+                        </div>
+                      </div>
+                      {c.id === "cellular" && (
+                        <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-full shrink-0">Worth more</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <FairPromise />
+              <TrustBadge />
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* STEP: STORAGE */}
       {step === "storage" && page === "home" && model && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
@@ -4779,7 +4879,7 @@ export default function Home() {
                   key={c.id}
                   onClick={() => {
                     setCondition(c);
-                    const ns = isNoStorageDevice ? "quote" : "storage";
+                    const ns: Step = isNoStorageDevice ? "quote" : (deviceType === "ipad" ? "connectivity" : "storage");
                     if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
                     setStep(ns); pushHistory(ns);
                   }}
