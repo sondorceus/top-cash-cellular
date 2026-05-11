@@ -1386,12 +1386,13 @@ const IPAD_SERIES = [
 
 const IPAD_MODELS = IPAD_SERIES.flatMap(s => s.variants);
 
+// Disc vs Digital is no longer a separate model — it's asked at the
+// extras step with an 8% multiplier reduction for digital. So PS5
+// Standard / Slim each consolidate to one entry.
 const PS5_VARIANTS = [
-  { id: "ps5pro", label: "PlayStation 5 Pro (2024)", base: 0, inquiryOnly: true, image: "/devices/ps5.webp" },
-  { id: "ps5", label: "PlayStation 5 (Standard, Disc)", base: 300, image: "/devices/ps5.webp" },
-  { id: "ps5d", label: "PlayStation 5 Digital", base: 250, image: "/devices/ps5-digital.webp" },
-  { id: "ps5slim", label: "PlayStation 5 Slim (Disc)", base: 0, inquiryOnly: true, image: "/devices/ps5-slim-disc.webp" },
-  { id: "ps5slim_d", label: "PlayStation 5 Slim Digital", base: 0, inquiryOnly: true, image: "/devices/ps5-slim-digital.webp" },
+  { id: "ps5pro",  label: "PlayStation 5 Pro (2024)", base: 0, inquiryOnly: true, image: "/devices/ps5.webp" },
+  { id: "ps5",     label: "PlayStation 5", base: 300, image: "/devices/ps5.webp" },
+  { id: "ps5slim", label: "PlayStation 5 Slim", base: 0, inquiryOnly: true, image: "/devices/ps5-slim-disc.webp" },
 ];
 const PS4_VARIANTS = [
   { id: "ps4pro", label: "PlayStation 4 Pro", base: 150, image: "/devices/ps4-pro.webp" },
