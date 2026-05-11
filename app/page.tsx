@@ -5122,15 +5122,6 @@ export default function Home() {
               </div>
             )}
 
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <span className="text-[#e6e6e6] text-sm">Quantity:</span>
-              <div className="flex items-center bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-3 py-2 text-white hover:bg-white/10 transition cursor-pointer text-lg font-bold">−</button>
-                <span className="px-4 py-2 text-white font-semibold text-sm min-w-[2rem] text-center">{quantity}</span>
-                <button onClick={() => setQuantity(Math.min(10, quantity + 1))} className="px-3 py-2 text-white hover:bg-white/10 transition cursor-pointer text-lg font-bold">+</button>
-              </div>
-            </div>
-
             <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/12 rounded-2xl p-5 mb-6 text-left shadow-[inset_1px_1px_0_rgba(255,255,255,0.06),0_10px_30px_rgba(0,0,0,0.5)]">
               <p className="text-[10px] font-extrabold text-[#00c853] uppercase tracking-[0.18em] mb-3">How we compare</p>
               <div className="divide-y divide-white/[0.06]">
