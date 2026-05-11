@@ -2166,6 +2166,12 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "yes",     label: "Yes — has disc drive",    multiplier: 1.00 },
       { id: "digital", label: "No — digital edition",     multiplier: 0.92 },
     ]},
+    { id: "ssd", question: "M.2 SSD upgrade installed?", helper: "Base PS5 is 825 GB, Slim 1 TB, Pro 2 TB. Internal M.2 slot adds up to 8 TB more — verified upgrades add a real resale premium.", options: [
+      { id: "none",   label: "No — base storage only",        multiplier: 1.00 },
+      { id: "1to2tb", label: "Yes — 1 TB or 2 TB M.2 added",  multiplier: 1.05 },
+      { id: "4tb",    label: "Yes — 4 TB M.2 added",          multiplier: 1.10 },
+      { id: "8tb",    label: "Yes — 8 TB M.2 added (maxed)",  multiplier: 1.15 },
+    ]},
     { id: "controllers", question: "Controllers included?", options: [
       { id: "2", label: "2 controllers", multiplier: 1.05 },
       { id: "1", label: "1 controller",  multiplier: 1.00 },
