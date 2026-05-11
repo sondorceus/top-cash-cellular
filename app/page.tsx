@@ -2743,7 +2743,7 @@ export default function Home() {
             {isPendingQuote ? (
               <>
                 <p className="text-[#b8b8b8] text-sm">Your device will be</p>
-                <p className="text-white font-extrabold text-3xl mt-1">Quoted at pickup</p>
+                <p className="text-white font-extrabold text-xl mt-1 leading-tight">Quoted via email or text</p>
               </>
             ) : (
               <>
@@ -5229,8 +5229,8 @@ export default function Home() {
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Your offer</p>
               {isPendingQuote ? (
                 <>
-                  <p className="text-4xl lg:text-5xl font-extrabold text-white mt-1">Quote at pickup</p>
-                  <p className="text-[#c8c8c8] text-sm mt-2 leading-snug max-w-md">This device isn&apos;t on our standard price list. Add it to your box and we&apos;ll review and quote it when we inspect — same day, same place.</p>
+                  <p className="text-3xl lg:text-4xl font-extrabold text-white mt-1 leading-tight">Quoted via email or text</p>
+                  <p className="text-[#c8c8c8] text-sm mt-2 leading-snug max-w-md">This device isn&apos;t on our standard price list. Add it to your box and we&apos;ll email or text you a quote within the hour — no need to wait until pickup.</p>
                 </>
               ) : (
                 <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853] mt-1" style={{ textShadow: "0 0 8px rgba(0, 200, 83, 0.22)" }}>${quote * quantity}</p>
@@ -6444,7 +6444,7 @@ export default function Home() {
                               {item.price > 0 ? (
                                 <p className={`text-[#00c853] font-extrabold ${priceSz}`} style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price * item.quantity}</p>
                               ) : (
-                                <p className={`text-white font-extrabold ${priceSz} opacity-90`}>Quote at pickup</p>
+                                <p className={`text-white font-extrabold ${priceSz} opacity-90`}>Quoted via email or text</p>
                               )}
                             </div>
                           </div>
