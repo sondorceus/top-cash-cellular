@@ -2459,7 +2459,7 @@ export default function Home() {
           )}
         </div>
         <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Selling</p>
-        <p className="text-[18px] font-bold text-white leading-tight mb-4">{model.label}</p>
+        <p className="text-[22px] font-extrabold text-white leading-tight mb-4">{model.label}</p>
         <div className="space-y-2 border-t border-white/10 pt-4">
           {[
             { label: "Storage",   value: storage?.label,    active: step === "storage",   helpId: "storage"  as const },
@@ -3505,7 +3505,7 @@ export default function Home() {
                     if (dt) { setDeviceType(dt as DeviceType); setStep("model"); pushHistory("model"); return; }
                     setCategory(cat.id); setStep("brand"); pushHistory("brand");
                   }}
-                  className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press reveal"
+                  className="tcc-card flex flex-col items-center justify-center p-4 rounded-2xl cursor-pointer reveal"
                   data-stagger={Math.min(idx + 1, 8)}
                 >
                   <CategoryIcon id={cat.id} className="w-9 h-9 mb-1.5 text-white" />
@@ -3723,7 +3723,7 @@ export default function Home() {
                 { id: "android" as const, label: "Samsung Galaxy", sub: "Galaxy S21 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg> },
                 { id: "pixel" as const, label: "Google Pixel", sub: "Pixel 5 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#4285F4" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="0"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#EA4335" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-15"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#FBBC05" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-30"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#34A853" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-45"/><text x="20" y="24" textAnchor="middle" fill="#4285F4" fontSize="11" fontWeight="bold" fontFamily="Arial">G</text></svg> },
               ].map((b, i) => (
-                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press reveal" data-stagger={Math.min(i + 1, 8)}>
+                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[130px] tap-press reveal" data-stagger={Math.min(i + 1, 8)}>
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#dcdcdc] text-xs text-center mt-0.5">{b.sub}</p>
@@ -3741,7 +3741,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_tab") { setInquiryCategory("Tablet"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#dcdcdc] text-xs text-center mt-0.5">{b.sub}</p>
@@ -3762,7 +3762,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_pc") { setInquiryCategory("Computer"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#dcdcdc] text-xs text-center mt-0.5">{b.sub}</p>
@@ -3781,7 +3781,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_desktop") { setInquiryCategory("Desktop"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#dcdcdc] text-xs text-center mt-0.5">{b.sub}</p>
@@ -3797,7 +3797,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_vr") { setInquiryCategory("VR Headset"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#dcdcdc] text-xs text-center mt-0.5">{b.sub}</p>
@@ -3808,7 +3808,7 @@ export default function Home() {
               ].map((b) => (
                 <button key={b.id} onClick={() => {
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#dcdcdc] text-xs text-center mt-0.5">{b.sub}</p>
@@ -3824,7 +3824,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_watch") { setInquiryCategory("Smartwatch"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#dcdcdc] text-xs text-center mt-0.5">{b.sub}</p>
@@ -3835,7 +3835,7 @@ export default function Home() {
                 { id: "microsoft" as const, label: "Microsoft", sub: "Xbox One, Series S, Series X", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#107c10"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold" fontFamily="Arial">XBOX</text></svg> },
                 { id: "nintendo" as const, label: "Nintendo", sub: "Switch OLED, Switch V2, Switch Lite", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#e60012"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">Nintendo</text></svg> },
               ].map((b) => (
-                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[130px] tap-press">
+                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[130px] tap-press">
                   <span className="flex-shrink-0 mb-2">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#dcdcdc] text-xs text-center mt-0.5">{b.sub}</p>
@@ -4011,7 +4011,7 @@ export default function Home() {
                 <p className="text-[#dcdcdc] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {LG_PC_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                       {s.image ? (
                         <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       ) : (
@@ -4037,7 +4037,7 @@ export default function Home() {
                   <p className="text-[#dcdcdc] text-sm mb-6">Pick your size</p>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {subs.map((s) => (
-                      <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[160px]">
+                      <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[160px]">
                         {s.image ? (
                           <img src={s.image} alt={s.label} loading="eager" className="w-20 h-14 object-contain mb-1" />
                         ) : (
@@ -4060,7 +4060,7 @@ export default function Home() {
                 <p className="text-[#dcdcdc] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {ACER_PC_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                       <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#dcdcdc] text-[10px] text-center">{s.year}</p>
@@ -4078,7 +4078,7 @@ export default function Home() {
                 <p className="text-[#dcdcdc] text-sm mb-6">Choose your generation</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {SAMSUNG_PC_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                       <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#dcdcdc] text-[10px] text-center">{s.year}</p>
@@ -4096,7 +4096,7 @@ export default function Home() {
                 <p className="text-[#dcdcdc] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {HP_PC_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                       {s.image ? (
                         <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       ) : (
@@ -4122,7 +4122,7 @@ export default function Home() {
                   <p className="text-[#dcdcdc] text-sm mb-6">Pick your sub-line</p>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {subs.map((s) => (
-                      <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[160px]">
+                      <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[160px]">
                         {s.image ? (
                           <img src={s.image} alt={s.label} loading="eager" className="w-20 h-14 object-contain mb-1" />
                         ) : (
@@ -4145,7 +4145,7 @@ export default function Home() {
                 <p className="text-[#dcdcdc] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {LENOVO_PC_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                       {s.image ? (
                         <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       ) : (
@@ -4167,7 +4167,7 @@ export default function Home() {
                 <p className="text-[#dcdcdc] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {DELL_PC_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                       {s.image ? (
                         <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       ) : (
@@ -4193,7 +4193,7 @@ export default function Home() {
                   <p className="text-[#dcdcdc] text-sm mb-6">Pick your sub-line</p>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {subs.map((s) => (
-                      <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                      <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                         {s.image ? (
                           <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                         ) : (
@@ -4216,7 +4216,7 @@ export default function Home() {
                 <p className="text-[#dcdcdc] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {ASUS_PC_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[150px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                       {s.image ? (
                         <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       ) : (
@@ -4238,7 +4238,7 @@ export default function Home() {
                 <p className="text-[#dcdcdc] text-sm mb-6">Pick your sub-line</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {ASUS_ROG_SUB_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[160px]">
+                    <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[160px]">
                       {s.image ? (
                         <img src={s.image} alt={s.label} loading="eager" className="w-20 h-14 object-contain mb-1" />
                       ) : (
@@ -4294,7 +4294,7 @@ export default function Home() {
                 <p className="text-[#dcdcdc] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 gap-3">
                   {ALIENWARE_SERIES.map((s) => (
-                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[140px]">
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[140px]">
                       {(s as { image?: string }).image ? (
                         <img src={(s as { image?: string }).image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1.5" />
                       ) : (
@@ -4320,7 +4320,7 @@ export default function Home() {
                       <button key={m.id} onClick={() => {
                         if (inq) { setInquiryCategory(category === "computers" ? "Laptop" : "Desktop"); setInquiryDesc(m.label); setInquirySent(false); setStep("inquiry"); pushHistory("inquiry"); }
                         else { setModel(m); setStep("storage"); pushHistory("storage"); }
-                      }} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition tap-press">
+                      }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer tap-press">
                         {mImg ? (
                           <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain mb-1.5" />
                         ) : (
@@ -4924,7 +4924,7 @@ export default function Home() {
                 <button
                   key={p.id}
                   onClick={() => { setPayout(p); setStep("contact"); pushHistory("contact"); }}
-                  className="flex flex-col items-center justify-center p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 cursor-pointer transition h-[100px] tap-press"
+                  className="flex flex-col items-center justify-center p-5 rounded-2xl tcc-card cursor-pointer h-[100px] tap-press"
                 >
                   <span className="text-3xl mb-2">{p.icon}</span>
                   <p className="font-semibold text-sm">{p.label}</p>

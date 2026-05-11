@@ -165,23 +165,29 @@ img[loading="lazy"] {
 nav.sticky { transition: box-shadow 200ms ease-out; }
 body:not(.at-top) nav.sticky { box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35); }
 
-/* TCC card system — every selectable / interactive card uses this base.
-   Spec: charcoal-transparent bg, glass blur, 1px white-edge, soft outer
-   glow, scale-on-hover + green border. Title 700 / pure white / 17–18px,
-   description 400 / #b0b0b0 / one step smaller. */
+/* TCC card system — glassmorphic base for every selectable / interactive
+   card. Semi-transparent near-black + 12px blur + razor-thin white rim
+   for the rim-light effect, plus a neon-green hover state (border + lift
+   + inner green glow) and a soft outer drop shadow.
+
+   Title spec: pure #FFF / weight 800 / +2px size baseline.
+   Sub spec:   muted #A0A0A0 / weight 400.
+*/
 .tcc-card {
-  background: rgba(45, 45, 45, 0.6);
+  background: rgba(15, 15, 15, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  transition: transform 250ms ease-out, background 250ms ease-out, border-color 250ms ease-out, box-shadow 250ms ease-out;
+  transition: transform 300ms ease, background 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
 }
 .tcc-card:hover {
-  transform: scale(1.02);
-  background: rgba(60, 60, 60, 0.65);
+  transform: translateY(-3px);
   border-color: #00c853;
-  box-shadow: 0 12px 36px rgba(0, 200, 83, 0.18), 0 10px 30px rgba(0, 0, 0, 0.45);
+  box-shadow:
+    inset 0 0 10px rgba(0, 200, 83, 0.12),
+    0 14px 38px rgba(0, 200, 83, 0.18),
+    0 10px 30px rgba(0, 0, 0, 0.45);
 }
 @media (prefers-reduced-motion: reduce) {
   .tcc-card { transition: none; }
@@ -190,13 +196,13 @@ body:not(.at-top) nav.sticky { box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35); }
 
 /* Condition icon glow — each condition emoji gets a soft colored
    drop-shadow matching the condition's tier so the icons read tactile
-   instead of floating flat. Apply via .cond-glow-<id> on the icon span. */
-.cond-glow-brandnew { filter: drop-shadow(0 0 10px rgba(0, 200, 83, 0.55)); }
-.cond-glow-flawless { filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6)); }
-.cond-glow-verygood { filter: drop-shadow(0 0 10px rgba(79, 195, 247, 0.55)); }
-.cond-glow-good     { filter: drop-shadow(0 0 10px rgba(0, 200, 83, 0.5));   }
-.cond-glow-fair     { filter: drop-shadow(0 0 10px rgba(255, 180, 0, 0.55)); }
-.cond-glow-broken   { filter: drop-shadow(0 0 10px rgba(255, 77, 77, 0.55)); }
+   like little neon lights. Apply via .cond-glow-<id> on the icon span. */
+.cond-glow-brandnew { filter: drop-shadow(0 0 6px rgba(0, 150, 255, 0.6));  }
+.cond-glow-flawless { filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.65)); }
+.cond-glow-verygood { filter: drop-shadow(0 0 6px rgba(0, 200, 255, 0.65)); }
+.cond-glow-good     { filter: drop-shadow(0 0 6px rgba(0, 200, 83, 0.6));   }
+.cond-glow-fair     { filter: drop-shadow(0 0 6px rgba(255, 180, 0, 0.6));  }
+.cond-glow-broken   { filter: drop-shadow(0 0 6px rgba(255, 77, 77, 0.6));  }
 
 /* scroll-reveal: opt-in classes that fade/slide in when entering the viewport */
 .reveal {
