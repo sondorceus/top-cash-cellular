@@ -2294,22 +2294,39 @@ export default function Home() {
   // iPad Cellular Vz:     condition -> connectivity -> storage -> carrier -> carrier-lock -> quote (6)
   // Other:                condition -> storage -> quote (3)
   // No-storage:           condition -> quote (2)
-  const funnelTotal = isNoStorageDevice
-    ? 2
-    : isPhoneFlow
-      ? (carrierAsksLock ? 5 : 4)
-      : isIpadCellular
-        ? (carrierAsksLock ? 6 : 5)
-        : isIpadFlow
-          ? 4
-          : 3;
-  const funnelStepNum =
+  // MacBook spec'd flow has 7 steps:
+  //   processor -> memory -> storage -> [displayglass?] -> condition
+  //   -> batteryhealth -> charger -> quote
+  const macSpecFlow = !!(model && hasMacSpecs(model.id));
+  const macHasGlassStep = !!(macSpecFlow && model && MACBOOK_SPECS[model.id].hasNanoGlass);
+  const funnelTotal = macSpecFlow
+    ? (macHasGlassStep ? 7 : 6)
+    : isNoStorageDevice
+      ? 2
+      : isPhoneFlow
+        ? (carrierAsksLock ? 5 : 4)
+        : isIpadCellular
+          ? (carrierAsksLock ? 6 : 5)
+          : isIpadFlow
+            ? 4
+            : 3;
+  const funnelStepNum = macSpecFlow ? (
+    step === "processor" ? 1 :
+    step === "memory" ? 2 :
+    step === "storage" ? 3 :
+    step === "displayglass" ? 4 :
+    step === "condition" ? (macHasGlassStep ? 5 : 4) :
+    step === "batteryhealth" ? (macHasGlassStep ? 6 : 5) :
+    step === "charger" ? (macHasGlassStep ? 7 : 6) :
+    step === "quote" ? funnelTotal : 0
+  ) : (
     step === "condition" ? 1 :
     step === "connectivity" ? 2 :
     step === "storage" ? (isIpadFlow ? 3 : 2) :
     step === "carrier" ? (isIpadFlow ? 4 : 3) :
     step === "carrier-lock" ? (isIpadFlow ? 5 : 4) :
-    step === "quote" ? funnelTotal : 0;
+    step === "quote" ? funnelTotal : 0
+  );
   const stepProgress = funnelStepNum > 0 && (
     <div className="mb-4 hidden lg:block">
       <div className="flex items-center gap-3 mb-1.5">
@@ -2636,7 +2653,22 @@ export default function Home() {
   // for "new" tiers (Brand New / Flawless). Skywalker's call.
   const isNewTier = condition?.id === "brandnew" || condition?.id === "flawless";
   const accessoryBonus = isNewTier && accessoriesIncluded ? 15 : 0;
-  const baseQuote = model && condition && model.base ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * connectivityMultiplier * promoMultiplier * couponMultiplier) + promoFlatBonus : 0;
+  // MacBook spec multipliers — only fire when the picked model has a
+  // MACBOOK_SPECS entry. Default to 1 so non-MacBook flows are unchanged.
+  const processorMultiplier = processor?.multiplier ?? 1;
+  const memoryMultiplier = memory?.multiplier ?? 1;
+  const displayGlassMultiplier = displayGlass?.multiplier ?? 1;
+  const batteryHealthMultiplier = batteryHealth?.multiplier ?? 1;
+  const chargerMultiplier = charger?.multiplier ?? 1;
+  const baseQuote = model && condition && model.base
+    ? Math.round(
+        model.base
+          * storageMultiplier * condition.multiplier * carrierMultiplier
+          * connectivityMultiplier * promoMultiplier * couponMultiplier
+          * processorMultiplier * memoryMultiplier * displayGlassMultiplier
+          * batteryHealthMultiplier * chargerMultiplier
+      ) + promoFlatBonus
+    : 0;
   const quote = baseQuote + accessoryBonus;
   // Inquiry-only models have no base price (or 0). We still let the
   // user walk the funnel + add to cart; the quote step shows
@@ -2669,13 +2701,33 @@ export default function Home() {
     else if (step === "category") { setStep("device"); }
     // New funnel order: model -> condition -> [connectivity (ipad)] -> storage -> [carrier (phone)] -> quote
     // (no-storage devices skip storage; non-phones skip carrier; only ipads have connectivity)
-    else if (step === "condition") { setStep("model"); setModel(null); }
+    // MacBook spec'd flow: model -> processor -> memory -> storage -> [displayglass] -> condition -> batteryhealth -> charger -> quote
+    else if (step === "processor") { setStep("model"); setModel(null); }
+    else if (step === "memory") { setStep("processor"); setProcessor(null); }
+    else if (step === "displayglass") { setStep("storage"); setStorage(null); }
+    else if (step === "batteryhealth") { setStep("condition"); setCondition(null); }
+    else if (step === "charger") { setStep("batteryhealth"); setBatteryHealth(null); }
+    else if (step === "condition") {
+      if (model && hasMacSpecs(model.id)) {
+        // Mac flow has condition AFTER storage/displayglass — go back accordingly
+        if (MACBOOK_SPECS[model.id].hasNanoGlass) { setStep("displayglass"); setDisplayGlass(null); }
+        else { setStep("storage"); setStorage(null); }
+      } else {
+        setStep("model"); setModel(null);
+      }
+    }
     else if (step === "connectivity") { setStep("condition"); setCondition(null); }
-    else if (step === "storage") { if (deviceType === "ipad") { setStep("connectivity"); setConnectivity(null); } else { setStep("condition"); setCondition(null); } }
+    else if (step === "storage") {
+      if (model && hasMacSpecs(model.id)) { setStep("memory"); setMemory(null); }
+      else if (deviceType === "ipad") { setStep("connectivity"); setConnectivity(null); }
+      else { setStep("condition"); setCondition(null); }
+    }
     else if (step === "carrier") { setStep("storage"); setStorage(null); }
     else if (step === "carrier-lock") { setStep("carrier"); setCarrier(null); }
     else if (step === "quote") {
-      if (carrierLock) { setStep("carrier-lock"); setCarrierLock(null); }
+      if (charger) { setStep("charger"); setCharger(null); }
+      else if (batteryHealth) { setStep("batteryhealth"); setBatteryHealth(null); }
+      else if (carrierLock) { setStep("carrier-lock"); setCarrierLock(null); }
       else if (carrier) { setStep("carrier"); setCarrier(null); }
       else if (storage) { setStep("storage"); setStorage(null); }
       else if (connectivity) { setStep("connectivity"); setConnectivity(null); }
@@ -4766,7 +4818,13 @@ export default function Home() {
                       const mImg = (m as { image?: string }).image;
                       return (
                         <button key={m.id} onClick={() => {
-                          setModel(m); setStep("condition"); pushHistory("condition");
+                          setModel(m);
+                          // Models with a MACBOOK_SPECS entry go through the
+                          // new IWM-style flow (processor -> memory -> storage
+                          // -> display -> condition -> battery -> charger).
+                          // Other models keep the legacy condition-first flow.
+                          const next: Step = hasMacSpecs(m.id) ? "processor" : "condition";
+                          setStep(next); pushHistory(next);
                         }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                           {mImg ? (
                             <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
@@ -5282,6 +5340,160 @@ export default function Home() {
       )}
 
       {/* STEP: STORAGE */}
+      {/* STEP: PROCESSOR — MacBook only, gated on hasMacSpecs(model) */}
+      {step === "processor" && page === "home" && model && hasMacSpecs(model.id) && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+              <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Select Processor</h2>
+              <p className="text-[#b8b8b8] text-xs mb-3">Find this in <span className="text-[#e6e6e6] font-semibold"> Menu &gt; About This Mac</span></p>
+              <div className="tcc-selection-frame">
+                <div className="space-y-2">
+                  {(MACBOOK_SPECS[model.id]?.processors || []).map((p) => (
+                    <button key={p.id} onClick={() => { setProcessor(p); setStep("memory"); pushHistory("memory"); }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-extrabold text-[15px] text-white leading-tight">{p.label}</p>
+                        {p.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{p.sub}</p>}
+                      </div>
+                      <svg className="w-4 h-4 text-[#e6e6e6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: MEMORY — MacBook only */}
+      {step === "memory" && page === "home" && model && hasMacSpecs(model.id) && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+              <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Select Memory</h2>
+              <p className="text-[#b8b8b8] text-xs mb-3">Find this in <span className="text-[#e6e6e6] font-semibold"> Menu &gt; About This Mac</span></p>
+              <div className="tcc-selection-frame">
+                <div className="space-y-2">
+                  {(MACBOOK_SPECS[model.id]?.memory || []).map((m) => (
+                    <button key={m.id} onClick={() => { setMemory(m); setStep("storage"); pushHistory("storage"); }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-extrabold text-[15px] text-white leading-tight">{m.label}</p>
+                        {m.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{m.sub}</p>}
+                      </div>
+                      <svg className="w-4 h-4 text-[#e6e6e6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: DISPLAY GLASS — MacBook Pro 16/14 only, between storage and condition */}
+      {step === "displayglass" && page === "home" && model && hasMacSpecs(model.id) && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+              <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Display Glass</h2>
+              <p className="text-[#b8b8b8] text-xs mb-3">Nano-texture is the anti-glare matte upgrade.</p>
+              <div className="tcc-selection-frame">
+                <div className="space-y-2">
+                  {DISPLAY_GLASS_OPTIONS.map((g) => (
+                    <button key={g.id} onClick={() => { setDisplayGlass(g); setStep("condition"); pushHistory("condition"); }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-extrabold text-[15px] text-white leading-tight">{g.label}</p>
+                        {g.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{g.sub}</p>}
+                      </div>
+                      <svg className="w-4 h-4 text-[#e6e6e6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: BATTERY HEALTH — MacBook only, between condition and charger */}
+      {step === "batteryhealth" && page === "home" && model && hasMacSpecs(model.id) && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+              <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Battery Health</h2>
+              <p className="text-[#b8b8b8] text-xs mb-3">Check it in <span className="text-[#e6e6e6] font-semibold"> Menu &gt; System Settings &gt; Battery &gt; Battery Health</span></p>
+              <div className="tcc-selection-frame">
+                <div className="space-y-2">
+                  {BATTERY_HEALTH_OPTIONS.map((b) => (
+                    <button key={b.id} onClick={() => { setBatteryHealth(b); setStep("charger"); pushHistory("charger"); }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-extrabold text-[15px] text-white leading-tight">{b.label}</p>
+                        {b.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{b.sub}</p>}
+                      </div>
+                      <svg className="w-4 h-4 text-[#e6e6e6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: CHARGER — MacBook only, final step before quote */}
+      {step === "charger" && page === "home" && model && hasMacSpecs(model.id) && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+              <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Including the Charger?</h2>
+              <p className="text-[#b8b8b8] text-xs mb-3">OEM only, fully functional, no fraying / yellowing / exposed wiring.</p>
+              <div className="tcc-selection-frame">
+                <div className="space-y-2">
+                  {CHARGER_OPTIONS.map((c) => (
+                    <button key={c.id} onClick={() => { setCharger(c); setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote"); }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-extrabold text-[15px] text-white leading-tight">{c.label}</p>
+                      </div>
+                      <svg className="w-4 h-4 text-[#e6e6e6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {step === "storage" && page === "home" && model && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
@@ -5299,11 +5511,21 @@ export default function Home() {
               {stepProgress}
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
-                  {getStoragesForModel(model.id).map((s) => (
+                  {(hasMacSpecs(model.id) ? MACBOOK_SPECS[model.id].storage : getStoragesForModel(model.id)).map((s) => (
                     <button
                       key={s.id}
                       onClick={() => {
-                        setStorage(s);
+                        // For MacBooks with a spec block, storage uses the
+                        // dedicated MACBOOK_SPECS option list. We park the
+                        // chosen option into the existing 'storage' state slot
+                        // (cast via unknown so the field shape lines up
+                        // enough for selectionPanel rendering).
+                        setStorage(s as unknown as typeof ALL_STORAGES[0]);
+                        if (hasMacSpecs(model.id)) {
+                          const next: Step = MACBOOK_SPECS[model.id].hasNanoGlass ? "displayglass" : "condition";
+                          setStep(next); pushHistory(next);
+                          return;
+                        }
                         const isPhone = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel" || deviceType === "lg_phone";
                         const ns: Step = (isPhone || isIpadCellular) ? "carrier" : "quote";
                         if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
@@ -5313,12 +5535,14 @@ export default function Home() {
                     >
                       <div className="flex-1 min-w-0 flex items-center gap-2">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{s.label}</p>
-                        <button
-                          type="button"
-                          onClick={(e) => { e.stopPropagation(); setStorageHelpId(s.id); }}
-                          aria-label={`What ${s.label} is good for`}
-                          className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none shrink-0 hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
-                        >i</button>
+                        {!hasMacSpecs(model.id) && (
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); setStorageHelpId(s.id); }}
+                            aria-label={`What ${s.label} is good for`}
+                            className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none shrink-0 hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
+                          >i</button>
+                        )}
                       </div>
                       <svg className="w-4 h-4 text-[#e6e6e6] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                     </button>
@@ -5355,6 +5579,13 @@ export default function Home() {
                   key={c.id}
                   onClick={() => {
                     setCondition(c);
+                    // MacBook spec'd flow: condition comes AFTER storage (and
+                    // displayglass if applicable), so when this fires the next
+                    // step is battery health.
+                    if (model && hasMacSpecs(model.id)) {
+                      setStep("batteryhealth"); pushHistory("batteryhealth");
+                      return;
+                    }
                     const ns: Step = isNoStorageDevice ? "quote" : (deviceType === "ipad" ? "connectivity" : "storage");
                     if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
                     setStep(ns); pushHistory(ns);
