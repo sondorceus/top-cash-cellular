@@ -1871,16 +1871,35 @@ const CARRIERS = [
 // Top multipliers — used by `getMaxPrice` to render the true ceiling
 // price on each variant card. base is the lowest-config price; the
 // max quote multiplies by top storage × top condition × top carrier.
-const TOP_CONDITION_MULT = Math.max(...CONDITIONS.map(c => c.multiplier));
 const TOP_CARRIER_MULT = Math.max(...CARRIERS.map(c => c.multiplier));
+
+// Brand New (+15%) only applies to device categories where we have
+// real profit margin — laptops / desktops. Phones, tablets, consoles,
+// watches etc. can't sustain a +15% bonus on a sealed device. For
+// those, the ceiling condition is Flawless (1.0).
+const HIGH_MARGIN_DEVICE_TYPES = new Set<string>([
+  // Laptops
+  "macbook", "samsung_pc", "lenovo", "dell", "alienware", "hp", "acer", "lg_pc", "asus_pc",
+  // Desktops
+  "apple_desktop", "dell_desktop", "lenovo_desktop", "hp_desktop", "asus_desktop", "alienware_desktop", "msi_desktop",
+]);
+const isHighMarginType = (dt: string | null | undefined): boolean => !!dt && HIGH_MARGIN_DEVICE_TYPES.has(dt);
+const getConditionsFor = (dt: string | null | undefined) => {
+  if (isHighMarginType(dt)) return CONDITIONS;
+  return CONDITIONS.filter(c => c.id !== "brandnew");
+};
+const getTopConditionMult = (dt: string | null | undefined): number => {
+  return Math.max(...getConditionsFor(dt).map(c => c.multiplier));
+};
+
 const getMaxStorageMult = (modelId: string): number => {
   const sids = STORAGE_MAP[modelId];
   if (!sids || sids.length === 0) return 1;
   return Math.max(...sids.map(sid => ALL_STORAGES.find(s => s.id === sid)?.multiplier ?? 1));
 };
-const getMaxPrice = (m: { id: string; base?: number }): number => {
+const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): number => {
   if (!m.base) return 0;
-  return Math.round(m.base * getMaxStorageMult(m.id) * TOP_CONDITION_MULT * TOP_CARRIER_MULT);
+  return Math.round(m.base * getMaxStorageMult(m.id) * getTopConditionMult(dt) * TOP_CARRIER_MULT);
 };
 
 const PAYOUTS = [
@@ -3806,7 +3825,7 @@ export default function Home() {
               <>
                 <p className="text-[#dcdcdc] text-sm mb-6">What condition is your device in?</p>
                 <div className="space-y-2">
-                  {CONDITIONS.map((c) => (
+                  {getConditionsFor(deviceType).map((c) => (
                     <button
                       key={c.id}
                       onClick={() => setCondition(c)}
@@ -4091,7 +4110,7 @@ export default function Home() {
                       {imgSrc && <img src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m)}</span>
+                        <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m, deviceType)}</span>
                         <svg className="w-4 h-4 text-[#dcdcdc]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
@@ -4116,7 +4135,7 @@ export default function Home() {
                       )}
                       <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m)}</span>
+                        <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m, deviceType)}</span>
                         <svg className="w-4 h-4 text-[#dcdcdc]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </div>
                     </button>
@@ -4169,7 +4188,7 @@ export default function Home() {
                           )}
                           <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                           <div className="flex items-center gap-2">
-                            <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m)}`}</span>
+                            <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m, deviceType)}`}</span>
                             <svg className="w-4 h-4 text-[#dcdcdc]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                           </div>
                         </button>
@@ -4195,7 +4214,7 @@ export default function Home() {
                         )}
                         <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                         <div className="flex items-center gap-2">
-                          <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m)}</span>
+                          <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m, deviceType)}</span>
                           <svg className="w-4 h-4 text-[#dcdcdc]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
                       </button>
@@ -4549,7 +4568,7 @@ export default function Home() {
                           <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
                         )}
                         <p className="font-bold text-sm text-center leading-tight">{m.label}</p>
-                        <p className="text-[#00c853] font-bold text-xs mt-0.5">{inq ? "Get a quote" : `Up to $${getMaxPrice(m)}`}</p>
+                        <p className="text-[#00c853] font-bold text-xs mt-0.5">{inq ? "Get a quote" : `Up to $${getMaxPrice(m, deviceType)}`}</p>
                       </button>
                     );
                   })}
@@ -4571,7 +4590,7 @@ export default function Home() {
                         )}
                         <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                         <div className="flex items-center gap-2">
-                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m)}`}</span>
+                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m, deviceType)}`}</span>
                           <svg className="w-4 h-4 text-[#dcdcdc]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </div>
                       </button>
@@ -4693,7 +4712,7 @@ export default function Home() {
             </div>
             <div className="tcc-selection-frame">
             <div className="space-y-2">
-              {CONDITIONS.map((c) => (
+              {getConditionsFor(deviceType).map((c) => (
                 <button
                   key={c.id}
                   onClick={(e) => {
