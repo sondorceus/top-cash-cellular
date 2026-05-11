@@ -2029,6 +2029,66 @@ const FAQS = [
 
 type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "condition" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
 
+// Brand-aware competitor reference. The 'How we compare' card on the
+// quote page used to hardcode 'Apple Trade-In' for every device, which
+// looks silly when you're selling an LG laptop or a PS5. Maps each
+// deviceType to the right competitor + the percentage of our quote
+// we estimate they'd pay. Values are conservative ballparks based on
+// public trade-in published rates; refresh monthly when piece 2 lands.
+const COMP_SOURCES: Record<string, { name: string; percent: number }> = {
+  // Apple ecosystem -> Apple Trade-In
+  iphone: { name: "Apple Trade-In", percent: 0.62 },
+  ipad: { name: "Apple Trade-In", percent: 0.62 },
+  macbook: { name: "Apple Trade-In", percent: 0.62 },
+  apple_desktop: { name: "Apple Trade-In", percent: 0.60 },
+  applewatch: { name: "Apple Trade-In", percent: 0.55 },
+  apple_vr: { name: "Apple Trade-In", percent: 0.55 },
+  // Samsung -> Samsung Trade-In
+  android: { name: "Samsung Trade-In", percent: 0.65 },
+  samsung_tab: { name: "Samsung Trade-In", percent: 0.62 },
+  samsung_pc: { name: "Samsung Trade-In", percent: 0.62 },
+  samsungwatch: { name: "Samsung Trade-In", percent: 0.55 },
+  // Google
+  pixel: { name: "Google Store Trade-In", percent: 0.60 },
+  pixelwatch: { name: "Google Store Trade-In", percent: 0.55 },
+  google_tab: { name: "Google Store Trade-In", percent: 0.55 },
+  // LG (no first-party trade-in left) -> Decluttr is the closest comp
+  lg_phone: { name: "Decluttr", percent: 0.72 },
+  lg_pc: { name: "Decluttr", percent: 0.70 },
+  // Console / gaming
+  sony: { name: "PlayStation Direct / GameStop", percent: 0.55 },
+  microsoft: { name: "Microsoft / GameStop", percent: 0.55 },
+  nintendo: { name: "Nintendo / GameStop", percent: 0.50 },
+  console: { name: "GameStop", percent: 0.55 },
+  // Drones / VR
+  dji: { name: "DJI Care Trade-In", percent: 0.60 },
+  meta_vr: { name: "Meta Trade-In", percent: 0.55 },
+  valve_vr: { name: "Backflip / eBay", percent: 0.65 },
+  psvr: { name: "PlayStation Direct", percent: 0.55 },
+  // Watches not covered above
+  garmin: { name: "Garmin Trade-In", percent: 0.50 },
+  // Windows laptops -> Backflip is the leading per-laptop reseller
+  lenovo: { name: "Backflip / Decluttr", percent: 0.65 },
+  dell: { name: "Backflip / Decluttr", percent: 0.65 },
+  hp: { name: "Backflip / Decluttr", percent: 0.65 },
+  acer: { name: "Backflip / Decluttr", percent: 0.65 },
+  asus_pc: { name: "Backflip / Decluttr", percent: 0.65 },
+  alienware: { name: "Backflip / Decluttr", percent: 0.65 },
+  // Surface / Lenovo / OnePlus tablets
+  surface: { name: "Microsoft Trade-In", percent: 0.55 },
+  lenovo_tab: { name: "Backflip / Decluttr", percent: 0.65 },
+  oneplus_tab: { name: "Backflip / Decluttr", percent: 0.65 },
+  // Windows desktops
+  dell_desktop: { name: "Backflip / Decluttr", percent: 0.60 },
+  lenovo_desktop: { name: "Backflip / Decluttr", percent: 0.60 },
+  hp_desktop: { name: "Backflip / Decluttr", percent: 0.60 },
+  asus_desktop: { name: "Backflip / Decluttr", percent: 0.60 },
+  alienware_desktop: { name: "Backflip / Decluttr", percent: 0.60 },
+  msi_desktop: { name: "Backflip / Decluttr", percent: 0.60 },
+};
+const COMP_FALLBACK = { name: "Backflip / eBay", percent: 0.65 };
+const getCompSource = (dt: string | null | undefined) => (dt && COMP_SOURCES[dt]) || COMP_FALLBACK;
+
 // MacBook-specific spec catalog. Per-model dictionary of processor /
 // memory / storage / display-glass options that the new MacBook flow
 // (Wave 1) asks for one at a time. Models WITHOUT an entry in this
@@ -6213,16 +6273,23 @@ export default function Home() {
                   <span className="text-[15px] font-extrabold text-white">Top Cash Cellular</span>
                   <span className="text-xl font-extrabold text-[#00c853]" style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${quote * quantity}</span>
                 </div>
-                <div className="flex items-center justify-between py-3 px-2">
-                  <span className="text-sm font-bold text-[#e6e6e6]">Apple Trade-In</span>
-                  <span className="text-sm font-bold text-[#b8b8b8]">${Math.round(quote * 0.62 * quantity)}</span>
-                </div>
-                <div className="flex items-center justify-between py-3 px-2">
-                  <span className="text-sm font-bold text-[#e6e6e6]">Carrier Trade-In</span>
-                  <span className="text-sm font-bold text-[#b8b8b8]">${Math.round(quote * 0.7 * quantity)}</span>
-                </div>
+                {(() => {
+                  const comp = getCompSource(deviceType);
+                  return (
+                    <div className="flex items-center justify-between py-3 px-2">
+                      <span className="text-sm font-bold text-[#e6e6e6]">{comp.name}</span>
+                      <span className="text-sm font-bold text-[#b8b8b8]">${Math.round(quote * comp.percent * quantity)}</span>
+                    </div>
+                  );
+                })()}
+                {isPhoneFlow && (
+                  <div className="flex items-center justify-between py-3 px-2">
+                    <span className="text-sm font-bold text-[#e6e6e6]">Carrier Trade-In</span>
+                    <span className="text-sm font-bold text-[#b8b8b8]">${Math.round(quote * 0.7 * quantity)}</span>
+                  </div>
+                )}
               </div>
-              <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${(quote - Math.round(quote * 0.62)) * quantity} more with us</p>
+              <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${(quote - Math.round(quote * getCompSource(deviceType).percent)) * quantity} more with us</p>
               <a href={`mailto:offers@topcashcellular.com?subject=Price%20Match%20Request&body=Model%3A%20${encodeURIComponent(model?.label || '')}%0AStorage%3A%20${encodeURIComponent(storage?.label || '')}%0AStorage%3A%20${encodeURIComponent(condition?.label || '')}%0ACompetitor%20URL%3A%20%0ACompetitor%20offer%3A%20%24`} className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#00c853]/10 border border-[#00c853]/30 hover:bg-[#00c853]/15 text-[#00c853] text-xs font-bold transition">⚡ Got a higher offer? We&apos;ll beat it by $25</a>
             </div>
 
