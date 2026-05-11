@@ -1,7 +1,7 @@
 {
   "active": true,
-  "text": "🚀 Trade 2+ devices · get +10% extra cash",
-  "percent": 10,
-  "appliesTo": "all",
-  "minQuantity": 2
+  "text": "🎁 This week — extra $20 on select devices",
+  "percent": 0,
+  "flatBonus": 20,
+  "appliesTo": "iphone"
 }

@@ -2383,13 +2383,14 @@ export default function Home() {
   const carrierMultiplier = carrier?.multiplier ?? 1;
   const connectivityMultiplier = connectivity?.multiplier ?? 1;
 
-  type Promo = { active: boolean; text: string; percent: number; appliesTo: string; minQuantity?: number };
+  type Promo = { active: boolean; text: string; percent: number; appliesTo: string; minQuantity?: number; flatBonus?: number };
   const [promo, setPromo] = useState<Promo | null>(null);
   useEffect(() => {
     fetch("/promo.json", { cache: "no-store" }).then(r => r.ok ? r.json() : null).then(setPromo).catch(() => setPromo(null));
   }, []);
   const promoApplies = !!(promo?.active && deviceType && (promo.appliesTo === "all" || promo.appliesTo === deviceType) && (!promo.minQuantity || quantity >= promo.minQuantity));
-  const promoMultiplier = promoApplies && promo ? 1 + (promo.percent / 100) : 1;
+  const promoMultiplier = promoApplies && promo && promo.percent ? 1 + (promo.percent / 100) : 1;
+  const promoFlatBonus = promoApplies && promo?.flatBonus ? promo.flatBonus : 0;
 
   const [accessoriesIncluded, setAccessoriesIncluded] = useState(false);
   const [couponCode, setCouponCode] = useState("");
@@ -2416,7 +2417,7 @@ export default function Home() {
   // for "new" tiers (Brand New / Flawless). Skywalker's call.
   const isNewTier = condition?.id === "brandnew" || condition?.id === "flawless";
   const accessoryBonus = isNewTier && accessoriesIncluded ? 15 : 0;
-  const baseQuote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * connectivityMultiplier * promoMultiplier * couponMultiplier) : 0;
+  const baseQuote = model && condition ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * connectivityMultiplier * promoMultiplier * couponMultiplier) + promoFlatBonus : 0;
   const quote = baseQuote + accessoryBonus;
 
   const maxQuoteFor = (v: { id: string; base: number }) => {
@@ -2866,8 +2867,8 @@ export default function Home() {
           className="block w-full text-center px-3 py-2 bg-gradient-to-r from-[#00c853]/15 via-[#00e676]/25 to-[#00c853]/15 hover:from-[#00c853]/25 hover:via-[#00e676]/35 hover:to-[#00c853]/25 transition border-b border-[#00c853]/20"
           style={{ backgroundSize: "200% 100%", animation: "promoGradient 6s ease-in-out infinite" }}
         >
-          <span className="hidden sm:inline text-[#00c853] text-xs font-extrabold tracking-wide">🚀 Trade 2+ devices · get +10% extra cash</span>
-          <span className="sm:hidden text-[#00c853] text-[11px] font-extrabold tracking-wide">🚀 Trade 2+ devices · +10% extra cash</span>
+          <span className="hidden sm:inline text-[#00c853] text-xs font-extrabold tracking-wide">{promo?.active ? promo.text : "🎁 This week — extra cash on select devices"}</span>
+          <span className="sm:hidden text-[#00c853] text-[11px] font-extrabold tracking-wide">{promo?.active ? promo.text : "🎁 Extra cash on select devices"}</span>
         </a>
         <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between relative">
           {/* LEFT: logo */}
@@ -5069,7 +5070,7 @@ export default function Home() {
             </div>
             <div className="flex items-center justify-center lg:justify-start flex-wrap gap-1 mb-2">
               {promoApplies && promo && (
-                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎉 +{promo.percent}% promo applied</p>
+                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎉 {promo.flatBonus ? `+$${promo.flatBonus} bonus applied` : `+${promo.percent}% promo applied`}</p>
               )}
               {couponPercent > 0 && (
                 <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎟️ {couponLabel} +{couponPercent}%</p>
