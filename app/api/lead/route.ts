@@ -37,7 +37,7 @@ function isDuplicate(email: string, contact: string, device: string, model: stri
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings, handoff } = data;
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
 
   // Dedup check — wider window for custom-quote flows (free-text descriptions)
@@ -56,6 +56,21 @@ export async function POST(req: NextRequest) {
     imeiLines.push(`[IMEI WARNINGS] ${(imeiWarnings as string[]).join(" | ")}`);
   }
 
+  const handoffLines: string[] = [];
+  if (handoff && typeof handoff === "object") {
+    const h = handoff as { method?: string; address?: Record<string, string>; area?: string };
+    if (h.method === "ship" && h.address) {
+      const { street, unit, city, state, zip } = h.address;
+      handoffLines.push("--- Handoff: SHIPPING ---");
+      handoffLines.push(`Address: ${street}${unit ? `, ${unit}` : ""}, ${city}, ${state} ${zip}`);
+      handoffLines.push("Action: Email USPS prepaid label.");
+    } else if (h.method === "local" && h.area) {
+      handoffLines.push("--- Handoff: LOCAL MEETUP ---");
+      handoffLines.push(`Area: ${h.area}`);
+      handoffLines.push("Action: Reach out to schedule meetup.");
+    }
+  }
+
   const leadBody = [
     `[NEW BUYBACK LEAD]`,
     `Name: ${name}`,
@@ -69,6 +84,7 @@ export async function POST(req: NextRequest) {
     `Payout: ${payout}`,
     ...imeiLines,
     ...photoLines,
+    ...handoffLines,
   ].filter(Boolean).join("\n");
 
   try {
