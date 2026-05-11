@@ -4809,13 +4809,15 @@ export default function Home() {
       {/* STEP: CHECKOUT (email capture) */}
       {step === "checkout" && page === "home" && model && condition && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
 
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 lg:hidden">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-semibold text-sm">{model.label}</p>
@@ -4895,6 +4897,7 @@ export default function Home() {
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Options &amp; Terms</h3>
               <p className="text-[#dcdcdc] text-xs">By proceeding, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
             </div>
+            </div>
           </div>
         </section>
       )}
@@ -4902,12 +4905,14 @@ export default function Home() {
       {/* STEP: PAYOUT METHOD */}
       {step === "payout" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 lg:hidden">
               <p className="text-xs font-semibold text-[#dcdcdc] uppercase tracking-wider mb-2">Your Cart</p>
               <div className="flex items-center justify-between">
                 <div>
@@ -4931,6 +4936,7 @@ export default function Home() {
                 </button>
               ))}
             </div>
+            </div>
           </div>
         </section>
       )}
@@ -4938,13 +4944,15 @@ export default function Home() {
       {/* STEP: CONTACT INFO */}
       {step === "contact" && page === "home" && model && condition && payout && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
 
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6 lg:hidden">
               <div className="flex items-center justify-between mb-2">
                 <p className="font-semibold">{model.label}</p>
                 <p className="text-[#00c853] font-bold text-xl">${quote * quantity}</p>
@@ -5087,6 +5095,7 @@ export default function Home() {
                 Submit &amp; Get Paid
               </button>
             </form>
+            </div>
           </div>
         </section>
       )}
