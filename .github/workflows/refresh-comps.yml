@@ -69,3 +69,65 @@ jobs:
             </details>
           branch: refresh-comps/apple
           delete-branch: true
+
+  google:
+    name: Refresh Google Store Trade-In values
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install playwright + chromium
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          playwright install chromium --with-deps
+
+      - name: Run Google refresh
+        id: refresh
+        run: |
+          python scripts/refresh-google-comps.py | tee /tmp/refresh-google.log
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          tail -200 /tmp/refresh-google.log >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet public/comps/google-trade-in.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Open PR with refreshed values
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: refresh Google Store Trade-In comps (monthly)"
+          title: "Monthly Google Store Trade-In comp refresh"
+          body: |
+            Automated monthly refresh of `public/comps/google-trade-in.json`.
+
+            Review the diff before merging — values that moved more than
+            40% were left at their previous value (see warnings in the
+            run log).
+
+            <details><summary>Refresh log</summary>
+
+            ```
+            ${{ steps.refresh.outputs.log }}
+            ```
+
+            </details>
+          branch: refresh-comps/google
+          delete-branch: true

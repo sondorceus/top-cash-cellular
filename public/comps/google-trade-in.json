@@ -1,0 +1,40 @@
+{
+  "_doc": "Google Store Trade-In max published values per model id. Refreshed monthly by scripts/refresh-google-comps.py via .github/workflows/refresh-comps.yml. Frontend reads this at runtime when device is in the Google family (pixel / pixelwatch / google_tab) and falls back to COMP_SOURCES percentage if the model id isn't here.",
+  "source": "https://store.google.com/us/buy/trade-in",
+  "updatedAt": "2026-05-12T03:25:00Z",
+  "values": {
+    "px10pxl": 530,
+    "px10p": 400,
+    "px10": 320,
+    "px10pfold": 755,
+
+    "px9pxl": 375,
+    "px9p": 305,
+    "px9pfold": 575,
+    "px9": 185,
+    "px9a": 135,
+
+    "px8p": 240,
+    "px8": 120,
+    "px8a": 90,
+    "pxfold": 280,
+
+    "px7p": 85,
+    "px7": 45,
+    "px7a": 10,
+
+    "px6p": 50,
+    "px6": 40,
+    "px6a": 30,
+
+    "px5": 50,
+    "px5a": 30,
+
+    "pw3": 130,
+    "pw2": 80,
+    "pw1": 50,
+
+    "gpixeltab": 150,
+    "gpixeltab128": 110
+  }
+}

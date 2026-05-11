@@ -3019,15 +3019,21 @@ export default function Home() {
   useEffect(() => {
     fetch("/promo.json", { cache: "no-store" }).then(r => r.ok ? r.json() : null).then(setPromo).catch(() => setPromo(null));
   }, []);
-  // Real Apple Trade-In comp values per model id. Loaded once on mount;
-  // refreshed monthly by .github/workflows/refresh-comps.yml -> public/comps/apple-trade-in.json.
-  // Frontend prefers this over the percentage estimate in COMP_SOURCES.
+  // Real competitor trade-in values per model id, refreshed monthly via
+  // .github/workflows/refresh-comps.yml. Each JSON is keyed by our
+  // internal model ids; frontend prefers these over the percentage
+  // estimate in COMP_SOURCES.
   const [appleComps, setAppleComps] = useState<Record<string, number> | null>(null);
+  const [googleComps, setGoogleComps] = useState<Record<string, number> | null>(null);
   useEffect(() => {
     fetch("/comps/apple-trade-in.json", { cache: "no-store" })
       .then(r => r.ok ? r.json() : null)
       .then((d: { values?: Record<string, number> } | null) => setAppleComps(d?.values || null))
       .catch(() => setAppleComps(null));
+    fetch("/comps/google-trade-in.json", { cache: "no-store" })
+      .then(r => r.ok ? r.json() : null)
+      .then((d: { values?: Record<string, number> } | null) => setGoogleComps(d?.values || null))
+      .catch(() => setGoogleComps(null));
   }, []);
   const promoApplies = !!(promoClaimed && promo?.active && deviceType && (promo.appliesTo === "all" || promo.appliesTo === deviceType) && (!promo.minQuantity || quantity >= promo.minQuantity));
   const promoMultiplier = promoApplies && promo && promo.percent ? 1 + (promo.percent / 100) : 1;
@@ -6285,11 +6291,14 @@ export default function Home() {
                 </div>
                 {(() => {
                   const comp = getCompSource(deviceType);
-                  // Apple family: prefer the real published value from
-                  // public/comps/apple-trade-in.json if we have it.
-                  // Otherwise fall back to the percentage estimate.
+                  // For each brand family, prefer the real published
+                  // snapshot value over the percentage estimate when we
+                  // have an entry for this model.
                   const isApple = deviceType === "iphone" || deviceType === "ipad" || deviceType === "macbook" || deviceType === "apple_desktop" || deviceType === "applewatch" || deviceType === "apple_vr";
-                  const real = isApple && model && appleComps ? appleComps[model.id] : undefined;
+                  const isGoogle = deviceType === "pixel" || deviceType === "pixelwatch" || deviceType === "google_tab";
+                  const real =
+                    (isApple && model && appleComps ? appleComps[model.id] : undefined) ??
+                    (isGoogle && model && googleComps ? googleComps[model.id] : undefined);
                   const compValue = typeof real === "number"
                     ? real * quantity
                     : Math.round(quote * comp.percent * quantity);
@@ -6309,7 +6318,10 @@ export default function Home() {
               </div>
               {(() => {
                 const isApple = deviceType === "iphone" || deviceType === "ipad" || deviceType === "macbook" || deviceType === "apple_desktop" || deviceType === "applewatch" || deviceType === "apple_vr";
-                const real = isApple && model && appleComps ? appleComps[model.id] : undefined;
+                const isGoogle = deviceType === "pixel" || deviceType === "pixelwatch" || deviceType === "google_tab";
+                const real =
+                  (isApple && model && appleComps ? appleComps[model.id] : undefined) ??
+                  (isGoogle && model && googleComps ? googleComps[model.id] : undefined);
                 const compPer = typeof real === "number" ? real : Math.round(quote * getCompSource(deviceType).percent);
                 const savings = (quote - compPer) * quantity;
                 return <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${savings > 0 ? savings : 0} more with us</p>;
