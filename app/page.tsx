@@ -1361,9 +1361,9 @@ const IPAD_MODELS = IPAD_SERIES.flatMap(s => s.variants);
 // extras step with an 8% multiplier reduction for digital. So PS5
 // Standard / Slim each consolidate to one entry.
 const PS5_VARIANTS = [
-  { id: "ps5pro",  label: "PlayStation 5 Pro (2024)", base: 0, inquiryOnly: true, image: "/devices/ps5.webp" },
-  { id: "ps5",     label: "PlayStation 5", base: 300, image: "/devices/ps5.webp" },
-  { id: "ps5slim", label: "PlayStation 5 Slim", base: 0, inquiryOnly: true, image: "/devices/ps5-slim-disc.webp" },
+  { id: "ps5pro",  label: "PlayStation 5 Pro (2 TB)",    base: 550, image: "/devices/ps5.webp" },
+  { id: "ps5slim", label: "PlayStation 5 Slim (1 TB)",   base: 380, image: "/devices/ps5-slim-disc.webp" },
+  { id: "ps5",     label: "PlayStation 5 (825 GB)",      base: 300, image: "/devices/ps5.webp" },
 ];
 const PS4_VARIANTS = [
   { id: "ps4pro", label: "PlayStation 4 Pro", base: 150, image: "/devices/ps4-pro.webp" },
@@ -1377,9 +1377,12 @@ const SONY_SERIES = [
 const SONY_MODELS = [...PS5_VARIANTS, ...PS4_VARIANTS];
 
 const MICROSOFT_MODELS = [
-  { id: "xsx", label: "Xbox Series X", base: 280, image: "/devices/xbox-series-x.webp" },
-  { id: "xss", label: "Xbox Series S", base: 150, image: "/devices/xbox-series-s.webp" },
-  { id: "xone", label: "Xbox One", base: 80, image: "/devices/xbox-one.webp" },
+  { id: "xsx2tb",      label: "Xbox Series X (2 TB Galaxy Black Special Edition)", base: 380, image: "/devices/xbox-series-x.webp" },
+  { id: "xsx",         label: "Xbox Series X (1 TB)",                             base: 280, image: "/devices/xbox-series-x.webp" },
+  { id: "xsx_digital", label: "Xbox Series X Digital (1 TB)",                     base: 240, image: "/devices/xbox-series-x.webp" },
+  { id: "xss1tb",      label: "Xbox Series S (1 TB Carbon Black)",                base: 200, image: "/devices/xbox-series-s.webp" },
+  { id: "xss",         label: "Xbox Series S (512 GB)",                           base: 150, image: "/devices/xbox-series-s.webp" },
+  { id: "xone",        label: "Xbox One",                                         base: 80,  image: "/devices/xbox-one.webp" },
 ];
 
 const NINTENDO_MODELS = [
@@ -3176,7 +3179,9 @@ export default function Home() {
 
   useEffect(() => {
     if (!statsVisible) return;
-    const targets = { devices: 500, payout: 150, time: 24 };
+    // Match the 5000+ stat used in the 'Why Austin chooses us' card above
+    // so both 'Devices Bought' numbers tell the same story.
+    const targets = { devices: 5000, payout: 1500, time: 24 };
     const duration = 1500;
     const steps = 40;
     const interval = duration / steps;
@@ -4728,7 +4733,7 @@ export default function Home() {
             </div>
 
             <div className="mt-6 flex flex-wrap items-center gap-2 hero-fade-up hero-d-4">
-              <a href="/reviews" className="inline-flex items-center gap-1.5 bg-[#ffb400]/10 text-[#ffb400] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#ffb400]/20 hover:bg-[#ffb400]/15 transition">
+              <a href="#reviews" className="inline-flex items-center gap-1.5 bg-[#ffb400]/10 text-[#ffb400] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#ffb400]/20 hover:bg-[#ffb400]/15 transition">
                 <span className="text-sm leading-none">★</span>
                 4.9 — Read reviews
               </a>
@@ -4913,7 +4918,7 @@ export default function Home() {
             {[
               { n: 1, icon: "💸", title: "Get an instant quote", body: "Pick your device, condition, and storage. We show you the offer in seconds — no signup needed." },
               { n: 2, icon: "📦", title: "Ship free or drop off", body: "Print our prepaid label, or drop off in Austin. We pay shipping. Insured up to $1,000." },
-              { n: 3, icon: "💵", title: "Get paid same-day", body: "Cash, Cash App, Zelle, or BTC. Most payouts hit within 24 hours of arrival." },
+              { n: 3, icon: "💵", title: "Get paid same-day", body: "Cash, Cash App, Zelle, or BTC. Local meetup: paid on the spot (under 5 min). Shipping: most payouts hit within 24 hours of device arriving." },
             ].map((s, i) => (
               <div key={s.n} className="relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
                 <div className="absolute -top-3 -left-2 w-9 h-9 rounded-full bg-[#00c853] text-[#0a0a0a] text-sm font-bold flex items-center justify-center shadow-lg shadow-[#00c853]/30">{s.n}</div>
@@ -4936,7 +4941,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {[
               { stat: <CountUp end={5000} suffix="+" />, label: "Devices bought", icon: "📲" },
-              { stat: <CountUp end={4.9} decimals={1} suffix="★" />, label: "Average review rating", icon: "⭐" },
+              { stat: "4.9★", label: "Average review rating", icon: "⭐" },
               { stat: "Same-Day", label: "Payouts available", icon: "⚡" },
               { stat: "Free", label: "Shipping nationwide", icon: "📦" },
               { stat: "Higher", label: "Offer than Apple trade-in", icon: "💰" },
@@ -4967,13 +4972,13 @@ export default function Home() {
 
       {/* HOMEPAGE: Customer reviews carousel */}
       {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto py-10">
+        <section id="reviews" className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto py-10">
           <div className="px-4 flex items-end justify-between mb-6">
             <div>
               <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-1 reveal">Real Austin customers</p>
               <h2 className="text-3xl md:text-4xl font-bold leading-tight reveal" data-stagger="1">What people are saying</h2>
             </div>
-            <a href="/reviews" className="text-[#00c853] text-sm font-semibold whitespace-nowrap hover:underline">See all →</a>
+            <a href="https://www.google.com/search?q=Top+Cash+Cellular+Austin+reviews" target="_blank" rel="noopener noreferrer" className="text-[#00c853] text-sm font-semibold whitespace-nowrap hover:underline">See all on Google →</a>
           </div>
           <ReviewsCarousel reviews={[
             { name: "Marcus T.", loc: "South Austin", text: "Sold my iPhone 14 Pro for $480. Apple offered $230. Same-day cash. Zero BS.", stars: 5 },
@@ -4995,7 +5000,7 @@ export default function Home() {
           </div>
           <div className="space-y-2">
             {[
-              { q: "How do I get paid?", a: "Choose Cash, Cash App, Zelle, or BTC. Most payouts hit your account within 24 hours of your device arriving — same-day if you drop off in Austin." },
+              { q: "How do I get paid?", a: "Local Austin meetup — paid on the spot, under 5 minutes once we've inspected. Shipping — most payouts hit your account within 24 hours of the device arriving at our facility. Methods: Cash (local only), Cash App, Zelle, or BTC." },
               { q: "Do you ship for free?", a: "Yes — every offer over $50 gets a free prepaid USPS label. We also offer free Austin pickup for local sellers." },
               { q: "What if my device shows up worth less than the quote?", a: "We send you a revised offer. If you don't like it, we ship the device back to you free of charge. No pressure, no surprises." },
               { q: "Are you really in Austin?", a: "Yes — Austin-based and real humans. You can drop off locally for same-day cash, or ship from anywhere in the US." },
