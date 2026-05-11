@@ -3232,15 +3232,13 @@ export default function Home() {
                 conic ring + beveled button; shipping is the secondary outline.
                 Same on mobile and desktop. */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 hero-scale-in hero-d-3">
-              <div className="tcc-ring-wrap">
-                <button
-                  onClick={() => { setStep("category"); pushHistory("category"); }}
-                  className="tcc-button-primary w-full py-4 text-base font-extrabold flex flex-col items-center gap-0.5"
-                >
-                  <span className="flex items-center gap-2"><span>📍</span>Sell Local Today</span>
-                  <span className="text-[11px] font-medium opacity-80">Local pickup · Cash on the spot</span>
-                </button>
-              </div>
+              <button
+                onClick={() => { setStep("category"); pushHistory("category"); }}
+                className="tcc-button-primary w-full py-4 text-base font-extrabold flex flex-col items-center gap-0.5"
+              >
+                <span className="flex items-center gap-2"><span>📍</span>Sell Local Today</span>
+                <span className="text-[11px] font-medium opacity-80">Local pickup · Cash on the spot</span>
+              </button>
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
                 className="w-full bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] hover:bg-[rgba(15,15,15,0.85)] hover:border-[#00c853] border border-white/15 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-300 ease-out shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex flex-col items-center gap-0.5"
