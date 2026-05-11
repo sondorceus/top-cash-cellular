@@ -3778,19 +3778,19 @@ export default function Home() {
               <span><strong className="text-white">On-site data wipe in your presence</strong> before we pay you.</span>
             </p>
 
-            {/* DUAL-PATH ENTRY — local vs. shipping. Local path gets the animated
-                conic ring + beveled button; shipping is the secondary outline.
-                Same on mobile and desktop. */}
+            {/* DUAL-PATH ENTRY — local vs. shipping. Each button locks in the
+                handoff method so the contact step only asks for the matching
+                detail (address OR area), not both. */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 hero-scale-in hero-d-3">
               <button
-                onClick={() => { setStep("category"); pushHistory("category"); }}
+                onClick={() => { setHandoffMethod("local"); setStep("category"); pushHistory("category"); }}
                 className="tcc-button-primary w-full py-4 text-base font-extrabold flex flex-col items-center gap-0.5"
               >
                 <span className="flex items-center gap-2"><span>📍</span>Sell Local Today</span>
                 <span className="text-[11px] font-medium opacity-80">Local pickup · Cash on the spot</span>
               </button>
               <button
-                onClick={() => { setStep("category"); pushHistory("category"); }}
+                onClick={() => { setHandoffMethod("ship"); setStep("category"); pushHistory("category"); }}
                 className="w-full bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] hover:bg-[rgba(15,15,15,0.85)] hover:border-[#00c853] border border-white/15 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-300 ease-out shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex flex-col items-center gap-0.5"
               >
                 <span className="flex items-center gap-2"><span>📦</span>I&apos;m Shipping: Get a Label</span>
@@ -5833,34 +5833,44 @@ export default function Home() {
                 localStorage.removeItem("tcc-session"); setStep("done"); pushHistory("done");
               } catch { alert("Something went wrong. Please try again or call us directly."); }
             }} className="space-y-4">
-              {/* HANDOFF METHOD — picked here so the done page doesn't have to
-                  ask again. If 'ship' we collect the address inline; if
-                  'local' we show the Austin area picker. Required to submit. */}
+              {/* HANDOFF SECTION — if the user picked Local or Shipping on the
+                  hero, we already know the method. Only show the relevant
+                  detail form (address OR area picker), plus a small text link
+                  to switch methods. If they got here without a pre-pick (deep
+                  link, direct nav) we render both choices as a fallback. */}
               <div>
-                <label className="block text-xs font-medium text-[#e6e6e6] mb-2 uppercase tracking-wider">How are you handing off the device?</label>
-                <div className="grid grid-cols-2 gap-2 mb-3">
-                  <button type="button" onClick={() => setHandoffMethod("ship")} className="flex items-center gap-3 px-3 py-3 rounded-xl border cursor-pointer text-left tap-press transition" style={{ background: handoffMethod === "ship" ? "rgba(0,200,83,0.10)" : "rgba(255,255,255,0.03)", borderColor: handoffMethod === "ship" ? "#00c853" : "rgba(255,255,255,0.10)", boxShadow: handoffMethod === "ship" ? "0 0 0 1px rgba(0,200,83,0.4), 0 0 14px rgba(0,200,83,0.15)" : "none" }}>
-                    <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                      <svg className="w-4 h-4 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7h13l4 4v6a1 1 0 01-1 1h-2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+                {handoffMethod === null && (
+                  <>
+                    <label className="block text-xs font-medium text-[#e6e6e6] mb-2 uppercase tracking-wider">How are you handing off the device?</label>
+                    <div className="grid grid-cols-2 gap-2 mb-3">
+                      <button type="button" onClick={() => setHandoffMethod("ship")} className="flex items-center gap-3 px-3 py-3 rounded-xl border border-white/10 cursor-pointer text-left tap-press transition" style={{ background: "rgba(255,255,255,0.03)" }}>
+                        <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                          <svg className="w-4 h-4 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7h13l4 4v6a1 1 0 01-1 1h-2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-white text-[13px] font-extrabold leading-tight">Ship It</p>
+                          <p className="text-[#bdbdbd] text-[11px] leading-snug">Free prepaid label</p>
+                        </div>
+                      </button>
+                      <button type="button" onClick={() => setHandoffMethod("local")} className="flex items-center gap-3 px-3 py-3 rounded-xl border border-white/10 cursor-pointer text-left tap-press transition" style={{ background: "rgba(255,255,255,0.03)" }}>
+                        <div className="w-8 h-8 rounded-lg bg-[#00c853]/15 border border-[#00c853]/30 flex items-center justify-center shrink-0">
+                          <svg className="w-4 h-4 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-white text-[13px] font-extrabold leading-tight">Local Meetup</p>
+                          <p className="text-[#bdbdbd] text-[11px] leading-snug">We come to you</p>
+                        </div>
+                      </button>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-white text-[13px] font-extrabold leading-tight">Ship It</p>
-                      <p className="text-[#bdbdbd] text-[11px] leading-snug">Free prepaid label</p>
-                    </div>
-                  </button>
-                  <button type="button" onClick={() => setHandoffMethod("local")} className="flex items-center gap-3 px-3 py-3 rounded-xl border cursor-pointer text-left tap-press transition" style={{ background: handoffMethod === "local" ? "rgba(0,200,83,0.10)" : "rgba(255,255,255,0.03)", borderColor: handoffMethod === "local" ? "#00c853" : "rgba(255,255,255,0.10)", boxShadow: handoffMethod === "local" ? "0 0 0 1px rgba(0,200,83,0.4), 0 0 14px rgba(0,200,83,0.15)" : "none" }}>
-                    <div className="w-8 h-8 rounded-lg bg-[#00c853]/15 border border-[#00c853]/30 flex items-center justify-center shrink-0">
-                      <svg className="w-4 h-4 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-white text-[13px] font-extrabold leading-tight">Local Meetup</p>
-                      <p className="text-[#bdbdbd] text-[11px] leading-snug">We come to you</p>
-                    </div>
-                  </button>
-                </div>
+                  </>
+                )}
 
                 {handoffMethod === "ship" && (
-                  <div className="space-y-2 mt-2 p-3 rounded-xl bg-white/[0.02] border border-white/8">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">Shipping address</label>
+                      <button type="button" onClick={() => { setHandoffMethod("local"); setLocalArea(null); }} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to local meetup instead</button>
+                    </div>
                     <input required value={shipStreet} onChange={e => setShipStreet(e.target.value)} placeholder="Street address" autoComplete="address-line1" className="w-full px-4 py-3 tcc-input" />
                     <input value={shipUnit} onChange={e => setShipUnit(e.target.value)} placeholder="Apt / Suite (optional)" autoComplete="address-line2" className="w-full px-4 py-3 tcc-input" />
                     <div className="grid grid-cols-3 gap-2">
@@ -5873,8 +5883,11 @@ export default function Home() {
                 )}
 
                 {handoffMethod === "local" && (
-                  <div className="mt-2 p-3 rounded-xl bg-white/[0.02] border border-white/8">
-                    <p className="text-[#bdbdbd] text-[11px] mb-2">Pick your area — we&apos;ll arrange a meet & pay on the spot.</p>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">Pick your Austin area</label>
+                      <button type="button" onClick={() => { setHandoffMethod("ship"); setShipStreet(""); setShipUnit(""); setShipCity(""); setShipZip(""); }} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to shipping instead</button>
+                    </div>
                     <div className="grid grid-cols-2 gap-2">
                       {AUSTIN_AREAS.map(a => {
                         const active = localArea === a.label;
