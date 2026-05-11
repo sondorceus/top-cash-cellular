@@ -3019,6 +3019,16 @@ export default function Home() {
   useEffect(() => {
     fetch("/promo.json", { cache: "no-store" }).then(r => r.ok ? r.json() : null).then(setPromo).catch(() => setPromo(null));
   }, []);
+  // Real Apple Trade-In comp values per model id. Loaded once on mount;
+  // refreshed monthly by .github/workflows/refresh-comps.yml -> public/comps/apple-trade-in.json.
+  // Frontend prefers this over the percentage estimate in COMP_SOURCES.
+  const [appleComps, setAppleComps] = useState<Record<string, number> | null>(null);
+  useEffect(() => {
+    fetch("/comps/apple-trade-in.json", { cache: "no-store" })
+      .then(r => r.ok ? r.json() : null)
+      .then((d: { values?: Record<string, number> } | null) => setAppleComps(d?.values || null))
+      .catch(() => setAppleComps(null));
+  }, []);
   const promoApplies = !!(promoClaimed && promo?.active && deviceType && (promo.appliesTo === "all" || promo.appliesTo === deviceType) && (!promo.minQuantity || quantity >= promo.minQuantity));
   const promoMultiplier = promoApplies && promo && promo.percent ? 1 + (promo.percent / 100) : 1;
   const promoFlatBonus = promoApplies && promo?.flatBonus ? promo.flatBonus : 0;
@@ -6275,10 +6285,18 @@ export default function Home() {
                 </div>
                 {(() => {
                   const comp = getCompSource(deviceType);
+                  // Apple family: prefer the real published value from
+                  // public/comps/apple-trade-in.json if we have it.
+                  // Otherwise fall back to the percentage estimate.
+                  const isApple = deviceType === "iphone" || deviceType === "ipad" || deviceType === "macbook" || deviceType === "apple_desktop" || deviceType === "applewatch" || deviceType === "apple_vr";
+                  const real = isApple && model && appleComps ? appleComps[model.id] : undefined;
+                  const compValue = typeof real === "number"
+                    ? real * quantity
+                    : Math.round(quote * comp.percent * quantity);
                   return (
                     <div className="flex items-center justify-between py-3 px-2">
                       <span className="text-sm font-bold text-[#e6e6e6]">{comp.name}</span>
-                      <span className="text-sm font-bold text-[#b8b8b8]">${Math.round(quote * comp.percent * quantity)}</span>
+                      <span className="text-sm font-bold text-[#b8b8b8]">${compValue}</span>
                     </div>
                   );
                 })()}
@@ -6289,7 +6307,13 @@ export default function Home() {
                   </div>
                 )}
               </div>
-              <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${(quote - Math.round(quote * getCompSource(deviceType).percent)) * quantity} more with us</p>
+              {(() => {
+                const isApple = deviceType === "iphone" || deviceType === "ipad" || deviceType === "macbook" || deviceType === "apple_desktop" || deviceType === "applewatch" || deviceType === "apple_vr";
+                const real = isApple && model && appleComps ? appleComps[model.id] : undefined;
+                const compPer = typeof real === "number" ? real : Math.round(quote * getCompSource(deviceType).percent);
+                const savings = (quote - compPer) * quantity;
+                return <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${savings > 0 ? savings : 0} more with us</p>;
+              })()}
               <a href={`mailto:offers@topcashcellular.com?subject=Price%20Match%20Request&body=Model%3A%20${encodeURIComponent(model?.label || '')}%0AStorage%3A%20${encodeURIComponent(storage?.label || '')}%0AStorage%3A%20${encodeURIComponent(condition?.label || '')}%0ACompetitor%20URL%3A%20%0ACompetitor%20offer%3A%20%24`} className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#00c853]/10 border border-[#00c853]/30 hover:bg-[#00c853]/15 text-[#00c853] text-xs font-bold transition">⚡ Got a higher offer? We&apos;ll beat it by $25</a>
             </div>
 
