@@ -6172,12 +6172,13 @@ export default function Home() {
       {/* (Text Us pill was here; moved into the mobile nav next to cart so it
           doesn't crowd the bottom of the screen.) */}
 
-      {/* CHAT WIDGET — draggable FAB. Hidden while a help modal is open,
-          and on the quote step on mobile where the sticky Add to Cart bar
-          is using the bottom strip. Default position is bottom-left;
-          once dragged, the position is remembered in localStorage. */}
+      {/* CHAT WIDGET — draggable FAB. Hidden while a help modal is open.
+          Default position is bottom-left; once dragged, the position is
+          remembered in localStorage. On mobile the FAB is rendered as a
+          translucent glass bubble so it never feels in the way of the
+          page content. */}
       <div
-        className={`fixed z-40 select-none ${conditionHelpId || storageHelpId || connectivityHelpOpen || helpTopic ? "hidden" : ""} ${step === "quote" ? "hidden lg:block" : ""}`}
+        className={`fixed z-40 select-none ${conditionHelpId || storageHelpId || connectivityHelpOpen || helpTopic ? "hidden" : ""}`}
         style={fabPos ? { left: `${fabPos.x}px`, top: `${fabPos.y}px`, bottom: "auto" } : { left: "24px", bottom: "24px" }}>
         {chatOpen && (
           <div className="mb-3 w-[300px] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
@@ -6269,7 +6270,7 @@ export default function Home() {
             setChatOpen(!chatOpen);
           }}
           aria-label={chatOpen ? "Close chat" : "Open chat — drag to move"}
-          className="w-14 h-14 rounded-full bg-[#00c853] text-[#0a0a0a] flex items-center justify-center shadow-lg hover:bg-[#00e676] transition tap-press touch-none"
+          className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-[rgba(0,200,83,0.45)] lg:bg-[#00c853] text-white lg:text-[#0a0a0a] flex items-center justify-center shadow-[0_8px_22px_rgba(0,0,0,0.45)] backdrop-blur-md border border-[#00c853]/40 lg:border-transparent hover:bg-[rgba(0,230,118,0.65)] lg:hover:bg-[#00e676] transition tap-press touch-none"
           style={{ cursor: fabDrag.current?.moved ? "grabbing" : "grab" }}
         >
           {chatOpen ? (
