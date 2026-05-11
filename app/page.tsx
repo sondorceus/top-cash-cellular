@@ -2059,7 +2059,7 @@ export default function Home() {
       <div className="flex items-center gap-3 mb-1.5">
         <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Step {funnelStepNum} of {funnelTotal}</span>
         <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden max-w-[180px]">
-          <div className="h-full bg-gradient-to-r from-[#00c853] via-[#00e676] to-[#00c853] shadow-[0_0_10px_rgba(0,230,118,0.9),0_0_4px_rgba(0,230,118,0.6)] transition-all duration-500" style={{ width: `${(funnelStepNum / funnelTotal) * 100}%` }} />
+          <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_6px_rgba(0,200,83,0.5)] transition-all duration-500" style={{ width: `${(funnelStepNum / funnelTotal) * 100}%` }} />
         </div>
       </div>
     </div>
@@ -2533,7 +2533,7 @@ export default function Home() {
       {(step === "quote" || step === "checkout" || step === "payout" || step === "contact") && (
         <div className="border-t border-white/10 mt-2 pt-4 text-center">
           <p className="text-[#a0a0a0] text-sm">Your device is valued at</p>
-          <p className="text-[#00c853] font-extrabold text-4xl mt-1" style={{ textShadow: "0 0 15px rgba(0,200,83,0.45)" }}>${quote * quantity}</p>
+          <p className="text-[#00c853] font-extrabold text-4xl mt-1" style={{ textShadow: "0 0 8px rgba(0,200,83,0.22)" }}>${quote * quantity}</p>
         </div>
       )}
     </div>
@@ -2911,7 +2911,7 @@ export default function Home() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
               </svg>
               {cartItems.length > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#00c853] text-[#0a0a0a] text-[10px] font-extrabold flex items-center justify-center shadow-[0_0_8px_rgba(0,200,83,0.6)]">
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#00c853] text-[#0a0a0a] text-[10px] font-extrabold flex items-center justify-center shadow-[0_0_5px_rgba(0,200,83,0.4)]">
                   {cartItems.reduce((sum, i) => sum + i.quantity, 0)}
                 </span>
               )}
@@ -4708,7 +4708,7 @@ export default function Home() {
             {selectionPanelMobile}
             <div className="hidden lg:block mb-2">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Your offer</p>
-              <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853] mt-1" style={{ textShadow: "0 0 15px rgba(0, 200, 83, 0.45), 0 0 30px rgba(0, 200, 83, 0.2)" }}>${quote * quantity}</p>
+              <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853] mt-1" style={{ textShadow: "0 0 8px rgba(0, 200, 83, 0.22)" }}>${quote * quantity}</p>
             </div>
             <div className="flex items-center justify-center lg:justify-start flex-wrap gap-1 mb-2">
               {promoApplies && promo && (
@@ -4753,7 +4753,7 @@ export default function Home() {
               <div className="divide-y divide-white/[0.06]">
                 <div className="flex items-center justify-between -mx-2 px-2 py-3 rounded-lg bg-[#00c853]/10 border border-[#00c853]/30 shadow-[0_0_10px_rgba(0,200,83,0.18)]">
                   <span className="text-[15px] font-extrabold text-white">Top Cash Cellular</span>
-                  <span className="text-xl font-extrabold text-[#00c853]" style={{ textShadow: "0 0 10px rgba(0,200,83,0.4)" }}>${quote * quantity}</span>
+                  <span className="text-xl font-extrabold text-[#00c853]" style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${quote * quantity}</span>
                 </div>
                 <div className="flex items-center justify-between py-3 px-2">
                   <span className="text-sm font-bold text-[#dcdcdc]">Apple Trade-In</span>
