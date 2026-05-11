@@ -2495,6 +2495,15 @@ export default function Home() {
           if (s.carrier) setCarrier(s.carrier);
           if (s.quantity) setQuantity(s.quantity);
           if (s.email) setEmail(s.email);
+          // Hero handoff pick must survive refreshes — otherwise the contact
+          // step asks again and feels redundant. Restore everything we put
+          // into the session payload.
+          if (s.handoffMethod) setHandoffMethod(s.handoffMethod);
+          if (s.shipStreet) setShipStreet(s.shipStreet);
+          if (s.shipUnit) setShipUnit(s.shipUnit);
+          if (s.shipCity) setShipCity(s.shipCity);
+          if (s.shipState) setShipState(s.shipState);
+          if (s.shipZip) setShipZip(s.shipZip);
           setStep(s.step);
         }
       }
@@ -2505,10 +2514,12 @@ export default function Home() {
     if (step === "device") { localStorage.removeItem("tcc-session"); return; }
     try {
       localStorage.setItem("tcc-session", JSON.stringify({
-        step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, ts: Date.now(),
+        step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email,
+        handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip,
+        ts: Date.now(),
       }));
     } catch {}
-  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email]);
+  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip]);
 
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrierMultiplierFor(carrier?.id, carrierLock?.id);
