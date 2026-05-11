@@ -4680,7 +4680,7 @@ export default function Home() {
               <div>
                 <p className="text-[#dcdcdc] text-sm font-medium lg:hidden">{model.label} · {storage?.label} · {condition.label}</p>
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1 hidden lg:block">Your offer</p>
-                <p className="text-5xl lg:text-6xl font-bold text-[#00c853] mt-1">${quote * quantity}</p>
+                <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853] mt-1" style={{ textShadow: "0 0 15px rgba(0, 200, 83, 0.45), 0 0 30px rgba(0, 200, 83, 0.2)" }}>${quote * quantity}</p>
                 {promoApplies && promo && (
                   <p className="text-[10px] mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎉 +{promo.percent}% promo applied</p>
                 )}
@@ -4719,23 +4719,23 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 text-left">
-              <p className="text-xs font-semibold text-[#dcdcdc] uppercase tracking-wider mb-3">How we compare</p>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-[#00c853]">Top Cash Cellular</span>
-                  <span className="text-lg font-bold text-[#00c853]">${quote * quantity}</span>
+            <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/12 rounded-2xl p-5 mb-6 text-left shadow-[inset_1px_1px_0_rgba(255,255,255,0.06),0_10px_30px_rgba(0,0,0,0.5)]">
+              <p className="text-[10px] font-extrabold text-[#00c853] uppercase tracking-[0.18em] mb-3">How we compare</p>
+              <div className="divide-y divide-white/[0.06]">
+                <div className="flex items-center justify-between -mx-2 px-2 py-3 rounded-lg bg-[#00c853]/10 border border-[#00c853]/30 shadow-[0_0_10px_rgba(0,200,83,0.18)]">
+                  <span className="text-[15px] font-extrabold text-white">Top Cash Cellular</span>
+                  <span className="text-xl font-extrabold text-[#00c853]" style={{ textShadow: "0 0 10px rgba(0,200,83,0.4)" }}>${quote * quantity}</span>
                 </div>
-                <div className="flex items-center justify-between text-[#dcdcdc]">
-                  <span className="text-sm">Apple Trade-In</span>
-                  <span className="text-sm">${Math.round(quote * 0.62 * quantity)}</span>
+                <div className="flex items-center justify-between py-3 px-2">
+                  <span className="text-sm font-bold text-[#dcdcdc]">Apple Trade-In</span>
+                  <span className="text-sm font-bold text-[#a0a0a0]">${Math.round(quote * 0.62 * quantity)}</span>
                 </div>
-                <div className="flex items-center justify-between text-[#dcdcdc]">
-                  <span className="text-sm">Carrier Trade-In</span>
-                  <span className="text-sm">${Math.round(quote * 0.7 * quantity)}</span>
+                <div className="flex items-center justify-between py-3 px-2">
+                  <span className="text-sm font-bold text-[#dcdcdc]">Carrier Trade-In</span>
+                  <span className="text-sm font-bold text-[#a0a0a0]">${Math.round(quote * 0.7 * quantity)}</span>
                 </div>
               </div>
-              <p className="text-[#00c853] text-xs font-semibold mt-3">You make up to ${(quote - Math.round(quote * 0.62)) * quantity} more with us</p>
+              <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${(quote - Math.round(quote * 0.62)) * quantity} more with us</p>
               <a href={`mailto:offers@topcashcellular.com?subject=Price%20Match%20Request&body=Model%3A%20${encodeURIComponent(model?.label || '')}%0AStorage%3A%20${encodeURIComponent(storage?.label || '')}%0AStorage%3A%20${encodeURIComponent(condition?.label || '')}%0ACompetitor%20URL%3A%20%0ACompetitor%20offer%3A%20%24`} className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#00c853]/10 border border-[#00c853]/30 hover:bg-[#00c853]/15 text-[#00c853] text-xs font-bold transition">⚡ Got a higher offer? We&apos;ll beat it by $25</a>
             </div>
 
@@ -4750,17 +4750,19 @@ export default function Home() {
               ) : (
                 <>
                   <div className="flex gap-2">
-                    <input type="text" value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} placeholder="ENTER CODE" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#c5c5c5] focus:outline-none focus:border-[#00c853] transition uppercase tracking-wide" />
-                    <button onClick={applyCoupon} className="px-4 py-2 bg-[#00c853] text-[#0a0a0a] rounded-xl text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition">Apply</button>
+                    <input type="text" value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} placeholder="ENTER CODE" className="tcc-input flex-1 px-3 py-2 text-sm uppercase tracking-wide" />
+                    <button onClick={applyCoupon} className="tcc-button-primary px-4 py-2 text-sm font-extrabold">Apply</button>
                   </div>
                   {couponError && <p className="text-xs text-red-400 mt-1.5">{couponError}</p>}
                 </>
               )}
             </div>
 
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-              <p className="text-[#00c853] text-sm font-semibold">Price locked for 7 days</p>
+            <div className="flex items-center justify-center lg:justify-start gap-2 mb-4">
+              <span className="inline-flex items-center gap-1.5 bg-[#ffb400]/12 border border-[#ffb400]/35 text-[#ffb400] text-xs font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(255,180,0,0.25)]">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.4}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                Price locked · 7 days
+              </span>
             </div>
 
             <div className="flex gap-3">
