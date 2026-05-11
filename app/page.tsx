@@ -1578,12 +1578,12 @@ const CONDITIONS = [
 ];
 
 const ALL_STORAGES = [
-  { id: "64",  label: "64 GB",  desc: "Light use — basic apps + a few photos", multiplier: 0.85, details: ["Holds roughly 15,000 photos OR 8 hours of 4K video", "Fine for: web, email, social, light apps", "Tight if you shoot a lot of photos or video", "Common on older models and the base iPhone SE"] },
-  { id: "128", label: "128 GB", desc: "Everyday use — average user comfort",    multiplier: 1.0,  details: ["Holds roughly 30,000 photos OR 16 hours of 4K video", "Fine for: most people, including casual photos and videos", "Default tier on many recent base-model iPhones / iPads", "Comfortable if you don't keep movies offline"] },
-  { id: "256", label: "256 GB", desc: "Sweet spot — most popular choice",       multiplier: 1.12, details: ["Holds roughly 60,000 photos OR 32 hours of 4K video", "Plenty of room for years of photos, games, and apps", "The most-bought tier across iPhone and iPad lines", "Pays well on resale — high demand keeps the price strong"] },
-  { id: "512", label: "512 GB", desc: "Power user — heavy photo & 4K video",    multiplier: 1.25, details: ["Holds roughly 125,000 photos OR 64 hours of 4K video", "Made for heavy creators or families sharing one device", "Solid pick for 4K video, large game libraries, RAW photos", "Higher resale multiplier than 256 GB"] },
-  { id: "1tb", label: "1 TB",   desc: "Pro tier — content creator capacity",    multiplier: 1.4,  details: ["Holds 250,000+ photos OR 128 hours of 4K video", "Targeted at pro photographers, filmmakers, and developers", "Required for some pro workflows like ProRes video recording", "Highest demand storage tier on the secondary market — pays the most"] },
-  { id: "2tb", label: "2 TB",   desc: "Maximum — top-of-stack pro work",        multiplier: 1.55, details: ["Holds 500,000+ photos OR 256+ hours of 4K video", "Only offered on the iPhone Pro Max and iPad Pro M-series", "For uncompressed pro workflows — no compromises on space", "Premium tier — limited inventory drives top resale value"] },
+  { id: "64",  label: "64 GB",  desc: "Older base capacity",                multiplier: 0.85, details: ["Common on older iPhone SE / pre-2020 iPads", "Resale demand is limited but we still buy", "Quote is on the lower end of the ladder", "Lookup tip: Settings > General > About > Capacity"] },
+  { id: "128", label: "128 GB", desc: "Standard base size",                  multiplier: 1.0,  details: ["Default base size on many recent iPhone / iPad models", "Easy resale — broad demand across the market", "Mid-tier payout — sits in the middle of our ladder", "Lookup tip: Settings > General > About > Capacity"] },
+  { id: "256", label: "256 GB", desc: "Most common — solid payout",          multiplier: 1.12, details: ["The most-traded capacity across iPhone and iPad lines", "Strong resale demand means a higher payout than 128", "Plenty of headroom for photos, apps, and a few games", "Lookup tip: Settings > General > About > Capacity"] },
+  { id: "512", label: "512 GB", desc: "Larger capacity — pays more",         multiplier: 1.25, details: ["Bigger tier, usually owned by heavier users or families", "Pays a clear step above 256 GB", "Common on Pro models and content-creator devices", "Lookup tip: Settings > General > About > Capacity"] },
+  { id: "1tb", label: "1 TB",   desc: "High tier — strong resale demand",    multiplier: 1.4,  details: ["High-end capacity, mostly Pro and Pro Max models", "Limited supply on the secondary market keeps prices firm", "Pays meaningfully more than 512 GB", "Lookup tip: Settings > General > About > Capacity"] },
+  { id: "2tb", label: "2 TB",   desc: "Highest payout — top of our ladder",  multiplier: 1.55, details: ["Maximum capacity tier — only iPhone Pro Max and iPad Pro M-series ship with it", "Rare on the resale market, so we pay the most for it", "Top of our payout ladder", "Lookup tip: Settings > General > About > Capacity"] },
 ];
 
 const STORAGE_MAP: Record<string, string[]> = {
@@ -4870,39 +4870,33 @@ export default function Home() {
               {stepProgress}
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
-                  {getStoragesForModel(model.id).map((s) => {
-                    const isPremium = s.id === "1tb" || s.id === "2tb";
-                    return (
-                      <button
-                        key={s.id}
-                        onClick={() => {
-                          setStorage(s);
-                          const isPhone = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
-                          const ns: Step = (isPhone || isIpadCellular) ? "carrier" : "quote";
-                          if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
-                          setStep(ns); pushHistory(ns);
-                        }}
-                        className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <p className="font-extrabold text-[15px] text-white leading-tight">{s.label}</p>
-                            <button
-                              type="button"
-                              onClick={(e) => { e.stopPropagation(); setStorageHelpId(s.id); }}
-                              aria-label={`What ${s.label} is good for`}
-                              className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none shrink-0 hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
-                            >i</button>
-                            {isPremium && (
-                              <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-full">Premium</span>
-                            )}
-                          </div>
-                          <p className="text-[#b0b0b0] text-[12px] leading-snug mt-0.5">{s.desc}</p>
+                  {getStoragesForModel(model.id).map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() => {
+                        setStorage(s);
+                        const isPhone = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
+                        const ns: Step = (isPhone || isIpadCellular) ? "carrier" : "quote";
+                        if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
+                        setStep(ns); pushHistory(ns);
+                      }}
+                      className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="font-extrabold text-[15px] text-white leading-tight">{s.label}</p>
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); setStorageHelpId(s.id); }}
+                            aria-label={`What ${s.label} is good for`}
+                            className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none shrink-0 hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
+                          >i</button>
                         </div>
-                        <svg className="w-4 h-4 text-[#dcdcdc] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                      </button>
-                    );
-                  })}
+                        <p className="text-[#b0b0b0] text-[12px] leading-snug mt-0.5">{s.desc}</p>
+                      </div>
+                      <svg className="w-4 h-4 text-[#dcdcdc] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  ))}
                 </div>
               </div>
               <FairPromise />
