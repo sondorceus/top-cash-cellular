@@ -5194,7 +5194,10 @@ export default function Home() {
                     setCartToast({ model: model.label, price: quote * quantity });
                     setTimeout(() => setCartToast(null), 2400);
                   }
-                  setStep("checkout"); pushHistory("checkout");
+                  // Open the cart drawer first — IWM-style. The user can
+                  // then proceed to checkout from inside the cart, instead
+                  // of being forced straight into the login form.
+                  setCartOpen(true);
                 }}
                 className="flex-[2] bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press"
               >
