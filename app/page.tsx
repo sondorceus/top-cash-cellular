@@ -2867,7 +2867,11 @@ export default function Home() {
         </div>
         <div className="mt-3 pt-3 border-t border-white/10 flex items-baseline justify-between gap-2">
           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#e6e6e6]">Total</span>
-          <span className="text-[20px] font-extrabold text-[#00c853]">${checkoutTotal}{checkoutHasPending && <span className="text-[10px] text-[#b8b8b8] font-semibold align-middle ml-1">+ quoted items</span>}</span>
+          {checkoutTotal === 0 && checkoutHasPending ? (
+            <span className="text-[20px] font-extrabold text-[#e6e6e6]">TBD</span>
+          ) : (
+            <span className="text-[20px] font-extrabold text-[#00c853]">${checkoutTotal}{checkoutHasPending && <span className="text-[10px] text-[#b8b8b8] font-semibold align-middle ml-1">+ quoted items</span>}</span>
+          )}
         </div>
       </div>
     </aside>
@@ -2883,7 +2887,11 @@ export default function Home() {
       </div>
       <div className="mt-2 pt-2 border-t border-white/10 flex items-baseline justify-between gap-2">
         <span className="text-[11px] font-semibold uppercase tracking-wider text-[#e6e6e6]">Total</span>
-        <span className="text-[18px] font-extrabold text-[#00c853]">${checkoutTotal}{checkoutHasPending && <span className="text-[9px] text-[#b8b8b8] font-semibold align-middle ml-1">+ quoted</span>}</span>
+        {checkoutTotal === 0 && checkoutHasPending ? (
+          <span className="text-[18px] font-extrabold text-[#e6e6e6]">TBD</span>
+        ) : (
+          <span className="text-[18px] font-extrabold text-[#00c853]">${checkoutTotal}{checkoutHasPending && <span className="text-[9px] text-[#b8b8b8] font-semibold align-middle ml-1">+ quoted</span>}</span>
+        )}
       </div>
     </div>
   );
