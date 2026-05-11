@@ -1,0 +1,58 @@
+{
+  "_doc": "Samsung Trade-In max published values per model id. Refreshed monthly by scripts/refresh-samsung-comps.py via .github/workflows/refresh-comps.yml. Frontend reads this at runtime when device is in the Samsung family (android / samsung_tab / samsung_pc / samsungwatch) and falls back to COMP_SOURCES percentage if the model id isn't here.",
+  "source": "https://www.samsung.com/us/shop/mobile/trade-in/",
+  "updatedAt": "2026-05-12T03:30:00Z",
+  "values": {
+    "gs26u": 510,
+    "gs25u": 400,
+    "gs24u": 360,
+    "gs23u": 230,
+    "gs22u": 140,
+    "gs21u": 100,
+    "gs20u": 60,
+
+    "gs25edge": 120,
+
+    "gs26p": 275,
+    "gs25p": 210,
+    "gs24p": 190,
+    "gs23p": 140,
+    "gs22p": 100,
+    "gs21p": 60,
+    "gs20p": 50,
+
+    "gs26": 200,
+    "gs25": 125,
+    "gs24": 130,
+    "gs23": 90,
+    "gs22": 60,
+    "gs21": 40,
+    "gs20": 30,
+
+    "gs25fe": 95,
+    "gs24fe": 70,
+    "gs23fe": 50,
+    "gs21fe": 30,
+    "gs20fe": 20,
+
+    "gztrifold": 1300,
+    "gzfold7": 500,
+    "gzfold6": 250,
+    "gzfold5": 130,
+    "gzfold4": 60,
+    "gzfold3": 40,
+
+    "gzflip7": 130,
+    "gzflip6": 80,
+    "gzflip5": 40,
+    "gzflip4": 30,
+    "gzflip3": 20,
+
+    "gnote20u": 80,
+    "gnote20": 60,
+    "gnote10p5g": 40,
+    "gnote10p": 35,
+    "gnote10": 25,
+    "gnote9": 20
+  }
+}
