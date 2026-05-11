@@ -1578,12 +1578,12 @@ const CONDITIONS = [
 ];
 
 const ALL_STORAGES = [
-  { id: "64", label: "64 GB", multiplier: 0.85 },
-  { id: "128", label: "128 GB", multiplier: 1.0 },
-  { id: "256", label: "256 GB", multiplier: 1.12 },
-  { id: "512", label: "512 GB", multiplier: 1.25 },
-  { id: "1tb", label: "1 TB", multiplier: 1.4 },
-  { id: "2tb", label: "2 TB", multiplier: 1.55 },
+  { id: "64",  label: "64 GB",  desc: "Light use — basic apps + a few photos", multiplier: 0.85, details: ["Holds roughly 15,000 photos OR 8 hours of 4K video", "Fine for: web, email, social, light apps", "Tight if you shoot a lot of photos or video", "Common on older models and the base iPhone SE"] },
+  { id: "128", label: "128 GB", desc: "Everyday use — average user comfort",    multiplier: 1.0,  details: ["Holds roughly 30,000 photos OR 16 hours of 4K video", "Fine for: most people, including casual photos and videos", "Default tier on many recent base-model iPhones / iPads", "Comfortable if you don't keep movies offline"] },
+  { id: "256", label: "256 GB", desc: "Sweet spot — most popular choice",       multiplier: 1.12, details: ["Holds roughly 60,000 photos OR 32 hours of 4K video", "Plenty of room for years of photos, games, and apps", "The most-bought tier across iPhone and iPad lines", "Pays well on resale — high demand keeps the price strong"] },
+  { id: "512", label: "512 GB", desc: "Power user — heavy photo & 4K video",    multiplier: 1.25, details: ["Holds roughly 125,000 photos OR 64 hours of 4K video", "Made for heavy creators or families sharing one device", "Solid pick for 4K video, large game libraries, RAW photos", "Higher resale multiplier than 256 GB"] },
+  { id: "1tb", label: "1 TB",   desc: "Pro tier — content creator capacity",    multiplier: 1.4,  details: ["Holds 250,000+ photos OR 128 hours of 4K video", "Targeted at pro photographers, filmmakers, and developers", "Required for some pro workflows like ProRes video recording", "Highest demand storage tier on the secondary market — pays the most"] },
+  { id: "2tb", label: "2 TB",   desc: "Maximum — top-of-stack pro work",        multiplier: 1.55, details: ["Holds 500,000+ photos OR 256+ hours of 4K video", "Only offered on the iPhone Pro Max and iPad Pro M-series", "For uncompressed pro workflows — no compromises on space", "Premium tier — limited inventory drives top resale value"] },
 ];
 
 const STORAGE_MAP: Record<string, string[]> = {
@@ -2140,6 +2140,7 @@ export default function Home() {
   // condition tile. Modal shows the tier's bullet list without expanding
   // the tile itself so all condition boxes stay the same height.
   const [conditionHelpId, setConditionHelpId] = useState<string | null>(null);
+  const [storageHelpId, setStorageHelpId] = useState<string | null>(null);
   const [connectivityHelpOpen, setConnectivityHelpOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMode, setChatMode] = useState<"choose" | "chat" | "call">("choose");
@@ -3242,6 +3243,37 @@ export default function Home() {
               </div>
               <ul className="p-5 space-y-2.5">
                 {(c as { details?: string[] }).details?.map((d, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-[#e8e8e8] text-sm leading-snug">
+                    <span className="text-[#00c853] mt-0.5 shrink-0" style={{ filter: "drop-shadow(0 0 4px rgba(0,200,83,0.5))" }}>✓</span>
+                    <span>{d}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* STORAGE HELP MODAL — 'What does this size hold?' details, triggered
+          by the small "i" on each storage tile. Same modal pattern as the
+          condition modal so the picker tiles stay the same size. */}
+      {storageHelpId && (() => {
+        const s = ALL_STORAGES.find(x => x.id === storageHelpId);
+        if (!s) return null;
+        return (
+          <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setStorageHelpId(null)}>
+            <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6),0_0_20px_rgba(0,200,83,0.15)]" onClick={(e) => e.stopPropagation()}>
+              <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+                <div className="min-w-0">
+                  <p className="text-[#00c853] text-[10px] font-extrabold uppercase tracking-[0.18em]">What you get with</p>
+                  <h3 className="text-white text-lg font-extrabold leading-tight mt-0.5">{s.label} <span className="text-[#dcdcdc] text-sm font-medium">— {s.desc}</span></h3>
+                </div>
+                <button onClick={() => setStorageHelpId(null)} aria-label="Close" className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press shrink-0">
+                  <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+              <ul className="p-5 space-y-2.5">
+                {s.details?.map((d, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-[#e8e8e8] text-sm leading-snug">
                     <span className="text-[#00c853] mt-0.5 shrink-0" style={{ filter: "drop-shadow(0 0 4px rgba(0,200,83,0.5))" }}>✓</span>
                     <span>{d}</span>
@@ -4829,15 +4861,24 @@ export default function Home() {
                           if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
                           setStep(ns); pushHistory(ns);
                         }}
-                        className="tcc-card w-full flex items-center justify-between px-5 py-4 rounded-2xl cursor-pointer text-left"
+                        className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
                       >
-                        <div className="flex items-center gap-3">
-                          <p className="font-extrabold text-[17px] text-white">{s.label}</p>
-                          {isPremium && (
-                            <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full">Premium</span>
-                          )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-extrabold text-[15px] text-white leading-tight">{s.label}</p>
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); setStorageHelpId(s.id); }}
+                              aria-label={`What ${s.label} is good for`}
+                              className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none shrink-0 hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
+                            >i</button>
+                            {isPremium && (
+                              <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-full">Premium</span>
+                            )}
+                          </div>
+                          <p className="text-[#b0b0b0] text-[12px] leading-snug mt-0.5">{s.desc}</p>
                         </div>
-                        <svg className="w-4 h-4 text-[#b0b0b0]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        <svg className="w-4 h-4 text-[#dcdcdc] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                       </button>
                     );
                   })}
@@ -4971,12 +5012,13 @@ export default function Home() {
                   <button
                     key={c.id}
                     onClick={() => { setCarrier(c); setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote"); }}
-                    className="tcc-card w-full flex items-center gap-4 px-5 py-4 rounded-2xl cursor-pointer text-left"
+                    className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
                   >
-                    <p className="font-extrabold text-[17px] text-white flex-1">{c.label}</p>
+                    <p className="font-extrabold text-[15px] text-white flex-1 leading-tight">{c.label}</p>
                     {c.id === "unlocked" && (
-                      <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-full shadow-[0_0_8px_rgba(0,200,83,0.35)]">Best value</span>
+                      <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-full shadow-[0_0_8px_rgba(0,200,83,0.35)] shrink-0">Best value</span>
                     )}
+                    <svg className="w-4 h-4 text-[#dcdcdc] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                   </button>
                 ))}
               </div>
