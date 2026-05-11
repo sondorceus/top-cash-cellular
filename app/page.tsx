@@ -132,7 +132,7 @@ const IPHONE_SERIES = [
     { id: "ip17p", label: "iPhone 17 Pro", base: 715, image: "/devices/iphone-17-pro.webp" },
     { id: "ip17air", label: "iPhone 17 Air", base: 475, image: "/iphone17air.png" },
     { id: "ip17plus", label: "iPhone 17 Plus", base: 500, image: "/iphone17plus.png" },
-    { id: "ip17", label: "iPhone 17", base: 455, image: "/devices/iphone-17.webp" },
+    { id: "ip17", label: "iPhone 17", base: 455, image: "/devices/iphone-17-test.png" },
     { id: "ip17e", label: "iPhone 17E", base: 190, image: "/iphone17e.png" },
   ]},
   { id: "16", label: "iPhone 16", image: "/iphone16.png", year: "2024", topPrice: 490, variants: [
