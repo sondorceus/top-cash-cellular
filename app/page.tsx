@@ -5,6 +5,101 @@ const BRAND = "Top Cash Cellular";
 const EMAIL = "topcashcellular@gmail.com";
 const EMAIL_HREF = "mailto:topcashcellular@gmail.com";
 
+// Category icons — custom hand-drawn-looking line art for the device grid /
+// mega-menu. Style is monochrome with currentColor stroke so they inherit
+// whatever text color the parent sets. Slight rounded-end-cap line work +
+// one small green accent dot per icon to keep our brand mark in the family.
+type CatIconId = "phones" | "tablets" | "computers" | "desktops" | "watches" | "consoles" | "drones" | "vr";
+function CategoryIcon({ id, className = "" }: { id: CatIconId; className?: string }) {
+  const accent = "#00c853";
+  const stroke = "currentColor";
+  const common = { fill: "none", stroke, strokeWidth: 1.6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  switch (id) {
+    case "phones":
+      return (
+        <svg viewBox="0 0 32 32" className={className}>
+          <rect x="9" y="3" width="14" height="26" rx="3" {...common} />
+          <rect x="13" y="5.5" width="6" height="1.4" rx="0.7" fill={stroke} stroke="none" />
+          <line x1="13.5" y1="25.5" x2="18.5" y2="25.5" {...common} strokeWidth={1.8} />
+          <circle cx="24.6" cy="14" r="0.9" fill={accent} stroke="none" />
+        </svg>
+      );
+    case "tablets":
+      return (
+        <svg viewBox="0 0 32 32" className={className}>
+          <rect x="5" y="5" width="22" height="22" rx="2.5" {...common} />
+          <circle cx="16" cy="6.5" r="0.55" fill={stroke} stroke="none" />
+          <line x1="13" y1="25" x2="19" y2="25" {...common} strokeWidth={1.8} />
+          <circle cx="6.5" cy="25.5" r="0.9" fill={accent} stroke="none" />
+        </svg>
+      );
+    case "computers":
+      return (
+        <svg viewBox="0 0 32 32" className={className}>
+          <path d="M7 7.5 h18 a1.4 1.4 0 0 1 1.4 1.4 v12.6 h-20.8 v-12.6 a1.4 1.4 0 0 1 1.4 -1.4 z" {...common} />
+          <line x1="9" y1="10" x2="23" y2="10" {...common} strokeWidth={0.9} stroke="rgba(255,255,255,0.35)" />
+          <path d="M3 22 h26 l-1.3 2.6 a1.5 1.5 0 0 1 -1.35 0.9 h-20.7 a1.5 1.5 0 0 1 -1.35 -0.9 z" {...common} />
+          <line x1="13" y1="24" x2="19" y2="24" {...common} strokeWidth={1.4} />
+          <circle cx="16" cy="14.7" r="0.9" fill={accent} stroke="none" />
+        </svg>
+      );
+    case "desktops":
+      return (
+        <svg viewBox="0 0 32 32" className={className}>
+          <rect x="4" y="5" width="24" height="16" rx="2" {...common} />
+          <line x1="13" y1="25" x2="19" y2="25" {...common} strokeWidth={1.6} />
+          <line x1="16" y1="21" x2="16" y2="25" {...common} strokeWidth={1.6} />
+          <line x1="10" y1="28" x2="22" y2="28" {...common} strokeWidth={1.8} />
+          <circle cx="22.4" cy="9.5" r="0.9" fill={accent} stroke="none" />
+        </svg>
+      );
+    case "watches":
+      return (
+        <svg viewBox="0 0 32 32" className={className}>
+          <rect x="9" y="9" width="14" height="14" rx="3" {...common} />
+          <path d="M11 9 l1.2 -4 h7.6 l1.2 4" {...common} />
+          <path d="M11 23 l1.2 4 h7.6 l1.2 -4" {...common} />
+          <line x1="24" y1="14" x2="25.5" y2="14" {...common} strokeWidth={2} />
+          <line x1="24" y1="17.5" x2="25" y2="17.5" {...common} strokeWidth={1.6} />
+          <circle cx="16" cy="16" r="0.9" fill={accent} stroke="none" />
+        </svg>
+      );
+    case "consoles":
+      return (
+        <svg viewBox="0 0 32 32" className={className}>
+          <path d="M9 11 h14 a4 4 0 0 1 4 4 v3 a4 4 0 0 1 -4 4 c-2 0 -2.5 -1.2 -3.5 -2.2 h-7 c-1 1 -1.5 2.2 -3.5 2.2 a4 4 0 0 1 -4 -4 v-3 a4 4 0 0 1 4 -4 z" {...common} />
+          <line x1="11" y1="15.5" x2="11" y2="18.5" {...common} strokeWidth={2} />
+          <line x1="9.5" y1="17" x2="12.5" y2="17" {...common} strokeWidth={2} />
+          <circle cx="20.5" cy="15.5" r="0.9" fill={accent} stroke="none" />
+          <circle cx="22.5" cy="18" r="0.9" fill={stroke} stroke="none" />
+        </svg>
+      );
+    case "drones":
+      return (
+        <svg viewBox="0 0 32 32" className={className}>
+          <rect x="12" y="12" width="8" height="8" rx="1.4" {...common} />
+          <circle cx="7" cy="7" r="3.2" {...common} />
+          <circle cx="25" cy="7" r="3.2" {...common} />
+          <circle cx="7" cy="25" r="3.2" {...common} />
+          <circle cx="25" cy="25" r="3.2" {...common} />
+          <line x1="9.3" y1="9.3" x2="12.5" y2="12.5" {...common} />
+          <line x1="22.7" y1="9.3" x2="19.5" y2="12.5" {...common} />
+          <line x1="9.3" y1="22.7" x2="12.5" y2="19.5" {...common} />
+          <line x1="22.7" y1="22.7" x2="19.5" y2="19.5" {...common} />
+          <circle cx="16" cy="16" r="0.9" fill={accent} stroke="none" />
+        </svg>
+      );
+    case "vr":
+      return (
+        <svg viewBox="0 0 32 32" className={className}>
+          <path d="M5 11 h22 a2 2 0 0 1 2 2 v6 a2 2 0 0 1 -2 2 h-5 c-1 0 -1.4 -0.5 -2 -1.4 l-1.2 -1.8 a2 2 0 0 0 -3.6 0 l-1.2 1.8 c-0.6 0.9 -1 1.4 -2 1.4 h-5 a2 2 0 0 1 -2 -2 v-6 a2 2 0 0 1 2 -2 z" {...common} />
+          <circle cx="11" cy="15.5" r="1.6" fill={accent} stroke="none" opacity="0.85" />
+          <circle cx="21" cy="15.5" r="1.6" fill={stroke} stroke="none" opacity="0.4" />
+        </svg>
+      );
+  }
+}
+
 const IPHONE_SERIES = [
   { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 825, variants: [
     { id: "ip17pm", label: "iPhone 17 Pro Max", base: 825, image: "/devices/iphone-17-pro-max.webp" },
@@ -2523,25 +2618,21 @@ export default function Home() {
                   <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em] mb-3 px-2 text-center">Sell your device</p>
                   <div className="grid grid-cols-4 gap-2">
                     {[
-                      { id: "phones" as const, label: "Phone", icon: "📱" },
-                      { id: "tablets" as const, label: "Tablet", icon: "⬜", customIcon: true },
-                      { id: "computers" as const, label: "Laptop", icon: "💻" },
-                      { id: "desktops" as const, label: "Desktop", icon: "🖥️" },
-                      { id: "watches" as const, label: "Smartwatch", icon: "⌚" },
-                      { id: "consoles" as const, label: "Console", icon: "🎮" },
-                      { id: "drones" as const, label: "Drone", icon: "🛸" },
-                      { id: "vr" as const, label: "VR", icon: "🥽" },
+                      { id: "phones" as const, label: "Phone" },
+                      { id: "tablets" as const, label: "Tablet" },
+                      { id: "computers" as const, label: "Laptop" },
+                      { id: "desktops" as const, label: "Desktop" },
+                      { id: "watches" as const, label: "Smartwatch" },
+                      { id: "consoles" as const, label: "Console" },
+                      { id: "drones" as const, label: "Drone" },
+                      { id: "vr" as const, label: "VR" },
                     ].map((cat) => (
                       <button
                         key={cat.id}
                         onClick={() => { setCategory(cat.id); setStep("brand"); pushHistory("brand"); }}
                         className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press"
                       >
-                        {cat.customIcon ? (
-                          <svg className="w-7 h-5 mb-1 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
-                        ) : (
-                          <span className="text-xl mb-1">{cat.icon}</span>
-                        )}
+                        <CategoryIcon id={cat.id} className="w-7 h-7 mb-1 text-white" />
                         <p className="text-xs font-semibold text-white">{cat.label}</p>
                       </button>
                     ))}
@@ -2704,25 +2795,21 @@ export default function Home() {
               {mobileMenuExpanded === "sell" && (
                 <div className="px-3 pb-4 grid grid-cols-3 gap-2">
                   {[
-                    { id: "phones" as const, label: "Phone", icon: "📱" },
-                    { id: "tablets" as const, label: "Tablet", icon: "⬜", customIcon: true },
-                    { id: "computers" as const, label: "Laptop", icon: "💻" },
-                    { id: "desktops" as const, label: "Desktop", icon: "🖥️" },
-                    { id: "watches" as const, label: "Smartwatch", icon: "⌚" },
-                    { id: "consoles" as const, label: "Console", icon: "🎮" },
-                    { id: "drones" as const, label: "Drone", icon: "🛸" },
-                    { id: "vr" as const, label: "VR", icon: "🥽" },
+                    { id: "phones" as const, label: "Phone" },
+                    { id: "tablets" as const, label: "Tablet" },
+                    { id: "computers" as const, label: "Laptop" },
+                    { id: "desktops" as const, label: "Desktop" },
+                    { id: "watches" as const, label: "Smartwatch" },
+                    { id: "consoles" as const, label: "Console" },
+                    { id: "drones" as const, label: "Drone" },
+                    { id: "vr" as const, label: "VR" },
                   ].map((cat) => (
                     <button
                       key={cat.id}
                       onClick={() => { setMobileMenuOpen(false); setCategory(cat.id); setStep("brand"); pushHistory("brand"); }}
                       className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press"
                     >
-                      {cat.customIcon ? (
-                        <svg className="w-7 h-5 mb-1 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
-                      ) : (
-                        <span className="text-xl mb-1">{cat.icon}</span>
-                      )}
+                      <CategoryIcon id={cat.id} className="w-7 h-7 mb-1 text-white" />
                       <p className="text-[11px] font-semibold text-white">{cat.label}</p>
                     </button>
                   ))}
@@ -3258,14 +3345,14 @@ export default function Home() {
             {searchBar}
             <div className="grid grid-cols-4 md:grid-cols-5 gap-2 md:gap-3">
               {[
-                { id: "phones" as const, label: "Sell Phone", icon: "📱" },
-                { id: "tablets" as const, label: "Sell Tablet", icon: "⬜", customIcon: true },
-                { id: "computers" as const, label: "Sell Laptop", icon: "💻" },
-                { id: "desktops" as const, label: "Sell Desktop", icon: "🖥️" },
-                { id: "watches" as const, label: "Sell Smartwatch", icon: "⌚" },
-                { id: "consoles" as const, label: "Sell Game Console", icon: "🎮" },
-                { id: "drones" as const, label: "Sell Drone", icon: "🛸" },
-                { id: "vr" as const, label: "Sell VR", icon: "🥽" },
+                { id: "phones" as const, label: "Sell Phone" },
+                { id: "tablets" as const, label: "Sell Tablet" },
+                { id: "computers" as const, label: "Sell Laptop" },
+                { id: "desktops" as const, label: "Sell Desktop" },
+                { id: "watches" as const, label: "Sell Smartwatch" },
+                { id: "consoles" as const, label: "Sell Game Console" },
+                { id: "drones" as const, label: "Sell Drone" },
+                { id: "vr" as const, label: "Sell VR" },
               ].map((cat, idx) => (
                 <button
                   key={idx}
@@ -3286,11 +3373,7 @@ export default function Home() {
                   className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press reveal"
                   data-stagger={Math.min(idx + 1, 8)}
                 >
-                  {(cat as { customIcon?: boolean }).customIcon ? (
-                    <svg className="w-8 h-6 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="20" rx="3" /><circle cx="16" cy="22" r="1" fill="currentColor" /></svg>
-                  ) : (
-                    <span className="text-2xl mb-1.5">{cat.icon}</span>
-                  )}
+                  <CategoryIcon id={cat.id} className="w-9 h-9 mb-1.5 text-white" />
                   <p className="font-semibold text-white text-xs text-center">{cat.label}</p>
                 </button>
               ))}
