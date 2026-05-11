@@ -2040,7 +2040,7 @@ export default function Home() {
   const [selectedSubSeries, setSelectedSubSeries] = useState<string | null>(null);
   const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
   const [page, setPage] = useState<"home" | "about" | "privacy" | "terms">("home");
-  const [model, setModel] = useState<{ id: string; label: string; base: number } | null>(null);
+  const [model, setModel] = useState<{ id: string; label: string; base: number; image?: string } | null>(null);
   const [storage, setStorage] = useState<typeof ALL_STORAGES[0] | null>(null);
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
@@ -2442,6 +2442,40 @@ export default function Home() {
     onClick: () => { setStep("quote"); pushHistory("quote"); },
   });
   const showBreadcrumbs = breadcrumbs.length > 1 && step !== "device" && step !== "category" && page === "home";
+
+  // SELECTION PANEL — sticky sidebar that travels with the user through the
+  // storage / condition / carrier steps so they can always see what they're
+  // selling. Inspired by IWM but with our spin: bordered card, soft green
+  // accent border, selected fields go bold-green as they're picked.
+  const selectionPanel = model && (
+    <aside className="hidden lg:block lg:w-[300px] shrink-0">
+      <div className="sticky top-24 bg-white/[0.04] border-2 border-[#00c853]/25 rounded-3xl p-5 shadow-[0_8px_30px_rgba(0,200,83,0.08)]">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 aspect-square flex items-center justify-center">
+          {model.image ? (
+            <img src={model.image} alt={model.label} className="max-w-full max-h-full object-contain" />
+          ) : (
+            <div className="text-6xl opacity-30">📱</div>
+          )}
+        </div>
+        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Selling</p>
+        <p className="text-lg font-bold text-white leading-tight mb-4">{model.label}</p>
+        <div className="space-y-2 border-t border-white/10 pt-4">
+          {[
+            { label: "Storage",   value: storage?.label,    active: step === "storage" },
+            { label: "Condition", value: condition?.label,  active: step === "condition" },
+            { label: "Carrier",   value: carrier?.label,    active: step === "carrier" },
+          ].map(row => (
+            <div key={row.label} className={`flex items-center justify-between text-sm rounded-lg px-3 py-2 transition ${row.active ? "bg-[#00c853]/12 border border-[#00c853]/40" : row.value ? "bg-white/5" : ""}`}>
+              <span className={`font-medium ${row.active ? "text-[#00c853]" : "text-[#dcdcdc]"}`}>{row.label}</span>
+              <span className={`text-right font-bold ${row.value ? (row.active ? "text-[#00c853]" : "text-white") : "text-[#888]"}`}>
+                {row.value || (row.active ? "Selecting…" : "—")}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </aside>
+  );
 
   // SEARCH BAR — extracted JSX so it can be rendered inline inside each
   // device-discovery step right above the selection grid (instead of as
@@ -4307,27 +4341,30 @@ export default function Home() {
       {/* STEP: STORAGE */}
       {step === "storage" && page === "home" && model && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-              Back
-            </button>
-            <h2 className="text-2xl font-bold mb-1">Storage capacity?</h2>
-            <p className="text-[#dcdcdc] text-sm mb-6">{model.label}</p>
-            <div className="space-y-2">
-              {getStoragesForModel(model.id).map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => { setStorage(s); setStep("condition"); pushHistory("condition"); }}
-                  className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press"
-                >
-                  <p className="font-semibold text-[15px]">{s.label}</p>
-                  <svg className="w-4 h-4 text-[#dcdcdc]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                </button>
-              ))}
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              <h2 className="text-2xl font-bold mb-1">Storage capacity?</h2>
+              <p className="text-[#dcdcdc] text-sm mb-6 lg:hidden">{model.label}</p>
+              <div className="space-y-2">
+                {getStoragesForModel(model.id).map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => { setStorage(s); setStep("condition"); pushHistory("condition"); }}
+                    className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-[rgba(45,45,45,0.6)] backdrop-blur-[12px] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:bg-[rgba(60,60,60,0.65)] hover:border-[#00c853] hover:scale-[1.02] cursor-pointer transition-all duration-[250ms] ease-out text-left"
+                  >
+                    <p className="font-bold text-[17px] text-white">{s.label}</p>
+                    <svg className="w-4 h-4 text-[#b0b0b0]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  </button>
+                ))}
+              </div>
+              <FairPromise />
+              <TrustBadge />
             </div>
-            <FairPromise />
-            <TrustBadge />
           </div>
         </section>
       )}
@@ -4335,13 +4372,15 @@ export default function Home() {
       {/* STEP: CONDITION */}
       {step === "condition" && page === "home" && model && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">Select Condition</h2>
-            <p className="text-[#dcdcdc] text-sm mb-2">{model.label}</p>
+            <p className="text-[#dcdcdc] text-sm mb-2 lg:hidden">{model.label}</p>
             <button className="text-[#00c853] text-xs font-medium mb-4 cursor-pointer hover:underline" onClick={() => { const el = document.getElementById('condition-guide'); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; }}>How to assess condition</button>
             <div id="condition-guide" style={{ display: 'none' }} className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-xs text-[#d4d4d4] space-y-2">
               <p><strong className="text-white">Brand New:</strong> Sealed in original packaging, never opened</p>
@@ -4359,12 +4398,12 @@ export default function Home() {
                     if ((e.target as HTMLElement).closest('details') || (e.target as HTMLElement).closest('summary')) return;
                     setCondition(c); const cs = (deviceType === "iphone" || deviceType === "android" || deviceType === "pixel") ? "carrier" : "quote"; if (cs === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); } setStep(cs); pushHistory(cs);
                   }}
-                  className="group w-full flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press"
+                  className="group w-full flex items-center gap-4 p-5 rounded-2xl bg-[rgba(45,45,45,0.6)] backdrop-blur-[12px] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:bg-[rgba(60,60,60,0.65)] hover:border-[#00c853] hover:scale-[1.02] cursor-pointer transition-all duration-[250ms] ease-out text-left"
                 >
                   <span className="text-2xl">{c.icon}</span>
                   <div className="flex-1">
-                    <p className="font-semibold text-lg">{c.label}</p>
-                    <p className="text-[#dcdcdc] text-sm">{c.desc}</p>
+                    <p className="font-bold text-[18px] text-white">{c.label}</p>
+                    <p className="text-[#b0b0b0] text-[13px]">{c.desc}</p>
                     {(c as { details?: string[] }).details && (
                       <details className="mt-2">
                         <summary className="text-[#00c853] text-xs cursor-pointer hover:underline">ℹ️ What qualifies?</summary>
@@ -4420,6 +4459,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            </div>
           </div>
         </section>
       )}
@@ -4427,7 +4467,9 @@ export default function Home() {
       {/* STEP: CARRIER */}
       {step === "carrier" && page === "home" && model && condition && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
@@ -4439,15 +4481,16 @@ export default function Home() {
                 <button
                   key={c.id}
                   onClick={() => { setCarrier(c); setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote"); }}
-                  className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press"
+                  className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl bg-[rgba(45,45,45,0.6)] backdrop-blur-[12px] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:bg-[rgba(60,60,60,0.65)] hover:border-[#00c853] hover:scale-[1.02] cursor-pointer transition-all duration-[250ms] ease-out text-left"
                 >
                   <CarrierIcon id={c.id as CarrierIconId} className="w-9 h-9 shrink-0" />
-                  <p className="font-semibold text-[15px] flex-1">{c.label}</p>
+                  <p className="font-bold text-[17px] text-white flex-1">{c.label}</p>
                   {c.id === "unlocked" && <span className="text-[#00c853] text-xs font-medium">Best value</span>}
                 </button>
               ))}
             </div>
             <TrustBadge />
+            </div>
           </div>
         </section>
       )}
