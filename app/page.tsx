@@ -1956,6 +1956,126 @@ const CARRIER_LOCKS = [
   { id: "yes", label: "Yes — Locked to carrier", desc: "Tied to the carrier above" },
 ];
 
+// Per-brand condition label + description overrides. Falls back to the
+// generic CONDITIONS entry when a deviceType isn't here or doesn't
+// override a specific condition id. Pure data — adding a new brand
+// override is one entry, no logic changes.
+const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: string; desc?: string }>>> = {
+  // Apple family — 'Flawless' becomes 'Pristine' / 'Brand New' becomes 'Sealed in Box'
+  iphone: {
+    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    flawless: { label: "Pristine", desc: "Like new — zero scratches or marks" },
+  },
+  ipad: {
+    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    flawless: { label: "Pristine", desc: "Like new — zero scratches or marks" },
+  },
+  macbook: {
+    brandnew: { label: "Sealed in Box", desc: "Factory sealed, original packaging" },
+    flawless: { label: "Pristine", desc: "Like new — zero wear, all original" },
+  },
+  apple_desktop: {
+    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never plugged in" },
+    flawless: { label: "Pristine", desc: "Like new — all original cables + box" },
+  },
+  applewatch: {
+    flawless: { label: "Pristine", desc: "Like new — zero face scratches" },
+    broken:   { label: "Cracked or dead", desc: "Cracked face, dead battery, or won't power on" },
+  },
+  apple_vr: {
+    flawless: { label: "Pristine", desc: "Like new — no scuffs on the cover glass" },
+  },
+  // Samsung family — 'Flawless' becomes 'Mint'
+  android: {
+    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    flawless: { label: "Mint", desc: "Boxed & untouched — zero marks" },
+  },
+  samsung_tab: {
+    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    flawless: { label: "Mint", desc: "Boxed & untouched" },
+  },
+  samsung_pc: {
+    brandnew: { label: "Sealed in Box", desc: "Factory sealed" },
+    flawless: { label: "Mint", desc: "Boxed & untouched" },
+  },
+  samsungwatch: {
+    flawless: { label: "Mint", desc: "Like new — zero face scratches" },
+    broken:   { label: "Cracked or dead", desc: "Cracked face, dead battery, or won't power on" },
+  },
+  // Google family
+  pixel: {
+    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    flawless: { label: "Pristine", desc: "Like new — zero scratches" },
+  },
+  pixelwatch: {
+    flawless: { label: "Pristine", desc: "Like new — zero face scratches" },
+    broken:   { label: "Cracked or dead", desc: "Cracked face, dead battery, or won't power on" },
+  },
+  google_tab: {
+    flawless: { label: "Pristine", desc: "Like new — zero scratches" },
+  },
+  // Consoles — different vocabulary; the customer thinks about working/broken not flawless/fair
+  sony: {
+    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
+    flawless: { label: "Like New", desc: "Boxed, lightly used, no marks" },
+    verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
+    good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
+    fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
+    broken:   { label: "Disc drive broken / won't power on", desc: "Major hardware fault" },
+  },
+  microsoft: {
+    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
+    flawless: { label: "Like New", desc: "Boxed, lightly used, no marks" },
+    verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
+    good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
+    fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
+    broken:   { label: "Disc drive broken / won't power on", desc: "Major hardware fault" },
+  },
+  nintendo: {
+    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
+    flawless: { label: "Like New", desc: "Boxed, lightly used, no marks" },
+    verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
+    good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
+    fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
+    broken:   { label: "Joy-Con drift / won't power on", desc: "Major hardware fault" },
+  },
+  console: {
+    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
+    flawless: { label: "Like New", desc: "Boxed, lightly used" },
+    broken:   { label: "Disc drive broken / won't power on" },
+  },
+  // Drones
+  dji: {
+    flawless: { label: "Hangar-stored, never flown", desc: "Sealed or unflown — full kit included" },
+    verygood: { label: "Lightly Flown", desc: "Under 10 hours, no crashes" },
+    good:     { label: "Well-Maintained", desc: "Flown but maintained, no incidents" },
+    fair:     { label: "Heavily Used", desc: "200+ hours, cosmetic wear, no crashes" },
+    broken:   { label: "Crashed / Motors Broken", desc: "Repair history, motor or shell damage" },
+  },
+  // Watches not already covered
+  garmin: {
+    flawless: { label: "Pristine", desc: "Like new — zero scratches" },
+    broken:   { label: "Cracked or dead", desc: "Cracked face or won't power on" },
+  },
+  // VR
+  meta_vr: {
+    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never paired" },
+    broken:   { label: "Cracked lens / won't power on" },
+  },
+  valve_vr: {
+    broken: { label: "Tracking broken / won't power on" },
+  },
+  psvr: {
+    broken: { label: "Won't pair / cracked headset" },
+  },
+};
+function getConditionLabel(cond: { id: string; label: string; desc?: string }, dt: string | null | undefined): { label: string; desc?: string } {
+  if (!dt) return { label: cond.label, desc: cond.desc };
+  const override = BRAND_CONDITION_LABELS[dt]?.[cond.id];
+  if (!override) return { label: cond.label, desc: cond.desc };
+  return { label: override.label, desc: override.desc ?? cond.desc };
+}
+
 // Combined multiplier: unlocked anything pays the most, big-3 locked
 // pays mid, locked-to-other pays the least. 'unlocked' carrier id is
 // treated as if the user said No to the lock step.
@@ -3403,7 +3523,7 @@ export default function Home() {
     onClick: () => { setStorage(null); setCondition(null); setCarrier(null); setStep("condition"); pushHistory("condition"); },
   });
   if (condition) breadcrumbs.push({
-    label: condition.label,
+    label: getConditionLabel(condition, deviceType).label,
     onClick: () => { setStorage(null); setCarrier(null); setStep("storage"); pushHistory("storage"); },
   });
   if (storage) breadcrumbs.push({
@@ -3498,7 +3618,7 @@ export default function Home() {
               <div className="flex items-center justify-between py-1.5">
                 <span className="text-[#b8b8b8] text-xs">Condition</span>
                 <button onClick={editRow("condition")} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
-                  {condition.label}
+                  {getConditionLabel(condition, deviceType).label}
                   <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                 </button>
               </div>
@@ -3606,7 +3726,7 @@ export default function Home() {
             { label: "Memory",       value: memory?.label,       active: step === "memory",       helpId: null       as null,    show: macSpecFlow },
             { label: "Storage",      value: storage?.label,      active: step === "storage",      helpId: "storage"  as const,   show: !isNoStorageDevice },
             { label: "Display",      value: displayGlass?.label, active: step === "displayglass", helpId: null       as null,    show: macSpecFlow && macHasGlassStep },
-            { label: "Condition",    value: condition?.label,    active: step === "condition",    helpId: null       as null,    show: true },
+            { label: "Condition",    value: condition ? getConditionLabel(condition, deviceType).label : undefined, active: step === "condition", helpId: null as null, show: true },
             { label: "Battery",      value: batteryHealth?.label, active: step === "batteryhealth", helpId: null     as null,    show: macSpecFlow },
             { label: "Charger",      value: charger?.label,      active: step === "charger",      helpId: null       as null,    show: macSpecFlow },
             // Brand extras (PS5 disc / drone hours / watch band etc) get
@@ -6297,17 +6417,17 @@ export default function Home() {
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="font-extrabold text-[15px] text-white leading-tight">{c.label}</p>
+                      <p className="font-extrabold text-[15px] text-white leading-tight">{getConditionLabel(c, deviceType).label}</p>
                       {(c as { details?: string[] }).details && (
                         <button
                           type="button"
                           onClick={(e) => { e.stopPropagation(); setConditionHelpId(c.id); }}
-                          aria-label={`What qualifies as ${c.label}`}
+                          aria-label={`What qualifies as ${getConditionLabel(c, deviceType).label}`}
                           className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none shrink-0 hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
                         >i</button>
                       )}
                     </div>
-                    <p className="text-[#c8c8c8] text-[12px] leading-snug mt-0.5">{c.desc}</p>
+                    <p className="text-[#c8c8c8] text-[12px] leading-snug mt-0.5">{getConditionLabel(c, deviceType).desc || c.desc}</p>
                   </div>
                   <svg className="w-4 h-4 text-[#e6e6e6] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
@@ -7120,7 +7240,7 @@ export default function Home() {
                 <div className="min-w-0 flex-1">
                   <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Quoted</p>
                   <p className="font-extrabold text-[16px] lg:text-[18px] text-white leading-tight break-words">{model.label}</p>
-                  <p className="text-[#d4d4d4] text-[11px] lg:text-xs mt-1 break-words">{storage?.label} · {condition.label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
+                  <p className="text-[#d4d4d4] text-[11px] lg:text-xs mt-1 break-words">{storage?.label} · {getConditionLabel(condition, deviceType).label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
                 </div>
                 <div className="text-right shrink-0">
                   <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Payout</p>
