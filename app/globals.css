@@ -8,6 +8,25 @@
   to { transform: translateX(0); }
 }
 
+/* Selection frame — wraps a group of selection rows (storage, condition,
+   carrier) in a slightly-elevated glass container so the whole group
+   reads as ONE 3D object instead of loose floating tiles. Inspired by
+   ItsWorthMore but tuned to our dark glassy look. The inner rows keep
+   their own tcc-card hover state but feel "contained". */
+.tcc-selection-frame {
+  background: rgba(15, 15, 15, 0.42);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 24px;
+  padding: 10px;
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.25),
+    0 24px 50px rgba(0, 0, 0, 0.55),
+    0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
 /* Cart icon bump — small bounce + green glow when an item is added.
    Triggered by changing the React key on the cart button so the
    animation replays on every add. */

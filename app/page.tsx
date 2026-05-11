@@ -4633,17 +4633,19 @@ export default function Home() {
               {selectionPanelMobile}
               <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Storage capacity?</h2>
               {stepProgress}
-              <div className="space-y-2">
-                {getStoragesForModel(model.id).map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => { setStorage(s); setStep("condition"); pushHistory("condition"); }}
-                    className="tcc-card w-full flex items-center justify-between px-5 py-4 rounded-2xl cursor-pointer text-left"
-                  >
-                    <p className="font-extrabold text-[17px] text-white">{s.label}</p>
-                    <svg className="w-4 h-4 text-[#b0b0b0]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                  </button>
-                ))}
+              <div className="tcc-selection-frame">
+                <div className="space-y-2">
+                  {getStoragesForModel(model.id).map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() => { setStorage(s); setStep("condition"); pushHistory("condition"); }}
+                      className="tcc-card w-full flex items-center justify-between px-5 py-4 rounded-2xl cursor-pointer text-left"
+                    >
+                      <p className="font-extrabold text-[17px] text-white">{s.label}</p>
+                      <svg className="w-4 h-4 text-[#b0b0b0]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  ))}
+                </div>
               </div>
               <FairPromise />
               <TrustBadge />
@@ -4674,6 +4676,7 @@ export default function Home() {
               <p><strong className="text-white">Fair:</strong> Noticeable wear — scuffs, dents, or cosmetic damage</p>
               <p><strong className="text-white">Broken:</strong> Cracked screen, water damage, or not fully functional</p>
             </div>
+            <div className="tcc-selection-frame">
             <div className="space-y-2">
               {CONDITIONS.map((c) => (
                 <button
@@ -4702,6 +4705,7 @@ export default function Home() {
                   <svg className="w-4 h-4 text-[#dcdcdc] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
               ))}
+            </div>
             </div>
 
             <div className="mt-6 bg-[rgba(20,28,40,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
@@ -4764,19 +4768,21 @@ export default function Home() {
             <h2 className="text-2xl lg:text-3xl font-extrabold mb-2">Carrier status?</h2>
             {stepProgress}
             <p className="text-[#dcdcdc] text-sm mb-6">Is your phone unlocked or locked to a carrier?</p>
-            <div className="space-y-2">
-              {CARRIERS.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => { setCarrier(c); setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote"); }}
-                  className="tcc-card w-full flex items-center gap-4 px-5 py-4 rounded-2xl cursor-pointer text-left"
-                >
-                  <p className="font-extrabold text-[17px] text-white flex-1">{c.label}</p>
-                  {c.id === "unlocked" && (
-                    <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-full shadow-[0_0_8px_rgba(0,200,83,0.35)]">Best value</span>
-                  )}
-                </button>
-              ))}
+            <div className="tcc-selection-frame">
+              <div className="space-y-2">
+                {CARRIERS.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => { setCarrier(c); setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote"); }}
+                    className="tcc-card w-full flex items-center gap-4 px-5 py-4 rounded-2xl cursor-pointer text-left"
+                  >
+                    <p className="font-extrabold text-[17px] text-white flex-1">{c.label}</p>
+                    {c.id === "unlocked" && (
+                      <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-full shadow-[0_0_8px_rgba(0,200,83,0.35)]">Best value</span>
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
             <TrustBadge />
             </div>
