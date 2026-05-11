@@ -1875,8 +1875,10 @@ function getStoragesForModel(modelId: string) {
 // CARRIER_LOCKS toggle below tracks whether it's actually locked to
 // that network or unlocked. Multiplier comes from the combination —
 // see carrierMultiplierFor() — so the individual constants here just
-// carry the labels.
+// carry the labels. 'Unlocked' is its own first option for users who
+// know their phone is already unlocked (skips the lock step entirely).
 const CARRIERS = [
+  { id: "unlocked", label: "Unlocked", icon: "🔓" },
   { id: "att", label: "AT&T", icon: "📶" },
   { id: "tmobile", label: "T-Mobile", icon: "📶" },
   { id: "verizon", label: "Verizon", icon: "📶" },
@@ -1889,8 +1891,10 @@ const CARRIER_LOCKS = [
 ];
 
 // Combined multiplier: unlocked anything pays the most, big-3 locked
-// pays mid, locked-to-other pays the least.
+// pays mid, locked-to-other pays the least. 'unlocked' carrier id is
+// treated as if the user said No to the lock step.
 const carrierMultiplierFor = (carrierId: string | null | undefined, lockId: string | null | undefined): number => {
+  if (carrierId === "unlocked") return 1.0;
   if (!lockId) return 1; // not picked yet, no penalty
   if (lockId === "no") return 1.0;
   if (carrierId === "other") return 0.85;
