@@ -395,8 +395,8 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "512": { broken: 72, fair: 117, good: 162, mint: 189, sealed: 248, verygood: 171 },
   },
   gzflip6: {
-    "256": { fair: 158, good: 198, mint: 234, sealed: 261, verygood: 216 },
-    "512": { fair: 176, good: 216, mint: 252, sealed: 306, verygood: 234 },
+    "256": { broken: 54, fair: 158, good: 198, mint: 234, sealed: 261, verygood: 216 },
+    "512": { broken: 63, fair: 176, good: 216, mint: 252, sealed: 306, verygood: 234 },
   },
   gzflip7: {
     "256": { broken: 45, fair: 292, good: 351, mint: 387, sealed: 423, verygood: 369 },
