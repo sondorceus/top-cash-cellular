@@ -113,13 +113,12 @@ export async function POST(req: NextRequest) {
     const shipping = 10;
     const netProfit = margin - shipping;
     marginLines.push("--- MARGIN ANALYSIS ---");
-    marginLines.push(`Est. resell: $${resellEst} (eBay/market)`);
-    marginLines.push(`Our buy: $${quoteNum}`);
-    marginLines.push(`Gross margin: $${margin} (${marginPct}%)`);
-    marginLines.push(`Net (after ~$${shipping} ship): $${netProfit}`);
-    if (marginPct < 10) marginLines.push("⚠️ LOW MARGIN — review before accepting");
-    else if (marginPct < 15) marginLines.push("⚡ Thin margin — proceed with caution");
-    else marginLines.push("✅ Healthy margin");
+    marginLines.push(`Sells for: ~$${resellEst} (Swappa/eBay)`);
+    marginLines.push(`You pay: $${quoteNum}`);
+    marginLines.push(`You make: $${netProfit} after shipping (${marginPct}% margin)`);
+    if (marginPct < 10) marginLines.push("⚠️ LOW — review before accepting");
+    else if (marginPct < 15) marginLines.push("⚡ THIN — proceed with caution");
+    else marginLines.push("✅ GOOD DEAL");
   } else if (quoteNum === 0) {
     marginLines.push("--- MARGIN: Manual quote needed (no auto-price) ---");
   }
