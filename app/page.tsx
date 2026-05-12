@@ -3743,7 +3743,7 @@ export default function Home() {
   );
 
   const selectionPanel = model && (
-    <aside className="hidden lg:block lg:w-[300px] shrink-0">
+    <aside className="hidden lg:block lg:w-[330px] shrink-0">
       <div className="sticky top-24 bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
         <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl mb-4 h-72 flex items-center justify-center overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-3">
           {model.image ? (
@@ -3856,7 +3856,7 @@ export default function Home() {
     </div>
   );
   const checkoutSummary = checkoutLines.length > 0 && (
-    <aside className="hidden lg:block lg:w-[300px] shrink-0">
+    <aside className="hidden lg:block lg:w-[330px] shrink-0">
       <div className="sticky top-24 bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
         <div className="flex items-center justify-between mb-3">
           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Order summary</p>
