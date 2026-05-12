@@ -1,0 +1,110 @@
+[
+  {
+    "id": "ip16pm",
+    "model": "iphone-16-pro-max",
+    "iwm": 780,
+    "ours": 663
+  },
+  {
+    "id": "ip16p",
+    "model": "iphone-16-pro",
+    "iwm": 660,
+    "ours": 561
+  },
+  {
+    "id": "ip16plus",
+    "model": "iphone-16-plus",
+    "iwm": 530,
+    "ours": 450
+  },
+  {
+    "id": "ip16",
+    "model": "iphone-16",
+    "iwm": 505,
+    "ours": 429
+  },
+  {
+    "id": "ip15pm",
+    "model": "iphone-15-pro-max",
+    "iwm": 550,
+    "ours": 467
+  },
+  {
+    "id": "ip15p",
+    "model": "iphone-15-pro",
+    "iwm": 495,
+    "ours": 420
+  },
+  {
+    "id": "ip15plus",
+    "model": "iphone-15-plus",
+    "iwm": 410,
+    "ours": 348
+  },
+  {
+    "id": "ip15",
+    "model": "iphone-15",
+    "iwm": 365,
+    "ours": 310
+  },
+  {
+    "id": "ip14pm",
+    "model": "iphone-14-pro-max",
+    "iwm": 460,
+    "ours": 391
+  },
+  {
+    "id": "ip14p",
+    "model": "iphone-14-pro",
+    "iwm": 380,
+    "ours": 323
+  },
+  {
+    "id": "ip14",
+    "model": "iphone-14",
+    "iwm": 295,
+    "ours": 250
+  },
+  {
+    "id": "ip13pm",
+    "model": "iphone-13-pro-max",
+    "iwm": 365,
+    "ours": 310
+  },
+  {
+    "id": "ip13p",
+    "model": "iphone-13-pro",
+    "iwm": 315,
+    "ours": 267
+  },
+  {
+    "id": "ip13",
+    "model": "iphone-13",
+    "iwm": 215,
+    "ours": 182
+  },
+  {
+    "id": "ip12pm",
+    "model": "iphone-12-pro-max",
+    "iwm": 255,
+    "ours": 216
+  },
+  {
+    "id": "ip12",
+    "model": "iphone-12",
+    "iwm": 160,
+    "ours": 136
+  },
+  {
+    "id": "ip11pm",
+    "model": "iphone-11-pro-max",
+    "iwm": 210,
+    "ours": 178
+  },
+  {
+    "id": "ip11",
+    "model": "iphone-11",
+    "iwm": 130,
+    "ours": 110
+  }
+]
