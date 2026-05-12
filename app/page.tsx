@@ -3101,7 +3101,30 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
     ]},
   ],
 };
-const getBrandExtras = (dt: string | null | undefined): BrandExtra[] => (dt && BRAND_EXTRAS[dt]) || [];
+// Apple Watch Ultra (gen 1 + 2) ships cellular-only on a 49mm titanium
+// case — so the GPS-vs-Cellular question is meaningless and the band
+// list is Ultra-specific (Alpine / Trail / Ocean / Titanium Milanese).
+// Non-Ultra Apple Watches keep the standard 4-question flow.
+const isAppleWatchUltra = (modelId?: string | null) => modelId === "awu1" || modelId === "awu2";
+const getBrandExtras = (dt: string | null | undefined, modelId?: string | null | undefined): BrandExtra[] => {
+  const base = (dt && BRAND_EXTRAS[dt]) || [];
+  if (dt === "applewatch" && isAppleWatchUltra(modelId)) {
+    return base
+      .filter(q => q.id !== "connectivity")
+      .map(q => q.id === "band"
+        ? { ...q, question: "Original band included?", options: [
+            { id: "alpine",            label: "Alpine Loop",              multiplier: 1.05 },
+            { id: "trail",             label: "Trail Loop",               multiplier: 1.05 },
+            { id: "ocean",             label: "Ocean Band",               multiplier: 1.05 },
+            { id: "titanium_milanese", label: "Titanium Milanese Loop",   multiplier: 1.12 },
+            { id: "third",             label: "3rd-party band",           multiplier: 1.00 },
+            { id: "none",              label: "No band",                  multiplier: 0.90 },
+          ]}
+        : q
+      );
+  }
+  return base;
+};
 
 // Brand-aware competitor reference. The 'How we compare' card on the
 // quote page used to hardcode 'Apple Trade-In' for every device, which
@@ -4274,7 +4297,7 @@ export default function Home() {
     else if (step === "extras") {
       if (extrasIndex > 0) {
         // Back up one question within the extras flow.
-        const ex = getBrandExtras(deviceType);
+        const ex = getBrandExtras(deviceType, model?.id);
         const prev = ex[extrasIndex - 1];
         if (prev) {
           const next = { ...extras };
@@ -4298,7 +4321,7 @@ export default function Home() {
     else if (step === "connectivity") {
       // If this device has brand extras, back through the last question instead
       // of jumping straight to condition.
-      const ex = getBrandExtras(deviceType);
+      const ex = getBrandExtras(deviceType, model?.id);
       if (ex.length > 0) {
         setExtrasIndex(ex.length - 1);
         setStep("extras"); // keep last answer until they re-pick
@@ -4557,10 +4580,10 @@ export default function Home() {
                 </button>
               </div>
             )}
-            {getBrandExtras(deviceType).filter(q => extras[q.id]).map((q) => (
+            {getBrandExtras(deviceType, model?.id).filter(q => extras[q.id]).map((q) => (
               <div key={q.id} className="flex items-center justify-between py-1.5">
                 <span className="text-[#b8b8b8] text-xs">{q.question.replace(/\?$/, "")}</span>
-                <button onClick={() => { setExtrasIndex(getBrandExtras(deviceType).findIndex(x => x.id === q.id)); setStep("extras"); pushHistory("extras"); }} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
+                <button onClick={() => { setExtrasIndex(getBrandExtras(deviceType, model?.id).findIndex(x => x.id === q.id)); setStep("extras"); pushHistory("extras"); }} className="inline-flex items-center gap-1.5 text-white text-xs font-extrabold cursor-pointer hover:text-[#00c853] transition">
                   {extras[q.id]?.label}
                   <svg className="w-3 h-3 text-[#b8b8b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                 </button>
@@ -4649,10 +4672,10 @@ export default function Home() {
             // Brand extras (PS5 disc / drone hours / watch band etc) get
             // one row per answered question, only shown for device types
             // that declare extras in BRAND_EXTRAS.
-            ...getBrandExtras(deviceType).map(q => ({
+            ...getBrandExtras(deviceType, model?.id).map(q => ({
               label: q.question.replace(/\?$/, ""),
               value: extras[q.id]?.label,
-              active: step === "extras" && getBrandExtras(deviceType)[extrasIndex]?.id === q.id,
+              active: step === "extras" && getBrandExtras(deviceType, model?.id)[extrasIndex]?.id === q.id,
               helpId: null as null,
               show: true,
             })),
@@ -7353,7 +7376,7 @@ export default function Home() {
           answer we advance the index and re-render. When all questions are
           answered, route to the next funnel step (storage / quote). */}
       {step === "extras" && page === "home" && model && deviceType && (() => {
-        const list = getBrandExtras(deviceType);
+        const list = getBrandExtras(deviceType, model?.id);
         const q = list[extrasIndex];
         if (!q) {
           // Defensive — shouldn't render in this state because the answer
@@ -7521,7 +7544,7 @@ export default function Home() {
                     // Brand-specific extras (PS5 disc drive, DJI hours flown,
                     // smartwatch band etc) fire BEFORE the quote so the
                     // pricing reflects them.
-                    if (getBrandExtras(deviceType).length > 0) {
+                    if (getBrandExtras(deviceType, model?.id).length > 0) {
                       setExtras({}); setExtrasIndex(0);
                       setStep("extras"); pushHistory("extras");
                       return;
