@@ -720,6 +720,9 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   awu2: {
     "base": { fair: 90, good: 135, mint: 180, sealed: 216, verygood: 162 },
   },
+  awu3: {
+    "base": { broken: 45, fair: 171, good: 252, mint: 302, sealed: 338, verygood: 279 },
+  },
   mba13m3: {
     "1tb": { fair: 432, good: 540, mint: 648, sealed: 693, verygood: 594 },
     "2tb": { fair: 544, good: 652, mint: 760, sealed: 806, verygood: 706 },
@@ -2086,7 +2089,7 @@ const CONSOLE_MODELS = [...SONY_MODELS, ...MICROSOFT_MODELS, ...NINTENDO_MODELS]
 const APPLEWATCH_MODELS = [
   // Ultra 3 base is a placeholder — ClaudeMX's IWM scraper picks up
   // exact pricing on the weekly Monday refresh.
-  { id: "awu3", label: "Apple Watch Ultra 3", base: 580, image: "/devices/apple-watch-ultra-3.webp" },
+  { id: "awu3", label: "Apple Watch Ultra 3", base: 302, image: "/devices/apple-watch-ultra-3.webp" },
   { id: "awu2", label: "Apple Watch Ultra 2", base: 450, image: "/devices/apple-watch-ultra-2.webp" },
   { id: "awu1", label: "Apple Watch Ultra", base: 350, image: "/devices/apple-watch-ultra.webp" },
   { id: "aws10", label: "Apple Watch Series 10", base: 280, image: "/devices/apple-watch-series-10.webp" },
@@ -3144,11 +3147,13 @@ const getBrandExtras = (dt: string | null | undefined, modelId?: string | null |
     // size. Replace the generic band question's options with the actual
     // Ultra band lineup. Titanium Milanese only shipped from Sept 2024,
     // so it's only an option for Ultra 3.
+    // IWM band pricing: Alpine/Trail/Ocean are base ($0 adj).
+    // Titanium Milanese Loop is +$25-30 premium. No band is -$25.
     const ultraBandOptions = [
-      { id: "alpine", label: "Alpine Loop", multiplier: 1.05 },
-      { id: "trail",  label: "Trail Loop",  multiplier: 1.05 },
-      { id: "ocean",  label: "Ocean Band",  multiplier: 1.05 },
-      ...(modelId === "awu3" ? [{ id: "titanium_milanese", label: "Titanium Milanese Loop", multiplier: 1.12 }] : []),
+      { id: "alpine", label: "Alpine Loop", multiplier: 1.00 },
+      { id: "trail",  label: "Trail Loop",  multiplier: 1.00 },
+      { id: "ocean",  label: "Ocean Band",  multiplier: 1.00 },
+      ...(modelId === "awu2" || modelId === "awu3" ? [{ id: "titanium_milanese", label: "Titanium Milanese Loop", multiplier: 1.08 }] : []),
     ];
     return base
       .filter(q => q.id !== "connectivity" && q.id !== "material" && q.id !== "size")
