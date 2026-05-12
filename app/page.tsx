@@ -187,6 +187,10 @@ const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
   gzflip7: { att: 50, tmobile: 70, other: 100 },
   gzflip6: { att: 40, tmobile: 50, other: 80 },
 };
+// Minimum offer threshold — below this we lose money on shipping + processing.
+// Devices below this get "Manual review & custom quote" instead of a dollar amount.
+const MIN_OFFER = 25;
+
 const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   ip11: {
     "128": { broken: 20, fair: 76, good: 95, mint: 109, sealed: 138 },
@@ -3813,14 +3817,15 @@ export default function Home() {
       : 0;
   const quote = baseQuote + accessoryBonus;
   // Minimum offer threshold — below this we lose money on shipping +
-  // processing. Show "Custom quote" instead of a dollar amount.
-  const MIN_OFFER = 25;
+  // processing. Show "Manual quote" instead of a dollar amount.
+  // User can still add to cart; we review manually before paying out.
   const isBelowMinimum = quote > 0 && quote < MIN_OFFER;
   // Inquiry-only models have no base price (or 0). We still let the
   // user walk the funnel + add to cart; the quote step shows
   // 'Quote pending' instead of a number, and the cart marks the line
   // 'Pending quote'.
-  const isPendingQuote = !model?.base || isBelowMinimum;
+  const isPendingQuote = !model?.base;
+  const isManualQuote = isBelowMinimum;
 
   const maxQuoteFor = (v: { id: string; base: number }) => {
     const sids = STORAGE_MAP[v.id];
@@ -4189,10 +4194,11 @@ export default function Home() {
         {/* BOTTOM — price reveal once we're past the carrier step */}
         {(step === "quote" || step === "checkout" || step === "payout" || step === "contact") && (
           <div className="border-t border-white/10 mt-2 pt-4 text-center">
-            {isPendingQuote ? (
+            {isPendingQuote || isManualQuote ? (
               <>
-                <p className="text-[#b8b8b8] text-sm">Your device will be</p>
-                <p className="text-white font-extrabold text-xl mt-1 leading-tight">Quoted via email or text</p>
+                <p className="text-[#b8b8b8] text-sm">{isManualQuote ? "This device needs a" : "Your device will be"}</p>
+                <p className="text-white font-extrabold text-xl mt-1 leading-tight">{isManualQuote ? "Manual review & custom quote" : "Quoted via email or text"}</p>
+                <p className="text-[#888] text-xs mt-1">{isManualQuote ? "Add to your box — we\u2019ll text you a fair offer within the hour" : ""}</p>
               </>
             ) : (
               <>
@@ -4238,8 +4244,8 @@ export default function Home() {
               show: true,
             })),
             { label: "Connectivity", value: connectivity?.label, active: step === "connectivity", helpId: null       as null,    show: deviceType === "ipad" },
-            { label: "Carrier",      value: carrier?.label,      active: step === "carrier",      helpId: "carrier"  as const,   show: isPhoneFlow || isIpadCellular },
-            { label: "Carrier Lock", value: carrierLock?.label,  active: step === "carrier-lock", helpId: null       as null,    show: isPhoneFlow || isIpadCellular },
+            { label: "Carrier",      value: isManualQuote ? "N/A" : carrier?.label,      active: step === "carrier",      helpId: "carrier"  as const,   show: (isPhoneFlow || isIpadCellular) && !isManualQuote },
+            { label: "Carrier Lock", value: isManualQuote ? "N/A" : carrierLock?.label,  active: step === "carrier-lock", helpId: null       as null,    show: (isPhoneFlow || isIpadCellular) && !isManualQuote },
           ].filter(row => row.show).map(row => (
             <div key={row.label} className={`rounded-lg px-3 py-2.5 transition-all duration-[250ms] ease-out ${row.active ? "bg-[#00c853]/12 border border-[#00c853]" : row.value ? "bg-[rgba(15,15,15,0.5)] border border-white/10" : "border border-transparent"}`}>
               <div className="flex items-center justify-between gap-2">
@@ -7035,7 +7041,12 @@ export default function Home() {
                           return;
                         }
                         const isPhone = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
-                        const ns: Step = (isPhone || isIpadCellular) ? "carrier" : "quote";
+                        // Check if price would be below minimum — if so skip carrier
+                        const storMult = (s as { multiplier?: number }).multiplier ?? 1;
+                        const estPrice = PRICE_TABLE[model.id]?.[s.id]?.[condition?.id ?? ""] ??
+                          Math.round((model.base ?? 0) * storMult * (condition?.multiplier ?? 1));
+                        const skipCarrier = estPrice < MIN_OFFER;
+                        const ns: Step = skipCarrier ? "quote" : (isPhone || isIpadCellular) ? "carrier" : "quote";
                         if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
                         setStep(ns); pushHistory(ns);
                       }}
@@ -7299,10 +7310,10 @@ export default function Home() {
             {selectionPanelMobile}
             <div className="hidden lg:block mb-2">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Your offer</p>
-              {isPendingQuote ? (
+              {isPendingQuote || isManualQuote ? (
                 <>
-                  <p className="text-3xl lg:text-4xl font-extrabold text-white mt-1 leading-tight">Quoted via email or text</p>
-                  <p className="text-[#c8c8c8] text-sm mt-2 leading-snug max-w-md">This device isn&apos;t on our standard price list. Add it to your box and we&apos;ll email or text you a quote within the hour — no need to wait until pickup.</p>
+                  <p className="text-3xl lg:text-4xl font-extrabold text-white mt-1 leading-tight">{isManualQuote ? "Manual review needed" : "Quoted via email or text"}</p>
+                  <p className="text-[#c8c8c8] text-sm mt-2 leading-snug max-w-md">{isManualQuote ? "This device\u2019s value is below our standard offer threshold. Add it to your box and we\u2019ll text you a fair custom quote within the hour." : "This device isn\u2019t on our standard price list. Add it to your box and we\u2019ll email or text you a quote within the hour \u2014 no need to wait until pickup."}</p>
                 </>
               ) : (
                 <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853] mt-1" style={{ textShadow: "0 0 8px rgba(0, 200, 83, 0.22)" }}>${quote * quantity}</p>
