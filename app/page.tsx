@@ -2927,7 +2927,11 @@ type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" |
 // Each option carries a multiplier that folds into the quote alongside
 // storage / condition / etc.
 type ExtraOption = { id: string; label: string; sub?: string; multiplier: number };
-type BrandExtra = { id: string; question: string; helper?: string; options: ExtraOption[] };
+// `showIf` makes a question conditional on a previous answer — used to
+// short-circuit follow-ups like "which band?" when the user already said
+// "no band". When showIf returns false, the renderer auto-advances past
+// the question instead of showing it.
+type BrandExtra = { id: string; question: string; helper?: string; options: ExtraOption[]; showIf?: (extras: Record<string, ExtraOption | undefined>) => boolean };
 const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
   // Consoles — single ask: disc drive yes/no (digital editions trade lower)
   // and how many controllers are in the box.
@@ -3005,6 +3009,13 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
   ],
   // Smartwatches — band makes a big resale difference
   applewatch: [
+    // Functional check first. "No" returns a near-zero multiplier (0.02)
+    // which drops the quote below MIN_OFFER and triggers the
+    // "Manual review needed" flow on the quote step.
+    { id: "functional", question: "Is the watch fully functional?", helper: "Powers on, touchscreen and buttons respond, all sensors work.", options: [
+      { id: "yes", label: "Yes — fully working", multiplier: 1.00 },
+      { id: "no",  label: "No — needs repair or won't power on", sub: "We'll text you a custom quote", multiplier: 0.02 },
+    ]},
     { id: "material", question: "Case material?", helper: "Check the back of your watch or Settings > General > About.", options: [
       { id: "aluminum",  label: "Aluminum",        multiplier: 1.00 },
       { id: "stainless", label: "Stainless Steel",  multiplier: 1.15 },
@@ -3018,10 +3029,15 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "small", label: "Small (40-42mm)",       multiplier: 1.00 },
       { id: "large", label: "Large (44-46mm)",       multiplier: 1.05 },
     ]},
-    { id: "band", question: "Band included?", options: [
-      { id: "oem",   label: "Yes — original Apple band",   multiplier: 1.05 },
-      { id: "third", label: "Yes — 3rd-party band",        multiplier: 1.00 },
-      { id: "none",  label: "No band",                     multiplier: 0.90 },
+    // Two-step band flow — yes/no first so users without a band don't
+    // have to scan the full list. If "yes", the follow-up "which band?"
+    // question fires via showIf.
+    { id: "bandIncluded", question: "Original Apple band included?", options: [
+      { id: "yes", label: "Yes",        multiplier: 1.00 },
+      { id: "no",  label: "No (no band or 3rd-party only)", multiplier: 0.90 },
+    ]},
+    { id: "band", question: "Which band shipped with it?", showIf: (extras) => extras.bandIncluded?.id === "yes", options: [
+      { id: "oem", label: "Original Apple band", multiplier: 1.05 },
     ]},
   ],
   samsungwatch: [
@@ -3124,20 +3140,20 @@ const isAppleWatchUltra = (modelId?: string | null) => modelId === "awu1" || mod
 const getBrandExtras = (dt: string | null | undefined, modelId?: string | null | undefined): BrandExtra[] => {
   const base = (dt && BRAND_EXTRAS[dt]) || [];
   if (dt === "applewatch" && isAppleWatchUltra(modelId)) {
+    // Ultras: titanium 49mm cellular always — drop material / connectivity /
+    // size. Replace the generic band question's options with the actual
+    // Ultra band lineup. Titanium Milanese only shipped from Sept 2024,
+    // so it's only an option for Ultra 3.
     const ultraBandOptions = [
       { id: "alpine", label: "Alpine Loop", multiplier: 1.05 },
       { id: "trail",  label: "Trail Loop",  multiplier: 1.05 },
       { id: "ocean",  label: "Ocean Band",  multiplier: 1.05 },
-      // Titanium Milanese Loop only shipped with Ultra 3 (released Sept 2024,
-      // after Ultra 1 and Ultra 2 were already out)
       ...(modelId === "awu3" ? [{ id: "titanium_milanese", label: "Titanium Milanese Loop", multiplier: 1.12 }] : []),
-      { id: "third", label: "3rd-party band", multiplier: 1.00 },
-      { id: "none",  label: "No band",        multiplier: 0.90 },
     ];
     return base
       .filter(q => q.id !== "connectivity" && q.id !== "material" && q.id !== "size")
       .map(q => q.id === "band"
-        ? { ...q, question: "Original band included?", options: ultraBandOptions }
+        ? { ...q, options: ultraBandOptions }
         : q
       );
   }
@@ -7406,6 +7422,12 @@ export default function Home() {
           }, 0);
           return null;
         }
+        // Auto-skip questions whose showIf predicate says they don't apply
+        // given current answers (e.g. "which band?" when user said no band).
+        if (q.showIf && !q.showIf(extras)) {
+          setTimeout(() => setExtrasIndex(i => i + 1), 0);
+          return null;
+        }
         return (
           <section className="animate-[fadeIn_0.3s_ease-out]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
@@ -7429,7 +7451,15 @@ export default function Home() {
                         onClick={() => {
                           const nextExtras = { ...extras, [q.id]: opt };
                           setExtras(nextExtras);
-                          const nextIdx = extrasIndex + 1;
+                          // Walk past any subsequent questions that don't
+                          // apply given the new answers (e.g. "which band?"
+                          // when user just said no band).
+                          let nextIdx = extrasIndex + 1;
+                          while (nextIdx < list.length) {
+                            const peek = list[nextIdx];
+                            if (peek.showIf && !peek.showIf(nextExtras)) nextIdx++;
+                            else break;
+                          }
                           if (nextIdx < list.length) {
                             setExtrasIndex(nextIdx);
                           } else {
