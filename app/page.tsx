@@ -1946,60 +1946,46 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   // Apple family — 'Mint' becomes 'Pristine' / 'Sealed' label
   iphone: {
     sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
-    mint: { label: "Pristine", desc: "Like new — zero scratches or marks" },
   },
   ipad: {
     sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
-    mint: { label: "Pristine", desc: "Like new — zero scratches or marks" },
   },
   macbook: {
     sealed: { label: "Sealed", desc: "Factory sealed, original packaging" },
-    mint: { label: "Pristine", desc: "Like new — zero wear, all original" },
   },
   apple_desktop: {
     sealed: { label: "Sealed", desc: "Factory sealed, never plugged in" },
-    mint: { label: "Pristine", desc: "Like new — all original cables + box" },
   },
   applewatch: {
-    mint: { label: "Pristine", desc: "Like new — zero face scratches" },
     broken:   { label: "Cracked or dead", desc: "Cracked face, dead battery, or won't power on" },
   },
   apple_vr: {
-    mint: { label: "Pristine", desc: "Like new — no scuffs on the cover glass" },
   },
   // Samsung family — 'Flawless' becomes 'New'
   android: {
     sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
-    mint: { label: "New", desc: "Boxed & untouched — zero marks" },
   },
   samsung_tab: {
     sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
-    mint: { label: "New", desc: "Boxed & untouched" },
   },
   samsung_pc: {
     sealed: { label: "Sealed", desc: "Factory sealed" },
-    mint: { label: "New", desc: "Boxed & untouched" },
   },
   samsungwatch: {
-    mint: { label: "New", desc: "Like new — zero face scratches" },
     broken:   { label: "Cracked or dead", desc: "Cracked face, dead battery, or won't power on" },
   },
   // Google family
   pixel: {
     sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
-    mint: { label: "Pristine", desc: "Like new — zero scratches" },
   },
   pixelwatch: {
-    mint: { label: "Pristine", desc: "Like new — zero face scratches" },
     broken:   { label: "Cracked or dead", desc: "Cracked face, dead battery, or won't power on" },
   },
   google_tab: {
-    mint: { label: "Pristine", desc: "Like new — zero scratches" },
   },
   // Consoles — different vocabulary; the customer thinks about working/broken not flawless/fair
   sony: {
     sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
-    mint: { label: "Like New", desc: "Boxed, lightly used, no marks" },
     verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
     fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
@@ -2007,7 +1993,6 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   },
   microsoft: {
     sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
-    mint: { label: "Like New", desc: "Boxed, lightly used, no marks" },
     verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
     fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
@@ -2015,7 +2000,6 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   },
   nintendo: {
     sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
-    mint: { label: "Like New", desc: "Boxed, lightly used, no marks" },
     verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
     fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
@@ -2023,12 +2007,10 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   },
   console: {
     sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
-    mint: { label: "Like New", desc: "Boxed, lightly used" },
     broken:   { label: "Disc drive broken / won't power on" },
   },
   // Drones
   dji: {
-    mint: { label: "Hangar-stored, never flown", desc: "Sealed or unflown — full kit included" },
     verygood: { label: "Lightly Flown", desc: "Under 10 hours, no crashes" },
     good:     { label: "Well-Maintained", desc: "Flown but maintained, no incidents" },
     fair:     { label: "Heavily Used", desc: "200+ hours, cosmetic wear, no crashes" },
@@ -2036,7 +2018,6 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   },
   // Watches not already covered
   garmin: {
-    mint: { label: "Pristine", desc: "Like new — zero scratches" },
     broken:   { label: "Cracked or dead", desc: "Cracked face or won't power on" },
   },
   // VR
