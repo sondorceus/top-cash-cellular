@@ -218,6 +218,53 @@ body:not(.at-top) nav.sticky { box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35); }
    Title spec: pure #FFF / weight 800 / +2px size baseline.
    Sub spec:   muted #A0A0A0 / weight 400.
 */
+
+/* Brand-icon tile — uniform chrome around the per-brand SVG glyphs on
+   the brand-selector buttons. Modernizes the look of the existing
+   circle-based brand logos without rewriting each SVG: a rounded-2xl
+   frame with subtle rim light + ambient shadow + a soft white highlight
+   gradient overlay. All brand icons now read the same size & weight. */
+.tcc-brand-tile {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 14px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
+}
+.tcc-brand-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 45%);
+  pointer-events: none;
+  border-radius: 14px;
+}
+.tcc-brand-tile > svg {
+  width: 38px;
+  height: 38px;
+}
+button:hover > .tcc-brand-tile {
+  transform: translateY(-1px);
+  border-color: rgba(0, 200, 83, 0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 14px rgba(0, 200, 83, 0.18),
+    0 10px 20px rgba(0, 0, 0, 0.5);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tcc-brand-tile { transition: none; }
+  button:hover > .tcc-brand-tile { transform: none; }
+}
+
 .tcc-card {
   background: rgba(15, 15, 15, 0.5);
   backdrop-filter: blur(12px);
