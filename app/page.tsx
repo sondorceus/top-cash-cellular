@@ -7301,7 +7301,19 @@ export default function Home() {
               ))}
             </div>
           )}
-          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-12 pb-8 lg:flex lg:gap-8 lg:items-start lg:text-left text-center">
+          {/* 3D depth: a faint glowing line in the background that
+              visually links the device thumb (selection panel) to the
+              offer / price column. Horizontal on desktop where the two
+              panels sit side-by-side; vertical on mobile where they
+              stack. Pure decoration, never blocks clicks. */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden z-0">
+            {/* Desktop horizontal connector */}
+            <div className="hidden lg:block absolute left-[12%] right-[12%] top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-[#00c853]/30 to-transparent" style={{ boxShadow: "0 0 16px 2px rgba(0,200,83,0.18)" }} />
+            <div className="hidden lg:block absolute left-[18%] right-[18%] top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-[#00c853]/15 to-transparent translate-y-2" />
+            {/* Mobile vertical connector */}
+            <div className="lg:hidden absolute top-[10%] bottom-[10%] left-1/2 -translate-x-1/2 w-px bg-gradient-to-b from-transparent via-[#00c853]/22 to-transparent" style={{ boxShadow: "0 0 14px 2px rgba(0,200,83,0.14)" }} />
+          </div>
+          <div className="relative z-10 max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-12 pb-8 lg:flex lg:gap-8 lg:items-start lg:text-left text-center">
             {selectionPanel}
             <div className="flex-1 min-w-0">
             {/* Mobile: IWM-style 'Sell Your X' card (device thumb + editable
