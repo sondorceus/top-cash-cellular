@@ -64,6 +64,13 @@ TARGETS = [
     ("galaxy-s-series", "galaxy-s20-plus-5g",      "gs20p"),
     ("galaxy-s-series", "galaxy-s20-5g",           "gs20"),
     ("galaxy-s-series", "galaxy-s20-fe-5g",        "gs20fe"),
+    # Note series under /sell/galaxy-note-series/
+    ("galaxy-note-series", "galaxy-note-20-ultra-5g", "gnote20u"),
+    ("galaxy-note-series", "galaxy-note-20-5g",       "gnote20"),
+    ("galaxy-note-series", "galaxy-note-10-plus-5g",  "gnote10p5g"),
+    ("galaxy-note-series", "galaxy-note-10-plus",     "gnote10p"),
+    ("galaxy-note-series", "galaxy-note-10",          "gnote10"),
+    ("galaxy-note-series", "galaxy-note-9",           "gnote9"),
 ]
 
 DOLLAR = re.compile(r"\$\s*([0-9]+(?:,[0-9]{3})*)(?!\d)")

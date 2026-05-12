@@ -230,13 +230,19 @@ const SAMSUNG_SERIES = [
     { id: "gzflip4", label: "Galaxy Z Flip 4", base: 144, image: "/devices/gzflip4.png" },       // IWM $200
     { id: "gzflip3", label: "Galaxy Z Flip 3", base: 161, image: "/devices/gzflip3.png" },       // IWM $200
   ]},
+  // Note Series — every Note returns IWM's $200 floor (which is generous
+  // for 4-7 year old phones, since IWM has margin to resell at much
+  // higher refurb prices). Applied the IWM - $20 formula mechanically;
+  // these bases are HIGHER than realistic resale value for older Notes,
+  // so we'll lose margin on Note 9 / Note 10 trades unless Skywalker
+  // overrides.
   { id: "noteseries", label: "Note Series", year: "Note 9 / 10 / 20", topPrice: 180, image: "/devices/gnote20u.png", variants: [
-    { id: "gnote20u", label: "Galaxy Note 20 Ultra 5G", base: 180, image: "/devices/gnote20u.png" },
-    { id: "gnote20", label: "Galaxy Note 20 5G", base: 110, image: "/devices/gnote20.png" },
-    { id: "gnote10p5g", label: "Galaxy Note 10+ 5G", base: 90, image: "/devices/gnote10p5g.png" },
-    { id: "gnote10p", label: "Galaxy Note 10+", base: 70, image: "/devices/gnote10p.png" },
-    { id: "gnote10", label: "Galaxy Note 10", base: 50, image: "/devices/gnote10.png" },
-    { id: "gnote9", label: "Galaxy Note 9", base: 20, image: "/devices/gnote9.png" },
+    { id: "gnote20u", label: "Galaxy Note 20 Ultra 5G", base: 144, image: "/devices/gnote20u.png" },     // IWM $200 / 1.25
+    { id: "gnote20", label: "Galaxy Note 20 5G", base: 180, image: "/devices/gnote20.png" },             // IWM $200 / 1.00 (single storage)
+    { id: "gnote10p5g", label: "Galaxy Note 10+ 5G", base: 144, image: "/devices/gnote10p5g.png" },      // IWM $200 / 1.25
+    { id: "gnote10p", label: "Galaxy Note 10+", base: 144, image: "/devices/gnote10p.png" },             // IWM $200 / 1.25
+    { id: "gnote10", label: "Galaxy Note 10", base: 161, image: "/devices/gnote10.png" },                // IWM $200 / 1.12
+    { id: "gnote9", label: "Galaxy Note 9", base: 144, image: "/devices/gnote9.png" },                   // IWM $200 / 1.25
   ]},
 ];
 
