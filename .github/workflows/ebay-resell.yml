@@ -1,0 +1,146 @@
+name: Scrape eBay sold prices
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 7 * * 1"  # Monday 2:23am Austin
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          pip install playwright
+          playwright install chromium --with-deps
+
+      - name: Scrape eBay sold listings
+        run: |
+          python3 << 'PYEOF'
+          from playwright.sync_api import sync_playwright
+          import re, json, time, statistics
+
+          DEVICES = [
+              ("iphone+17+pro+max+256gb+unlocked+used", "ip17pm", "iPhone 17 Pro Max"),
+              ("iphone+17+pro+256gb+unlocked+used", "ip17p", "iPhone 17 Pro"),
+              ("iphone+16+pro+max+256gb+unlocked+used", "ip16pm", "iPhone 16 Pro Max"),
+              ("iphone+16+pro+256gb+unlocked+used", "ip16p", "iPhone 16 Pro"),
+              ("iphone+16+256gb+unlocked+used", "ip16", "iPhone 16"),
+              ("iphone+15+pro+max+256gb+unlocked+used", "ip15pm", "iPhone 15 Pro Max"),
+              ("iphone+15+pro+256gb+unlocked+used", "ip15p", "iPhone 15 Pro"),
+              ("iphone+15+256gb+unlocked+used", "ip15", "iPhone 15"),
+              ("iphone+14+pro+max+256gb+unlocked+used", "ip14pm", "iPhone 14 Pro Max"),
+              ("iphone+14+pro+256gb+unlocked+used", "ip14p", "iPhone 14 Pro"),
+              ("iphone+14+256gb+unlocked+used", "ip14", "iPhone 14"),
+              ("iphone+13+pro+max+256gb+unlocked+used", "ip13pm", "iPhone 13 Pro Max"),
+              ("iphone+13+pro+256gb+unlocked+used", "ip13p", "iPhone 13 Pro"),
+              ("iphone+13+256gb+unlocked+used", "ip13", "iPhone 13"),
+              ("galaxy+s26+ultra+256gb+unlocked+used", "gs26u", "Galaxy S26 Ultra"),
+              ("galaxy+s25+ultra+256gb+unlocked+used", "gs25u", "Galaxy S25 Ultra"),
+              ("galaxy+s24+ultra+256gb+unlocked+used", "gs24u", "Galaxy S24 Ultra"),
+              ("galaxy+s26+256gb+unlocked+used", "gs26", "Galaxy S26"),
+              ("galaxy+s25+256gb+unlocked+used", "gs25", "Galaxy S25"),
+              ("galaxy+z+fold+7+unlocked+used", "gzfold7", "Galaxy Z Fold 7"),
+              ("galaxy+z+fold+6+unlocked+used", "gzfold6", "Galaxy Z Fold 6"),
+              ("galaxy+z+flip+7+unlocked+used", "gzflip7", "Galaxy Z Flip 7"),
+              ("galaxy+z+flip+6+unlocked+used", "gzflip6", "Galaxy Z Flip 6"),
+              ("pixel+10+pro+xl+unlocked+used", "px10pxl", "Pixel 10 Pro XL"),
+              ("pixel+10+pro+unlocked+used", "px10p", "Pixel 10 Pro"),
+              ("pixel+9+pro+xl+unlocked+used", "px9pxl", "Pixel 9 Pro XL"),
+              ("pixel+9+pro+unlocked+used", "px9p", "Pixel 9 Pro"),
+              ("playstation+5+pro+console", "ps5pro", "PS5 Pro"),
+              ("playstation+5+slim+console", "ps5slim", "PS5 Slim"),
+              ("playstation+5+console+-slim+-pro", "ps5", "PS5"),
+              ("xbox+series+x+console", "xbsx", "Xbox Series X"),
+              ("xbox+series+s+console", "xbss", "Xbox Series S"),
+              ("nintendo+switch+2+console", "nsw2", "Switch 2"),
+              ("nintendo+switch+oled+console", "nswoled", "Switch OLED"),
+              ("macbook+pro+16+m4+used", "mbp16m4", "MacBook Pro 16 M4"),
+              ("macbook+pro+14+m4+used", "mbp14m4", "MacBook Pro 14 M4"),
+              ("macbook+pro+16+m3+used", "mbp16m3", "MacBook Pro 16 M3"),
+              ("macbook+air+m4+used", "mbam4", "MacBook Air M4"),
+              ("macbook+air+m3+used", "mbam3", "MacBook Air M3"),
+          ]
+
+          results = {}
+
+          with sync_playwright() as pw:
+              browser = pw.chromium.launch(headless=True)
+              page = browser.new_page()
+
+              for query, did, name in DEVICES:
+                  url = f"https://www.ebay.com/sch/i.html?_nkw={query}&LH_Sold=1&LH_Complete=1&LH_ItemCondition=3000&_ipg=40&_sop=13"
+                  try:
+                      page.goto(url, wait_until="domcontentloaded", timeout=20000)
+                      page.wait_for_timeout(2000)
+
+                      items = page.evaluate("""() => {
+                          const r = [];
+                          document.querySelectorAll('.s-item').forEach(el => {
+                              const t = el.querySelector('.s-item__title span') || el.querySelector('.s-item__title');
+                              const p = el.querySelector('.s-item__price');
+                              if (!t || !p) return;
+                              const title = t.innerText.trim();
+                              if (title.toLowerCase().startsWith('shop on')) return;
+                              const m = p.innerText.match(/\\$([0-9,]+\\.?\\d*)/);
+                              if (!m) return;
+                              const price = parseFloat(m[1].replace(',',''));
+                              if (price > 10) r.push(price);
+                          });
+                          return r;
+                      }""")
+
+                      if items and len(items) >= 3:
+                          # Remove outliers
+                          mean = sum(items) / len(items)
+                          std = (sum((x - mean)**2 for x in items) / len(items)) ** 0.5
+                          filtered = [x for x in items if abs(x - mean) <= 2 * std] or items
+                          median = sorted(filtered)[len(filtered)//2]
+                          results[did] = {"name": name, "median": round(median), "count": len(items), "low": round(min(filtered)), "high": round(max(filtered))}
+                          print(f"  {name:30s} ${round(median):>6} ({len(items)} sold)")
+                      else:
+                          print(f"  {name:30s} insufficient data ({len(items or [])} results)")
+                  except Exception as e:
+                      print(f"  {name:30s} FAILED: {e}")
+
+                  time.sleep(1.5)
+
+              browser.close()
+
+          with open("ebay-resell-data.json", "w") as f:
+              json.dump(results, f, indent=2)
+          print(f"\nSaved {len(results)} devices")
+          PYEOF
+        timeout-minutes: 30
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet ebay-resell-data.json 2>/dev/null; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Open PR
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: weekly eBay sold price refresh"
+          title: "Weekly eBay resell price update"
+          body: |
+            Automated eBay sold listings scrape — real transaction prices.
+            Review the data before merging.
+          branch: refresh-ebay-resell
+          delete-branch: true
