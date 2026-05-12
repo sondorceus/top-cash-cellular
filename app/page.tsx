@@ -1602,7 +1602,7 @@ const GOOGLE_TAB_MODELS = [
 ];
 
 const CONDITIONS = [
-  { id: "brandnew", label: "Brand New", desc: "Factory sealed, never activated", multiplier: 1.15, icon: "🆕", details: ["Still in factory original packaging", "Plastic film still on the device and has not been reapplied", "Device is not activated", "Must come with the original box with matching serial number", "Contains all original accessories"] },
+  { id: "brandnew", label: "Brand New", desc: "Factory sealed, never activated", multiplier: 1.22, icon: "🆕", details: ["Still in factory original packaging", "Plastic film still on the device and has not been reapplied", "Device is not activated", "Must come with the original box with matching serial number", "Contains all original accessories"] },
   { id: "flawless", label: "Flawless", desc: "Like new, zero signs of use", multiplier: 1.0, icon: "✨", details: ["Zero scratches, scuffs, or other marks — looks like new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
   { id: "verygood", label: "Very Good", desc: "Minimal use, no visible scratches at arm's length", multiplier: 0.95, icon: "💎", details: ["Light scratches or scuffs not visible at arm's length — no dents, dings, or deep scratches", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
   { id: "good", label: "Good", desc: "Light wear, fully functional", multiplier: 0.88, icon: "👍", details: ["Light to moderate signs of wear — few light scratches and/or dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
@@ -2084,11 +2084,15 @@ const CONNECTIVITY = [
 // regardless of which provider was originally on the phone.
 const TOP_CARRIER_MULT = 1.0;
 
-// Brand New (+15%) only applies to device categories where we have
-// real profit margin — laptops / desktops. Phones, tablets, consoles,
-// watches etc. can't sustain a +15% bonus on a sealed device. For
-// those, the ceiling condition is Flawless (1.0).
+// 'Brand New / Sealed in Box' tier — pays a +22% premium over Flawless.
+// Added to phones on 2026-05-12 after Skywalker compared us to IWM:
+// IWM offers ~$340 for a sealed Z Flip 6 / 512 / unlocked while we were
+// capping at Flawless = $260. IWM's own Sealed tier is ~21% over their
+// Flawless tier; we mirror that ratio so a sealed phone lands within ~$5
+// of (IWM - $20). Laptops / desktops also use this tier.
 const HIGH_MARGIN_DEVICE_TYPES = new Set<string>([
+  // Phones — IWM pays a real sealed-in-box premium, so do we.
+  "iphone", "android", "pixel",
   // Laptops
   "macbook", "samsung_pc", "lenovo", "dell", "alienware", "hp", "acer", "lg_pc", "asus_pc",
   // Desktops
