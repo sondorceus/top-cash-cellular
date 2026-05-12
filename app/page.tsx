@@ -466,6 +466,30 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   nswoled: {
     "base": { broken: 21, fair: 36, good: 72, mint: 90, sealed: 112 },
   },
+  // === AUDIT FIXES — devices that were >15% off with multiplier fallback ===
+  gs23u: {
+    "1tb": { broken: 33, fair: 212, good: 261, mint: 292, sealed: 310, verygood: 279 },
+    "256": { broken: 32, fair: 158, good: 207, mint: 238, sealed: 266, verygood: 225 },
+    "512": { broken: 32, fair: 176, good: 225, mint: 256, sealed: 288, verygood: 243 },
+  },
+  gs22: {
+    "128": { broken: 18, fair: 36, good: 58, mint: 72, sealed: 90 },
+    "256": { broken: 22, fair: 45, good: 68, mint: 81, sealed: 108 },
+  },
+  gzflip4: {
+    "128": { broken: 14, fair: 9, good: 27, mint: 36, sealed: 50 },
+    "256": { broken: 14, fair: 14, good: 32, mint: 40, sealed: 54 },
+    "512": { broken: 15, fair: 14, good: 32, mint: 40, sealed: 58 },
+  },
+  px8: {
+    "128": { broken: 22, fair: 68, good: 108, mint: 126, sealed: 166, verygood: 117 },
+    "256": { broken: 27, fair: 90, good: 130, mint: 148, sealed: 189, verygood: 140 },
+  },
+  ip12p: {
+    "128": { fair: 95, good: 142, mint: 162, sealed: 195 },
+    "256": { fair: 133, good: 180, mint: 200, sealed: 209 },
+    "512": { fair: 133, good: 180, mint: 200, sealed: 218 },
+  },
 };
 
 const IPHONE_SERIES = [
