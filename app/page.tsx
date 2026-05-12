@@ -1714,8 +1714,8 @@ const SONY_SERIES = [
 const SONY_MODELS = [...PS5_VARIANTS, ...PS4_VARIANTS];
 
 const MICROSOFT_MODELS = [
-  { id: "xsx",  label: "Xbox Series X", base: 280, image: "/devices/xbox-series-x.webp" },
-  { id: "xss",  label: "Xbox Series S", base: 150, image: "/devices/xbox-series-s.webp" },
+  { id: "xsx",  label: "Xbox Series X", base: 180, image: "/devices/xbox-series-x.webp" },
+  { id: "xss",  label: "Xbox Series S", base: 80, image: "/devices/xbox-series-s.webp" },
   { id: "xone", label: "Xbox One",      base: 80,  image: "/devices/xbox-one.webp" },
 ];
 
@@ -7328,12 +7328,11 @@ export default function Home() {
                 <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎟️ {couponLabel} +{couponPercent}%</p>
               )}
             </div>
-            {quantity > 1 && <p className="text-[#e6e6e6] text-sm mb-2">${quote} each × {quantity}</p>}
-            {quantity === 1 && <div className="mb-3" />}
+            {!isManualQuote && !isPendingQuote && quantity > 1 && <p className="text-[#e6e6e6] text-sm mb-2">${quote} each × {quantity}</p>}
+            {!isManualQuote && !isPendingQuote && quantity === 1 && <div className="mb-3" />}
 
-            {/* Accessory bonus — only when it actually moves price:
-                new tier (any device) or MacBook (any condition, the brick is pricey) */}
-            {showAccessoryQuestion && accessoryBonusAmount > 0 && (
+            {/* Accessory bonus — only when it actually moves price and not manual quote */}
+            {!isManualQuote && !isPendingQuote && showAccessoryQuestion && accessoryBonusAmount > 0 && (
               <div className="max-w-md mx-auto mb-4">
                 <button
                   type="button"
@@ -7350,7 +7349,7 @@ export default function Home() {
               </div>
             )}
 
-            <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/12 rounded-2xl p-5 mb-6 text-left shadow-[inset_1px_1px_0_rgba(255,255,255,0.06),0_10px_30px_rgba(0,0,0,0.5)]">
+            {!isManualQuote && !isPendingQuote && <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/12 rounded-2xl p-5 mb-6 text-left shadow-[inset_1px_1px_0_rgba(255,255,255,0.06),0_10px_30px_rgba(0,0,0,0.5)]">
               <p className="text-[10px] font-extrabold text-[#00c853] uppercase tracking-[0.18em] mb-3">How we compare</p>
               <div className="divide-y divide-white/[0.06]">
                 <div className="flex items-center justify-between -mx-2 px-2 py-3 rounded-lg bg-[#00c853]/10 border border-[#00c853]/30 shadow-[0_0_10px_rgba(0,200,83,0.18)]">
@@ -7403,7 +7402,7 @@ export default function Home() {
                 return <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${savings > 0 ? savings : 0} more with us</p>;
               })()}
               <a href={`mailto:offers@topcashcellular.com?subject=Price%20Match%20Request&body=Model%3A%20${encodeURIComponent(model?.label || '')}%0AStorage%3A%20${encodeURIComponent(storage?.label || '')}%0AStorage%3A%20${encodeURIComponent(condition?.label || '')}%0ACompetitor%20URL%3A%20%0ACompetitor%20offer%3A%20%24`} className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#00c853]/10 border border-[#00c853]/30 hover:bg-[#00c853]/15 text-[#00c853] text-xs font-bold transition">⚡ Got a higher offer? We&apos;ll beat it by $25</a>
-            </div>
+            </div>}
 
             {/* Coupon code */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-left">
@@ -7954,7 +7953,10 @@ export default function Home() {
                 </div>
                 <div className="text-right shrink-0">
                   <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Payout</p>
-                  <p className="text-[#00c853] font-extrabold text-2xl lg:text-3xl leading-none" style={{ textShadow: "0 0 18px rgba(0,200,83,0.4)" }}>${quote * quantity}</p>
+                  {isManualQuote || isPendingQuote
+                    ? <p className="text-white font-extrabold text-lg leading-none">Custom quote</p>
+                    : <p className="text-[#00c853] font-extrabold text-2xl lg:text-3xl leading-none" style={{ textShadow: "0 0 18px rgba(0,200,83,0.4)" }}>${quote * quantity}</p>
+                  }
                 </div>
               </div>
               <div className="border-t border-white/10 pt-3 lg:pt-4 flex items-center gap-3">
