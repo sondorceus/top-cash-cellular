@@ -149,14 +149,24 @@ def step(pg, prefs):
     return res
 
 
-def walk(pg, series, model, verbose=False):
+def walk(pg, series, model, condition="Flawless", carrier="Unlocked", verbose=False):
+    """Walk IWM quiz for a specific condition + carrier combo.
+    condition: Flawless | Good | Fair
+    carrier: Unlocked | AT&T | T-Mobile | Verizon | Sprint
+    """
     url = f"https://www.itsworthmore.com/sell/{series}/{model}"
     try:
         pg.goto(url, wait_until="networkidle", timeout=45000)
     except Exception as e:
         return None, f"goto fail: {e}"
     pg.wait_for_timeout(1500)
-    # Walk up to 10 steps
+
+    # Build preference list based on condition + carrier
+    # The quiz asks questions in varying order — condition, carrier, storage, etc.
+    # We match by keyword: if the question is about condition, pick our condition.
+    # If about carrier, pick our carrier. Storage always picks highest.
+    carrier_prefs = ["Unlocked", "No"] if carrier == "Unlocked" else [carrier]
+
     for i in range(10):
         visible = pg.evaluate(
             "() => Array.from(document.querySelectorAll('.answers')).some(el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; })"
@@ -164,11 +174,38 @@ def walk(pg, series, model, verbose=False):
         if not visible:
             if verbose: print(f"    step {i+1}: no .answers visible, breaking")
             break
-        prefs = ["Flawless", "Unlocked", "No"]
+
+        # Detect question type from wrapper class
+        qtype = pg.evaluate(
+            """() => {
+                const wrap = Array.from(document.querySelectorAll('.answers')).find(el => {
+                    const r = el.getBoundingClientRect();
+                    return r.width > 0 && r.height > 0;
+                });
+                return wrap ? wrap.className : '';
+            }"""
+        )
+
+        # Pick preferences based on question type
+        if "condition" in qtype.lower():
+            prefs = [condition]
+        elif "carrier" in qtype.lower() or "lock" in qtype.lower():
+            prefs = carrier_prefs
+        else:
+            # Storage or other — pick highest (last child handled by CLICK_JS default)
+            prefs = [condition] + carrier_prefs
+
         res = step(pg, prefs)
-        if verbose: print(f"    step {i+1}: cls={res.get('cls','?')} clicked={res.get('clicked','?')}")
+        if verbose: print(f"    step {i+1}: cls={res.get('cls','?')} clicked={res.get('clicked','?')} (q={qtype[:30]})")
+
     pg.wait_for_timeout(1200)
     return grab_price(pg), None
+
+
+# Condition/carrier combos to scrape
+CONDITIONS = ["Flawless", "Good", "Fair"]
+CARRIERS = ["Unlocked", "AT&T"]  # AT&T as proxy for "locked" pricing
+DISCOUNT = 20  # subtract from IWM price
 
 
 def main():
@@ -182,26 +219,62 @@ def main():
             pg.click('button:has-text("Accept")', timeout=3000)
         except Exception:
             pass
-        # Diagnostic run on Z Flip 7 only first
+
+        # Diagnostic mode
         if len(sys.argv) > 1 and sys.argv[1] == "debug":
-            print("=== DEBUG: galaxy-z-flip-7 ===")
-            price, err = walk(pg, "galaxy-z-fold-series", "galaxy-z-flip-7", verbose=True)
-            print(f"\nFinal price: {price} (err={err})")
+            target = sys.argv[2] if len(sys.argv) > 2 else "galaxy-z-flip-7"
+            series = "galaxy-z-fold-series" if "fold" in target or "flip" in target or "trifold" in target else "galaxy-s-series"
+            print(f"=== DEBUG: {target} ===")
+            for cond in CONDITIONS:
+                for carr in CARRIERS:
+                    price, err = walk(pg, series, target, condition=cond, carrier=carr, verbose=True)
+                    our_price = max(0, price - DISCOUNT) if price else None
+                    print(f"  {cond:10} {carr:10} IWM=${price}  ours=${our_price}  (err={err})")
             return 0
+
+        # Full scrape: all models x conditions x carriers
+        print(f"Scraping {len(TARGETS)} models x {len(CONDITIONS)} conditions x {len(CARRIERS)} carriers")
+        print(f"Discount: -${DISCOUNT} from IWM\n")
+
         for series, model, mid in TARGETS:
-            try:
-                price, err = walk(pg, series, model)
-            except Exception as e:
-                price, err = None, str(e)
-            if price:
-                print(f"  OK {mid:10}  {model:32}  ${price}")
-                results.append((mid, model, price))
-            else:
-                print(f"  -- {mid:10}  {model:32}  {err or 'no price'}")
+            model_prices = {"id": mid, "model": model, "prices": {}}
+            for cond in CONDITIONS:
+                for carr in CARRIERS:
+                    label = f"{carr.lower()}"
+                    try:
+                        price, err = walk(pg, series, model, condition=cond, carrier=carr)
+                    except Exception as e:
+                        price, err = None, str(e)
+
+                    if price:
+                        our_price = max(0, price - DISCOUNT)
+                        key = f"{cond.lower()}_{label}"
+                        model_prices["prices"][key] = {"iwm": price, "ours": our_price}
+                        print(f"  OK {mid:10} {cond:10} {carr:10} IWM=${price:4d} ours=${our_price:4d}")
+                    else:
+                        print(f"  -- {mid:10} {cond:10} {carr:10} {err or 'no price'}")
+
+            results.append(model_prices)
+
         b.close()
-    print("\n--- Summary ---")
-    for mid, model, price in results:
-        print(f"{mid:10}  ${price}")
+
+    # Summary
+    print(f"\n{'='*60}")
+    print(f"RESULTS: {len(results)} models scraped")
+    print(f"{'='*60}")
+    for r in results:
+        prices = r["prices"]
+        if prices:
+            fl_unlocked = prices.get("flawless_unlocked", {}).get("ours", "?")
+            fl_locked = prices.get("flawless_at&t", {}).get("ours", "?")
+            good_unlocked = prices.get("good_unlocked", {}).get("ours", "?")
+            print(f"  {r['id']:10} Flawless: unlocked=${fl_unlocked} locked=${fl_locked}  Good: unlocked=${good_unlocked}")
+
+    # Output JSON for easy import
+    import json
+    with open("samsung-prices.json", "w") as f:
+        json.dump(results, f, indent=2)
+    print(f"\nSaved to samsung-prices.json")
 
 
 if __name__ == "__main__":
