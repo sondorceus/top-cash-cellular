@@ -1967,21 +1967,21 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   apple_vr: {
     flawless: { label: "Pristine", desc: "Like new — no scuffs on the cover glass" },
   },
-  // Samsung family — 'Flawless' becomes 'Mint'
+  // Samsung family — 'Flawless' becomes 'New'
   android: {
     brandnew: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
-    flawless: { label: "Mint", desc: "Boxed & untouched — zero marks" },
+    flawless: { label: "New", desc: "Boxed & untouched — zero marks" },
   },
   samsung_tab: {
     brandnew: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
-    flawless: { label: "Mint", desc: "Boxed & untouched" },
+    flawless: { label: "New", desc: "Boxed & untouched" },
   },
   samsung_pc: {
     brandnew: { label: "Sealed in Box", desc: "Factory sealed" },
-    flawless: { label: "Mint", desc: "Boxed & untouched" },
+    flawless: { label: "New", desc: "Boxed & untouched" },
   },
   samsungwatch: {
-    flawless: { label: "Mint", desc: "Like new — zero face scratches" },
+    flawless: { label: "New", desc: "Like new — zero face scratches" },
     broken:   { label: "Cracked or dead", desc: "Cracked face, dead battery, or won't power on" },
   },
   // Google family
