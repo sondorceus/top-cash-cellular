@@ -3473,7 +3473,13 @@ export default function Home() {
   type FlatVariant = { id: string; label: string; base: number; image?: string; inquiryOnly?: boolean };
   const iphoneVariants: FlatVariant[] = IPHONE_SERIES.flatMap(s => s.variants as FlatVariant[]);
   const ipadVariants: FlatVariant[] = IPAD_SERIES.flatMap(s => s.variants as FlatVariant[]);
-  const samsungVariants: FlatVariant[] = SAMSUNG_SERIES.flatMap(s => s.variants as FlatVariant[]);
+  // Samsung now uses the same series-picker pattern as MacBook — pick
+  // S / Z / Note series first, then variants. When selectedSeries is set
+  // we filter to that series; otherwise we surface the full flat list so
+  // search still works across the whole Samsung catalog.
+  const samsungSelectedVariants: FlatVariant[] = selectedSeries
+    ? (SAMSUNG_SERIES.find(s => s.id === selectedSeries)?.variants as FlatVariant[] | undefined) || []
+    : SAMSUNG_SERIES.flatMap(s => s.variants as FlatVariant[]);
   const pixelVariants: FlatVariant[] = PIXEL_SERIES.flatMap(s => s.variants as FlatVariant[]);
   // MacBook now uses the same series-then-models pattern as Lenovo/Dell/HP.
   // When selectedSeries is set we expose only that series' variants; otherwise
@@ -4027,7 +4033,7 @@ export default function Home() {
       })()}
     </div>
   );
-  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookSelectedVariants : deviceType === "samsung_pc" ? samsungBookVariants : deviceType === "lenovo" ? lenovoPcVariants : deviceType === "dell" ? dellPcVariants : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? hpPcVariants : deviceType === "acer" ? acerPcVariants : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_pc" ? asusPcVariants : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
+  const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungSelectedVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookSelectedVariants : deviceType === "samsung_pc" ? samsungBookVariants : deviceType === "lenovo" ? lenovoPcVariants : deviceType === "dell" ? dellPcVariants : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? hpPcVariants : deviceType === "acer" ? acerPcVariants : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_pc" ? asusPcVariants : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
@@ -5470,29 +5476,57 @@ export default function Home() {
               </>
             )}
 
-            {/* Samsung Galaxy: All variants flat */}
-            {deviceType === "android" && (
+            {/* Samsung Galaxy: top-level series picker (S / Z / Note) */}
+            {deviceType === "android" && !selectedSeries && (
               <>
-                <div className="space-y-2">
-                  {models.map((m) => {
-                    const mImage = (m as { image?: string }).image;
-                    return (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                      {mImage ? (
-                        <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
+                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your Samsung Galaxy</h2>
+                <p className="text-[#e6e6e6] text-sm mb-6">Choose your line</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {SAMSUNG_SERIES.map((s) => (
+                    <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[150px]">
+                      {s.image ? (
+                        <img src={s.image} alt={s.label} loading="eager" className="w-20 h-16 object-contain mb-1" />
                       ) : (
-                        <div className="w-10 h-10 shrink-0" />
+                        <div className="w-16 h-12 mb-1" />
                       )}
-                      <p className="font-semibold text-[15px] flex-1">{m.label}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m, deviceType)}</span>
-                        <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                      </div>
+                      <p className="font-bold text-sm">{s.label}</p>
+                      <p className="text-[#e6e6e6] text-[10px] text-center">{s.year}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p>
                     </button>
-                  )})}
+                  ))}
                 </div>
               </>
             )}
+
+            {/* Samsung Galaxy: variants of the picked series */}
+            {deviceType === "android" && selectedSeries && (() => {
+              const ser = SAMSUNG_SERIES.find(s => s.id === selectedSeries);
+              return (
+                <>
+                  <h2 className="text-2xl font-bold mb-1">{ser?.label}</h2>
+                  <p className="text-[#e6e6e6] text-sm mb-4">{ser?.year}</p>
+                  <div className="space-y-2">
+                    {models.map((m) => {
+                      const mImage = (m as { image?: string }).image;
+                      return (
+                        <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                          {mImage ? (
+                            <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
+                          ) : (
+                            <div className="w-10 h-10 shrink-0" />
+                          )}
+                          <p className="font-semibold text-[15px] flex-1">{m.label}</p>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m, deviceType)}</span>
+                            <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              );
+            })()}
 
             {/* Google Pixel: All variants flat */}
             {deviceType === "pixel" && (
