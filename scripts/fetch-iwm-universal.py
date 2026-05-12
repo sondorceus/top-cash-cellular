@@ -66,24 +66,19 @@ TARGETS = {
         ("galaxy-note-series", "galaxy-note-10", "gnote10"),
     ],
     "macbook": [
-        ("macbook-pro", "macbook-pro-16-inch-m4-max-2024", "mbp16m4max"),
-        ("macbook-pro", "macbook-pro-16-inch-m4-pro-2024", "mbp16m4pro"),
-        ("macbook-pro", "macbook-pro-14-inch-m4-2024", "mbp14m4"),
-        ("macbook-pro", "macbook-pro-16-inch-m3-max-2023", "mbp16m3max"),
-        ("macbook-pro", "macbook-pro-16-inch-m3-pro-2023", "mbp16m3pro"),
-        ("macbook-pro", "macbook-pro-14-inch-m3-2023", "mbp14m3"),
-        ("macbook-pro", "macbook-pro-16-inch-m2-max-2023", "mbp16m2max"),
-        ("macbook-pro", "macbook-pro-16-inch-m2-pro-2023", "mbp16m2pro"),
-        ("macbook-pro", "macbook-pro-13-inch-m2-2022", "mbp13m2"),
-        ("macbook-pro", "macbook-pro-16-inch-m1-pro-2021", "mbp16m1pro"),
-        ("macbook-pro", "macbook-pro-14-inch-m1-pro-2021", "mbp14m1pro"),
-        ("macbook-air", "macbook-air-15-inch-m4-2025", "mba15m4"),
-        ("macbook-air", "macbook-air-13-inch-m4-2025", "mba13m4"),
-        ("macbook-air", "macbook-air-15-inch-m3-2024", "mba15m3"),
-        ("macbook-air", "macbook-air-13-inch-m3-2024", "mba13m3"),
-        ("macbook-air", "macbook-air-15-inch-m2-2023", "mba15m2"),
-        ("macbook-air", "macbook-air-m2-2022", "mba13m2"),
-        ("macbook-air", "macbook-air-m1-2020", "mba13m1"),
+        # MacBook Pro (2021-Present) — correct IWM URLs
+        ("macbook-pro-m1", "macbook-pro-16-m5", "mbp16m5"),    # up to $5,800
+        ("macbook-pro-m1", "macbook-pro-14-m5", "mbp14m5"),    # up to $5,650
+        ("macbook-pro-m1", "macbook-pro-16-m4", "mbp16m4"),    # up to $4,500
+        ("macbook-pro-m1", "macbook-pro-14-m4", "mbp14m4"),    # up to $4,300
+        ("macbook-pro-m1", "macbook-pro-16-m3", "mbp16m3"),    # up to $3,875
+        ("macbook-pro-m1", "macbook-pro-14-m3", "mbp14m3"),    # up to $3,800
+        ("macbook-pro-m1", "macbook-pro-16-m2", "mbp16m2"),    # up to $2,375
+        ("macbook-pro-m1", "macbook-pro-14-m2", "mbp14m2"),    # up to $2,410
+        ("macbook-pro-m1", "macbook-pro-13", "mbp13m2"),       # up to $905
+        ("macbook-pro-m1", "macbook-pro-16-m1", "mbp16m1"),    # up to $1,700
+        ("macbook-pro-m1", "macbook-pro-14-m1", "mbp14m1"),    # up to $1,575
+        # MacBook Air — TODO: discover correct URLs
     ],
     "iphone": [
         ("iphone", "iphone-16-pro-max", "ip16pm"),
