@@ -2333,7 +2333,7 @@ const APPLEWATCH_MODELS = [
   { id: "aws8", label: "Apple Watch Series 8", base: 170, image: "/devices/apple-watch-series-8.webp" },
   { id: "aws7", label: "Apple Watch Series 7", base: 120, image: "/devices/apple-watch-series-7.webp" },
   { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 130, image: "/devices/apple-watch-se-2.webp" },
-  { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 80, image: "/devices/apple-watch-se-1.webp" },
+  { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 0, image: "/devices/apple-watch-se-1.webp" },
 ];
 
 const PIXELWATCH_MODELS = [
