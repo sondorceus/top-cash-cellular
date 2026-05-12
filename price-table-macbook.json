@@ -1,0 +1,294 @@
+{
+  "mbp16m5": {
+    "1tb": {
+      "mint": 1868,
+      "good": 1800,
+      "fair": 1598,
+      "broken": 934
+    },
+    "2tb": {
+      "mint": 1980,
+      "good": 1912,
+      "fair": 1710,
+      "broken": 990
+    },
+    "4tb": {
+      "mint": 2430,
+      "good": 2362,
+      "fair": 2160,
+      "broken": 1215
+    }
+  },
+  "mbp14m5": {
+    "512": {
+      "mint": 855,
+      "good": 801,
+      "fair": 652,
+      "broken": 428
+    },
+    "1tb": {
+      "mint": 990,
+      "good": 936,
+      "fair": 788,
+      "broken": 495
+    },
+    "2tb": {
+      "mint": 1080,
+      "good": 1026,
+      "fair": 878,
+      "broken": 540
+    },
+    "4tb": {
+      "mint": 1305,
+      "good": 1251,
+      "fair": 1102,
+      "broken": 652
+    }
+  },
+  "mbp16m4": {
+    "512": {
+      "mint": 1328,
+      "good": 1260,
+      "fair": 1058,
+      "broken": 664
+    },
+    "1tb": {
+      "mint": 1462,
+      "good": 1395,
+      "fair": 1192,
+      "broken": 731
+    },
+    "2tb": {
+      "mint": 1598,
+      "good": 1530,
+      "fair": 1328,
+      "broken": 799
+    },
+    "4tb": {
+      "mint": 1868,
+      "good": 1800,
+      "fair": 1598,
+      "broken": 934
+    }
+  },
+  "mbp14m4": {
+    "512": {
+      "mint": 855,
+      "good": 801,
+      "fair": 652,
+      "broken": 428
+    },
+    "1tb": {
+      "mint": 968,
+      "good": 914,
+      "fair": 765,
+      "broken": 484
+    },
+    "2tb": {
+      "mint": 1080,
+      "good": 1026,
+      "fair": 878,
+      "broken": 540
+    }
+  },
+  "mbp16m3": {
+    "512": {
+      "mint": 1035,
+      "good": 968,
+      "fair": 788,
+      "broken": 518
+    },
+    "1tb": {
+      "mint": 1148,
+      "good": 1080,
+      "fair": 900,
+      "broken": 574
+    },
+    "2tb": {
+      "mint": 1260,
+      "good": 1170,
+      "fair": 945,
+      "broken": 630
+    },
+    "4tb": {
+      "mint": 1485,
+      "good": 1395,
+      "fair": 1170,
+      "broken": 742
+    }
+  },
+  "mbp14m3": {
+    "512": {
+      "mint": 567,
+      "good": 518,
+      "fair": 378,
+      "broken": 284
+    },
+    "1tb": {
+      "mint": 657,
+      "good": 608,
+      "fair": 468,
+      "broken": 328
+    },
+    "2tb": {
+      "mint": 792,
+      "good": 729,
+      "fair": 567,
+      "broken": 396
+    }
+  },
+  "mbp16m2": {
+    "512": {
+      "mint": 810,
+      "good": 756,
+      "fair": 558,
+      "broken": 405
+    },
+    "1tb": {
+      "mint": 945,
+      "good": 891,
+      "fair": 693,
+      "broken": 472
+    },
+    "2tb": {
+      "mint": 1080,
+      "good": 999,
+      "fair": 765,
+      "broken": 540
+    },
+    "4tb": {
+      "mint": 1260,
+      "good": 1161,
+      "fair": 855,
+      "broken": 630
+    },
+    "8tb": {
+      "mint": 1440,
+      "good": 1341,
+      "fair": 990,
+      "broken": 720
+    }
+  },
+  "mbp14m2": {
+    "512": {
+      "mint": 675,
+      "good": 630,
+      "fair": 472,
+      "broken": 338
+    },
+    "1tb": {
+      "mint": 742,
+      "good": 698,
+      "fair": 540,
+      "broken": 371
+    },
+    "2tb": {
+      "mint": 810,
+      "good": 742,
+      "fair": 585,
+      "broken": 405
+    },
+    "4tb": {
+      "mint": 945,
+      "good": 878,
+      "fair": 720,
+      "broken": 472
+    },
+    "8tb": {
+      "mint": 1125,
+      "good": 1035,
+      "fair": 810,
+      "broken": 562
+    }
+  },
+  "mbp13m2": {
+    "256": {
+      "mint": 396,
+      "good": 364,
+      "fair": 279,
+      "broken": 198
+    },
+    "512": {
+      "mint": 432,
+      "good": 400,
+      "fair": 315,
+      "broken": 216
+    },
+    "1tb": {
+      "mint": 477,
+      "good": 450,
+      "fair": 342,
+      "broken": 238
+    },
+    "2tb": {
+      "mint": 576,
+      "good": 544,
+      "fair": 418,
+      "broken": 288
+    }
+  },
+  "mbp16m1": {
+    "512": {
+      "mint": 522,
+      "good": 486,
+      "fair": 351,
+      "broken": 261
+    },
+    "1tb": {
+      "mint": 567,
+      "good": 531,
+      "fair": 396,
+      "broken": 284
+    },
+    "2tb": {
+      "mint": 634,
+      "good": 598,
+      "fair": 464,
+      "broken": 317
+    },
+    "4tb": {
+      "mint": 702,
+      "good": 648,
+      "fair": 477,
+      "broken": 351
+    },
+    "8tb": {
+      "mint": 882,
+      "good": 814,
+      "fair": 590,
+      "broken": 441
+    }
+  },
+  "mbp14m1": {
+    "512": {
+      "mint": 468,
+      "good": 432,
+      "fair": 297,
+      "broken": 234
+    },
+    "1tb": {
+      "mint": 522,
+      "good": 486,
+      "fair": 351,
+      "broken": 261
+    },
+    "2tb": {
+      "mint": 576,
+      "good": 540,
+      "fair": 405,
+      "broken": 288
+    },
+    "4tb": {
+      "mint": 648,
+      "good": 594,
+      "fair": 423,
+      "broken": 324
+    },
+    "8tb": {
+      "mint": 828,
+      "good": 760,
+      "fair": 536,
+      "broken": 414
+    }
+  }
+}
