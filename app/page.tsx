@@ -491,10 +491,10 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "512": { broken: 112, fair: 364, good: 418, mint: 436, sealed: 464, verygood: 428 },
   },
   px10p: {
-    "128": { broken: 68, fair: 252, good: 315, mint: 360, sealed: 387, verygood: 338 },
-    "1tb": { broken: 81, fair: 342, good: 405, mint: 450, sealed: 468, verygood: 428 },
-    "256": { broken: 72, fair: 310, good: 374, mint: 418, sealed: 423, verygood: 396 },
-    "512": { broken: 76, fair: 328, good: 392, mint: 436, sealed: 454, verygood: 414 },
+    "128": { broken: 67, fair: 252, good: 315, mint: 360, sealed: 387, verygood: 337 },
+    "1tb": { broken: 148, fair: 333, good: 396, mint: 441, sealed: 468, verygood: 418 },
+    "256": { broken: 103, fair: 288, good: 351, mint: 396, sealed: 423, verygood: 373 },
+    "512": { broken: 135, fair: 319, good: 382, mint: 427, sealed: 454, verygood: 405 },
   },
   px10: {
     "128": { broken: 68, fair: 216, good: 274, mint: 297, sealed: 333, verygood: 288 },
@@ -514,7 +514,7 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   },
   px9: {
     "128": { broken: 40, fair: 112, good: 153, mint: 198, sealed: 225, verygood: 171 },
-    "256": { broken: 45, fair: 130, good: 171, mint: 216, sealed: 248, verygood: 189 },
+    "256": { broken: 45, fair: 130, good: 175, mint: 220, sealed: 247, verygood: 193 },
   },
   px8p: {
     "128": { broken: 32, fair: 112, good: 144, mint: 184, sealed: 207, verygood: 162 },
