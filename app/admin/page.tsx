@@ -12,6 +12,7 @@ interface Lead {
   model?: string;
   storage?: string;
   condition?: string;
+  carrier?: string;
   quote?: string;
   payout?: string;
   imei?: string;
@@ -24,6 +25,10 @@ interface Lead {
   noteCount?: number;
   duplicateCount?: number;
   duplicateIds?: string[];
+  resellEstimate?: number;
+  grossMargin?: number;
+  marginPercent?: number;
+  marginFlag?: string;
 }
 
 const STATUS_OPTIONS = [
@@ -779,6 +784,14 @@ export default function AdminPage() {
                     </div>
                     <div className="text-sm">
                       <p className="font-semibold text-[#00c853]">{lead.quote || "—"}</p>
+                      {lead.marginPercent != null && (
+                        <p className={`text-[10px] font-bold mt-0.5 ${lead.marginFlag === "low" ? "text-red-400" : lead.marginFlag === "thin" ? "text-yellow-400" : "text-emerald-400"}`}>
+                          {lead.marginFlag === "low" ? "⚠️" : lead.marginFlag === "thin" ? "⚡" : "✅"} Margin: ${lead.grossMargin} ({lead.marginPercent}%) · Resell ~${lead.resellEstimate}
+                        </p>
+                      )}
+                      {lead.marginFlag === "manual" && (
+                        <p className="text-[10px] font-bold text-orange-400 mt-0.5">📋 Manual quote — no auto margin</p>
+                      )}
                       <p className="text-[#c5c5c5] text-xs">{lead.payout}</p>
                       {adjustingId !== lead.id && (
                         <button type="button" onClick={() => { setAdjustingId(lead.id); setAdjustQuote(""); setAdjustReason(""); }} className="text-[10px] text-[#c5c5c5] hover:text-[#d4d4d4] mt-1 cursor-pointer">✏️ Adjust quote</button>
