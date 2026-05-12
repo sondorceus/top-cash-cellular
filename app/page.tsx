@@ -3167,7 +3167,7 @@ const getCompSource = (dt: string | null | undefined) => (dt && COMP_SOURCES[dt]
 // (Wave 1) asks for one at a time. Models WITHOUT an entry in this
 // dict keep the legacy flow (model -> condition -> storage -> ...).
 // Each option carries a `multiplier` against the model's base price.
-type MacSpecOption = { id: string; label: string; multiplier: number; sub?: string };
+type MacSpecOption = { id: string; label: string; multiplier: number; adj?: number; sub?: string };
 type MacSpec = {
   processors: MacSpecOption[];
   memory: MacSpecOption[];
@@ -3248,27 +3248,27 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
   // 2024 14-inch MacBook Pro M4
   mbp14m4: {
     processors: [
-      { id: "m4_10_10",    label: "M4",     sub: "10-Core CPU / 10-Core GPU", multiplier: 1.00 },
-      { id: "m4pro_12_16", label: "M4 Pro", sub: "12-Core CPU / 16-Core GPU", multiplier: 1.30 },
-      { id: "m4pro_14_20", label: "M4 Pro", sub: "14-Core CPU / 20-Core GPU", multiplier: 1.45 },
-      { id: "m4max_14_32", label: "M4 Max", sub: "14-Core CPU / 32-Core GPU", multiplier: 1.70 },
-      { id: "m4max_16_40", label: "M4 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 1.90 },
+      { id: "m4_10_10",    label: "M4",     sub: "10-Core CPU / 10-Core GPU", multiplier: 1.00, adj: 950 },
+      { id: "m4pro_12_16", label: "M4 Pro", sub: "12-Core CPU / 16-Core GPU", multiplier: 1.37, adj: 1300 },
+      { id: "m4pro_14_20", label: "M4 Pro", sub: "14-Core CPU / 20-Core GPU", multiplier: 1.42, adj: 1350 },
+      { id: "m4max_14_32", label: "M4 Max", sub: "14-Core CPU / 32-Core GPU", multiplier: 2.26, adj: 2150 },
+      { id: "m4max_16_40", label: "M4 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 2.47, adj: 2350 },
     ],
     memory: [
-      { id: "16",  label: "16 GB",  sub: "Unified Memory", multiplier: 1.00 },
-      { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.06 },
-      { id: "32",  label: "32 GB",  sub: "Unified Memory", multiplier: 1.12 },
-      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.14 },
-      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.20 },
-      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.30 },
-      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.50 },
+      { id: "16",  label: "16 GB",  sub: "Unified Memory", multiplier: 1.00, adj: 0 },
+      { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.06, adj: 125 },
+      { id: "32",  label: "32 GB",  sub: "Unified Memory", multiplier: 1.12, adj: 250 },
+      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.14, adj: 250 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.20, adj: 400 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.30, adj: 600 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.50, adj: 1000 },
     ],
     storage: [
-      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85 },
-      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00 },
-      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18 },
-      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40 },
-      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 125 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18, adj: 250 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40, adj: 600 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70, adj: 1000 },
     ],
     hasNanoGlass: true,
   },
@@ -4203,14 +4203,31 @@ export default function Home() {
   const totalCarrierDeduction = carrierDeduction + lockDeduction;
   // For devices in the price table, use flat deduction instead of multiplier
   const useDirectPricing = lookupPrice != null;
+  // MacBook additive mode: use IWM's exact $ adjustments (no multipliers)
+  const procAdj = (processor as MacSpecOption | null)?.adj;
+  const useAdditive = procAdj != null && model && hasMacSpecs(model.id);
   const nonCarrierMultiplier = connectivityMultiplier * promoMultiplier
     * couponMultiplier * processorMultiplier * memoryMultiplier * displayGlassMultiplier
     * batteryHealthMultiplier * chargerMultiplier * extrasMultiplier;
-  const baseQuote = useDirectPricing
-    ? Math.max(0, Math.round((lookupPrice - totalCarrierDeduction) * nonCarrierMultiplier)) + promoFlatBonus
-    : model && condition && model.base
-      ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * nonCarrierMultiplier) + promoFlatBonus
-      : 0;
+  const promoOnly = promoMultiplier * couponMultiplier * extrasMultiplier;
+  const baseQuote = useAdditive
+    ? (() => {
+        const chip = procAdj;
+        const ram = (memory as MacSpecOption | null)?.adj ?? 0;
+        const stor = (storage as MacSpecOption | null)?.adj ?? 0;
+        const MCOND: Record<string, number> = { sealed: 50, mint: 0, verygood: -50, good: -110, fair: -220 };
+        const cond = MCOND[condition?.id ?? "mint"] ?? 0;
+        const nano = displayGlass?.id === "nano" ? 50 : 0;
+        const batt = batteryHealth?.id === "poor" ? -80 : 0;
+        const chrg = charger?.id === "no" ? -50 : 0;
+        const iwm = chip + ram + stor + cond + nano + batt + chrg;
+        return Math.max(0, Math.round(iwm * 0.90 * promoOnly)) + promoFlatBonus;
+      })()
+    : useDirectPricing
+      ? Math.max(0, Math.round((lookupPrice - totalCarrierDeduction) * nonCarrierMultiplier)) + promoFlatBonus
+      : model && condition && model.base
+        ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * nonCarrierMultiplier) + promoFlatBonus
+        : 0;
   const quote = baseQuote + accessoryBonus;
   // Minimum offer threshold — below this we lose money on shipping +
   // processing. Show "Manual quote" instead of a dollar amount.
