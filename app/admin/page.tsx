@@ -784,13 +784,22 @@ export default function AdminPage() {
                     </div>
                     <div className="text-sm">
                       <p className="font-semibold text-[#00c853]">{lead.quote || "—"}</p>
-                      {lead.marginPercent != null && (
-                        <p className={`text-[10px] font-bold mt-0.5 ${lead.marginFlag === "low" ? "text-red-400" : lead.marginFlag === "thin" ? "text-yellow-400" : "text-emerald-400"}`}>
-                          {lead.marginFlag === "low" ? "⚠️" : lead.marginFlag === "thin" ? "⚡" : "✅"} Margin: ${lead.grossMargin} ({lead.marginPercent}%) · Resell ~${lead.resellEstimate}
-                        </p>
+                      {lead.marginPercent != null && lead.grossMargin != null && (
+                        <div className={`mt-1 px-2 py-1 rounded-md text-[11px] font-bold ${lead.marginFlag === "low" ? "bg-red-500/15 border border-red-500/30" : lead.marginFlag === "thin" ? "bg-yellow-500/15 border border-yellow-500/30" : "bg-emerald-500/15 border border-emerald-500/30"}`}>
+                          <span className={lead.marginFlag === "low" ? "text-red-400" : lead.marginFlag === "thin" ? "text-yellow-400" : "text-emerald-400"}>
+                            {lead.marginFlag === "low" ? "⚠️ LOW" : lead.marginFlag === "thin" ? "⚡ THIN" : "✅ GOOD"}
+                          </span>
+                          <span className="text-white ml-1">You make ${lead.grossMargin}</span>
+                          <span className="text-[#999] ml-1">({lead.marginPercent}%)</span>
+                          <br />
+                          <span className="text-[#888]">Sells for ~${lead.resellEstimate} on Swappa/eBay</span>
+                        </div>
                       )}
                       {lead.marginFlag === "manual" && (
-                        <p className="text-[10px] font-bold text-orange-400 mt-0.5">📋 Manual quote — no auto margin</p>
+                        <div className="mt-1 px-2 py-1 rounded-md text-[11px] font-bold bg-orange-500/15 border border-orange-500/30">
+                          <span className="text-orange-400">📋 Manual quote needed</span>
+                          <span className="text-[#888] ml-1">— check Swappa/eBay before offering</span>
+                        </div>
                       )}
                       <p className="text-[#c5c5c5] text-xs">{lead.payout}</p>
                       {adjustingId !== lead.id && (

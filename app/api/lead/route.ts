@@ -35,27 +35,25 @@ function isDuplicate(email: string, contact: string, device: string, model: stri
   return false;
 }
 
-// Estimated resell values (eBay sold medians) — updated periodically.
+// Resell values from Swappa (real market data, scraped 2026-05-12).
 // Used to calculate profit margin on each lead for the owner's review.
-// Format: { "model_keyword": resell_price }
 const RESELL_ESTIMATES: Record<string, number> = {
-  // iPhones (eBay used sold median)
-  "iPhone 17 Pro Max": 1050, "iPhone 17 Pro": 900, "iPhone 17 Air": 750, "iPhone 17": 650,
-  "iPhone 16 Pro Max": 750, "iPhone 16 Pro": 620, "iPhone 16 Plus": 520, "iPhone 16": 480,
-  "iPhone 15 Pro Max": 550, "iPhone 15 Pro": 480, "iPhone 15 Plus": 400, "iPhone 15": 350,
-  "iPhone 14 Pro Max": 450, "iPhone 14 Pro": 380, "iPhone 14": 280,
-  "iPhone 13 Pro Max": 350, "iPhone 13 Pro": 300, "iPhone 13": 220,
-  // Samsung
-  "Galaxy S26 Ultra": 720, "Galaxy S25 Ultra": 630, "Galaxy S24 Ultra": 500,
-  "Galaxy S26": 480, "Galaxy S25": 380, "Galaxy Z Fold 7": 830, "Galaxy Z Fold 6": 520,
-  "Galaxy Z Flip 7": 450, "Galaxy Z Flip 6": 300,
-  // Pixel
-  "Pixel 10 Pro XL": 500, "Pixel 10 Pro": 430, "Pixel 9 Pro XL": 380, "Pixel 9 Pro": 300,
-  // Consoles
+  // iPhones — Swappa mid price (actual listings)
+  "iPhone 17 Pro Max": 1081, "iPhone 17 Pro": 949, "iPhone 17": 695,
+  "iPhone 16 Pro Max": 721, "iPhone 16 Pro": 638, "iPhone 16 Plus": 428, "iPhone 16": 520,
+  "iPhone 15 Pro Max": 525, "iPhone 15 Pro": 528, "iPhone 15": 349,
+  "iPhone 14 Pro Max": 417, "iPhone 14 Pro": 358, "iPhone 14": 268,
+  "iPhone 13 Pro Max": 338, "iPhone 13 Pro": 268, "iPhone 13": 211,
+  // Samsung — Swappa mid price
+  "Galaxy S26 Ultra": 927, "Galaxy S25 Ultra": 714, "Galaxy S24 Ultra": 544,
+  "Galaxy S26": 741, "Galaxy S25": 372,
+  // Pixel — Swappa mid price
+  "Pixel 10 Pro XL": 657, "Pixel 10 Pro": 567, "Pixel 9 Pro XL": 392, "Pixel 9 Pro": 375,
+  // Consoles — PriceCharting
   "PlayStation 5 Pro": 680, "PlayStation 5 Slim": 310, "PlayStation 5": 347,
   "Xbox Series X": 220, "Xbox Series S": 130,
   "Nintendo Switch 2": 370, "Nintendo Switch OLED": 180,
-  // MacBook
+  // MacBook — estimates pending eBay API
   "MacBook Pro 16\" M4": 1500, "MacBook Pro 14\" M4": 1000, "MacBook Pro 16\" M3": 1100,
   "MacBook Pro 14\" M3": 700, "MacBook Air M4": 600, "MacBook Air M3": 450,
 };
