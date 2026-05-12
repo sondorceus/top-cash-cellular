@@ -1265,7 +1265,7 @@ const MACBOOK_SERIES = [
 // Yoga are flat. T and E ThinkPad pages returned no products on IWM so
 // they're omitted from the sub-series list.
 const LENOVO_TP_X1_VARIANTS = [
-  { id: "ln_tp_x1_carbon", label: "ThinkPad X1 Carbon", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
+  { id: "ln_tp_x1_carbon", label: "ThinkPad X1 Carbon", base: 380, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
   { id: "ln_tp_x1_extreme", label: "ThinkPad X1 Extreme", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-extreme.png" },
   { id: "ln_tp_x1_fold", label: "ThinkPad X1 Fold", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-fold.png" },
   { id: "ln_tp_x1_nano", label: "ThinkPad X1 Nano", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-nano.png" },
@@ -3413,6 +3413,15 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "no",  label: "No mouse",        multiplier: 1.00 },
     ]},
   ],
+  // Lenovo laptops — display resolution is a price driver for ThinkPad X1 Carbon.
+  // Uses adj values consumed by the additive pricing path.
+  lenovo: [
+    { id: "display", question: "Display resolution?", helper: "Check Settings > System > Display on Windows.", options: [
+      { id: "fhd",  label: "FHD (1920x1200)",  multiplier: 1.00, adj: 0 },
+      { id: "2k",   label: "2K (2560x1600)",    multiplier: 1.00, adj: 25 },
+      { id: "uhd",  label: "UHD / 4K (3840x2400)", multiplier: 1.00, adj: 50 },
+    ]},
+  ],
   // HP desktops — GPU + optional secondary drive
   hp_desktop: [
     { id: "gpu", question: "Graphics card (GPU)?", helper: "Check Device Manager > Display adapters on Windows.", options: [
@@ -3489,6 +3498,12 @@ const getBrandExtras = (dt: string | null | undefined, modelId?: string | null |
   // specs won't hit this because they have base=0 (inquiry-only).
   if (dt === "dell" && modelId !== "dxps15") {
     return base.filter(q => q.id !== "gpu");
+  }
+  // Lenovo — only show the display resolution question for models with
+  // additive specs (ThinkPad X1 Carbon). Other Lenovo laptops are
+  // inquiry-only so they never reach this code path, but guard anyway.
+  if (dt === "lenovo" && modelId !== "ln_tp_x1_carbon") {
+    return base.filter(q => q.id !== "display");
   }
   return base;
 };
@@ -3999,6 +4014,25 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
       { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 50 },
       { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 100 },
       { id: "4tb", label: "4 TB SSD",   multiplier: 1.00, adj: 175 },
+    ],
+    hasNanoGlass: false,
+  },
+  // Lenovo ThinkPad X1 Carbon Gen 13 (2025) — IWM additive pricing
+  ln_tp_x1_carbon: {
+    processors: [
+      { id: "ultra5", label: "Intel Core Ultra 5", sub: "Gen 13 (2025)", multiplier: 1.00, adj: 380 },
+      { id: "ultra7", label: "Intel Core Ultra 7", sub: "Gen 13 (2025)", multiplier: 1.43, adj: 545 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 20 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 35 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 20 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 40 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 80 },
     ],
     hasNanoGlass: false,
   },
