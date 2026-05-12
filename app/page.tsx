@@ -1690,7 +1690,9 @@ const STORAGE_MAP: Record<string, string[]> = {
   gzflip4: ["128", "256", "512"],
   gzflip3: ["128", "256"],
   // Google Pixel
-  px10pxl: ["128", "256", "512", "1tb"],
+  // Pixel 10 Pro XL dropped the 128GB SKU starting this generation (Google
+  // moved the XL min to 256GB to differentiate from the non-XL Pro).
+  px10pxl: ["256", "512", "1tb"],
   px10p: ["128", "256", "512", "1tb"],
   px10: ["128", "256"],
   px10a: ["128", "256"],
@@ -1846,11 +1848,12 @@ const STORAGE_MAP: Record<string, string[]> = {
   msinightblade: ["512", "1tb"],
   msicodex5: ["512", "1tb"],
   msipro: ["256", "512"],
-  // iPads
-  ipadpro13m5: ["256", "512", "1tb"],
-  ipadpro11m5: ["256", "512", "1tb"],
-  ipadpro13m4: ["256", "512", "1tb"],
-  ipadpro11m4: ["256", "512", "1tb"],
+  // iPads — Apple's iPad Pro M4 and M5 both ship in 256/512/1TB/2TB
+  // (max storage is 2TB on the Pro line). Previously missing 2TB.
+  ipadpro13m5: ["256", "512", "1tb", "2tb"],
+  ipadpro11m5: ["256", "512", "1tb", "2tb"],
+  ipadpro13m4: ["256", "512", "1tb", "2tb"],
+  ipadpro11m4: ["256", "512", "1tb", "2tb"],
   ipadpro129g6: ["128", "256", "512", "1tb"],
   ipadpro11g4: ["128", "256", "512", "1tb"],
   ipadair13m3: ["128", "256", "512", "1tb"],
