@@ -2946,6 +2946,11 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "soft", label: "1-2 soft / non-damage",          multiplier: 1.00 },
       { id: "hard", label: "1+ crash with repair / replacement parts", multiplier: 0.85 },
     ]},
+    { id: "batteries", question: "Extra batteries?", helper: "Spare batteries add value — Fly More kits are worth more.", options: [
+      { id: "flyMore", label: "Fly More combo (2-3 batteries + bag)", multiplier: 1.12 },
+      { id: "extra",   label: "1 extra battery",                     multiplier: 1.05 },
+      { id: "one",     label: "Just the one in the drone",           multiplier: 1.00 },
+    ]},
   ],
   // Smartwatches — band makes a big resale difference
   applewatch: [
@@ -3003,6 +3008,10 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "oem",   label: "Yes — original Garmin band",  multiplier: 1.05 },
       { id: "third", label: "Yes — 3rd-party band",        multiplier: 1.00 },
       { id: "none",  label: "No band",                     multiplier: 0.90 },
+    ]},
+    { id: "charger", question: "Charging cable included?", options: [
+      { id: "yes", label: "Yes",  multiplier: 1.00 },
+      { id: "no",  label: "No",   multiplier: 0.92 },
     ]},
   ],
   // VR — accessories matter a lot
