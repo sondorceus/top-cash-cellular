@@ -5211,7 +5211,7 @@ export default function Home() {
             <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 flex items-start gap-3">
               <span className="text-xl shrink-0 leading-tight">🚗</span>
               <p className="text-[#e6e6e6] text-xs leading-relaxed">
-                <strong className="text-white">Or have us come to you.</strong> Our mobile tech meets you at Starbucks, your office, or a local Safe Exchange zone — marked vehicle, ETA text, watch the wipe, paid before we walk back to the car.
+                <strong className="text-white">Or have us come to you.</strong> We meet you at a public spot of your choice — live tracking, paid on the spot.
               </p>
             </div>
 
