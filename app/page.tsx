@@ -186,6 +186,69 @@ const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
   gzfold6: { att: 60, tmobile: 80, other: 150 },
   gzflip7: { att: 50, tmobile: 70, other: 100 },
   gzflip6: { att: 40, tmobile: 50, other: 80 },
+  // Galaxy Note series
+  gnote10:    { att: 40, tmobile: 60, other: 100 },
+  gnote10p:   { att: 40, tmobile: 60, other: 100 },
+  gnote10p5g: { att: 40, tmobile: 60, other: 100 },
+  gnote20:    { att: 20, tmobile: 30, other: 50 },
+  gnote9:     { att: 20, tmobile: 30, other: 50 },
+  // Galaxy S20 series
+  gs20:   { att: 20, tmobile: 30, other: 50 },
+  gs20fe: { att: 20, tmobile: 30, other: 50 },
+  gs20p:  { att: 20, tmobile: 30, other: 50 },
+  gs20u:  { att: 40, tmobile: 60, other: 100 },
+  // Galaxy S21 series
+  gs21:   { att: 20, tmobile: 30, other: 50 },
+  gs21fe: { att: 20, tmobile: 30, other: 50 },
+  gs21p:  { att: 20, tmobile: 30, other: 50 },
+  gs21u:  { att: 20, tmobile: 30, other: 50 },
+  // Galaxy S22 series
+  gs22:   { att: 20, tmobile: 30, other: 50 },
+  gs22p:  { att: 20, tmobile: 30, other: 50 },
+  gs22u:  { att: 40, tmobile: 60, other: 100 },
+  // Galaxy S23 series
+  gs23:   { att: 40, tmobile: 60, other: 100 },
+  gs23fe: { att: 20, tmobile: 30, other: 50 },
+  gs23p:  { att: 40, tmobile: 60, other: 100 },
+  // Galaxy S24/S25 additions
+  gs24fe: { att: 40, tmobile: 60, other: 100 },
+  gs24p:  { att: 40, tmobile: 60, other: 100 },
+  gs25edge: { att: 60, tmobile: 80, other: 150 },
+  gs25fe: { att: 40, tmobile: 60, other: 100 },
+  // Galaxy Z Flip older
+  gzflip3: { att: 20, tmobile: 30, other: 50 },
+  gzflip4: { att: 20, tmobile: 30, other: 50 },
+  gzflip5: { att: 40, tmobile: 60, other: 100 },
+  // Galaxy Z Fold older
+  gzfold3: { att: 40, tmobile: 60, other: 100 },
+  gzfold4: { att: 40, tmobile: 60, other: 100 },
+  gzfold5: { att: 40, tmobile: 60, other: 100 },
+  gztrifold: { att: 100, tmobile: 120, other: 400 },
+  // iPhone mini models
+  ip12mini: { att: 20, tmobile: 30, other: 50 },
+  ip13mini: { att: 40, tmobile: 60, other: 100 },
+  // Pixel 10 series
+  px10:    { att: 40, tmobile: 60, other: 100 },
+  px10a:   { att: 40, tmobile: 60, other: 100 },
+  px10p:   { att: 60, tmobile: 80, other: 150 },
+  px10pxl: { att: 60, tmobile: 80, other: 150 },
+  // Pixel older models
+  px5:  { att: 20, tmobile: 30, other: 50 },
+  px5a: { att: 20, tmobile: 30, other: 50 },
+  px6:  { att: 20, tmobile: 30, other: 50 },
+  px6p: { att: 20, tmobile: 30, other: 50 },
+  px7:  { att: 20, tmobile: 30, other: 50 },
+  px7a: { att: 20, tmobile: 30, other: 50 },
+  px7p: { att: 40, tmobile: 60, other: 100 },
+  px8:  { att: 40, tmobile: 60, other: 100 },
+  px8a: { att: 40, tmobile: 60, other: 100 },
+  px8p: { att: 40, tmobile: 60, other: 100 },
+  px9:  { att: 40, tmobile: 60, other: 100 },
+  px9a: { att: 40, tmobile: 60, other: 100 },
+  px9p: { att: 40, tmobile: 60, other: 100 },
+  px9pfold: { att: 60, tmobile: 80, other: 150 },
+  px9pxl: { att: 40, tmobile: 60, other: 100 },
+  pxfold: { att: 40, tmobile: 60, other: 100 },
 };
 // Minimum offer threshold — below this we lose money on shipping + processing.
 // Devices below this get "Manual review & custom quote" instead of a dollar amount.
