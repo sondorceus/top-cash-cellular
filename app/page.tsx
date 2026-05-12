@@ -612,6 +612,10 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "256": { broken: 22, fair: 112, good: 158, mint: 189, sealed: 216, verygood: 171 },
     "512": { broken: 25, fair: 130, good: 176, mint: 207, sealed: 243, verygood: 189 },
   },
+  ipad10: {
+    "256": { broken: 68, fair: 108, good: 144, mint: 171, sealed: 198, verygood: 158 },
+    "64": { broken: 23, fair: 63, good: 99, mint: 126, sealed: 153, verygood: 113 },
+  },
   ipad9: {
     "256": { broken: 13, fair: 43, good: 76, mint: 86, sealed: 100, verygood: 81 },
     "64": { broken: 10, fair: 28, good: 62, mint: 71, sealed: 90, verygood: 66 },
@@ -623,10 +627,10 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "512": { broken: 176, fair: 276, good: 328, mint: 361, sealed: 399, verygood: 337 },
   },
   ipadair11m3: {
-    "128": { broken: 119, fair: 176, good: 238, mint: 285, sealed: 314, verygood: 271 },
-    "1tb": { broken: 190, fair: 299, good: 361, mint: 408, sealed: 456, verygood: 394 },
-    "256": { broken: 142, fair: 185, good: 247, mint: 294, sealed: 337, verygood: 280 },
-    "512": { broken: 166, fair: 233, good: 294, mint: 342, sealed: 385, verygood: 328 },
+    "128": { broken: 113, fair: 167, good: 225, mint: 270, sealed: 297, verygood: 257 },
+    "1tb": { broken: 248, fair: 302, good: 360, mint: 405, sealed: 432, verygood: 392 },
+    "256": { broken: 135, fair: 189, good: 248, mint: 293, sealed: 320, verygood: 279 },
+    "512": { broken: 180, fair: 234, good: 293, mint: 338, sealed: 365, verygood: 324 },
   },
   ipadair13m2: {
     "128": { broken: 100, fair: 242, good: 290, mint: 337, sealed: 375, verygood: 309 },
@@ -638,6 +642,11 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "256": { broken: 40, fair: 133, good: 171, mint: 190, sealed: 195 },
     "64": { broken: 38, fair: 95, good: 133, mint: 152, sealed: 171 },
   },
+  ipadmini7: {
+    "128": { broken: 59, fair: 171, good: 216, mint: 234, sealed: 261, verygood: 234 },
+    "256": { broken: 95, fair: 207, good: 252, mint: 270, sealed: 297, verygood: 270 },
+    "512": { broken: 194, fair: 306, good: 351, mint: 369, sealed: 396, verygood: 369 },
+  },
   ipadpro11g4: {
     "128": { broken: 95, fair: 252, good: 294, mint: 332, sealed: 361, verygood: 314 },
     "1tb": { broken: 109, fair: 394, good: 437, mint: 475, sealed: 598, verygood: 456 },
@@ -646,10 +655,10 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "512": { broken: 104, fair: 323, good: 366, mint: 404, sealed: 456, verygood: 385 },
   },
   ipadpro11m4: {
-    "1tb": { broken: 285, fair: 522, good: 580, mint: 618, sealed: 750, verygood: 598 },
-    "256": { broken: 190, fair: 380, good: 437, mint: 475, sealed: 513, verygood: 456 },
-    "2tb": { broken: 332, fair: 594, good: 651, mint: 689, sealed: 846, verygood: 670 },
-    "512": { broken: 238, fair: 451, good: 508, mint: 546, sealed: 560, verygood: 527 },
+    "1tb": { broken: 315, fair: 495, good: 549, mint: 585, sealed: 621, verygood: 567 },
+    "256": { broken: 180, fair: 360, good: 414, mint: 450, sealed: 486, verygood: 432 },
+    "2tb": { broken: 383, fair: 563, good: 617, mint: 653, sealed: 689, verygood: 635 },
+    "512": { broken: 225, fair: 405, good: 459, mint: 495, sealed: 531, verygood: 477 },
   },
   ipadpro11m5: {
     "1tb": { broken: 261, fair: 608, good: 656, mint: 712, sealed: 808, verygood: 674 },
@@ -669,6 +678,12 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "256": { broken: 190, fair: 404, good: 466, mint: 513, sealed: 551, verygood: 484 },
     "2tb": { broken: 261, fair: 622, good: 684, mint: 732, sealed: 978, verygood: 703 },
     "512": { broken: 214, fair: 461, good: 522, mint: 570, sealed: 646, verygood: 542 },
+  },
+  ipadpro13m5: {
+    "1tb": { broken: 473, fair: 738, good: 792, mint: 864, sealed: 900, verygood: 819 },
+    "256": { broken: 248, fair: 513, good: 567, mint: 639, sealed: 675, verygood: 594 },
+    "2tb": { broken: 608, fair: 873, good: 927, mint: 999, sealed: 1035, verygood: 954 },
+    "512": { broken: 338, fair: 603, good: 657, mint: 729, sealed: 765, verygood: 684 },
   },
   px10a: {
     "128": { broken: 45, fair: 99, good: 153, mint: 198, sealed: 225, verygood: 180 },
@@ -962,6 +977,26 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   xsx: {
     "1tb": { broken: 8, fair: 162, good: 225, mint: 274, sealed: 315, verygood: 252 },
     "2tb": { broken: 8, fair: 162, good: 225, mint: 274, sealed: 315, verygood: 252 },
+  },
+  // === SAMSUNG TABLETS (10% below IWM) ===
+  stabs11u: {
+    "256": { broken: 90, fair: 369, good: 468, mint: 513, sealed: 567, verygood: 495 },
+    "512": { broken: 144, fair: 423, good: 522, mint: 567, sealed: 621, verygood: 549 },
+    "1tb": { broken: 202, fair: 481, good: 580, mint: 625, sealed: 679, verygood: 607 },
+  },
+  stabs11: {
+    "128": { broken: 58, fair: 225, good: 288, mint: 324, sealed: 342, verygood: 306 },
+    "256": { broken: 81, fair: 247, good: 310, mint: 346, sealed: 364, verygood: 328 },
+    "512": { broken: 103, fair: 270, good: 333, mint: 369, sealed: 387, verygood: 351 },
+  },
+  stabs10u: {
+    "256": { broken: 76, fair: 333, good: 382, mint: 418, sealed: 454, verygood: 400 },
+    "512": { broken: 112, fair: 369, good: 418, mint: 454, sealed: 490, verygood: 436 },
+    "1tb": { broken: 180, fair: 436, good: 486, mint: 522, sealed: 558, verygood: 504 },
+  },
+  stabs9: {
+    "128": { broken: 22, fair: 121, good: 171, mint: 198, sealed: 225, verygood: 180 },
+    "256": { broken: 27, fair: 139, good: 189, mint: 216, sealed: 238, verygood: 198 },
   },
 };
 
