@@ -485,11 +485,6 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "128": { broken: 22, fair: 68, good: 108, mint: 126, sealed: 166, verygood: 117 },
     "256": { broken: 27, fair: 90, good: 130, mint: 148, sealed: 189, verygood: 140 },
   },
-  ip12p: {
-    "128": { fair: 95, good: 142, mint: 162, sealed: 195 },
-    "256": { fair: 133, good: 180, mint: 200, sealed: 209 },
-    "512": { fair: 133, good: 180, mint: 200, sealed: 218 },
-  },
   // === AUDIT ROUND 2 — 5 more devices with >15% multiplier error ===
   gs24p: {
     "256": { broken: 72, fair: 144, good: 198, mint: 230, sealed: 266, verygood: 212 },
@@ -499,11 +494,6 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "128": { broken: 9, fair: 18, good: 27, mint: 40, sealed: 68 },
     "256": { broken: 9, fair: 27, good: 36, mint: 50, sealed: 86 },
   },
-  ip11p: {
-    "256": { broken: 26, fair: 90, good: 119, mint: 133, sealed: 152 },
-    "512": { broken: 28, fair: 114, good: 142, mint: 157, sealed: 171 },
-    "64": { broken: 24, fair: 62, good: 90, mint: 104, sealed: 124 },
-  },
   px7p: {
     "128": { broken: 22, fair: 45, good: 72, mint: 108, sealed: 135 },
     "256": { broken: 27, fair: 58, good: 86, mint: 122, sealed: 144 },
@@ -511,6 +501,222 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   },
   gs20: {
     "base": { broken: 14, fair: 45, good: 58, mint: 68, sealed: 90 },
+  },
+  // === FULL IWM SCRAPE — all remaining devices ===
+  awu1: {
+    "base": { fair: 36, good: 86, mint: 126, sealed: 144, verygood: 108 },
+  },
+  awu2: {
+    "base": { fair: 90, good: 135, mint: 180, sealed: 216, verygood: 162 },
+  },
+  gnote10: {
+    "base": { broken: 9, sealed: 99 },
+    "brandnew": { fair: 140, good: 162, mint: 171 },
+    "broken": { fair: 50, good: 72, mint: 81 },
+    "fair": { fair: 81, good: 104, mint: 112 },
+    "flawless": { fair: 112, good: 135, mint: 144 },
+    "good": { fair: 104, good: 126, mint: 135 },
+  },
+  gnote10p: {
+    "256": { broken: 38, fair: 45, good: 99, mint: 117, sealed: 135 },
+    "512": { broken: 47, fair: 54, good: 108, mint: 126, sealed: 158 },
+  },
+  gnote10p5g: {
+    "256": { broken: 36, fair: 45, good: 99, mint: 117, sealed: 135 },
+    "512": { broken: 50, fair: 58, good: 112, mint: 130, sealed: 158 },
+  },
+  gnote20: {
+    "128": { fair: 68, good: 81, mint: 90, sealed: 117 },
+    "256": { fair: 76, good: 90, mint: 99, sealed: 130 },
+  },
+  gnote9: {
+    "128": { broken: 9, fair: 27, good: 54, mint: 68, sealed: 94 },
+    "512": { broken: 18, fair: 36, good: 63, mint: 76, sealed: 113 },
+  },
+  gs20fe: {
+    "128": { broken: 14, fair: 18, good: 32, mint: 40, sealed: 63 },
+    "256": { broken: 22, fair: 27, good: 40, mint: 50, sealed: 81 },
+  },
+  gs20p: {
+    "128": { broken: 14, fair: 36, good: 68, mint: 76, sealed: 104 },
+    "512": { broken: 15, fair: 58, good: 90, mint: 99, sealed: 130 },
+  },
+  gs20u: {
+    "128": { broken: 14, fair: 68, good: 104, mint: 122, sealed: 148 },
+    "256": { broken: 18, fair: 76, good: 112, mint: 130, sealed: 158 },
+    "512": { broken: 22, fair: 86, good: 122, mint: 140, sealed: 166 },
+  },
+  gs21fe: {
+    "128": { broken: 9, fair: 22, good: 27, mint: 36, sealed: 54 },
+    "256": { broken: 14, fair: 32, good: 36, mint: 45, sealed: 72 },
+  },
+  gs21p: {
+    "128": { broken: 14, fair: 36, good: 54, mint: 63, sealed: 90 },
+    "256": { broken: 14, fair: 45, good: 63, mint: 72, sealed: 118 },
+  },
+  gs21u: {
+    "128": { broken: 22, fair: 54, good: 72, mint: 81, sealed: 99 },
+    "256": { broken: 24, fair: 63, good: 81, mint: 90, sealed: 108 },
+    "512": { broken: 25, fair: 68, good: 86, mint: 94, sealed: 112 },
+  },
+  gs22p: {
+    "128": { broken: 22, fair: 63, good: 86, mint: 99, sealed: 126 },
+    "256": { broken: 27, fair: 72, good: 94, mint: 108, sealed: 148 },
+  },
+  gs22u: {
+    "128": { broken: 27, fair: 76, good: 108, mint: 126, sealed: 162 },
+    "1tb": { broken: 27, fair: 99, good: 130, mint: 148, sealed: 280 },
+    "256": { broken: 27, fair: 90, good: 122, mint: 140, sealed: 204 },
+    "512": { broken: 27, fair: 94, good: 126, mint: 144, sealed: 242 },
+  },
+  gs23: {
+    "128": { broken: 22, fair: 72, good: 94, mint: 117, sealed: 153, verygood: 108 },
+    "256": { broken: 23, fair: 90, good: 112, mint: 135, sealed: 184, verygood: 126 },
+    "512": { broken: 23, fair: 94, good: 117, mint: 140, sealed: 198, verygood: 130 },
+  },
+  gs23fe: {
+    "128": { broken: 14, fair: 32, good: 63, mint: 81, sealed: 90, verygood: 68 },
+    "256": { broken: 15, fair: 40, good: 72, mint: 90, sealed: 108, verygood: 76 },
+  },
+  gs23p: {
+    "128": { broken: 72, sealed: 207 },
+    "256": { broken: 76, fair: 112, good: 162, mint: 180, sealed: 234, verygood: 171 },
+    "512": { broken: 78, fair: 122, good: 171, mint: 189, sealed: 252, verygood: 180 },
+  },
+  gs24fe: {
+    "128": { broken: 22, fair: 72, good: 117, mint: 135, sealed: 171, verygood: 126 },
+    "256": { broken: 32, fair: 90, good: 135, mint: 153, sealed: 189, verygood: 144 },
+  },
+  gs25edge: {
+    "256": { broken: 90, fair: 234, good: 279, mint: 315, sealed: 351, verygood: 288 },
+    "512": { broken: 99, fair: 256, good: 302, mint: 338, sealed: 382, verygood: 310 },
+  },
+  gs25fe: {
+    "128": { broken: 22, fair: 72, good: 194, mint: 220, sealed: 256, verygood: 202 },
+    "256": { broken: 32, fair: 90, good: 212, mint: 238, sealed: 274, verygood: 220 },
+    "512": { broken: 22, sealed: 256 },
+  },
+  gzflip3: {
+    "128": { broken: 9, fair: 14, good: 27, mint: 36, sealed: 54 },
+    "256": { broken: 14, fair: 22, good: 36, mint: 45, sealed: 68 },
+  },
+  gzfold3: {
+    "256": { broken: 18, fair: 72, good: 108, mint: 126, sealed: 153 },
+    "512": { broken: 22, fair: 86, good: 122, mint: 140, sealed: 180 },
+  },
+  gzfold4: {
+    "1tb": { broken: 27, fair: 144, good: 189, mint: 220, sealed: 270, verygood: 202 },
+    "256": { broken: 22, fair: 112, good: 158, mint: 189, sealed: 216, verygood: 171 },
+    "512": { broken: 25, fair: 130, good: 176, mint: 207, sealed: 243, verygood: 189 },
+  },
+  ipad9: {
+    "256": { broken: 13, fair: 43, good: 76, mint: 86, sealed: 100, verygood: 81 },
+    "64": { broken: 10, fair: 28, good: 62, mint: 71, sealed: 90, verygood: 66 },
+  },
+  ipadair11m2: {
+    "128": { broken: 128, fair: 190, good: 242, mint: 276, sealed: 304, verygood: 252 },
+    "1tb": { broken: 200, fair: 332, good: 385, mint: 418, sealed: 446, verygood: 394 },
+    "256": { broken: 152, fair: 218, good: 271, mint: 304, sealed: 352, verygood: 280 },
+    "512": { broken: 176, fair: 276, good: 328, mint: 361, sealed: 399, verygood: 337 },
+  },
+  ipadair11m3: {
+    "128": { broken: 119, fair: 176, good: 238, mint: 285, sealed: 314, verygood: 271 },
+    "1tb": { broken: 190, fair: 299, good: 361, mint: 408, sealed: 456, verygood: 394 },
+    "256": { broken: 142, fair: 185, good: 247, mint: 294, sealed: 337, verygood: 280 },
+    "512": { broken: 166, fair: 233, good: 294, mint: 342, sealed: 385, verygood: 328 },
+  },
+  ipadair13m2: {
+    "128": { broken: 100, fair: 242, good: 290, mint: 337, sealed: 375, verygood: 309 },
+    "1tb": { broken: 142, fair: 385, good: 432, mint: 480, sealed: 470, verygood: 451 },
+    "256": { broken: 124, fair: 290, good: 337, mint: 385, sealed: 423, verygood: 356 },
+    "512": { broken: 133, fair: 337, good: 385, mint: 432, sealed: 446, verygood: 404 },
+  },
+  ipadmini6: {
+    "256": { broken: 40, fair: 133, good: 171, mint: 190, sealed: 195 },
+    "64": { broken: 38, fair: 95, good: 133, mint: 152, sealed: 171 },
+  },
+  ipadpro11g4: {
+    "128": { broken: 95, fair: 252, good: 294, mint: 332, sealed: 361, verygood: 314 },
+    "1tb": { broken: 109, fair: 394, good: 437, mint: 475, sealed: 598, verygood: 456 },
+    "256": { broken: 100, fair: 299, good: 342, mint: 380, sealed: 408, verygood: 361 },
+    "2tb": { broken: 114, fair: 442, good: 484, mint: 522, sealed: 765, verygood: 504 },
+    "512": { broken: 104, fair: 323, good: 366, mint: 404, sealed: 456, verygood: 385 },
+  },
+  ipadpro11m4: {
+    "1tb": { broken: 285, fair: 522, good: 580, mint: 618, sealed: 750, verygood: 598 },
+    "256": { broken: 190, fair: 380, good: 437, mint: 475, sealed: 513, verygood: 456 },
+    "2tb": { broken: 332, fair: 594, good: 651, mint: 689, sealed: 846, verygood: 670 },
+    "512": { broken: 238, fair: 451, good: 508, mint: 546, sealed: 560, verygood: 527 },
+  },
+  ipadpro11m5: {
+    "1tb": { broken: 261, fair: 608, good: 656, mint: 712, sealed: 808, verygood: 674 },
+    "256": { broken: 166, fair: 466, good: 513, mint: 570, sealed: 618, verygood: 532 },
+    "2tb": { broken: 309, fair: 703, good: 750, mint: 808, sealed: 902, verygood: 770 },
+    "512": { broken: 214, fair: 513, good: 560, mint: 618, sealed: 665, verygood: 580 },
+  },
+  ipadpro129g6: {
+    "128": { broken: 119, fair: 242, good: 304, mint: 390, sealed: 456, verygood: 342 },
+    "1tb": { broken: 152, fair: 352, good: 413, mint: 499, sealed: 598, verygood: 451 },
+    "256": { broken: 128, fair: 280, good: 342, mint: 428, sealed: 527, verygood: 380 },
+    "2tb": { broken: 166, fair: 394, good: 456, mint: 542, sealed: 646, verygood: 494 },
+    "512": { broken: 133, fair: 299, good: 361, mint: 446, sealed: 551, verygood: 399 },
+  },
+  ipadpro13m4: {
+    "1tb": { broken: 238, fair: 518, good: 580, mint: 627, sealed: 788, verygood: 598 },
+    "256": { broken: 190, fair: 404, good: 466, mint: 513, sealed: 551, verygood: 484 },
+    "2tb": { broken: 261, fair: 622, good: 684, mint: 732, sealed: 978, verygood: 703 },
+    "512": { broken: 214, fair: 461, good: 522, mint: 570, sealed: 646, verygood: 542 },
+  },
+  px10a: {
+    "128": { broken: 45, fair: 99, good: 153, mint: 198, sealed: 225, verygood: 180 },
+    "256": { broken: 54, fair: 117, good: 171, mint: 216, sealed: 248, verygood: 198 },
+  },
+  px5: {
+    "base": { broken: 4, fair: 18, good: 32, mint: 40, sealed: 54 },
+  },
+  px5a: {
+    "base": { broken: 27, fair: 22, good: 32, mint: 36, sealed: 50 },
+  },
+  px6: {
+    "128": { broken: 9, fair: 32, good: 45, mint: 58, sealed: 86 },
+    "256": { broken: 11, fair: 40, good: 54, mint: 68, sealed: 99 },
+  },
+  px6p: {
+    "128": { broken: 14, fair: 40, good: 68, mint: 81, sealed: 108 },
+    "256": { broken: 14, fair: 50, good: 76, mint: 90, sealed: 112 },
+    "512": { broken: 14, fair: 54, good: 81, mint: 94, sealed: 117 },
+  },
+  px7: {
+    "128": { broken: 14, fair: 36, good: 51, mint: 63, sealed: 99 },
+    "256": { broken: 22, fair: 54, good: 69, mint: 81, sealed: 108 },
+  },
+  px7a: {
+    "base": { broken: 14, fair: 45, good: 63, mint: 72, sealed: 99 },
+  },
+  px8a: {
+    "128": { broken: 18, fair: 72, good: 108, mint: 126, sealed: 162, verygood: 117 },
+    "256": { broken: 18, fair: 81, good: 117, mint: 135, sealed: 184, verygood: 126 },
+  },
+  px9a: {
+    "128": { broken: 45, fair: 90, good: 130, mint: 158, sealed: 189, verygood: 140 },
+    "256": { broken: 50, fair: 108, good: 148, mint: 176, sealed: 212, verygood: 158 },
+  },
+  px9pfold: {
+    "256": { broken: 99, fair: 292, good: 360, mint: 405, sealed: 450, verygood: 378 },
+    "512": { broken: 108, fair: 320, good: 387, mint: 432, sealed: 540, verygood: 405 },
+  },
+  pxfold: {
+    "256": { broken: 32, fair: 90, good: 135, mint: 158, sealed: 202, verygood: 144 },
+    "512": { broken: 32, fair: 126, good: 171, mint: 194, sealed: 248, verygood: 180 },
+  },
+  switch: {
+    "base": { broken: 21, fair: 32, good: 54, mint: 81, sealed: 108, verygood: 68 },
+  },
+  switchlite: {
+    "base": { broken: 21, fair: 22, good: 36, mint: 50, sealed: 68 },
+  },
+  xone: {
+    "base": { broken: 21, fair: 54, good: 81, mint: 99, sealed: 117 },
   },
 };
 
