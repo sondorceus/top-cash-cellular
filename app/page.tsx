@@ -2197,7 +2197,7 @@ const MSI_DESKTOP_MODELS = [
 ];
 
 const IPAD_SERIES = [
-  { id: "ipadpro", label: "iPad Pro", topPrice: 610, image: "/ipadpro.png", variants: [
+  { id: "ipadpro", label: "iPad Pro", topPrice: 1035, image: "/ipadpro.png", variants: [
     { id: "ipadpro13m5", label: "iPad Pro 13\" M5", base: 610, image: "/devices/ipad-pro-13-m5.webp" },
     { id: "ipadpro11m5", label: "iPad Pro 11\" M5", base: 475, image: "/devices/ipad-pro-11-m5.webp" },
     { id: "ipadpro13m4", label: "iPad Pro 13\" M4", base: 500, image: "/devices/ipad-pro-13-m4.webp" },
@@ -2205,17 +2205,17 @@ const IPAD_SERIES = [
     { id: "ipadpro129g6", label: "iPad Pro 12.9\" 6th Gen", base: 270, image: "/devices/ipad-pro-12-9.webp" },
     { id: "ipadpro11g4", label: "iPad Pro 11\" 4th Gen", base: 225, image: "/devices/ipad-pro-11-4g.webp" },
   ]},
-  { id: "ipadair", label: "iPad Air", topPrice: 360, image: "/ipadair.png", variants: [
+  { id: "ipadair", label: "iPad Air", topPrice: 470, image: "/ipadair.png", variants: [
     { id: "ipadair13m3", label: "iPad Air 13\" M3", base: 360, image: "/devices/ipad-air-13-m3.webp" },
     { id: "ipadair11m3", label: "iPad Air 11\" M3", base: 275, image: "/devices/ipad-air-11-m3.webp" },
     { id: "ipadair13m2", label: "iPad Air 13\" M2", base: 275, image: "/devices/ipad-air-13-m2.webp" },
     { id: "ipadair11m2", label: "iPad Air 11\" M2", base: 200, image: "/devices/ipad-air-11-m2.webp" },
   ]},
-  { id: "ipadmini", label: "iPad Mini", topPrice: 225, image: "/ipadmini.png", variants: [
+  { id: "ipadmini", label: "iPad Mini", topPrice: 396, image: "/ipadmini.png", variants: [
     { id: "ipadmini7", label: "iPad Mini 7th Gen", base: 225, image: "/devices/ipad-mini-7.webp" },
     { id: "ipadmini6", label: "iPad Mini 6th Gen", base: 150, image: "/devices/ipad-mini-6.webp" },
   ]},
-  { id: "ipadbase", label: "iPad", topPrice: 150, image: "/ipadbase.png", variants: [
+  { id: "ipadbase", label: "iPad", topPrice: 198, image: "/ipadbase.png", variants: [
     { id: "ipad10", label: "iPad 10th Gen", base: 150, image: "/devices/ipad-10.webp" },
     { id: "ipad9", label: "iPad 9th Gen", base: 100, image: "/devices/ipad-9.webp" },
   ]},
