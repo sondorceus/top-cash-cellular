@@ -1,14 +1,94 @@
-name: Refresh competitor comp data
+name: Weekly price refresh
 
 on:
-  # 1st of every month at 09:00 UTC (04:00 Austin CDT)
+  # Every Monday at 06:00 UTC (01:00 Austin CDT)
   schedule:
-    - cron: "0 9 1 * *"
+    - cron: "0 6 * * 1"
   # Manual trigger from the GitHub Actions tab
   workflow_dispatch:
 
 jobs:
-  apple:
+  iwm-price-table:
+    name: Refresh IWM price table (all devices)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install playwright + chromium
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          playwright install chromium --with-deps
+
+      - name: Scrape iPhone prices (5% below IWM)
+        run: python scripts/build-price-table.py iphone
+        timeout-minutes: 120
+
+      - name: Scrape Samsung prices (10% below IWM)
+        run: python scripts/build-price-table.py samsung
+        timeout-minutes: 60
+
+      - name: Convert MacBook prices
+        run: |
+          python scripts/build-price-table.py macbook
+
+      - name: Merge all price tables
+        id: merge
+        run: |
+          python scripts/build-price-table.py merge | tee /tmp/merge.log
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          tail -50 /tmp/merge.log >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet price-table-*.json price-table.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Summary of changes:" >> /tmp/diff-summary.txt
+            git diff --stat price-table.json >> /tmp/diff-summary.txt 2>/dev/null || true
+          fi
+
+      - name: Open PR with refreshed prices
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: weekly IWM price refresh"
+          title: "Weekly price refresh — IWM scrape"
+          body: |
+            Automated weekly refresh of device prices from ItsWorthMore.com.
+
+            - **iPhone**: 5% below IWM (every condition × storage combo)
+            - **Samsung**: 10% below IWM
+            - **MacBook**: 10% below IWM (base chip/RAM config)
+
+            Review the diff — prices that look wildly off may indicate
+            a scraper issue (wrong quiz path, site change, etc).
+
+            <details>
+            <summary>Merge log</summary>
+
+            ```
+            ${{ steps.merge.outputs.log }}
+            ```
+
+            </details>
+          branch: refresh-prices/weekly
+          delete-branch: true
+
+  apple-trade-in:
     name: Refresh Apple Trade-In values
     runs-on: ubuntu-latest
     permissions:
@@ -18,18 +98,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
       - name: Install playwright + chromium
         run: |
-          python -m pip install --upgrade pip
           pip install playwright
           playwright install chromium --with-deps
-
       - name: Run Apple refresh
         id: refresh
         run: |
@@ -37,7 +112,6 @@ jobs:
           echo "log<<EOF" >> $GITHUB_OUTPUT
           tail -200 /tmp/refresh.log >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-
       - name: Detect changes
         id: diff
         run: |
@@ -46,31 +120,19 @@ jobs:
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
-
-      - name: Open PR with refreshed values
+      - name: Open PR
         if: steps.diff.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "chore: refresh Apple Trade-In comps (monthly)"
-          title: "Monthly Apple Trade-In comp refresh"
+          commit-message: "chore: refresh Apple Trade-In comps (weekly)"
+          title: "Weekly Apple Trade-In comp refresh"
           body: |
-            Automated monthly refresh of `public/comps/apple-trade-in.json`.
-
-            Review the diff before merging — values that moved more than
-            40% were left at their previous value (see warnings in the
-            run log) but spot-check anyway in case Apple repriced a tier.
-
-            <details><summary>Refresh log</summary>
-
-            ```
-            ${{ steps.refresh.outputs.log }}
-            ```
-
-            </details>
+            Automated weekly refresh of `public/comps/apple-trade-in.json`.
+            Values that moved >40% were kept at previous value.
           branch: refresh-comps/apple
           delete-branch: true
 
-  samsung:
+  samsung-trade-in:
     name: Refresh Samsung Trade-In values
     runs-on: ubuntu-latest
     permissions:
@@ -80,21 +142,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - name: Install playwright + chromium
         run: |
-          python -m pip install --upgrade pip
           pip install playwright
           playwright install chromium --with-deps
       - name: Run Samsung refresh
         id: refresh
         run: |
-          python scripts/refresh-samsung-comps.py | tee /tmp/refresh-samsung.log
+          python scripts/refresh-samsung-comps.py | tee /tmp/refresh.log
           echo "log<<EOF" >> $GITHUB_OUTPUT
-          tail -200 /tmp/refresh-samsung.log >> $GITHUB_OUTPUT
+          tail -200 /tmp/refresh.log >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
       - name: Detect changes
         id: diff
@@ -104,77 +164,18 @@ jobs:
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
-      - name: Open PR with refreshed values
+      - name: Open PR
         if: steps.diff.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "chore: refresh Samsung Trade-In comps (monthly)"
-          title: "Monthly Samsung Trade-In comp refresh"
+          commit-message: "chore: refresh Samsung Trade-In comps (weekly)"
+          title: "Weekly Samsung Trade-In comp refresh"
           body: |
-            Automated monthly refresh of `public/comps/samsung-trade-in.json`.
-            <details><summary>Refresh log</summary>
-
-            ```
-            ${{ steps.refresh.outputs.log }}
-            ```
-
-            </details>
+            Automated weekly refresh of `public/comps/samsung-trade-in.json`.
           branch: refresh-comps/samsung
           delete-branch: true
 
-  decluttr:
-    name: Refresh Decluttr values
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install playwright + chromium
-        run: |
-          python -m pip install --upgrade pip
-          pip install playwright
-          playwright install chromium --with-deps
-      - name: Run Decluttr refresh
-        id: refresh
-        run: |
-          python scripts/refresh-decluttr-comps.py | tee /tmp/refresh-decluttr.log
-          echo "log<<EOF" >> $GITHUB_OUTPUT
-          tail -200 /tmp/refresh-decluttr.log >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-      - name: Detect changes
-        id: diff
-        run: |
-          if git diff --quiet public/comps/decluttr.json; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
-      - name: Open PR with refreshed values
-        if: steps.diff.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: "chore: refresh Decluttr comps (monthly)"
-          title: "Monthly Decluttr comp refresh"
-          body: |
-            Automated monthly refresh of `public/comps/decluttr.json`.
-            <details><summary>Refresh log</summary>
-
-            ```
-            ${{ steps.refresh.outputs.log }}
-            ```
-
-            </details>
-          branch: refresh-comps/decluttr
-          delete-branch: true
-
-  google:
+  google-trade-in:
     name: Refresh Google Store Trade-In values
     runs-on: ubuntu-latest
     permissions:
@@ -184,26 +185,20 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
       - name: Install playwright + chromium
         run: |
-          python -m pip install --upgrade pip
           pip install playwright
           playwright install chromium --with-deps
-
       - name: Run Google refresh
         id: refresh
         run: |
-          python scripts/refresh-google-comps.py | tee /tmp/refresh-google.log
+          python scripts/refresh-google-comps.py | tee /tmp/refresh.log
           echo "log<<EOF" >> $GITHUB_OUTPUT
-          tail -200 /tmp/refresh-google.log >> $GITHUB_OUTPUT
+          tail -200 /tmp/refresh.log >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-
       - name: Detect changes
         id: diff
         run: |
@@ -212,90 +207,13 @@ jobs:
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
-
-      - name: Open PR with refreshed values
+      - name: Open PR
         if: steps.diff.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "chore: refresh Google Store Trade-In comps (monthly)"
-          title: "Monthly Google Store Trade-In comp refresh"
+          commit-message: "chore: refresh Google Store Trade-In comps (weekly)"
+          title: "Weekly Google Store Trade-In comp refresh"
           body: |
-            Automated monthly refresh of `public/comps/google-trade-in.json`.
-
-            Review the diff before merging — values that moved more than
-            40% were left at their previous value (see warnings in the
-            run log).
-
-            <details><summary>Refresh log</summary>
-
-            ```
-            ${{ steps.refresh.outputs.log }}
-            ```
-
-            </details>
+            Automated weekly refresh of `public/comps/google-trade-in.json`.
           branch: refresh-comps/google
-          delete-branch: true
-
-  iwm:
-    name: Refresh IWM prices (all devices)
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install playwright + chromium
-        run: |
-          python -m pip install --upgrade pip
-          pip install playwright
-          playwright install chromium --with-deps
-
-      - name: Run IWM price refresh
-        id: refresh
-        run: |
-          python scripts/refresh-iwm-prices.py all | tee /tmp/refresh.log
-          echo "log<<EOF" >> $GITHUB_OUTPUT
-          tail -200 /tmp/refresh.log >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-        timeout-minutes: 120
-
-      - name: Detect changes
-        id: diff
-        run: |
-          if git diff --quiet public/comps/iwm-prices.json; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Open PR with refreshed prices
-        if: steps.diff.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: "chore: refresh IWM prices (monthly auto-scrape)"
-          title: "Monthly IWM price refresh — all devices"
-          body: |
-            Automated monthly refresh of IWM prices for all devices.
-            Formula: our_price = IWM × 0.85 (15% less).
-
-            Review the diff before merging — values that moved more than
-            40% were left at their previous value (anomaly protection).
-
-            <details>
-            <summary>Refresh log</summary>
-
-            ```
-            ${{ steps.refresh.outputs.log }}
-            ```
-
-            </details>
-          branch: refresh-comps/iwm
           delete-branch: true
