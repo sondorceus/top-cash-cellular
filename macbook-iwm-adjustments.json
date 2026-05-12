@@ -1,0 +1,152 @@
+{
+  "mbp14m4": {
+    "base": 950,
+    "chips": {
+      "M4": 1.0,
+      "M4 Pro 12/16": 1.37,
+      "M4 Pro 14/20": 1.42,
+      "M4 Max 14/32": 2.26,
+      "M4 Max 16/40": 2.47
+    },
+    "ram_adj": {
+      "16GB": 0,
+      "24GB": 125,
+      "32GB": 250
+    },
+    "storage_adj": {
+      "512": 0,
+      "1tb": 125,
+      "2tb": 250
+    },
+    "condition_adj": {
+      "sealed": 50,
+      "mint": 0,
+      "verygood": -60,
+      "good": -110,
+      "fair": -225
+    }
+  },
+  "mbp16m4": {
+    "base": 1475,
+    "chips": {
+      "M4 Pro 14/20": 1.0,
+      "M4 Max 14/32": 1.46,
+      "M4 Max 16/40": 1.69
+    },
+    "ram_adj": {
+      "24GB": 0,
+      "48GB": 400
+    },
+    "storage_adj": {
+      "512": 0,
+      "1tb": 150,
+      "2tb": 300,
+      "4tb": 600
+    },
+    "condition_adj": {
+      "sealed": 75,
+      "mint": 0,
+      "verygood": -75,
+      "good": -150,
+      "fair": -300
+    }
+  },
+  "mbp14m3": {
+    "base": 630,
+    "chips": {
+      "M3": 1.0,
+      "M3 Pro 11/14": 1.43,
+      "M3 Pro 12/18": 1.51,
+      "M3 Max 14/30": 2.3,
+      "M3 Max 16/40": 2.7
+    },
+    "ram_adj": {
+      "8GB": 0,
+      "16GB": 150,
+      "24GB": 225
+    },
+    "storage_adj": {
+      "512": 0,
+      "1tb": 100,
+      "2tb": 250
+    },
+    "condition_adj": {
+      "sealed": 30,
+      "mint": 0,
+      "verygood": -55,
+      "good": -110,
+      "fair": -210
+    }
+  },
+  "mba13m3": {
+    "base": 470,
+    "chips": {
+      "M3 8/8": 1.0,
+      "M3 8/10": 1.14
+    },
+    "ram_adj": {
+      "8GB": 0,
+      "16GB": 50,
+      "24GB": 150
+    },
+    "storage_adj": {
+      "256": 0,
+      "512": 50,
+      "1tb": 125,
+      "2tb": 250
+    },
+    "condition_adj": {
+      "sealed": 40,
+      "mint": 0,
+      "verygood": -35,
+      "good": -70,
+      "fair": -155
+    }
+  },
+  "mba13m2": {
+    "base": 370,
+    "chips": {
+      "M2 8/8": 1.0,
+      "M2 8/10": 1.08
+    },
+    "ram_adj": {
+      "8GB": 0,
+      "16GB": 50,
+      "24GB": 125
+    },
+    "storage_adj": {
+      "256": 0,
+      "512": 50,
+      "1tb": 125,
+      "2tb": 175
+    },
+    "condition_adj": {
+      "sealed": 40,
+      "mint": 0,
+      "verygood": -30,
+      "good": -65,
+      "fair": -150
+    }
+  },
+  "mba15m2": {
+    "base": 440,
+    "ram_adj": {
+      "8GB": 0,
+      "16GB": 85,
+      "24GB": 170
+    },
+    "storage_adj": {
+      "256": 0,
+      "512": 50,
+      "1tb": 100,
+      "2tb": 200
+    },
+    "condition_adj": {
+      "sealed": 30,
+      "mint": 0,
+      "verygood": -25,
+      "good": -50,
+      "fair": -125
+    }
+  }
+}
