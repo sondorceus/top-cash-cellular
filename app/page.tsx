@@ -1039,7 +1039,7 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   },
   xsx: {
     "1tb": { broken: 8, fair: 162, good: 225, mint: 274, sealed: 315, verygood: 252 },
-    "2tb": { broken: 8, fair: 162, good: 225, mint: 274, sealed: 315, verygood: 252 },
+    "2tb": { broken: 8, fair: 252, good: 342, mint: 387, sealed: 428, verygood: 369 },
   },
   // === SAMSUNG TABLETS (10% below IWM) ===
   stabs11u: {
@@ -3190,6 +3190,10 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "1", label: "1 controller",  multiplier: 1.00 },
       { id: "0", label: "No controllers", multiplier: 0.92 },
     ]},
+    { id: "powercord", question: "Power cord included?", options: [
+      { id: "yes", label: "Yes", multiplier: 1.00 },
+      { id: "no",  label: "No",  multiplier: 0.96 },
+    ]},
   ],
   microsoft: [
     { id: "discdrive", question: "Disc drive?", helper: "Xbox Series S is always digital; Series X comes in both flavors.", options: [
@@ -3204,6 +3208,10 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "1", label: "1 controller",  multiplier: 1.00 },
       { id: "0", label: "No controllers", multiplier: 0.92 },
     ]},
+    { id: "powercord", question: "Power cord included?", options: [
+      { id: "yes", label: "Yes", multiplier: 1.00 },
+      { id: "no",  label: "No",  multiplier: 0.96 },
+    ]},
   ],
   nintendo: [
     { id: "joycons", question: "Joy-Cons / Pro Controller?", options: [
@@ -3216,6 +3224,10 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "yes",     label: "Yes — original dock",  multiplier: 1.00 },
       { id: "no",      label: "No dock",              multiplier: 0.90 },
       { id: "handheld", label: "N/A — Switch Lite",   multiplier: 1.00 },
+    ]},
+    { id: "powercord", question: "HDMI & power cords included?", options: [
+      { id: "yes", label: "Yes", multiplier: 1.00 },
+      { id: "no",  label: "No",  multiplier: 0.97 },
     ]},
   ],
   // iPad accessory bundling
