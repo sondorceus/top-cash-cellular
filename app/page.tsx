@@ -1463,8 +1463,8 @@ const LENOVO_PC_ALL_SUB_SERIES: { id: string; label: string; variants: { id: str
 
 const DELL_MODELS = [
   { id: "dxps17", label: "XPS 17 (2024)", base: 0, image: "/devices/dell-xps.webp" },
-  { id: "dxps15", label: "XPS 15 (2024)", base: 0, image: "/devices/dell-xps.webp" },
-  { id: "dxps13", label: "XPS 13 (2024)", base: 0, image: "/devices/dell-xps.webp" },
+  { id: "dxps15", label: "XPS 15 (2024)", base: 620, image: "/devices/dell-xps.webp" },
+  { id: "dxps13", label: "XPS 13 (2024)", base: 420, image: "/devices/dell-xps.webp" },
   { id: "dxps15g23", label: "XPS 15 (2023)", base: 0, image: "/devices/dell-xps.webp" },
   { id: "dxps13g23", label: "XPS 13 (2023)", base: 0, image: "/devices/dell-xps.webp" },
   { id: "dlat7440", label: "Latitude 7440", base: 0, image: "/devices/dell-latitude.jpg" },
@@ -1859,7 +1859,7 @@ const LENOVO_DESKTOP_MODELS = [
 const HP_DESKTOP_MODELS = [
   { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 0, image: "/devices/hp-elitedesk-800.webp" },
   { id: "hpprodesk", label: "ProDesk 400 G9", base: 0, image: "/devices/hp-prodesk-400.webp" },
-  { id: "hpomendsk", label: "OMEN 45L Desktop", base: 0, image: "/devices/hp-omen-45l.webp" },
+  { id: "hpomendsk", label: "OMEN 45L Desktop", base: 800, image: "/devices/hp-omen-45l.webp" },
   { id: "hpomen40", label: "OMEN 40L Desktop", base: 0, image: "/devices/hp-omen-35l.webp" },
   { id: "hpenvy34", label: "Envy 34 All-in-One", base: 0, image: "/devices/lenovo-ideacentre.webp" },
   { id: "hppav32", label: "Pavilion 32 All-in-One", base: 0, image: "/devices/lenovo-ideacentre.webp" },
@@ -2242,7 +2242,7 @@ const DELL_PC_ALL_SUB_SERIES = [
 ];
 
 const ALIENWARE_DESKTOP_MODELS = [
-  { id: "awaurorar16", label: "Aurora R16", base: 0, image: "/devices/alienware-aurora-r16.webp" },
+  { id: "awaurorar16", label: "Aurora R16", base: 340, image: "/devices/alienware-aurora-r16.webp" },
   { id: "awaurorar15", label: "Aurora R15", base: 0, image: "/devices/alienware-aurora-r15.webp" },
   { id: "awaurorar14", label: "Aurora R14", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r14.webp" },
   { id: "awaurorar13", label: "Aurora R13", base: 0, image: "/devices/alienware-aurora-r13.webp" },
@@ -3166,7 +3166,7 @@ type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" |
 // generic 'extras' step that advances an index between questions.
 // Each option carries a multiplier that folds into the quote alongside
 // storage / condition / etc.
-type ExtraOption = { id: string; label: string; sub?: string; multiplier: number };
+type ExtraOption = { id: string; label: string; sub?: string; multiplier: number; adj?: number };
 // `showIf` makes a question conditional on a previous answer — used to
 // short-circuit follow-ups like "which band?" when the user already said
 // "no band". When showIf returns false, the renderer auto-advances past
@@ -3371,6 +3371,79 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "no",  label: "No battery",                   multiplier: 0.85 },
     ]},
   ],
+  // Dell laptops — GPU is a big price driver for XPS 15. Uses adj values
+  // consumed by the additive pricing path. XPS 13 (integrated only) has
+  // the GPU question filtered out in getBrandExtras by model ID.
+  dell: [
+    { id: "gpu", question: "Graphics card?", helper: "Check Device Manager > Display adapters on Windows.", options: [
+      { id: "integrated", label: "Intel Integrated Graphics", multiplier: 1.00, adj: -100 },
+      { id: "rtx4050",    label: "NVIDIA RTX 4050",           multiplier: 1.00, adj: 0 },
+      { id: "rtx4060",    label: "NVIDIA RTX 4060",           multiplier: 1.00, adj: 50 },
+      { id: "rtx4070",    label: "NVIDIA RTX 4070",           multiplier: 1.00, adj: 100 },
+    ]},
+  ],
+  // Alienware desktops — GPU is the biggest price driver
+  alienware_desktop: [
+    { id: "gpu", question: "Graphics card (GPU)?", helper: "Check Device Manager > Display adapters on Windows.", options: [
+      { id: "rtx3050",        label: "NVIDIA RTX 3050",           multiplier: 1.00, adj: -100 },
+      { id: "rtx4060",        label: "NVIDIA RTX 4060",           multiplier: 1.00, adj: 0 },
+      { id: "rtx4060ti",      label: "NVIDIA RTX 4060 Ti",        multiplier: 1.00, adj: 25 },
+      { id: "rtx4070",        label: "NVIDIA RTX 4070",           multiplier: 1.00, adj: 75 },
+      { id: "rtx4070super",   label: "NVIDIA RTX 4070 Super",     multiplier: 1.00, adj: 100 },
+      { id: "rtx4070ti",      label: "NVIDIA RTX 4070 Ti",        multiplier: 1.00, adj: 125 },
+      { id: "rtx4070tisuper", label: "NVIDIA RTX 4070 Ti Super",  multiplier: 1.00, adj: 175 },
+      { id: "rtx4080",        label: "NVIDIA RTX 4080",           multiplier: 1.00, adj: 350 },
+      { id: "rtx4080super",   label: "NVIDIA RTX 4080 Super",     multiplier: 1.00, adj: 400 },
+      { id: "rtx4090",        label: "NVIDIA RTX 4090",           multiplier: 1.00, adj: 800 },
+    ]},
+    { id: "powercord", question: "Power cord included?", options: [
+      { id: "yes", label: "Yes", multiplier: 1.00 },
+      { id: "no",  label: "No",  multiplier: 0.96 },
+    ]},
+    { id: "hdmi", question: "HDMI cable included?", options: [
+      { id: "yes", label: "Yes", multiplier: 1.00 },
+      { id: "no",  label: "No",  multiplier: 1.00 },
+    ]},
+    { id: "keyboard", question: "Keyboard included?", options: [
+      { id: "yes", label: "Yes — OEM keyboard", multiplier: 1.02 },
+      { id: "no",  label: "No keyboard",        multiplier: 1.00 },
+    ]},
+    { id: "mouse", question: "Mouse included?", options: [
+      { id: "yes", label: "Yes — OEM mouse", multiplier: 1.01 },
+      { id: "no",  label: "No mouse",        multiplier: 1.00 },
+    ]},
+  ],
+  // HP desktops — GPU + optional secondary drive
+  hp_desktop: [
+    { id: "gpu", question: "Graphics card (GPU)?", helper: "Check Device Manager > Display adapters on Windows.", options: [
+      { id: "rtx4060ti", label: "NVIDIA RTX 4060 Ti", multiplier: 1.00, adj: -150 },
+      { id: "rtx4070ti", label: "NVIDIA RTX 4070 Ti", multiplier: 1.00, adj: -100 },
+      { id: "rtx4080",   label: "NVIDIA RTX 4080",    multiplier: 1.00, adj: 0 },
+      { id: "rtx4090",   label: "NVIDIA RTX 4090",    multiplier: 1.00, adj: 200 },
+    ]},
+    { id: "secondarydrive", question: "Secondary drive?", helper: "Some OMEN configs ship with a second HDD or SSD for extra storage.", options: [
+      { id: "none",    label: "None",     multiplier: 1.00, adj: 0 },
+      { id: "1tb_hdd", label: "1 TB HDD", multiplier: 1.00, adj: 5 },
+      { id: "1tb_ssd", label: "1 TB SSD", multiplier: 1.00, adj: 15 },
+      { id: "2tb_ssd", label: "2 TB SSD", multiplier: 1.00, adj: 25 },
+    ]},
+    { id: "powercord", question: "Power cord included?", options: [
+      { id: "yes", label: "Yes", multiplier: 1.00 },
+      { id: "no",  label: "No",  multiplier: 0.96 },
+    ]},
+    { id: "hdmi", question: "HDMI cable included?", options: [
+      { id: "yes", label: "Yes", multiplier: 1.00 },
+      { id: "no",  label: "No",  multiplier: 1.00 },
+    ]},
+    { id: "keyboard", question: "Keyboard included?", options: [
+      { id: "yes", label: "Yes — OEM keyboard", multiplier: 1.02 },
+      { id: "no",  label: "No keyboard",        multiplier: 1.00 },
+    ]},
+    { id: "mouse", question: "Mouse included?", options: [
+      { id: "yes", label: "Yes — OEM mouse", multiplier: 1.01 },
+      { id: "no",  label: "No mouse",        multiplier: 1.00 },
+    ]},
+  ],
 };
 // Apple Watch Ultra ships in only one configuration each generation:
 // titanium case, 49mm, cellular. So the case-material, case-size, and
@@ -3410,6 +3483,12 @@ const getBrandExtras = (dt: string | null | undefined, modelId?: string | null |
         ? { ...q, options: ultraBandOptions }
         : q
       );
+  }
+  // Dell XPS 13 has integrated graphics only — skip the GPU question.
+  // XPS 15 gets the full GPU picker. Other Dell models without additive
+  // specs won't hit this because they have base=0 (inquiry-only).
+  if (dt === "dell" && modelId !== "dxps15") {
+    return base.filter(q => q.id !== "gpu");
   }
   return base;
 };
@@ -3865,6 +3944,83 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
     ],
     hasNanoGlass: false,
   },
+  // Dell XPS 15 (2024) — IWM additive pricing
+  dxps15: {
+    processors: [
+      { id: "i7_14", label: "Intel Core i7 (14th Gen)", multiplier: 1.00, adj: 620 },
+      { id: "i9_14", label: "Intel Core i9 (14th Gen)", multiplier: 1.13, adj: 700 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 0 },
+      { id: "32", label: "32 GB", multiplier: 1.06, adj: 40 },
+      { id: "64", label: "64 GB", multiplier: 1.16, adj: 100 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "1tb", label: "1 TB SSD", multiplier: 1.06, adj: 40 },
+      { id: "2tb", label: "2 TB SSD", multiplier: 1.13, adj: 80 },
+    ],
+    hasNanoGlass: false,
+  },
+  // Dell XPS 13 (2024) — IWM additive pricing
+  dxps13: {
+    processors: [
+      { id: "ultra5", label: "Intel Core Ultra 5", multiplier: 1.00, adj: 420 },
+      { id: "ultra7", label: "Intel Core Ultra 7", multiplier: 1.19, adj: 500 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 0 },
+      { id: "32", label: "32 GB", multiplier: 1.07, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.05, adj: 20 },
+      { id: "1tb", label: "1 TB SSD", multiplier: 1.10, adj: 40 },
+    ],
+    hasNanoGlass: false,
+  },
+  // Alienware Aurora R16 — gaming desktop, additive pricing
+  awaurorar16: {
+    processors: [
+      { id: "i7_13", label: "Intel Core i7 (13th Gen)", multiplier: 1.00, adj: 340 },
+      { id: "i7_14", label: "Intel Core i7 (14th Gen)", multiplier: 1.00, adj: 390 },
+      { id: "i9_13", label: "Intel Core i9 (13th Gen)", multiplier: 1.00, adj: 380 },
+      { id: "i9_14", label: "Intel Core i9 (14th Gen)", multiplier: 1.00, adj: 490 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 25 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 50 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 100 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 25 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 50 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 100 },
+      { id: "4tb", label: "4 TB SSD",   multiplier: 1.00, adj: 175 },
+    ],
+    hasNanoGlass: false,
+  },
+  // HP OMEN 45L Desktop — gaming desktop, additive pricing
+  hpomendsk: {
+    processors: [
+      { id: "i9_13",     label: "Intel Core i9 (13th Gen)",     multiplier: 1.00, adj: 800 },
+      { id: "ultra7_s2", label: "Intel Core Ultra 7 Series 2",  multiplier: 1.00, adj: 825 },
+      { id: "ultra9_s2", label: "Intel Core Ultra 9 Series 2",  multiplier: 1.00, adj: 900 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 0 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 20 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 40 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 20 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 40 },
+    ],
+    hasNanoGlass: false,
+  },
 };
 const DISPLAY_GLASS_OPTIONS: MacSpecOption[] = [
   { id: "standard", label: "Standard Glass", multiplier: 1.00 },
@@ -3878,7 +4034,7 @@ const CHARGER_OPTIONS = [
   { id: "yes", label: "Yes — OEM charger included", multiplier: 1.05 },
   { id: "no",  label: "No charger", multiplier: 1.00 },
 ] as const;
-const hasMacSpecs = (modelId: string | undefined | null): boolean => !!modelId && !!MACBOOK_SPECS[modelId];
+const hasAdditiveSpecs = (modelId: string | undefined | null): boolean => !!modelId && !!MACBOOK_SPECS[modelId];
 const BRAND_LABELS: Record<string, string> = {
   iphone: "iPhone", android: "Samsung", pixel: "Pixel", ipad: "iPad",
   macbook: "MacBook", samsung_pc: "Samsung", lenovo: "Lenovo", dell: "Dell",
@@ -4098,13 +4254,14 @@ export default function Home() {
   // iPad Cellular Vz:     condition -> connectivity -> storage -> carrier -> carrier-lock -> quote (6)
   // Other:                condition -> storage -> quote (3)
   // No-storage:           condition -> quote (2)
-  // MacBook spec'd flow has 7 steps:
+  // Additive spec'd flow (MacBook, Dell XPS):
   //   processor -> memory -> storage -> [displayglass?] -> condition
-  //   -> batteryhealth -> charger -> quote
-  const macSpecFlow = !!(model && hasMacSpecs(model.id));
+  //   -> batteryhealth -> charger -> [extras?] -> quote
+  const macSpecFlow = !!(model && hasAdditiveSpecs(model.id));
   const macHasGlassStep = !!(macSpecFlow && model && MACBOOK_SPECS[model.id].hasNanoGlass);
+  const macSpecExtrasCount = macSpecFlow ? getBrandExtras(deviceType, model?.id).length : 0;
   const funnelTotal = macSpecFlow
-    ? (macHasGlassStep ? 7 : 6)
+    ? ((macHasGlassStep ? 7 : 6) + macSpecExtrasCount)
     : isNoStorageDevice
       ? 2
       : isPhoneFlow
@@ -4114,6 +4271,7 @@ export default function Home() {
           : isIpadFlow
             ? 4
             : 3;
+  const _chargerStepN = macHasGlassStep ? 7 : 6;
   const funnelStepNum = macSpecFlow ? (
     step === "processor" ? 1 :
     step === "memory" ? 2 :
@@ -4121,7 +4279,8 @@ export default function Home() {
     step === "displayglass" ? 4 :
     step === "condition" ? (macHasGlassStep ? 5 : 4) :
     step === "batteryhealth" ? (macHasGlassStep ? 6 : 5) :
-    step === "charger" ? (macHasGlassStep ? 7 : 6) :
+    step === "charger" ? _chargerStepN :
+    step === "extras" ? (_chargerStepN + 1) :
     step === "quote" ? funnelTotal : 0
   ) : (
     step === "condition" ? 1 :
@@ -4517,11 +4676,18 @@ export default function Home() {
   const useDirectPricing = lookupPrice != null;
   // MacBook additive mode: use IWM's exact $ adjustments (no multipliers)
   const procAdj = (processor as MacSpecOption | null)?.adj;
-  const useAdditive = procAdj != null && model && hasMacSpecs(model.id);
+  const useAdditive = procAdj != null && model && hasAdditiveSpecs(model.id);
   const nonCarrierMultiplier = connectivityMultiplier * promoMultiplier
     * couponMultiplier * processorMultiplier * memoryMultiplier * displayGlassMultiplier
     * batteryHealthMultiplier * chargerMultiplier * extrasMultiplier;
-  const promoOnly = promoMultiplier * couponMultiplier * extrasMultiplier;
+  // For additive mode, extras with adj values are summed directly (not multiplied).
+  // Extras WITHOUT adj still contribute via extrasMultiplier.
+  const extrasAdjSum = Object.values(extras).reduce((acc, opt) => acc + ((opt as ExtraOption | undefined)?.adj ?? 0), 0);
+  const extrasMultOnly = Object.values(extras).reduce((acc, opt) => {
+    const o = opt as ExtraOption | undefined;
+    return acc * ((o?.adj != null) ? 1 : (o?.multiplier ?? 1));
+  }, 1);
+  const promoOnly = promoMultiplier * couponMultiplier * (useAdditive ? extrasMultOnly : extrasMultiplier);
   const baseQuote = useAdditive
     ? (() => {
         const chip = procAdj;
@@ -4532,7 +4698,7 @@ export default function Home() {
         const nano = displayGlass?.id === "nano" ? 50 : 0;
         const batt = batteryHealth?.id === "poor" ? -80 : 0;
         const chrg = charger?.id === "no" ? -50 : 0;
-        const iwm = chip + ram + stor + cond + nano + batt + chrg;
+        const iwm = chip + ram + stor + cond + nano + batt + chrg + extrasAdjSum;
         return Math.max(0, Math.round(iwm * 0.90 * promoOnly)) + promoFlatBonus;
       })()
     : useDirectPricing
@@ -4596,12 +4762,18 @@ export default function Home() {
           setExtras(next);
         }
         setExtrasIndex(extrasIndex - 1);
+      } else if (model && hasAdditiveSpecs(model.id)) {
+        // Additive flow: desktops skip battery/charger so go back to
+        // condition; laptops go back to charger.
+        const isDskType = deviceType?.endsWith("_desktop") ?? false;
+        if (isDskType) { setStep("condition"); setCondition(null); }
+        else { setStep("charger"); setCharger(null); }
       } else {
         setStep("condition"); setCondition(null);
       }
     }
     else if (step === "condition") {
-      if (model && hasMacSpecs(model.id)) {
+      if (model && hasAdditiveSpecs(model.id)) {
         // Mac flow has condition AFTER storage/displayglass — go back accordingly
         if (MACBOOK_SPECS[model.id].hasNanoGlass) { setStep("displayglass"); setDisplayGlass(null); }
         else { setStep("storage"); setStorage(null); }
@@ -4621,7 +4793,7 @@ export default function Home() {
       }
     }
     else if (step === "storage") {
-      if (model && hasMacSpecs(model.id)) { setStep("memory"); setMemory(null); }
+      if (model && hasAdditiveSpecs(model.id)) { setStep("memory"); setMemory(null); }
       else if (deviceType === "ipad") { setStep("connectivity"); setConnectivity(null); }
       else { setStep("condition"); setCondition(null); }
     }
@@ -4629,7 +4801,13 @@ export default function Home() {
     else if (step === "carrier") { setStep("storage"); setStorage(null); }
     else if (step === "carrier-lock") { setStep("carrier"); setCarrier(null); }
     else if (step === "quote") {
-      if (charger) { setStep("charger"); setCharger(null); }
+      // If additive model came through extras (e.g. Dell GPU), go back there.
+      const quoteExtras = getBrandExtras(deviceType, model?.id);
+      if (model && hasAdditiveSpecs(model.id) && quoteExtras.length > 0) {
+        setExtrasIndex(quoteExtras.length - 1);
+        setStep("extras");
+      }
+      else if (charger) { setStep("charger"); setCharger(null); }
       else if (batteryHealth) { setStep("batteryhealth"); setBatteryHealth(null); }
       else if (carrierLock) { setStep("carrier-lock"); setCarrierLock(null); }
       else if (carrier) { setStep("carrier"); setCarrier(null); }
@@ -6923,7 +7101,7 @@ export default function Home() {
                                 // new IWM-style flow (processor -> memory -> storage
                                 // -> display -> condition -> battery -> charger).
                                 // Other models keep the legacy condition-first flow.
-                                const next: Step = hasMacSpecs(m.id) ? "processor" : "condition";
+                                const next: Step = hasAdditiveSpecs(m.id) ? "processor" : "condition";
                                 setStep(next); pushHistory(next);
                               }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                                 {mImg ? (
@@ -7509,8 +7687,8 @@ export default function Home() {
       )}
 
       {/* STEP: STORAGE */}
-      {/* STEP: PROCESSOR — MacBook only, gated on hasMacSpecs(model) */}
-      {step === "processor" && page === "home" && model && hasMacSpecs(model.id) && (
+      {/* STEP: PROCESSOR — additive-spec models (MacBook, Dell XPS), gated on hasAdditiveSpecs(model) */}
+      {step === "processor" && page === "home" && model && hasAdditiveSpecs(model.id) && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
@@ -7521,7 +7699,7 @@ export default function Home() {
               </button>
               {selectionPanelMobile}
               <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Select Processor</h2>
-              <p className="text-[#b8b8b8] text-xs mb-3">Find this in <span className="text-[#e6e6e6] font-semibold"> Menu &gt; About This Mac</span></p>
+              <p className="text-[#b8b8b8] text-xs mb-3">{deviceType === "dell" ? <>Find this in <span className="text-[#e6e6e6] font-semibold">Settings &gt; System &gt; About</span></> : <>Find this in <span className="text-[#e6e6e6] font-semibold"> Menu &gt; About This Mac</span></>}</p>
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
                   {(MACBOOK_SPECS[model.id]?.processors || []).map((p) => (
@@ -7540,8 +7718,8 @@ export default function Home() {
         </section>
       )}
 
-      {/* STEP: MEMORY — MacBook only */}
-      {step === "memory" && page === "home" && model && hasMacSpecs(model.id) && (
+      {/* STEP: MEMORY — additive-spec models (MacBook, Dell XPS) */}
+      {step === "memory" && page === "home" && model && hasAdditiveSpecs(model.id) && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
@@ -7552,7 +7730,7 @@ export default function Home() {
               </button>
               {selectionPanelMobile}
               <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Select Memory</h2>
-              <p className="text-[#b8b8b8] text-xs mb-3">Find this in <span className="text-[#e6e6e6] font-semibold"> Menu &gt; About This Mac</span></p>
+              <p className="text-[#b8b8b8] text-xs mb-3">{deviceType === "dell" ? <>Find this in <span className="text-[#e6e6e6] font-semibold">Settings &gt; System &gt; About</span></> : <>Find this in <span className="text-[#e6e6e6] font-semibold"> Menu &gt; About This Mac</span></>}</p>
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
                   {(MACBOOK_SPECS[model.id]?.memory || []).map((m) => (
@@ -7572,7 +7750,7 @@ export default function Home() {
       )}
 
       {/* STEP: DISPLAY GLASS — MacBook Pro 16/14 only, between storage and condition */}
-      {step === "displayglass" && page === "home" && model && hasMacSpecs(model.id) && (
+      {step === "displayglass" && page === "home" && model && hasAdditiveSpecs(model.id) && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
@@ -7602,8 +7780,8 @@ export default function Home() {
         </section>
       )}
 
-      {/* STEP: BATTERY HEALTH — MacBook only, between condition and charger */}
-      {step === "batteryhealth" && page === "home" && model && hasMacSpecs(model.id) && (
+      {/* STEP: BATTERY HEALTH — additive-spec models, between condition and charger */}
+      {step === "batteryhealth" && page === "home" && model && hasAdditiveSpecs(model.id) && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
@@ -7614,7 +7792,7 @@ export default function Home() {
               </button>
               {selectionPanelMobile}
               <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Battery Health</h2>
-              <p className="text-[#b8b8b8] text-xs mb-3">Check it in <span className="text-[#e6e6e6] font-semibold"> Menu &gt; System Settings &gt; Battery &gt; Battery Health</span></p>
+              <p className="text-[#b8b8b8] text-xs mb-3">{deviceType === "dell" ? <>Check it in <span className="text-[#e6e6e6] font-semibold">Dell Power Manager or Settings &gt; Power &amp; Battery</span></> : <>Check it in <span className="text-[#e6e6e6] font-semibold"> Menu &gt; System Settings &gt; Battery &gt; Battery Health</span></>}</p>
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
                   {BATTERY_HEALTH_OPTIONS.map((b) => (
@@ -7633,8 +7811,8 @@ export default function Home() {
         </section>
       )}
 
-      {/* STEP: CHARGER — MacBook only, final step before quote */}
-      {step === "charger" && page === "home" && model && hasMacSpecs(model.id) && (
+      {/* STEP: CHARGER — additive-spec models, before quote (or extras if present) */}
+      {step === "charger" && page === "home" && model && hasAdditiveSpecs(model.id) && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
@@ -7649,7 +7827,18 @@ export default function Home() {
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
                   {CHARGER_OPTIONS.map((c) => (
-                    <button key={c.id} onClick={() => { setCharger(c); setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote"); }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                    <button key={c.id} onClick={() => {
+                      setCharger(c);
+                      // If this additive model's device type has brand extras (e.g. Dell GPU),
+                      // route through extras before quote.
+                      const ex = getBrandExtras(deviceType, model?.id);
+                      if (ex.length > 0) {
+                        setExtras({}); setExtrasIndex(0);
+                        setStep("extras"); pushHistory("extras");
+                        return;
+                      }
+                      setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote");
+                    }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{c.label}</p>
                       </div>
@@ -7675,7 +7864,8 @@ export default function Home() {
           // handler routes onward when extrasIndex hits the end. If we do
           // somehow land here, kick to the next step.
           setTimeout(() => {
-            const ns: Step = isNoStorageDevice ? "quote" : "storage";
+            const ns: Step = (model && hasAdditiveSpecs(model.id)) ? "quote" : isNoStorageDevice ? "quote" : "storage";
+            if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
             setStep(ns); pushHistory(ns);
           }, 0);
           return null;
@@ -7722,13 +7912,17 @@ export default function Home() {
                             setExtrasIndex(nextIdx);
                           } else {
                             // All extras answered — route to next funnel step.
-                            // iPad has its connectivity step before storage; everything
-                            // else with storage goes straight to storage.
-                            const ns: Step = isNoStorageDevice
+                            // Additive-spec models (MacBook, Dell XPS) already
+                            // went through storage before extras, so go to quote.
+                            // iPad has its connectivity step before storage;
+                            // everything else with storage goes to storage.
+                            const ns: Step = (model && hasAdditiveSpecs(model.id))
                               ? "quote"
-                              : deviceType === "ipad"
-                                ? "connectivity"
-                                : "storage";
+                              : isNoStorageDevice
+                                ? "quote"
+                                : deviceType === "ipad"
+                                  ? "connectivity"
+                                  : "storage";
                             if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
                             setStep(ns); pushHistory(ns);
                           }
@@ -7767,7 +7961,7 @@ export default function Home() {
               {stepProgress}
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
-                  {(hasMacSpecs(model.id) ? MACBOOK_SPECS[model.id].storage : getStoragesForModel(model.id)).map((s) => (
+                  {(hasAdditiveSpecs(model.id) ? MACBOOK_SPECS[model.id].storage : getStoragesForModel(model.id)).map((s) => (
                     <button
                       key={s.id}
                       onClick={() => {
@@ -7777,7 +7971,7 @@ export default function Home() {
                         // (cast via unknown so the field shape lines up
                         // enough for selectionPanel rendering).
                         setStorage(s as unknown as typeof ALL_STORAGES[0]);
-                        if (hasMacSpecs(model.id)) {
+                        if (hasAdditiveSpecs(model.id)) {
                           const next: Step = MACBOOK_SPECS[model.id].hasNanoGlass ? "displayglass" : "condition";
                           setStep(next); pushHistory(next);
                           return;
@@ -7796,7 +7990,7 @@ export default function Home() {
                     >
                       <div className="flex-1 min-w-0 flex items-center gap-2">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{s.label}</p>
-                        {!hasMacSpecs(model.id) && (
+                        {!hasAdditiveSpecs(model.id) && (
                           <button
                             type="button"
                             onClick={(e) => { e.stopPropagation(); setStorageHelpId(s.id); }}
@@ -7847,11 +8041,22 @@ export default function Home() {
                       return;
                     }
                     setBrokenFunctional(null); // clear for non-broken
-                    // MacBook spec'd flow: condition comes AFTER storage (and
-                    // displayglass if applicable), so when this fires the next
-                    // step is battery health.
-                    if (model && hasMacSpecs(model.id)) {
-                      setStep("batteryhealth"); pushHistory("batteryhealth");
+                    // Spec'd flow: condition comes AFTER storage. Laptops go
+                    // to battery health; desktops skip battery/charger and
+                    // route to extras (GPU, accessories) or quote.
+                    if (model && hasAdditiveSpecs(model.id)) {
+                      const isDskType = deviceType?.endsWith("_desktop") ?? false;
+                      if (isDskType) {
+                        if (getBrandExtras(deviceType, model?.id).length > 0) {
+                          setExtras({}); setExtrasIndex(0);
+                          setStep("extras"); pushHistory("extras");
+                        } else {
+                          setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000);
+                          setStep("quote"); pushHistory("quote");
+                        }
+                      } else {
+                        setStep("batteryhealth"); pushHistory("batteryhealth");
+                      }
                       return;
                     }
                     // Brand-specific extras (PS5 disc drive, DJI hours flown,
@@ -7954,8 +8159,20 @@ export default function Home() {
                   onClick={() => {
                     setBrokenFunctional(true);
                     // Continue normal flow — functional broken gets a price
-                    if (model && hasMacSpecs(model.id)) {
-                      setStep("batteryhealth"); pushHistory("batteryhealth"); return;
+                    if (model && hasAdditiveSpecs(model.id)) {
+                      const isDskType = deviceType?.endsWith("_desktop") ?? false;
+                      if (isDskType) {
+                        if (getBrandExtras(deviceType, model?.id).length > 0) {
+                          setExtras({}); setExtrasIndex(0);
+                          setStep("extras"); pushHistory("extras");
+                        } else {
+                          setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000);
+                          setStep("quote"); pushHistory("quote");
+                        }
+                      } else {
+                        setStep("batteryhealth"); pushHistory("batteryhealth");
+                      }
+                      return;
                     }
                     if (getBrandExtras(deviceType, model?.id).length > 0) {
                       setExtras({}); setExtrasIndex(0);
