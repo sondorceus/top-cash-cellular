@@ -2885,6 +2885,148 @@
       "sealed": 135
     }
   },
+  "macminim4p": {
+    "1tb": {
+      "fair": 626,
+      "good": 680,
+      "mint": 742,
+      "sealed": 788,
+      "verygood": 720
+    },
+    "256gb": {
+      "fair": 356,
+      "good": 410,
+      "mint": 472,
+      "sealed": 518,
+      "verygood": 450
+    },
+    "2tb": {
+      "fair": 896,
+      "good": 950,
+      "mint": 1012,
+      "sealed": 1058,
+      "verygood": 990
+    },
+    "512gb": {
+      "fair": 490,
+      "good": 544,
+      "mint": 608,
+      "sealed": 652,
+      "verygood": 585
+    }
+  },
+  "macprom2u": {
+    "1tb": {
+      "fair": 2340,
+      "good": 2745,
+      "mint": 3150,
+      "sealed": 3420,
+      "verygood": 2970
+    },
+    "2tb": {
+      "fair": 2475,
+      "good": 2880,
+      "mint": 3285,
+      "sealed": 3555,
+      "verygood": 3105
+    },
+    "4tb": {
+      "fair": 2610,
+      "good": 3015,
+      "mint": 3420,
+      "sealed": 3690,
+      "verygood": 3240
+    },
+    "8tb": {
+      "fair": 2880,
+      "good": 3285,
+      "mint": 3690,
+      "sealed": 3960,
+      "verygood": 3510
+    }
+  },
+  "macstudiom2u": {
+    "1tb": {
+      "fair": 675,
+      "good": 796,
+      "mint": 945,
+      "sealed": 1012,
+      "verygood": 891
+    },
+    "2tb": {
+      "fair": 810,
+      "good": 932,
+      "mint": 1080,
+      "sealed": 1148,
+      "verygood": 1026
+    },
+    "4tb": {
+      "fair": 1080,
+      "good": 1202,
+      "mint": 1350,
+      "sealed": 1418,
+      "verygood": 1296
+    },
+    "512gb": {
+      "fair": 540,
+      "good": 662,
+      "mint": 810,
+      "sealed": 878,
+      "verygood": 756
+    },
+    "8tb": {
+      "fair": 1260,
+      "good": 1382,
+      "mint": 1530,
+      "sealed": 1598,
+      "verygood": 1476
+    }
+  },
+  "macstudiom4u": {
+    "1tb": {
+      "fair": 1665,
+      "good": 1822,
+      "mint": 1980,
+      "sealed": 2115,
+      "verygood": 1912
+    },
+    "2tb": {
+      "fair": 1890,
+      "good": 2048,
+      "mint": 2205,
+      "sealed": 2340,
+      "verygood": 2138
+    },
+    "4tb": {
+      "fair": 2160,
+      "good": 2318,
+      "mint": 2475,
+      "sealed": 2610,
+      "verygood": 2408
+    },
+    "512gb": {
+      "fair": 1440,
+      "good": 1598,
+      "mint": 1755,
+      "sealed": 1890,
+      "verygood": 1688
+    },
+    "8tb": {
+      "fair": 2520,
+      "good": 2678,
+      "mint": 2835,
+      "sealed": 2970,
+      "verygood": 2768
+    }
+  },
+  "pw1": {
+    "base": {
+      "fair": 4,
+      "good": 9,
+      "mint": 18,
+      "sealed": 32
+    }
+  },
   "imac24m1": {
     "16gbunifiedmemory": {
       "broken": 360,
