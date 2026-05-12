@@ -67,6 +67,17 @@ function getResellEstimate(modelName: string): number | null {
   return null;
 }
 
+// High-value devices that need manual review before payout
+const REVIEW_KEYWORDS = [
+  "Mac Studio", "Mac Pro", "MacBook Pro 16", "MacBook Pro 14\" M3",
+  "MacBook Pro 14\" M5", "MacBook Air M5", "Z TriFold",
+  "Mac Mini M4",
+];
+function needsManualReview(modelName: string, quoteAmt: number): boolean {
+  if (quoteAmt >= 1000) return true;
+  return REVIEW_KEYWORDS.some(kw => modelName?.includes(kw));
+}
+
 export async function POST(req: NextRequest) {
   const data = await req.json();
   const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings, handoff } = data;
@@ -123,8 +134,15 @@ export async function POST(req: NextRequest) {
     marginLines.push("--- MARGIN: Manual quote needed (no auto-price) ---");
   }
 
+  const reviewRequired = needsManualReview(model as string, quoteNum);
+  const reviewLines: string[] = [];
+  if (reviewRequired) {
+    reviewLines.push("⚠️ MANUAL REVIEW REQUIRED — high-value device");
+    reviewLines.push("Verify: condition matches description, check IMEI, confirm config (chip/RAM/storage)");
+  }
+
   const leadBody = [
-    `[NEW BUYBACK LEAD]`,
+    `[NEW BUYBACK LEAD]${reviewRequired ? " ⚠️ NEEDS REVIEW" : ""}`,
     `Name: ${name}`,
     `Phone: ${phone}`,
     email ? `Email: ${email}` : null,
@@ -134,6 +152,7 @@ export async function POST(req: NextRequest) {
     `Condition: ${condition}`,
     quote ? `Quote: $${quote}` : `Quote: TBD (custom)`,
     `Payout: ${payout}`,
+    ...reviewLines,
     ...marginLines,
     ...imeiLines,
     ...photoLines,
@@ -157,7 +176,8 @@ export async function POST(req: NextRequest) {
 
   if (TWILIO_SID && TWILIO_AUTH) {
     const photoNote = (photos as string[] | undefined)?.length ? ` Photos: ${(photos as string[])[0]}` : "";
-    const ownerSms = `NEW LEAD: ${name} wants to sell ${model} (${condition})${quote ? ` for $${quote}` : " — custom quote needed"}. Phone: ${phone || "N/A"} Email: ${email || "N/A"}${photoNote}`;
+    const reviewTag = reviewRequired ? "⚠️ REVIEW: " : "";
+    const ownerSms = `${reviewTag}NEW LEAD: ${name} wants to sell ${model} (${condition})${quote ? ` for $${quote}` : " — custom quote needed"}. Phone: ${phone || "N/A"} Email: ${email || "N/A"}${photoNote}`;
     try {
       await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
         method: "POST",

@@ -191,6 +191,15 @@ const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
 // Devices below this get "Manual review & custom quote" instead of a dollar amount.
 const MIN_OFFER = 25;
 
+// High-value devices that require manual review before payout.
+// Quote is shown to customer but backend flags the lead for owner approval.
+const MANUAL_REVIEW_DEVICES = new Set([
+  "macstudiom4m", "macprom2u", "macstudiom4u",
+  "mbp14m3", "mbp16m3", "mbp16_m5pmax_2026",
+  "macstudiom2m", "mbp16m4", "mba_m5_2026",
+  "macstudiom2u", "macminim4", "gztrifold",
+]);
+
 const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   ip11: {
     "128": { broken: 20, fair: 76, good: 95, mint: 109, sealed: 138 },
@@ -4430,6 +4439,7 @@ export default function Home() {
   // 'Pending quote'.
   const isPendingQuote = !model?.base;
   const isManualQuote = isBelowMinimum;
+  const needsReview = MANUAL_REVIEW_DEVICES.has(model?.id ?? "");
 
   const maxQuoteFor = (v: { id: string; base: number }) => {
     const sids = STORAGE_MAP[v.id];
