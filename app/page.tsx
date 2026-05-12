@@ -1694,9 +1694,9 @@ const PS5_VARIANTS = [
   // Storage is implicit by variant — Pro ships 2 TB, Slim ships 1 TB,
   // original ships 825 GB. No storage step or extras question for
   // consoles per Skywalker (2026-05-12).
-  { id: "ps5pro",  label: "PlayStation 5 Pro",    base: 550, image: "/devices/ps5.webp" },
-  { id: "ps5slim", label: "PlayStation 5 Slim",   base: 380, image: "/devices/ps5-slim-disc.webp" },
-  { id: "ps5",     label: "PlayStation 5",        base: 300, image: "/devices/ps5.webp" },
+  { id: "ps5pro",  label: "PlayStation 5 Pro",    base: 450, image: "/devices/ps5.webp" },
+  { id: "ps5slim", label: "PlayStation 5 Slim",   base: 225, image: "/devices/ps5-slim-disc.webp" },
+  { id: "ps5",     label: "PlayStation 5",        base: 238, image: "/devices/ps5.webp" },
 ];
 const PS4_VARIANTS = [
   { id: "ps4pro", label: "PlayStation 4 Pro", base: 150, image: "/devices/ps4-pro.webp" },
@@ -3782,7 +3782,7 @@ export default function Home() {
   // Direct price lookup — if the table has an exact price for this
   // device × storage × condition, use it instead of multiplier math.
   // Carrier deductions are flat $ amounts from CARRIER_DEDUCTIONS, not multipliers.
-  const lookupPrice = PRICE_TABLE[model?.id ?? ""]?.[storage?.id ?? ""]?.[condition?.id ?? ""];
+  const lookupPrice = PRICE_TABLE[model?.id ?? ""]?.[storage?.id ?? "base"]?.[condition?.id ?? ""];
   const carrierDeduction = CARRIER_DEDUCTIONS[model?.id ?? ""]?.[carrier?.id ?? ""] ?? 0;
   // Lock deduction: Verizon $0 only if unlocked. All carriers lose ~$200 if locked.
   const lockDeduction = (carrier?.id !== "unlocked" && carrierLock?.id === "yes") ? 200 : 0;
