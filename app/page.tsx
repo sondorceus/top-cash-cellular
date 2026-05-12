@@ -2486,7 +2486,21 @@ const HIGH_MARGIN_DEVICE_TYPES = new Set<string>([
   "apple_desktop", "dell_desktop", "lenovo_desktop", "hp_desktop", "asus_desktop", "alienware_desktop", "msi_desktop",
 ]);
 const isHighMarginType = (dt: string | null | undefined): boolean => !!dt && HIGH_MARGIN_DEVICE_TYPES.has(dt);
+// Simplified conditions for consoles/watches — fewer tiers, less confusing
+const SIMPLE_CONDITIONS = [
+  { id: "sealed", label: "New / Sealed", desc: "Factory sealed, never opened", multiplier: 1.03, icon: "📦", details: ["Still in original sealed packaging", "All accessories included and unopened", "Never been used or powered on"] },
+  { id: "good", label: "Good", desc: "Works perfectly, normal wear", multiplier: 0.969, icon: "👍", details: ["Powers on and functions 100% as intended", "Normal cosmetic wear — scratches, scuffs OK", "All buttons and ports work", "Includes power cable"] },
+  { id: "fair", label: "Fair / Beat Up", desc: "Heavy wear but still works", multiplier: 0.852, icon: "👌", details: ["Powers on and functions as intended", "Heavy cosmetic wear — dents, deep scratches", "May have minor functional issues", "Includes power cable"] },
+];
+// Device types that use simplified 3-tier conditions
+const SIMPLE_CONDITION_TYPES = new Set([
+  "console", "sony", "microsoft", "nintendo", "steam",
+  "watch", "apple_watch", "samsung_watch", "google_watch", "garmin", "fitbit",
+  "drone", "dji",
+]);
+const usesSimpleConditions = (dt: string | null | undefined): boolean => !!dt && SIMPLE_CONDITION_TYPES.has(dt);
 const getConditionsFor = (dt: string | null | undefined) => {
+  if (usesSimpleConditions(dt)) return SIMPLE_CONDITIONS;
   if (isHighMarginType(dt)) return CONDITIONS;
   return CONDITIONS.filter(c => c.id !== "sealed");
 };
@@ -3798,11 +3812,15 @@ export default function Home() {
       ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * nonCarrierMultiplier) + promoFlatBonus
       : 0;
   const quote = baseQuote + accessoryBonus;
+  // Minimum offer threshold — below this we lose money on shipping +
+  // processing. Show "Custom quote" instead of a dollar amount.
+  const MIN_OFFER = 25;
+  const isBelowMinimum = quote > 0 && quote < MIN_OFFER;
   // Inquiry-only models have no base price (or 0). We still let the
   // user walk the funnel + add to cart; the quote step shows
   // 'Quote pending' instead of a number, and the cart marks the line
   // 'Pending quote'.
-  const isPendingQuote = !model?.base;
+  const isPendingQuote = !model?.base || isBelowMinimum;
 
   const maxQuoteFor = (v: { id: string; base: number }) => {
     const sids = STORAGE_MAP[v.id];
