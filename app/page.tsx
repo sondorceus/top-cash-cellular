@@ -1864,14 +1864,32 @@ const STORAGE_MAP: Record<string, string[]> = {
   ipad9: ["64", "256"],
   ipadmini7: ["128", "256", "512"],
   ipadmini6: ["64", "256"],
-  // Samsung Tablets
-  stabs9u: ["256", "512"],
+  // Samsung Tablets — verified against Samsung's launch storage matrix.
+  // The Ultra and Plus tiers gained a 1TB option starting S9; older S8
+  // Ultra topped at 512GB. Tab S7+ also had a 512GB tier. Older S10 FE
+  // and Lite use smaller tiers.
+  stabs11u: ["256", "512", "1tb"],
+  stabs11:  ["128", "256", "512"],
+  stabs10u: ["256", "512", "1tb"],
+  stabs10p: ["256", "512"],
+  stabs10fep: ["128", "256"],
+  stabs10fe:  ["128", "256"],
+  stabs10l:   ["64", "128"],
+  stabs9u: ["256", "512", "1tb"],
   stabs9p: ["256", "512"],
   stabs9: ["128", "256"],
-  stabs8u: ["128", "256"],
+  stabs8u: ["128", "256", "512"],
   stabs8p: ["128", "256"],
   stabs8: ["128", "256"],
+  stabs7p: ["128", "256", "512"],
   staba9: ["64", "128"],
+  // Samsung Galaxy Note — these were falling back to ALL_STORAGES.
+  gnote20u:   ["128", "256", "512"],
+  gnote20:    ["128"],
+  gnote10p5g: ["256", "512"],
+  gnote10p:   ["256", "512"],
+  gnote10:    ["256"],
+  gnote9:     ["128", "512"],
   // Surface
   surfpro10: ["256", "512", "1tb"],
   surfpro9: ["128", "256", "512"],
