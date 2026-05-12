@@ -1079,7 +1079,7 @@ const PIXEL_SERIES = [
     { id: "px7", label: "Pixel 7", base: 48, image: "/devices/pixel-7.webp" },
     { id: "px7a", label: "Pixel 7a", base: 11, image: "/devices/pixel-7a.webp" },
     { id: "px6", label: "Pixel 6", base: 42, image: "/devices/pixel-6.webp" },
-    { id: "px6a", label: "Pixel 6a", base: 32, image: "/devices/pixel-6a.webp" },
+    { id: "px6a", label: "Pixel 6a", base: 0, image: "/devices/pixel-6a.webp" },
     { id: "px5", label: "Pixel 5", base: 53, image: "/devices/px5.webp" },
     { id: "px5a", label: "Pixel 5a (5G)", base: 32, image: "/devices/px5a.webp" },
   ]},
@@ -1133,7 +1133,7 @@ const MACBOOK_AIR_MODELS = [
 // the 256GB Atlas Open price (- $250); the storage multiplier on the
 // storage step bumps it for 512GB selections.
 const MACBOOK_NEO_MODELS = [
-  { id: "mbneo13", label: "MacBook Neo 13\" (A18 Pro, 2026)", base: 185 },
+  { id: "mbneo13", label: "MacBook Neo 13\" (A18 Pro, 2026)", base: 0 },
 ];
 const MACBOOK_CLASSIC_MODELS = [
   { id: "mb12_2017", label: "MacBook 12\" (2017)", base: 0, inquiryOnly: true },
@@ -1742,11 +1742,11 @@ const DELL_DESKTOP_MODELS = [
 ];
 
 const LENOVO_DESKTOP_MODELS = [
-  { id: "lnthinkm", label: "ThinkCentre M920", base: 300, image: "/devices/lenovo-thinkcentre-tower.webp" },
-  { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 350, image: "/devices/lenovo-thinkcentre-tiny.webp" },
-  { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 550, image: "/devices/lenovo-thinkcentre-tower.webp" },
-  { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 750, image: "/devices/lenovo-thinkcentre-tower.webp" },
-  { id: "lnideactower", label: "IdeaCentre 5i", base: 250, image: "/devices/lenovo-thinkcentre-sff.webp" },
+  { id: "lnthinkm", label: "ThinkCentre M920", base: 0, image: "/devices/lenovo-thinkcentre-tower.webp" },
+  { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 0, image: "/devices/lenovo-thinkcentre-tiny.webp" },
+  { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 0, image: "/devices/lenovo-thinkcentre-tower.webp" },
+  { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 0, image: "/devices/lenovo-thinkcentre-tower.webp" },
+  { id: "lnideactower", label: "IdeaCentre 5i", base: 0, image: "/devices/lenovo-thinkcentre-sff.webp" },
 ];
 
 const HP_DESKTOP_MODELS = [
@@ -2236,22 +2236,22 @@ const PIXELWATCH_MODELS = [
 ];
 
 const GARMIN_MODELS = [
-  { id: "gfenix7", label: "Fenix 7", base: 300 },
-  { id: "gfenix7s", label: "Fenix 7S", base: 250 },
-  { id: "gepix2", label: "Epix Gen 2", base: 280 },
-  { id: "gfr965", label: "Forerunner 965", base: 250 },
-  { id: "gfr265", label: "Forerunner 265", base: 180 },
-  { id: "gvenu3", label: "Venu 3", base: 220 },
-  { id: "gvenu2", label: "Venu 2", base: 130 },
+  { id: "gfenix7", label: "Fenix 7", base: 0 },
+  { id: "gfenix7s", label: "Fenix 7S", base: 0 },
+  { id: "gepix2", label: "Epix Gen 2", base: 0 },
+  { id: "gfr965", label: "Forerunner 965", base: 0 },
+  { id: "gfr265", label: "Forerunner 265", base: 0 },
+  { id: "gvenu3", label: "Venu 3", base: 0 },
+  { id: "gvenu2", label: "Venu 2", base: 0 },
 ];
 
 const SAMSUNGWATCH_MODELS = [
   { id: "sgwu", label: "Galaxy Watch Ultra", base: 350, image: "/devices/samsung-watch-7.webp" },
   { id: "sgw7", label: "Galaxy Watch 7", base: 150, image: "/devices/samsung-watch-7.webp" },
-  { id: "sgw6c", label: "Galaxy Watch 6 Classic", base: 160, image: "/devices/samsung-watch-6-classic.webp" },
-  { id: "sgw6", label: "Galaxy Watch 6", base: 110, image: "/devices/samsung-watch-6.webp" },
-  { id: "sgw5p", label: "Galaxy Watch 5 Pro", base: 130, image: "/devices/samsung-watch-5-pro.webp" },
-  { id: "sgw5", label: "Galaxy Watch 5", base: 80, image: "/devices/samsung-watch-5.webp" },
+  { id: "sgw6c", label: "Galaxy Watch 6 Classic", base: 0, image: "/devices/samsung-watch-6-classic.webp" },
+  { id: "sgw6", label: "Galaxy Watch 6", base: 0, image: "/devices/samsung-watch-6.webp" },
+  { id: "sgw5p", label: "Galaxy Watch 5 Pro", base: 0, image: "/devices/samsung-watch-5-pro.webp" },
+  { id: "sgw5", label: "Galaxy Watch 5", base: 0, image: "/devices/samsung-watch-5.webp" },
 ];
 
 const DJI_MODELS = [
