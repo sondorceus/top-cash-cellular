@@ -1,0 +1,4964 @@
+{
+  "iphone/iphone-4s": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-4s",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:03"
+  },
+  "iphone/apple-iphone-4": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "apple-iphone-4",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:03"
+  },
+  "htc-phone/htc-desire": {
+    "category": "phones",
+    "series": "htc-phone",
+    "model": "htc-desire",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:03"
+  },
+  "iphone/apple-iphone-3gs": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "apple-iphone-3gs",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:04"
+  },
+  "galaxy-s-series/galaxy-s-ii-gt-i9100": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s-ii-gt-i9100",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:04"
+  },
+  "motorola-razr-phone/razr-2024": {
+    "category": "phones",
+    "series": "motorola-razr-phone",
+    "model": "razr-2024",
+    "prices": {
+      "base": {
+        "sealed": 144
+      }
+    },
+    "scraped_at": "2026-05-12 01:04"
+  },
+  "google-phone/nexus-s-4g-sph-d720": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "nexus-s-4g-sph-d720",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:05"
+  },
+  "asus-rog-phone-series/rog-phone-7": {
+    "category": "phones",
+    "series": "asus-rog-phone-series",
+    "model": "rog-phone-7",
+    "prices": {
+      "256": {
+        "sealed": 274
+      },
+      "512": {
+        "sealed": 310
+      }
+    },
+    "scraped_at": "2026-05-12 01:05"
+  },
+  "asus-rog-phone-series/rog-phone-6": {
+    "category": "phones",
+    "series": "asus-rog-phone-series",
+    "model": "rog-phone-6",
+    "prices": {
+      "128": {
+        "sealed": 171
+      },
+      "256": {
+        "sealed": 184
+      },
+      "512": {
+        "sealed": 194
+      }
+    },
+    "scraped_at": "2026-05-12 01:06"
+  },
+  "asus-rog-phone-series/rog-phone-8": {
+    "category": "phones",
+    "series": "asus-rog-phone-series",
+    "model": "rog-phone-8",
+    "prices": {
+      "base": {
+        "sealed": 351
+      }
+    },
+    "scraped_at": "2026-05-12 01:06"
+  },
+  "galaxy-s-series/galaxy-s-gt-i9000": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s-gt-i9000",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:06"
+  },
+  "galaxy-note-series/galaxy-note-gt-n7000": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-gt-n7000",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:07"
+  },
+  "google-phone/nexus-gt-i9250": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "nexus-gt-i9250",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:07"
+  },
+  "htc-phone/htc-sensation-4g": {
+    "category": "phones",
+    "series": "htc-phone",
+    "model": "htc-sensation-4g",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:07"
+  },
+  "htc-phone/htc-evo-3d": {
+    "category": "phones",
+    "series": "htc-phone",
+    "model": "htc-evo-3d",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:08"
+  },
+  "galaxy-s-series/galaxy-ii-skyrocket-sgh-i727": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-ii-skyrocket-sgh-i727",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:08"
+  },
+  "galaxy-s-series/galaxy-s-iii": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s-iii",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:08"
+  },
+  "sony-xperia-1-phone/sony-xperia-1-v": {
+    "category": "phones",
+    "series": "sony-xperia-1-phone",
+    "model": "sony-xperia-1-v",
+    "prices": {
+      "256": {
+        "sealed": 428
+      },
+      "512": {
+        "sealed": 454
+      }
+    },
+    "scraped_at": "2026-05-12 01:09"
+  },
+  "iphone/apple-iphone-3g": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "apple-iphone-3g",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:09"
+  },
+  "htc-phone/htc-evo-4g-lte": {
+    "category": "phones",
+    "series": "htc-phone",
+    "model": "htc-evo-4g-lte",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:09"
+  },
+  "htc-phone/htc-inspire-4g": {
+    "category": "phones",
+    "series": "htc-phone",
+    "model": "htc-inspire-4g",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:10"
+  },
+  "htc-phone/htc-droid-incredible-2": {
+    "category": "phones",
+    "series": "htc-phone",
+    "model": "htc-droid-incredible-2",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:10"
+  },
+  "lg-phone/lg-revolution": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-revolution",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:10"
+  },
+  "nothing-phone/nothing-phone-2": {
+    "category": "phones",
+    "series": "nothing-phone",
+    "model": "nothing-phone-2",
+    "prices": {
+      "128": {
+        "sealed": 189
+      },
+      "256": {
+        "sealed": 212
+      },
+      "512": {
+        "sealed": 234
+      }
+    },
+    "scraped_at": "2026-05-12 01:11"
+  },
+  "htc-phone/htc-radar-4g": {
+    "category": "phones",
+    "series": "htc-phone",
+    "model": "htc-radar-4g",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:11"
+  },
+  "motorola-razr-phone/razr-2022": {
+    "category": "phones",
+    "series": "motorola-razr-phone",
+    "model": "razr-2022",
+    "prices": {
+      "128": {
+        "sealed": 76
+      },
+      "256": {
+        "sealed": 99
+      },
+      "512": {
+        "sealed": 117
+      }
+    },
+    "scraped_at": "2026-05-12 01:12"
+  },
+  "iphone/iphone-5": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-5",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:12"
+  },
+  "galaxy-note-series/galaxy-note-ii": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-ii",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:13"
+  },
+  "galaxy-note-series/galaxy-note-sgh-i717": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-sgh-i717",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:13"
+  },
+  "galaxy-s-series/galaxy-s-ii-sgh-i777": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s-ii-sgh-i777",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:13"
+  },
+  "galaxy-s-series/galaxy-s4": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s4",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:14"
+  },
+  "iphone/iphone-5s": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-5s",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:14"
+  },
+  "iphone/iphone-5c": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-5c",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:14"
+  },
+  "galaxy-note-series/galaxy-note-3": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-3",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:14"
+  },
+  "galaxy-s-series/galaxy-s4-active": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s4-active",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:15"
+  },
+  "galaxy-s-series/galaxy-s5": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s5",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:15"
+  },
+  "galaxy-s-series/galaxy-s4-mini": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s4-mini",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:15"
+  },
+  "iphone/iphone-6": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-6",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:16"
+  },
+  "iphone/iphone-6-plus": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-6-plus",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:16"
+  },
+  "galaxy-note-series/galaxy-note-4": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-4",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:16"
+  },
+  "google-phone/nexus-5": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "nexus-5",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:17"
+  },
+  "htc-phone/htc-one-m8": {
+    "category": "phones",
+    "series": "htc-phone",
+    "model": "htc-one-m8",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:17"
+  },
+  "google-phone/nexus-6": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "nexus-6",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:17"
+  },
+  "galaxy-note-series/galaxy-note-edge": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-edge",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:18"
+  },
+  "galaxy-s-series/galaxy-s5-active": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s5-active",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:18"
+  },
+  "galaxy-s-series/galaxy-s6": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s6",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:18"
+  },
+  "galaxy-s-series/galaxy-s6-edge": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s6-edge",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:19"
+  },
+  "galaxy-s-series/galaxy-s5-mini": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s5-mini",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:19"
+  },
+  "lg-phone/lg-g3": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-g3",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:19"
+  },
+  "htc-phone/htc-one-m9": {
+    "category": "phones",
+    "series": "htc-phone",
+    "model": "htc-one-m9",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:20"
+  },
+  "galaxy-s-series/galaxy-s6-edge-plus": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s6-edge-plus",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:20"
+  },
+  "galaxy-note-series/galaxy-note-5": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-5",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:20"
+  },
+  "iphone/iphone-6s": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-6s",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:20"
+  },
+  "iphone/iphone-6s-plus": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-6s-plus",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:21"
+  },
+  "galaxy-s-series/galaxy-s7": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s7",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:21"
+  },
+  "galaxy-s-series/galaxy-s7-edge": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s7-edge",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:21"
+  },
+  "iphone/iphone-se": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-se",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:22"
+  },
+  "htc-phone/htc-10": {
+    "category": "phones",
+    "series": "htc-phone",
+    "model": "htc-10",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:22"
+  },
+  "lg-phone/lg-g5": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-g5",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:22"
+  },
+  "iphone/iphone-7": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-7",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:23"
+  },
+  "iphone/iphone-7-plus": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-7-plus",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:23"
+  },
+  "google-phone/nexus-5x": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "nexus-5x",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:23"
+  },
+  "google-phone/nexus-6p": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "nexus-6p",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:24"
+  },
+  "lg-phone/lg-v10": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-v10",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:24"
+  },
+  "google-phone/google-pixel": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:24"
+  },
+  "google-phone/google-pixel-xl": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-xl",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:25"
+  },
+  "lg-phone/lg-v20": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-v20",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:25"
+  },
+  "lg-phone/lg-g6": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-g6",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:25"
+  },
+  "oneplus-phone/oneplus-3": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-3",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:26"
+  },
+  "oneplus-phone/oneplus-3t": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-3t",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:26"
+  },
+  "iphone/iphone-8": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-8",
+    "prices": {
+      "64": {
+        "sealed": 38,
+        "mint": 24,
+        "good": 19,
+        "fair": 10,
+        "broken": 12
+      },
+      "128": {
+        "sealed": 48,
+        "mint": 28,
+        "good": 24,
+        "fair": 14,
+        "broken": 14
+      },
+      "256": {
+        "sealed": 57,
+        "mint": 30,
+        "good": 26,
+        "fair": 16,
+        "broken": 15
+      }
+    },
+    "scraped_at": "2026-05-12 01:28"
+  },
+  "iphone/iphone-8-plus": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-8-plus",
+    "prices": {
+      "64": {
+        "sealed": 81,
+        "mint": 48,
+        "good": 43,
+        "fair": 28,
+        "broken": 24
+      },
+      "128": {
+        "sealed": 95,
+        "mint": 57,
+        "good": 52,
+        "fair": 38,
+        "broken": 28
+      },
+      "256": {
+        "sealed": 109,
+        "mint": 62,
+        "good": 57,
+        "fair": 43,
+        "broken": 31
+      }
+    },
+    "scraped_at": "2026-05-12 01:30"
+  },
+  "oneplus-phone/oneplus-5": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-5",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:30"
+  },
+  "iphone/iphone-x": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-x",
+    "prices": {
+      "64": {
+        "sealed": 89,
+        "mint": 57,
+        "good": 48,
+        "fair": 28,
+        "broken": 28
+      },
+      "256": {
+        "sealed": 99,
+        "mint": 76,
+        "good": 66,
+        "fair": 48,
+        "broken": 38
+      }
+    },
+    "scraped_at": "2026-05-12 01:32"
+  },
+  "google-phone/google-pixel-2": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-2",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:32"
+  },
+  "google-phone/google-pixel-2-xl": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-2-xl",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:33"
+  },
+  "htc-phone/htc-u11": {
+    "category": "phones",
+    "series": "htc-phone",
+    "model": "htc-u11",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:33"
+  },
+  "lg-phone/lg-v30": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-v30",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:33"
+  },
+  "galaxy-s-series/galaxy-s9-plus": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s9-plus",
+    "prices": {
+      "64": {
+        "sealed": 36
+      },
+      "128": {
+        "sealed": 45
+      },
+      "256": {
+        "sealed": 50
+      }
+    },
+    "scraped_at": "2026-05-12 01:34"
+  },
+  "galaxy-s-series/galaxy-s9": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s9",
+    "prices": {
+      "64": {
+        "sealed": 36
+      },
+      "128": {
+        "sealed": 40
+      },
+      "256": {
+        "sealed": 45
+      }
+    },
+    "scraped_at": "2026-05-12 01:35"
+  },
+  "oneplus-phone/oneplus-5t": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-5t",
+    "prices": {
+      "base": {
+        "sealed": 50
+      }
+    },
+    "scraped_at": "2026-05-12 01:35"
+  },
+  "galaxy-s-series/galaxy-s6-active": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s6-active",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:35"
+  },
+  "galaxy-s-series/galaxy-s-iii-mini": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s-iii-mini",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:36"
+  },
+  "galaxy-s-series/galaxy-s7-active": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s7-active",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:36"
+  },
+  "oneplus-phone/oneplus-6": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-6",
+    "prices": {
+      "64": {
+        "sealed": 45
+      },
+      "128": {
+        "sealed": 50
+      },
+      "256": {
+        "sealed": 54
+      }
+    },
+    "scraped_at": "2026-05-12 01:37"
+  },
+  "galaxy-note-series/galaxy-note-9": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-9",
+    "prices": {
+      "128": {
+        "sealed": 113
+      },
+      "512": {
+        "sealed": 132
+      }
+    },
+    "scraped_at": "2026-05-12 01:37"
+  },
+  "iphone/iphone-xs": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-xs",
+    "prices": {
+      "64": {
+        "sealed": 81,
+        "mint": 66,
+        "good": 57,
+        "fair": 28,
+        "broken": 33
+      },
+      "256": {
+        "sealed": 86,
+        "mint": 81,
+        "good": 71,
+        "fair": 43,
+        "broken": 40
+      },
+      "512": {
+        "sealed": 87,
+        "mint": 86,
+        "good": 76,
+        "fair": 48,
+        "broken": 43
+      }
+    },
+    "scraped_at": "2026-05-12 01:39"
+  },
+  "iphone/iphone-xs-max": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-xs-max",
+    "prices": {
+      "64": {
+        "sealed": 121,
+        "mint": 119,
+        "good": 100,
+        "fair": 76,
+        "broken": 60
+      },
+      "256": {
+        "sealed": 140,
+        "mint": 128,
+        "good": 109,
+        "fair": 86,
+        "broken": 64
+      },
+      "512": {
+        "sealed": 159,
+        "mint": 133,
+        "good": 114,
+        "fair": 90,
+        "broken": 66
+      }
+    },
+    "scraped_at": "2026-05-12 01:41"
+  },
+  "htc-phone/htc-u12-plus": {
+    "category": "phones",
+    "series": "htc-phone",
+    "model": "htc-u12-plus",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:42"
+  },
+  "lg-phone/lg-g7-thinq": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-g7-thinq",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:42"
+  },
+  "lg-phone/lg-v35-thinq": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-v35-thinq",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:42"
+  },
+  "google-phone/google-pixel-3-xl": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-3-xl",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:43"
+  },
+  "google-phone/google-pixel-3": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-3",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:43"
+  },
+  "iphone/iphone-xr": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-xr",
+    "prices": {
+      "64": {
+        "sealed": 86,
+        "mint": 62,
+        "good": 57,
+        "fair": 33,
+        "broken": 31
+      },
+      "128": {
+        "sealed": 90,
+        "mint": 71,
+        "good": 66,
+        "fair": 43,
+        "broken": 36
+      },
+      "256": {
+        "sealed": 92,
+        "mint": 81,
+        "good": 76,
+        "fair": 52,
+        "broken": 40
+      }
+    },
+    "scraped_at": "2026-05-12 01:45"
+  },
+  "oneplus-phone/oneplus-6t": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-6t",
+    "prices": {
+      "128": {
+        "sealed": 45
+      },
+      "256": {
+        "sealed": 50
+      }
+    },
+    "scraped_at": "2026-05-12 01:46"
+  },
+  "lg-phone/lg-v40-thinq": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-v40-thinq",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:46"
+  },
+  "galaxy-s-series/galaxy-s8-active": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s8-active",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:46"
+  },
+  "galaxy-s-series/galaxy-s10": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s10",
+    "prices": {
+      "128": {
+        "sealed": 112
+      },
+      "512": {
+        "sealed": 131
+      }
+    },
+    "scraped_at": "2026-05-12 01:47"
+  },
+  "galaxy-s-series/galaxy-s10-plus": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s10-plus",
+    "prices": {
+      "128": {
+        "sealed": 81
+      },
+      "512": {
+        "sealed": 128
+      },
+      "1tb": {
+        "sealed": 151
+      }
+    },
+    "scraped_at": "2026-05-12 01:48"
+  },
+  "galaxy-s-series/galaxy-s10e": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s10e",
+    "prices": {
+      "128": {
+        "sealed": 63
+      },
+      "256": {
+        "sealed": 72
+      }
+    },
+    "scraped_at": "2026-05-12 01:48"
+  },
+  "lg-phone/lg-v30-plus": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-v30-plus",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:48"
+  },
+  "google-phone/google-pixel-3a": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-3a",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:49"
+  },
+  "google-phone/google-pixel-3a-xl": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-3a-xl",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:49"
+  },
+  "oneplus-phone/oneplus-7-pro": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-7-pro",
+    "prices": {
+      "128": {
+        "sealed": 54
+      },
+      "256": {
+        "sealed": 58
+      }
+    },
+    "scraped_at": "2026-05-12 01:50"
+  },
+  "lg-phone/lg-g8-thinq": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-g8-thinq",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 01:50"
+  },
+  "galaxy-note-series/galaxy-note-10": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-10",
+    "prices": {
+      "base": {
+        "sealed": 112
+      }
+    },
+    "scraped_at": "2026-05-12 01:50"
+  },
+  "galaxy-note-series/galaxy-note-10-plus": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-10-plus",
+    "prices": {
+      "256": {
+        "sealed": 148
+      },
+      "512": {
+        "sealed": 172
+      }
+    },
+    "scraped_at": "2026-05-12 01:51"
+  },
+  "galaxy-note-series/galaxy-note-10-plus-5g": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-10-plus-5g",
+    "prices": {
+      "256": {
+        "sealed": 153
+      },
+      "512": {
+        "sealed": 176
+      }
+    },
+    "scraped_at": "2026-05-12 01:51"
+  },
+  "galaxy-s-series/galaxy-s10-5g": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s10-5g",
+    "prices": {
+      "256": {
+        "sealed": 36
+      },
+      "512": {
+        "sealed": 40
+      }
+    },
+    "scraped_at": "2026-05-12 01:52"
+  },
+  "iphone/iphone-11": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-11",
+    "prices": {
+      "64": {
+        "sealed": 124,
+        "mint": 76,
+        "good": 62,
+        "fair": 43,
+        "broken": 38
+      },
+      "128": {
+        "sealed": 138,
+        "mint": 109,
+        "good": 95,
+        "fair": 76,
+        "broken": 54
+      },
+      "256": {
+        "sealed": 152,
+        "mint": 124,
+        "good": 109,
+        "fair": 90,
+        "broken": 62
+      }
+    },
+    "scraped_at": "2026-05-12 01:54"
+  },
+  "iphone/iphone-11-pro": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-11-pro",
+    "prices": {
+      "64": {
+        "sealed": 142,
+        "mint": 104,
+        "good": 90,
+        "fair": 62,
+        "broken": 52
+      },
+      "256": {
+        "sealed": 171,
+        "mint": 133,
+        "good": 119,
+        "fair": 90,
+        "broken": 66
+      },
+      "512": {
+        "sealed": 190,
+        "mint": 157,
+        "good": 142,
+        "fair": 114,
+        "broken": 78
+      }
+    },
+    "scraped_at": "2026-05-12 01:56"
+  },
+  "iphone/iphone-11-pro-max": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-11-pro-max",
+    "prices": {
+      "64": {
+        "sealed": 223,
+        "mint": 176,
+        "good": 157,
+        "fair": 128,
+        "broken": 88
+      },
+      "256": {
+        "sealed": 233,
+        "mint": 180,
+        "good": 162,
+        "fair": 133,
+        "broken": 90
+      },
+      "512": {
+        "sealed": 238,
+        "mint": 200,
+        "good": 180,
+        "fair": 152,
+        "broken": 100
+      }
+    },
+    "scraped_at": "2026-05-12 01:58"
+  },
+  "google-phone/google-pixel-4": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-4",
+    "prices": {
+      "base": {
+        "sealed": 22
+      }
+    },
+    "scraped_at": "2026-05-12 01:58"
+  },
+  "google-phone/google-pixel-4-xl": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-4-xl",
+    "prices": {
+      "base": {
+        "sealed": 45
+      }
+    },
+    "scraped_at": "2026-05-12 01:59"
+  },
+  "oneplus-phone/oneplus-7t-pro-5g-mclaren": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-7t-pro-5g-mclaren",
+    "prices": {
+      "base": {
+        "sealed": 112
+      }
+    },
+    "scraped_at": "2026-05-12 01:59"
+  },
+  "oneplus-phone/oneplus-7t": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-7t",
+    "prices": {
+      "128": {
+        "sealed": 54
+      },
+      "256": {
+        "sealed": 68
+      }
+    },
+    "scraped_at": "2026-05-12 01:59"
+  },
+  "lg-phone/lg-v50-thinq-5g": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-v50-thinq-5g",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:00"
+  },
+  "galaxy-s-series/galaxy-s20-5g": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s20-5g",
+    "prices": {
+      "base": {
+        "sealed": 99
+      }
+    },
+    "scraped_at": "2026-05-12 02:00"
+  },
+  "galaxy-s-series/galaxy-s20-plus-5g": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s20-plus-5g",
+    "prices": {
+      "128": {
+        "sealed": 104
+      },
+      "512": {
+        "sealed": 130
+      }
+    },
+    "scraped_at": "2026-05-12 02:01"
+  },
+  "galaxy-s-series/galaxy-s20-ultra-5g": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s20-ultra-5g",
+    "prices": {
+      "128": {
+        "sealed": 184
+      },
+      "256": {
+        "sealed": 194
+      },
+      "512": {
+        "sealed": 202
+      }
+    },
+    "scraped_at": "2026-05-12 02:01"
+  },
+  "lg-phone/lg-v60-thinq-5g": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-v60-thinq-5g",
+    "prices": {
+      "base": {
+        "sealed": 72
+      }
+    },
+    "scraped_at": "2026-05-12 02:02"
+  },
+  "iphone/iphone-se-2nd-gen": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-se-2nd-gen",
+    "prices": {
+      "64": {
+        "sealed": 52,
+        "mint": 38,
+        "good": 33,
+        "fair": 24,
+        "broken": 19
+      },
+      "128": {
+        "sealed": 62,
+        "mint": 48,
+        "good": 43,
+        "fair": 33,
+        "broken": 24
+      },
+      "256": {
+        "sealed": 66,
+        "mint": 52,
+        "good": 48,
+        "fair": 38,
+        "broken": 26
+      }
+    },
+    "scraped_at": "2026-05-12 02:04"
+  },
+  "oneplus-phone/oneplus-8-pro": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-8-pro",
+    "prices": {
+      "128": {
+        "sealed": 90
+      },
+      "256": {
+        "sealed": 104
+      }
+    },
+    "scraped_at": "2026-05-12 02:04"
+  },
+  "oneplus-phone/oneplus-7-pro-5g": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-7-pro-5g",
+    "prices": {
+      "base": {
+        "sealed": 54
+      }
+    },
+    "scraped_at": "2026-05-12 02:05"
+  },
+  "sony-phone/sony-xperia-xz2-compact": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xz2-compact",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:05"
+  },
+  "sony-phone/sony-xperia-xz3": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xz3",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:05"
+  },
+  "sony-phone/sony-xperia-xz2": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xz2",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:05"
+  },
+  "sony-phone/sony-xperia-xz2-premium": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xz2-premium",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:06"
+  },
+  "sony-phone/sony-xperia-xz-premium": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xz-premium",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:06"
+  },
+  "sony-phone/sony-xperia-xzs": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xzs",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:06"
+  },
+  "sony-phone/sony-xperia-xz1-compact": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xz1-compact",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:07"
+  },
+  "sony-phone/sony-xperia-xz": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xz",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:07"
+  },
+  "sony-phone/sony-xperia-xz1": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xz1",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:07"
+  },
+  "sony-phone/sony-xperia-xa2-ultra": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xa2-ultra",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:08"
+  },
+  "sony-phone/sony-xperia-xa1-ultra": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xa1-ultra",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:08"
+  },
+  "sony-phone/sony-xperia-xa1-plus": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xa1-plus",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:08"
+  },
+  "sony-phone/sony-xperia-xa1": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xa1",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:09"
+  },
+  "sony-phone/sony-xperia-xa2": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-xa2",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:09"
+  },
+  "sony-phone/sony-xperia-10-plus": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-10-plus",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:09"
+  },
+  "sony-phone/sony-xperia-10": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-10",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:10"
+  },
+  "blackberry-phone/key2": {
+    "category": "phones",
+    "series": "blackberry-phone",
+    "model": "key2",
+    "prices": {
+      "base": {
+        "sealed": 117
+      }
+    },
+    "scraped_at": "2026-05-12 02:10"
+  },
+  "blackberry-phone/key2-le": {
+    "category": "phones",
+    "series": "blackberry-phone",
+    "model": "key2-le",
+    "prices": {
+      "base": {
+        "sealed": 135
+      }
+    },
+    "scraped_at": "2026-05-12 02:10"
+  },
+  "blackberry-phone/blackberry-motion": {
+    "category": "phones",
+    "series": "blackberry-phone",
+    "model": "blackberry-motion",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:11"
+  },
+  "blackberry-phone/porsche-design-p9983": {
+    "category": "phones",
+    "series": "blackberry-phone",
+    "model": "porsche-design-p9983",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:11"
+  },
+  "blackberry-phone/porsche-design-p9982": {
+    "category": "phones",
+    "series": "blackberry-phone",
+    "model": "porsche-design-p9982",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:11"
+  },
+  "blackberry-phone/keyone": {
+    "category": "phones",
+    "series": "blackberry-phone",
+    "model": "keyone",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:11"
+  },
+  "blackberry-phone/passport": {
+    "category": "phones",
+    "series": "blackberry-phone",
+    "model": "passport",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:12"
+  },
+  "blackberry-phone/priv": {
+    "category": "phones",
+    "series": "blackberry-phone",
+    "model": "priv",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:12"
+  },
+  "galaxy-z-fold-series/galaxy-z-flip": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-flip",
+    "prices": {
+      "base": {
+        "sealed": 54
+      }
+    },
+    "scraped_at": "2026-05-12 02:12"
+  },
+  "galaxy-z-fold-series/galaxy-fold": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-fold",
+    "prices": {
+      "base": {
+        "sealed": 112
+      }
+    },
+    "scraped_at": "2026-05-12 02:13"
+  },
+  "galaxy-a-series/galaxy-a70": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a70",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:13"
+  },
+  "galaxy-a-series/galaxy-a20": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a20",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:13"
+  },
+  "galaxy-a-series/galaxy-a8-2018": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a8-2018",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:14"
+  },
+  "galaxy-a-series/galaxy-a50": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a50",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:14"
+  },
+  "galaxy-a-series/galaxy-a10e": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a10e",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:14"
+  },
+  "galaxy-a-series/galaxy-a10": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a10",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:15"
+  },
+  "galaxy-a-series/galaxy-a30": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a30",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:15"
+  },
+  "galaxy-a-series/galaxy-a7": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a7",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:15"
+  },
+  "galaxy-a-series/galaxy-a3": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a3",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:16"
+  },
+  "huawei-phone/p30-pro": {
+    "category": "phones",
+    "series": "huawei-phone",
+    "model": "p30-pro",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:16"
+  },
+  "huawei-phone/p40-pro": {
+    "category": "phones",
+    "series": "huawei-phone",
+    "model": "p40-pro",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:16"
+  },
+  "huawei-phone/mate-30-pro": {
+    "category": "phones",
+    "series": "huawei-phone",
+    "model": "mate-30-pro",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:17"
+  },
+  "huawei-phone/mate-20-pro": {
+    "category": "phones",
+    "series": "huawei-phone",
+    "model": "mate-20-pro",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:17"
+  },
+  "huawei-phone/mate-xs": {
+    "category": "phones",
+    "series": "huawei-phone",
+    "model": "mate-xs",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:17"
+  },
+  "galaxy-a-series/galaxy-a30s": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a30s",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:17"
+  },
+  "galaxy-a-series/galaxy-a51": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a51",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:18"
+  },
+  "galaxy-a-series/galaxy-a20s": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a20s",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:18"
+  },
+  "galaxy-a-series/galaxy-a01": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a01",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:18"
+  },
+  "galaxy-a-series/galaxy-a11": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a11",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:19"
+  },
+  "motorola-phone/moto-z-4": {
+    "category": "phones",
+    "series": "motorola-phone",
+    "model": "moto-z-4",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:19"
+  },
+  "motorola-phone/edge-plus": {
+    "category": "phones",
+    "series": "motorola-phone",
+    "model": "edge-plus",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:19"
+  },
+  "motorola-phone/one-action": {
+    "category": "phones",
+    "series": "motorola-phone",
+    "model": "one-action",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:20"
+  },
+  "motorola-phone/one-zoom": {
+    "category": "phones",
+    "series": "motorola-phone",
+    "model": "one-zoom",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:20"
+  },
+  "motorola-phone/razr": {
+    "category": "phones",
+    "series": "motorola-phone",
+    "model": "razr",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:20"
+  },
+  "kyocera/duraforce-pro-2": {
+    "category": "phones",
+    "series": "kyocera",
+    "model": "duraforce-pro-2",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:21"
+  },
+  "zte-phone/axon-10-pro": {
+    "category": "phones",
+    "series": "zte-phone",
+    "model": "axon-10-pro",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:21"
+  },
+  "sony-xperia-5-phone/xperia-5": {
+    "category": "phones",
+    "series": "sony-xperia-5-phone",
+    "model": "xperia-5",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:21"
+  },
+  "sony-phone/xperia-1": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "xperia-1",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:22"
+  },
+  "galaxy-s-series/galaxy-s10-lite": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s10-lite",
+    "prices": {
+      "base": {
+        "sealed": 63
+      }
+    },
+    "scraped_at": "2026-05-12 02:22"
+  },
+  "oneplus-phone/oneplus-8-5g": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-8-5g",
+    "prices": {
+      "128": {
+        "sealed": 50
+      },
+      "256": {
+        "sealed": 63
+      }
+    },
+    "scraped_at": "2026-05-12 02:22"
+  },
+  "google-phone/google-pixel-4a": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-4a",
+    "prices": {
+      "base": {
+        "sealed": 22
+      }
+    },
+    "scraped_at": "2026-05-12 02:23"
+  },
+  "galaxy-note-series/galaxy-note-20-5g": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-20-5g",
+    "prices": {
+      "128": {
+        "sealed": 117
+      },
+      "256": {
+        "sealed": 130
+      }
+    },
+    "scraped_at": "2026-05-12 02:23"
+  },
+  "galaxy-note-series/galaxy-note-20-ultra-5g": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-20-ultra-5g",
+    "prices": {
+      "128": {
+        "sealed": 220
+      },
+      "256": {
+        "sealed": 230
+      },
+      "512": {
+        "sealed": 234
+      }
+    },
+    "scraped_at": "2026-05-12 02:24"
+  },
+  "galaxy-z-fold-series/galaxy-z-fold-2-5g": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-fold-2-5g",
+    "prices": {
+      "256": {
+        "sealed": 162
+      },
+      "512": {
+        "sealed": 189
+      }
+    },
+    "scraped_at": "2026-05-12 02:24"
+  },
+  "lg-phone/lg-velvet-5g": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-velvet-5g",
+    "prices": {
+      "base": {
+        "sealed": 58
+      }
+    },
+    "scraped_at": "2026-05-12 02:25"
+  },
+  "galaxy-a-series/galaxy-a71": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a71",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:25"
+  },
+  "motorola-phone/motorola-one-5g": {
+    "category": "phones",
+    "series": "motorola-phone",
+    "model": "motorola-one-5g",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:25"
+  },
+  "xiaomi-phone/mi-10-ultra": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "mi-10-ultra",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:26"
+  },
+  "galaxy-z-fold-series/galaxy-z-flip-5g": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-flip-5g",
+    "prices": {
+      "base": {
+        "sealed": 54
+      }
+    },
+    "scraped_at": "2026-05-12 02:26"
+  },
+  "xiaomi-phone/mi-10-5g": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "mi-10-5g",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:26"
+  },
+  "xiaomi-phone/mi-10-pro-5g": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "mi-10-pro-5g",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:27"
+  },
+  "xiaomi-phone/mi-9t": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "mi-9t",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:27"
+  },
+  "xiaomi-phone/mi-note-10-lite": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "mi-note-10-lite",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:27"
+  },
+  "xiaomi-phone/mi-note-10": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "mi-note-10",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:28"
+  },
+  "xiaomi-phone/redmi-note-8-pro": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "redmi-note-8-pro",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:28"
+  },
+  "xiaomi-phone/redmi-note-8t": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "redmi-note-8t",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:28"
+  },
+  "xiaomi-phone/redmi-note-9-pro": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "redmi-note-9-pro",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:29"
+  },
+  "xiaomi-phone/poco-f2-pro": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "poco-f2-pro",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:29"
+  },
+  "xiaomi-phone/redmi-k30-5g": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "redmi-k30-5g",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:29"
+  },
+  "razer-phone/razer-phone": {
+    "category": "phones",
+    "series": "razer-phone",
+    "model": "razer-phone",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:30"
+  },
+  "razer-phone/razer-phone-2": {
+    "category": "phones",
+    "series": "razer-phone",
+    "model": "razer-phone-2",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:30"
+  },
+  "nokia-phone/nokia-7-2": {
+    "category": "phones",
+    "series": "nokia-phone",
+    "model": "nokia-7-2",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:30"
+  },
+  "nokia-phone/nokia-9-pureview": {
+    "category": "phones",
+    "series": "nokia-phone",
+    "model": "nokia-9-pureview",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:31"
+  },
+  "asus-phone/zenfone-7": {
+    "category": "phones",
+    "series": "asus-phone",
+    "model": "zenfone-7",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:31"
+  },
+  "asus-phone/zenfone-7-pro": {
+    "category": "phones",
+    "series": "asus-phone",
+    "model": "zenfone-7-pro",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:31"
+  },
+  "asus-phone/zenfone-6": {
+    "category": "phones",
+    "series": "asus-phone",
+    "model": "zenfone-6",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:31"
+  },
+  "asus-phone/zenfone-max-pro-m2": {
+    "category": "phones",
+    "series": "asus-phone",
+    "model": "zenfone-max-pro-m2",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:32"
+  },
+  "motorola-razr-phone/razr-5g": {
+    "category": "phones",
+    "series": "motorola-razr-phone",
+    "model": "razr-5g",
+    "prices": {
+      "base": {
+        "sealed": 63
+      }
+    },
+    "scraped_at": "2026-05-12 02:32"
+  },
+  "sony-xperia-5-phone/xperia-5-ii": {
+    "category": "phones",
+    "series": "sony-xperia-5-phone",
+    "model": "xperia-5-ii",
+    "prices": {
+      "128": {
+        "sealed": 104
+      },
+      "256": {
+        "sealed": 112
+      }
+    },
+    "scraped_at": "2026-05-12 02:33"
+  },
+  "sony-xperia-1-phone/xperia-1-ii": {
+    "category": "phones",
+    "series": "sony-xperia-1-phone",
+    "model": "xperia-1-ii",
+    "prices": {
+      "base": {
+        "sealed": 81
+      }
+    },
+    "scraped_at": "2026-05-12 02:33"
+  },
+  "galaxy-s-series/galaxy-s20-fe-5g": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s20-fe-5g",
+    "prices": {
+      "128": {
+        "sealed": 90
+      },
+      "256": {
+        "sealed": 108
+      }
+    },
+    "scraped_at": "2026-05-12 02:33"
+  },
+  "asus-rog-phone-series/rog-phone-2": {
+    "category": "phones",
+    "series": "asus-rog-phone-series",
+    "model": "rog-phone-2",
+    "prices": {
+      "128": {
+        "sealed": 63
+      },
+      "512": {
+        "sealed": 68
+      },
+      "1tb": {
+        "sealed": 76
+      }
+    },
+    "scraped_at": "2026-05-12 02:34"
+  },
+  "google-phone/google-pixel-5": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-5",
+    "prices": {
+      "base": {
+        "sealed": 54
+      }
+    },
+    "scraped_at": "2026-05-12 02:34"
+  },
+  "lg-phone/lg-wing-5g": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-wing-5g",
+    "prices": {
+      "128": {
+        "sealed": 135
+      },
+      "256": {
+        "sealed": 140
+      }
+    },
+    "scraped_at": "2026-05-12 02:35"
+  },
+  "iphone/iphone-12": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-12",
+    "prices": {
+      "64": {
+        "sealed": 152,
+        "mint": 109,
+        "good": 90,
+        "fair": 62,
+        "broken": 54
+      },
+      "128": {
+        "sealed": 162,
+        "mint": 138,
+        "good": 119,
+        "fair": 90,
+        "broken": 69
+      },
+      "256": {
+        "sealed": 166,
+        "mint": 152,
+        "good": 133,
+        "fair": 104,
+        "broken": 76
+      }
+    },
+    "scraped_at": "2026-05-12 02:37"
+  },
+  "iphone/iphone-12-pro": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-12-pro",
+    "prices": {
+      "128": {
+        "sealed": 218,
+        "mint": 162,
+        "good": 142,
+        "fair": 95,
+        "broken": 81
+      },
+      "256": {
+        "sealed": 233,
+        "mint": 200,
+        "good": 180,
+        "fair": 133,
+        "broken": 100
+      },
+      "512": {
+        "sealed": 242,
+        "mint": 200,
+        "good": 180,
+        "fair": 133,
+        "broken": 100
+      }
+    },
+    "scraped_at": "2026-05-12 02:39"
+  },
+  "iphone/iphone-12-pro-max": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-12-pro-max",
+    "prices": {
+      "128": {
+        "sealed": 266,
+        "mint": 209,
+        "good": 195,
+        "fair": 138,
+        "broken": 104
+      },
+      "256": {
+        "sealed": 304,
+        "mint": 228,
+        "good": 214,
+        "fair": 157,
+        "broken": 114
+      },
+      "512": {
+        "sealed": 332,
+        "mint": 242,
+        "good": 228,
+        "fair": 171,
+        "broken": 121
+      }
+    },
+    "scraped_at": "2026-05-12 02:41"
+  },
+  "iphone/iphone-12-mini": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-12-mini",
+    "prices": {
+      "64": {
+        "sealed": 114,
+        "mint": 76,
+        "good": 62,
+        "fair": 38,
+        "broken": 38
+      },
+      "128": {
+        "sealed": 119,
+        "mint": 104,
+        "good": 90,
+        "fair": 66,
+        "broken": 52
+      },
+      "256": {
+        "sealed": 124,
+        "mint": 109,
+        "good": 95,
+        "fair": 71,
+        "broken": 54
+      }
+    },
+    "scraped_at": "2026-05-12 02:43"
+  },
+  "microsoft-phone/surface-duo": {
+    "category": "phones",
+    "series": "microsoft-phone",
+    "model": "surface-duo",
+    "prices": {
+      "128": {},
+      "256": {
+        "sealed": 158
+      }
+    },
+    "scraped_at": "2026-05-12 02:44"
+  },
+  "lg-phone/lg-g8x-thinq": {
+    "category": "phones",
+    "series": "lg-phone",
+    "model": "lg-g8x-thinq",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:45"
+  },
+  "galaxy-a-series/galaxy-a71-5g": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a71-5g",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:45"
+  },
+  "oneplus-phone/oneplus-8t": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-8t",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:45"
+  },
+  "galaxy-z-fold-series/galaxy-z-flip-6": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-flip-6",
+    "prices": {
+      "256": {
+        "sealed": 261
+      },
+      "512": {
+        "sealed": 306
+      }
+    },
+    "scraped_at": "2026-05-12 02:46"
+  },
+  "motorola-edge-phone/edge-2024": {
+    "category": "phones",
+    "series": "motorola-edge-phone",
+    "model": "edge-2024",
+    "prices": {
+      "base": {
+        "sealed": 76
+      }
+    },
+    "scraped_at": "2026-05-12 02:46"
+  },
+  "sony-xperia-1-phone/sony-xperia-1-iv": {
+    "category": "phones",
+    "series": "sony-xperia-1-phone",
+    "model": "sony-xperia-1-iv",
+    "prices": {
+      "256": {
+        "sealed": 252
+      },
+      "512": {
+        "sealed": 274
+      }
+    },
+    "scraped_at": "2026-05-12 02:47"
+  },
+  "google-phone/google-pixel-8a": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-8a",
+    "prices": {
+      "128": {
+        "sealed": 176
+      },
+      "256": {
+        "sealed": 198
+      }
+    },
+    "scraped_at": "2026-05-12 02:47"
+  },
+  "motorola-razr-phone/razr-2023": {
+    "category": "phones",
+    "series": "motorola-razr-phone",
+    "model": "razr-2023",
+    "prices": {
+      "128": {
+        "sealed": 90
+      },
+      "256": {
+        "sealed": 112
+      },
+      "512": {
+        "sealed": 130
+      }
+    },
+    "scraped_at": "2026-05-12 02:48"
+  },
+  "xiaomi-phone/xiaomi-13t": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "xiaomi-13t",
+    "prices": {
+      "base": {
+        "sealed": 117
+      }
+    },
+    "scraped_at": "2026-05-12 02:48"
+  },
+  "sony-xperia-5-phone/xperia-5-iv": {
+    "category": "phones",
+    "series": "sony-xperia-5-phone",
+    "model": "xperia-5-iv",
+    "prices": {
+      "128": {
+        "sealed": 180
+      },
+      "256": {
+        "sealed": 198
+      }
+    },
+    "scraped_at": "2026-05-12 02:48"
+  },
+  "asus-rog-phone-series/rog-phone-8-pro": {
+    "category": "phones",
+    "series": "asus-rog-phone-series",
+    "model": "rog-phone-8-pro",
+    "prices": {
+      "512": {
+        "sealed": 428
+      },
+      "1tb": {
+        "sealed": 495
+      }
+    },
+    "scraped_at": "2026-05-12 02:49"
+  },
+  "galaxy-note-series/galaxy-note-10-lite": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-10-lite",
+    "prices": {
+      "base": {
+        "sealed": 104
+      }
+    },
+    "scraped_at": "2026-05-12 02:49"
+  },
+  "galaxy-z-fold-series/galaxy-z-fold-6": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-fold-6",
+    "prices": {
+      "256": {
+        "sealed": 450
+      },
+      "512": {
+        "sealed": 477
+      },
+      "1tb": {
+        "sealed": 504
+      }
+    },
+    "scraped_at": "2026-05-12 02:50"
+  },
+  "motorola-razr-phone/razr-plus-2024": {
+    "category": "phones",
+    "series": "motorola-razr-phone",
+    "model": "razr-plus-2024",
+    "prices": {
+      "base": {
+        "sealed": 180
+      }
+    },
+    "scraped_at": "2026-05-12 02:50"
+  },
+  "motorola-razr-phone/razr-plus-2023": {
+    "category": "phones",
+    "series": "motorola-razr-phone",
+    "model": "razr-plus-2023",
+    "prices": {
+      "base": {
+        "sealed": 117
+      }
+    },
+    "scraped_at": "2026-05-12 02:51"
+  },
+  "google-phone/google-pixel-4a-5g": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-4a-5g",
+    "prices": {
+      "base": {
+        "sealed": 40
+      }
+    },
+    "scraped_at": "2026-05-12 02:51"
+  },
+  "oneplus-phone/oneplus-8t-5g": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-8t-5g",
+    "prices": {
+      "base": {
+        "sealed": 68
+      }
+    },
+    "scraped_at": "2026-05-12 02:51"
+  },
+  "nokia-phone/nokia-83-5g": {
+    "category": "phones",
+    "series": "nokia-phone",
+    "model": "nokia-83-5g",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:51"
+  },
+  "oneplus-phone/oneplus-7t-pro": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-7t-pro",
+    "prices": {
+      "base": {
+        "sealed": 72
+      }
+    },
+    "scraped_at": "2026-05-12 02:52"
+  },
+  "galaxy-a-series/galaxy-a51-5g": {
+    "category": "phones",
+    "series": "galaxy-a-series",
+    "model": "galaxy-a51-5g",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:52"
+  },
+  "motorola-edge-phone/edge": {
+    "category": "phones",
+    "series": "motorola-edge-phone",
+    "model": "edge",
+    "prices": {
+      "128": {
+        "sealed": 45
+      },
+      "256": {
+        "sealed": 45
+      }
+    },
+    "scraped_at": "2026-05-12 02:53"
+  },
+  "galaxy-s-series/galaxy-s21-5g": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s21-5g",
+    "prices": {
+      "128": {
+        "sealed": 94
+      },
+      "256": {
+        "sealed": 112
+      }
+    },
+    "scraped_at": "2026-05-12 02:53"
+  },
+  "galaxy-s-series/galaxy-s21-plus-5g": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s21-plus-5g",
+    "prices": {
+      "128": {
+        "sealed": 117
+      },
+      "256": {
+        "sealed": 145
+      }
+    },
+    "scraped_at": "2026-05-12 02:54"
+  },
+  "galaxy-s-series/galaxy-s21-ultra-5g": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s21-ultra-5g",
+    "prices": {
+      "128": {
+        "sealed": 126
+      },
+      "256": {
+        "sealed": 135
+      },
+      "512": {
+        "sealed": 140
+      }
+    },
+    "scraped_at": "2026-05-12 02:54"
+  },
+  "motorola-phone/motorola-one-5g-ace": {
+    "category": "phones",
+    "series": "motorola-phone",
+    "model": "motorola-one-5g-ace",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:55"
+  },
+  "oneplus-phone/oneplus-9": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-9",
+    "prices": {
+      "128": {
+        "sealed": 86
+      },
+      "256": {
+        "sealed": 99
+      }
+    },
+    "scraped_at": "2026-05-12 02:55"
+  },
+  "oneplus-phone/oneplus-9-pro": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-9-pro",
+    "prices": {
+      "128": {
+        "sealed": 126
+      },
+      "256": {
+        "sealed": 153
+      }
+    },
+    "scraped_at": "2026-05-12 02:56"
+  },
+  "galaxy-s-series/galaxy-s20-ultra": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s20-ultra",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:56"
+  },
+  "galaxy-note-series/galaxy-note-20-ultra": {
+    "category": "phones",
+    "series": "galaxy-note-series",
+    "model": "galaxy-note-20-ultra",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:56"
+  },
+  "galaxy-s-series/galaxy-s21": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s21",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:57"
+  },
+  "galaxy-s-series/galaxy-s21-plus": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s21-plus",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:57"
+  },
+  "galaxy-s-series/galaxy-s21-ultra": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s21-ultra",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 02:57"
+  },
+  "motorola-edge-phone/edge-2023": {
+    "category": "phones",
+    "series": "motorola-edge-phone",
+    "model": "edge-2023",
+    "prices": {
+      "base": {
+        "sealed": 54
+      }
+    },
+    "scraped_at": "2026-05-12 02:58"
+  },
+  "xiaomi-phone/xiaomi-13": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "xiaomi-13",
+    "prices": {
+      "256": {
+        "sealed": 81
+      },
+      "512": {
+        "sealed": 126
+      }
+    },
+    "scraped_at": "2026-05-12 02:58"
+  },
+  "xiaomi-phone/xiaomi-13-pro": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "xiaomi-13-pro",
+    "prices": {
+      "256": {
+        "sealed": 270
+      },
+      "512": {
+        "sealed": 288
+      }
+    },
+    "scraped_at": "2026-05-12 02:58"
+  },
+  "xiaomi-phone/xiaomi-14-pro": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "xiaomi-14-pro",
+    "prices": {
+      "256": {
+        "sealed": 292
+      },
+      "512": {
+        "sealed": 328
+      },
+      "1tb": {
+        "sealed": 405
+      }
+    },
+    "scraped_at": "2026-05-12 02:59"
+  },
+  "galaxy-z-fold-series/galaxy-z-fold-3-5g": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-fold-3-5g",
+    "prices": {
+      "256": {
+        "sealed": 153
+      },
+      "512": {
+        "sealed": 180
+      }
+    },
+    "scraped_at": "2026-05-12 03:00"
+  },
+  "galaxy-z-fold-series/galaxy-z-flip3-5g": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-flip3-5g",
+    "prices": {
+      "128": {
+        "sealed": 58
+      },
+      "256": {
+        "sealed": 72
+      }
+    },
+    "scraped_at": "2026-05-12 03:00"
+  },
+  "sony-xperia-5-phone/xperia-5-iii": {
+    "category": "phones",
+    "series": "sony-xperia-5-phone",
+    "model": "xperia-5-iii",
+    "prices": {
+      "128": {
+        "sealed": 144
+      },
+      "256": {
+        "sealed": 153
+      }
+    },
+    "scraped_at": "2026-05-12 03:01"
+  },
+  "sony-phone/sony-xperia-10-ii": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-10-ii",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 03:01"
+  },
+  "sony-phone/sony-xperia-10-iii": {
+    "category": "phones",
+    "series": "sony-phone",
+    "model": "sony-xperia-10-iii",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 03:01"
+  },
+  "sony-xperia-1-phone/sony-xperia-1-iii": {
+    "category": "phones",
+    "series": "sony-xperia-1-phone",
+    "model": "sony-xperia-1-iii",
+    "prices": {
+      "256": {
+        "sealed": 184
+      },
+      "512": {
+        "sealed": 207
+      }
+    },
+    "scraped_at": "2026-05-12 03:02"
+  },
+  "google-phone/google-pixel-5a-5g": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-5a-5g",
+    "prices": {
+      "base": {
+        "sealed": 50
+      }
+    },
+    "scraped_at": "2026-05-12 03:02"
+  },
+  "iphone/iphone-13": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-13",
+    "prices": {
+      "128": {
+        "sealed": 242,
+        "mint": 162,
+        "verygood": 152,
+        "good": 152,
+        "fair": 104,
+        "broken": 81
+      },
+      "256": {
+        "sealed": 271,
+        "mint": 195,
+        "verygood": 185,
+        "good": 185,
+        "fair": 138,
+        "broken": 98
+      },
+      "512": {
+        "sealed": 290,
+        "mint": 204,
+        "verygood": 195,
+        "good": 195,
+        "fair": 147,
+        "broken": 102
+      }
+    },
+    "scraped_at": "2026-05-12 03:05"
+  },
+  "iphone/iphone-13-pro-max": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-13-pro-max",
+    "prices": {
+      "128": {
+        "sealed": 385,
+        "mint": 280,
+        "verygood": 266,
+        "good": 266,
+        "fair": 195,
+        "broken": 140
+      },
+      "256": {
+        "sealed": 408,
+        "mint": 323,
+        "verygood": 309,
+        "good": 309,
+        "fair": 238,
+        "broken": 162
+      },
+      "512": {
+        "sealed": 432,
+        "mint": 332,
+        "verygood": 318,
+        "good": 318,
+        "fair": 247,
+        "broken": 166
+      },
+      "1tb": {
+        "sealed": 456,
+        "mint": 347,
+        "verygood": 332,
+        "good": 332,
+        "fair": 261,
+        "broken": 174
+      }
+    },
+    "scraped_at": "2026-05-12 03:08"
+  },
+  "iphone/iphone-13-pro": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-13-pro",
+    "prices": {
+      "128": {
+        "sealed": 261,
+        "mint": 233,
+        "verygood": 218,
+        "good": 218,
+        "fair": 147,
+        "broken": 116
+      },
+      "256": {
+        "sealed": 332,
+        "mint": 266,
+        "verygood": 252,
+        "good": 252,
+        "fair": 180,
+        "broken": 133
+      },
+      "512": {
+        "sealed": 404,
+        "mint": 290,
+        "verygood": 276,
+        "good": 276,
+        "fair": 204,
+        "broken": 145
+      },
+      "1tb": {
+        "sealed": 451,
+        "mint": 299,
+        "verygood": 285,
+        "good": 285,
+        "fair": 214,
+        "broken": 150
+      }
+    },
+    "scraped_at": "2026-05-12 03:12"
+  },
+  "iphone/iphone-13-mini": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-13-mini",
+    "prices": {
+      "128": {
+        "sealed": 209,
+        "mint": 152,
+        "verygood": 133,
+        "good": 133,
+        "fair": 76,
+        "broken": 76
+      },
+      "256": {
+        "sealed": 218,
+        "mint": 180,
+        "verygood": 162,
+        "good": 162,
+        "fair": 104,
+        "broken": 90
+      },
+      "512": {
+        "sealed": 223,
+        "mint": 200,
+        "verygood": 180,
+        "good": 180,
+        "fair": 124,
+        "broken": 100
+      }
+    },
+    "scraped_at": "2026-05-12 03:14"
+  },
+  "google-phone/google-pixel-6": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-6",
+    "prices": {
+      "128": {
+        "sealed": 99
+      },
+      "256": {
+        "sealed": 112
+      }
+    },
+    "scraped_at": "2026-05-12 03:15"
+  },
+  "google-phone/google-pixel-6-pro": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-6-pro",
+    "prices": {
+      "128": {
+        "sealed": 108
+      },
+      "256": {
+        "sealed": 112
+      },
+      "512": {
+        "sealed": 117
+      }
+    },
+    "scraped_at": "2026-05-12 03:15"
+  },
+  "asus-rog-phone-series/rog-phone-3": {
+    "category": "phones",
+    "series": "asus-rog-phone-series",
+    "model": "rog-phone-3",
+    "prices": {
+      "128": {
+        "sealed": 135
+      },
+      "256": {
+        "sealed": 148
+      },
+      "512": {
+        "sealed": 158
+      }
+    },
+    "scraped_at": "2026-05-12 03:16"
+  },
+  "asus-rog-phone-series/rog-phone-5": {
+    "category": "phones",
+    "series": "asus-rog-phone-series",
+    "model": "rog-phone-5",
+    "prices": {
+      "128": {
+        "sealed": 135
+      },
+      "256": {
+        "sealed": 158
+      }
+    },
+    "scraped_at": "2026-05-12 03:17"
+  },
+  "asus-rog-phone-series/rog-phone-5s": {
+    "category": "phones",
+    "series": "asus-rog-phone-series",
+    "model": "rog-phone-5s",
+    "prices": {
+      "128": {
+        "sealed": 158
+      },
+      "256": {
+        "sealed": 176
+      },
+      "512": {
+        "sealed": 189
+      }
+    },
+    "scraped_at": "2026-05-12 03:17"
+  },
+  "asus-phone/rog-phone-5s-pro": {
+    "category": "phones",
+    "series": "asus-phone",
+    "model": "rog-phone-5s-pro",
+    "prices": {
+      "base": {}
+    },
+    "scraped_at": "2026-05-12 03:18"
+  },
+  "motorola-edge-phone/edge-plus-2023": {
+    "category": "phones",
+    "series": "motorola-edge-phone",
+    "model": "edge-plus-2023",
+    "prices": {
+      "base": {
+        "sealed": 148
+      }
+    },
+    "scraped_at": "2026-05-12 03:18"
+  },
+  "nothing-phone/nothing-phone-3a": {
+    "category": "phones",
+    "series": "nothing-phone",
+    "model": "nothing-phone-3a",
+    "prices": {
+      "128": {
+        "sealed": 180
+      },
+      "256": {
+        "sealed": 198
+      }
+    },
+    "scraped_at": "2026-05-12 03:18"
+  },
+  "galaxy-s-series/galaxy-s22-5g": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s22-5g",
+    "prices": {
+      "128": {
+        "sealed": 117
+      },
+      "256": {
+        "sealed": 135
+      }
+    },
+    "scraped_at": "2026-05-12 03:19"
+  },
+  "galaxy-s-series/galaxy-s22-plus-5g": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s22-plus-5g",
+    "prices": {
+      "128": {
+        "sealed": 171
+      },
+      "256": {
+        "sealed": 194
+      }
+    },
+    "scraped_at": "2026-05-12 03:19"
+  },
+  "galaxy-s-series/galaxy-s22-ultra-5g": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s22-ultra-5g",
+    "prices": {
+      "128": {
+        "sealed": 162
+      },
+      "256": {
+        "sealed": 204
+      },
+      "512": {
+        "sealed": 242
+      },
+      "1tb": {
+        "sealed": 280
+      }
+    },
+    "scraped_at": "2026-05-12 03:20"
+  },
+  "oneplus-phone/oneplus-10-pro": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-10-pro",
+    "prices": {
+      "128": {
+        "sealed": 140
+      },
+      "256": {
+        "sealed": 148
+      },
+      "512": {
+        "sealed": 158
+      }
+    },
+    "scraped_at": "2026-05-12 03:21"
+  },
+  "iphone/iphone-se-3rd-gen": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-se-3rd-gen",
+    "prices": {
+      "64": {
+        "sealed": 81,
+        "mint": 66,
+        "good": 57,
+        "fair": 38,
+        "broken": 33
+      },
+      "128": {
+        "sealed": 90,
+        "mint": 76,
+        "good": 66,
+        "fair": 48,
+        "broken": 38
+      },
+      "256": {
+        "sealed": 95,
+        "mint": 86,
+        "good": 76,
+        "fair": 57,
+        "broken": 43
+      }
+    },
+    "scraped_at": "2026-05-12 03:23"
+  },
+  "motorola-edge-phone/edge-plus-2022": {
+    "category": "phones",
+    "series": "motorola-edge-phone",
+    "model": "edge-plus-2022",
+    "prices": {
+      "128": {
+        "sealed": 54
+      },
+      "256": {
+        "sealed": 54
+      },
+      "512": {
+        "sealed": 54
+      }
+    },
+    "scraped_at": "2026-05-12 03:24"
+  },
+  "galaxy-z-fold-series/galaxy-z-fold-4": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-fold-4",
+    "prices": {
+      "256": {
+        "sealed": 216
+      },
+      "512": {
+        "sealed": 243
+      },
+      "1tb": {
+        "sealed": 270
+      }
+    },
+    "scraped_at": "2026-05-12 03:24"
+  },
+  "galaxy-z-fold-series/galaxy-z-flip4": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-flip4",
+    "prices": {
+      "128": {
+        "sealed": 50
+      },
+      "256": {
+        "sealed": 54
+      },
+      "512": {
+        "sealed": 58
+      }
+    },
+    "scraped_at": "2026-05-12 03:25"
+  },
+  "iphone/iphone-14": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-14",
+    "prices": {
+      "128": {
+        "sealed": 223,
+        "mint": 176,
+        "verygood": 166,
+        "good": 166,
+        "fair": 109,
+        "broken": 88
+      },
+      "256": {
+        "sealed": 247,
+        "mint": 209,
+        "verygood": 200,
+        "good": 200,
+        "fair": 142,
+        "broken": 104
+      },
+      "512": {
+        "sealed": 271,
+        "mint": 280,
+        "verygood": 271,
+        "good": 271,
+        "fair": 214,
+        "broken": 140
+      }
+    },
+    "scraped_at": "2026-05-12 03:28"
+  },
+  "iphone/iphone-14-plus": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-14-plus",
+    "prices": {
+      "128": {
+        "sealed": 247,
+        "mint": 209,
+        "verygood": 195,
+        "good": 195,
+        "fair": 142,
+        "broken": 104
+      },
+      "256": {
+        "sealed": 294,
+        "mint": 247,
+        "verygood": 233,
+        "good": 233,
+        "fair": 180,
+        "broken": 124
+      },
+      "512": {
+        "sealed": 318,
+        "mint": 266,
+        "verygood": 252,
+        "good": 252,
+        "fair": 200,
+        "broken": 133
+      }
+    },
+    "scraped_at": "2026-05-12 03:30"
+  },
+  "iphone/iphone-14-pro": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-14-pro",
+    "prices": {
+      "128": {
+        "sealed": 314,
+        "mint": 285,
+        "verygood": 256,
+        "good": 256,
+        "fair": 180,
+        "broken": 142
+      },
+      "256": {
+        "sealed": 337,
+        "mint": 314,
+        "verygood": 285,
+        "good": 285,
+        "fair": 209,
+        "broken": 157
+      },
+      "512": {
+        "sealed": 352,
+        "mint": 342,
+        "verygood": 314,
+        "good": 314,
+        "fair": 238,
+        "broken": 171
+      },
+      "1tb": {
+        "sealed": 370,
+        "mint": 361,
+        "verygood": 332,
+        "good": 332,
+        "fair": 256,
+        "broken": 180
+      }
+    },
+    "scraped_at": "2026-05-12 03:34"
+  },
+  "iphone/iphone-14-pro-max": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-14-pro-max",
+    "prices": {
+      "128": {
+        "sealed": 390,
+        "mint": 361,
+        "verygood": 323,
+        "good": 323,
+        "fair": 256,
+        "broken": 180
+      },
+      "256": {
+        "sealed": 418,
+        "mint": 380,
+        "verygood": 342,
+        "good": 342,
+        "fair": 276,
+        "broken": 190
+      },
+      "512": {
+        "sealed": 428,
+        "mint": 408,
+        "verygood": 370,
+        "good": 370,
+        "fair": 304,
+        "broken": 204
+      },
+      "1tb": {
+        "sealed": 446,
+        "mint": 437,
+        "verygood": 399,
+        "good": 399,
+        "fair": 332,
+        "broken": 218
+      }
+    },
+    "scraped_at": "2026-05-12 03:37"
+  },
+  "galaxy-s-series/galaxy-s21-fe-5g": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s21-fe-5g",
+    "prices": {
+      "128": {
+        "sealed": 54
+      },
+      "256": {
+        "sealed": 72
+      }
+    },
+    "scraped_at": "2026-05-12 03:38"
+  },
+  "oneplus-phone/oneplus-10t-5g": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-10t-5g",
+    "prices": {
+      "128": {
+        "sealed": 126
+      },
+      "256": {
+        "sealed": 148
+      }
+    },
+    "scraped_at": "2026-05-12 03:38"
+  },
+  "google-phone/google-pixel-7-pro": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-7-pro",
+    "prices": {
+      "128": {
+        "sealed": 153
+      },
+      "256": {
+        "sealed": 162
+      },
+      "512": {
+        "sealed": 166
+      }
+    },
+    "scraped_at": "2026-05-12 03:39"
+  },
+  "google-phone/google-pixel-7": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-7",
+    "prices": {
+      "128": {
+        "sealed": 112
+      },
+      "256": {
+        "sealed": 122
+      }
+    },
+    "scraped_at": "2026-05-12 03:40"
+  },
+  "galaxy-s-series/galaxy-s23": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s23",
+    "prices": {
+      "128": {
+        "sealed": 180
+      },
+      "256": {
+        "sealed": 212
+      },
+      "512": {
+        "sealed": 225
+      }
+    },
+    "scraped_at": "2026-05-12 03:40"
+  },
+  "galaxy-s-series/galaxy-s23-ultra": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s23-ultra",
+    "prices": {
+      "256": {
+        "sealed": 266
+      },
+      "512": {
+        "sealed": 288
+      },
+      "1tb": {
+        "sealed": 310
+      }
+    },
+    "scraped_at": "2026-05-12 03:41"
+  },
+  "galaxy-s-series/galaxy-s23-plus": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s23-plus",
+    "prices": {
+      "128": {
+        "sealed": 234
+      },
+      "256": {
+        "sealed": 261
+      },
+      "512": {
+        "sealed": 279
+      }
+    },
+    "scraped_at": "2026-05-12 03:42"
+  },
+  "motorola-edge-phone/edge-2022": {
+    "category": "phones",
+    "series": "motorola-edge-phone",
+    "model": "edge-2022",
+    "prices": {
+      "128": {
+        "sealed": 40
+      },
+      "256": {
+        "sealed": 50
+      },
+      "512": {
+        "sealed": 54
+      }
+    },
+    "scraped_at": "2026-05-12 03:42"
+  },
+  "oneplus-phone/oneplus-11": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-11",
+    "prices": {
+      "128": {
+        "sealed": 216
+      },
+      "256": {
+        "sealed": 238
+      },
+      "512": {
+        "sealed": 261
+      }
+    },
+    "scraped_at": "2026-05-12 03:43"
+  },
+  "microsoft-phone/surface-duo-2": {
+    "category": "phones",
+    "series": "microsoft-phone",
+    "model": "surface-duo-2",
+    "prices": {
+      "128": {
+        "sealed": 387
+      },
+      "256": {
+        "sealed": 410
+      },
+      "512": {
+        "sealed": 432
+      }
+    },
+    "scraped_at": "2026-05-12 03:44"
+  },
+  "google-phone/google-pixel-fold": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-fold",
+    "prices": {
+      "256": {
+        "sealed": 202
+      },
+      "512": {
+        "sealed": 248
+      }
+    },
+    "scraped_at": "2026-05-12 03:44"
+  },
+  "nothing-phone/nothing-phone-3a-pro": {
+    "category": "phones",
+    "series": "nothing-phone",
+    "model": "nothing-phone-3a-pro",
+    "prices": {
+      "128": {
+        "sealed": 252
+      },
+      "256": {
+        "sealed": 270
+      }
+    },
+    "scraped_at": "2026-05-12 03:45"
+  },
+  "google-phone/google-pixel-7a": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-7a",
+    "prices": {
+      "base": {
+        "sealed": 112
+      }
+    },
+    "scraped_at": "2026-05-12 03:45"
+  },
+  "galaxy-z-fold-series/galaxy-z-fold-5": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-fold-5",
+    "prices": {
+      "256": {
+        "sealed": 310
+      },
+      "512": {
+        "sealed": 338
+      },
+      "1tb": {
+        "sealed": 364
+      }
+    },
+    "scraped_at": "2026-05-12 03:46"
+  },
+  "galaxy-z-fold-series/galaxy-z-flip5": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-flip5",
+    "prices": {
+      "256": {
+        "sealed": 202
+      },
+      "512": {
+        "sealed": 248
+      }
+    },
+    "scraped_at": "2026-05-12 03:46"
+  },
+  "iphone/iphone-15-pro-max": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-15-pro-max",
+    "prices": {
+      "256": {
+        "sealed": 508,
+        "mint": 446,
+        "verygood": 428,
+        "good": 428,
+        "fair": 361,
+        "broken": 223
+      },
+      "512": {
+        "sealed": 532,
+        "mint": 480,
+        "verygood": 461,
+        "good": 461,
+        "fair": 394,
+        "broken": 240
+      },
+      "1tb": {
+        "sealed": 556,
+        "mint": 522,
+        "verygood": 504,
+        "good": 504,
+        "fair": 437,
+        "broken": 261
+      }
+    },
+    "scraped_at": "2026-05-12 03:49"
+  },
+  "iphone/iphone-15-pro": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-15-pro",
+    "prices": {
+      "128": {
+        "sealed": 394,
+        "mint": 356,
+        "verygood": 328,
+        "good": 328,
+        "fair": 261,
+        "broken": 178
+      },
+      "256": {
+        "sealed": 442,
+        "mint": 404,
+        "verygood": 375,
+        "good": 375,
+        "fair": 309,
+        "broken": 202
+      },
+      "512": {
+        "sealed": 466,
+        "mint": 432,
+        "verygood": 404,
+        "good": 404,
+        "fair": 337,
+        "broken": 216
+      },
+      "1tb": {
+        "sealed": 513,
+        "mint": 470,
+        "verygood": 442,
+        "good": 442,
+        "fair": 375,
+        "broken": 235
+      }
+    },
+    "scraped_at": "2026-05-12 03:52"
+  },
+  "iphone/iphone-15-plus": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-15-plus",
+    "prices": {
+      "128": {
+        "sealed": 399,
+        "mint": 314,
+        "verygood": 285,
+        "good": 285,
+        "fair": 228,
+        "broken": 157
+      },
+      "256": {
+        "sealed": 446,
+        "mint": 337,
+        "verygood": 309,
+        "good": 309,
+        "fair": 252,
+        "broken": 168
+      },
+      "512": {
+        "sealed": 470,
+        "mint": 390,
+        "verygood": 361,
+        "good": 361,
+        "fair": 304,
+        "broken": 195
+      }
+    },
+    "scraped_at": "2026-05-12 03:55"
+  },
+  "iphone/iphone-15": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-15",
+    "prices": {
+      "128": {
+        "sealed": 328,
+        "mint": 280,
+        "verygood": 266,
+        "good": 266,
+        "fair": 204,
+        "broken": 140
+      },
+      "256": {
+        "sealed": 375,
+        "mint": 318,
+        "verygood": 304,
+        "good": 304,
+        "fair": 242,
+        "broken": 159
+      },
+      "512": {
+        "sealed": 423,
+        "mint": 347,
+        "verygood": 332,
+        "good": 332,
+        "fair": 271,
+        "broken": 174
+      }
+    },
+    "scraped_at": "2026-05-12 03:58"
+  },
+  "google-phone/google-pixel-8-pro": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-8-pro",
+    "prices": {
+      "128": {
+        "sealed": 207
+      },
+      "256": {
+        "sealed": 243
+      },
+      "512": {
+        "sealed": 261
+      },
+      "1tb": {
+        "sealed": 274
+      }
+    },
+    "scraped_at": "2026-05-12 03:58"
+  },
+  "google-phone/google-pixel-8": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-8",
+    "prices": {
+      "128": {
+        "sealed": 166
+      },
+      "256": {
+        "sealed": 189
+      }
+    },
+    "scraped_at": "2026-05-12 03:59"
+  },
+  "oneplus-phone/oneplus-open": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-open",
+    "prices": {
+      "512": {
+        "sealed": 558
+      },
+      "1tb": {
+        "sealed": 648
+      }
+    },
+    "scraped_at": "2026-05-12 04:00"
+  },
+  "galaxy-s-series/galaxy-s23-fe": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s23-fe",
+    "prices": {
+      "128": {
+        "sealed": 108
+      },
+      "256": {
+        "sealed": 126
+      }
+    },
+    "scraped_at": "2026-05-12 04:00"
+  },
+  "galaxy-s-series/galaxy-s24": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s24",
+    "prices": {
+      "128": {
+        "sealed": 216
+      },
+      "256": {
+        "sealed": 248
+      }
+    },
+    "scraped_at": "2026-05-12 04:01"
+  },
+  "galaxy-s-series/galaxy-s24-plus": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s24-plus",
+    "prices": {
+      "256": {
+        "sealed": 266
+      },
+      "512": {
+        "sealed": 310
+      }
+    },
+    "scraped_at": "2026-05-12 04:01"
+  },
+  "galaxy-s-series/galaxy-s24-ultra": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s24-ultra",
+    "prices": {
+      "256": {
+        "sealed": 432
+      },
+      "512": {
+        "sealed": 500
+      },
+      "1tb": {
+        "sealed": 590
+      }
+    },
+    "scraped_at": "2026-05-12 04:02"
+  },
+  "oneplus-phone/oneplus-12": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-12",
+    "prices": {
+      "256": {
+        "sealed": 351
+      },
+      "512": {
+        "sealed": 396
+      }
+    },
+    "scraped_at": "2026-05-12 04:02"
+  },
+  "oneplus-phone/oneplus-12r": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-12r",
+    "prices": {
+      "128": {
+        "sealed": 212
+      },
+      "256": {
+        "sealed": 225
+      }
+    },
+    "scraped_at": "2026-05-12 04:03"
+  },
+  "google-phone/google-pixel-9": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-9",
+    "prices": {
+      "128": {
+        "sealed": 225
+      },
+      "256": {
+        "sealed": 248
+      }
+    },
+    "scraped_at": "2026-05-12 04:03"
+  },
+  "google-phone/google-pixel-9-pro": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-9-pro",
+    "prices": {
+      "128": {
+        "sealed": 261
+      },
+      "256": {
+        "sealed": 297
+      },
+      "512": {
+        "sealed": 328
+      },
+      "1tb": {
+        "sealed": 342
+      }
+    },
+    "scraped_at": "2026-05-12 04:04"
+  },
+  "google-phone/google-pixel-9-pro-xl": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-9-pro-xl",
+    "prices": {
+      "128": {
+        "sealed": 315
+      },
+      "256": {
+        "sealed": 351
+      },
+      "512": {
+        "sealed": 382
+      },
+      "1tb": {
+        "sealed": 396
+      }
+    },
+    "scraped_at": "2026-05-12 04:05"
+  },
+  "google-phone/google-pixel-9-pro-fold": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-9-pro-fold",
+    "prices": {
+      "256": {
+        "sealed": 450
+      },
+      "512": {
+        "sealed": 540
+      }
+    },
+    "scraped_at": "2026-05-12 04:06"
+  },
+  "iphone/iphone-16": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-16",
+    "prices": {
+      "128": {
+        "sealed": 489,
+        "mint": 413,
+        "verygood": 380,
+        "good": 380,
+        "fair": 309,
+        "broken": 206
+      },
+      "256": {
+        "sealed": 542,
+        "mint": 451,
+        "verygood": 418,
+        "good": 418,
+        "fair": 347,
+        "broken": 226
+      },
+      "512": {
+        "sealed": 594,
+        "mint": 480,
+        "verygood": 446,
+        "good": 446,
+        "fair": 375,
+        "broken": 240
+      }
+    },
+    "scraped_at": "2026-05-12 04:08"
+  },
+  "iphone/iphone-16-plus": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-16-plus",
+    "prices": {
+      "128": {
+        "sealed": 470,
+        "mint": 432,
+        "verygood": 418,
+        "good": 418,
+        "fair": 356,
+        "broken": 216
+      },
+      "256": {
+        "sealed": 518,
+        "mint": 470,
+        "verygood": 456,
+        "good": 456,
+        "fair": 394,
+        "broken": 235
+      },
+      "512": {
+        "sealed": 565,
+        "mint": 504,
+        "verygood": 489,
+        "good": 489,
+        "fair": 428,
+        "broken": 252
+      }
+    },
+    "scraped_at": "2026-05-12 04:11"
+  },
+  "iphone/iphone-16-pro": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-16-pro",
+    "prices": {
+      "128": {
+        "sealed": 504,
+        "mint": 484,
+        "verygood": 461,
+        "good": 461,
+        "fair": 356,
+        "broken": 242
+      },
+      "256": {
+        "sealed": 551,
+        "mint": 532,
+        "verygood": 508,
+        "good": 508,
+        "fair": 404,
+        "broken": 266
+      },
+      "512": {
+        "sealed": 598,
+        "mint": 570,
+        "verygood": 546,
+        "good": 546,
+        "fair": 442,
+        "broken": 285
+      },
+      "1tb": {
+        "sealed": 646,
+        "mint": 627,
+        "verygood": 603,
+        "good": 603,
+        "fair": 499,
+        "broken": 314
+      }
+    },
+    "scraped_at": "2026-05-12 04:14"
+  },
+  "iphone/iphone-16-pro-max": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-16-pro-max",
+    "prices": {
+      "256": {
+        "sealed": 684,
+        "mint": 608,
+        "verygood": 589,
+        "good": 589,
+        "fair": 518,
+        "broken": 304
+      },
+      "512": {
+        "sealed": 779,
+        "mint": 660,
+        "verygood": 641,
+        "good": 641,
+        "fair": 570,
+        "broken": 330
+      },
+      "1tb": {
+        "sealed": 874,
+        "mint": 741,
+        "verygood": 722,
+        "good": 722,
+        "fair": 651,
+        "broken": 370
+      }
+    },
+    "scraped_at": "2026-05-12 04:17"
+  },
+  "galaxy-s-series/galaxy-s24-fe": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s24-fe",
+    "prices": {
+      "128": {
+        "sealed": 189
+      },
+      "256": {
+        "sealed": 207
+      }
+    },
+    "scraped_at": "2026-05-12 04:18"
+  },
+  "oneplus-phone/oneplus-13": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-13",
+    "prices": {
+      "256": {
+        "sealed": 414
+      },
+      "512": {
+        "sealed": 459
+      }
+    },
+    "scraped_at": "2026-05-12 04:18"
+  },
+  "oneplus-phone/oneplus-13r": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-13r",
+    "prices": {
+      "256": {
+        "sealed": 252
+      },
+      "512": {
+        "sealed": 297
+      }
+    },
+    "scraped_at": "2026-05-12 04:19"
+  },
+  "asus-rog-phone-series/rog-phone-9": {
+    "category": "phones",
+    "series": "asus-rog-phone-series",
+    "model": "rog-phone-9",
+    "prices": {
+      "256": {
+        "sealed": 396
+      },
+      "512": {
+        "sealed": 441
+      }
+    },
+    "scraped_at": "2026-05-12 04:19"
+  },
+  "asus-rog-phone-series/rog-phone-9-pro": {
+    "category": "phones",
+    "series": "asus-rog-phone-series",
+    "model": "rog-phone-9-pro",
+    "prices": {
+      "512": {
+        "sealed": 495
+      },
+      "1tb": {
+        "sealed": 562
+      }
+    },
+    "scraped_at": "2026-05-12 04:19"
+  },
+  "galaxy-s-series/galaxy-s25": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s25",
+    "prices": {
+      "128": {
+        "sealed": 297
+      },
+      "256": {
+        "sealed": 328
+      }
+    },
+    "scraped_at": "2026-05-12 04:20"
+  },
+  "galaxy-s-series/galaxy-s25-plus": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s25-plus",
+    "prices": {
+      "256": {
+        "sealed": 396
+      },
+      "512": {
+        "sealed": 441
+      }
+    },
+    "scraped_at": "2026-05-12 04:21"
+  },
+  "galaxy-s-series/galaxy-s25-ultra": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s25-ultra",
+    "prices": {
+      "256": {
+        "sealed": 558
+      },
+      "512": {
+        "sealed": 580
+      },
+      "1tb": {
+        "sealed": 603
+      }
+    },
+    "scraped_at": "2026-05-12 04:21"
+  },
+  "iphone/iphone-16e": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-16e",
+    "prices": {
+      "128": {
+        "sealed": 323,
+        "mint": 247,
+        "verygood": 228,
+        "good": 228,
+        "fair": 152,
+        "broken": 124
+      },
+      "256": {
+        "sealed": 375,
+        "mint": 314,
+        "verygood": 294,
+        "good": 294,
+        "fair": 218,
+        "broken": 157
+      },
+      "512": {
+        "sealed": 428,
+        "mint": 361,
+        "verygood": 342,
+        "good": 342,
+        "fair": 266,
+        "broken": 180
+      }
+    },
+    "scraped_at": "2026-05-12 04:24"
+  },
+  "google-phone/google-pixel-9a": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-9a",
+    "prices": {
+      "128": {
+        "sealed": 202
+      },
+      "256": {
+        "sealed": 225
+      }
+    },
+    "scraped_at": "2026-05-12 04:24"
+  },
+  "asus-rog-phone-series/rog-phone-6-pro": {
+    "category": "phones",
+    "series": "asus-rog-phone-series",
+    "model": "rog-phone-6-pro",
+    "prices": {
+      "base": {
+        "sealed": 324
+      }
+    },
+    "scraped_at": "2026-05-12 04:25"
+  },
+  "sony-xperia-1-phone/sony-xperia-1-vi": {
+    "category": "phones",
+    "series": "sony-xperia-1-phone",
+    "model": "sony-xperia-1-vi",
+    "prices": {
+      "256": {
+        "sealed": 432
+      },
+      "512": {
+        "sealed": 459
+      }
+    },
+    "scraped_at": "2026-05-12 04:25"
+  },
+  "sony-xperia-5-phone/xperia-5-v": {
+    "category": "phones",
+    "series": "sony-xperia-5-phone",
+    "model": "xperia-5-v",
+    "prices": {
+      "128": {
+        "sealed": 207
+      },
+      "256": {
+        "sealed": 225
+      }
+    },
+    "scraped_at": "2026-05-12 04:26"
+  },
+  "galaxy-xcover-rugged-series/galaxy-xcover6-pro": {
+    "category": "phones",
+    "series": "galaxy-xcover-rugged-series",
+    "model": "galaxy-xcover6-pro",
+    "prices": {
+      "base": {
+        "sealed": 76
+      }
+    },
+    "scraped_at": "2026-05-12 04:26"
+  },
+  "motorola-razr-phone/razr-2025": {
+    "category": "phones",
+    "series": "motorola-razr-phone",
+    "model": "razr-2025",
+    "prices": {
+      "base": {
+        "sealed": 212
+      }
+    },
+    "scraped_at": "2026-05-12 04:26"
+  },
+  "motorola-razr-phone/razr-ultra-2025": {
+    "category": "phones",
+    "series": "motorola-razr-phone",
+    "model": "razr-ultra-2025",
+    "prices": {
+      "512": {
+        "sealed": 360
+      },
+      "1tb": {
+        "sealed": 405
+      }
+    },
+    "scraped_at": "2026-05-12 04:27"
+  },
+  "galaxy-s-series/galaxy-s25-edge": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s25-edge",
+    "prices": {
+      "256": {
+        "sealed": 351
+      },
+      "512": {
+        "sealed": 382
+      }
+    },
+    "scraped_at": "2026-05-12 04:27"
+  },
+  "nothing-phone/nothing-phone-2a": {
+    "category": "phones",
+    "series": "nothing-phone",
+    "model": "nothing-phone-2a",
+    "prices": {
+      "128": {
+        "sealed": 135
+      },
+      "256": {
+        "sealed": 153
+      }
+    },
+    "scraped_at": "2026-05-12 04:28"
+  },
+  "nothing-phone/nothing-phone-2a-plus": {
+    "category": "phones",
+    "series": "nothing-phone",
+    "model": "nothing-phone-2a-plus",
+    "prices": {
+      "base": {
+        "sealed": 189
+      }
+    },
+    "scraped_at": "2026-05-12 04:28"
+  },
+  "motorola-razr-phone/razr-plus-2025": {
+    "category": "phones",
+    "series": "motorola-razr-phone",
+    "model": "razr-plus-2025",
+    "prices": {
+      "base": {
+        "sealed": 306
+      }
+    },
+    "scraped_at": "2026-05-12 04:28"
+  },
+  "motorola-edge-phone/edge-2025": {
+    "category": "phones",
+    "series": "motorola-edge-phone",
+    "model": "edge-2025",
+    "prices": {
+      "base": {
+        "sealed": 135
+      }
+    },
+    "scraped_at": "2026-05-12 04:28"
+  },
+  "galaxy-z-fold-series/galaxy-z-fold-7": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-fold-7",
+    "prices": {
+      "256": {
+        "sealed": 711
+      },
+      "512": {
+        "sealed": 738
+      },
+      "1tb": {
+        "sealed": 765
+      }
+    },
+    "scraped_at": "2026-05-12 04:29"
+  },
+  "galaxy-z-fold-series/galaxy-z-flip-7": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-flip-7",
+    "prices": {
+      "256": {
+        "sealed": 423
+      },
+      "512": {
+        "sealed": 468
+      }
+    },
+    "scraped_at": "2026-05-12 04:30"
+  },
+  "galaxy-z-fold-series/galaxy-z-flip-7-fe": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-flip-7-fe",
+    "prices": {
+      "128": {
+        "sealed": 328
+      },
+      "256": {
+        "sealed": 351
+      }
+    },
+    "scraped_at": "2026-05-12 04:30"
+  },
+  "nothing-phone/nothing-phone-3": {
+    "category": "phones",
+    "series": "nothing-phone",
+    "model": "nothing-phone-3",
+    "prices": {
+      "256": {
+        "sealed": 387
+      },
+      "512": {
+        "sealed": 410
+      }
+    },
+    "scraped_at": "2026-05-12 04:31"
+  },
+  "google-phone/google-pixel-10": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-10",
+    "prices": {
+      "128": {
+        "sealed": 266
+      },
+      "256": {
+        "sealed": 288
+      }
+    },
+    "scraped_at": "2026-05-12 04:31"
+  },
+  "google-phone/google-pixel-10-pro": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-10-pro",
+    "prices": {
+      "128": {
+        "sealed": 320
+      },
+      "256": {
+        "sealed": 356
+      },
+      "512": {
+        "sealed": 387
+      },
+      "1tb": {
+        "sealed": 400
+      }
+    },
+    "scraped_at": "2026-05-12 04:32"
+  },
+  "google-phone/google-pixel-10-pro-xl": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-10-pro-xl",
+    "prices": {
+      "256": {
+        "sealed": 364
+      },
+      "512": {
+        "sealed": 396
+      },
+      "1tb": {
+        "sealed": 410
+      }
+    },
+    "scraped_at": "2026-05-12 04:33"
+  },
+  "google-phone/google-pixel-10-pro-fold": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-10-pro-fold",
+    "prices": {
+      "256": {
+        "sealed": 630
+      },
+      "512": {
+        "sealed": 720
+      },
+      "1tb": {
+        "sealed": 810
+      }
+    },
+    "scraped_at": "2026-05-12 04:33"
+  },
+  "iphone/iphone-17": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-17",
+    "prices": {
+      "256": {
+        "sealed": 589,
+        "mint": 546,
+        "verygood": 518,
+        "good": 518,
+        "fair": 418,
+        "broken": 273
+      },
+      "512": {
+        "sealed": 694,
+        "mint": 641,
+        "verygood": 613,
+        "good": 613,
+        "fair": 513,
+        "broken": 320
+      }
+    },
+    "scraped_at": "2026-05-12 04:35"
+  },
+  "iphone/iphone-air": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-air",
+    "prices": {
+      "256": {
+        "sealed": 660,
+        "mint": 575,
+        "verygood": 527,
+        "good": 527,
+        "fair": 446,
+        "broken": 288
+      },
+      "512": {
+        "sealed": 765,
+        "mint": 632,
+        "verygood": 584,
+        "good": 584,
+        "fair": 504,
+        "broken": 316
+      },
+      "1tb": {
+        "sealed": 831,
+        "mint": 703,
+        "verygood": 656,
+        "good": 656,
+        "fair": 575,
+        "broken": 352
+      }
+    },
+    "scraped_at": "2026-05-12 04:38"
+  },
+  "iphone/iphone-17-pro": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-17-pro",
+    "prices": {
+      "256": {
+        "sealed": 803,
+        "mint": 755,
+        "verygood": 708,
+        "good": 708,
+        "fair": 546,
+        "broken": 378
+      },
+      "512": {
+        "sealed": 945,
+        "mint": 850,
+        "verygood": 803,
+        "good": 803,
+        "fair": 641,
+        "broken": 425
+      },
+      "1tb": {
+        "sealed": 993,
+        "mint": 898,
+        "verygood": 850,
+        "good": 850,
+        "fair": 689,
+        "broken": 449
+      }
+    },
+    "scraped_at": "2026-05-12 04:40"
+  },
+  "iphone/iphone-17-pro-max": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-17-pro-max",
+    "prices": {
+      "256": {
+        "sealed": 888,
+        "mint": 860,
+        "verygood": 831,
+        "good": 831,
+        "fair": 717,
+        "broken": 430
+      },
+      "512": {
+        "sealed": 983,
+        "mint": 955,
+        "verygood": 926,
+        "good": 926,
+        "fair": 812,
+        "broken": 478
+      },
+      "1tb": {
+        "sealed": 1078,
+        "mint": 1016,
+        "verygood": 988,
+        "good": 988,
+        "fair": 874,
+        "broken": 508
+      },
+      "2tb": {
+        "sealed": 1268,
+        "mint": 1050,
+        "verygood": 1021,
+        "good": 1021,
+        "fair": 907,
+        "broken": 525
+      }
+    },
+    "scraped_at": "2026-05-12 04:44"
+  },
+  "galaxy-s-series/galaxy-s25-fe": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s25-fe",
+    "prices": {
+      "128": {
+        "sealed": 274
+      },
+      "256": {
+        "sealed": 292
+      }
+    },
+    "scraped_at": "2026-05-12 04:44"
+  },
+  "galaxy-xcover-rugged-series/galaxy-xcover7-pro": {
+    "category": "phones",
+    "series": "galaxy-xcover-rugged-series",
+    "model": "galaxy-xcover7-pro",
+    "prices": {
+      "base": {
+        "sealed": 198
+      }
+    },
+    "scraped_at": "2026-05-12 04:45"
+  },
+  "oneplus-phone/oneplus-15": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-15",
+    "prices": {
+      "256": {
+        "sealed": 477
+      },
+      "512": {
+        "sealed": 522
+      }
+    },
+    "scraped_at": "2026-05-12 04:45"
+  },
+  "oneplus-phone/oneplus-15r": {
+    "category": "phones",
+    "series": "oneplus-phone",
+    "model": "oneplus-15r",
+    "prices": {
+      "256": {
+        "sealed": 342
+      },
+      "512": {
+        "sealed": 387
+      }
+    },
+    "scraped_at": "2026-05-12 04:46"
+  },
+  "xiaomi-phone/xiaomi-15": {
+    "category": "phones",
+    "series": "xiaomi-phone",
+    "model": "xiaomi-15",
+    "prices": {
+      "256": {
+        "sealed": 270
+      },
+      "512": {
+        "sealed": 297
+      }
+    },
+    "scraped_at": "2026-05-12 04:46"
+  },
+  "asus-rog-phone-series/rog-phone-7-ultimate": {
+    "category": "phones",
+    "series": "asus-rog-phone-series",
+    "model": "rog-phone-7-ultimate",
+    "prices": {
+      "512": {
+        "sealed": 333
+      }
+    },
+    "scraped_at": "2026-05-12 04:47"
+  },
+  "galaxy-s-series/galaxy-s26": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s26",
+    "prices": {
+      "256": {
+        "sealed": 450
+      },
+      "512": {
+        "sealed": 477
+      }
+    },
+    "scraped_at": "2026-05-12 04:47"
+  },
+  "galaxy-s-series/galaxy-s26-plus": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s26-plus",
+    "prices": {
+      "256": {
+        "sealed": 495
+      },
+      "512": {
+        "sealed": 540
+      }
+    },
+    "scraped_at": "2026-05-12 04:48"
+  },
+  "galaxy-s-series/galaxy-s26-ultra": {
+    "category": "phones",
+    "series": "galaxy-s-series",
+    "model": "galaxy-s26-ultra",
+    "prices": {
+      "256": {
+        "sealed": 630
+      },
+      "512": {
+        "sealed": 675
+      },
+      "1tb": {
+        "sealed": 720
+      }
+    },
+    "scraped_at": "2026-05-12 04:48"
+  },
+  "iphone/iphone-17e": {
+    "category": "phones",
+    "series": "iphone",
+    "model": "iphone-17e",
+    "prices": {
+      "256": {
+        "sealed": 394,
+        "mint": 342,
+        "verygood": 318,
+        "good": 318,
+        "fair": 238,
+        "broken": 171
+      },
+      "512": {
+        "sealed": 446,
+        "mint": 390,
+        "verygood": 366,
+        "good": 366,
+        "fair": 285,
+        "broken": 195
+      }
+    },
+    "scraped_at": "2026-05-12 04:50"
+  },
+  "google-phone/google-pixel-10a": {
+    "category": "phones",
+    "series": "google-phone",
+    "model": "google-pixel-10a",
+    "prices": {
+      "128": {
+        "sealed": 238
+      },
+      "256": {
+        "sealed": 261
+      }
+    },
+    "scraped_at": "2026-05-12 04:51"
+  },
+  "galaxy-z-fold-series/galaxy-z-trifold": {
+    "category": "phones",
+    "series": "galaxy-z-fold-series",
+    "model": "galaxy-z-trifold",
+    "prices": {
+      "512": {
+        "sealed": 2070
+      },
+      "1tb": {
+        "sealed": 2138
+      }
+    },
+    "scraped_at": "2026-05-12 04:51"
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "ip17pm": {
+    "name": "iPhone 17 Pro Max",
+    "low": 947,
+    "mid": 1081,
+    "high": 1498
+  },
+  "ip17p": {
+    "name": "iPhone 17 Pro",
+    "low": 898,
+    "mid": 949,
+    "high": 1298
+  },
+  "ip17": {
+    "name": "iPhone 17",
+    "low": 618,
+    "mid": 695,
+    "high": 793
+  },
+  "ip16pm": {
+    "name": "iPhone 16 Pro Max",
+    "low": 633,
+    "mid": 721,
+    "high": 906
+  },
+  "ip16p": {
+    "name": "iPhone 16 Pro",
+    "low": 463,
+    "mid": 638,
+    "high": 642
+  },
+  "ip16plus": {
+    "name": "iPhone 16 Plus",
+    "low": 381,
+    "mid": 428,
+    "high": 505
+  },
+  "ip16": {
+    "name": "iPhone 16",
+    "low": 350,
+    "mid": 520,
+    "high": 698
+  },
+  "ip15pm": {
+    "name": "iPhone 15 Pro Max",
+    "low": 493,
+    "mid": 525,
+    "high": 576
+  },
+  "ip15p": {
+    "name": "iPhone 15 Pro",
+    "low": 427,
+    "mid": 528,
+    "high": 726
+  },
+  "ip15": {
+    "name": "iPhone 15",
+    "low": 319,
+    "mid": 349,
+    "high": 509
+  },
+  "ip14pm": {
+    "name": "iPhone 14 Pro Max",
+    "low": 339,
+    "mid": 417,
+    "high": 551
+  },
+  "ip14p": {
+    "name": "iPhone 14 Pro",
+    "low": 290,
+    "mid": 358,
+    "high": 515
+  },
+  "ip14": {
+    "name": "iPhone 14",
+    "low": 236,
+    "mid": 268,
+    "high": 339
+  },
+  "ip13pm": {
+    "name": "iPhone 13 Pro Max",
+    "low": 282,
+    "mid": 338,
+    "high": 449
+  },
+  "ip13p": {
+    "name": "iPhone 13 Pro",
+    "low": 247,
+    "mid": 268,
+    "high": 360
+  },
+  "ip13": {
+    "name": "iPhone 13",
+    "low": 185,
+    "mid": 211,
+    "high": 237
+  },
+  "gs26u": {
+    "name": "Galaxy S26 Ultra",
+    "low": 896,
+    "mid": 927,
+    "high": 947
+  },
+  "gs25u": {
+    "name": "Galaxy S25 Ultra",
+    "low": 695,
+    "mid": 714,
+    "high": 799
+  },
+  "gs24u": {
+    "name": "Galaxy S24 Ultra",
+    "low": 520,
+    "mid": 544,
+    "high": 602
+  },
+  "gs26": {
+    "name": "Galaxy S26",
+    "low": 648,
+    "mid": 741,
+    "high": 772
+  },
+  "gs25": {
+    "name": "Galaxy S25",
+    "low": 299,
+    "mid": 372,
+    "high": 548
+  },
+  "px10pxl": {
+    "name": "Pixel 10 Pro XL",
+    "low": 609,
+    "mid": 657,
+    "high": 839
+  },
+  "px10p": {
+    "name": "Pixel 10 Pro",
+    "low": 463,
+    "mid": 567,
+    "high": 814
+  },
+  "px9pxl": {
+    "name": "Pixel 9 Pro XL",
+    "low": 369,
+    "mid": 392,
+    "high": 515
+  },
+  "px9p": {
+    "name": "Pixel 9 Pro",
+    "low": 368,
+    "mid": 375,
+    "high": 381
+  }
+}

@@ -1,0 +1,4035 @@
+{
+  "ip11": {
+    "label": "iPhone 11",
+    "prices": {
+      "128": {
+        "broken": 20,
+        "fair": 76,
+        "good": 95,
+        "mint": 109,
+        "sealed": 138
+      },
+      "256": {
+        "broken": 21,
+        "fair": 90,
+        "good": 109,
+        "mint": 124,
+        "sealed": 152
+      },
+      "64": {
+        "broken": 19,
+        "fair": 43,
+        "good": 62,
+        "mint": 76,
+        "sealed": 124
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip11p": {
+    "label": "iPhone 11 Pro",
+    "prices": {
+      "256": {
+        "broken": 26,
+        "fair": 90,
+        "good": 119,
+        "mint": 133,
+        "sealed": 152
+      },
+      "512": {
+        "broken": 28,
+        "fair": 114,
+        "good": 142,
+        "mint": 157,
+        "sealed": 171
+      },
+      "64": {
+        "broken": 24,
+        "fair": 62,
+        "good": 90,
+        "mint": 104,
+        "sealed": 124
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip11pm": {
+    "label": "iPhone 11 Pro Max",
+    "prices": {
+      "256": {
+        "fair": 133,
+        "good": 162,
+        "mint": 180,
+        "sealed": 204
+      },
+      "512": {
+        "fair": 152,
+        "good": 180,
+        "mint": 200,
+        "sealed": 209
+      },
+      "64": {
+        "fair": 128,
+        "good": 157,
+        "mint": 176,
+        "sealed": 195
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip12": {
+    "label": "iPhone 12",
+    "prices": {
+      "128": {
+        "fair": 90,
+        "good": 119,
+        "mint": 138,
+        "sealed": 142
+      },
+      "256": {
+        "fair": 104,
+        "good": 133,
+        "mint": 152,
+        "sealed": 147
+      },
+      "64": {
+        "fair": 62,
+        "good": 90,
+        "mint": 109,
+        "sealed": 133
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip12mini": {
+    "label": "iPhone 12 Mini",
+    "prices": {
+      "128": {
+        "fair": 48,
+        "good": 71,
+        "mint": 86,
+        "sealed": 109
+      },
+      "256": {
+        "fair": 52,
+        "good": 76,
+        "mint": 90,
+        "sealed": 114
+      },
+      "64": {
+        "fair": 19,
+        "good": 43,
+        "mint": 57,
+        "sealed": 104
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip12p": {
+    "label": "iPhone 12 Pro",
+    "prices": {
+      "128": {
+        "fair": 95,
+        "good": 142,
+        "mint": 162,
+        "sealed": 195
+      },
+      "256": {
+        "fair": 133,
+        "good": 180,
+        "mint": 200,
+        "sealed": 209
+      },
+      "512": {
+        "fair": 133,
+        "good": 180,
+        "mint": 200,
+        "sealed": 218
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip12pm": {
+    "label": "iPhone 12 Pro Max",
+    "prices": {
+      "128": {
+        "fair": 138,
+        "good": 195,
+        "mint": 209,
+        "sealed": 238
+      },
+      "256": {
+        "fair": 157,
+        "good": 214,
+        "mint": 228,
+        "sealed": 276
+      },
+      "512": {
+        "fair": 171,
+        "good": 228,
+        "mint": 242,
+        "sealed": 304
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip13": {
+    "label": "iPhone 13",
+    "prices": {
+      "128": {
+        "broken": 48,
+        "fair": 104,
+        "good": 142,
+        "mint": 162,
+        "sealed": 190,
+        "verygood": 152
+      },
+      "256": {
+        "broken": 52,
+        "fair": 138,
+        "good": 176,
+        "mint": 195,
+        "sealed": 218,
+        "verygood": 185
+      },
+      "512": {
+        "broken": 57,
+        "fair": 147,
+        "good": 185,
+        "mint": 204,
+        "sealed": 238,
+        "verygood": 195
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip13mini": {
+    "label": "ip13mini",
+    "prices": {
+      "128": {
+        "fair": 76,
+        "good": 124,
+        "mint": 152,
+        "sealed": 180,
+        "verygood": 133
+      },
+      "256": {
+        "fair": 104,
+        "good": 152,
+        "mint": 180,
+        "sealed": 190,
+        "verygood": 162
+      },
+      "512": {
+        "fair": 124,
+        "good": 171,
+        "mint": 200,
+        "sealed": 195,
+        "verygood": 180
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip13p": {
+    "label": "iPhone 13 Pro",
+    "prices": {
+      "128": {
+        "broken": 62,
+        "fair": 147,
+        "good": 204,
+        "mint": 233,
+        "sealed": 261,
+        "verygood": 218
+      },
+      "1tb": {
+        "broken": 71,
+        "fair": 214,
+        "good": 271,
+        "mint": 299,
+        "sealed": 451,
+        "verygood": 285
+      },
+      "256": {
+        "broken": 66,
+        "fair": 180,
+        "good": 238,
+        "mint": 266,
+        "sealed": 332,
+        "verygood": 252
+      },
+      "512": {
+        "broken": 68,
+        "fair": 204,
+        "good": 261,
+        "mint": 290,
+        "sealed": 404,
+        "verygood": 276
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip13pm": {
+    "label": "iPhone 13 Pro Max",
+    "prices": {
+      "128": {
+        "broken": 81,
+        "fair": 195,
+        "good": 252,
+        "mint": 280,
+        "sealed": 337,
+        "verygood": 266
+      },
+      "1tb": {
+        "broken": 95,
+        "fair": 261,
+        "good": 318,
+        "mint": 347,
+        "sealed": 408,
+        "verygood": 332
+      },
+      "256": {
+        "broken": 86,
+        "fair": 238,
+        "good": 294,
+        "mint": 323,
+        "sealed": 361,
+        "verygood": 309
+      },
+      "512": {
+        "broken": 90,
+        "fair": 247,
+        "good": 304,
+        "mint": 332,
+        "sealed": 385,
+        "verygood": 318
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip14": {
+    "label": "iPhone 14",
+    "prices": {
+      "128": {
+        "broken": 57,
+        "fair": 109,
+        "good": 152,
+        "mint": 176,
+        "sealed": 223,
+        "verygood": 166
+      },
+      "256": {
+        "broken": 62,
+        "fair": 142,
+        "good": 185,
+        "mint": 209,
+        "sealed": 247,
+        "verygood": 200
+      },
+      "512": {
+        "broken": 64,
+        "fair": 214,
+        "good": 256,
+        "mint": 280,
+        "sealed": 271,
+        "verygood": 271
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip14p": {
+    "label": "iPhone 14 Pro",
+    "prices": {
+      "128": {
+        "broken": 119,
+        "fair": 180,
+        "good": 238,
+        "mint": 285,
+        "sealed": 314,
+        "verygood": 256
+      },
+      "1tb": {
+        "broken": 138,
+        "fair": 256,
+        "good": 314,
+        "mint": 361,
+        "sealed": 370,
+        "verygood": 332
+      },
+      "256": {
+        "broken": 128,
+        "fair": 209,
+        "good": 266,
+        "mint": 314,
+        "sealed": 337,
+        "verygood": 285
+      },
+      "512": {
+        "broken": 133,
+        "fair": 238,
+        "good": 294,
+        "mint": 342,
+        "sealed": 352,
+        "verygood": 314
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip14plus": {
+    "label": "iPhone 14 Plus",
+    "prices": {
+      "128": {
+        "broken": 90,
+        "fair": 142,
+        "good": 180,
+        "mint": 209,
+        "sealed": 247,
+        "verygood": 195
+      },
+      "256": {
+        "broken": 95,
+        "fair": 180,
+        "good": 218,
+        "mint": 247,
+        "sealed": 294,
+        "verygood": 233
+      },
+      "512": {
+        "broken": 100,
+        "fair": 200,
+        "good": 238,
+        "mint": 266,
+        "sealed": 318,
+        "verygood": 252
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip14pm": {
+    "label": "iPhone 14 Pro Max",
+    "prices": {
+      "128": {
+        "broken": 152,
+        "fair": 256,
+        "good": 314,
+        "mint": 361,
+        "sealed": 390,
+        "verygood": 323
+      },
+      "1tb": {
+        "broken": 209,
+        "fair": 332,
+        "good": 390,
+        "mint": 437,
+        "sealed": 446,
+        "verygood": 399
+      },
+      "256": {
+        "broken": 171,
+        "fair": 276,
+        "good": 332,
+        "mint": 380,
+        "sealed": 418,
+        "verygood": 342
+      },
+      "512": {
+        "broken": 190,
+        "fair": 304,
+        "good": 361,
+        "mint": 408,
+        "sealed": 428,
+        "verygood": 370
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip15": {
+    "label": "iPhone 15",
+    "prices": {
+      "128": {
+        "broken": 95,
+        "fair": 204,
+        "good": 242,
+        "mint": 280,
+        "sealed": 328,
+        "verygood": 266
+      },
+      "256": {
+        "broken": 104,
+        "fair": 242,
+        "good": 280,
+        "mint": 318,
+        "sealed": 375,
+        "verygood": 304
+      },
+      "512": {
+        "broken": 109,
+        "fair": 271,
+        "good": 309,
+        "mint": 347,
+        "sealed": 423,
+        "verygood": 332
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip15p": {
+    "label": "iPhone 15 Pro",
+    "prices": {
+      "128": {
+        "broken": 180,
+        "fair": 261,
+        "good": 309,
+        "mint": 356,
+        "sealed": 394,
+        "verygood": 328
+      },
+      "1tb": {
+        "broken": 228,
+        "fair": 375,
+        "good": 423,
+        "mint": 470,
+        "sealed": 513,
+        "verygood": 442
+      },
+      "256": {
+        "broken": 200,
+        "fair": 309,
+        "good": 356,
+        "mint": 404,
+        "sealed": 442,
+        "verygood": 375
+      },
+      "512": {
+        "broken": 209,
+        "fair": 337,
+        "good": 385,
+        "mint": 432,
+        "sealed": 466,
+        "verygood": 404
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip15plus": {
+    "label": "iPhone 15 Plus",
+    "prices": {
+      "128": {
+        "broken": 138,
+        "fair": 228,
+        "good": 266,
+        "mint": 314,
+        "sealed": 361,
+        "verygood": 285
+      },
+      "256": {
+        "broken": 147,
+        "fair": 252,
+        "good": 290,
+        "mint": 337,
+        "sealed": 408,
+        "verygood": 309
+      },
+      "512": {
+        "broken": 157,
+        "fair": 304,
+        "good": 342,
+        "mint": 390,
+        "sealed": 432,
+        "verygood": 361
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip15pm": {
+    "label": "iPhone 15 Pro Max",
+    "prices": {
+      "1tb": {
+        "broken": 190,
+        "fair": 437,
+        "good": 480,
+        "mint": 522,
+        "sealed": 556,
+        "verygood": 504
+      },
+      "256": {
+        "broken": 171,
+        "fair": 361,
+        "good": 404,
+        "mint": 446,
+        "sealed": 508,
+        "verygood": 428
+      },
+      "512": {
+        "broken": 180,
+        "fair": 394,
+        "good": 437,
+        "mint": 480,
+        "sealed": 532,
+        "verygood": 461
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip16": {
+    "label": "iPhone 16",
+    "prices": {
+      "128": {
+        "broken": 171,
+        "fair": 309,
+        "good": 366,
+        "mint": 413,
+        "sealed": 451,
+        "verygood": 380
+      },
+      "256": {
+        "broken": 209,
+        "fair": 347,
+        "good": 404,
+        "mint": 451,
+        "sealed": 504,
+        "verygood": 418
+      },
+      "512": {
+        "broken": 247,
+        "fair": 375,
+        "good": 432,
+        "mint": 480,
+        "sealed": 556,
+        "verygood": 446
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip16e": {
+    "label": "iPhone 16E",
+    "prices": {
+      "128": {
+        "broken": 66,
+        "fair": 152,
+        "good": 214,
+        "mint": 247,
+        "sealed": 285,
+        "verygood": 228
+      },
+      "256": {
+        "broken": 86,
+        "fair": 218,
+        "good": 280,
+        "mint": 314,
+        "sealed": 337,
+        "verygood": 294
+      },
+      "512": {
+        "broken": 104,
+        "fair": 266,
+        "good": 328,
+        "mint": 361,
+        "sealed": 390,
+        "verygood": 342
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip16p": {
+    "label": "iPhone 16 Pro",
+    "prices": {
+      "128": {
+        "broken": 261,
+        "fair": 356,
+        "good": 437,
+        "mint": 484,
+        "sealed": 504,
+        "verygood": 461
+      },
+      "1tb": {
+        "broken": 332,
+        "fair": 499,
+        "good": 580,
+        "mint": 627,
+        "sealed": 646,
+        "verygood": 603
+      },
+      "256": {
+        "broken": 271,
+        "fair": 404,
+        "good": 484,
+        "mint": 532,
+        "sealed": 551,
+        "verygood": 508
+      },
+      "512": {
+        "broken": 309,
+        "fair": 442,
+        "good": 522,
+        "mint": 570,
+        "sealed": 598,
+        "verygood": 546
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip16plus": {
+    "label": "iPhone 16 Plus",
+    "prices": {
+      "128": {
+        "broken": 204,
+        "fair": 356,
+        "good": 404,
+        "mint": 432,
+        "sealed": 470,
+        "verygood": 418
+      },
+      "256": {
+        "broken": 242,
+        "fair": 394,
+        "good": 442,
+        "mint": 470,
+        "sealed": 518,
+        "verygood": 456
+      },
+      "512": {
+        "broken": 280,
+        "fair": 428,
+        "good": 475,
+        "mint": 504,
+        "sealed": 565,
+        "verygood": 489
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip16pm": {
+    "label": "iPhone 16 Pro Max",
+    "prices": {
+      "1tb": {
+        "broken": 332,
+        "fair": 651,
+        "good": 712,
+        "mint": 741,
+        "sealed": 874,
+        "verygood": 722
+      },
+      "256": {
+        "broken": 266,
+        "fair": 518,
+        "good": 580,
+        "mint": 608,
+        "sealed": 684,
+        "verygood": 589
+      },
+      "512": {
+        "broken": 294,
+        "fair": 570,
+        "good": 632,
+        "mint": 660,
+        "sealed": 779,
+        "verygood": 641
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip17": {
+    "label": "iPhone 17",
+    "prices": {
+      "256": {
+        "broken": 247,
+        "fair": 418,
+        "good": 494,
+        "mint": 546,
+        "sealed": 589,
+        "verygood": 518
+      },
+      "512": {
+        "broken": 323,
+        "fair": 513,
+        "good": 589,
+        "mint": 641,
+        "sealed": 694,
+        "verygood": 613
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip17air": {
+    "label": "iPhone 17 Air",
+    "prices": {
+      "1tb": {
+        "broken": 332,
+        "fair": 575,
+        "good": 636,
+        "mint": 703,
+        "sealed": 793,
+        "verygood": 656
+      },
+      "256": {
+        "broken": 218,
+        "fair": 446,
+        "good": 508,
+        "mint": 575,
+        "sealed": 622,
+        "verygood": 527
+      },
+      "512": {
+        "broken": 294,
+        "fair": 504,
+        "good": 565,
+        "mint": 632,
+        "sealed": 727,
+        "verygood": 584
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip17e": {
+    "label": "iPhone 17E",
+    "prices": {
+      "256": {
+        "broken": 95,
+        "fair": 238,
+        "good": 299,
+        "mint": 342,
+        "sealed": 356,
+        "verygood": 318
+      },
+      "512": {
+        "broken": 114,
+        "fair": 285,
+        "good": 347,
+        "mint": 390,
+        "sealed": 408,
+        "verygood": 366
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip17p": {
+    "label": "iPhone 17 Pro",
+    "prices": {
+      "1tb": {
+        "broken": 437,
+        "fair": 689,
+        "good": 822,
+        "mint": 898,
+        "sealed": 993,
+        "verygood": 850
+      },
+      "256": {
+        "broken": 285,
+        "fair": 546,
+        "good": 679,
+        "mint": 755,
+        "sealed": 803,
+        "verygood": 708
+      },
+      "512": {
+        "broken": 399,
+        "fair": 641,
+        "good": 774,
+        "mint": 850,
+        "sealed": 945,
+        "verygood": 803
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ip17pm": {
+    "label": "iPhone 17 Pro Max",
+    "prices": {
+      "1tb": {
+        "broken": 399,
+        "fair": 874,
+        "good": 969,
+        "mint": 1016,
+        "sealed": 1078,
+        "verygood": 988
+      },
+      "256": {
+        "broken": 332,
+        "fair": 717,
+        "good": 812,
+        "mint": 860,
+        "sealed": 888,
+        "verygood": 831
+      },
+      "2tb": {
+        "broken": 475,
+        "fair": 907,
+        "good": 1002,
+        "mint": 1050,
+        "sealed": 1268,
+        "verygood": 1021
+      },
+      "512": {
+        "broken": 361,
+        "fair": 812,
+        "good": 907,
+        "mint": 955,
+        "sealed": 983,
+        "verygood": 926
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs24": {
+    "label": "Galaxy S24",
+    "prices": {
+      "128": {
+        "broken": 50,
+        "fair": 117,
+        "good": 162,
+        "mint": 189,
+        "sealed": 216,
+        "verygood": 171
+      },
+      "256": {
+        "broken": 54,
+        "fair": 144,
+        "good": 189,
+        "mint": 216,
+        "sealed": 248,
+        "verygood": 198
+      },
+      "512": {
+        "fair": 117,
+        "good": 162,
+        "mint": 189,
+        "sealed": 216,
+        "verygood": 171
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs24u": {
+    "label": "Galaxy S24 Ultra",
+    "prices": {
+      "1tb": {
+        "broken": 153,
+        "fair": 342,
+        "good": 423,
+        "mint": 468,
+        "sealed": 590,
+        "verygood": 441
+      },
+      "256": {
+        "broken": 135,
+        "fair": 270,
+        "good": 351,
+        "mint": 396,
+        "sealed": 432,
+        "verygood": 369
+      },
+      "512": {
+        "broken": 144,
+        "fair": 288,
+        "good": 369,
+        "mint": 414,
+        "sealed": 500,
+        "verygood": 387
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs25": {
+    "label": "Galaxy S25",
+    "prices": {
+      "128": {
+        "broken": 54,
+        "fair": 189,
+        "good": 238,
+        "mint": 261,
+        "sealed": 297,
+        "verygood": 248
+      },
+      "256": {
+        "broken": 58,
+        "fair": 225,
+        "good": 274,
+        "mint": 297,
+        "sealed": 328,
+        "verygood": 284
+      },
+      "512": {
+        "broken": 54,
+        "fair": 189,
+        "good": 238,
+        "mint": 261,
+        "sealed": 297,
+        "verygood": 248
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs25p": {
+    "label": "Galaxy S25+",
+    "prices": {
+      "256": {
+        "broken": 72,
+        "fair": 261,
+        "good": 306,
+        "mint": 360,
+        "sealed": 396,
+        "verygood": 324
+      },
+      "512": {
+        "broken": 81,
+        "fair": 315,
+        "good": 360,
+        "mint": 414,
+        "sealed": 441,
+        "verygood": 378
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs25u": {
+    "label": "Galaxy S25 Ultra",
+    "prices": {
+      "1tb": {
+        "broken": 153,
+        "fair": 486,
+        "good": 540,
+        "mint": 580,
+        "sealed": 603,
+        "verygood": 554
+      },
+      "256": {
+        "broken": 135,
+        "fair": 418,
+        "good": 472,
+        "mint": 513,
+        "sealed": 558,
+        "verygood": 486
+      },
+      "512": {
+        "broken": 144,
+        "fair": 441,
+        "good": 495,
+        "mint": 536,
+        "sealed": 580,
+        "verygood": 508
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs26": {
+    "label": "Galaxy S26",
+    "prices": {
+      "256": {
+        "broken": 90,
+        "fair": 284,
+        "good": 356,
+        "mint": 405,
+        "sealed": 450,
+        "verygood": 378
+      },
+      "512": {
+        "broken": 99,
+        "fair": 306,
+        "good": 378,
+        "mint": 428,
+        "sealed": 477,
+        "verygood": 400
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs26p": {
+    "label": "Galaxy S26+",
+    "prices": {
+      "256": {
+        "broken": 108,
+        "fair": 306,
+        "good": 387,
+        "mint": 450,
+        "sealed": 495,
+        "verygood": 414
+      },
+      "512": {
+        "broken": 117,
+        "fair": 342,
+        "good": 423,
+        "mint": 486,
+        "sealed": 540,
+        "verygood": 450
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs26u": {
+    "label": "Galaxy S26 Ultra",
+    "prices": {
+      "1tb": {
+        "broken": 144,
+        "fair": 468,
+        "good": 576,
+        "mint": 657,
+        "sealed": 720,
+        "verygood": 612
+      },
+      "256": {
+        "broken": 126,
+        "fair": 396,
+        "good": 504,
+        "mint": 585,
+        "sealed": 630,
+        "verygood": 540
+      },
+      "512": {
+        "broken": 135,
+        "fair": 432,
+        "good": 540,
+        "mint": 621,
+        "sealed": 675,
+        "verygood": 576
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gzflip5": {
+    "label": "Galaxy Z Flip 5",
+    "prices": {
+      "256": {
+        "broken": 68,
+        "fair": 104,
+        "good": 148,
+        "mint": 176,
+        "sealed": 202,
+        "verygood": 158
+      },
+      "512": {
+        "broken": 72,
+        "fair": 117,
+        "good": 162,
+        "mint": 189,
+        "sealed": 248,
+        "verygood": 171
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gzflip6": {
+    "label": "Galaxy Z Flip 6",
+    "prices": {
+      "256": {
+        "fair": 158,
+        "good": 198,
+        "mint": 234,
+        "sealed": 261,
+        "verygood": 216
+      },
+      "512": {
+        "fair": 176,
+        "good": 216,
+        "mint": 252,
+        "sealed": 306,
+        "verygood": 234
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gzflip7": {
+    "label": "Galaxy Z Flip 7",
+    "prices": {
+      "256": {
+        "broken": 45,
+        "fair": 292,
+        "good": 351,
+        "mint": 387,
+        "sealed": 423,
+        "verygood": 369
+      },
+      "512": {
+        "broken": 58,
+        "fair": 306,
+        "good": 364,
+        "mint": 400,
+        "sealed": 468,
+        "verygood": 382
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gzfold5": {
+    "label": "Galaxy Z Fold 5",
+    "prices": {
+      "1tb": {
+        "broken": 50,
+        "fair": 248,
+        "good": 292,
+        "mint": 320,
+        "sealed": 364,
+        "verygood": 302
+      },
+      "256": {
+        "broken": 45,
+        "fair": 212,
+        "good": 256,
+        "mint": 284,
+        "sealed": 310,
+        "verygood": 266
+      },
+      "512": {
+        "broken": 48,
+        "fair": 230,
+        "good": 274,
+        "mint": 302,
+        "sealed": 338,
+        "verygood": 284
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gzfold6": {
+    "label": "Galaxy Z Fold 6",
+    "prices": {
+      "1tb": {
+        "broken": 99,
+        "fair": 369,
+        "good": 414,
+        "mint": 468,
+        "sealed": 504,
+        "verygood": 450
+      },
+      "256": {
+        "broken": 90,
+        "fair": 306,
+        "good": 351,
+        "mint": 405,
+        "sealed": 450,
+        "verygood": 387
+      },
+      "512": {
+        "broken": 94,
+        "fair": 342,
+        "good": 387,
+        "mint": 441,
+        "sealed": 477,
+        "verygood": 423
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gzfold7": {
+    "label": "Galaxy Z Fold 7",
+    "prices": {
+      "1tb": {
+        "broken": 144,
+        "fair": 603,
+        "good": 693,
+        "mint": 738,
+        "sealed": 765,
+        "verygood": 729
+      },
+      "256": {
+        "broken": 135,
+        "fair": 540,
+        "good": 630,
+        "mint": 675,
+        "sealed": 711,
+        "verygood": 666
+      },
+      "512": {
+        "broken": 140,
+        "fair": 576,
+        "good": 666,
+        "mint": 711,
+        "sealed": 738,
+        "verygood": 702
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gztrifold": {
+    "label": "Galaxy Z TriFold",
+    "prices": {
+      "1tb": {
+        "broken": 189,
+        "fair": 945,
+        "good": 1395,
+        "mint": 1845,
+        "sealed": 2138,
+        "verygood": 1620
+      },
+      "512": {
+        "broken": 180,
+        "fair": 900,
+        "good": 1350,
+        "mint": 1800,
+        "sealed": 2070,
+        "verygood": 1575
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px10pxl": {
+    "label": "Pixel 10 Pro XL",
+    "prices": {
+      "1tb": {
+        "broken": 126,
+        "fair": 378,
+        "good": 432,
+        "mint": 450,
+        "sealed": 477,
+        "verygood": 441
+      },
+      "256": {
+        "broken": 104,
+        "fair": 333,
+        "good": 387,
+        "mint": 405,
+        "sealed": 432,
+        "verygood": 396
+      },
+      "512": {
+        "broken": 112,
+        "fair": 364,
+        "good": 418,
+        "mint": 436,
+        "sealed": 464,
+        "verygood": 428
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px10p": {
+    "label": "Pixel 10 Pro",
+    "prices": {
+      "128": {
+        "broken": 68,
+        "fair": 252,
+        "good": 315,
+        "mint": 360,
+        "sealed": 387,
+        "verygood": 338
+      },
+      "1tb": {
+        "broken": 81,
+        "fair": 342,
+        "good": 405,
+        "mint": 450,
+        "sealed": 468,
+        "verygood": 428
+      },
+      "256": {
+        "broken": 72,
+        "fair": 310,
+        "good": 374,
+        "mint": 418,
+        "sealed": 423,
+        "verygood": 396
+      },
+      "512": {
+        "broken": 76,
+        "fair": 328,
+        "good": 392,
+        "mint": 436,
+        "sealed": 454,
+        "verygood": 414
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px10": {
+    "label": "Pixel 10",
+    "prices": {
+      "128": {
+        "broken": 68,
+        "fair": 216,
+        "good": 274,
+        "mint": 297,
+        "sealed": 333,
+        "verygood": 288
+      },
+      "256": {
+        "broken": 76,
+        "fair": 234,
+        "good": 292,
+        "mint": 315,
+        "sealed": 356,
+        "verygood": 306
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px9pxl": {
+    "label": "Pixel 9 Pro XL",
+    "prices": {
+      "128": {
+        "broken": 68,
+        "fair": 189,
+        "good": 243,
+        "mint": 288,
+        "sealed": 315,
+        "verygood": 261
+      },
+      "1tb": {
+        "broken": 74,
+        "fair": 243,
+        "good": 297,
+        "mint": 342,
+        "sealed": 396,
+        "verygood": 315
+      },
+      "256": {
+        "broken": 72,
+        "fair": 207,
+        "good": 261,
+        "mint": 306,
+        "sealed": 351,
+        "verygood": 279
+      },
+      "512": {
+        "broken": 72,
+        "fair": 225,
+        "good": 279,
+        "mint": 324,
+        "sealed": 382,
+        "verygood": 297
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px9p": {
+    "label": "Pixel 9 Pro",
+    "prices": {
+      "128": {
+        "broken": 45,
+        "fair": 126,
+        "good": 180,
+        "mint": 216,
+        "sealed": 243,
+        "verygood": 189
+      },
+      "1tb": {
+        "broken": 50,
+        "fair": 194,
+        "good": 248,
+        "mint": 284,
+        "sealed": 324,
+        "verygood": 256
+      },
+      "256": {
+        "broken": 47,
+        "fair": 153,
+        "good": 207,
+        "mint": 243,
+        "sealed": 279,
+        "verygood": 216
+      },
+      "512": {
+        "broken": 49,
+        "fair": 171,
+        "good": 225,
+        "mint": 261,
+        "sealed": 310,
+        "verygood": 234
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px9": {
+    "label": "Pixel 9",
+    "prices": {
+      "128": {
+        "broken": 40,
+        "fair": 112,
+        "good": 153,
+        "mint": 198,
+        "sealed": 225,
+        "verygood": 171
+      },
+      "256": {
+        "broken": 45,
+        "fair": 130,
+        "good": 171,
+        "mint": 216,
+        "sealed": 248,
+        "verygood": 189
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px8p": {
+    "label": "Pixel 8 Pro",
+    "prices": {
+      "128": {
+        "broken": 32,
+        "fair": 112,
+        "good": 144,
+        "mint": 184,
+        "sealed": 207,
+        "verygood": 162
+      },
+      "1tb": {
+        "broken": 36,
+        "fair": 148,
+        "good": 180,
+        "mint": 220,
+        "sealed": 274,
+        "verygood": 198
+      },
+      "256": {
+        "broken": 33,
+        "fair": 122,
+        "good": 153,
+        "mint": 194,
+        "sealed": 243,
+        "verygood": 171
+      },
+      "512": {
+        "broken": 34,
+        "fair": 140,
+        "good": 171,
+        "mint": 212,
+        "sealed": 261,
+        "verygood": 189
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ps5pro": {
+    "label": "PlayStation 5 Pro",
+    "prices": {
+      "base": {
+        "broken": 8,
+        "fair": 297,
+        "good": 378,
+        "mint": 450,
+        "sealed": 495,
+        "verygood": 414
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ps5slim": {
+    "label": "PlayStation 5 Slim",
+    "prices": {
+      "base": {
+        "broken": 8,
+        "fair": 99,
+        "good": 171,
+        "mint": 225,
+        "sealed": 252,
+        "verygood": 198
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ps5": {
+    "label": "PlayStation 5",
+    "prices": {
+      "base": {
+        "broken": 8,
+        "fair": 112,
+        "good": 180,
+        "mint": 238,
+        "sealed": 270,
+        "verygood": 212
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "nsw2": {
+    "label": "nsw2",
+    "prices": {
+      "base": {
+        "broken": 54,
+        "fair": 153,
+        "good": 225,
+        "mint": 248,
+        "sealed": 279
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "nswoled": {
+    "label": "nswoled",
+    "prices": {
+      "base": {
+        "broken": 21,
+        "fair": 36,
+        "good": 72,
+        "mint": 90,
+        "sealed": 112
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs23u": {
+    "label": "Galaxy S23 Ultra",
+    "prices": {
+      "1tb": {
+        "broken": 33,
+        "fair": 212,
+        "good": 261,
+        "mint": 292,
+        "sealed": 310,
+        "verygood": 279
+      },
+      "256": {
+        "broken": 32,
+        "fair": 158,
+        "good": 207,
+        "mint": 238,
+        "sealed": 266,
+        "verygood": 225
+      },
+      "512": {
+        "broken": 32,
+        "fair": 176,
+        "good": 225,
+        "mint": 256,
+        "sealed": 288,
+        "verygood": 243
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs22": {
+    "label": "Galaxy S22",
+    "prices": {
+      "128": {
+        "broken": 18,
+        "fair": 36,
+        "good": 58,
+        "mint": 72,
+        "sealed": 90
+      },
+      "256": {
+        "broken": 22,
+        "fair": 45,
+        "good": 68,
+        "mint": 81,
+        "sealed": 108
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gzflip4": {
+    "label": "Galaxy Z Flip 4",
+    "prices": {
+      "128": {
+        "broken": 14,
+        "fair": 9,
+        "good": 27,
+        "mint": 36,
+        "sealed": 50
+      },
+      "256": {
+        "broken": 14,
+        "fair": 14,
+        "good": 32,
+        "mint": 40,
+        "sealed": 54
+      },
+      "512": {
+        "broken": 15,
+        "fair": 14,
+        "good": 32,
+        "mint": 40,
+        "sealed": 58
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px8": {
+    "label": "Pixel 8",
+    "prices": {
+      "128": {
+        "broken": 22,
+        "fair": 68,
+        "good": 108,
+        "mint": 126,
+        "sealed": 166,
+        "verygood": 117
+      },
+      "256": {
+        "broken": 27,
+        "fair": 90,
+        "good": 130,
+        "mint": 148,
+        "sealed": 189,
+        "verygood": 140
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs24p": {
+    "label": "Galaxy S24+",
+    "prices": {
+      "256": {
+        "broken": 72,
+        "fair": 144,
+        "good": 198,
+        "mint": 230,
+        "sealed": 266,
+        "verygood": 212
+      },
+      "512": {
+        "broken": 81,
+        "fair": 180,
+        "good": 234,
+        "mint": 266,
+        "sealed": 310,
+        "verygood": 248
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs21": {
+    "label": "Galaxy S21",
+    "prices": {
+      "128": {
+        "broken": 9,
+        "fair": 18,
+        "good": 27,
+        "mint": 40,
+        "sealed": 68
+      },
+      "256": {
+        "broken": 9,
+        "fair": 27,
+        "good": 36,
+        "mint": 50,
+        "sealed": 86
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px7p": {
+    "label": "Pixel 7 Pro",
+    "prices": {
+      "128": {
+        "broken": 22,
+        "fair": 45,
+        "good": 72,
+        "mint": 108,
+        "sealed": 135
+      },
+      "256": {
+        "broken": 27,
+        "fair": 58,
+        "good": 86,
+        "mint": 122,
+        "sealed": 144
+      },
+      "512": {
+        "broken": 29,
+        "fair": 63,
+        "good": 90,
+        "mint": 126,
+        "sealed": 148
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs20": {
+    "label": "Galaxy S20",
+    "prices": {
+      "base": {
+        "broken": 14,
+        "fair": 45,
+        "good": 58,
+        "mint": 68,
+        "sealed": 90
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gnote10": {
+    "label": "Galaxy Note 10",
+    "prices": {
+      "base": {
+        "broken": 9,
+        "sealed": 99
+      },
+      "brandnew": {
+        "fair": 140,
+        "good": 162,
+        "mint": 171
+      },
+      "broken": {
+        "fair": 50,
+        "good": 72,
+        "mint": 81
+      },
+      "fair": {
+        "fair": 81,
+        "good": 104,
+        "mint": 112
+      },
+      "flawless": {
+        "fair": 112,
+        "good": 135,
+        "mint": 144
+      },
+      "good": {
+        "fair": 104,
+        "good": 126,
+        "mint": 135
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gnote10p": {
+    "label": "Galaxy Note 10+",
+    "prices": {
+      "256": {
+        "broken": 38,
+        "fair": 45,
+        "good": 99,
+        "mint": 117,
+        "sealed": 135
+      },
+      "512": {
+        "broken": 47,
+        "fair": 54,
+        "good": 108,
+        "mint": 126,
+        "sealed": 158
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gnote10p5g": {
+    "label": "Galaxy Note 10+ 5G",
+    "prices": {
+      "256": {
+        "broken": 36,
+        "fair": 45,
+        "good": 99,
+        "mint": 117,
+        "sealed": 135
+      },
+      "512": {
+        "broken": 50,
+        "fair": 58,
+        "good": 112,
+        "mint": 130,
+        "sealed": 158
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gnote20": {
+    "label": "Galaxy Note 20 5G",
+    "prices": {
+      "128": {
+        "fair": 68,
+        "good": 81,
+        "mint": 90,
+        "sealed": 117
+      },
+      "256": {
+        "fair": 76,
+        "good": 90,
+        "mint": 99,
+        "sealed": 130
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gnote9": {
+    "label": "Galaxy Note 9",
+    "prices": {
+      "128": {
+        "broken": 9,
+        "fair": 27,
+        "good": 54,
+        "mint": 68,
+        "sealed": 94
+      },
+      "512": {
+        "broken": 18,
+        "fair": 36,
+        "good": 63,
+        "mint": 76,
+        "sealed": 113
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs20fe": {
+    "label": "Galaxy S20 FE",
+    "prices": {
+      "128": {
+        "broken": 14,
+        "fair": 18,
+        "good": 32,
+        "mint": 40,
+        "sealed": 63
+      },
+      "256": {
+        "broken": 22,
+        "fair": 27,
+        "good": 40,
+        "mint": 50,
+        "sealed": 81
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs20p": {
+    "label": "Galaxy S20+",
+    "prices": {
+      "128": {
+        "broken": 14,
+        "fair": 36,
+        "good": 68,
+        "mint": 76,
+        "sealed": 104
+      },
+      "512": {
+        "broken": 15,
+        "fair": 58,
+        "good": 90,
+        "mint": 99,
+        "sealed": 130
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs20u": {
+    "label": "Galaxy S20 Ultra",
+    "prices": {
+      "128": {
+        "broken": 14,
+        "fair": 68,
+        "good": 104,
+        "mint": 122,
+        "sealed": 148
+      },
+      "256": {
+        "broken": 18,
+        "fair": 76,
+        "good": 112,
+        "mint": 130,
+        "sealed": 158
+      },
+      "512": {
+        "broken": 22,
+        "fair": 86,
+        "good": 122,
+        "mint": 140,
+        "sealed": 166
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs21fe": {
+    "label": "Galaxy S21 FE",
+    "prices": {
+      "128": {
+        "broken": 9,
+        "fair": 22,
+        "good": 27,
+        "mint": 36,
+        "sealed": 54
+      },
+      "256": {
+        "broken": 14,
+        "fair": 32,
+        "good": 36,
+        "mint": 45,
+        "sealed": 72
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs21p": {
+    "label": "Galaxy S21+",
+    "prices": {
+      "128": {
+        "broken": 14,
+        "fair": 36,
+        "good": 54,
+        "mint": 63,
+        "sealed": 90
+      },
+      "256": {
+        "broken": 14,
+        "fair": 45,
+        "good": 63,
+        "mint": 72,
+        "sealed": 118
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs21u": {
+    "label": "Galaxy S21 Ultra",
+    "prices": {
+      "128": {
+        "broken": 22,
+        "fair": 54,
+        "good": 72,
+        "mint": 81,
+        "sealed": 99
+      },
+      "256": {
+        "broken": 24,
+        "fair": 63,
+        "good": 81,
+        "mint": 90,
+        "sealed": 108
+      },
+      "512": {
+        "broken": 25,
+        "fair": 68,
+        "good": 86,
+        "mint": 94,
+        "sealed": 112
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs22p": {
+    "label": "Galaxy S22+",
+    "prices": {
+      "128": {
+        "broken": 22,
+        "fair": 63,
+        "good": 86,
+        "mint": 99,
+        "sealed": 126
+      },
+      "256": {
+        "broken": 27,
+        "fair": 72,
+        "good": 94,
+        "mint": 108,
+        "sealed": 148
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs22u": {
+    "label": "Galaxy S22 Ultra",
+    "prices": {
+      "128": {
+        "broken": 27,
+        "fair": 76,
+        "good": 108,
+        "mint": 126,
+        "sealed": 162
+      },
+      "1tb": {
+        "broken": 27,
+        "fair": 99,
+        "good": 130,
+        "mint": 148,
+        "sealed": 280
+      },
+      "256": {
+        "broken": 27,
+        "fair": 90,
+        "good": 122,
+        "mint": 140,
+        "sealed": 204
+      },
+      "512": {
+        "broken": 27,
+        "fair": 94,
+        "good": 126,
+        "mint": 144,
+        "sealed": 242
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs23": {
+    "label": "Galaxy S23",
+    "prices": {
+      "128": {
+        "broken": 22,
+        "fair": 72,
+        "good": 94,
+        "mint": 117,
+        "sealed": 153,
+        "verygood": 108
+      },
+      "256": {
+        "broken": 23,
+        "fair": 90,
+        "good": 112,
+        "mint": 135,
+        "sealed": 184,
+        "verygood": 126
+      },
+      "512": {
+        "broken": 23,
+        "fair": 94,
+        "good": 117,
+        "mint": 140,
+        "sealed": 198,
+        "verygood": 130
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs23fe": {
+    "label": "Galaxy S23 FE",
+    "prices": {
+      "128": {
+        "broken": 14,
+        "fair": 32,
+        "good": 63,
+        "mint": 81,
+        "sealed": 90,
+        "verygood": 68
+      },
+      "256": {
+        "broken": 15,
+        "fair": 40,
+        "good": 72,
+        "mint": 90,
+        "sealed": 108,
+        "verygood": 76
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs23p": {
+    "label": "Galaxy S23+",
+    "prices": {
+      "128": {
+        "broken": 72,
+        "sealed": 207
+      },
+      "256": {
+        "broken": 76,
+        "fair": 112,
+        "good": 162,
+        "mint": 180,
+        "sealed": 234,
+        "verygood": 171
+      },
+      "512": {
+        "broken": 78,
+        "fair": 122,
+        "good": 171,
+        "mint": 189,
+        "sealed": 252,
+        "verygood": 180
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs24fe": {
+    "label": "Galaxy S24 FE",
+    "prices": {
+      "128": {
+        "broken": 22,
+        "fair": 72,
+        "good": 117,
+        "mint": 135,
+        "sealed": 171,
+        "verygood": 126
+      },
+      "256": {
+        "broken": 32,
+        "fair": 90,
+        "good": 135,
+        "mint": 153,
+        "sealed": 189,
+        "verygood": 144
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs25edge": {
+    "label": "Galaxy S25 Edge",
+    "prices": {
+      "256": {
+        "broken": 90,
+        "fair": 234,
+        "good": 279,
+        "mint": 315,
+        "sealed": 351,
+        "verygood": 288
+      },
+      "512": {
+        "broken": 99,
+        "fair": 256,
+        "good": 302,
+        "mint": 338,
+        "sealed": 382,
+        "verygood": 310
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gs25fe": {
+    "label": "Galaxy S25 FE",
+    "prices": {
+      "128": {
+        "broken": 22,
+        "fair": 72,
+        "good": 194,
+        "mint": 220,
+        "sealed": 256,
+        "verygood": 202
+      },
+      "256": {
+        "broken": 32,
+        "fair": 90,
+        "good": 212,
+        "mint": 238,
+        "sealed": 274,
+        "verygood": 220
+      },
+      "512": {
+        "broken": 22,
+        "sealed": 256
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gzflip3": {
+    "label": "Galaxy Z Flip 3",
+    "prices": {
+      "128": {
+        "broken": 9,
+        "fair": 14,
+        "good": 27,
+        "mint": 36,
+        "sealed": 54
+      },
+      "256": {
+        "broken": 14,
+        "fair": 22,
+        "good": 36,
+        "mint": 45,
+        "sealed": 68
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gzfold3": {
+    "label": "Galaxy Z Fold 3",
+    "prices": {
+      "256": {
+        "broken": 18,
+        "fair": 72,
+        "good": 108,
+        "mint": 126,
+        "sealed": 153
+      },
+      "512": {
+        "broken": 22,
+        "fair": 86,
+        "good": 122,
+        "mint": 140,
+        "sealed": 180
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "gzfold4": {
+    "label": "Galaxy Z Fold 4",
+    "prices": {
+      "1tb": {
+        "broken": 27,
+        "fair": 144,
+        "good": 189,
+        "mint": 220,
+        "sealed": 270,
+        "verygood": 202
+      },
+      "256": {
+        "broken": 22,
+        "fair": 112,
+        "good": 158,
+        "mint": 189,
+        "sealed": 216,
+        "verygood": 171
+      },
+      "512": {
+        "broken": 25,
+        "fair": 130,
+        "good": 176,
+        "mint": 207,
+        "sealed": 243,
+        "verygood": 189
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ipad9": {
+    "label": "iPad 9th Gen",
+    "prices": {
+      "256": {
+        "broken": 13,
+        "fair": 43,
+        "good": 76,
+        "mint": 86,
+        "sealed": 100,
+        "verygood": 81
+      },
+      "64": {
+        "broken": 10,
+        "fair": 28,
+        "good": 62,
+        "mint": 71,
+        "sealed": 90,
+        "verygood": 66
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ipadair11m2": {
+    "label": "iPad Air 11\\",
+    "prices": {
+      "128": {
+        "broken": 128,
+        "fair": 190,
+        "good": 242,
+        "mint": 276,
+        "sealed": 304,
+        "verygood": 252
+      },
+      "1tb": {
+        "broken": 200,
+        "fair": 332,
+        "good": 385,
+        "mint": 418,
+        "sealed": 446,
+        "verygood": 394
+      },
+      "256": {
+        "broken": 152,
+        "fair": 218,
+        "good": 271,
+        "mint": 304,
+        "sealed": 352,
+        "verygood": 280
+      },
+      "512": {
+        "broken": 176,
+        "fair": 276,
+        "good": 328,
+        "mint": 361,
+        "sealed": 399,
+        "verygood": 337
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ipadair11m3": {
+    "label": "iPad Air 11\\",
+    "prices": {
+      "128": {
+        "broken": 119,
+        "fair": 176,
+        "good": 238,
+        "mint": 285,
+        "sealed": 314,
+        "verygood": 271
+      },
+      "1tb": {
+        "broken": 190,
+        "fair": 299,
+        "good": 361,
+        "mint": 408,
+        "sealed": 456,
+        "verygood": 394
+      },
+      "256": {
+        "broken": 142,
+        "fair": 185,
+        "good": 247,
+        "mint": 294,
+        "sealed": 337,
+        "verygood": 280
+      },
+      "512": {
+        "broken": 166,
+        "fair": 233,
+        "good": 294,
+        "mint": 342,
+        "sealed": 385,
+        "verygood": 328
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ipadair13m2": {
+    "label": "iPad Air 13\\",
+    "prices": {
+      "128": {
+        "broken": 100,
+        "fair": 242,
+        "good": 290,
+        "mint": 337,
+        "sealed": 375,
+        "verygood": 309
+      },
+      "1tb": {
+        "broken": 142,
+        "fair": 385,
+        "good": 432,
+        "mint": 480,
+        "sealed": 470,
+        "verygood": 451
+      },
+      "256": {
+        "broken": 124,
+        "fair": 290,
+        "good": 337,
+        "mint": 385,
+        "sealed": 423,
+        "verygood": 356
+      },
+      "512": {
+        "broken": 133,
+        "fair": 337,
+        "good": 385,
+        "mint": 432,
+        "sealed": 446,
+        "verygood": 404
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ipadmini6": {
+    "label": "iPad Mini 6th Gen",
+    "prices": {
+      "256": {
+        "broken": 40,
+        "fair": 133,
+        "good": 171,
+        "mint": 190,
+        "sealed": 195
+      },
+      "64": {
+        "broken": 38,
+        "fair": 95,
+        "good": 133,
+        "mint": 152,
+        "sealed": 171
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ipadpro11g4": {
+    "label": "iPad Pro 11\\",
+    "prices": {
+      "128": {
+        "broken": 95,
+        "fair": 252,
+        "good": 294,
+        "mint": 332,
+        "sealed": 361,
+        "verygood": 314
+      },
+      "1tb": {
+        "broken": 109,
+        "fair": 394,
+        "good": 437,
+        "mint": 475,
+        "sealed": 598,
+        "verygood": 456
+      },
+      "256": {
+        "broken": 100,
+        "fair": 299,
+        "good": 342,
+        "mint": 380,
+        "sealed": 408,
+        "verygood": 361
+      },
+      "2tb": {
+        "broken": 114,
+        "fair": 442,
+        "good": 484,
+        "mint": 522,
+        "sealed": 765,
+        "verygood": 504
+      },
+      "512": {
+        "broken": 104,
+        "fair": 323,
+        "good": 366,
+        "mint": 404,
+        "sealed": 456,
+        "verygood": 385
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ipadpro11m4": {
+    "label": "iPad Pro 11\\",
+    "prices": {
+      "1tb": {
+        "broken": 285,
+        "fair": 522,
+        "good": 580,
+        "mint": 618,
+        "sealed": 750,
+        "verygood": 598
+      },
+      "256": {
+        "broken": 190,
+        "fair": 380,
+        "good": 437,
+        "mint": 475,
+        "sealed": 513,
+        "verygood": 456
+      },
+      "2tb": {
+        "broken": 332,
+        "fair": 594,
+        "good": 651,
+        "mint": 689,
+        "sealed": 846,
+        "verygood": 670
+      },
+      "512": {
+        "broken": 238,
+        "fair": 451,
+        "good": 508,
+        "mint": 546,
+        "sealed": 560,
+        "verygood": 527
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ipadpro11m5": {
+    "label": "iPad Pro 11\\",
+    "prices": {
+      "1tb": {
+        "broken": 261,
+        "fair": 608,
+        "good": 656,
+        "mint": 712,
+        "sealed": 808,
+        "verygood": 674
+      },
+      "256": {
+        "broken": 166,
+        "fair": 466,
+        "good": 513,
+        "mint": 570,
+        "sealed": 618,
+        "verygood": 532
+      },
+      "2tb": {
+        "broken": 309,
+        "fair": 703,
+        "good": 750,
+        "mint": 808,
+        "sealed": 902,
+        "verygood": 770
+      },
+      "512": {
+        "broken": 214,
+        "fair": 513,
+        "good": 560,
+        "mint": 618,
+        "sealed": 665,
+        "verygood": 580
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ipadpro129g6": {
+    "label": "iPad Pro 12.9\\",
+    "prices": {
+      "128": {
+        "broken": 119,
+        "fair": 242,
+        "good": 304,
+        "mint": 390,
+        "sealed": 456,
+        "verygood": 342
+      },
+      "1tb": {
+        "broken": 152,
+        "fair": 352,
+        "good": 413,
+        "mint": 499,
+        "sealed": 598,
+        "verygood": 451
+      },
+      "256": {
+        "broken": 128,
+        "fair": 280,
+        "good": 342,
+        "mint": 428,
+        "sealed": 527,
+        "verygood": 380
+      },
+      "2tb": {
+        "broken": 166,
+        "fair": 394,
+        "good": 456,
+        "mint": 542,
+        "sealed": 646,
+        "verygood": 494
+      },
+      "512": {
+        "broken": 133,
+        "fair": 299,
+        "good": 361,
+        "mint": 446,
+        "sealed": 551,
+        "verygood": 399
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ipadpro13m4": {
+    "label": "iPad Pro 13\\",
+    "prices": {
+      "1tb": {
+        "broken": 238,
+        "fair": 518,
+        "good": 580,
+        "mint": 627,
+        "sealed": 788,
+        "verygood": 598
+      },
+      "256": {
+        "broken": 190,
+        "fair": 404,
+        "good": 466,
+        "mint": 513,
+        "sealed": 551,
+        "verygood": 484
+      },
+      "2tb": {
+        "broken": 261,
+        "fair": 622,
+        "good": 684,
+        "mint": 732,
+        "sealed": 978,
+        "verygood": 703
+      },
+      "512": {
+        "broken": 214,
+        "fair": 461,
+        "good": 522,
+        "mint": 570,
+        "sealed": 646,
+        "verygood": 542
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px10a": {
+    "label": "Pixel 10a",
+    "prices": {
+      "128": {
+        "broken": 45,
+        "fair": 99,
+        "good": 153,
+        "mint": 198,
+        "sealed": 225,
+        "verygood": 180
+      },
+      "256": {
+        "broken": 54,
+        "fair": 117,
+        "good": 171,
+        "mint": 216,
+        "sealed": 248,
+        "verygood": 198
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px5": {
+    "label": "Pixel 5",
+    "prices": {
+      "base": {
+        "broken": 4,
+        "fair": 18,
+        "good": 32,
+        "mint": 40,
+        "sealed": 54
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px5a": {
+    "label": "Pixel 5a (5G)",
+    "prices": {
+      "base": {
+        "broken": 27,
+        "fair": 22,
+        "good": 32,
+        "mint": 36,
+        "sealed": 50
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px6": {
+    "label": "Pixel 6",
+    "prices": {
+      "128": {
+        "broken": 9,
+        "fair": 32,
+        "good": 45,
+        "mint": 58,
+        "sealed": 86
+      },
+      "256": {
+        "broken": 11,
+        "fair": 40,
+        "good": 54,
+        "mint": 68,
+        "sealed": 99
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px6p": {
+    "label": "Pixel 6 Pro",
+    "prices": {
+      "128": {
+        "broken": 14,
+        "fair": 40,
+        "good": 68,
+        "mint": 81,
+        "sealed": 108
+      },
+      "256": {
+        "broken": 14,
+        "fair": 50,
+        "good": 76,
+        "mint": 90,
+        "sealed": 112
+      },
+      "512": {
+        "broken": 14,
+        "fair": 54,
+        "good": 81,
+        "mint": 94,
+        "sealed": 117
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px7": {
+    "label": "Pixel 7",
+    "prices": {
+      "128": {
+        "broken": 14,
+        "fair": 36,
+        "good": 51,
+        "mint": 63,
+        "sealed": 99
+      },
+      "256": {
+        "broken": 22,
+        "fair": 54,
+        "good": 69,
+        "mint": 81,
+        "sealed": 108
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px7a": {
+    "label": "Pixel 7a",
+    "prices": {
+      "base": {
+        "broken": 14,
+        "fair": 45,
+        "good": 63,
+        "mint": 72,
+        "sealed": 99
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px8a": {
+    "label": "Pixel 8a",
+    "prices": {
+      "128": {
+        "broken": 18,
+        "fair": 72,
+        "good": 108,
+        "mint": 126,
+        "sealed": 162,
+        "verygood": 117
+      },
+      "256": {
+        "broken": 18,
+        "fair": 81,
+        "good": 117,
+        "mint": 135,
+        "sealed": 184,
+        "verygood": 126
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px9a": {
+    "label": "Pixel 9a",
+    "prices": {
+      "128": {
+        "broken": 45,
+        "fair": 90,
+        "good": 130,
+        "mint": 158,
+        "sealed": 189,
+        "verygood": 140
+      },
+      "256": {
+        "broken": 50,
+        "fair": 108,
+        "good": 148,
+        "mint": 176,
+        "sealed": 212,
+        "verygood": 158
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "px9pfold": {
+    "label": "Pixel 9 Pro Fold",
+    "prices": {
+      "256": {
+        "broken": 99,
+        "fair": 292,
+        "good": 360,
+        "mint": 405,
+        "sealed": 450,
+        "verygood": 378
+      },
+      "512": {
+        "broken": 108,
+        "fair": 320,
+        "good": 387,
+        "mint": 432,
+        "sealed": 540,
+        "verygood": 405
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "pxfold": {
+    "label": "Pixel Fold",
+    "prices": {
+      "256": {
+        "broken": 32,
+        "fair": 90,
+        "good": 135,
+        "mint": 158,
+        "sealed": 202,
+        "verygood": 144
+      },
+      "512": {
+        "broken": 32,
+        "fair": 126,
+        "good": 171,
+        "mint": 194,
+        "sealed": 248,
+        "verygood": 180
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "switch": {
+    "label": "Nintendo Switch OLED",
+    "prices": {
+      "base": {
+        "broken": 21,
+        "fair": 32,
+        "good": 54,
+        "mint": 81,
+        "sealed": 108,
+        "verygood": 68
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "switchlite": {
+    "label": "Nintendo Switch Lite",
+    "prices": {
+      "base": {
+        "broken": 21,
+        "fair": 22,
+        "good": 36,
+        "mint": 50,
+        "sealed": 68
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "xone": {
+    "label": "Xbox One",
+    "prices": {
+      "base": {
+        "broken": 21,
+        "fair": 54,
+        "good": 81,
+        "mint": 99,
+        "sealed": 117
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "awu1": {
+    "label": "Apple Watch Ultra",
+    "prices": {
+      "base": {
+        "fair": 36,
+        "good": 86,
+        "mint": 126,
+        "sealed": 144,
+        "verygood": 108
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "awu2": {
+    "label": "Apple Watch Ultra 2",
+    "prices": {
+      "base": {
+        "fair": 90,
+        "good": 135,
+        "mint": 180,
+        "sealed": 216,
+        "verygood": 162
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "awu3": {
+    "label": "Apple Watch Ultra 3",
+    "prices": {
+      "base": {
+        "broken": 45,
+        "fair": 171,
+        "good": 252,
+        "mint": 302,
+        "sealed": 338,
+        "verygood": 279
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mba13m3": {
+    "label": "MacBook Air 13\\",
+    "prices": {
+      "1tb": {
+        "fair": 432,
+        "good": 540,
+        "mint": 648,
+        "sealed": 693,
+        "verygood": 594
+      },
+      "2tb": {
+        "fair": 544,
+        "good": 652,
+        "mint": 760,
+        "sealed": 806,
+        "verygood": 706
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mba15m3": {
+    "label": "MacBook Air 15\\",
+    "prices": {
+      "1tb": {
+        "fair": 472,
+        "good": 594,
+        "mint": 675,
+        "sealed": 729,
+        "verygood": 634
+      },
+      "2tb": {
+        "fair": 562,
+        "good": 684,
+        "mint": 765,
+        "sealed": 819,
+        "verygood": 724
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mba_m4_2025": {
+    "label": "MacBook Air M4 (13\\",
+    "prices": {
+      "1tb": {
+        "fair": 531,
+        "good": 644,
+        "mint": 778,
+        "sealed": 824,
+        "verygood": 711
+      },
+      "2tb": {
+        "fair": 711,
+        "good": 824,
+        "mint": 958,
+        "sealed": 1004,
+        "verygood": 891
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mba_m5_2026": {
+    "label": "MacBook Air M5 (13\\",
+    "prices": {
+      "1tb": {
+        "fair": 585,
+        "good": 698,
+        "mint": 832,
+        "sealed": 922,
+        "verygood": 765
+      },
+      "2tb": {
+        "fair": 900,
+        "good": 1012,
+        "mint": 1148,
+        "sealed": 1238,
+        "verygood": 1080
+      },
+      "4tb": {
+        "fair": 1350,
+        "good": 1462,
+        "mint": 1598,
+        "sealed": 1688,
+        "verygood": 1530
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mbp13m1": {
+    "label": "MacBook Pro 13\\",
+    "prices": {
+      "2tb": {
+        "fair": 468,
+        "good": 558,
+        "mint": 626,
+        "sealed": 675,
+        "verygood": 616
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mbp14m2": {
+    "label": "MacBook Pro 14\\",
+    "prices": {
+      "2tb": {
+        "fair": 630,
+        "good": 765,
+        "mint": 945,
+        "sealed": 990,
+        "verygood": 855
+      },
+      "4tb": {
+        "fair": 810,
+        "good": 945,
+        "mint": 1125,
+        "sealed": 1170,
+        "verygood": 1035
+      },
+      "8tb": {
+        "fair": 900,
+        "good": 1125,
+        "mint": 1350,
+        "sealed": 1404,
+        "verygood": 1215
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mbp14m3": {
+    "label": "MacBook Pro 14\\",
+    "prices": {
+      "1tb": {
+        "fair": 891,
+        "good": 981,
+        "mint": 1080,
+        "sealed": 1107,
+        "verygood": 1030
+      },
+      "2tb": {
+        "fair": 900,
+        "good": 1080,
+        "mint": 1215,
+        "sealed": 1260,
+        "verygood": 1148
+      },
+      "4tb": {
+        "fair": 1035,
+        "good": 1215,
+        "mint": 1395,
+        "sealed": 1462,
+        "verygood": 1314
+      },
+      "512": {
+        "fair": 756,
+        "good": 846,
+        "mint": 945,
+        "sealed": 972,
+        "verygood": 896
+      },
+      "8tb": {
+        "fair": 2160,
+        "good": 2565,
+        "mint": 2835,
+        "sealed": 2925,
+        "verygood": 2700
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mbp16_m5pmax_2026": {
+    "label": "MacBook Pro 16\\",
+    "prices": {
+      "2tb": {
+        "fair": 2340,
+        "good": 2475,
+        "mint": 2610,
+        "sealed": 2745,
+        "verygood": 2542
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mbp16m2": {
+    "label": "MacBook Pro 16\\",
+    "prices": {
+      "2tb": {
+        "fair": 1215,
+        "good": 1408,
+        "mint": 1620,
+        "sealed": 1665,
+        "verygood": 1521
+      },
+      "4tb": {
+        "fair": 1170,
+        "good": 1418,
+        "mint": 1710,
+        "sealed": 1778,
+        "verygood": 1575
+      },
+      "8tb": {
+        "fair": 1350,
+        "good": 1598,
+        "mint": 1890,
+        "sealed": 1958,
+        "verygood": 1755
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mbp16m3": {
+    "label": "MacBook Pro 16\\",
+    "prices": {
+      "2tb": {
+        "fair": 1350,
+        "good": 1485,
+        "mint": 1665,
+        "sealed": 1732,
+        "verygood": 1575
+      },
+      "4tb": {
+        "fair": 1620,
+        "good": 1755,
+        "mint": 1935,
+        "sealed": 2002,
+        "verygood": 1845
+      },
+      "8tb": {
+        "fair": 1845,
+        "good": 2025,
+        "mint": 2295,
+        "sealed": 2362,
+        "verygood": 2160
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mbp16m4": {
+    "label": "MacBook Pro 16\\",
+    "prices": {
+      "2tb": {
+        "fair": 1935,
+        "good": 2070,
+        "mint": 2205,
+        "sealed": 2295,
+        "verygood": 2138
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "xss": {
+    "label": "Xbox Series S",
+    "prices": {
+      "base": {
+        "broken": 21,
+        "fair": 54,
+        "good": 90,
+        "mint": 135,
+        "sealed": 158,
+        "verygood": 112
+      },
+      "carbonblack": {
+        "broken": 43,
+        "fair": 86,
+        "good": 148,
+        "mint": 184,
+        "sealed": 220,
+        "verygood": 166
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "aws10": {
+    "label": "Apple Watch Series 10",
+    "prices": {
+      "base": {
+        "fair": 18,
+        "good": 54,
+        "mint": 90,
+        "sealed": 112,
+        "verygood": 72
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "aws7": {
+    "label": "Apple Watch Series 7",
+    "prices": {
+      "base": {
+        "good": 9,
+        "mint": 27,
+        "sealed": 40,
+        "verygood": 18
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "aws8": {
+    "label": "Apple Watch Series 8",
+    "prices": {
+      "base": {
+        "good": 18,
+        "mint": 40,
+        "sealed": 63,
+        "verygood": 27
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "aws9": {
+    "label": "Apple Watch Series 9",
+    "prices": {
+      "base": {
+        "fair": 14,
+        "good": 40,
+        "mint": 63,
+        "sealed": 81,
+        "verygood": 50
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "awse2": {
+    "label": "Apple Watch SE (2nd Gen)",
+    "prices": {
+      "base": {
+        "good": 9,
+        "mint": 18,
+        "sealed": 40
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mba13m2": {
+    "label": "MacBook Air 13\\",
+    "prices": {
+      "1tb": {
+        "fair": 310,
+        "good": 387,
+        "mint": 446,
+        "sealed": 482,
+        "verygood": 418
+      },
+      "256": {
+        "fair": 198,
+        "good": 274,
+        "mint": 333,
+        "sealed": 369,
+        "verygood": 306
+      },
+      "2tb": {
+        "fair": 356,
+        "good": 432,
+        "mint": 490,
+        "sealed": 526,
+        "verygood": 464
+      },
+      "512": {
+        "fair": 243,
+        "good": 320,
+        "mint": 378,
+        "sealed": 414,
+        "verygood": 351
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mba15m2": {
+    "label": "MacBook Air 15\\",
+    "prices": {
+      "1tb": {
+        "fair": 374,
+        "good": 441,
+        "mint": 486,
+        "sealed": 513,
+        "verygood": 464
+      },
+      "256": {
+        "fair": 284,
+        "good": 351,
+        "mint": 396,
+        "sealed": 423,
+        "verygood": 374
+      },
+      "2tb": {
+        "fair": 464,
+        "good": 531,
+        "mint": 576,
+        "sealed": 603,
+        "verygood": 554
+      },
+      "512": {
+        "fair": 328,
+        "good": 396,
+        "mint": 441,
+        "sealed": 468,
+        "verygood": 418
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mbp14_m5_2025": {
+    "label": "MacBook Pro 14\\",
+    "prices": {
+      "1tb": {
+        "fair": 788,
+        "good": 891,
+        "mint": 990,
+        "sealed": 1058,
+        "verygood": 936
+      },
+      "2tb": {
+        "fair": 878,
+        "good": 981,
+        "mint": 1080,
+        "sealed": 1148,
+        "verygood": 1026
+      },
+      "4tb": {
+        "fair": 1102,
+        "good": 1206,
+        "mint": 1305,
+        "sealed": 1372,
+        "verygood": 1251
+      },
+      "512": {
+        "fair": 652,
+        "good": 756,
+        "mint": 855,
+        "sealed": 922,
+        "verygood": 801
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mbp14_m5pmax_2026": {
+    "label": "MacBook Pro 14\\",
+    "prices": {
+      "1tb": {
+        "fair": 788,
+        "good": 891,
+        "mint": 990,
+        "sealed": 1058,
+        "verygood": 936
+      },
+      "2tb": {
+        "fair": 878,
+        "good": 981,
+        "mint": 1080,
+        "sealed": 1148,
+        "verygood": 1026
+      },
+      "4tb": {
+        "fair": 1102,
+        "good": 1206,
+        "mint": 1305,
+        "sealed": 1372,
+        "verygood": 1251
+      },
+      "512": {
+        "fair": 652,
+        "good": 756,
+        "mint": 855,
+        "sealed": 922,
+        "verygood": 801
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "mbp14m4": {
+    "label": "MacBook Pro 14\\",
+    "prices": {
+      "1tb": {
+        "fair": 765,
+        "good": 868,
+        "mint": 968,
+        "sealed": 1012,
+        "verygood": 914
+      },
+      "2tb": {
+        "fair": 878,
+        "good": 981,
+        "mint": 1080,
+        "sealed": 1125,
+        "verygood": 1026
+      },
+      "512": {
+        "fair": 652,
+        "good": 756,
+        "mint": 855,
+        "sealed": 900,
+        "verygood": 801
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ps4": {
+    "label": "PlayStation 4 (Standard)",
+    "prices": {
+      "base": {
+        "broken": 8,
+        "fair": 14,
+        "good": 27,
+        "mint": 45,
+        "sealed": 63
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "ps4pro": {
+    "label": "PlayStation 4 Pro",
+    "prices": {
+      "base": {
+        "broken": 21,
+        "fair": 45,
+        "good": 86,
+        "mint": 108,
+        "sealed": 135
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "imac24m1": {
+    "label": "iMac 24\\",
+    "prices": {
+      "16gbunifiedmemory": {
+        "broken": 360,
+        "fair": 279,
+        "good": 324,
+        "mint": 360,
+        "sealed": 387,
+        "verygood": 342
+      },
+      "1tb": {
+        "broken": 387,
+        "fair": 306,
+        "good": 351,
+        "mint": 387,
+        "sealed": 414,
+        "verygood": 369
+      },
+      "256gb": {
+        "broken": 315,
+        "fair": 234,
+        "good": 279,
+        "mint": 315,
+        "sealed": 342,
+        "verygood": 297
+      },
+      "512gb": {
+        "broken": 351,
+        "fair": 270,
+        "good": 315,
+        "mint": 351,
+        "sealed": 378,
+        "verygood": 333
+      },
+      "8gbunifiedmemory": {
+        "broken": 315,
+        "fair": 234,
+        "good": 279,
+        "mint": 315,
+        "sealed": 342,
+        "verygood": 297
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "imac24m3": {
+    "label": "iMac 24\\",
+    "prices": {
+      "16gbunifiedmemory": {
+        "broken": 405,
+        "fair": 261,
+        "good": 333,
+        "mint": 405,
+        "sealed": 450,
+        "verygood": 369
+      },
+      "1tb": {
+        "broken": 450,
+        "fair": 306,
+        "good": 378,
+        "mint": 450,
+        "sealed": 495,
+        "verygood": 414
+      },
+      "24gbunifiedmemory": {
+        "broken": 450,
+        "fair": 306,
+        "good": 378,
+        "mint": 450,
+        "sealed": 495,
+        "verygood": 414
+      },
+      "256gb": {
+        "broken": 360,
+        "fair": 216,
+        "good": 288,
+        "mint": 360,
+        "sealed": 405,
+        "verygood": 324
+      },
+      "512gb": {
+        "broken": 405,
+        "fair": 261,
+        "good": 333,
+        "mint": 405,
+        "sealed": 450,
+        "verygood": 369
+      },
+      "8gbunifiedmemory": {
+        "broken": 360,
+        "fair": 216,
+        "good": 288,
+        "mint": 360,
+        "sealed": 405,
+        "verygood": 324
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "imac24m4": {
+    "label": "iMac 24\\",
+    "prices": {
+      "16gbunifiedmemory": {
+        "broken": 518,
+        "fair": 315,
+        "good": 428,
+        "mint": 518,
+        "sealed": 585,
+        "verygood": 472
+      },
+      "1tb": {
+        "broken": 742,
+        "fair": 540,
+        "good": 652,
+        "mint": 742,
+        "sealed": 810,
+        "verygood": 698
+      },
+      "24gbunifiedmemory": {
+        "broken": 698,
+        "fair": 495,
+        "good": 608,
+        "mint": 698,
+        "sealed": 765,
+        "verygood": 652
+      },
+      "256gb": {
+        "broken": 518,
+        "fair": 315,
+        "good": 428,
+        "mint": 518,
+        "sealed": 585,
+        "verygood": 472
+      },
+      "512gb": {
+        "broken": 630,
+        "fair": 428,
+        "good": 540,
+        "mint": 630,
+        "sealed": 698,
+        "verygood": 585
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "macminim1": {
+    "label": "Mac Mini M1",
+    "prices": {
+      "1tb": {
+        "broken": 360,
+        "fair": 315,
+        "good": 342,
+        "mint": 360,
+        "sealed": 382,
+        "verygood": 351
+      },
+      "256gb": {
+        "broken": 292,
+        "fair": 248,
+        "good": 274,
+        "mint": 292,
+        "sealed": 315,
+        "verygood": 284
+      },
+      "2tb": {
+        "broken": 405,
+        "fair": 360,
+        "good": 387,
+        "mint": 405,
+        "sealed": 428,
+        "verygood": 396
+      },
+      "512gb": {
+        "broken": 315,
+        "fair": 270,
+        "good": 297,
+        "mint": 315,
+        "sealed": 338,
+        "verygood": 306
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "macminim2": {
+    "label": "Mac Mini M2",
+    "prices": {
+      "16gbunifiedmemory": {
+        "broken": 360,
+        "fair": 243,
+        "good": 297,
+        "mint": 360,
+        "sealed": 396,
+        "verygood": 338
+      },
+      "1tb": {
+        "broken": 382,
+        "fair": 266,
+        "good": 320,
+        "mint": 382,
+        "sealed": 418,
+        "verygood": 360
+      },
+      "24gbunifiedmemory": {
+        "broken": 405,
+        "fair": 288,
+        "good": 342,
+        "mint": 405,
+        "sealed": 441,
+        "verygood": 382
+      },
+      "256gb": {
+        "broken": 315,
+        "fair": 198,
+        "good": 252,
+        "mint": 315,
+        "sealed": 351,
+        "verygood": 292
+      },
+      "2tb": {
+        "broken": 450,
+        "fair": 333,
+        "good": 387,
+        "mint": 450,
+        "sealed": 486,
+        "verygood": 428
+      },
+      "512gb": {
+        "broken": 346,
+        "fair": 230,
+        "good": 284,
+        "mint": 346,
+        "sealed": 382,
+        "verygood": 324
+      },
+      "8gbunifiedmemory": {
+        "broken": 315,
+        "fair": 198,
+        "good": 252,
+        "mint": 315,
+        "sealed": 351,
+        "verygood": 292
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "macminim4": {
+    "label": "Mac Mini M4",
+    "prices": {
+      "16gbunifiedmemory": {
+        "broken": 472,
+        "fair": 356,
+        "good": 410,
+        "mint": 472,
+        "sealed": 518,
+        "verygood": 450
+      },
+      "1tb": {
+        "broken": 742,
+        "fair": 626,
+        "good": 680,
+        "mint": 742,
+        "sealed": 788,
+        "verygood": 720
+      },
+      "24gbunifiedmemory": {
+        "broken": 652,
+        "fair": 536,
+        "good": 590,
+        "mint": 652,
+        "sealed": 698,
+        "verygood": 630
+      },
+      "256gb": {
+        "broken": 472,
+        "fair": 356,
+        "good": 410,
+        "mint": 472,
+        "sealed": 518,
+        "verygood": 450
+      },
+      "2tb": {
+        "broken": 1012,
+        "fair": 896,
+        "good": 950,
+        "mint": 1012,
+        "sealed": 1058,
+        "verygood": 990
+      },
+      "32gbunifiedmemory": {
+        "broken": 832,
+        "fair": 716,
+        "good": 770,
+        "mint": 832,
+        "sealed": 878,
+        "verygood": 810
+      },
+      "512gb": {
+        "broken": 608,
+        "fair": 490,
+        "good": 544,
+        "mint": 608,
+        "sealed": 652,
+        "verygood": 585
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "macstudiom2m": {
+    "label": "Mac Studio M2 Max",
+    "prices": {
+      "1tb": {
+        "broken": 1215,
+        "fair": 675,
+        "good": 796,
+        "mint": 945,
+        "sealed": 1012,
+        "verygood": 891
+      },
+      "2tb": {
+        "broken": 1350,
+        "fair": 810,
+        "good": 932,
+        "mint": 1080,
+        "sealed": 1148,
+        "verygood": 1026
+      },
+      "32gbunifiedmemory": {
+        "broken": 1080,
+        "fair": 540,
+        "good": 662,
+        "mint": 810,
+        "sealed": 878,
+        "verygood": 756
+      },
+      "4tb": {
+        "broken": 1620,
+        "fair": 1080,
+        "good": 1202,
+        "mint": 1350,
+        "sealed": 1418,
+        "verygood": 1296
+      },
+      "512gb": {
+        "broken": 1080,
+        "fair": 540,
+        "good": 662,
+        "mint": 810,
+        "sealed": 878,
+        "verygood": 756
+      },
+      "64gbunifiedmemory": {
+        "broken": 1395,
+        "fair": 855,
+        "good": 976,
+        "mint": 1125,
+        "sealed": 1192,
+        "verygood": 1071
+      },
+      "8tb": {
+        "broken": 1800,
+        "fair": 1260,
+        "good": 1382,
+        "mint": 1530,
+        "sealed": 1598,
+        "verygood": 1476
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "macstudiom4m": {
+    "label": "Mac Studio M4 Max",
+    "prices": {
+      "1tb": {
+        "broken": 2250,
+        "fair": 1665,
+        "good": 1822,
+        "mint": 1980,
+        "sealed": 2115,
+        "verygood": 1912
+      },
+      "2tb": {
+        "broken": 2475,
+        "fair": 1890,
+        "good": 2048,
+        "mint": 2205,
+        "sealed": 2340,
+        "verygood": 2138
+      },
+      "36gbunifiedmemory": {
+        "broken": 2025,
+        "fair": 1440,
+        "good": 1598,
+        "mint": 1755,
+        "sealed": 1890,
+        "verygood": 1688
+      },
+      "4tb": {
+        "broken": 2745,
+        "fair": 2160,
+        "good": 2318,
+        "mint": 2475,
+        "sealed": 2610,
+        "verygood": 2408
+      },
+      "512gb": {
+        "broken": 2025,
+        "fair": 1440,
+        "good": 1598,
+        "mint": 1755,
+        "sealed": 1890,
+        "verygood": 1688
+      },
+      "8tb": {
+        "broken": 3105,
+        "fair": 2520,
+        "good": 2678,
+        "mint": 2835,
+        "sealed": 2970,
+        "verygood": 2768
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "pw2": {
+    "label": "Pixel Watch 2",
+    "prices": {
+      "base": {
+        "fair": 4,
+        "good": 9,
+        "mint": 18,
+        "sealed": 32
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "pw3": {
+    "label": "Pixel Watch 3",
+    "prices": {
+      "pixelwatch3bluetoothwifi": {
+        "fair": 4,
+        "good": 18,
+        "mint": 27,
+        "sealed": 54
+      },
+      "pixelwatch3bluetoothwifi4glte": {
+        "broken": 4,
+        "fair": 9,
+        "good": 22,
+        "mint": 32,
+        "sealed": 58
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "pw4": {
+    "label": "pw4",
+    "prices": {
+      "pixelwatch4bluetoothwifi": {
+        "fair": 27,
+        "good": 72,
+        "mint": 108,
+        "sealed": 144,
+        "verygood": 90
+      },
+      "pixelwatch4bluetoothwifi4glte": {
+        "broken": 9,
+        "fair": 36,
+        "good": 81,
+        "mint": 117,
+        "sealed": 153,
+        "verygood": 99
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "sgw7": {
+    "label": "Galaxy Watch 7",
+    "prices": {
+      "bluetoothwifi": {
+        "broken": 18,
+        "good": 9,
+        "mint": 18,
+        "sealed": 32
+      },
+      "bluetoothwifi4glte": {
+        "broken": 22,
+        "fair": 4,
+        "good": 14,
+        "mint": 22,
+        "sealed": 36
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "sgw8": {
+    "label": "sgw8",
+    "prices": {
+      "bluetoothwifi": {
+        "broken": 63,
+        "fair": 18,
+        "good": 45,
+        "mint": 63,
+        "sealed": 86
+      },
+      "bluetoothwifi4glte": {
+        "broken": 72,
+        "fair": 27,
+        "good": 54,
+        "mint": 72,
+        "sealed": 94
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "sgw8c": {
+    "label": "sgw8c",
+    "prices": {
+      "bluetoothwifi": {
+        "broken": 99,
+        "fair": 54,
+        "good": 76,
+        "mint": 99,
+        "sealed": 122,
+        "verygood": 90
+      },
+      "bluetoothwifi4glte": {
+        "broken": 108,
+        "fair": 63,
+        "good": 86,
+        "mint": 108,
+        "sealed": 130,
+        "verygood": 99
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "sgwu": {
+    "label": "Galaxy Watch Ultra",
+    "prices": {
+      "base": {
+        "fair": 22,
+        "good": 58,
+        "mint": 90,
+        "sealed": 112,
+        "verygood": 76
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "sgwu25": {
+    "label": "sgwu25",
+    "prices": {
+      "base": {
+        "fair": 72,
+        "good": 112,
+        "mint": 144,
+        "sealed": 176,
+        "verygood": 130
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "switchv2": {
+    "label": "Nintendo Switch V2",
+    "prices": {
+      "base": {
+        "broken": 21,
+        "fair": 32,
+        "good": 54,
+        "mint": 81,
+        "sealed": 108,
+        "verygood": 68
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  },
+  "xsx": {
+    "label": "Xbox Series X",
+    "prices": {
+      "1tb": {
+        "broken": 8,
+        "fair": 162,
+        "good": 225,
+        "mint": 274,
+        "sealed": 315,
+        "verygood": 252
+      },
+      "2tb": {
+        "broken": 8,
+        "fair": 162,
+        "good": 225,
+        "mint": 274,
+        "sealed": 315,
+        "verygood": 252
+      }
+    },
+    "updated": "2026-05-12 10:39"
+  }
+}
