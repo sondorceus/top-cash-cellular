@@ -133,11 +133,11 @@ const IPHONE_SERIES = [
   // our margin per device. topPrice mirrors the new base for the legacy
   // marquee display.
   { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 929, variants: [
-    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 929, image: "/devices/iphone-17-pro-max-test.png" },
-    { id: "ip17p", label: "iPhone 17 Pro", base: 707, image: "/devices/iphone-17-pro-test.png" },
+    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 605, image: "/devices/iphone-17-pro-max-test.png" },
+    { id: "ip17p", label: "iPhone 17 Pro", base: 573, image: "/devices/iphone-17-pro-test.png" },
     { id: "ip17air", label: "iPhone 17 Air", base: 489, image: "/devices/iphone-17-air-test.png" },
-    { id: "ip17", label: "iPhone 17", base: 428, image: "/devices/iphone-17-test.png" },
-    { id: "ip17e", label: "iPhone 17E", base: 212, image: "/iphone17e.png" },
+    { id: "ip17", label: "iPhone 17", base: 459, image: "/devices/iphone-17-test.png" },
+    { id: "ip17e", label: "iPhone 17E", base: 278, image: "/iphone17e.png" },
   ]},
   { id: "16", label: "iPhone 16", image: "/iphone16.png", year: "2024", topPrice: 629, variants: [
     { id: "ip16pm", label: "iPhone 16 Pro Max", base: 473, image: "/devices/iphone-16-pro-max-test.png" },
