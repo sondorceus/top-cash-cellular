@@ -41,82 +41,95 @@ def normalize_storage(label):
 def get_discount(series):
     return IPHONE_DISCOUNT if series in IPHONE_SERIES else DEFAULT_DISCOUNT
 
-def extract_prices_from_tree(tree, discount, path=None):
-    """Recursively walk the pricingData tree and extract all price combos.
-    Returns dict: { combo_key: { condition_id: our_price } }
+def extract_prices_from_tree(tree, discount):
+    """Extract all prices from IWM's additive pricing tree.
+
+    IWM uses: final_price = condition_base + carrier_adj + storage_adj
+    - Branch 1, Q1: conditions with base prices ($720, $640, etc.)
+    - Each condition's go_to leads to carrier/storage branches
+    - Carrier answers are adjustments (AT&T -$120, Verizon $0, etc.)
+    - Storage answers are adjustments (256GB $0, 512GB +$55, 1TB +$140)
+
+    Returns dict: { storage_id: { condition_id: our_price } }
     """
-    if path is None:
-        path = {}
+    if not isinstance(tree, list) or not tree:
+        return {}
 
     results = {}
 
-    if not isinstance(tree, list):
-        return results
+    # Step 1: Get conditions from the first branch
+    first_branch = tree[0]
+    conditions_q = first_branch.get("questions", [{}])[0]
+    conditions = []
 
-    for branch in tree:
-        questions = branch.get("questions", [])
-        for q in questions:
-            q_text = q.get("text", "").lower()
-            answers = q.get("answers", [])
+    for ans in conditions_q.get("answers", []):
+        base_price = ans.get("value", 0)
+        if not base_price or base_price <= 0:
+            continue
+        if not ans.get("value_enabled", 1):
+            continue
 
-            for ans in answers:
-                ans_text = ans.get("text", "")
-                iwm_price = ans.get("value")
-                attrs = {a["key"]: a["value"] for a in ans.get("attributes", [])}
+        attrs = {a["key"]: a["value"] for a in ans.get("attributes", [])}
+        cond_key = attrs.get("condition", ans.get("text", "").lower())
+        cond_id = COND_MAP.get(cond_key, COND_MAP.get(ans.get("text", "").lower(), "unknown"))
+        go_to = ans.get("go_to", "")
 
-                # Determine what this answer represents
-                new_path = dict(path)
+        # Find the branch this condition leads to
+        storage_adjustments = {}
+        if go_to and "," in go_to:
+            try:
+                branch_idx = int(go_to.split(",")[0]) - 1
+                if 0 <= branch_idx < len(tree):
+                    branch = tree[branch_idx]
+                    for q in branch.get("questions", []):
+                        q_text = q.get("text", "").lower()
+                        for a in q.get("answers", []):
+                            a_attrs = {x["key"]: x["value"] for x in a.get("attributes", [])}
+                            a_text = a.get("text", "")
+                            a_val = a.get("value", 0)
+                            if isinstance(a_val, str):
+                                try: a_val = int(a_val)
+                                except: a_val = 0
 
-                if "condition" in attrs:
-                    cond_key = attrs["condition"]
-                    cond_id = COND_MAP.get(cond_key, COND_MAP.get(ans_text.lower(), ans_text.lower().replace(" ", "")))
-                    new_path["condition"] = cond_id
-                elif "carrier" in q_text or "carrier" in str(attrs):
-                    carrier_val = attrs.get("carrier", ans_text)
-                    new_path["carrier"] = carrier_val.strip("[]").lower()
-                elif "storage" in q_text or "capacity" in q_text or "gb" in ans_text.lower() or "tb" in ans_text.lower():
-                    new_path["storage"] = normalize_storage(ans_text)
-                elif any(k in q_text for k in ["chip", "processor", "model"]):
-                    new_path["chip"] = ans_text[:30]
-                elif any(k in q_text for k in ["memory", "ram"]):
-                    new_path["ram"] = ans_text[:20]
+                            # Storage adjustments
+                            if "storage" in q_text or "capacity" in q_text or "storage_size" in a_attrs:
+                                sid = normalize_storage(a_text)
+                                storage_adjustments[sid] = a_val
 
-                # If this answer has a price and we have condition + storage, record it
-                if iwm_price and iwm_price > 0 and "condition" in new_path:
-                    storage_key = new_path.get("storage", "base")
-                    carrier_key = new_path.get("carrier", "unlocked")
-                    cond_id = new_path["condition"]
+                            # Also follow sub-branch go_to for storage
+                            sub_go = a.get("go_to", "")
+                            if sub_go and "," in sub_go:
+                                try:
+                                    sub_idx = int(sub_go.split(",")[0]) - 1
+                                    if 0 <= sub_idx < len(tree):
+                                        for sq in tree[sub_idx].get("questions", []):
+                                            sq_text = sq.get("text", "").lower()
+                                            for sa in sq.get("answers", []):
+                                                sa_attrs = {x["key"]: x["value"] for x in sa.get("attributes", [])}
+                                                if "storage" in sq_text or "capacity" in sq_text or "storage_size" in sa_attrs:
+                                                    sid = normalize_storage(sa.get("text", ""))
+                                                    sa_val = sa.get("value", 0)
+                                                    if isinstance(sa_val, str):
+                                                        try: sa_val = int(sa_val)
+                                                        except: sa_val = 0
+                                                    storage_adjustments[sid] = sa_val
+                                except:
+                                    pass
+            except:
+                pass
 
-                    # Only record unlocked/base carrier prices
-                    if carrier_key in ("unlocked", "no", "n/a", ""):
-                        if storage_key not in results:
-                            results[storage_key] = {}
-                        our_price = round(iwm_price * (1 - discount))
-                        # Keep the highest price if multiple paths lead here
-                        # (first path is usually the right one)
-                        if cond_id not in results[storage_key]:
-                            results[storage_key][cond_id] = our_price
+        # Calculate final prices: base + storage adjustment
+        if not storage_adjustments:
+            storage_adjustments = {"base": 0}
 
-                # Recurse into sub-questions via go_to
-                go_to = ans.get("go_to", "")
-                if go_to and "result" in ans and ans["result"] == 2:
-                    # This answer leads to more questions — find the next branch
-                    parts = go_to.split(",")
-                    if len(parts) >= 2:
-                        try:
-                            branch_idx = int(parts[0]) - 1
-                            if 0 <= branch_idx < len(tree):
-                                sub_results = extract_prices_from_tree(
-                                    [tree[branch_idx]], discount, new_path
-                                )
-                                for sk, sv in sub_results.items():
-                                    if sk not in results:
-                                        results[sk] = {}
-                                    for ck, cv in sv.items():
-                                        if ck not in results[sk]:
-                                            results[sk][ck] = cv
-                        except (ValueError, IndexError):
-                            pass
+        for sid, adj in storage_adjustments.items():
+            iwm_price = base_price + adj
+            if iwm_price <= 0:
+                continue
+            our_price = round(iwm_price * (1 - discount))
+            if sid not in results:
+                results[sid] = {}
+            results[sid][cond_id] = our_price
 
     return results
 
