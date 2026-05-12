@@ -23,7 +23,9 @@ from playwright.sync_api import sync_playwright
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36"
 DOLLAR = re.compile(r"\$\s*([0-9]+(?:,[0-9]{3})*)(?!\d)")
-DISCOUNT = 20
+DISCOUNT_PERCENT = 0.15  # Our prices = IWM × (1 - 0.15) = IWM × 0.85
+RATE_LIMIT_SECONDS = 1.5  # Wait between page loads to avoid getting blocked
+RESUME_FILE = "/tmp/iwm_scrape_progress.json"
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
 # ========== TARGETS ==========
@@ -371,8 +373,36 @@ def walk_quiz(pg, series, model, condition="Flawless", carrier="Unlocked", stora
     pg.wait_for_timeout(1200)
     return grab_price(pg)
 
+def our_price(iwm_price):
+    """Calculate our price: IWM minus 15%."""
+    if not iwm_price:
+        return None
+    return max(0, int(iwm_price * (1 - DISCOUNT_PERCENT)))
+
+def load_progress(category):
+    """Load scrape progress for resume support."""
+    try:
+        with open(RESUME_FILE) as f:
+            data = json.load(f)
+            return data.get(category, {})
+    except:
+        return {}
+
+def save_progress(category, mid, entry):
+    """Save scrape progress for resume."""
+    try:
+        with open(RESUME_FILE) as f:
+            data = json.load(f)
+    except:
+        data = {}
+    if category not in data:
+        data[category] = {}
+    data[category][mid] = entry
+    with open(RESUME_FILE, "w") as f:
+        json.dump(data, f)
+
 # ========== FULL SCRAPE ==========
-def scrape_category(category, download_images=True):
+def scrape_category(category, download_images=True, resume=True):
     targets = TARGETS.get(category, [])
     if not targets:
         print(f"Unknown: {category}. Available: {', '.join(TARGETS.keys())}")
@@ -380,6 +410,11 @@ def scrape_category(category, download_images=True):
 
     has_carrier = HAS_CARRIER.get(category, True)
     carriers = PHONE_CARRIERS if has_carrier else NO_CARRIER
+
+    # Load previous progress for resume
+    progress = load_progress(category) if resume else {}
+    if progress:
+        print(f"Resuming: {len(progress)} models already scraped")
 
     print(f"=== SCRAPING {category.upper()} ({len(targets)} models) ===\n")
 
@@ -396,6 +431,12 @@ def scrape_category(category, download_images=True):
             pass
 
         for series, model, mid in targets:
+            # Skip if already scraped (resume)
+            if mid in progress:
+                print(f"\n--- {model} ({mid}) --- SKIPPED (already scraped)")
+                results.append(progress[mid])
+                continue
+
             print(f"\n--- {model} ({mid}) ---")
 
             # Step 1: Discover available options
@@ -429,21 +470,39 @@ def scrape_category(category, download_images=True):
 
             use_conditions = [c for c in CONDITIONS if any(c.lower() in o.lower() for o in info["conditions"])] or CONDITIONS
 
-            for cond in use_conditions:
-                for carr in carriers:
-                    try:
-                        price = walk_quiz(pg, series, model, condition=cond, carrier=carr)
-                    except Exception as e:
-                        price = None
+            # Add Broken condition if available
+            if any("broken" in o.lower() for o in info["conditions"]):
+                use_conditions = use_conditions + ["Broken"]
 
-                    if price:
-                        our_price = max(0, price - DISCOUNT)
-                        key = f"{cond.lower()}_{carr.lower().replace(' ', '_').replace('&', 'and')}"
-                        entry["prices"][key] = {"iwm": price, "ours": our_price}
-                        print(f"  {cond:10} {carr:10} IWM=${price:5d} ours=${our_price:5d}")
-                    else:
-                        print(f"  {cond:10} {carr:10} FAILED")
+            # Storage tiers to scrape (if device has storage options)
+            storage_tiers = info["storage"] if info["storage"] else [None]
 
+            total_combos = len(use_conditions) * len(carriers) * len(storage_tiers)
+            print(f"  Scraping {total_combos} combos ({len(use_conditions)} cond × {len(carriers)} carrier × {len(storage_tiers)} storage)")
+
+            for stor in storage_tiers:
+                for cond in use_conditions:
+                    for carr in carriers:
+                        try:
+                            iwm_price = walk_quiz(pg, series, model, condition=cond, carrier=carr, storage=stor)
+                        except Exception as e:
+                            iwm_price = None
+
+                        if iwm_price:
+                            ours = our_price(iwm_price)
+                            stor_label = stor.replace(" ", "").lower() if stor else "max"
+                            carr_label = carr.lower().replace(" ", "_").replace("&", "and")
+                            key = f"{cond.lower()}_{carr_label}_{stor_label}"
+                            entry["prices"][key] = {"iwm": iwm_price, "ours": ours, "storage": stor, "condition": cond, "carrier": carr}
+                            print(f"  {cond:10} {carr:10} {str(stor or 'max'):6} IWM=${iwm_price:5d} ours=${ours:5d}")
+                        else:
+                            print(f"  {cond:10} {carr:10} {str(stor or 'max'):6} FAILED")
+
+                        # Rate limit
+                        time.sleep(RATE_LIMIT_SECONDS)
+
+            # Save progress for resume
+            save_progress(category, mid, entry)
             results.append(entry)
 
         b.close()
