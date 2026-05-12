@@ -35,6 +35,40 @@ function isDuplicate(email: string, contact: string, device: string, model: stri
   return false;
 }
 
+// Estimated resell values (eBay sold medians) — updated periodically.
+// Used to calculate profit margin on each lead for the owner's review.
+// Format: { "model_keyword": resell_price }
+const RESELL_ESTIMATES: Record<string, number> = {
+  // iPhones (eBay used sold median)
+  "iPhone 17 Pro Max": 1050, "iPhone 17 Pro": 900, "iPhone 17 Air": 750, "iPhone 17": 650,
+  "iPhone 16 Pro Max": 750, "iPhone 16 Pro": 620, "iPhone 16 Plus": 520, "iPhone 16": 480,
+  "iPhone 15 Pro Max": 550, "iPhone 15 Pro": 480, "iPhone 15 Plus": 400, "iPhone 15": 350,
+  "iPhone 14 Pro Max": 450, "iPhone 14 Pro": 380, "iPhone 14": 280,
+  "iPhone 13 Pro Max": 350, "iPhone 13 Pro": 300, "iPhone 13": 220,
+  // Samsung
+  "Galaxy S26 Ultra": 720, "Galaxy S25 Ultra": 630, "Galaxy S24 Ultra": 500,
+  "Galaxy S26": 480, "Galaxy S25": 380, "Galaxy Z Fold 7": 830, "Galaxy Z Fold 6": 520,
+  "Galaxy Z Flip 7": 450, "Galaxy Z Flip 6": 300,
+  // Pixel
+  "Pixel 10 Pro XL": 500, "Pixel 10 Pro": 430, "Pixel 9 Pro XL": 380, "Pixel 9 Pro": 300,
+  // Consoles
+  "PlayStation 5 Pro": 680, "PlayStation 5 Slim": 310, "PlayStation 5": 347,
+  "Xbox Series X": 220, "Xbox Series S": 130,
+  "Nintendo Switch 2": 370, "Nintendo Switch OLED": 180,
+  // MacBook
+  "MacBook Pro 16\" M4": 1500, "MacBook Pro 14\" M4": 1000, "MacBook Pro 16\" M3": 1100,
+  "MacBook Pro 14\" M3": 700, "MacBook Air M4": 600, "MacBook Air M3": 450,
+};
+
+function getResellEstimate(modelName: string): number | null {
+  if (!modelName) return null;
+  // Try exact match first, then partial
+  for (const [key, val] of Object.entries(RESELL_ESTIMATES)) {
+    if (modelName.includes(key) || key.includes(modelName)) return val;
+  }
+  return null;
+}
+
 export async function POST(req: NextRequest) {
   const data = await req.json();
   const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings, handoff } = data;
@@ -71,6 +105,27 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Margin analysis — estimate profit on this deal
+  const resellEst = getResellEstimate(model as string);
+  const quoteNum = typeof quote === "number" ? quote : parseInt(quote as string) || 0;
+  const marginLines: string[] = [];
+  if (resellEst && quoteNum > 0) {
+    const margin = resellEst - quoteNum;
+    const marginPct = Math.round((margin / resellEst) * 100);
+    const shipping = 10;
+    const netProfit = margin - shipping;
+    marginLines.push("--- MARGIN ANALYSIS ---");
+    marginLines.push(`Est. resell: $${resellEst} (eBay/market)`);
+    marginLines.push(`Our buy: $${quoteNum}`);
+    marginLines.push(`Gross margin: $${margin} (${marginPct}%)`);
+    marginLines.push(`Net (after ~$${shipping} ship): $${netProfit}`);
+    if (marginPct < 10) marginLines.push("⚠️ LOW MARGIN — review before accepting");
+    else if (marginPct < 15) marginLines.push("⚡ Thin margin — proceed with caution");
+    else marginLines.push("✅ Healthy margin");
+  } else if (quoteNum === 0) {
+    marginLines.push("--- MARGIN: Manual quote needed (no auto-price) ---");
+  }
+
   const leadBody = [
     `[NEW BUYBACK LEAD]`,
     `Name: ${name}`,
@@ -82,6 +137,7 @@ export async function POST(req: NextRequest) {
     `Condition: ${condition}`,
     quote ? `Quote: $${quote}` : `Quote: TBD (custom)`,
     `Payout: ${payout}`,
+    ...marginLines,
     ...imeiLines,
     ...photoLines,
     ...handoffLines,

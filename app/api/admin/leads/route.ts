@@ -19,6 +19,7 @@ interface AdminLead {
   model?: string;
   storage?: string;
   condition?: string;
+  carrier?: string;
   quote?: string;
   payout?: string;
   imei?: string;
@@ -29,6 +30,11 @@ interface AdminLead {
   latestNote?: string;
   latestNoteAt?: string;
   noteCount?: number;
+  // Margin analysis
+  resellEstimate?: number;
+  grossMargin?: number;
+  marginPercent?: number;
+  marginFlag?: string; // "healthy" | "thin" | "low" | "manual"
 }
 
 const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "rejected"];
@@ -97,6 +103,18 @@ export async function GET(req: NextRequest) {
     const notes = notesByLead.get(m.id) || [];
     notes.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
     const latestNote = notes[0];
+    // Parse margin data
+    const resellStr = parseField(m.body, "Est. resell");
+    const resellEstimate = resellStr ? parseInt(resellStr.replace(/[^0-9]/g, "")) || undefined : undefined;
+    const grossStr = parseField(m.body, "Gross margin");
+    const grossMargin = grossStr ? parseInt(grossStr.replace(/[^0-9-]/g, "")) || undefined : undefined;
+    const pctMatch = grossStr?.match(/(\d+)%/);
+    const marginPercent = pctMatch ? parseInt(pctMatch[1]) : undefined;
+    const marginFlag = m.body.includes("LOW MARGIN") ? "low"
+      : m.body.includes("Thin margin") ? "thin"
+      : m.body.includes("Healthy margin") ? "healthy"
+      : m.body.includes("Manual quote") ? "manual" : undefined;
+
     leads.push({
       id: m.id,
       timestamp: m.timestamp,
@@ -107,6 +125,7 @@ export async function GET(req: NextRequest) {
       model: deviceLine?.split(" — ")[1],
       storage: parseField(m.body, "Storage"),
       condition: parseField(m.body, "Condition"),
+      carrier: parseField(m.body, "Carrier"),
       quote: parseField(m.body, "Quote") || parseField(m.body, "Offer"),
       payout: parseField(m.body, "Payout"),
       imei: parseField(m.body, "IMEI"),
@@ -117,6 +136,10 @@ export async function GET(req: NextRequest) {
       latestNote: latestNote?.text,
       latestNoteAt: latestNote?.timestamp,
       noteCount: notes.length,
+      resellEstimate,
+      grossMargin,
+      marginPercent,
+      marginFlag,
     });
   }
 
