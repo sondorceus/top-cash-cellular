@@ -5446,27 +5446,45 @@ export default function Home() {
 
             {searchBar}
 
-            {/* iPhone: All variants flat (series intermediate removed) */}
-            {deviceType === "iphone" && (
-              <>
-                <div className="space-y-2">
-                  {models.map((m) => {
-                    const seriesImg = IPHONE_SERIES.find(s => s.id === selectedSeries);
-                    const imgSrc = (m as { image?: string }).image || ({ip17pm:"/iphone17.png",ip17p:"/iphone17.png",ip17air:"/iphone17air.png",ip17:"/iphone17base.png",ip17e:"/iphone17e.png",ip16pm:"/iphone16.png",ip16p:"/iphone16.png",ip16plus:"/iphone16plus.png",ip16:"/iphone16base.png",ip16e:"/iphone16e.png",ip15pm:"/iphone15.png",ip15p:"/iphone15.png",ip15plus:"/iphone15.png",ip15:"/iphone15base.png",ip14pm:"/iphone14.png",ip14p:"/iphone14.png",ip14plus:"/iphone14plus.png",ip14:"/iphone14base.png",ip13pm:"/iphone13.png",ip13p:"/iphone13.png",ip13:"/iphone13base.png",ip12pm:"/iphone12.png",ip12p:"/iphone12.png",ip12:"/iphone12base.png",ip12mini:"/iphone12mini.png",ip11pm:"/iphone11.png",ip11p:"/iphone11.png",ip11:"/iphone11base.png"} as Record<string,string>)[m.id] || (seriesImg as {image?:string})?.image || null;
-                    return (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                      {imgSrc && <img src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
-                      <p className="font-semibold text-[15px] flex-1">{m.label}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m, deviceType)}</span>
-                        <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            {/* iPhone: grouped by generation (17 / 16 / 15 / ... / 11)
+                with a thin uppercase divider above each set so the
+                full list stays scannable. */}
+            {deviceType === "iphone" && (() => {
+              const fallbackImgs: Record<string,string> = {ip17pm:"/iphone17.png",ip17p:"/iphone17.png",ip17air:"/iphone17air.png",ip17:"/iphone17base.png",ip17e:"/iphone17e.png",ip16pm:"/iphone16.png",ip16p:"/iphone16.png",ip16plus:"/iphone16plus.png",ip16:"/iphone16base.png",ip16e:"/iphone16e.png",ip15pm:"/iphone15.png",ip15p:"/iphone15.png",ip15plus:"/iphone15.png",ip15:"/iphone15base.png",ip14pm:"/iphone14.png",ip14p:"/iphone14.png",ip14plus:"/iphone14plus.png",ip14:"/iphone14base.png",ip13pm:"/iphone13.png",ip13p:"/iphone13.png",ip13:"/iphone13base.png",ip12pm:"/iphone12.png",ip12p:"/iphone12.png",ip12:"/iphone12base.png",ip12mini:"/iphone12mini.png",ip11pm:"/iphone11.png",ip11p:"/iphone11.png",ip11:"/iphone11base.png"};
+              const visibleIds = new Set(models.map(m => m.id));
+              const groups = IPHONE_SERIES
+                .map(s => ({ label: s.label, year: s.year, variants: s.variants.filter(v => visibleIds.has(v.id)) }))
+                .filter(g => g.variants.length > 0);
+              return (
+                <div className="space-y-5">
+                  {groups.map(g => (
+                    <div key={g.label}>
+                      <div className="flex items-center gap-3 mb-2">
+                        <p className="text-[10px] font-extrabold tracking-[0.22em] uppercase text-[#00c853]">{g.label}</p>
+                        <span className="text-[10px] text-[#888]">{g.year}</span>
+                        <div className="flex-1 h-px bg-gradient-to-r from-[#00c853]/40 via-white/15 to-transparent" />
                       </div>
-                    </button>
-                    );
-                  })}
+                      <div className="space-y-2">
+                        {g.variants.map((v) => {
+                          const m = v as typeof models[number];
+                          const imgSrc = (m as { image?: string }).image || fallbackImgs[m.id] || null;
+                          return (
+                            <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                              {imgSrc && <img src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
+                              <p className="font-semibold text-[15px] flex-1">{m.label}</p>
+                              <div className="flex items-center gap-2">
+                                <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m, deviceType)}</span>
+                                <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </>
-            )}
+              );
+            })()}
 
             {/* Samsung Galaxy: top-level series picker (S / Z / Note) */}
             {deviceType === "android" && !selectedSeries && (
