@@ -176,62 +176,60 @@ const IPHONE_SERIES = [
   ]},
 ];
 
+// 2026-05-12: Skywalker said 'copy IWM Samsung prices, lower ours by
+// $20'. Subtracted $20 from every Samsung base (S / Z / Note) so we
+// undercut IWM by an extra $20 on top of the existing IWM-calibrated
+// margin. $10 floor so older FE / Flip 3 / Note 9 don't go to zero.
 const SAMSUNG_SERIES = [
-  { id: "sseries", label: "S Series", year: "Galaxy S20–S26", topPrice: 510, image: "/s-series.png", variants: [
-    { id: "gs26u", label: "Galaxy S26 Ultra", base: 510, image: "/devices/gs26u.png" },
-    { id: "gs25u", label: "Galaxy S25 Ultra", base: 330, image: "/devices/gs25u.png" },
-    { id: "gs24u", label: "Galaxy S24 Ultra", base: 460, image: "/devices/gs24u.png" },
-    { id: "gs23u", label: "Galaxy S23 Ultra", base: 300, image: "/devices/gs23u.png" },
-    { id: "gs22u", label: "Galaxy S22 Ultra", base: 180, image: "/devices/gs22u.png" },
-    { id: "gs21u", label: "Galaxy S21 Ultra", base: 130, image: "/devices/gs21u.png" },
-    { id: "gs20u", label: "Galaxy S20 Ultra", base: 80, image: "/devices/gs20u.png" },
-    { id: "gs25edge", label: "Galaxy S25 Edge", base: 120, image: "/devices/gs25edge.png" },
-    { id: "gs26p", label: "Galaxy S26+", base: 275, image: "/devices/gs26p.png" },
-    { id: "gs25p", label: "Galaxy S25+", base: 210, image: "/devices/gs25p.png" },
-    { id: "gs24p", label: "Galaxy S24+", base: 240, image: "/devices/gs24p.png" },
-    { id: "gs23p", label: "Galaxy S23+", base: 190, image: "/devices/gs23p.png" },
-    { id: "gs22p", label: "Galaxy S22+", base: 115, image: "/devices/gs22p.png" },
-    { id: "gs21p", label: "Galaxy S21+", base: 65, image: "/devices/gs21p.png" },
-    { id: "gs20p", label: "Galaxy S20+", base: 70, image: "/devices/gs20p.png" },
-    { id: "gs26", label: "Galaxy S26", base: 200, image: "/devices/gs26.png" },
-    { id: "gs25", label: "Galaxy S25", base: 125, image: "/devices/gs25.png" },
-    { id: "gs24", label: "Galaxy S24", base: 170, image: "/devices/gs24.png" },
-    { id: "gs23", label: "Galaxy S23", base: 120, image: "/devices/gs23.png" },
-    { id: "gs22", label: "Galaxy S22", base: 70, image: "/devices/gs22.png" },
-    { id: "gs21", label: "Galaxy S21", base: 40, image: "/devices/gs21.png" },
-    { id: "gs20", label: "Galaxy S20", base: 35, image: "/devices/gs20.png" },
-    { id: "gs25fe", label: "Galaxy S25 FE", base: 95, image: "/devices/gs25fe.png" },
-    { id: "gs24fe", label: "Galaxy S24 FE", base: 80, image: "/devices/gs24fe.png" },
-    { id: "gs23fe", label: "Galaxy S23 FE", base: 50, image: "/devices/gs23fe.png" },
-    { id: "gs21fe", label: "Galaxy S21 FE", base: 30, image: "/devices/gs21fe.png" },
-    { id: "gs20fe", label: "Galaxy S20 FE", base: 20, image: "/devices/gs20fe.png" },
+  { id: "sseries", label: "S Series", year: "Galaxy S20–S26", topPrice: 490, image: "/s-series.png", variants: [
+    { id: "gs26u", label: "Galaxy S26 Ultra", base: 490, image: "/devices/gs26u.png" },
+    { id: "gs25u", label: "Galaxy S25 Ultra", base: 310, image: "/devices/gs25u.png" },
+    { id: "gs24u", label: "Galaxy S24 Ultra", base: 440, image: "/devices/gs24u.png" },
+    { id: "gs23u", label: "Galaxy S23 Ultra", base: 280, image: "/devices/gs23u.png" },
+    { id: "gs22u", label: "Galaxy S22 Ultra", base: 160, image: "/devices/gs22u.png" },
+    { id: "gs21u", label: "Galaxy S21 Ultra", base: 110, image: "/devices/gs21u.png" },
+    { id: "gs20u", label: "Galaxy S20 Ultra", base: 60, image: "/devices/gs20u.png" },
+    { id: "gs25edge", label: "Galaxy S25 Edge", base: 100, image: "/devices/gs25edge.png" },
+    { id: "gs26p", label: "Galaxy S26+", base: 255, image: "/devices/gs26p.png" },
+    { id: "gs25p", label: "Galaxy S25+", base: 190, image: "/devices/gs25p.png" },
+    { id: "gs24p", label: "Galaxy S24+", base: 220, image: "/devices/gs24p.png" },
+    { id: "gs23p", label: "Galaxy S23+", base: 170, image: "/devices/gs23p.png" },
+    { id: "gs22p", label: "Galaxy S22+", base: 95, image: "/devices/gs22p.png" },
+    { id: "gs21p", label: "Galaxy S21+", base: 45, image: "/devices/gs21p.png" },
+    { id: "gs20p", label: "Galaxy S20+", base: 50, image: "/devices/gs20p.png" },
+    { id: "gs26", label: "Galaxy S26", base: 180, image: "/devices/gs26.png" },
+    { id: "gs25", label: "Galaxy S25", base: 105, image: "/devices/gs25.png" },
+    { id: "gs24", label: "Galaxy S24", base: 150, image: "/devices/gs24.png" },
+    { id: "gs23", label: "Galaxy S23", base: 100, image: "/devices/gs23.png" },
+    { id: "gs22", label: "Galaxy S22", base: 50, image: "/devices/gs22.png" },
+    { id: "gs21", label: "Galaxy S21", base: 20, image: "/devices/gs21.png" },
+    { id: "gs20", label: "Galaxy S20", base: 15, image: "/devices/gs20.png" },
+    { id: "gs25fe", label: "Galaxy S25 FE", base: 75, image: "/devices/gs25fe.png" },
+    { id: "gs24fe", label: "Galaxy S24 FE", base: 60, image: "/devices/gs24fe.png" },
+    { id: "gs23fe", label: "Galaxy S23 FE", base: 30, image: "/devices/gs23fe.png" },
+    { id: "gs21fe", label: "Galaxy S21 FE", base: 10, image: "/devices/gs21fe.png" },
+    { id: "gs20fe", label: "Galaxy S20 FE", base: 10, image: "/devices/gs20fe.png" },
   ]},
-  { id: "zseries", label: "Z Series", year: "Z Fold + Z Flip + TriFold", topPrice: 1475, image: "/fold-series.webp", variants: [
-    // Bases rebased 2026-05-11 against IWM Samsung scrape. Rule:
-    //   base = (IWM Flawless / Unlocked / max-storage ceiling - $150) / max_storage_mult (1.25)
-    // for models where we were paying more than IWM. Where IWM is
-    // higher than our current ceiling (Z TriFold, Z Fold 7, Z Fold 6,
-    // Z Flip 7) we leave base alone — we don't want to raise prices
-    // until Skywalker says so.
-    { id: "gztrifold", label: "Galaxy Z TriFold", base: 1475, image: "/devices/gztrifold.png" },
-    { id: "gzfold7", label: "Galaxy Z Fold 7", base: 630, image: "/devices/gzfold7.png" },
-    { id: "gzfold6", label: "Galaxy Z Fold 6", base: 325, image: "/devices/gzfold6.png" },
-    { id: "gzfold5", label: "Galaxy Z Fold 5", base: 164, image: "/devices/gzfold5.png" }, // was 400, IWM $355
-    { id: "gzfold4", label: "Galaxy Z Fold 4", base: 76,  image: "/devices/gzfold4.png" }, // was 300, IWM $245
-    { id: "gzfold3", label: "Galaxy Z Fold 3", base: 60,  image: "/devices/gzfold3.png" }, // was 190, scrape unreliable
-    { id: "gzflip7", label: "Galaxy Z Flip 7", base: 160, image: "/devices/gzflip7.png" },
-    { id: "gzflip6", label: "Galaxy Z Flip 6", base: 104, image: "/devices/gzflip6.png" }, // was 300, IWM $280
-    { id: "gzflip5", label: "Galaxy Z Flip 5", base: 48,  image: "/devices/gzflip5.png" }, // was 240, IWM $210
-    { id: "gzflip4", label: "Galaxy Z Flip 4", base: 40,  image: "/devices/gzflip4.png" }, // was 150, scrape unreliable
-    { id: "gzflip3", label: "Galaxy Z Flip 3", base: 30,  image: "/devices/gzflip3.png" }, // was 70, scrape unreliable
+  { id: "zseries", label: "Z Series", year: "Z Fold + Z Flip + TriFold", topPrice: 1455, image: "/fold-series.webp", variants: [
+    { id: "gztrifold", label: "Galaxy Z TriFold", base: 1455, image: "/devices/gztrifold.png" },
+    { id: "gzfold7", label: "Galaxy Z Fold 7", base: 610, image: "/devices/gzfold7.png" },
+    { id: "gzfold6", label: "Galaxy Z Fold 6", base: 305, image: "/devices/gzfold6.png" },
+    { id: "gzfold5", label: "Galaxy Z Fold 5", base: 144, image: "/devices/gzfold5.png" },
+    { id: "gzfold4", label: "Galaxy Z Fold 4", base: 56,  image: "/devices/gzfold4.png" },
+    { id: "gzfold3", label: "Galaxy Z Fold 3", base: 40,  image: "/devices/gzfold3.png" },
+    { id: "gzflip7", label: "Galaxy Z Flip 7", base: 140, image: "/devices/gzflip7.png" },
+    { id: "gzflip6", label: "Galaxy Z Flip 6", base: 84,  image: "/devices/gzflip6.png" },
+    { id: "gzflip5", label: "Galaxy Z Flip 5", base: 28,  image: "/devices/gzflip5.png" },
+    { id: "gzflip4", label: "Galaxy Z Flip 4", base: 20,  image: "/devices/gzflip4.png" },
+    { id: "gzflip3", label: "Galaxy Z Flip 3", base: 10,  image: "/devices/gzflip3.png" },
   ]},
-  { id: "noteseries", label: "Note Series", year: "Note 9 / 10 / 20", topPrice: 200, image: "/devices/gnote20u.png", variants: [
-    { id: "gnote20u", label: "Galaxy Note 20 Ultra 5G", base: 200, image: "/devices/gnote20u.png" },
-    { id: "gnote20", label: "Galaxy Note 20 5G", base: 130, image: "/devices/gnote20.png" },
-    { id: "gnote10p5g", label: "Galaxy Note 10+ 5G", base: 110, image: "/devices/gnote10p5g.png" },
-    { id: "gnote10p", label: "Galaxy Note 10+", base: 90, image: "/devices/gnote10p.png" },
-    { id: "gnote10", label: "Galaxy Note 10", base: 70, image: "/devices/gnote10.png" },
-    { id: "gnote9", label: "Galaxy Note 9", base: 40, image: "/devices/gnote9.png" },
+  { id: "noteseries", label: "Note Series", year: "Note 9 / 10 / 20", topPrice: 180, image: "/devices/gnote20u.png", variants: [
+    { id: "gnote20u", label: "Galaxy Note 20 Ultra 5G", base: 180, image: "/devices/gnote20u.png" },
+    { id: "gnote20", label: "Galaxy Note 20 5G", base: 110, image: "/devices/gnote20.png" },
+    { id: "gnote10p5g", label: "Galaxy Note 10+ 5G", base: 90, image: "/devices/gnote10p5g.png" },
+    { id: "gnote10p", label: "Galaxy Note 10+", base: 70, image: "/devices/gnote10p.png" },
+    { id: "gnote10", label: "Galaxy Note 10", base: 50, image: "/devices/gnote10.png" },
+    { id: "gnote9", label: "Galaxy Note 9", base: 20, image: "/devices/gnote9.png" },
   ]},
 ];
 
