@@ -3399,8 +3399,8 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
     hasNanoGlass: true,
   },
   // 2026 14-inch MacBook Pro M5 Pro/Max — same chip tiers as the 16,
-  // with the 15-16C base Pro chip configurable too. Smaller display, no
-  // 8TB SSD option on 14-inch.
+  // with the 15-16C base Pro chip configurable too. 8TB SSD available
+  // on M5 Max only (not M5 Pro).
   mbp14_m5pmax_2026: {
     processors: [
       { id: "m5pro_15_16", label: "M5 Pro", sub: "15-Core CPU / 16-Core GPU", multiplier: 1.00, adj: 1350 },
