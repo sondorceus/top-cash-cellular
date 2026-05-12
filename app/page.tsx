@@ -1104,8 +1104,8 @@ const MACBOOK_PRO_MODELS = [
   // — formula: Atlas's lowest 'Open' variant per model line minus $250
   // (midpoint of Skywalker's $200-$300 rule). Older models (M3, M2 Pro/13,
   // M1 Pro) are NOT on Atlas — left at prior bases pending comp study.
-  { id: "mbp16_m5pmax_2026", label: "MacBook Pro 16\" M5 Pro/Max (2026)", base: 1737, image: "/devices/macbook-pro-m4.webp" },
-  { id: "mbp14_m5pmax_2026", label: "MacBook Pro 14\" M5 Pro/Max (2026)", base: 1334, image: "/devices/macbook-pro-m4.webp" },
+  { id: "mbp16_m5pmax_2026", label: "MacBook Pro 16\" M5 (2026)", base: 1737, image: "/devices/macbook-pro-m4.webp" },
+  { id: "mbp14_m5pmax_2026", label: "MacBook Pro 14\" M5 (2026)", base: 1334, image: "/devices/macbook-pro-m4.webp" },
   { id: "mbp14_m5_2025", label: "MacBook Pro 14\" M5 (2025)", base: 1043, image: "/devices/macbook-pro-m4.webp" },
   { id: "mbp16m4", label: "MacBook Pro 16\" M4 (2024)", base: 1456, image: "/devices/macbook-pro-m4.webp" },
   { id: "mbp14m4", label: "MacBook Pro 14\" M4 (2024)", base: 768, image: "/devices/macbook-pro-m4.webp" },
