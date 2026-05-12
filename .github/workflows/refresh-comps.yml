@@ -235,3 +235,67 @@ jobs:
             </details>
           branch: refresh-comps/google
           delete-branch: true
+
+  iwm:
+    name: Refresh IWM prices (all devices)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install playwright + chromium
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          playwright install chromium --with-deps
+
+      - name: Run IWM price refresh
+        id: refresh
+        run: |
+          python scripts/refresh-iwm-prices.py all | tee /tmp/refresh.log
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          tail -200 /tmp/refresh.log >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        timeout-minutes: 120
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet public/comps/iwm-prices.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Open PR with refreshed prices
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: refresh IWM prices (monthly auto-scrape)"
+          title: "Monthly IWM price refresh — all devices"
+          body: |
+            Automated monthly refresh of IWM prices for all devices.
+            Formula: our_price = IWM × 0.85 (15% less).
+
+            Review the diff before merging — values that moved more than
+            40% were left at their previous value (anomaly protection).
+
+            <details>
+            <summary>Refresh log</summary>
+
+            ```
+            ${{ steps.refresh.outputs.log }}
+            ```
+
+            </details>
+          branch: refresh-comps/iwm
+          delete-branch: true
