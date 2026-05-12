@@ -1462,16 +1462,16 @@ const LENOVO_PC_SERIES = [
 const LENOVO_PC_ALL_SUB_SERIES: { id: string; label: string; variants: { id: string; label: string; base: number }[] }[] = [];
 
 const DELL_MODELS = [
-  { id: "dxps17", label: "XPS 17 (2024)", base: 750, image: "/devices/dell-xps.webp" },
-  { id: "dxps15", label: "XPS 15 (2024)", base: 620, image: "/devices/dell-xps.webp" },
-  { id: "dxps13", label: "XPS 13 (2024)", base: 480, image: "/devices/dell-xps.webp" },
-  { id: "dxps15g23", label: "XPS 15 (2023)", base: 500, image: "/devices/dell-xps.webp" },
-  { id: "dxps13g23", label: "XPS 13 (2023)", base: 380, image: "/devices/dell-xps.webp" },
-  { id: "dlat7440", label: "Latitude 7440", base: 420, image: "/devices/dell-latitude.jpg" },
-  { id: "dlat5540", label: "Latitude 5540", base: 300, image: "/devices/dell-latitude.jpg" },
-  { id: "dinsp16p", label: "Inspiron 16 Plus", base: 350, image: "/devices/dell-inspiron-15.webp" },
-  { id: "dinsp15", label: "Inspiron 15", base: 220, image: "/devices/dell-inspiron-15.webp" },
-  { id: "dinsp14", label: "Inspiron 14", base: 200, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dxps17", label: "XPS 17 (2024)", base: 0, image: "/devices/dell-xps.webp" },
+  { id: "dxps15", label: "XPS 15 (2024)", base: 0, image: "/devices/dell-xps.webp" },
+  { id: "dxps13", label: "XPS 13 (2024)", base: 0, image: "/devices/dell-xps.webp" },
+  { id: "dxps15g23", label: "XPS 15 (2023)", base: 0, image: "/devices/dell-xps.webp" },
+  { id: "dxps13g23", label: "XPS 13 (2023)", base: 0, image: "/devices/dell-xps.webp" },
+  { id: "dlat7440", label: "Latitude 7440", base: 0, image: "/devices/dell-latitude.jpg" },
+  { id: "dlat5540", label: "Latitude 5540", base: 0, image: "/devices/dell-latitude.jpg" },
+  { id: "dinsp16p", label: "Inspiron 16 Plus", base: 0, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dinsp15", label: "Inspiron 15", base: 0, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dinsp14", label: "Inspiron 14", base: 0, image: "/devices/dell-inspiron-15.webp" },
 ];
 
 // Alienware laptop categories restructured 2026-05-06 to mirror itsworthmore.com
@@ -1840,12 +1840,12 @@ const APPLE_DESKTOP_MODELS = [
 ];
 
 const DELL_DESKTOP_MODELS = [
-  { id: "doptiplex7010", label: "OptiPlex 7010", base: 350, image: "/devices/dell-optiplex-tower.webp" },
-  { id: "doptiplex5000", label: "OptiPlex 5000", base: 280, image: "/devices/dell-optiplex-sff.webp" },
-  { id: "dxps8960", label: "XPS Desktop 8960", base: 500, image: "/devices/dell-xps-8960.webp" },
-  { id: "dxps8950", label: "XPS Desktop 8950", base: 380, image: "/devices/dell-xps-8950.webp" },
-  { id: "dinsp3030", label: "Inspiron 3030 Desktop", base: 250 },
-  { id: "dprecision3680", label: "Precision 3680", base: 550, image: "/devices/dell-optiplex-tower.webp" },
+  { id: "doptiplex7010", label: "OptiPlex 7010", base: 0, image: "/devices/dell-optiplex-tower.webp" },
+  { id: "doptiplex5000", label: "OptiPlex 5000", base: 0, image: "/devices/dell-optiplex-sff.webp" },
+  { id: "dxps8960", label: "XPS Desktop 8960", base: 0, image: "/devices/dell-xps-8960.webp" },
+  { id: "dxps8950", label: "XPS Desktop 8950", base: 0, image: "/devices/dell-xps-8950.webp" },
+  { id: "dinsp3030", label: "Inspiron 3030 Desktop", base: 0 },
+  { id: "dprecision3680", label: "Precision 3680", base: 0, image: "/devices/dell-optiplex-tower.webp" },
 ];
 
 const LENOVO_DESKTOP_MODELS = [
@@ -1857,21 +1857,21 @@ const LENOVO_DESKTOP_MODELS = [
 ];
 
 const HP_DESKTOP_MODELS = [
-  { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 400, image: "/devices/hp-elitedesk-800.webp" },
-  { id: "hpprodesk", label: "ProDesk 400 G9", base: 280, image: "/devices/hp-prodesk-400.webp" },
-  { id: "hpomendsk", label: "OMEN 45L Desktop", base: 650, image: "/devices/hp-omen-45l.webp" },
-  { id: "hpomen40", label: "OMEN 40L Desktop", base: 500, image: "/devices/hp-omen-35l.webp" },
-  { id: "hpenvy34", label: "Envy 34 All-in-One", base: 550, image: "/devices/lenovo-ideacentre.webp" },
-  { id: "hppav32", label: "Pavilion 32 All-in-One", base: 380, image: "/devices/lenovo-ideacentre.webp" },
+  { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 0, image: "/devices/hp-elitedesk-800.webp" },
+  { id: "hpprodesk", label: "ProDesk 400 G9", base: 0, image: "/devices/hp-prodesk-400.webp" },
+  { id: "hpomendsk", label: "OMEN 45L Desktop", base: 0, image: "/devices/hp-omen-45l.webp" },
+  { id: "hpomen40", label: "OMEN 40L Desktop", base: 0, image: "/devices/hp-omen-35l.webp" },
+  { id: "hpenvy34", label: "Envy 34 All-in-One", base: 0, image: "/devices/lenovo-ideacentre.webp" },
+  { id: "hppav32", label: "Pavilion 32 All-in-One", base: 0, image: "/devices/lenovo-ideacentre.webp" },
 ];
 
 const ASUS_DESKTOP_MODELS = [
-  { id: "asrogstrix", label: "ROG Strix G16CH", base: 700, image: "/devices/asus-rog-desktop.webp" },
-  { id: "asroghyper", label: "ROG Hyperion", base: 1200, image: "/devices/asus-rog-desktop.webp" },
-  { id: "asrogflow", label: "ROG NUC", base: 500, image: "/devices/asus-rog-desktop.webp" },
-  { id: "astufgaming", label: "TUF Gaming Desktop", base: 450, image: "/devices/asus-rog-desktop.webp" },
-  { id: "asexperpro", label: "ExpertCenter D5", base: 300, image: "/devices/asus-rog-desktop.webp" },
-  { id: "asnuc14", label: "NUC 14 Pro", base: 350, image: "/devices/asus-rog-desktop.webp" },
+  { id: "asrogstrix", label: "ROG Strix G16CH", base: 0, image: "/devices/asus-rog-desktop.webp" },
+  { id: "asroghyper", label: "ROG Hyperion", base: 0, image: "/devices/asus-rog-desktop.webp" },
+  { id: "asrogflow", label: "ROG NUC", base: 0, image: "/devices/asus-rog-desktop.webp" },
+  { id: "astufgaming", label: "TUF Gaming Desktop", base: 0, image: "/devices/asus-rog-desktop.webp" },
+  { id: "asexperpro", label: "ExpertCenter D5", base: 0, image: "/devices/asus-rog-desktop.webp" },
+  { id: "asnuc14", label: "NUC 14 Pro", base: 0, image: "/devices/asus-rog-desktop.webp" },
 ];
 
 // ASUS LAPTOPS — three-level tree mirroring itsworthmore.com.
@@ -2242,21 +2242,21 @@ const DELL_PC_ALL_SUB_SERIES = [
 ];
 
 const ALIENWARE_DESKTOP_MODELS = [
-  { id: "awaurorar16", label: "Aurora R16", base: 800, image: "/devices/alienware-aurora-r16.webp" },
-  { id: "awaurorar15", label: "Aurora R15", base: 600, image: "/devices/alienware-aurora-r15.webp" },
+  { id: "awaurorar16", label: "Aurora R16", base: 0, image: "/devices/alienware-aurora-r16.webp" },
+  { id: "awaurorar15", label: "Aurora R15", base: 0, image: "/devices/alienware-aurora-r15.webp" },
   { id: "awaurorar14", label: "Aurora R14", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r14.webp" },
-  { id: "awaurorar13", label: "Aurora R13", base: 450, image: "/devices/alienware-aurora-r13.webp" },
+  { id: "awaurorar13", label: "Aurora R13", base: 0, image: "/devices/alienware-aurora-r13.webp" },
   { id: "awaurorar12", label: "Aurora R12", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r12.webp" },
   { id: "awaurorar10", label: "Aurora R10", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r10.webp" },
   { id: "awarea51desktop", label: "Area-51 Desktop", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51-desktop.webp" },
 ];
 
 const MSI_DESKTOP_MODELS = [
-  { id: "msiinfinity", label: "MEG Trident X2", base: 900, image: "/devices/msi-trident.webp" },
-  { id: "msitrident", label: "MAG Trident S5", base: 550, image: "/devices/msi-trident.webp" },
-  { id: "msinightblade", label: "MAG Codex 6", base: 650, image: "/devices/msi-codex.webp" },
-  { id: "msicodex5", label: "MAG Codex 5", base: 450, image: "/devices/msi-codex.webp" },
-  { id: "msipro", label: "PRO DP180", base: 300, image: "/devices/msi-aegis.webp" },
+  { id: "msiinfinity", label: "MEG Trident X2", base: 0, image: "/devices/msi-trident.webp" },
+  { id: "msitrident", label: "MAG Trident S5", base: 0, image: "/devices/msi-trident.webp" },
+  { id: "msinightblade", label: "MAG Codex 6", base: 0, image: "/devices/msi-codex.webp" },
+  { id: "msicodex5", label: "MAG Codex 5", base: 0, image: "/devices/msi-codex.webp" },
+  { id: "msipro", label: "PRO DP180", base: 0, image: "/devices/msi-aegis.webp" },
 ];
 
 const IPAD_SERIES = [
