@@ -7696,14 +7696,13 @@ export default function Home() {
               ))}
             </div>
           )}
-          {/* 3D depth: a faint grey hairline in the background that
-              visually links the device thumb (selection panel) to the
-              offer / price column. Matches the white/10 divider style
-              used elsewhere on the page. Horizontal on desktop, vertical
-              on mobile. Pure decoration, never blocks clicks. */}
+          {/* 3D depth: a faint grey hairline that visually links the
+              device thumb (selection panel) to the offer / price column
+              on desktop. Skipped on mobile — the column stacks there
+              and a vertical centerline cut through the trust-badge list
+              awkwardly. Pure decoration, never blocks clicks. */}
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden z-0">
             <div className="hidden lg:block absolute left-[12%] right-[12%] top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-white/12 to-transparent" />
-            <div className="lg:hidden absolute top-[10%] bottom-[10%] left-1/2 -translate-x-1/2 w-px bg-gradient-to-b from-transparent via-white/12 to-transparent" />
           </div>
           <div className="relative z-10 max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-12 pb-8 lg:flex lg:gap-8 lg:items-start lg:text-left text-center">
             {selectionPanel}
