@@ -1943,21 +1943,21 @@ const CARRIER_LOCKS = [
 // override a specific condition id. Pure data — adding a new brand
 // override is one entry, no logic changes.
 const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: string; desc?: string }>>> = {
-  // Apple family — 'Flawless' becomes 'Pristine' / 'Brand New' becomes 'Sealed in Box'
+  // Apple family — 'Mint' becomes 'Pristine' / 'Sealed' label
   iphone: {
-    sealed: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
     mint: { label: "Pristine", desc: "Like new — zero scratches or marks" },
   },
   ipad: {
-    sealed: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
     mint: { label: "Pristine", desc: "Like new — zero scratches or marks" },
   },
   macbook: {
-    sealed: { label: "Sealed in Box", desc: "Factory sealed, original packaging" },
+    sealed: { label: "Sealed", desc: "Factory sealed, original packaging" },
     mint: { label: "Pristine", desc: "Like new — zero wear, all original" },
   },
   apple_desktop: {
-    sealed: { label: "Sealed in Box", desc: "Factory sealed, never plugged in" },
+    sealed: { label: "Sealed", desc: "Factory sealed, never plugged in" },
     mint: { label: "Pristine", desc: "Like new — all original cables + box" },
   },
   applewatch: {
@@ -1969,15 +1969,15 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   },
   // Samsung family — 'Flawless' becomes 'New'
   android: {
-    sealed: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
     mint: { label: "New", desc: "Boxed & untouched — zero marks" },
   },
   samsung_tab: {
-    sealed: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
     mint: { label: "New", desc: "Boxed & untouched" },
   },
   samsung_pc: {
-    sealed: { label: "Sealed in Box", desc: "Factory sealed" },
+    sealed: { label: "Sealed", desc: "Factory sealed" },
     mint: { label: "New", desc: "Boxed & untouched" },
   },
   samsungwatch: {
@@ -1986,7 +1986,7 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   },
   // Google family
   pixel: {
-    sealed: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
     mint: { label: "Pristine", desc: "Like new — zero scratches" },
   },
   pixelwatch: {
@@ -1998,7 +1998,7 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   },
   // Consoles — different vocabulary; the customer thinks about working/broken not flawless/fair
   sony: {
-    sealed: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
+    sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
     mint: { label: "Like New", desc: "Boxed, lightly used, no marks" },
     verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
@@ -2006,7 +2006,7 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
     broken:   { label: "Disc drive broken / won't power on", desc: "Major hardware fault" },
   },
   microsoft: {
-    sealed: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
+    sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
     mint: { label: "Like New", desc: "Boxed, lightly used, no marks" },
     verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
@@ -2014,7 +2014,7 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
     broken:   { label: "Disc drive broken / won't power on", desc: "Major hardware fault" },
   },
   nintendo: {
-    sealed: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
+    sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
     mint: { label: "Like New", desc: "Boxed, lightly used, no marks" },
     verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
@@ -2022,7 +2022,7 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
     broken:   { label: "Joy-Con drift / won't power on", desc: "Major hardware fault" },
   },
   console: {
-    sealed: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
+    sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
     mint: { label: "Like New", desc: "Boxed, lightly used" },
     broken:   { label: "Disc drive broken / won't power on" },
   },
@@ -2041,7 +2041,7 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   },
   // VR
   meta_vr: {
-    sealed: { label: "Sealed in Box", desc: "Factory sealed, never paired" },
+    sealed: { label: "Sealed", desc: "Factory sealed, never paired" },
     broken:   { label: "Cracked lens / won't power on" },
   },
   valve_vr: {
@@ -2086,7 +2086,7 @@ const CONNECTIVITY = [
 // regardless of which provider was originally on the phone.
 const TOP_CARRIER_MULT = 1.0;
 
-// 'Brand New / Sealed in Box' tier — pays a +22% premium over Flawless.
+// 'Sealed' tier — pays a +22% premium over Flawless.
 // Added to phones on 2026-05-12 after Skywalker compared us to IWM:
 // IWM offers ~$340 for a sealed Z Flip 6 / 512 / unlocked while we were
 // capping at Flawless = $260. IWM's own Sealed tier is ~21% over their
@@ -3335,8 +3335,8 @@ export default function Home() {
   };
 
   // Accessory bonus: +$15 flat when customer confirms all original accessories
-  // for "new" tiers (Brand New / Flawless). Skywalker's call.
-  const isNewTier = condition?.id === "sealed" || condition?.id === "flawless";
+  // for "new" tiers (Sealed / Mint). Skywalker's call.
+  const isNewTier = condition?.id === "sealed" || condition?.id === "mint";
   const accessoryBonus = isNewTier && accessoriesIncluded ? 15 : 0;
   // MacBook spec multipliers — only fire when the picked model has a
   // MACBOOK_SPECS entry. Default to 1 so non-MacBook flows are unchanged.
@@ -6712,7 +6712,7 @@ export default function Home() {
             {quantity > 1 && <p className="text-[#e6e6e6] text-sm mb-2">${quote} each × {quantity}</p>}
             {quantity === 1 && <div className="mb-3" />}
 
-            {/* Accessory bonus — Brand New / Flawless only */}
+            {/* Accessory bonus — Sealed / Mint only */}
             {isNewTier && (
               <div className="max-w-md mx-auto mb-4">
                 <button
@@ -7807,7 +7807,7 @@ export default function Home() {
                 </div>
                 <div className="space-y-4 mb-10">
                   {[
-                    { tier: "Brand New", icon: "✨", color: "#00c853", desc: "Sealed in the box, never activated. Receipt strongly preferred. We verify the seal and confirm the IMEI is clean. Brand New only applies to computers/laptops/desktops, not phones." },
+                    { tier: "Sealed", icon: "✨", color: "#00c853", desc: "Sealed in the box, never activated. Receipt strongly preferred. We verify the seal and confirm the IMEI is clean. Sealed only applies to computers/laptops/desktops, not phones." },
                     { tier: "Like New", icon: "🌟", color: "#00c853", desc: "Indistinguishable from new — zero scratches on screen or body under bright light, original accessories present, battery health ≥ 95% on phones. Powers on cleanly, all sensors and buttons work, Face ID / Touch ID enrolled and functioning." },
                     { tier: "Good", icon: "👍", color: "#88dd66", desc: "Light micro-scratches on the screen or frame visible only at certain angles. No cracks, no dents, no chips. Battery health ≥ 85% on phones. All functions work normally." },
                     { tier: "Fair", icon: "🛠️", color: "#ffb400", desc: "Visible scratches or scuffs but no cracks in the glass. Frame may have small dings. Screen powers on with full color, no dead pixels, no shadow burn-in. All buttons and ports work." },
