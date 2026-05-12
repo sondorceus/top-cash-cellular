@@ -1605,8 +1605,8 @@ const CONDITIONS = [
   { id: "brandnew", label: "Brand New", desc: "Factory sealed, never activated", multiplier: 1.22, icon: "🆕", details: ["Still in factory original packaging", "Plastic film still on the device and has not been reapplied", "Device is not activated", "Must come with the original box with matching serial number", "Contains all original accessories"] },
   { id: "flawless", label: "Flawless", desc: "Like new, zero signs of use", multiplier: 1.0, icon: "✨", details: ["Zero scratches, scuffs, or other marks — looks like new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
   { id: "verygood", label: "Very Good", desc: "Minimal use, no visible scratches at arm's length", multiplier: 0.95, icon: "💎", details: ["Light scratches or scuffs not visible at arm's length — no dents, dings, or deep scratches", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
-  { id: "good", label: "Good", desc: "Light wear, fully functional", multiplier: 0.88, icon: "👍", details: ["Light to moderate signs of wear — few light scratches and/or dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
-  { id: "fair", label: "Fair", desc: "Moderate to heavy wear, functional", multiplier: 0.72, icon: "👌", details: ["Moderate to excessive signs of wear — contains heavy scratches and/or dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
+  { id: "good", label: "Good", desc: "Light wear, fully functional", multiplier: 0.93, icon: "👍", details: ["Light to moderate signs of wear — few light scratches and/or dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
+  { id: "fair", label: "Fair", desc: "Moderate to heavy wear, functional", multiplier: 0.70, icon: "👌", details: ["Moderate to excessive signs of wear — contains heavy scratches and/or dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
   { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: "⚠️", details: ["Functionally defective or broken parts on either screen or body", "Cracked display or damaged housing", "Display defects such as dead pixels, white spots, or burn-in", "Shows no signs of liquid intrusion or water damage"] },
 ];
 
@@ -2058,15 +2058,17 @@ function getConditionLabel(cond: { id: string; label: string; desc?: string }, d
   return { label: override.label, desc: override.desc ?? cond.desc };
 }
 
-// Combined multiplier: unlocked anything pays the most, big-3 locked
-// pays mid, locked-to-other pays the least. 'unlocked' carrier id is
-// treated as if the user said No to the lock step.
+// Calibrated against IWM on 2026-05-12 per Skywalker directive:
+// Locked Flawless = Unlocked × 0.81 (a flat 19% off). The smaller
+// per-condition variations (Locked Good 0.79, Locked Fair 0.75) roll
+// into 0.81 for matrix simplicity; the diff is single-digit dollars.
+// 'unlocked' carrier id is treated as if the user said No to the lock step.
 const carrierMultiplierFor = (carrierId: string | null | undefined, lockId: string | null | undefined): number => {
   if (carrierId === "unlocked") return 1.0;
   if (!lockId) return 1; // not picked yet, no penalty
   if (lockId === "no") return 1.0;
-  if (carrierId === "other") return 0.85;
-  return 0.95;
+  if (carrierId === "other") return 0.70; // off-brand locked phones hold less value
+  return 0.81;
 };
 
 // iPad connectivity tier — Wi-Fi + Cellular models retain more value
