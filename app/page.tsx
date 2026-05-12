@@ -490,6 +490,28 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "256": { fair: 133, good: 180, mint: 200, sealed: 209 },
     "512": { fair: 133, good: 180, mint: 200, sealed: 218 },
   },
+  // === AUDIT ROUND 2 — 5 more devices with >15% multiplier error ===
+  gs24p: {
+    "256": { broken: 72, fair: 144, good: 198, mint: 230, sealed: 266, verygood: 212 },
+    "512": { broken: 81, fair: 180, good: 234, mint: 266, sealed: 310, verygood: 248 },
+  },
+  gs21: {
+    "128": { broken: 9, fair: 18, good: 27, mint: 40, sealed: 68 },
+    "256": { broken: 9, fair: 27, good: 36, mint: 50, sealed: 86 },
+  },
+  ip11p: {
+    "256": { broken: 26, fair: 90, good: 119, mint: 133, sealed: 152 },
+    "512": { broken: 28, fair: 114, good: 142, mint: 157, sealed: 171 },
+    "64": { broken: 24, fair: 62, good: 90, mint: 104, sealed: 124 },
+  },
+  px7p: {
+    "128": { broken: 22, fair: 45, good: 72, mint: 108, sealed: 135 },
+    "256": { broken: 27, fair: 58, good: 86, mint: 122, sealed: 144 },
+    "512": { broken: 29, fair: 63, good: 90, mint: 126, sealed: 148 },
+  },
+  gs20: {
+    "base": { broken: 14, fair: 45, good: 58, mint: 68, sealed: 90 },
+  },
 };
 
 const IPHONE_SERIES = [
