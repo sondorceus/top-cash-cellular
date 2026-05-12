@@ -2084,6 +2084,9 @@ const NINTENDO_MODELS = [
 const CONSOLE_MODELS = [...SONY_MODELS, ...MICROSOFT_MODELS, ...NINTENDO_MODELS];
 
 const APPLEWATCH_MODELS = [
+  // Ultra 3 base is a placeholder — ClaudeMX's IWM scraper picks up
+  // exact pricing on the weekly Monday refresh.
+  { id: "awu3", label: "Apple Watch Ultra 3", base: 580, image: "/devices/apple-watch-ultra-3.webp" },
   { id: "awu2", label: "Apple Watch Ultra 2", base: 450, image: "/devices/apple-watch-ultra-2.webp" },
   { id: "awu1", label: "Apple Watch Ultra", base: 350, image: "/devices/apple-watch-ultra.webp" },
   { id: "aws10", label: "Apple Watch Series 10", base: 280, image: "/devices/apple-watch-series-10.webp" },
@@ -2300,7 +2303,7 @@ const GOOGLE_TAB_MODELS = [
 type ModelGroup = { label: string; year?: string; ids: string[] };
 const MODEL_GROUPS: Record<string, ModelGroup[]> = {
   applewatch: [
-    { label: "Ultra",      year: "2022–2023", ids: ["awu2", "awu1"] },
+    { label: "Ultra",      year: "2022–2025", ids: ["awu3", "awu2", "awu1"] },
     { label: "Series",     year: "2021–2024", ids: ["aws10", "aws9", "aws8", "aws7"] },
     { label: "SE",         year: "2020–2022", ids: ["awse2", "awse1"] },
   ],
@@ -3101,28 +3104,40 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
     ]},
   ],
 };
-// Apple Watch Ultra (gen 1 + 2) only ships in one configuration:
+// Apple Watch Ultra ships in only one configuration each generation:
 // titanium case, 49mm, cellular. So the case-material, case-size, and
 // GPS-vs-Cellular questions are all meaningless for Ultras — skip them
-// and just ask which of the four Ultra-specific bands shipped with it
-// (or 3rd-party / none). Non-Ultra Apple Watches keep the standard
-// 4-question flow because they really do have material / size / GPS
-// vs cellular variants.
-const isAppleWatchUltra = (modelId?: string | null) => modelId === "awu1" || modelId === "awu2";
+// and just ask which Ultra-specific band shipped with it. Non-Ultra
+// Apple Watches keep the standard 4-question flow because they really
+// do have material / size / GPS vs cellular variants.
+//
+// Band lineup by year-of-release:
+//   Ultra 1 (Sept 2022): Alpine Loop, Trail Loop, Ocean Band
+//   Ultra 2 (Sept 2023): same three (Titanium Milanese didn't ship until
+//                        Sept 2024 — not an original-with-watch option)
+//   Ultra 3 (Sept 2025): all four including Titanium Milanese Loop
+//
+// All Ultra-original bands are $99 retail except Titanium Milanese Loop
+// at $199 (titanium construction), which is why it gets a higher
+// resale multiplier.
+const isAppleWatchUltra = (modelId?: string | null) => modelId === "awu1" || modelId === "awu2" || modelId === "awu3";
 const getBrandExtras = (dt: string | null | undefined, modelId?: string | null | undefined): BrandExtra[] => {
   const base = (dt && BRAND_EXTRAS[dt]) || [];
   if (dt === "applewatch" && isAppleWatchUltra(modelId)) {
+    const ultraBandOptions = [
+      { id: "alpine", label: "Alpine Loop", multiplier: 1.05 },
+      { id: "trail",  label: "Trail Loop",  multiplier: 1.05 },
+      { id: "ocean",  label: "Ocean Band",  multiplier: 1.05 },
+      // Titanium Milanese Loop only shipped with Ultra 3 (released Sept 2024,
+      // after Ultra 1 and Ultra 2 were already out)
+      ...(modelId === "awu3" ? [{ id: "titanium_milanese", label: "Titanium Milanese Loop", multiplier: 1.12 }] : []),
+      { id: "third", label: "3rd-party band", multiplier: 1.00 },
+      { id: "none",  label: "No band",        multiplier: 0.90 },
+    ];
     return base
       .filter(q => q.id !== "connectivity" && q.id !== "material" && q.id !== "size")
       .map(q => q.id === "band"
-        ? { ...q, question: "Original band included?", options: [
-            { id: "alpine",            label: "Alpine Loop",              multiplier: 1.05 },
-            { id: "trail",             label: "Trail Loop",               multiplier: 1.05 },
-            { id: "ocean",             label: "Ocean Band",               multiplier: 1.05 },
-            { id: "titanium_milanese", label: "Titanium Milanese Loop",   multiplier: 1.12 },
-            { id: "third",             label: "3rd-party band",           multiplier: 1.00 },
-            { id: "none",              label: "No band",                  multiplier: 0.90 },
-          ]}
+        ? { ...q, question: "Original band included?", options: ultraBandOptions }
         : q
       );
   }
