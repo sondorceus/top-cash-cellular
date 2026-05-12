@@ -9081,7 +9081,58 @@ export default function Home() {
                           if (v?.image) return v.image;
                         }
                         return undefined;
-                      };
+                        // === FINAL: ALL REMAINING DEVICES ===
+  aws10: {
+    "base": { fair: 18, good: 54, mint: 90, sealed: 112, verygood: 72 },
+  },
+  aws7: {
+    "base": { good: 9, mint: 27, sealed: 40, verygood: 18 },
+  },
+  aws8: {
+    "base": { good: 18, mint: 40, sealed: 63, verygood: 27 },
+  },
+  aws9: {
+    "base": { fair: 14, good: 40, mint: 63, sealed: 81, verygood: 50 },
+  },
+  awse2: {
+    "base": { good: 9, mint: 18, sealed: 40 },
+  },
+  mba13m2: {
+    "1tb": { fair: 310, good: 387, mint: 446, sealed: 482, verygood: 418 },
+    "256": { fair: 198, good: 274, mint: 333, sealed: 369, verygood: 306 },
+    "2tb": { fair: 356, good: 432, mint: 490, sealed: 526, verygood: 464 },
+    "512": { fair: 243, good: 320, mint: 378, sealed: 414, verygood: 351 },
+  },
+  mba15m2: {
+    "1tb": { fair: 374, good: 441, mint: 486, sealed: 513, verygood: 464 },
+    "256": { fair: 284, good: 351, mint: 396, sealed: 423, verygood: 374 },
+    "2tb": { fair: 464, good: 531, mint: 576, sealed: 603, verygood: 554 },
+    "512": { fair: 328, good: 396, mint: 441, sealed: 468, verygood: 418 },
+  },
+  mbp14_m5_2025: {
+    "1tb": { fair: 788, good: 891, mint: 990, sealed: 1058, verygood: 936 },
+    "2tb": { fair: 878, good: 981, mint: 1080, sealed: 1148, verygood: 1026 },
+    "4tb": { fair: 1102, good: 1206, mint: 1305, sealed: 1372, verygood: 1251 },
+    "512": { fair: 652, good: 756, mint: 855, sealed: 922, verygood: 801 },
+  },
+  mbp14_m5pmax_2026: {
+    "1tb": { fair: 788, good: 891, mint: 990, sealed: 1058, verygood: 936 },
+    "2tb": { fair: 878, good: 981, mint: 1080, sealed: 1148, verygood: 1026 },
+    "4tb": { fair: 1102, good: 1206, mint: 1305, sealed: 1372, verygood: 1251 },
+    "512": { fair: 652, good: 756, mint: 855, sealed: 922, verygood: 801 },
+  },
+  mbp14m4: {
+    "1tb": { fair: 765, good: 868, mint: 968, sealed: 1012, verygood: 914 },
+    "2tb": { fair: 878, good: 981, mint: 1080, sealed: 1125, verygood: 1026 },
+    "512": { fair: 652, good: 756, mint: 855, sealed: 900, verygood: 801 },
+  },
+  ps4: {
+    "base": { broken: 8, fair: 14, good: 27, mint: 45, sealed: 63 },
+  },
+  ps4pro: {
+    "base": { broken: 21, fair: 45, good: 86, mint: 108, sealed: 135 },
+  },
+};
                       return cartItems.map((item, i) => {
                         const imgSrc = item.image || lookupImage(item.modelId);
                         return (
