@@ -1602,12 +1602,12 @@ const GOOGLE_TAB_MODELS = [
 ];
 
 const CONDITIONS = [
-  { id: "brandnew", label: "Brand New", desc: "Factory sealed, never activated", multiplier: 1.22, icon: "🆕", details: ["Still in factory original packaging", "Plastic film still on the device and has not been reapplied", "Device is not activated", "Must come with the original box with matching serial number", "Contains all original accessories"] },
-  { id: "flawless", label: "Flawless", desc: "Like new, zero signs of use", multiplier: 1.0, icon: "✨", details: ["Zero scratches, scuffs, or other marks — looks like new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
-  { id: "verygood", label: "Very Good", desc: "Minimal use, no visible scratches at arm's length", multiplier: 0.95, icon: "💎", details: ["Light scratches or scuffs not visible at arm's length — no dents, dings, or deep scratches", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
-  { id: "good", label: "Good", desc: "Light wear, fully functional", multiplier: 0.93, icon: "👍", details: ["Light to moderate signs of wear — few light scratches and/or dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
-  { id: "fair", label: "Fair", desc: "Moderate to heavy wear, functional", multiplier: 0.70, icon: "👌", details: ["Moderate to excessive signs of wear — contains heavy scratches and/or dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
-  { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: "⚠️", details: ["Functionally defective or broken parts on either screen or body", "Cracked display or damaged housing", "Display defects such as dead pixels, white spots, or burn-in", "Shows no signs of liquid intrusion or water damage"] },
+  { id: "sealed", label: "Sealed", desc: "Factory sealed, never opened", multiplier: 1.22, icon: "📦", details: ["Still in factory original sealed packaging", "Plastic wrap or seal is intact and has not been tampered with", "Device has never been activated or powered on", "Must include original box with matching serial number", "Contains all original accessories unopened"] },
+  { id: "mint", label: "Mint", desc: "Like new, zero signs of use", multiplier: 1.0, icon: "✨", details: ["Zero scratches, scuffs, or other marks — looks brand new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 90% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
+  { id: "verygood", label: "Very Good", desc: "Minimal use, barely noticeable wear", multiplier: 0.93, icon: "💎", details: ["Very light scratches or scuffs barely visible — no dents or dings", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
+  { id: "good", label: "Good", desc: "Normal wear, fully functional", multiplier: 0.85, icon: "👍", details: ["Light to moderate signs of wear — visible scratches and/or minor dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
+  { id: "fair", label: "Fair", desc: "Heavy wear, still functional", multiplier: 0.70, icon: "👌", details: ["Heavy signs of wear — deep scratches, dents, or scuffs", "Display is free of cracks but may have minor blemishes", "Battery may be below 80% capacity", "Powers on and functions as intended", "Must be paid off and free of any financial obligations"] },
+  { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: "⚠️", details: ["Cracked screen, broken buttons, or damaged housing", "Display defects such as dead pixels, white spots, or burn-in", "May have functional issues — touchscreen, speakers, cameras", "Device still powers on", "No signs of liquid intrusion or water damage"] },
 ];
 
 const ALL_STORAGES = [
@@ -1945,90 +1945,90 @@ const CARRIER_LOCKS = [
 const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: string; desc?: string }>>> = {
   // Apple family — 'Flawless' becomes 'Pristine' / 'Brand New' becomes 'Sealed in Box'
   iphone: {
-    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
-    flawless: { label: "Pristine", desc: "Like new — zero scratches or marks" },
+    sealed: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    mint: { label: "Pristine", desc: "Like new — zero scratches or marks" },
   },
   ipad: {
-    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
-    flawless: { label: "Pristine", desc: "Like new — zero scratches or marks" },
+    sealed: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    mint: { label: "Pristine", desc: "Like new — zero scratches or marks" },
   },
   macbook: {
-    brandnew: { label: "Sealed in Box", desc: "Factory sealed, original packaging" },
-    flawless: { label: "Pristine", desc: "Like new — zero wear, all original" },
+    sealed: { label: "Sealed in Box", desc: "Factory sealed, original packaging" },
+    mint: { label: "Pristine", desc: "Like new — zero wear, all original" },
   },
   apple_desktop: {
-    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never plugged in" },
-    flawless: { label: "Pristine", desc: "Like new — all original cables + box" },
+    sealed: { label: "Sealed in Box", desc: "Factory sealed, never plugged in" },
+    mint: { label: "Pristine", desc: "Like new — all original cables + box" },
   },
   applewatch: {
-    flawless: { label: "Pristine", desc: "Like new — zero face scratches" },
+    mint: { label: "Pristine", desc: "Like new — zero face scratches" },
     broken:   { label: "Cracked or dead", desc: "Cracked face, dead battery, or won't power on" },
   },
   apple_vr: {
-    flawless: { label: "Pristine", desc: "Like new — no scuffs on the cover glass" },
+    mint: { label: "Pristine", desc: "Like new — no scuffs on the cover glass" },
   },
   // Samsung family — 'Flawless' becomes 'New'
   android: {
-    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
-    flawless: { label: "New", desc: "Boxed & untouched — zero marks" },
+    sealed: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    mint: { label: "New", desc: "Boxed & untouched — zero marks" },
   },
   samsung_tab: {
-    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
-    flawless: { label: "New", desc: "Boxed & untouched" },
+    sealed: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    mint: { label: "New", desc: "Boxed & untouched" },
   },
   samsung_pc: {
-    brandnew: { label: "Sealed in Box", desc: "Factory sealed" },
-    flawless: { label: "New", desc: "Boxed & untouched" },
+    sealed: { label: "Sealed in Box", desc: "Factory sealed" },
+    mint: { label: "New", desc: "Boxed & untouched" },
   },
   samsungwatch: {
-    flawless: { label: "New", desc: "Like new — zero face scratches" },
+    mint: { label: "New", desc: "Like new — zero face scratches" },
     broken:   { label: "Cracked or dead", desc: "Cracked face, dead battery, or won't power on" },
   },
   // Google family
   pixel: {
-    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
-    flawless: { label: "Pristine", desc: "Like new — zero scratches" },
+    sealed: { label: "Sealed in Box", desc: "Factory sealed, never activated" },
+    mint: { label: "Pristine", desc: "Like new — zero scratches" },
   },
   pixelwatch: {
-    flawless: { label: "Pristine", desc: "Like new — zero face scratches" },
+    mint: { label: "Pristine", desc: "Like new — zero face scratches" },
     broken:   { label: "Cracked or dead", desc: "Cracked face, dead battery, or won't power on" },
   },
   google_tab: {
-    flawless: { label: "Pristine", desc: "Like new — zero scratches" },
+    mint: { label: "Pristine", desc: "Like new — zero scratches" },
   },
   // Consoles — different vocabulary; the customer thinks about working/broken not flawless/fair
   sony: {
-    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
-    flawless: { label: "Like New", desc: "Boxed, lightly used, no marks" },
+    sealed: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
+    mint: { label: "Like New", desc: "Boxed, lightly used, no marks" },
     verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
     fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
     broken:   { label: "Disc drive broken / won't power on", desc: "Major hardware fault" },
   },
   microsoft: {
-    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
-    flawless: { label: "Like New", desc: "Boxed, lightly used, no marks" },
+    sealed: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
+    mint: { label: "Like New", desc: "Boxed, lightly used, no marks" },
     verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
     fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
     broken:   { label: "Disc drive broken / won't power on", desc: "Major hardware fault" },
   },
   nintendo: {
-    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
-    flawless: { label: "Like New", desc: "Boxed, lightly used, no marks" },
+    sealed: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
+    mint: { label: "Like New", desc: "Boxed, lightly used, no marks" },
     verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
     fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
     broken:   { label: "Joy-Con drift / won't power on", desc: "Major hardware fault" },
   },
   console: {
-    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
-    flawless: { label: "Like New", desc: "Boxed, lightly used" },
+    sealed: { label: "Sealed in Box", desc: "Factory sealed, never opened" },
+    mint: { label: "Like New", desc: "Boxed, lightly used" },
     broken:   { label: "Disc drive broken / won't power on" },
   },
   // Drones
   dji: {
-    flawless: { label: "Hangar-stored, never flown", desc: "Sealed or unflown — full kit included" },
+    mint: { label: "Hangar-stored, never flown", desc: "Sealed or unflown — full kit included" },
     verygood: { label: "Lightly Flown", desc: "Under 10 hours, no crashes" },
     good:     { label: "Well-Maintained", desc: "Flown but maintained, no incidents" },
     fair:     { label: "Heavily Used", desc: "200+ hours, cosmetic wear, no crashes" },
@@ -2036,12 +2036,12 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   },
   // Watches not already covered
   garmin: {
-    flawless: { label: "Pristine", desc: "Like new — zero scratches" },
+    mint: { label: "Pristine", desc: "Like new — zero scratches" },
     broken:   { label: "Cracked or dead", desc: "Cracked face or won't power on" },
   },
   // VR
   meta_vr: {
-    brandnew: { label: "Sealed in Box", desc: "Factory sealed, never paired" },
+    sealed: { label: "Sealed in Box", desc: "Factory sealed, never paired" },
     broken:   { label: "Cracked lens / won't power on" },
   },
   valve_vr: {
@@ -2103,7 +2103,7 @@ const HIGH_MARGIN_DEVICE_TYPES = new Set<string>([
 const isHighMarginType = (dt: string | null | undefined): boolean => !!dt && HIGH_MARGIN_DEVICE_TYPES.has(dt);
 const getConditionsFor = (dt: string | null | undefined) => {
   if (isHighMarginType(dt)) return CONDITIONS;
-  return CONDITIONS.filter(c => c.id !== "brandnew");
+  return CONDITIONS.filter(c => c.id !== "sealed");
 };
 const getTopConditionMult = (dt: string | null | undefined): number => {
   return Math.max(...getConditionsFor(dt).map(c => c.multiplier));
@@ -3336,7 +3336,7 @@ export default function Home() {
 
   // Accessory bonus: +$15 flat when customer confirms all original accessories
   // for "new" tiers (Brand New / Flawless). Skywalker's call.
-  const isNewTier = condition?.id === "brandnew" || condition?.id === "flawless";
+  const isNewTier = condition?.id === "sealed" || condition?.id === "flawless";
   const accessoryBonus = isNewTier && accessoriesIncluded ? 15 : 0;
   // MacBook spec multipliers — only fire when the picked model has a
   // MACBOOK_SPECS entry. Default to 1 so non-MacBook flows are unchanged.
@@ -6425,7 +6425,7 @@ export default function Home() {
             {selectionPanelMobile}
             <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Select Condition</h2>
             <p className="text-[#b8b8b8] text-xs mb-3">
-              Not sure? <button type="button" onClick={() => setConditionHelpId(getConditionsFor(deviceType)[0]?.id || "flawless")} className="text-[#00c853] font-semibold hover:underline cursor-pointer">Help me choose</button>
+              Not sure? <button type="button" onClick={() => setConditionHelpId(getConditionsFor(deviceType)[0]?.id || "mint")} className="text-[#00c853] font-semibold hover:underline cursor-pointer">Help me choose</button>
             </p>
             {stepProgress}
             <div className="tcc-selection-frame">
@@ -6678,7 +6678,7 @@ export default function Home() {
                   <span className={`w-5 h-5 rounded border-2 flex items-center justify-center text-xs font-bold transition ${accessoriesIncluded ? "bg-[#00c853] border-[#00c853] text-[#0a0a0a]" : "border-white/30 text-transparent"}`}>✓</span>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-white">All original accessories included</p>
-                    <p className="text-[11px] text-[#e6e6e6]">Charger, cable, original box{condition?.id === "brandnew" ? ", manuals" : ""}</p>
+                    <p className="text-[11px] text-[#e6e6e6]">Charger, cable, original box{condition?.id === "sealed" ? ", manuals" : ""}</p>
                   </div>
                   <span className="text-[#00c853] font-bold text-sm whitespace-nowrap">+$15</span>
                 </button>
