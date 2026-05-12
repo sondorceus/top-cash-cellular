@@ -3895,7 +3895,7 @@ export default function Home() {
   const [selectedSubSeries, setSelectedSubSeries] = useState<string | null>(null);
   const [carrier, setCarrier] = useState<typeof CARRIERS[0] | null>(null);
   const [carrierLock, setCarrierLock] = useState<typeof CARRIER_LOCKS[0] | null>(null);
-  const [page, setPage] = useState<"home" | "about" | "privacy" | "terms" | "grading" | "shipping">("home");
+  const [page, setPage] = useState<"home" | "about" | "privacy" | "terms" | "grading" | "shipping" | "affiliate" | "itad" | "blog" | "cookies" | "accessibility">("home");
   const [model, setModel] = useState<{ id: string; label: string; base?: number; image?: string } | null>(null);
   const [helpTopic, setHelpTopic] = useState<"storage" | "carrier" | null>(null);
   const [loginError, setLoginError] = useState("");
@@ -8876,7 +8876,7 @@ export default function Home() {
       )}
 
       {/* INNER PAGES */}
-      {(page === "about" || page === "privacy" || page === "terms" || page === "grading" || page === "shipping") && (
+      {(page === "about" || page === "privacy" || page === "terms" || page === "grading" || page === "shipping" || page === "affiliate" || page === "itad" || page === "blog" || page === "cookies" || page === "accessibility") && (
         <section className="min-h-[60vh] animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-16">
             <button onClick={() => { setPage("home"); window.scrollTo({ top: 0 }); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
@@ -9098,6 +9098,76 @@ export default function Home() {
                 </div>
               </div>
             )}
+
+            {page === "affiliate" && (
+              <div className="animate-[fadeIn_0.3s_ease-out]">
+                <h1 className="text-3xl font-bold mb-2">Become an affiliate</h1>
+                <p className="text-[#b8b8b8] text-sm mb-6">Earn cash for every customer you refer.</p>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 space-y-3 text-sm text-[#e6e6e6] leading-relaxed">
+                  <p>Run a YouTube channel, repair shop, IT consultancy, or just have a big network of folks upgrading phones every year? Send them our way and we'll cut you a slice of every device we buy.</p>
+                  <p><strong className="text-white">How it works:</strong> you get a tracked referral link or coupon code. When someone uses it to sell a device, we wire you a percentage of the payout — typically <strong className="text-[#00c853]">5–10% per device</strong>, depending on volume.</p>
+                  <p>No minimum quota, no monthly commitment, no fine print. We pay weekly via Zelle, Cash App, or check.</p>
+                </div>
+                <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-6 text-center">
+                  <p className="text-lg font-bold mb-2">Interested?</p>
+                  <p className="text-[#e6e6e6] text-sm mb-4">Email us with a bit about your audience and we'll set you up.</p>
+                  <a href={EMAIL_HREF} className="inline-block bg-[#00c853] text-[#0a0a0a] px-8 py-3 rounded-2xl font-semibold hover:bg-[#00e676] transition tap-press">Email Us</a>
+                </div>
+              </div>
+            )}
+
+            {page === "itad" && (
+              <div className="animate-[fadeIn_0.3s_ease-out]">
+                <h1 className="text-3xl font-bold mb-2">IT Asset Disposition</h1>
+                <p className="text-[#b8b8b8] text-sm mb-6">Clearing out a fleet? We buy in bulk and document every device.</p>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 space-y-3 text-sm text-[#e6e6e6] leading-relaxed">
+                  <p>Decommissioning end-of-lease laptops, refreshing your sales team's iPhones, or shutting down a remote office? We handle the whole chain: pickup, secure wipe (NIST 800-88 certified), serial-by-serial reporting, and a single bulk payout.</p>
+                  <p><strong className="text-white">What we buy in bulk:</strong> iPhones, iPads, MacBooks, Android phones, Galaxy tablets, Windows laptops, Pixel phones, smartwatches. Working, broken, anywhere in the lifecycle.</p>
+                  <p><strong className="text-white">What you get:</strong> a fixed offer per asset type before pickup, a chain-of-custody receipt with every serial, a signed certificate of data destruction, and payment within 5 business days of inspection.</p>
+                </div>
+                <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-6 text-center">
+                  <p className="text-lg font-bold mb-2">Got 25+ devices?</p>
+                  <p className="text-[#e6e6e6] text-sm mb-4">Email us a rough device list and we'll come back with a bulk quote within 24 hours.</p>
+                  <a href={EMAIL_HREF} className="inline-block bg-[#00c853] text-[#0a0a0a] px-8 py-3 rounded-2xl font-semibold hover:bg-[#00e676] transition tap-press">Request Bulk Quote</a>
+                </div>
+              </div>
+            )}
+
+            {page === "blog" && (
+              <div className="animate-[fadeIn_0.3s_ease-out]">
+                <h1 className="text-3xl font-bold mb-2">Blog</h1>
+                <p className="text-[#b8b8b8] text-sm mb-6">Resale tips, gear breakdowns, and sustainability stories.</p>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 text-sm text-[#e6e6e6] leading-relaxed">
+                  <p className="text-white font-semibold mb-2">Coming soon</p>
+                  <p>We're putting together guides on getting the most for your trade-in, when to upgrade vs. hold, and which devices keep value longest. Sign up for the newsletter at the bottom of the page and we'll send the first post when it drops.</p>
+                </div>
+              </div>
+            )}
+
+            {page === "cookies" && (
+              <div className="animate-[fadeIn_0.3s_ease-out]">
+                <h1 className="text-3xl font-bold mb-2">Cookie policy</h1>
+                <p className="text-[#b8b8b8] text-sm mb-6">What we store on your browser and why.</p>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 space-y-3 text-sm text-[#e6e6e6] leading-relaxed">
+                  <p><strong className="text-white">Essential cookies:</strong> needed to keep your quote and cart state across page loads. We can't turn these off — without them the site doesn't function.</p>
+                  <p><strong className="text-white">Analytics cookies:</strong> we track anonymized page-load and quote-completion stats so we can find broken flows. No personal info, no third-party ad networks.</p>
+                  <p>You can choose Essential or Accept All via the banner at the bottom of the page. Your choice is stored locally and respected on every visit.</p>
+                  <p>Questions? Email us — link in the footer.</p>
+                </div>
+              </div>
+            )}
+
+            {page === "accessibility" && (
+              <div className="animate-[fadeIn_0.3s_ease-out]">
+                <h1 className="text-3xl font-bold mb-2">Accessibility statement</h1>
+                <p className="text-[#b8b8b8] text-sm mb-6">We want this site to work for everyone.</p>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 space-y-3 text-sm text-[#e6e6e6] leading-relaxed">
+                  <p>{BRAND} is committed to WCAG 2.1 AA conformance. Our team tests with VoiceOver, NVDA, and keyboard-only navigation when shipping changes.</p>
+                  <p><strong className="text-white">What we already do:</strong> semantic HTML, focus states on every interactive control, alt text on device images, sufficient color contrast on text, no auto-playing media, and a quote flow that works without a mouse.</p>
+                  <p><strong className="text-white">If something is hard to use:</strong> email us at the address in the footer and we'll fix it. Mention the page and what screen reader / assistive tool you were using if you can.</p>
+                </div>
+              </div>
+            )}
           </div>
         </section>
       )}
@@ -9107,24 +9177,62 @@ export default function Home() {
         {/* Green accent stripe at top — signals end-of-page + brand color */}
         <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-[#00c853]/60 to-transparent" />
         <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 gap-6 mb-6">
+          {/* Email signup — IWM-style tagline + capture above the link grid */}
+          <div className="mb-8 text-center">
+            <p className="text-white font-semibold text-sm mb-1">Smart tech. Smarter savings.</p>
+            <p className="text-xs text-[#9a9a9a] mb-3">Sign up for deals & sustainability tips.</p>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const input = form.querySelector("input[type=email]") as HTMLInputElement | null;
+                const email = input?.value.trim();
+                if (!email) return;
+                fetch("/api/newsletter", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email }) }).catch(() => {});
+                if (input) input.value = "";
+                form.querySelector(".nl-ok")?.classList.remove("hidden");
+              }}
+              className="flex items-center gap-2 max-w-sm mx-auto"
+            >
+              <input
+                type="email"
+                required
+                placeholder="Email address"
+                className="flex-1 px-3 py-2 rounded-full bg-white/5 border border-white/10 text-white text-xs placeholder:text-[#888] focus:outline-none focus:border-[#00c853]/50"
+              />
+              <button type="submit" className="px-4 py-2 rounded-full bg-[#00c853] text-[#0a0a0a] text-xs font-extrabold hover:bg-[#00e676] transition">Sign up</button>
+            </form>
+            <p className="nl-ok hidden text-[10px] text-[#00c853] mt-2">Thanks! You're on the list.</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-6">
             <div>
-              <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Company</p>
+              <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Quick Navigation</p>
               <div className="space-y-2">
-                <button onClick={() => { setPage("about"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer">About Us</button>
-                <a href="/reviews" className="block text-xs hover:text-[#00c853] transition">Reviews</a>
-                <a href={EMAIL_HREF} className="block text-xs hover:text-[#00c853] transition">Contact</a>
-                <a href="/privacy" className="block text-xs hover:text-[#00c853] transition">Privacy Policy</a>
-                <button onClick={() => { setPage("terms"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer">Terms of Service</button>
-              </div>
-            </div>
-            <div>
-              <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Process</p>
-              <div className="space-y-2">
+                <button onClick={() => { setStep("category"); window.scrollTo({ top: 0 }); pushHistory("category"); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Get Custom Quote</button>
                 <a href="/how-it-works" className="block text-xs hover:text-[#00c853] transition">How It Works</a>
                 <button onClick={() => { setPage("grading"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Grading Guide</button>
                 <button onClick={() => { setPage("shipping"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Shipping &amp; Returns</button>
                 <a href="/faq" className="block text-xs hover:text-[#00c853] transition">FAQ</a>
+              </div>
+            </div>
+            <div>
+              <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">About Us</p>
+              <div className="space-y-2">
+                <button onClick={() => { setPage("about"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">About Us</button>
+                <button onClick={() => { setPage("affiliate"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Become an Affiliate</button>
+                <button onClick={() => { setPage("itad"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">IT Asset Disposition</button>
+                <button onClick={() => { setPage("blog"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Blog</button>
+                <a href="/reviews" className="block text-xs hover:text-[#00c853] transition">Reviews</a>
+                <a href={EMAIL_HREF} className="block text-xs hover:text-[#00c853] transition">Contact Us</a>
+              </div>
+            </div>
+            <div className="col-span-2 md:col-span-1">
+              <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Legal</p>
+              <div className="space-y-2">
+                <a href="/privacy" className="block text-xs hover:text-[#00c853] transition">Privacy Policy</a>
+                <button onClick={() => { setPage("terms"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Terms &amp; Conditions</button>
+                <button onClick={() => { setPage("cookies"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Cookie Policy</button>
+                <button onClick={() => { setPage("accessibility"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Accessibility Statement</button>
                 <p className="text-xs text-[#9a9a9a] pt-2">Austin, TX · Mon–Sat 8 AM–8 PM</p>
               </div>
             </div>
@@ -9132,8 +9240,6 @@ export default function Home() {
           <div className="border-t border-[#00c853]/15 pt-6 text-center">
             <p className="text-[11px] text-[#cfcfcf]/70 mb-3">© 2026 {BRAND}</p>
             <div className="flex items-center justify-center gap-4">
-              <a href="/privacy" className="text-[11px] text-[#cfcfcf] hover:text-[#00c853] transition">Privacy Policy</a>
-              <span className="text-[11px] text-[#00c853]/40">·</span>
               <a href="https://atxgadgetfix.com" target="_blank" rel="noopener noreferrer" className="text-[11px] text-[#cfcfcf] hover:text-[#00c853] transition">
                 Need a repair? ATX Gadget Fix →
               </a>
