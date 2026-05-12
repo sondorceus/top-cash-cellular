@@ -1362,9 +1362,12 @@ const IPAD_MODELS = IPAD_SERIES.flatMap(s => s.variants);
 // extras step with an 8% multiplier reduction for digital. So PS5
 // Standard / Slim each consolidate to one entry.
 const PS5_VARIANTS = [
-  { id: "ps5pro",  label: "PlayStation 5 Pro (2 TB)",    base: 550, image: "/devices/ps5.webp" },
-  { id: "ps5slim", label: "PlayStation 5 Slim (1 TB)",   base: 380, image: "/devices/ps5-slim-disc.webp" },
-  { id: "ps5",     label: "PlayStation 5 (825 GB)",      base: 300, image: "/devices/ps5.webp" },
+  // Storage is implicit by variant — Pro ships 2 TB, Slim ships 1 TB,
+  // original ships 825 GB. No storage step or extras question for
+  // consoles per Skywalker (2026-05-12).
+  { id: "ps5pro",  label: "PlayStation 5 Pro",    base: 550, image: "/devices/ps5.webp" },
+  { id: "ps5slim", label: "PlayStation 5 Slim",   base: 380, image: "/devices/ps5-slim-disc.webp" },
+  { id: "ps5",     label: "PlayStation 5",        base: 300, image: "/devices/ps5.webp" },
 ];
 const PS4_VARIANTS = [
   { id: "ps4pro", label: "PlayStation 4 Pro", base: 150, image: "/devices/ps4-pro.webp" },
@@ -2206,12 +2209,8 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "yes",     label: "Yes — has disc drive",    multiplier: 1.00 },
       { id: "digital", label: "No — digital edition",     multiplier: 0.92 },
     ]},
-    { id: "ssd", question: "M.2 SSD upgrade installed?", helper: "Base PS5 is 825 GB, Slim 1 TB, Pro 2 TB. Internal M.2 slot adds up to 8 TB more — verified upgrades add a real resale premium.", options: [
-      { id: "none",   label: "No — base storage only",        multiplier: 1.00 },
-      { id: "1to2tb", label: "Yes — 1 TB or 2 TB M.2 added",  multiplier: 1.05 },
-      { id: "4tb",    label: "Yes — 4 TB M.2 added",          multiplier: 1.10 },
-      { id: "8tb",    label: "Yes — 8 TB M.2 added (maxed)",  multiplier: 1.15 },
-    ]},
+    // Storage is implicit by variant (Pro 2 TB, Slim 1 TB, original
+    // 825 GB) — no upgrade-tier question per Skywalker (2026-05-12).
     { id: "controllers", question: "Controllers included?", options: [
       { id: "2", label: "2 controllers", multiplier: 1.05 },
       { id: "1", label: "1 controller",  multiplier: 1.00 },
@@ -2223,11 +2222,9 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "yes",     label: "Yes — has disc drive",    multiplier: 1.00 },
       { id: "digital", label: "No — digital edition",     multiplier: 0.92 },
     ]},
-    { id: "storage", question: "Storage capacity?", helper: "Series S base is 512 GB. Series X / Series S Carbon Black is 1 TB. The 2 TB option is Series X Galaxy Black Special Edition or any Xbox with a Storage Expansion Card.", options: [
-      { id: "512", label: "512 GB",                       multiplier: 0.95 },
-      { id: "1tb", label: "1 TB",                         multiplier: 1.00 },
-      { id: "2tb", label: "2 TB (Galaxy Black SE / card)", multiplier: 1.15 },
-    ]},
+    // Storage is implicit by variant (Series X 1 TB, Series S 512 GB,
+    // Xbox One 500 GB / 1 TB) — no capacity question per Skywalker
+    // (2026-05-12).
     { id: "controllers", question: "Controllers included?", options: [
       { id: "2", label: "2 controllers", multiplier: 1.05 },
       { id: "1", label: "1 controller",  multiplier: 1.00 },
