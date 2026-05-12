@@ -5714,30 +5714,54 @@ export default function Home() {
               );
             })()}
 
-            {/* iPad: All variants flat */}
-            {deviceType === "ipad" && (
-              <>
-                <div className="space-y-2">
-                  {models.map((m) => {
-                    const mImg = (m as { image?: string }).image;
-                    return (
-                      <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                        {mImg ? (
-                          <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-12 object-contain shrink-0" />
-                        ) : (
-                          <div className="w-12 h-12 shrink-0" />
-                        )}
-                        <p className="font-semibold text-[15px] flex-1">{m.label}</p>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m, deviceType)}</span>
-                          <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                        </div>
-                      </button>
-                    );
-                  })}
+            {/* iPad: grouped by product line (Pro / Air / Mini / iPad)
+                with the year span shown next to each label, matching
+                the iPhone + Pixel treatment. */}
+            {deviceType === "ipad" && (() => {
+              type IpadGroup = { label: string; year: string; ids: string[] };
+              const ipadGroups: IpadGroup[] = [
+                { label: "iPad Pro",  year: "2022–2025", ids: ["ipadpro13m5","ipadpro11m5","ipadpro13m4","ipadpro11m4","ipadpro129g6","ipadpro11g4"] },
+                { label: "iPad Air",  year: "2024–2025", ids: ["ipadair13m3","ipadair11m3","ipadair13m2","ipadair11m2"] },
+                { label: "iPad Mini", year: "2021–2024", ids: ["ipadmini7","ipadmini6"] },
+                { label: "iPad",      year: "2021–2022", ids: ["ipad10","ipad9"] },
+              ];
+              const byId = new Map(models.map(m => [m.id, m]));
+              const groups = ipadGroups
+                .map(g => ({ ...g, variants: g.ids.map(id => byId.get(id)).filter(Boolean) as typeof models }))
+                .filter(g => g.variants.length > 0);
+              return (
+                <div className="space-y-5">
+                  {groups.map(g => (
+                    <div key={g.label}>
+                      <div className="flex items-center gap-3 mb-2">
+                        <p className="text-[10px] font-extrabold tracking-[0.22em] uppercase text-[#00c853]">{g.label}</p>
+                        <span className="text-[10px] text-[#888]">{g.year}</span>
+                        <div className="flex-1 h-px bg-gradient-to-r from-[#00c853]/40 via-white/15 to-transparent" />
+                      </div>
+                      <div className="space-y-2">
+                        {g.variants.map((m) => {
+                          const mImg = (m as { image?: string }).image;
+                          return (
+                            <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                              {mImg ? (
+                                <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-12 object-contain shrink-0" />
+                              ) : (
+                                <div className="w-12 h-12 shrink-0" />
+                              )}
+                              <p className="font-semibold text-[15px] flex-1">{m.label}</p>
+                              <div className="flex items-center gap-2">
+                                <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m, deviceType)}</span>
+                                <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </>
-            )}
+              );
+            })()}
 
             {/* DJI Drones: No pricing, goes to inquiry */}
             {deviceType === "dji" && (
