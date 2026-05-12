@@ -1601,6 +1601,78 @@ const GOOGLE_TAB_MODELS = [
   { id: "gpixeltab128", label: "Pixel Tablet (128GB)" },
 ];
 
+// Sub-section grouping for the flat device lists (watches, consoles,
+// DJI, VR, non-iPad tablets). Each device type maps to an ordered list
+// of groups; `ids` is the explicit set of variant IDs in that group.
+// The grouped renderer below filters out empty groups and falls back
+// to a single anonymous group if a device type isn't in this map.
+type ModelGroup = { label: string; year?: string; ids: string[] };
+const MODEL_GROUPS: Record<string, ModelGroup[]> = {
+  applewatch: [
+    { label: "Ultra",      year: "2022–2023", ids: ["awu2", "awu1"] },
+    { label: "Series",     year: "2021–2024", ids: ["aws10", "aws9", "aws8", "aws7"] },
+    { label: "SE",         year: "2020–2022", ids: ["awse2", "awse1"] },
+  ],
+  samsungwatch: [
+    { label: "Ultra",      year: "2024",      ids: ["sgwu"] },
+    { label: "Watch 7",    year: "2024",      ids: ["sgw7"] },
+    { label: "Watch 6",    year: "2023",      ids: ["sgw6c", "sgw6"] },
+    { label: "Watch 5",    year: "2022",      ids: ["sgw5p", "sgw5"] },
+  ],
+  pixelwatch: [
+    { label: "Pixel Watch 3", year: "2024", ids: ["pw3"] },
+    { label: "Pixel Watch 2", year: "2023", ids: ["pw2"] },
+    { label: "Pixel Watch",   year: "2022", ids: ["pw1"] },
+  ],
+  garmin: [
+    { label: "Fenix",      ids: ["gfenix7", "gfenix7s"] },
+    { label: "Epix",       ids: ["gepix2"] },
+    { label: "Forerunner", ids: ["gfr965", "gfr265"] },
+    { label: "Venu",       ids: ["gvenu3", "gvenu2"] },
+  ],
+  sony: [
+    { label: "PlayStation 5", year: "2020–2024", ids: ["ps5pro", "ps5slim", "ps5"] },
+    { label: "PlayStation 4", year: "2013–2016", ids: ["ps4pro", "ps4", "ps4slim"] },
+  ],
+  microsoft: [
+    { label: "Xbox Series", year: "2020", ids: ["xsx", "xss"] },
+    { label: "Xbox One",    year: "2013", ids: ["xone"] },
+  ],
+  dji: [
+    { label: "Flagship", ids: ["djimavic", "djiinspire", "djiphantom"] },
+    { label: "Mid",      ids: ["djiair", "djifpv", "djiavata"] },
+    { label: "Compact",  ids: ["djimini", "djiflip", "djispark"] },
+  ],
+  meta_vr: [
+    { label: "Quest 3",    year: "2023", ids: ["mq3", "mq3b"] },
+    { label: "Quest 3S",   year: "2024", ids: ["mq3s256", "mq3128"] },
+    { label: "Quest 2",    year: "2020", ids: ["mq2256", "mq2128"] },
+    { label: "Quest Pro",  year: "2022", ids: ["mqpro"] },
+  ],
+  psvr: [
+    { label: "PlayStation VR2",        year: "2023", ids: ["psvr2", "psvr2h"] },
+    { label: "PlayStation VR Original", year: "2016", ids: ["psvr1"] },
+  ],
+  samsung_tab: [
+    { label: "Tab S11",         year: "2025", ids: ["stabs11u", "stabs11"] },
+    { label: "Tab S10",         year: "2024", ids: ["stabs10u", "stabs10p", "stabs10fep", "stabs10fe", "stabs10l"] },
+    { label: "Tab S9",          year: "2023", ids: ["stabs9u", "stabs9p", "stabs9", "stabs9fep", "stabs9fe"] },
+    { label: "Tab S8",          year: "2022", ids: ["stabs8u", "stabs8p", "stabs8"] },
+    { label: "Tab S7",          year: "2020–2021", ids: ["stabs7p", "stabs7fe", "stabs7"] },
+    { label: "Tab S6 / Older",  year: "2018–2020", ids: ["stabs6l", "stabs6", "stabs5e", "stabs4"] },
+    { label: "Tab A",           year: "2023", ids: ["staba9"] },
+  ],
+};
+const getDeviceGroups = <T extends { id: string }>(deviceType: string | null | undefined, mdls: readonly T[]): Array<{ label: string; year?: string; variants: T[] }> => {
+  const groups = deviceType ? MODEL_GROUPS[deviceType] : null;
+  if (!groups) return [{ label: "", variants: [...mdls] }];
+  const byId = new Map(mdls.map(m => [m.id, m]));
+  return groups
+    .map(g => ({ label: g.label, year: g.year, variants: g.ids.map(id => byId.get(id)).filter(Boolean) as T[] }))
+    .filter(g => g.variants.length > 0);
+};
+
+
 const CONDITIONS = [
   { id: "sealed", label: "Sealed", desc: "Factory sealed, never opened", multiplier: 1.03, icon: "📦", details: ["Still in factory original sealed packaging", "Plastic wrap or seal is intact and has not been tampered with", "Device has never been activated or powered on", "Must include original box with matching serial number", "Contains all original accessories unopened"] },
   { id: "mint", label: "Mint", desc: "Like new, zero signs of use", multiplier: 1.0, icon: "✨", details: ["Zero scratches, scuffs, or other marks — looks brand new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 90% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
@@ -5779,15 +5851,28 @@ export default function Home() {
               <>
                 <h2 className="text-2xl font-bold mb-1">Select your drone</h2>
                 <p className="text-[#e6e6e6] text-sm mb-6">Choose your DJI model</p>
-                <div className="space-y-2">
-                  {DJI_MODELS.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                      <p className="font-semibold text-[15px]">{m.label}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">Get Quote</span>
-                        <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                <div className="space-y-5">
+                  {getDeviceGroups("dji", DJI_MODELS).map((g, gi) => (
+                    <div key={g.label || gi}>
+                      {g.label && (
+                        <div className="flex items-center gap-3 mb-2">
+                          <p className="text-[10px] font-extrabold tracking-[0.22em] uppercase text-[#00c853]">{g.label}</p>
+                          {g.year && <span className="text-[10px] text-[#888]">{g.year}</span>}
+                          <div className="flex-1 h-px bg-gradient-to-r from-[#00c853]/40 via-white/15 to-transparent" />
+                        </div>
+                      )}
+                      <div className="space-y-2">
+                        {g.variants.map((m) => (
+                          <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                            <p className="font-semibold text-[15px]">{m.label}</p>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[#00c853] font-bold text-sm">Get Quote</span>
+                              <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                            </div>
+                          </button>
+                        ))}
                       </div>
-                    </button>
+                    </div>
                   ))}
                 </div>
               </>
@@ -6149,51 +6234,80 @@ export default function Home() {
             )}
 
             {/* No-price devices (VR + non-Apple/non-Lenovo/non-Surface tablets): goes to inquiry */}
-            {(deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" || deviceType === "samsung_tab" || deviceType === "oneplus_tab" || deviceType === "google_tab") && (
-              <>
-                <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your device</h2>
-                <p className="text-[#e6e6e6] text-sm mb-6">Choose your model</p>
-                <div className="space-y-2">
-                  {(deviceType === "apple_vr" ? APPLE_VR_MODELS : deviceType === "meta_vr" ? META_VR_MODELS : deviceType === "valve_vr" ? VALVE_VR_MODELS : deviceType === "psvr" ? PSVR_MODELS : deviceType === "samsung_tab" ? SAMSUNG_TAB_MODELS : deviceType === "oneplus_tab" ? ONEPLUS_TAB_MODELS : GOOGLE_TAB_MODELS).map((m) => {
-                    const mImage = (m as { image?: string }).image;
-                    return (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                      {mImage ? (
-                        <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
-                      ) : (
-                        <div className="w-10 h-10 shrink-0" />
-                      )}
-                      <p className="font-semibold text-[15px] flex-1">{m.label}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
-                        <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                      </div>
-                    </button>
-                  )})}
-                </div>
-              </>
-            )}
-
-            {/* Other categories (consoles incl. Sony, watches): Flat model list */}
-            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "android" && deviceType !== "pixel" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && deviceType !== "samsung_tab" && deviceType !== "surface" && deviceType !== "lenovo_tab" && deviceType !== "oneplus_tab" && deviceType !== "google_tab" && category !== "computers" && category !== "desktops" && (
-              <>
-                <div className="space-y-2">
-                  {models.map((m) => {
-                    const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
-                    return (
-                      <button key={m.id} onClick={() => {
-                        setModel(m); setStep("condition"); pushHistory("condition");
-                      }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                        <p className="font-semibold text-[15px]">{m.label}</p>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m as { id: string; base?: number }, deviceType)}`}</span>
-                          <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            {(deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" || deviceType === "samsung_tab" || deviceType === "oneplus_tab" || deviceType === "google_tab") && (() => {
+              const list = deviceType === "apple_vr" ? APPLE_VR_MODELS : deviceType === "meta_vr" ? META_VR_MODELS : deviceType === "valve_vr" ? VALVE_VR_MODELS : deviceType === "psvr" ? PSVR_MODELS : deviceType === "samsung_tab" ? SAMSUNG_TAB_MODELS : deviceType === "oneplus_tab" ? ONEPLUS_TAB_MODELS : GOOGLE_TAB_MODELS;
+              const grouped = getDeviceGroups(deviceType, list);
+              return (
+                <>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your device</h2>
+                  <p className="text-[#e6e6e6] text-sm mb-6">Choose your model</p>
+                  <div className="space-y-5">
+                    {grouped.map((g, gi) => (
+                      <div key={g.label || gi}>
+                        {g.label && (
+                          <div className="flex items-center gap-3 mb-2">
+                            <p className="text-[10px] font-extrabold tracking-[0.22em] uppercase text-[#00c853]">{g.label}</p>
+                            {g.year && <span className="text-[10px] text-[#888]">{g.year}</span>}
+                            <div className="flex-1 h-px bg-gradient-to-r from-[#00c853]/40 via-white/15 to-transparent" />
+                          </div>
+                        )}
+                        <div className="space-y-2">
+                          {g.variants.map((m) => {
+                            const mImage = (m as { image?: string }).image;
+                            return (
+                              <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                                {mImage ? (
+                                  <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
+                                ) : (
+                                  <div className="w-10 h-10 shrink-0" />
+                                )}
+                                <p className="font-semibold text-[15px] flex-1">{m.label}</p>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
+                                  <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                                </div>
+                              </button>
+                            );
+                          })}
                         </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              );
+            })()}
+
+            {/* Other categories (consoles incl. Sony, watches): Flat model list — now grouped via MODEL_GROUPS when available */}
+            {deviceType !== "iphone" && deviceType !== "ipad" && deviceType !== "android" && deviceType !== "pixel" && deviceType !== "dji" && deviceType !== "apple_vr" && deviceType !== "meta_vr" && deviceType !== "valve_vr" && deviceType !== "psvr" && deviceType !== "samsung_tab" && deviceType !== "surface" && deviceType !== "lenovo_tab" && deviceType !== "oneplus_tab" && deviceType !== "google_tab" && category !== "computers" && category !== "desktops" && (
+              <div className="space-y-5">
+                {getDeviceGroups(deviceType, models).map((g, gi) => (
+                  <div key={g.label || gi}>
+                    {g.label && (
+                      <div className="flex items-center gap-3 mb-2">
+                        <p className="text-[10px] font-extrabold tracking-[0.22em] uppercase text-[#00c853]">{g.label}</p>
+                        {g.year && <span className="text-[10px] text-[#888]">{g.year}</span>}
+                        <div className="flex-1 h-px bg-gradient-to-r from-[#00c853]/40 via-white/15 to-transparent" />
+                      </div>
+                    )}
+                    <div className="space-y-2">
+                      {g.variants.map((m) => {
+                        const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
+                        return (
+                          <button key={m.id} onClick={() => {
+                            setModel(m); setStep("condition"); pushHistory("condition");
+                          }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                            <p className="font-semibold text-[15px]">{m.label}</p>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m as { id: string; base?: number }, deviceType)}`}</span>
+                              <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
             <FairPromise />
             <TrustBadge />
