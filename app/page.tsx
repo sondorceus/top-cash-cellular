@@ -176,37 +176,40 @@ const IPHONE_SERIES = [
   ]},
 ];
 
-// 2026-05-12: Skywalker said 'copy IWM Samsung prices, lower ours by
-// $20'. Subtracted $20 from every Samsung base (S / Z / Note) so we
-// undercut IWM by an extra $20 on top of the existing IWM-calibrated
-// margin. $10 floor so older FE / Flip 3 / Note 9 don't go to zero.
+// S Series rebased 2026-05-12 against fresh IWM scrape with corrected
+// URL slugs (S23+ dropped the -5g suffix). Formula:
+//   our top-config quote = IWM max - $20
+//   base = (IWM - 20) / max_storage_multiplier
+// S22 and older bottom out at IWM's $200 floor (banner / minimum payout
+// threshold), so I kept those at conservative -$20 values rather than
+// trust banner reads.
 const SAMSUNG_SERIES = [
-  { id: "sseries", label: "S Series", year: "Galaxy S20–S26", topPrice: 490, image: "/s-series.png", variants: [
-    { id: "gs26u", label: "Galaxy S26 Ultra", base: 490, image: "/devices/gs26u.png" },
-    { id: "gs25u", label: "Galaxy S25 Ultra", base: 310, image: "/devices/gs25u.png" },
-    { id: "gs24u", label: "Galaxy S24 Ultra", base: 440, image: "/devices/gs24u.png" },
-    { id: "gs23u", label: "Galaxy S23 Ultra", base: 280, image: "/devices/gs23u.png" },
-    { id: "gs22u", label: "Galaxy S22 Ultra", base: 160, image: "/devices/gs22u.png" },
+  { id: "sseries", label: "S Series", year: "Galaxy S20–S26", topPrice: 710, image: "/s-series.png", variants: [
+    { id: "gs26u", label: "Galaxy S26 Ultra", base: 507, image: "/devices/gs26u.png" },     // IWM $730
+    { id: "gs25u", label: "Galaxy S25 Ultra", base: 446, image: "/devices/gs25u.png" },     // IWM $645
+    { id: "gs24u", label: "Galaxy S24 Ultra", base: 357, image: "/devices/gs24u.png" },     // IWM $520
+    { id: "gs23u", label: "Galaxy S23 Ultra", base: 218, image: "/devices/gs23u.png" },     // IWM $325
+    { id: "gs22u", label: "Galaxy S22 Ultra", base: 160, image: "/devices/gs22u.png" },     // IWM floor $200, kept conservative
     { id: "gs21u", label: "Galaxy S21 Ultra", base: 110, image: "/devices/gs21u.png" },
     { id: "gs20u", label: "Galaxy S20 Ultra", base: 60, image: "/devices/gs20u.png" },
-    { id: "gs25edge", label: "Galaxy S25 Edge", base: 100, image: "/devices/gs25edge.png" },
-    { id: "gs26p", label: "Galaxy S26+", base: 255, image: "/devices/gs26p.png" },
-    { id: "gs25p", label: "Galaxy S25+", base: 190, image: "/devices/gs25p.png" },
-    { id: "gs24p", label: "Galaxy S24+", base: 220, image: "/devices/gs24p.png" },
-    { id: "gs23p", label: "Galaxy S23+", base: 170, image: "/devices/gs23p.png" },
+    { id: "gs25edge", label: "Galaxy S25 Edge", base: 284, image: "/devices/gs25edge.png" }, // IWM $375
+    { id: "gs26p", label: "Galaxy S26+", base: 416, image: "/devices/gs26p.png" },          // IWM $540
+    { id: "gs25p", label: "Galaxy S25+", base: 352, image: "/devices/gs25p.png" },          // IWM $460
+    { id: "gs24p", label: "Galaxy S24+", base: 220, image: "/devices/gs24p.png" },          // IWM $295
+    { id: "gs23p", label: "Galaxy S23+", base: 152, image: "/devices/gs23p.png" },          // IWM $210
     { id: "gs22p", label: "Galaxy S22+", base: 95, image: "/devices/gs22p.png" },
     { id: "gs21p", label: "Galaxy S21+", base: 45, image: "/devices/gs21p.png" },
     { id: "gs20p", label: "Galaxy S20+", base: 50, image: "/devices/gs20p.png" },
-    { id: "gs26", label: "Galaxy S26", base: 180, image: "/devices/gs26.png" },
-    { id: "gs25", label: "Galaxy S25", base: 105, image: "/devices/gs25.png" },
-    { id: "gs24", label: "Galaxy S24", base: 150, image: "/devices/gs24.png" },
-    { id: "gs23", label: "Galaxy S23", base: 100, image: "/devices/gs23.png" },
+    { id: "gs26", label: "Galaxy S26", base: 364, image: "/devices/gs26.png" },             // IWM $475
+    { id: "gs25", label: "Galaxy S25", base: 248, image: "/devices/gs25.png" },             // IWM $330
+    { id: "gs24", label: "Galaxy S24", base: 196, image: "/devices/gs24.png" },             // IWM $240
+    { id: "gs23", label: "Galaxy S23", base: 144, image: "/devices/gs23.png" },             // IWM $200 floor
     { id: "gs22", label: "Galaxy S22", base: 50, image: "/devices/gs22.png" },
     { id: "gs21", label: "Galaxy S21", base: 20, image: "/devices/gs21.png" },
     { id: "gs20", label: "Galaxy S20", base: 15, image: "/devices/gs20.png" },
-    { id: "gs25fe", label: "Galaxy S25 FE", base: 75, image: "/devices/gs25fe.png" },
-    { id: "gs24fe", label: "Galaxy S24 FE", base: 60, image: "/devices/gs24fe.png" },
-    { id: "gs23fe", label: "Galaxy S23 FE", base: 30, image: "/devices/gs23fe.png" },
+    { id: "gs25fe", label: "Galaxy S25 FE", base: 219, image: "/devices/gs25fe.png" },      // IWM $265
+    { id: "gs24fe", label: "Galaxy S24 FE", base: 161, image: "/devices/gs24fe.png" },      // IWM $200 floor
+    { id: "gs23fe", label: "Galaxy S23 FE", base: 161, image: "/devices/gs23fe.png" },      // IWM $200 floor
     { id: "gs21fe", label: "Galaxy S21 FE", base: 10, image: "/devices/gs21fe.png" },
     { id: "gs20fe", label: "Galaxy S20 FE", base: 10, image: "/devices/gs20fe.png" },
   ]},
