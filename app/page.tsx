@@ -825,6 +825,106 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   ps4pro: {
     "base": { broken: 21, fair: 45, good: 86, mint: 108, sealed: 135 },
   },
+  // === WATCHES + DESKTOPS + CONSOLES (IWM scrape) ===
+  imac24m1: {
+    "16gbunifiedmemory": { broken: 360, fair: 279, good: 324, mint: 360, sealed: 387, verygood: 342 },
+    "1tb": { broken: 387, fair: 306, good: 351, mint: 387, sealed: 414, verygood: 369 },
+    "256gb": { broken: 315, fair: 234, good: 279, mint: 315, sealed: 342, verygood: 297 },
+    "512gb": { broken: 351, fair: 270, good: 315, mint: 351, sealed: 378, verygood: 333 },
+    "8gbunifiedmemory": { broken: 315, fair: 234, good: 279, mint: 315, sealed: 342, verygood: 297 },
+  },
+  imac24m3: {
+    "16gbunifiedmemory": { broken: 405, fair: 261, good: 333, mint: 405, sealed: 450, verygood: 369 },
+    "1tb": { broken: 450, fair: 306, good: 378, mint: 450, sealed: 495, verygood: 414 },
+    "24gbunifiedmemory": { broken: 450, fair: 306, good: 378, mint: 450, sealed: 495, verygood: 414 },
+    "256gb": { broken: 360, fair: 216, good: 288, mint: 360, sealed: 405, verygood: 324 },
+    "512gb": { broken: 405, fair: 261, good: 333, mint: 405, sealed: 450, verygood: 369 },
+    "8gbunifiedmemory": { broken: 360, fair: 216, good: 288, mint: 360, sealed: 405, verygood: 324 },
+  },
+  imac24m4: {
+    "16gbunifiedmemory": { broken: 518, fair: 315, good: 428, mint: 518, sealed: 585, verygood: 472 },
+    "1tb": { broken: 742, fair: 540, good: 652, mint: 742, sealed: 810, verygood: 698 },
+    "24gbunifiedmemory": { broken: 698, fair: 495, good: 608, mint: 698, sealed: 765, verygood: 652 },
+    "256gb": { broken: 518, fair: 315, good: 428, mint: 518, sealed: 585, verygood: 472 },
+    "512gb": { broken: 630, fair: 428, good: 540, mint: 630, sealed: 698, verygood: 585 },
+  },
+  macminim1: {
+    "1tb": { broken: 360, fair: 315, good: 342, mint: 360, sealed: 382, verygood: 351 },
+    "256gb": { broken: 292, fair: 248, good: 274, mint: 292, sealed: 315, verygood: 284 },
+    "2tb": { broken: 405, fair: 360, good: 387, mint: 405, sealed: 428, verygood: 396 },
+    "512gb": { broken: 315, fair: 270, good: 297, mint: 315, sealed: 338, verygood: 306 },
+  },
+  macminim2: {
+    "16gbunifiedmemory": { broken: 360, fair: 243, good: 297, mint: 360, sealed: 396, verygood: 338 },
+    "1tb": { broken: 382, fair: 266, good: 320, mint: 382, sealed: 418, verygood: 360 },
+    "24gbunifiedmemory": { broken: 405, fair: 288, good: 342, mint: 405, sealed: 441, verygood: 382 },
+    "256gb": { broken: 315, fair: 198, good: 252, mint: 315, sealed: 351, verygood: 292 },
+    "2tb": { broken: 450, fair: 333, good: 387, mint: 450, sealed: 486, verygood: 428 },
+    "512gb": { broken: 346, fair: 230, good: 284, mint: 346, sealed: 382, verygood: 324 },
+    "8gbunifiedmemory": { broken: 315, fair: 198, good: 252, mint: 315, sealed: 351, verygood: 292 },
+  },
+  macminim4: {
+    "16gbunifiedmemory": { broken: 472, fair: 356, good: 410, mint: 472, sealed: 518, verygood: 450 },
+    "1tb": { broken: 742, fair: 626, good: 680, mint: 742, sealed: 788, verygood: 720 },
+    "24gbunifiedmemory": { broken: 652, fair: 536, good: 590, mint: 652, sealed: 698, verygood: 630 },
+    "256gb": { broken: 472, fair: 356, good: 410, mint: 472, sealed: 518, verygood: 450 },
+    "2tb": { broken: 1012, fair: 896, good: 950, mint: 1012, sealed: 1058, verygood: 990 },
+    "32gbunifiedmemory": { broken: 832, fair: 716, good: 770, mint: 832, sealed: 878, verygood: 810 },
+    "512gb": { broken: 608, fair: 490, good: 544, mint: 608, sealed: 652, verygood: 585 },
+  },
+  macstudiom2m: {
+    "1tb": { broken: 1215, fair: 675, good: 796, mint: 945, sealed: 1012, verygood: 891 },
+    "2tb": { broken: 1350, fair: 810, good: 932, mint: 1080, sealed: 1148, verygood: 1026 },
+    "32gbunifiedmemory": { broken: 1080, fair: 540, good: 662, mint: 810, sealed: 878, verygood: 756 },
+    "4tb": { broken: 1620, fair: 1080, good: 1202, mint: 1350, sealed: 1418, verygood: 1296 },
+    "512gb": { broken: 1080, fair: 540, good: 662, mint: 810, sealed: 878, verygood: 756 },
+    "64gbunifiedmemory": { broken: 1395, fair: 855, good: 976, mint: 1125, sealed: 1192, verygood: 1071 },
+    "8tb": { broken: 1800, fair: 1260, good: 1382, mint: 1530, sealed: 1598, verygood: 1476 },
+  },
+  macstudiom4m: {
+    "1tb": { broken: 2250, fair: 1665, good: 1822, mint: 1980, sealed: 2115, verygood: 1912 },
+    "2tb": { broken: 2475, fair: 1890, good: 2048, mint: 2205, sealed: 2340, verygood: 2138 },
+    "36gbunifiedmemory": { broken: 2025, fair: 1440, good: 1598, mint: 1755, sealed: 1890, verygood: 1688 },
+    "4tb": { broken: 2745, fair: 2160, good: 2318, mint: 2475, sealed: 2610, verygood: 2408 },
+    "512gb": { broken: 2025, fair: 1440, good: 1598, mint: 1755, sealed: 1890, verygood: 1688 },
+    "8tb": { broken: 3105, fair: 2520, good: 2678, mint: 2835, sealed: 2970, verygood: 2768 },
+  },
+  pw2: {
+    "base": { fair: 4, good: 9, mint: 18, sealed: 32 },
+  },
+  pw3: {
+    "pixelwatch3bluetoothwifi": { fair: 4, good: 18, mint: 27, sealed: 54 },
+    "pixelwatch3bluetoothwifi4glte": { broken: 4, fair: 9, good: 22, mint: 32, sealed: 58 },
+  },
+  pw4: {
+    "pixelwatch4bluetoothwifi": { fair: 27, good: 72, mint: 108, sealed: 144, verygood: 90 },
+    "pixelwatch4bluetoothwifi4glte": { broken: 9, fair: 36, good: 81, mint: 117, sealed: 153, verygood: 99 },
+  },
+  sgw7: {
+    "bluetoothwifi": { broken: 18, good: 9, mint: 18, sealed: 32 },
+    "bluetoothwifi4glte": { broken: 22, fair: 4, good: 14, mint: 22, sealed: 36 },
+  },
+  sgw8: {
+    "bluetoothwifi": { broken: 63, fair: 18, good: 45, mint: 63, sealed: 86 },
+    "bluetoothwifi4glte": { broken: 72, fair: 27, good: 54, mint: 72, sealed: 94 },
+  },
+  sgw8c: {
+    "bluetoothwifi": { broken: 99, fair: 54, good: 76, mint: 99, sealed: 122, verygood: 90 },
+    "bluetoothwifi4glte": { broken: 108, fair: 63, good: 86, mint: 108, sealed: 130, verygood: 99 },
+  },
+  sgwu: {
+    "base": { fair: 22, good: 58, mint: 90, sealed: 112, verygood: 76 },
+  },
+  sgwu25: {
+    "base": { fair: 72, good: 112, mint: 144, sealed: 176, verygood: 130 },
+  },
+  switchv2: {
+    "base": { broken: 21, fair: 32, good: 54, mint: 81, sealed: 108, verygood: 68 },
+  },
+  xsx: {
+    "1tb": { broken: 8, fair: 162, good: 225, mint: 274, sealed: 315, verygood: 252 },
+    "2tb": { broken: 8, fair: 162, good: 225, mint: 274, sealed: 315, verygood: 252 },
+  },
 };
 
 const IPHONE_SERIES = [
