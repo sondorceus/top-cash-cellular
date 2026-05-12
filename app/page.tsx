@@ -1549,33 +1549,33 @@ const HP_ELITEBOOK_STD_VARIANTS = [
   { id: "hp_eb_g1a", label: "EliteBook G1a", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g1a.png" },
   { id: "hp_eb_g1i", label: "EliteBook G1i", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g1i.png" },
   { id: "hp_eb_g1q", label: "EliteBook G1q", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g1q.png" },
-  { id: "hp_eb_g11", label: "EliteBook G11", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g11.png" },
-  { id: "hp_eb_g10", label: "EliteBook G10", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g10.png" },
-  { id: "hp_eb_g9", label: "EliteBook G9", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g9.png" },
-  { id: "hp_eb_g8", label: "EliteBook G8", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g8.png" },
-  { id: "hp_eb_g7", label: "EliteBook G7", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g7.png" },
-  { id: "hp_eb_g6", label: "EliteBook G6", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g6.png" },
-  { id: "hp_eb_g5", label: "EliteBook G5", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g5.png" },
-  { id: "hp_eb_g4", label: "EliteBook G4", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g4.png" },
+  { id: "hp_eb_g11", label: "EliteBook G11", base: 1, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g11.png" },
+  { id: "hp_eb_g10", label: "EliteBook G10", base: 1, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g10.png" },
+  { id: "hp_eb_g9", label: "EliteBook G9", base: 1, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g9.png" },
+  { id: "hp_eb_g8", label: "EliteBook G8", base: 1, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g8.png" },
+  { id: "hp_eb_g7", label: "EliteBook G7", base: 1, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g7.png" },
+  { id: "hp_eb_g6", label: "EliteBook G6", base: 1, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g6.png" },
+  { id: "hp_eb_g5", label: "EliteBook G5", base: 1, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g5.png" },
+  { id: "hp_eb_g4", label: "EliteBook G4", base: 1, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g4.png" },
 ];
 const HP_ELITEBOOK_ULTRA_VARIANTS = [
   { id: "hp_eb_ultra_g1q", label: "EliteBook Ultra G1q", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1q.png" },
   { id: "hp_eb_ultra_g1i", label: "EliteBook Ultra G1i", base: 0, inquiryOnly: true, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1i.png" },
 ];
 const HP_ELITEBOOK_SUB_SERIES = [
-  { id: "hp_eb_std", label: "EliteBook", year: "Standard line", topPrice: 0, variants: HP_ELITEBOOK_STD_VARIANTS, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g1a.png" },
+  { id: "hp_eb_std", label: "EliteBook", year: "Standard line", topPrice: 375, variants: HP_ELITEBOOK_STD_VARIANTS, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g1a.png" },
   { id: "hp_eb_ultra", label: "EliteBook Ultra", year: "Premium ultraportable", topPrice: 0, variants: HP_ELITEBOOK_ULTRA_VARIANTS, inquiryOnly: true, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1q.png" },
 ];
 const HP_ENVY_VARIANTS = [
   { id: "hp_envy_13", label: "Envy 13", base: 0, inquiryOnly: true, image: "/devices/hp-envy-hp-envy-13.png" },
-  { id: "hp_envy_15", label: "Envy 15", base: 0, inquiryOnly: true, image: "/devices/hp-envy-hp-envy-15.png" },
+  { id: "hp_envy_15", label: "Envy 15", base: 1, image: "/devices/hp-envy-hp-envy-15.png" },
   { id: "hp_envy_17", label: "Envy 17", base: 0, inquiryOnly: true, image: "/devices/hp-envy-hp-envy-17.png" },
-  { id: "hp_envy_x360", label: "Envy x360", base: 0, inquiryOnly: true, image: "/devices/hp-envy-hp-envy-x360.png" },
+  { id: "hp_envy_x360", label: "Envy x360", base: 1, image: "/devices/hp-envy-hp-envy-x360.png" },
 ];
 const HP_OMEN_STD_VARIANTS = [
-  { id: "hp_omen_17", label: "OMEN 17", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
-  { id: "hp_omen_16", label: "OMEN 16", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-16.png" },
-  { id: "hp_omen_15", label: "OMEN 15", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-15.png" },
+  { id: "hp_omen_17", label: "OMEN 17", base: 1, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_omen_16", label: "OMEN 16", base: 1, image: "/devices/hp-omen-omen_std-hp-omen-16.png" },
+  { id: "hp_omen_15", label: "OMEN 15", base: 1, image: "/devices/hp-omen-omen_std-hp-omen-15.png" },
 ];
 const HP_OMEN_TRANSCEND_VARIANTS = [
   { id: "hp_omen_trans_16", label: "OMEN Transcend 16", base: 0, inquiryOnly: true, image: "/devices/hp-omen-omen_trans-hp-omen-transcend-16.png" },
@@ -1588,7 +1588,7 @@ const HP_OMEN_SLIM_VARIANTS = [
   { id: "hp_omen_slim", label: "OMEN Slim", base: 0, inquiryOnly: true, image: "/devices/hp_omen_slim.png" },
 ];
 const HP_OMEN_SUB_SERIES = [
-  { id: "hp_omen_std_sub", label: "OMEN", year: "Standard gaming", topPrice: 0, variants: HP_OMEN_STD_VARIANTS, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_omen_std_sub", label: "OMEN", year: "Standard gaming", topPrice: 675, variants: HP_OMEN_STD_VARIANTS, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
   { id: "hp_omen_max_sub", label: "OMEN Max", year: "Top-tier", topPrice: 0, variants: HP_OMEN_MAX_VARIANTS, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
   { id: "hp_omen_slim_sub", label: "OMEN Slim", year: "Slim gaming", topPrice: 0, variants: HP_OMEN_SLIM_VARIANTS, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
   { id: "hp_omen_trans_sub", label: "OMEN Transcend", year: "Premium gaming", topPrice: 0, variants: HP_OMEN_TRANSCEND_VARIANTS, inquiryOnly: true, image: "/devices/hp-omen-omen_trans-hp-omen-transcend-16.png" },
@@ -1609,27 +1609,27 @@ const HP_PAVILION_VARIANTS = [
   { id: "hp_pav_x360", label: "Pavilion x360", base: 0, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-x360.png" },
 ];
 const HP_PROBOOK_VARIANTS = [
-  { id: "hp_pb_g11", label: "ProBook G11", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g11.png" },
-  { id: "hp_pb_g10", label: "ProBook G10", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g10.png" },
-  { id: "hp_pb_g9", label: "ProBook G9", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g9.png" },
-  { id: "hp_pb_g8", label: "ProBook G8", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g8.png" },
-  { id: "hp_pb_g7", label: "ProBook G7", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g7.png" },
+  { id: "hp_pb_g11", label: "ProBook G11", base: 1, image: "/devices/hp-probook-hp-probook-g11.png" },
+  { id: "hp_pb_g10", label: "ProBook G10", base: 1, image: "/devices/hp-probook-hp-probook-g10.png" },
+  { id: "hp_pb_g9", label: "ProBook G9", base: 1, image: "/devices/hp-probook-hp-probook-g9.png" },
+  { id: "hp_pb_g8", label: "ProBook G8", base: 1, image: "/devices/hp-probook-hp-probook-g8.png" },
+  { id: "hp_pb_g7", label: "ProBook G7", base: 1, image: "/devices/hp-probook-hp-probook-g7.png" },
   { id: "hp_pb_g6", label: "ProBook G6", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g6.png" },
   { id: "hp_pb_g5", label: "ProBook G5", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g5.png" },
 ];
 const HP_SPECTRE_VARIANTS = [
-  { id: "hp_spec_13", label: "Spectre x360 13", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-hp-spectre-13-x360.png" },
-  { id: "hp_spec_14", label: "Spectre x360 14", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-hp-spectre-14-x360.png" },
-  { id: "hp_spec_15", label: "Spectre x360 15", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-hp-spectre-15-x360.png" },
-  { id: "hp_spec_16", label: "Spectre x360 16", base: 0, inquiryOnly: true, image: "/devices/hp-spectre-hp-spectre-16-x360.png" },
+  { id: "hp_spec_13", label: "Spectre x360 13", base: 1, image: "/devices/hp-spectre-hp-spectre-13-x360.png" },
+  { id: "hp_spec_14", label: "Spectre x360 14", base: 1, image: "/devices/hp-spectre-hp-spectre-14-x360.png" },
+  { id: "hp_spec_15", label: "Spectre x360 15", base: 1, image: "/devices/hp-spectre-hp-spectre-15-x360.png" },
+  { id: "hp_spec_16", label: "Spectre x360 16", base: 1, image: "/devices/hp-spectre-hp-spectre-16-x360.png" },
 ];
 const HP_VICTUS_VARIANTS = [
   { id: "hp_victus_15", label: "Victus 15", base: 0, inquiryOnly: true, image: "/devices/hp_victus_15.png" },
   { id: "hp_victus_16", label: "Victus 16", base: 0, inquiryOnly: true, image: "/devices/hp_victus_16.png" },
 ];
 const HP_ZBOOK_VARIANTS = [
-  { id: "hp_zb_g11", label: "ZBook G11", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g11.png" },
-  { id: "hp_zb_g10", label: "ZBook G10", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g10.png" },
+  { id: "hp_zb_g11", label: "ZBook G11", base: 1, image: "/devices/hp-zbook-hp-zbook-g11.png" },
+  { id: "hp_zb_g10", label: "ZBook G10", base: 1, image: "/devices/hp-zbook-hp-zbook-g10.png" },
   { id: "hp_zb_g9", label: "ZBook G9", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g9.png" },
   { id: "hp_zb_g8", label: "ZBook G8", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g8.png" },
   { id: "hp_zb_g7", label: "ZBook G7", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g7.png" },
@@ -1644,15 +1644,15 @@ const HP_NOTEBOOK_VARIANTS = [
 ];
 
 const HP_PC_SERIES = [
-  { id: "hp_elitebook", label: "EliteBook", year: "Premium business", topPrice: 0, subSeries: HP_ELITEBOOK_SUB_SERIES, inquiryOnly: true, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g11.png" },
-  { id: "hp_envy", label: "Envy", year: "Mainstream consumer", topPrice: 0, variants: HP_ENVY_VARIANTS, inquiryOnly: true, image: "/devices/hp-envy-hp-envy-x360.png" },
-  { id: "hp_omen", label: "OMEN", year: "Gaming", topPrice: 0, subSeries: HP_OMEN_SUB_SERIES, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_elitebook", label: "EliteBook", year: "Premium business", topPrice: 375, subSeries: HP_ELITEBOOK_SUB_SERIES, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g11.png" },
+  { id: "hp_envy", label: "Envy", year: "Mainstream consumer", topPrice: 200, variants: HP_ENVY_VARIANTS, image: "/devices/hp-envy-hp-envy-x360.png" },
+  { id: "hp_omen", label: "OMEN", year: "Gaming", topPrice: 675, subSeries: HP_OMEN_SUB_SERIES, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
   { id: "hp_omnibook", label: "OmniBook", year: "AI productivity", topPrice: 0, variants: HP_OMNIBOOK_VARIANTS, inquiryOnly: true, image: "/devices/hp-omnibook-hp-omnibook-x.png" },
   { id: "hp_pavilion", label: "Pavilion", year: "Everyday", topPrice: 0, variants: HP_PAVILION_VARIANTS, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-15.png" },
-  { id: "hp_probook", label: "ProBook", year: "SMB business", topPrice: 0, variants: HP_PROBOOK_VARIANTS, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g11.png" },
-  { id: "hp_spectre", label: "Spectre", year: "Premium consumer", topPrice: 0, variants: HP_SPECTRE_VARIANTS, inquiryOnly: true, image: "/devices/hp-spectre-hp-spectre-14-x360.png" },
+  { id: "hp_probook", label: "ProBook", year: "SMB business", topPrice: 350, variants: HP_PROBOOK_VARIANTS, image: "/devices/hp-probook-hp-probook-g11.png" },
+  { id: "hp_spectre", label: "Spectre", year: "Premium consumer", topPrice: 500, variants: HP_SPECTRE_VARIANTS, image: "/devices/hp-spectre-hp-spectre-14-x360.png" },
   { id: "hp_victus", label: "Victus", year: "Entry gaming", topPrice: 0, variants: HP_VICTUS_VARIANTS, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
-  { id: "hp_zbook", label: "ZBook", year: "Mobile workstation", topPrice: 0, variants: HP_ZBOOK_VARIANTS, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g11.png" },
+  { id: "hp_zbook", label: "ZBook", year: "Mobile workstation", topPrice: 1315, variants: HP_ZBOOK_VARIANTS, image: "/devices/hp-zbook-hp-zbook-g11.png" },
   { id: "hp_notebook", label: "Notebook", year: "Budget", topPrice: 0, variants: HP_NOTEBOOK_VARIANTS, inquiryOnly: true, image: "/devices/hp-notebook-hp-notebook-15.png" },
 ];
 const HP_PC_ALL_SUB_SERIES = [
@@ -4037,6 +4037,534 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
     hasNanoGlass: false,
   },
   // HP OMEN 45L Desktop — gaming desktop, additive pricing
+  // ─── HP LAPTOPS — additive pricing from IWM (scraped 2026-05-11) ───
+  // EliteBook Standard — business ultrabooks
+  hp_eb_g11: {
+    processors: [
+      { id: "r5_7535u",      label: "AMD Ryzen 5 7535U",       multiplier: 1.00, adj: 230 },
+      { id: "r5p_7535u",     label: "AMD Ryzen 5 Pro 7535U",   multiplier: 1.00, adj: 250 },
+      { id: "r7_7735u",      label: "AMD Ryzen 7 7735U",       multiplier: 1.00, adj: 290 },
+      { id: "r7p_7735u",     label: "AMD Ryzen 7 Pro 7735U",   multiplier: 1.00, adj: 325 },
+      { id: "ultra5",        label: "Intel Core Ultra 5",       multiplier: 1.00, adj: 300 },
+      { id: "ultra7",        label: "Intel Core Ultra 7",       multiplier: 1.00, adj: 375 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g10: {
+    processors: [
+      { id: "i5_13",     label: "Intel Core i5 (13th Gen)",   multiplier: 1.00, adj: 230 },
+      { id: "i7_13",     label: "Intel Core i7 (13th Gen)",   multiplier: 1.00, adj: 265 },
+      { id: "r5_7530u",  label: "AMD Ryzen 5 7530U",          multiplier: 1.00, adj: 160 },
+      { id: "r5p_7530u", label: "AMD Ryzen 5 Pro 7530U",      multiplier: 1.00, adj: 185 },
+      { id: "r7_7730u",  label: "AMD Ryzen 7 7730U",          multiplier: 1.00, adj: 210 },
+      { id: "r7p_7730u", label: "AMD Ryzen 7 Pro 7730U",      multiplier: 1.00, adj: 245 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g9: {
+    processors: [
+      { id: "i5_12",     label: "Intel Core i5 (12th Gen)",   multiplier: 1.00, adj: 150 },
+      { id: "i7_12",     label: "Intel Core i7 (12th Gen)",   multiplier: 1.00, adj: 190 },
+      { id: "r5p_5675u", label: "AMD Ryzen 5 Pro 5675U",      multiplier: 1.00, adj: 120 },
+      { id: "r7p_5875u", label: "AMD Ryzen 7 Pro 5875U",      multiplier: 1.00, adj: 165 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g8: {
+    processors: [
+      { id: "i5_11",     label: "Intel Core i5 (11th Gen)",   multiplier: 1.00, adj: 100 },
+      { id: "i7_11",     label: "Intel Core i7 (11th Gen)",   multiplier: 1.00, adj: 150 },
+      { id: "r5_5600u",  label: "AMD Ryzen 5 5600U",          multiplier: 1.00, adj: 70 },
+      { id: "r5p_5650u", label: "AMD Ryzen 5 Pro 5650U",      multiplier: 1.00, adj: 100 },
+      { id: "r7_5800u",  label: "AMD Ryzen 7 5800U",          multiplier: 1.00, adj: 95 },
+      { id: "r7p_5850u", label: "AMD Ryzen 7 Pro 5850U",      multiplier: 1.00, adj: 120 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g7: {
+    processors: [
+      { id: "i5_10",     label: "Intel Core i5 (10th Gen)",   multiplier: 1.00, adj: 65 },
+      { id: "i7_10",     label: "Intel Core i7 (10th Gen)",   multiplier: 1.00, adj: 110 },
+      { id: "r3p_4450u", label: "AMD Ryzen 3 Pro 4450U",      multiplier: 1.00, adj: 25 },
+      { id: "r5p_4650u", label: "AMD Ryzen 5 Pro 4650U",      multiplier: 1.00, adj: 90 },
+      { id: "r7p_4750u", label: "AMD Ryzen 7 Pro 4750U",      multiplier: 1.00, adj: 125 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g6: {
+    processors: [
+      { id: "i5_8",      label: "Intel Core i5 (8th Gen)",    multiplier: 1.00, adj: 75 },
+      { id: "i7_8",      label: "Intel Core i7 (8th Gen)",    multiplier: 1.00, adj: 100 },
+      { id: "r3p_3300u", label: "AMD Ryzen 3 Pro 3300U",      multiplier: 1.00, adj: 50 },
+      { id: "r5p_3500u", label: "AMD Ryzen 5 Pro 3500U",      multiplier: 1.00, adj: 90 },
+      { id: "r7p_3700u", label: "AMD Ryzen 7 Pro 3700U",      multiplier: 1.00, adj: 120 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g5: {
+    processors: [
+      { id: "r3p_2300u", label: "AMD Ryzen 3 Pro 2300U",      multiplier: 1.00, adj: 15 },
+      { id: "r5p_2500u", label: "AMD Ryzen 5 Pro 2500U",      multiplier: 1.00, adj: 30 },
+      { id: "r7p_2700u", label: "AMD Ryzen 7 Pro 2700U",      multiplier: 1.00, adj: 45 },
+      { id: "i5_8",      label: "Intel Core i5 (8th Gen)",    multiplier: 1.00, adj: 45 },
+      { id: "i7_8",      label: "Intel Core i7 (8th Gen)",    multiplier: 1.00, adj: 70 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g4: {
+    processors: [
+      { id: "i5_7",  label: "Intel Core i5 (7th Gen)",  multiplier: 1.00, adj: 30 },
+      { id: "i7_7",  label: "Intel Core i7 (7th Gen)",  multiplier: 1.00, adj: 55 },
+      { id: "i5_8",  label: "Intel Core i5 (8th Gen)",  multiplier: 1.00, adj: 50 },
+      { id: "i7_8",  label: "Intel Core i7 (8th Gen)",  multiplier: 1.00, adj: 80 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 20 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+    ],
+    hasNanoGlass: false,
+  },
+  // Spectre x360 — premium consumer convertible
+  hp_spec_14: {
+    processors: [
+      { id: "i5_11", label: "Intel Core i5 (11th Gen)",  multiplier: 1.00, adj: 200 },
+      { id: "i5_12", label: "Intel Core i5 (12th Gen)",  multiplier: 1.00, adj: 250 },
+      { id: "i7_11", label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 275 },
+      { id: "i7_12", label: "Intel Core i7 (12th Gen)",  multiplier: 1.00, adj: 350 },
+      { id: "i7_13", label: "Intel Core i7 (13th Gen)",  multiplier: 1.00, adj: 470 },
+      { id: "ultra7", label: "Intel Core Ultra 7",        multiplier: 1.00, adj: 500 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_spec_16: {
+    processors: [
+      { id: "i7_11", label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 225 },
+      { id: "i7_12", label: "Intel Core i7 (12th Gen)",  multiplier: 1.00, adj: 300 },
+      { id: "i7_13", label: "Intel Core i7 (13th Gen)",  multiplier: 1.00, adj: 375 },
+      { id: "ultra7", label: "Intel Core Ultra 7",        multiplier: 1.00, adj: 450 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 0 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 50 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 100 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_spec_13: {
+    processors: [
+      { id: "i5_10", label: "Intel Core i5 (10th Gen)",  multiplier: 1.00, adj: 210 },
+      { id: "i5_11", label: "Intel Core i5 (11th Gen)",  multiplier: 1.00, adj: 275 },
+      { id: "i5_12", label: "Intel Core i5 (12th Gen)",  multiplier: 1.00, adj: 295 },
+      { id: "i5_13", label: "Intel Core i5 (13th Gen)",  multiplier: 1.00, adj: 320 },
+      { id: "i7_10", label: "Intel Core i7 (10th Gen)",  multiplier: 1.00, adj: 260 },
+      { id: "i7_11", label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 290 },
+      { id: "i7_12", label: "Intel Core i7 (12th Gen)",  multiplier: 1.00, adj: 330 },
+      { id: "i7_13", label: "Intel Core i7 (13th Gen)",  multiplier: 1.00, adj: 365 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_spec_15: {
+    processors: [
+      { id: "i7_7",  label: "Intel Core i7 (7th Gen)",   multiplier: 1.00, adj: 180 },
+      { id: "i7_8",  label: "Intel Core i7 (8th Gen)",   multiplier: 1.00, adj: 240 },
+      { id: "i7_9",  label: "Intel Core i7 (9th Gen)",   multiplier: 1.00, adj: 280 },
+      { id: "i7_10", label: "Intel Core i7 (10th Gen)",  multiplier: 1.00, adj: 325 },
+      { id: "i7_11", label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 340 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  // ProBook — SMB business laptops
+  hp_pb_g11: {
+    processors: [
+      { id: "ultra5",    label: "Intel Core Ultra 5",      multiplier: 1.00, adj: 280 },
+      { id: "ultra7",    label: "Intel Core Ultra 7",      multiplier: 1.00, adj: 350 },
+      { id: "r5_7535u",  label: "AMD Ryzen 5 7535U",       multiplier: 1.00, adj: 240 },
+      { id: "r7_7735u",  label: "AMD Ryzen 7 7735U",       multiplier: 1.00, adj: 300 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_pb_g10: {
+    processors: [
+      { id: "i5_13",     label: "Intel Core i5 (13th Gen)", multiplier: 1.00, adj: 150 },
+      { id: "i7_13",     label: "Intel Core i7 (13th Gen)", multiplier: 1.00, adj: 175 },
+      { id: "r3_7330u",  label: "AMD Ryzen 3 7330U",        multiplier: 1.00, adj: 145 },
+      { id: "r5_7530u",  label: "AMD Ryzen 5 7530U",        multiplier: 1.00, adj: 190 },
+      { id: "r7_7730u",  label: "AMD Ryzen 7 7730U",        multiplier: 1.00, adj: 230 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 25 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 20 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 40 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_pb_g9: {
+    processors: [
+      { id: "i5_12",     label: "Intel Core i5 (12th Gen)", multiplier: 1.00, adj: 150 },
+      { id: "i7_12",     label: "Intel Core i7 (12th Gen)", multiplier: 1.00, adj: 190 },
+      { id: "r3_5425u",  label: "AMD Ryzen 3 5425U",        multiplier: 1.00, adj: 60 },
+      { id: "r5_5625u",  label: "AMD Ryzen 5 5625U",        multiplier: 1.00, adj: 100 },
+      { id: "r7_5825u",  label: "AMD Ryzen 7 5825U",        multiplier: 1.00, adj: 140 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_pb_g8: {
+    processors: [
+      { id: "i5_11", label: "Intel Core i5 (11th Gen)",  multiplier: 1.00, adj: 55 },
+      { id: "i7_11", label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 90 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_pb_g7: {
+    processors: [
+      { id: "i5_10",    label: "Intel Core i5 (10th Gen)", multiplier: 1.00, adj: 40 },
+      { id: "i7_10",    label: "Intel Core i7 (10th Gen)", multiplier: 1.00, adj: 60 },
+      { id: "r3_4300u", label: "AMD Ryzen 3 4300U",        multiplier: 1.00, adj: 20 },
+      { id: "r5_4500u", label: "AMD Ryzen 5 4500U",        multiplier: 1.00, adj: 40 },
+      { id: "r7_4700u", label: "AMD Ryzen 7 4700U",        multiplier: 1.00, adj: 60 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 10 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 20 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 20 },
+    ],
+    hasNanoGlass: false,
+  },
+  // OMEN gaming laptops
+  hp_omen_17: {
+    processors: [
+      { id: "i5_10",    label: "Intel Core i5 (10th Gen)",  multiplier: 1.00, adj: 230 },
+      { id: "i5_11",    label: "Intel Core i5 (11th Gen)",  multiplier: 1.00, adj: 300 },
+      { id: "i5_12",    label: "Intel Core i5 (12th Gen)",  multiplier: 1.00, adj: 360 },
+      { id: "i7_10",    label: "Intel Core i7 (10th Gen)",  multiplier: 1.00, adj: 290 },
+      { id: "i7_11",    label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 350 },
+      { id: "i7_12",    label: "Intel Core i7 (12th Gen)",  multiplier: 1.00, adj: 400 },
+      { id: "i7_13",    label: "Intel Core i7 (13th Gen)",  multiplier: 1.00, adj: 455 },
+      { id: "i7_14",    label: "Intel Core i7 (14th Gen)",  multiplier: 1.00, adj: 515 },
+      { id: "i9_12",    label: "Intel Core i9 (12th Gen)",  multiplier: 1.00, adj: 450 },
+      { id: "i9_13",    label: "Intel Core i9 (13th Gen)",  multiplier: 1.00, adj: 520 },
+      { id: "r_ai5",    label: "AMD Ryzen AI 5 340",        multiplier: 1.00, adj: 450 },
+      { id: "r7_8845",  label: "AMD Ryzen 7 8845HS",        multiplier: 1.00, adj: 500 },
+      { id: "r_ai7",    label: "AMD Ryzen AI 7 350",        multiplier: 1.00, adj: 525 },
+      { id: "r_ai9",    label: "AMD Ryzen AI 9 365",        multiplier: 1.00, adj: 675 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 55 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_omen_16: {
+    processors: [
+      { id: "r5_4600h", label: "AMD Ryzen 5 4600H",   multiplier: 1.00, adj: 130 },
+      { id: "r5_5600h", label: "AMD Ryzen 5 5600H",   multiplier: 1.00, adj: 170 },
+      { id: "r5_7640",  label: "AMD Ryzen 5 7640HS",  multiplier: 1.00, adj: 240 },
+      { id: "r_ai5",    label: "AMD Ryzen AI 5 340",  multiplier: 1.00, adj: 425 },
+      { id: "r7_4800h", label: "AMD Ryzen 7 4800H",   multiplier: 1.00, adj: 190 },
+      { id: "r7_5800h", label: "AMD Ryzen 7 5800H",   multiplier: 1.00, adj: 220 },
+      { id: "r7_6800h", label: "AMD Ryzen 7 6800H",   multiplier: 1.00, adj: 280 },
+      { id: "r7_7840",  label: "AMD Ryzen 7 7840HS",  multiplier: 1.00, adj: 350 },
+      { id: "r_ai7",    label: "AMD Ryzen AI 7 350",  multiplier: 1.00, adj: 475 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_omen_15: {
+    processors: [
+      { id: "r5_4600h", label: "AMD Ryzen 5 4600H",   multiplier: 1.00, adj: 270 },
+      { id: "r5_5600h", label: "AMD Ryzen 5 5600H",   multiplier: 1.00, adj: 330 },
+      { id: "r7_4800h", label: "AMD Ryzen 7 4800H",   multiplier: 1.00, adj: 300 },
+      { id: "r7_5800h", label: "AMD Ryzen 7 5800H",   multiplier: 1.00, adj: 350 },
+      { id: "r7_6800h", label: "AMD Ryzen 7 6800H",   multiplier: 1.00, adj: 390 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  // Envy — mainstream consumer
+  hp_envy_x360: {
+    processors: [
+      { id: "i5_10",    label: "Intel Core i5 (10th Gen)",  multiplier: 1.00, adj: 135 },
+      { id: "i5_11",    label: "Intel Core i5 (11th Gen)",  multiplier: 1.00, adj: 160 },
+      { id: "i5_12",    label: "Intel Core i5 (12th Gen)",  multiplier: 1.00, adj: 185 },
+      { id: "i5_13",    label: "Intel Core i5 (13th Gen)",  multiplier: 1.00, adj: 180 },
+      { id: "r5_4500u", label: "AMD Ryzen 5 4500U",         multiplier: 1.00, adj: 150 },
+      { id: "r5_5500u", label: "AMD Ryzen 5 5500U",         multiplier: 1.00, adj: 180 },
+      { id: "r5_7530u", label: "AMD Ryzen 5 7530U",         multiplier: 1.00, adj: 200 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_envy_15: {
+    processors: [
+      { id: "i5_8",  label: "Intel Core i5 (8th Gen)",   multiplier: 1.00, adj: 50 },
+      { id: "i5_9",  label: "Intel Core i5 (9th Gen)",   multiplier: 1.00, adj: 80 },
+      { id: "i5_10", label: "Intel Core i5 (10th Gen)",  multiplier: 1.00, adj: 120 },
+      { id: "i5_11", label: "Intel Core i5 (11th Gen)",  multiplier: 1.00, adj: 145 },
+      { id: "i7_8",  label: "Intel Core i7 (8th Gen)",   multiplier: 1.00, adj: 70 },
+      { id: "i7_9",  label: "Intel Core i7 (9th Gen)",   multiplier: 1.00, adj: 115 },
+      { id: "i7_10", label: "Intel Core i7 (10th Gen)",  multiplier: 1.00, adj: 140 },
+      { id: "i7_11", label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 165 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  // ZBook — mobile workstation
+  hp_zb_g11: {
+    processors: [
+      { id: "ultra5",  label: "Intel Core Ultra 5",         multiplier: 1.00, adj: 285 },
+      { id: "ultra7",  label: "Intel Core Ultra 7",         multiplier: 1.00, adj: 340 },
+      { id: "i7_13",   label: "Intel Core i7 (13th Gen)",   multiplier: 1.00, adj: 875 },
+      { id: "i7_14",   label: "Intel Core i7 (14th Gen)",   multiplier: 1.00, adj: 1200 },
+      { id: "i9_13",   label: "Intel Core i9 (13th Gen)",   multiplier: 1.00, adj: 1250 },
+      { id: "i9_14",   label: "Intel Core i9 (14th Gen)",   multiplier: 1.00, adj: 1315 },
+    ],
+    memory: [
+      { id: "8",   label: "8 GB",   multiplier: 1.00, adj: 0 },
+      { id: "16",  label: "16 GB",  multiplier: 1.00, adj: 25 },
+      { id: "32",  label: "32 GB",  multiplier: 1.00, adj: 50 },
+      { id: "64",  label: "64 GB",  multiplier: 1.00, adj: 100 },
+      { id: "128", label: "128 GB", multiplier: 1.00, adj: 150 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 25 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 50 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 100 },
+      { id: "4tb", label: "4 TB SSD",   multiplier: 1.00, adj: 200 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_zb_g10: {
+    processors: [
+      { id: "r5p_7640",  label: "AMD Ryzen 5 Pro 7640HS",  multiplier: 1.00, adj: 150 },
+      { id: "r7p_7840",  label: "AMD Ryzen 7 Pro 7840HS",  multiplier: 1.00, adj: 220 },
+      { id: "r9p_7940",  label: "AMD Ryzen 9 Pro 7940HS",  multiplier: 1.00, adj: 265 },
+      { id: "i5_13",     label: "Intel Core i5 (13th Gen)", multiplier: 1.00, adj: 190 },
+      { id: "i7_13",     label: "Intel Core i7 (13th Gen)", multiplier: 1.00, adj: 235 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 25 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 50 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 75 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 25 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 50 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 75 },
+    ],
+    hasNanoGlass: false,
+  },
+  // HP OMEN Desktop (already existed)
   hpomendsk: {
     processors: [
       { id: "i9_13",     label: "Intel Core i9 (13th Gen)",     multiplier: 1.00, adj: 800 },
