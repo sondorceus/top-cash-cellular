@@ -503,12 +503,6 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "base": { broken: 14, fair: 45, good: 58, mint: 68, sealed: 90 },
   },
   // === FULL IWM SCRAPE — all remaining devices ===
-  awu1: {
-    "base": { fair: 36, good: 86, mint: 126, sealed: 144, verygood: 108 },
-  },
-  awu2: {
-    "base": { fair: 90, good: 135, mint: 180, sealed: 216, verygood: 162 },
-  },
   gnote10: {
     "base": { broken: 9, sealed: 99 },
     "brandnew": { fair: 140, good: 162, mint: 171 },
@@ -717,6 +711,66 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   },
   xone: {
     "base": { broken: 21, fair: 54, good: 81, mint: 99, sealed: 117 },
+  },
+
+  // === MACBOOKS + WATCHES + REMAINING ===
+  awu1: {
+    "base": { fair: 36, good: 86, mint: 126, sealed: 144, verygood: 108 },
+  },
+  awu2: {
+    "base": { fair: 90, good: 135, mint: 180, sealed: 216, verygood: 162 },
+  },
+  mba13m3: {
+    "1tb": { fair: 432, good: 540, mint: 648, sealed: 693, verygood: 594 },
+    "2tb": { fair: 544, good: 652, mint: 760, sealed: 806, verygood: 706 },
+  },
+  mba15m3: {
+    "1tb": { fair: 472, good: 594, mint: 675, sealed: 729, verygood: 634 },
+    "2tb": { fair: 562, good: 684, mint: 765, sealed: 819, verygood: 724 },
+  },
+  mba_m4_2025: {
+    "1tb": { fair: 531, good: 644, mint: 778, sealed: 824, verygood: 711 },
+    "2tb": { fair: 711, good: 824, mint: 958, sealed: 1004, verygood: 891 },
+  },
+  mba_m5_2026: {
+    "1tb": { fair: 585, good: 698, mint: 832, sealed: 922, verygood: 765 },
+    "2tb": { fair: 900, good: 1012, mint: 1148, sealed: 1238, verygood: 1080 },
+    "4tb": { fair: 1350, good: 1462, mint: 1598, sealed: 1688, verygood: 1530 },
+  },
+  mbp13m1: {
+    "2tb": { fair: 468, good: 558, mint: 626, sealed: 675, verygood: 616 },
+  },
+  mbp14m2: {
+    "2tb": { fair: 630, good: 765, mint: 945, sealed: 990, verygood: 855 },
+    "4tb": { fair: 810, good: 945, mint: 1125, sealed: 1170, verygood: 1035 },
+    "8tb": { fair: 900, good: 1125, mint: 1350, sealed: 1404, verygood: 1215 },
+  },
+  mbp14m3: {
+    "1tb": { fair: 891, good: 981, mint: 1080, sealed: 1107, verygood: 1030 },
+    "2tb": { fair: 900, good: 1080, mint: 1215, sealed: 1260, verygood: 1148 },
+    "4tb": { fair: 1035, good: 1215, mint: 1395, sealed: 1462, verygood: 1314 },
+    "512": { fair: 756, good: 846, mint: 945, sealed: 972, verygood: 896 },
+    "8tb": { fair: 2160, good: 2565, mint: 2835, sealed: 2925, verygood: 2700 },
+  },
+  mbp16_m5pmax_2026: {
+    "2tb": { fair: 2340, good: 2475, mint: 2610, sealed: 2745, verygood: 2542 },
+  },
+  mbp16m2: {
+    "2tb": { fair: 1215, good: 1408, mint: 1620, sealed: 1665, verygood: 1521 },
+    "4tb": { fair: 1170, good: 1418, mint: 1710, sealed: 1778, verygood: 1575 },
+    "8tb": { fair: 1350, good: 1598, mint: 1890, sealed: 1958, verygood: 1755 },
+  },
+  mbp16m3: {
+    "2tb": { fair: 1350, good: 1485, mint: 1665, sealed: 1732, verygood: 1575 },
+    "4tb": { fair: 1620, good: 1755, mint: 1935, sealed: 2002, verygood: 1845 },
+    "8tb": { fair: 1845, good: 2025, mint: 2295, sealed: 2362, verygood: 2160 },
+  },
+  mbp16m4: {
+    "2tb": { fair: 1935, good: 2070, mint: 2205, sealed: 2295, verygood: 2138 },
+  },
+  xss: {
+    "base": { broken: 21, fair: 54, good: 90, mint: 135, sealed: 158, verygood: 112 },
+    "carbonblack": { broken: 43, fair: 86, good: 148, mint: 184, sealed: 220, verygood: 166 },
   },
 };
 
