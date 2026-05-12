@@ -338,6 +338,130 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "2tb": { broken: 475, fair: 907, good: 1002, mint: 1050, sealed: 1268, verygood: 1021 },
     "512": { broken: 361, fair: 812, good: 907, mint: 955, sealed: 983, verygood: 926 },
   },
+  // === SAMSUNG S SERIES (10% below IWM) ===
+  gs24: {
+    "128": { broken: 50, fair: 117, good: 162, mint: 189, sealed: 216, verygood: 171 },
+    "256": { broken: 54, fair: 144, good: 189, mint: 216, sealed: 248, verygood: 198 },
+    "512": { fair: 117, good: 162, mint: 189, sealed: 216, verygood: 171 },
+  },
+  gs24u: {
+    "1tb": { broken: 153, fair: 342, good: 423, mint: 468, sealed: 590, verygood: 441 },
+    "256": { broken: 135, fair: 270, good: 351, mint: 396, sealed: 432, verygood: 369 },
+    "512": { broken: 144, fair: 288, good: 369, mint: 414, sealed: 500, verygood: 387 },
+  },
+  gs25: {
+    "128": { broken: 54, fair: 189, good: 238, mint: 261, sealed: 297, verygood: 248 },
+    "256": { broken: 58, fair: 225, good: 274, mint: 297, sealed: 328, verygood: 284 },
+    "512": { broken: 54, fair: 189, good: 238, mint: 261, sealed: 297, verygood: 248 },
+  },
+  gs25p: {
+    "256": { broken: 72, fair: 261, good: 306, mint: 360, sealed: 396, verygood: 324 },
+    "512": { broken: 81, fair: 315, good: 360, mint: 414, sealed: 441, verygood: 378 },
+  },
+  gs25u: {
+    "1tb": { broken: 153, fair: 486, good: 540, mint: 580, sealed: 603, verygood: 554 },
+    "256": { broken: 135, fair: 418, good: 472, mint: 513, sealed: 558, verygood: 486 },
+    "512": { broken: 144, fair: 441, good: 495, mint: 536, sealed: 580, verygood: 508 },
+  },
+  gs26: {
+    "256": { broken: 90, fair: 284, good: 356, mint: 405, sealed: 450, verygood: 378 },
+    "512": { broken: 99, fair: 306, good: 378, mint: 428, sealed: 477, verygood: 400 },
+  },
+  gs26p: {
+    "256": { broken: 108, fair: 306, good: 387, mint: 450, sealed: 495, verygood: 414 },
+    "512": { broken: 117, fair: 342, good: 423, mint: 486, sealed: 540, verygood: 450 },
+  },
+  gs26u: {
+    "1tb": { broken: 144, fair: 468, good: 576, mint: 657, sealed: 720, verygood: 612 },
+    "256": { broken: 126, fair: 396, good: 504, mint: 585, sealed: 630, verygood: 540 },
+    "512": { broken: 135, fair: 432, good: 540, mint: 621, sealed: 675, verygood: 576 },
+  },
+  // === SAMSUNG Z SERIES ===
+  gzflip5: {
+    "256": { broken: 68, fair: 104, good: 148, mint: 176, sealed: 202, verygood: 158 },
+    "512": { broken: 72, fair: 117, good: 162, mint: 189, sealed: 248, verygood: 171 },
+  },
+  gzflip6: {
+    "256": { fair: 158, good: 198, mint: 234, sealed: 261, verygood: 216 },
+    "512": { fair: 176, good: 216, mint: 252, sealed: 306, verygood: 234 },
+  },
+  gzflip7: {
+    "256": { broken: 45, fair: 292, good: 351, mint: 387, sealed: 423, verygood: 369 },
+    "512": { broken: 58, fair: 306, good: 364, mint: 400, sealed: 468, verygood: 382 },
+  },
+  gzfold5: {
+    "1tb": { broken: 50, fair: 248, good: 292, mint: 320, sealed: 364, verygood: 302 },
+    "256": { broken: 45, fair: 212, good: 256, mint: 284, sealed: 310, verygood: 266 },
+    "512": { broken: 48, fair: 230, good: 274, mint: 302, sealed: 338, verygood: 284 },
+  },
+  gzfold6: {
+    "1tb": { broken: 99, fair: 369, good: 414, mint: 468, sealed: 504, verygood: 450 },
+    "256": { broken: 90, fair: 306, good: 351, mint: 405, sealed: 450, verygood: 387 },
+    "512": { broken: 94, fair: 342, good: 387, mint: 441, sealed: 477, verygood: 423 },
+  },
+  gzfold7: {
+    "1tb": { broken: 144, fair: 603, good: 693, mint: 738, sealed: 765, verygood: 729 },
+    "256": { broken: 135, fair: 540, good: 630, mint: 675, sealed: 711, verygood: 666 },
+    "512": { broken: 140, fair: 576, good: 666, mint: 711, sealed: 738, verygood: 702 },
+  },
+  gztrifold: {
+    "1tb": { broken: 189, fair: 945, good: 1395, mint: 1845, sealed: 2138, verygood: 1620 },
+    "512": { broken: 180, fair: 900, good: 1350, mint: 1800, sealed: 2070, verygood: 1575 },
+  },
+  // === PIXEL (10% below IWM) ===
+  px10pxl: {
+    "1tb": { broken: 126, fair: 378, good: 432, mint: 450, sealed: 477, verygood: 441 },
+    "256": { broken: 104, fair: 333, good: 387, mint: 405, sealed: 432, verygood: 396 },
+    "512": { broken: 112, fair: 364, good: 418, mint: 436, sealed: 464, verygood: 428 },
+  },
+  px10p: {
+    "128": { broken: 68, fair: 252, good: 315, mint: 360, sealed: 387, verygood: 338 },
+    "1tb": { broken: 81, fair: 342, good: 405, mint: 450, sealed: 468, verygood: 428 },
+    "256": { broken: 72, fair: 310, good: 374, mint: 418, sealed: 423, verygood: 396 },
+    "512": { broken: 76, fair: 328, good: 392, mint: 436, sealed: 454, verygood: 414 },
+  },
+  px10: {
+    "128": { broken: 68, fair: 216, good: 274, mint: 297, sealed: 333, verygood: 288 },
+    "256": { broken: 76, fair: 234, good: 292, mint: 315, sealed: 356, verygood: 306 },
+  },
+  px9pxl: {
+    "128": { broken: 68, fair: 189, good: 243, mint: 288, sealed: 315, verygood: 261 },
+    "1tb": { broken: 74, fair: 243, good: 297, mint: 342, sealed: 396, verygood: 315 },
+    "256": { broken: 72, fair: 207, good: 261, mint: 306, sealed: 351, verygood: 279 },
+    "512": { broken: 72, fair: 225, good: 279, mint: 324, sealed: 382, verygood: 297 },
+  },
+  px9p: {
+    "128": { broken: 45, fair: 126, good: 180, mint: 216, sealed: 243, verygood: 189 },
+    "1tb": { broken: 50, fair: 194, good: 248, mint: 284, sealed: 324, verygood: 256 },
+    "256": { broken: 47, fair: 153, good: 207, mint: 243, sealed: 279, verygood: 216 },
+    "512": { broken: 49, fair: 171, good: 225, mint: 261, sealed: 310, verygood: 234 },
+  },
+  px9: {
+    "128": { broken: 40, fair: 112, good: 153, mint: 198, sealed: 225, verygood: 171 },
+    "256": { broken: 45, fair: 130, good: 171, mint: 216, sealed: 248, verygood: 189 },
+  },
+  px8p: {
+    "128": { broken: 32, fair: 112, good: 144, mint: 184, sealed: 207, verygood: 162 },
+    "1tb": { broken: 36, fair: 148, good: 180, mint: 220, sealed: 274, verygood: 198 },
+    "256": { broken: 33, fair: 122, good: 153, mint: 194, sealed: 243, verygood: 171 },
+    "512": { broken: 34, fair: 140, good: 171, mint: 212, sealed: 261, verygood: 189 },
+  },
+  // === CONSOLES (10% below IWM) ===
+  ps5pro: {
+    "base": { broken: 8, fair: 297, good: 378, mint: 450, sealed: 495, verygood: 414 },
+  },
+  ps5slim: {
+    "base": { broken: 8, fair: 99, good: 171, mint: 225, sealed: 252, verygood: 198 },
+  },
+  ps5: {
+    "base": { broken: 8, fair: 112, good: 180, mint: 238, sealed: 270, verygood: 212 },
+  },
+  nsw2: {
+    "base": { broken: 54, fair: 153, good: 225, mint: 248, sealed: 279 },
+  },
+  nswoled: {
+    "base": { broken: 21, fair: 36, good: 72, mint: 90, sealed: 112 },
+  },
 };
 
 const IPHONE_SERIES = [

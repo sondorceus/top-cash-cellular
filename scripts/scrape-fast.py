@@ -123,6 +123,7 @@ def extract_prices_from_tree(tree, discount):
             storage_adjustments = {"base": 0}
 
         for sid, adj in storage_adjustments.items():
+            if adj is None: adj = 0
             iwm_price = base_price + adj
             if iwm_price <= 0:
                 continue
