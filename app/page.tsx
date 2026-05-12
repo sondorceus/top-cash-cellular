@@ -863,7 +863,7 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "carbonblack": { broken: 43, fair: 86, good: 148, mint: 184, sealed: 220, verygood: 166 },
   },
   aws10: {
-    "base": { fair: 18, good: 54, mint: 90, sealed: 112, verygood: 72 },
+    "base": { fair: 23, good: 59, mint: 95, sealed: 117, verygood: 77 },
   },
   aws7: {
     "base": { good: 9, mint: 27, sealed: 40, verygood: 18 },
@@ -998,12 +998,12 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "8tb": { broken: 1800, fair: 1260, good: 1382, mint: 1530, sealed: 1598, verygood: 1476 },
   },
   macstudiom4m: {
-    "1tb": { broken: 2250, fair: 1665, good: 1822, mint: 1980, sealed: 2115, verygood: 1912 },
-    "2tb": { broken: 2475, fair: 1890, good: 2048, mint: 2205, sealed: 2340, verygood: 2138 },
-    "36gbunifiedmemory": { broken: 2025, fair: 1440, good: 1598, mint: 1755, sealed: 1890, verygood: 1688 },
-    "4tb": { broken: 2745, fair: 2160, good: 2318, mint: 2475, sealed: 2610, verygood: 2408 },
-    "512gb": { broken: 2025, fair: 1440, good: 1598, mint: 1755, sealed: 1890, verygood: 1688 },
-    "8tb": { broken: 3105, fair: 2520, good: 2678, mint: 2835, sealed: 2970, verygood: 2768 },
+    "1tb": { fair: 1665, good: 1822, mint: 1980, sealed: 2115, verygood: 1912 },
+    "2tb": { fair: 1890, good: 2048, mint: 2205, sealed: 2340, verygood: 2138 },
+    "36gbunifiedmemory": { fair: 1440, good: 1598, mint: 1755, sealed: 1890, verygood: 1688 },
+    "4tb": { fair: 2160, good: 2318, mint: 2475, sealed: 2610, verygood: 2408 },
+    "512gb": { fair: 1440, good: 1598, mint: 1755, sealed: 1890, verygood: 1688 },
+    "8tb": { fair: 2520, good: 2678, mint: 2835, sealed: 2970, verygood: 2768 },
   },
   pw2: {
     "base": { fair: 4, good: 9, mint: 18, sealed: 32 },
