@@ -1698,7 +1698,7 @@ const PS5_VARIANTS = [
   // Storage is implicit by variant — Pro ships 2 TB, Slim ships 1 TB,
   // original ships 825 GB. No storage step or extras question for
   // consoles per Skywalker (2026-05-12).
-  { id: "ps5pro",  label: "PlayStation 5 Pro",    base: 450, image: "/devices/ps5.webp" },
+  { id: "ps5pro",  label: "PlayStation 5 Pro",    base: 450, image: "/devices/ps5pro.webp" },
   { id: "ps5slim", label: "PlayStation 5 Slim",   base: 225, image: "/devices/ps5-slim-disc.webp" },
   { id: "ps5",     label: "PlayStation 5",        base: 238, image: "/devices/ps5.webp" },
 ];
@@ -2518,12 +2518,17 @@ const getMaxStorageMult = (modelId: string): number => {
   return Math.max(...sids.map(sid => ALL_STORAGES.find(s => s.id === sid)?.multiplier ?? 1));
 };
 // True ceiling for the 'Up to $X' label in the picker. PRICE_TABLE
-// holds exact per-storage / per-condition dollar amounts (currently
-// iPhone, expanding via the IWM scraper). When present we take the
-// max value across every cell — that's the real max payout. For
-// models not in the table we fall back to multiplier math, plus the
-// iPhone-only $10 accessory bonus so the displayed ceiling matches
-// what the quote step can actually award.
+// holds exact per-storage / per-condition dollar amounts. When present
+// we take the max value across every cell — that's the real max payout.
+// For models not in the table we fall back to multiplier math. Accessory
+// bonus is added so the displayed ceiling matches what the quote step
+// can actually award: MacBook +$30 (brick is pricey), iPhone +$10 (new
+// tier completes the package), zero elsewhere.
+const maxAccessoryBonus = (dt?: string | null): number => {
+  if (dt === "macbook") return 30;
+  if (dt === "iphone") return 10;
+  return 0;
+};
 const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): number => {
   const table = PRICE_TABLE[m.id];
   if (table) {
@@ -2533,15 +2538,11 @@ const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): numb
         if (price > topPrice) topPrice = price;
       }
     }
-    if (topPrice > 0) {
-      const accessoryBonus = dt === "iphone" ? 10 : 0;
-      return topPrice + accessoryBonus;
-    }
+    if (topPrice > 0) return topPrice + maxAccessoryBonus(dt);
   }
   if (!m.base) return 0;
   const computed = Math.round(m.base * getMaxStorageMult(m.id) * getTopConditionMult(dt) * TOP_CARRIER_MULT);
-  const accessoryBonus = dt === "iphone" ? 10 : 0;
-  return computed + accessoryBonus;
+  return computed + maxAccessoryBonus(dt);
 };
 
 const PAYOUTS = [
@@ -3778,15 +3779,15 @@ export default function Home() {
     } catch { setCouponError("Couldn't verify code, try again"); }
   };
 
-  // Accessory bonus: +$10 flat for iPhone, $0 for everything else.
-  // Skywalker 2026-05-12 — iPhone resale rewards original accessories
-  // (Lightning/USB-C cable, brick if pre-iPhone-12) so we pass a real
-  // premium through; Samsung resale doesn't price the box meaningfully
-  // so no bump there.
-  // isNewTier is still used to gate showing the accessories question
-  // (only "new" condition tiers see it).
+  // Accessory bonus — Skywalker 2026-05-12: only ask when it actually
+  // moves price. MacBook bricks (USB-C 96W etc) retail $79+, so they
+  // matter on any condition. New iPhones have the box/cable as part
+  // of the "sealed" premium. For used iPhone/Samsung the accessories
+  // don't move resale meaningfully so we don't ask.
   const isNewTier = condition?.id === "sealed" || condition?.id === "mint";
-  const accessoryBonus = isNewTier && accessoriesIncluded && deviceType === "iphone" ? 10 : 0;
+  const showAccessoryQuestion = isNewTier || deviceType === "macbook";
+  const accessoryBonusAmount = deviceType === "macbook" ? 30 : (isNewTier && deviceType === "iphone" ? 10 : 0);
+  const accessoryBonus = showAccessoryQuestion && accessoriesIncluded ? accessoryBonusAmount : 0;
   // MacBook spec multipliers — only fire when the picked model has a
   // MACBOOK_SPECS entry. Default to 1 so non-MacBook flows are unchanged.
   const processorMultiplier = processor?.multiplier ?? 1;
@@ -7330,8 +7331,9 @@ export default function Home() {
             {quantity > 1 && <p className="text-[#e6e6e6] text-sm mb-2">${quote} each × {quantity}</p>}
             {quantity === 1 && <div className="mb-3" />}
 
-            {/* Accessory bonus — Sealed / Mint only */}
-            {isNewTier && (
+            {/* Accessory bonus — only when it actually moves price:
+                new tier (any device) or MacBook (any condition, the brick is pricey) */}
+            {showAccessoryQuestion && accessoryBonusAmount > 0 && (
               <div className="max-w-md mx-auto mb-4">
                 <button
                   type="button"
@@ -7341,9 +7343,9 @@ export default function Home() {
                   <span className={`w-5 h-5 rounded border-2 flex items-center justify-center text-xs font-bold transition ${accessoriesIncluded ? "bg-[#00c853] border-[#00c853] text-[#0a0a0a]" : "border-white/30 text-transparent"}`}>✓</span>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-white">All original accessories included</p>
-                    <p className="text-[11px] text-[#e6e6e6]">Charger, cable, original box{condition?.id === "sealed" ? ", manuals" : ""}</p>
+                    <p className="text-[11px] text-[#e6e6e6]">{deviceType === "macbook" ? "Original brick, USB-C cable, box" : `Charger, cable, original box${condition?.id === "sealed" ? ", manuals" : ""}`}</p>
                   </div>
-                  <span className="text-[#00c853] font-bold text-sm whitespace-nowrap">+$15</span>
+                  <span className="text-[#00c853] font-bold text-sm whitespace-nowrap">+${accessoryBonusAmount}</span>
                 </button>
               </div>
             )}
