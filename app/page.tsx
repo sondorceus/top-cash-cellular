@@ -2552,6 +2552,7 @@ const STORAGE_MAP: Record<string, string[]> = {
   // iPhone 13 series — 13 Pro/PM have 128/256/512/1TB, base 13 has 128/256/512
   ip13pm: ["128", "256", "512", "1tb"],
   ip13p: ["128", "256", "512", "1tb"],
+  ip13mini: ["128", "256", "512"],
   ip13: ["128", "256", "512"],
   // iPhone 12 series — 12 Pro/PM start 128, base has 64/128/256
   ip12pm: ["128", "256", "512"],
