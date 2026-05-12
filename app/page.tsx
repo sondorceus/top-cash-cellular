@@ -2885,8 +2885,11 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "yes",     label: "Yes — has disc drive",    multiplier: 1.00 },
       { id: "digital", label: "No — digital edition",     multiplier: 0.92 },
     ]},
-    // Storage is implicit by variant (Pro 2 TB, Slim 1 TB, original
-    // 825 GB) — no upgrade-tier question per Skywalker (2026-05-12).
+    { id: "storage", question: "Storage upgraded?", helper: "PS4/PS4 Pro owners may have swapped the internal drive. PS5 storage is fixed by model.", options: [
+      { id: "none",   label: "No — base storage only",        multiplier: 1.00 },
+      { id: "1-2tb",  label: "Yes — upgraded to 1-2TB",       multiplier: 1.05 },
+      { id: "4tb",    label: "Yes — upgraded to 4TB+",        multiplier: 1.10 },
+    ]},
     { id: "controllers", question: "Controllers included?", options: [
       { id: "2", label: "2 controllers", multiplier: 1.05 },
       { id: "1", label: "1 controller",  multiplier: 1.00 },
