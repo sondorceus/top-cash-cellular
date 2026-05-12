@@ -1,0 +1,1516 @@
+[
+  {
+    "id": "mbp16m5",
+    "model": "macbook-pro-16-m5",
+    "series": "macbook-pro-m1",
+    "image": "https://www.itsworthmore.com/static/images/v2/hero-wallet-hand.png",
+    "available_conditions": [
+      "Brand New",
+      "Flawless",
+      "Very Good",
+      "Good",
+      "Fair",
+      "Broken"
+    ],
+    "available_carriers": [],
+    "available_storage": [
+      "1TB SSD",
+      "2TB SSD",
+      "4TB SSD"
+    ],
+    "prices": {
+      "flawless_n/a_1tbssd": {
+        "iwm": 2075,
+        "ours": 1763,
+        "storage": "1TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_1tbssd": {
+        "iwm": 2000,
+        "ours": 1700,
+        "storage": "1TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_1tbssd": {
+        "iwm": 1775,
+        "ours": 1508,
+        "storage": "1TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_1tbssd": {
+        "iwm": 2075,
+        "ours": 1763,
+        "storage": "1TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_2tbssd": {
+        "iwm": 2200,
+        "ours": 1870,
+        "storage": "2TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_2tbssd": {
+        "iwm": 2125,
+        "ours": 1806,
+        "storage": "2TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_2tbssd": {
+        "iwm": 1900,
+        "ours": 1615,
+        "storage": "2TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_2tbssd": {
+        "iwm": 2200,
+        "ours": 1870,
+        "storage": "2TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_4tbssd": {
+        "iwm": 2700,
+        "ours": 2295,
+        "storage": "4TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_4tbssd": {
+        "iwm": 2625,
+        "ours": 2231,
+        "storage": "4TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_4tbssd": {
+        "iwm": 2400,
+        "ours": 2040,
+        "storage": "4TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_4tbssd": {
+        "iwm": 2700,
+        "ours": 2295,
+        "storage": "4TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      }
+    }
+  },
+  {
+    "id": "mbp14m5",
+    "model": "macbook-pro-14-m5",
+    "series": "macbook-pro-m1",
+    "image": "https://www.itsworthmore.com/static/images/v2/hero-wallet-hand.png",
+    "available_conditions": [
+      "Brand New",
+      "Flawless",
+      "Very Good",
+      "Good",
+      "Fair",
+      "Broken"
+    ],
+    "available_carriers": [],
+    "available_storage": [
+      "512GB SSD",
+      "1TB SSD",
+      "2TB SSD",
+      "4TB SSD"
+    ],
+    "prices": {
+      "flawless_n/a_512gbssd": {
+        "iwm": 950,
+        "ours": 807,
+        "storage": "512GB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_512gbssd": {
+        "iwm": 890,
+        "ours": 756,
+        "storage": "512GB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_512gbssd": {
+        "iwm": 725,
+        "ours": 616,
+        "storage": "512GB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_512gbssd": {
+        "iwm": 950,
+        "ours": 807,
+        "storage": "512GB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_1tbssd": {
+        "iwm": 1100,
+        "ours": 935,
+        "storage": "1TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_1tbssd": {
+        "iwm": 1040,
+        "ours": 884,
+        "storage": "1TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_1tbssd": {
+        "iwm": 875,
+        "ours": 743,
+        "storage": "1TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_1tbssd": {
+        "iwm": 1100,
+        "ours": 935,
+        "storage": "1TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_2tbssd": {
+        "iwm": 1200,
+        "ours": 1020,
+        "storage": "2TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_2tbssd": {
+        "iwm": 1140,
+        "ours": 969,
+        "storage": "2TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_2tbssd": {
+        "iwm": 975,
+        "ours": 828,
+        "storage": "2TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_2tbssd": {
+        "iwm": 1200,
+        "ours": 1020,
+        "storage": "2TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_4tbssd": {
+        "iwm": 1450,
+        "ours": 1232,
+        "storage": "4TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_4tbssd": {
+        "iwm": 1390,
+        "ours": 1181,
+        "storage": "4TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_4tbssd": {
+        "iwm": 1225,
+        "ours": 1041,
+        "storage": "4TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_4tbssd": {
+        "iwm": 1450,
+        "ours": 1232,
+        "storage": "4TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      }
+    }
+  },
+  {
+    "id": "mbp16m4",
+    "model": "macbook-pro-16-m4",
+    "series": "macbook-pro-m1",
+    "image": "https://www.itsworthmore.com/static/images/v2/hero-wallet-hand.png",
+    "available_conditions": [
+      "Brand New",
+      "Flawless",
+      "Very Good",
+      "Good",
+      "Fair",
+      "Broken"
+    ],
+    "available_carriers": [],
+    "available_storage": [
+      "512GB SSD",
+      "1TB SSD",
+      "2TB SSD",
+      "4TB SSD"
+    ],
+    "prices": {
+      "flawless_n/a_512gbssd": {
+        "iwm": 1475,
+        "ours": 1253,
+        "storage": "512GB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_512gbssd": {
+        "iwm": 1400,
+        "ours": 1190,
+        "storage": "512GB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_512gbssd": {
+        "iwm": 1175,
+        "ours": 998,
+        "storage": "512GB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_512gbssd": {
+        "iwm": 1475,
+        "ours": 1253,
+        "storage": "512GB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_1tbssd": {
+        "iwm": 1625,
+        "ours": 1381,
+        "storage": "1TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_1tbssd": {
+        "iwm": 1550,
+        "ours": 1317,
+        "storage": "1TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_1tbssd": {
+        "iwm": 1325,
+        "ours": 1126,
+        "storage": "1TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_1tbssd": {
+        "iwm": 1625,
+        "ours": 1381,
+        "storage": "1TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_2tbssd": {
+        "iwm": 1775,
+        "ours": 1508,
+        "storage": "2TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_2tbssd": {
+        "iwm": 1700,
+        "ours": 1445,
+        "storage": "2TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_2tbssd": {
+        "iwm": 1475,
+        "ours": 1253,
+        "storage": "2TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_2tbssd": {
+        "iwm": 1775,
+        "ours": 1508,
+        "storage": "2TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_4tbssd": {
+        "iwm": 2075,
+        "ours": 1763,
+        "storage": "4TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_4tbssd": {
+        "iwm": 2000,
+        "ours": 1700,
+        "storage": "4TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_4tbssd": {
+        "iwm": 1775,
+        "ours": 1508,
+        "storage": "4TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_4tbssd": {
+        "iwm": 2075,
+        "ours": 1763,
+        "storage": "4TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      }
+    }
+  },
+  {
+    "id": "mbp14m4",
+    "model": "macbook-pro-14-m4",
+    "series": "macbook-pro-m1",
+    "image": "https://www.itsworthmore.com/static/images/v2/hero-wallet-hand.png",
+    "available_conditions": [
+      "Brand New",
+      "Flawless",
+      "Very Good",
+      "Good",
+      "Fair",
+      "Broken"
+    ],
+    "available_carriers": [],
+    "available_storage": [
+      "512GB SSD",
+      "1TB SSD",
+      "2TB SSD"
+    ],
+    "prices": {
+      "flawless_n/a_512gbssd": {
+        "iwm": 950,
+        "ours": 807,
+        "storage": "512GB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_512gbssd": {
+        "iwm": 890,
+        "ours": 756,
+        "storage": "512GB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_512gbssd": {
+        "iwm": 725,
+        "ours": 616,
+        "storage": "512GB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_512gbssd": {
+        "iwm": 950,
+        "ours": 807,
+        "storage": "512GB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_1tbssd": {
+        "iwm": 1075,
+        "ours": 913,
+        "storage": "1TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_1tbssd": {
+        "iwm": 1015,
+        "ours": 862,
+        "storage": "1TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_1tbssd": {
+        "iwm": 850,
+        "ours": 722,
+        "storage": "1TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_1tbssd": {
+        "iwm": 1075,
+        "ours": 913,
+        "storage": "1TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_2tbssd": {
+        "iwm": 1200,
+        "ours": 1020,
+        "storage": "2TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_2tbssd": {
+        "iwm": 1140,
+        "ours": 969,
+        "storage": "2TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_2tbssd": {
+        "iwm": 975,
+        "ours": 828,
+        "storage": "2TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_2tbssd": {
+        "iwm": 1200,
+        "ours": 1020,
+        "storage": "2TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      }
+    }
+  },
+  {
+    "id": "mbp16m3",
+    "model": "macbook-pro-16-m3",
+    "series": "macbook-pro-m1",
+    "image": "https://www.itsworthmore.com/static/images/v2/hero-wallet-hand.png",
+    "available_conditions": [
+      "Brand New",
+      "Flawless",
+      "Very Good",
+      "Good",
+      "Fair",
+      "Broken"
+    ],
+    "available_carriers": [],
+    "available_storage": [
+      "512GB SSD",
+      "1TB SSD",
+      "2TB SSD",
+      "4TB SSD"
+    ],
+    "prices": {
+      "flawless_n/a_512gbssd": {
+        "iwm": 1150,
+        "ours": 977,
+        "storage": "512GB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_512gbssd": {
+        "iwm": 1075,
+        "ours": 913,
+        "storage": "512GB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_512gbssd": {
+        "iwm": 875,
+        "ours": 743,
+        "storage": "512GB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_512gbssd": {
+        "iwm": 1150,
+        "ours": 977,
+        "storage": "512GB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_1tbssd": {
+        "iwm": 1275,
+        "ours": 1083,
+        "storage": "1TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_1tbssd": {
+        "iwm": 1200,
+        "ours": 1020,
+        "storage": "1TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_1tbssd": {
+        "iwm": 1000,
+        "ours": 850,
+        "storage": "1TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_1tbssd": {
+        "iwm": 1275,
+        "ours": 1083,
+        "storage": "1TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_2tbssd": {
+        "iwm": 1400,
+        "ours": 1190,
+        "storage": "2TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_2tbssd": {
+        "iwm": 1300,
+        "ours": 1105,
+        "storage": "2TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_2tbssd": {
+        "iwm": 1050,
+        "ours": 892,
+        "storage": "2TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_2tbssd": {
+        "iwm": 1400,
+        "ours": 1190,
+        "storage": "2TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_4tbssd": {
+        "iwm": 1650,
+        "ours": 1402,
+        "storage": "4TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_4tbssd": {
+        "iwm": 1550,
+        "ours": 1317,
+        "storage": "4TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_4tbssd": {
+        "iwm": 1300,
+        "ours": 1105,
+        "storage": "4TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_4tbssd": {
+        "iwm": 1650,
+        "ours": 1402,
+        "storage": "4TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      }
+    }
+  },
+  {
+    "id": "mbp14m3",
+    "model": "macbook-pro-14-m3",
+    "series": "macbook-pro-m1",
+    "image": "https://www.itsworthmore.com/static/images/v2/hero-wallet-hand.png",
+    "available_conditions": [
+      "Brand New",
+      "Flawless",
+      "Very Good",
+      "Good",
+      "Fair",
+      "Broken"
+    ],
+    "available_carriers": [],
+    "available_storage": [
+      "512GB SSD",
+      "1TB SSD",
+      "2TB SSD"
+    ],
+    "prices": {
+      "flawless_n/a_512gbssd": {
+        "iwm": 630,
+        "ours": 535,
+        "storage": "512GB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_512gbssd": {
+        "iwm": 575,
+        "ours": 488,
+        "storage": "512GB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_512gbssd": {
+        "iwm": 420,
+        "ours": 357,
+        "storage": "512GB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_512gbssd": {
+        "iwm": 630,
+        "ours": 535,
+        "storage": "512GB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_1tbssd": {
+        "iwm": 730,
+        "ours": 620,
+        "storage": "1TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_1tbssd": {
+        "iwm": 675,
+        "ours": 573,
+        "storage": "1TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_1tbssd": {
+        "iwm": 520,
+        "ours": 442,
+        "storage": "1TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_1tbssd": {
+        "iwm": 730,
+        "ours": 620,
+        "storage": "1TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_2tbssd": {
+        "iwm": 880,
+        "ours": 748,
+        "storage": "2TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_2tbssd": {
+        "iwm": 810,
+        "ours": 688,
+        "storage": "2TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_2tbssd": {
+        "iwm": 630,
+        "ours": 535,
+        "storage": "2TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_2tbssd": {
+        "iwm": 880,
+        "ours": 748,
+        "storage": "2TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      }
+    }
+  },
+  {
+    "id": "mbp16m2",
+    "model": "macbook-pro-16-m2",
+    "series": "macbook-pro-m1",
+    "image": "https://www.itsworthmore.com/static/images/v2/hero-wallet-hand.png",
+    "available_conditions": [
+      "Brand New",
+      "Flawless",
+      "Very Good",
+      "Good",
+      "Fair",
+      "Broken"
+    ],
+    "available_carriers": [],
+    "available_storage": [
+      "512GB SSD",
+      "1TB SSD",
+      "2TB SSD",
+      "4TB SSD",
+      "8TB SSD"
+    ],
+    "prices": {
+      "flawless_n/a_512gbssd": {
+        "iwm": 900,
+        "ours": 765,
+        "storage": "512GB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_512gbssd": {
+        "iwm": 840,
+        "ours": 714,
+        "storage": "512GB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_512gbssd": {
+        "iwm": 620,
+        "ours": 527,
+        "storage": "512GB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_512gbssd": {
+        "iwm": 900,
+        "ours": 765,
+        "storage": "512GB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_1tbssd": {
+        "iwm": 1050,
+        "ours": 892,
+        "storage": "1TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_1tbssd": {
+        "iwm": 990,
+        "ours": 841,
+        "storage": "1TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_1tbssd": {
+        "iwm": 770,
+        "ours": 654,
+        "storage": "1TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_1tbssd": {
+        "iwm": 1050,
+        "ours": 892,
+        "storage": "1TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_2tbssd": {
+        "iwm": 1200,
+        "ours": 1020,
+        "storage": "2TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_2tbssd": {
+        "iwm": 1110,
+        "ours": 943,
+        "storage": "2TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_2tbssd": {
+        "iwm": 850,
+        "ours": 722,
+        "storage": "2TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_2tbssd": {
+        "iwm": 1200,
+        "ours": 1020,
+        "storage": "2TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_4tbssd": {
+        "iwm": 1400,
+        "ours": 1190,
+        "storage": "4TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_4tbssd": {
+        "iwm": 1290,
+        "ours": 1096,
+        "storage": "4TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_4tbssd": {
+        "iwm": 950,
+        "ours": 807,
+        "storage": "4TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_4tbssd": {
+        "iwm": 1400,
+        "ours": 1190,
+        "storage": "4TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_8tbssd": {
+        "iwm": 1600,
+        "ours": 1360,
+        "storage": "8TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_8tbssd": {
+        "iwm": 1490,
+        "ours": 1266,
+        "storage": "8TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_8tbssd": {
+        "iwm": 1100,
+        "ours": 935,
+        "storage": "8TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_8tbssd": {
+        "iwm": 1600,
+        "ours": 1360,
+        "storage": "8TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      }
+    }
+  },
+  {
+    "id": "mbp14m2",
+    "model": "macbook-pro-14-m2",
+    "series": "macbook-pro-m1",
+    "image": "https://www.itsworthmore.com/static/images/v2/hero-wallet-hand.png",
+    "available_conditions": [
+      "Brand New",
+      "Flawless",
+      "Very Good",
+      "Good",
+      "Fair",
+      "Broken"
+    ],
+    "available_carriers": [],
+    "available_storage": [
+      "512GB SSD",
+      "1TB SSD",
+      "2TB SSD",
+      "4TB SSD",
+      "8TB SSD"
+    ],
+    "prices": {
+      "flawless_n/a_512gbssd": {
+        "iwm": 750,
+        "ours": 637,
+        "storage": "512GB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_512gbssd": {
+        "iwm": 700,
+        "ours": 595,
+        "storage": "512GB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_512gbssd": {
+        "iwm": 525,
+        "ours": 446,
+        "storage": "512GB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_512gbssd": {
+        "iwm": 750,
+        "ours": 637,
+        "storage": "512GB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_1tbssd": {
+        "iwm": 825,
+        "ours": 701,
+        "storage": "1TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_1tbssd": {
+        "iwm": 775,
+        "ours": 658,
+        "storage": "1TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_1tbssd": {
+        "iwm": 600,
+        "ours": 510,
+        "storage": "1TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_1tbssd": {
+        "iwm": 825,
+        "ours": 701,
+        "storage": "1TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_2tbssd": {
+        "iwm": 900,
+        "ours": 765,
+        "storage": "2TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_2tbssd": {
+        "iwm": 825,
+        "ours": 701,
+        "storage": "2TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_2tbssd": {
+        "iwm": 650,
+        "ours": 552,
+        "storage": "2TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_2tbssd": {
+        "iwm": 900,
+        "ours": 765,
+        "storage": "2TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_4tbssd": {
+        "iwm": 1050,
+        "ours": 892,
+        "storage": "4TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_4tbssd": {
+        "iwm": 975,
+        "ours": 828,
+        "storage": "4TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_4tbssd": {
+        "iwm": 800,
+        "ours": 680,
+        "storage": "4TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_4tbssd": {
+        "iwm": 1050,
+        "ours": 892,
+        "storage": "4TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_8tbssd": {
+        "iwm": 1250,
+        "ours": 1062,
+        "storage": "8TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_8tbssd": {
+        "iwm": 1150,
+        "ours": 977,
+        "storage": "8TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_8tbssd": {
+        "iwm": 900,
+        "ours": 765,
+        "storage": "8TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_8tbssd": {
+        "iwm": 1250,
+        "ours": 1062,
+        "storage": "8TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      }
+    }
+  },
+  {
+    "id": "mbp13m2",
+    "model": "macbook-pro-13",
+    "series": "macbook-pro-m1",
+    "image": "https://www.itsworthmore.com/static/images/v2/hero-wallet-hand.png",
+    "available_conditions": [
+      "Brand New",
+      "Flawless",
+      "Very Good",
+      "Good",
+      "Fair",
+      "Broken"
+    ],
+    "available_carriers": [],
+    "available_storage": [
+      "256GB SSD",
+      "512GB SSD",
+      "1TB SSD",
+      "2TB SSD"
+    ],
+    "prices": {
+      "flawless_n/a_256gbssd": {
+        "iwm": 440,
+        "ours": 374,
+        "storage": "256GB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_256gbssd": {
+        "iwm": 405,
+        "ours": 344,
+        "storage": "256GB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_256gbssd": {
+        "iwm": 310,
+        "ours": 263,
+        "storage": "256GB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_256gbssd": {
+        "iwm": 440,
+        "ours": 374,
+        "storage": "256GB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_512gbssd": {
+        "iwm": 480,
+        "ours": 408,
+        "storage": "512GB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_512gbssd": {
+        "iwm": 445,
+        "ours": 378,
+        "storage": "512GB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_512gbssd": {
+        "iwm": 350,
+        "ours": 297,
+        "storage": "512GB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_512gbssd": {
+        "iwm": 480,
+        "ours": 408,
+        "storage": "512GB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_1tbssd": {
+        "iwm": 530,
+        "ours": 450,
+        "storage": "1TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_1tbssd": {
+        "iwm": 500,
+        "ours": 425,
+        "storage": "1TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_1tbssd": {
+        "iwm": 380,
+        "ours": 323,
+        "storage": "1TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_1tbssd": {
+        "iwm": 530,
+        "ours": 450,
+        "storage": "1TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_2tbssd": {
+        "iwm": 640,
+        "ours": 544,
+        "storage": "2TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_2tbssd": {
+        "iwm": 605,
+        "ours": 514,
+        "storage": "2TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_2tbssd": {
+        "iwm": 465,
+        "ours": 395,
+        "storage": "2TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_2tbssd": {
+        "iwm": 640,
+        "ours": 544,
+        "storage": "2TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      }
+    }
+  },
+  {
+    "id": "mbp16m1",
+    "model": "macbook-pro-16-m1",
+    "series": "macbook-pro-m1",
+    "image": "https://www.itsworthmore.com/static/images/v2/hero-wallet-hand.png",
+    "available_conditions": [
+      "Brand New",
+      "Flawless",
+      "Very Good",
+      "Good",
+      "Fair",
+      "Broken"
+    ],
+    "available_carriers": [],
+    "available_storage": [
+      "512GB SSD",
+      "1TB SSD",
+      "2TB SSD",
+      "4TB SSD",
+      "8TB SSD"
+    ],
+    "prices": {
+      "flawless_n/a_512gbssd": {
+        "iwm": 580,
+        "ours": 493,
+        "storage": "512GB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_512gbssd": {
+        "iwm": 540,
+        "ours": 459,
+        "storage": "512GB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_512gbssd": {
+        "iwm": 390,
+        "ours": 331,
+        "storage": "512GB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_512gbssd": {
+        "iwm": 580,
+        "ours": 493,
+        "storage": "512GB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_1tbssd": {
+        "iwm": 630,
+        "ours": 535,
+        "storage": "1TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_1tbssd": {
+        "iwm": 590,
+        "ours": 501,
+        "storage": "1TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_1tbssd": {
+        "iwm": 440,
+        "ours": 374,
+        "storage": "1TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_1tbssd": {
+        "iwm": 630,
+        "ours": 535,
+        "storage": "1TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_2tbssd": {
+        "iwm": 705,
+        "ours": 599,
+        "storage": "2TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_2tbssd": {
+        "iwm": 665,
+        "ours": 565,
+        "storage": "2TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_2tbssd": {
+        "iwm": 515,
+        "ours": 437,
+        "storage": "2TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_2tbssd": {
+        "iwm": 705,
+        "ours": 599,
+        "storage": "2TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_4tbssd": {
+        "iwm": 780,
+        "ours": 663,
+        "storage": "4TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_4tbssd": {
+        "iwm": 720,
+        "ours": 612,
+        "storage": "4TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_4tbssd": {
+        "iwm": 530,
+        "ours": 450,
+        "storage": "4TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_4tbssd": {
+        "iwm": 780,
+        "ours": 663,
+        "storage": "4TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_8tbssd": {
+        "iwm": 980,
+        "ours": 833,
+        "storage": "8TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_8tbssd": {
+        "iwm": 905,
+        "ours": 769,
+        "storage": "8TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_8tbssd": {
+        "iwm": 655,
+        "ours": 556,
+        "storage": "8TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_8tbssd": {
+        "iwm": 980,
+        "ours": 833,
+        "storage": "8TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      }
+    }
+  },
+  {
+    "id": "mbp14m1",
+    "model": "macbook-pro-14-m1",
+    "series": "macbook-pro-m1",
+    "image": "https://www.itsworthmore.com/static/images/v2/hero-wallet-hand.png",
+    "available_conditions": [
+      "Brand New",
+      "Flawless",
+      "Very Good",
+      "Good",
+      "Fair",
+      "Broken"
+    ],
+    "available_carriers": [],
+    "available_storage": [
+      "512GB SSD",
+      "1TB SSD",
+      "2TB SSD",
+      "4TB SSD",
+      "8TB SSD"
+    ],
+    "prices": {
+      "flawless_n/a_512gbssd": {
+        "iwm": 520,
+        "ours": 442,
+        "storage": "512GB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_512gbssd": {
+        "iwm": 480,
+        "ours": 408,
+        "storage": "512GB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_512gbssd": {
+        "iwm": 330,
+        "ours": 280,
+        "storage": "512GB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_512gbssd": {
+        "iwm": 520,
+        "ours": 442,
+        "storage": "512GB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_1tbssd": {
+        "iwm": 580,
+        "ours": 493,
+        "storage": "1TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_1tbssd": {
+        "iwm": 540,
+        "ours": 459,
+        "storage": "1TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_1tbssd": {
+        "iwm": 390,
+        "ours": 331,
+        "storage": "1TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_1tbssd": {
+        "iwm": 580,
+        "ours": 493,
+        "storage": "1TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_2tbssd": {
+        "iwm": 640,
+        "ours": 544,
+        "storage": "2TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_2tbssd": {
+        "iwm": 600,
+        "ours": 510,
+        "storage": "2TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_2tbssd": {
+        "iwm": 450,
+        "ours": 382,
+        "storage": "2TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_2tbssd": {
+        "iwm": 640,
+        "ours": 544,
+        "storage": "2TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_4tbssd": {
+        "iwm": 720,
+        "ours": 612,
+        "storage": "4TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_4tbssd": {
+        "iwm": 660,
+        "ours": 561,
+        "storage": "4TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_4tbssd": {
+        "iwm": 470,
+        "ours": 399,
+        "storage": "4TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_4tbssd": {
+        "iwm": 720,
+        "ours": 612,
+        "storage": "4TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      },
+      "flawless_n/a_8tbssd": {
+        "iwm": 920,
+        "ours": 782,
+        "storage": "8TB SSD",
+        "condition": "Flawless",
+        "carrier": "N/A"
+      },
+      "good_n/a_8tbssd": {
+        "iwm": 845,
+        "ours": 718,
+        "storage": "8TB SSD",
+        "condition": "Good",
+        "carrier": "N/A"
+      },
+      "fair_n/a_8tbssd": {
+        "iwm": 595,
+        "ours": 505,
+        "storage": "8TB SSD",
+        "condition": "Fair",
+        "carrier": "N/A"
+      },
+      "broken_n/a_8tbssd": {
+        "iwm": 920,
+        "ours": 782,
+        "storage": "8TB SSD",
+        "condition": "Broken",
+        "carrier": "N/A"
+      }
+    }
+  }
+]
