@@ -113,18 +113,69 @@ NEXT_JS = """() => {
 
 
 def grab_price(pg):
-    # Strip the banner-coupon promo so its '$25/$100' numbers don't get
-    # treated as the device price. Then grab the largest plausible value.
+    # PREFERRED: read the visible 'Your Offer' element directly. IWM renders
+    # the final value inside h3.your-offer > strong. Pulling it from there
+    # avoids harvesting hidden disclaimer text — earlier versions grabbed a
+    # '$200 deduction' line buried in an ng-hide modal which masked every
+    # price below $200 (see scripts/debug-iwm/ run on 2026-05-12).
+    direct = pg.evaluate(
+        """() => {
+            const candidates = [
+                'section#product-pricing-ctrl h3.your-offer strong',
+                'h3.your-offer strong',
+                '.pricing-form-final-offer .your-offer strong',
+                '.your-offer strong',
+            ];
+            for (const sel of candidates) {
+                const el = document.querySelector(sel);
+                if (!el) continue;
+                const style = window.getComputedStyle(el);
+                if (style.display === 'none' || style.visibility === 'hidden') continue;
+                const t = (el.innerText || '').trim();
+                if (t) return t;
+            }
+            return '';
+        }"""
+    )
+    if direct:
+        m = DOLLAR.search(direct)
+        if m:
+            try:
+                v = int(m.group(1).replace(",", ""))
+                if 20 <= v <= 5000:
+                    return v
+            except Exception:
+                pass
+    # FALLBACK: filtered DOM walk that respects display:none / visibility:hidden
+    # and ng-hide ancestors. Skips the coupon banner as before.
     text = pg.evaluate(
         """() => {
             const banner = document.querySelector('.banner-coupon-v2, .banner-coupon, .banner-coupon-desktop');
             const ignore = new Set(['SCRIPT', 'STYLE', 'NAV', 'HEADER', 'FOOTER']);
+            const hiddenAncestor = (el) => {
+                let cur = el && el.parentElement;
+                while (cur) {
+                    if (cur.classList && (cur.classList.contains('ng-hide') || cur.classList.contains('reveal-modal'))) return true;
+                    const cs = window.getComputedStyle(cur);
+                    if (cs.display === 'none' || cs.visibility === 'hidden') return true;
+                    cur = cur.parentElement;
+                }
+                return false;
+            };
             let out = '';
             const walk = (el) => {
                 if (!el) return;
                 if (ignore.has(el.tagName)) return;
                 if (banner && (banner === el || banner.contains(el))) return;
-                if (el.nodeType === 3) { out += el.textContent || ''; return; }
+                if (el.nodeType === 3) {
+                    if (!hiddenAncestor(el)) out += el.textContent || '';
+                    return;
+                }
+                if (el.nodeType === 1) {
+                    if (el.classList && (el.classList.contains('ng-hide') || el.classList.contains('reveal-modal'))) return;
+                    const cs = window.getComputedStyle(el);
+                    if (cs.display === 'none' || cs.visibility === 'hidden') return;
+                }
                 for (const c of el.childNodes) walk(c);
             };
             walk(document.body);

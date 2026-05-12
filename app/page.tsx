@@ -176,73 +176,63 @@ const IPHONE_SERIES = [
   ]},
 ];
 
-// S Series rebased 2026-05-12 against fresh IWM scrape with corrected
-// URL slugs (S23+ dropped the -5g suffix). Formula:
+// S/Z/Note rebased 2026-05-12 (round 2) on REAL IWM data after the
+// scraper bug was fixed. The earlier $200 reads turned out to be a
+// hidden ng-hide disclaimer ('$200 deduction for bad ESN') the scraper
+// was harvesting. With that ignored, every model returns its actual
+// IWM offer. Formula unchanged:
 //   our top-config quote = IWM max - $20
 //   base = (IWM - 20) / max_storage_multiplier
-// S22 and older bottom out at IWM's $200 floor (banner / minimum payout
-// threshold), so I kept those at conservative -$20 values rather than
-// trust banner reads.
 const SAMSUNG_SERIES = [
   { id: "sseries", label: "S Series", year: "Galaxy S20–S26", topPrice: 710, image: "/s-series.png", variants: [
     { id: "gs26u", label: "Galaxy S26 Ultra", base: 507, image: "/devices/gs26u.png" },     // IWM $730
     { id: "gs25u", label: "Galaxy S25 Ultra", base: 446, image: "/devices/gs25u.png" },     // IWM $645
     { id: "gs24u", label: "Galaxy S24 Ultra", base: 357, image: "/devices/gs24u.png" },     // IWM $520
     { id: "gs23u", label: "Galaxy S23 Ultra", base: 218, image: "/devices/gs23u.png" },     // IWM $325
-    { id: "gs22u", label: "Galaxy S22 Ultra", base: 160, image: "/devices/gs22u.png" },     // IWM floor $200, kept conservative
-    { id: "gs21u", label: "Galaxy S21 Ultra", base: 110, image: "/devices/gs21u.png" },
-    { id: "gs20u", label: "Galaxy S20 Ultra", base: 60, image: "/devices/gs20u.png" },
+    { id: "gs22u", label: "Galaxy S22 Ultra", base: 104, image: "/devices/gs22u.png" },     // IWM $165
+    { id: "gs21u", label: "Galaxy S21 Ultra", base: 110, image: "/devices/gs21u.png" },     // IWM scrape timed out — kept previous
+    { id: "gs20u", label: "Galaxy S20 Ultra", base: 108, image: "/devices/gs20u.png" },     // IWM $155
     { id: "gs25edge", label: "Galaxy S25 Edge", base: 284, image: "/devices/gs25edge.png" }, // IWM $375
     { id: "gs26p", label: "Galaxy S26+", base: 416, image: "/devices/gs26p.png" },          // IWM $540
     { id: "gs25p", label: "Galaxy S25+", base: 352, image: "/devices/gs25p.png" },          // IWM $460
     { id: "gs24p", label: "Galaxy S24+", base: 220, image: "/devices/gs24p.png" },          // IWM $295
     { id: "gs23p", label: "Galaxy S23+", base: 152, image: "/devices/gs23p.png" },          // IWM $210
-    { id: "gs22p", label: "Galaxy S22+", base: 95, image: "/devices/gs22p.png" },
-    { id: "gs21p", label: "Galaxy S21+", base: 45, image: "/devices/gs21p.png" },
-    { id: "gs20p", label: "Galaxy S20+", base: 50, image: "/devices/gs20p.png" },
+    { id: "gs22p", label: "Galaxy S22+", base: 89, image: "/devices/gs22p.png" },           // IWM $120
+    { id: "gs21p", label: "Galaxy S21+", base: 54, image: "/devices/gs21p.png" },           // IWM $80
+    { id: "gs20p", label: "Galaxy S20+", base: 72, image: "/devices/gs20p.png" },           // IWM $110
     { id: "gs26", label: "Galaxy S26", base: 364, image: "/devices/gs26.png" },             // IWM $475
     { id: "gs25", label: "Galaxy S25", base: 248, image: "/devices/gs25.png" },             // IWM $330
     { id: "gs24", label: "Galaxy S24", base: 196, image: "/devices/gs24.png" },             // IWM $240
-    { id: "gs23", label: "Galaxy S23", base: 144, image: "/devices/gs23.png" },             // IWM $200 floor
-    { id: "gs22", label: "Galaxy S22", base: 50, image: "/devices/gs22.png" },
-    { id: "gs21", label: "Galaxy S21", base: 20, image: "/devices/gs21.png" },
-    { id: "gs20", label: "Galaxy S20", base: 15, image: "/devices/gs20.png" },
+    { id: "gs23", label: "Galaxy S23", base: 108, image: "/devices/gs23.png" },             // IWM $155
+    { id: "gs22", label: "Galaxy S22", base: 62, image: "/devices/gs22.png" },              // IWM $90
+    { id: "gs21", label: "Galaxy S21", base: 40, image: "/devices/gs21.png" },              // IWM $65
+    { id: "gs20", label: "Galaxy S20", base: 55, image: "/devices/gs20.png" },              // IWM $75
     { id: "gs25fe", label: "Galaxy S25 FE", base: 219, image: "/devices/gs25fe.png" },      // IWM $265
-    { id: "gs24fe", label: "Galaxy S24 FE", base: 161, image: "/devices/gs24fe.png" },      // IWM $200 floor
-    { id: "gs23fe", label: "Galaxy S23 FE", base: 161, image: "/devices/gs23fe.png" },      // IWM $200 floor
-    { id: "gs21fe", label: "Galaxy S21 FE", base: 10, image: "/devices/gs21fe.png" },
-    { id: "gs20fe", label: "Galaxy S20 FE", base: 10, image: "/devices/gs20fe.png" },
+    { id: "gs24fe", label: "Galaxy S24 FE", base: 134, image: "/devices/gs24fe.png" },      // IWM $170
+    { id: "gs23fe", label: "Galaxy S23 FE", base: 71, image: "/devices/gs23fe.png" },       // IWM $100
+    { id: "gs21fe", label: "Galaxy S21 FE", base: 27, image: "/devices/gs21fe.png" },       // IWM $50
+    { id: "gs20fe", label: "Galaxy S20 FE", base: 40, image: "/devices/gs20fe.png" },       // IWM $60
   ]},
-  // Z Series rebased 2026-05-12 against fresh IWM scrape, formula:
-  //   our top-config quote = IWM max price - $20
-  //   base = (IWM - 20) / max_storage_mult
-  // IWM max prices from scripts/fetch-iwm-samsung-prices.py run today.
   { id: "zseries", label: "Z Series", year: "Z Fold + Z Flip + TriFold", topPrice: 2030, image: "/fold-series.webp", variants: [
-    { id: "gztrifold", label: "Galaxy Z TriFold", base: 1450, image: "/devices/gztrifold.png" }, // IWM $2050 -> top quote $2030
+    { id: "gztrifold", label: "Galaxy Z TriFold", base: 1450, image: "/devices/gztrifold.png" }, // IWM $2050
     { id: "gzfold7", label: "Galaxy Z Fold 7", base: 571, image: "/devices/gzfold7.png" },       // IWM $820
     { id: "gzfold6", label: "Galaxy Z Fold 6", base: 357, image: "/devices/gzfold6.png" },       // IWM $520
     { id: "gzfold5", label: "Galaxy Z Fold 5", base: 239, image: "/devices/gzfold5.png" },       // IWM $355
     { id: "gzfold4", label: "Galaxy Z Fold 4", base: 161, image: "/devices/gzfold4.png" },       // IWM $245
-    { id: "gzfold3", label: "Galaxy Z Fold 3", base: 144, image: "/devices/gzfold3.png" },       // IWM $200
+    { id: "gzfold3", label: "Galaxy Z Fold 3", base: 108, image: "/devices/gzfold3.png" },       // IWM $155
     { id: "gzflip7", label: "Galaxy Z Flip 7", base: 340, image: "/devices/gzflip7.png" },       // IWM $445
     { id: "gzflip6", label: "Galaxy Z Flip 6", base: 208, image: "/devices/gzflip6.png" },       // IWM $280
     { id: "gzflip5", label: "Galaxy Z Flip 5", base: 152, image: "/devices/gzflip5.png" },       // IWM $210
-    { id: "gzflip4", label: "Galaxy Z Flip 4", base: 144, image: "/devices/gzflip4.png" },       // IWM $200
-    { id: "gzflip3", label: "Galaxy Z Flip 3", base: 161, image: "/devices/gzflip3.png" },       // IWM $200
+    { id: "gzflip4", label: "Galaxy Z Flip 4", base: 20, image: "/devices/gzflip4.png" },        // IWM $45
+    { id: "gzflip3", label: "Galaxy Z Flip 3", base: 27, image: "/devices/gzflip3.png" },        // IWM $50
   ]},
-  // Note Series — every Note returns IWM's $200 floor (which is generous
-  // for 4-7 year old phones, since IWM has margin to resell at much
-  // higher refurb prices). Applied the IWM - $20 formula mechanically;
-  // these bases are HIGHER than realistic resale value for older Notes,
-  // so we'll lose margin on Note 9 / Note 10 trades unless Skywalker
-  // overrides.
-  { id: "noteseries", label: "Note Series", year: "Note 9 / 10 / 20", topPrice: 180, image: "/devices/gnote20u.png", variants: [
-    { id: "gnote20u", label: "Galaxy Note 20 Ultra 5G", base: 144, image: "/devices/gnote20u.png" },     // IWM $200 / 1.25
-    { id: "gnote20", label: "Galaxy Note 20 5G", base: 180, image: "/devices/gnote20.png" },             // IWM $200 / 1.00 (single storage)
-    { id: "gnote10p5g", label: "Galaxy Note 10+ 5G", base: 144, image: "/devices/gnote10p5g.png" },      // IWM $200 / 1.25
-    { id: "gnote10p", label: "Galaxy Note 10+", base: 144, image: "/devices/gnote10p.png" },             // IWM $200 / 1.25
-    { id: "gnote10", label: "Galaxy Note 10", base: 161, image: "/devices/gnote10.png" },                // IWM $200 / 1.12
-    { id: "gnote9", label: "Galaxy Note 9", base: 144, image: "/devices/gnote9.png" },                   // IWM $200 / 1.25
+  { id: "noteseries", label: "Note Series", year: "Note 9 / 10 / 20", topPrice: 155, image: "/devices/gnote20u.png", variants: [
+    { id: "gnote20u", label: "Galaxy Note 20 Ultra 5G", base: 124, image: "/devices/gnote20u.png" },     // IWM $175
+    { id: "gnote20", label: "Galaxy Note 20 5G", base: 90, image: "/devices/gnote20.png" },              // IWM $110
+    { id: "gnote10p5g", label: "Galaxy Note 10+ 5G", base: 100, image: "/devices/gnote10p5g.png" },      // IWM $145
+    { id: "gnote10p", label: "Galaxy Note 10+", base: 96, image: "/devices/gnote10p.png" },              // IWM $140
+    { id: "gnote10", label: "Galaxy Note 10", base: 62, image: "/devices/gnote10.png" },                 // IWM $90
+    { id: "gnote9", label: "Galaxy Note 9", base: 52, image: "/devices/gnote9.png" },                    // IWM $85
   ]},
 ];
 
@@ -1674,6 +1664,10 @@ const STORAGE_MAP: Record<string, string[]> = {
   gs25p: ["256", "512"],
   gs25: ["128", "256", "512"],
   gs25fe: ["128", "256"],
+  gs24fe: ["128", "256"],
+  gs23fe: ["128", "256"],
+  gs21fe: ["128", "256"],
+  gs20fe: ["128", "256"],
   gs24u: ["256", "512", "1tb"],
   gs24p: ["256", "512"],
   gs24: ["128", "256"],
