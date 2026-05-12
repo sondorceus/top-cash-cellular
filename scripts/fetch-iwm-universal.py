@@ -23,7 +23,7 @@ from playwright.sync_api import sync_playwright
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36"
 DOLLAR = re.compile(r"\$\s*([0-9]+(?:,[0-9]{3})*)(?!\d)")
-DISCOUNT_PERCENT = 0.15  # Our prices = IWM × (1 - 0.15) = IWM × 0.85
+DISCOUNT_PERCENT = 0.10  # Our prices = IWM × (1 - 0.10) = IWM × 0.90
 RATE_LIMIT_SECONDS = 1.5  # Wait between page loads to avoid getting blocked
 RESUME_FILE = "/tmp/iwm_scrape_progress.json"
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))

@@ -127,142 +127,136 @@ function CarrierIcon({ id, className = "" }: { id: CarrierIconId; className?: st
 }
 
 const IPHONE_SERIES = [
-  // Bases refreshed 2026-05-11 from IWM scrape. Rule:
-  // base = (IWM_flawless_lowest_storage × 0.92) / lowest_storage_mult
-  // Anchored from LOWEST storage tier so common configs are accurate.
-  // iPhone is 8% below IWM. Condition mults match IWM ratios (VG=0.97, Good=0.93).
-  { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 832, variants: [
-    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 743, image: "/devices/iphone-17-pro-max-test.png" },   // IWM 256GB=$905
-    { id: "ip17p", label: "iPhone 17 Pro", base: 703, image: "/devices/iphone-17-pro-test.png" },            // scaled
-    { id: "ip17air", label: "iPhone 17 Air", base: 600, image: "/devices/iphone-17-air-test.png" },          // scaled
-    { id: "ip17", label: "iPhone 17", base: 563, image: "/devices/iphone-17-test.png" },                     // scaled
-    { id: "ip17e", label: "iPhone 17E", base: 341, image: "/iphone17e.png" },                                // scaled
+  // Bases: IWM_lowest_storage × 0.95 / lowest_storage_mult
+  // iPhone = 5% below IWM. Everything else = 10% below.
+  { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 860, variants: [
+    { id: "ip17pm", label: "iPhone 17 Pro Max", base: 767, image: "/devices/iphone-17-pro-max-test.png" },   // IWM 256GB=$905
+    { id: "ip17p", label: "iPhone 17 Pro", base: 726, image: "/devices/iphone-17-pro-test.png" },
+    { id: "ip17air", label: "iPhone 17 Air", base: 620, image: "/devices/iphone-17-air-test.png" },
+    { id: "ip17", label: "iPhone 17", base: 581, image: "/devices/iphone-17-test.png" },
+    { id: "ip17e", label: "iPhone 17E", base: 352, image: "/iphone17e.png" },
   ]},
-  { id: "16", label: "iPhone 16", image: "/iphone16.png", year: "2024", topPrice: 589, variants: [
-    { id: "ip16pm", label: "iPhone 16 Pro Max", base: 526, image: "/devices/iphone-16-pro-max-test.png" },   // IWM est 256GB=$640
-    { id: "ip16p", label: "iPhone 16 Pro", base: 498, image: "/devices/bm/iphone-16-pro.png" },              // IWM est 128GB=$541
-    { id: "ip16plus", label: "iPhone 16 Plus", base: 400, image: "/devices/iphone-16-plus-test.png" },       // IWM est 128GB=$435
-    { id: "ip16", label: "iPhone 16", base: 381, image: "/devices/bm/iphone-16.png" },                       // IWM est 128GB=$414
-    { id: "ip16e", label: "iPhone 16E", base: 226, image: "/devices/iphone-16e-test.png" },                  // scaled
+  { id: "16", label: "iPhone 16", image: "/iphone16.png", year: "2024", topPrice: 608, variants: [
+    { id: "ip16pm", label: "iPhone 16 Pro Max", base: 543, image: "/devices/iphone-16-pro-max-test.png" },   // IWM est 256GB=$640
+    { id: "ip16p", label: "iPhone 16 Pro", base: 514, image: "/devices/bm/iphone-16-pro.png" },              // IWM est 128GB=$541
+    { id: "ip16plus", label: "iPhone 16 Plus", base: 413, image: "/devices/iphone-16-plus-test.png" },       // IWM est 128GB=$435
+    { id: "ip16", label: "iPhone 16", base: 393, image: "/devices/bm/iphone-16.png" },                       // IWM est 128GB=$414
+    { id: "ip16e", label: "iPhone 16E", base: 233, image: "/devices/iphone-16e-test.png" },
   ]},
-  { id: "15", label: "iPhone 15", image: "/iphone15.png", year: "2023", topPrice: 414, variants: [
-    { id: "ip15pm", label: "iPhone 15 Pro Max", base: 370, image: "/devices/bm/iphone-15-pro-max.png" },     // IWM est 256GB=$451
-    { id: "ip15p", label: "iPhone 15 Pro", base: 374, image: "/devices/bm/iphone-15-pro.png" },              // IWM est 128GB=$406
-    { id: "ip15plus", label: "iPhone 15 Plus", base: 309, image: "/devices/bm/iphone-15-plus.png" },         // IWM est 128GB=$336
-    { id: "ip15", label: "iPhone 15", base: 275, image: "/devices/bm/iphone-15.png" },                       // IWM est 128GB=$299
+  { id: "15", label: "iPhone 15", image: "/iphone15.png", year: "2023", topPrice: 428, variants: [
+    { id: "ip15pm", label: "iPhone 15 Pro Max", base: 382, image: "/devices/bm/iphone-15-pro-max.png" },     // IWM est 256GB=$451
+    { id: "ip15p", label: "iPhone 15 Pro", base: 386, image: "/devices/bm/iphone-15-pro.png" },              // IWM est 128GB=$406
+    { id: "ip15plus", label: "iPhone 15 Plus", base: 319, image: "/devices/bm/iphone-15-plus.png" },         // IWM est 128GB=$336
+    { id: "ip15", label: "iPhone 15", base: 284, image: "/devices/bm/iphone-15.png" },                       // IWM est 128GB=$299
   ]},
-  { id: "14", label: "iPhone 14", image: "/iphone14.png", year: "2022", topPrice: 347, variants: [
-    { id: "ip14pm", label: "iPhone 14 Pro Max", base: 347, image: "/devices/bm/iphone-14-pro-max.png" },     // IWM est 128GB=$377
-    { id: "ip14p", label: "iPhone 14 Pro", base: 287, image: "/devices/bm/iphone-14-pro.png" },              // IWM est 128GB=$312
-    { id: "ip14plus", label: "iPhone 14 Plus", base: 122, image: "/devices/bm/iphone-14-plus.png" },         // scaled
-    { id: "ip14", label: "iPhone 14", base: 223, image: "/devices/bm/iphone-14.png" },                       // IWM est 128GB=$242
+  { id: "14", label: "iPhone 14", image: "/iphone14.png", year: "2022", topPrice: 358, variants: [
+    { id: "ip14pm", label: "iPhone 14 Pro Max", base: 358, image: "/devices/bm/iphone-14-pro-max.png" },     // IWM est 128GB=$377
+    { id: "ip14p", label: "iPhone 14 Pro", base: 296, image: "/devices/bm/iphone-14-pro.png" },              // IWM est 128GB=$312
+    { id: "ip14plus", label: "iPhone 14 Plus", base: 126, image: "/devices/bm/iphone-14-plus.png" },
+    { id: "ip14", label: "iPhone 14", base: 230, image: "/devices/bm/iphone-14.png" },                       // IWM est 128GB=$242
   ]},
-  { id: "13", label: "iPhone 13", image: "/iphone13.png", year: "2021", topPrice: 275, variants: [
-    { id: "ip13pm", label: "iPhone 13 Pro Max", base: 275, image: "/devices/bm/iphone-13-pro-max.png" },     // IWM est 128GB=$299
-    { id: "ip13p", label: "iPhone 13 Pro", base: 237, image: "/devices/bm/iphone-13-pro.png" },              // IWM est 128GB=$258
-    { id: "ip13", label: "iPhone 13", base: 162, image: "/devices/bm/iphone-13.png" },                       // IWM est 128GB=$176
+  { id: "13", label: "iPhone 13", image: "/iphone13.png", year: "2021", topPrice: 284, variants: [
+    { id: "ip13pm", label: "iPhone 13 Pro Max", base: 284, image: "/devices/bm/iphone-13-pro-max.png" },     // IWM est 128GB=$299
+    { id: "ip13p", label: "iPhone 13 Pro", base: 245, image: "/devices/bm/iphone-13-pro.png" },              // IWM est 128GB=$258
+    { id: "ip13", label: "iPhone 13", base: 167, image: "/devices/bm/iphone-13.png" },                       // IWM est 128GB=$176
   ]},
-  { id: "12", label: "iPhone 12", image: "/iphone12.png", year: "2020", topPrice: 192, variants: [
-    { id: "ip12pm", label: "iPhone 12 Pro Max", base: 192, image: "/devices/bm/iphone-12-pro-max.png" },     // IWM est 128GB=$209
-    { id: "ip12p", label: "iPhone 12 Pro", base: 122, image: "/devices/bm/iphone-12-pro.png" },              // scaled
-    { id: "ip12", label: "iPhone 12", base: 142, image: "/devices/bm/iphone-12.png" },                       // IWM est 64GB=$131
-    { id: "ip12mini", label: "iPhone 12 Mini", base: 70, image: "/devices/bm/iphone-12-mini.png" },          // scaled
+  { id: "12", label: "iPhone 12", image: "/iphone12.png", year: "2020", topPrice: 198, variants: [
+    { id: "ip12pm", label: "iPhone 12 Pro Max", base: 198, image: "/devices/bm/iphone-12-pro-max.png" },     // IWM est 128GB=$209
+    { id: "ip12p", label: "iPhone 12 Pro", base: 126, image: "/devices/bm/iphone-12-pro.png" },
+    { id: "ip12", label: "iPhone 12", base: 147, image: "/devices/bm/iphone-12.png" },                       // IWM est 64GB=$131
+    { id: "ip12mini", label: "iPhone 12 Mini", base: 72, image: "/devices/bm/iphone-12-mini.png" },
   ]},
-  { id: "11", label: "iPhone 11", image: "/iphone11.png", year: "2019", topPrice: 186, variants: [
-    { id: "ip11pm", label: "iPhone 11 Pro Max", base: 186, image: "/devices/bm/iphone-11-pro-max.png" },     // IWM est 64GB=$172
-    { id: "ip11p", label: "iPhone 11 Pro", base: 110, image: "/devices/bm/iphone-11-pro.png" },              // scaled
-    { id: "ip11", label: "iPhone 11", base: 116, image: "/devices/bm/iphone-11.png" },                       // IWM est 64GB=$107
+  { id: "11", label: "iPhone 11", image: "/iphone11.png", year: "2019", topPrice: 192, variants: [
+    { id: "ip11pm", label: "iPhone 11 Pro Max", base: 192, image: "/devices/bm/iphone-11-pro-max.png" },     // IWM est 64GB=$172
+    { id: "ip11p", label: "iPhone 11 Pro", base: 114, image: "/devices/bm/iphone-11-pro.png" },
+    { id: "ip11", label: "iPhone 11", base: 120, image: "/devices/bm/iphone-11.png" },                       // IWM est 64GB=$107
   ]},
 ];
 
 // S/Z/Note rebased 2026-05-12 (round 2) on REAL IWM data after the
-// scraper bug was fixed. The earlier $200 reads turned out to be a
-// hidden ng-hide disclaimer ('$200 deduction for bad ESN') the scraper
-// was harvesting. With that ignored, every model returns its actual
-// IWM offer. Formula unchanged:
-//   our top-config quote = IWM max - $20
-//   base = (IWM - 20) / max_storage_multiplier
+// Samsung/Pixel/all non-iPhone = 10% below IWM (was 15%).
+// iPhone = 5% below. Condition mults match IWM ratios.
 const SAMSUNG_SERIES = [
-  { id: "sseries", label: "S Series", year: "Galaxy S20–S26", topPrice: 620, image: "/s-series.png", variants: [
-    { id: "gs26u", label: "Galaxy S26 Ultra", base: 443, image: "/devices/gs26u.png" },     // IWM $730
-    { id: "gs25u", label: "Galaxy S25 Ultra", base: 391, image: "/devices/gs25u.png" },     // IWM $645
-    { id: "gs24u", label: "Galaxy S24 Ultra", base: 315, image: "/devices/gs24u.png" },     // IWM $520
-    { id: "gs23u", label: "Galaxy S23 Ultra", base: 197, image: "/devices/gs23u.png" },     // IWM $325
-    { id: "gs22u", label: "Galaxy S22 Ultra", base: 100, image: "/devices/gs22u.png" },     // IWM $165
-    { id: "gs21u", label: "Galaxy S21 Ultra", base: 71, image: "/devices/gs21u.png" },     // IWM scrape timed out — kept previous
-    { id: "gs20u", label: "Galaxy S20 Ultra", base: 105, image: "/devices/gs20u.png" },     // IWM $155
-    { id: "gs25edge", label: "Galaxy S25 Edge", base: 255, image: "/devices/gs25edge.png" }, // IWM $375
-    { id: "gs26p", label: "Galaxy S26+", base: 367, image: "/devices/gs26p.png" },          // IWM $540
-    { id: "gs25p", label: "Galaxy S25+", base: 312, image: "/devices/gs25p.png" },          // IWM $460
-    { id: "gs24p", label: "Galaxy S24+", base: 200, image: "/devices/gs24p.png" },          // IWM $295
-    { id: "gs23p", label: "Galaxy S23+", base: 142, image: "/devices/gs23p.png" },          // IWM $210
-    { id: "gs22p", label: "Galaxy S22+", base: 91, image: "/devices/gs22p.png" },           // IWM $120
-    { id: "gs21p", label: "Galaxy S21+", base: 60, image: "/devices/gs21p.png" },           // IWM $80
-    { id: "gs20p", label: "Galaxy S20+", base: 74, image: "/devices/gs20p.png" },           // IWM $110
-    { id: "gs26", label: "Galaxy S26", base: 323, image: "/devices/gs26.png" },             // IWM $475
-    { id: "gs25", label: "Galaxy S25", base: 224, image: "/devices/gs25.png" },             // IWM $330
-    { id: "gs24", label: "Galaxy S24", base: 182, image: "/devices/gs24.png" },             // IWM $240
-    { id: "gs23", label: "Galaxy S23", base: 105, image: "/devices/gs23.png" },             // IWM $155
-    { id: "gs22", label: "Galaxy S22", base: 68, image: "/devices/gs22.png" },              // IWM $90
-    { id: "gs21", label: "Galaxy S21", base: 49, image: "/devices/gs21.png" },              // IWM $65
-    { id: "gs20", label: "Galaxy S20", base: 63, image: "/devices/gs20.png" },              // IWM $75
-    { id: "gs25fe", label: "Galaxy S25 FE", base: 201, image: "/devices/gs25fe.png" },      // IWM $265
-    { id: "gs24fe", label: "Galaxy S24 FE", base: 129, image: "/devices/gs24fe.png" },      // IWM $170
-    { id: "gs23fe", label: "Galaxy S23 FE", base: 75, image: "/devices/gs23fe.png" },       // IWM $100
-    { id: "gs21fe", label: "Galaxy S21 FE", base: 37, image: "/devices/gs21fe.png" },       // IWM $50
-    { id: "gs20fe", label: "Galaxy S20 FE", base: 45, image: "/devices/gs20fe.png" },       // IWM $60
+  { id: "sseries", label: "S Series", year: "Galaxy S20–S26", topPrice: 657, image: "/s-series.png", variants: [
+    { id: "gs26u", label: "Galaxy S26 Ultra", base: 469, image: "/devices/gs26u.png" },     // IWM $730
+    { id: "gs25u", label: "Galaxy S25 Ultra", base: 414, image: "/devices/gs25u.png" },     // IWM $645
+    { id: "gs24u", label: "Galaxy S24 Ultra", base: 334, image: "/devices/gs24u.png" },     // IWM $520
+    { id: "gs23u", label: "Galaxy S23 Ultra", base: 209, image: "/devices/gs23u.png" },     // IWM $325
+    { id: "gs22u", label: "Galaxy S22 Ultra", base: 106, image: "/devices/gs22u.png" },     // IWM $165
+    { id: "gs21u", label: "Galaxy S21 Ultra", base: 75, image: "/devices/gs21u.png" },      // IWM est
+    { id: "gs20u", label: "Galaxy S20 Ultra", base: 111, image: "/devices/gs20u.png" },     // IWM $155
+    { id: "gs25edge", label: "Galaxy S25 Edge", base: 270, image: "/devices/gs25edge.png" }, // IWM $375
+    { id: "gs26p", label: "Galaxy S26+", base: 389, image: "/devices/gs26p.png" },          // IWM $540
+    { id: "gs25p", label: "Galaxy S25+", base: 330, image: "/devices/gs25p.png" },          // IWM $460
+    { id: "gs24p", label: "Galaxy S24+", base: 212, image: "/devices/gs24p.png" },          // IWM $295
+    { id: "gs23p", label: "Galaxy S23+", base: 150, image: "/devices/gs23p.png" },          // IWM $210
+    { id: "gs22p", label: "Galaxy S22+", base: 96, image: "/devices/gs22p.png" },           // IWM $120
+    { id: "gs21p", label: "Galaxy S21+", base: 64, image: "/devices/gs21p.png" },           // IWM $80
+    { id: "gs20p", label: "Galaxy S20+", base: 78, image: "/devices/gs20p.png" },           // IWM $110
+    { id: "gs26", label: "Galaxy S26", base: 342, image: "/devices/gs26.png" },             // IWM $475
+    { id: "gs25", label: "Galaxy S25", base: 237, image: "/devices/gs25.png" },             // IWM $330
+    { id: "gs24", label: "Galaxy S24", base: 193, image: "/devices/gs24.png" },             // IWM $240
+    { id: "gs23", label: "Galaxy S23", base: 111, image: "/devices/gs23.png" },             // IWM $155
+    { id: "gs22", label: "Galaxy S22", base: 72, image: "/devices/gs22.png" },              // IWM $90
+    { id: "gs21", label: "Galaxy S21", base: 52, image: "/devices/gs21.png" },              // IWM $65
+    { id: "gs20", label: "Galaxy S20", base: 67, image: "/devices/gs20.png" },              // IWM $75
+    { id: "gs25fe", label: "Galaxy S25 FE", base: 213, image: "/devices/gs25fe.png" },      // IWM $265
+    { id: "gs24fe", label: "Galaxy S24 FE", base: 137, image: "/devices/gs24fe.png" },      // IWM $170
+    { id: "gs23fe", label: "Galaxy S23 FE", base: 79, image: "/devices/gs23fe.png" },       // IWM $100
+    { id: "gs21fe", label: "Galaxy S21 FE", base: 39, image: "/devices/gs21fe.png" },       // IWM $50
+    { id: "gs20fe", label: "Galaxy S20 FE", base: 48, image: "/devices/gs20fe.png" },       // IWM $60
   ]},
-  { id: "zseries", label: "Z Series", year: "Z Fold + Z Flip + TriFold", topPrice: 1742, image: "/fold-series.webp", variants: [
-    { id: "gztrifold", label: "Galaxy Z TriFold", base: 1244, image: "/devices/gztrifold.png" }, // IWM $2050
-    { id: "gzfold7", label: "Galaxy Z Fold 7", base: 497, image: "/devices/gzfold7.png" },       // IWM $820
-    { id: "gzfold6", label: "Galaxy Z Fold 6", base: 315, image: "/devices/gzfold6.png" },       // IWM $520
-    { id: "gzfold5", label: "Galaxy Z Fold 5", base: 215, image: "/devices/gzfold5.png" },       // IWM $355
-    { id: "gzfold4", label: "Galaxy Z Fold 4", base: 148, image: "/devices/gzfold4.png" },       // IWM $245
-    { id: "gzfold3", label: "Galaxy Z Fold 3", base: 105, image: "/devices/gzfold3.png" },       // IWM $155
-    { id: "gzflip7", label: "Galaxy Z Flip 7", base: 302, image: "/devices/gzflip7.png" },       // IWM $445
-    { id: "gzflip6", label: "Galaxy Z Flip 6", base: 190, image: "/devices/gzflip6.png" },       // IWM $280
-    { id: "gzflip5", label: "Galaxy Z Flip 5", base: 142, image: "/devices/gzflip5.png" },       // IWM $210
-    { id: "gzflip4", label: "Galaxy Z Flip 4", base: 30, image: "/devices/gzflip4.png" },        // IWM $45
-    { id: "gzflip3", label: "Galaxy Z Flip 3", base: 37, image: "/devices/gzflip3.png" },        // IWM $50
+  { id: "zseries", label: "Z Series", year: "Z Fold + Z Flip + TriFold", topPrice: 1845, image: "/fold-series.webp", variants: [
+    { id: "gztrifold", label: "Galaxy Z TriFold", base: 1317, image: "/devices/gztrifold.png" }, // IWM $2050
+    { id: "gzfold7", label: "Galaxy Z Fold 7", base: 526, image: "/devices/gzfold7.png" },       // IWM $820
+    { id: "gzfold6", label: "Galaxy Z Fold 6", base: 334, image: "/devices/gzfold6.png" },       // IWM $520
+    { id: "gzfold5", label: "Galaxy Z Fold 5", base: 228, image: "/devices/gzfold5.png" },       // IWM $355
+    { id: "gzfold4", label: "Galaxy Z Fold 4", base: 157, image: "/devices/gzfold4.png" },       // IWM $245
+    { id: "gzfold3", label: "Galaxy Z Fold 3", base: 111, image: "/devices/gzfold3.png" },       // IWM $155
+    { id: "gzflip7", label: "Galaxy Z Flip 7", base: 320, image: "/devices/gzflip7.png" },       // IWM $445
+    { id: "gzflip6", label: "Galaxy Z Flip 6", base: 201, image: "/devices/gzflip6.png" },       // IWM $280
+    { id: "gzflip5", label: "Galaxy Z Flip 5", base: 150, image: "/devices/gzflip5.png" },       // IWM $210
+    { id: "gzflip4", label: "Galaxy Z Flip 4", base: 32, image: "/devices/gzflip4.png" },        // IWM $45
+    { id: "gzflip3", label: "Galaxy Z Flip 3", base: 39, image: "/devices/gzflip3.png" },        // IWM $50
   ]},
-  { id: "noteseries", label: "Note Series", year: "Note 9 / 10 / 20", topPrice: 148, image: "/devices/gnote20u.png", variants: [
-    { id: "gnote20u", label: "Galaxy Note 20 Ultra 5G", base: 119, image: "/devices/gnote20u.png" },     // IWM $175
-    { id: "gnote20", label: "Galaxy Note 20 5G", base: 93, image: "/devices/gnote20.png" },              // IWM $110
-    { id: "gnote10p5g", label: "Galaxy Note 10+ 5G", base: 98, image: "/devices/gnote10p5g.png" },      // IWM $145
-    { id: "gnote10p", label: "Galaxy Note 10+", base: 95, image: "/devices/gnote10p.png" },              // IWM $140
-    { id: "gnote10", label: "Galaxy Note 10", base: 68, image: "/devices/gnote10.png" },                 // IWM $90
-    { id: "gnote9", label: "Galaxy Note 9", base: 57, image: "/devices/gnote9.png" },                    // IWM $85
+  { id: "noteseries", label: "Note Series", year: "Note 9 / 10 / 20", topPrice: 157, image: "/devices/gnote20u.png", variants: [
+    { id: "gnote20u", label: "Galaxy Note 20 Ultra 5G", base: 126, image: "/devices/gnote20u.png" },     // IWM $175
+    { id: "gnote20", label: "Galaxy Note 20 5G", base: 98, image: "/devices/gnote20.png" },              // IWM $110
+    { id: "gnote10p5g", label: "Galaxy Note 10+ 5G", base: 104, image: "/devices/gnote10p5g.png" },      // IWM $145
+    { id: "gnote10p", label: "Galaxy Note 10+", base: 101, image: "/devices/gnote10p.png" },              // IWM $140
+    { id: "gnote10", label: "Galaxy Note 10", base: 72, image: "/devices/gnote10.png" },                 // IWM $90
+    { id: "gnote9", label: "Galaxy Note 9", base: 60, image: "/devices/gnote9.png" },                    // IWM $85
   ]},
 ];
 
 const PIXEL_SERIES = [
-  { id: "pproseries", label: "Pro Series", year: "Pixel 6 Pro–10 Pro XL", topPrice: 530, image: "/pixel-pro-series.webp", variants: [
-    { id: "px10pxl", label: "Pixel 10 Pro XL", base: 530, image: "/devices/px10pxl.webp" },
-    { id: "px10p", label: "Pixel 10 Pro", base: 440, image: "/devices/px10p.webp" },
-    { id: "px9pxl", label: "Pixel 9 Pro XL", base: 375, image: "/devices/pixel-9-pro-xl.webp" },
-    { id: "px9p", label: "Pixel 9 Pro", base: 305, image: "/devices/pixel-9-pro.webp" },
-    { id: "px8p", label: "Pixel 8 Pro", base: 240, image: "/devices/pixel-8-pro.webp" },
-    { id: "px7p", label: "Pixel 7 Pro", base: 85, image: "/devices/pixel-7-pro.webp" },
-    { id: "px6p", label: "Pixel 6 Pro", base: 50, image: "/devices/pixel-6-pro.webp" },
+  { id: "pproseries", label: "Pro Series", year: "Pixel 6 Pro–10 Pro XL", topPrice: 561, image: "/pixel-pro-series.webp", variants: [
+    { id: "px10pxl", label: "Pixel 10 Pro XL", base: 561, image: "/devices/px10pxl.webp" },
+    { id: "px10p", label: "Pixel 10 Pro", base: 466, image: "/devices/px10p.webp" },
+    { id: "px9pxl", label: "Pixel 9 Pro XL", base: 397, image: "/devices/pixel-9-pro-xl.webp" },
+    { id: "px9p", label: "Pixel 9 Pro", base: 323, image: "/devices/pixel-9-pro.webp" },
+    { id: "px8p", label: "Pixel 8 Pro", base: 254, image: "/devices/pixel-8-pro.webp" },
+    { id: "px7p", label: "Pixel 7 Pro", base: 90, image: "/devices/pixel-7-pro.webp" },
+    { id: "px6p", label: "Pixel 6 Pro", base: 53, image: "/devices/pixel-6-pro.webp" },
   ]},
-  { id: "pstandard", label: "Standard Series", year: "Pixel 5–10 + a-series", topPrice: 325, image: "/pixel-standard-series.webp", variants: [
-    { id: "px10", label: "Pixel 10", base: 325, image: "/devices/px10.webp" },
-    { id: "px10a", label: "Pixel 10a", base: 145, image: "/devices/px10a.webp" },
-    { id: "px9", label: "Pixel 9", base: 185, image: "/devices/pixel-9.webp" },
-    { id: "px9a", label: "Pixel 9a", base: 135, image: "/devices/pixel-9a.webp" },
-    { id: "px8", label: "Pixel 8", base: 120, image: "/devices/pixel-8.webp" },
-    { id: "px8a", label: "Pixel 8a", base: 90, image: "/devices/pixel-8a.webp" },
-    { id: "px7", label: "Pixel 7", base: 45, image: "/devices/pixel-7.webp" },
-    { id: "px7a", label: "Pixel 7a", base: 10, image: "/devices/pixel-7a.webp" },
-    { id: "px6", label: "Pixel 6", base: 40, image: "/devices/pixel-6.webp" },
-    { id: "px6a", label: "Pixel 6a", base: 30, image: "/devices/pixel-6a.webp" },
-    { id: "px5", label: "Pixel 5", base: 50, image: "/devices/px5.webp" },
-    { id: "px5a", label: "Pixel 5a (5G)", base: 30, image: "/devices/px5a.webp" },
+  { id: "pstandard", label: "Standard Series", year: "Pixel 5–10 + a-series", topPrice: 344, image: "/pixel-standard-series.webp", variants: [
+    { id: "px10", label: "Pixel 10", base: 344, image: "/devices/px10.webp" },
+    { id: "px10a", label: "Pixel 10a", base: 154, image: "/devices/px10a.webp" },
+    { id: "px9", label: "Pixel 9", base: 196, image: "/devices/pixel-9.webp" },
+    { id: "px9a", label: "Pixel 9a", base: 143, image: "/devices/pixel-9a.webp" },
+    { id: "px8", label: "Pixel 8", base: 127, image: "/devices/pixel-8.webp" },
+    { id: "px8a", label: "Pixel 8a", base: 95, image: "/devices/pixel-8a.webp" },
+    { id: "px7", label: "Pixel 7", base: 48, image: "/devices/pixel-7.webp" },
+    { id: "px7a", label: "Pixel 7a", base: 11, image: "/devices/pixel-7a.webp" },
+    { id: "px6", label: "Pixel 6", base: 42, image: "/devices/pixel-6.webp" },
+    { id: "px6a", label: "Pixel 6a", base: 32, image: "/devices/pixel-6a.webp" },
+    { id: "px5", label: "Pixel 5", base: 53, image: "/devices/px5.webp" },
+    { id: "px5a", label: "Pixel 5a (5G)", base: 32, image: "/devices/px5a.webp" },
   ]},
-  { id: "pfoldseries", label: "Fold Series", year: "Pixel Fold lineup", topPrice: 755, image: "/pixel-fold-series.webp", variants: [
-    { id: "px10pfold", label: "Pixel 10 Pro Fold", base: 755, image: "/devices/px10pfold.webp" },
-    { id: "px9pfold", label: "Pixel 9 Pro Fold", base: 575, image: "/devices/px9pfold.webp" },
-    { id: "pxfold", label: "Pixel Fold", base: 280, image: "/devices/pxfold.webp" },
+  { id: "pfoldseries", label: "Fold Series", year: "Pixel Fold lineup", topPrice: 800, image: "/pixel-fold-series.webp", variants: [
+    { id: "px10pfold", label: "Pixel 10 Pro Fold", base: 800, image: "/devices/px10pfold.webp" },
+    { id: "px9pfold", label: "Pixel 9 Pro Fold", base: 609, image: "/devices/px9pfold.webp" },
+    { id: "pxfold", label: "Pixel Fold", base: 297, image: "/devices/pxfold.webp" },
   ]},
 ];
 
@@ -271,19 +265,17 @@ const MACBOOK_PRO_MODELS = [
   // — formula: Atlas's lowest 'Open' variant per model line minus $250
   // (midpoint of Skywalker's $200-$300 rule). Older models (M3, M2 Pro/13,
   // M1 Pro) are NOT on Atlas — left at prior bases pending comp study.
-  { id: "mbp16_m5pmax_2026", label: "MacBook Pro 16\" M5 Pro/Max (2026)", base: 1640, image: "/devices/macbook-pro-m4.webp" }, // Atlas $1,890
-  { id: "mbp14_m5pmax_2026", label: "MacBook Pro 14\" M5 Pro/Max (2026)", base: 1260, image: "/devices/macbook-pro-m4.webp" }, // Atlas $1,510
-  { id: "mbp14_m5_2025", label: "MacBook Pro 14\" M5 (2025)", base: 985, image: "/devices/macbook-pro-m4.webp" }, // Atlas $1,235
-  { id: "mbp16m4", label: "MacBook Pro 16\" M4 (2024)", base: 1375, image: "/devices/macbook-pro-m4.webp" }, // Atlas $1,625, was 1200
-  { id: "mbp14m4", label: "MacBook Pro 14\" M4 (2024)", base: 725, image: "/devices/macbook-pro-m4.webp" }, // Atlas $975, was 1000 (we were overpaying)
-  // Models below NOT on Atlas — bases set against competition ceilings
-  // (IWM / Decluttr / Backflip avg ~10-20% above Apple Trade-In) minus
-  // \$250 per Skywalker's rule. 2026-05-11.
-  { id: "mbp16m3", label: "MacBook Pro 16\" M3 (2023)", base: 800, image: "/devices/macbook-pro-m3.webp" }, // comp ~\$1,050, was 950
-  { id: "mbp14m3", label: "MacBook Pro 14\" M3 (2023)", base: 600, image: "/devices/macbook-pro-m3.webp" }, // comp ~\$850, was 800
-  { id: "mbp16m2", label: "MacBook Pro 16\" M2 (2023)", base: 570, image: "/devices/macbook-pro-m2.webp" }, // comp ~\$820, was 750
-  { id: "mbp14m2", label: "MacBook Pro 14\" M2 (2023)", base: 420, image: "/devices/macbook-pro-m2.webp" }, // comp ~\$670, was 650
-  { id: "mbp13m1", label: "MacBook Pro 13\" M1 (2020)", base: 170, image: "/devices/macbook-pro-m1.webp" }, // comp ~\$420, was 400
+  { id: "mbp16_m5pmax_2026", label: "MacBook Pro 16\" M5 Pro/Max (2026)", base: 1737, image: "/devices/macbook-pro-m4.webp" },
+  { id: "mbp14_m5pmax_2026", label: "MacBook Pro 14\" M5 Pro/Max (2026)", base: 1334, image: "/devices/macbook-pro-m4.webp" },
+  { id: "mbp14_m5_2025", label: "MacBook Pro 14\" M5 (2025)", base: 1043, image: "/devices/macbook-pro-m4.webp" },
+  { id: "mbp16m4", label: "MacBook Pro 16\" M4 (2024)", base: 1456, image: "/devices/macbook-pro-m4.webp" },
+  { id: "mbp14m4", label: "MacBook Pro 14\" M4 (2024)", base: 768, image: "/devices/macbook-pro-m4.webp" },
+  // Models below set at 10% below competition (IWM/Decluttr avg).
+  { id: "mbp16m3", label: "MacBook Pro 16\" M3 (2023)", base: 847, image: "/devices/macbook-pro-m3.webp" },
+  { id: "mbp14m3", label: "MacBook Pro 14\" M3 (2023)", base: 635, image: "/devices/macbook-pro-m3.webp" },
+  { id: "mbp16m2", label: "MacBook Pro 16\" M2 (2023)", base: 604, image: "/devices/macbook-pro-m2.webp" },
+  { id: "mbp14m2", label: "MacBook Pro 14\" M2 (2023)", base: 445, image: "/devices/macbook-pro-m2.webp" },
+  { id: "mbp13m1", label: "MacBook Pro 13\" M1 (2020)", base: 180, image: "/devices/macbook-pro-m1.webp" },
   { id: "mbp13_intel_2020", label: "MacBook Pro 13\" Intel (2020)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m1.webp" },
   { id: "mbp16_intel_2019", label: "MacBook Pro 16\" Intel (2019)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m1.webp" },
   { id: "mbp_tb_2018_2019", label: "MacBook Pro Touch Bar 13\"/15\" (2018–2019)", base: 0, inquiryOnly: true, image: "/devices/macbook-pro-m1.webp" },
@@ -294,14 +286,13 @@ const MACBOOK_PRO_MODELS = [
 const MACBOOK_AIR_MODELS = [
   // Bases rebased 2026-05-11 against Atlas Mobile sheet — Atlas Open price
   // minus $250. M3 Air not listed on Atlas; left at prior base.
-  { id: "mba_m5_2026", label: "MacBook Air M5 (13\" & 15\", 2026)", base: 625, image: "/devices/macbook-air-m3.webp" }, // Atlas avg M5 13/15 - 250
-  { id: "mba_m4_2025", label: "MacBook Air M4 (13\" & 15\", 2025)", base: 470, image: "/devices/macbook-air-m3.webp" }, // est from M3/M5 midpoint
-  // Competition-anchored (IWM/Decluttr avg) minus \$250 — Atlas didn't list these.
-  { id: "mba15m3", label: "MacBook Air 15\" M3 (2024)", base: 510, image: "/devices/macbook-air-m3.webp" }, // comp ~\$760, was 700
-  { id: "mba13m3", label: "MacBook Air 13\" M3 (2024)", base: 345, image: "/devices/macbook-air-m3.webp" }, // comp ~\$595, was 600
-  { id: "mba15m2", label: "MacBook Air 15\" M2 (2023)", base: 310, image: "/devices/macbook-air-m2.webp" }, // comp ~\$560, was 550
-  { id: "mba13m2", label: "MacBook Air 13\" M2 (2022)", base: 280, image: "/devices/macbook-air-m2.webp" }, // Atlas $530, was 480
-  { id: "mba13m1", label: "MacBook Air 13\" M1 (2020)", base: 200, image: "/devices/macbook-air-m1.webp" }, // Atlas $450, was 350
+  { id: "mba_m5_2026", label: "MacBook Air M5 (13\" & 15\", 2026)", base: 662, image: "/devices/macbook-air-m3.webp" },
+  { id: "mba_m4_2025", label: "MacBook Air M4 (13\" & 15\", 2025)", base: 498, image: "/devices/macbook-air-m3.webp" },
+  { id: "mba15m3", label: "MacBook Air 15\" M3 (2024)", base: 540, image: "/devices/macbook-air-m3.webp" },
+  { id: "mba13m3", label: "MacBook Air 13\" M3 (2024)", base: 365, image: "/devices/macbook-air-m3.webp" },
+  { id: "mba15m2", label: "MacBook Air 15\" M2 (2023)", base: 328, image: "/devices/macbook-air-m2.webp" },
+  { id: "mba13m2", label: "MacBook Air 13\" M2 (2022)", base: 297, image: "/devices/macbook-air-m2.webp" },
+  { id: "mba13m1", label: "MacBook Air 13\" M1 (2020)", base: 212, image: "/devices/macbook-air-m1.webp" },
   { id: "mba_intel_2020", label: "MacBook Air Intel (2020)", base: 0, inquiryOnly: true },
   { id: "mba_retina_2018_2019", label: "MacBook Air Retina (2018–2019)", base: 0, inquiryOnly: true },
   { id: "mba_2017", label: "MacBook Air (2017)", base: 0, inquiryOnly: true },
@@ -312,7 +303,7 @@ const MACBOOK_AIR_MODELS = [
 // the 256GB Atlas Open price (- $250); the storage multiplier on the
 // storage step bumps it for 512GB selections.
 const MACBOOK_NEO_MODELS = [
-  { id: "mbneo13", label: "MacBook Neo 13\" (A18 Pro, 2026)", base: 175 }, // Atlas 256GB $425 - $250
+  { id: "mbneo13", label: "MacBook Neo 13\" (A18 Pro, 2026)", base: 185 },
 ];
 const MACBOOK_CLASSIC_MODELS = [
   { id: "mb12_2017", label: "MacBook 12\" (2017)", base: 0, inquiryOnly: true },
