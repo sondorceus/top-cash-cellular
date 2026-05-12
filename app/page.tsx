@@ -1017,16 +1017,16 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "pixelwatch4bluetoothwifi4glte": { broken: 9, fair: 36, good: 81, mint: 117, sealed: 153, verygood: 99 },
   },
   sgw7: {
-    "bluetoothwifi": { broken: 18, good: 9, mint: 18, sealed: 32 },
-    "bluetoothwifi4glte": { broken: 22, fair: 4, good: 14, mint: 22, sealed: 36 },
+    "bluetoothwifi": { good: 9, mint: 18, sealed: 32 },
+    "bluetoothwifi4glte": { fair: 4, good: 14, mint: 22, sealed: 36 },
   },
   sgw8: {
-    "bluetoothwifi": { broken: 63, fair: 18, good: 45, mint: 63, sealed: 86 },
-    "bluetoothwifi4glte": { broken: 72, fair: 27, good: 54, mint: 72, sealed: 94 },
+    "bluetoothwifi": { fair: 18, good: 45, mint: 63, sealed: 86 },
+    "bluetoothwifi4glte": { fair: 27, good: 54, mint: 72, sealed: 94 },
   },
   sgw8c: {
-    "bluetoothwifi": { broken: 99, fair: 54, good: 76, mint: 99, sealed: 122, verygood: 90 },
-    "bluetoothwifi4glte": { broken: 108, fair: 63, good: 86, mint: 108, sealed: 130, verygood: 99 },
+    "bluetoothwifi": { fair: 54, good: 76, mint: 99, sealed: 122, verygood: 90 },
+    "bluetoothwifi4glte": { fair: 63, good: 86, mint: 108, sealed: 130, verygood: 99 },
   },
   sgwu: {
     "base": { fair: 22, good: 58, mint: 90, sealed: 112, verygood: 76 },
@@ -3158,7 +3158,7 @@ const FAQS = [
   { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
 ];
 
-type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "condition" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "extras" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
+type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "condition" | "broken-functional" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "extras" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
 
 // Brand-specific extra questions. A device family can declare a list of
 // follow-up questions (disc drive / controllers / hours flown / band
@@ -4143,6 +4143,7 @@ export default function Home() {
   );
   const [storage, setStorage] = useState<typeof ALL_STORAGES[0] | null>(null);
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
+  const [brokenFunctional, setBrokenFunctional] = useState<boolean | null>(null);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
   // MacBook-specific picks (Wave 1). Only used when the picked model
   // has a MACBOOK_SPECS entry; otherwise these stay null and the legacy
@@ -4549,7 +4550,8 @@ export default function Home() {
   // 'Quote pending' instead of a number, and the cart marks the line
   // 'Pending quote'.
   const isPendingQuote = !model?.base;
-  const isManualQuote = isBelowMinimum;
+  const isBrokenNonFunctional = condition?.id === "broken" && brokenFunctional === false;
+  const isManualQuote = isBelowMinimum || isBrokenNonFunctional;
   const needsReview = MANUAL_REVIEW_DEVICES.has(model?.id ?? "");
 
   const maxQuoteFor = (v: { id: string; base: number }) => {
@@ -4623,6 +4625,7 @@ export default function Home() {
       else if (deviceType === "ipad") { setStep("connectivity"); setConnectivity(null); }
       else { setStep("condition"); setCondition(null); }
     }
+    else if (step === "broken-functional") { setStep("condition"); setCondition(null); setBrokenFunctional(null); }
     else if (step === "carrier") { setStep("storage"); setStorage(null); }
     else if (step === "carrier-lock") { setStep("carrier"); setCarrier(null); }
     else if (step === "quote") {
@@ -7837,6 +7840,13 @@ export default function Home() {
                   key={c.id}
                   onClick={() => {
                     setCondition(c);
+                    // Broken: ask functional question before continuing
+                    if (c.id === "broken") {
+                      setBrokenFunctional(null); // reset
+                      setStep("broken-functional" as Step); pushHistory("broken-functional" as Step);
+                      return;
+                    }
+                    setBrokenFunctional(null); // clear for non-broken
                     // MacBook spec'd flow: condition comes AFTER storage (and
                     // displayglass if applicable), so when this fires the next
                     // step is battery health.
@@ -7917,6 +7927,66 @@ export default function Home() {
                   <p className="text-xl font-bold text-[#00c853]">🏠</p>
                   <p className="text-xs text-[#e6e6e6] mt-1">We meet locally in Austin</p>
                 </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: BROKEN FUNCTIONAL CHECK */}
+      {step === "broken-functional" && page === "home" && model && condition?.id === "broken" && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+            {selectionPanelMobile}
+            <h2 className="text-xl lg:text-3xl font-extrabold mb-2">Is the device still functional?</h2>
+            <p className="text-[#b8b8b8] text-sm mb-4">This helps us determine if we can offer an instant quote or need to review manually.</p>
+            {stepProgress}
+            <div className="tcc-selection-frame">
+              <div className="space-y-2">
+                <button
+                  onClick={() => {
+                    setBrokenFunctional(true);
+                    // Continue normal flow — functional broken gets a price
+                    if (model && hasMacSpecs(model.id)) {
+                      setStep("batteryhealth"); pushHistory("batteryhealth"); return;
+                    }
+                    if (getBrandExtras(deviceType, model?.id).length > 0) {
+                      setExtras({}); setExtrasIndex(0);
+                      setStep("extras"); pushHistory("extras"); return;
+                    }
+                    const ns: Step = isNoStorageDevice ? "quote" : (deviceType === "ipad" ? "connectivity" : "storage");
+                    if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
+                    setStep(ns); pushHistory(ns);
+                  }}
+                  className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                >
+                  <div className="text-3xl">✅</div>
+                  <div className="flex-1">
+                    <p className="font-extrabold text-[15px] text-white">Yes — still works</p>
+                    <p className="text-[#b8b8b8] text-xs mt-0.5">Screen cracked, dents, or cosmetic damage — but touchscreen, cameras, speakers, and buttons all work</p>
+                  </div>
+                </button>
+                <button
+                  onClick={() => {
+                    setBrokenFunctional(false);
+                    // Non-functional → go straight to quote (will show manual review)
+                    setStep("quote"); pushHistory("quote");
+                  }}
+                  className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                >
+                  <div className="text-3xl">❌</div>
+                  <div className="flex-1">
+                    <p className="font-extrabold text-[15px] text-white">No — not functional</p>
+                    <p className="text-[#b8b8b8] text-xs mt-0.5">Won&apos;t power on, dead screen, non-responsive touch, water damage, or major hardware failure</p>
+                  </div>
+                </button>
               </div>
             </div>
             </div>
