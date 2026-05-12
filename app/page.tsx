@@ -5755,40 +5755,78 @@ export default function Home() {
               </>
             )}
 
-            {/* MacBook: variants of the picked series */}
+            {/* MacBook: variants of the picked series — grouped by chip
+                generation (M5 / M4 / M3 / M2 / M1 / Intel) for Pro and
+                Air. Neo and Classic series have too few variants to
+                divide further. */}
             {deviceType === "macbook" && selectedSeries && (() => {
               const ser = MACBOOK_SERIES.find(s => s.id === selectedSeries);
+              const macGroups: Record<string, Array<{ label: string; year?: string; match: (id: string) => boolean }>> = {
+                mbpro: [
+                  { label: "M5", year: "2025–2026", match: id => id.includes("m5") },
+                  { label: "M4", year: "2024",      match: id => /(^|[^a-z])m4($|[^a-z\d])/.test(id) },
+                  { label: "M3", year: "2023",      match: id => /(^|[^a-z])m3($|[^a-z\d])/.test(id) },
+                  { label: "M2", year: "2023",      match: id => /(^|[^a-z])m2($|[^a-z\d])/.test(id) },
+                  { label: "M1", year: "2020–2021", match: id => /(^|[^a-z])m1($|[^a-z\d])/.test(id) },
+                  { label: "Intel", year: "2014–2020", match: id => /intel|tb_|retina_/.test(id) },
+                ],
+                mbair: [
+                  { label: "M5", year: "2026",      match: id => id.includes("m5") },
+                  { label: "M4", year: "2025",      match: id => /(^|[^a-z])m4($|[^a-z\d])/.test(id) },
+                  { label: "M3", year: "2024",      match: id => /(^|[^a-z])m3($|[^a-z\d])/.test(id) },
+                  { label: "M2", year: "2022–2023", match: id => /(^|[^a-z])m2($|[^a-z\d])/.test(id) },
+                  { label: "M1", year: "2020",      match: id => /(^|[^a-z])m1($|[^a-z\d])/.test(id) },
+                  { label: "Intel", year: "2014–2020", match: id => /intel|retina|mba_2/.test(id) },
+                ],
+              };
+              const defs = (selectedSeries && macGroups[selectedSeries]) || null;
+              const groups = defs
+                ? defs.map(g => ({ label: g.label, year: g.year, variants: models.filter(m => g.match(m.id)) })).filter(g => g.variants.length > 0)
+                : [{ label: "", year: undefined as string | undefined, variants: models }];
               return (
                 <>
                   <h2 className="text-2xl font-bold mb-1">{ser?.label}</h2>
                   <p className="text-[#e6e6e6] text-sm mb-4">{ser?.year}</p>
-                  <div className="space-y-2">
-                    {models.map((m) => {
-                      const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
-                      const mImg = (m as { image?: string }).image;
-                      return (
-                        <button key={m.id} onClick={() => {
-                          setModel(m);
-                          // Models with a MACBOOK_SPECS entry go through the
-                          // new IWM-style flow (processor -> memory -> storage
-                          // -> display -> condition -> battery -> charger).
-                          // Other models keep the legacy condition-first flow.
-                          const next: Step = hasMacSpecs(m.id) ? "processor" : "condition";
-                          setStep(next); pushHistory(next);
-                        }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                          {mImg ? (
-                            <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
-                          ) : (
-                            <div className="w-12 h-9 shrink-0" />
-                          )}
-                          <p className="font-semibold text-[15px] flex-1">{m.label}</p>
-                          <div className="flex items-center gap-2">
-                            <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m, deviceType)}`}</span>
-                            <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  <div className="space-y-5">
+                    {groups.map((g, gi) => (
+                      <div key={g.label || gi}>
+                        {g.label && (
+                          <div className="flex items-center gap-3 mb-2">
+                            <p className="text-[10px] font-extrabold tracking-[0.22em] uppercase text-[#00c853]">{g.label}</p>
+                            {g.year && <span className="text-[10px] text-[#888]">{g.year}</span>}
+                            <div className="flex-1 h-px bg-gradient-to-r from-[#00c853]/40 via-white/15 to-transparent" />
                           </div>
-                        </button>
-                      );
-                    })}
+                        )}
+                        <div className="space-y-2">
+                          {g.variants.map((m) => {
+                            const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
+                            const mImg = (m as { image?: string }).image;
+                            return (
+                              <button key={m.id} onClick={() => {
+                                setModel(m);
+                                // Models with a MACBOOK_SPECS entry go through the
+                                // new IWM-style flow (processor -> memory -> storage
+                                // -> display -> condition -> battery -> charger).
+                                // Other models keep the legacy condition-first flow.
+                                const next: Step = hasMacSpecs(m.id) ? "processor" : "condition";
+                                setStep(next); pushHistory(next);
+                              }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                                {mImg ? (
+                                  <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
+                                ) : (
+                                  <div className="w-12 h-9 shrink-0" />
+                                )}
+                                <p className="font-semibold text-[15px] flex-1">{m.label}</p>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m, deviceType)}`}</span>
+                                  <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </>
               );
