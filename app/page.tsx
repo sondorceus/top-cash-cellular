@@ -2375,9 +2375,31 @@ const getMaxStorageMult = (modelId: string): number => {
   if (!sids || sids.length === 0) return 1;
   return Math.max(...sids.map(sid => ALL_STORAGES.find(s => s.id === sid)?.multiplier ?? 1));
 };
+// True ceiling for the 'Up to $X' label in the picker. PRICE_TABLE
+// holds exact per-storage / per-condition dollar amounts (currently
+// iPhone, expanding via the IWM scraper). When present we take the
+// max value across every cell — that's the real max payout. For
+// models not in the table we fall back to multiplier math, plus the
+// iPhone-only $10 accessory bonus so the displayed ceiling matches
+// what the quote step can actually award.
 const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): number => {
+  const table = PRICE_TABLE[m.id];
+  if (table) {
+    let topPrice = 0;
+    for (const storageEntry of Object.values(table)) {
+      for (const price of Object.values(storageEntry)) {
+        if (price > topPrice) topPrice = price;
+      }
+    }
+    if (topPrice > 0) {
+      const accessoryBonus = dt === "iphone" ? 10 : 0;
+      return topPrice + accessoryBonus;
+    }
+  }
   if (!m.base) return 0;
-  return Math.round(m.base * getMaxStorageMult(m.id) * getTopConditionMult(dt) * TOP_CARRIER_MULT);
+  const computed = Math.round(m.base * getMaxStorageMult(m.id) * getTopConditionMult(dt) * TOP_CARRIER_MULT);
+  const accessoryBonus = dt === "iphone" ? 10 : 0;
+  return computed + accessoryBonus;
 };
 
 const PAYOUTS = [
@@ -3614,10 +3636,15 @@ export default function Home() {
     } catch { setCouponError("Couldn't verify code, try again"); }
   };
 
-  // Accessory bonus: +$15 flat when customer confirms all original accessories
-  // for "new" tiers (Sealed / Mint). Skywalker's call.
+  // Accessory bonus: +$10 flat for iPhone, $0 for everything else.
+  // Skywalker 2026-05-12 — iPhone resale rewards original accessories
+  // (Lightning/USB-C cable, brick if pre-iPhone-12) so we pass a real
+  // premium through; Samsung resale doesn't price the box meaningfully
+  // so no bump there.
+  // isNewTier is still used to gate showing the accessories question
+  // (only "new" condition tiers see it).
   const isNewTier = condition?.id === "sealed" || condition?.id === "mint";
-  const accessoryBonus = isNewTier && accessoriesIncluded ? 15 : 0;
+  const accessoryBonus = isNewTier && accessoriesIncluded && deviceType === "iphone" ? 10 : 0;
   // MacBook spec multipliers — only fire when the picked model has a
   // MACBOOK_SPECS entry. Default to 1 so non-MacBook flows are unchanged.
   const processorMultiplier = processor?.multiplier ?? 1;
