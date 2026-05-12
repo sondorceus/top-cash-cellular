@@ -210,18 +210,22 @@ const SAMSUNG_SERIES = [
     { id: "gs21fe", label: "Galaxy S21 FE", base: 10, image: "/devices/gs21fe.png" },
     { id: "gs20fe", label: "Galaxy S20 FE", base: 10, image: "/devices/gs20fe.png" },
   ]},
-  { id: "zseries", label: "Z Series", year: "Z Fold + Z Flip + TriFold", topPrice: 1455, image: "/fold-series.webp", variants: [
-    { id: "gztrifold", label: "Galaxy Z TriFold", base: 1455, image: "/devices/gztrifold.png" },
-    { id: "gzfold7", label: "Galaxy Z Fold 7", base: 610, image: "/devices/gzfold7.png" },
-    { id: "gzfold6", label: "Galaxy Z Fold 6", base: 305, image: "/devices/gzfold6.png" },
-    { id: "gzfold5", label: "Galaxy Z Fold 5", base: 144, image: "/devices/gzfold5.png" },
-    { id: "gzfold4", label: "Galaxy Z Fold 4", base: 56,  image: "/devices/gzfold4.png" },
-    { id: "gzfold3", label: "Galaxy Z Fold 3", base: 40,  image: "/devices/gzfold3.png" },
-    { id: "gzflip7", label: "Galaxy Z Flip 7", base: 140, image: "/devices/gzflip7.png" },
-    { id: "gzflip6", label: "Galaxy Z Flip 6", base: 84,  image: "/devices/gzflip6.png" },
-    { id: "gzflip5", label: "Galaxy Z Flip 5", base: 28,  image: "/devices/gzflip5.png" },
-    { id: "gzflip4", label: "Galaxy Z Flip 4", base: 20,  image: "/devices/gzflip4.png" },
-    { id: "gzflip3", label: "Galaxy Z Flip 3", base: 10,  image: "/devices/gzflip3.png" },
+  // Z Series rebased 2026-05-12 against fresh IWM scrape, formula:
+  //   our top-config quote = IWM max price - $20
+  //   base = (IWM - 20) / max_storage_mult
+  // IWM max prices from scripts/fetch-iwm-samsung-prices.py run today.
+  { id: "zseries", label: "Z Series", year: "Z Fold + Z Flip + TriFold", topPrice: 2030, image: "/fold-series.webp", variants: [
+    { id: "gztrifold", label: "Galaxy Z TriFold", base: 1450, image: "/devices/gztrifold.png" }, // IWM $2050 -> top quote $2030
+    { id: "gzfold7", label: "Galaxy Z Fold 7", base: 571, image: "/devices/gzfold7.png" },       // IWM $820
+    { id: "gzfold6", label: "Galaxy Z Fold 6", base: 357, image: "/devices/gzfold6.png" },       // IWM $520
+    { id: "gzfold5", label: "Galaxy Z Fold 5", base: 239, image: "/devices/gzfold5.png" },       // IWM $355
+    { id: "gzfold4", label: "Galaxy Z Fold 4", base: 161, image: "/devices/gzfold4.png" },       // IWM $245
+    { id: "gzfold3", label: "Galaxy Z Fold 3", base: 144, image: "/devices/gzfold3.png" },       // IWM $200
+    { id: "gzflip7", label: "Galaxy Z Flip 7", base: 340, image: "/devices/gzflip7.png" },       // IWM $445
+    { id: "gzflip6", label: "Galaxy Z Flip 6", base: 208, image: "/devices/gzflip6.png" },       // IWM $280
+    { id: "gzflip5", label: "Galaxy Z Flip 5", base: 152, image: "/devices/gzflip5.png" },       // IWM $210
+    { id: "gzflip4", label: "Galaxy Z Flip 4", base: 144, image: "/devices/gzflip4.png" },       // IWM $200
+    { id: "gzflip3", label: "Galaxy Z Flip 3", base: 161, image: "/devices/gzflip3.png" },       // IWM $200
   ]},
   { id: "noteseries", label: "Note Series", year: "Note 9 / 10 / 20", topPrice: 180, image: "/devices/gnote20u.png", variants: [
     { id: "gnote20u", label: "Galaxy Note 20 Ultra 5G", base: 180, image: "/devices/gnote20u.png" },
