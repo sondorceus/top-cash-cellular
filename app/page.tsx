@@ -3101,16 +3101,19 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
     ]},
   ],
 };
-// Apple Watch Ultra (gen 1 + 2) ships cellular-only on a 49mm titanium
-// case — so the GPS-vs-Cellular question is meaningless and the band
-// list is Ultra-specific (Alpine / Trail / Ocean / Titanium Milanese).
-// Non-Ultra Apple Watches keep the standard 4-question flow.
+// Apple Watch Ultra (gen 1 + 2) only ships in one configuration:
+// titanium case, 49mm, cellular. So the case-material, case-size, and
+// GPS-vs-Cellular questions are all meaningless for Ultras — skip them
+// and just ask which of the four Ultra-specific bands shipped with it
+// (or 3rd-party / none). Non-Ultra Apple Watches keep the standard
+// 4-question flow because they really do have material / size / GPS
+// vs cellular variants.
 const isAppleWatchUltra = (modelId?: string | null) => modelId === "awu1" || modelId === "awu2";
 const getBrandExtras = (dt: string | null | undefined, modelId?: string | null | undefined): BrandExtra[] => {
   const base = (dt && BRAND_EXTRAS[dt]) || [];
   if (dt === "applewatch" && isAppleWatchUltra(modelId)) {
     return base
-      .filter(q => q.id !== "connectivity")
+      .filter(q => q.id !== "connectivity" && q.id !== "material" && q.id !== "size")
       .map(q => q.id === "band"
         ? { ...q, question: "Original band included?", options: [
             { id: "alpine",            label: "Alpine Loop",              multiplier: 1.05 },
