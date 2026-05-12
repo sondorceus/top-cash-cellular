@@ -294,6 +294,7 @@ const MACBOOK_AIR_MODELS = [
   // Bases rebased 2026-05-11 against Atlas Mobile sheet — Atlas Open price
   // minus $250. M3 Air not listed on Atlas; left at prior base.
   { id: "mba_m5_2026", label: "MacBook Air M5 (13\" & 15\", 2026)", base: 625, image: "/devices/macbook-air-m3.webp" }, // Atlas avg M5 13/15 - 250
+  { id: "mba_m4_2025", label: "MacBook Air M4 (13\" & 15\", 2025)", base: 470, image: "/devices/macbook-air-m3.webp" }, // est from M3/M5 midpoint
   // Competition-anchored (IWM/Decluttr avg) minus \$250 — Atlas didn't list these.
   { id: "mba15m3", label: "MacBook Air 15\" M3 (2024)", base: 510, image: "/devices/macbook-air-m3.webp" }, // comp ~\$760, was 700
   { id: "mba13m3", label: "MacBook Air 13\" M3 (2024)", base: 345, image: "/devices/macbook-air-m3.webp" }, // comp ~\$595, was 600
@@ -1444,7 +1445,7 @@ const APPLE_VR_MODELS = [
 ];
 
 const META_VR_MODELS = [
-  { id: "mq3512", label: "Meta Quest 3S (512GB)", image: "/devices/meta-quest-3.jpg" },
+  { id: "mq3s256", label: "Meta Quest 3S (256GB)", image: "/devices/meta-quest-3.jpg" },
   { id: "mq3128", label: "Meta Quest 3S (128GB)", image: "/devices/meta-quest-3.jpg" },
   { id: "mq3", label: "Meta Quest 3 (512GB)", image: "/devices/meta-quest-3.jpg" },
   { id: "mq3b", label: "Meta Quest 3 (128GB)", image: "/devices/meta-quest-3.jpg" },
@@ -1623,7 +1624,7 @@ const STORAGE_MAP: Record<string, string[]> = {
   ip17p: ["256", "512", "1tb"],
   ip17air: ["256", "512", "1tb"],
   ip17: ["256", "512"],
-  ip17e: ["256"],
+  ip17e: ["256", "512"],
   // iPhone 16 series
   ip16pm: ["256", "512", "1tb"],
   ip16p: ["128", "256", "512", "1tb"],
@@ -1857,14 +1858,14 @@ const STORAGE_MAP: Record<string, string[]> = {
   ipadpro11m5: ["256", "512", "1tb", "2tb"],
   ipadpro13m4: ["256", "512", "1tb", "2tb"],
   ipadpro11m4: ["256", "512", "1tb", "2tb"],
-  ipadpro129g6: ["128", "256", "512", "1tb"],
-  ipadpro11g4: ["128", "256", "512", "1tb"],
+  ipadpro129g6: ["128", "256", "512", "1tb", "2tb"],
+  ipadpro11g4: ["128", "256", "512", "1tb", "2tb"],
   ipadair13m3: ["128", "256", "512", "1tb"],
   ipadair11m3: ["128", "256", "512", "1tb"],
   ipadair13m2: ["128", "256", "512", "1tb"],
   ipadair11m2: ["128", "256", "512", "1tb"],
   ipad10: ["64", "256"],
-  ipad9: ["64", "256"],
+  ipad9: ["64", "128"],
   ipadmini7: ["128", "256", "512"],
   ipadmini6: ["64", "256"],
   // Samsung Tablets — verified against Samsung's launch storage matrix.
@@ -2347,14 +2348,17 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
       { id: "m5max_18_40", label: "M5 Max", sub: "18-Core CPU / 40-Core GPU", multiplier: 1.50 },
     ],
     memory: [
-      { id: "48",  label: "48 GB", sub: "Unified Memory",  multiplier: 1.00 },
-      { id: "64",  label: "64 GB", sub: "Unified Memory",  multiplier: 1.12 },
-      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.30 },
+      { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.00 },
+      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.08 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.15 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.25 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.45 },
     ],
     storage: [
-      { id: "2tb", label: "2 TB",  sub: "SSD", multiplier: 1.00 },
-      { id: "4tb", label: "4 TB",  sub: "SSD", multiplier: 1.25 },
-      { id: "8tb", label: "8 TB",  sub: "SSD", multiplier: 1.60 },
+      { id: "1tb", label: "1 TB",  sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB",  sub: "SSD", multiplier: 1.15 },
+      { id: "4tb", label: "4 TB",  sub: "SSD", multiplier: 1.40 },
+      { id: "8tb", label: "8 TB",  sub: "SSD", multiplier: 1.75 },
     ],
     hasNanoGlass: true,
   },
@@ -2392,9 +2396,10 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
     ],
     memory: [
       { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.00 },
-      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.10 },
-      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.20 },
-      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.40 },
+      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.06 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.12 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.22 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.42 },
     ],
     storage: [
       { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85 },
@@ -2417,6 +2422,7 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
     memory: [
       { id: "16",  label: "16 GB",  sub: "Unified Memory", multiplier: 1.00 },
       { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.06 },
+      { id: "32",  label: "32 GB",  sub: "Unified Memory", multiplier: 1.12 },
       { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.14 },
       { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.20 },
       { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.30 },
@@ -2453,7 +2459,7 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
       { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40 },
       { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70 },
     ],
-    hasNanoGlass: true,
+    hasNanoGlass: false,
   },
   // 2023 14-inch MacBook Pro M3 / Pro / Max
   mbp14m3: {
@@ -2470,6 +2476,7 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
       { id: "18",  label: "18 GB",  sub: "Unified Memory", multiplier: 1.04 },
       { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.08 },
       { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.16 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.22 },
       { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.30 },
       { id: "96",  label: "96 GB",  sub: "Unified Memory", multiplier: 1.42 },
       { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.55 },
@@ -2481,7 +2488,7 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
       { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40 },
       { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70 },
     ],
-    hasNanoGlass: true,
+    hasNanoGlass: false,
   },
   // 2023 16-inch MacBook Pro M2 Pro/Max (no nano-texture this gen)
   mbp16m2: {
@@ -2533,34 +2540,53 @@ const MACBOOK_SPECS: Record<string, MacSpec> = {
   // No nano glass on the base M5 model.
   mbp14_m5_2025: {
     processors: [
-      { id: "m5_10_10",      label: "M5",     sub: "10-Core CPU / 10-Core GPU", multiplier: 1.00 },
-      { id: "m5pro_12_16",   label: "M5 Pro", sub: "12-Core CPU / 16-Core GPU", multiplier: 1.25 },
-      { id: "m5max_14_32",   label: "M5 Max", sub: "14-Core CPU / 32-Core GPU", multiplier: 1.55 },
+      { id: "m5_10_10", label: "M5", sub: "10-Core CPU / 10-Core GPU", multiplier: 1.00 },
     ],
     memory: [
       { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00 },
       { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.08 },
-      { id: "36", label: "36 GB", sub: "Unified Memory", multiplier: 1.20 },
-      { id: "48", label: "48 GB", sub: "Unified Memory", multiplier: 1.28 },
+      { id: "32", label: "32 GB", sub: "Unified Memory", multiplier: 1.18 },
     ],
     storage: [
       { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85 },
       { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00 },
       { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.20 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.45 },
     ],
-    hasNanoGlass: false,
+    hasNanoGlass: true,
   },
   // 2026 MacBook Air M5 — Skywalker has 13 + 15 combined as one catalog
   // entry, so screen size lives on the processor step (M5 chip is the
   // same across sizes; the 15-inch just commands a price premium).
   mba_m5_2026: {
     processors: [
-      { id: "m5_13",       label: "M5 (13-inch)", sub: "10-Core CPU / 8-10C GPU",  multiplier: 0.85 },
+      { id: "m5_13",       label: "M5 (13-inch)", sub: "10-Core CPU / 10-Core GPU", multiplier: 0.85 },
       { id: "m5_15",       label: "M5 (15-inch)", sub: "10-Core CPU / 10-Core GPU", multiplier: 1.05 },
     ],
     memory: [
       { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00 },
       { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10 },
+      { id: "32", label: "32 GB", sub: "Unified Memory", multiplier: 1.22 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.60 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2025 MacBook Air M4 — 13" and 15" combined. M4 chip, 16/24/32 GB RAM,
+  // 256/512/1TB/2TB storage. Same approach as M5 Air: screen size on processor step.
+  mba_m4_2025: {
+    processors: [
+      { id: "m4_13", label: "M4 (13-inch)", sub: "10-Core CPU / 8-Core GPU",  multiplier: 0.85 },
+      { id: "m4_15", label: "M4 (15-inch)", sub: "10-Core CPU / 10-Core GPU", multiplier: 1.05 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10 },
+      { id: "32", label: "32 GB", sub: "Unified Memory", multiplier: 1.22 },
     ],
     storage: [
       { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85 },

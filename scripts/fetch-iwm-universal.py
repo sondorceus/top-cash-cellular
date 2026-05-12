@@ -267,7 +267,10 @@ def read_quiz_options(pg):
     }""")
 
 def click_quiz_option(pg, prefs):
-    """Click a quiz option matching preferences."""
+    """Click a quiz option matching preferences.
+    Special pref '__FIRST__' picks the first option (base config).
+    If no pref matches, picks the last option (highest config).
+    """
     return pg.evaluate("""([prefList]) => {
         const wrap = Array.from(document.querySelectorAll('.answers')).find(el => {
             const r = el.getBoundingClientRect();
@@ -281,9 +284,13 @@ def click_quiz_option(pg, prefs):
         });
         if (!kids.length) return {ok: false};
         let chosen = null;
-        for (const pref of prefList) {
-            chosen = kids.find(k => (k.innerText || '').toLowerCase().includes(pref.toLowerCase()));
-            if (chosen) break;
+        if (prefList.length === 1 && prefList[0] === '__FIRST__') {
+            chosen = kids[0];
+        } else {
+            for (const pref of prefList) {
+                chosen = kids.find(k => (k.innerText || '').toLowerCase().includes(pref.toLowerCase()));
+                if (chosen) break;
+            }
         }
         if (!chosen) chosen = kids[kids.length - 1];
         chosen.click();
@@ -301,7 +308,9 @@ def click_next(pg):
 
 # ========== DISCOVERY: find available options for a device ==========
 def discover_device(pg, series, model):
-    """Visit device page and discover all available conditions, carriers, storage."""
+    """Visit device page and discover all available options.
+    For MacBooks, also discovers chip variants and RAM tiers.
+    """
     url = f"https://www.itsworthmore.com/sell/{series}/{model}"
     try:
         pg.goto(url, wait_until="networkidle", timeout=45000)
@@ -310,22 +319,29 @@ def discover_device(pg, series, model):
     pg.wait_for_timeout(1500)
 
     image_url = grab_image_url(pg)
-    discovered = {"conditions": [], "carriers": [], "storage": [], "image": image_url}
+    discovered = {"conditions": [], "carriers": [], "storage": [],
+                  "chips": [], "ram": [], "image": image_url}
 
     for i in range(10):
         opts = read_quiz_options(pg)
         if not opts:
             break
 
-        if opts["type"] == "condition" or "condition" in opts["cls"].lower():
-            discovered["conditions"] = opts["options"]
-        elif opts["type"] == "carrier" or any(c in " ".join(opts["options"]).lower() for c in ["at&t", "unlocked", "verizon", "t-mobile"]):
-            discovered["carriers"] = opts["options"]
-        elif opts["type"] == "storage" or any(c in " ".join(opts["options"]).lower() for c in ["gb", "tb"]):
-            discovered["storage"] = opts["options"]
+        step_type = classify_quiz_step(opts)
 
-        # Click through (pick first option just to advance)
-        click_quiz_option(pg, ["Flawless", "Unlocked", "No"])
+        if step_type == "condition":
+            discovered["conditions"] = opts["options"]
+        elif step_type == "carrier":
+            discovered["carriers"] = opts["options"]
+        elif step_type == "storage":
+            discovered["storage"] = opts["options"]
+        elif step_type == "chip":
+            discovered["chips"] = opts["options"]
+        elif step_type == "ram":
+            discovered["ram"] = opts["options"]
+
+        # Click through (pick first/base option to advance)
+        click_quiz_option(pg, ["__FIRST__"])
         pg.wait_for_timeout(400)
         click_next(pg)
         pg.wait_for_timeout(800)
@@ -333,8 +349,68 @@ def discover_device(pg, series, model):
     return discovered
 
 # ========== WALK QUIZ FOR SPECIFIC CONFIG ==========
+def classify_quiz_step(opts):
+    """Classify a quiz step as condition/carrier/storage/chip/ram/other.
+    MacBook quizzes have chip, RAM, storage, screen, battery, charger steps
+    in addition to condition — need to distinguish RAM (GB ≤192) from
+    storage (GB ≥256 or TB).
+    """
+    cls_lower = opts["cls"].lower()
+    joined = " ".join(opts["options"]).lower()
+
+    if "condition" in cls_lower:
+        return "condition"
+    if "carrier" in cls_lower:
+        return "carrier"
+    if "storage" in cls_lower:
+        return "storage"
+
+    # Carrier: options mention carrier names
+    if any(c in joined for c in ["at&t", "unlocked", "verizon", "t-mobile", "sprint"]):
+        return "carrier"
+
+    # Chip/processor: options mention chip names but NOT gb/tb
+    chip_words = ["m1 ", "m2 ", "m3 ", "m4 ", "m5 ", "m1\n", "m2\n", "m3\n", "m4\n", "m5\n",
+                   "pro/max", "core cpu", "core gpu", "intel", "apple m", "a18"]
+    if any(c in joined for c in chip_words) and "gb" not in joined and "tb" not in joined:
+        return "chip"
+
+    # RAM vs storage: both have GB but RAM ≤192, storage ≥256 or uses TB
+    if "tb" in joined:
+        return "storage"
+    if "gb" in joined:
+        import re
+        nums = [int(x) for x in re.findall(r"(\d+)\s*gb", joined)]
+        if nums:
+            max_val = max(nums)
+            if max_val <= 192:
+                return "ram"
+            else:
+                return "storage"
+
+    # Battery: "80%", "battery", "cycle"
+    if any(c in joined for c in ["80%", "battery", "cycle", "health"]):
+        return "battery"
+    # Charger: "charger", "adapter", "power"
+    if any(c in joined for c in ["charger", "adapter", "power cable"]):
+        return "charger"
+    # Screen: "nano", "glass", "standard", "coating"
+    if any(c in joined for c in ["nano", "standard glass", "coating"]):
+        return "screen"
+    # Condition fallback: "flawless", "good", "fair", "broken"
+    if any(c in joined for c in ["flawless", "fair", "broken"]):
+        return "condition"
+    # Yes/No pattern (common for charger/accessory)
+    stripped = [o.strip().lower() for o in opts["options"]]
+    if set(stripped) <= {"yes", "no"}:
+        return "yesno"
+
+    return "other"
+
 def walk_quiz(pg, series, model, condition="Flawless", carrier="Unlocked", storage=None):
-    """Walk quiz for specific condition/carrier/storage combo. Return price."""
+    """Walk quiz for specific condition/carrier/storage combo. Return price.
+    For MacBooks, always picks BASE chip and BASE RAM to get the lowest config.
+    """
     url = f"https://www.itsworthmore.com/sell/{series}/{model}"
     try:
         pg.goto(url, wait_until="networkidle", timeout=45000)
@@ -350,13 +426,26 @@ def walk_quiz(pg, series, model, condition="Flawless", carrier="Unlocked", stora
         if not opts:
             break
 
-        # Pick prefs based on question type
-        if "condition" in opts["cls"].lower():
+        step_type = classify_quiz_step(opts)
+
+        if step_type == "condition":
             prefs = [condition]
-        elif any(c in " ".join(opts["options"]).lower() for c in ["at&t", "unlocked", "verizon"]):
+        elif step_type == "carrier":
             prefs = carrier_prefs
-        elif any(c in " ".join(opts["options"]).lower() for c in ["gb", "tb"]):
+        elif step_type == "storage":
             prefs = storage_prefs if storage_prefs else []  # empty = pick last (highest)
+        elif step_type == "chip":
+            prefs = ["__FIRST__"]  # Always pick base/first chip
+        elif step_type == "ram":
+            prefs = ["__FIRST__"]  # Always pick base/first RAM
+        elif step_type == "battery":
+            prefs = ["80", "yes", "good"]  # Best battery
+        elif step_type == "charger":
+            prefs = ["yes"]  # Has charger
+        elif step_type == "screen":
+            prefs = ["standard", "no"]  # Standard glass (not nano)
+        elif step_type == "yesno":
+            prefs = ["yes"]  # Default to yes for accessories
         else:
             prefs = [condition] + carrier_prefs
 
@@ -591,10 +680,9 @@ if __name__ == "__main__":
             info = discover_device(pg, series, model)
             print(f"\nDiscovered: {json.dumps(info, indent=2)}")
             for cond in CONDITIONS:
-                for carr in ["Unlocked", "AT&T"]:
-                    price = walk_quiz(pg, series, model, condition=cond, carrier=carr)
-                    our = max(0, price - DISCOUNT) if price else None
-                    print(f"  {cond:10} {carr:10} IWM=${price} ours=${our}")
+                price = walk_quiz(pg, series, model, condition=cond, carrier="N/A")
+                ours = our_price(price) if price else None
+                print(f"  {cond:10} IWM=${price} ours=${ours}")
             b.close()
     else:
         print("""
