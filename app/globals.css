@@ -219,6 +219,34 @@ body:not(.at-top) nav.sticky { box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35); }
    Sub spec:   muted #A0A0A0 / weight 400.
 */
 
+/* Brand pick card — used on the 'Select your brand' grid. Builds on
+   .tcc-card but with a more visible outline and a stronger 3D depth
+   read so the brand buttons feel like raised tiles instead of flat
+   panels. Pair with .tcc-card on the same button. */
+.tcc-brand-card {
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.10),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 6px 14px rgba(0, 0, 0, 0.45),
+    0 14px 28px rgba(0, 0, 0, 0.35);
+  transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease, background 250ms ease;
+}
+.tcc-brand-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 200, 83, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px rgba(0, 200, 83, 0.18),
+    0 0 18px rgba(0, 200, 83, 0.22),
+    0 18px 32px rgba(0, 0, 0, 0.55);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tcc-brand-card { transition: none; }
+  .tcc-brand-card:hover { transform: none; }
+}
+
 /* Brand-icon tile — uniform chrome around the per-brand SVG glyphs on
    the brand-selector buttons. Modernizes the look of the existing
    circle-based brand logos without rewriting each SVG: a rounded-2xl
