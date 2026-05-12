@@ -1,6 +1,6 @@
 {
   "ip11": {
-    "label": "ip11",
+    "label": "iPhone 11",
     "prices": {
       "128": {
         "broken": 20,
@@ -24,10 +24,10 @@
         "sealed": 124
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip11p": {
-    "label": "ip11p",
+    "label": "iPhone 11 Pro",
     "prices": {
       "256": {
         "broken": 26,
@@ -51,10 +51,10 @@
         "sealed": 124
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip11pm": {
-    "label": "ip11pm",
+    "label": "iPhone 11 Pro Max",
     "prices": {
       "256": {
         "fair": 133,
@@ -75,10 +75,10 @@
         "sealed": 195
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip12": {
-    "label": "ip12",
+    "label": "iPhone 12",
     "prices": {
       "128": {
         "fair": 90,
@@ -99,10 +99,10 @@
         "sealed": 133
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip12mini": {
-    "label": "ip12mini",
+    "label": "iPhone 12 Mini",
     "prices": {
       "128": {
         "fair": 48,
@@ -123,10 +123,10 @@
         "sealed": 104
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip12p": {
-    "label": "ip12p",
+    "label": "iPhone 12 Pro",
     "prices": {
       "128": {
         "fair": 95,
@@ -147,10 +147,10 @@
         "sealed": 218
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip12pm": {
-    "label": "ip12pm",
+    "label": "iPhone 12 Pro Max",
     "prices": {
       "128": {
         "fair": 138,
@@ -171,10 +171,10 @@
         "sealed": 304
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip13": {
-    "label": "ip13",
+    "label": "iPhone 13",
     "prices": {
       "128": {
         "broken": 48,
@@ -201,7 +201,7 @@
         "verygood": 195
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip13mini": {
     "label": "ip13mini",
@@ -228,10 +228,10 @@
         "verygood": 180
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip13p": {
-    "label": "ip13p",
+    "label": "iPhone 13 Pro",
     "prices": {
       "128": {
         "broken": 62,
@@ -266,10 +266,10 @@
         "verygood": 276
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip13pm": {
-    "label": "ip13pm",
+    "label": "iPhone 13 Pro Max",
     "prices": {
       "128": {
         "broken": 81,
@@ -304,10 +304,10 @@
         "verygood": 318
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip14": {
-    "label": "ip14",
+    "label": "iPhone 14",
     "prices": {
       "128": {
         "broken": 57,
@@ -334,10 +334,10 @@
         "verygood": 271
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip14p": {
-    "label": "ip14p",
+    "label": "iPhone 14 Pro",
     "prices": {
       "128": {
         "broken": 119,
@@ -372,10 +372,10 @@
         "verygood": 314
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip14plus": {
-    "label": "ip14plus",
+    "label": "iPhone 14 Plus",
     "prices": {
       "128": {
         "broken": 90,
@@ -402,10 +402,10 @@
         "verygood": 252
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip14pm": {
-    "label": "ip14pm",
+    "label": "iPhone 14 Pro Max",
     "prices": {
       "128": {
         "broken": 152,
@@ -440,10 +440,10 @@
         "verygood": 370
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip15": {
-    "label": "ip15",
+    "label": "iPhone 15",
     "prices": {
       "128": {
         "broken": 95,
@@ -470,10 +470,10 @@
         "verygood": 332
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip15p": {
-    "label": "ip15p",
+    "label": "iPhone 15 Pro",
     "prices": {
       "128": {
         "broken": 180,
@@ -508,10 +508,10 @@
         "verygood": 404
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip15plus": {
-    "label": "ip15plus",
+    "label": "iPhone 15 Plus",
     "prices": {
       "128": {
         "broken": 138,
@@ -538,10 +538,10 @@
         "verygood": 361
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip15pm": {
-    "label": "ip15pm",
+    "label": "iPhone 15 Pro Max",
     "prices": {
       "1tb": {
         "broken": 190,
@@ -568,10 +568,10 @@
         "verygood": 461
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip16": {
-    "label": "ip16",
+    "label": "iPhone 16",
     "prices": {
       "128": {
         "broken": 171,
@@ -598,10 +598,10 @@
         "verygood": 446
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip16e": {
-    "label": "ip16e",
+    "label": "iPhone 16E",
     "prices": {
       "128": {
         "broken": 66,
@@ -628,10 +628,10 @@
         "verygood": 342
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip16p": {
-    "label": "ip16p",
+    "label": "iPhone 16 Pro",
     "prices": {
       "128": {
         "broken": 261,
@@ -666,10 +666,10 @@
         "verygood": 546
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip16plus": {
-    "label": "ip16plus",
+    "label": "iPhone 16 Plus",
     "prices": {
       "128": {
         "broken": 204,
@@ -696,10 +696,10 @@
         "verygood": 489
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip16pm": {
-    "label": "ip16pm",
+    "label": "iPhone 16 Pro Max",
     "prices": {
       "1tb": {
         "broken": 332,
@@ -726,10 +726,10 @@
         "verygood": 641
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip17": {
-    "label": "ip17",
+    "label": "iPhone 17",
     "prices": {
       "256": {
         "broken": 247,
@@ -748,10 +748,10 @@
         "verygood": 613
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip17air": {
-    "label": "ip17air",
+    "label": "iPhone 17 Air",
     "prices": {
       "1tb": {
         "broken": 332,
@@ -778,10 +778,10 @@
         "verygood": 584
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip17e": {
-    "label": "ip17e",
+    "label": "iPhone 17E",
     "prices": {
       "256": {
         "broken": 95,
@@ -800,10 +800,10 @@
         "verygood": 366
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip17p": {
-    "label": "ip17p",
+    "label": "iPhone 17 Pro",
     "prices": {
       "1tb": {
         "broken": 437,
@@ -830,10 +830,10 @@
         "verygood": 803
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ip17pm": {
-    "label": "ip17pm",
+    "label": "iPhone 17 Pro Max",
     "prices": {
       "1tb": {
         "broken": 399,
@@ -868,10 +868,10 @@
         "verygood": 926
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs24": {
-    "label": "gs24",
+    "label": "Galaxy S24",
     "prices": {
       "128": {
         "broken": 50,
@@ -897,10 +897,10 @@
         "verygood": 171
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs24u": {
-    "label": "gs24u",
+    "label": "Galaxy S24 Ultra",
     "prices": {
       "1tb": {
         "broken": 153,
@@ -927,10 +927,10 @@
         "verygood": 387
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs25": {
-    "label": "gs25",
+    "label": "Galaxy S25",
     "prices": {
       "128": {
         "broken": 54,
@@ -957,10 +957,10 @@
         "verygood": 248
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs25p": {
-    "label": "gs25p",
+    "label": "Galaxy S25+",
     "prices": {
       "256": {
         "broken": 72,
@@ -979,10 +979,10 @@
         "verygood": 378
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs25u": {
-    "label": "gs25u",
+    "label": "Galaxy S25 Ultra",
     "prices": {
       "1tb": {
         "broken": 153,
@@ -1009,10 +1009,10 @@
         "verygood": 508
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs26": {
-    "label": "gs26",
+    "label": "Galaxy S26",
     "prices": {
       "256": {
         "broken": 90,
@@ -1031,10 +1031,10 @@
         "verygood": 400
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs26p": {
-    "label": "gs26p",
+    "label": "Galaxy S26+",
     "prices": {
       "256": {
         "broken": 108,
@@ -1053,10 +1053,10 @@
         "verygood": 450
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs26u": {
-    "label": "gs26u",
+    "label": "Galaxy S26 Ultra",
     "prices": {
       "1tb": {
         "broken": 144,
@@ -1083,10 +1083,10 @@
         "verygood": 576
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gzflip5": {
-    "label": "gzflip5",
+    "label": "Galaxy Z Flip 5",
     "prices": {
       "256": {
         "broken": 68,
@@ -1105,10 +1105,10 @@
         "verygood": 171
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gzflip6": {
-    "label": "gzflip6",
+    "label": "Galaxy Z Flip 6",
     "prices": {
       "256": {
         "fair": 158,
@@ -1125,10 +1125,10 @@
         "verygood": 234
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gzflip7": {
-    "label": "gzflip7",
+    "label": "Galaxy Z Flip 7",
     "prices": {
       "256": {
         "broken": 45,
@@ -1147,10 +1147,10 @@
         "verygood": 382
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gzfold5": {
-    "label": "gzfold5",
+    "label": "Galaxy Z Fold 5",
     "prices": {
       "1tb": {
         "broken": 50,
@@ -1177,10 +1177,10 @@
         "verygood": 284
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gzfold6": {
-    "label": "gzfold6",
+    "label": "Galaxy Z Fold 6",
     "prices": {
       "1tb": {
         "broken": 99,
@@ -1207,10 +1207,10 @@
         "verygood": 423
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gzfold7": {
-    "label": "gzfold7",
+    "label": "Galaxy Z Fold 7",
     "prices": {
       "1tb": {
         "broken": 144,
@@ -1237,10 +1237,10 @@
         "verygood": 702
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gztrifold": {
-    "label": "gztrifold",
+    "label": "Galaxy Z TriFold",
     "prices": {
       "1tb": {
         "broken": 189,
@@ -1259,10 +1259,10 @@
         "verygood": 1575
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px10pxl": {
-    "label": "px10pxl",
+    "label": "Pixel 10 Pro XL",
     "prices": {
       "1tb": {
         "broken": 126,
@@ -1289,10 +1289,10 @@
         "verygood": 428
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px10p": {
-    "label": "px10p",
+    "label": "Pixel 10 Pro",
     "prices": {
       "128": {
         "broken": 68,
@@ -1327,10 +1327,10 @@
         "verygood": 414
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px10": {
-    "label": "px10",
+    "label": "Pixel 10",
     "prices": {
       "128": {
         "broken": 68,
@@ -1349,10 +1349,10 @@
         "verygood": 306
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px9pxl": {
-    "label": "px9pxl",
+    "label": "Pixel 9 Pro XL",
     "prices": {
       "128": {
         "broken": 68,
@@ -1387,10 +1387,10 @@
         "verygood": 297
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px9p": {
-    "label": "px9p",
+    "label": "Pixel 9 Pro",
     "prices": {
       "128": {
         "broken": 45,
@@ -1425,10 +1425,10 @@
         "verygood": 234
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px9": {
-    "label": "px9",
+    "label": "Pixel 9",
     "prices": {
       "128": {
         "broken": 40,
@@ -1447,10 +1447,10 @@
         "verygood": 189
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px8p": {
-    "label": "px8p",
+    "label": "Pixel 8 Pro",
     "prices": {
       "128": {
         "broken": 32,
@@ -1485,10 +1485,10 @@
         "verygood": 189
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ps5pro": {
-    "label": "ps5pro",
+    "label": "PlayStation 5 Pro",
     "prices": {
       "base": {
         "broken": 8,
@@ -1499,10 +1499,10 @@
         "verygood": 414
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ps5slim": {
-    "label": "ps5slim",
+    "label": "PlayStation 5 Slim",
     "prices": {
       "base": {
         "broken": 8,
@@ -1513,10 +1513,10 @@
         "verygood": 198
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ps5": {
-    "label": "ps5",
+    "label": "PlayStation 5",
     "prices": {
       "base": {
         "broken": 8,
@@ -1527,7 +1527,7 @@
         "verygood": 212
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "nsw2": {
     "label": "nsw2",
@@ -1540,7 +1540,7 @@
         "sealed": 279
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "nswoled": {
     "label": "nswoled",
@@ -1553,10 +1553,10 @@
         "sealed": 112
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs23u": {
-    "label": "gs23u",
+    "label": "Galaxy S23 Ultra",
     "prices": {
       "1tb": {
         "broken": 33,
@@ -1583,10 +1583,10 @@
         "verygood": 243
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs22": {
-    "label": "gs22",
+    "label": "Galaxy S22",
     "prices": {
       "128": {
         "broken": 18,
@@ -1603,34 +1603,37 @@
         "sealed": 108
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gzflip4": {
-    "label": "gzflip4",
+    "label": "Galaxy Z Flip 4",
     "prices": {
       "128": {
+        "broken": 14,
         "fair": 9,
         "good": 27,
         "mint": 36,
         "sealed": 50
       },
       "256": {
+        "broken": 14,
         "fair": 14,
         "good": 32,
         "mint": 40,
         "sealed": 54
       },
       "512": {
+        "broken": 15,
         "fair": 14,
         "good": 32,
         "mint": 40,
         "sealed": 58
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px8": {
-    "label": "px8",
+    "label": "Pixel 8",
     "prices": {
       "128": {
         "broken": 22,
@@ -1649,10 +1652,10 @@
         "verygood": 140
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs24p": {
-    "label": "gs24p",
+    "label": "Galaxy S24+",
     "prices": {
       "256": {
         "broken": 72,
@@ -1671,10 +1674,10 @@
         "verygood": 248
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs21": {
-    "label": "gs21",
+    "label": "Galaxy S21",
     "prices": {
       "128": {
         "broken": 9,
@@ -1691,10 +1694,10 @@
         "sealed": 86
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px7p": {
-    "label": "px7p",
+    "label": "Pixel 7 Pro",
     "prices": {
       "128": {
         "broken": 22,
@@ -1718,10 +1721,10 @@
         "sealed": 148
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs20": {
-    "label": "gs20",
+    "label": "Galaxy S20",
     "prices": {
       "base": {
         "broken": 14,
@@ -1731,10 +1734,10 @@
         "sealed": 90
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gnote10": {
-    "label": "gnote10",
+    "label": "Galaxy Note 10",
     "prices": {
       "base": {
         "broken": 9,
@@ -1766,10 +1769,10 @@
         "mint": 135
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gnote10p": {
-    "label": "gnote10p",
+    "label": "Galaxy Note 10+",
     "prices": {
       "256": {
         "broken": 38,
@@ -1786,10 +1789,10 @@
         "sealed": 158
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gnote10p5g": {
-    "label": "gnote10p5g",
+    "label": "Galaxy Note 10+ 5G",
     "prices": {
       "256": {
         "broken": 36,
@@ -1806,10 +1809,10 @@
         "sealed": 158
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gnote20": {
-    "label": "gnote20",
+    "label": "Galaxy Note 20 5G",
     "prices": {
       "128": {
         "fair": 68,
@@ -1824,10 +1827,10 @@
         "sealed": 130
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gnote9": {
-    "label": "gnote9",
+    "label": "Galaxy Note 9",
     "prices": {
       "128": {
         "broken": 9,
@@ -1844,10 +1847,10 @@
         "sealed": 113
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs20fe": {
-    "label": "gs20fe",
+    "label": "Galaxy S20 FE",
     "prices": {
       "128": {
         "broken": 14,
@@ -1864,10 +1867,10 @@
         "sealed": 81
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs20p": {
-    "label": "gs20p",
+    "label": "Galaxy S20+",
     "prices": {
       "128": {
         "broken": 14,
@@ -1884,10 +1887,10 @@
         "sealed": 130
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs20u": {
-    "label": "gs20u",
+    "label": "Galaxy S20 Ultra",
     "prices": {
       "128": {
         "broken": 14,
@@ -1911,10 +1914,10 @@
         "sealed": 166
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs21fe": {
-    "label": "gs21fe",
+    "label": "Galaxy S21 FE",
     "prices": {
       "128": {
         "broken": 9,
@@ -1931,10 +1934,10 @@
         "sealed": 72
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs21p": {
-    "label": "gs21p",
+    "label": "Galaxy S21+",
     "prices": {
       "128": {
         "broken": 14,
@@ -1951,10 +1954,10 @@
         "sealed": 118
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs21u": {
-    "label": "gs21u",
+    "label": "Galaxy S21 Ultra",
     "prices": {
       "128": {
         "broken": 22,
@@ -1978,10 +1981,10 @@
         "sealed": 112
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs22p": {
-    "label": "gs22p",
+    "label": "Galaxy S22+",
     "prices": {
       "128": {
         "broken": 22,
@@ -1998,10 +2001,10 @@
         "sealed": 148
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs22u": {
-    "label": "gs22u",
+    "label": "Galaxy S22 Ultra",
     "prices": {
       "128": {
         "broken": 27,
@@ -2032,10 +2035,10 @@
         "sealed": 242
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs23": {
-    "label": "gs23",
+    "label": "Galaxy S23",
     "prices": {
       "128": {
         "broken": 22,
@@ -2062,10 +2065,10 @@
         "verygood": 130
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs23fe": {
-    "label": "gs23fe",
+    "label": "Galaxy S23 FE",
     "prices": {
       "128": {
         "broken": 14,
@@ -2084,10 +2087,10 @@
         "verygood": 76
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs23p": {
-    "label": "gs23p",
+    "label": "Galaxy S23+",
     "prices": {
       "128": {
         "broken": 72,
@@ -2110,10 +2113,10 @@
         "verygood": 180
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs24fe": {
-    "label": "gs24fe",
+    "label": "Galaxy S24 FE",
     "prices": {
       "128": {
         "broken": 22,
@@ -2132,10 +2135,10 @@
         "verygood": 144
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs25edge": {
-    "label": "gs25edge",
+    "label": "Galaxy S25 Edge",
     "prices": {
       "256": {
         "broken": 90,
@@ -2154,10 +2157,10 @@
         "verygood": 310
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gs25fe": {
-    "label": "gs25fe",
+    "label": "Galaxy S25 FE",
     "prices": {
       "128": {
         "broken": 22,
@@ -2180,10 +2183,10 @@
         "sealed": 256
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gzflip3": {
-    "label": "gzflip3",
+    "label": "Galaxy Z Flip 3",
     "prices": {
       "128": {
         "broken": 9,
@@ -2200,10 +2203,10 @@
         "sealed": 68
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gzfold3": {
-    "label": "gzfold3",
+    "label": "Galaxy Z Fold 3",
     "prices": {
       "256": {
         "broken": 18,
@@ -2220,10 +2223,10 @@
         "sealed": 180
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "gzfold4": {
-    "label": "gzfold4",
+    "label": "Galaxy Z Fold 4",
     "prices": {
       "1tb": {
         "broken": 27,
@@ -2250,10 +2253,10 @@
         "verygood": 189
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ipad9": {
-    "label": "ipad9",
+    "label": "iPad 9th Gen",
     "prices": {
       "256": {
         "broken": 13,
@@ -2272,10 +2275,10 @@
         "verygood": 66
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ipadair11m2": {
-    "label": "ipadair11m2",
+    "label": "iPad Air 11\\",
     "prices": {
       "128": {
         "broken": 128,
@@ -2310,10 +2313,10 @@
         "verygood": 337
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ipadair11m3": {
-    "label": "ipadair11m3",
+    "label": "iPad Air 11\\",
     "prices": {
       "128": {
         "broken": 119,
@@ -2348,10 +2351,10 @@
         "verygood": 328
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ipadair13m2": {
-    "label": "ipadair13m2",
+    "label": "iPad Air 13\\",
     "prices": {
       "128": {
         "broken": 100,
@@ -2386,10 +2389,10 @@
         "verygood": 404
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ipadmini6": {
-    "label": "ipadmini6",
+    "label": "iPad Mini 6th Gen",
     "prices": {
       "256": {
         "broken": 40,
@@ -2406,10 +2409,10 @@
         "sealed": 171
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ipadpro11g4": {
-    "label": "ipadpro11g4",
+    "label": "iPad Pro 11\\",
     "prices": {
       "128": {
         "broken": 95,
@@ -2452,10 +2455,10 @@
         "verygood": 385
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ipadpro11m4": {
-    "label": "ipadpro11m4",
+    "label": "iPad Pro 11\\",
     "prices": {
       "1tb": {
         "broken": 285,
@@ -2490,10 +2493,10 @@
         "verygood": 527
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ipadpro11m5": {
-    "label": "ipadpro11m5",
+    "label": "iPad Pro 11\\",
     "prices": {
       "1tb": {
         "broken": 261,
@@ -2528,10 +2531,10 @@
         "verygood": 580
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ipadpro129g6": {
-    "label": "ipadpro129g6",
+    "label": "iPad Pro 12.9\\",
     "prices": {
       "128": {
         "broken": 119,
@@ -2574,10 +2577,10 @@
         "verygood": 399
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ipadpro13m4": {
-    "label": "ipadpro13m4",
+    "label": "iPad Pro 13\\",
     "prices": {
       "1tb": {
         "broken": 238,
@@ -2612,10 +2615,10 @@
         "verygood": 542
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px10a": {
-    "label": "px10a",
+    "label": "Pixel 10a",
     "prices": {
       "128": {
         "broken": 45,
@@ -2634,10 +2637,10 @@
         "verygood": 198
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px5": {
-    "label": "px5",
+    "label": "Pixel 5",
     "prices": {
       "base": {
         "broken": 4,
@@ -2647,22 +2650,23 @@
         "sealed": 54
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px5a": {
-    "label": "px5a",
+    "label": "Pixel 5a (5G)",
     "prices": {
       "base": {
+        "broken": 27,
         "fair": 22,
         "good": 32,
         "mint": 36,
         "sealed": 50
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px6": {
-    "label": "px6",
+    "label": "Pixel 6",
     "prices": {
       "128": {
         "broken": 9,
@@ -2679,10 +2683,10 @@
         "sealed": 99
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px6p": {
-    "label": "px6p",
+    "label": "Pixel 6 Pro",
     "prices": {
       "128": {
         "broken": 14,
@@ -2706,10 +2710,10 @@
         "sealed": 117
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px7": {
-    "label": "px7",
+    "label": "Pixel 7",
     "prices": {
       "128": {
         "broken": 14,
@@ -2726,10 +2730,10 @@
         "sealed": 108
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px7a": {
-    "label": "px7a",
+    "label": "Pixel 7a",
     "prices": {
       "base": {
         "broken": 14,
@@ -2739,10 +2743,10 @@
         "sealed": 99
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px8a": {
-    "label": "px8a",
+    "label": "Pixel 8a",
     "prices": {
       "128": {
         "broken": 18,
@@ -2761,10 +2765,10 @@
         "verygood": 126
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px9a": {
-    "label": "px9a",
+    "label": "Pixel 9a",
     "prices": {
       "128": {
         "broken": 45,
@@ -2783,10 +2787,10 @@
         "verygood": 158
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "px9pfold": {
-    "label": "px9pfold",
+    "label": "Pixel 9 Pro Fold",
     "prices": {
       "256": {
         "broken": 99,
@@ -2805,10 +2809,10 @@
         "verygood": 405
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "pxfold": {
-    "label": "pxfold",
+    "label": "Pixel Fold",
     "prices": {
       "256": {
         "broken": 32,
@@ -2827,10 +2831,10 @@
         "verygood": 180
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "switch": {
-    "label": "switch",
+    "label": "Nintendo Switch OLED",
     "prices": {
       "base": {
         "broken": 21,
@@ -2841,10 +2845,10 @@
         "verygood": 68
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "switchlite": {
-    "label": "switchlite",
+    "label": "Nintendo Switch Lite",
     "prices": {
       "base": {
         "broken": 21,
@@ -2854,10 +2858,10 @@
         "sealed": 68
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "xone": {
-    "label": "xone",
+    "label": "Xbox One",
     "prices": {
       "base": {
         "broken": 21,
@@ -2867,10 +2871,10 @@
         "sealed": 117
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "awu1": {
-    "label": "awu1",
+    "label": "Apple Watch Ultra",
     "prices": {
       "base": {
         "fair": 36,
@@ -2880,10 +2884,10 @@
         "verygood": 108
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "awu2": {
-    "label": "awu2",
+    "label": "Apple Watch Ultra 2",
     "prices": {
       "base": {
         "fair": 90,
@@ -2893,10 +2897,10 @@
         "verygood": 162
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "awu3": {
-    "label": "awu3",
+    "label": "Apple Watch Ultra 3",
     "prices": {
       "base": {
         "broken": 45,
@@ -2907,10 +2911,10 @@
         "verygood": 279
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mba13m3": {
-    "label": "mba13m3",
+    "label": "MacBook Air 13\\",
     "prices": {
       "1tb": {
         "fair": 432,
@@ -2927,10 +2931,10 @@
         "verygood": 706
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mba15m3": {
-    "label": "mba15m3",
+    "label": "MacBook Air 15\\",
     "prices": {
       "1tb": {
         "fair": 472,
@@ -2947,10 +2951,10 @@
         "verygood": 724
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mba_m4_2025": {
-    "label": "mba_m4_2025",
+    "label": "MacBook Air M4 (13\\",
     "prices": {
       "1tb": {
         "fair": 531,
@@ -2967,10 +2971,10 @@
         "verygood": 891
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mba_m5_2026": {
-    "label": "mba_m5_2026",
+    "label": "MacBook Air M5 (13\\",
     "prices": {
       "1tb": {
         "fair": 585,
@@ -2994,10 +2998,10 @@
         "verygood": 1530
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mbp13m1": {
-    "label": "mbp13m1",
+    "label": "MacBook Pro 13\\",
     "prices": {
       "2tb": {
         "fair": 468,
@@ -3007,10 +3011,10 @@
         "verygood": 616
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mbp14m2": {
-    "label": "mbp14m2",
+    "label": "MacBook Pro 14\\",
     "prices": {
       "2tb": {
         "fair": 630,
@@ -3034,10 +3038,10 @@
         "verygood": 1215
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mbp14m3": {
-    "label": "mbp14m3",
+    "label": "MacBook Pro 14\\",
     "prices": {
       "1tb": {
         "fair": 891,
@@ -3075,10 +3079,10 @@
         "verygood": 2700
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mbp16_m5pmax_2026": {
-    "label": "mbp16_m5pmax_2026",
+    "label": "MacBook Pro 16\\",
     "prices": {
       "2tb": {
         "fair": 2340,
@@ -3088,10 +3092,10 @@
         "verygood": 2542
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mbp16m2": {
-    "label": "mbp16m2",
+    "label": "MacBook Pro 16\\",
     "prices": {
       "2tb": {
         "fair": 1215,
@@ -3115,10 +3119,10 @@
         "verygood": 1755
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mbp16m3": {
-    "label": "mbp16m3",
+    "label": "MacBook Pro 16\\",
     "prices": {
       "2tb": {
         "fair": 1350,
@@ -3142,10 +3146,10 @@
         "verygood": 2160
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mbp16m4": {
-    "label": "mbp16m4",
+    "label": "MacBook Pro 16\\",
     "prices": {
       "2tb": {
         "fair": 1935,
@@ -3155,10 +3159,10 @@
         "verygood": 2138
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "xss": {
-    "label": "xss",
+    "label": "Xbox Series S",
     "prices": {
       "base": {
         "broken": 21,
@@ -3177,10 +3181,10 @@
         "verygood": 166
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "aws10": {
-    "label": "aws10",
+    "label": "Apple Watch Series 10",
     "prices": {
       "base": {
         "fair": 18,
@@ -3190,10 +3194,10 @@
         "verygood": 72
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "aws7": {
-    "label": "aws7",
+    "label": "Apple Watch Series 7",
     "prices": {
       "base": {
         "good": 9,
@@ -3202,10 +3206,10 @@
         "verygood": 18
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "aws8": {
-    "label": "aws8",
+    "label": "Apple Watch Series 8",
     "prices": {
       "base": {
         "good": 18,
@@ -3214,10 +3218,10 @@
         "verygood": 27
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "aws9": {
-    "label": "aws9",
+    "label": "Apple Watch Series 9",
     "prices": {
       "base": {
         "fair": 14,
@@ -3227,10 +3231,10 @@
         "verygood": 50
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "awse2": {
-    "label": "awse2",
+    "label": "Apple Watch SE (2nd Gen)",
     "prices": {
       "base": {
         "good": 9,
@@ -3238,10 +3242,10 @@
         "sealed": 40
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mba13m2": {
-    "label": "mba13m2",
+    "label": "MacBook Air 13\\",
     "prices": {
       "1tb": {
         "fair": 310,
@@ -3272,10 +3276,10 @@
         "verygood": 351
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mba15m2": {
-    "label": "mba15m2",
+    "label": "MacBook Air 15\\",
     "prices": {
       "1tb": {
         "fair": 374,
@@ -3306,10 +3310,10 @@
         "verygood": 418
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mbp14_m5_2025": {
-    "label": "mbp14_m5_2025",
+    "label": "MacBook Pro 14\\",
     "prices": {
       "1tb": {
         "fair": 788,
@@ -3340,10 +3344,10 @@
         "verygood": 801
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mbp14_m5pmax_2026": {
-    "label": "mbp14_m5pmax_2026",
+    "label": "MacBook Pro 14\\",
     "prices": {
       "1tb": {
         "fair": 788,
@@ -3374,10 +3378,10 @@
         "verygood": 801
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "mbp14m4": {
-    "label": "mbp14m4",
+    "label": "MacBook Pro 14\\",
     "prices": {
       "1tb": {
         "fair": 765,
@@ -3401,10 +3405,10 @@
         "verygood": 801
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ps4": {
-    "label": "ps4",
+    "label": "PlayStation 4 (Standard)",
     "prices": {
       "base": {
         "broken": 8,
@@ -3414,10 +3418,10 @@
         "sealed": 63
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "ps4pro": {
-    "label": "ps4pro",
+    "label": "PlayStation 4 Pro",
     "prices": {
       "base": {
         "broken": 21,
@@ -3427,12 +3431,13 @@
         "sealed": 135
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "imac24m1": {
-    "label": "imac24m1",
+    "label": "iMac 24\\",
     "prices": {
       "16gbunifiedmemory": {
+        "broken": 360,
         "fair": 279,
         "good": 324,
         "mint": 360,
@@ -3440,6 +3445,7 @@
         "verygood": 342
       },
       "1tb": {
+        "broken": 387,
         "fair": 306,
         "good": 351,
         "mint": 387,
@@ -3447,6 +3453,7 @@
         "verygood": 369
       },
       "256gb": {
+        "broken": 315,
         "fair": 234,
         "good": 279,
         "mint": 315,
@@ -3454,6 +3461,7 @@
         "verygood": 297
       },
       "512gb": {
+        "broken": 351,
         "fair": 270,
         "good": 315,
         "mint": 351,
@@ -3461,6 +3469,7 @@
         "verygood": 333
       },
       "8gbunifiedmemory": {
+        "broken": 315,
         "fair": 234,
         "good": 279,
         "mint": 315,
@@ -3468,12 +3477,13 @@
         "verygood": 297
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "imac24m3": {
-    "label": "imac24m3",
+    "label": "iMac 24\\",
     "prices": {
       "16gbunifiedmemory": {
+        "broken": 405,
         "fair": 261,
         "good": 333,
         "mint": 405,
@@ -3481,6 +3491,7 @@
         "verygood": 369
       },
       "1tb": {
+        "broken": 450,
         "fair": 306,
         "good": 378,
         "mint": 450,
@@ -3488,6 +3499,7 @@
         "verygood": 414
       },
       "24gbunifiedmemory": {
+        "broken": 450,
         "fair": 306,
         "good": 378,
         "mint": 450,
@@ -3495,6 +3507,7 @@
         "verygood": 414
       },
       "256gb": {
+        "broken": 360,
         "fair": 216,
         "good": 288,
         "mint": 360,
@@ -3502,6 +3515,7 @@
         "verygood": 324
       },
       "512gb": {
+        "broken": 405,
         "fair": 261,
         "good": 333,
         "mint": 405,
@@ -3509,6 +3523,7 @@
         "verygood": 369
       },
       "8gbunifiedmemory": {
+        "broken": 360,
         "fair": 216,
         "good": 288,
         "mint": 360,
@@ -3516,12 +3531,13 @@
         "verygood": 324
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "imac24m4": {
-    "label": "imac24m4",
+    "label": "iMac 24\\",
     "prices": {
       "16gbunifiedmemory": {
+        "broken": 518,
         "fair": 315,
         "good": 428,
         "mint": 518,
@@ -3529,6 +3545,7 @@
         "verygood": 472
       },
       "1tb": {
+        "broken": 742,
         "fair": 540,
         "good": 652,
         "mint": 742,
@@ -3536,6 +3553,7 @@
         "verygood": 698
       },
       "24gbunifiedmemory": {
+        "broken": 698,
         "fair": 495,
         "good": 608,
         "mint": 698,
@@ -3543,6 +3561,7 @@
         "verygood": 652
       },
       "256gb": {
+        "broken": 518,
         "fair": 315,
         "good": 428,
         "mint": 518,
@@ -3550,6 +3569,7 @@
         "verygood": 472
       },
       "512gb": {
+        "broken": 630,
         "fair": 428,
         "good": 540,
         "mint": 630,
@@ -3557,12 +3577,13 @@
         "verygood": 585
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "macminim1": {
-    "label": "macminim1",
+    "label": "Mac Mini M1",
     "prices": {
       "1tb": {
+        "broken": 360,
         "fair": 315,
         "good": 342,
         "mint": 360,
@@ -3570,6 +3591,7 @@
         "verygood": 351
       },
       "256gb": {
+        "broken": 292,
         "fair": 248,
         "good": 274,
         "mint": 292,
@@ -3577,6 +3599,7 @@
         "verygood": 284
       },
       "2tb": {
+        "broken": 405,
         "fair": 360,
         "good": 387,
         "mint": 405,
@@ -3584,6 +3607,7 @@
         "verygood": 396
       },
       "512gb": {
+        "broken": 315,
         "fair": 270,
         "good": 297,
         "mint": 315,
@@ -3591,12 +3615,13 @@
         "verygood": 306
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "macminim2": {
-    "label": "macminim2",
+    "label": "Mac Mini M2",
     "prices": {
       "16gbunifiedmemory": {
+        "broken": 360,
         "fair": 243,
         "good": 297,
         "mint": 360,
@@ -3604,6 +3629,7 @@
         "verygood": 338
       },
       "1tb": {
+        "broken": 382,
         "fair": 266,
         "good": 320,
         "mint": 382,
@@ -3611,6 +3637,7 @@
         "verygood": 360
       },
       "24gbunifiedmemory": {
+        "broken": 405,
         "fair": 288,
         "good": 342,
         "mint": 405,
@@ -3618,6 +3645,7 @@
         "verygood": 382
       },
       "256gb": {
+        "broken": 315,
         "fair": 198,
         "good": 252,
         "mint": 315,
@@ -3625,6 +3653,7 @@
         "verygood": 292
       },
       "2tb": {
+        "broken": 450,
         "fair": 333,
         "good": 387,
         "mint": 450,
@@ -3632,6 +3661,7 @@
         "verygood": 428
       },
       "512gb": {
+        "broken": 346,
         "fair": 230,
         "good": 284,
         "mint": 346,
@@ -3639,6 +3669,7 @@
         "verygood": 324
       },
       "8gbunifiedmemory": {
+        "broken": 315,
         "fair": 198,
         "good": 252,
         "mint": 315,
@@ -3646,12 +3677,13 @@
         "verygood": 292
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "macminim4": {
-    "label": "macminim4",
+    "label": "Mac Mini M4",
     "prices": {
       "16gbunifiedmemory": {
+        "broken": 472,
         "fair": 356,
         "good": 410,
         "mint": 472,
@@ -3659,6 +3691,7 @@
         "verygood": 450
       },
       "1tb": {
+        "broken": 742,
         "fair": 626,
         "good": 680,
         "mint": 742,
@@ -3666,6 +3699,7 @@
         "verygood": 720
       },
       "24gbunifiedmemory": {
+        "broken": 652,
         "fair": 536,
         "good": 590,
         "mint": 652,
@@ -3673,6 +3707,7 @@
         "verygood": 630
       },
       "256gb": {
+        "broken": 472,
         "fair": 356,
         "good": 410,
         "mint": 472,
@@ -3680,6 +3715,7 @@
         "verygood": 450
       },
       "2tb": {
+        "broken": 1012,
         "fair": 896,
         "good": 950,
         "mint": 1012,
@@ -3687,6 +3723,7 @@
         "verygood": 990
       },
       "32gbunifiedmemory": {
+        "broken": 832,
         "fair": 716,
         "good": 770,
         "mint": 832,
@@ -3694,6 +3731,7 @@
         "verygood": 810
       },
       "512gb": {
+        "broken": 608,
         "fair": 490,
         "good": 544,
         "mint": 608,
@@ -3701,12 +3739,13 @@
         "verygood": 585
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "macstudiom2m": {
-    "label": "macstudiom2m",
+    "label": "Mac Studio M2 Max",
     "prices": {
       "1tb": {
+        "broken": 1215,
         "fair": 675,
         "good": 796,
         "mint": 945,
@@ -3714,6 +3753,7 @@
         "verygood": 891
       },
       "2tb": {
+        "broken": 1350,
         "fair": 810,
         "good": 932,
         "mint": 1080,
@@ -3721,6 +3761,7 @@
         "verygood": 1026
       },
       "32gbunifiedmemory": {
+        "broken": 1080,
         "fair": 540,
         "good": 662,
         "mint": 810,
@@ -3728,6 +3769,7 @@
         "verygood": 756
       },
       "4tb": {
+        "broken": 1620,
         "fair": 1080,
         "good": 1202,
         "mint": 1350,
@@ -3735,6 +3777,7 @@
         "verygood": 1296
       },
       "512gb": {
+        "broken": 1080,
         "fair": 540,
         "good": 662,
         "mint": 810,
@@ -3742,6 +3785,7 @@
         "verygood": 756
       },
       "64gbunifiedmemory": {
+        "broken": 1395,
         "fair": 855,
         "good": 976,
         "mint": 1125,
@@ -3749,6 +3793,7 @@
         "verygood": 1071
       },
       "8tb": {
+        "broken": 1800,
         "fair": 1260,
         "good": 1382,
         "mint": 1530,
@@ -3756,12 +3801,13 @@
         "verygood": 1476
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "macstudiom4m": {
-    "label": "macstudiom4m",
+    "label": "Mac Studio M4 Max",
     "prices": {
       "1tb": {
+        "broken": 2250,
         "fair": 1665,
         "good": 1822,
         "mint": 1980,
@@ -3769,6 +3815,7 @@
         "verygood": 1912
       },
       "2tb": {
+        "broken": 2475,
         "fair": 1890,
         "good": 2048,
         "mint": 2205,
@@ -3776,6 +3823,7 @@
         "verygood": 2138
       },
       "36gbunifiedmemory": {
+        "broken": 2025,
         "fair": 1440,
         "good": 1598,
         "mint": 1755,
@@ -3783,6 +3831,7 @@
         "verygood": 1688
       },
       "4tb": {
+        "broken": 2745,
         "fair": 2160,
         "good": 2318,
         "mint": 2475,
@@ -3790,6 +3839,7 @@
         "verygood": 2408
       },
       "512gb": {
+        "broken": 2025,
         "fair": 1440,
         "good": 1598,
         "mint": 1755,
@@ -3797,6 +3847,7 @@
         "verygood": 1688
       },
       "8tb": {
+        "broken": 3105,
         "fair": 2520,
         "good": 2678,
         "mint": 2835,
@@ -3804,10 +3855,10 @@
         "verygood": 2768
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "pw2": {
-    "label": "pw2",
+    "label": "Pixel Watch 2",
     "prices": {
       "base": {
         "fair": 4,
@@ -3816,10 +3867,10 @@
         "sealed": 32
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "pw3": {
-    "label": "pw3",
+    "label": "Pixel Watch 3",
     "prices": {
       "pixelwatch3bluetoothwifi": {
         "fair": 4,
@@ -3835,7 +3886,7 @@
         "sealed": 58
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "pw4": {
     "label": "pw4",
@@ -3856,47 +3907,52 @@
         "verygood": 99
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "sgw7": {
-    "label": "sgw7",
+    "label": "Galaxy Watch 7",
     "prices": {
       "bluetoothwifi": {
+        "broken": 18,
         "good": 9,
         "mint": 18,
         "sealed": 32
       },
       "bluetoothwifi4glte": {
+        "broken": 22,
         "fair": 4,
         "good": 14,
         "mint": 22,
         "sealed": 36
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "sgw8": {
     "label": "sgw8",
     "prices": {
       "bluetoothwifi": {
+        "broken": 63,
         "fair": 18,
         "good": 45,
         "mint": 63,
         "sealed": 86
       },
       "bluetoothwifi4glte": {
+        "broken": 72,
         "fair": 27,
         "good": 54,
         "mint": 72,
         "sealed": 94
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "sgw8c": {
     "label": "sgw8c",
     "prices": {
       "bluetoothwifi": {
+        "broken": 99,
         "fair": 54,
         "good": 76,
         "mint": 99,
@@ -3904,6 +3960,7 @@
         "verygood": 90
       },
       "bluetoothwifi4glte": {
+        "broken": 108,
         "fair": 63,
         "good": 86,
         "mint": 108,
@@ -3911,10 +3968,10 @@
         "verygood": 99
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "sgwu": {
-    "label": "sgwu",
+    "label": "Galaxy Watch Ultra",
     "prices": {
       "base": {
         "fair": 22,
@@ -3924,7 +3981,7 @@
         "verygood": 76
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "sgwu25": {
     "label": "sgwu25",
@@ -3937,10 +3994,10 @@
         "verygood": 130
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "switchv2": {
-    "label": "switchv2",
+    "label": "Nintendo Switch V2",
     "prices": {
       "base": {
         "broken": 21,
@@ -3951,10 +4008,10 @@
         "verygood": 68
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "xsx": {
-    "label": "xsx",
+    "label": "Xbox Series X",
     "prices": {
       "1tb": {
         "broken": 8,
@@ -3973,10 +4030,10 @@
         "verygood": 252
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "macminim4p": {
-    "label": "macminim4p",
+    "label": "Mac Mini M4 Pro",
     "prices": {
       "1tb": {
         "fair": 626,
@@ -4007,10 +4064,10 @@
         "verygood": 585
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "macprom2u": {
-    "label": "macprom2u",
+    "label": "Mac Pro M2 Ultra",
     "prices": {
       "1tb": {
         "fair": 2340,
@@ -4041,10 +4098,10 @@
         "verygood": 3510
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "macstudiom2u": {
-    "label": "macstudiom2u",
+    "label": "Mac Studio M2 Ultra",
     "prices": {
       "1tb": {
         "fair": 675,
@@ -4082,10 +4139,10 @@
         "verygood": 1476
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "macstudiom4u": {
-    "label": "macstudiom4u",
+    "label": "Mac Studio M4 Ultra",
     "prices": {
       "1tb": {
         "fair": 1665,
@@ -4123,10 +4180,10 @@
         "verygood": 2768
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   },
   "pw1": {
-    "label": "pw1",
+    "label": "Pixel Watch",
     "prices": {
       "base": {
         "fair": 4,
@@ -4135,6 +4192,6 @@
         "sealed": 32
       }
     },
-    "updated": "2026-05-12 10:48"
+    "updated": "2026-05-12 10:41"
   }
 }
