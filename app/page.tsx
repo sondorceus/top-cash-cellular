@@ -5509,31 +5509,76 @@ export default function Home() {
               </>
             )}
 
-            {/* Samsung Galaxy: variants of the picked series */}
+            {/* Samsung Galaxy: variants of the picked series — grouped by
+                sub-category (Ultra / Plus / Base / FE etc) with section
+                dividers between groups so each tab feels organized. */}
             {deviceType === "android" && selectedSeries && (() => {
               const ser = SAMSUNG_SERIES.find(s => s.id === selectedSeries);
+              type V = typeof models[number];
+              const matchById = (prefixes: string[]) =>
+                (m: V) => prefixes.some(p => m.id.startsWith(p));
+              const inGroup = (m: V, ids: string[]) => ids.includes(m.id);
+              const filter = (test: (m: V) => boolean) => models.filter(test);
+              const groups: { label: string; variants: V[] }[] = (() => {
+                if (selectedSeries === "sseries") {
+                  return [
+                    { label: "Ultra",        variants: filter(m => /^gs\d+u$/.test(m.id)) },
+                    { label: "Edge",         variants: filter(m => m.id.endsWith("edge")) },
+                    { label: "Plus",         variants: filter(m => /^gs\d+p$/.test(m.id)) },
+                    { label: "Standard",     variants: filter(m => /^gs\d+$/.test(m.id)) },
+                    { label: "Fan Edition",  variants: filter(m => m.id.endsWith("fe")) },
+                  ];
+                }
+                if (selectedSeries === "zseries") {
+                  return [
+                    { label: "TriFold", variants: filter(m => inGroup(m, ["gztrifold"])) },
+                    { label: "Z Fold",  variants: filter(matchById(["gzfold"])) },
+                    { label: "Z Flip",  variants: filter(matchById(["gzflip"])) },
+                  ];
+                }
+                if (selectedSeries === "noteseries") {
+                  return [
+                    { label: "Note 20", variants: filter(m => m.id === "gnote20u" || m.id === "gnote20") },
+                    { label: "Note 10", variants: filter(m => m.id === "gnote10p5g" || m.id === "gnote10p" || m.id === "gnote10") },
+                    { label: "Note 9",  variants: filter(m => m.id === "gnote9") },
+                  ];
+                }
+                return [{ label: "", variants: models }];
+              })().filter(g => g.variants.length > 0);
               return (
                 <>
                   <h2 className="text-2xl font-bold mb-1">{ser?.label}</h2>
                   <p className="text-[#e6e6e6] text-sm mb-4">{ser?.year}</p>
-                  <div className="space-y-2">
-                    {models.map((m) => {
-                      const mImage = (m as { image?: string }).image;
-                      return (
-                        <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                          {mImage ? (
-                            <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
-                          ) : (
-                            <div className="w-10 h-10 shrink-0" />
-                          )}
-                          <p className="font-semibold text-[15px] flex-1">{m.label}</p>
-                          <div className="flex items-center gap-2">
-                            <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m, deviceType)}</span>
-                            <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  <div className="space-y-5">
+                    {groups.map((g, gi) => (
+                      <div key={g.label || gi}>
+                        {g.label && (
+                          <div className="flex items-center gap-3 mb-2">
+                            <p className="text-[10px] font-extrabold tracking-[0.22em] uppercase text-[#00c853]">{g.label}</p>
+                            <div className="flex-1 h-px bg-gradient-to-r from-[#00c853]/40 via-white/15 to-transparent" />
                           </div>
-                        </button>
-                      );
-                    })}
+                        )}
+                        <div className="space-y-2">
+                          {g.variants.map((m) => {
+                            const mImage = (m as { image?: string }).image;
+                            return (
+                              <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                                {mImage ? (
+                                  <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
+                                ) : (
+                                  <div className="w-10 h-10 shrink-0" />
+                                )}
+                                <p className="font-semibold text-[15px] flex-1">{m.label}</p>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m, deviceType)}</span>
+                                  <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </>
               );
