@@ -2946,6 +2946,19 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
   ],
   // Smartwatches — band makes a big resale difference
   applewatch: [
+    { id: "material", question: "Case material?", helper: "Check the back of your watch or Settings > General > About.", options: [
+      { id: "aluminum",  label: "Aluminum",        multiplier: 1.00 },
+      { id: "stainless", label: "Stainless Steel",  multiplier: 1.15 },
+      { id: "titanium",  label: "Titanium",         multiplier: 1.40 },
+    ]},
+    { id: "connectivity", question: "GPS or GPS + Cellular?", helper: "Cellular models have a red ring on the Digital Crown (or orange on Ultra).", options: [
+      { id: "gps",      label: "GPS only",          multiplier: 1.00 },
+      { id: "cellular", label: "GPS + Cellular",    multiplier: 1.10 },
+    ]},
+    { id: "size", question: "Case size?", helper: "Check Settings > General > About, or measure the case height.", options: [
+      { id: "small", label: "Small (40-42mm)",       multiplier: 1.00 },
+      { id: "large", label: "Large (44-46mm)",       multiplier: 1.05 },
+    ]},
     { id: "band", question: "Band included?", options: [
       { id: "oem",   label: "Yes — original Apple band",   multiplier: 1.05 },
       { id: "third", label: "Yes — 3rd-party band",        multiplier: 1.00 },
@@ -2953,6 +2966,14 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
     ]},
   ],
   samsungwatch: [
+    { id: "connectivity", question: "Bluetooth only or LTE?", helper: "LTE models can make calls without your phone nearby.", options: [
+      { id: "bt",  label: "Bluetooth only",  multiplier: 1.00 },
+      { id: "lte", label: "LTE (Cellular)",  multiplier: 1.10 },
+    ]},
+    { id: "size", question: "Case size?", options: [
+      { id: "small", label: "Small (40-43mm)", multiplier: 1.00 },
+      { id: "large", label: "Large (44-47mm)", multiplier: 1.05 },
+    ]},
     { id: "band", question: "Band included?", options: [
       { id: "oem",   label: "Yes — original Samsung band", multiplier: 1.05 },
       { id: "third", label: "Yes — 3rd-party band",        multiplier: 1.00 },
@@ -2960,6 +2981,14 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
     ]},
   ],
   pixelwatch: [
+    { id: "connectivity", question: "Wi-Fi or LTE?", options: [
+      { id: "wifi", label: "Wi-Fi / Bluetooth only", multiplier: 1.00 },
+      { id: "lte",  label: "LTE (Cellular)",         multiplier: 1.10 },
+    ]},
+    { id: "size", question: "Case size?", options: [
+      { id: "small", label: "Small (41mm)",  multiplier: 1.00 },
+      { id: "large", label: "Large (45mm)",  multiplier: 1.05 },
+    ]},
     { id: "band", question: "Band included?", options: [
       { id: "oem",   label: "Yes — original Google band",  multiplier: 1.05 },
       { id: "third", label: "Yes — 3rd-party band",        multiplier: 1.00 },
