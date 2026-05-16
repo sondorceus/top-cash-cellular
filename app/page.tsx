@@ -4881,11 +4881,23 @@ export default function Home() {
   // carrier — only condition -> quote (2 steps).
   const isPhoneFlow = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
   const isIpadFlow = deviceType === "ipad";
+  // PC laptops follow a laptop-shaped flow: condition → battery → charger
+  // → quote. The phone-style "storage + carrier" pair from the generic
+  // funnel asks the wrong questions for these devices (no carrier on a
+  // laptop, and base prices come from IWM scrape at max-config Flawless
+  // already so the per-storage delta is small — defer that to V2).
+  // MacBook (deviceType="macbook") has its own additive specs flow and is
+  // intentionally excluded here.
+  const isPcLaptopFlow =
+    deviceType === "lenovo" || deviceType === "hp" || deviceType === "dell" ||
+    deviceType === "alienware" || deviceType === "asus_pc" || deviceType === "acer" ||
+    deviceType === "samsung_pc" || deviceType === "lg_pc";
   const isNoStorageDevice =
     deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" ||
     deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch" ||
     deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" ||
-    deviceType === "dji";
+    deviceType === "dji" ||
+    isPcLaptopFlow;
   // Carrier-lock step only fires for Verizon (only carrier with a real
   // 60-day lock policy worth asking about). Other carriers skip it and
   // are treated as unlocked. This makes the funnel one step shorter for
@@ -4907,15 +4919,18 @@ export default function Home() {
   const macSpecExtrasCount = macSpecFlow ? getBrandExtras(deviceType, model?.id).length : 0;
   const funnelTotal = macSpecFlow
     ? ((macHasGlassStep ? 7 : 6) + macSpecExtrasCount)
-    : isNoStorageDevice
-      ? 2
-      : isPhoneFlow
-        ? (carrierAsksLock ? 5 : 4)
-        : isIpadCellular
-          ? (carrierAsksLock ? 6 : 5)
-          : isIpadFlow
-            ? 4
-            : 3;
+    // PC laptops: condition → battery → charger → quote (4 incl. quote)
+    : isPcLaptopFlow
+      ? 4
+      : isNoStorageDevice
+        ? 2
+        : isPhoneFlow
+          ? (carrierAsksLock ? 5 : 4)
+          : isIpadCellular
+            ? (carrierAsksLock ? 6 : 5)
+            : isIpadFlow
+              ? 4
+              : 3;
   const _chargerStepN = macHasGlassStep ? 7 : 6;
   const funnelStepNum = macSpecFlow ? (
     step === "processor" ? 1 :
@@ -4926,6 +4941,11 @@ export default function Home() {
     step === "batteryhealth" ? (macHasGlassStep ? 6 : 5) :
     step === "charger" ? _chargerStepN :
     step === "extras" ? (_chargerStepN + 1) :
+    step === "quote" ? funnelTotal : 0
+  ) : isPcLaptopFlow ? (
+    step === "condition" ? 1 :
+    step === "batteryhealth" ? 2 :
+    step === "charger" ? 3 :
     step === "quote" ? funnelTotal : 0
   ) : (
     step === "condition" ? 1 :
@@ -8739,6 +8759,13 @@ export default function Home() {
                       }
                       return;
                     }
+                    // PC laptops: skip storage/carrier (base price = IWM
+                    // Flawless × 0.90 at max config), route through battery
+                    // and charger like a MacBook.
+                    if (isPcLaptopFlow) {
+                      setStep("batteryhealth"); pushHistory("batteryhealth");
+                      return;
+                    }
                     // Brand-specific extras (PS5 disc drive, DJI hours flown,
                     // smartwatch band etc) fire BEFORE the quote so the
                     // pricing reflects them.
@@ -8852,6 +8879,10 @@ export default function Home() {
                       } else {
                         setStep("batteryhealth"); pushHistory("batteryhealth");
                       }
+                      return;
+                    }
+                    if (isPcLaptopFlow) {
+                      setStep("batteryhealth"); pushHistory("batteryhealth");
                       return;
                     }
                     if (getBrandExtras(deviceType, model?.id).length > 0) {
