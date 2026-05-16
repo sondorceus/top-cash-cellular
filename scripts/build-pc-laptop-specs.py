@@ -32,6 +32,11 @@ MANUAL_IMAGE_TO_SLUG = {
     "/devices/ln_tp_e16_g3.png": "lenovo-thinkpad-e16-gen-3",
     "/devices/ln_tp_e16_g2.png": "lenovo-thinkpad-e16-gen-2",
     "/devices/ln_tp_e16_g1.png": "lenovo-thinkpad-e16-gen-1",
+    # IWM dropped the 'i' on Pro variants (lenovo-legion-7-pro covers both
+    # 7 and 7i Pro; same for Slim 7 Pro X). Override the bridge slug so
+    # those page variants resolve to the priced IWM SKU.
+    "/devices/lenovo-legion-lenovo-legion-7i-pro.png": "lenovo-legion-7-pro",
+    "/devices/lenovo-slim-lenovo-slim-7i-pro-x.png": "lenovo-slim-7-pro-x",
 }
 
 # Page-variant-id → IWM model slug for brands without proper bridges
@@ -82,7 +87,7 @@ MANUAL_ID_TO_SLUG = {
 
 
 def build_image_to_slug():
-    img_to_slug = dict(MANUAL_IMAGE_TO_SLUG)
+    img_to_slug = {}
     for brand in ("lenovo", "hp", "asus"):
         for e in json.load(open(BRIDGES[brand])):
             slug = e.get("model_slug")
@@ -96,6 +101,11 @@ def build_image_to_slug():
         prefix = f"dell_{sub}_"
         if img and bid.startswith(prefix):
             img_to_slug[img] = bid[len(prefix):]
+    # Apply manual overrides AFTER bridges so they always win
+    # (used when IWM SKU naming diverges from Lenovo / Dell catalog
+    # naming — e.g. Legion 7i Pro lives under IWM lenovo-legion-7-pro
+    # because IWM doesn't split Intel/AMD pro variants).
+    img_to_slug.update(MANUAL_IMAGE_TO_SLUG)
     return img_to_slug
 
 

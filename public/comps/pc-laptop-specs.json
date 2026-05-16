@@ -35221,6 +35221,132 @@
       }
     ]
   },
+  "ln_legion_7i_pro": {
+    "base_price": 1200,
+    "battery_adj": {
+      "good": 0,
+      "poor": -120
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -375,
+      "good": -140,
+      "mint": 0,
+      "sealed": 40,
+      "verygood": -65
+    },
+    "display": [],
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5070_ti",
+        "label": "NVIDIA GeForce RTX 5070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_geforce_rtx_5080",
+        "label": "NVIDIA GeForce RTX 5080",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 1200,
+        "id": "amd_ryzen_9_7945hx",
+        "label": "AMD Ryzen 9 7945HX",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 1400,
+        "id": "amd_ryzen_9_9955hx",
+        "label": "AMD Ryzen 9 9955HX",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 75,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
   "ln_legion_slim_5": {
     "base_price": 480,
     "battery_adj": {
@@ -36998,6 +37124,88 @@
         "adj": 30,
         "id": "1tb",
         "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_slim_7i_pro_x": {
+    "base_price": 400,
+    "battery_adj": {
+      "good": 0,
+      "poor": -80
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -130,
+      "good": -60,
+      "mint": 0,
+      "sealed": 25
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 400,
+        "id": "amd_ryzen_7_6800hs",
+        "label": "AMD Ryzen 7 6800HS",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 450,
+        "id": "amd_ryzen_9_6900hs",
+        "label": "AMD Ryzen 9 6900HS",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 25,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "2tb",
+        "label": "2TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
