@@ -1567,10 +1567,10 @@ const HP_ELITEBOOK_SUB_SERIES = [
   { id: "hp_eb_ultra", label: "EliteBook Ultra", year: "Premium ultraportable", topPrice: 0, variants: HP_ELITEBOOK_ULTRA_VARIANTS, inquiryOnly: true, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1q.png" },
 ];
 const HP_ENVY_VARIANTS = [
-  { id: "hp_envy_13", label: "Envy 13", base: 0, inquiryOnly: true, image: "/devices/hp-envy-hp-envy-13.png" },
-  { id: "hp_envy_15", label: "Envy 15", base: 1, image: "/devices/hp-envy-hp-envy-15.png" },
-  { id: "hp_envy_17", label: "Envy 17", base: 0, inquiryOnly: true, image: "/devices/hp-envy-hp-envy-17.png" },
-  { id: "hp_envy_x360", label: "Envy x360", base: 1, image: "/devices/hp-envy-hp-envy-x360.png" },
+  { id: "hp_envy_13", label: "Envy 13", base: 58, inquiryOnly: false, image: "/devices/hp-envy-hp-envy-13.png" },
+  { id: "hp_envy_15", label: "Envy 15", base: 45, inquiryOnly: false, image: "/devices/hp-envy-hp-envy-15.png" },
+  { id: "hp_envy_17", label: "Envy 17", base: 72, inquiryOnly: false, image: "/devices/hp-envy-hp-envy-17.png" },
+  { id: "hp_envy_x360", label: "Envy x360", base: 243, inquiryOnly: false, image: "/devices/hp-envy-hp-envy-x360.png" },
 ];
 const HP_OMEN_STD_VARIANTS = [
   { id: "hp_omen_17", label: "OMEN 17", base: 796, inquiryOnly: false, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
@@ -1602,45 +1602,45 @@ const HP_OMNIBOOK_VARIANTS = [
   { id: "hp_omni_3", label: "OmniBook 3", base: 306, inquiryOnly: false, image: "/devices/hp-omnibook-hp-omnibook-3.png" },
 ];
 const HP_PAVILION_VARIANTS = [
-  { id: "hp_pav_gaming", label: "Pavilion Gaming", base: 0, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-gaming.png" },
-  { id: "hp_pav_14", label: "Pavilion 14", base: 0, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-14.png" },
-  { id: "hp_pav_15", label: "Pavilion 15", base: 0, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-15.png" },
-  { id: "hp_pav_16", label: "Pavilion 16", base: 0, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-16.png" },
-  { id: "hp_pav_x360", label: "Pavilion x360", base: 0, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-x360.png" },
+  { id: "hp_pav_gaming", label: "Pavilion Gaming", base: 112, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-gaming.png" },
+  { id: "hp_pav_14", label: "Pavilion 14", base: 45, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-14.png" },
+  { id: "hp_pav_15", label: "Pavilion 15", base: 58, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-15.png" },
+  { id: "hp_pav_16", label: "Pavilion 16", base: 194, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-16.png" },
+  { id: "hp_pav_x360", label: "Pavilion x360", base: 76, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-x360.png" },
 ];
 const HP_PROBOOK_VARIANTS = [
-  { id: "hp_pb_g11", label: "ProBook G11", base: 1, image: "/devices/hp-probook-hp-probook-g11.png" },
-  { id: "hp_pb_g10", label: "ProBook G10", base: 1, image: "/devices/hp-probook-hp-probook-g10.png" },
-  { id: "hp_pb_g9", label: "ProBook G9", base: 1, image: "/devices/hp-probook-hp-probook-g9.png" },
-  { id: "hp_pb_g8", label: "ProBook G8", base: 1, image: "/devices/hp-probook-hp-probook-g8.png" },
-  { id: "hp_pb_g7", label: "ProBook G7", base: 1, image: "/devices/hp-probook-hp-probook-g7.png" },
-  { id: "hp_pb_g6", label: "ProBook G6", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g6.png" },
-  { id: "hp_pb_g5", label: "ProBook G5", base: 0, inquiryOnly: true, image: "/devices/hp-probook-hp-probook-g5.png" },
+  { id: "hp_pb_g11", label: "ProBook G11", base: 297, inquiryOnly: false, image: "/devices/hp-probook-hp-probook-g11.png" },
+  { id: "hp_pb_g10", label: "ProBook G10", base: 230, inquiryOnly: false, image: "/devices/hp-probook-hp-probook-g10.png" },
+  { id: "hp_pb_g9", label: "ProBook G9", base: 153, inquiryOnly: false, image: "/devices/hp-probook-hp-probook-g9.png" },
+  { id: "hp_pb_g8", label: "ProBook G8", base: 140, inquiryOnly: false, image: "/devices/hp-probook-hp-probook-g8.png" },
+  { id: "hp_pb_g7", label: "ProBook G7", base: 108, inquiryOnly: false, image: "/devices/hp-probook-hp-probook-g7.png" },
+  { id: "hp_pb_g6", label: "ProBook G6", base: 68, inquiryOnly: false, image: "/devices/hp-probook-hp-probook-g6.png" },
+  { id: "hp_pb_g5", label: "ProBook G5", base: 40, inquiryOnly: false, image: "/devices/hp-probook-hp-probook-g5.png" },
 ];
 const HP_SPECTRE_VARIANTS = [
-  { id: "hp_spec_13", label: "Spectre x360 13", base: 1, image: "/devices/hp-spectre-hp-spectre-13-x360.png" },
-  { id: "hp_spec_14", label: "Spectre x360 14", base: 1, image: "/devices/hp-spectre-hp-spectre-14-x360.png" },
-  { id: "hp_spec_15", label: "Spectre x360 15", base: 1, image: "/devices/hp-spectre-hp-spectre-15-x360.png" },
-  { id: "hp_spec_16", label: "Spectre x360 16", base: 1, image: "/devices/hp-spectre-hp-spectre-16-x360.png" },
+  { id: "hp_spec_13", label: "Spectre x360 13", base: 158, inquiryOnly: false, image: "/devices/hp-spectre-hp-spectre-13-x360.png" },
+  { id: "hp_spec_14", label: "Spectre x360 14", base: 225, inquiryOnly: false, image: "/devices/hp-spectre-hp-spectre-14-x360.png" },
+  { id: "hp_spec_15", label: "Spectre x360 15", base: 189, inquiryOnly: false, image: "/devices/hp-spectre-hp-spectre-15-x360.png" },
+  { id: "hp_spec_16", label: "Spectre x360 16", base: 248, inquiryOnly: false, image: "/devices/hp-spectre-hp-spectre-16-x360.png" },
 ];
 const HP_VICTUS_VARIANTS = [
   { id: "hp_victus_15", label: "Victus 15", base: 0, inquiryOnly: true, image: "/devices/hp_victus_15.png" },
   { id: "hp_victus_16", label: "Victus 16", base: 0, inquiryOnly: true, image: "/devices/hp_victus_16.png" },
 ];
 const HP_ZBOOK_VARIANTS = [
-  { id: "hp_zb_g11", label: "ZBook G11", base: 1, image: "/devices/hp-zbook-hp-zbook-g11.png" },
-  { id: "hp_zb_g10", label: "ZBook G10", base: 1, image: "/devices/hp-zbook-hp-zbook-g10.png" },
-  { id: "hp_zb_g9", label: "ZBook G9", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g9.png" },
-  { id: "hp_zb_g8", label: "ZBook G8", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g8.png" },
-  { id: "hp_zb_g7", label: "ZBook G7", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g7.png" },
-  { id: "hp_zb_g6", label: "ZBook G6", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g6.png" },
-  { id: "hp_zb_g5", label: "ZBook G5", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g5.png" },
-  { id: "hp_zb_g4", label: "ZBook G4", base: 0, inquiryOnly: true, image: "/devices/hp-zbook-hp-zbook-g4.png" },
+  { id: "hp_zb_g11", label: "ZBook G11", base: 900, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g11.png" },
+  { id: "hp_zb_g10", label: "ZBook G10", base: 810, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g10.png" },
+  { id: "hp_zb_g9", label: "ZBook G9", base: 729, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g9.png" },
+  { id: "hp_zb_g8", label: "ZBook G8", base: 518, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g8.png" },
+  { id: "hp_zb_g7", label: "ZBook G7", base: 338, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g7.png" },
+  { id: "hp_zb_g6", label: "ZBook G6", base: 248, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g6.png" },
+  { id: "hp_zb_g5", label: "ZBook G5", base: 153, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g5.png" },
+  { id: "hp_zb_g4", label: "ZBook G4", base: 54, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g4.png" },
 ];
 const HP_NOTEBOOK_VARIANTS = [
-  { id: "hp_nb_14", label: "Notebook 14", base: 0, inquiryOnly: true, image: "/devices/hp-notebook-hp-notebook-14.png" },
-  { id: "hp_nb_15", label: "Notebook 15", base: 0, inquiryOnly: true, image: "/devices/hp-notebook-hp-notebook-15.png" },
-  { id: "hp_nb_17", label: "Notebook 17", base: 0, inquiryOnly: true, image: "/devices/hp-notebook-hp-notebook-17.png" },
+  { id: "hp_nb_14", label: "Notebook 14", base: 45, inquiryOnly: false, image: "/devices/hp-notebook-hp-notebook-14.png" },
+  { id: "hp_nb_15", label: "Notebook 15", base: 40, inquiryOnly: false, image: "/devices/hp-notebook-hp-notebook-15.png" },
+  { id: "hp_nb_17", label: "Notebook 17", base: 76, inquiryOnly: false, image: "/devices/hp-notebook-hp-notebook-17.png" },
 ];
 
 const HP_PC_SERIES = [
@@ -1901,7 +1901,7 @@ const ASUS_ROG_STRIX_VARIANTS = [
 ];
 const ASUS_ROG_ZEPHYRUS_VARIANTS = [
   { id: "as_rog_zephyrus_g16_gu605", label: "ROG Zephyrus G16 GU605", base: 1170, inquiryOnly: false, image: "/devices/asus-rog-republic-of-gamers-zephyrus-g16-gu605.png" },
-  { id: "as_rog_zephyrus_duo_16_gx650", label: "ROG Zephyrus Duo 16 GX650", base: 0, inquiryOnly: true, image: "/devices/asus-rog-republic-of-gamers-zephyrus-duo-16-gx650.png" },
+  { id: "as_rog_zephyrus_duo_16_gx650", label: "ROG Zephyrus Duo 16 GX650", base: 1710, inquiryOnly: false, image: "/devices/asus-rog-republic-of-gamers-zephyrus-duo-16-gx650.png" },
   { id: "as_rog_zephyrus_g14_ga403", label: "ROG Zephyrus G14 GA403", base: 1170, inquiryOnly: false, image: "/devices/asus-rog-republic-of-gamers-zephyrus-g14-ga403.png" },
   { id: "as_rog_zephyrus_m16_gu604", label: "ROG Zephyrus M16 GU604", base: 1242, inquiryOnly: false, image: "/devices/asus-rog-republic-of-gamers-zephyrus-m16-gu604.png" },
   { id: "as_rog_zephyrus_duo_15_se_gx551", label: "ROG Zephyrus Duo 15 SE GX551", base: 1058, inquiryOnly: false, image: "/devices/asus-rog-republic-of-gamers-zephyrus-duo-15-se-gx551.png" },
@@ -1916,7 +1916,7 @@ const ASUS_ROG_ZEPHYRUS_VARIANTS = [
   { id: "as_rog_zephyrus_m15_gu502", label: "ROG Zephyrus M15 GU502", base: 414, inquiryOnly: false, image: "/devices/asus-rog-republic-of-gamers-zephyrus-m15-gu502.png" },
   { id: "as_rog_zephyrus_s15_gx502", label: "ROG Zephyrus S15 GX502", base: 292, inquiryOnly: false, image: "/devices/asus-rog-republic-of-gamers-zephyrus-s15-gx502.png" },
   { id: "as_rog_zephyrus_s17_gx701", label: "ROG Zephyrus S17 GX701", base: 302, inquiryOnly: false, image: "/devices/asus-rog-republic-of-gamers-zephyrus-s17-gx701.png" },
-  { id: "as_rog_zephyrus_s_gx531", label: "ROG Zephyrus S GX531", base: 292, inquiryOnly: false, image: "/devices/asus-rog-republic-of-gamers-zephyrus-s-gx531.png" },
+  { id: "as_rog_zephyrus_s_gx531", label: "ROG Zephyrus S GX531", base: 315, inquiryOnly: false, image: "/devices/asus-rog-republic-of-gamers-zephyrus-s-gx531.png" },
   { id: "as_rog_zephyrus_g15_ga502", label: "ROG Zephyrus G15 GA502", base: 297, inquiryOnly: false, image: "/devices/asus-rog-republic-of-gamers-zephyrus-g15-ga502.png" },
   { id: "as_rog_zephyrus_m_gm501", label: "ROG Zephyrus M GM501", base: 180, inquiryOnly: false, image: "/devices/asus-rog-republic-of-gamers-zephyrus-m-gm501.png" },
 ];

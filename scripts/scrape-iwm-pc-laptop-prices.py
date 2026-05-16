@@ -72,6 +72,10 @@ HP_SUB_TO_SERIES = {
     "omen_max": "hp-omen-max-laptop",
     "omen_slim": "hp-omen-slim-laptop",
     "omen_trans": "hp-omen-transcend-laptop",
+}
+# HP bridge entries without a sub_id (flat series like Envy / Pavilion /
+# ProBook) — match by series_id instead.
+HP_SERIES_TO_SERIES = {
     "envy": "hp-envy",
     "omnibook": "hp-omnibook",
     "pavilion": "hp-pavilion",
@@ -157,7 +161,10 @@ def derive_targets_from_bridges():
                 if not slug:
                     continue
                 sub = e.get("sub_id", "")
-                series = HP_SUB_TO_SERIES.get(sub)
+                if sub:
+                    series = HP_SUB_TO_SERIES.get(sub)
+                else:
+                    series = HP_SERIES_TO_SERIES.get(e.get("series_id", ""))
                 if not series:
                     continue
                 key = (series, slug)
