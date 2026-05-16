@@ -7583,7 +7583,7 @@ export default function Home() {
                           const m = v as typeof models[number];
                           const imgSrc = (m as { image?: string }).image || fallbackImgs[m.id] || null;
                           return (
-                            <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                            <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                               {imgSrc && <img src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
                               <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                               <div className="flex items-center gap-2">
@@ -7675,7 +7675,7 @@ export default function Home() {
                           {g.variants.map((m) => {
                             const mImage = (m as { image?: string }).image;
                             return (
-                              <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                              <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                                 {mImage ? (
                                   <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                                 ) : (
@@ -7727,7 +7727,7 @@ export default function Home() {
                         {g.variants.map((m) => {
                           const mImage = (m as { image?: string }).image;
                           return (
-                            <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                            <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                               {mImage ? (
                                 <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                               ) : (
@@ -7878,7 +7878,7 @@ export default function Home() {
                         {g.variants.map((m) => {
                           const mImg = (m as { image?: string }).image;
                           return (
-                            <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                            <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                               {mImg ? (
                                 <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-12 object-contain shrink-0" />
                               ) : (
@@ -7916,7 +7916,7 @@ export default function Home() {
                       )}
                       <div className="space-y-2">
                         {g.variants.map((m) => (
-                          <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                          <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                             <p className="font-semibold text-[15px]">{m.label}</p>
                             <div className="flex items-center gap-2">
                               <span className="text-[#00c853] font-bold text-sm">Get Quote</span>
@@ -8187,7 +8187,7 @@ export default function Home() {
               <>
                 <div className="space-y-2">
                   {lenovoTabVariants.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
@@ -8204,7 +8204,7 @@ export default function Home() {
               <>
                 <div className="space-y-2">
                   {surfaceVariants.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
@@ -8247,7 +8247,7 @@ export default function Home() {
                     const mImg = (m as { image?: string }).image;
                     return (
                       <button key={m.id} onClick={() => {
-                        setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel);
+                        setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns);
                       }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer tap-press">
                         {mImg ? (
                           <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain mb-1.5" />
@@ -8267,7 +8267,7 @@ export default function Home() {
                     const mImg = (m as { image?: string }).image;
                     return (
                       <button key={m.id} onClick={() => {
-                        setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel);
+                        setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns);
                       }} className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         {mImg ? (
                           <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
@@ -8308,7 +8308,7 @@ export default function Home() {
                           {g.variants.map((m) => {
                             const mImage = (m as { image?: string }).image;
                             return (
-                              <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                              <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                                 {mImage ? (
                                   <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                                 ) : (
@@ -8347,7 +8347,7 @@ export default function Home() {
                         const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
                         return (
                           <button key={m.id} onClick={() => {
-                            setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel);
+                            setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns);
                           }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                             <p className="font-semibold text-[15px]">{m.label}</p>
                             <div className="flex items-center gap-2">
