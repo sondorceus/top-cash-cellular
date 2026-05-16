@@ -80027,7 +80027,7 @@
       "4GB RAM": -20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-05-16T02:09:15+00:00",
+    "scraped_at": "2026-05-16T05:08:12+00:00",
     "series": "xps-laptop",
     "storage_adj": {
       "128GB SSD": -20,
@@ -81555,7 +81555,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-05-16T02:09:13+00:00",
+    "scraped_at": "2026-05-16T05:08:15+00:00",
     "series": "xps-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -81813,7 +81813,7 @@
       "64GB RAM": 60,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-05-16T02:09:18+00:00",
+    "scraped_at": "2026-05-16T05:08:17+00:00",
     "series": "xps-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -82510,7 +82510,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-05-16T02:09:12+00:00",
+    "scraped_at": "2026-05-16T05:08:20+00:00",
     "series": "xps-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -82751,7 +82751,7 @@
       "64GB RAM": 60,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-05-16T02:09:19+00:00",
+    "scraped_at": "2026-05-16T05:08:23+00:00",
     "series": "xps-laptop",
     "storage_adj": {
       "1TB SSD": 30,

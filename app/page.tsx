@@ -1972,47 +1972,47 @@ const ASUS_PC_MODELS = [
 // images are series-level placeholders (per-model photos are not on IWM
 // for Dell — they use a quiz UI rather than product detail pages).
 const DELL_XPS_13_VARIANTS = [
-  { id: "d_xps_13_9345", label: "XPS 13 9345", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-9345.png" },
-  { id: "d_xps_13_9340", label: "XPS 13 9340", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-9340.png" },
-  { id: "d_xps_13_plus_9320", label: "XPS 13 Plus 9320", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-plus-9320.png" },
-  { id: "d_xps_13_9315", label: "XPS 13 9315", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-9315.png" },
-  { id: "d_xps_13_9315_2in1", label: "XPS 13 9315 2-in-1", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-9315-2-in-1.png" },
-  { id: "d_xps_13_9310", label: "XPS 13 9310", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-9310.png" },
-  { id: "d_xps_13_9310_2in1", label: "XPS 13 9310 2-in-1", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-9310-2-in-1.png" },
-  { id: "d_xps_13_9305", label: "XPS 13 9305", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-9305.png" },
-  { id: "d_xps_13_9300", label: "XPS 13 9300", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-9300.png" },
-  { id: "d_xps_13_7390", label: "XPS 13 7390", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-7390.png" },
-  { id: "d_xps_13_7390_2in1", label: "XPS 13 7390 2-in-1", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-7390-2-in-1.png" },
-  { id: "d_xps_13_9380", label: "XPS 13 9380", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-9380.png" },
-  { id: "d_xps_13_9370", label: "XPS 13 9370", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-9370.png" },
-  { id: "d_xps_13_9365_2in1", label: "XPS 13 9365 2-in-1", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-9365-2-in-1.png" },
-  { id: "d_xps_13_9360", label: "XPS 13 9360", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-9360.png" },
-  { id: "d_xps_13_9350", label: "XPS 13 9350", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_13-13_xps-13-9350.png" },
+  { id: "d_xps_13_9345", label: "XPS 13 9345", base: 374, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-9345.png" },
+  { id: "d_xps_13_9340", label: "XPS 13 9340", base: 472, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-9340.png" },
+  { id: "d_xps_13_plus_9320", label: "XPS 13 Plus 9320", base: 279, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-plus-9320.png" },
+  { id: "d_xps_13_9315", label: "XPS 13 9315", base: 194, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-9315.png" },
+  { id: "d_xps_13_9315_2in1", label: "XPS 13 9315 2-in-1", base: 270, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-9315-2-in-1.png" },
+  { id: "d_xps_13_9310", label: "XPS 13 9310", base: 162, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-9310.png" },
+  { id: "d_xps_13_9310_2in1", label: "XPS 13 9310 2-in-1", base: 180, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-9310-2-in-1.png" },
+  { id: "d_xps_13_9305", label: "XPS 13 9305", base: 162, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-9305.png" },
+  { id: "d_xps_13_9300", label: "XPS 13 9300", base: 135, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-9300.png" },
+  { id: "d_xps_13_7390", label: "XPS 13 7390", base: 99, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-7390.png" },
+  { id: "d_xps_13_7390_2in1", label: "XPS 13 7390 2-in-1", base: 117, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-7390-2-in-1.png" },
+  { id: "d_xps_13_9380", label: "XPS 13 9380", base: 99, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-9380.png" },
+  { id: "d_xps_13_9370", label: "XPS 13 9370", base: 86, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-9370.png" },
+  { id: "d_xps_13_9365_2in1", label: "XPS 13 9365 2-in-1", base: 45, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-9365-2-in-1.png" },
+  { id: "d_xps_13_9360", label: "XPS 13 9360", base: 54, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-9360.png" },
+  { id: "d_xps_13_9350", label: "XPS 13 9350", base: 608, inquiryOnly: false, image: "/devices/dell-xps-xps_13-13_xps-13-9350.png" },
 ];
 const DELL_XPS_14_VARIANTS = [
-  { id: "d_xps_14_9440", label: "XPS 14 9440", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_14-14_xps-14-9440.png" },
-  { id: "d_xps_14_da14260", label: "XPS 14 DA14260", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_14-14_xps-14-da14260.png" },
+  { id: "d_xps_14_9440", label: "XPS 14 9440", base: 472, inquiryOnly: false, image: "/devices/dell-xps-xps_14-14_xps-14-9440.png" },
+  { id: "d_xps_14_da14260", label: "XPS 14 DA14260", base: 495, inquiryOnly: false, image: "/devices/dell-xps-xps_14-14_xps-14-da14260.png" },
 ];
 const DELL_XPS_15_VARIANTS = [
-  { id: "d_xps_15_9530", label: "XPS 15 9530", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_15-15_xps-15-9530.png" },
-  { id: "d_xps_15_9520", label: "XPS 15 9520", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_15-15_xps-15-9520.png" },
-  { id: "d_xps_15_9510", label: "XPS 15 9510", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_15-15_xps-15-9510.png" },
-  { id: "d_xps_15_9500", label: "XPS 15 9500", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_15-15_xps-15-9500.png" },
-  { id: "d_xps_15_7590", label: "XPS 15 7590", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_15-15_xps-15-7590.png" },
-  { id: "d_xps_15_9575_2in1", label: "XPS 15 9575 2-in-1", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_15-15_xps-15-9575-2-in-1.png" },
-  { id: "d_xps_15_9570", label: "XPS 15 9570", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_15-15_xps-15-9570.png" },
-  { id: "d_xps_15_9560", label: "XPS 15 9560", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_15-15_xps-15-9560.png" },
-  { id: "d_xps_15_9550", label: "XPS 15 9550", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_15-15_xps-15-9550.png" },
+  { id: "d_xps_15_9530", label: "XPS 15 9530", base: 594, inquiryOnly: false, image: "/devices/dell-xps-xps_15-15_xps-15-9530.png" },
+  { id: "d_xps_15_9520", label: "XPS 15 9520", base: 315, inquiryOnly: false, image: "/devices/dell-xps-xps_15-15_xps-15-9520.png" },
+  { id: "d_xps_15_9510", label: "XPS 15 9510", base: 270, inquiryOnly: false, image: "/devices/dell-xps-xps_15-15_xps-15-9510.png" },
+  { id: "d_xps_15_9500", label: "XPS 15 9500", base: 176, inquiryOnly: false, image: "/devices/dell-xps-xps_15-15_xps-15-9500.png" },
+  { id: "d_xps_15_7590", label: "XPS 15 7590", base: 135, inquiryOnly: false, image: "/devices/dell-xps-xps_15-15_xps-15-7590.png" },
+  { id: "d_xps_15_9575_2in1", label: "XPS 15 9575 2-in-1", base: 99, inquiryOnly: false, image: "/devices/dell-xps-xps_15-15_xps-15-9575-2-in-1.png" },
+  { id: "d_xps_15_9570", label: "XPS 15 9570", base: 117, inquiryOnly: false, image: "/devices/dell-xps-xps_15-15_xps-15-9570.png" },
+  { id: "d_xps_15_9560", label: "XPS 15 9560", base: 45, inquiryOnly: false, image: "/devices/dell-xps-xps_15-15_xps-15-9560.png" },
+  { id: "d_xps_15_9550", label: "XPS 15 9550", base: 90, inquiryOnly: false, image: "/devices/dell-xps-xps_15-15_xps-15-9550.png" },
 ];
 const DELL_XPS_16_VARIANTS = [
-  { id: "d_xps_16_9640", label: "XPS 16 9640", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_16-16_xps-16-9640.png" },
-  { id: "d_xps_16_da16260", label: "XPS 16 DA16260", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_16-16_xps-16-da16260.png" },
+  { id: "d_xps_16_9640", label: "XPS 16 9640", base: 540, inquiryOnly: false, image: "/devices/dell-xps-xps_16-16_xps-16-9640.png" },
+  { id: "d_xps_16_da16260", label: "XPS 16 DA16260", base: 562, inquiryOnly: false, image: "/devices/dell-xps-xps_16-16_xps-16-da16260.png" },
 ];
 const DELL_XPS_17_VARIANTS = [
-  { id: "d_xps_17_9730", label: "XPS 17 9730", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_17-17_xps-17-9730.png" },
-  { id: "d_xps_17_9720", label: "XPS 17 9720", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_17-17_xps-17-9720.png" },
-  { id: "d_xps_17_9710", label: "XPS 17 9710", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_17-17_xps-17-9710.png" },
-  { id: "d_xps_17_9700", label: "XPS 17 9700", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_17-17_xps-17-9700.png" },
+  { id: "d_xps_17_9730", label: "XPS 17 9730", base: 1152, inquiryOnly: false, image: "/devices/dell-xps-xps_17-17_xps-17-9730.png" },
+  { id: "d_xps_17_9720", label: "XPS 17 9720", base: 414, inquiryOnly: false, image: "/devices/dell-xps-xps_17-17_xps-17-9720.png" },
+  { id: "d_xps_17_9710", label: "XPS 17 9710", base: 324, inquiryOnly: false, image: "/devices/dell-xps-xps_17-17_xps-17-9710.png" },
+  { id: "d_xps_17_9700", label: "XPS 17 9700", base: 279, inquiryOnly: false, image: "/devices/dell-xps-xps_17-17_xps-17-9700.png" },
 ];
 const DELL_LATITUDE_3000_VARIANTS = [
   { id: "d_lat_3500", label: "Latitude 3500 Series", base: 36, inquiryOnly: false, image: "/devices/dell-latitude-latitude_3000-3000_latitude-3000-15.png" },
@@ -2098,7 +2098,7 @@ const DELL_VOSTRO_5000_VARIANTS = [
 ];
 const DELL_VOSTRO_7000_VARIANTS = [
   { id: "d_vostro_7620", label: "Vostro 7620", base: 0, inquiryOnly: true, image: "/devices/dell-vostro-vostro_7000-7000_7620.png" },
-  { id: "d_vostro_7590", label: "Vostro 7590", base: 0, inquiryOnly: true, image: "/devices/dell-xps-xps_15-15_xps-15-7590.png" },
+  { id: "d_vostro_7590", label: "Vostro 7590", base: 135, inquiryOnly: false, image: "/devices/dell-xps-xps_15-15_xps-15-7590.png" },
   { id: "d_vostro_7510", label: "Vostro 7510", base: 0, inquiryOnly: true, image: "/devices/dell-vostro-vostro_7000-7000_7510.png" },
   { id: "d_vostro_7500", label: "Vostro 7500", base: 148, inquiryOnly: false, image: "/devices/dell-latitude-latitude_7000-7000_latitude-7000-15.png" },
 ];
@@ -2172,11 +2172,11 @@ const DELL_LAT_RUGGED_VARIANTS = [
 ];
 
 const DELL_XPS_SUB_SERIES = [
-  { id: "dell_xps_13", label: "XPS 13", year: "13-inch", topPrice: 0, variants: DELL_XPS_13_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
-  { id: "dell_xps_14", label: "XPS 14", year: "14-inch", topPrice: 0, variants: DELL_XPS_14_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
-  { id: "dell_xps_15", label: "XPS 15", year: "15-inch", topPrice: 0, variants: DELL_XPS_15_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
-  { id: "dell_xps_16", label: "XPS 16", year: "16-inch", topPrice: 0, variants: DELL_XPS_16_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
-  { id: "dell_xps_17", label: "XPS 17", year: "17-inch", topPrice: 0, variants: DELL_XPS_17_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_xps_13", label: "XPS 13", year: "13-inch", topPrice: 608, variants: DELL_XPS_13_VARIANTS, image: "/devices/dell-xps.webp" },
+  { id: "dell_xps_14", label: "XPS 14", year: "14-inch", topPrice: 495, variants: DELL_XPS_14_VARIANTS, image: "/devices/dell-xps.webp" },
+  { id: "dell_xps_15", label: "XPS 15", year: "15-inch", topPrice: 594, variants: DELL_XPS_15_VARIANTS, image: "/devices/dell-xps.webp" },
+  { id: "dell_xps_16", label: "XPS 16", year: "16-inch", topPrice: 562, variants: DELL_XPS_16_VARIANTS, image: "/devices/dell-xps.webp" },
+  { id: "dell_xps_17", label: "XPS 17", year: "17-inch", topPrice: 1152, variants: DELL_XPS_17_VARIANTS, image: "/devices/dell-xps.webp" },
 ];
 const DELL_LATITUDE_SUB_SERIES = [
   { id: "dell_lat_3000", label: "Latitude 3000", year: "Entry business", topPrice: 40, variants: DELL_LATITUDE_3000_VARIANTS, image: "/devices/dell-latitude.jpg" },
@@ -2215,7 +2215,7 @@ const DELL_RUGGED_SUB_SERIES = [
   { id: "dell_lat_rugged", label: "Latitude Rugged", year: "Field-tough", topPrice: 0, variants: DELL_LAT_RUGGED_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
 ];
 const DELL_PC_SERIES = [
-  { id: "dell_xps", label: "XPS", year: "Premium consumer", topPrice: 0, subSeries: DELL_XPS_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_xps", label: "XPS", year: "Premium consumer", topPrice: 1152, subSeries: DELL_XPS_SUB_SERIES, image: "/devices/dell-xps.webp" },
   { id: "dell_latitude", label: "Latitude", year: "Business", topPrice: 585, subSeries: DELL_LATITUDE_SUB_SERIES, image: "/devices/dell-latitude.jpg" },
   { id: "dell_inspiron", label: "Inspiron", year: "Everyday", topPrice: 284, subSeries: DELL_INSPIRON_SUB_SERIES, image: "/devices/dell-inspiron-15.webp" },
   { id: "dell_precision", label: "Precision", year: "Mobile workstation", topPrice: 720, subSeries: DELL_PRECISION_SUB_SERIES, image: "/devices/dell-latitude.jpg" },
@@ -2241,11 +2241,11 @@ const ALIENWARE_DESKTOP_MODELS = [
 ];
 
 const MSI_DESKTOP_MODELS = [
-  { id: "msiinfinity", label: "MEG Trident X2", base: 0, image: "/devices/msi-trident.webp" },
-  { id: "msitrident", label: "MAG Trident S5", base: 0, image: "/devices/msi-trident.webp" },
-  { id: "msinightblade", label: "MAG Codex 6", base: 0, image: "/devices/msi-codex.webp" },
-  { id: "msicodex5", label: "MAG Codex 5", base: 0, image: "/devices/msi-codex.webp" },
-  { id: "msipro", label: "PRO DP180", base: 0, image: "/devices/msi-aegis.webp" },
+  { id: "msiinfinity", label: "MEG Trident X2", base: 338, inquiryOnly: false, image: "/devices/msi-trident.webp" },
+  { id: "msitrident", label: "MAG Trident S5", base: 135, inquiryOnly: false, image: "/devices/msi-trident.webp" },
+  { id: "msinightblade", label: "MAG Codex 6", base: 225, inquiryOnly: false, image: "/devices/msi-codex.webp" },
+  { id: "msicodex5", label: "MAG Codex 5", base: 90, inquiryOnly: false, image: "/devices/msi-codex.webp" },
+  { id: "msipro", label: "PRO DP180", base: 220, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
 ];
 
 const IPAD_SERIES = [

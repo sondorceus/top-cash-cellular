@@ -262,12 +262,13 @@ MANUAL_ID_TO_DESKTOP_SLUG = {
 }
 
 
-def pick_submodel(v: dict, page_vid: str):
+def pick_submodel(v: dict, page_vid: str, target_slug=None):
     """Given a v2 adjustments entry (has 'submodels' dict), return the
     submodel dict the build should use for this page variant. Priority:
     1) MANUAL_ID_TO_SUBMODEL exact slug match
-    2) First submodel (IWM lists newest → oldest, so this is newest gen)
-    3) None if no submodels
+    2) target_slug from the page variant (e.g. d_xps_13_7390 → xps-13-7390)
+    3) Highest-priced submodel as "newest" proxy
+    4) None if no submodels
     """
     subs = v.get("submodels") or {}
     if not subs:
@@ -284,6 +285,14 @@ def pick_submodel(v: dict, page_vid: str):
         candidate = subs[want]
         if candidate.get("base_price", 0) > 0 and candidate.get("chips"):
             return candidate
+    # Target slug match (e.g. when the page variant's bridge slug is
+    # also a submodel slug like xps-13-7390). This lets each XPS
+    # variant pick up its exact submodel pricing instead of the
+    # umbrella max.
+    if target_slug and target_slug in subs:
+        candidate = subs[target_slug]
+        if candidate.get("base_price", 0) > 0:
+            return candidate
     # Default: highest-priced submodel. For multi-gen URLs (X1 Carbon
     # Gen 6..13, Razer Blade by year, etc.) the newest gen reliably
     # has the highest IWM base, so this is a good "newest" proxy when
@@ -298,12 +307,20 @@ def pick_submodel(v: dict, page_vid: str):
 def main():
     adj = json.load(open(ADJ))
     img_to_slug = build_image_to_slug()
-    # Index adj entries by IWM model slug
+    # Index adj entries by IWM model slug AND by submodel slug. Some
+    # umbrella URLs (xps-laptop/xps-13-laptop) host the per-submodel
+    # data — the page variant's bridge slug (xps-13-7390) matches a
+    # submodel key, not the model field. Index both so the lookup works.
     by_slug = {}
     for k, v in adj.items():
         slug = v.get("model")
         if slug:
             by_slug.setdefault(slug, []).append(v)
+        # Also index every submodel slug as a fake top-level lookup
+        # that points back at this URL's entry — pick_submodel will
+        # then dive into the matching submodel.
+        for subkey in (v.get("submodels") or {}):
+            by_slug.setdefault(subkey, []).append(v)
 
     # Read page.tsx variants in the PC laptop section to extract id ↔ image
     src = PAGE.read_text()
@@ -334,8 +351,17 @@ def main():
         if not entries:
             continue
         # Resolve to a specific submodel (newest by default, manual override
-        # via MANUAL_ID_TO_SUBMODEL for per-gen page variants).
-        sub = pick_submodel(entries[0], vid)
+        # via MANUAL_ID_TO_SUBMODEL for per-gen page variants, or use the
+        # exact submodel matching the page variant's bridge slug — XPS
+        # umbrella URLs need this). Prefer entries whose submodels actually
+        # contain the target slug — otherwise we might pick an empty stub
+        # entry (e.g. xps-laptop/xps-13-7390 has no data, the real spec
+        # lives under xps-laptop/xps-13-laptop submodel xps-13-7390).
+        sub = None
+        for entry in entries:
+            sub = pick_submodel(entry, vid, target_slug=slug)
+            if sub and sub.get("base_price"):
+                break
         if not sub or not sub.get("base_price"):
             continue
         spec = to_macspec(sub)
