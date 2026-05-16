@@ -2404,10 +2404,16 @@ const DJI_MODELS = [
   { id: "djispark", label: "DJI Spark" },
 ];
 
+// Apple Vision Pro pricing — Apple does NOT offer trade-in for Vision Pro
+// (confirmed Oct 22 2025), so no Apple Trade-In competition. IWM ceilings:
+// 256GB $1400 / 512GB $1550 / 1TB $1700 (Flawless). Swappa private-sale
+// nets $1850-$2400. Our base = IWM Flawless × 0.90 anchored at the
+// minimum-config quote; brand-extras questions (front glass, battery,
+// bands, Light Seal, AppleCare+) adjust upward toward CIB market-top.
 const APPLE_VR_MODELS = [
-  { id: "avp1tb", label: "Apple Vision Pro (1TB)", image: "/devices/apple-vision-pro.jpg" },
-  { id: "avp512", label: "Apple Vision Pro (512GB)", image: "/devices/apple-vision-pro.jpg" },
-  { id: "avp256", label: "Apple Vision Pro (256GB)", image: "/devices/apple-vision-pro.jpg" },
+  { id: "avp1tb", label: "Apple Vision Pro (1TB)",  base: 1530, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
+  { id: "avp512", label: "Apple Vision Pro (512GB)", base: 1395, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
+  { id: "avp256", label: "Apple Vision Pro (256GB)", base: 1260, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
 ];
 
 const META_VR_MODELS = [
@@ -3392,14 +3398,57 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
     ]},
   ],
   apple_vr: [
-    { id: "storage", question: "Storage capacity?", helper: "Vision Pro ships in 256 / 512 / 1 TB.", options: [
-      { id: "256", label: "256 GB", multiplier: 1.00 },
-      { id: "512", label: "512 GB", multiplier: 1.10 },
-      { id: "1tb", label: "1 TB",   multiplier: 1.22 },
+    // Storage is captured by the parent variant id (avp256/avp512/avp1tb),
+    // so we don't re-ask it. Generation matters — M5 launched Oct 2025
+    // with the new Dual Knit Band.
+    { id: "generation", question: "Which Vision Pro model?", helper: "Check Settings > General > About. M5 launched October 2025.", options: [
+      { id: "m2", label: "Original Vision Pro (M2, 2024)", multiplier: 1.00, adj: 0 },
+      { id: "m5", label: "New Vision Pro (M5, 2025)",      multiplier: 1.00, adj: 200 },
     ]},
-    { id: "battery", question: "External battery included?", options: [
-      { id: "yes", label: "Yes — original Apple battery", multiplier: 1.00 },
-      { id: "no",  label: "No battery",                   multiplier: 0.85 },
+    { id: "powers_on", question: "Does it power on and complete Optic ID?", helper: "If Optic ID won't enroll your eyes, the unit is essentially parts-value.", options: [
+      { id: "yes",   label: "Yes — fully functional",        multiplier: 1.00, adj: 0 },
+      { id: "boots", label: "Powers on but Optic ID broken", multiplier: 1.00, adj: -400 },
+      { id: "no",    label: "Won't power on / brick",        multiplier: 1.00, adj: -1300 },
+    ]},
+    { id: "eyesight", question: "Front EyeSight glass condition?", helper: "The curved outer display — biggest resale factor. A crack drops the unit from $1700 to parts value.", options: [
+      { id: "flawless", label: "Flawless — no marks",         multiplier: 1.00, adj: 0 },
+      { id: "light",    label: "Light surface scratches",     multiplier: 1.00, adj: -100 },
+      { id: "deep",     label: "Deep scratches or scuffs",    multiplier: 1.00, adj: -350 },
+      { id: "cracked",  label: "Cracked or chipped",          multiplier: 1.00, adj: -1200 },
+    ]},
+    { id: "lenses", question: "Internal lenses + displays?", helper: "Look inside the headset. Dust on lenses is normal; scratches are not.", options: [
+      { id: "clean",      label: "Clean, no scratches",       multiplier: 1.00, adj: 0 },
+      { id: "dust",       label: "Visible dust",              multiplier: 1.00, adj: -25 },
+      { id: "scratched",  label: "Scratched internal lenses", multiplier: 1.00, adj: -300 },
+    ]},
+    { id: "battery", question: "External battery pack?", helper: "AVP needs the external battery to operate.", options: [
+      { id: "yes",     label: "Yes — included, no swelling",   multiplier: 1.00, adj: 0 },
+      { id: "missing", label: "Battery missing or swollen",    multiplier: 1.00, adj: -250 },
+    ]},
+    { id: "bands", question: "Which bands are included?", helper: "M2 ships with both Solo Knit + Dual Loop. M5 ships with one Dual Knit band.", options: [
+      { id: "both",   label: "Both bands (M2) / Dual Knit (M5)", multiplier: 1.00, adj: 0 },
+      { id: "one",    label: "Only one band",                    multiplier: 1.00, adj: -75 },
+      { id: "none",   label: "No bands",                         multiplier: 1.00, adj: -175 },
+    ]},
+    { id: "light_seal", question: "Light Seal + cushions present?", helper: "The foam piece that goes against the face. Includes primary + spare cushion.", options: [
+      { id: "complete", label: "Light Seal + both cushions",  multiplier: 1.00, adj: 0 },
+      { id: "partial",  label: "Light Seal, missing a cushion", multiplier: 1.00, adj: -40 },
+      { id: "missing",  label: "Missing entirely",             multiplier: 1.00, adj: -100 },
+    ]},
+    { id: "zeiss", question: "ZEISS Optical Inserts?", helper: "Magnetic prescription lenses that snap onto AVP. Sold separately by Apple.", options: [
+      { id: "none",        label: "None included",                multiplier: 1.00, adj: 0 },
+      { id: "readers",     label: "Non-Rx readers (unused)",      multiplier: 1.00, adj: 30 },
+      { id: "rx",          label: "Rx prescription (locked to user)", multiplier: 1.00, adj: 0 },
+    ]},
+    { id: "box", question: "Original box and accessories?", helper: "CIB = Complete In Box: box, charger, USB-C cable, polishing cloth, front cover.", options: [
+      { id: "cib",      label: "Complete in box (CIB)",         multiplier: 1.00, adj: 0 },
+      { id: "partial",  label: "Some accessories missing",      multiplier: 1.00, adj: -50 },
+      { id: "device",   label: "Device only, no accessories",   multiplier: 1.00, adj: -100 },
+    ]},
+    { id: "applecare", question: "AppleCare+ status?", helper: "Transferable to the new owner — adds resale value.", options: [
+      { id: "12mo",   label: "Active — 12+ months remaining", multiplier: 1.00, adj: 150 },
+      { id: "active", label: "Active — less than 12 months",  multiplier: 1.00, adj: 75 },
+      { id: "none",   label: "No AppleCare+ / expired",       multiplier: 1.00, adj: 0 },
     ]},
   ],
   // Dell laptops — GPU is a big price driver for XPS 15. Uses adj values
