@@ -1,0 +1,62 @@
+{
+  "_doc": "Factory spec research for Lenovo desktop variants in page.tsx. Source: research agent (Lenovo PSREF, lenovo.com, eBay sold listings, ServeTheHome reviews). 2026-05-15.",
+  "lnthinkm": {
+    "model": "ThinkCentre M920 (SFF / Tower / Tiny)",
+    "chips": ["Intel Celeron G4900/G4930", "Pentium Gold G5400/G5500", "Core i3-8100/8300/9100", "Core i5-8400/8500/8600/9400/9500/9600", "Core i7-8700/9700", "Core i9-9900 (Tower/SFF only)"],
+    "ram_tiers": ["4GB", "8GB", "16GB", "32GB", "64GB"],
+    "storage_tiers": ["128GB SSD", "256GB SSD", "512GB SSD", "1TB SSD", "500GB HDD", "1TB HDD", "2TB HDD", "256GB SSD + 1TB HDD", "512GB SSD + 1TB HDD"],
+    "gpu_tiers": ["Intel UHD 630 (integrated)", "Optional discrete on Tower/SFF: NVIDIA GTX 1050 Ti / Quadro P400/P620/P1000 / Radeon RX 550"],
+    "form_factor": "SFF / Tower / Tiny (M920q ~1L)",
+    "generations": ["2018 release (8th gen)", "2019 refresh (9th gen)"],
+    "market_value_usd": "75-350 depending on CPU/RAM/storage",
+    "notes": "Refurb-channel staple. Resale: Tiny i5/8/256 ~$120-180, i7/16/512 ~$220-320; SFF/Tower similar with slight discount. End-of-Win11-support flag (no native Win11 on 8th gen) drags prices."
+  },
+  "lnthinkm90q": {
+    "model": "ThinkCentre M90q Tiny",
+    "chips": [
+      "Gen1: Core i3-10100T/10300T, i5-10400T/10500T/10600, i7-10700/10700T, i9-10900/10900T",
+      "Gen2: Core i3-10105T/11100, i5-11400T/11500/11500T, i7-11700/11700T, i9-11900",
+      "Gen3: Core i3-12100/12100T, i5-12400/12500/12500T, i7-12700/12700T, i9-12900 (some SKUs)"
+    ],
+    "ram_tiers": ["8GB", "16GB", "32GB", "64GB"],
+    "storage_tiers": ["128GB SSD", "256GB SSD", "512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["Integrated (UHD 630 / UHD 750 / UHD 770)"],
+    "form_factor": "Tiny (~1L)",
+    "generations": ["Gen 1 (2020, Comet Lake)", "Gen 2 (2021, Rocket/Tiger Lake, DDR4)", "Gen 3 (2022, Alder Lake, DDR5 + PCIe Gen4, 2.5GbE option)"],
+    "market_value_usd": "200-700",
+    "notes": "Hot in the homelab/Proxmox market. Gen3 holds value strongly: i5-12500/16/512 ~$400-550; Gen1 i7/16/512 ~$250-350; i9-10900 builds ~$350-450. No HDD bay — SSD only."
+  },
+  "lnlegion5dtwr": {
+    "model": "Legion Tower 5i (26L)",
+    "chips": ["Gen6: i5-11400F/i7-11700F/i7-11700KF", "Gen7: i5-12400F/i7-12700F/i7-12700KF", "Gen8: i5-13400F/i7-13700F/i7-13700KF/i9-13900F", "Gen9: i5-14400F/i7-14700F/i9-14900F"],
+    "ram_tiers": ["8GB", "16GB", "32GB", "64GB"],
+    "storage_tiers": ["512GB SSD", "1TB SSD", "2TB SSD", "1TB SSD + 1TB HDD", "1TB SSD + 2TB HDD"],
+    "gpu_tiers": ["RTX 3060", "RTX 3060 Ti", "RTX 3070", "RTX 3070 Ti", "RTX 4060", "RTX 4060 Ti", "RTX 4070", "RTX 4070 Super", "RTX 4070 Ti Super"],
+    "form_factor": "Mid Tower (26L)",
+    "generations": ["Gen 6 (2021)", "Gen 7 (2022)", "Gen 8 (2023)", "Gen 9 (2024)"],
+    "market_value_usd": "550-1600",
+    "notes": "GPU drives 70%+ of resale value. Gen8 i7/RTX4070/32/1TB ~$1100-1400 used; Gen6 i7/RTX3070 ~$700-900. Proprietary front-panel/PSU cabling limits parts-out value."
+  },
+  "lnlegion7dtwr": {
+    "model": "Legion Tower 7i (32L / 34L Gen10)",
+    "chips": ["Gen7: i7-12700KF/i9-12900K/i9-12900KF", "Gen8: i7-13700KF/i9-13900K/i9-13900KF", "Gen9: i7-14700KF/i9-14900K/i9-14900KF", "Gen10: Core Ultra 7 265K / Ultra 9 285K"],
+    "ram_tiers": ["16GB", "32GB", "64GB", "128GB (Gen10 CUDIMM)"],
+    "storage_tiers": ["1TB SSD", "2TB SSD", "1TB SSD + 2TB HDD", "2TB SSD + 2TB HDD", "4TB NVMe"],
+    "gpu_tiers": ["RTX 3080", "RTX 3080 Ti", "RTX 3090", "RTX 4070 Ti", "RTX 4080", "RTX 4080 Super", "RTX 4090", "RTX 5080", "RTX 5090 (Gen10)"],
+    "form_factor": "Full Tower with 240mm AIO liquid cooling",
+    "generations": ["Gen 7 (2022)", "Gen 8 (2023)", "Gen 9 (2024)", "Gen 10 (2025, Arrow Lake)"],
+    "market_value_usd": "900-3200",
+    "notes": "Halo SKU. Resale dominated by GPU tier: 4090 builds $2200-3000, 4080 $1500-2000, 3080 Ti $900-1300. Liquid cooler age is a buyback risk factor."
+  },
+  "lnideactower": {
+    "model": "IdeaCentre 5i (14L / 17L Gaming variant)",
+    "chips": ["i3-10100/10105/12100", "i5-10400/11400/12400/13400", "i7-10700/11700/12700/13700"],
+    "ram_tiers": ["8GB", "12GB", "16GB", "32GB"],
+    "storage_tiers": ["256GB SSD", "512GB SSD", "1TB SSD", "1TB HDD", "2TB HDD", "256GB SSD + 1TB HDD", "512GB SSD + 1TB HDD"],
+    "gpu_tiers": ["Integrated UHD 630/730/770", "GTX 1660 Super (Gaming 5i older)", "RTX 3050", "RTX 3060", "RTX 3060 Ti"],
+    "form_factor": "Tower (14L mainstream, 17L Gaming 5i)",
+    "generations": ["Gen 6 (2020)", "Gen 7 (2022)", "Gen 8 (2023)"],
+    "market_value_usd": "150-800",
+    "notes": "Consumer-tier; lower resale floor than ThinkCentre. Non-gaming i5/16/512 ~$220-320; Gaming 5i with RTX 3060 ~$550-750. Often confused with IdeaCentre 5 (AMD) — confirm 'i' suffix in intake."
+  }
+}

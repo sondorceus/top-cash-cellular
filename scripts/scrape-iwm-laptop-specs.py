@@ -26,7 +26,7 @@ Usage:
   python3 scripts/scrape-iwm-laptop-specs.py --shard 0 4  # one worker of four
 """
 from __future__ import annotations
-import json, os, sys, time
+import json, os, re, sys, time
 from datetime import datetime, timezone
 from pathlib import Path
 from playwright.sync_api import sync_playwright
@@ -154,36 +154,45 @@ def walk_branch(tree, branch_idx, seen=None):
     return out
 
 
-def extract_specs(tree):
-    """Pick the canonical branch (last per-model branch if there's a
-    Select-Model first step; else the only branch) and pull adj data."""
+def _slugify(label):
+    return re.sub(r"[^a-z0-9]+", "-", (label or "").lower()).strip("-")
+
+
+def extract_all_submodels(tree):
+    """Detect a top-level Select-Model branch and emit one spec entry per
+    sub-model. If no model picker exists, returns a single-entry dict with
+    key "" (empty) holding the base data. This is what fixes the LG Gram
+    bug — the old extract_specs only walked the first sub-model's branch.
+    """
     if not tree:
-        return None
-    # Detect model-picker first branch
+        return {}
     first = tree[0]
     first_qs = first.get("questions", [{}])
     first_q = first_qs[0] if first_qs else {}
     first_qtext = (first_q.get("text") or "").lower()
-    if "select model" in first_qtext or "which" in first_qtext:
-        # Pick the LAST answer (newest generation) — its go_to points at
-        # the canonical branch.
-        anss = first_q.get("answers", [])
-        if not anss:
-            return None
-        # Newest = first answer in IWM lists (they list newest → oldest).
-        target = anss[0]
-        gt = target.get("go_to", "")
-        if gt and "," in gt:
-            branch_idx = int(gt.split(",")[0]) - 1
-        else:
-            branch_idx = 1 if len(tree) > 1 else 0
-        canonical_model_label = target.get("text", "")
-    else:
-        branch_idx = 0
-        canonical_model_label = ""
+    is_picker = "select model" in first_qtext or "which" in first_qtext
 
-    if branch_idx < 0 or branch_idx >= len(tree):
-        return None
+    out = {}
+    if is_picker:
+        for ans in first_q.get("answers", []):
+            label = ans.get("text", "").strip()
+            gt = ans.get("go_to", "")
+            if not gt or "," not in gt:
+                continue
+            branch_idx = int(gt.split(",")[0]) - 1
+            if branch_idx < 0 or branch_idx >= len(tree):
+                continue
+            spec = _spec_from_branch(tree, branch_idx, label)
+            if spec:
+                out[_slugify(label)] = spec
+    else:
+        spec = _spec_from_branch(tree, 0, "")
+        if spec:
+            out[""] = spec
+    return out
+
+
+def _spec_from_branch(tree, branch_idx, model_label):
     data = walk_branch(tree, branch_idx)
     if not data:
         return None
@@ -203,8 +212,8 @@ def extract_specs(tree):
         return {r["label"]: r["val"] - anchor for r in rows}
 
     result = {
-        "canonical_model_label": canonical_model_label,
-        "base_price": base_price,  # = chip[0].val (Flawless, base RAM/storage at this gen)
+        "model_label": model_label,
+        "base_price": base_price,  # = chip[0].val (Flawless, base RAM/storage at this submodel/gen)
         "chips": [{"label": r["label"], "adj": r["val"] - base_price, "attrs": r["attrs"]} for r in chips],
         "ram_adj": deltas(data.get("ram", [])),
         "storage_adj": deltas(data.get("storage", [])),
@@ -254,16 +263,19 @@ def scrape(targets, shard_idx=None, total_shards=1):
                 state[key] = {"series": t["series"], "model": t["model"], "url": url, "done": True, "error": "no_pricing", "scraped_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
                 progress_path.write_text(json.dumps(state, indent=2))
                 continue
-            specs = extract_specs(d.get("pricing"))
+            submodels = extract_all_submodels(d.get("pricing"))
             entry = {
                 "series": t["series"], "model": t["model"], "url": url,
                 "iwm_name": d.get("name", ""),
                 "done": True,
                 "scraped_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                "submodels": submodels,
             }
-            if specs:
-                entry.update(specs)
-                print(f"  base=${specs['base_price']}  chips={len(specs.get('chips',[]))} ram={len(specs.get('ram_adj',{}))} storage={len(specs.get('storage_adj',{}))}")
+            if submodels:
+                # Also flatten the first submodel into entry for back-compat
+                first_key = next(iter(submodels))
+                entry.update({k: v for k, v in submodels[first_key].items() if k != "model_label"})
+                print(f"  submodels={len(submodels)}  first base=${submodels[first_key].get('base_price', 0)}")
             else:
                 entry["error"] = "no_specs"
             state[key] = entry
