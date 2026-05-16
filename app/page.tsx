@@ -10917,8 +10917,9 @@ export default function Home() {
                 <h3 className="text-lg font-bold mb-1">Get price alerts &amp; deals</h3>
                 <p className="text-[#e6e6e6] text-sm mb-4">We&apos;ll let you know when buyback prices go up or we run a promo. No spam — just money.</p>
                 {newsletterSubmitted ? (
-                  <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-xl p-4">
-                    <p className="text-[#00c853] font-semibold text-sm">You&apos;re in! We&apos;ll keep you posted.</p>
+                  <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-4">
+                    <p className="text-[#00c853] font-bold text-sm">You&apos;re in. Check your inbox for the welcome email.</p>
+                    <p className="text-[#9a9a9a] text-[11px] mt-1">If it isn&apos;t there in a minute, peek in spam — first emails from new senders sometimes land there.</p>
                   </div>
                 ) : (
                   <form onSubmit={async (e) => {
@@ -11334,7 +11335,8 @@ export default function Home() {
                 if (!email) return;
                 fetch("/api/newsletter", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email }) }).catch(() => {});
                 if (input) input.value = "";
-                form.querySelector(".nl-ok")?.classList.remove("hidden");
+                form.classList.add("hidden");
+                form.parentElement?.querySelector(".nl-ok")?.classList.remove("hidden");
               }}
               className="flex items-center gap-2 max-w-sm mx-auto"
             >
@@ -11346,7 +11348,10 @@ export default function Home() {
               />
               <button type="submit" className="px-4 py-2 rounded-full bg-[#00c853] text-[#0a0a0a] text-xs font-extrabold hover:bg-[#00e676] transition">Sign up</button>
             </form>
-            <p className="nl-ok hidden text-[10px] text-[#00c853] mt-2">Thanks! You're on the list.</p>
+            <div className="nl-ok hidden bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl px-4 py-3 max-w-sm mx-auto">
+              <p className="text-[#00c853] text-sm font-bold">You're on the list. Check your inbox.</p>
+              <p className="text-[#9a9a9a] text-[11px] mt-1">If it isn't there in a minute, peek in spam — first emails from new senders sometimes land there.</p>
+            </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-6">
             <div>
