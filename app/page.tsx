@@ -6236,6 +6236,35 @@ export default function Home() {
           { list: LG_GRAM_PRO_16_2IN1_VARIANTS, dt: "lg_pc", cat: "computers" },
           { list: LG_GRAM_PRO_17_VARIANTS, dt: "lg_pc", cat: "computers" },
           { list: LG_GRAM_SUPERSLIM_15_VARIANTS, dt: "lg_pc", cat: "computers" },
+          // Desktops
+          { list: DELL_DESKTOP_MODELS, dt: "dell_desktop", cat: "desktops" },
+          { list: LENOVO_DESKTOP_MODELS, dt: "lenovo_desktop", cat: "desktops" },
+          { list: HP_DESKTOP_MODELS, dt: "hp_desktop", cat: "desktops" },
+          { list: ASUS_DESKTOP_MODELS, dt: "asus_desktop", cat: "desktops" },
+          { list: ALIENWARE_DESKTOP_MODELS, dt: "alienware_desktop", cat: "desktops" },
+          { list: MSI_DESKTOP_MODELS, dt: "msi_desktop", cat: "desktops" },
+          // Alienware laptops
+          { list: ALIENWARE_MODELS, dt: "alienware", cat: "computers" },
+          // VR / mixed reality headsets
+          { list: APPLE_VR_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "apple_vr", cat: "vr" },
+          { list: META_VR_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "meta_vr", cat: "vr" },
+          { list: VALVE_VR_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "valve_vr", cat: "vr" },
+          { list: PSVR_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "psvr", cat: "vr" },
+          // Smartwatches
+          { list: APPLEWATCH_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "applewatch", cat: "watches" },
+          { list: PIXELWATCH_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "pixelwatch", cat: "watches" },
+          { list: GARMIN_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "garmin", cat: "watches" },
+          { list: SAMSUNGWATCH_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "samsungwatch", cat: "watches" },
+          // Other consoles (Sony already covered via SONY_SERIES)
+          { list: MICROSOFT_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "microsoft", cat: "consoles" },
+          { list: NINTENDO_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "nintendo", cat: "consoles" },
+          // Drones
+          { list: DJI_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "dji", cat: "drones" },
+          // Non-Apple tablets
+          { list: SAMSUNG_TAB_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "samsung_tab", cat: "tablets" },
+          { list: LENOVO_TAB_SERIES.flatMap(s => s.variants) as unknown as { id: string; label: string; base: number; image?: string }[], dt: "lenovo_tab", cat: "tablets" },
+          { list: ONEPLUS_TAB_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "oneplus_tab", cat: "tablets" },
+          { list: GOOGLE_TAB_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "google_tab", cat: "tablets" },
         ];
         for (const fl of flatLists) {
           for (const v of fl.list) {
