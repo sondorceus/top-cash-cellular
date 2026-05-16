@@ -95,18 +95,22 @@ def rule_price_floor_pc_laptops() -> list[Finding]:
 
 
 def rule_page_tsx_duplicate_ids() -> list[Finding]:
-    """No two device variants should share an id. We narrow the regex to
-    variant-object shape `{ id: "...", label: "..."` so JSX form ids
-    (like storage labels "16", carrier ids "att") don't trigger.
+    """No two DEVICE VARIANTS should share an id. Variant objects have
+    base / inquiryOnly / image — those are real model picker entries.
+    Lookup-table entries (GARMIN_EDITIONS / TABLET_SPECS / brand_extras
+    options / MODEL_GROUPS sub-series) intentionally repeat keys and
+    are not what this rule is checking.
     """
     if not PAGE.exists():
         return []
     src = PAGE.read_text()
-    # Variant objects always have id followed shortly by label.
-    # Filter out short / pure-numeric ids — those are usually shared
-    # storage/RAM tier labels across multiple device specs, not real
-    # variant collisions.
-    ids = re.findall(r'\{\s*id:\s*"([^"]+)",\s*label:\s*"', src)
+    # Match only real variant objects: id + label + (base | inquiryOnly | image).
+    # That excludes brand_extras options ({id,label,multiplier}), edition
+    # entries ({id,label,adj}), MODEL_GROUPS rows, etc.
+    ids = re.findall(
+        r'\{\s*id:\s*"([^"]+)",\s*label:\s*"[^"]+"[^}]*?(?:base|inquiryOnly|image):',
+        src,
+    )
     seen = {}
     for vid in ids:
         if len(vid) < 3 or vid.isdigit() or vid.endswith("gb"):
@@ -115,7 +119,7 @@ def rule_page_tsx_duplicate_ids() -> list[Finding]:
     dupes = [f"{vid} appears {n}×" for vid, n in seen.items() if n > 1]
     if not dupes:
         return [Finding("page-duplicate-ids", "info", f"no duplicate variant ids ({len(ids)} variants scanned)")]
-    return [Finding("page-duplicate-ids", "warn", f"{len(dupes)} duplicated variant ids", dupes)]
+    return [Finding("page-duplicate-ids", "fail", f"{len(dupes)} duplicated variant ids", dupes)]
 
 
 def rule_pc_specs_baseline_quote_nonzero() -> list[Finding]:
@@ -228,17 +232,90 @@ def rule_inquiry_vs_base_consistency() -> list[Finding]:
 
 
 def rule_page_variants_have_image() -> list[Finding]:
-    """Every variant must reference a file under public/devices/.
-    Doesn't verify the file exists (cheap+fast lint); flags obvious typos.
-    """
+    """Every variant image should reference a real local file.
+    Accepts /devices/* (most variants) AND root-level /*.png|.webp|.jpg
+    (legacy iPhone/iPad/Samsung images at public root). Flags only
+    paths that don't match either pattern."""
     if not PAGE.exists():
         return []
     src = PAGE.read_text()
     images = re.findall(r'image:\s*"([^"]+)"', src)
-    bad = [img for img in images if img and not img.startswith("/devices/") and not img.startswith("http")]
+    ok_re = re.compile(r"^/(devices/|[\w-]+\.(png|jpg|jpeg|webp|svg))")
+    bad = [img for img in images if img and not ok_re.match(img) and not img.startswith("http")]
     if not bad:
-        return [Finding("page-image-paths", "info", "all variant images point at /devices/")]
-    return [Finding("page-image-paths", "warn", f"{len(bad)} images not under /devices/", list(set(bad)))]
+        return [Finding("page-image-paths", "info", f"all {len(set(images))} variant image paths look local")]
+    return [Finding("page-image-paths", "warn", f"{len(bad)} images not under /devices/ or root", list(set(bad)))]
+
+
+def rule_tablet_specs_match_scrape() -> list[Finding]:
+    """Every priced tablet variant in page.tsx must have a TABLET_SPECS
+    entry, and that entry's cellularAdj / stylusAdj / storages must
+    reflect what the IWM scrape says for that model. This is the rule
+    that would have caught the generic-defaults bug: a Samsung Tab S5e
+    showing an S Pen question when IWM has no stylus question for it,
+    a Lenovo Legion Tab being asked about LTE when IWM doesn't, etc.
+    """
+    adj_path = ROOT / "iwm-tablet-adjustments.json"
+    if not PAGE.exists() or not adj_path.exists():
+        return []
+    src = PAGE.read_text()
+    iwm = json.loads(adj_path.read_text())
+
+    # Parse the inline MAP from gen-tablet-specs.py — easier than
+    # importing. Each line: "vid": "iwm-key",
+    map_path = ROOT / "scripts" / "gen-tablet-specs.py"
+    mapping = {}
+    if map_path.exists():
+        in_map = False
+        for line in map_path.read_text().splitlines():
+            if "MAP = {" in line: in_map = True; continue
+            if in_map and line.strip() == "}": break
+            if in_map:
+                m = re.match(r'\s*"([^"]+)":\s*"([^"]+)"', line)
+                if m: mapping[m.group(1)] = m.group(2)
+
+    # Pull the inline TABLET_SPECS from page.tsx for compare.
+    specs_block_re = re.search(r"const TABLET_SPECS:.*?=\s*\{(.*?)\n\};", src, re.DOTALL)
+    page_specs = {}
+    if specs_block_re:
+        for line in specs_block_re.group(1).splitlines():
+            # Allow trailing JS comments after the closing }.
+            m = re.match(r'\s*(\w+):\s*\{(.*?)\},?\s*(//.*)?$', line)
+            if not m: continue
+            vid, body = m.group(1), m.group(2)
+            entry = {}
+            for fm in re.finditer(r"(cellularAdj|stylusAdj):\s*(-?\d+)", body):
+                entry[fm.group(1)] = int(fm.group(2))
+            sm = re.search(r"storages:\s*\[([^\]]+)\]", body)
+            if sm:
+                entry["storages"] = re.findall(r'"([^"]+)"', sm.group(1))
+            page_specs[vid] = entry
+
+    problems = []
+    for vid, iwm_key in mapping.items():
+        if vid not in page_specs:
+            problems.append(f"{vid}: in gen-tablet-specs MAP but missing from TABLET_SPECS in page.tsx")
+            continue
+        e = iwm.get(iwm_key, {})
+        ps = page_specs[vid]
+        # Cellular: page should have cellularAdj iff IWM has a NON-ZERO
+        # connectivity delta. IWM sometimes lists both Wi-Fi + Cellular
+        # at the same price ($0 delta) — those aren't worth a question.
+        conn = e.get("connectivity_adj") or {}
+        iwm_cell_delta = max((abs(v) for v in conn.values()), default=0)
+        iwm_has_cell = iwm_cell_delta > 0
+        page_has_cell = "cellularAdj" in ps
+        if iwm_has_cell != page_has_cell:
+            problems.append(f"{vid}: IWM cellular={iwm_has_cell} (delta=${iwm_cell_delta}) but page cellularAdj present={page_has_cell}")
+        # Stylus: same
+        iwm_has_styl = bool(e.get("stylus_adj"))
+        page_has_styl = "stylusAdj" in ps
+        if iwm_has_styl != page_has_styl:
+            problems.append(f"{vid}: IWM stylus={iwm_has_styl} but page stylusAdj present={page_has_styl}")
+
+    if not problems:
+        return [Finding("tablet-specs-match", "info", f"all {len(mapping)} tablet specs match IWM scrape")]
+    return [Finding("tablet-specs-match", "fail", f"{len(problems)} tablet specs drifted from IWM scrape", problems)]
 
 
 RULES: list[Callable[[], list[Finding]]] = [
@@ -250,6 +327,7 @@ RULES: list[Callable[[], list[Finding]]] = [
     rule_topprice_drift,
     rule_inquiry_vs_base_consistency,
     rule_page_variants_have_image,
+    rule_tablet_specs_match_scrape,
 ]
 
 

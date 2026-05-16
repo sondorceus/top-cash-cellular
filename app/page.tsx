@@ -2621,9 +2621,9 @@ const SURFACE_DUO_VARIANTS = [
   { id: "surfduo1", label: "Surface Duo", base: 0, inquiryOnly: true },
 ];
 const SURFACE_SERIES = [
-  { id: "surf_pro", label: "Pro", year: "Flagship", topPrice: 0, variants: SURFACE_PRO_VARIANTS, inquiryOnly: true },
-  { id: "surf_go", label: "Go", year: "Compact", topPrice: 0, variants: SURFACE_GO_VARIANTS, inquiryOnly: true },
-  { id: "surf_x", label: "Pro X", year: "ARM Ultra-thin", topPrice: 0, variants: SURFACE_X_VARIANTS, inquiryOnly: true },
+  { id: "surf_pro", label: "Pro", year: "Flagship", topPrice: 580, variants: SURFACE_PRO_VARIANTS },
+  { id: "surf_go", label: "Go", year: "Compact", topPrice: 248, variants: SURFACE_GO_VARIANTS },
+  { id: "surf_x", label: "Pro X", year: "ARM Ultra-thin", topPrice: 180, variants: SURFACE_X_VARIANTS },
   { id: "surf_bookstudio", label: "Book & Laptop Studio", year: "Hybrid", topPrice: 0, variants: SURFACE_BOOKSTUDIO_VARIANTS, inquiryOnly: true },
   { id: "surf_original", label: "Original (Non-Pro)", year: "RT / 2 / 3", topPrice: 0, variants: SURFACE_ORIGINAL_VARIANTS, inquiryOnly: true },
   { id: "surf_duo", label: "Duo", year: "Dual-Screen", topPrice: 0, variants: SURFACE_DUO_VARIANTS, inquiryOnly: true },
@@ -2663,7 +2663,7 @@ const LENOVO_THINKTAB_VARIANTS = [
   { id: "thinktabx11", label: "ThinkTab X11", base: 0, inquiryOnly: true },
 ];
 const LENOVO_TAB_SERIES = [
-  { id: "lenovo_legion", label: "Legion", year: "Gaming", topPrice: 0, variants: LENOVO_LEGION_TAB_VARIANTS, inquiryOnly: true },
+  { id: "lenovo_legion", label: "Legion", year: "Gaming", topPrice: 189, variants: LENOVO_LEGION_TAB_VARIANTS },
   { id: "lenovo_ideatab", label: "Idea Tab", year: "Productivity", topPrice: 0, variants: LENOVO_IDEA_TAB_VARIANTS, inquiryOnly: true },
   { id: "lenovo_tabpk", label: "Tab P & K", year: "Education", topPrice: 0, variants: LENOVO_TABPK_VARIANTS, inquiryOnly: true },
   { id: "lenovo_tabm", label: "Tab M & Plus", year: "Budget", topPrice: 0, variants: LENOVO_TABM_VARIANTS, inquiryOnly: true },
@@ -3393,9 +3393,14 @@ const TABLET_SPECS: Record<string, TabletSpec> = {
   // into the config (chip+RAM+SSD) variant they pick.
   surfpro11:    { cellularAdj: 90 },
   surfpro10biz: { cellularAdj: 90 },
+  surfpro9:     { },  // no separate LTE question on IWM (baked into config picker)
   surfpro8:     { cellularAdj: 32 },
   surfpro7p:    { cellularAdj: 32 },
   surfpro7:     { cellularAdj: 9 },
+  surfpro6:     { },  // no separate LTE question on IWM
+  surfgo4:      { },  // no separate LTE question on IWM
+  surfgo3:      { },  // no separate LTE question on IWM
+  surfgo2:      { },  // no separate LTE question on IWM
   surfprox2020: { cellularAdj: 18 },
   surfprox2019: { cellularAdj: 18 },
 };
