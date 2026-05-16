@@ -1,0 +1,702 @@
+{
+  "google-tablet/google-pixel-slate": {
+    "base_price": 5,
+    "battery_adj": {},
+    "charger_adj": {
+      "keyboard": 5,
+      "no": -5,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -25,
+      "good": -10,
+      "mint": 0,
+      "sealed": 10
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Google Pixel Slate",
+    "model": "google-pixel-slate",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T06:44:03+00:00",
+    "series": "google-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "Intel Celeron, 4GB RAM, 64GB Storage": 0,
+      "Intel Celeron, 8GB RAM, 64GB Storage": 5,
+      "Intel Core i5, 8GB RAM, 128GB Storage": 60,
+      "Intel Core i7, 16GB RAM, 256GB Storage": 85,
+      "Intel Core m3, 8GB RAM, 64GB Storage": 25
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/google-tablet/google-pixel-slate"
+  },
+  "google-tablet/google-pixel-tablet": {
+    "base_price": 220,
+    "battery_adj": {},
+    "charger_adj": {
+      "original box": 1,
+      "powercable + adapter": 5,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 15,
+      "fair": 70,
+      "good": 140,
+      "mint": 180,
+      "sealed": 220
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Google Pixel Tablet",
+    "model": "google-pixel-tablet",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:44:00+00:00",
+    "series": "google-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 35
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/google-tablet/google-pixel-tablet"
+  },
+  "lenovo-tablet/lenovo-legion-tab-gen-3": {
+    "base_price": 255,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 25,
+      "fair": 130,
+      "good": 180,
+      "mint": 210,
+      "sealed": 255
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Lenovo Legion Tab Gen 3",
+    "model": "lenovo-legion-tab-gen-3",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:43:38+00:00",
+    "series": "lenovo-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "256GB": 0,
+      "512GB": 15
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/lenovo-tablet/lenovo-legion-tab-gen-3"
+  },
+  "lenovo-tablet/lenovo-thinkpad-x12-detachable": {
+    "base_price": -15,
+    "battery_adj": {
+      "good": 0,
+      "poor": -90
+    },
+    "charger_adj": {
+      "keyboard": 100,
+      "no": -20,
+      "pen": 15,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -130,
+      "good": -40,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -45
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Lenovo ThinkPad X12 Detachable",
+    "model": "lenovo-thinkpad-x12-detachable",
+    "operational_adj": {
+      "no": 0,
+      "yes": 60
+    },
+    "scraped_at": "2026-05-16T06:43:41+00:00",
+    "series": "lenovo-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB SSD": -5,
+      "16GB RAM": 40,
+      "1TB SSD": 55,
+      "256GB SSD": 15,
+      "32GB RAM": 55,
+      "4GB RAM": 0,
+      "512GB SSD": 35,
+      "8GB RAM": 15
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/lenovo-tablet/lenovo-thinkpad-x12-detachable"
+  },
+  "lenovo-tablet/lenovo-yoga-tab-plus": {
+    "base_price": 225,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 25,
+      "fair": 110,
+      "good": 150,
+      "mint": 175,
+      "sealed": 225
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Lenovo Yoga Tab Plus",
+    "model": "lenovo-yoga-tab-plus",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:43:44+00:00",
+    "series": "lenovo-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "256GB": 0,
+      "512GB": 15
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/lenovo-tablet/lenovo-yoga-tab-plus"
+  },
+  "oneplus-tablet/oneplus-pad": {
+    "base_price": 130,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 10,
+      "fair": 50,
+      "good": 80,
+      "mint": 100,
+      "sealed": 130
+    },
+    "connectivity_adj": {},
+    "iwm_name": "OnePlus Pad",
+    "model": "oneplus-pad",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:43:57+00:00",
+    "series": "oneplus-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 35
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/oneplus-tablet/oneplus-pad"
+  },
+  "oneplus-tablet/oneplus-pad-2": {
+    "base_price": 200,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 20,
+      "fair": 100,
+      "good": 150,
+      "mint": 170,
+      "sealed": 200
+    },
+    "connectivity_adj": {},
+    "iwm_name": "OnePlus Pad 2",
+    "model": "oneplus-pad-2",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:43:50+00:00",
+    "series": "oneplus-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 30
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/oneplus-tablet/oneplus-pad-2"
+  },
+  "oneplus-tablet/oneplus-pad-3": {
+    "base_price": 360,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 35,
+      "fair": 250,
+      "good": 300,
+      "mint": 320,
+      "sealed": 360
+    },
+    "connectivity_adj": {},
+    "iwm_name": "OnePlus Pad 3",
+    "model": "oneplus-pad-3",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:43:47+00:00",
+    "series": "oneplus-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "256GB": 0
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/oneplus-tablet/oneplus-pad-3"
+  },
+  "oneplus-tablet/oneplus-pad-go-2": {
+    "base_price": 200,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 25,
+      "fair": 110,
+      "good": 150,
+      "mint": 170,
+      "sealed": 200
+    },
+    "connectivity_adj": {},
+    "iwm_name": "OnePlus Pad Go 2",
+    "model": "oneplus-pad-go-2",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:43:53+00:00",
+    "series": "oneplus-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 30
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/oneplus-tablet/oneplus-pad-go-2"
+  },
+  "samsung-tablet/galaxy-tab-s10-fe": {
+    "base_price": 200,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 50,
+      "fair": 100,
+      "good": 140,
+      "mint": 170,
+      "sealed": 200,
+      "verygood": 150
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S10 FE",
+    "model": "galaxy-tab-s10-fe",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:43:09+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 20
+    },
+    "stylus_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s10-fe"
+  },
+  "samsung-tablet/galaxy-tab-s10-fe-plus": {
+    "base_price": 280,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 50,
+      "fair": 150,
+      "good": 210,
+      "mint": 250,
+      "sealed": 280,
+      "verygood": 230
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S10 FE+",
+    "model": "galaxy-tab-s10-fe-plus",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:43:05+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 35
+    },
+    "stylus_adj": {
+      "no": -15,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s10-fe-plus"
+  },
+  "samsung-tablet/galaxy-tab-s10-lite": {
+    "base_price": 175,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 15,
+      "fair": 30,
+      "good": 75,
+      "mint": 125,
+      "sealed": 175,
+      "verygood": 100
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S10 Lite",
+    "model": "galaxy-tab-s10-lite",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:43:12+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 15
+    },
+    "stylus_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s10-lite"
+  },
+  "samsung-tablet/galaxy-tab-s10-plus": {
+    "base_price": 390,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 65,
+      "fair": 220,
+      "good": 290,
+      "mint": 350,
+      "sealed": 390,
+      "verygood": 320
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S10+",
+    "model": "galaxy-tab-s10-plus",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:43:02+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "256GB": 0,
+      "512GB": 50
+    },
+    "stylus_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s10-plus"
+  },
+  "samsung-tablet/galaxy-tab-s10-ultra": {
+    "base_price": 505,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 85,
+      "fair": 370,
+      "good": 425,
+      "mint": 465,
+      "sealed": 505,
+      "verygood": 445
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S10 Ultra",
+    "model": "galaxy-tab-s10-ultra",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:42:59+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "1TB": 75,
+      "256GB": 0,
+      "512GB": 40
+    },
+    "stylus_adj": {
+      "no": -50,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s10-ultra"
+  },
+  "samsung-tablet/galaxy-tab-s11": {
+    "base_price": 380,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 65,
+      "fair": 250,
+      "good": 320,
+      "mint": 360,
+      "sealed": 380,
+      "verygood": 340
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S11",
+    "model": "galaxy-tab-s11",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:42:56+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 25,
+      "512GB": 50
+    },
+    "stylus_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s11"
+  },
+  "samsung-tablet/galaxy-tab-s11-ultra": {
+    "base_price": 630,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 100,
+      "fair": 410,
+      "good": 520,
+      "mint": 570,
+      "sealed": 630,
+      "verygood": 550
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S11 Ultra",
+    "model": "galaxy-tab-s11-ultra",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:42:52+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "1TB": 125,
+      "256GB": 0,
+      "512GB": 60
+    },
+    "stylus_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s11-ultra"
+  },
+  "samsung-tablet/galaxy-tab-s4-105": {
+    "base_price": 45,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 15,
+      "fair": 10,
+      "good": 20,
+      "mint": 30,
+      "sealed": 45
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S4 10.5",
+    "model": "galaxy-tab-s4-105",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T06:43:35+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "256GB": 10,
+      "64GB": 0
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s4-105"
+  },
+  "samsung-tablet/galaxy-tab-s5e": {
+    "base_price": 40,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 14,
+      "fair": 10,
+      "good": 15,
+      "mint": 25,
+      "sealed": 40
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S5e",
+    "model": "galaxy-tab-s5e",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T06:43:32+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 20,
+      "64GB": 0
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s5e"
+  },
+  "samsung-tablet/galaxy-tab-s6": {
+    "base_price": 100,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 52,
+      "fair": 55,
+      "good": 70,
+      "mint": 80,
+      "sealed": 100
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S6",
+    "model": "galaxy-tab-s6",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T06:43:29+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 20
+    },
+    "stylus_adj": {
+      "no": -15,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s6"
+  },
+  "samsung-tablet/galaxy-tab-s6-lite": {
+    "base_price": 80,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 14,
+      "fair": 25,
+      "good": 40,
+      "mint": 55,
+      "sealed": 80
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S6 Lite",
+    "model": "galaxy-tab-s6-lite",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T06:43:25+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 15,
+      "64GB": 0
+    },
+    "stylus_adj": {
+      "no": -15,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s6-lite"
+  },
+  "samsung-tablet/galaxy-tab-s7": {
+    "base_price": 130,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 10,
+      "fair": 50,
+      "good": 80,
+      "mint": 100,
+      "sealed": 130
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S7",
+    "model": "galaxy-tab-s7",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:43:22+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 20,
+      "512GB": 40
+    },
+    "stylus_adj": {
+      "no": -15,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s7"
+  },
+  "samsung-tablet/galaxy-tab-s7-fe": {
+    "base_price": 120,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 0,
+      "fair": 50,
+      "good": 80,
+      "mint": 90,
+      "sealed": 120
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S7 FE",
+    "model": "galaxy-tab-s7-fe",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T06:43:19+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 25,
+      "256GB": 50,
+      "64GB": 0
+    },
+    "stylus_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s7-fe"
+  },
+  "samsung-tablet/galaxy-tab-s7-plus": {
+    "base_price": 150,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 30,
+      "fair": 75,
+      "good": 100,
+      "mint": 120,
+      "sealed": 150
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S7+",
+    "model": "galaxy-tab-s7-plus",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:43:15+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 25,
+      "512GB": 50
+    },
+    "stylus_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s7-plus"
+  }
+}

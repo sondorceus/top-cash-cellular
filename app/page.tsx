@@ -2553,13 +2553,13 @@ const PSVR_MODELS = [
 ];
 
 const SAMSUNG_TAB_MODELS = [
-  { id: "stabs11u", label: "Galaxy Tab S11 Ultra", image: "/devices/galaxy-tab-s11-ultra.webp" },
-  { id: "stabs11", label: "Galaxy Tab S11", image: "/devices/galaxy-tab-s11.webp" },
-  { id: "stabs10u", label: "Galaxy Tab S10 Ultra", image: "/devices/galaxy-tab-s10-ultra.png" },
-  { id: "stabs10p", label: "Galaxy Tab S10+", image: "/devices/galaxy-tab-s10-plus.webp" },
-  { id: "stabs10fep", label: "Galaxy Tab S10 FE+", image: "/devices/galaxy-tab-s10-fe-plus.webp" },
-  { id: "stabs10fe", label: "Galaxy Tab S10 FE", image: "/devices/galaxy-tab-s10-fe.webp" },
-  { id: "stabs10l", label: "Galaxy Tab S10 Lite", image: "/devices/galaxy-tab-s10-lite.webp" },
+  { id: "stabs11u", label: "Galaxy Tab S11 Ultra", base: 567, inquiryOnly: false, image: "/devices/galaxy-tab-s11-ultra.webp" },
+  { id: "stabs11", label: "Galaxy Tab S11", base: 342, inquiryOnly: false, image: "/devices/galaxy-tab-s11.webp" },
+  { id: "stabs10u", label: "Galaxy Tab S10 Ultra", base: 454, inquiryOnly: false, image: "/devices/galaxy-tab-s10-ultra.png" },
+  { id: "stabs10p", label: "Galaxy Tab S10+", base: 351, inquiryOnly: false, image: "/devices/galaxy-tab-s10-plus.webp" },
+  { id: "stabs10fep", label: "Galaxy Tab S10 FE+", base: 252, inquiryOnly: false, image: "/devices/galaxy-tab-s10-fe-plus.webp" },
+  { id: "stabs10fe", label: "Galaxy Tab S10 FE", base: 180, inquiryOnly: false, image: "/devices/galaxy-tab-s10-fe.webp" },
+  { id: "stabs10l", label: "Galaxy Tab S10 Lite", base: 158, inquiryOnly: false, image: "/devices/galaxy-tab-s10-lite.webp" },
   { id: "stabs9u", label: "Galaxy Tab S9 Ultra", image: "/devices/galaxy-tab-s9-ultra.webp" },
   { id: "stabs9p", label: "Galaxy Tab S9+", image: "/devices/galaxy-tab-s9-plus.webp" },
   { id: "stabs9", label: "Galaxy Tab S9", image: "/devices/galaxy-tab-s9.webp" },
@@ -2568,13 +2568,13 @@ const SAMSUNG_TAB_MODELS = [
   { id: "stabs8u", label: "Galaxy Tab S8 Ultra", image: "/devices/galaxy-tab-s8-ultra.webp" },
   { id: "stabs8p", label: "Galaxy Tab S8+", image: "/devices/galaxy-tab-s8-plus.webp" },
   { id: "stabs8", label: "Galaxy Tab S8", image: "/devices/galaxy-tab-s8.webp" },
-  { id: "stabs7p", label: "Galaxy Tab S7+", image: "/devices/galaxy-tab-s7-plus.webp" },
-  { id: "stabs7fe", label: "Galaxy Tab S7 FE", image: "/devices/galaxy-tab-s7-fe.png" },
-  { id: "stabs7", label: "Galaxy Tab S7", image: "/devices/galaxy-tab-s7.webp" },
-  { id: "stabs6l", label: "Galaxy Tab S6 Lite", image: "/devices/galaxy-tab-s6-lite.webp" },
-  { id: "stabs6", label: "Galaxy Tab S6", image: "/devices/galaxy-tab-s6.webp" },
-  { id: "stabs5e", label: "Galaxy Tab S5e", image: "/devices/galaxy-tab-s5e.webp" },
-  { id: "stabs4", label: "Galaxy Tab S4 10.5", image: "/devices/galaxy-tab-s4-105.webp" },
+  { id: "stabs7p", label: "Galaxy Tab S7+", base: 135, inquiryOnly: false, image: "/devices/galaxy-tab-s7-plus.webp" },
+  { id: "stabs7fe", label: "Galaxy Tab S7 FE", base: 108, inquiryOnly: false, image: "/devices/galaxy-tab-s7-fe.png" },
+  { id: "stabs7", label: "Galaxy Tab S7", base: 117, inquiryOnly: false, image: "/devices/galaxy-tab-s7.webp" },
+  { id: "stabs6l", label: "Galaxy Tab S6 Lite", base: 72, inquiryOnly: false, image: "/devices/galaxy-tab-s6-lite.webp" },
+  { id: "stabs6", label: "Galaxy Tab S6", base: 90, inquiryOnly: false, image: "/devices/galaxy-tab-s6.webp" },
+  { id: "stabs5e", label: "Galaxy Tab S5e", base: 36, inquiryOnly: false, image: "/devices/galaxy-tab-s5e.webp" },
+  { id: "stabs4", label: "Galaxy Tab S4 10.5", base: 40, inquiryOnly: false, image: "/devices/galaxy-tab-s4-105.webp" },
   { id: "staba9", label: "Galaxy Tab A9+", image: "/devices/galaxy-tab-a9-plus.webp" },
 ];
 
@@ -2639,7 +2639,7 @@ const SURFACE_MODELS = [
 
 const LENOVO_LEGION_TAB_VARIANTS = [
   { id: "legtabg5", label: "Legion Tab Gen 5 (8.8\")", base: 0, inquiryOnly: true },
-  { id: "legtabg3", label: "Legion Tab Gen 3", base: 0, inquiryOnly: true },
+  { id: "legtabg3", label: "Legion Tab Gen 3", base: 230, inquiryOnly: false },
   { id: "legy900_2026", label: "Legion Y900 (2026)", base: 0, inquiryOnly: true },
 ];
 const LENOVO_IDEA_TAB_VARIANTS = [
@@ -2678,12 +2678,14 @@ const LENOVO_TAB_MODELS = [
 ];
 
 const ONEPLUS_TAB_MODELS = [
-  { id: "oppad2", label: "OnePlus Pad 2" },
-  { id: "oppad", label: "OnePlus Pad" },
+  { id: "oppad3",   label: "OnePlus Pad 3",     base: 324, inquiryOnly: false },
+  { id: "oppadgo2", label: "OnePlus Pad Go 2",  base: 180, inquiryOnly: false },
+  { id: "oppad2",   label: "OnePlus Pad 2",     base: 180, inquiryOnly: false },
+  { id: "oppad",    label: "OnePlus Pad",       base: 117, inquiryOnly: false },
 ];
 
 const GOOGLE_TAB_MODELS = [
-  { id: "gpixeltab", label: "Pixel Tablet", image: "/devices/pixel-tablet.webp" },
+  { id: "gpixeltab", label: "Pixel Tablet", base: 198, inquiryOnly: false, image: "/devices/pixel-tablet.webp" },
 ];
 
 // Sub-section grouping for the flat device lists (watches, consoles,
