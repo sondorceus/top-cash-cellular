@@ -7153,6 +7153,14 @@ export default function Home() {
             </div>
           </div>
         )}
+        {/* FUNNEL PROGRESS BAR — last row of the nav so it always sits
+            directly under whatever else is in the sticky header, no
+            hardcoded top offsets to maintain. */}
+        {step !== "device" && step !== "done" && page === "home" && (
+          <div className="h-1 bg-white/10">
+            <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${({category: 8, brand: 15, model: 22, storage: 32, condition: 42, carrier: 52, quote: 62, checkout: 72, payout: 82, contact: 92} as Record<string,number>)[step] ?? 0}%` }} />
+          </div>
+        )}
       </nav>
 
       {/* MOBILE MENU DRAWER — same Sell/Bulk/Support/Login structure as the desktop mega-menu, accordion-style */}
@@ -10742,7 +10750,7 @@ export default function Home() {
             <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <h2 className="text-xl font-bold text-center mb-2">Not in Austin? Ship to us</h2>
               <p className="text-[#e6e6e6] text-sm text-center mb-8">Mail your device from anywhere in the US. We pay shipping.</p>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {[
                   { num: "1", icon: "📦", title: "Pack", desc: "We send you a free prepaid shipping label" },
                   { num: "2", icon: "✈️", title: "Ship", desc: "Drop it off at any USPS or UPS location" },
@@ -11632,12 +11640,9 @@ export default function Home() {
         );
       })()}
 
-      {/* PROGRESS BAR — shows during flow */}
-      {step !== "device" && step !== "done" && page === "home" && (
-        <div className="fixed top-[52px] left-0 right-0 z-30 h-1 bg-white/10">
-          <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${({category: 8, brand: 15, model: 22, storage: 32, condition: 42, carrier: 52, quote: 62, checkout: 72, payout: 82, contact: 92} as Record<string,number>)[step] ?? 0}%` }} />
-        </div>
-      )}
+      {/* Progress bar moved into the sticky <nav> above so it tracks the
+          dynamic nav height (logo row + search row) instead of a
+          hardcoded top-[52px] that broke when the search row was added. */}
 
       {cookieConsent === null && (
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111]/95 backdrop-blur-sm border-t border-white/10 px-3 py-2 animate-[fadeIn_0.3s_ease-out]">
