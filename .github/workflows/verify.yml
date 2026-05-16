@@ -1,0 +1,35 @@
+name: Verifier
+
+# Layer 3 of the accountability system — runs scripts/verifier.py on
+# every push to master. Posts a [VERIFIED-OK] or [BUG-N] message to
+# Mission Control comms so the agent fleet can see whether the latest
+# commit passed sanity checks.
+#
+# Rule set lives in scripts/verifier.py — extend it whenever a bug
+# slips through that the verifier could have caught.
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run verifier and post to MC
+        env:
+          MC_API_KEY: ${{ secrets.MC_API_KEY }}
+        run: |
+          python scripts/verifier.py --post-mc --commit "${{ github.sha }}"
+        # Exit code 1 (FAIL) does NOT fail the workflow — we want the MC
+        # post to land regardless so the team sees the result. The
+        # `|| true` keeps the job green; CI status reflects "verifier ran",
+        # not "everything passed". The MC post carries the verdict.
+        continue-on-error: true
