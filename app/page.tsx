@@ -1919,9 +1919,9 @@ const ASUS_ROG_FLOW_VARIANTS = [
   { id: "as_rog_flow_x13_gv301", label: "ROG Flow X13 GV301", base: 464, inquiryOnly: false, image: "/devices/asus-rog-republic-of-gamers-flow-x13-gv301.png" },
 ];
 const ASUS_ROG_SUB_SERIES = [
-  { id: "asus_rog_strix", label: "ROG Strix", year: "Tournament-grade", topPrice: 0, variants: ASUS_ROG_STRIX_VARIANTS, inquiryOnly: true, image: "/devices/asus-rog-strix.webp" },
-  { id: "asus_rog_zephyrus", label: "ROG Zephyrus", year: "Slim performance", topPrice: 0, variants: ASUS_ROG_ZEPHYRUS_VARIANTS, inquiryOnly: true, image: "/devices/asus-rog-zephyrus.webp" },
-  { id: "asus_rog_flow", label: "ROG Flow", year: "Convertible / 2-in-1", topPrice: 0, variants: ASUS_ROG_FLOW_VARIANTS, inquiryOnly: true, image: "/devices/asus-rog-zephyrus.webp" },
+  { id: "asus_rog_strix", label: "ROG Strix", year: "Tournament-grade", topPrice: 1912, variants: ASUS_ROG_STRIX_VARIANTS, image: "/devices/asus-rog-strix.webp" },
+  { id: "asus_rog_zephyrus", label: "ROG Zephyrus", year: "Slim performance", topPrice: 1710, variants: ASUS_ROG_ZEPHYRUS_VARIANTS, image: "/devices/asus-rog-zephyrus.webp" },
+  { id: "asus_rog_flow", label: "ROG Flow", year: "Convertible / 2-in-1", topPrice: 1215, variants: ASUS_ROG_FLOW_VARIANTS, image: "/devices/asus-rog-zephyrus.webp" },
 ];
 const ASUS_TUF_VARIANTS = [
   { id: "as_tuf_a18", label: "TUF A18", base: 734, inquiryOnly: false, image: "/devices/asus-tuf-tuf-a18-laptop.png" },
@@ -1954,11 +1954,11 @@ const ASUS_EXPERTBOOK_VARIANTS = [
   { id: "as_expertbook_b2", label: "ExpertBook B2", base: 189, inquiryOnly: false, image: "/devices/asus-expertbook-expertbook-b2.png" },
 ];
 const ASUS_PC_SERIES = [
-  { id: "asus_rog", label: "ROG", year: "Republic of Gamers", topPrice: 0, subSeries: ASUS_ROG_SUB_SERIES, inquiryOnly: true, image: "/devices/asus-rog-strix.webp" },
-  { id: "asus_tuf", label: "TUF Gaming", year: "The Ultimate Force", topPrice: 0, variants: ASUS_TUF_VARIANTS, inquiryOnly: true, image: "/devices/asus-tuf-gaming.webp" },
-  { id: "asus_proart", label: "ProArt", year: "Creator / Studiobook", topPrice: 0, variants: ASUS_PROART_VARIANTS, inquiryOnly: true, image: "/devices/asus-proart-proart-p16.png" },
-  { id: "asus_vivobook", label: "Vivobook", year: "Everyday", topPrice: 0, variants: ASUS_VIVOBOOK_VARIANTS, inquiryOnly: true, image: "/devices/asus-vivobook.webp" },
-  { id: "asus_expertbook", label: "ExpertBook", year: "Business", topPrice: 0, variants: ASUS_EXPERTBOOK_VARIANTS, inquiryOnly: true, image: "/devices/asus-expertbook-expertbook-b9.png" },
+  { id: "asus_rog", label: "ROG", year: "Republic of Gamers", topPrice: 1912, subSeries: ASUS_ROG_SUB_SERIES, image: "/devices/asus-rog-strix.webp" },
+  { id: "asus_tuf", label: "TUF Gaming", year: "The Ultimate Force", topPrice: 774, variants: ASUS_TUF_VARIANTS, image: "/devices/asus-tuf-gaming.webp" },
+  { id: "asus_proart", label: "ProArt", year: "Creator / Studiobook", topPrice: 1620, variants: ASUS_PROART_VARIANTS, image: "/devices/asus-proart-proart-p16.png" },
+  { id: "asus_vivobook", label: "Vivobook", year: "Everyday", topPrice: 225, variants: ASUS_VIVOBOOK_VARIANTS, image: "/devices/asus-vivobook.webp" },
+  { id: "asus_expertbook", label: "ExpertBook", year: "Business", topPrice: 414, variants: ASUS_EXPERTBOOK_VARIANTS, image: "/devices/asus-expertbook-expertbook-b9.png" },
 ];
 const ASUS_PC_MODELS = [
   ...ASUS_ROG_STRIX_VARIANTS, ...ASUS_ROG_ZEPHYRUS_VARIANTS, ...ASUS_ROG_FLOW_VARIANTS,
@@ -5157,10 +5157,24 @@ export default function Home() {
     setCookieConsent(saved);
   }, []);
 
-  // Scroll to top whenever step changes (so the new screen starts at the top, not at the button position)
+  // Scroll to top whenever step changes (so the new screen starts at
+  // the top, not at the button the user just clicked). On Android the
+  // "smooth" behavior often leaves the page stuck at the previous
+  // scroll position when the new section is short — looks like the
+  // page "jumped to the footer". Snap instantly and re-snap on the
+  // next animation frame so any late-rendering content also lands at
+  // the top. Mirrors the pattern at line ~10044 where buttons trigger
+  // step changes manually.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    });
   }, [step, page]);
 
   // Returning-customer detection at contact step — debounced lookup as user types phone/email
@@ -8182,7 +8196,7 @@ export default function Home() {
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[10px]">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">{s.topPrice ? `Up to $${s.topPrice}` : "Get an offer"}</p>
                     </button>
                   ))}
                 </div>
@@ -8204,7 +8218,7 @@ export default function Home() {
                       )}
                       <p className="font-bold text-base">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[11px]">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">{s.topPrice ? `Up to $${s.topPrice}` : "Get an offer"}</p>
                     </button>
                   ))}
                 </div>
