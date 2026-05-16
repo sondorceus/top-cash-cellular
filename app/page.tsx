@@ -7653,6 +7653,44 @@ export default function Home() {
               </span>
             </div>
 
+            {/* INSTANT QUOTE WIDGET — 4 hero cards for the most-asked
+                devices. Click jumps straight to the condition step with
+                the model pre-selected, skipping category/brand/model. */}
+            <div className="mt-8">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-[#e6e6e6] text-xs font-semibold uppercase tracking-wider">Quick quote — pick yours</p>
+                <span className="text-[10px] text-[#00c853] font-bold uppercase tracking-wider">Top dollar today</span>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {([
+                  { id: "ip17pm", label: "iPhone 17 Pro Max", base: 767, image: "/devices/iphone-17-pro-max-test.png", deviceType: "iphone" as const, category: "phones" as const },
+                  { id: "gs25u", label: "Galaxy S25 Ultra", base: 414, image: "/devices/gs25u.webp", deviceType: "android" as const, category: "phones" as const },
+                  { id: "mbp16m4", label: "MacBook Pro 16\" M4", base: 1456, image: "/devices/macbook-pro-m4.webp", deviceType: "macbook" as const, category: "computers" as const },
+                  { id: "ipadpro13m5", label: "iPad Pro 13\" M5", base: 610, image: "/devices/ipad-pro-13-m5.webp", deviceType: "ipad" as const, category: "tablets" as const },
+                ]).map(d => {
+                  const topPrice = getMaxPrice({ id: d.id, base: d.base }, d.deviceType);
+                  return (
+                    <button
+                      key={d.id}
+                      onClick={() => {
+                        setCategory(d.category);
+                        setDeviceType(d.deviceType);
+                        setModel({ id: d.id, label: d.label, base: d.base });
+                        setStep("condition");
+                        pushHistory("condition");
+                      }}
+                      className="group bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press"
+                    >
+                      <img src={d.image} alt={d.label} className="w-16 h-16 md:w-20 md:h-20 object-contain mb-2" loading="lazy" />
+                      <p className="text-white text-[11px] md:text-xs font-semibold leading-tight mb-1 min-h-[2.2em]">{d.label}</p>
+                      <p className="text-[#00c853] text-lg md:text-xl font-extrabold leading-none">up to ${topPrice}</p>
+                      <p className="text-[#e6e6e6] text-[10px] mt-1.5 group-hover:text-[#00c853] transition font-semibold">Get my quote →</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {/* TOP PAYOUTS TICKER — what we're paying today, no duplicates */}
             <div className="mt-8 -mx-4">
               <div className="flex items-center justify-between px-4 mb-3">
