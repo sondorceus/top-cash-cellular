@@ -37952,7 +37952,363 @@
       }
     ]
   },
-  "ln_tp_l13": {
+  "ln_tp_l13_g1": {
+    "base_price": 40,
+    "battery_adj": {
+      "good": 0,
+      "poor": -60
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -30,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 40,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 20,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_l13_g2": {
+    "base_price": 115,
+    "battery_adj": {
+      "good": 0,
+      "poor": -60
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -20,
+      "mint": 0,
+      "sealed": 15
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 115,
+        "id": "intel_core_i5_11th_gen",
+        "label": "Intel Core i5 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_l13_g3": {
+    "base_price": 135,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -60,
+      "good": -30,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 135,
+        "id": "amd_ryzen_5_pro_5675u",
+        "label": "AMD Ryzen 5 Pro 5675U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 180,
+        "id": "amd_ryzen_7_pro_5875u",
+        "label": "AMD Ryzen 7 Pro 5875U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 190,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_l13_g4": {
+    "base_price": 170,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -70,
+      "good": -35,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 170,
+        "id": "amd_ryzen_5_pro_7530u",
+        "label": "AMD Ryzen 5 Pro 7530U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 210,
+        "id": "amd_ryzen_7_pro_7730u",
+        "label": "AMD Ryzen 7 Pro 7730U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 190,
+        "id": "intel_core_i5_13th_gen",
+        "label": "Intel Core i5 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 230,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_l13_g5": {
     "base_price": 250,
     "battery_adj": {
       "good": 0,
@@ -38034,7 +38390,536 @@
       }
     ]
   },
-  "ln_tp_l14": {
+  "ln_tp_l14_g1": {
+    "base_price": 70,
+    "battery_adj": {
+      "good": 0,
+      "poor": -60
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -45,
+      "good": -20,
+      "mint": 0,
+      "sealed": 15
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 70,
+        "id": "amd_ryzen_5_pro_4650u",
+        "label": "AMD Ryzen 5 Pro 4650U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 95,
+        "id": "amd_ryzen_7_pro_4750u",
+        "label": "AMD Ryzen 7 Pro 4750U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 115,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_l14_g2": {
+    "base_price": 100,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -65,
+      "good": -25,
+      "mint": 0,
+      "sealed": 15
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 100,
+        "id": "amd_ryzen_5_pro_5650u",
+        "label": "AMD Ryzen 5 Pro 5650U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "amd_ryzen_7_pro_5850u",
+        "label": "AMD Ryzen 7 Pro 5850U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 110,
+        "id": "intel_core_i5_11th_gen",
+        "label": "Intel Core i5 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 135,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_l14_g3": {
+    "base_price": 140,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -90,
+      "good": -35,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 140,
+        "id": "amd_ryzen_5_pro_5675u",
+        "label": "AMD Ryzen 5 Pro 5675U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 170,
+        "id": "amd_ryzen_7_pro_5875u",
+        "label": "AMD Ryzen 7 Pro 5875U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 160,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_l14_g4": {
+    "base_price": 180,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -115,
+      "good": -45,
+      "mint": 0,
+      "sealed": 25
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 180,
+        "id": "amd_ryzen_5_pro_7530u",
+        "label": "AMD Ryzen 5 Pro 7530U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 225,
+        "id": "amd_ryzen_7_pro_7730u",
+        "label": "AMD Ryzen 7 Pro 7730U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 215,
+        "id": "intel_core_i5_13th_gen",
+        "label": "Intel Core i5 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 260,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_l14_g5": {
+    "base_price": 275,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -145,
+      "good": -55,
+      "mint": 0,
+      "sealed": 25
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 275,
+        "id": "amd_ryzen_5_pro_7535u",
+        "label": "AMD Ryzen 5 Pro 7535U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 340,
+        "id": "amd_ryzen_7_pro_7735u",
+        "label": "AMD Ryzen 7 Pro 7735U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "intel_core_ultra_5",
+        "label": "Intel Core Ultra 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 370,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_l14_g6": {
     "base_price": 345,
     "battery_adj": {
       "good": 0,
@@ -38165,7 +39050,323 @@
       }
     ]
   },
-  "ln_tp_l15": {
+  "ln_tp_l15_g1": {
+    "base_price": 85,
+    "battery_adj": {
+      "good": 0,
+      "poor": -60
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -65,
+      "good": -25,
+      "mint": 0,
+      "sealed": 15
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 85,
+        "id": "amd_ryzen_5_pro_4650u",
+        "label": "AMD Ryzen 5 Pro 4650U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 110,
+        "id": "amd_ryzen_7_pro_4750u",
+        "label": "AMD Ryzen 7 Pro 4750U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 115,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_l15_g2": {
+    "base_price": 135,
+    "battery_adj": {
+      "good": 0,
+      "poor": -60
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -75,
+      "good": -30,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 135,
+        "id": "amd_ryzen_5_pro_5650u",
+        "label": "AMD Ryzen 5 Pro 5650U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 160,
+        "id": "amd_ryzen_7_pro_5850u",
+        "label": "AMD Ryzen 7 Pro 5850U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 120,
+        "id": "intel_core_i5_11th_gen",
+        "label": "Intel Core i5 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 145,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_l15_g3": {
+    "base_price": 160,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -90,
+      "good": -35,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 160,
+        "id": "amd_ryzen_5_pro_5675u",
+        "label": "AMD Ryzen 5 Pro 5675U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "amd_ryzen_5_pro_4650u",
+        "label": "AMD Ryzen 5 Pro 4650U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 110,
+        "id": "amd_ryzen_7_pro_4750u",
+        "label": "AMD Ryzen 7 Pro 4750U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 115,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "amd_ryzen_7_pro_5875u",
+        "label": "AMD Ryzen 7 Pro 5875U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 170,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 215,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_l15_g4": {
     "base_price": 175,
     "battery_adj": {
       "good": 0,
@@ -38303,7 +39504,117 @@
       }
     ]
   },
-  "ln_tp_l16": {
+  "ln_tp_l16_g1": {
+    "base_price": 180,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -100,
+      "good": -50,
+      "mint": 0,
+      "sealed": 25
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 180,
+        "id": "amd_ryzen_5_pro_7535u",
+        "label": "AMD Ryzen 5 Pro 7535U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "amd_ryzen_7_pro_7735u",
+        "label": "AMD Ryzen 7 Pro 7735U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 275,
+        "id": "intel_core_ultra_5",
+        "label": "Intel Core Ultra 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 340,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_l16_g2": {
     "base_price": 250,
     "battery_adj": {
       "good": 0,
@@ -39332,7 +40643,582 @@
       }
     ]
   },
-  "ln_tp_x13": {
+  "ln_tp_x13_2in1": {
+    "base_price": 350,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -150,
+      "good": -50,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -30
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 350,
+        "id": "intel_core_ultra_5",
+        "label": "Intel Core Ultra 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 400,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x13_g1": {
+    "base_price": 40,
+    "battery_adj": {
+      "good": 0,
+      "poor": -80
+    },
+    "charger_adj": {
+      "no": -30,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -50,
+      "good": -25,
+      "mint": 0,
+      "sealed": 15
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 40,
+        "id": "amd_ryzen_5_pro_4650u",
+        "label": "AMD Ryzen 5 Pro 4650U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "amd_ryzen_7_pro_4750u",
+        "label": "AMD Ryzen 7 Pro 4750U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 55,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x13_g2": {
+    "base_price": 125,
+    "battery_adj": {
+      "good": 0,
+      "poor": -80
+    },
+    "charger_adj": {
+      "no": -30,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -70,
+      "good": -35,
+      "mint": 0,
+      "sealed": 15
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 125,
+        "id": "amd_ryzen_5_pro_5650u",
+        "label": "AMD Ryzen 5 Pro 5650U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "amd_ryzen_7_pro_5850u",
+        "label": "AMD Ryzen 7 Pro 5850U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 120,
+        "id": "intel_core_i5_11th_gen",
+        "label": "Intel Core i5 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 140,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x13_g3": {
+    "base_price": 190,
+    "battery_adj": {
+      "good": 0,
+      "poor": -80
+    },
+    "charger_adj": {
+      "no": -30,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -90,
+      "good": -45,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 190,
+        "id": "amd_ryzen_5_pro_6650u",
+        "label": "AMD Ryzen 5 Pro 6650U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 270,
+        "id": "amd_ryzen_7_pro_6850u",
+        "label": "AMD Ryzen 7 Pro 6850U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 260,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x13_g4": {
+    "base_price": 320,
+    "battery_adj": {
+      "good": 0,
+      "poor": -90
+    },
+    "charger_adj": {
+      "no": -30,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -120,
+      "good": -60,
+      "mint": 0,
+      "sealed": 25
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 320,
+        "id": "amd_ryzen_5_pro_7540u",
+        "label": "AMD Ryzen 5 Pro 7540U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 435,
+        "id": "amd_ryzen_7_pro_7840u",
+        "label": "AMD Ryzen 7 Pro 7840U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 275,
+        "id": "intel_core_i5_13th_gen",
+        "label": "Intel Core i5 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 385,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x13_g5": {
+    "base_price": 330,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -30,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -130,
+      "good": -65,
+      "mint": 0,
+      "sealed": 25
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 330,
+        "id": "intel_core_ultra_5",
+        "label": "Intel Core Ultra 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 420,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 70,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x13_g6": {
     "base_price": 490,
     "battery_adj": {
       "good": 0,
@@ -39436,8 +41322,186 @@
       }
     ]
   },
-  "ln_tp_x13_2in1": {
-    "base_price": 350,
+  "ln_tp_x13_yoga_g1": {
+    "base_price": 110,
+    "battery_adj": {
+      "good": 0,
+      "poor": -60
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -55,
+      "good": -25,
+      "mint": 0,
+      "sealed": 15
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 110,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x13_yoga_g2": {
+    "base_price": 170,
+    "battery_adj": {
+      "good": 0,
+      "poor": -60
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -60,
+      "good": -30,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 170,
+        "id": "intel_core_i5_11th_gen",
+        "label": "Intel Core i5 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 110,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x13_yoga_g3": {
+    "base_price": 250,
     "battery_adj": {
       "good": 0,
       "poor": -70
@@ -39447,11 +41511,10 @@
     },
     "condition_adj": {
       "broken": 0,
-      "fair": -150,
-      "good": -50,
+      "fair": -90,
+      "good": -45,
       "mint": 0,
-      "sealed": 25,
-      "verygood": -30
+      "sealed": 20
     },
     "display": [],
     "graphics": [],
@@ -39465,7 +41528,7 @@
         "sub": ""
       },
       {
-        "adj": 20,
+        "adj": 30,
         "id": "r32",
         "label": "32GB RAM",
         "multiplier": 1.0,
@@ -39474,16 +41537,16 @@
     ],
     "processors": [
       {
-        "adj": 350,
-        "id": "intel_core_ultra_5",
-        "label": "Intel Core Ultra 5",
+        "adj": 250,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 400,
-        "id": "intel_core_ultra_7",
-        "label": "Intel Core Ultra 7",
+        "adj": 300,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -39519,7 +41582,7 @@
       }
     ]
   },
-  "ln_tp_x13_yoga": {
+  "ln_tp_x13_yoga_g4": {
     "base_price": 325,
     "battery_adj": {
       "good": 0,
@@ -39609,7 +41672,7 @@
       }
     ]
   },
-  "ln_tp_x1_2in1": {
+  "ln_tp_x1_2in1_g10": {
     "base_price": 625,
     "battery_adj": {
       "good": 0,
@@ -39692,7 +41755,455 @@
       }
     ]
   },
-  "ln_tp_x1_carbon": {
+  "ln_tp_x1_2in1_g9": {
+    "base_price": 570,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -35,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -210,
+      "good": -70,
+      "mint": 0,
+      "sealed": 30
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 570,
+        "id": "intel_core_ultra_5",
+        "label": "Intel Core Ultra 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 625,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_carbon_g10": {
+    "base_price": 275,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -30,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -125,
+      "good": -55,
+      "mint": 0,
+      "sealed": 30,
+      "verygood": -25
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 275,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 350,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 115,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 140,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 110,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 35,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_carbon_g11": {
+    "base_price": 370,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -30,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -165,
+      "good": -80,
+      "mint": 0,
+      "sealed": 35,
+      "verygood": -35
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 370,
+        "id": "intel_core_i5_13th_gen",
+        "label": "Intel Core i5 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 450,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 115,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 140,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 110,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 35,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_carbon_g12": {
+    "base_price": 520,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -50,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -200,
+      "good": -100,
+      "mint": 0,
+      "sealed": 35,
+      "verygood": -50
+    },
+    "display": [
+      {
+        "adj": 90,
+        "id": "2_8k_2880_x_1800",
+        "label": "2.8K (2880 x 1800)",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "wuxga_1920_x_1200",
+        "label": "WUXGA (1920 x 1200)",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 120,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 520,
+        "id": "intel_core_ultra_5",
+        "label": "Intel Core Ultra 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 600,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 115,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 140,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 160,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_carbon_g13": {
     "base_price": 725,
     "battery_adj": {
       "good": 0,
@@ -39826,7 +42337,888 @@
       }
     ]
   },
-  "ln_tp_x1_extreme": {
+  "ln_tp_x1_carbon_g6": {
+    "base_price": 115,
+    "battery_adj": {
+      "good": 0,
+      "poor": -60
+    },
+    "charger_adj": {
+      "no": -20,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -45,
+      "good": -20,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 115,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 140,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_carbon_g7": {
+    "base_price": 130,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "no": -30,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -60,
+      "good": -30,
+      "mint": 0,
+      "sealed": 15
+    },
+    "display": [
+      {
+        "adj": 25,
+        "id": "2k_2560_x_1440",
+        "label": "2K (2560 x 1440)",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "fhd_1920_x_1080",
+        "label": "FHD (1920 x 1080)",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "uhd_3840_x_2160",
+        "label": "UHD (3840 x 2160)",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 130,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 165,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 180,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_carbon_g8": {
+    "base_price": 165,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -30,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -65,
+      "good": -30,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 165,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 195,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 115,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 140,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_carbon_g9": {
+    "base_price": 220,
+    "battery_adj": {
+      "good": 0,
+      "poor": -80
+    },
+    "charger_adj": {
+      "no": -30,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -85,
+      "good": -40,
+      "mint": 0,
+      "sealed": 20,
+      "verygood": -15
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 220,
+        "id": "intel_core_i5_11th_gen",
+        "label": "Intel Core i5 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 245,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 115,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 140,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 90,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_extreme_g1": {
+    "base_price": 160,
+    "battery_adj": {
+      "good": 0,
+      "poor": -60
+    },
+    "charger_adj": {
+      "no": -35,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -65,
+      "good": -35,
+      "mint": 0,
+      "sealed": 15
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 160,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 225,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "intel_core_i9_8th_gen",
+        "label": "Intel Core i9 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_extreme_g2": {
+    "base_price": 190,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -40,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -115,
+      "good": -45,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 190,
+        "id": "intel_core_i5_9th_gen",
+        "label": "Intel Core i5 9th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 240,
+        "id": "intel_core_i7_9th_gen",
+        "label": "Intel Core i7 9th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 275,
+        "id": "intel_core_i9_9th_gen",
+        "label": "Intel Core i9 9th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_extreme_g3": {
+    "base_price": 300,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -50,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -130,
+      "good": -50,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -25
+    },
+    "display": [
+      {
+        "adj": 0,
+        "id": "full_hd",
+        "label": "Full HD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "ultra_hd",
+        "label": "Ultra HD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "ultra_hd_touchscreen",
+        "label": "Ultra HD (Touchscreen)",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 300,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 350,
+        "id": "intel_core_i9_10th_gen",
+        "label": "Intel Core i9 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_extreme_g4": {
+    "base_price": 430,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -50,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -165,
+      "good": -55,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -30
+    },
+    "display": [
+      {
+        "adj": 0,
+        "id": "full_hd",
+        "label": "Full HD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "qhd",
+        "label": "QHD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "ultra_hd",
+        "label": "Ultra HD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "ultra_hd_touchscreen",
+        "label": "Ultra HD (Touchscreen)",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 430,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 550,
+        "id": "intel_core_i9_11th_gen",
+        "label": "Intel Core i9 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_extreme_g5": {
     "base_price": 600,
     "battery_adj": {
       "good": 0,
@@ -40080,7 +43472,173 @@
       }
     ]
   },
-  "ln_tp_x1_nano": {
+  "ln_tp_x1_nano_g1": {
+    "base_price": 225,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -30,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -90,
+      "good": -40,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 225,
+        "id": "intel_core_i5_11th_gen",
+        "label": "Intel Core i5 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_nano_g2": {
+    "base_price": 340,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -30,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -125,
+      "good": -55,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 340,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 380,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_nano_g3": {
     "base_price": 460,
     "battery_adj": {
       "good": 0,
@@ -40246,7 +43804,459 @@
       }
     ]
   },
-  "ln_tp_x1_yoga": {
+  "ln_tp_x1_yoga_g3": {
+    "base_price": 95,
+    "battery_adj": {
+      "good": 0,
+      "poor": -60
+    },
+    "charger_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -35,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 95,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 120,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_yoga_g4": {
+    "base_price": 100,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -65,
+      "good": -25,
+      "mint": 0,
+      "sealed": 15
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 100,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 170,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 145,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_yoga_g5": {
+    "base_price": 110,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -60,
+      "good": -25,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 110,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 160,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 95,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 120,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_yoga_g6": {
+    "base_price": 210,
+    "battery_adj": {
+      "good": 0,
+      "poor": -90
+    },
+    "charger_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -115,
+      "good": -45,
+      "mint": 0,
+      "sealed": 20,
+      "verygood": -25
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 210,
+        "id": "intel_core_i5_11th_gen",
+        "label": "Intel Core i5 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 285,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 95,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 120,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_yoga_g7": {
+    "base_price": 310,
+    "battery_adj": {
+      "good": 0,
+      "poor": -90
+    },
+    "charger_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -170,
+      "good": -65,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -35
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 310,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 350,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 95,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 120,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_x1_yoga_g8": {
     "base_price": 380,
     "battery_adj": {
       "good": 0,
@@ -40618,7 +44628,96 @@
       }
     ]
   },
-  "ln_tp_z13": {
+  "ln_tp_z13_g1": {
+    "base_price": 270,
+    "battery_adj": {
+      "good": 0,
+      "poor": -80
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -120,
+      "good": -40,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 270,
+        "id": "amd_ryzen_5_pro_6650u",
+        "label": "AMD Ryzen 5 Pro 6650U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 360,
+        "id": "amd_ryzen_7_pro_6850u",
+        "label": "AMD Ryzen 7 Pro 6850U",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 370,
+        "id": "amd_ryzen_7_pro_6860u",
+        "label": "AMD Ryzen 7 Pro 6860U",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_z13_g2": {
     "base_price": 370,
     "battery_adj": {
       "good": 0,
@@ -40700,7 +44799,103 @@
       }
     ]
   },
-  "ln_tp_z16": {
+  "ln_tp_z16_g1": {
+    "base_price": 250,
+    "battery_adj": {
+      "good": 0,
+      "poor": -80
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -100,
+      "good": -45,
+      "mint": 0,
+      "sealed": 25
+    },
+    "display": [],
+    "graphics": [],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 250,
+        "id": "amd_ryzen_5_pro_6650h",
+        "label": "AMD Ryzen 5 Pro 6650H",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 325,
+        "id": "amd_ryzen_7_pro_6850h",
+        "label": "AMD Ryzen 7 Pro 6850H",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 385,
+        "id": "amd_ryzen_9_pro_6950h",
+        "label": "AMD Ryzen 9 Pro 6950H",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "ln_tp_z16_g2": {
     "base_price": 385,
     "battery_adj": {
       "good": 0,
@@ -43563,984 +47758,6 @@
         "adj": 0,
         "id": "2tb",
         "label": "2TB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ]
-  },
-  "msicodex5": {
-    "base_price": 100,
-    "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {
-      "broken": 0,
-      "fair": -170,
-      "good": -65,
-      "mint": 0,
-      "sealed": 20
-    },
-    "display": [],
-    "graphics": [
-      {
-        "adj": 0,
-        "id": "nvidia_geforce_rtx_2060",
-        "label": "NVIDIA GeForce RTX 2060",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 25,
-        "id": "nvidia_geforce_rtx_3050",
-        "label": "NVIDIA GeForce RTX 3050",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 50,
-        "id": "nvidia_geforce_rtx_3060",
-        "label": "NVIDIA GeForce RTX 3060",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 75,
-        "id": "nvidia_geforce_rtx_3060_ti",
-        "label": "NVIDIA GeForce RTX 3060 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 75,
-        "id": "nvidia_geforce_rtx_4060",
-        "label": "NVIDIA GeForce RTX 4060",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 100,
-        "id": "nvidia_geforce_rtx_4060_ti",
-        "label": "NVIDIA GeForce RTX 4060 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 125,
-        "id": "nvidia_geforce_rtx_4070_super",
-        "label": "NVIDIA GeForce RTX 4070 SUPER",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "hasNanoGlass": false,
-    "memory": [
-      {
-        "adj": 0,
-        "id": "r8",
-        "label": "8GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 15,
-        "id": "r16",
-        "label": "16GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 30,
-        "id": "r32",
-        "label": "32GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "processors": [
-      {
-        "adj": 100,
-        "id": "intel_core_i5_11th_gen",
-        "label": "Intel Core i5 11th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 250,
-        "id": "intel_core_i5_12th_gen",
-        "label": "Intel Core i5 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 300,
-        "id": "intel_core_i5_13th_gen",
-        "label": "Intel Core i5 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i5_14th_gen",
-        "label": "Intel Core i5 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 335,
-        "id": "intel_core_i7_13th_gen",
-        "label": "Intel Core i7 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 380,
-        "id": "intel_core_i7_14th_gen",
-        "label": "Intel Core i7 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 160,
-        "id": "intel_core_i5_12th_gen",
-        "label": "Intel Core i5 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 185,
-        "id": "intel_core_i5_13th_gen",
-        "label": "Intel Core i5 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 250,
-        "id": "intel_core_i5_14th_gen",
-        "label": "Intel Core i5 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 150,
-        "id": "intel_core_i7_11th_gen",
-        "label": "Intel Core i7 11th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 175,
-        "id": "intel_core_i7_12th_gen",
-        "label": "Intel Core i7 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 240,
-        "id": "intel_core_i7_13th_gen",
-        "label": "Intel Core i7 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 300,
-        "id": "intel_core_i7_14th_gen",
-        "label": "Intel Core i7 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "storage": [
-      {
-        "adj": -25,
-        "id": "1tb",
-        "label": "1TB HDD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 25,
-        "id": "1tb",
-        "label": "1TB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "2tb",
-        "label": "2TB HDD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 50,
-        "id": "2tb",
-        "label": "2TB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "512",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ]
-  },
-  "msiinfinity": {
-    "base_price": 375,
-    "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {
-      "broken": 0,
-      "fair": -200,
-      "good": -75,
-      "mint": 0,
-      "sealed": 20
-    },
-    "display": [],
-    "graphics": [
-      {
-        "adj": 0,
-        "id": "nvidia_geforce_rtx_3050",
-        "label": "NVIDIA GeForce RTX 3050",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "nvidia_geforce_rtx_3060",
-        "label": "NVIDIA GeForce RTX 3060",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 85,
-        "id": "nvidia_geforce_rtx_3060_ti",
-        "label": "NVIDIA GeForce RTX 3060 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 85,
-        "id": "nvidia_geforce_rtx_3070",
-        "label": "NVIDIA GeForce RTX 3070",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": -25,
-        "id": "nvidia_geforce_rtx_3070_ti",
-        "label": "NVIDIA GeForce RTX 3070 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "nvidia_geforce_rtx_3080",
-        "label": "NVIDIA GeForce RTX 3080",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 25,
-        "id": "nvidia_geforce_rtx_3080_ti",
-        "label": "NVIDIA GeForce RTX 3080 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 75,
-        "id": "nvidia_geforce_rtx_3090",
-        "label": "NVIDIA GeForce RTX 3090",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "nvidia_geforce_rtx_4060",
-        "label": "NVIDIA GeForce RTX 4060",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "nvidia_geforce_rtx_4060_ti",
-        "label": "NVIDIA GeForce RTX 4060 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "nvidia_geforce_rtx_4070",
-        "label": "NVIDIA GeForce RTX 4070",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "hasNanoGlass": false,
-    "memory": [
-      {
-        "adj": 0,
-        "id": "r8",
-        "label": "8GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 15,
-        "id": "r16",
-        "label": "16GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 30,
-        "id": "r32",
-        "label": "32GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 50,
-        "id": "r64",
-        "label": "64GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "processors": [
-      {
-        "adj": 375,
-        "id": "intel_core_i7_11th_gen",
-        "label": "Intel Core i7 11th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i5_13th_gen",
-        "label": "Intel Core i5 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i5_14th_gen",
-        "label": "Intel Core i5 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i7_10th_gen",
-        "label": "Intel Core i7 10th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i7_12th_gen",
-        "label": "Intel Core i7 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i7_13th_gen",
-        "label": "Intel Core i7 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i7_14th_gen",
-        "label": "Intel Core i7 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 450,
-        "id": "intel_core_i7_12th_gen",
-        "label": "Intel Core i7 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 440,
-        "id": "intel_core_i9_11th_gen",
-        "label": "Intel Core i9 11th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "storage": [
-      {
-        "adj": 30,
-        "id": "1tb",
-        "label": "1TB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 80,
-        "id": "2tb",
-        "label": "2TB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "512",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ]
-  },
-  "msinightblade": {
-    "base_price": 250,
-    "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {
-      "broken": 0,
-      "fair": -170,
-      "good": -65,
-      "mint": 0,
-      "sealed": 20
-    },
-    "display": [],
-    "graphics": [
-      {
-        "adj": 0,
-        "id": "nvidia_geforce_rtx_3050",
-        "label": "NVIDIA GeForce RTX 3050",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 50,
-        "id": "nvidia_geforce_rtx_4060",
-        "label": "NVIDIA GeForce RTX 4060",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 75,
-        "id": "nvidia_geforce_rtx_4060_ti",
-        "label": "NVIDIA GeForce RTX 4060 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 125,
-        "id": "nvidia_geforce_rtx_4070_super",
-        "label": "NVIDIA GeForce RTX 4070 SUPER",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "hasNanoGlass": false,
-    "memory": [
-      {
-        "adj": 0,
-        "id": "r8",
-        "label": "8GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 15,
-        "id": "r16",
-        "label": "16GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 30,
-        "id": "r32",
-        "label": "32GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "processors": [
-      {
-        "adj": 250,
-        "id": "intel_core_i5_12th_gen",
-        "label": "Intel Core i5 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 300,
-        "id": "intel_core_i5_13th_gen",
-        "label": "Intel Core i5 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i5_14th_gen",
-        "label": "Intel Core i5 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 335,
-        "id": "intel_core_i7_13th_gen",
-        "label": "Intel Core i7 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 380,
-        "id": "intel_core_i7_14th_gen",
-        "label": "Intel Core i7 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "storage": [
-      {
-        "adj": 15,
-        "id": "1tb",
-        "label": "1TB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 30,
-        "id": "2tb",
-        "label": "2TB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "512",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ]
-  },
-  "msipro": {
-    "base_price": 245,
-    "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {
-      "broken": 0,
-      "fair": -170,
-      "good": -65,
-      "mint": 0,
-      "sealed": 25
-    },
-    "display": [],
-    "graphics": [
-      {
-        "adj": -40,
-        "id": "nvidia_geforce_rtx_3050",
-        "label": "NVIDIA GeForce RTX 3050",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": -20,
-        "id": "nvidia_geforce_rtx_3060",
-        "label": "NVIDIA GeForce RTX 3060",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "nvidia_geforce_rtx_3060_ti",
-        "label": "NVIDIA GeForce RTX 3060 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 10,
-        "id": "nvidia_geforce_rtx_3070",
-        "label": "NVIDIA GeForce RTX 3070",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 25,
-        "id": "nvidia_geforce_rtx_3070_ti",
-        "label": "NVIDIA GeForce RTX 3070 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 40,
-        "id": "nvidia_geforce_rtx_3080",
-        "label": "NVIDIA GeForce RTX 3080",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": -10,
-        "id": "nvidia_geforce_rtx_4060",
-        "label": "NVIDIA GeForce RTX 4060",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 5,
-        "id": "nvidia_geforce_rtx_4060_ti",
-        "label": "NVIDIA GeForce RTX 4060 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 25,
-        "id": "nvidia_geforce_rtx_4070",
-        "label": "NVIDIA GeForce RTX 4070",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 50,
-        "id": "nvidia_geforce_rtx_4070_super",
-        "label": "NVIDIA GeForce RTX 4070 SUPER",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 75,
-        "id": "nvidia_geforce_rtx_4070_ti",
-        "label": "NVIDIA GeForce RTX 4070 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 100,
-        "id": "nvidia_geforce_rtx_4070_ti_super",
-        "label": "NVIDIA GeForce RTX 4070 Ti SUPER",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 425,
-        "id": "nvidia_geforce_rtx_4080",
-        "label": "NVIDIA GeForce RTX 4080",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 225,
-        "id": "nvidia_geforce_rtx_4080_super",
-        "label": "NVIDIA GeForce RTX 4080 SUPER",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "hasNanoGlass": false,
-    "memory": [
-      {
-        "adj": 30,
-        "id": "r16",
-        "label": "16GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 55,
-        "id": "r32",
-        "label": "32GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 80,
-        "id": "r64",
-        "label": "64GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "processors": [
-      {
-        "adj": 245,
-        "id": "intel_core_i5_12th_gen",
-        "label": "Intel Core i5 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i7_14th_gen",
-        "label": "Intel Core i7 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i9_14th_gen",
-        "label": "Intel Core i9 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 210,
-        "id": "intel_core_i7_10th_gen",
-        "label": "Intel Core i7 10th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 250,
-        "id": "intel_core_i7_11th_gen",
-        "label": "Intel Core i7 11th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 320,
-        "id": "intel_core_i7_12th_gen",
-        "label": "Intel Core i7 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 400,
-        "id": "intel_core_i7_13th_gen",
-        "label": "Intel Core i7 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 440,
-        "id": "intel_core_i7_14th_gen",
-        "label": "Intel Core i7 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 485,
-        "id": "intel_core_i9_14th_gen",
-        "label": "Intel Core i9 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "storage": [
-      {
-        "adj": 25,
-        "id": "1tb",
-        "label": "1TB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 50,
-        "id": "2tb",
-        "label": "2TB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "512",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ]
-  },
-  "msitrident": {
-    "base_price": 150,
-    "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {
-      "broken": 0,
-      "fair": -170,
-      "good": -65,
-      "mint": 0,
-      "sealed": 25
-    },
-    "display": [],
-    "graphics": [
-      {
-        "adj": -5,
-        "id": "nvidia_geforce_rtx_3050",
-        "label": "NVIDIA GeForce RTX 3050",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 25,
-        "id": "nvidia_geforce_rtx_3060",
-        "label": "NVIDIA GeForce RTX 3060",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 85,
-        "id": "nvidia_geforce_rtx_3060_ti",
-        "label": "NVIDIA GeForce RTX 3060 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 85,
-        "id": "nvidia_geforce_rtx_3070",
-        "label": "NVIDIA GeForce RTX 3070",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "nvidia_geforce_rtx_4060",
-        "label": "NVIDIA GeForce RTX 4060",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "nvidia_geforce_rtx_4060_ti",
-        "label": "NVIDIA GeForce RTX 4060 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "nvidia_geforce_rtx_4070",
-        "label": "NVIDIA GeForce RTX 4070",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "hasNanoGlass": false,
-    "memory": [
-      {
-        "adj": 0,
-        "id": "r8",
-        "label": "8GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 15,
-        "id": "r16",
-        "label": "16GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 30,
-        "id": "r32",
-        "label": "32GB RAM",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "processors": [
-      {
-        "adj": 150,
-        "id": "intel_core_i5_11th_gen",
-        "label": "Intel Core i5 11th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i5_13th_gen",
-        "label": "Intel Core i5 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i5_14th_gen",
-        "label": "Intel Core i5 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i7_10th_gen",
-        "label": "Intel Core i7 10th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i7_12th_gen",
-        "label": "Intel Core i7 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i7_13th_gen",
-        "label": "Intel Core i7 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 340,
-        "id": "intel_core_i7_14th_gen",
-        "label": "Intel Core i7 14th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 200,
-        "id": "intel_core_i5_12th_gen",
-        "label": "Intel Core i5 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 245,
-        "id": "intel_core_i5_13th_gen",
-        "label": "Intel Core i5 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 200,
-        "id": "intel_core_i7_11th_gen",
-        "label": "Intel Core i7 11th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 240,
-        "id": "intel_core_i7_12th_gen",
-        "label": "Intel Core i7 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 275,
-        "id": "intel_core_i7_13th_gen",
-        "label": "Intel Core i7 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
-    "storage": [
-      {
-        "adj": 30,
-        "id": "1tb",
-        "label": "1TB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 60,
-        "id": "2tb",
-        "label": "2TB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 10,
-        "id": "512",
-        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
