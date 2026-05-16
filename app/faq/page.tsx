@@ -26,7 +26,7 @@ const FAQ = [
   },
   {
     q: "What about insurance during shipping?",
-    a: "All trade-ins are insured up to $1,500 by default through our shipping carriers. Higher-value devices (e.g., MacBook Pro 16, Z TriFold) are insured for their full quoted value.",
+    a: "Standard carrier insurance is included up to $100 — that comes with the prepaid label automatically. For devices worth more than $100, we strongly recommend adding extra coverage at the counter when you drop the box off (a few dollars and the counter clerk will handle it). We don't insure beyond $100 ourselves, so the extra protection on higher-value devices is on the shipper.",
   },
   {
     q: "Can I change my mind after shipping?",
