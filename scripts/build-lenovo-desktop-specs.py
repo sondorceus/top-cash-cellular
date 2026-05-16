@@ -17,7 +17,10 @@ import json, re
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
-SRC = ROOT / "lenovo-desktop-specs.json"
+SRC_FILES = [
+    ROOT / "lenovo-desktop-specs.json",
+    ROOT / "desktop-specs.json",
+]
 SPECS = ROOT / "public" / "comps" / "pc-laptop-specs.json"
 
 
@@ -84,16 +87,25 @@ def to_macspec(entry):
 
 
 def main():
-    src = json.loads(SRC.read_text())
     specs = json.loads(SPECS.read_text())
     added = []
-    for vid, entry in src.items():
-        if vid.startswith("_"):
+    for src_path in SRC_FILES:
+        if not src_path.exists():
             continue
-        specs[vid] = to_macspec(entry)
-        added.append(vid)
+        src = json.loads(src_path.read_text())
+        for vid, entry in src.items():
+            if vid.startswith("_"):
+                continue
+            # Skip if a real (priced) IWM-based spec already exists — we
+            # don't want research-agent placeholders to overwrite scraped
+            # data. Detect via base_price > 0.
+            existing = specs.get(vid)
+            if existing and existing.get("base_price", 0) > 0:
+                continue
+            specs[vid] = to_macspec(entry)
+            added.append(vid)
     SPECS.write_text(json.dumps(specs, indent=2, sort_keys=True))
-    print(f"Added {len(added)} Lenovo desktop entries to pc-laptop-specs.json:")
+    print(f"Added {len(added)} desktop entries to pc-laptop-specs.json:")
     for vid in added:
         s = specs[vid]
         print(f"  {vid}: {len(s['processors'])} chips, {len(s['memory'])} RAM tiers, {len(s['storage'])} storage tiers")

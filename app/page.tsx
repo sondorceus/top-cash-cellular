@@ -1320,17 +1320,10 @@ const LENOVO_TP_E_VARIANTS = [
   { id: "ln_tp_e16_g2", label: "ThinkPad E16 Gen 2", base: 324, inquiryOnly: false, image: "/devices/ln_tp_e16_g2.png" },
   { id: "ln_tp_e16_g1", label: "ThinkPad E16 Gen 1", base: 153, inquiryOnly: false, image: "/devices/ln_tp_e16_g1.png" },
 ];
-const LENOVO_THINKPAD_SUB_SERIES = [
-  { id: "ln_tp_x1", label: "ThinkPad X1", year: "Premium ultrabook", topPrice: 0, variants: LENOVO_TP_X1_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
-  { id: "ln_tp_x13", label: "ThinkPad X13", year: "13-inch business", topPrice: 0, variants: LENOVO_TP_X13_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13.png" },
-  { id: "ln_tp_x390", label: "ThinkPad X390", year: "Legacy 13.3-inch", topPrice: 0, variants: LENOVO_TP_X390_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_x390.png" },
-  { id: "ln_tp_x9", label: "ThinkPad X9", year: "Aura Edition", topPrice: 0, variants: LENOVO_TP_X9_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_x9_14.png" },
-  { id: "ln_tp_z", label: "ThinkPad Z", year: "Modern design", topPrice: 0, variants: LENOVO_TP_Z_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_z-lenovo-thinkpad-z16.png" },
-  { id: "ln_tp_t_sub", label: "ThinkPad T", year: "Workhorse business", topPrice: 0, variants: LENOVO_TP_T_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_t.png" },
-  { id: "ln_tp_p", label: "ThinkPad P", year: "Mobile workstation", topPrice: 0, variants: LENOVO_TP_P_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p51.png" },
-  { id: "ln_tp_l", label: "ThinkPad L", year: "Mainstream business", topPrice: 0, variants: LENOVO_TP_L_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_l-lenovo-thinkpad-l14-series.png" },
-  { id: "ln_tp_e_sub", label: "ThinkPad E", year: "Essential business", topPrice: 0, variants: LENOVO_TP_E_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_e14_g7.png" },
-];
+// (Removed: LENOVO_THINKPAD_SUB_SERIES was dead code. Its sub-series
+//  ids (ln_tp_x13, ln_tp_x390) collided with child variant ids in the
+//  arrays above, breaking navigation. The real active sub-series lives
+//  in LENOVO_PC_SERIES below with unique lenovo_tp_* ids.)
 
 const LENOVO_TB_13_VARIANTS = [
   { id: "ln_tb_13x", label: "ThinkBook 13x", base: 0, inquiryOnly: true, image: "/devices/ln_tb_13x.png" },
@@ -1350,12 +1343,8 @@ const LENOVO_TB_16_VARIANTS = [
   { id: "ln_tb_16", label: "ThinkBook 16", base: 0, inquiryOnly: true, image: "/devices/ln_tb_16.png" },
   { id: "ln_tb_16p", label: "ThinkBook 16p", base: 0, inquiryOnly: true, image: "/devices/ln_tb_16p.png" },
 ];
-const LENOVO_THINKBOOK_SUB_SERIES = [
-  { id: "ln_tb_13", label: "ThinkBook 13", year: "13-inch", topPrice: 0, variants: LENOVO_TB_13_VARIANTS, inquiryOnly: true, image: "/devices/ln_tb_13x.png" },
-  { id: "ln_tb_14", label: "ThinkBook 14", year: "14-inch", topPrice: 0, variants: LENOVO_TB_14_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkbook-tb_14-lenovo-thinkbook-14-series.png" },
-  { id: "ln_tb_15", label: "ThinkBook 15", year: "15-inch", topPrice: 0, variants: LENOVO_TB_15_VARIANTS, inquiryOnly: true, image: "/devices/ln_tb_15.png" },
-  { id: "ln_tb_16", label: "ThinkBook 16", year: "16-inch", topPrice: 0, variants: LENOVO_TB_16_VARIANTS, inquiryOnly: true, image: "/devices/ln_tb_16.png" },
-];
+// (Removed: LENOVO_THINKBOOK_SUB_SERIES was dead code with the same
+//  duplicate-id problem.)
 
 const LENOVO_IDEAPAD_VARIANTS = [
   { id: "ln_ideapad_5", label: "IdeaPad 5", base: 94, inquiryOnly: false, image: "/devices/lenovo-ideapad-lenovo-ideapad-5.png" },

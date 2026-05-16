@@ -1,0 +1,192 @@
+{
+  "_doc": "Factory spec research for Dell / HP / ASUS / Alienware desktops in page.tsx. Source: research agent (Dell, HP, ASUS official spec pages, PSREF, eBay sold listings). 2026-05-15. Most aren't on IWM so these stay inquiry-only — but the funnel collects chip / RAM / storage / GPU details before handing off to manual quote.",
+  "doptiplex7010": {
+    "chips": ["i3-13100", "i3-13100T", "i5-13400", "i5-13500", "i5-13500T", "i5-13600", "i7-13700", "i7-13700T"],
+    "ram_tiers": ["8GB", "16GB", "32GB", "64GB"],
+    "storage_tiers": ["256GB SSD", "512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["Intel UHD 730", "Intel UHD 770", "Optional low-profile dGPU (T1000)"],
+    "form_factor": "Tower / SFF / Micro / Plus Tower / Plus SFF",
+    "market_value_usd": "150-500",
+    "notes": "Released 2023, 13th gen Raptor Lake business desktop. Five chassis variants — must capture form factor at intake."
+  },
+  "doptiplex5000": {
+    "chips": ["i3-12100", "i3-12300", "i5-12400", "i5-12500", "i5-12600", "i7-12700"],
+    "ram_tiers": ["8GB", "16GB", "32GB", "64GB"],
+    "storage_tiers": ["256GB SSD", "512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["Intel UHD 730/770", "Optional low-profile dGPU (GTX 1660, T400)"],
+    "form_factor": "SFF (also MT and Micro variants)",
+    "market_value_usd": "200-450",
+    "notes": "2022 release, 12th gen Alder Lake, Q670 chipset."
+  },
+  "dxps8960": {
+    "chips": ["i5-13400", "i7-13700", "i7-13700K", "i9-13900", "i9-13900K", "i7-14700K", "i9-14900K"],
+    "ram_tiers": ["16GB", "32GB", "64GB"],
+    "storage_tiers": ["512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["RTX 3050", "RTX 4060", "RTX 4060 Ti", "RTX 4070", "RTX 4070 Ti", "RTX 4080", "RTX 4090", "RX 7600/7700 XT"],
+    "form_factor": "Mid-tower",
+    "market_value_usd": "800-2500",
+    "notes": "Raptor Lake-era XPS Desktop, also accepts 14th gen refresh. PCIe 5.0, DDR5."
+  },
+  "dxps8950": {
+    "chips": ["i5-12600K", "i7-12700", "i7-12700K", "i9-12900", "i9-12900K"],
+    "ram_tiers": ["8GB", "16GB", "32GB", "64GB"],
+    "storage_tiers": ["256GB SSD", "512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["GTX 1650 Super", "RTX 3050", "RTX 3060", "RTX 3060 Ti", "RTX 3070", "RTX 3080", "RTX 3090", "RX 6700/6900 XT"],
+    "form_factor": "Mid-tower",
+    "market_value_usd": "600-2000",
+    "notes": "2022 release, Alder Lake, Z690, first XPS with DDR5 + PCIe 5.0."
+  },
+  "dinsp3030": {
+    "chips": ["i3-14100", "i5-14400", "i7-14700"],
+    "ram_tiers": ["8GB", "16GB", "32GB", "64GB"],
+    "storage_tiers": ["256GB SSD", "512GB SSD", "1TB SSD", "2TB SSD", "4TB SSD"],
+    "gpu_tiers": ["Intel UHD 730/770", "Optional GTX 1660 Super / RTX 3050 on Tower"],
+    "form_factor": "Tower / Small Desktop",
+    "market_value_usd": "350-700",
+    "notes": "2024 release, 14th gen Raptor Lake Refresh."
+  },
+  "dprecision3680": {
+    "chips": ["i5-14500", "i5-14600", "i7-14700", "i7-14700K", "i9-14900", "i9-14900K", "i5-13500", "i7-13700", "i9-13900"],
+    "ram_tiers": ["16GB", "32GB", "64GB", "128GB"],
+    "storage_tiers": ["512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["Intel UHD", "T400/T1000", "RTX A2000", "RTX A4000", "RTX 4000 Ada", "RTX 4080/4090"],
+    "form_factor": "Mid-tower workstation",
+    "market_value_usd": "1000-3000",
+    "notes": "ISV-certified workstation — uses 13th/14th gen Core (not Xeon). PCIe 5.0."
+  },
+  "hpelitedesk": {
+    "chips": ["i3-12100/T", "i5-12500/T", "i5-12600", "i7-12700/T", "i9-12900"],
+    "ram_tiers": ["8GB", "16GB", "32GB", "64GB"],
+    "storage_tiers": ["256GB SSD", "512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["Intel UHD 770", "Optional T400/T1000 or RTX A2000 on Tower/SFF"],
+    "form_factor": "Tower / SFF / Mini (DM)",
+    "market_value_usd": "300-700",
+    "notes": "12th gen commercial flagship. Sold as 'EliteDesk 800 G9' and 'Elite 800 G9'."
+  },
+  "hpprodesk": {
+    "chips": ["i3-12100", "i3-12300", "i5-12400", "i5-12500", "i5-12500T", "i5-12600", "i7-12700"],
+    "ram_tiers": ["8GB", "16GB", "32GB", "64GB"],
+    "storage_tiers": ["256GB SSD", "512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["Intel UHD 730/770", "Optional low-profile dGPU"],
+    "form_factor": "Tower (MT) / SFF / Mini",
+    "market_value_usd": "250-550",
+    "notes": "12th gen value-tier commercial. Q670, supports 13th/14th gen on later revisions. Branded 'Pro 400 G9'."
+  },
+  "hpomendsk": {
+    "chips": ["i7-13700K", "i9-13900K", "i7-14700K", "i9-14900K", "Ryzen 7 7700X", "Ryzen 9 7900X", "Ryzen 9 7950X"],
+    "ram_tiers": ["16GB", "32GB", "64GB", "128GB"],
+    "storage_tiers": ["512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["RTX 4060 Ti", "RTX 4070", "RTX 4070 Super", "RTX 4070 Ti Super", "RTX 4080", "RTX 4080 Super", "RTX 4090", "RX 7900 XT/XTX"],
+    "form_factor": "Full tower (GT22 chassis, Cryo Chamber)",
+    "market_value_usd": "1200-3200",
+    "notes": "2023-2024 era. AIO liquid cooler on top SKUs, 1200W Gold PSU on flagship."
+  },
+  "hpomen40": {
+    "chips": ["i7-12700K", "i9-12900K", "Ryzen 7 5700G", "Ryzen 7 5800X", "Ryzen 9 5900X", "Ryzen 9 5950X"],
+    "ram_tiers": ["16GB", "32GB", "64GB"],
+    "storage_tiers": ["512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["RTX 3060", "RTX 3060 Ti", "RTX 3070", "RTX 3070 Ti", "RTX 3080", "RTX 3080 Ti", "RTX 3090", "RX 6700 XT", "RX 6800 XT"],
+    "form_factor": "Mid-full tower (GT21 chassis)",
+    "market_value_usd": "800-2000",
+    "notes": "2022 release. Alder Lake / Ryzen 5000 era, DDR4."
+  },
+  "hpenvy34": {
+    "chips": ["i5-11400", "i7-11700", "i9-11900"],
+    "ram_tiers": ["16GB", "32GB", "64GB", "128GB"],
+    "storage_tiers": ["512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["GTX 1650", "RTX 3060", "RTX 3080"],
+    "form_factor": "34-inch 5K (5120x2160) All-in-One",
+    "market_value_usd": "1000-2500",
+    "notes": "Tiger Lake desktop CPUs, 16MP detachable webcam. iMac competitor."
+  },
+  "hppav32": {
+    "chips": ["i5-12400T", "i7-12700", "i9-12900K"],
+    "ram_tiers": ["16GB", "32GB", "64GB"],
+    "storage_tiers": ["512GB SSD", "1TB SSD", "2TB SSD", "4TB SSD"],
+    "gpu_tiers": ["Intel UHD 730/770"],
+    "form_factor": "31.5-inch 4K UHD All-in-One",
+    "market_value_usd": "700-1300",
+    "notes": "Pavilion 32-b series, 2022. Integrated graphics only."
+  },
+  "asrogstrix": {
+    "chips": ["i5-13400F", "i7-13700F", "i7-13700KF", "i7-14700F", "i7-14700KF", "i9-14900KF", "i9-14900KS"],
+    "ram_tiers": ["16GB", "32GB", "64GB", "128GB"],
+    "storage_tiers": ["512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["RTX 4060", "RTX 4060 Ti", "RTX 4070", "RTX 4070 Super", "RTX 4080"],
+    "form_factor": "Mid-tower with mesh front + D-ring handle",
+    "market_value_usd": "900-2000",
+    "notes": "G16CH = DDR4/13th gen; G16CHR refresh = DDR5/14th gen — capture exact model number."
+  },
+  "asrogflow": {
+    "chips": ["Core Ultra 7 155H", "Core Ultra 9 185H"],
+    "ram_tiers": ["16GB", "32GB", "64GB", "96GB", "128GB"],
+    "storage_tiers": ["512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["RTX 4060 Laptop", "RTX 4070 Laptop (115W + 25W Dyn Boost)"],
+    "form_factor": "2.5L Mini-PC (NUC form factor)",
+    "market_value_usd": "900-1600",
+    "notes": "ROG NUC 970 / 760 (the page label 'asrogflow' conflates with Flow line; using ROG NUC data). 2024 CES release."
+  },
+  "awaurorar16": {
+    "chips": ["i7-13700F", "i9-13900F", "i7-14700F", "i9-14900F", "i9-14900KF"],
+    "ram_tiers": ["16GB", "32GB", "64GB"],
+    "storage_tiers": ["512GB SSD", "1TB SSD", "2TB SSD", "4TB SSD"],
+    "gpu_tiers": ["RTX 4060", "RTX 4060 Ti", "RTX 4070", "RTX 4070 Super", "RTX 4080 Super", "RTX 4090"],
+    "form_factor": "35L slim mid-tower",
+    "market_value_usd": "1100-2800",
+    "notes": "2024 slim redesign. Vastly improved thermals over R15."
+  },
+  "awaurorar15": {
+    "chips": ["i7-13700F", "i7-13700KF", "i9-13900F", "i9-13900KF"],
+    "ram_tiers": ["16GB", "32GB", "64GB"],
+    "storage_tiers": ["512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["RTX 3060", "RTX 3070 Ti", "RTX 4070", "RTX 4070 Ti", "RTX 4080", "RTX 4090"],
+    "form_factor": "Curved 'Legend 2.0' mid-tower (~80L)",
+    "market_value_usd": "1000-2500",
+    "notes": "2023 release, 13th gen Raptor Lake. 240mm heat exchanger."
+  },
+  "awaurorar14": {
+    "chips": ["Ryzen 5 5600X", "Ryzen 7 5800", "Ryzen 7 5800X", "Ryzen 9 5900", "Ryzen 9 5900X", "Ryzen 9 5950X"],
+    "ram_tiers": ["16GB", "32GB", "64GB", "128GB"],
+    "storage_tiers": ["512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["RTX 3060", "RTX 3060 Ti", "RTX 3070", "RTX 3080", "RTX 3080 Ti", "RTX 3090", "RX 6800 XT"],
+    "form_factor": "Curved 'Legend 2.0' mid-tower",
+    "market_value_usd": "800-1900",
+    "notes": "Ryzen 5000 sibling to R13. DDR4."
+  },
+  "awaurorar13": {
+    "chips": ["i5-12400", "i5-12600K", "i7-12700", "i7-12700KF", "i9-12900", "i9-12900K", "i9-12900KF"],
+    "ram_tiers": ["16GB", "32GB", "64GB", "128GB"],
+    "storage_tiers": ["512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["RTX 3060", "RTX 3070", "RTX 3070 Ti", "RTX 3080", "RTX 3080 Ti", "RTX 3090", "RX 6800 XT"],
+    "form_factor": "Curved 'Legend 2.0' mid-tower",
+    "market_value_usd": "750-1800",
+    "notes": "2021/2022 first Alder Lake Aurora. Famously runs hot — bad thermals in early units."
+  },
+  "awaurorar12": {
+    "chips": ["i5-11400/F", "i5-11600K/KF", "i7-11700/F/K/KF", "i9-11900/K/KF"],
+    "ram_tiers": ["8GB", "16GB", "32GB", "64GB", "128GB"],
+    "storage_tiers": ["256GB SSD", "512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["GTX 1650 Super", "RTX 3060", "RTX 3060 Ti", "RTX 3070", "RTX 3080", "RTX 3080 Ti", "RTX 3090"],
+    "form_factor": "Oval 'Legend' mid-tower (pre-redesign)",
+    "market_value_usd": "650-1500",
+    "notes": "2021 Rocket Lake, Z490, DDR4."
+  },
+  "awaurorar10": {
+    "chips": ["Ryzen 5 3500/3600X/XT", "Ryzen 7 3700X/3800X/XT", "Ryzen 9 3900/X/XT/3950X", "Ryzen 5 5600X", "Ryzen 7 5800X", "Ryzen 9 5900X/5950X"],
+    "ram_tiers": ["8GB", "16GB", "32GB", "64GB", "128GB"],
+    "storage_tiers": ["256GB SSD", "512GB SSD", "1TB SSD", "2TB SSD"],
+    "gpu_tiers": ["GTX 1660 Super", "RTX 3060", "RTX 3070", "RTX 3080", "RTX 3090", "RX 5700", "RX 6800/XT"],
+    "form_factor": "Oval 'Legend' mid-tower",
+    "market_value_usd": "550-1400",
+    "notes": "2020-2021 Ryzen sibling to R11. AM4 B550A."
+  },
+  "awarea51desktop": {
+    "chips": ["Core Ultra 9 285K", "Ryzen 7 9800X3D", "Ryzen 9 9950X/9950X3D"],
+    "ram_tiers": ["32GB", "64GB"],
+    "storage_tiers": ["1TB SSD", "2TB SSD", "4TB SSD"],
+    "gpu_tiers": ["RTX 5070 Ti", "RTX 5080", "RTX 5090"],
+    "form_factor": "80L full tower (DIY-friendly, 420mm AIO support)",
+    "market_value_usd": "2800-6000",
+    "notes": "2025 Area-51 revival. Both Intel and AMD variants. 600W+ GPU support."
+  }
+}

@@ -5122,6 +5122,981 @@
       }
     ]
   },
+  "asrogflow": {
+    "_form_factor": "2.5L Mini-PC (NUC form factor)",
+    "_gpu_tiers": [
+      "RTX 4060 Laptop",
+      "RTX 4070 Laptop (115W + 25W Dyn Boost)"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "900-1600",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r96",
+        "label": "96GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r128",
+        "label": "128GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "core_ultra_7_155h",
+        "label": "Core Ultra 7 155H",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "core_ultra_9_185h",
+        "label": "Core Ultra 9 185H",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "asrogstrix": {
+    "_form_factor": "Mid-tower with mesh front + D-ring handle",
+    "_gpu_tiers": [
+      "RTX 4060",
+      "RTX 4060 Ti",
+      "RTX 4070",
+      "RTX 4070 Super",
+      "RTX 4080"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "900-2000",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r128",
+        "label": "128GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i5_13400f",
+        "label": "i5-13400F",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_13700f",
+        "label": "i7-13700F",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_13700kf",
+        "label": "i7-13700KF",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_14700f",
+        "label": "i7-14700F",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_14700kf",
+        "label": "i7-14700KF",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_14900kf",
+        "label": "i9-14900KF",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_14900ks",
+        "label": "i9-14900KS",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awarea51desktop": {
+    "_form_factor": "80L full tower (DIY-friendly, 420mm AIO support)",
+    "_gpu_tiers": [
+      "RTX 5070 Ti",
+      "RTX 5080",
+      "RTX 5090"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "2800-6000",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "core_ultra_9_285k",
+        "label": "Core Ultra 9 285K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_7_9800x3d",
+        "label": "Ryzen 7 9800X3D",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_9_9950x_9950x3d",
+        "label": "Ryzen 9 9950X/9950X3D",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awaurorar10": {
+    "_form_factor": "Oval 'Legend' mid-tower",
+    "_gpu_tiers": [
+      "GTX 1660 Super",
+      "RTX 3060",
+      "RTX 3070",
+      "RTX 3080",
+      "RTX 3090",
+      "RX 5700",
+      "RX 6800/XT"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "550-1400",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r128",
+        "label": "128GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "ryzen_5_3500_3600x_xt",
+        "label": "Ryzen 5 3500/3600X/XT",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_7_3700x_3800x_xt",
+        "label": "Ryzen 7 3700X/3800X/XT",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_9_3900_x_xt_3950x",
+        "label": "Ryzen 9 3900/X/XT/3950X",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_5_5600x",
+        "label": "Ryzen 5 5600X",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_7_5800x",
+        "label": "Ryzen 7 5800X",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_9_5900x_5950x",
+        "label": "Ryzen 9 5900X/5950X",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "256gb",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awaurorar12": {
+    "_form_factor": "Oval 'Legend' mid-tower (pre-redesign)",
+    "_gpu_tiers": [
+      "GTX 1650 Super",
+      "RTX 3060",
+      "RTX 3060 Ti",
+      "RTX 3070",
+      "RTX 3080",
+      "RTX 3080 Ti",
+      "RTX 3090"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "650-1500",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r128",
+        "label": "128GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i5_11400_f",
+        "label": "i5-11400/F",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_11600k_kf",
+        "label": "i5-11600K/KF",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_11700_f_k_kf",
+        "label": "i7-11700/F/K/KF",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_11900_k_kf",
+        "label": "i9-11900/K/KF",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "256gb",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awaurorar13": {
+    "_form_factor": "Curved 'Legend 2.0' mid-tower",
+    "_gpu_tiers": [
+      "RTX 3060",
+      "RTX 3070",
+      "RTX 3070 Ti",
+      "RTX 3080",
+      "RTX 3080 Ti",
+      "RTX 3090",
+      "RX 6800 XT"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "750-1800",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r128",
+        "label": "128GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i5_12400",
+        "label": "i5-12400",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_12600k",
+        "label": "i5-12600K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_12700",
+        "label": "i7-12700",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_12700kf",
+        "label": "i7-12700KF",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_12900",
+        "label": "i9-12900",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_12900k",
+        "label": "i9-12900K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_12900kf",
+        "label": "i9-12900KF",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awaurorar14": {
+    "_form_factor": "Curved 'Legend 2.0' mid-tower",
+    "_gpu_tiers": [
+      "RTX 3060",
+      "RTX 3060 Ti",
+      "RTX 3070",
+      "RTX 3080",
+      "RTX 3080 Ti",
+      "RTX 3090",
+      "RX 6800 XT"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "800-1900",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r128",
+        "label": "128GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "ryzen_5_5600x",
+        "label": "Ryzen 5 5600X",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_7_5800",
+        "label": "Ryzen 7 5800",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_7_5800x",
+        "label": "Ryzen 7 5800X",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_9_5900",
+        "label": "Ryzen 9 5900",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_9_5900x",
+        "label": "Ryzen 9 5900X",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_9_5950x",
+        "label": "Ryzen 9 5950X",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awaurorar15": {
+    "_form_factor": "Curved 'Legend 2.0' mid-tower (~80L)",
+    "_gpu_tiers": [
+      "RTX 3060",
+      "RTX 3070 Ti",
+      "RTX 4070",
+      "RTX 4070 Ti",
+      "RTX 4080",
+      "RTX 4090"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "1000-2500",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i7_13700f",
+        "label": "i7-13700F",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_13700kf",
+        "label": "i7-13700KF",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_13900f",
+        "label": "i9-13900F",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_13900kf",
+        "label": "i9-13900KF",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awaurorar16": {
+    "_form_factor": "35L slim mid-tower",
+    "_gpu_tiers": [
+      "RTX 4060",
+      "RTX 4060 Ti",
+      "RTX 4070",
+      "RTX 4070 Super",
+      "RTX 4080 Super",
+      "RTX 4090"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "1100-2800",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i7_13700f",
+        "label": "i7-13700F",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_13900f",
+        "label": "i9-13900F",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_14700f",
+        "label": "i7-14700F",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_14900f",
+        "label": "i9-14900F",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_14900kf",
+        "label": "i9-14900KF",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
   "awm15r5_ryzen": {
     "base_price": 390,
     "battery_adj": {
@@ -10082,6 +11057,731 @@
       }
     ]
   },
+  "dinsp3030": {
+    "_form_factor": "Tower / Small Desktop",
+    "_gpu_tiers": [
+      "Intel UHD 730/770",
+      "Optional GTX 1660 Super / RTX 3050 on Tower"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "350-700",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i3_14100",
+        "label": "i3-14100",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_14400",
+        "label": "i5-14400",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_14700",
+        "label": "i7-14700",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "256gb",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "doptiplex5000": {
+    "_form_factor": "SFF (also MT and Micro variants)",
+    "_gpu_tiers": [
+      "Intel UHD 730/770",
+      "Optional low-profile dGPU (GTX 1660, T400)"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "200-450",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i3_12100",
+        "label": "i3-12100",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i3_12300",
+        "label": "i3-12300",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_12400",
+        "label": "i5-12400",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_12500",
+        "label": "i5-12500",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_12600",
+        "label": "i5-12600",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_12700",
+        "label": "i7-12700",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "256gb",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "doptiplex7010": {
+    "_form_factor": "Tower / SFF / Micro / Plus Tower / Plus SFF",
+    "_gpu_tiers": [
+      "Intel UHD 730",
+      "Intel UHD 770",
+      "Optional low-profile dGPU (T1000)"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "150-500",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i3_13100",
+        "label": "i3-13100",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i3_13100t",
+        "label": "i3-13100T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_13400",
+        "label": "i5-13400",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_13500",
+        "label": "i5-13500",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_13500t",
+        "label": "i5-13500T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_13600",
+        "label": "i5-13600",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_13700",
+        "label": "i7-13700",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_13700t",
+        "label": "i7-13700T",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "256gb",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "dprecision3680": {
+    "_form_factor": "Mid-tower workstation",
+    "_gpu_tiers": [
+      "Intel UHD",
+      "T400/T1000",
+      "RTX A2000",
+      "RTX A4000",
+      "RTX 4000 Ada",
+      "RTX 4080/4090"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "1000-3000",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r128",
+        "label": "128GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i5_14500",
+        "label": "i5-14500",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_14600",
+        "label": "i5-14600",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_14700",
+        "label": "i7-14700",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_14700k",
+        "label": "i7-14700K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_14900",
+        "label": "i9-14900",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_14900k",
+        "label": "i9-14900K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_13500",
+        "label": "i5-13500",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_13700",
+        "label": "i7-13700",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_13900",
+        "label": "i9-13900",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "dxps8950": {
+    "_form_factor": "Mid-tower",
+    "_gpu_tiers": [
+      "GTX 1650 Super",
+      "RTX 3050",
+      "RTX 3060",
+      "RTX 3060 Ti",
+      "RTX 3070",
+      "RTX 3080",
+      "RTX 3090",
+      "RX 6700/6900 XT"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "600-2000",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i5_12600k",
+        "label": "i5-12600K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_12700",
+        "label": "i7-12700",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_12700k",
+        "label": "i7-12700K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_12900",
+        "label": "i9-12900",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_12900k",
+        "label": "i9-12900K",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "256gb",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "dxps8960": {
+    "_form_factor": "Mid-tower",
+    "_gpu_tiers": [
+      "RTX 3050",
+      "RTX 4060",
+      "RTX 4060 Ti",
+      "RTX 4070",
+      "RTX 4070 Ti",
+      "RTX 4080",
+      "RTX 4090",
+      "RX 7600/7700 XT"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "800-2500",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i5_13400",
+        "label": "i5-13400",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_13700",
+        "label": "i7-13700",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_13700k",
+        "label": "i7-13700K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_13900",
+        "label": "i9-13900",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_13900k",
+        "label": "i9-13900K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_14700k",
+        "label": "i7-14700K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_14900k",
+        "label": "i9-14900K",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
   "hp_eb_g10": {
     "base_price": 280,
     "battery_adj": {
@@ -14766,6 +16466,657 @@
         "adj": 25,
         "id": "512",
         "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "hpelitedesk": {
+    "_form_factor": "Tower / SFF / Mini (DM)",
+    "_gpu_tiers": [
+      "Intel UHD 770",
+      "Optional T400/T1000 or RTX A2000 on Tower/SFF"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "300-700",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i3_12100_t",
+        "label": "i3-12100/T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_12500_t",
+        "label": "i5-12500/T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_12600",
+        "label": "i5-12600",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_12700_t",
+        "label": "i7-12700/T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_12900",
+        "label": "i9-12900",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "256gb",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "hpenvy34": {
+    "_form_factor": "34-inch 5K (5120x2160) All-in-One",
+    "_gpu_tiers": [
+      "GTX 1650",
+      "RTX 3060",
+      "RTX 3080"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "1000-2500",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r128",
+        "label": "128GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i5_11400",
+        "label": "i5-11400",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_11700",
+        "label": "i7-11700",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_11900",
+        "label": "i9-11900",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "hpomen40": {
+    "_form_factor": "Mid-full tower (GT21 chassis)",
+    "_gpu_tiers": [
+      "RTX 3060",
+      "RTX 3060 Ti",
+      "RTX 3070",
+      "RTX 3070 Ti",
+      "RTX 3080",
+      "RTX 3080 Ti",
+      "RTX 3090",
+      "RX 6700 XT",
+      "RX 6800 XT"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "800-2000",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i7_12700k",
+        "label": "i7-12700K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_12900k",
+        "label": "i9-12900K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_7_5700g",
+        "label": "Ryzen 7 5700G",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_7_5800x",
+        "label": "Ryzen 7 5800X",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_9_5900x",
+        "label": "Ryzen 9 5900X",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_9_5950x",
+        "label": "Ryzen 9 5950X",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "hpomendsk": {
+    "_form_factor": "Full tower (GT22 chassis, Cryo Chamber)",
+    "_gpu_tiers": [
+      "RTX 4060 Ti",
+      "RTX 4070",
+      "RTX 4070 Super",
+      "RTX 4070 Ti Super",
+      "RTX 4080",
+      "RTX 4080 Super",
+      "RTX 4090",
+      "RX 7900 XT/XTX"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "1200-3200",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r128",
+        "label": "128GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i7_13700k",
+        "label": "i7-13700K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_13900k",
+        "label": "i9-13900K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_14700k",
+        "label": "i7-14700K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_14900k",
+        "label": "i9-14900K",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_7_7700x",
+        "label": "Ryzen 7 7700X",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_9_7900x",
+        "label": "Ryzen 9 7900X",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "ryzen_9_7950x",
+        "label": "Ryzen 9 7950X",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "hppav32": {
+    "_form_factor": "31.5-inch 4K UHD All-in-One",
+    "_gpu_tiers": [
+      "Intel UHD 730/770"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "700-1300",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i5_12400t",
+        "label": "i5-12400T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_12700",
+        "label": "i7-12700",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_12900k",
+        "label": "i9-12900K",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "hpprodesk": {
+    "_form_factor": "Tower (MT) / SFF / Mini",
+    "_gpu_tiers": [
+      "Intel UHD 730/770",
+      "Optional low-profile dGPU"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "250-550",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i3_12100",
+        "label": "i3-12100",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i3_12300",
+        "label": "i3-12300",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_12400",
+        "label": "i5-12400",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_12500",
+        "label": "i5-12500",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_12500t",
+        "label": "i5-12500T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_12600",
+        "label": "i5-12600",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_12700",
+        "label": "i7-12700",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "256gb",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -26133,6 +28484,689 @@
         "adj": 0,
         "id": "512",
         "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lnideactower": {
+    "_form_factor": "Tower (14L mainstream, 17L Gaming 5i)",
+    "_gpu_tiers": [
+      "Integrated UHD 630/730/770",
+      "GTX 1660 Super (Gaming 5i older)",
+      "RTX 3050",
+      "RTX 3060",
+      "RTX 3060 Ti"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "150-800",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r12",
+        "label": "12GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i3_10100_10105_12100",
+        "label": "i3-10100/10105/12100",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_10400_11400_12400_13400",
+        "label": "i5-10400/11400/12400/13400",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_10700_11700_12700_13700",
+        "label": "i7-10700/11700/12700/13700",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "256gb",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256gb_plus_1tb",
+        "label": "256GB SSD + 1TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512gb_plus_1tb",
+        "label": "512GB SSD + 1TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lnlegion5dtwr": {
+    "_form_factor": "Mid Tower (26L)",
+    "_gpu_tiers": [
+      "RTX 3060",
+      "RTX 3060 Ti",
+      "RTX 3070",
+      "RTX 3070 Ti",
+      "RTX 4060",
+      "RTX 4060 Ti",
+      "RTX 4070",
+      "RTX 4070 Super",
+      "RTX 4070 Ti Super"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "550-1600",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i5_11400f_i7_11700f_i7_11700kf",
+        "label": "i5-11400F/i7-11700F/i7-11700KF",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_12400f_i7_12700f_i7_12700kf",
+        "label": "i5-12400F/i7-12700F/i7-12700KF",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_13400f_i7_13700f_i7_13700kf_i9_13900f",
+        "label": "i5-13400F/i7-13700F/i7-13700KF/i9-13900F",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_14400f_i7_14700f_i9_14900f",
+        "label": "i5-14400F/i7-14700F/i9-14900F",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb_plus_1tb",
+        "label": "1TB SSD + 1TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb_plus_2tb",
+        "label": "1TB SSD + 2TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lnlegion7dtwr": {
+    "_form_factor": "Full Tower with 240mm AIO liquid cooling",
+    "_gpu_tiers": [
+      "RTX 3080",
+      "RTX 3080 Ti",
+      "RTX 3090",
+      "RTX 4070 Ti",
+      "RTX 4080",
+      "RTX 4080 Super",
+      "RTX 4090",
+      "RTX 5080",
+      "RTX 5090 (Gen10)"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "900-3200",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r128",
+        "label": "128GB (Gen10 CUDIMM)",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "i7_12700kf_i9_12900k_i9_12900kf",
+        "label": "i7-12700KF/i9-12900K/i9-12900KF",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_13700kf_i9_13900k_i9_13900kf",
+        "label": "i7-13700KF/i9-13900K/i9-13900KF",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_14700kf_i9_14900k_i9_14900kf",
+        "label": "i7-14700KF/i9-14900K/i9-14900KF",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "core_ultra_7_265k_ultra_9_285k",
+        "label": "Core Ultra 7 265K / Ultra 9 285K",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb_plus_2tb",
+        "label": "1TB SSD + 2TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb_plus_2tb",
+        "label": "2TB SSD + 2TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "4tbnvme",
+        "label": "4TB NVMe",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lnthinkm": {
+    "_form_factor": "SFF / Tower / Tiny (M920q ~1L)",
+    "_gpu_tiers": [
+      "Intel UHD 630 (integrated)",
+      "Optional discrete on Tower/SFF: NVIDIA GTX 1050 Ti / Quadro P400/P620/P1000 / Radeon RX 550"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "75-350 depending on CPU/RAM/storage",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r4",
+        "label": "4GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_celeron_g4900_g4930",
+        "label": "Intel Celeron G4900/G4930",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "pentium_gold_g5400_g5500",
+        "label": "Pentium Gold G5400/G5500",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "core_i3_8100_8300_9100",
+        "label": "Core i3-8100/8300/9100",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "core_i5_8400_8500_8600_9400_9500_9600",
+        "label": "Core i5-8400/8500/8600/9400/9500/9600",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "core_i7_8700_9700",
+        "label": "Core i7-8700/9700",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "core_i9_9900_tower_sff_only",
+        "label": "Core i9-9900 (Tower/SFF only)",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128gb",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256gb",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "500gb",
+        "label": "500GB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256gb_plus_1tb",
+        "label": "256GB SSD + 1TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512gb_plus_1tb",
+        "label": "512GB SSD + 1TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lnthinkm90q": {
+    "_form_factor": "Tiny (~1L)",
+    "_gpu_tiers": [
+      "Integrated (UHD 630 / UHD 750 / UHD 770)"
+    ],
+    "_inquiry_only": true,
+    "_market_value_usd": "200-700",
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {},
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r32",
+        "label": "32GB",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r64",
+        "label": "64GB",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "core_i3_10100t_10300t",
+        "label": "Core i3-10100T/10300T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_10400t_10500t_10600",
+        "label": "i5-10400T/10500T/10600",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_10700_10700t",
+        "label": "i7-10700/10700T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_10900_10900t",
+        "label": "i9-10900/10900T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "core_i3_10105t_11100",
+        "label": "Core i3-10105T/11100",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_11400t_11500_11500t",
+        "label": "i5-11400T/11500/11500T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_11700_11700t",
+        "label": "i7-11700/11700T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_11900",
+        "label": "i9-11900",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "core_i3_12100_12100t",
+        "label": "Core i3-12100/12100T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i5_12400_12500_12500t",
+        "label": "i5-12400/12500/12500T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i7_12700_12700t",
+        "label": "i7-12700/12700T",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "i9_12900_some_skus",
+        "label": "i9-12900 (some SKUs)",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128gb",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256gb",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512gb",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "2tb",
+        "label": "2TB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
