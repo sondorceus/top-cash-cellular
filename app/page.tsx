@@ -2615,21 +2615,6 @@ const CONDITIONS = [
   { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: "⚠️", details: ["Cracked screen, broken buttons, or damaged housing", "Display defects such as dead pixels, white spots, or burn-in", "May have functional issues — touchscreen, speakers, cameras", "Device still powers on", "No signs of liquid intrusion or water damage"] },
 ];
 
-// Laptop storage tiers — IWM quiz pattern across PC laptop brands offers
-// 256GB / 512GB / 1TB / 2TB / 4TB SSD. Multipliers anchored at 512GB=1.0
-// (IWM's most common base config for our scrape). Per-tier scaling is
-// modest because our base price already reflects the scraper's quiz pick
-// (typically max storage at base chip/RAM), so the tiers really only
-// shift the quote by ±10-20%.
-const LAPTOP_STORAGES = [
-  { id: "lap_256",  label: "256 GB SSD",  desc: "Entry capacity",          multiplier: 0.88 },
-  { id: "lap_512",  label: "512 GB SSD",  desc: "Most common base",        multiplier: 1.00 },
-  { id: "lap_1tb",  label: "1 TB SSD",    desc: "Step up — pays more",     multiplier: 1.10 },
-  { id: "lap_2tb",  label: "2 TB SSD",    desc: "High tier",               multiplier: 1.20 },
-  { id: "lap_4tb",  label: "4 TB SSD",    desc: "Top tier — workstations", multiplier: 1.30 },
-  { id: "lap_unsure", label: "Not sure",  desc: "We'll verify at intake",  multiplier: 1.00 },
-];
-
 const ALL_STORAGES = [
   { id: "64",  label: "64 GB",  desc: "Older base capacity",                multiplier: 0.85, details: ["Common on older iPhone SE / pre-2020 iPads", "Resale demand is limited but we still buy", "Quote is on the lower end of the ladder", "Lookup tip: Settings > General > About > Capacity"] },
   { id: "128", label: "128 GB", desc: "Standard base size",                  multiplier: 1.0,  details: ["Default base size on many recent iPhone / iPad models", "Easy resale — broad demand across the market", "Mid-tier payout — sits in the middle of our ladder", "Lookup tip: Settings > General > About > Capacity"] },
@@ -4896,9 +4881,11 @@ export default function Home() {
   // carrier — only condition -> quote (2 steps).
   const isPhoneFlow = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
   const isIpadFlow = deviceType === "ipad";
-  // PC laptops follow a laptop-shaped flow: storage → condition → battery
-  // → charger → quote. No carrier (irrelevant), but they DO ask SSD size
-  // using LAPTOP_STORAGES (256GB → 4TB) instead of the phone-style tiers.
+  // PC laptops follow a laptop-shaped flow without iPhone-style storage
+  // or carrier questions. Until the per-model IWM additive specs land
+  // (PC_LAPTOP_SPECS — chip/RAM/storage as proper $ deltas), the funnel
+  // goes model → condition → battery → charger → quote, using the IWM
+  // scrape's max-config Flawless × 0.90 as the base.
   // MacBook (deviceType="macbook") has its own additive specs flow and is
   // intentionally excluded here.
   const isPcLaptopFlow =
@@ -4908,12 +4895,13 @@ export default function Home() {
   // First post-model step for the current device type. Used by every
   // model-pick handler so we don't have to switch on isPcLaptopFlow at
   // each click site.
-  const stepAfterModel: Step = isPcLaptopFlow ? "storage" : "condition";
+  const stepAfterModel: Step = "condition";
   const isNoStorageDevice =
     deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" ||
     deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch" ||
     deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" ||
-    deviceType === "dji";
+    deviceType === "dji" ||
+    isPcLaptopFlow;
   // Carrier-lock step only fires for Verizon (only carrier with a real
   // 60-day lock policy worth asking about). Other carriers skip it and
   // are treated as unlocked. This makes the funnel one step shorter for
@@ -4935,9 +4923,9 @@ export default function Home() {
   const macSpecExtrasCount = macSpecFlow ? getBrandExtras(deviceType, model?.id).length : 0;
   const funnelTotal = macSpecFlow
     ? ((macHasGlassStep ? 7 : 6) + macSpecExtrasCount)
-    // PC laptops: storage → condition → battery → charger → quote (5 incl. quote)
+    // PC laptops: condition → battery → charger → quote (4 incl. quote)
     : isPcLaptopFlow
-      ? 5
+      ? 4
       : isNoStorageDevice
         ? 2
         : isPhoneFlow
@@ -4959,10 +4947,9 @@ export default function Home() {
     step === "extras" ? (_chargerStepN + 1) :
     step === "quote" ? funnelTotal : 0
   ) : isPcLaptopFlow ? (
-    step === "storage" ? 1 :
-    step === "condition" ? 2 :
-    step === "batteryhealth" ? 3 :
-    step === "charger" ? 4 :
+    step === "condition" ? 1 :
+    step === "batteryhealth" ? 2 :
+    step === "charger" ? 3 :
     step === "quote" ? funnelTotal : 0
   ) : (
     step === "condition" ? 1 :
@@ -5494,9 +5481,6 @@ export default function Home() {
         // Mac flow has condition AFTER storage/displayglass — go back accordingly
         if (MACBOOK_SPECS[model.id].hasNanoGlass) { setStep("displayglass"); setDisplayGlass(null); }
         else { setStep("storage"); setStorage(null); }
-      } else if (isPcLaptopFlow) {
-        // PC laptops: condition came after storage.
-        setStep("storage"); setStorage(null);
       } else {
         setStep("model"); setModel(null);
       }
@@ -5515,7 +5499,6 @@ export default function Home() {
     else if (step === "storage") {
       if (model && hasAdditiveSpecs(model.id)) { setStep("memory"); setMemory(null); }
       else if (deviceType === "ipad") { setStep("connectivity"); setConnectivity(null); }
-      else if (isPcLaptopFlow) { setStep("model"); setModel(null); }
       else { setStep("condition"); setCondition(null); }
     }
     else if (step === "broken-functional") { setStep("condition"); setCondition(null); setBrokenFunctional(null); }
@@ -8682,7 +8665,7 @@ export default function Home() {
               {stepProgress}
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
-                  {(hasAdditiveSpecs(model.id) ? MACBOOK_SPECS[model.id].storage : (isPcLaptopFlow ? LAPTOP_STORAGES : getStoragesForModel(model.id))).map((s) => (
+                  {(hasAdditiveSpecs(model.id) ? MACBOOK_SPECS[model.id].storage : getStoragesForModel(model.id)).map((s) => (
                     <button
                       key={s.id}
                       onClick={() => {
@@ -8695,13 +8678,6 @@ export default function Home() {
                         if (hasAdditiveSpecs(model.id)) {
                           const next: Step = MACBOOK_SPECS[model.id].hasNanoGlass ? "displayglass" : "condition";
                           setStep(next); pushHistory(next);
-                          return;
-                        }
-                        if (isPcLaptopFlow) {
-                          // Storage is the first post-model step for PC
-                          // laptops — go straight to condition (battery and
-                          // charger come after).
-                          setStep("condition"); pushHistory("condition");
                           return;
                         }
                         const isPhone = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
