@@ -15,6 +15,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -81,6 +82,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -155,6 +157,7 @@
       "sealed": 30,
       "verygood": -30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -228,6 +231,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -303,6 +307,36 @@
       "sealed": 40,
       "verygood": -80
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 700,
+        "id": "nvidia_geforce_rtx_5090",
+        "label": "NVIDIA GeForce RTX 5090",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -378,6 +412,22 @@
       "sealed": 40,
       "verygood": -45
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -452,6 +502,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -527,6 +578,22 @@
       "sealed": 40,
       "verygood": -60
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -602,6 +669,15 @@
       "sealed": 40,
       "verygood": -90
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_rtx_3000_ada",
+        "label": "NVIDIA RTX 3000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -677,6 +753,36 @@
       "sealed": 20,
       "verygood": -30
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_gtx_1650",
+        "label": "NVIDIA GeForce GTX 1650",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -773,6 +879,36 @@
       "sealed": 40,
       "verygood": -45
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 400,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -862,6 +998,43 @@
       "sealed": 40,
       "verygood": -65
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -944,6 +1117,15 @@
       "sealed": 50,
       "verygood": -50
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -991,6 +1173,43 @@
       "sealed": 25,
       "verygood": -60
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -1101,6 +1320,7 @@
       "sealed": 25,
       "verygood": -80
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -1190,6 +1410,7 @@
       "sealed": 50,
       "verygood": -65
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -1236,6 +1457,43 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1650_ti",
+        "label": "NVIDIA GeForce GTX 1650 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_2070",
+        "label": "NVIDIA GeForce RTX 2070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 90,
+        "id": "nvidia_geforce_rtx_2070_super",
+        "label": "NVIDIA GeForce RTX 2070 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -1324,6 +1582,57 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "amd_radeon_graphics",
+        "label": "AMD Radeon Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -45,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -25,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -1441,6 +1750,64 @@
       "sealed": 50,
       "verygood": -45
     },
+    "graphics": [
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 275,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 325,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5050",
+        "label": "NVIDIA GeForce RTX 5050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 275,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 325,
+        "id": "nvidia_geforce_rtx_5070_ti",
+        "label": "NVIDIA GeForce RTX 5070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -1551,6 +1918,7 @@
       "sealed": 50,
       "verygood": -45
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -1646,6 +2014,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -1714,6 +2083,64 @@
       "sealed": 25,
       "verygood": -35
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -50,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -1837,6 +2264,50 @@
       "mint": 0,
       "sealed": 50
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -150,
+        "id": "nvidia_geforce_rtx_5050",
+        "label": "NVIDIA GeForce RTX 5050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -1939,6 +2410,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -2027,6 +2499,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -2122,6 +2595,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -2211,6 +2685,43 @@
       "sealed": 25,
       "verygood": -45
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -2313,6 +2824,22 @@
       "sealed": 75,
       "verygood": -100
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5080",
+        "label": "NVIDIA GeForce RTX 5080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "nvidia_geforce_rtx_5090",
+        "label": "NVIDIA GeForce RTX 5090",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -2380,6 +2907,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -2469,6 +2997,57 @@
       "sealed": 25,
       "verygood": -45
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 225,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 400,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -2579,6 +3158,7 @@
       "sealed": 40,
       "verygood": -90
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -2646,6 +3226,29 @@
       "sealed": 50,
       "verygood": -90
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5070_ti",
+        "label": "NVIDIA GeForce RTX 5070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_5080",
+        "label": "NVIDIA GeForce RTX 5080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 650,
+        "id": "nvidia_geforce_rtx_5090",
+        "label": "NVIDIA GeForce RTX 5090",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -2714,6 +3317,22 @@
       "sealed": 25,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_2070_super",
+        "label": "NVIDIA GeForce RTX 2070 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_2080_super",
+        "label": "NVIDIA GeForce RTX 2080 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -2796,6 +3415,29 @@
       "sealed": 50,
       "verygood": -65
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -2885,6 +3527,50 @@
       "sealed": 40,
       "verygood": -65
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 400,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -2988,6 +3674,57 @@
       "sealed": 20,
       "verygood": -30
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1650",
+        "label": "NVIDIA GeForce GTX 1650",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1650_ti",
+        "label": "NVIDIA GeForce GTX 1650 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 70,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -3105,6 +3842,43 @@
       "sealed": 25,
       "verygood": -45
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 500,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -3215,6 +3989,50 @@
       "sealed": 40,
       "verygood": -55
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_5070_ti",
+        "label": "NVIDIA GeForce RTX 5070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "nvidia_geforce_rtx_5080",
+        "label": "NVIDIA GeForce RTX 5080",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -3296,6 +4114,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -3385,6 +4204,50 @@
       "sealed": 25,
       "verygood": -45
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 275,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -3481,6 +4344,22 @@
       "sealed": 50,
       "verygood": -70
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -3542,6 +4421,29 @@
       "sealed": 50,
       "verygood": -45
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -3637,6 +4539,29 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "nvidia_geforce_rtx_2070",
+        "label": "NVIDIA GeForce RTX 2070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -3726,6 +4651,36 @@
       "sealed": 25,
       "verygood": -35
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 90,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 155,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -3836,6 +4791,29 @@
       "sealed": 50,
       "verygood": -50
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 500,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -3910,6 +4888,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -3991,6 +4970,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -4073,6 +5053,29 @@
       "sealed": 30,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -4168,6 +5171,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -4257,6 +5261,29 @@
       "sealed": 25,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -4346,6 +5373,92 @@
       "sealed": 20,
       "verygood": -30
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1650",
+        "label": "NVIDIA GeForce GTX 1650",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "nvidia_geforce_gtx_1650_ti",
+        "label": "NVIDIA GeForce GTX 1650 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -75,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -4463,6 +5576,36 @@
       "sealed": 40,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -4579,6 +5722,85 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1650",
+        "label": "NVIDIA GeForce GTX 1650",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "nvidia_geforce_gtx_1650_ti",
+        "label": "NVIDIA GeForce GTX 1650 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -4689,6 +5911,29 @@
       "sealed": 50,
       "verygood": -45
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5050",
+        "label": "NVIDIA GeForce RTX 5050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -4756,6 +6001,85 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1650",
+        "label": "NVIDIA GeForce GTX 1650",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "nvidia_geforce_gtx_1650_ti",
+        "label": "NVIDIA GeForce GTX 1650 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 35,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_2050",
+        "label": "NVIDIA GeForce RTX 2050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 55,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 95,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 115,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -4907,6 +6231,43 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5050",
+        "label": "NVIDIA GeForce RTX 5050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -5002,6 +6363,64 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1650_ti",
+        "label": "NVIDIA GeForce GTX 1650 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_2050",
+        "label": "NVIDIA GeForce RTX 2050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 70,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 130,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -6115,6 +7534,29 @@
       "sealed": 20,
       "verygood": -35
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -6204,6 +7646,36 @@
       "sealed": 25,
       "verygood": -35
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -6307,6 +7779,43 @@
       "sealed": 25,
       "verygood": -60
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -6417,6 +7926,43 @@
       "sealed": 50,
       "verygood": -65
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "amd_radeon_rx_7600m_xt",
+        "label": "AMD Radeon RX 7600M XT",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 350,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 600,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -6534,6 +8080,29 @@
       "sealed": 50,
       "verygood": -60
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -6630,6 +8199,57 @@
       "sealed": 30,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "amd_radeon_rx_6700m",
+        "label": "AMD Radeon RX 6700M",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "amd_radeon_rx_6850m_xt",
+        "label": "AMD Radeon RX 6850M XT",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 5,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 105,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 180,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 230,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -6719,6 +8339,57 @@
       "sealed": 40,
       "verygood": -70
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "amd_radeon_rx_7600m_xt",
+        "label": "AMD Radeon RX 7600M XT",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "amd_radeon_rx_7900m",
+        "label": "AMD Radeon RX 7900M",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -100,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 600,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -6843,6 +8514,57 @@
       "sealed": 40,
       "verygood": -70
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "amd_radeon_rx_7600m_xt",
+        "label": "AMD Radeon RX 7600M XT",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "amd_radeon_rx_7900m",
+        "label": "AMD Radeon RX 7900M",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -100,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 600,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -6967,6 +8689,29 @@
       "sealed": 25,
       "verygood": -30
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -7049,6 +8794,29 @@
       "sealed": 25,
       "verygood": -45
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -7131,6 +8899,29 @@
       "sealed": 25,
       "verygood": -35
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -7213,6 +9004,36 @@
       "sealed": 30,
       "verygood": -50
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -7302,6 +9123,43 @@
       "sealed": 50,
       "verygood": -70
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 400,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -7398,6 +9256,36 @@
       "sealed": 50,
       "verygood": -85
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 400,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -7473,6 +9361,29 @@
       "sealed": 25,
       "verygood": -55
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -7569,6 +9480,36 @@
       "sealed": 25,
       "verygood": -60
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -7656,6 +9597,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -7757,6 +9699,7 @@
       "mint": 0,
       "sealed": 40
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -7830,6 +9773,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -7924,6 +9868,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -8004,6 +9949,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -8070,6 +10016,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -8157,6 +10104,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -8230,6 +10178,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -8324,6 +10273,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -8411,6 +10361,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -8477,6 +10428,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -8571,6 +10523,36 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics_only",
+        "label": "Integrated Graphics Only",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 140,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -8637,6 +10619,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -8724,6 +10707,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -8804,6 +10788,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -8891,6 +10876,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -8979,6 +10965,7 @@
       "mint": 0,
       "sealed": 10
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -9073,6 +11060,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -9153,6 +11141,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -9226,6 +11215,7 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -9306,6 +11296,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -9386,6 +11377,7 @@
       "mint": 0,
       "sealed": 35
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -9480,6 +11472,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -9588,6 +11581,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -9668,6 +11662,7 @@
       "mint": 0,
       "sealed": 35
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -9741,6 +11736,7 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -9815,6 +11811,7 @@
       "sealed": 40,
       "verygood": -35
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -9916,6 +11913,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -9996,6 +11994,22 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_rtx_500_ada",
+        "label": "NVIDIA RTX 500 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -10091,6 +12105,36 @@
       "sealed": 35,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_rtx_1000_ada",
+        "label": "NVIDIA RTX 1000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_rtx_2000_ada",
+        "label": "NVIDIA RTX 2000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_rtx_500_ada",
+        "label": "NVIDIA RTX 500 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -10193,6 +12237,36 @@
       "sealed": 35,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_rtx_1000_ada",
+        "label": "NVIDIA RTX 1000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_rtx_2000_ada",
+        "label": "NVIDIA RTX 2000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_rtx_500_ada",
+        "label": "NVIDIA RTX 500 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -10295,6 +12369,36 @@
       "sealed": 35,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_rtx_1000_ada",
+        "label": "NVIDIA RTX 1000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_rtx_2000_ada",
+        "label": "NVIDIA RTX 2000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_rtx_500_ada",
+        "label": "NVIDIA RTX 500 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -10397,6 +12501,36 @@
       "sealed": 35,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_rtx_1000_ada",
+        "label": "NVIDIA RTX 1000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_rtx_2000_ada",
+        "label": "NVIDIA RTX 2000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_rtx_500_ada",
+        "label": "NVIDIA RTX 500 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -10499,6 +12633,36 @@
       "sealed": 35,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_rtx_1000_ada",
+        "label": "NVIDIA RTX 1000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_rtx_2000_ada",
+        "label": "NVIDIA RTX 2000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_rtx_500_ada",
+        "label": "NVIDIA RTX 500 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -10601,6 +12765,36 @@
       "sealed": 35,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_rtx_1000_ada",
+        "label": "NVIDIA RTX 1000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_rtx_2000_ada",
+        "label": "NVIDIA RTX 2000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_rtx_500_ada",
+        "label": "NVIDIA RTX 500 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -10703,6 +12897,36 @@
       "sealed": 35,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_rtx_1000_ada",
+        "label": "NVIDIA RTX 1000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_rtx_2000_ada",
+        "label": "NVIDIA RTX 2000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_rtx_500_ada",
+        "label": "NVIDIA RTX 500 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -10805,6 +13029,36 @@
       "sealed": 35,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_rtx_1000_ada",
+        "label": "NVIDIA RTX 1000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_rtx_2000_ada",
+        "label": "NVIDIA RTX 2000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_rtx_500_ada",
+        "label": "NVIDIA RTX 500 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -10906,6 +13160,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -10993,6 +13248,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -11799,6 +14055,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -11936,6 +14193,7 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -12038,6 +14296,7 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -12147,6 +14406,7 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -12235,6 +14495,7 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -12323,6 +14584,7 @@
       "mint": 0,
       "sealed": 10
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -12432,6 +14694,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -12534,6 +14797,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -12629,6 +14893,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -12717,6 +14982,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -12804,6 +15070,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -12913,6 +15180,7 @@
       "mint": 0,
       "sealed": 35
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -13001,6 +15269,7 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -13075,6 +15344,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -13226,6 +15496,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -13334,6 +15605,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -13491,6 +15763,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -13650,6 +15923,50 @@
       "sealed": 30,
       "verygood": -55
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5050",
+        "label": "NVIDIA GeForce RTX 5050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -13738,6 +16055,29 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 120,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 195,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -13818,6 +16158,7 @@
       "mint": 0,
       "sealed": 35
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -13891,6 +16232,22 @@
       "mint": 0,
       "sealed": 35
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics_only",
+        "label": "Integrated Graphics Only",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -13993,6 +16350,7 @@
       "sealed": 35,
       "verygood": -25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -14066,6 +16424,7 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -14139,6 +16498,22 @@
       "mint": 0,
       "sealed": 35
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics_only",
+        "label": "Integrated Graphics Only",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -14219,6 +16594,7 @@
       "mint": 0,
       "sealed": 35
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -14313,6 +16689,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -14447,6 +16824,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -14640,6 +17018,22 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_rtx_2050",
+        "label": "NVIDIA GeForce RTX 2050",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -14728,6 +17122,7 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -14815,6 +17210,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -14916,6 +17312,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -14996,6 +17393,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -15097,6 +17495,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -15254,6 +17653,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -15369,6 +17769,29 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_gtx_1650_ti",
+        "label": "NVIDIA GeForce GTX 1650 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_mx150",
+        "label": "NVIDIA GeForce MX150",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "nvidia_geforce_mx250",
+        "label": "NVIDIA GeForce MX250",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -15470,6 +17893,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -15558,6 +17982,50 @@
       "sealed": 40,
       "verygood": -75
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_rtx_2000_ada",
+        "label": "NVIDIA RTX 2000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "nvidia_rtx_3500_ada",
+        "label": "NVIDIA RTX 3500 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 400,
+        "id": "nvidia_rtx_4000_ada",
+        "label": "NVIDIA RTX 4000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 600,
+        "id": "nvidia_rtx_5000_ada",
+        "label": "NVIDIA RTX 5000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_rtx_a1000",
+        "label": "NVIDIA RTX A1000",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -15667,6 +18135,50 @@
       "sealed": 40,
       "verygood": -50
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_rtx_1000_ada",
+        "label": "NVIDIA RTX 1000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 225,
+        "id": "nvidia_rtx_2000_ada",
+        "label": "NVIDIA RTX 2000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "nvidia_rtx_3500_ada",
+        "label": "NVIDIA RTX 3500 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 450,
+        "id": "nvidia_rtx_4000_ada",
+        "label": "NVIDIA RTX 4000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 650,
+        "id": "nvidia_rtx_5000_ada",
+        "label": "NVIDIA RTX 5000 Ada",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -15789,6 +18301,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -15911,6 +18424,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -16047,6 +18561,43 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
+        "id": "nvidia_quadro_rtx_3000",
+        "label": "NVIDIA Quadro RTX 3000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 90,
+        "id": "nvidia_quadro_rtx_4000",
+        "label": "NVIDIA Quadro RTX 4000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 140,
+        "id": "nvidia_quadro_rtx_5000",
+        "label": "NVIDIA Quadro RTX 5000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_quadro_t1000",
+        "label": "NVIDIA Quadro T1000",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -16183,6 +18734,36 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_2070",
+        "label": "NVIDIA GeForce RTX 2070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 70,
+        "id": "nvidia_geforce_rtx_2070_super",
+        "label": "NVIDIA GeForce RTX 2070 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_2080_super",
+        "label": "NVIDIA GeForce RTX 2080 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -16284,6 +18865,43 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics_only",
+        "label": "Integrated Graphics Only",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_quadro_t1200",
+        "label": "NVIDIA Quadro T1200",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_rtx_a2000",
+        "label": "NVIDIA RTX A2000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 110,
+        "id": "nvidia_rtx_a3000",
+        "label": "NVIDIA RTX A3000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_rtx_a4000",
+        "label": "NVIDIA RTX A4000",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -16372,6 +18990,57 @@
       "sealed": 30,
       "verygood": -45
     },
+    "graphics": [
+      {
+        "adj": 25,
+        "id": "amd_radeon_rx_6600m",
+        "label": "AMD Radeon RX 6600M",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_rtx_a1000",
+        "label": "NVIDIA RTX A1000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_rtx_a2000",
+        "label": "NVIDIA RTX A2000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_rtx_a3000",
+        "label": "NVIDIA RTX A3000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 275,
+        "id": "nvidia_rtx_a4500",
+        "label": "NVIDIA RTX A4500",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 425,
+        "id": "nvidia_rtx_a5500",
+        "label": "NVIDIA RTX A5500",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -17138,6 +19807,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -17267,6 +19937,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -17396,6 +20067,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -17483,6 +20155,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -17570,6 +20243,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -17699,6 +20373,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -17814,6 +20489,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -17929,6 +20605,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -18009,6 +20686,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -18089,6 +20767,22 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics_only",
+        "label": "Integrated Graphics Only",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -18239,6 +20933,22 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics_only",
+        "label": "Integrated Graphics Only",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -18389,6 +21099,22 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics_only",
+        "label": "Integrated Graphics Only",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -18476,6 +21202,22 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics_only",
+        "label": "Integrated Graphics Only",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -18563,6 +21305,22 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics_only",
+        "label": "Integrated Graphics Only",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -18651,6 +21409,29 @@
       "sealed": 35,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics_only",
+        "label": "Integrated Graphics Only",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "nvidia_geforce_rtx_2050",
+        "label": "NVIDIA GeForce RTX 2050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 35,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -18725,6 +21506,29 @@
       "sealed": 35,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics_only",
+        "label": "Integrated Graphics Only",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "nvidia_geforce_rtx_2050",
+        "label": "NVIDIA GeForce RTX 2050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 35,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -18798,6 +21602,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -18927,6 +21732,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -19043,6 +21849,7 @@
       "sealed": 25,
       "verygood": -25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -19123,6 +21930,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -19238,6 +22046,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -19332,6 +22141,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -19489,6 +22299,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -19660,6 +22471,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -19761,6 +22573,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -19883,6 +22696,7 @@
       "mint": 0,
       "sealed": 10
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -20040,6 +22854,50 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1650",
+        "label": "NVIDIA GeForce GTX 1650",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "nvidia_geforce_rtx_2050",
+        "label": "NVIDIA GeForce RTX 2050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 55,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -20169,6 +23027,29 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -20270,6 +23151,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -20371,6 +23253,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -20486,6 +23369,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -20587,6 +23471,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -20689,6 +23574,85 @@
       "sealed": 20,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1650",
+        "label": "NVIDIA GeForce GTX 1650",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 5,
+        "id": "nvidia_geforce_gtx_1650_ti",
+        "label": "NVIDIA GeForce GTX 1650 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5050",
+        "label": "NVIDIA GeForce RTX 5050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -20840,6 +23804,71 @@
       "sealed": 25,
       "verygood": -45
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -20970,6 +23999,106 @@
       "sealed": 30,
       "verygood": -30
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1650",
+        "label": "NVIDIA GeForce GTX 1650",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "nvidia_geforce_gtx_1650_ti",
+        "label": "NVIDIA GeForce GTX 1650 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -25,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -25,
+        "id": "nvidia_geforce_rtx_5050",
+        "label": "NVIDIA GeForce RTX 5050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -21233,6 +24362,85 @@
       "sealed": 20,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -25,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 225,
+        "id": "nvidia_geforce_rtx_5070_ti",
+        "label": "NVIDIA GeForce RTX 5070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -21405,6 +24613,43 @@
       "sealed": 30,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "amd_radeon_rx_6700_xt",
+        "label": "AMD Radeon RX 6700 XT",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "amd_radeon_rx_6850m_xt",
+        "label": "AMD Radeon RX 6850M XT",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -21507,6 +24752,36 @@
       "sealed": 40,
       "verygood": -65
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5070_ti",
+        "label": "NVIDIA GeForce RTX 5070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_geforce_rtx_5080",
+        "label": "NVIDIA GeForce RTX 5080",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -21602,6 +24877,99 @@
       "sealed": 30,
       "verygood": -45
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_2070",
+        "label": "NVIDIA GeForce RTX 2070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_2070_super",
+        "label": "NVIDIA GeForce RTX 2070 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "nvidia_geforce_rtx_2080_super",
+        "label": "NVIDIA GeForce RTX 2080 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -21753,6 +25121,29 @@
       "sealed": 40,
       "verygood": -50
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -21868,6 +25259,36 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -21955,6 +25376,43 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [
+      {
+        "adj": -50,
+        "id": "amd_radeon_rx_6600s",
+        "label": "AMD Radeon RX 6600S",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "amd_radeon_rx_6800s",
+        "label": "AMD Radeon RX 6800S",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -22064,6 +25522,50 @@
       "sealed": 30,
       "verygood": -40
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -20,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -22179,6 +25681,29 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1050",
+        "label": "NVIDIA GeForce GTX 1050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "nvidia_geforce_gtx_1050_ti",
+        "label": "NVIDIA GeForce GTX 1050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_gtx_1060",
+        "label": "NVIDIA GeForce GTX 1060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -22280,6 +25805,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -22367,6 +25893,29 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1650",
+        "label": "NVIDIA GeForce GTX 1650",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -22468,6 +26017,29 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1650",
+        "label": "NVIDIA GeForce GTX 1650",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -22541,6 +26113,22 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1050",
+        "label": "NVIDIA GeForce GTX 1050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "nvidia_geforce_gtx_1050_ti",
+        "label": "NVIDIA GeForce GTX 1050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -22607,6 +26195,36 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_2070",
+        "label": "NVIDIA GeForce RTX 2070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "nvidia_geforce_rtx_2080",
+        "label": "NVIDIA GeForce RTX 2080",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -22701,6 +26319,57 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [
+      {
+        "adj": -50,
+        "id": "nvidia_geforce_rtx_2050",
+        "label": "NVIDIA GeForce RTX 2050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 35,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_5050",
+        "label": "NVIDIA GeForce RTX 5050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -22851,6 +26520,29 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_5050",
+        "label": "NVIDIA GeForce RTX 5050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -22938,6 +26630,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -23011,6 +26704,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -23091,6 +26785,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -23199,6 +26894,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -23279,6 +26975,22 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -23353,6 +27065,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -23448,6 +27161,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -23557,6 +27271,7 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -23687,6 +27402,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -23782,6 +27498,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -23884,6 +27601,7 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -23993,6 +27711,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -24108,6 +27827,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -24188,6 +27908,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -24317,6 +28038,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -24453,6 +28175,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -24582,6 +28305,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -24669,6 +28393,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -24770,6 +28495,29 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_quadro_p1000",
+        "label": "NVIDIA Quadro P1000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_quadro_p2000",
+        "label": "NVIDIA Quadro P2000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_quadro_p3200",
+        "label": "NVIDIA Quadro P3200",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -24871,6 +28619,43 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 50,
+        "id": "nvidia_quadro_rtx_3000",
+        "label": "NVIDIA Quadro RTX 3000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_quadro_rtx_4000",
+        "label": "NVIDIA Quadro RTX 4000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_quadro_rtx_5000",
+        "label": "NVIDIA Quadro RTX 5000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_quadro_t1000",
+        "label": "NVIDIA Quadro T1000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_quadro_t2000",
+        "label": "NVIDIA Quadro T2000",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -24979,6 +28764,43 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "intel_integrated_graphics",
+        "label": "Intel Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_quadro_m3000m",
+        "label": "NVIDIA Quadro M3000M",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_quadro_m4000m",
+        "label": "NVIDIA Quadro M4000M",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_quadro_m5000m",
+        "label": "NVIDIA Quadro M5000M",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_quadro_m600m",
+        "label": "NVIDIA Quadro M600M",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -25066,6 +28888,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -25146,6 +28969,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -25233,6 +29057,50 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics_only",
+        "label": "Integrated Graphics Only",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_quadro_p620",
+        "label": "NVIDIA Quadro P620",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_quadro_rtx_3000",
+        "label": "NVIDIA Quadro RTX 3000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_quadro_rtx_4000",
+        "label": "NVIDIA Quadro RTX 4000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_quadro_rtx_5000",
+        "label": "NVIDIA Quadro RTX 5000",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 70,
+        "id": "nvidia_quadro_t2000",
+        "label": "NVIDIA Quadro T2000",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -25328,6 +29196,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -25430,6 +29299,7 @@
       "sealed": 25,
       "verygood": -30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -25511,6 +29381,7 @@
       "sealed": 25,
       "verygood": -35
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -25599,6 +29470,7 @@
       "mint": 0,
       "sealed": 40
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -25681,6 +29553,7 @@
       "sealed": 50,
       "verygood": -60
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -25798,6 +29671,36 @@
       "sealed": 40,
       "verygood": -50
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -25894,6 +29797,7 @@
       "sealed": 50,
       "verygood": -75
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -25989,6 +29893,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -26070,6 +29975,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -26152,6 +30058,7 @@
       "sealed": 25,
       "verygood": -25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -26260,6 +30167,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -26340,6 +30248,7 @@
       "mint": 0,
       "sealed": 50
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -26427,6 +30336,7 @@
       "mint": 0,
       "sealed": 50
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -26514,6 +30424,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -26595,6 +30506,7 @@
       "sealed": 25,
       "verygood": -40
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -26689,6 +30601,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -26783,6 +30696,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -26940,6 +30854,7 @@
       "mint": 0,
       "sealed": 10
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -27027,6 +30942,7 @@
       "mint": 0,
       "sealed": 10
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -27107,6 +31023,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -27243,6 +31160,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -27338,6 +31256,7 @@
       "sealed": 25,
       "verygood": -45
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -27489,6 +31408,7 @@
       "sealed": 40,
       "verygood": -50
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -27583,6 +31503,7 @@
       "mint": 0,
       "sealed": 10
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -27677,6 +31598,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -27771,6 +31693,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -27865,6 +31788,7 @@
       "mint": 0,
       "sealed": 10
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -27959,6 +31883,7 @@
       "mint": 0,
       "sealed": 15
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -28075,6 +32000,22 @@
       "sealed": 25,
       "verygood": -25
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -28142,6 +32083,43 @@
       "sealed": 35,
       "verygood": -50
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 135,
+        "id": "nvidia_geforce_rtx_5060",
+        "label": "NVIDIA GeForce RTX 5060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -28229,6 +32207,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -28316,6 +32295,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -28390,6 +32370,7 @@
       "sealed": 50,
       "verygood": -50
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -29183,6 +33164,57 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3060_ti",
+        "label": "NVIDIA GeForce RTX 3060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_4060_ti",
+        "label": "NVIDIA GeForce RTX 4060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_4070_super",
+        "label": "NVIDIA GeForce RTX 4070 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -29349,6 +33381,85 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "nvidia_geforce_rtx_3060_ti",
+        "label": "NVIDIA GeForce RTX 3060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -25,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3090",
+        "label": "NVIDIA GeForce RTX 3090",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060_ti",
+        "label": "NVIDIA GeForce RTX 4060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -29480,6 +33591,36 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_4060_ti",
+        "label": "NVIDIA GeForce RTX 4060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_4070_super",
+        "label": "NVIDIA GeForce RTX 4070 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -29576,6 +33717,106 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [
+      {
+        "adj": -40,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -20,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3060_ti",
+        "label": "NVIDIA GeForce RTX 3060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -10,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 5,
+        "id": "nvidia_geforce_rtx_4060_ti",
+        "label": "NVIDIA GeForce RTX 4060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4070_super",
+        "label": "NVIDIA GeForce RTX 4070 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_4070_ti",
+        "label": "NVIDIA GeForce RTX 4070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_4070_ti_super",
+        "label": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 425,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 225,
+        "id": "nvidia_geforce_rtx_4080_super",
+        "label": "NVIDIA GeForce RTX 4080 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -29700,6 +33941,57 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [
+      {
+        "adj": -5,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "nvidia_geforce_rtx_3060_ti",
+        "label": "NVIDIA GeForce RTX 3060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4060_ti",
+        "label": "NVIDIA GeForce RTX 4060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -29850,6 +34142,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -29944,6 +34237,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -30038,6 +34332,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -30132,6 +34427,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -30226,6 +34522,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -30320,6 +34617,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -30414,6 +34712,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -30508,6 +34807,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -30602,6 +34902,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -30675,6 +34976,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -30741,6 +35043,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -30814,6 +35117,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -30887,6 +35191,7 @@
       "mint": 0,
       "sealed": 20
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -30946,6 +35251,7 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -31010,6 +35316,7 @@
       "mint": 0,
       "sealed": 30
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -31069,6 +35376,7 @@
       "mint": 0,
       "sealed": 35
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -31129,6 +35437,7 @@
       "sealed": 30,
       "verygood": -45
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -31182,6 +35491,7 @@
       "sealed": 50,
       "verygood": -80
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -31241,6 +35551,7 @@
       "mint": 0,
       "sealed": 25
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -31287,6 +35598,7 @@
       "sealed": 40,
       "verygood": -45
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -31340,6 +35652,7 @@
       "sealed": 75,
       "verygood": -45
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
@@ -31400,6 +35713,7 @@
       "sealed": 50,
       "verygood": -45
     },
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {

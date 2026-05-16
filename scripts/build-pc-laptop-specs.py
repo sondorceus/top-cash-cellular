@@ -171,11 +171,17 @@ def to_macspec(entry):
         return int(m.group(1)) if m else 0
     memory.sort(key=ram_num)
 
+    # Graphics (GPU) options when IWM offers them as a price-altering
+    # answer — gaming laptops + workstations all have a GPU step.
+    gpu = []
+    for label, val in (entry.get("gpu_adj") or {}).items():
+        gpu.append({"id": chip_id(label), "label": label, "sub": "", "multiplier": 1.0, "adj": int(val)})
     return {
         "base_price": int(base),
         "processors": processors,
         "memory": memory,
         "storage": storage,
+        "graphics": gpu,
         "condition_adj": entry.get("condition_adj", {}),
         "battery_adj": entry.get("battery_adj", {}),
         "charger_adj": entry.get("charger_adj", {}),

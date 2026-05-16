@@ -3147,7 +3147,7 @@ const FAQS = [
   { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
 ];
 
-type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "condition" | "broken-functional" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "extras" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
+type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "graphics" | "condition" | "broken-functional" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "extras" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
 
 // Brand-specific extra questions. A device family can declare a list of
 // follow-up questions (disc drive / controllers / hours flown / band
@@ -3566,6 +3566,10 @@ type MacSpec = {
   processors: MacSpecOption[];
   memory: MacSpecOption[];
   storage: MacSpecOption[];
+  // Optional graphics step (gaming laptops, workstations). PC laptops
+  // surface this between storage and condition when populated; MacBooks
+  // never have it.
+  graphics?: MacSpecOption[];
   hasNanoGlass?: boolean;
 };
 const MACBOOK_SPECS: Record<string, MacSpec> = {
@@ -4974,6 +4978,7 @@ export default function Home() {
   // flow runs unchanged.
   const [processor, setProcessor] = useState<MacSpecOption | null>(null);
   const [memory, setMemory] = useState<MacSpecOption | null>(null);
+  const [graphics, setGraphics] = useState<MacSpecOption | null>(null);
   const [displayGlass, setDisplayGlass] = useState<MacSpecOption | null>(null);
   const [batteryHealth, setBatteryHealth] = useState<(typeof BATTERY_HEALTH_OPTIONS)[number] | null>(null);
   const [charger, setCharger] = useState<(typeof CHARGER_OPTIONS)[number] | null>(null);
@@ -5407,12 +5412,13 @@ export default function Home() {
         const chip = procAdj;
         const ram = (memory as MacSpecOption | null)?.adj ?? 0;
         const stor = (storage as MacSpecOption | null)?.adj ?? 0;
+        const gpu = (graphics as MacSpecOption | null)?.adj ?? 0;
         const MCOND: Record<string, number> = { sealed: 50, mint: 0, verygood: -50, good: -110, fair: -220 };
         const cond = MCOND[condition?.id ?? "mint"] ?? 0;
         const nano = displayGlass?.id === "nano" ? 50 : 0;
         const batt = batteryHealth?.id === "poor" ? -80 : 0;
         const chrg = charger?.id === "no" ? -50 : 0;
-        const iwm = chip + ram + stor + cond + nano + batt + chrg + extrasAdjSum;
+        const iwm = chip + ram + stor + gpu + cond + nano + batt + chrg + extrasAdjSum;
         return Math.max(0, Math.round(iwm * 0.90 * promoOnly)) + promoFlatBonus;
       })()
     : useDirectPricing
@@ -5462,7 +5468,12 @@ export default function Home() {
     // MacBook spec'd flow: model -> processor -> memory -> storage -> [displayglass] -> condition -> batteryhealth -> charger -> quote
     else if (step === "processor") { setStep("model"); setModel(null); }
     else if (step === "memory") { setStep("processor"); setProcessor(null); }
-    else if (step === "displayglass") { setStep("storage"); setStorage(null); }
+    else if (step === "graphics") { setStep("storage"); setStorage(null); }
+    else if (step === "displayglass") {
+      const spec = model ? getMacSpec(model.id) : null;
+      if (spec?.graphics && spec.graphics.length > 0) { setStep("graphics"); setGraphics(null); }
+      else { setStep("storage"); setStorage(null); }
+    }
     else if (step === "batteryhealth") { setStep("condition"); setCondition(null); }
     else if (step === "charger") { setStep("batteryhealth"); setBatteryHealth(null); }
     else if (step === "extras") {
@@ -5488,8 +5499,12 @@ export default function Home() {
     }
     else if (step === "condition") {
       if (model && hasAdditiveSpecs(model.id)) {
-        // Mac flow has condition AFTER storage/displayglass — go back accordingly
-        if ((getMacSpec(model.id)?.hasNanoGlass ?? false)) { setStep("displayglass"); setDisplayGlass(null); }
+        // Spec'd flow back-nav: condition came after one of these in order
+        // of preference: displayglass (MacBook nano), graphics (PC gaming),
+        // or storage.
+        const spec = getMacSpec(model.id);
+        if (spec?.hasNanoGlass) { setStep("displayglass"); setDisplayGlass(null); }
+        else if (spec?.graphics && spec.graphics.length > 0) { setStep("graphics"); setGraphics(null); }
         else { setStep("storage"); setStorage(null); }
       } else {
         setStep("model"); setModel(null);
@@ -5556,7 +5571,7 @@ export default function Home() {
     setHandoffMethod(null);
     setShipStreet(""); setShipUnit(""); setShipCity(""); setShipState("TX"); setShipZip("");
     setLocalArea(null);
-    setProcessor(null); setMemory(null); setDisplayGlass(null);
+    setProcessor(null); setMemory(null); setGraphics(null); setDisplayGlass(null);
     setBatteryHealth(null); setCharger(null); setBrokenPhotoUrl(null);
     setExtras({}); setExtrasIndex(0);
   };
@@ -8463,6 +8478,42 @@ export default function Home() {
         </section>
       )}
 
+      {/* STEP: GRAPHICS — PC gaming laptops + workstations with multiple GPU
+          options on IWM. Sits between storage and condition. */}
+      {step === "graphics" && page === "home" && model && hasAdditiveSpecs(model.id) && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+              <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Select Graphics</h2>
+              <p className="text-[#b8b8b8] text-xs mb-3">Check <span className="text-[#e6e6e6] font-semibold">Device Manager &gt; Display adapters</span> if you&apos;re unsure.</p>
+              <div className="tcc-selection-frame">
+                <div className="space-y-2">
+                  {(getMacSpec(model.id)?.graphics || []).map((g) => (
+                    <button key={g.id} onClick={() => {
+                      setGraphics(g);
+                      const next: Step = (getMacSpec(model.id)?.hasNanoGlass ?? false) ? "displayglass" : "condition";
+                      setStep(next); pushHistory(next);
+                    }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-extrabold text-[15px] text-white leading-tight">{g.label}</p>
+                        {g.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{g.sub}</p>}
+                      </div>
+                      <svg className="w-4 h-4 text-[#e6e6e6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* STEP: DISPLAY GLASS — MacBook Pro 16/14 only, between storage and condition */}
       {step === "displayglass" && page === "home" && model && hasAdditiveSpecs(model.id) && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
@@ -8686,7 +8737,11 @@ export default function Home() {
                         // enough for selectionPanel rendering).
                         setStorage(s as unknown as typeof ALL_STORAGES[0]);
                         if (hasAdditiveSpecs(model.id)) {
-                          const next: Step = (getMacSpec(model.id)?.hasNanoGlass ?? false) ? "displayglass" : "condition";
+                          const spec = getMacSpec(model.id);
+                          // Order: storage → [graphics if any] → [displayglass on MacBook] → condition
+                          const next: Step =
+                            (spec?.graphics && spec.graphics.length > 0) ? "graphics" :
+                            (spec?.hasNanoGlass ? "displayglass" : "condition");
                           setStep(next); pushHistory(next);
                           return;
                         }
