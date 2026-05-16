@@ -4596,7 +4596,14 @@ const CHARGER_OPTIONS = [
   { id: "yes", label: "Yes — OEM charger included", multiplier: 1.05 },
   { id: "no",  label: "No charger", multiplier: 1.00 },
 ] as const;
-const hasAdditiveSpecs = (modelId: string | undefined | null): boolean => !!modelId && !!MACBOOK_SPECS[modelId];
+// Mutable module-level cache for PC laptop additive specs loaded from
+// /comps/pc-laptop-specs.json on mount. We merge into MacSpec lookups so
+// hasAdditiveSpecs() and getMacSpec() pick up both Apple and non-Apple
+// laptops without changing every call site.
+let PC_LAPTOP_SPECS_CACHE: Record<string, MacSpec> = {};
+const getMacSpec = (modelId: string | undefined | null): MacSpec | undefined =>
+  !modelId ? undefined : (MACBOOK_SPECS[modelId] || PC_LAPTOP_SPECS_CACHE[modelId]);
+const hasAdditiveSpecs = (modelId: string | undefined | null): boolean => !!getMacSpec(modelId);
 const BRAND_LABELS: Record<string, string> = {
   iphone: "iPhone", android: "Samsung", pixel: "Pixel", ipad: "iPad",
   macbook: "MacBook", samsung_pc: "Samsung", lenovo: "Lenovo", dell: "Dell",
@@ -4919,7 +4926,7 @@ export default function Home() {
   //   processor -> memory -> storage -> [displayglass?] -> condition
   //   -> batteryhealth -> charger -> [extras?] -> quote
   const macSpecFlow = !!(model && hasAdditiveSpecs(model.id));
-  const macHasGlassStep = !!(macSpecFlow && model && MACBOOK_SPECS[model.id].hasNanoGlass);
+  const macHasGlassStep = !!(macSpecFlow && model && (getMacSpec(model.id)?.hasNanoGlass ?? false));
   const macSpecExtrasCount = macSpecFlow ? getBrandExtras(deviceType, model?.id).length : 0;
   const funnelTotal = macSpecFlow
     ? ((macHasGlassStep ? 7 : 6) + macSpecExtrasCount)
@@ -5306,6 +5313,7 @@ export default function Home() {
   const [googleComps, setGoogleComps] = useState<Record<string, number> | null>(null);
   const [samsungComps, setSamsungComps] = useState<Record<string, number> | null>(null);
   const [decluttrComps, setDecluttrComps] = useState<Record<string, number> | null>(null);
+  const [, setPcSpecsVersion] = useState(0);
   useEffect(() => {
     fetch("/comps/apple-trade-in.json", { cache: "no-store" })
       .then(r => r.ok ? r.json() : null)
@@ -5323,6 +5331,19 @@ export default function Home() {
       .then(r => r.ok ? r.json() : null)
       .then((d: { values?: Record<string, number> } | null) => setDecluttrComps(d?.values || null))
       .catch(() => setDecluttrComps(null));
+    // PC laptop additive specs (IWM scrape). Populates the module-level
+    // PC_LAPTOP_SPECS_CACHE so getMacSpec() / hasAdditiveSpecs() pick
+    // them up; setPcSpecsVersion bumps a counter to trigger a rerender
+    // once the data is in.
+    fetch("/comps/pc-laptop-specs.json", { cache: "no-store" })
+      .then(r => r.ok ? r.json() : null)
+      .then((d: Record<string, MacSpec> | null) => {
+        if (d) {
+          PC_LAPTOP_SPECS_CACHE = d;
+          setPcSpecsVersion(v => v + 1);
+        }
+      })
+      .catch(() => {});
   }, []);
   const promoApplies = !!(promoClaimed && promo?.active && deviceType && (promo.appliesTo === "all" || promo.appliesTo === deviceType) && (!promo.minQuantity || quantity >= promo.minQuantity));
   const promoMultiplier = promoApplies && promo && promo.percent ? 1 + (promo.percent / 100) : 1;
@@ -5479,7 +5500,7 @@ export default function Home() {
     else if (step === "condition") {
       if (model && hasAdditiveSpecs(model.id)) {
         // Mac flow has condition AFTER storage/displayglass — go back accordingly
-        if (MACBOOK_SPECS[model.id].hasNanoGlass) { setStep("displayglass"); setDisplayGlass(null); }
+        if ((getMacSpec(model.id)?.hasNanoGlass ?? false)) { setStep("displayglass"); setDisplayGlass(null); }
         else { setStep("storage"); setStorage(null); }
       } else {
         setStep("model"); setModel(null);
@@ -8406,7 +8427,7 @@ export default function Home() {
               <p className="text-[#b8b8b8] text-xs mb-3">{deviceType === "dell" ? <>Find this in <span className="text-[#e6e6e6] font-semibold">Settings &gt; System &gt; About</span></> : <>Find this in <span className="text-[#e6e6e6] font-semibold"> Menu &gt; About This Mac</span></>}</p>
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
-                  {(MACBOOK_SPECS[model.id]?.processors || []).map((p) => (
+                  {(getMacSpec(model.id)?.processors || []).map((p) => (
                     <button key={p.id} onClick={() => { setProcessor(p); setStep("memory"); pushHistory("memory"); }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{p.label}</p>
@@ -8437,7 +8458,7 @@ export default function Home() {
               <p className="text-[#b8b8b8] text-xs mb-3">{deviceType === "dell" ? <>Find this in <span className="text-[#e6e6e6] font-semibold">Settings &gt; System &gt; About</span></> : <>Find this in <span className="text-[#e6e6e6] font-semibold"> Menu &gt; About This Mac</span></>}</p>
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
-                  {(MACBOOK_SPECS[model.id]?.memory || []).map((m) => (
+                  {(getMacSpec(model.id)?.memory || []).map((m) => (
                     <button key={m.id} onClick={() => { setMemory(m); setStep("storage"); pushHistory("storage"); }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{m.label}</p>
@@ -8665,7 +8686,7 @@ export default function Home() {
               {stepProgress}
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
-                  {(hasAdditiveSpecs(model.id) ? MACBOOK_SPECS[model.id].storage : getStoragesForModel(model.id)).map((s) => (
+                  {(hasAdditiveSpecs(model.id) ? (getMacSpec(model.id)?.storage || []) : getStoragesForModel(model.id)).map((s) => (
                     <button
                       key={s.id}
                       onClick={() => {
@@ -8676,7 +8697,7 @@ export default function Home() {
                         // enough for selectionPanel rendering).
                         setStorage(s as unknown as typeof ALL_STORAGES[0]);
                         if (hasAdditiveSpecs(model.id)) {
-                          const next: Step = MACBOOK_SPECS[model.id].hasNanoGlass ? "displayglass" : "condition";
+                          const next: Step = (getMacSpec(model.id)?.hasNanoGlass ?? false) ? "displayglass" : "condition";
                           setStep(next); pushHistory(next);
                           return;
                         }
