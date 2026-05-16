@@ -34,6 +34,52 @@ MANUAL_IMAGE_TO_SLUG = {
     "/devices/ln_tp_e16_g1.png": "lenovo-thinkpad-e16-gen-1",
 }
 
+# Page-variant-id → IWM model slug for brands without proper bridges
+# (samsung_pc / lg_pc / acer / alienware). These map our short variant
+# ids straight to the most-similar IWM laptop generation.
+MANUAL_ID_TO_SLUG = {
+    # Samsung Galaxy Book — all variants of a generation share that
+    # generation's IWM SKU (sub-variants like 360 / Pro / Ultra / Edge
+    # aren't separately priced on IWM).
+    "sgbk_5": "galaxy-book5", "sgbk_5_360": "galaxy-book5",
+    "sgbk_5_pro": "galaxy-book5", "sgbk_5_pro_360": "galaxy-book5",
+    "sgbk_4": "galaxy-book4", "sgbk_4_360": "galaxy-book4",
+    "sgbk_4_pro": "galaxy-book4", "sgbk_4_pro_360": "galaxy-book4",
+    "sgbk_4_ultra": "galaxy-book4", "sgbk_4_edge": "galaxy-book4",
+    "sgbk_3": "galaxy-book3", "sgbk_3_360": "galaxy-book3",
+    "sgbk_3_pro": "galaxy-book3", "sgbk_3_pro_360": "galaxy-book3",
+    "sgbk_3_ultra": "galaxy-book3",
+    "sgbk_2": "galaxy-book2", "sgbk_2_360": "galaxy-book2",
+    "sgbk_2_pro": "galaxy-book2", "sgbk_2_pro_360": "galaxy-book2",
+    "sgbk_1": "galaxy-book", "sgbk_1_pro": "galaxy-book",
+    "sgbk_1_pro_360": "galaxy-book", "sgbk_1_ion": "galaxy-book",
+    "sgbk_1_flex": "galaxy-book", "sgbk_1_flex_alpha": "galaxy-book",
+    "sgbk_1_flex2_alpha": "galaxy-book", "sgbk_1_odyssey": "galaxy-book",
+    # LG Gram — IWM has 3 SKUs (lg-gram / lg-gram-pro / lg-gram-superslim)
+    # Map page variants accordingly.
+    "lg_gr14_24": "lg-gram", "lg_gr14_23": "lg-gram", "lg_grstyle14": "lg-gram",
+    "lg_gr14t_24": "lg-gram", "lg_gr14t_23": "lg-gram",
+    "lg_gr15_23": "lg-gram",
+    "lg_gr16_24": "lg-gram", "lg_gr16_23": "lg-gram", "lg_grstyle16": "lg-gram",
+    "lg_gr16t_24": "lg-gram", "lg_gr16t_23": "lg-gram",
+    "lg_gr17_24": "lg-gram", "lg_gr17_23": "lg-gram",
+    "lg_grpro16_25": "lg-gram-pro", "lg_grpro16_24": "lg-gram-pro",
+    "lg_grpro16t_24": "lg-gram-pro",
+    "lg_grpro17_25": "lg-gram-pro", "lg_grpro17_24": "lg-gram-pro",
+    "lg_grultra15": "lg-gram-superslim",
+    # Alienware m-series — page splits by gen+screen (m15 R5/R6/R7,
+    # m16 R1/R2, m17 R5, m18 R1/R2) but IWM has just m15/m16/m17/m18.
+    "awm15r5_ryzen": "alienware-m15", "awm15r6": "alienware-m15", "awm15r7": "alienware-m15",
+    "awm16r1": "alienware-m16", "awm16r2": "alienware-m16",
+    "awm17r5": "alienware-m17",
+    "awm18r1": "alienware-m18", "awm18r2": "alienware-m18",
+    # Alienware x-series
+    "awx14r1": "alienware-x14", "awx14r2": "alienware-x14",
+    "awx15r1": "alienware-x15", "awx15r2": "alienware-x15",
+    "awx16r1": "alienware-x16", "awx16r2": "alienware-x16",
+    "awx17r1": "alienware-x17", "awx17r2": "alienware-x17",
+}
+
 
 def build_image_to_slug():
     img_to_slug = dict(MANUAL_IMAGE_TO_SLUG)
@@ -161,7 +207,7 @@ def main():
     matched = 0
     for m in vre.finditer(src, span_start, span_end):
         vid, label, image = m.group("id"), m.group("label"), m.group("image")
-        slug = img_to_slug.get(image)
+        slug = MANUAL_ID_TO_SLUG.get(vid) or img_to_slug.get(image)
         if not slug:
             continue
         entries = by_slug.get(slug)

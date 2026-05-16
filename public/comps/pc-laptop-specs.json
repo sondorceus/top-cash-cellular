@@ -5202,6 +5202,1611 @@
       }
     ]
   },
+  "awm15r5_ryzen": {
+    "base_price": 215,
+    "battery_adj": {
+      "good": 0,
+      "poor": -80
+    },
+    "charger_adj": {
+      "no": -50,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -80,
+      "good": -35,
+      "mint": 0,
+      "sealed": 20,
+      "verygood": -15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 215,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 265,
+        "id": "intel_core_i9_10th_gen",
+        "label": "Intel Core i9 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "intel_core_i7_9th_gen",
+        "label": "Intel Core i7 9th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": -20,
+        "id": "1tb",
+        "label": "1TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awm15r6": {
+    "base_price": 215,
+    "battery_adj": {
+      "good": 0,
+      "poor": -80
+    },
+    "charger_adj": {
+      "no": -50,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -80,
+      "good": -35,
+      "mint": 0,
+      "sealed": 20,
+      "verygood": -15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 215,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 265,
+        "id": "intel_core_i9_10th_gen",
+        "label": "Intel Core i9 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "intel_core_i7_9th_gen",
+        "label": "Intel Core i7 9th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": -20,
+        "id": "1tb",
+        "label": "1TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awm15r7": {
+    "base_price": 215,
+    "battery_adj": {
+      "good": 0,
+      "poor": -80
+    },
+    "charger_adj": {
+      "no": -50,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -80,
+      "good": -35,
+      "mint": 0,
+      "sealed": 20,
+      "verygood": -15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 215,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 265,
+        "id": "intel_core_i9_10th_gen",
+        "label": "Intel Core i9 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "intel_core_i7_9th_gen",
+        "label": "Intel Core i7 9th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": -20,
+        "id": "1tb",
+        "label": "1TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awm16r1": {
+    "base_price": 525,
+    "battery_adj": {
+      "good": 0,
+      "poor": -85
+    },
+    "charger_adj": {
+      "no": -70,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -260,
+      "good": -130,
+      "mint": 0,
+      "sealed": 50,
+      "verygood": -65
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "amd_ryzen_7_7745hx",
+        "label": "AMD Ryzen 7 7745HX",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "amd_ryzen_9_7845hx",
+        "label": "AMD Ryzen 9 7845HX",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "amd_ryzen_9_7945hx",
+        "label": "AMD Ryzen 9 7945HX",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "intel_core_i9_13th_gen",
+        "label": "Intel Core i9 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "8tb",
+        "label": "8TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awm16r2": {
+    "base_price": 525,
+    "battery_adj": {
+      "good": 0,
+      "poor": -85
+    },
+    "charger_adj": {
+      "no": -70,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -260,
+      "good": -130,
+      "mint": 0,
+      "sealed": 50,
+      "verygood": -65
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "amd_ryzen_7_7745hx",
+        "label": "AMD Ryzen 7 7745HX",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "amd_ryzen_9_7845hx",
+        "label": "AMD Ryzen 9 7845HX",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "amd_ryzen_9_7945hx",
+        "label": "AMD Ryzen 9 7945HX",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "intel_core_i9_13th_gen",
+        "label": "Intel Core i9 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "8tb",
+        "label": "8TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awm17r5": {
+    "base_price": 225,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -55,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -90,
+      "good": -45,
+      "mint": 0,
+      "sealed": 20
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "intel_core_i7_9th_gen",
+        "label": "Intel Core i7 9th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "1tb",
+        "label": "1TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 35,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awm18r1": {
+    "base_price": 700,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -80,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -270,
+      "good": -135,
+      "mint": 0,
+      "sealed": 40,
+      "verygood": -70
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "amd_ryzen_7_7745hx",
+        "label": "AMD Ryzen 7 7745HX",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "amd_ryzen_9_7845hx",
+        "label": "AMD Ryzen 9 7845HX",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "amd_ryzen_9_7945hx",
+        "label": "AMD Ryzen 9 7945HX",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 110,
+        "id": "intel_core_i9_13th_gen",
+        "label": "Intel Core i9 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "intel_core_i7_14th_gen",
+        "label": "Intel Core i7 14th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "intel_core_i9_14th_gen",
+        "label": "Intel Core i9 14th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awm18r2": {
+    "base_price": 700,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -80,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -270,
+      "good": -135,
+      "mint": 0,
+      "sealed": 40,
+      "verygood": -70
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "amd_ryzen_7_7745hx",
+        "label": "AMD Ryzen 7 7745HX",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "amd_ryzen_9_7845hx",
+        "label": "AMD Ryzen 9 7845HX",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "amd_ryzen_9_7945hx",
+        "label": "AMD Ryzen 9 7945HX",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 110,
+        "id": "intel_core_i9_13th_gen",
+        "label": "Intel Core i9 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "intel_core_i7_14th_gen",
+        "label": "Intel Core i7 14th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "intel_core_i9_14th_gen",
+        "label": "Intel Core i9 14th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awx14r1": {
+    "base_price": 375,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -50,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -175,
+      "good": -85,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -30
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awx14r2": {
+    "base_price": 375,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -50,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -175,
+      "good": -85,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -30
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awx15r1": {
+    "base_price": 475,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -50,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -170,
+      "good": -75,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -35
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 35,
+        "id": "intel_core_i9_11th_gen",
+        "label": "Intel Core i9 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awx15r2": {
+    "base_price": 475,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -50,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -170,
+      "good": -75,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -35
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 35,
+        "id": "intel_core_i9_11th_gen",
+        "label": "Intel Core i9 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awx16r1": {
+    "base_price": 715,
+    "battery_adj": {
+      "good": 0,
+      "poor": -150
+    },
+    "charger_adj": {
+      "no": -70,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -280,
+      "good": -140,
+      "mint": 0,
+      "sealed": 50,
+      "verygood": -70
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 160,
+        "id": "intel_core_ultra_9",
+        "label": "Intel Core Ultra 9",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "intel_core_i9_13th_gen",
+        "label": "Intel Core i9 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awx16r2": {
+    "base_price": 715,
+    "battery_adj": {
+      "good": 0,
+      "poor": -150
+    },
+    "charger_adj": {
+      "no": -70,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -280,
+      "good": -140,
+      "mint": 0,
+      "sealed": 50,
+      "verygood": -70
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 160,
+        "id": "intel_core_ultra_9",
+        "label": "Intel Core Ultra 9",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "intel_core_i9_13th_gen",
+        "label": "Intel Core i9 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 50,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awx17r1": {
+    "base_price": 550,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -70,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -210,
+      "good": -105,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -55
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 90,
+        "id": "intel_core_i9_11th_gen",
+        "label": "Intel Core i9 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "awx17r2": {
+    "base_price": 550,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -70,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -210,
+      "good": -105,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -55
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 90,
+        "id": "intel_core_i9_11th_gen",
+        "label": "Intel Core i9 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
   "d_insp_3400": {
     "base_price": 30,
     "battery_adj": {
@@ -13135,6 +14740,1653 @@
       },
       {
         "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_gr14_23": {
+    "base_price": 45,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_gr14_24": {
+    "base_price": 45,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_gr14t_23": {
+    "base_price": 45,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_gr14t_24": {
+    "base_price": 45,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_gr15_23": {
+    "base_price": 45,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_gr16_23": {
+    "base_price": 45,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_gr16_24": {
+    "base_price": 45,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_gr16t_23": {
+    "base_price": 45,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_gr16t_24": {
+    "base_price": 45,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_gr17_23": {
+    "base_price": 45,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_gr17_24": {
+    "base_price": 45,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_grpro16_24": {
+    "base_price": 400,
+    "battery_adj": {
+      "good": 0,
+      "poor": -85
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 200,
+      "fair": -170,
+      "good": -70,
+      "mint": 0,
+      "sealed": 25
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_ultra_5",
+        "label": "Intel Core Ultra 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "intel_core_ultra_7_series_2",
+        "label": "Intel Core Ultra 7 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "intel_core_ultra_9_series_2",
+        "label": "Intel Core Ultra 9 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_grpro16_25": {
+    "base_price": 400,
+    "battery_adj": {
+      "good": 0,
+      "poor": -85
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 200,
+      "fair": -170,
+      "good": -70,
+      "mint": 0,
+      "sealed": 25
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_ultra_5",
+        "label": "Intel Core Ultra 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "intel_core_ultra_7_series_2",
+        "label": "Intel Core Ultra 7 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "intel_core_ultra_9_series_2",
+        "label": "Intel Core Ultra 9 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_grpro16t_24": {
+    "base_price": 400,
+    "battery_adj": {
+      "good": 0,
+      "poor": -85
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 200,
+      "fair": -170,
+      "good": -70,
+      "mint": 0,
+      "sealed": 25
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_ultra_5",
+        "label": "Intel Core Ultra 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "intel_core_ultra_7_series_2",
+        "label": "Intel Core Ultra 7 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "intel_core_ultra_9_series_2",
+        "label": "Intel Core Ultra 9 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_grpro17_24": {
+    "base_price": 400,
+    "battery_adj": {
+      "good": 0,
+      "poor": -85
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 200,
+      "fair": -170,
+      "good": -70,
+      "mint": 0,
+      "sealed": 25
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_ultra_5",
+        "label": "Intel Core Ultra 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "intel_core_ultra_7_series_2",
+        "label": "Intel Core Ultra 7 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "intel_core_ultra_9_series_2",
+        "label": "Intel Core Ultra 9 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_grpro17_25": {
+    "base_price": 400,
+    "battery_adj": {
+      "good": 0,
+      "poor": -85
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 200,
+      "fair": -170,
+      "good": -70,
+      "mint": 0,
+      "sealed": 25
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_ultra_5",
+        "label": "Intel Core Ultra 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "intel_core_ultra_7_series_2",
+        "label": "Intel Core Ultra 7 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "intel_core_ultra_9_series_2",
+        "label": "Intel Core Ultra 9 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 30,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_grstyle14": {
+    "base_price": 45,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_grstyle16": {
+    "base_price": 45,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -15,
+      "mint": 0,
+      "sealed": 15
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_i5_8th_gen",
+        "label": "Intel Core i5 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "intel_core_i7_8th_gen",
+        "label": "Intel Core i7 8th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "lg_grultra15": {
+    "base_price": 375,
+    "battery_adj": {
+      "good": 0,
+      "poor": -80
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 200,
+      "fair": -150,
+      "good": -60,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -25
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_ultra_5",
+        "label": "Intel Core Ultra 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -35,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "intel_core_ultra_7",
+        "label": "Intel Core Ultra 7",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
         "id": "512",
         "label": "512GB SSD",
         "multiplier": 1.0,
@@ -22452,6 +25704,540 @@
         "multiplier": 1.0,
         "sub": ""
       },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "sgbk_4": {
+    "base_price": 160,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -60,
+      "good": -30,
+      "mint": 0,
+      "sealed": 20
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_5",
+        "label": "Intel Core 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "intel_core_7",
+        "label": "Intel Core 7",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "sgbk_4_360": {
+    "base_price": 160,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -60,
+      "good": -30,
+      "mint": 0,
+      "sealed": 20
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_5",
+        "label": "Intel Core 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "intel_core_7",
+        "label": "Intel Core 7",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "sgbk_4_edge": {
+    "base_price": 160,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -60,
+      "good": -30,
+      "mint": 0,
+      "sealed": 20
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_5",
+        "label": "Intel Core 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "intel_core_7",
+        "label": "Intel Core 7",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "sgbk_4_pro": {
+    "base_price": 160,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -60,
+      "good": -30,
+      "mint": 0,
+      "sealed": 20
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_5",
+        "label": "Intel Core 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "intel_core_7",
+        "label": "Intel Core 7",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "sgbk_4_pro_360": {
+    "base_price": 160,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -60,
+      "good": -30,
+      "mint": 0,
+      "sealed": 20
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_5",
+        "label": "Intel Core 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "intel_core_7",
+        "label": "Intel Core 7",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "sgbk_4_ultra": {
+    "base_price": 160,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -60,
+      "good": -30,
+      "mint": 0,
+      "sealed": 20
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_5",
+        "label": "Intel Core 5",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "intel_core_7",
+        "label": "Intel Core 7",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "sgbk_5": {
+    "base_price": 350,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -100,
+      "good": -30,
+      "mint": 0,
+      "sealed": 25
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_ultra_7_series_2",
+        "label": "Intel Core Ultra 7 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "sgbk_5_360": {
+    "base_price": 350,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -100,
+      "good": -30,
+      "mint": 0,
+      "sealed": 25
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_ultra_7_series_2",
+        "label": "Intel Core Ultra 7 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "sgbk_5_pro": {
+    "base_price": 350,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -100,
+      "good": -30,
+      "mint": 0,
+      "sealed": 25
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_ultra_7_series_2",
+        "label": "Intel Core Ultra 7 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "sgbk_5_pro_360": {
+    "base_price": 350,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -100,
+      "good": -30,
+      "mint": 0,
+      "sealed": 25
+    },
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 0,
+        "id": "intel_core_ultra_7_series_2",
+        "label": "Intel Core Ultra 7 Series 2",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
       {
         "adj": 0,
         "id": "512",
