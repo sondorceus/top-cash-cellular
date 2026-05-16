@@ -672,6 +672,22 @@
     },
     "url": "https://www.itsworthmore.com/sell/alienware-aurora-laptop/alienware-16x-aurora"
   },
+  "alienware-desktop/alienware-aurora-r5": {
+    "done": true,
+    "error": "no_pricing",
+    "model": "alienware-aurora-r5",
+    "scraped_at": "2026-05-16T02:38:31+00:00",
+    "series": "alienware-desktop",
+    "url": "https://www.itsworthmore.com/sell/alienware-desktop/alienware-aurora-r5"
+  },
+  "alienware-desktop/alienware-aurora-r6": {
+    "done": true,
+    "error": "no_pricing",
+    "model": "alienware-aurora-r6",
+    "scraped_at": "2026-05-16T02:38:35+00:00",
+    "series": "alienware-desktop",
+    "url": "https://www.itsworthmore.com/sell/alienware-desktop/alienware-aurora-r6"
+  },
   "alienware-m-series-laptop/alienware-m15": {
     "base_price": 215,
     "battery_adj": {
@@ -9399,6 +9415,14 @@
     "scraped_at": "2026-05-16T02:09:25+00:00",
     "series": "hp-chromebook-laptop",
     "url": "https://www.itsworthmore.com/sell/hp-chromebook-laptop/hp-chromebook"
+  },
+  "hp-desktop/hp-omen": {
+    "done": true,
+    "error": "no_pricing",
+    "model": "hp-omen",
+    "scraped_at": "2026-05-16T02:38:28+00:00",
+    "series": "hp-desktop",
+    "url": "https://www.itsworthmore.com/sell/hp-desktop/hp-omen"
   },
   "hp-elitebook-ultra/hp-elitebook-ultra-g1i": {
     "base_price": 400,
@@ -55795,6 +55819,1491 @@
       }
     },
     "url": "https://www.itsworthmore.com/sell/lg-laptop/lg-gram-superslim"
+  },
+  "microsoft-desktop/microsoft-surface-studio": {
+    "base_price": 210,
+    "battery_adj": {},
+    "charger_adj": {
+      "original power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "memory": "[8-gb-ram]",
+          "processor_type": "[intel-core-i5-6th-gen]",
+          "storage_size": "[1-tb]",
+          "storage_type": "[hdd]"
+        },
+        "label": "Intel Core i5 8GB RAM 1TB HDD"
+      },
+      {
+        "adj": 590,
+        "attrs": {
+          "memory": "[16-gb-ram]",
+          "processor_type": "[intel-core-i7-7th-gen]",
+          "storage_size": "[1-tb]",
+          "storage_type": "[ssd]"
+        },
+        "label": "Intel Core i7 16GB RAM 1TB SSD"
+      },
+      {
+        "adj": 690,
+        "attrs": {
+          "memory": "[32-gb-ram]",
+          "processor_type": "[intel-core-i7-7th-gen]",
+          "storage_size": "[1-tb]",
+          "storage_type": "[ssd]"
+        },
+        "label": "Intel Core i7 32GB RAM 1TB SSD"
+      },
+      {
+        "adj": 790,
+        "attrs": {
+          "memory": "[32-gb-ram]",
+          "processor_type": "[intel-core-i7-7th-gen]",
+          "storage_size": "[2-tb]",
+          "storage_type": "[ssd]"
+        },
+        "label": "Intel Core i7 32GB RAM 2TB SSD"
+      },
+      {
+        "adj": -210,
+        "attrs": {
+          "memory": "[32-gb-ram]",
+          "model": "[2plus]",
+          "processor_type": "[intel-core-i7-11th-gen]",
+          "size": "[28]",
+          "storage_size": "[1-tb]",
+          "storage_type": "[ssd]"
+        },
+        "label": "Surface Studio 2+"
+      },
+      {
+        "adj": 100,
+        "attrs": {
+          "memory": "[16-gb-ram]",
+          "processor_type": "[intel-core-i7-6th-gen]",
+          "storage_size": "[1-tb]",
+          "storage_type": "[hdd]"
+        },
+        "label": "Intel Core i7 16GB RAM 1TB HDD"
+      },
+      {
+        "adj": 165,
+        "attrs": {
+          "memory": "[32-gb-ram]",
+          "processor_type": "[intel-core-i7-6th-gen]",
+          "storage_size": "[2-tb]",
+          "storage_type": "[hdd]"
+        },
+        "label": "Intel Core i7 32GB RAM 2TB HDD"
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -100,
+      "good": -60,
+      "mint": 0,
+      "sealed": 30,
+      "verygood": -50
+    },
+    "done": true,
+    "iwm_name": "Microsoft Surface Studio",
+    "model": "microsoft-surface-studio",
+    "ram_adj": {},
+    "scraped_at": "2026-05-16T02:38:24+00:00",
+    "series": "microsoft-desktop",
+    "storage_adj": {},
+    "submodels": {
+      "surface-studio-1": {
+        "base_price": 210,
+        "battery_adj": {},
+        "charger_adj": {
+          "original power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "memory": "[8-gb-ram]",
+              "processor_type": "[intel-core-i5-6th-gen]",
+              "storage_size": "[1-tb]",
+              "storage_type": "[hdd]"
+            },
+            "label": "Intel Core i5 8GB RAM 1TB HDD"
+          },
+          {
+            "adj": 590,
+            "attrs": {
+              "memory": "[16-gb-ram]",
+              "processor_type": "[intel-core-i7-7th-gen]",
+              "storage_size": "[1-tb]",
+              "storage_type": "[ssd]"
+            },
+            "label": "Intel Core i7 16GB RAM 1TB SSD"
+          },
+          {
+            "adj": 690,
+            "attrs": {
+              "memory": "[32-gb-ram]",
+              "processor_type": "[intel-core-i7-7th-gen]",
+              "storage_size": "[1-tb]",
+              "storage_type": "[ssd]"
+            },
+            "label": "Intel Core i7 32GB RAM 1TB SSD"
+          },
+          {
+            "adj": 790,
+            "attrs": {
+              "memory": "[32-gb-ram]",
+              "processor_type": "[intel-core-i7-7th-gen]",
+              "storage_size": "[2-tb]",
+              "storage_type": "[ssd]"
+            },
+            "label": "Intel Core i7 32GB RAM 2TB SSD"
+          },
+          {
+            "adj": -210,
+            "attrs": {
+              "memory": "[32-gb-ram]",
+              "model": "[2plus]",
+              "processor_type": "[intel-core-i7-11th-gen]",
+              "size": "[28]",
+              "storage_size": "[1-tb]",
+              "storage_type": "[ssd]"
+            },
+            "label": "Surface Studio 2+"
+          },
+          {
+            "adj": 100,
+            "attrs": {
+              "memory": "[16-gb-ram]",
+              "processor_type": "[intel-core-i7-6th-gen]",
+              "storage_size": "[1-tb]",
+              "storage_type": "[hdd]"
+            },
+            "label": "Intel Core i7 16GB RAM 1TB HDD"
+          },
+          {
+            "adj": 165,
+            "attrs": {
+              "memory": "[32-gb-ram]",
+              "processor_type": "[intel-core-i7-6th-gen]",
+              "storage_size": "[2-tb]",
+              "storage_type": "[hdd]"
+            },
+            "label": "Intel Core i7 32GB RAM 2TB HDD"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -100,
+          "good": -60,
+          "mint": 0,
+          "sealed": 30,
+          "verygood": -50
+        },
+        "model_label": "Surface Studio 1",
+        "ram_adj": {},
+        "storage_adj": {}
+      },
+      "surface-studio-2": {
+        "base_price": 0,
+        "battery_adj": {},
+        "charger_adj": {
+          "original power cord": 15
+        },
+        "chips": [],
+        "condition_adj": {
+          "broken": 0,
+          "fair": 1100,
+          "good": 1525,
+          "mint": 2075,
+          "sealed": 2150,
+          "verygood": 1750
+        },
+        "model_label": "Surface Studio 2+",
+        "ram_adj": {},
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/microsoft-desktop/microsoft-surface-studio"
+  },
+  "msi-desktop/msi-aegis-gaming-desktop": {
+    "base_price": 245,
+    "battery_adj": {},
+    "charger_adj": {},
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "processor_type": "[intel-core-i5-12th-gen]"
+        },
+        "label": "Intel Core i5 12th Gen."
+      },
+      {
+        "adj": 95,
+        "attrs": {
+          "processor_type": "[intel-core-i7-14th-gen.]"
+        },
+        "label": "Intel Core i7 14th Gen."
+      },
+      {
+        "adj": 95,
+        "attrs": {
+          "processor_type": "[intel-core-i9-14th-gen.]"
+        },
+        "label": "Intel Core i9 14th Gen."
+      },
+      {
+        "adj": -35,
+        "attrs": {
+          "processor_type": "[intel-core-i7-10th-gen]"
+        },
+        "label": "Intel Core i7 10th Gen."
+      },
+      {
+        "adj": 5,
+        "attrs": {
+          "processor_type": "[intel-core-i7-11th-gen]"
+        },
+        "label": "Intel Core i7 11th Gen."
+      },
+      {
+        "adj": 75,
+        "attrs": {
+          "processor_type": "[intel-core-i7-12th-gen]"
+        },
+        "label": "Intel Core i7 12th Gen."
+      },
+      {
+        "adj": 155,
+        "attrs": {
+          "processor_type": "[intel-core-i7-13th-gen.]"
+        },
+        "label": "Intel Core i7 13th Gen."
+      },
+      {
+        "adj": 195,
+        "attrs": {
+          "processor_type": "[intel-core-i7-14th-gen.]"
+        },
+        "label": "Intel Core i7 14th Gen."
+      },
+      {
+        "adj": 240,
+        "attrs": {
+          "processor_type": "[intel-core-i9-14th-gen.]"
+        },
+        "label": "Intel Core i9 14th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -170,
+      "good": -65,
+      "mint": 0,
+      "sealed": 25
+    },
+    "done": true,
+    "gpu_adj": {
+      "NVIDIA GeForce RTX 3050": -40,
+      "NVIDIA GeForce RTX 3060": -20,
+      "NVIDIA GeForce RTX 3060 Ti": 0,
+      "NVIDIA GeForce RTX 3070": 10,
+      "NVIDIA GeForce RTX 3070 Ti": 25,
+      "NVIDIA GeForce RTX 3080": 40,
+      "NVIDIA GeForce RTX 4060": -10,
+      "NVIDIA GeForce RTX 4060 Ti": 5,
+      "NVIDIA GeForce RTX 4070": 25,
+      "NVIDIA GeForce RTX 4070 SUPER": 50,
+      "NVIDIA GeForce RTX 4070 Ti": 75,
+      "NVIDIA GeForce RTX 4070 Ti SUPER": 100,
+      "NVIDIA GeForce RTX 4080": 425,
+      "NVIDIA GeForce RTX 4080 SUPER": 225
+    },
+    "iwm_name": "MSI Aegis Gaming",
+    "model": "msi-aegis-gaming-desktop",
+    "ram_adj": {
+      "16GB RAM": 30,
+      "32GB RAM": 55,
+      "64GB RAM": 80
+    },
+    "scraped_at": "2026-05-16T02:38:43+00:00",
+    "series": "msi-desktop",
+    "storage_adj": {
+      "1TB SSD": 25,
+      "2TB SSD": 50,
+      "512GB SSD": 0
+    },
+    "submodels": {
+      "aegis-r": {
+        "base_price": 245,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-12th-gen]"
+            },
+            "label": "Intel Core i5 12th Gen."
+          },
+          {
+            "adj": 95,
+            "attrs": {
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 95,
+            "attrs": {
+              "processor_type": "[intel-core-i9-14th-gen.]"
+            },
+            "label": "Intel Core i9 14th Gen."
+          },
+          {
+            "adj": -35,
+            "attrs": {
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": 5,
+            "attrs": {
+              "processor_type": "[intel-core-i7-11th-gen]"
+            },
+            "label": "Intel Core i7 11th Gen."
+          },
+          {
+            "adj": 75,
+            "attrs": {
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": 155,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 195,
+            "attrs": {
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 240,
+            "attrs": {
+              "processor_type": "[intel-core-i9-14th-gen.]"
+            },
+            "label": "Intel Core i9 14th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -170,
+          "good": -65,
+          "mint": 0,
+          "sealed": 25
+        },
+        "gpu_adj": {
+          "NVIDIA GeForce RTX 3050": -40,
+          "NVIDIA GeForce RTX 3060": -20,
+          "NVIDIA GeForce RTX 3060 Ti": 0,
+          "NVIDIA GeForce RTX 3070": 10,
+          "NVIDIA GeForce RTX 3070 Ti": 25,
+          "NVIDIA GeForce RTX 3080": 40,
+          "NVIDIA GeForce RTX 4060": -10,
+          "NVIDIA GeForce RTX 4060 Ti": 5,
+          "NVIDIA GeForce RTX 4070": 25,
+          "NVIDIA GeForce RTX 4070 SUPER": 50,
+          "NVIDIA GeForce RTX 4070 Ti": 75,
+          "NVIDIA GeForce RTX 4070 Ti SUPER": 100,
+          "NVIDIA GeForce RTX 4080": 425,
+          "NVIDIA GeForce RTX 4080 SUPER": 225
+        },
+        "model_label": "Aegis R",
+        "ram_adj": {
+          "16GB RAM": 30,
+          "32GB RAM": 55,
+          "64GB RAM": 80
+        },
+        "storage_adj": {
+          "1TB SSD": 25,
+          "2TB SSD": 50,
+          "512GB SSD": 0
+        }
+      },
+      "aegis-rs": {
+        "base_price": 235,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-11th-gen]"
+            },
+            "label": "Intel Core i5 11th Gen."
+          },
+          {
+            "adj": 105,
+            "attrs": {
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 105,
+            "attrs": {
+              "processor_type": "[intel-core-i9-14th-gen.]"
+            },
+            "label": "Intel Core i9 14th Gen."
+          },
+          {
+            "adj": -10,
+            "attrs": {
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": 65,
+            "attrs": {
+              "processor_type": "[intel-core-i7-11th-gen]"
+            },
+            "label": "Intel Core i7 11th Gen."
+          },
+          {
+            "adj": 115,
+            "attrs": {
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": 190,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 265,
+            "attrs": {
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 55,
+            "attrs": {
+              "processor_type": "[intel-core-i9-10th-gen]"
+            },
+            "label": "Intel Core i9 10th Gen."
+          },
+          {
+            "adj": 140,
+            "attrs": {
+              "processor_type": "[intel-core-i9-11th-gen]"
+            },
+            "label": "Intel Core i9 11th Gen."
+          },
+          {
+            "adj": 215,
+            "attrs": {
+              "processor_type": "[intel-core-i9-12th-gen]"
+            },
+            "label": "Intel Core i9 12th Gen."
+          },
+          {
+            "adj": 290,
+            "attrs": {
+              "processor_type": "[intel-core-i9-13th-gen.]"
+            },
+            "label": "Intel Core i9 13th Gen."
+          },
+          {
+            "adj": 340,
+            "attrs": {
+              "processor_type": "[intel-core-i9-14th-gen.]"
+            },
+            "label": "Intel Core i9 14th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -160,
+          "good": -60,
+          "mint": 0,
+          "sealed": 25
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 6700 XT": -40,
+          "NVIDIA GeForce RTX 2060": -50,
+          "NVIDIA GeForce RTX 2070 SUPER": -35,
+          "NVIDIA GeForce RTX 2080": -15,
+          "NVIDIA GeForce RTX 2080 SUPER": 0,
+          "NVIDIA GeForce RTX 2080 Ti": 10,
+          "NVIDIA GeForce RTX 3050": -25,
+          "NVIDIA GeForce RTX 3060": -5,
+          "NVIDIA GeForce RTX 3060 Ti": 15,
+          "NVIDIA GeForce RTX 3070": 25,
+          "NVIDIA GeForce RTX 3070 Ti": 45,
+          "NVIDIA GeForce RTX 3080": 65,
+          "NVIDIA GeForce RTX 3080 Ti": 85,
+          "NVIDIA GeForce RTX 3090": 125,
+          "NVIDIA GeForce RTX 4070": 50,
+          "NVIDIA GeForce RTX 4070 SUPER": 75,
+          "NVIDIA GeForce RTX 4070 Ti": 100,
+          "NVIDIA GeForce RTX 4070 Ti SUPER": 0,
+          "NVIDIA GeForce RTX 4080": 175,
+          "NVIDIA GeForce RTX 4080 SUPER": 225,
+          "NVIDIA GeForce RTX 4090": 425
+        },
+        "model_label": "Aegis RS",
+        "ram_adj": {
+          "16GB RAM": 30,
+          "32GB RAM": 55,
+          "64GB RAM": 80
+        },
+        "storage_adj": {
+          "1TB SSD": 25,
+          "2TB SSD": 50,
+          "512GB SSD": 0
+        }
+      },
+      "aegis-se": {
+        "base_price": 125,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-10th-gen]"
+            },
+            "label": "Intel Core i5 10th Gen."
+          },
+          {
+            "adj": 215,
+            "attrs": {
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 215,
+            "attrs": {
+              "processor_type": "[intel-core-i9-14th-gen.]"
+            },
+            "label": "Intel Core i9 14th Gen."
+          },
+          {
+            "adj": 40,
+            "attrs": {
+              "processor_type": "[intel-core-i5-12th-gen]"
+            },
+            "label": "Intel Core i5 12th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -75,
+          "good": -25,
+          "mint": 0,
+          "sealed": 15
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 5600 XT": -5,
+          "NVIDIA GeForce GTX 1660 SUPER": 25,
+          "NVIDIA GeForce GTX 1660 Ti": 25,
+          "NVIDIA GeForce RTX 2060": 40,
+          "NVIDIA GeForce RTX 3050": 55,
+          "NVIDIA GeForce RTX 4070": 0,
+          "NVIDIA GeForce RTX 4070 SUPER": 0,
+          "NVIDIA GeForce RTX 4070 Ti SUPER": 0,
+          "NVIDIA GeForce RTX 4080 SUPER": 0
+        },
+        "model_label": "Aegis SE",
+        "ram_adj": {
+          "16GB RAM": 30,
+          "32GB RAM": 45,
+          "64GB RAM": 60
+        },
+        "storage_adj": {
+          "1TB SSD": 15,
+          "2TB SSD": 30,
+          "512GB SSD": 0
+        }
+      },
+      "aegis-zs": {
+        "base_price": 135,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[amd-ryzen-5-5600g]"
+            },
+            "label": "AMD Ryzen 5 5600G"
+          },
+          {
+            "adj": 205,
+            "attrs": {
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 205,
+            "attrs": {
+              "processor_type": "[intel-core-i9-14th-gen.]"
+            },
+            "label": "Intel Core i9 14th Gen."
+          },
+          {
+            "adj": 5,
+            "attrs": {
+              "processor_type": "[amd-ryzen-5-5600x]"
+            },
+            "label": "AMD Ryzen 5 5600X"
+          },
+          {
+            "adj": 25,
+            "attrs": {
+              "processor_type": "[amd-ryzen-7-5700g]"
+            },
+            "label": "AMD Ryzen 7 5700G"
+          },
+          {
+            "adj": 45,
+            "attrs": {
+              "processor_type": "[amd-ryzen-7-5800x]"
+            },
+            "label": "AMD Ryzen 7 5800X"
+          },
+          {
+            "adj": 90,
+            "attrs": {
+              "processor_type": "[amd-ryzen-7-7700]"
+            },
+            "label": "AMD Ryzen 7 7700"
+          },
+          {
+            "adj": 145,
+            "attrs": {
+              "processor_type": "[amd-ryzen-9-5900x]"
+            },
+            "label": "AMD Ryzen 9 5900X"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -170,
+          "good": -65,
+          "mint": 0,
+          "sealed": 20
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 5600 XT": -50,
+          "AMD Radeon RX 6600 XT": -5,
+          "AMD Radeon RX 6700 XT": 25,
+          "AMD Radeon RX 6800 XT": 40,
+          "NVIDIA GeForce RTX 2060": -5,
+          "NVIDIA GeForce RTX 3050": -5,
+          "NVIDIA GeForce RTX 3060": 25,
+          "NVIDIA GeForce RTX 3060 Ti": 40,
+          "NVIDIA GeForce RTX 3070 Ti": 75,
+          "NVIDIA GeForce RTX 3080": 125,
+          "NVIDIA GeForce RTX 4060": 75,
+          "NVIDIA GeForce RTX 4070": 0,
+          "NVIDIA GeForce RTX 4070 SUPER": 175,
+          "NVIDIA GeForce RTX 4070 Ti SUPER": 0,
+          "NVIDIA GeForce RTX 4080 SUPER": 0
+        },
+        "model_label": "Aegis ZS",
+        "ram_adj": {
+          "16GB RAM": 30,
+          "32GB RAM": 55,
+          "64GB RAM": 80
+        },
+        "storage_adj": {
+          "1TB SSD": 25,
+          "2TB SSD": 50,
+          "512GB SSD": 0
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/msi-desktop/msi-aegis-gaming-desktop"
+  },
+  "msi-desktop/msi-codex-gaming-desktop": {
+    "base_price": 100,
+    "battery_adj": {},
+    "charger_adj": {},
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "processor_type": "[intel-core-i5-11th-gen]"
+        },
+        "label": "Intel Core i5 11th Gen."
+      },
+      {
+        "adj": 150,
+        "attrs": {
+          "processor_type": "[intel-core-i5-12th-gen]"
+        },
+        "label": "Intel Core i5 12th Gen."
+      },
+      {
+        "adj": 200,
+        "attrs": {
+          "processor_type": "[intel-core-i5-13th-gen.]"
+        },
+        "label": "Intel Core i5 13th Gen."
+      },
+      {
+        "adj": 240,
+        "attrs": {
+          "processor_type": "[intel-core-i5-14th-gen.]"
+        },
+        "label": "Intel Core i5 14th Gen."
+      },
+      {
+        "adj": 235,
+        "attrs": {
+          "processor_type": "[intel-core-i7-13th-gen.]"
+        },
+        "label": "Intel Core i7 13th Gen."
+      },
+      {
+        "adj": 280,
+        "attrs": {
+          "processor_type": "[intel-core-i7-14th-gen.]"
+        },
+        "label": "Intel Core i7 14th Gen."
+      },
+      {
+        "adj": 60,
+        "attrs": {
+          "processor_type": "[intel-core-i5-12th-gen]"
+        },
+        "label": "Intel Core i5 12th Gen."
+      },
+      {
+        "adj": 85,
+        "attrs": {
+          "processor_type": "[intel-core-i5-13th-gen.]"
+        },
+        "label": "Intel Core i5 13th Gen."
+      },
+      {
+        "adj": 150,
+        "attrs": {
+          "processor_type": "[intel-core-i5-14th-gen.]"
+        },
+        "label": "Intel Core i5 14th Gen."
+      },
+      {
+        "adj": 50,
+        "attrs": {
+          "processor_type": "[intel-core-i7-11th-gen]"
+        },
+        "label": "Intel Core i7 11th Gen."
+      },
+      {
+        "adj": 75,
+        "attrs": {
+          "processor_type": "[intel-core-i7-12th-gen]"
+        },
+        "label": "Intel Core i7 12th Gen."
+      },
+      {
+        "adj": 140,
+        "attrs": {
+          "processor_type": "[intel-core-i7-13th-gen.]"
+        },
+        "label": "Intel Core i7 13th Gen."
+      },
+      {
+        "adj": 200,
+        "attrs": {
+          "processor_type": "[intel-core-i7-14th-gen.]"
+        },
+        "label": "Intel Core i7 14th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -170,
+      "good": -65,
+      "mint": 0,
+      "sealed": 20
+    },
+    "done": true,
+    "gpu_adj": {
+      "NVIDIA GeForce RTX 2060": 0,
+      "NVIDIA GeForce RTX 3050": 25,
+      "NVIDIA GeForce RTX 3060": 50,
+      "NVIDIA GeForce RTX 3060 Ti": 75,
+      "NVIDIA GeForce RTX 4060": 75,
+      "NVIDIA GeForce RTX 4060 Ti": 100,
+      "NVIDIA GeForce RTX 4070 SUPER": 125
+    },
+    "iwm_name": "MSI Codex Gaming",
+    "model": "msi-codex-gaming-desktop",
+    "ram_adj": {
+      "16GB RAM": 15,
+      "32GB RAM": 30,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-05-16T02:38:40+00:00",
+    "series": "msi-desktop",
+    "storage_adj": {
+      "1TB HDD": -25,
+      "1TB SSD": 25,
+      "2TB HDD": 0,
+      "2TB SSD": 50,
+      "512GB SSD": 0
+    },
+    "submodels": {
+      "codex-r": {
+        "base_price": 100,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-11th-gen]"
+            },
+            "label": "Intel Core i5 11th Gen."
+          },
+          {
+            "adj": 150,
+            "attrs": {
+              "processor_type": "[intel-core-i5-12th-gen]"
+            },
+            "label": "Intel Core i5 12th Gen."
+          },
+          {
+            "adj": 200,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": 240,
+            "attrs": {
+              "processor_type": "[intel-core-i5-14th-gen.]"
+            },
+            "label": "Intel Core i5 14th Gen."
+          },
+          {
+            "adj": 235,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 280,
+            "attrs": {
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 60,
+            "attrs": {
+              "processor_type": "[intel-core-i5-12th-gen]"
+            },
+            "label": "Intel Core i5 12th Gen."
+          },
+          {
+            "adj": 85,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": 150,
+            "attrs": {
+              "processor_type": "[intel-core-i5-14th-gen.]"
+            },
+            "label": "Intel Core i5 14th Gen."
+          },
+          {
+            "adj": 50,
+            "attrs": {
+              "processor_type": "[intel-core-i7-11th-gen]"
+            },
+            "label": "Intel Core i7 11th Gen."
+          },
+          {
+            "adj": 75,
+            "attrs": {
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": 140,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 200,
+            "attrs": {
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -170,
+          "good": -65,
+          "mint": 0,
+          "sealed": 20
+        },
+        "gpu_adj": {
+          "NVIDIA GeForce RTX 2060": 0,
+          "NVIDIA GeForce RTX 3050": 25,
+          "NVIDIA GeForce RTX 3060": 50,
+          "NVIDIA GeForce RTX 3060 Ti": 75,
+          "NVIDIA GeForce RTX 4060": 75,
+          "NVIDIA GeForce RTX 4060 Ti": 100,
+          "NVIDIA GeForce RTX 4070 SUPER": 125
+        },
+        "model_label": "Codex R",
+        "ram_adj": {
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": -25,
+          "1TB SSD": 25,
+          "2TB HDD": 0,
+          "2TB SSD": 50,
+          "512GB SSD": 0
+        }
+      },
+      "codex-r2": {
+        "base_price": 250,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-12th-gen]"
+            },
+            "label": "Intel Core i5 12th Gen."
+          },
+          {
+            "adj": 50,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": 90,
+            "attrs": {
+              "processor_type": "[intel-core-i5-14th-gen.]"
+            },
+            "label": "Intel Core i5 14th Gen."
+          },
+          {
+            "adj": 85,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 130,
+            "attrs": {
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -170,
+          "good": -65,
+          "mint": 0,
+          "sealed": 20
+        },
+        "gpu_adj": {
+          "NVIDIA GeForce RTX 3050": 0,
+          "NVIDIA GeForce RTX 4060": 50,
+          "NVIDIA GeForce RTX 4060 Ti": 75,
+          "NVIDIA GeForce RTX 4070 SUPER": 125
+        },
+        "model_label": "Codex R2",
+        "ram_adj": {
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB SSD": 15,
+          "2TB SSD": 30,
+          "512GB SSD": 0
+        }
+      },
+      "codex-z": {
+        "base_price": 210,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[amd-ryzen-5-5600x]"
+            },
+            "label": "AMD Ryzen 5 5600X"
+          },
+          {
+            "adj": 40,
+            "attrs": {
+              "processor_type": "[intel-core-i5-12th-gen]"
+            },
+            "label": "Intel Core i5 12th Gen."
+          },
+          {
+            "adj": 90,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": 130,
+            "attrs": {
+              "processor_type": "[intel-core-i5-14th-gen.]"
+            },
+            "label": "Intel Core i5 14th Gen."
+          },
+          {
+            "adj": 125,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 170,
+            "attrs": {
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 50,
+            "attrs": {
+              "processor_type": "[amd-ryzen-7-5700g]"
+            },
+            "label": "AMD Ryzen 7 5700G"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -105,
+          "good": -40,
+          "mint": 0,
+          "sealed": 25
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 5600 XT": 0,
+          "NVIDIA GeForce GTX 1660 Ti": 0,
+          "NVIDIA GeForce RTX 2060": 25,
+          "NVIDIA GeForce RTX 3050": 0,
+          "NVIDIA GeForce RTX 3060": 50,
+          "NVIDIA GeForce RTX 3060 Ti": 75,
+          "NVIDIA GeForce RTX 4060": 50,
+          "NVIDIA GeForce RTX 4060 Ti": 75,
+          "NVIDIA GeForce RTX 4070 SUPER": 125
+        },
+        "model_label": "Codex Z",
+        "ram_adj": {
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": -25,
+          "1TB SSD": 25,
+          "2TB HDD": 0,
+          "2TB SSD": 50,
+          "512GB SSD": 0
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/msi-desktop/msi-codex-gaming-desktop"
+  },
+  "msi-desktop/msi-trident-gaming-desktop": {
+    "base_price": 150,
+    "battery_adj": {},
+    "charger_adj": {},
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "processor_type": "[intel-core-i5-11th-gen]"
+        },
+        "label": "Intel Core i5 11th Gen."
+      },
+      {
+        "adj": 190,
+        "attrs": {
+          "processor_type": "[intel-core-i5-13th-gen.]"
+        },
+        "label": "Intel Core i5 13th Gen."
+      },
+      {
+        "adj": 190,
+        "attrs": {
+          "processor_type": "[intel-core-i5-14th-gen.]"
+        },
+        "label": "Intel Core i5 14th Gen."
+      },
+      {
+        "adj": 190,
+        "attrs": {
+          "processor_type": "[intel-core-i7-10th-gen]"
+        },
+        "label": "Intel Core i7 10th Gen."
+      },
+      {
+        "adj": 190,
+        "attrs": {
+          "processor_type": "[intel-core-i7-12th-gen]"
+        },
+        "label": "Intel Core i7 12th Gen."
+      },
+      {
+        "adj": 190,
+        "attrs": {
+          "processor_type": "[intel-core-i7-13th-gen.]"
+        },
+        "label": "Intel Core i7 13th Gen."
+      },
+      {
+        "adj": 190,
+        "attrs": {
+          "processor_type": "[intel-core-i7-14th-gen.]"
+        },
+        "label": "Intel Core i7 14th Gen."
+      },
+      {
+        "adj": 50,
+        "attrs": {
+          "processor_type": "[intel-core-i5-12th-gen]"
+        },
+        "label": "Intel Core i5 12th Gen."
+      },
+      {
+        "adj": 95,
+        "attrs": {
+          "processor_type": "[intel-core-i5-13th-gen.]"
+        },
+        "label": "Intel Core i5 13th Gen."
+      },
+      {
+        "adj": 50,
+        "attrs": {
+          "processor_type": "[intel-core-i7-11th-gen]"
+        },
+        "label": "Intel Core i7 11th Gen."
+      },
+      {
+        "adj": 90,
+        "attrs": {
+          "processor_type": "[intel-core-i7-12th-gen]"
+        },
+        "label": "Intel Core i7 12th Gen."
+      },
+      {
+        "adj": 125,
+        "attrs": {
+          "processor_type": "[intel-core-i7-13th-gen.]"
+        },
+        "label": "Intel Core i7 13th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -170,
+      "good": -65,
+      "mint": 0,
+      "sealed": 25
+    },
+    "done": true,
+    "gpu_adj": {
+      "NVIDIA GeForce RTX 3050": -5,
+      "NVIDIA GeForce RTX 3060": 25,
+      "NVIDIA GeForce RTX 3060 Ti": 85,
+      "NVIDIA GeForce RTX 3070": 85,
+      "NVIDIA GeForce RTX 4060": 0,
+      "NVIDIA GeForce RTX 4060 Ti": 0,
+      "NVIDIA GeForce RTX 4070": 0
+    },
+    "iwm_name": "MSI Trident Gaming",
+    "model": "msi-trident-gaming-desktop",
+    "ram_adj": {
+      "16GB RAM": 15,
+      "32GB RAM": 30,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-05-16T02:38:37+00:00",
+    "series": "msi-desktop",
+    "storage_adj": {
+      "1TB SSD": 30,
+      "2TB SSD": 60,
+      "512GB SSD": 10
+    },
+    "submodels": {
+      "trident-3": {
+        "base_price": 150,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-11th-gen]"
+            },
+            "label": "Intel Core i5 11th Gen."
+          },
+          {
+            "adj": 190,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": 190,
+            "attrs": {
+              "processor_type": "[intel-core-i5-14th-gen.]"
+            },
+            "label": "Intel Core i5 14th Gen."
+          },
+          {
+            "adj": 190,
+            "attrs": {
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": 190,
+            "attrs": {
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": 190,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 190,
+            "attrs": {
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 50,
+            "attrs": {
+              "processor_type": "[intel-core-i5-12th-gen]"
+            },
+            "label": "Intel Core i5 12th Gen."
+          },
+          {
+            "adj": 95,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": 50,
+            "attrs": {
+              "processor_type": "[intel-core-i7-11th-gen]"
+            },
+            "label": "Intel Core i7 11th Gen."
+          },
+          {
+            "adj": 90,
+            "attrs": {
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": 125,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -170,
+          "good": -65,
+          "mint": 0,
+          "sealed": 25
+        },
+        "gpu_adj": {
+          "NVIDIA GeForce RTX 3050": -5,
+          "NVIDIA GeForce RTX 3060": 25,
+          "NVIDIA GeForce RTX 3060 Ti": 85,
+          "NVIDIA GeForce RTX 3070": 85,
+          "NVIDIA GeForce RTX 4060": 0,
+          "NVIDIA GeForce RTX 4060 Ti": 0,
+          "NVIDIA GeForce RTX 4070": 0
+        },
+        "model_label": "Trident 3",
+        "ram_adj": {
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB SSD": 30,
+          "2TB SSD": 60,
+          "512GB SSD": 10
+        }
+      },
+      "trident-x": {
+        "base_price": 375,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i7-11th-gen]"
+            },
+            "label": "Intel Core i7 11th Gen."
+          },
+          {
+            "adj": -35,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": -35,
+            "attrs": {
+              "processor_type": "[intel-core-i5-14th-gen.]"
+            },
+            "label": "Intel Core i5 14th Gen."
+          },
+          {
+            "adj": -35,
+            "attrs": {
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": -35,
+            "attrs": {
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": -35,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": -35,
+            "attrs": {
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 75,
+            "attrs": {
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": 65,
+            "attrs": {
+              "processor_type": "[intel-core-i9-11th-gen]"
+            },
+            "label": "Intel Core i9 11th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -200,
+          "good": -75,
+          "mint": 0,
+          "sealed": 20
+        },
+        "gpu_adj": {
+          "NVIDIA GeForce RTX 3050": 0,
+          "NVIDIA GeForce RTX 3060": 0,
+          "NVIDIA GeForce RTX 3060 Ti": 85,
+          "NVIDIA GeForce RTX 3070": 85,
+          "NVIDIA GeForce RTX 3070 Ti": -25,
+          "NVIDIA GeForce RTX 3080": 0,
+          "NVIDIA GeForce RTX 3080 Ti": 25,
+          "NVIDIA GeForce RTX 3090": 75,
+          "NVIDIA GeForce RTX 4060": 0,
+          "NVIDIA GeForce RTX 4060 Ti": 0,
+          "NVIDIA GeForce RTX 4070": 0
+        },
+        "model_label": "Trident X",
+        "ram_adj": {
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "64GB RAM": 50,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB SSD": 30,
+          "2TB SSD": 80,
+          "512GB SSD": 0
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/msi-desktop/msi-trident-gaming-desktop"
   },
   "msi-laptop/micro-star-international-bravo": {
     "base_price": 360,

@@ -226,6 +226,22 @@ MANUAL_ID_TO_SUBMODEL = {
     # Razer Blade by year — IWM uses model_year flag
     "razer-blade-15": "razer-blade-15-2024", "razer-blade-16": "razer-blade-16-2025",
     "razer-blade-18": "razer-blade-18-2024",
+    # MSI desktops — page.tsx labels vs IWM submodel slugs
+    "msiinfinity": "trident-x",     # MEG Trident X2 → IWM trident-x flagship
+    "msitrident": "trident-3",      # MAG Trident S5 → IWM trident-3
+    "msinightblade": "codex-r2",    # MAG Codex 6 → IWM codex-r2 (latest)
+    "msicodex5": "codex-r",         # MAG Codex 5 → IWM codex-r
+    "msipro": "aegis-r",            # PRO DP180 closest IWM analog
+}
+
+# Page variants whose IWM URL slug needs a manual hint (not derivable
+# from bridge files or image filenames).
+MANUAL_ID_TO_DESKTOP_SLUG = {
+    "msiinfinity": "msi-trident-gaming-desktop",
+    "msitrident": "msi-trident-gaming-desktop",
+    "msinightblade": "msi-codex-gaming-desktop",
+    "msicodex5": "msi-codex-gaming-desktop",
+    "msipro": "msi-aegis-gaming-desktop",
 }
 
 
@@ -280,8 +296,10 @@ def main():
     pos = 0
     for ln in lines:
         starts.append(pos); pos += len(ln)
+    # Span covers non-Apple laptop arrays AND Alienware/MSI desktop arrays
+    # near line 2260 — extended end so MSI desktop variants get matched.
     span_start = starts[1259] if len(starts) > 1259 else 0
-    span_end = starts[2245] if len(starts) > 2245 else len(src)
+    span_end = starts[2280] if len(starts) > 2280 else len(src)
     vre = re.compile(
         r'\{\s*id:\s*"(?P<id>[^"]+)",\s*label:\s*"(?P<label>[^"]+)",\s*base:\s*\d+'
         r'(?:,\s*inquiryOnly:\s*(?:true|false))?\s*,\s*image:\s*"(?P<image>/devices/[^"]+)"\s*\}'
@@ -290,7 +308,9 @@ def main():
     matched = 0
     for m in vre.finditer(src, span_start, span_end):
         vid, label, image = m.group("id"), m.group("label"), m.group("image")
-        slug = MANUAL_ID_TO_SLUG.get(vid) or img_to_slug.get(image)
+        slug = (MANUAL_ID_TO_SLUG.get(vid) or
+                MANUAL_ID_TO_DESKTOP_SLUG.get(vid) or
+                img_to_slug.get(image))
         if not slug:
             continue
         entries = by_slug.get(slug)
