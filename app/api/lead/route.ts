@@ -58,13 +58,42 @@ const RESELL_ESTIMATES: Record<string, number> = {
   "MacBook Pro 14\" M3": 700, "MacBook Air M4": 600, "MacBook Air M3": 450,
 };
 
+// Match the customer's model name against RESELL_ESTIMATES. The naive
+// previous implementation used `includes()` in dictionary order, which
+// matched "iPhone 16" against "iPhone 16 Pro Max" first (Pro Max appears
+// earlier in the dict and contains "iPhone 16" as a substring) and quoted
+// a wildly inflated $721 resell value for a regular iPhone 16. Fix: walk
+// every key, prefer an exact match, otherwise pick the LONGEST key whose
+// label is fully contained in the customer's model string. Longest-key
+// match avoids "iPhone 16" matching "iPhone 16 Pro Max" while still
+// letting "iPhone 16 Pro Max 256GB" match "iPhone 16 Pro Max".
 function getResellEstimate(modelName: string): number | null {
   if (!modelName) return null;
-  // Try exact match first, then partial
+  const m = modelName.trim();
+  let best: { key: string; val: number } | null = null;
   for (const [key, val] of Object.entries(RESELL_ESTIMATES)) {
-    if (modelName.includes(key) || key.includes(modelName)) return val;
+    if (m === key) return val; // exact wins immediately
+    if (m.includes(key) && (!best || key.length > best.key.length)) {
+      best = { key, val };
+    }
   }
-  return null;
+  return best ? best.val : null;
+}
+
+// Broken / heavily-damaged devices resell as parts on eBay for a fraction
+// of working price. Cap the resell estimate accordingly so the margin
+// math doesn't claim a $595 win on a $721 reference price when the device
+// is broken. Multipliers calibrated against actual eBay "for parts" sold
+// listings 2026-05-16. condition strings come from the funnel ("Broken",
+// "Fair", "Good", "Very Good", "Mint", "Sealed", "Flawless").
+function resellMultiplierForCondition(condition: string | undefined): number {
+  const c = (condition || "").toLowerCase();
+  if (c.includes("broken") || c.includes("crack") || c.includes("dead") || c.includes("won't")) return 0.30;
+  if (c.includes("fair") || c.includes("heavy")) return 0.65;
+  if (c.includes("good") && !c.includes("very")) return 0.80;
+  if (c.includes("very good") || c.includes("excellent") || c.includes("light")) return 0.92;
+  // mint, sealed, flawless, like-new, pristine — full resell
+  return 1.0;
 }
 
 // High-value devices that need manual review before payout
@@ -114,8 +143,13 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Margin analysis — estimate profit on this deal
-  const resellEst = getResellEstimate(model as string);
+  // Margin analysis — estimate profit on this deal. Resell value is the
+  // working-condition Swappa mid price, scaled down for damaged devices
+  // (broken phones sell for parts at ~30% of working). Without this
+  // condition scaling, broken-tier quotes claimed huge fake margins.
+  const resellWorking = getResellEstimate(model as string);
+  const condMult = resellMultiplierForCondition(condition as string);
+  const resellEst = resellWorking != null ? Math.round(resellWorking * condMult) : null;
   const quoteNum = typeof quote === "number" ? quote : parseInt(quote as string) || 0;
   const marginLines: string[] = [];
   if (resellEst && quoteNum > 0) {
@@ -124,10 +158,12 @@ export async function POST(req: NextRequest) {
     const shipping = 10;
     const netProfit = margin - shipping;
     marginLines.push("--- MARGIN ANALYSIS ---");
-    marginLines.push(`Sells for: ~$${resellEst} (Swappa/eBay)`);
+    const refNote = condMult < 1 ? ` (working: $${resellWorking}, ${Math.round(condMult*100)}% for ${condition})` : "";
+    marginLines.push(`Sells for: ~$${resellEst}${refNote}`);
     marginLines.push(`You pay: $${quoteNum}`);
     marginLines.push(`You make: $${netProfit} after shipping (${marginPct}% margin)`);
-    if (marginPct < 10) marginLines.push("⚠️ LOW — review before accepting");
+    if (netProfit <= 0) marginLines.push("🚨 LOSS — DO NOT ACCEPT without manual review");
+    else if (marginPct < 10) marginLines.push("⚠️ LOW — review before accepting");
     else if (marginPct < 15) marginLines.push("⚡ THIN — proceed with caution");
     else marginLines.push("✅ GOOD DEAL");
   } else if (quoteNum === 0) {
