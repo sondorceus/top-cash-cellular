@@ -2404,16 +2404,15 @@ const DJI_MODELS = [
   { id: "djispark", label: "DJI Spark" },
 ];
 
-// Apple Vision Pro pricing — Apple does NOT offer trade-in for Vision Pro
-// (confirmed Oct 22 2025), so no Apple Trade-In competition. IWM ceilings:
-// 256GB $1400 / 512GB $1550 / 1TB $1700 (Flawless). Swappa private-sale
-// nets $1850-$2400. Our base = IWM Flawless × 0.90 anchored at the
-// minimum-config quote; brand-extras questions (front glass, battery,
-// bands, Light Seal, AppleCare+) adjust upward toward CIB market-top.
+// Apple Vision Pro — single device entry. Storage is a runtime question
+// (256GB / 512GB / 1TB), and generation is a separate question (M2 2024
+// / M5 2025) since the chassis and accessories shipped in box differ.
+// Apple does NOT offer trade-in for Vision Pro (confirmed Oct 22, 2025),
+// so no Apple Trade-In competition. IWM ceiling $1700 (1TB Flawless);
+// our base = IWM Flawless × 0.90 anchored at 256GB Flawless, with extras
+// adding upward via additive deltas toward the CIB market-top.
 const APPLE_VR_MODELS = [
-  { id: "avp1tb", label: "Apple Vision Pro (1TB)",  base: 1530, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
-  { id: "avp512", label: "Apple Vision Pro (512GB)", base: 1395, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
-  { id: "avp256", label: "Apple Vision Pro (256GB)", base: 1260, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
+  { id: "avp", label: "Apple Vision Pro", base: 1260, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
 ];
 
 const META_VR_MODELS = [
@@ -3403,9 +3402,22 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
     ]},
   ],
   apple_vr: [
-    // Storage is captured by the parent variant id (avp256/avp512/avp1tb),
-    // so we don't re-ask it. Generation matters — M5 launched Oct 2025
-    // with the new Dual Knit Band.
+    // One Apple Vision Pro entry; storage + generation are runtime
+    // questions. Storage deltas come from IWM Flawless prices: 256GB
+    // $1400, 512GB $1550, 1TB $1700 → after ×0.90 our anchor is 256GB
+    // at $1260, +$135 for 512GB, +$270 for 1TB.
+    { id: "storage", question: "Storage capacity?", helper: "Check Settings → General → About → Capacity.",
+      guide: { title: "How to find your storage", steps: [
+        "Put on Vision Pro and press the Digital Crown to go Home.",
+        "Open Settings (gear icon).",
+        "Tap General → About.",
+        "Look for 'Capacity' — it'll show 256 GB, 512 GB, or 1 TB.",
+      ]},
+      options: [
+      { id: "256", label: "256 GB", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB", multiplier: 1.00, adj: 135 },
+      { id: "1tb", label: "1 TB",   multiplier: 1.00, adj: 270 },
+    ]},
     { id: "generation", question: "Which Vision Pro model?", helper: "M5 launched October 2025.",
       guide: { title: "How to tell M2 from M5", steps: [
         "Open Settings on Vision Pro (Crown + look at Home screen).",
