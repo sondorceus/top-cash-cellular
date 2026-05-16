@@ -5190,6 +5190,26 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [statsVisible]);
 
+  // Cart hydrates from its own tcc-cart key (separate from tcc-session so it
+  // survives the device-step session wipe). cartHydrated keeps the save
+  // effect from firing during the initial mount with cartItems=[] and
+  // wiping the very tcc-cart we are about to read.
+  const cartHydrated = useRef(false);
+
+  useEffect(() => {
+    // Run BEFORE any tcc-cart writes so the read sees what was persisted.
+    try {
+      const raw = localStorage.getItem("tcc-cart");
+      if (raw) {
+        const c = JSON.parse(raw);
+        if (Array.isArray(c.items) && Date.now() - (c.ts || 0) < 7 * 24 * 60 * 60 * 1000 && c.items.length > 0) {
+          setCartItems(c.items);
+        }
+      }
+    } catch {}
+    cartHydrated.current = true;
+  }, []);
+
   useEffect(() => {
     try {
       const saved = localStorage.getItem("tcc-session");
@@ -5213,7 +5233,6 @@ export default function Home() {
           if (s.shipCity) setShipCity(s.shipCity);
           if (s.shipState) setShipState(s.shipState);
           if (s.shipZip) setShipZip(s.shipZip);
-          if (Array.isArray(s.cartItems)) setCartItems(s.cartItems);
           setStep(s.step);
         }
       }
@@ -5222,7 +5241,10 @@ export default function Home() {
 
   useEffect(() => {
     // Persist cart separately from session so it survives even after the
-    // "device" step (when we wipe tcc-session on a fresh-start).
+    // "device" step (when we wipe tcc-session on a fresh-start). Skip the
+    // initial mount run — otherwise it fires with cartItems=[] before the
+    // restore effect has hydrated state and wipes the persisted cart.
+    if (!cartHydrated.current) return;
     try {
       if (cartItems.length > 0) {
         localStorage.setItem("tcc-cart", JSON.stringify({ items: cartItems, ts: Date.now() }));
@@ -5233,29 +5255,15 @@ export default function Home() {
   }, [cartItems]);
 
   useEffect(() => {
-    // Restore cart on first mount independent of the session.
-    try {
-      const raw = localStorage.getItem("tcc-cart");
-      if (raw) {
-        const c = JSON.parse(raw);
-        if (Array.isArray(c.items) && Date.now() - (c.ts || 0) < 7 * 24 * 60 * 60 * 1000) {
-          setCartItems(c.items);
-        }
-      }
-    } catch {}
-  }, []);
-
-  useEffect(() => {
     if (step === "device") { localStorage.removeItem("tcc-session"); return; }
     try {
       localStorage.setItem("tcc-session", JSON.stringify({
         step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email,
         handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip,
-        cartItems,
         ts: Date.now(),
       }));
     } catch {}
-  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, cartItems]);
+  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip]);
 
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrierMultiplierFor(carrier?.id, carrierLock?.id);
