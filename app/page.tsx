@@ -2519,15 +2519,16 @@ const GARMIN_EDITIONS: Record<string, Array<{id: string; label: string; adj: num
   ],
 };
 
-// Apple Vision Pro — single device entry. Storage is a runtime question
-// (256GB / 512GB / 1TB), and generation is a separate question (M2 2024
-// / M5 2025) since the chassis and accessories shipped in box differ.
+// Apple Vision Pro — two distinct devices, one variant each, with
+// storage as a runtime question (deltas are the same for both gens:
+// 256GB $0 / 512GB +$90 / 1TB +$225 after ×0.90).
+// IWM Flawless 256GB anchors:  M2 2024 = $1450 → our $1305
+//                              M5 2025 = $1950 → our $1755
 // Apple does NOT offer trade-in for Vision Pro (confirmed Oct 22, 2025),
-// so no Apple Trade-In competition. IWM ceiling $1700 (1TB Flawless);
-// our base = IWM Flawless × 0.90 anchored at 256GB Flawless, with extras
-// adding upward via additive deltas toward the CIB market-top.
+// so no first-party comp.
 const APPLE_VR_MODELS = [
-  { id: "avp", label: "Apple Vision Pro", base: 1260, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
+  { id: "avp_m5", label: "Apple Vision Pro (M5, 2025)",   base: 1755, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
+  { id: "avp_m2", label: "Apple Vision Pro (M2, 2024)",   base: 1305, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
 ];
 
 const META_VR_MODELS = [
@@ -3563,10 +3564,9 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
     ]},
   ],
   apple_vr: [
-    // One Apple Vision Pro entry; storage + generation are runtime
-    // questions. Storage deltas come from IWM Flawless prices: 256GB
-    // $1400, 512GB $1550, 1TB $1700 → after ×0.90 our anchor is 256GB
-    // at $1260, +$135 for 512GB, +$270 for 1TB.
+    // Generation lives at the variant level (avp_m2 vs avp_m5) so this
+    // question is gone. Storage deltas are identical for both gens per
+    // IWM: 256GB $0 / 512GB +$90 / 1TB +$225 (all after ×0.90).
     { id: "storage", question: "Storage capacity?", helper: "Check Settings → General → About → Capacity.",
       guide: { title: "How to find your storage", steps: [
         "Put on Vision Pro and press the Digital Crown to go Home.",
@@ -3576,19 +3576,8 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       ]},
       options: [
       { id: "256", label: "256 GB", multiplier: 1.00, adj: 0 },
-      { id: "512", label: "512 GB", multiplier: 1.00, adj: 135 },
-      { id: "1tb", label: "1 TB",   multiplier: 1.00, adj: 270 },
-    ]},
-    { id: "generation", question: "Which Vision Pro model?", helper: "M5 launched October 2025.",
-      guide: { title: "How to tell M2 from M5", steps: [
-        "Open Settings on Vision Pro (Crown + look at Home screen).",
-        "Go to General → About.",
-        "Look for 'Model Identifier': N301 / RealityDevice1,1 = M2 (2024). N302 / RealityDevice1,2 = M5 (2025).",
-        "Or check the box: M5 ships with a single Dual Knit Band; M2 ships with Solo Knit + Dual Loop.",
-      ]},
-      options: [
-      { id: "m2", label: "Original Vision Pro (M2, 2024)", multiplier: 1.00, adj: 0 },
-      { id: "m5", label: "New Vision Pro (M5, 2025)",      multiplier: 1.00, adj: 200 },
+      { id: "512", label: "512 GB", multiplier: 1.00, adj: 90 },
+      { id: "1tb", label: "1 TB",   multiplier: 1.00, adj: 225 },
     ]},
     { id: "powers_on", question: "Does it power on and complete Optic ID?", helper: "If Optic ID won't enroll your eyes, the unit is essentially parts-value.",
       guide: { title: "How to test power-on + Optic ID", steps: [
