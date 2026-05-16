@@ -18,7 +18,7 @@
     "iwm_name": "Google Pixel Slate",
     "model": "google-pixel-slate",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:50:15+00:00",
+    "scraped_at": "2026-05-16T17:04:18+00:00",
     "series": "google-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -53,7 +53,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:50:13+00:00",
+    "scraped_at": "2026-05-16T17:04:15+00:00",
     "series": "google-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -81,7 +81,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:49:50+00:00",
+    "scraped_at": "2026-05-16T17:03:53+00:00",
     "series": "lenovo-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -118,7 +118,7 @@
       "no": 0,
       "yes": 60
     },
-    "scraped_at": "2026-05-16T16:49:52+00:00",
+    "scraped_at": "2026-05-16T17:03:55+00:00",
     "series": "lenovo-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -152,7 +152,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:49:55+00:00",
+    "scraped_at": "2026-05-16T17:03:58+00:00",
     "series": "lenovo-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -186,7 +186,7 @@
     "iwm_name": "Microsoft Surface Go (1st Gen.)",
     "model": "microsoft-surface-go-1",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:57+00:00",
+    "scraped_at": "2026-05-16T17:03:00+00:00",
     "series": "microsoft-surface-go",
     "size_adj": {},
     "storage_adj": {
@@ -221,7 +221,7 @@
     "iwm_name": "Microsoft Surface Go 2",
     "model": "microsoft-surface-go-2",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:55+00:00",
+    "scraped_at": "2026-05-16T17:02:57+00:00",
     "series": "microsoft-surface-go",
     "size_adj": {},
     "storage_adj": {
@@ -258,7 +258,7 @@
     "iwm_name": "Microsoft Surface Go 3",
     "model": "microsoft-surface-go-3",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:52+00:00",
+    "scraped_at": "2026-05-16T17:02:55+00:00",
     "series": "microsoft-surface-go",
     "size_adj": {},
     "storage_adj": {
@@ -294,7 +294,7 @@
     "iwm_name": "Microsoft Surface Go 4",
     "model": "microsoft-surface-go-4",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:49+00:00",
+    "scraped_at": "2026-05-16T17:02:52+00:00",
     "series": "microsoft-surface-go",
     "size_adj": {},
     "storage_adj": {
@@ -331,7 +331,7 @@
     "iwm_name": "Microsoft Surface Pro X",
     "model": "microsoft-surface-pro-x",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:49:00+00:00",
+    "scraped_at": "2026-05-16T17:03:03+00:00",
     "series": "microsoft-surface-pro-x",
     "size_adj": {},
     "storage_adj": {
@@ -370,7 +370,7 @@
     "iwm_name": "Microsoft Surface Pro 10",
     "model": "microsoft-surface-pro-10",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:28+00:00",
+    "scraped_at": "2026-05-16T17:02:31+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -417,7 +417,7 @@
     "iwm_name": "Microsoft Surface Pro 11",
     "model": "microsoft-surface-pro-11",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:25+00:00",
+    "scraped_at": "2026-05-16T17:02:28+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -467,7 +467,7 @@
     "iwm_name": "Microsoft Surface Pro 12in",
     "model": "microsoft-surface-pro-12in",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:23+00:00",
+    "scraped_at": "2026-05-16T17:02:26+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -501,7 +501,7 @@
     "iwm_name": "Microsoft Surface Pro 4",
     "model": "microsoft-surface-pro-4",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:47+00:00",
+    "scraped_at": "2026-05-16T17:02:50+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -544,7 +544,7 @@
     "iwm_name": "Microsoft Surface Pro 5",
     "model": "microsoft-surface-pro-5",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:44+00:00",
+    "scraped_at": "2026-05-16T17:02:47+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -584,7 +584,7 @@
     "iwm_name": "Microsoft Surface Pro 6",
     "model": "microsoft-surface-pro-6",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:42+00:00",
+    "scraped_at": "2026-05-16T17:02:44+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -626,7 +626,7 @@
     "iwm_name": "Microsoft Surface Pro 7",
     "model": "microsoft-surface-pro-7",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:39+00:00",
+    "scraped_at": "2026-05-16T17:02:42+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -668,7 +668,7 @@
     "iwm_name": "Microsoft Surface Pro 7+",
     "model": "microsoft-surface-pro-7-plus",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:36+00:00",
+    "scraped_at": "2026-05-16T17:02:39+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -711,7 +711,7 @@
     "iwm_name": "Microsoft Surface Pro 8",
     "model": "microsoft-surface-pro-8",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:34+00:00",
+    "scraped_at": "2026-05-16T17:02:37+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -751,7 +751,7 @@
     "iwm_name": "Microsoft Surface Pro 9",
     "model": "microsoft-surface-pro-9",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:48:31+00:00",
+    "scraped_at": "2026-05-16T17:02:34+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -788,7 +788,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:50:09+00:00",
+    "scraped_at": "2026-05-16T17:04:12+00:00",
     "series": "oneplus-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -816,7 +816,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:50:02+00:00",
+    "scraped_at": "2026-05-16T17:04:05+00:00",
     "series": "oneplus-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -844,7 +844,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:49:59+00:00",
+    "scraped_at": "2026-05-16T17:04:02+00:00",
     "series": "oneplus-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -864,14 +864,17 @@
       "mint": 170,
       "sealed": 200
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "WiFi + Cellular": 0,
+      "WiFi Only": 0
+    },
     "iwm_name": "OnePlus Pad Go 2",
     "model": "oneplus-pad-go-2",
     "operational_adj": {
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:50:06+00:00",
+    "scraped_at": "2026-05-16T17:04:08+00:00",
     "series": "oneplus-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -893,14 +896,17 @@
       "sealed": 200,
       "verygood": 150
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi ONLY": -10
+    },
     "iwm_name": "Galaxy Tab S10 FE",
     "model": "galaxy-tab-s10-fe",
     "operational_adj": {
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:49:20+00:00",
+    "scraped_at": "2026-05-16T17:03:23+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -932,7 +938,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:49:17+00:00",
+    "scraped_at": "2026-05-16T17:03:20+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -957,14 +963,17 @@
       "sealed": 175,
       "verygood": 100
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi ONLY": -20
+    },
     "iwm_name": "Galaxy Tab S10 Lite",
     "model": "galaxy-tab-s10-lite",
     "operational_adj": {
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:49:23+00:00",
+    "scraped_at": "2026-05-16T17:03:26+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -989,14 +998,17 @@
       "sealed": 390,
       "verygood": 320
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi ONLY": -50
+    },
     "iwm_name": "Galaxy Tab S10+",
     "model": "galaxy-tab-s10-plus",
     "operational_adj": {
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:49:14+00:00",
+    "scraped_at": "2026-05-16T17:03:16+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1021,14 +1033,17 @@
       "sealed": 505,
       "verygood": 445
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi ONLY": -40
+    },
     "iwm_name": "Galaxy Tab S10 Ultra",
     "model": "galaxy-tab-s10-ultra",
     "operational_adj": {
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:49:10+00:00",
+    "scraped_at": "2026-05-16T17:03:13+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1054,14 +1069,17 @@
       "sealed": 380,
       "verygood": 340
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi ONLY": -50
+    },
     "iwm_name": "Galaxy Tab S11",
     "model": "galaxy-tab-s11",
     "operational_adj": {
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:49:07+00:00",
+    "scraped_at": "2026-05-16T17:03:10+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1087,14 +1105,17 @@
       "sealed": 630,
       "verygood": 550
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi ONLY": -30
+    },
     "iwm_name": "Galaxy Tab S11 Ultra",
     "model": "galaxy-tab-s11-ultra",
     "operational_adj": {
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:49:04+00:00",
+    "scraped_at": "2026-05-16T17:03:07+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1119,11 +1140,14 @@
       "mint": 30,
       "sealed": 45
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi Only": -10
+    },
     "iwm_name": "Galaxy Tab S4 10.5",
     "model": "galaxy-tab-s4-105",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:49:46+00:00",
+    "scraped_at": "2026-05-16T17:03:49+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1144,11 +1168,14 @@
       "mint": 25,
       "sealed": 40
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi ONLY": -10
+    },
     "iwm_name": "Galaxy Tab S5e",
     "model": "galaxy-tab-s5e",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:49:43+00:00",
+    "scraped_at": "2026-05-16T17:03:46+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1169,11 +1196,14 @@
       "mint": 80,
       "sealed": 100
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi Only": -5
+    },
     "iwm_name": "Galaxy Tab S6",
     "model": "galaxy-tab-s6",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:49:40+00:00",
+    "scraped_at": "2026-05-16T17:03:43+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1197,11 +1227,14 @@
       "mint": 55,
       "sealed": 80
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi Only": -20
+    },
     "iwm_name": "Galaxy Tab S6 Lite",
     "model": "galaxy-tab-s6-lite",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:49:37+00:00",
+    "scraped_at": "2026-05-16T17:03:40+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1225,14 +1258,17 @@
       "mint": 100,
       "sealed": 130
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi ONLY": -40
+    },
     "iwm_name": "Galaxy Tab S7",
     "model": "galaxy-tab-s7",
     "operational_adj": {
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:49:34+00:00",
+    "scraped_at": "2026-05-16T17:03:36+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1257,11 +1293,14 @@
       "mint": 90,
       "sealed": 120
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi Only": -40
+    },
     "iwm_name": "Galaxy Tab S7 FE",
     "model": "galaxy-tab-s7-fe",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T16:49:30+00:00",
+    "scraped_at": "2026-05-16T17:03:33+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1286,14 +1325,17 @@
       "mint": 120,
       "sealed": 150
     },
-    "connectivity_adj": {},
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi Only": -25
+    },
     "iwm_name": "Galaxy Tab S7+",
     "model": "galaxy-tab-s7-plus",
     "operational_adj": {
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T16:49:27+00:00",
+    "scraped_at": "2026-05-16T17:03:30+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {

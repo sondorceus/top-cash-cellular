@@ -78,7 +78,7 @@ def _classify_q(qtext, ans_attrs):
     t = (qtext or "").lower()
     keys = set(ans_attrs)
     if "storage" in t or "capacity" in t or "storage_size" in keys: return "storage"
-    if "connectivity" in t or "wifi" in t or "wi-fi" in t or "cellular" in t or "lte" in t: return "connectivity"
+    if "connectivity" in t or "wifi" in t or "wi-fi" in t or "cellular" in t or "lte" in t or "carrier" in t: return "connectivity"
     if "size" in t or "screen" in t: return "size"
     if "condition" in t or "condition" in keys: return "condition"
     if "charger" in t or "accessories" in keys: return "charger"

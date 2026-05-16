@@ -3353,6 +3353,53 @@ const TABLET_STORAGE_OPTIONS = [
   { id: "1tb", label: "1 TB",   multiplier: 1.00, adj: 70 },
 ];
 
+// Per-variant tablet spec — drives which questions getBrandExtras()
+// shows for each tablet, and the $ deltas it uses. Sourced from
+// iwm-tablet-adjustments.json × 0.90 by scripts/gen-tablet-specs.py.
+//   cellularAdj = how much MORE a cellular config pays vs Wi-Fi-only.
+//                 omit if the model has no cellular variant on IWM.
+//   stylusAdj   = how much LESS we pay if the included stylus is
+//                 missing (negative number). omit if no stylus question.
+//   storages    = the storage tiers IWM actually has for this model
+//                 (we filter TABLET_STORAGE_OPTIONS down to this set).
+type TabletSpec = {
+  cellularAdj?: number;
+  stylusAdj?: number;
+  storages?: string[];
+};
+const TABLET_SPECS: Record<string, TabletSpec> = {
+  stabs11u:    { cellularAdj: 27, stylusAdj: -22, storages: ["256GB", "512GB", "1TB"] },
+  stabs11:     { cellularAdj: 45, stylusAdj: -22, storages: ["128GB", "256GB", "512GB"] },
+  stabs10u:    { cellularAdj: 36, stylusAdj: -45, storages: ["256GB", "512GB", "1TB"] },
+  stabs10p:    { cellularAdj: 45, stylusAdj: -22, storages: ["256GB", "512GB"] },
+  stabs10fep:  { stylusAdj: -14, storages: ["128GB", "256GB"] },
+  stabs10fe:   { cellularAdj: 9,  stylusAdj: -22, storages: ["128GB", "256GB"] },
+  stabs10l:    { cellularAdj: 18, stylusAdj: -22, storages: ["128GB", "256GB"] },
+  stabs7p:     { cellularAdj: 22, stylusAdj: -22, storages: ["128GB", "256GB", "512GB"] },
+  stabs7fe:    { cellularAdj: 36, stylusAdj: -22, storages: ["64GB", "128GB", "256GB"] },
+  stabs7:      { cellularAdj: 36, stylusAdj: -14, storages: ["128GB", "256GB", "512GB"] },
+  stabs6l:     { cellularAdj: 18, stylusAdj: -14, storages: ["64GB", "128GB"] },
+  stabs6:      { cellularAdj: 4,  stylusAdj: -14, storages: ["128GB", "256GB"] },
+  stabs5e:     { cellularAdj: 9,  storages: ["64GB", "128GB"] },
+  stabs4:      { cellularAdj: 9,  storages: ["64GB", "256GB"] },
+  oppad3:      { storages: ["256GB"] },
+  oppadgo2:    { storages: ["128GB", "256GB"] },
+  oppad2:      { storages: ["128GB", "256GB"] },
+  oppad:       { storages: ["128GB", "256GB"] },
+  gpixeltab:   { storages: ["128GB", "256GB"] },
+  legtabg3:    { storages: ["256GB", "512GB"] },
+  // Surface — only Pro 5/7/7+/8/10/11 + Pro X have a separate LTE
+  // question on IWM. Pro 6 / 9 / 12in and all Go models bake cellular
+  // into the config (chip+RAM+SSD) variant they pick.
+  surfpro11:    { cellularAdj: 90 },
+  surfpro10biz: { cellularAdj: 90 },
+  surfpro8:     { cellularAdj: 32 },
+  surfpro7p:    { cellularAdj: 32 },
+  surfpro7:     { cellularAdj: 9 },
+  surfprox2020: { cellularAdj: 18 },
+  surfprox2019: { cellularAdj: 18 },
+};
+
 const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
   // ===== Tablets =====
   // Samsung Galaxy Tab — storage / carrier / S Pen / charger / box.
@@ -3978,6 +4025,45 @@ const getBrandExtras = (dt: string | null | undefined, modelId?: string | null |
   // inquiry-only so they never reach this code path, but guard anyway.
   if (dt === "lenovo" && modelId !== "ln_tp_x1_carbon") {
     return base.filter(q => q.id !== "display");
+  }
+  // Tablets — gate questions per IWM ground truth. The shared base
+  // questions cover the full superset; we filter / re-price based on
+  // TABLET_SPECS[modelId] for each variant.
+  if ((dt === "samsung_tab" || dt === "oneplus_tab" || dt === "lenovo_tab" ||
+       dt === "google_tab" || dt === "surface") && modelId) {
+    const spec = TABLET_SPECS[modelId];
+    return base.flatMap(q => {
+      // Storage: filter the global options down to the tiers IWM lists
+      // for this exact model. If no spec, leave the question as-is.
+      if (q.id === "storage" && spec?.storages) {
+        const filtered = q.options.filter(o => {
+          // Map option id (64/128/256/512/1tb) to a label fragment.
+          const lbl = o.id === "1tb" ? "1TB" : `${o.id}GB`;
+          return spec.storages!.some(s => s.replace(/\s+/g, "").toUpperCase() === lbl.toUpperCase());
+        });
+        return filtered.length ? [{ ...q, options: filtered }] : [];
+      }
+      // Carrier / LTE — only show if this model has a cellular variant
+      // on IWM. Use the per-model cellularAdj for the "yes" answer.
+      if ((q.id === "carrier" || q.id === "lte") && spec) {
+        if (spec.cellularAdj == null) return [];
+        const cellAdj = spec.cellularAdj;
+        return [{ ...q, options: q.options.map(o => {
+          const isCellularChoice = o.id === "lte" || o.id === "yes";
+          return isCellularChoice ? { ...o, adj: cellAdj } : { ...o, adj: 0 };
+        })}];
+      }
+      // S Pen / OnePlus Stylo — drop if the model has no stylus question
+      // on IWM (older Samsung S4/S5e, all Lenovo, Google, OnePlus).
+      if ((q.id === "spen" || q.id === "stylus") && spec) {
+        if (spec.stylusAdj == null) return [];
+        const styAdj = spec.stylusAdj;
+        return [{ ...q, options: q.options.map(o =>
+          o.id === "no" ? { ...o, adj: styAdj } : { ...o, adj: 0 }
+        )}];
+      }
+      return [q];
+    });
   }
   // Garmin — inject a per-model "edition" question for Fenix / Epix
   // submodels that ship multiple trims. Adj already discounted ×0.90.
