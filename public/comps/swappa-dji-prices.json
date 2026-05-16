@@ -1,0 +1,435 @@
+{
+  "dji_avata_2": {
+    "vid": "dji_avata_2",
+    "swappa_slug": "dji-avata-2",
+    "swappa_url": "https://swappa.com/buy/dji-avata-2",
+    "iwm_flawless": 375,
+    "our_price_iwm_x_0.90": 338,
+    "swappa": {
+      "offerCount": 1,
+      "lowPrice": 695.0,
+      "highPrice": 695.0,
+      "availability": "InStock"
+    },
+    "scraped_at": "2026-05-16T20:52:19.576465+00:00"
+  },
+  "dji_fpv": {
+    "vid": "dji_fpv",
+    "swappa_slug": "dji-fpv",
+    "swappa_url": "https://swappa.com/buy/dji-fpv",
+    "iwm_flawless": 275,
+    "our_price_iwm_x_0.90": 248,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:20.062376+00:00"
+  },
+  "dji_avata": {
+    "vid": "dji_avata",
+    "swappa_slug": "dji-avata",
+    "swappa_url": "https://swappa.com/buy/dji-avata",
+    "iwm_flawless": 215,
+    "our_price_iwm_x_0.90": 194,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:20.580026+00:00"
+  },
+  "dji_mavic_pro": {
+    "vid": "dji_mavic_pro",
+    "swappa_slug": "dji-mavic-pro",
+    "swappa_url": "https://swappa.com/buy/dji-mavic-pro",
+    "iwm_flawless": 80,
+    "our_price_iwm_x_0.90": 72,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:21.058675+00:00"
+  },
+  "dji_mavic_pro_platinum": {
+    "vid": "dji_mavic_pro_platinum",
+    "swappa_slug": "dji-mavic-pro-platinum",
+    "swappa_url": "https://swappa.com/buy/dji-mavic-pro-platinum",
+    "iwm_flawless": 175,
+    "our_price_iwm_x_0.90": 158,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:21.585602+00:00"
+  },
+  "dji_mavic_2_pro": {
+    "vid": "dji_mavic_2_pro",
+    "swappa_slug": "dji-mavic-2-pro",
+    "swappa_url": "https://swappa.com/buy/dji-mavic-2-pro",
+    "iwm_flawless": 230,
+    "our_price_iwm_x_0.90": 207,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:22.191784+00:00"
+  },
+  "dji_mavic_2_zoom": {
+    "vid": "dji_mavic_2_zoom",
+    "swappa_slug": "dji-mavic-2-zoom",
+    "swappa_url": "https://swappa.com/buy/dji-mavic-2-zoom",
+    "iwm_flawless": 225,
+    "our_price_iwm_x_0.90": 202,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:22.701817+00:00"
+  },
+  "dji_mavic_3": {
+    "vid": "dji_mavic_3",
+    "swappa_slug": "dji-mavic-3",
+    "swappa_url": "https://swappa.com/buy/dji-mavic-3",
+    "iwm_flawless": 600,
+    "our_price_iwm_x_0.90": 540,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:23.205514+00:00"
+  },
+  "dji_mavic_3_classic": {
+    "vid": "dji_mavic_3_classic",
+    "swappa_slug": "dji-mavic-3-classic",
+    "swappa_url": "https://swappa.com/buy/dji-mavic-3-classic",
+    "iwm_flawless": 575,
+    "our_price_iwm_x_0.90": 518,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:23.702504+00:00"
+  },
+  "dji_mavic_3_pro": {
+    "vid": "dji_mavic_3_pro",
+    "swappa_slug": "dji-mavic-3-pro",
+    "swappa_url": "https://swappa.com/buy/dji-mavic-3-pro",
+    "iwm_flawless": 1075,
+    "our_price_iwm_x_0.90": 968,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:24.188333+00:00"
+  },
+  "dji_inspire_1": {
+    "vid": "dji_inspire_1",
+    "swappa_slug": "dji-inspire-1",
+    "swappa_url": "https://swappa.com/buy/dji-inspire-1",
+    "iwm_flawless": 275,
+    "our_price_iwm_x_0.90": 248,
+    "swappa": {
+      "error": "fetch_failed"
+    },
+    "scraped_at": "2026-05-16T20:52:24.636744+00:00"
+  },
+  "dji_inspire_2": {
+    "vid": "dji_inspire_2",
+    "swappa_slug": "dji-inspire-2",
+    "swappa_url": "https://swappa.com/buy/dji-inspire-2",
+    "iwm_flawless": 1100,
+    "our_price_iwm_x_0.90": 990,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:25.234563+00:00"
+  },
+  "dji_mavic_air_2": {
+    "vid": "dji_mavic_air_2",
+    "swappa_slug": "dji-mavic-air-2",
+    "swappa_url": "https://swappa.com/buy/dji-mavic-air-2",
+    "iwm_flawless": 160,
+    "our_price_iwm_x_0.90": 144,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:25.831660+00:00"
+  },
+  "dji_air_2s": {
+    "vid": "dji_air_2s",
+    "swappa_slug": "dji-air-2s",
+    "swappa_url": "https://swappa.com/buy/dji-air-2s",
+    "iwm_flawless": 300,
+    "our_price_iwm_x_0.90": 270,
+    "swappa": {
+      "offerCount": 1,
+      "lowPrice": 952.0,
+      "highPrice": 952.0,
+      "availability": "InStock"
+    },
+    "scraped_at": "2026-05-16T20:52:26.311133+00:00"
+  },
+  "dji_air_3": {
+    "vid": "dji_air_3",
+    "swappa_slug": "dji-air-3",
+    "swappa_url": "https://swappa.com/buy/dji-air-3",
+    "iwm_flawless": 510,
+    "our_price_iwm_x_0.90": 459,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:26.811841+00:00"
+  },
+  "dji_mavic_mini": {
+    "vid": "dji_mavic_mini",
+    "swappa_slug": "dji-mavic-mini",
+    "swappa_url": "https://swappa.com/buy/dji-mavic-mini",
+    "iwm_flawless": 45,
+    "our_price_iwm_x_0.90": 40,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:27.320310+00:00"
+  },
+  "dji_mini_2": {
+    "vid": "dji_mini_2",
+    "swappa_slug": "dji-mini-2",
+    "swappa_url": "https://swappa.com/buy/dji-mini-2",
+    "iwm_flawless": 90,
+    "our_price_iwm_x_0.90": 81,
+    "swappa": {
+      "error": "fetch_failed"
+    },
+    "scraped_at": "2026-05-16T20:52:27.753975+00:00"
+  },
+  "dji_mini_se": {
+    "vid": "dji_mini_se",
+    "swappa_slug": "dji-mini-se",
+    "swappa_url": "https://swappa.com/buy/dji-mini-se",
+    "iwm_flawless": 60,
+    "our_price_iwm_x_0.90": 54,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:28.249460+00:00"
+  },
+  "dji_mini_3": {
+    "vid": "dji_mini_3",
+    "swappa_slug": "dji-mini-3",
+    "swappa_url": "https://swappa.com/buy/dji-mini-3",
+    "iwm_flawless": 175,
+    "our_price_iwm_x_0.90": 158,
+    "swappa": {
+      "offerCount": 1,
+      "lowPrice": 391.0,
+      "highPrice": 391.0,
+      "availability": "InStock"
+    },
+    "scraped_at": "2026-05-16T20:52:28.754497+00:00"
+  },
+  "dji_mini_3_pro": {
+    "vid": "dji_mini_3_pro",
+    "swappa_slug": "dji-mini-3-pro",
+    "swappa_url": "https://swappa.com/buy/dji-mini-3-pro",
+    "iwm_flawless": 220,
+    "our_price_iwm_x_0.90": 198,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:29.234348+00:00"
+  },
+  "dji_mini_2_se": {
+    "vid": "dji_mini_2_se",
+    "swappa_slug": "dji-mini-2-se",
+    "swappa_url": "https://swappa.com/buy/dji-mini-2-se",
+    "iwm_flawless": 75,
+    "our_price_iwm_x_0.90": 68,
+    "swappa": {
+      "offerCount": 1,
+      "lowPrice": 288.0,
+      "highPrice": 288.0,
+      "availability": "InStock"
+    },
+    "scraped_at": "2026-05-16T20:52:29.748887+00:00"
+  },
+  "dji_mini_4_pro": {
+    "vid": "dji_mini_4_pro",
+    "swappa_slug": "dji-mini-4-pro",
+    "swappa_url": "https://swappa.com/buy/dji-mini-4-pro",
+    "iwm_flawless": 350,
+    "our_price_iwm_x_0.90": 315,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:30.227578+00:00"
+  },
+  "dji_phantom_4": {
+    "vid": "dji_phantom_4",
+    "swappa_slug": "dji-phantom-4",
+    "swappa_url": "https://swappa.com/buy/dji-phantom-4",
+    "iwm_flawless": 105,
+    "our_price_iwm_x_0.90": 94,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:30.709197+00:00"
+  },
+  "dji_phantom_4_advanced": {
+    "vid": "dji_phantom_4_advanced",
+    "swappa_slug": "dji-phantom-4-advanced",
+    "swappa_url": "https://swappa.com/buy/dji-phantom-4-advanced",
+    "iwm_flawless": 115,
+    "our_price_iwm_x_0.90": 104,
+    "swappa": {
+      "error": "fetch_failed"
+    },
+    "scraped_at": "2026-05-16T20:52:31.154102+00:00"
+  },
+  "dji_phantom_4_pro": {
+    "vid": "dji_phantom_4_pro",
+    "swappa_slug": "dji-phantom-4-pro",
+    "swappa_url": "https://swappa.com/buy/dji-phantom-4-pro",
+    "iwm_flawless": 210,
+    "our_price_iwm_x_0.90": 189,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:31.665632+00:00"
+  },
+  "dji_phantom_4_pro_v2": {
+    "vid": "dji_phantom_4_pro_v2",
+    "swappa_slug": "dji-phantom-4-pro-v2",
+    "swappa_url": "https://swappa.com/buy/dji-phantom-4-pro-v2",
+    "iwm_flawless": 325,
+    "our_price_iwm_x_0.90": 292,
+    "swappa": {
+      "error": "fetch_failed"
+    },
+    "scraped_at": "2026-05-16T20:52:32.116430+00:00"
+  },
+  "dji_spark": {
+    "vid": "dji_spark",
+    "swappa_slug": "dji-spark",
+    "swappa_url": "https://swappa.com/buy/dji-spark",
+    "iwm_flawless": 50,
+    "our_price_iwm_x_0.90": 45,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:32.681874+00:00"
+  },
+  "dji_mavic_3_pro_cine": {
+    "vid": "dji_mavic_3_pro_cine",
+    "swappa_slug": "dji-mavic-3-pro-cine",
+    "swappa_url": "https://swappa.com/buy/dji-mavic-3-pro-cine",
+    "iwm_flawless": 1275,
+    "our_price_iwm_x_0.90": 1148,
+    "swappa": {
+      "error": "fetch_failed"
+    },
+    "scraped_at": "2026-05-16T20:52:33.116237+00:00"
+  },
+  "dji_mavic_3_cine": {
+    "vid": "dji_mavic_3_cine",
+    "swappa_slug": "dji-mavic-3-cine",
+    "swappa_url": "https://swappa.com/buy/dji-mavic-3-cine",
+    "iwm_flawless": 1150,
+    "our_price_iwm_x_0.90": 1035,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:33.617408+00:00"
+  },
+  "dji_air_3s": {
+    "vid": "dji_air_3s",
+    "swappa_slug": "dji-air-3s",
+    "swappa_url": "https://swappa.com/buy/dji-air-3s",
+    "iwm_flawless": 605,
+    "our_price_iwm_x_0.90": 544,
+    "swappa": {
+      "offerCount": 1,
+      "lowPrice": 1798.0,
+      "highPrice": 1798.0,
+      "availability": "InStock"
+    },
+    "scraped_at": "2026-05-16T20:52:34.098163+00:00"
+  },
+  "dji_flip": {
+    "vid": "dji_flip",
+    "swappa_slug": "dji-flip",
+    "swappa_url": "https://swappa.com/buy/dji-flip",
+    "iwm_flawless": 160,
+    "our_price_iwm_x_0.90": 144,
+    "swappa": {
+      "offerCount": 1,
+      "lowPrice": 449.0,
+      "highPrice": 449.0,
+      "availability": "InStock"
+    },
+    "scraped_at": "2026-05-16T20:52:34.600637+00:00"
+  },
+  "dji_mavic_4_pro": {
+    "vid": "dji_mavic_4_pro",
+    "swappa_slug": "dji-mavic-4-pro",
+    "swappa_url": "https://swappa.com/buy/dji-mavic-4-pro",
+    "iwm_flawless": 1500,
+    "our_price_iwm_x_0.90": 1350,
+    "swappa": {
+      "offerCount": 0,
+      "lowPrice": 0.0,
+      "highPrice": 0.0,
+      "availability": "SoldOut"
+    },
+    "scraped_at": "2026-05-16T20:52:35.117508+00:00"
+  }
+}
