@@ -2615,6 +2615,21 @@ const CONDITIONS = [
   { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: "⚠️", details: ["Cracked screen, broken buttons, or damaged housing", "Display defects such as dead pixels, white spots, or burn-in", "May have functional issues — touchscreen, speakers, cameras", "Device still powers on", "No signs of liquid intrusion or water damage"] },
 ];
 
+// Laptop storage tiers — IWM quiz pattern across PC laptop brands offers
+// 256GB / 512GB / 1TB / 2TB / 4TB SSD. Multipliers anchored at 512GB=1.0
+// (IWM's most common base config for our scrape). Per-tier scaling is
+// modest because our base price already reflects the scraper's quiz pick
+// (typically max storage at base chip/RAM), so the tiers really only
+// shift the quote by ±10-20%.
+const LAPTOP_STORAGES = [
+  { id: "lap_256",  label: "256 GB SSD",  desc: "Entry capacity",          multiplier: 0.88 },
+  { id: "lap_512",  label: "512 GB SSD",  desc: "Most common base",        multiplier: 1.00 },
+  { id: "lap_1tb",  label: "1 TB SSD",    desc: "Step up — pays more",     multiplier: 1.10 },
+  { id: "lap_2tb",  label: "2 TB SSD",    desc: "High tier",               multiplier: 1.20 },
+  { id: "lap_4tb",  label: "4 TB SSD",    desc: "Top tier — workstations", multiplier: 1.30 },
+  { id: "lap_unsure", label: "Not sure",  desc: "We'll verify at intake",  multiplier: 1.00 },
+];
+
 const ALL_STORAGES = [
   { id: "64",  label: "64 GB",  desc: "Older base capacity",                multiplier: 0.85, details: ["Common on older iPhone SE / pre-2020 iPads", "Resale demand is limited but we still buy", "Quote is on the lower end of the ladder", "Lookup tip: Settings > General > About > Capacity"] },
   { id: "128", label: "128 GB", desc: "Standard base size",                  multiplier: 1.0,  details: ["Default base size on many recent iPhone / iPad models", "Easy resale — broad demand across the market", "Mid-tier payout — sits in the middle of our ladder", "Lookup tip: Settings > General > About > Capacity"] },
@@ -4881,23 +4896,24 @@ export default function Home() {
   // carrier — only condition -> quote (2 steps).
   const isPhoneFlow = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
   const isIpadFlow = deviceType === "ipad";
-  // PC laptops follow a laptop-shaped flow: condition → battery → charger
-  // → quote. The phone-style "storage + carrier" pair from the generic
-  // funnel asks the wrong questions for these devices (no carrier on a
-  // laptop, and base prices come from IWM scrape at max-config Flawless
-  // already so the per-storage delta is small — defer that to V2).
+  // PC laptops follow a laptop-shaped flow: storage → condition → battery
+  // → charger → quote. No carrier (irrelevant), but they DO ask SSD size
+  // using LAPTOP_STORAGES (256GB → 4TB) instead of the phone-style tiers.
   // MacBook (deviceType="macbook") has its own additive specs flow and is
   // intentionally excluded here.
   const isPcLaptopFlow =
     deviceType === "lenovo" || deviceType === "hp" || deviceType === "dell" ||
     deviceType === "alienware" || deviceType === "asus_pc" || deviceType === "acer" ||
     deviceType === "samsung_pc" || deviceType === "lg_pc";
+  // First post-model step for the current device type. Used by every
+  // model-pick handler so we don't have to switch on isPcLaptopFlow at
+  // each click site.
+  const stepAfterModel: Step = isPcLaptopFlow ? "storage" : "condition";
   const isNoStorageDevice =
     deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo" ||
     deviceType === "applewatch" || deviceType === "pixelwatch" || deviceType === "garmin" || deviceType === "samsungwatch" ||
     deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr" ||
-    deviceType === "dji" ||
-    isPcLaptopFlow;
+    deviceType === "dji";
   // Carrier-lock step only fires for Verizon (only carrier with a real
   // 60-day lock policy worth asking about). Other carriers skip it and
   // are treated as unlocked. This makes the funnel one step shorter for
@@ -4919,9 +4935,9 @@ export default function Home() {
   const macSpecExtrasCount = macSpecFlow ? getBrandExtras(deviceType, model?.id).length : 0;
   const funnelTotal = macSpecFlow
     ? ((macHasGlassStep ? 7 : 6) + macSpecExtrasCount)
-    // PC laptops: condition → battery → charger → quote (4 incl. quote)
+    // PC laptops: storage → condition → battery → charger → quote (5 incl. quote)
     : isPcLaptopFlow
-      ? 4
+      ? 5
       : isNoStorageDevice
         ? 2
         : isPhoneFlow
@@ -4943,9 +4959,10 @@ export default function Home() {
     step === "extras" ? (_chargerStepN + 1) :
     step === "quote" ? funnelTotal : 0
   ) : isPcLaptopFlow ? (
-    step === "condition" ? 1 :
-    step === "batteryhealth" ? 2 :
-    step === "charger" ? 3 :
+    step === "storage" ? 1 :
+    step === "condition" ? 2 :
+    step === "batteryhealth" ? 3 :
+    step === "charger" ? 4 :
     step === "quote" ? funnelTotal : 0
   ) : (
     step === "condition" ? 1 :
@@ -5477,6 +5494,9 @@ export default function Home() {
         // Mac flow has condition AFTER storage/displayglass — go back accordingly
         if (MACBOOK_SPECS[model.id].hasNanoGlass) { setStep("displayglass"); setDisplayGlass(null); }
         else { setStep("storage"); setStorage(null); }
+      } else if (isPcLaptopFlow) {
+        // PC laptops: condition came after storage.
+        setStep("storage"); setStorage(null);
       } else {
         setStep("model"); setModel(null);
       }
@@ -5495,6 +5515,7 @@ export default function Home() {
     else if (step === "storage") {
       if (model && hasAdditiveSpecs(model.id)) { setStep("memory"); setMemory(null); }
       else if (deviceType === "ipad") { setStep("connectivity"); setConnectivity(null); }
+      else if (isPcLaptopFlow) { setStep("model"); setModel(null); }
       else { setStep("condition"); setCondition(null); }
     }
     else if (step === "broken-functional") { setStep("condition"); setCondition(null); setBrokenFunctional(null); }
@@ -7558,7 +7579,7 @@ export default function Home() {
                           const m = v as typeof models[number];
                           const imgSrc = (m as { image?: string }).image || fallbackImgs[m.id] || null;
                           return (
-                            <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                            <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                               {imgSrc && <img src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
                               <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                               <div className="flex items-center gap-2">
@@ -7650,7 +7671,7 @@ export default function Home() {
                           {g.variants.map((m) => {
                             const mImage = (m as { image?: string }).image;
                             return (
-                              <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                              <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                                 {mImage ? (
                                   <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                                 ) : (
@@ -7702,7 +7723,7 @@ export default function Home() {
                         {g.variants.map((m) => {
                           const mImage = (m as { image?: string }).image;
                           return (
-                            <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                            <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                               {mImage ? (
                                 <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                               ) : (
@@ -7853,7 +7874,7 @@ export default function Home() {
                         {g.variants.map((m) => {
                           const mImg = (m as { image?: string }).image;
                           return (
-                            <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                            <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                               {mImg ? (
                                 <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-12 object-contain shrink-0" />
                               ) : (
@@ -7891,7 +7912,7 @@ export default function Home() {
                       )}
                       <div className="space-y-2">
                         {g.variants.map((m) => (
-                          <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                          <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                             <p className="font-semibold text-[15px]">{m.label}</p>
                             <div className="flex items-center gap-2">
                               <span className="text-[#00c853] font-bold text-sm">Get Quote</span>
@@ -8162,7 +8183,7 @@ export default function Home() {
               <>
                 <div className="space-y-2">
                   {lenovoTabVariants.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
@@ -8179,7 +8200,7 @@ export default function Home() {
               <>
                 <div className="space-y-2">
                   {surfaceVariants.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                    <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                       <p className="font-semibold text-[15px]">{m.label}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
@@ -8222,7 +8243,7 @@ export default function Home() {
                     const mImg = (m as { image?: string }).image;
                     return (
                       <button key={m.id} onClick={() => {
-                        setModel(m); setStep("condition"); pushHistory("condition");
+                        setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel);
                       }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer tap-press">
                         {mImg ? (
                           <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain mb-1.5" />
@@ -8242,7 +8263,7 @@ export default function Home() {
                     const mImg = (m as { image?: string }).image;
                     return (
                       <button key={m.id} onClick={() => {
-                        setModel(m); setStep("condition"); pushHistory("condition");
+                        setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel);
                       }} className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         {mImg ? (
                           <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
@@ -8283,7 +8304,7 @@ export default function Home() {
                           {g.variants.map((m) => {
                             const mImage = (m as { image?: string }).image;
                             return (
-                              <button key={m.id} onClick={() => { setModel(m); setStep("condition"); pushHistory("condition"); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                              <button key={m.id} onClick={() => { setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                                 {mImage ? (
                                   <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                                 ) : (
@@ -8322,7 +8343,7 @@ export default function Home() {
                         const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
                         return (
                           <button key={m.id} onClick={() => {
-                            setModel(m); setStep("condition"); pushHistory("condition");
+                            setModel(m); setStep(stepAfterModel); pushHistory(stepAfterModel);
                           }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                             <p className="font-semibold text-[15px]">{m.label}</p>
                             <div className="flex items-center gap-2">
@@ -8661,7 +8682,7 @@ export default function Home() {
               {stepProgress}
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
-                  {(hasAdditiveSpecs(model.id) ? MACBOOK_SPECS[model.id].storage : getStoragesForModel(model.id)).map((s) => (
+                  {(hasAdditiveSpecs(model.id) ? MACBOOK_SPECS[model.id].storage : (isPcLaptopFlow ? LAPTOP_STORAGES : getStoragesForModel(model.id))).map((s) => (
                     <button
                       key={s.id}
                       onClick={() => {
@@ -8674,6 +8695,13 @@ export default function Home() {
                         if (hasAdditiveSpecs(model.id)) {
                           const next: Step = MACBOOK_SPECS[model.id].hasNanoGlass ? "displayglass" : "condition";
                           setStep(next); pushHistory(next);
+                          return;
+                        }
+                        if (isPcLaptopFlow) {
+                          // Storage is the first post-model step for PC
+                          // laptops — go straight to condition (battery and
+                          // charger come after).
+                          setStep("condition"); pushHistory("condition");
                           return;
                         }
                         const isPhone = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
