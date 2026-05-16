@@ -1,0 +1,1084 @@
+{
+  "dji-drone-avata/dji-drone-avata-2": {
+    "model_label": "DJI Avata 2",
+    "iwm_flawless": 375,
+    "condition_adj": {
+      "sealed": 445,
+      "mint": 375,
+      "good": 320,
+      "fair": 240,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "No": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 20,
+      "3+": 50,
+      "None": 0
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "DJI FPV Remote Controller 3": 50,
+      "Extra Propellors": 5,
+      "Battery Charger": 5,
+      "Case": 10
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-avata/dji-drone-avata-2",
+    "series": "dji-drone-avata",
+    "model": "dji-drone-avata-2",
+    "scraped_at": "2026-05-16T20:20:14.182842+00:00"
+  },
+  "dji-drone-fpv/dji-drone-fpv": {
+    "model_label": "DJI FPV",
+    "iwm_flawless": 275,
+    "condition_adj": {
+      "sealed": 350,
+      "mint": 275,
+      "good": 225,
+      "fair": 145,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "No": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 10,
+      "3+": 20,
+      "None": 40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Motion Controller": 20,
+      "Extra Propellors": 5,
+      "Battery Charger": 5,
+      "Case": 10
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-fpv/dji-drone-fpv",
+    "series": "dji-drone-fpv",
+    "model": "dji-drone-fpv",
+    "scraped_at": "2026-05-16T20:20:16.813515+00:00"
+  },
+  "dji-drone-avata/dji-drone-avata": {
+    "model_label": "DJI Avata",
+    "iwm_flawless": 215,
+    "condition_adj": {
+      "sealed": 265,
+      "mint": 215,
+      "good": 165,
+      "fair": 100,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "No": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 15,
+      "3+": 30,
+      "None": 40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 5,
+      "Case": 10
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-avata/dji-drone-avata",
+    "series": "dji-drone-avata",
+    "model": "dji-drone-avata",
+    "scraped_at": "2026-05-16T20:20:19.465508+00:00"
+  },
+  "dji-drone-mavic/dji-drone-mavic-pro": {
+    "model_label": "DJI Mavic Pro",
+    "iwm_flawless": 80,
+    "condition_adj": {
+      "sealed": 120,
+      "mint": 80,
+      "good": 55,
+      "fair": 25,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "No": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 10,
+      "3+": 20,
+      "None": 40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 1,
+      "Multi-Battery Charger": 5,
+      "Car Charger": 1,
+      "Case": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mavic/dji-drone-mavic-pro",
+    "series": "dji-drone-mavic",
+    "model": "dji-drone-mavic-pro",
+    "scraped_at": "2026-05-16T20:20:22.173164+00:00"
+  },
+  "dji-drone-mavic/dji-drone-mavic-pro-platinum": {
+    "model_label": "DJI Mavic Pro Platinum",
+    "iwm_flawless": 175,
+    "condition_adj": {
+      "sealed": 220,
+      "mint": 175,
+      "good": 135,
+      "fair": 85,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "No": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 5,
+      "3+": 15,
+      "None": 30
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 3,
+      "Mutli-Battery Charger": 5,
+      "Car Charger": 1,
+      "Case": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mavic/dji-drone-mavic-pro-platinum",
+    "series": "dji-drone-mavic",
+    "model": "dji-drone-mavic-pro-platinum",
+    "scraped_at": "2026-05-16T20:20:24.880736+00:00"
+  },
+  "dji-drone-mavic/dji-drone-mavic-2-pro": {
+    "model_label": "DJI Mavic 2 Pro",
+    "iwm_flawless": 230,
+    "condition_adj": {
+      "sealed": 280,
+      "mint": 230,
+      "good": 180,
+      "fair": 110,
+      "broken": 0
+    },
+    "controller_adj": {
+      "RC1A": 0,
+      "RC1B": 0,
+      "Smart Controller": 45,
+      "None": 75
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 20,
+      "3+": 40,
+      "None": 40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 5,
+      "Multi-Battery Charger": 10,
+      "Case": 10
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mavic/dji-drone-mavic-2-pro",
+    "series": "dji-drone-mavic",
+    "model": "dji-drone-mavic-2-pro",
+    "scraped_at": "2026-05-16T20:20:27.470257+00:00"
+  },
+  "dji-drone-mavic/dji-drone-mavic-2-zoom": {
+    "model_label": "DJI Mavic 2 Zoom",
+    "iwm_flawless": 225,
+    "condition_adj": {
+      "sealed": 275,
+      "mint": 225,
+      "good": 175,
+      "fair": 100,
+      "broken": 0
+    },
+    "controller_adj": {
+      "RC1A": 0,
+      "RC1B": 20,
+      "Smart Controller": 50,
+      "None": 50
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 20,
+      "3+": 40,
+      "None": 40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 1,
+      "Multi-Battery Charger": 5,
+      "Case": 10
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mavic/dji-drone-mavic-2-zoom",
+    "series": "dji-drone-mavic",
+    "model": "dji-drone-mavic-2-zoom",
+    "scraped_at": "2026-05-16T20:20:30.293979+00:00"
+  },
+  "dji-drone-mavic/dji-drone-mavic-3": {
+    "model_label": "DJI Mavic 3",
+    "iwm_flawless": 600,
+    "condition_adj": {
+      "sealed": 650,
+      "mint": 600,
+      "good": 500,
+      "fair": 400,
+      "broken": 0
+    },
+    "controller_adj": {
+      "RC231 (RC-N1)": -75,
+      "RC (RM330)": 0,
+      "RC Pro (RM510)": 100,
+      "None": 250
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 35,
+      "3+": 70,
+      "None": 60
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 5,
+      "Multi-Battery Charger": 10,
+      "Case": 10
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mavic/dji-drone-mavic-3",
+    "series": "dji-drone-mavic",
+    "model": "dji-drone-mavic-3",
+    "scraped_at": "2026-05-16T20:20:32.956458+00:00"
+  },
+  "dji-drone-mavic/dji-drone-mavic-3-classic": {
+    "model_label": "DJI Mavic 3 Classic",
+    "iwm_flawless": 575,
+    "condition_adj": {
+      "sealed": 650,
+      "mint": 575,
+      "good": 500,
+      "fair": 410,
+      "broken": 0
+    },
+    "controller_adj": {
+      "RC231 (RC-N1)": 0,
+      "RC (RM330)": 35,
+      "None": 100
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 15,
+      "3+": 50,
+      "None": 50
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 5,
+      "Multi-Battery Charger": 10,
+      "Case": 10
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mavic/dji-drone-mavic-3-classic",
+    "series": "dji-drone-mavic",
+    "model": "dji-drone-mavic-3-classic",
+    "scraped_at": "2026-05-16T20:20:35.795057+00:00"
+  },
+  "dji-drone-mavic/dji-drone-mavic-3-pro": {
+    "model_label": "DJI Mavic 3 Pro",
+    "iwm_flawless": 1075,
+    "condition_adj": {
+      "sealed": 1250,
+      "mint": 1075,
+      "good": 950,
+      "fair": 700,
+      "broken": 0
+    },
+    "controller_adj": {
+      "RC (RM330)": 0,
+      "RC Pro (RM510)": 50,
+      "None": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 40,
+      "3+": 100,
+      "None": -150
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 5,
+      "Gimbal Cover": 10,
+      "Case": 15
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mavic/dji-drone-mavic-3-pro",
+    "series": "dji-drone-mavic",
+    "model": "dji-drone-mavic-3-pro",
+    "scraped_at": "2026-05-16T20:20:38.560021+00:00"
+  },
+  "dji-drone-inspire/dji-drone-inspire-1": {
+    "model_label": "DJI Inspire 1",
+    "iwm_flawless": 275,
+    "condition_adj": {
+      "sealed": 325,
+      "mint": 275,
+      "good": 250,
+      "fair": 175,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "No": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 10,
+      "3+": 20,
+      "None": 0
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 1,
+      "Multi-Battery Charger": 5,
+      "Case": 10
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-inspire/dji-drone-inspire-1",
+    "series": "dji-drone-inspire",
+    "model": "dji-drone-inspire-1",
+    "scraped_at": "2026-05-16T20:20:41.511819+00:00"
+  },
+  "dji-drone-inspire/dji-drone-inspire-2": {
+    "model_label": "DJI Inspire 2",
+    "iwm_flawless": 1100,
+    "condition_adj": {
+      "sealed": 1175,
+      "mint": 1100,
+      "good": 1000,
+      "fair": 825,
+      "broken": 0
+    },
+    "controller_adj": {
+      "GL6D10A": 0,
+      "GL800A (Cendence)": 100,
+      "None": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 0,
+      "3+": 100,
+      "None": 0
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 10,
+      "Battery Charger": 5,
+      "Multi-Battery Charger": 10,
+      "Case": 10
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-inspire/dji-drone-inspire-2",
+    "series": "dji-drone-inspire",
+    "model": "dji-drone-inspire-2",
+    "scraped_at": "2026-05-16T20:20:44.200330+00:00"
+  },
+  "dji-drone-air/dji-drone-mavic-air-2": {
+    "model_label": "DJI Mavic Air 2",
+    "iwm_flawless": 160,
+    "condition_adj": {
+      "sealed": 200,
+      "mint": 160,
+      "good": 110,
+      "fair": 50,
+      "broken": 0
+    },
+    "controller_adj": {
+      "RC231 (RC-N1)": 0,
+      "Smart Controller": 35,
+      "None": 35
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 15,
+      "3+": 30,
+      "None": 40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 1,
+      "Case": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-air/dji-drone-mavic-air-2",
+    "series": "dji-drone-air",
+    "model": "dji-drone-mavic-air-2",
+    "scraped_at": "2026-05-16T20:20:47.003517+00:00"
+  },
+  "dji-drone-air/dji-drone-air-2s": {
+    "model_label": "DJI Air 2S",
+    "iwm_flawless": 300,
+    "condition_adj": {
+      "sealed": 350,
+      "mint": 300,
+      "good": 250,
+      "fair": 150,
+      "broken": 0
+    },
+    "controller_adj": {
+      "RC231 (RC-N1)": -50,
+      "RC (RM330)": 0,
+      "RC Pro (RM510)": 50,
+      "None": 50
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 25,
+      "3+": 50,
+      "None": 40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 5,
+      "Case": 15,
+      "Gimbal Cover": 10
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-air/dji-drone-air-2s",
+    "series": "dji-drone-air",
+    "model": "dji-drone-air-2s",
+    "scraped_at": "2026-05-16T20:20:49.765921+00:00"
+  },
+  "dji-drone-air/dji-drone-air-3": {
+    "model_label": "DJI Air 3",
+    "iwm_flawless": 510,
+    "condition_adj": {
+      "sealed": 580,
+      "mint": 510,
+      "good": 460,
+      "fair": 370,
+      "broken": 0
+    },
+    "controller_adj": {
+      "DJI RC-N2": -50,
+      "DJI RC 2": 25,
+      "None": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 30,
+      "3+": 80,
+      "None": 40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 10,
+      "Multi Battery Charger": 15,
+      "Case": 20
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-air/dji-drone-air-3",
+    "series": "dji-drone-air",
+    "model": "dji-drone-air-3",
+    "scraped_at": "2026-05-16T20:20:52.676867+00:00"
+  },
+  "dji-drone-mini/dji-drone-mavic-mini": {
+    "model_label": "DJI Mavic Mini",
+    "iwm_flawless": 45,
+    "condition_adj": {
+      "sealed": 70,
+      "mint": 45,
+      "good": 25,
+      "fair": 10,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "No": -35
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 5,
+      "3+": 15,
+      "None": -30
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 1,
+      "Case": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mini/dji-drone-mavic-mini",
+    "series": "dji-drone-mini",
+    "model": "dji-drone-mavic-mini",
+    "scraped_at": "2026-05-16T20:20:55.303234+00:00"
+  },
+  "dji-drone-mini/dji-drone-mini-2": {
+    "model_label": "DJI Mini 2",
+    "iwm_flawless": 90,
+    "condition_adj": {
+      "sealed": 115,
+      "mint": 90,
+      "good": 40,
+      "fair": 30,
+      "broken": 0
+    },
+    "controller_adj": {
+      "RC231 (RC-N1)": 0,
+      "Smart Controller": 20,
+      "None": -35
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 10,
+      "3+": 20,
+      "None": -50
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 1,
+      "Case": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mini/dji-drone-mini-2",
+    "series": "dji-drone-mini",
+    "model": "dji-drone-mini-2",
+    "scraped_at": "2026-05-16T20:20:57.951882+00:00"
+  },
+  "dji-drone-mini/dji-drone-mini-se": {
+    "model_label": "DJI Mini SE",
+    "iwm_flawless": 60,
+    "condition_adj": {
+      "sealed": 75,
+      "mint": 60,
+      "good": 40,
+      "fair": 15,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "No": -35
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 5,
+      "3+": 10,
+      "None": -30
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 1,
+      "Battery Charger": 1,
+      "Case": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mini/dji-drone-mini-se",
+    "series": "dji-drone-mini",
+    "model": "dji-drone-mini-se",
+    "scraped_at": "2026-05-16T20:21:00.627420+00:00"
+  },
+  "dji-drone-mini/dji-drone-mini-3": {
+    "model_label": "DJI Mini 3",
+    "iwm_flawless": 175,
+    "condition_adj": {
+      "sealed": 210,
+      "mint": 175,
+      "good": 130,
+      "fair": 80,
+      "broken": 0
+    },
+    "controller_adj": {
+      "DJI RC-N1": 0,
+      "DJI RC": 20,
+      "None": -35
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 10,
+      "3+": 30,
+      "None": -70
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 5,
+      "Case": 5,
+      "Gimbal Cover": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mini/dji-drone-mini-3",
+    "series": "dji-drone-mini",
+    "model": "dji-drone-mini-3",
+    "scraped_at": "2026-05-16T20:21:03.256486+00:00"
+  },
+  "dji-drone-mini/dji-drone-mini-3-pro": {
+    "model_label": "DJI Mini 3 Pro",
+    "iwm_flawless": 220,
+    "condition_adj": {
+      "sealed": 270,
+      "mint": 220,
+      "good": 185,
+      "fair": 100,
+      "broken": 0
+    },
+    "controller_adj": {
+      "RC231 (RC-N1)": 0,
+      "RC (RM330)": 20,
+      "RC Pro (RM510)": 50,
+      "None": -35
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 15,
+      "3+": 50,
+      "None": -100
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 5,
+      "Case": 15,
+      "Gimbal Cover": 10
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mini/dji-drone-mini-3-pro",
+    "series": "dji-drone-mini",
+    "model": "dji-drone-mini-3-pro",
+    "scraped_at": "2026-05-16T20:21:05.825183+00:00"
+  },
+  "dji-drone-mini/dji-drone-mini-2-se": {
+    "model_label": "DJI Mini 2 SE",
+    "iwm_flawless": 75,
+    "condition_adj": {
+      "sealed": 120,
+      "mint": 75,
+      "good": 45,
+      "fair": 20,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "No": -35
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 5,
+      "3+": 10,
+      "None": -30
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 3,
+      "Battery Charger": 1,
+      "Case": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mini/dji-drone-mini-2-se",
+    "series": "dji-drone-mini",
+    "model": "dji-drone-mini-2-se",
+    "scraped_at": "2026-05-16T20:21:08.446915+00:00"
+  },
+  "dji-drone-mini/dji-drone-mini-4-pro": {
+    "model_label": "DJI Mini 4 Pro",
+    "iwm_flawless": 350,
+    "condition_adj": {
+      "sealed": 450,
+      "mint": 350,
+      "good": 300,
+      "fair": 225,
+      "broken": 0
+    },
+    "controller_adj": {
+      "DJI RC-N2": -50,
+      "DJI RC 2": 50,
+      "None": -35
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 20,
+      "3+": 50,
+      "None": -100
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 3,
+      "Multi-Battery Charger": 5,
+      "Case": 10,
+      "Gimbal Cover": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mini/dji-drone-mini-4-pro",
+    "series": "dji-drone-mini",
+    "model": "dji-drone-mini-4-pro",
+    "scraped_at": "2026-05-16T20:21:11.117237+00:00"
+  },
+  "dji-drone-phantom/dji-drone-phantom-3-standard": {
+    "error": "no_pricing_data",
+    "url": "https://www.itsworthmore.com/sell/dji-drone-phantom/dji-drone-phantom-3-standard"
+  },
+  "dji-drone-phantom/dji-drone-phantom-3-advanced": {
+    "error": "no_pricing_data",
+    "url": "https://www.itsworthmore.com/sell/dji-drone-phantom/dji-drone-phantom-3-advanced"
+  },
+  "dji-drone-phantom/dji-drone-phantom-3-pro": {
+    "error": "no_pricing_data",
+    "url": "https://www.itsworthmore.com/sell/dji-drone-phantom/dji-drone-phantom-3-pro"
+  },
+  "dji-drone-phantom/dji-drone-phantom-4": {
+    "model_label": "DJI Phantom 4",
+    "iwm_flawless": 105,
+    "condition_adj": {
+      "sealed": 150,
+      "mint": 105,
+      "good": 60,
+      "fair": 25,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "No": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 5,
+      "3+": 10,
+      "None": -40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 3,
+      "Battery Charger": 1,
+      "Case": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-phantom/dji-drone-phantom-4",
+    "series": "dji-drone-phantom",
+    "model": "dji-drone-phantom-4",
+    "scraped_at": "2026-05-16T20:21:24.508684+00:00"
+  },
+  "dji-drone-phantom/dji-drone-phantom-4-advanced": {
+    "model_label": "DJI Phantom 4 Advanced",
+    "iwm_flawless": 115,
+    "condition_adj": {
+      "sealed": 155,
+      "mint": 115,
+      "good": 70,
+      "fair": 20,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "No": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 10,
+      "3+": 20,
+      "None": -40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 3,
+      "Battery Charger": 1,
+      "Case": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-phantom/dji-drone-phantom-4-advanced",
+    "series": "dji-drone-phantom",
+    "model": "dji-drone-phantom-4-advanced",
+    "scraped_at": "2026-05-16T20:21:27.331523+00:00"
+  },
+  "dji-drone-phantom/dji-drone-phantom-4-pro": {
+    "model_label": "DJI Phantom 4 Pro",
+    "iwm_flawless": 210,
+    "condition_adj": {
+      "sealed": 240,
+      "mint": 210,
+      "good": 165,
+      "fair": 115,
+      "broken": 0
+    },
+    "controller_adj": {
+      "GL300": 0,
+      "GL6D10A": 25,
+      "None": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 10,
+      "3+": 20,
+      "None": -40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 3,
+      "Battery Charger": 1,
+      "Case": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-phantom/dji-drone-phantom-4-pro",
+    "series": "dji-drone-phantom",
+    "model": "dji-drone-phantom-4-pro",
+    "scraped_at": "2026-05-16T20:21:30.201649+00:00"
+  },
+  "dji-drone-phantom/dji-drone-phantom-4-pro-v2": {
+    "model_label": "DJI Phantom 4 Pro v2",
+    "iwm_flawless": 325,
+    "condition_adj": {
+      "sealed": 375,
+      "mint": 325,
+      "good": 285,
+      "fair": 225,
+      "broken": 0
+    },
+    "controller_adj": {
+      "GL300": 0,
+      "Smart Controller": 25,
+      "None": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 15,
+      "3+": 30,
+      "None": -40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 3,
+      "Battery Charger": 5,
+      "Case": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-phantom/dji-drone-phantom-4-pro-v2",
+    "series": "dji-drone-phantom",
+    "model": "dji-drone-phantom-4-pro-v2",
+    "scraped_at": "2026-05-16T20:21:32.947320+00:00"
+  },
+  "dji-drone-spark/dji-drone-spark": {
+    "model_label": "DJI Spark",
+    "iwm_flawless": 50,
+    "condition_adj": {
+      "sealed": 75,
+      "mint": 50,
+      "good": 25,
+      "fair": 15,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "No": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 10,
+      "3+": 20,
+      "None": -40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 1,
+      "Battery Charger": 1,
+      "Multi Battery Charger": 5,
+      "Case": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-spark/dji-drone-spark",
+    "series": "dji-drone-spark",
+    "model": "dji-drone-spark",
+    "scraped_at": "2026-05-16T20:21:35.616644+00:00"
+  },
+  "dji-drone-mavic/dji-drone-mavic-3-pro-cine": {
+    "model_label": "DJI Mavic 3 Pro Cine",
+    "iwm_flawless": 1275,
+    "condition_adj": {
+      "sealed": 1450,
+      "mint": 1275,
+      "good": 1050,
+      "fair": 900,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "None": 250
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 50,
+      "3+": 100,
+      "None": 60
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 5,
+      "Multi-Battery Charger": 10,
+      "Case": 20
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mavic/dji-drone-mavic-3-pro-cine",
+    "series": "dji-drone-mavic",
+    "model": "dji-drone-mavic-3-pro-cine",
+    "scraped_at": "2026-05-16T20:21:38.279242+00:00"
+  },
+  "dji-drone-mavic/dji-drone-mavic-3-cine": {
+    "model_label": "DJI Mavic 3 Cine",
+    "iwm_flawless": 1150,
+    "condition_adj": {
+      "sealed": 1250,
+      "mint": 1150,
+      "good": 1000,
+      "fair": 700,
+      "broken": 0
+    },
+    "controller_adj": {
+      "Yes": 0,
+      "No": 80
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 40,
+      "3+": 80,
+      "None": 60
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 5,
+      "Multi-Battery Charger": 10,
+      "Case": 15
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mavic/dji-drone-mavic-3-cine",
+    "series": "dji-drone-mavic",
+    "model": "dji-drone-mavic-3-cine",
+    "scraped_at": "2026-05-16T20:21:41.090536+00:00"
+  },
+  "dji-drone-air/dji-drone-air-3s": {
+    "model_label": "DJI Air 3S",
+    "iwm_flawless": 605,
+    "condition_adj": {
+      "sealed": 675,
+      "mint": 605,
+      "good": 545,
+      "fair": 425,
+      "broken": 0
+    },
+    "controller_adj": {
+      "DJI RC-N3": 0,
+      "DJI RC 2": 150,
+      "None": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 40,
+      "3+": 80,
+      "None": 40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 5,
+      "Battery Charger": 10,
+      "Case": 20
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-air/dji-drone-air-3s",
+    "series": "dji-drone-air",
+    "model": "dji-drone-air-3s",
+    "scraped_at": "2026-05-16T20:21:43.890373+00:00"
+  },
+  "dji-drone-flip/dji-drone-flip": {
+    "model_label": "DJI Flip",
+    "iwm_flawless": 160,
+    "condition_adj": {
+      "sealed": 200,
+      "mint": 160,
+      "good": 115,
+      "fair": 35,
+      "broken": 0
+    },
+    "controller_adj": {
+      "DJI RC-N3": 0,
+      "DJI RC 2": 75,
+      "None": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 15,
+      "3+": 30,
+      "None": 40
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 1,
+      "Battery Charger": 3,
+      "Case": 5
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-flip/dji-drone-flip",
+    "series": "dji-drone-flip",
+    "model": "dji-drone-flip",
+    "scraped_at": "2026-05-16T20:21:46.541162+00:00"
+  },
+  "dji-drone-mavic/dji-drone-mavic-4-pro": {
+    "model_label": "DJI Mavic 4 Pro",
+    "iwm_flawless": 1500,
+    "condition_adj": {
+      "sealed": 1600,
+      "mint": 1500,
+      "good": 1375,
+      "fair": 1125,
+      "broken": 0
+    },
+    "controller_adj": {
+      "RC 2": 0,
+      "RC Pro 2": 500,
+      "None": 0
+    },
+    "battery_adj": {
+      "1": 0,
+      "2": 40,
+      "3+": 100,
+      "None": -150
+    },
+    "charger_adj": {},
+    "box_adj": {},
+    "accessories_adj": {
+      "Extra Propellors": 10,
+      "Battery Charger": 10,
+      "Gimbal Cover": 10,
+      "Case": 20
+    },
+    "url": "https://www.itsworthmore.com/sell/dji-drone-mavic/dji-drone-mavic-4-pro",
+    "series": "dji-drone-mavic",
+    "model": "dji-drone-mavic-4-pro",
+    "scraped_at": "2026-05-16T20:21:49.287948+00:00"
+  }
+}

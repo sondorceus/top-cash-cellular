@@ -2455,16 +2455,58 @@ const SAMSUNGWATCH_MODELS = [
   { id: "sgw7", label: "Galaxy Watch 7", base: 18, image: "/devices/samsung-watch-7.webp" },
 ];
 
+// DJI drones — 32 per-submodel variants priced from IWM scrape (x0.90).
+// 3 Phantom 3 entries are inquiry-only — IWM no longer carries them.
+// Per-submodel Swappa hero PNGs for 27/32 priced models; 5 models that
+// Swappa doesn't carry separately reuse a sibling's hero (same chassis):
+// inspire_1 → inspire_2, mini_2 → mini_3, phantom_4_advanced → phantom_4,
+// phantom_4_pro_v2 → phantom_4_pro, mavic_3_pro_cine → mavic_3_pro.
+// See scripts/scrape-iwm-drones.py and scripts/scrape-swappa-dji.py.
 const DJI_MODELS = [
-  { id: "djimavic", label: "DJI Mavic" },
-  { id: "djiinspire", label: "DJI Inspire" },
-  { id: "djiavata", label: "DJI Avata" },
-  { id: "djifpv", label: "DJI FPV" },
-  { id: "djiair", label: "DJI Air" },
-  { id: "djimini", label: "DJI Mini" },
-  { id: "djiphantom", label: "DJI Phantom" },
-  { id: "djiflip", label: "DJI Flip" },
-  { id: "djispark", label: "DJI Spark" },
+  // Mavic
+  { id: "dji_mavic_4_pro", label: "DJI Mavic 4 Pro", base: 1350, image: "/devices/dji_mavic_4_pro.png" },
+  { id: "dji_mavic_3_pro_cine", label: "DJI Mavic 3 Pro Cine", base: 1148, image: "/devices/dji_mavic_3_pro.png" },
+  { id: "dji_mavic_3_cine", label: "DJI Mavic 3 Cine", base: 1035, image: "/devices/dji_mavic_3_cine.png" },
+  { id: "dji_mavic_3_pro", label: "DJI Mavic 3 Pro", base: 968, image: "/devices/dji_mavic_3_pro.png" },
+  { id: "dji_mavic_3", label: "DJI Mavic 3", base: 540, image: "/devices/dji_mavic_3.png" },
+  { id: "dji_mavic_3_classic", label: "DJI Mavic 3 Classic", base: 518, image: "/devices/dji_mavic_3_classic.png" },
+  { id: "dji_mavic_2_pro", label: "DJI Mavic 2 Pro", base: 207, image: "/devices/dji_mavic_2_pro.png" },
+  { id: "dji_mavic_2_zoom", label: "DJI Mavic 2 Zoom", base: 202, image: "/devices/dji_mavic_2_zoom.png" },
+  { id: "dji_mavic_pro_platinum", label: "DJI Mavic Pro Platinum", base: 158, image: "/devices/dji_mavic_pro_platinum.png" },
+  { id: "dji_mavic_pro", label: "DJI Mavic Pro", base: 72, image: "/devices/dji_mavic_pro.png" },
+  // Mini
+  { id: "dji_mini_4_pro", label: "DJI Mini 4 Pro", base: 315, image: "/devices/dji_mini_4_pro.png" },
+  { id: "dji_mini_3_pro", label: "DJI Mini 3 Pro", base: 198, image: "/devices/dji_mini_3_pro.png" },
+  { id: "dji_mini_3", label: "DJI Mini 3", base: 158, image: "/devices/dji_mini_3.png" },
+  { id: "dji_mini_2", label: "DJI Mini 2", base: 81, image: "/devices/dji_mini_3.png" },
+  { id: "dji_mini_2_se", label: "DJI Mini 2 SE", base: 68, image: "/devices/dji_mini_2_se.png" },
+  { id: "dji_mini_se", label: "DJI Mini SE", base: 54, image: "/devices/dji_mini_se.png" },
+  { id: "dji_mavic_mini", label: "DJI Mavic Mini", base: 40, image: "/devices/dji_mavic_mini.png" },
+  // Air
+  { id: "dji_air_3s", label: "DJI Air 3S", base: 544, image: "/devices/dji_air_3s.png" },
+  { id: "dji_air_3", label: "DJI Air 3", base: 459, image: "/devices/dji_air_3.png" },
+  { id: "dji_air_2s", label: "DJI Air 2S", base: 270, image: "/devices/dji_air_2s.png" },
+  { id: "dji_mavic_air_2", label: "DJI Mavic Air 2", base: 144, image: "/devices/dji_mavic_air_2.png" },
+  // Avata (FPV)
+  { id: "dji_avata_2", label: "DJI Avata 2", base: 338, image: "/devices/dji_avata_2.png" },
+  { id: "dji_avata", label: "DJI Avata", base: 194, image: "/devices/dji_avata.png" },
+  // FPV
+  { id: "dji_fpv", label: "DJI FPV", base: 248, image: "/devices/dji_fpv.png" },
+  // Inspire
+  { id: "dji_inspire_2", label: "DJI Inspire 2", base: 990, image: "/devices/dji_inspire_2.png" },
+  { id: "dji_inspire_1", label: "DJI Inspire 1", base: 248, image: "/devices/dji_inspire_2.png" },
+  // Phantom
+  { id: "dji_phantom_4_pro_v2", label: "DJI Phantom 4 Pro v2", base: 292, image: "/devices/dji_phantom_4_pro.png" },
+  { id: "dji_phantom_4_pro", label: "DJI Phantom 4 Pro", base: 189, image: "/devices/dji_phantom_4_pro.png" },
+  { id: "dji_phantom_4_advanced", label: "DJI Phantom 4 Advanced", base: 104, image: "/devices/dji_phantom_4.png" },
+  { id: "dji_phantom_4", label: "DJI Phantom 4", base: 94, image: "/devices/dji_phantom_4.png" },
+  { id: "dji_phantom_3_pro", label: "DJI Phantom 3 Pro", base: 0, inquiryOnly: true, image: "/djiphantom.png" },
+  { id: "dji_phantom_3_advanced", label: "DJI Phantom 3 Advanced", base: 0, inquiryOnly: true, image: "/djiphantom.png" },
+  { id: "dji_phantom_3_standard", label: "DJI Phantom 3 Standard", base: 0, inquiryOnly: true, image: "/djiphantom.png" },
+  // Flip
+  { id: "dji_flip", label: "DJI Flip", base: 144, image: "/devices/dji_flip.png" },
+  // Spark
+  { id: "dji_spark", label: "DJI Spark", base: 45, image: "/devices/dji_spark.png" },
 ];
 
 // Per-variant edition map for Garmin series that ship multiple trims
@@ -2734,9 +2776,15 @@ const MODEL_GROUPS: Record<string, ModelGroup[]> = {
     { label: "Xbox One",    year: "2013", ids: ["xone"] },
   ],
   dji: [
-    { label: "Flagship", ids: ["djimavic", "djiinspire", "djiphantom"] },
-    { label: "Mid",      ids: ["djiair", "djifpv", "djiavata"] },
-    { label: "Compact",  ids: ["djimini", "djiflip", "djispark"] },
+    { label: "Mavic",   year: "2016–2026", ids: ["dji_mavic_4_pro", "dji_mavic_3_pro_cine", "dji_mavic_3_cine", "dji_mavic_3_pro", "dji_mavic_3", "dji_mavic_3_classic", "dji_mavic_2_pro", "dji_mavic_2_zoom", "dji_mavic_pro_platinum", "dji_mavic_pro"] },
+    { label: "Mini",    year: "2019–2024", ids: ["dji_mini_4_pro", "dji_mini_3_pro", "dji_mini_3", "dji_mini_2", "dji_mini_2_se", "dji_mini_se", "dji_mavic_mini"] },
+    { label: "Air",     year: "2018–2024", ids: ["dji_air_3s", "dji_air_3", "dji_air_2s", "dji_mavic_air_2"] },
+    { label: "Avata",   year: "FPV · 2022–2024", ids: ["dji_avata_2", "dji_avata"] },
+    { label: "FPV",     year: "2021", ids: ["dji_fpv"] },
+    { label: "Inspire", year: "2014–2016", ids: ["dji_inspire_2", "dji_inspire_1"] },
+    { label: "Phantom", year: "2014–2018", ids: ["dji_phantom_4_pro_v2", "dji_phantom_4_pro", "dji_phantom_4_advanced", "dji_phantom_4", "dji_phantom_3_pro", "dji_phantom_3_advanced", "dji_phantom_3_standard"] },
+    { label: "Flip",    year: "2025", ids: ["dji_flip"] },
+    { label: "Spark",   year: "2017", ids: ["dji_spark"] },
   ],
   meta_vr: [
     { label: "Quest 3",    year: "2023", ids: ["mq3", "mq3b"] },
