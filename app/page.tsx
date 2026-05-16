@@ -3396,6 +3396,7 @@ const TABLET_SPECS: Record<string, TabletSpec> = {
   oppad:       { storages: ["128GB", "256GB"] },
   gpixeltab:   { storages: ["128GB", "256GB"] },
   legtabg3:    { storages: ["256GB", "512GB"] },
+  legy900_2026: { storages: ["256GB", "512GB"] },
   // Surface — only Pro 5/7/7+/8/10/11 + Pro X have a separate LTE
   // question on IWM. Pro 6 / 9 / 12in and all Go models bake cellular
   // into the config (chip+RAM+SSD) variant they pick.
