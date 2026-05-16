@@ -6720,11 +6720,11 @@ export default function Home() {
     </div>
   );
 
-  // SEARCH BAR — extracted JSX so it can be rendered inline inside each
-  // device-discovery step right above the selection grid (instead of as
-  // a separate strip below the nav). Closer to where the eye lands.
+  // SEARCH BAR — rendered globally inside the sticky <nav> as a second
+  // row so it's accessible from every page/step on both desktop and
+  // mobile. No mb-6 here; the nav wrapper handles spacing.
   const searchBar = (
-    <div className="relative mb-6">
+    <div className="relative">
       <input
         type="text"
         value={searchQuery}
@@ -7142,9 +7142,18 @@ export default function Home() {
             </button>
           </div>
         </div>
+        {/* GLOBAL SEARCH ROW — second row of the sticky nav. Visible on
+            every step on both desktop and mobile so users can jump to a
+            model from anywhere. Hidden on non-home subpages (about,
+            privacy, etc.) where it would have no target. */}
+        {page === "home" && (
+          <div className="border-t border-white/5 px-4 lg:px-8 py-2.5">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-3xl mx-auto">
+              {searchBar}
+            </div>
+          </div>
+        )}
       </nav>
-
-      {/* Search bar JSX is defined as the `searchBar` const above and rendered inline inside each device-discovery step section, right above the selection grid (close to where the eye lands). */}
 
       {/* MOBILE MENU DRAWER — same Sell/Bulk/Support/Login structure as the desktop mega-menu, accordion-style */}
       {mobileMenuOpen && (
@@ -7931,8 +7940,7 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">What are you selling?</h2>
-            <p className="text-[#e6e6e6] text-sm mb-4">Search by name, or pick a category below</p>
-            {searchBar}
+            <p className="text-[#e6e6e6] text-sm mb-6">Pick a category, or search by name at the top.</p>
             <div className="grid grid-cols-4 md:grid-cols-5 gap-2 md:gap-3">
               {[
                 { id: "phones" as const, label: "Sell Phone" },
@@ -8170,8 +8178,7 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your brand</h2>
-            <p className="text-[#e6e6e6] text-sm mb-4">{category === "phones" ? "Phone brands" : category === "tablets" ? "Tablet brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : category === "watches" ? "Smartwatch brands" : category === "drones" ? "Drone brands" : category === "vr" ? "VR headset brands" : "Console brands"}</p>
-            {searchBar}
+            <p className="text-[#e6e6e6] text-sm mb-6">{category === "phones" ? "Phone brands" : category === "tablets" ? "Tablet brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : category === "watches" ? "Smartwatch brands" : category === "drones" ? "Drone brands" : category === "vr" ? "VR headset brands" : "Console brands"}</p>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {category === "phones" && [
                 { id: "iphone" as const, label: "Apple iPhone", sub: "iPhone 11 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg> },
@@ -8309,8 +8316,6 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-
-            {searchBar}
 
             {/* iPhone: grouped by generation (17 / 16 / 15 / ... / 11)
                 with a thin uppercase divider above each set so the
