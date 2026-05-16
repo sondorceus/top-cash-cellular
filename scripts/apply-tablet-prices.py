@@ -33,10 +33,30 @@ MAP = {
     # Lenovo Tab
     "legtabg3":   "lenovo-tablet/lenovo-legion-tab-gen-3",
     # OnePlus
+    "oppad3":     "oneplus-tablet/oneplus-pad-3",
+    "oppadgo2":   "oneplus-tablet/oneplus-pad-go-2",
     "oppad2":     "oneplus-tablet/oneplus-pad-2",
     "oppad":      "oneplus-tablet/oneplus-pad",
     # Google
     "gpixeltab":  "google-tablet/google-pixel-tablet",
+    # Microsoft Surface
+    "surfpro12_13":  "microsoft-surface-pro/microsoft-surface-pro-12in",
+    "surfpro12_12":  "microsoft-surface-pro/microsoft-surface-pro-12in",
+    "surfpro11":     "microsoft-surface-pro/microsoft-surface-pro-11",
+    "surfpro10biz":  "microsoft-surface-pro/microsoft-surface-pro-10",
+    "surfpro9":      "microsoft-surface-pro/microsoft-surface-pro-9",
+    "surfpro8":      "microsoft-surface-pro/microsoft-surface-pro-8",
+    "surfpro7p":     "microsoft-surface-pro/microsoft-surface-pro-7-plus",
+    "surfpro7":      "microsoft-surface-pro/microsoft-surface-pro-7",
+    "surfpro6":      "microsoft-surface-pro/microsoft-surface-pro-6",
+    "surfpro5_2017": "microsoft-surface-pro/microsoft-surface-pro-5",
+    "surfpro4":      "microsoft-surface-pro/microsoft-surface-pro-4",
+    "surfgo4":       "microsoft-surface-go/microsoft-surface-go-4",
+    "surfgo3":       "microsoft-surface-go/microsoft-surface-go-3",
+    "surfgo2":       "microsoft-surface-go/microsoft-surface-go-2",
+    "surfgo1":       "microsoft-surface-go/microsoft-surface-go-1",
+    "surfprox2020":  "microsoft-surface-pro-x/microsoft-surface-pro-x",
+    "surfprox2019":  "microsoft-surface-pro-x/microsoft-surface-pro-x",
 }
 
 

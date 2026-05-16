@@ -2553,13 +2553,13 @@ const PSVR_MODELS = [
 ];
 
 const SAMSUNG_TAB_MODELS = [
-  { id: "stabs11u", label: "Galaxy Tab S11 Ultra", base: 567, inquiryOnly: false, image: "/devices/galaxy-tab-s11-ultra.webp" },
-  { id: "stabs11", label: "Galaxy Tab S11", base: 342, inquiryOnly: false, image: "/devices/galaxy-tab-s11.webp" },
-  { id: "stabs10u", label: "Galaxy Tab S10 Ultra", base: 454, inquiryOnly: false, image: "/devices/galaxy-tab-s10-ultra.png" },
-  { id: "stabs10p", label: "Galaxy Tab S10+", base: 351, inquiryOnly: false, image: "/devices/galaxy-tab-s10-plus.webp" },
-  { id: "stabs10fep", label: "Galaxy Tab S10 FE+", base: 252, inquiryOnly: false, image: "/devices/galaxy-tab-s10-fe-plus.webp" },
-  { id: "stabs10fe", label: "Galaxy Tab S10 FE", base: 180, inquiryOnly: false, image: "/devices/galaxy-tab-s10-fe.webp" },
-  { id: "stabs10l", label: "Galaxy Tab S10 Lite", base: 158, inquiryOnly: false, image: "/devices/galaxy-tab-s10-lite.webp" },
+  { id: "stabs11u", label: "Galaxy Tab S11 Ultra", base: 513, inquiryOnly: false, image: "/devices/galaxy-tab-s11-ultra.webp" },
+  { id: "stabs11", label: "Galaxy Tab S11", base: 324, inquiryOnly: false, image: "/devices/galaxy-tab-s11.webp" },
+  { id: "stabs10u", label: "Galaxy Tab S10 Ultra", base: 418, inquiryOnly: false, image: "/devices/galaxy-tab-s10-ultra.png" },
+  { id: "stabs10p", label: "Galaxy Tab S10+", base: 315, inquiryOnly: false, image: "/devices/galaxy-tab-s10-plus.webp" },
+  { id: "stabs10fep", label: "Galaxy Tab S10 FE+", base: 225, inquiryOnly: false, image: "/devices/galaxy-tab-s10-fe-plus.webp" },
+  { id: "stabs10fe", label: "Galaxy Tab S10 FE", base: 153, inquiryOnly: false, image: "/devices/galaxy-tab-s10-fe.webp" },
+  { id: "stabs10l", label: "Galaxy Tab S10 Lite", base: 112, inquiryOnly: false, image: "/devices/galaxy-tab-s10-lite.webp" },
   { id: "stabs9u", label: "Galaxy Tab S9 Ultra", image: "/devices/galaxy-tab-s9-ultra.webp" },
   { id: "stabs9p", label: "Galaxy Tab S9+", image: "/devices/galaxy-tab-s9-plus.webp" },
   { id: "stabs9", label: "Galaxy Tab S9", image: "/devices/galaxy-tab-s9.webp" },
@@ -2568,26 +2568,26 @@ const SAMSUNG_TAB_MODELS = [
   { id: "stabs8u", label: "Galaxy Tab S8 Ultra", image: "/devices/galaxy-tab-s8-ultra.webp" },
   { id: "stabs8p", label: "Galaxy Tab S8+", image: "/devices/galaxy-tab-s8-plus.webp" },
   { id: "stabs8", label: "Galaxy Tab S8", image: "/devices/galaxy-tab-s8.webp" },
-  { id: "stabs7p", label: "Galaxy Tab S7+", base: 135, inquiryOnly: false, image: "/devices/galaxy-tab-s7-plus.webp" },
-  { id: "stabs7fe", label: "Galaxy Tab S7 FE", base: 108, inquiryOnly: false, image: "/devices/galaxy-tab-s7-fe.png" },
-  { id: "stabs7", label: "Galaxy Tab S7", base: 117, inquiryOnly: false, image: "/devices/galaxy-tab-s7.webp" },
-  { id: "stabs6l", label: "Galaxy Tab S6 Lite", base: 72, inquiryOnly: false, image: "/devices/galaxy-tab-s6-lite.webp" },
-  { id: "stabs6", label: "Galaxy Tab S6", base: 90, inquiryOnly: false, image: "/devices/galaxy-tab-s6.webp" },
-  { id: "stabs5e", label: "Galaxy Tab S5e", base: 36, inquiryOnly: false, image: "/devices/galaxy-tab-s5e.webp" },
-  { id: "stabs4", label: "Galaxy Tab S4 10.5", base: 40, inquiryOnly: false, image: "/devices/galaxy-tab-s4-105.webp" },
+  { id: "stabs7p", label: "Galaxy Tab S7+", base: 108, inquiryOnly: false, image: "/devices/galaxy-tab-s7-plus.webp" },
+  { id: "stabs7fe", label: "Galaxy Tab S7 FE", base: 81, inquiryOnly: false, image: "/devices/galaxy-tab-s7-fe.png" },
+  { id: "stabs7", label: "Galaxy Tab S7", base: 90, inquiryOnly: false, image: "/devices/galaxy-tab-s7.webp" },
+  { id: "stabs6l", label: "Galaxy Tab S6 Lite", base: 50, inquiryOnly: false, image: "/devices/galaxy-tab-s6-lite.webp" },
+  { id: "stabs6", label: "Galaxy Tab S6", base: 72, inquiryOnly: false, image: "/devices/galaxy-tab-s6.webp" },
+  { id: "stabs5e", label: "Galaxy Tab S5e", base: 22, inquiryOnly: false, image: "/devices/galaxy-tab-s5e.webp" },
+  { id: "stabs4", label: "Galaxy Tab S4 10.5", base: 27, inquiryOnly: false, image: "/devices/galaxy-tab-s4-105.webp" },
   { id: "staba9", label: "Galaxy Tab A9+", image: "/devices/galaxy-tab-a9-plus.webp" },
 ];
 
 const SURFACE_PRO_VARIANTS = [
   { id: "surfpro12_13", label: "Surface Pro 12 13\" (2026)", base: 0, inquiryOnly: true },
   { id: "surfpro12_12", label: "Surface Pro 12 12\" (2026)", base: 0, inquiryOnly: true },
-  { id: "surfpro11", label: "Surface Pro 11th Ed (Copilot+ / Snapdragon X)", base: 0, inquiryOnly: true },
-  { id: "surfpro10biz", label: "Surface Pro 10 for Business", base: 0, inquiryOnly: true },
-  { id: "surfpro9", label: "Surface Pro 9", base: 0, inquiryOnly: true },
-  { id: "surfpro8", label: "Surface Pro 8", base: 0, inquiryOnly: true },
-  { id: "surfpro7p", label: "Surface Pro 7+", base: 0, inquiryOnly: true },
-  { id: "surfpro7", label: "Surface Pro 7", base: 0, inquiryOnly: true },
-  { id: "surfpro6", label: "Surface Pro 6", base: 0, inquiryOnly: true },
+  { id: "surfpro11", label: "Surface Pro 11th Ed (Copilot+ / Snapdragon X)", base: 580, inquiryOnly: false },
+  { id: "surfpro10biz", label: "Surface Pro 10 for Business", base: 472, inquiryOnly: false },
+  { id: "surfpro9", label: "Surface Pro 9", base: 248, inquiryOnly: false },
+  { id: "surfpro8", label: "Surface Pro 8", base: 212, inquiryOnly: false },
+  { id: "surfpro7p", label: "Surface Pro 7+", base: 94, inquiryOnly: false },
+  { id: "surfpro7", label: "Surface Pro 7", base: 36, inquiryOnly: false },
+  { id: "surfpro6", label: "Surface Pro 6", base: 18, inquiryOnly: false },
   { id: "surfpro5_2017", label: "Surface Pro 5 (2017)", base: 0, inquiryOnly: true },
   { id: "surfpro4", label: "Surface Pro 4", base: 0, inquiryOnly: true },
   { id: "surfpro3", label: "Surface Pro 3", base: 0, inquiryOnly: true },
@@ -2595,14 +2595,14 @@ const SURFACE_PRO_VARIANTS = [
   { id: "surfpro1", label: "Surface Pro (2013)", base: 0, inquiryOnly: true },
 ];
 const SURFACE_GO_VARIANTS = [
-  { id: "surfgo4", label: "Surface Go 4 (Business)", base: 0, inquiryOnly: true },
-  { id: "surfgo3", label: "Surface Go 3", base: 0, inquiryOnly: true },
-  { id: "surfgo2", label: "Surface Go 2", base: 0, inquiryOnly: true },
+  { id: "surfgo4", label: "Surface Go 4 (Business)", base: 248, inquiryOnly: false },
+  { id: "surfgo3", label: "Surface Go 3", base: 36, inquiryOnly: false },
+  { id: "surfgo2", label: "Surface Go 2", base: 18, inquiryOnly: false },
   { id: "surfgo1", label: "Surface Go (2018)", base: 0, inquiryOnly: true },
 ];
 const SURFACE_X_VARIANTS = [
-  { id: "surfprox2020", label: "Surface Pro X (2020 Refresh)", base: 0, inquiryOnly: true },
-  { id: "surfprox2019", label: "Surface Pro X (2019)", base: 0, inquiryOnly: true },
+  { id: "surfprox2020", label: "Surface Pro X (2020 Refresh)", base: 180, inquiryOnly: false },
+  { id: "surfprox2019", label: "Surface Pro X (2019)", base: 180, inquiryOnly: false },
 ];
 const SURFACE_BOOKSTUDIO_VARIANTS = [
   { id: "surfstudio2", label: "Surface Laptop Studio 2", base: 0, inquiryOnly: true },
@@ -2639,7 +2639,7 @@ const SURFACE_MODELS = [
 
 const LENOVO_LEGION_TAB_VARIANTS = [
   { id: "legtabg5", label: "Legion Tab Gen 5 (8.8\")", base: 0, inquiryOnly: true },
-  { id: "legtabg3", label: "Legion Tab Gen 3", base: 230, inquiryOnly: false },
+  { id: "legtabg3", label: "Legion Tab Gen 3", base: 189, inquiryOnly: false },
   { id: "legy900_2026", label: "Legion Y900 (2026)", base: 0, inquiryOnly: true },
 ];
 const LENOVO_IDEA_TAB_VARIANTS = [
@@ -2678,14 +2678,14 @@ const LENOVO_TAB_MODELS = [
 ];
 
 const ONEPLUS_TAB_MODELS = [
-  { id: "oppad3",   label: "OnePlus Pad 3",     base: 324, inquiryOnly: false },
-  { id: "oppadgo2", label: "OnePlus Pad Go 2",  base: 180, inquiryOnly: false },
-  { id: "oppad2",   label: "OnePlus Pad 2",     base: 180, inquiryOnly: false },
-  { id: "oppad",    label: "OnePlus Pad",       base: 117, inquiryOnly: false },
+  { id: "oppad3",   label: "OnePlus Pad 3", base: 288, inquiryOnly: false },
+  { id: "oppadgo2", label: "OnePlus Pad Go 2", base: 153, inquiryOnly: false },
+  { id: "oppad2",   label: "OnePlus Pad 2", base: 153, inquiryOnly: false },
+  { id: "oppad",    label: "OnePlus Pad", base: 90, inquiryOnly: false },
 ];
 
 const GOOGLE_TAB_MODELS = [
-  { id: "gpixeltab", label: "Pixel Tablet", base: 198, inquiryOnly: false, image: "/devices/pixel-tablet.webp" },
+  { id: "gpixeltab", label: "Pixel Tablet", base: 162, inquiryOnly: false, image: "/devices/pixel-tablet.webp" },
 ];
 
 // Sub-section grouping for the flat device lists (watches, consoles,
@@ -3339,7 +3339,152 @@ type BrandExtra = { id: string; question: string; helper?: string; options: Extr
   // the seller may not immediately have (AVP Optic ID, EyeSight glass, etc.).
   guide?: { title: string; steps: string[] };
 };
+// Storage-delta values come from IWM scrape (iwm-tablet-adjustments.json)
+// in dollars. We apply ×0.90 inline on each adj value here so the
+// quote-math doesn't need to know the source. Common pattern across
+// Samsung / OnePlus / Lenovo / Google tablets: 128GB = $0, 256GB ≈ +$15,
+// 512GB ≈ +$45, 1TB ≈ +$70. Surface uses a separate config (chip+RAM+SSD)
+// picker downstream because the matrix is wide.
+const TABLET_STORAGE_OPTIONS = [
+  { id: "64",  label: "64 GB",  multiplier: 1.00, adj: -10 },
+  { id: "128", label: "128 GB", multiplier: 1.00, adj: 0 },
+  { id: "256", label: "256 GB", multiplier: 1.00, adj: 15 },
+  { id: "512", label: "512 GB", multiplier: 1.00, adj: 45 },
+  { id: "1tb", label: "1 TB",   multiplier: 1.00, adj: 70 },
+];
+
 const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
+  // ===== Tablets =====
+  // Samsung Galaxy Tab — storage / carrier / S Pen / charger / box.
+  // Adj values derived from IWM Galaxy Tab S10 Ultra tree × 0.90 and
+  // hold roughly across the S-series (Samsung uses the same matrix).
+  samsung_tab: [
+    { id: "storage", question: "Storage capacity?", helper: "Settings → About tablet → Storage.",
+      guide: { title: "How to find your tablet's storage", steps: [
+        "Open Settings.",
+        "Tap About tablet → Storage.",
+        "Look for 'Total space' — common sizes: 64 GB / 128 GB / 256 GB / 512 GB / 1 TB.",
+      ]}, options: TABLET_STORAGE_OPTIONS,
+    },
+    { id: "carrier", question: "Wi-Fi only or LTE/5G?", helper: "Unlocked cellular models pay $30+ more than Wi-Fi only.",
+      guide: { title: "How to check connectivity", steps: [
+        "Settings → Connections → Mobile networks. If you see a carrier or 'No SIM', it's a cellular model.",
+        "Or check the back near the camera: cellular models have a SIM tray slot.",
+        "Wi-Fi-only tablets only show 'Wi-Fi' under Connections.",
+      ]}, options: [
+      { id: "wifi", label: "Wi-Fi only",        multiplier: 1.00, adj: 0 },
+      { id: "lte",  label: "LTE / 5G unlocked", multiplier: 1.00, adj: 36 },
+    ]},
+    { id: "spen", question: "S Pen included?", helper: "Most Galaxy Tab S series ship with an S Pen — significant value if it's missing.",
+      guide: { title: "How to identify the S Pen", steps: [
+        "Look on the back of the tablet — there's a flat magnetic strip where the S Pen attaches.",
+        "If you have the S Pen, it's the slim stylus that magnetically clicks onto the back.",
+        "S Pens for newer Tab S models have a button on the side; older ones are plain.",
+      ]}, options: [
+      { id: "yes", label: "Yes — S Pen included",  multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No — S Pen missing",    multiplier: 1.00, adj: -45 },
+    ]},
+    { id: "charger", question: "Charger included?", options: [
+      { id: "yes", label: "Yes — charger + cable", multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No",                    multiplier: 1.00, adj: -9 },
+    ]},
+    { id: "box", question: "Original box?", options: [
+      { id: "yes", label: "Yes", multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No",  multiplier: 1.00, adj: -5 },
+    ]},
+  ],
+  // Microsoft Surface — Type Cover and Pen are the two big drivers,
+  // plus LTE for Pro 11. Storage/RAM/CPU baked into the variant ID
+  // already (each Surface page in IWM uses a Configuration picker that
+  // we represent at the variant level).
+  surface: [
+    { id: "typecover", question: "Type Cover keyboard included?", helper: "Surface Type Cover keyboards sell for $150+ separately.",
+      guide: { title: "How to identify a Type Cover", steps: [
+        "Look for the magnetic keyboard cover that clicks onto the bottom of the Surface.",
+        "Type Covers have a fabric/Alcantara finish; the Signature cover is darker and softer.",
+        "If it came in the original box and snaps in firmly via magnets, it's OEM.",
+      ]}, options: [
+      { id: "yes", label: "Yes — Type Cover included", multiplier: 1.00, adj: 65 },
+      { id: "no",  label: "No",                         multiplier: 1.00, adj: 0 },
+    ]},
+    { id: "pen", question: "Surface Pen included?", helper: "Adds $5-$20 depending on generation.",
+      guide: { title: "How to identify a Surface Pen", steps: [
+        "Surface Pen is a slim white/black stylus with a soft eraser-tip button on top.",
+        "Magnetically clips to the left side of the Surface Pro/Go.",
+        "Surface Slim Pen 2 is the newer model — flat clip vs. round pencil shape.",
+      ]}, options: [
+      { id: "yes", label: "Yes",  multiplier: 1.00, adj: 18 },
+      { id: "no",  label: "No",   multiplier: 1.00, adj: 0 },
+    ]},
+    { id: "lte", question: "LTE / 5G cellular?", helper: "Cellular Surfaces add ~$90 over the Wi-Fi version.", showIf: () => true,
+      guide: { title: "How to check cellular", steps: [
+        "Settings → Network & internet → Cellular. If present, it's a cellular model.",
+        "Or look on the back near the kickstand — cellular models have a SIM tray.",
+        "Surface Pro 9 / 10 / 11 all offer optional LTE variants.",
+      ]}, options: [
+      { id: "yes", label: "Yes — LTE cellular", multiplier: 1.00, adj: 90 },
+      { id: "no",  label: "No — Wi-Fi only",    multiplier: 1.00, adj: 0 },
+    ]},
+    { id: "charger", question: "Charger included?", options: [
+      { id: "yes", label: "Yes — Surface Connect or USB-C charger", multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No",                                      multiplier: 1.00, adj: -27 },
+    ]},
+    { id: "box", question: "Original box?", options: [
+      { id: "yes", label: "Yes", multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No",  multiplier: 1.00, adj: -5 },
+    ]},
+  ],
+  // Lenovo Tab — same storage matrix as Samsung; no S Pen question
+  // because most Lenovo tabs ship without a stylus.
+  lenovo_tab: [
+    { id: "storage", question: "Storage capacity?", helper: "Settings → System → Storage.", options: TABLET_STORAGE_OPTIONS },
+    { id: "charger", question: "Charger included?", options: [
+      { id: "yes", label: "Yes", multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No",  multiplier: 1.00, adj: -8 },
+    ]},
+    { id: "box", question: "Original box?", options: [
+      { id: "yes", label: "Yes", multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No",  multiplier: 1.00, adj: -3 },
+    ]},
+  ],
+  // OnePlus Pad / Pad 2 / Pad 3 / Pad Go 2 — storage only, no LTE
+  // variants on US models.
+  oneplus_tab: [
+    { id: "storage", question: "Storage capacity?", helper: "Settings → About device → Storage.", options: TABLET_STORAGE_OPTIONS },
+    { id: "stylus", question: "OnePlus Stylo included?", helper: "OnePlus Pad 2/3 ship with the magnetic Stylo stylus — adds ~$30 if included.",
+      options: [
+      { id: "yes", label: "Yes — Stylo included", multiplier: 1.00, adj: 27 },
+      { id: "no",  label: "No",                    multiplier: 1.00, adj: 0 },
+    ]},
+    { id: "charger", question: "Charger included?", options: [
+      { id: "yes", label: "Yes — OnePlus charger", multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No",                     multiplier: 1.00, adj: -9 },
+    ]},
+    { id: "box", question: "Original box?", options: [
+      { id: "yes", label: "Yes", multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No",  multiplier: 1.00, adj: -3 },
+    ]},
+  ],
+  // Google Pixel Tablet — comes with charging dock, storage 128 / 256.
+  google_tab: [
+    { id: "storage", question: "Storage capacity?", helper: "Settings → About tablet → Storage.", options: [
+      { id: "128", label: "128 GB", multiplier: 1.00, adj: 0 },
+      { id: "256", label: "256 GB", multiplier: 1.00, adj: 25 },
+    ]},
+    { id: "dock", question: "Charging speaker dock included?", helper: "The white speaker base — Pixel Tablet ships with one. Adds $40+ if included.",
+      guide: { title: "How to identify the dock", steps: [
+        "The Pixel Tablet ships with a circular white base that doubles as a speaker and stand.",
+        "It charges magnetically via 4 metal pins on the back of the tablet.",
+        "Sold separately for $129 — keeps significant resale value.",
+      ]}, options: [
+      { id: "yes", label: "Yes — dock included",   multiplier: 1.00, adj: 36 },
+      { id: "no",  label: "No",                     multiplier: 1.00, adj: 0 },
+    ]},
+    { id: "box", question: "Original box?", options: [
+      { id: "yes", label: "Yes", multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No",  multiplier: 1.00, adj: -3 },
+    ]},
+  ],
   // Consoles — single ask: disc drive yes/no (digital editions trade lower)
   // and how many controllers are in the box.
   sony: [
@@ -5783,16 +5928,19 @@ export default function Home() {
   // MacBook additive mode: use IWM's exact $ adjustments (no multipliers)
   const procAdj = (processor as MacSpecOption | null)?.adj;
   const useAdditive = procAdj != null && model && hasAdditiveSpecs(model.id);
-  const nonCarrierMultiplier = connectivityMultiplier * promoMultiplier
-    * couponMultiplier * processorMultiplier * memoryMultiplier * displayGlassMultiplier
-    * batteryHealthMultiplier * chargerMultiplier * extrasMultiplier;
-  // For additive mode, extras with adj values are summed directly (not multiplied).
-  // Extras WITHOUT adj still contribute via extrasMultiplier.
+  // For extras: any option that carries an `adj` field is treated as a
+  // flat dollar add (post-multiplier), and only options WITHOUT `adj`
+  // contribute multiplicatively. This lets tablet brand_extras (storage,
+  // S Pen, Type Cover, etc.) work without forcing them into the full
+  // additive-spec flow used for laptops.
   const extrasAdjSum = Object.values(extras).reduce((acc, opt) => acc + ((opt as ExtraOption | undefined)?.adj ?? 0), 0);
   const extrasMultOnly = Object.values(extras).reduce((acc, opt) => {
     const o = opt as ExtraOption | undefined;
     return acc * ((o?.adj != null) ? 1 : (o?.multiplier ?? 1));
   }, 1);
+  const nonCarrierMultiplier = connectivityMultiplier * promoMultiplier
+    * couponMultiplier * processorMultiplier * memoryMultiplier * displayGlassMultiplier
+    * batteryHealthMultiplier * chargerMultiplier * extrasMultOnly;
   const promoOnly = promoMultiplier * couponMultiplier * (useAdditive ? extrasMultOnly : extrasMultiplier);
   const baseQuote = useAdditive
     ? (() => {
@@ -5826,9 +5974,9 @@ export default function Home() {
         return Math.max(0, Math.round(iwm * 0.90 * promoOnly)) + promoFlatBonus;
       })()
     : useDirectPricing
-      ? Math.max(0, Math.round((lookupPrice - totalCarrierDeduction) * nonCarrierMultiplier)) + promoFlatBonus
+      ? Math.max(0, Math.round((lookupPrice - totalCarrierDeduction) * nonCarrierMultiplier + extrasAdjSum)) + promoFlatBonus
       : model && condition && model.base
-        ? Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * nonCarrierMultiplier) + promoFlatBonus
+        ? Math.max(0, Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * nonCarrierMultiplier + extrasAdjSum)) + promoFlatBonus
         : 0;
   const quote = baseQuote + accessoryBonus;
   // Minimum offer threshold — below this we lose money on shipping +

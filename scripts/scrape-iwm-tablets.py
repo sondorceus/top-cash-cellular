@@ -25,7 +25,23 @@ COND_MAP = {
 }
 
 TARGETS = [
-    # (series, model)
+    # === Microsoft Surface ===
+    ("microsoft-surface-pro", "microsoft-surface-pro-12in"),
+    ("microsoft-surface-pro", "microsoft-surface-pro-11"),
+    ("microsoft-surface-pro", "microsoft-surface-pro-10"),
+    ("microsoft-surface-pro", "microsoft-surface-pro-9"),
+    ("microsoft-surface-pro", "microsoft-surface-pro-8"),
+    ("microsoft-surface-pro", "microsoft-surface-pro-7-plus"),
+    ("microsoft-surface-pro", "microsoft-surface-pro-7"),
+    ("microsoft-surface-pro", "microsoft-surface-pro-6"),
+    ("microsoft-surface-pro", "microsoft-surface-pro-5"),
+    ("microsoft-surface-pro", "microsoft-surface-pro-4"),
+    ("microsoft-surface-go",  "microsoft-surface-go-4"),
+    ("microsoft-surface-go",  "microsoft-surface-go-3"),
+    ("microsoft-surface-go",  "microsoft-surface-go-2"),
+    ("microsoft-surface-go",  "microsoft-surface-go-1"),
+    ("microsoft-surface-pro-x", "microsoft-surface-pro-x"),
+    # === Samsung / Lenovo / OnePlus / Google (existing) ===
     ("samsung-tablet", "galaxy-tab-s11-ultra"),
     ("samsung-tablet", "galaxy-tab-s11"),
     ("samsung-tablet", "galaxy-tab-s10-ultra"),
@@ -109,16 +125,31 @@ def _cond_key(row):
 def _spec_from_branch(tree, branch_idx, model_label):
     data = walk_branch(tree, branch_idx)
     if not data: return None
-    # Tablets: base price = sum of first-option vals across the major
-    # priced dimensions (storage / connectivity / size). Condition.Flawless
-    # is the anchor (val 0); deltas come from condition/battery/charger.
+    # Tablets: IWM's first question is usually "Select Condition" with
+    # Flawless = the base Flawless price (not 0 anchor). The other
+    # dimensions (storage/connectivity/pen) are additive deltas to that.
+    # Newer Surface trees flip the order — condition is later and
+    # storage/connectivity carry the base. Handle both:
     base = 0
-    for k in ("storage", "connectivity", "size"):
-        rows = data.get(k, [])
-        if rows: base += rows[0]["val"]
+    cond = data.get("condition", [])
+    if cond:
+        # Find the Flawless entry by attrs.condition key or label
+        flawless = None
+        for c in cond:
+            ck = (c.get("attrs") or {}).get("condition", "")
+            ck = ck if not isinstance(ck, list) else (ck[0] if ck else "")
+            if ck == "excellent" or (c.get("label") or "").lower() == "flawless":
+                flawless = c; break
+        if flawless and flawless["val"] > 0:
+            base = flawless["val"]
     if not base:
-        cond = data.get("condition", [])
-        if cond: base = max((c["val"] for c in cond), default=0)
+        # Fall back to summing first-option vals across price-driver dims.
+        for k in ("storage", "connectivity", "size"):
+            rows = data.get(k, [])
+            if rows: base += rows[0]["val"]
+    if not base and cond:
+        # Last resort: max condition val (Brand New).
+        base = max((c["val"] for c in cond), default=0)
 
     def deltas(rows):
         if not rows: return {}

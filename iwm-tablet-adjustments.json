@@ -18,7 +18,7 @@
     "iwm_name": "Google Pixel Slate",
     "model": "google-pixel-slate",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T06:44:03+00:00",
+    "scraped_at": "2026-05-16T16:50:15+00:00",
     "series": "google-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -32,7 +32,7 @@
     "url": "https://www.itsworthmore.com/sell/google-tablet/google-pixel-slate"
   },
   "google-tablet/google-pixel-tablet": {
-    "base_price": 220,
+    "base_price": 180,
     "battery_adj": {},
     "charger_adj": {
       "original box": 1,
@@ -53,7 +53,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:44:00+00:00",
+    "scraped_at": "2026-05-16T16:50:13+00:00",
     "series": "google-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -64,7 +64,7 @@
     "url": "https://www.itsworthmore.com/sell/google-tablet/google-pixel-tablet"
   },
   "lenovo-tablet/lenovo-legion-tab-gen-3": {
-    "base_price": 255,
+    "base_price": 210,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -81,7 +81,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:43:38+00:00",
+    "scraped_at": "2026-05-16T16:49:50+00:00",
     "series": "lenovo-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -118,7 +118,7 @@
       "no": 0,
       "yes": 60
     },
-    "scraped_at": "2026-05-16T06:43:41+00:00",
+    "scraped_at": "2026-05-16T16:49:52+00:00",
     "series": "lenovo-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -135,7 +135,7 @@
     "url": "https://www.itsworthmore.com/sell/lenovo-tablet/lenovo-thinkpad-x12-detachable"
   },
   "lenovo-tablet/lenovo-yoga-tab-plus": {
-    "base_price": 225,
+    "base_price": 175,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -152,7 +152,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:43:44+00:00",
+    "scraped_at": "2026-05-16T16:49:55+00:00",
     "series": "lenovo-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -162,8 +162,616 @@
     "stylus_adj": {},
     "url": "https://www.itsworthmore.com/sell/lenovo-tablet/lenovo-yoga-tab-plus"
   },
+  "microsoft-surface-go/microsoft-surface-go-1": {
+    "base_price": 5,
+    "battery_adj": {
+      "good": 0,
+      "poor": -25
+    },
+    "charger_adj": {
+      "no": -10,
+      "surface pen": 5,
+      "surface touch type / cover": 10,
+      "type cover": 10,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -25,
+      "good": -10,
+      "mint": 0,
+      "sealed": 5
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Microsoft Surface Go (1st Gen.)",
+    "model": "microsoft-surface-go-1",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:57+00:00",
+    "series": "microsoft-surface-go",
+    "size_adj": {},
+    "storage_adj": {
+      "Intel Pentium 4415Y 4GB RAM 128GB SSD": 5,
+      "Intel Pentium 4415Y 4GB RAM 64GB eMMC": 0,
+      "Intel Pentium 4415Y 8GB RAM 128GB SSD": 20,
+      "Intel Pentium 4415Y 8GB RAM 128GB SSD - LTE": 35
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-go/microsoft-surface-go-1"
+  },
+  "microsoft-surface-go/microsoft-surface-go-2": {
+    "base_price": 20,
+    "battery_adj": {
+      "good": 0,
+      "poor": -45
+    },
+    "charger_adj": {
+      "no": -10,
+      "surface pen": 5,
+      "type cover": 10,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 33,
+      "fair": -45,
+      "good": -15,
+      "mint": 0,
+      "sealed": 10
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Microsoft Surface Go 2",
+    "model": "microsoft-surface-go-2",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:55+00:00",
+    "series": "microsoft-surface-go",
+    "size_adj": {},
+    "storage_adj": {
+      "Intel Core M3 4GB RAM 64GB eMMC": 10,
+      "Intel Core M3 8GB RAM 128GB SSD": 30,
+      "Intel Core M3 8GB RAM 128GB SSD - LTE": 45,
+      "Intel Core M3 8GB RAM 256GB SSD - LTE": 80,
+      "Intel Pentium 4425Y 4GB RAM 64GB eMMC": 0,
+      "Intel Pentium 4425Y 8GB RAM 128GB SSD": 20
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-go/microsoft-surface-go-2"
+  },
+  "microsoft-surface-go/microsoft-surface-go-3": {
+    "base_price": 40,
+    "battery_adj": {
+      "good": 0,
+      "poor": -50
+    },
+    "charger_adj": {
+      "no": -20,
+      "surface pen": 5,
+      "type cover": 25,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 57,
+      "fair": -50,
+      "good": -25,
+      "mint": 0,
+      "sealed": 20
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Microsoft Surface Go 3",
+    "model": "microsoft-surface-go-3",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:52+00:00",
+    "series": "microsoft-surface-go",
+    "size_adj": {},
+    "storage_adj": {
+      "Intel Core i3 4GB RAM 64GB eMMC": 20,
+      "Intel Core i3 8GB RAM 128GB SSD": 85,
+      "Intel Core i3 8GB RAM 256GB SSD": 100,
+      "Intel Pentium 6500Y 4GB RAM 64GB eMMC": 0,
+      "Intel Pentium 6500Y 8GB RAM 128GB SSD": 65
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-go/microsoft-surface-go-3"
+  },
+  "microsoft-surface-go/microsoft-surface-go-4": {
+    "base_price": 275,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "no": -25,
+      "surface pen": 5,
+      "type cover": 25,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 57,
+      "fair": -125,
+      "good": -65,
+      "mint": 0,
+      "sealed": 25
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Microsoft Surface Go 4",
+    "model": "microsoft-surface-go-4",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:49+00:00",
+    "series": "microsoft-surface-go",
+    "size_adj": {},
+    "storage_adj": {
+      "Intel N200 8GB RAM 128GB eUFS": 50,
+      "Intel N200 8GB RAM 256GB eUFS": 175,
+      "Intel N200 8GB RAM 64GB eUFS": 0
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-go/microsoft-surface-go-4"
+  },
+  "microsoft-surface-pro-x/microsoft-surface-pro-x": {
+    "base_price": 200,
+    "battery_adj": {
+      "good": 0,
+      "poor": -80
+    },
+    "charger_adj": {
+      "no": -20,
+      "surface pen": 5,
+      "surface type cover": 40,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 50,
+      "fair": -75,
+      "good": -40,
+      "mint": 0,
+      "sealed": 20
+    },
+    "connectivity_adj": {
+      "No": -20,
+      "Yes": 0
+    },
+    "iwm_name": "Microsoft Surface Pro X",
+    "model": "microsoft-surface-pro-x",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:49:00+00:00",
+    "series": "microsoft-surface-pro-x",
+    "size_adj": {},
+    "storage_adj": {
+      "16GB RAM 256GB SSD": 40,
+      "16GB RAM 512GB SSD": 60,
+      "8GB RAM 128GB SSD": 0,
+      "8GB RAM 256GB SSD": 20
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-pro-x/microsoft-surface-pro-x"
+  },
+  "microsoft-surface-pro/microsoft-surface-pro-10": {
+    "base_price": 525,
+    "battery_adj": {
+      "good": 0,
+      "poor": -180
+    },
+    "charger_adj": {
+      "no": -55,
+      "pen": 10,
+      "type cover": 65,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": -500,
+      "fair": -145,
+      "good": -75,
+      "mint": 0,
+      "sealed": 30,
+      "verygood": -35
+    },
+    "connectivity_adj": {
+      "No": -100,
+      "Yes": 0
+    },
+    "iwm_name": "Microsoft Surface Pro 10",
+    "model": "microsoft-surface-pro-10",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:28+00:00",
+    "series": "microsoft-surface-pro",
+    "size_adj": {},
+    "storage_adj": {
+      "Intel Core Ultra 5 16GB RAM 256GB SSD": 50,
+      "Intel Core Ultra 5 16GB RAM 512GB SSD": 75,
+      "Intel Core Ultra 5 32GB RAM 256GB SSD": 125,
+      "Intel Core Ultra 5 32GB RAM 512GB SSD": 150,
+      "Intel Core Ultra 5 8GB RAM 256GB SSD": 0,
+      "Intel Core Ultra 7 16GB RAM 1TB SSD": 225,
+      "Intel Core Ultra 7 16GB RAM 256GB SSD": 150,
+      "Intel Core Ultra 7 16GB RAM 512GB SSD": 200,
+      "Intel Core Ultra 7 32GB RAM 1TB SSD": 395,
+      "Intel Core Ultra 7 32GB RAM 256GB SSD": 285,
+      "Intel Core Ultra 7 32GB RAM 512GB SSD": 355,
+      "Intel Core Ultra 7 64GB RAM 1TB SSD": 525
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-pro/microsoft-surface-pro-10"
+  },
+  "microsoft-surface-pro/microsoft-surface-pro-11": {
+    "base_price": 645,
+    "battery_adj": {
+      "good": 0,
+      "poor": -180
+    },
+    "charger_adj": {
+      "no": -30,
+      "pen": 25,
+      "type cover": 75,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": -500,
+      "fair": -285,
+      "good": -95,
+      "mint": 0,
+      "sealed": 50,
+      "verygood": -50
+    },
+    "connectivity_adj": {
+      "No": -100,
+      "Yes": 0
+    },
+    "iwm_name": "Microsoft Surface Pro 11",
+    "model": "microsoft-surface-pro-11",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:25+00:00",
+    "series": "microsoft-surface-pro",
+    "size_adj": {},
+    "storage_adj": {
+      "Intel Core Ultra 5 Series 2 16GB RAM 256GB SSD": 0,
+      "Intel Core Ultra 5 Series 2 16GB RAM 512GB SSD": 55,
+      "Intel Core Ultra 5 Series 2 32GB RAM 256GB SSD": 105,
+      "Intel Core Ultra 5 Series 2 32GB RAM 512GB SSD": 155,
+      "Intel Core Ultra 7 Series 2 16GB RAM 1TB SSD": 255,
+      "Intel Core Ultra 7 Series 2 16GB RAM 256GB SSD": 155,
+      "Intel Core Ultra 7 Series 2 16GB RAM 512GB SSD": 205,
+      "Intel Core Ultra 7 Series 2 32GB RAM 1TB SSD": 555,
+      "Intel Core Ultra 7 Series 2 32GB RAM 256GB SSD": 405,
+      "Intel Core Ultra 7 Series 2 32GB RAM 512GB SSD": 455,
+      "Snapdragon X Elite 16GB RAM 1TB SSD": 5,
+      "Snapdragon X Elite 16GB RAM 256GB SSD": -95,
+      "Snapdragon X Elite 16GB RAM 512GB SSD": -70,
+      "Snapdragon X Elite 32GB RAM 1TB SSD": 280,
+      "Snapdragon X Elite 64GB RAM 1TB SSD": 455,
+      "Snapdragon X Plus 16GB RAM 1TB SSD": -45,
+      "Snapdragon X Plus 16GB RAM 256GB SSD": -120,
+      "Snapdragon X Plus 16GB RAM 512GB SSD": -95
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-pro/microsoft-surface-pro-11"
+  },
+  "microsoft-surface-pro/microsoft-surface-pro-12in": {
+    "base_price": 390,
+    "battery_adj": {
+      "good": 0,
+      "poor": -150
+    },
+    "charger_adj": {
+      "no": -20,
+      "pen": 20,
+      "type cover": 60,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": -500,
+      "fair": -170,
+      "good": -75,
+      "mint": 0,
+      "sealed": 30,
+      "verygood": -35
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Microsoft Surface Pro 12in",
+    "model": "microsoft-surface-pro-12in",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:23+00:00",
+    "series": "microsoft-surface-pro",
+    "size_adj": {},
+    "storage_adj": {
+      "Snapdragon X Plus 16GB RAM 256GB UFS": 0,
+      "Snapdragon X Plus 16GB RAM 512GB UFS": 60
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-pro/microsoft-surface-pro-12in"
+  },
+  "microsoft-surface-pro/microsoft-surface-pro-4": {
+    "base_price": 10,
+    "battery_adj": {
+      "good": 0,
+      "poor": -30
+    },
+    "charger_adj": {
+      "no": -10,
+      "pen": 5,
+      "touch type / cover": 15,
+      "type cover": 35,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -25,
+      "good": -10,
+      "mint": 0,
+      "sealed": 10
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Microsoft Surface Pro 4",
+    "model": "microsoft-surface-pro-4",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:47+00:00",
+    "series": "microsoft-surface-pro",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB SSD": 0,
+      "16GB RAM": 10,
+      "1TB SSD": 15,
+      "256GB SSD": 5,
+      "4GB RAM": 0,
+      "512GB SSD": 10,
+      "8GB RAM": 5
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-pro/microsoft-surface-pro-4"
+  },
+  "microsoft-surface-pro/microsoft-surface-pro-5": {
+    "base_price": 10,
+    "battery_adj": {
+      "good": 0,
+      "poor": -60
+    },
+    "charger_adj": {
+      "no": -20,
+      "pen": 5,
+      "surface pen": 5,
+      "touch type / cover": 15,
+      "type cover": 35,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -20,
+      "mint": 0,
+      "sealed": 15
+    },
+    "connectivity_adj": {
+      "No": -10,
+      "Yes": 0
+    },
+    "iwm_name": "Microsoft Surface Pro 5",
+    "model": "microsoft-surface-pro-5",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:44+00:00",
+    "series": "microsoft-surface-pro",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB SSD": 0,
+      "16GB RAM": 20,
+      "1TB SSD": 20,
+      "256GB SSD": 5,
+      "4GB RAM": 0,
+      "512GB SSD": 10,
+      "8GB RAM": 10
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-pro/microsoft-surface-pro-5"
+  },
+  "microsoft-surface-pro/microsoft-surface-pro-6": {
+    "base_price": 20,
+    "battery_adj": {
+      "good": 0,
+      "poor": -70
+    },
+    "charger_adj": {
+      "no": -20,
+      "pen": 5,
+      "surface pen": 5,
+      "touch type / cover": 35,
+      "type cover": 30,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -35,
+      "good": -15,
+      "mint": 0,
+      "sealed": 20
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Microsoft Surface Pro 6",
+    "model": "microsoft-surface-pro-6",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:42+00:00",
+    "series": "microsoft-surface-pro",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB SSD": 0,
+      "16GB RAM": 20,
+      "1TB SSD": 35,
+      "256GB SSD": 10,
+      "4GB RAM": 0,
+      "512GB SSD": 20,
+      "8GB RAM": 10
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-pro/microsoft-surface-pro-6"
+  },
+  "microsoft-surface-pro/microsoft-surface-pro-7": {
+    "base_price": 40,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -30,
+      "pen": 5,
+      "touch type / cover": 25,
+      "type cover": 35,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": -450,
+      "fair": -55,
+      "good": -25,
+      "mint": 0,
+      "sealed": 20
+    },
+    "connectivity_adj": {
+      "No": -10,
+      "Yes": 0
+    },
+    "iwm_name": "Microsoft Surface Pro 7",
+    "model": "microsoft-surface-pro-7",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:39+00:00",
+    "series": "microsoft-surface-pro",
+    "size_adj": {},
+    "storage_adj": {
+      "Intel Core i3 4GB RAM 128GB SSD": 0,
+      "Intel Core i5 16GB RAM 256GB SSD": 105,
+      "Intel Core i5 16GB RAM 512GB SSD": 135,
+      "Intel Core i5 8GB RAM 128GB SSD": 55,
+      "Intel Core i5 8GB RAM 256GB SSD": 80,
+      "Intel Core i7 16GB RAM 1TB SSD": 210,
+      "Intel Core i7 16GB RAM 256GB SSD": 145,
+      "Intel Core i7 16GB RAM 512GB SSD": 180
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-pro/microsoft-surface-pro-7"
+  },
+  "microsoft-surface-pro/microsoft-surface-pro-7-plus": {
+    "base_price": 105,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -30,
+      "pen": 5,
+      "type cover": 25,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": -400,
+      "fair": -90,
+      "good": -35,
+      "mint": 0,
+      "sealed": 20
+    },
+    "connectivity_adj": {
+      "No": -35,
+      "Yes": 0
+    },
+    "iwm_name": "Microsoft Surface Pro 7+",
+    "model": "microsoft-surface-pro-7-plus",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:36+00:00",
+    "series": "microsoft-surface-pro",
+    "size_adj": {},
+    "storage_adj": {
+      "Intel Core i3 8GB RAM 128GB SSD": 0,
+      "Intel Core i5 16GB RAM 256GB SSD": 100,
+      "Intel Core i5 8GB RAM 128GB SSD": 30,
+      "Intel Core i5 8GB RAM 256GB SSD": 70,
+      "Intel Core i7 16GB RAM 1TB SSD": 210,
+      "Intel Core i7 16GB RAM 256GB SSD": 130,
+      "Intel Core i7 16GB RAM 512GB SSD": 160,
+      "Intel Core i7 32GB RAM 1TB SSD": 280
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-pro/microsoft-surface-pro-7-plus"
+  },
+  "microsoft-surface-pro/microsoft-surface-pro-8": {
+    "base_price": 235,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -40,
+      "pen": 15,
+      "type cover": 35,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": -500,
+      "fair": -100,
+      "good": -45,
+      "mint": 0,
+      "sealed": 20,
+      "verygood": -25
+    },
+    "connectivity_adj": {
+      "No": -35,
+      "Yes": 0
+    },
+    "iwm_name": "Microsoft Surface Pro 8",
+    "model": "microsoft-surface-pro-8",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:34+00:00",
+    "series": "microsoft-surface-pro",
+    "size_adj": {},
+    "storage_adj": {
+      "Intel Core i5 16GB RAM 256GB SSD": 70,
+      "Intel Core i5 8GB RAM 128GB SSD": 0,
+      "Intel Core i5 8GB RAM 256GB SSD": 35,
+      "Intel Core i5 8GB RAM 512GB SSD": 50,
+      "Intel Core i7 16GB RAM 1TB SSD": 245,
+      "Intel Core i7 16GB RAM 256GB SSD": 135,
+      "Intel Core i7 16GB RAM 512GB SSD": 175,
+      "Intel Core i7 32GB RAM 1TB SSD": 300
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-pro/microsoft-surface-pro-8"
+  },
+  "microsoft-surface-pro/microsoft-surface-pro-9": {
+    "base_price": 275,
+    "battery_adj": {
+      "good": 0,
+      "poor": -150
+    },
+    "charger_adj": {
+      "no": -30,
+      "pen": 10,
+      "type cover": 40,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": -500,
+      "fair": -125,
+      "good": -60,
+      "mint": 0,
+      "sealed": 30,
+      "verygood": -35
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Microsoft Surface Pro 9",
+    "model": "microsoft-surface-pro-9",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T16:48:31+00:00",
+    "series": "microsoft-surface-pro",
+    "size_adj": {},
+    "storage_adj": {
+      "Intel Core i5 16GB RAM 256GB SSD": 75,
+      "Intel Core i5 8GB RAM 128GB SSD": 0,
+      "Intel Core i5 8GB RAM 256GB SSD": 35,
+      "Intel Core i7 16GB RAM 1TB SSD": 285,
+      "Intel Core i7 16GB RAM 256GB SSD": 165,
+      "Intel Core i7 16GB RAM 512GB SSD": 225,
+      "Intel Core i7 32GB RAM 1TB SSD": 405,
+      "Microsoft SQ3 16GB RAM 256GB SSD": 125,
+      "Microsoft SQ3 16GB RAM 512GB SSD": 175,
+      "Microsoft SQ3 8GB RAM 128GB SSD": 25,
+      "Microsoft SQ3 8GB RAM 256GB SSD": 65
+    },
+    "stylus_adj": {},
+    "url": "https://www.itsworthmore.com/sell/microsoft-surface-pro/microsoft-surface-pro-9"
+  },
   "oneplus-tablet/oneplus-pad": {
-    "base_price": 130,
+    "base_price": 100,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -180,7 +788,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:43:57+00:00",
+    "scraped_at": "2026-05-16T16:50:09+00:00",
     "series": "oneplus-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -191,7 +799,7 @@
     "url": "https://www.itsworthmore.com/sell/oneplus-tablet/oneplus-pad"
   },
   "oneplus-tablet/oneplus-pad-2": {
-    "base_price": 200,
+    "base_price": 170,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -208,7 +816,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:43:50+00:00",
+    "scraped_at": "2026-05-16T16:50:02+00:00",
     "series": "oneplus-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -219,7 +827,7 @@
     "url": "https://www.itsworthmore.com/sell/oneplus-tablet/oneplus-pad-2"
   },
   "oneplus-tablet/oneplus-pad-3": {
-    "base_price": 360,
+    "base_price": 320,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -236,7 +844,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:43:47+00:00",
+    "scraped_at": "2026-05-16T16:49:59+00:00",
     "series": "oneplus-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -246,7 +854,7 @@
     "url": "https://www.itsworthmore.com/sell/oneplus-tablet/oneplus-pad-3"
   },
   "oneplus-tablet/oneplus-pad-go-2": {
-    "base_price": 200,
+    "base_price": 170,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -263,7 +871,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:43:53+00:00",
+    "scraped_at": "2026-05-16T16:50:06+00:00",
     "series": "oneplus-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -274,7 +882,7 @@
     "url": "https://www.itsworthmore.com/sell/oneplus-tablet/oneplus-pad-go-2"
   },
   "samsung-tablet/galaxy-tab-s10-fe": {
-    "base_price": 200,
+    "base_price": 170,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -292,7 +900,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:43:09+00:00",
+    "scraped_at": "2026-05-16T16:49:20+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -306,7 +914,7 @@
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s10-fe"
   },
   "samsung-tablet/galaxy-tab-s10-fe-plus": {
-    "base_price": 280,
+    "base_price": 250,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -324,7 +932,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:43:05+00:00",
+    "scraped_at": "2026-05-16T16:49:17+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -338,7 +946,7 @@
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s10-fe-plus"
   },
   "samsung-tablet/galaxy-tab-s10-lite": {
-    "base_price": 175,
+    "base_price": 125,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -356,7 +964,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:43:12+00:00",
+    "scraped_at": "2026-05-16T16:49:23+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -370,7 +978,7 @@
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s10-lite"
   },
   "samsung-tablet/galaxy-tab-s10-plus": {
-    "base_price": 390,
+    "base_price": 350,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -388,7 +996,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:43:02+00:00",
+    "scraped_at": "2026-05-16T16:49:14+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -402,7 +1010,7 @@
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s10-plus"
   },
   "samsung-tablet/galaxy-tab-s10-ultra": {
-    "base_price": 505,
+    "base_price": 465,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -420,7 +1028,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:42:59+00:00",
+    "scraped_at": "2026-05-16T16:49:10+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -435,7 +1043,7 @@
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s10-ultra"
   },
   "samsung-tablet/galaxy-tab-s11": {
-    "base_price": 380,
+    "base_price": 360,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -453,7 +1061,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:42:56+00:00",
+    "scraped_at": "2026-05-16T16:49:07+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -468,7 +1076,7 @@
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s11"
   },
   "samsung-tablet/galaxy-tab-s11-ultra": {
-    "base_price": 630,
+    "base_price": 570,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -486,7 +1094,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:42:52+00:00",
+    "scraped_at": "2026-05-16T16:49:04+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -501,7 +1109,7 @@
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s11-ultra"
   },
   "samsung-tablet/galaxy-tab-s4-105": {
-    "base_price": 45,
+    "base_price": 30,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -515,7 +1123,7 @@
     "iwm_name": "Galaxy Tab S4 10.5",
     "model": "galaxy-tab-s4-105",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T06:43:35+00:00",
+    "scraped_at": "2026-05-16T16:49:46+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -526,7 +1134,7 @@
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s4-105"
   },
   "samsung-tablet/galaxy-tab-s5e": {
-    "base_price": 40,
+    "base_price": 25,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -540,7 +1148,7 @@
     "iwm_name": "Galaxy Tab S5e",
     "model": "galaxy-tab-s5e",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T06:43:32+00:00",
+    "scraped_at": "2026-05-16T16:49:43+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -551,7 +1159,7 @@
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s5e"
   },
   "samsung-tablet/galaxy-tab-s6": {
-    "base_price": 100,
+    "base_price": 80,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -565,7 +1173,7 @@
     "iwm_name": "Galaxy Tab S6",
     "model": "galaxy-tab-s6",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T06:43:29+00:00",
+    "scraped_at": "2026-05-16T16:49:40+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -579,7 +1187,7 @@
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s6"
   },
   "samsung-tablet/galaxy-tab-s6-lite": {
-    "base_price": 80,
+    "base_price": 55,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -593,7 +1201,7 @@
     "iwm_name": "Galaxy Tab S6 Lite",
     "model": "galaxy-tab-s6-lite",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T06:43:25+00:00",
+    "scraped_at": "2026-05-16T16:49:37+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -607,7 +1215,7 @@
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s6-lite"
   },
   "samsung-tablet/galaxy-tab-s7": {
-    "base_price": 130,
+    "base_price": 100,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -624,7 +1232,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:43:22+00:00",
+    "scraped_at": "2026-05-16T16:49:34+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -639,7 +1247,7 @@
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s7"
   },
   "samsung-tablet/galaxy-tab-s7-fe": {
-    "base_price": 120,
+    "base_price": 90,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -653,7 +1261,7 @@
     "iwm_name": "Galaxy Tab S7 FE",
     "model": "galaxy-tab-s7-fe",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T06:43:19+00:00",
+    "scraped_at": "2026-05-16T16:49:30+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -668,7 +1276,7 @@
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s7-fe"
   },
   "samsung-tablet/galaxy-tab-s7-plus": {
-    "base_price": 150,
+    "base_price": 120,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -685,7 +1293,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T06:43:15+00:00",
+    "scraped_at": "2026-05-16T16:49:27+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
