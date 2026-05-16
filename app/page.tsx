@@ -3574,6 +3574,12 @@ type MacSpec = {
   // Sits between graphics and displayglass.
   display?: MacSpecOption[];
   hasNanoGlass?: boolean;
+  // Per-model IWM condition adjustments. Keys: sealed / mint / verygood
+  // / good / fair / broken. When present, the additive math uses these
+  // instead of the MacBook-calibrated MCOND constants.
+  condition_adj?: Record<string, number>;
+  battery_adj?: Record<string, number>;
+  charger_adj?: Record<string, number>;
 };
 const MACBOOK_SPECS: Record<string, MacSpec> = {
   // 2026 16-inch MacBook Pro M5 Pro/Max (Skywalker's example reference).
@@ -5418,8 +5424,15 @@ export default function Home() {
         const stor = (storage as MacSpecOption | null)?.adj ?? 0;
         const gpu = (graphics as MacSpecOption | null)?.adj ?? 0;
         const disp = (displayResolution as MacSpecOption | null)?.adj ?? 0;
+        // Prefer per-model condition adjustments from the IWM scrape;
+        // fall back to MacBook-calibrated MCOND for MacBook variants and
+        // any spec entry without scraped condition_adj data.
         const MCOND: Record<string, number> = { sealed: 50, mint: 0, verygood: -50, good: -110, fair: -220 };
-        const cond = MCOND[condition?.id ?? "mint"] ?? 0;
+        const specCondAdj = model ? getMacSpec(model.id)?.condition_adj : undefined;
+        const condId = condition?.id ?? "mint";
+        const cond = specCondAdj && (condId in specCondAdj)
+          ? (specCondAdj[condId] ?? 0)
+          : (MCOND[condId] ?? 0);
         const nano = displayGlass?.id === "nano" ? 50 : 0;
         const batt = batteryHealth?.id === "poor" ? -80 : 0;
         const chrg = charger?.id === "no" ? -50 : 0;
