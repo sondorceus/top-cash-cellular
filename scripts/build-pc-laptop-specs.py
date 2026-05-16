@@ -126,6 +126,12 @@ def to_macspec(entry):
     base = entry.get("base_price", 0)
     if not base or not entry.get("chips"):
         return None
+    # Require at least one RAM tier — IWM sometimes folds memory into the
+    # chip label (e.g. galaxy-book3-ultra). Without separate RAM options
+    # the additive flow has nothing to ask for, so skip and let the
+    # variant fall back to the simple model → condition → battery flow.
+    if not entry.get("ram_adj"):
+        return None
 
     chips = entry.get("chips", [])
     processors = [
@@ -177,14 +183,91 @@ def to_macspec(entry):
     }
 
 
+# Page variant id → specific IWM submodel slug. Used when one IWM URL
+# covers multiple generations / sub-models that page.tsx wants priced
+# separately (Alienware m/x R-versions, HP EliteBook G10/G11 sub-ids,
+# ASUS ExpertBook B-series, etc.). The auto-fallback when this dict
+# doesn't have an entry: pick the FIRST submodel (newest by IWM ordering).
+MANUAL_ID_TO_SUBMODEL = {
+    # Alienware m-series gens
+    "awm15r5_ryzen": "alienware-m15-r5", "awm15r6": "alienware-m15-r6", "awm15r7": "alienware-m15-r7",
+    "awm16r1": "alienware-m16-r1", "awm16r2": "alienware-m16-r2",
+    "awm17r5": "alienware-m17-r5",
+    "awm18r1": "alienware-m18-r1", "awm18r2": "alienware-m18-r2",
+    # Alienware x-series gens
+    "awx14r1": "alienware-x14-r1", "awx14r2": "alienware-x14-r2",
+    "awx15r1": "alienware-x15-r1", "awx15r2": "alienware-x15-r2",
+    "awx16r1": "alienware-x16-r1", "awx16r2": "alienware-x16-r2",
+    "awx17r1": "alienware-x17-r1", "awx17r2": "alienware-x17-r2",
+    # Alienware Area-51m
+    "aw_a51m_r1": "alienware-area-51m-r1", "aw_a51m_r2": "alienware-area-51m-r2",
+    # LG Gram — IWM groups by size; map to the right size submodel
+    "lg_gr14_24": "gram-14", "lg_gr14_23": "gram-14", "lg_grstyle14": "gram-14",
+    "lg_gr14t_24": "gram-14-2-in-1", "lg_gr14t_23": "gram-14-2-in-1",
+    "lg_gr15_23": "gram-15",
+    "lg_gr16_24": "gram-16", "lg_gr16_23": "gram-16", "lg_grstyle16": "gram-16",
+    "lg_gr16t_24": "gram-16-2-in-1", "lg_gr16t_23": "gram-16-2-in-1",
+    "lg_gr17_24": "gram-17", "lg_gr17_23": "gram-17",
+    "lg_grpro16_25": "gram-pro-16", "lg_grpro16_24": "gram-pro-16",
+    "lg_grpro16t_24": "gram-pro-16-2-in-1",
+    "lg_grpro17_25": "gram-pro-17", "lg_grpro17_24": "gram-pro-17",
+    "lg_grultra15": "gram-superslim-15",
+    # Samsung Galaxy Book gens (IWM splits each gen by sub-SKU)
+    "sgbk_5": "galaxy-book5", "sgbk_5_360": "galaxy-book5-360",
+    "sgbk_5_pro": "galaxy-book5-pro", "sgbk_5_pro_360": "galaxy-book5-pro-360",
+    "sgbk_4": "galaxy-book4", "sgbk_4_360": "galaxy-book4-360",
+    "sgbk_4_pro": "galaxy-book4-pro", "sgbk_4_pro_360": "galaxy-book4-pro-360",
+    "sgbk_4_ultra": "galaxy-book4-ultra", "sgbk_4_edge": "galaxy-book4-edge",
+    "sgbk_3": "galaxy-book3", "sgbk_3_360": "galaxy-book3-360",
+    "sgbk_3_pro": "galaxy-book3-pro", "sgbk_3_pro_360": "galaxy-book3-pro-360",
+    "sgbk_3_ultra": "galaxy-book3-ultra",
+    "sgbk_2": "galaxy-book2", "sgbk_2_360": "galaxy-book2-360",
+    "sgbk_2_pro": "galaxy-book2-pro", "sgbk_2_pro_360": "galaxy-book2-pro-360",
+    # Razer Blade by year — IWM uses model_year flag
+    "razer-blade-15": "razer-blade-15-2024", "razer-blade-16": "razer-blade-16-2025",
+    "razer-blade-18": "razer-blade-18-2024",
+}
+
+
+def pick_submodel(v: dict, page_vid: str):
+    """Given a v2 adjustments entry (has 'submodels' dict), return the
+    submodel dict the build should use for this page variant. Priority:
+    1) MANUAL_ID_TO_SUBMODEL exact slug match
+    2) First submodel (IWM lists newest → oldest, so this is newest gen)
+    3) None if no submodels
+    """
+    subs = v.get("submodels") or {}
+    if not subs:
+        # Legacy flat entries — return the entry itself
+        if v.get("base_price"):
+            return v
+        return None
+    # Manual override — but only if the targeted submodel actually has
+    # usable spec data. IWM occasionally packs a sub-SKU as a single
+    # combined label with no chip/RAM tiers (e.g. galaxy-book3 base);
+    # in that case fall through to the auto-pick.
+    want = MANUAL_ID_TO_SUBMODEL.get(page_vid)
+    if want and want in subs:
+        candidate = subs[want]
+        if candidate.get("base_price", 0) > 0 and candidate.get("chips"):
+            return candidate
+    # Default: highest-priced submodel. For multi-gen URLs (X1 Carbon
+    # Gen 6..13, Razer Blade by year, etc.) the newest gen reliably
+    # has the highest IWM base, so this is a good "newest" proxy when
+    # sort order is unreliable.
+    priced = [(s.get("base_price") or 0, k, s) for k, s in subs.items()]
+    if not priced:
+        return None
+    priced.sort(reverse=True)  # highest first
+    return priced[0][2]
+
+
 def main():
     adj = json.load(open(ADJ))
     img_to_slug = build_image_to_slug()
-    # Index adj data by IWM model slug (not series/model)
+    # Index adj entries by IWM model slug
     by_slug = {}
     for k, v in adj.items():
-        if not v.get("base_price"):
-            continue
         slug = v.get("model")
         if slug:
             by_slug.setdefault(slug, []).append(v)
@@ -213,7 +296,12 @@ def main():
         entries = by_slug.get(slug)
         if not entries:
             continue
-        spec = to_macspec(entries[0])
+        # Resolve to a specific submodel (newest by default, manual override
+        # via MANUAL_ID_TO_SUBMODEL for per-gen page variants).
+        sub = pick_submodel(entries[0], vid)
+        if not sub or not sub.get("base_price"):
+            continue
+        spec = to_macspec(sub)
         if not spec:
             continue
         out[vid] = spec
