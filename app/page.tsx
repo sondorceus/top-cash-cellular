@@ -10925,7 +10925,7 @@ export default function Home() {
                     e.preventDefault();
                     if (!newsletterEmail.trim()) return;
                     try {
-                      await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Newsletter Signup", email: newsletterEmail, phone: "", device: "Newsletter", notes: "Homepage newsletter signup" }) });
+                      await fetch("/api/newsletter", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: newsletterEmail }) });
                     } catch {}
                     setNewsletterSubmitted(true);
                   }} className="flex gap-2">
