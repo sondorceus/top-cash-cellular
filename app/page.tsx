@@ -1284,8 +1284,8 @@ const LENOVO_TP_X390_VARIANTS = [
   { id: "ln_tp_x390_yoga", label: "ThinkPad X390 Yoga", base: 0, inquiryOnly: true, image: "/devices/ln_tp_x390_yoga.png" },
 ];
 const LENOVO_TP_X9_VARIANTS = [
-  { id: "ln_tp_x9_14", label: "ThinkPad X9 14", base: 0, inquiryOnly: true, image: "/devices/ln_tp_x9_14.png" },
-  { id: "ln_tp_x9_15", label: "ThinkPad X9 15", base: 0, inquiryOnly: true, image: "/devices/ln_tp_x9_15.png" },
+  { id: "ln_tp_x9_14", label: "ThinkPad X9 14", base: 675, inquiryOnly: false, image: "/devices/ln_tp_x9_14.png" },
+  { id: "ln_tp_x9_15", label: "ThinkPad X9 15", base: 675, inquiryOnly: false, image: "/devices/ln_tp_x9_15.png" },
 ];
 const LENOVO_TP_Z_VARIANTS = [
   { id: "ln_tp_z16", label: "ThinkPad Z16", base: 562, inquiryOnly: false, image: "/devices/lenovo-thinkpad-tp_z-lenovo-thinkpad-z16.png" },
@@ -1312,12 +1312,12 @@ const LENOVO_TP_T_VARIANTS = [
   { id: "ln_tp_t", label: "ThinkPad T-Series", base: 81, inquiryOnly: false, image: "/devices/ln_tp_t.png" },
 ];
 const LENOVO_TP_E_VARIANTS = [
-  { id: "ln_tp_e14_g7", label: "ThinkPad E14 Gen 7", base: 238, inquiryOnly: false, image: "/devices/ln_tp_e14_g7.png" },
-  { id: "ln_tp_e14_g6", label: "ThinkPad E14 Gen 6", base: 238, inquiryOnly: false, image: "/devices/ln_tp_e14_g6.png" },
+  { id: "ln_tp_e14_g7", label: "ThinkPad E14 Gen 7", base: 252, inquiryOnly: false, image: "/devices/ln_tp_e14_g7.png" },
+  { id: "ln_tp_e14_g6", label: "ThinkPad E14 Gen 6", base: 252, inquiryOnly: false, image: "/devices/ln_tp_e14_g6.png" },
   { id: "ln_tp_e14_g5", label: "ThinkPad E14 Gen 5", base: 238, inquiryOnly: false, image: "/devices/ln_tp_e14_g5.png" },
   { id: "ln_tp_e15", label: "ThinkPad E15", base: 171, inquiryOnly: false, image: "/devices/ln_tp_e15.png" },
-  { id: "ln_tp_e16_g3", label: "ThinkPad E16 Gen 3", base: 153, inquiryOnly: false, image: "/devices/ln_tp_e16_g3.png" },
-  { id: "ln_tp_e16_g2", label: "ThinkPad E16 Gen 2", base: 153, inquiryOnly: false, image: "/devices/ln_tp_e16_g2.png" },
+  { id: "ln_tp_e16_g3", label: "ThinkPad E16 Gen 3", base: 351, inquiryOnly: false, image: "/devices/ln_tp_e16_g3.png" },
+  { id: "ln_tp_e16_g2", label: "ThinkPad E16 Gen 2", base: 324, inquiryOnly: false, image: "/devices/ln_tp_e16_g2.png" },
   { id: "ln_tp_e16_g1", label: "ThinkPad E16 Gen 1", base: 153, inquiryOnly: false, image: "/devices/ln_tp_e16_g1.png" },
 ];
 const LENOVO_THINKPAD_SUB_SERIES = [

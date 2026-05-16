@@ -33,9 +33,28 @@ DISCOUNT = 0.10
 REPORT = Path("/tmp/iwm-pc-laptop-apply-report.txt")
 
 
+# Manual overrides for page.tsx variants whose image filename doesn't
+# follow the brand-bridge pattern (hand-rolled short names like
+# `ln_tp_e14_g7.png`). Maps image path → IWM model slug.
+MANUAL_IMAGE_TO_SLUG = {
+    # Lenovo ThinkPad X-series legacy
+    "/devices/ln_tp_x390.png": "lenovo-thinkpad-x390-series",
+    "/devices/ln_tp_x9_14.png": "lenovo-thinkpad-x9",
+    "/devices/ln_tp_x9_15.png": "lenovo-thinkpad-x9",
+    # Lenovo ThinkPad E-series by generation
+    "/devices/ln_tp_e14_g7.png": "lenovo-thinkpad-e14-gen-7",
+    "/devices/ln_tp_e14_g6.png": "lenovo-thinkpad-e14-gen-6",
+    "/devices/ln_tp_e14_g5.png": "lenovo-thinkpad-e14-gen-5",
+    "/devices/ln_tp_e15.png": "lenovo-thinkpad-e15-gen-4",
+    "/devices/ln_tp_e16_g3.png": "lenovo-thinkpad-e16-gen-3",
+    "/devices/ln_tp_e16_g2.png": "lenovo-thinkpad-e16-gen-2",
+    "/devices/ln_tp_e16_g1.png": "lenovo-thinkpad-e16-gen-1",
+}
+
+
 def build_image_to_slug():
     """Map page.tsx image path → IWM model slug, using bridge files."""
-    img_to_slug = {}
+    img_to_slug = dict(MANUAL_IMAGE_TO_SLUG)
 
     # Lenovo / HP / ASUS — bridge has model_slug field
     for brand in ("lenovo", "hp", "asus"):
@@ -136,8 +155,8 @@ VARIANT_RE = re.compile(
     r"""(\{\s*id:\s*"(?P<id>[^"]+)",\s*
          label:\s*"(?P<label>[^"]+)",\s*
          base:\s*(?P<base>\d+)
-         (?P<inquiry>,\s*inquiryOnly:\s*true)?
-         ,?\s*image:\s*"(?P<image>/devices/[^"]+)"\s*\})""",
+         (?:,\s*inquiryOnly:\s*(?P<inquiry>true|false))?
+         \s*,\s*image:\s*"(?P<image>/devices/[^"]+)"\s*\})""",
     re.VERBOSE,
 )
 
@@ -186,7 +205,7 @@ def main(dry_run=False):
         label = m.group("label")
         image = m.group("image")
         cur_base = int(m.group("base"))
-        cur_inquiry = bool(m.group("inquiry"))
+        cur_inquiry = m.group("inquiry") == "true"
 
         # Try bridge
         slug = img_to_slug.get(image)
