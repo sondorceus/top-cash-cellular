@@ -3208,7 +3208,12 @@ type ExtraOption = { id: string; label: string; sub?: string; multiplier: number
 // short-circuit follow-ups like "which band?" when the user already said
 // "no band". When showIf returns false, the renderer auto-advances past
 // the question instead of showing it.
-type BrandExtra = { id: string; question: string; helper?: string; options: ExtraOption[]; showIf?: (extras: Record<string, ExtraOption | undefined>) => boolean };
+type BrandExtra = { id: string; question: string; helper?: string; options: ExtraOption[]; showIf?: (extras: Record<string, ExtraOption | undefined>) => boolean;
+  // Optional step-by-step guide shown when the user clicks "How do I check this?"
+  // — useful for questions where the answer requires inspection or knowledge
+  // the seller may not immediately have (AVP Optic ID, EyeSight glass, etc.).
+  guide?: { title: string; steps: string[] };
+};
 const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
   // Consoles — single ask: disc drive yes/no (digital editions trade lower)
   // and how many controllers are in the box.
@@ -3401,51 +3406,131 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
     // Storage is captured by the parent variant id (avp256/avp512/avp1tb),
     // so we don't re-ask it. Generation matters — M5 launched Oct 2025
     // with the new Dual Knit Band.
-    { id: "generation", question: "Which Vision Pro model?", helper: "Check Settings > General > About. M5 launched October 2025.", options: [
+    { id: "generation", question: "Which Vision Pro model?", helper: "M5 launched October 2025.",
+      guide: { title: "How to tell M2 from M5", steps: [
+        "Open Settings on Vision Pro (Crown + look at Home screen).",
+        "Go to General → About.",
+        "Look for 'Model Identifier': N301 / RealityDevice1,1 = M2 (2024). N302 / RealityDevice1,2 = M5 (2025).",
+        "Or check the box: M5 ships with a single Dual Knit Band; M2 ships with Solo Knit + Dual Loop.",
+      ]},
+      options: [
       { id: "m2", label: "Original Vision Pro (M2, 2024)", multiplier: 1.00, adj: 0 },
       { id: "m5", label: "New Vision Pro (M5, 2025)",      multiplier: 1.00, adj: 200 },
     ]},
-    { id: "powers_on", question: "Does it power on and complete Optic ID?", helper: "If Optic ID won't enroll your eyes, the unit is essentially parts-value.", options: [
+    { id: "powers_on", question: "Does it power on and complete Optic ID?", helper: "If Optic ID won't enroll your eyes, the unit is essentially parts-value.",
+      guide: { title: "How to test power-on + Optic ID", steps: [
+        "Connect the external battery. Hold the top button 2 seconds — Apple logo should appear.",
+        "Put the headset on; the Solo Knit / Dual Loop strap can stay loose.",
+        "If it asks to enroll Optic ID: go through the eye-scan flow. It takes ~30 seconds.",
+        "Already enrolled? Open Settings → Optic ID and try 'Reset Optic ID' then re-enroll.",
+        "If the eye scan never completes after multiple tries, the IR eye-tracking hardware is bad — pick 'Optic ID broken'.",
+      ]},
+      options: [
       { id: "yes",   label: "Yes — fully functional",        multiplier: 1.00, adj: 0 },
       { id: "boots", label: "Powers on but Optic ID broken", multiplier: 1.00, adj: -400 },
       { id: "no",    label: "Won't power on / brick",        multiplier: 1.00, adj: -1300 },
     ]},
-    { id: "eyesight", question: "Front EyeSight glass condition?", helper: "The curved outer display — biggest resale factor. A crack drops the unit from $1700 to parts value.", options: [
+    { id: "eyesight", question: "Front EyeSight glass condition?", helper: "The curved outer display — biggest resale factor. A crack drops the unit from $1700 to parts value.",
+      guide: { title: "What is EyeSight + how to inspect", steps: [
+        "EyeSight = the curved glass on the OUTSIDE of the headset that shows your eyes to people around you.",
+        "Turn the headset off; wipe the front with a microfiber cloth.",
+        "Hold under bright direct light at an angle — surface scratches appear as fine lines.",
+        "Run a fingernail across — if it catches in a line, that's a deep scratch (-$350).",
+        "Any crack, chip, or impact mark = 'Cracked' (-$1200). Even hairline cracks count.",
+      ]},
+      options: [
       { id: "flawless", label: "Flawless — no marks",         multiplier: 1.00, adj: 0 },
       { id: "light",    label: "Light surface scratches",     multiplier: 1.00, adj: -100 },
       { id: "deep",     label: "Deep scratches or scuffs",    multiplier: 1.00, adj: -350 },
       { id: "cracked",  label: "Cracked or chipped",          multiplier: 1.00, adj: -1200 },
     ]},
-    { id: "lenses", question: "Internal lenses + displays?", helper: "Look inside the headset. Dust on lenses is normal; scratches are not.", options: [
+    { id: "lenses", question: "Internal lenses + displays?", helper: "Look inside the headset. Dust on lenses is normal; scratches are not.",
+      guide: { title: "How to inspect internal lenses", steps: [
+        "Take off the Light Seal (it pulls away from the headset).",
+        "Hold the headset display-side up under a bright light.",
+        "Look at the two round lenses — these are what your eyes see through.",
+        "Dust specks on the lens surface = normal. They wipe off.",
+        "Scratches won't wipe off. Anything visible that doesn't move when you wipe counts as scratched.",
+        "Also check the internal micro-OLED panels (visible THROUGH the lenses) for dead pixels or burn-in.",
+      ]},
+      options: [
       { id: "clean",      label: "Clean, no scratches",       multiplier: 1.00, adj: 0 },
       { id: "dust",       label: "Visible dust",              multiplier: 1.00, adj: -25 },
       { id: "scratched",  label: "Scratched internal lenses", multiplier: 1.00, adj: -300 },
     ]},
-    { id: "battery", question: "External battery pack?", helper: "AVP needs the external battery to operate.", options: [
+    { id: "battery", question: "External battery pack?", helper: "AVP needs the external battery to operate.",
+      guide: { title: "Where to find + inspect the battery", steps: [
+        "The battery is a separate silver pack about the size of a phone — connects via a single cable to the left arm of the headset.",
+        "Lay it flat on a hard surface — it should sit FLAT. Any visible swelling, bulge, or curve = swollen.",
+        "Check the cable for fraying or damage at either end.",
+        "Apple sells replacement batteries for $199, so buyers care about the original being present + healthy.",
+      ]},
+      options: [
       { id: "yes",     label: "Yes — included, no swelling",   multiplier: 1.00, adj: 0 },
       { id: "missing", label: "Battery missing or swollen",    multiplier: 1.00, adj: -250 },
     ]},
-    { id: "bands", question: "Which bands are included?", helper: "M2 ships with both Solo Knit + Dual Loop. M5 ships with one Dual Knit band.", options: [
+    { id: "bands", question: "Which bands are included?", helper: "M2 ships with both Solo Knit + Dual Loop. M5 ships with one Dual Knit band.",
+      guide: { title: "How to identify the bands", steps: [
+        "Solo Knit Band (M2): single woven elastic strap that goes around the back of your head. Has a dial on the right for fit.",
+        "Dual Loop Band (M2): TWO straps — one over the head + one around the back. More secure but bulkier.",
+        "Dual Knit Band (M5 only): replaces both — has a single integrated strap with a top loop and back dial.",
+        "Bands are sized S/M/L — the size is printed inside the band near the dial. Sized to the original user's head.",
+        "Missing one band = -$75, missing all = -$175.",
+      ]},
+      options: [
       { id: "both",   label: "Both bands (M2) / Dual Knit (M5)", multiplier: 1.00, adj: 0 },
       { id: "one",    label: "Only one band",                    multiplier: 1.00, adj: -75 },
       { id: "none",   label: "No bands",                         multiplier: 1.00, adj: -175 },
     ]},
-    { id: "light_seal", question: "Light Seal + cushions present?", helper: "The foam piece that goes against the face. Includes primary + spare cushion.", options: [
+    { id: "light_seal", question: "Light Seal + cushions present?", helper: "The foam piece that goes against the face. Includes primary + spare cushion.",
+      guide: { title: "How to identify the Light Seal", steps: [
+        "Light Seal = the soft black foam piece that surrounds the inside of the headset and contacts your face.",
+        "It magnetically attaches — pulls off easily.",
+        "There's also a removable CUSHION on the back of the Light Seal (the part that actually touches the face).",
+        "AVP ships with TWO cushions: one attached + one spare in a separate pouch.",
+        "Light Seal codes (e.g. 21W, 33N+) are printed on the back — sized per individual user from Apple Store fitting.",
+      ]},
+      options: [
       { id: "complete", label: "Light Seal + both cushions",  multiplier: 1.00, adj: 0 },
       { id: "partial",  label: "Light Seal, missing a cushion", multiplier: 1.00, adj: -40 },
       { id: "missing",  label: "Missing entirely",             multiplier: 1.00, adj: -100 },
     ]},
-    { id: "zeiss", question: "ZEISS Optical Inserts?", helper: "Magnetic prescription lenses that snap onto AVP. Sold separately by Apple.", options: [
+    { id: "zeiss", question: "ZEISS Optical Inserts?", helper: "Magnetic prescription lenses that snap onto AVP. Sold separately by Apple.",
+      guide: { title: "What are ZEISS Inserts", steps: [
+        "ZEISS Optical Inserts are small round prescription lenses that snap MAGNETICALLY onto the AVP internal lenses.",
+        "They're sold separately by Apple (not included in the box) — $149 Rx, $99 non-Rx readers.",
+        "Look inside the headset — if there are extra round lenses sitting on top of the regular AVP lenses, those are ZEISS inserts.",
+        "Rx inserts are locked to the original user's prescription — most resellers see negative value.",
+        "Non-Rx readers (reading glasses for far-sighted users) are common-prescription and add some value.",
+      ]},
+      options: [
       { id: "none",        label: "None included",                multiplier: 1.00, adj: 0 },
       { id: "readers",     label: "Non-Rx readers (unused)",      multiplier: 1.00, adj: 30 },
       { id: "rx",          label: "Rx prescription (locked to user)", multiplier: 1.00, adj: 0 },
     ]},
-    { id: "box", question: "Original box and accessories?", helper: "CIB = Complete In Box: box, charger, USB-C cable, polishing cloth, front cover.", options: [
+    { id: "box", question: "Original box and accessories?", helper: "CIB = Complete In Box: box, charger, USB-C cable, polishing cloth, front cover.",
+      guide: { title: "What ships in the box", steps: [
+        "Original box (white, square, with AVP printed on top)",
+        "40W USB-C power adapter (square white brick)",
+        "USB-C charging cable (1.5m)",
+        "Polishing cloth (the soft fabric one Apple uses)",
+        "Front cover (the soft pouch that goes over the EyeSight glass when not in use)",
+        "All five items = 'Complete in box (CIB)' for top quote.",
+      ]},
+      options: [
       { id: "cib",      label: "Complete in box (CIB)",         multiplier: 1.00, adj: 0 },
       { id: "partial",  label: "Some accessories missing",      multiplier: 1.00, adj: -50 },
       { id: "device",   label: "Device only, no accessories",   multiplier: 1.00, adj: -100 },
     ]},
-    { id: "applecare", question: "AppleCare+ status?", helper: "Transferable to the new owner — adds resale value.", options: [
+    { id: "applecare", question: "AppleCare+ status?", helper: "Transferable to the new owner — adds resale value.",
+      guide: { title: "How to check AppleCare+", steps: [
+        "On Vision Pro: Settings → General → AppleCare & Warranty.",
+        "Or on iPhone: open the Apple Support app → Get Support → Vision Pro → Coverage.",
+        "Or web: checkcoverage.apple.com — enter the AVP serial number (Settings → General → About).",
+        "AppleCare+ is transferable to a new owner; that's why it adds value.",
+        "12+ months remaining = +$150, less than 12 months = +$75.",
+      ]},
+      options: [
       { id: "12mo",   label: "Active — 12+ months remaining", multiplier: 1.00, adj: 150 },
       { id: "active", label: "Active — less than 12 months",  multiplier: 1.00, adj: 75 },
       { id: "none",   label: "No AppleCare+ / expired",       multiplier: 1.00, adj: 0 },
@@ -8859,7 +8944,21 @@ export default function Home() {
                 </button>
                 {selectionPanelMobile}
                 <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">{q.question}</h2>
-                {q.helper && <p className="text-[#b8b8b8] text-xs mb-3">{q.helper}</p>}
+                {q.helper && <p className="text-[#b8b8b8] text-xs mb-2">{q.helper}</p>}
+                {q.guide && (
+                  <details className="mb-3 group">
+                    <summary className="inline-flex items-center gap-1.5 text-[#00c853] text-xs font-bold cursor-pointer hover:underline list-none">
+                      <svg className="w-3.5 h-3.5 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                      How do I check this?
+                    </summary>
+                    <div className="mt-2 p-3 rounded-xl bg-white/5 border border-white/10">
+                      <p className="text-[11px] font-bold text-white uppercase tracking-wider mb-2">{q.guide.title}</p>
+                      <ol className="text-[12px] text-[#d4d4d4] leading-relaxed space-y-1.5 list-decimal list-inside">
+                        {q.guide.steps.map((s, i) => (<li key={i}>{s}</li>))}
+                      </ol>
+                    </div>
+                  </details>
+                )}
                 {list.length > 1 && (
                   <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Step {extrasIndex + 1} of {list.length}</p>
                 )}
