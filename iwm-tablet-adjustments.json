@@ -18,7 +18,7 @@
     "iwm_name": "Google Pixel Slate",
     "model": "google-pixel-slate",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:04:18+00:00",
+    "scraped_at": "2026-05-16T17:43:12+00:00",
     "series": "google-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -53,7 +53,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:04:15+00:00",
+    "scraped_at": "2026-05-16T17:43:10+00:00",
     "series": "google-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -81,7 +81,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:03:53+00:00",
+    "scraped_at": "2026-05-16T17:42:47+00:00",
     "series": "lenovo-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -118,7 +118,7 @@
       "no": 0,
       "yes": 60
     },
-    "scraped_at": "2026-05-16T17:03:55+00:00",
+    "scraped_at": "2026-05-16T17:42:49+00:00",
     "series": "lenovo-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -152,7 +152,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:03:58+00:00",
+    "scraped_at": "2026-05-16T17:42:53+00:00",
     "series": "lenovo-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -186,7 +186,7 @@
     "iwm_name": "Microsoft Surface Go (1st Gen.)",
     "model": "microsoft-surface-go-1",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:03:00+00:00",
+    "scraped_at": "2026-05-16T17:41:29+00:00",
     "series": "microsoft-surface-go",
     "size_adj": {},
     "storage_adj": {
@@ -221,7 +221,7 @@
     "iwm_name": "Microsoft Surface Go 2",
     "model": "microsoft-surface-go-2",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:02:57+00:00",
+    "scraped_at": "2026-05-16T17:41:26+00:00",
     "series": "microsoft-surface-go",
     "size_adj": {},
     "storage_adj": {
@@ -258,7 +258,7 @@
     "iwm_name": "Microsoft Surface Go 3",
     "model": "microsoft-surface-go-3",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:02:55+00:00",
+    "scraped_at": "2026-05-16T17:41:23+00:00",
     "series": "microsoft-surface-go",
     "size_adj": {},
     "storage_adj": {
@@ -294,7 +294,7 @@
     "iwm_name": "Microsoft Surface Go 4",
     "model": "microsoft-surface-go-4",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:02:52+00:00",
+    "scraped_at": "2026-05-16T17:41:21+00:00",
     "series": "microsoft-surface-go",
     "size_adj": {},
     "storage_adj": {
@@ -331,7 +331,7 @@
     "iwm_name": "Microsoft Surface Pro X",
     "model": "microsoft-surface-pro-x",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:03:03+00:00",
+    "scraped_at": "2026-05-16T17:41:31+00:00",
     "series": "microsoft-surface-pro-x",
     "size_adj": {},
     "storage_adj": {
@@ -370,7 +370,7 @@
     "iwm_name": "Microsoft Surface Pro 10",
     "model": "microsoft-surface-pro-10",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:02:31+00:00",
+    "scraped_at": "2026-05-16T17:41:00+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -417,7 +417,7 @@
     "iwm_name": "Microsoft Surface Pro 11",
     "model": "microsoft-surface-pro-11",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:02:28+00:00",
+    "scraped_at": "2026-05-16T17:40:57+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -467,7 +467,7 @@
     "iwm_name": "Microsoft Surface Pro 12in",
     "model": "microsoft-surface-pro-12in",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:02:26+00:00",
+    "scraped_at": "2026-05-16T17:40:55+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -501,7 +501,7 @@
     "iwm_name": "Microsoft Surface Pro 4",
     "model": "microsoft-surface-pro-4",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:02:50+00:00",
+    "scraped_at": "2026-05-16T17:41:18+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -544,7 +544,7 @@
     "iwm_name": "Microsoft Surface Pro 5",
     "model": "microsoft-surface-pro-5",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:02:47+00:00",
+    "scraped_at": "2026-05-16T17:41:16+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -584,7 +584,7 @@
     "iwm_name": "Microsoft Surface Pro 6",
     "model": "microsoft-surface-pro-6",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:02:44+00:00",
+    "scraped_at": "2026-05-16T17:41:13+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -626,7 +626,7 @@
     "iwm_name": "Microsoft Surface Pro 7",
     "model": "microsoft-surface-pro-7",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:02:42+00:00",
+    "scraped_at": "2026-05-16T17:41:10+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -668,7 +668,7 @@
     "iwm_name": "Microsoft Surface Pro 7+",
     "model": "microsoft-surface-pro-7-plus",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:02:39+00:00",
+    "scraped_at": "2026-05-16T17:41:08+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -711,7 +711,7 @@
     "iwm_name": "Microsoft Surface Pro 8",
     "model": "microsoft-surface-pro-8",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:02:37+00:00",
+    "scraped_at": "2026-05-16T17:41:05+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -751,7 +751,7 @@
     "iwm_name": "Microsoft Surface Pro 9",
     "model": "microsoft-surface-pro-9",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:02:34+00:00",
+    "scraped_at": "2026-05-16T17:41:03+00:00",
     "series": "microsoft-surface-pro",
     "size_adj": {},
     "storage_adj": {
@@ -788,7 +788,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:04:12+00:00",
+    "scraped_at": "2026-05-16T17:43:06+00:00",
     "series": "oneplus-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -816,7 +816,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:04:05+00:00",
+    "scraped_at": "2026-05-16T17:42:59+00:00",
     "series": "oneplus-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -844,7 +844,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:04:02+00:00",
+    "scraped_at": "2026-05-16T17:42:56+00:00",
     "series": "oneplus-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -874,7 +874,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:04:08+00:00",
+    "scraped_at": "2026-05-16T17:43:03+00:00",
     "series": "oneplus-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -906,7 +906,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:03:23+00:00",
+    "scraped_at": "2026-05-16T17:42:17+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -938,7 +938,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:03:20+00:00",
+    "scraped_at": "2026-05-16T17:42:14+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -973,7 +973,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:03:26+00:00",
+    "scraped_at": "2026-05-16T17:42:20+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1008,7 +1008,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:03:16+00:00",
+    "scraped_at": "2026-05-16T17:42:11+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1043,7 +1043,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:03:13+00:00",
+    "scraped_at": "2026-05-16T17:42:08+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1079,7 +1079,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:03:10+00:00",
+    "scraped_at": "2026-05-16T17:42:04+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1115,7 +1115,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:03:07+00:00",
+    "scraped_at": "2026-05-16T17:41:35+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1147,7 +1147,7 @@
     "iwm_name": "Galaxy Tab S4 10.5",
     "model": "galaxy-tab-s4-105",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:03:49+00:00",
+    "scraped_at": "2026-05-16T17:42:43+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1175,7 +1175,7 @@
     "iwm_name": "Galaxy Tab S5e",
     "model": "galaxy-tab-s5e",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:03:46+00:00",
+    "scraped_at": "2026-05-16T17:42:40+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1203,7 +1203,7 @@
     "iwm_name": "Galaxy Tab S6",
     "model": "galaxy-tab-s6",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:03:43+00:00",
+    "scraped_at": "2026-05-16T17:42:37+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1234,7 +1234,7 @@
     "iwm_name": "Galaxy Tab S6 Lite",
     "model": "galaxy-tab-s6-lite",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:03:40+00:00",
+    "scraped_at": "2026-05-16T17:42:34+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1268,7 +1268,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:03:36+00:00",
+    "scraped_at": "2026-05-16T17:42:30+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1300,7 +1300,7 @@
     "iwm_name": "Galaxy Tab S7 FE",
     "model": "galaxy-tab-s7-fe",
     "operational_adj": {},
-    "scraped_at": "2026-05-16T17:03:33+00:00",
+    "scraped_at": "2026-05-16T17:42:27+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1335,7 +1335,7 @@
       "no": 0,
       "yes": 0
     },
-    "scraped_at": "2026-05-16T17:03:30+00:00",
+    "scraped_at": "2026-05-16T17:42:24+00:00",
     "series": "samsung-tablet",
     "size_adj": {},
     "storage_adj": {
@@ -1348,5 +1348,279 @@
       "yes": 0
     },
     "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s7-plus"
+  },
+  "samsung-tablet/galaxy-tab-s8": {
+    "base_price": 155,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 40,
+      "fair": 85,
+      "good": 125,
+      "mint": 155,
+      "sealed": 215,
+      "verygood": 140
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S8",
+    "model": "galaxy-tab-s8",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T17:42:01+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 50
+    },
+    "stylus_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s8"
+  },
+  "samsung-tablet/galaxy-tab-s8-plus": {
+    "base_price": 190,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 40,
+      "fair": 110,
+      "good": 170,
+      "mint": 190,
+      "sealed": 220,
+      "verygood": 180
+    },
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi Only": -30
+    },
+    "iwm_name": "Galaxy Tab S8+",
+    "model": "galaxy-tab-s8-plus",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T17:41:58+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 50,
+      "512GB": 75
+    },
+    "stylus_adj": {
+      "no": -10,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s8-plus"
+  },
+  "samsung-tablet/galaxy-tab-s8-ultra": {
+    "base_price": 250,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 40,
+      "fair": 150,
+      "good": 210,
+      "mint": 250,
+      "sealed": 270,
+      "verygood": 230
+    },
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi ONLY": -30
+    },
+    "iwm_name": "Galaxy Tab S8 Ultra",
+    "model": "galaxy-tab-s8-ultra",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T17:41:54+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 30,
+      "512GB": 50
+    },
+    "stylus_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s8-ultra"
+  },
+  "samsung-tablet/galaxy-tab-s9": {
+    "base_price": 220,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 25,
+      "fair": 135,
+      "good": 190,
+      "mint": 220,
+      "sealed": 250,
+      "verygood": 200
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S9",
+    "model": "galaxy-tab-s9",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T17:41:45+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 15
+    },
+    "stylus_adj": {
+      "no": -15,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s9"
+  },
+  "samsung-tablet/galaxy-tab-s9-fe": {
+    "base_price": 110,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 15,
+      "fair": 50,
+      "good": 85,
+      "mint": 110,
+      "sealed": 140,
+      "verygood": 95
+    },
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi ONLY": -15
+    },
+    "iwm_name": "Galaxy Tab S9 FE",
+    "model": "galaxy-tab-s9-fe",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T17:41:51+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 20
+    },
+    "stylus_adj": {
+      "no": -5,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s9-fe"
+  },
+  "samsung-tablet/galaxy-tab-s9-fe-plus": {
+    "base_price": 190,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 35,
+      "fair": 110,
+      "good": 155,
+      "mint": 190,
+      "sealed": 220,
+      "verygood": 170
+    },
+    "connectivity_adj": {},
+    "iwm_name": "Galaxy Tab S9 FE+",
+    "model": "galaxy-tab-s9-fe-plus",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T17:41:48+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "128GB": 0,
+      "256GB": 15
+    },
+    "stylus_adj": {
+      "no": -15,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s9-fe-plus"
+  },
+  "samsung-tablet/galaxy-tab-s9-plus": {
+    "base_price": 290,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 50,
+      "fair": 220,
+      "good": 260,
+      "mint": 290,
+      "sealed": 320,
+      "verygood": 275
+    },
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi ONLY": -40
+    },
+    "iwm_name": "Galaxy Tab S9+",
+    "model": "galaxy-tab-s9-plus",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T17:41:41+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "256GB": 0,
+      "512GB": 40
+    },
+    "stylus_adj": {
+      "no": -25,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s9-plus"
+  },
+  "samsung-tablet/galaxy-tab-s9-ultra": {
+    "base_price": 370,
+    "battery_adj": {},
+    "charger_adj": {},
+    "condition_adj": {
+      "broken": 75,
+      "fair": 275,
+      "good": 340,
+      "mint": 370,
+      "sealed": 400,
+      "verygood": 355
+    },
+    "connectivity_adj": {
+      "Unlocked": 0,
+      "WiFi ONLY": -50
+    },
+    "iwm_name": "Galaxy Tab S9 Ultra",
+    "model": "galaxy-tab-s9-ultra",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T17:41:38+00:00",
+    "series": "samsung-tablet",
+    "size_adj": {},
+    "storage_adj": {
+      "1TB": 75,
+      "256GB": 0,
+      "512GB": 40
+    },
+    "stylus_adj": {
+      "no": -20,
+      "yes": 0
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-tablet/galaxy-tab-s9-ultra"
   }
 }
