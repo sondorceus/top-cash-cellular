@@ -149,6 +149,13 @@ def to_macspec(entry):
     # from chip[0] but the math needs the absolute, so re-anchor here.
     # Without this, picking baseline-chip + baseline-RAM + baseline-storage
     # gave a $0 quote — the LG-class bug class 2.
+    #
+    # Filter: drop chip options whose delta from chip[0] is below
+    # -50% of base. IWM occasionally serves stale 8th-gen Intel
+    # options on a Gen 13 X1 Carbon page (delta -$610 on $725 base);
+    # those chips don't physically exist on the modern chassis and
+    # showing them as quiz options confuses the user.
+    floor_delta = -int(base * 0.5)
     processors = [
         {
             "id": chip_id(c["label"]),
@@ -158,6 +165,7 @@ def to_macspec(entry):
             "adj": int(base) + int(c.get("adj", 0)),
         }
         for c in chips
+        if int(c.get("adj", 0)) >= floor_delta
     ]
     memory = [
         {

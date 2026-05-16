@@ -10651,13 +10651,6 @@
         "sub": ""
       },
       {
-        "adj": 75,
-        "id": "intel_core_i5_8th_gen",
-        "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 140,
         "id": "intel_core_i5_9th_gen",
         "label": "Intel Core i5 9th Gen.",
@@ -13201,13 +13194,6 @@
         "sub": ""
       },
       {
-        "adj": 10,
-        "id": "intel_core_i5_7th_gen",
-        "label": "Intel Core i5 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 20,
         "id": "intel_core_i7_7th_gen",
         "label": "Intel Core i7 7th Gen.",
@@ -13529,20 +13515,6 @@
         "sub": ""
       },
       {
-        "adj": 10,
-        "id": "intel_core_i5_7th_gen",
-        "label": "Intel Core i5 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 15,
-        "id": "intel_core_i7_7th_gen",
-        "label": "Intel Core i7 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 145,
         "id": "intel_core_i7_10th_gen",
         "label": "Intel Core i7 10th Gen.",
@@ -13621,20 +13593,6 @@
         "adj": 575,
         "id": "intel_core_ultra_7",
         "label": "Intel Core Ultra 7",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 30,
-        "id": "intel_core_i5_8th_gen",
-        "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 45,
-        "id": "intel_core_i7_8th_gen",
-        "label": "Intel Core i7 8th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -13717,27 +13675,6 @@
         "adj": 365,
         "id": "snapdragon_x_elite",
         "label": "Snapdragon X Elite",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 20,
-        "id": "intel_core_i5_7th_gen",
-        "label": "Intel Core i5 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 30,
-        "id": "intel_core_i5_8th_gen",
-        "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 50,
-        "id": "intel_core_i7_8th_gen",
-        "label": "Intel Core i7 8th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -18158,13 +18095,6 @@
         "sub": ""
       },
       {
-        "adj": 60,
-        "id": "intel_core_i5_7th_gen",
-        "label": "Intel Core i5 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 675,
         "id": "intel_core_ultra_7_series_2",
         "label": "Intel Core Ultra 7 Series 2",
@@ -18351,13 +18281,6 @@
         "adj": 350,
         "id": "intel_core_i7_12th_gen",
         "label": "Intel Core i7 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 60,
-        "id": "intel_core_i5_7th_gen",
-        "label": "Intel Core i5 7th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
@@ -18559,13 +18482,6 @@
         "sub": ""
       },
       {
-        "adj": 60,
-        "id": "intel_core_i5_7th_gen",
-        "label": "Intel Core i5 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 675,
         "id": "intel_core_ultra_7_series_2",
         "label": "Intel Core Ultra 7 Series 2",
@@ -18756,13 +18672,6 @@
         "sub": ""
       },
       {
-        "adj": 60,
-        "id": "intel_core_i5_7th_gen",
-        "label": "Intel Core i5 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 675,
         "id": "intel_core_ultra_7_series_2",
         "label": "Intel Core Ultra 7 Series 2",
@@ -18946,13 +18855,6 @@
         "sub": ""
       },
       {
-        "adj": 60,
-        "id": "intel_core_i5_7th_gen",
-        "label": "Intel Core i5 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 675,
         "id": "intel_core_ultra_7_series_2",
         "label": "Intel Core Ultra 7 Series 2",
@@ -18970,13 +18872,6 @@
         "adj": 110,
         "id": "intel_core_i5_8th_gen",
         "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 100,
-        "id": "intel_core_i7_7th_gen",
-        "label": "Intel Core i7 7th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
@@ -19129,13 +19024,6 @@
         "sub": ""
       },
       {
-        "adj": 60,
-        "id": "intel_core_i5_7th_gen",
-        "label": "Intel Core i5 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 675,
         "id": "intel_core_ultra_7_series_2",
         "label": "Intel Core Ultra 7 Series 2",
@@ -19146,27 +19034,6 @@
         "adj": 775,
         "id": "intel_core_ultra_9_series_2",
         "label": "Intel Core Ultra 9 Series 2",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 110,
-        "id": "intel_core_i5_8th_gen",
-        "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 100,
-        "id": "intel_core_i7_7th_gen",
-        "label": "Intel Core i7 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 125,
-        "id": "intel_core_i7_8th_gen",
-        "label": "Intel Core i7 8th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -19432,13 +19299,6 @@
         "sub": ""
       },
       {
-        "adj": 60,
-        "id": "intel_core_i5_7th_gen",
-        "label": "Intel Core i5 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 675,
         "id": "intel_core_ultra_7_series_2",
         "label": "Intel Core Ultra 7 Series 2",
@@ -19449,27 +19309,6 @@
         "adj": 775,
         "id": "intel_core_ultra_9_series_2",
         "label": "Intel Core Ultra 9 Series 2",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 110,
-        "id": "intel_core_i5_8th_gen",
-        "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 100,
-        "id": "intel_core_i7_7th_gen",
-        "label": "Intel Core i7 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 125,
-        "id": "intel_core_i7_8th_gen",
-        "label": "Intel Core i7 8th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
@@ -20354,13 +20193,6 @@
         "sub": ""
       },
       {
-        "adj": 60,
-        "id": "intel_core_i5_7th_gen",
-        "label": "Intel Core i5 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 675,
         "id": "intel_core_ultra_7_series_2",
         "label": "Intel Core Ultra 7 Series 2",
@@ -20371,27 +20203,6 @@
         "adj": 775,
         "id": "intel_core_ultra_9_series_2",
         "label": "Intel Core Ultra 9 Series 2",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 110,
-        "id": "intel_core_i5_8th_gen",
-        "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 100,
-        "id": "intel_core_i7_7th_gen",
-        "label": "Intel Core i7 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 125,
-        "id": "intel_core_i7_8th_gen",
-        "label": "Intel Core i7 8th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
@@ -21038,13 +20849,6 @@
         "sub": ""
       },
       {
-        "adj": 100,
-        "id": "intel_core_i5_6th_gen",
-        "label": "Intel Core i5 6th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 160,
         "id": "intel_core_i7_6th_gen",
         "label": "Intel Core i7 6th Gen.",
@@ -21182,20 +20986,6 @@
         "adj": 485,
         "id": "intel_core_i7_12th_gen",
         "label": "Intel Core i7 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 100,
-        "id": "intel_core_i5_6th_gen",
-        "label": "Intel Core i5 6th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 160,
-        "id": "intel_core_i7_6th_gen",
-        "label": "Intel Core i7 6th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
@@ -21352,20 +21142,6 @@
         "adj": 660,
         "id": "intel_core_i7_13th_gen",
         "label": "Intel Core i7 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 100,
-        "id": "intel_core_i5_6th_gen",
-        "label": "Intel Core i5 6th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 160,
-        "id": "intel_core_i7_6th_gen",
-        "label": "Intel Core i7 6th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
@@ -22718,27 +22494,6 @@
         "adj": 1280,
         "id": "intel_core_i7_13th_gen",
         "label": "Intel Core i7 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 460,
-        "id": "intel_core_i5_12th_gen",
-        "label": "Intel Core i5 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 540,
-        "id": "intel_core_i7_12th_gen",
-        "label": "Intel Core i7 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 590,
-        "id": "intel_core_i9_12th_gen",
-        "label": "Intel Core i9 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
@@ -24496,20 +24251,6 @@
         "adj": 60,
         "id": "intel_core_i5_8th_gen",
         "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 5,
-        "id": "intel_core_i5_7th_gen",
-        "label": "Intel Core i5 7th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 10,
-        "id": "intel_core_i7_7th_gen",
-        "label": "Intel Core i7 7th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
@@ -33797,13 +33538,6 @@
         "sub": ""
       },
       {
-        "adj": 250,
-        "id": "amd_ryzen_5_4600h",
-        "label": "AMD Ryzen 5 4600H",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 340,
         "id": "amd_ryzen_5_5600h",
         "label": "AMD Ryzen 5 5600H",
@@ -39632,13 +39366,6 @@
         "sub": ""
       },
       {
-        "adj": 85,
-        "id": "amd_ryzen_5_pro_4650u",
-        "label": "AMD Ryzen 5 Pro 4650U",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 110,
         "id": "amd_ryzen_7_pro_4750u",
         "label": "AMD Ryzen 7 Pro 4750U",
@@ -42106,13 +41833,6 @@
         "sub": ""
       },
       {
-        "adj": 115,
-        "id": "intel_core_i5_8th_gen",
-        "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 140,
         "id": "intel_core_i7_8th_gen",
         "label": "Intel Core i7 8th Gen.",
@@ -42221,20 +41941,6 @@
         "adj": 450,
         "id": "intel_core_i7_13th_gen",
         "label": "Intel Core i7 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 115,
-        "id": "intel_core_i5_8th_gen",
-        "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 140,
-        "id": "intel_core_i7_8th_gen",
-        "label": "Intel Core i7 8th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -42357,20 +42063,6 @@
         "label": "Intel Core Ultra 7",
         "multiplier": 1.0,
         "sub": ""
-      },
-      {
-        "adj": 115,
-        "id": "intel_core_i5_8th_gen",
-        "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 140,
-        "id": "intel_core_i7_8th_gen",
-        "label": "Intel Core i7 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
       }
     ],
     "storage": [
@@ -42482,20 +42174,6 @@
         "adj": 725,
         "id": "intel_core_ultra_5_series_2",
         "label": "Intel Core Ultra 5 Series 2",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 115,
-        "id": "intel_core_i5_8th_gen",
-        "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 140,
-        "id": "intel_core_i7_8th_gen",
-        "label": "Intel Core i7 8th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
@@ -44328,13 +44006,6 @@
         "sub": ""
       },
       {
-        "adj": 95,
-        "id": "intel_core_i5_8th_gen",
-        "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
         "adj": 120,
         "id": "intel_core_i7_8th_gen",
         "label": "Intel Core i7 8th Gen.",
@@ -44422,20 +44093,6 @@
         "adj": 350,
         "id": "intel_core_i7_12th_gen",
         "label": "Intel Core i7 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 95,
-        "id": "intel_core_i5_8th_gen",
-        "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 120,
-        "id": "intel_core_i7_8th_gen",
-        "label": "Intel Core i7 8th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -44527,20 +44184,6 @@
         "adj": 440,
         "id": "intel_core_i7_13th_gen",
         "label": "Intel Core i7 13th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 95,
-        "id": "intel_core_i5_8th_gen",
-        "label": "Intel Core i5 8th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 120,
-        "id": "intel_core_i7_8th_gen",
-        "label": "Intel Core i7 8th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -47060,48 +46703,6 @@
       },
       {
         "adj": 590,
-        "id": "intel_core_ultra_7_series_2",
-        "label": "Intel Core Ultra 7 Series 2",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "intel_core_i5_11th_gen",
-        "label": "Intel Core i5 11th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "intel_core_i5_12th_gen",
-        "label": "Intel Core i5 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "intel_core_ultra_5_series_2",
-        "label": "Intel Core Ultra 5 Series 2",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "intel_core_i7_11th_gen",
-        "label": "Intel Core i7 11th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "intel_core_i7_12th_gen",
-        "label": "Intel Core i7 12th Gen.",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
         "id": "intel_core_ultra_7_series_2",
         "label": "Intel Core Ultra 7 Series 2",
         "multiplier": 1.0,
