@@ -1250,8 +1250,8 @@ const MACBOOK_CLASSIC_MODELS = [
 // Mirrors IWM's MacBook categories: Pro, Air, Neo (new A-chip line),
 // classic 12-inch.
 const MACBOOK_SERIES = [
-  { id: "mbpro", label: "MacBook Pro", year: "M1–M5", topPrice: 1640, image: "/macbook-pro-series.webp", variants: MACBOOK_PRO_MODELS },
-  { id: "mbair", label: "MacBook Air", year: "M1–M5", topPrice: 700, image: "/macbook-air-series.webp", variants: MACBOOK_AIR_MODELS },
+  { id: "mbpro", label: "MacBook Pro", year: "M1–M5", topPrice: 1737, image: "/macbook-pro-series.webp", variants: MACBOOK_PRO_MODELS },
+  { id: "mbair", label: "MacBook Air", year: "M1–M5", topPrice: 662, image: "/macbook-air-series.webp", variants: MACBOOK_AIR_MODELS },
   { id: "mbneo", label: "MacBook Neo", year: "A18 Pro · 2026", topPrice: 270, image: "/macbook-classic-series.webp", variants: MACBOOK_NEO_MODELS },
   { id: "mbclassic", label: "MacBook", year: "12-inch Retina", topPrice: 0, image: "/macbook-classic-series.webp", variants: MACBOOK_CLASSIC_MODELS, inquiryOnly: true },
 ];
@@ -1430,21 +1430,21 @@ const LENOVO_THINKBOOK_VARIANTS = [
   ...LENOVO_TB_16_VARIANTS,
 ];
 const LENOVO_PC_SERIES = [
-  { id: "lenovo_tp_x1", label: "ThinkPad X1", year: "Premium ultrabook", topPrice: 0, variants: LENOVO_TP_X1_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
-  { id: "lenovo_tp_x9", label: "ThinkPad X9", year: "Aura Edition", topPrice: 0, variants: LENOVO_TP_X9_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_x9_14.png" },
-  { id: "lenovo_tp_x13", label: "ThinkPad X13", year: "13-inch business", topPrice: 0, variants: LENOVO_TP_X13_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13.png" },
-  { id: "lenovo_tp_x390", label: "ThinkPad X390", year: "Legacy 13.3-inch", topPrice: 0, variants: LENOVO_TP_X390_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_x390.png" },
-  { id: "lenovo_tp_t", label: "ThinkPad T", year: "Workhorse business", topPrice: 0, variants: LENOVO_TP_T_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_t.png" },
-  { id: "lenovo_tp_p", label: "ThinkPad P", year: "Mobile workstation", topPrice: 0, variants: LENOVO_TP_P_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p51.png" },
-  { id: "lenovo_tp_l", label: "ThinkPad L", year: "Mainstream business", topPrice: 0, variants: LENOVO_TP_L_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_l-lenovo-thinkpad-l14-series.png" },
-  { id: "lenovo_tp_e", label: "ThinkPad E", year: "Essential business", topPrice: 0, variants: LENOVO_TP_E_VARIANTS, inquiryOnly: true, image: "/devices/ln_tp_e14_g7.png" },
-  { id: "lenovo_tp_z", label: "ThinkPad Z", year: "Modern design", topPrice: 0, variants: LENOVO_TP_Z_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-thinkpad-tp_z-lenovo-thinkpad-z16.png" },
+  { id: "lenovo_tp_x1", label: "ThinkPad X1", year: "Premium ultrabook", topPrice: 630, variants: LENOVO_TP_X1_VARIANTS, image: "/devices/lenovo-thinkpad-tp_x1-lenovo-thinkpad-x1-carbon.png" },
+  { id: "lenovo_tp_x9", label: "ThinkPad X9", year: "Aura Edition", topPrice: 675, variants: LENOVO_TP_X9_VARIANTS, image: "/devices/ln_tp_x9_14.png" },
+  { id: "lenovo_tp_x13", label: "ThinkPad X13", year: "13-inch business", topPrice: 531, variants: LENOVO_TP_X13_VARIANTS, image: "/devices/lenovo-thinkpad-tp_x13-lenovo-thinkpad-x13.png" },
+  { id: "lenovo_tp_x390", label: "ThinkPad X390", year: "Legacy 13.3-inch", topPrice: 81, variants: LENOVO_TP_X390_VARIANTS, image: "/devices/ln_tp_x390.png" },
+  { id: "lenovo_tp_t", label: "ThinkPad T", year: "Workhorse business", topPrice: 81, variants: LENOVO_TP_T_VARIANTS, image: "/devices/ln_tp_t.png" },
+  { id: "lenovo_tp_p", label: "ThinkPad P", year: "Mobile workstation", topPrice: 378, variants: LENOVO_TP_P_VARIANTS, image: "/devices/lenovo-thinkpad-tp_p-lenovo-thinkpad-p51.png" },
+  { id: "lenovo_tp_l", label: "ThinkPad L", year: "Mainstream business", topPrice: 356, variants: LENOVO_TP_L_VARIANTS, image: "/devices/lenovo-thinkpad-tp_l-lenovo-thinkpad-l14-series.png" },
+  { id: "lenovo_tp_e", label: "ThinkPad E", year: "Essential business", topPrice: 351, variants: LENOVO_TP_E_VARIANTS, image: "/devices/ln_tp_e14_g7.png" },
+  { id: "lenovo_tp_z", label: "ThinkPad Z", year: "Modern design", topPrice: 562, variants: LENOVO_TP_Z_VARIANTS, image: "/devices/lenovo-thinkpad-tp_z-lenovo-thinkpad-z16.png" },
   { id: "lenovo_thinkbook", label: "ThinkBook", year: "Business mid-range", topPrice: 0, variants: LENOVO_THINKBOOK_VARIANTS, inquiryOnly: true, image: "/devices/ln_tb_14.png" },
-  { id: "lenovo_ideapad", label: "IdeaPad", year: "Everyday", topPrice: 0, variants: LENOVO_IDEAPAD_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-ideapad-lenovo-ideapad-5.png" },
-  { id: "lenovo_legion", label: "Legion", year: "Gaming", topPrice: 0, variants: LENOVO_LEGION_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-legion-lenovo-legion-5-pro.png" },
-  { id: "lenovo_loq", label: "LOQ", year: "Entry gaming", topPrice: 0, variants: LENOVO_LOQ_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-loq-lenovo-loq-15.png" },
-  { id: "lenovo_slim", label: "Slim", year: "Slim creator", topPrice: 0, variants: LENOVO_SLIM_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-slim-lenovo-slim-7.png" },
-  { id: "lenovo_yoga", label: "Yoga", year: "2-in-1 / convertible", topPrice: 0, variants: LENOVO_YOGA_VARIANTS, inquiryOnly: true, image: "/devices/lenovo-yoga-lenovo-yoga-9i.png" },
+  { id: "lenovo_ideapad", label: "IdeaPad", year: "Everyday", topPrice: 346, variants: LENOVO_IDEAPAD_VARIANTS, image: "/devices/lenovo-ideapad-lenovo-ideapad-5.png" },
+  { id: "lenovo_legion", label: "Legion", year: "Gaming", topPrice: 1530, variants: LENOVO_LEGION_VARIANTS, image: "/devices/lenovo-legion-lenovo-legion-5-pro.png" },
+  { id: "lenovo_loq", label: "LOQ", year: "Entry gaming", topPrice: 500, variants: LENOVO_LOQ_VARIANTS, image: "/devices/lenovo-loq-lenovo-loq-15.png" },
+  { id: "lenovo_slim", label: "Slim", year: "Slim creator", topPrice: 590, variants: LENOVO_SLIM_VARIANTS, image: "/devices/lenovo-slim-lenovo-slim-7.png" },
+  { id: "lenovo_yoga", label: "Yoga", year: "2-in-1 / convertible", topPrice: 585, variants: LENOVO_YOGA_VARIANTS, image: "/devices/lenovo-yoga-lenovo-yoga-9i.png" },
 ];
 // Lenovo no longer uses sub-series — kept as empty array so the breadcrumb
 // resolver doesn't break when checking against it.
@@ -1511,10 +1511,10 @@ const ALIENWARE_13_VARIANTS = [
   { id: "aw13r2", label: "Alienware 13 R2", base: 0, inquiryOnly: true, image: "/devices/alienware-13-r2.webp" },
 ];
 const ALIENWARE_SERIES = [
-  { id: "aw_m_series", label: "M Series", year: "m15 / m16 / m17 / m18", topPrice: 0, variants: ALIENWARE_M_SERIES_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-m.webp" },
-  { id: "aw_x_series", label: "X Series", year: "x14 / x15 / x16 / x17", topPrice: 0, variants: ALIENWARE_X_SERIES_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-x.webp" },
-  { id: "aw_area_series", label: "Area Series", year: "Area-51m / Area-51", topPrice: 0, variants: ALIENWARE_AREA_SERIES_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-area.webp" },
-  { id: "aw_aurora_laptop", label: "Aurora Laptop", year: "2026 — New", topPrice: 0, variants: ALIENWARE_AURORA_LAPTOP_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-aurora.webp" },
+  { id: "aw_m_series", label: "M Series", year: "m15 / m16 / m17 / m18", topPrice: 1480, variants: ALIENWARE_M_SERIES_VARIANTS, image: "/devices/aw-cat-m.webp" },
+  { id: "aw_x_series", label: "X Series", year: "x14 / x15 / x16 / x17", topPrice: 1197, variants: ALIENWARE_X_SERIES_VARIANTS, image: "/devices/aw-cat-x.webp" },
+  { id: "aw_area_series", label: "Area Series", year: "Area-51m / Area-51", topPrice: 2205, variants: ALIENWARE_AREA_SERIES_VARIANTS, image: "/devices/aw-cat-area.webp" },
+  { id: "aw_aurora_laptop", label: "Aurora Laptop", year: "2026 — New", topPrice: 810, variants: ALIENWARE_AURORA_LAPTOP_VARIANTS, image: "/devices/aw-cat-aurora.webp" },
   { id: "aw_17", label: "Alienware 17", year: "Legacy 17\"", topPrice: 0, variants: ALIENWARE_17_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-17.webp" },
   { id: "aw_15", label: "Alienware 15", year: "Legacy 15\"", topPrice: 0, variants: ALIENWARE_15_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-15.webp" },
   { id: "aw_13", label: "Alienware 13", year: "Legacy 13\"", topPrice: 0, variants: ALIENWARE_13_VARIANTS, inquiryOnly: true, image: "/devices/aw-cat-13.webp" },
@@ -1552,8 +1552,8 @@ const HP_ELITEBOOK_ULTRA_VARIANTS = [
   { id: "hp_eb_ultra_g1i", label: "EliteBook Ultra G1i", base: 428, inquiryOnly: false, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1i.png" },
 ];
 const HP_ELITEBOOK_SUB_SERIES = [
-  { id: "hp_eb_std", label: "EliteBook", year: "Standard line", topPrice: 375, variants: HP_ELITEBOOK_STD_VARIANTS, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g1a.png" },
-  { id: "hp_eb_ultra", label: "EliteBook Ultra", year: "Premium ultraportable", topPrice: 0, variants: HP_ELITEBOOK_ULTRA_VARIANTS, inquiryOnly: true, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1q.png" },
+  { id: "hp_eb_std", label: "EliteBook", year: "Standard line", topPrice: 418, variants: HP_ELITEBOOK_STD_VARIANTS, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g1a.png" },
+  { id: "hp_eb_ultra", label: "EliteBook Ultra", year: "Premium ultraportable", topPrice: 428, variants: HP_ELITEBOOK_ULTRA_VARIANTS, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1q.png" },
 ];
 const HP_ENVY_VARIANTS = [
   { id: "hp_envy_13", label: "Envy 13", base: 58, inquiryOnly: false, image: "/devices/hp-envy-hp-envy-13.png" },
@@ -1577,10 +1577,10 @@ const HP_OMEN_SLIM_VARIANTS = [
   { id: "hp_omen_slim", label: "OMEN Slim", base: 464, inquiryOnly: false, image: "/devices/hp_omen_slim.png" },
 ];
 const HP_OMEN_SUB_SERIES = [
-  { id: "hp_omen_std_sub", label: "OMEN", year: "Standard gaming", topPrice: 675, variants: HP_OMEN_STD_VARIANTS, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
-  { id: "hp_omen_max_sub", label: "OMEN Max", year: "Top-tier", topPrice: 0, variants: HP_OMEN_MAX_VARIANTS, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
-  { id: "hp_omen_slim_sub", label: "OMEN Slim", year: "Slim gaming", topPrice: 0, variants: HP_OMEN_SLIM_VARIANTS, inquiryOnly: true, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
-  { id: "hp_omen_trans_sub", label: "OMEN Transcend", year: "Premium gaming", topPrice: 0, variants: HP_OMEN_TRANSCEND_VARIANTS, inquiryOnly: true, image: "/devices/hp-omen-omen_trans-hp-omen-transcend-16.png" },
+  { id: "hp_omen_std_sub", label: "OMEN", year: "Standard gaming", topPrice: 796, variants: HP_OMEN_STD_VARIANTS, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_omen_max_sub", label: "OMEN Max", year: "Top-tier", topPrice: 945, variants: HP_OMEN_MAX_VARIANTS, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_omen_slim_sub", label: "OMEN Slim", year: "Slim gaming", topPrice: 464, variants: HP_OMEN_SLIM_VARIANTS, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_omen_trans_sub", label: "OMEN Transcend", year: "Premium gaming", topPrice: 698, variants: HP_OMEN_TRANSCEND_VARIANTS, image: "/devices/hp-omen-omen_trans-hp-omen-transcend-16.png" },
 ];
 const HP_OMNIBOOK_VARIANTS = [
   { id: "hp_omni_x", label: "OmniBook X", base: 432, inquiryOnly: false, image: "/devices/hp-omnibook-hp-omnibook-x.png" },
@@ -1633,16 +1633,16 @@ const HP_NOTEBOOK_VARIANTS = [
 ];
 
 const HP_PC_SERIES = [
-  { id: "hp_elitebook", label: "EliteBook", year: "Premium business", topPrice: 375, subSeries: HP_ELITEBOOK_SUB_SERIES, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g11.png" },
-  { id: "hp_envy", label: "Envy", year: "Mainstream consumer", topPrice: 200, variants: HP_ENVY_VARIANTS, image: "/devices/hp-envy-hp-envy-x360.png" },
-  { id: "hp_omen", label: "OMEN", year: "Gaming", topPrice: 675, subSeries: HP_OMEN_SUB_SERIES, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
-  { id: "hp_omnibook", label: "OmniBook", year: "AI productivity", topPrice: 0, variants: HP_OMNIBOOK_VARIANTS, inquiryOnly: true, image: "/devices/hp-omnibook-hp-omnibook-x.png" },
-  { id: "hp_pavilion", label: "Pavilion", year: "Everyday", topPrice: 0, variants: HP_PAVILION_VARIANTS, inquiryOnly: true, image: "/devices/hp-pavilion-hp-pavilion-15.png" },
-  { id: "hp_probook", label: "ProBook", year: "SMB business", topPrice: 350, variants: HP_PROBOOK_VARIANTS, image: "/devices/hp-probook-hp-probook-g11.png" },
-  { id: "hp_spectre", label: "Spectre", year: "Premium consumer", topPrice: 500, variants: HP_SPECTRE_VARIANTS, image: "/devices/hp-spectre-hp-spectre-14-x360.png" },
+  { id: "hp_elitebook", label: "EliteBook", year: "Premium business", topPrice: 428, subSeries: HP_ELITEBOOK_SUB_SERIES, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g11.png" },
+  { id: "hp_envy", label: "Envy", year: "Mainstream consumer", topPrice: 243, variants: HP_ENVY_VARIANTS, image: "/devices/hp-envy-hp-envy-x360.png" },
+  { id: "hp_omen", label: "OMEN", year: "Gaming", topPrice: 945, subSeries: HP_OMEN_SUB_SERIES, image: "/devices/hp-omen-omen_std-hp-omen-17.png" },
+  { id: "hp_omnibook", label: "OmniBook", year: "AI productivity", topPrice: 450, variants: HP_OMNIBOOK_VARIANTS, image: "/devices/hp-omnibook-hp-omnibook-x.png" },
+  { id: "hp_pavilion", label: "Pavilion", year: "Everyday", topPrice: 194, variants: HP_PAVILION_VARIANTS, image: "/devices/hp-pavilion-hp-pavilion-15.png" },
+  { id: "hp_probook", label: "ProBook", year: "SMB business", topPrice: 297, variants: HP_PROBOOK_VARIANTS, image: "/devices/hp-probook-hp-probook-g11.png" },
+  { id: "hp_spectre", label: "Spectre", year: "Premium consumer", topPrice: 248, variants: HP_SPECTRE_VARIANTS, image: "/devices/hp-spectre-hp-spectre-14-x360.png" },
   { id: "hp_victus", label: "Victus", year: "Entry gaming", topPrice: 0, variants: HP_VICTUS_VARIANTS, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
-  { id: "hp_zbook", label: "ZBook", year: "Mobile workstation", topPrice: 1315, variants: HP_ZBOOK_VARIANTS, image: "/devices/hp-zbook-hp-zbook-g11.png" },
-  { id: "hp_notebook", label: "Notebook", year: "Budget", topPrice: 0, variants: HP_NOTEBOOK_VARIANTS, inquiryOnly: true, image: "/devices/hp-notebook-hp-notebook-15.png" },
+  { id: "hp_zbook", label: "ZBook", year: "Mobile workstation", topPrice: 900, variants: HP_ZBOOK_VARIANTS, image: "/devices/hp-zbook-hp-zbook-g11.png" },
+  { id: "hp_notebook", label: "Notebook", year: "Budget", topPrice: 76, variants: HP_NOTEBOOK_VARIANTS, image: "/devices/hp-notebook-hp-notebook-15.png" },
 ];
 const HP_PC_ALL_SUB_SERIES = [
   ...HP_ELITEBOOK_SUB_SERIES,
@@ -1708,11 +1708,11 @@ const SAMSUNG_BOOK1_VARIANTS = [
   { id: "sgbk_1_odyssey", label: "Galaxy Book Odyssey", base: 140, inquiryOnly: false, image: "/devices/sgbk2.png" },
 ];
 const SAMSUNG_PC_SERIES = [
-  { id: "sgbk_book5", label: "Galaxy Book 5", year: "2025", topPrice: 0, variants: SAMSUNG_BOOK5_VARIANTS, inquiryOnly: true, image: "/devices/sgbk4u.png" },
-  { id: "sgbk_book4", label: "Galaxy Book 4", year: "2024", topPrice: 0, variants: SAMSUNG_BOOK4_VARIANTS, inquiryOnly: true, image: "/devices/sgbk4u.png" },
-  { id: "sgbk_book3", label: "Galaxy Book 3", year: "2023", topPrice: 0, variants: SAMSUNG_BOOK3_VARIANTS, inquiryOnly: true, image: "/devices/sgbk3u.png" },
-  { id: "sgbk_book2", label: "Galaxy Book 2", year: "2022", topPrice: 0, variants: SAMSUNG_BOOK2_VARIANTS, inquiryOnly: true, image: "/devices/sgbk2.png" },
-  { id: "sgbk_book1", label: "Galaxy Book", year: "2020–2021", topPrice: 0, variants: SAMSUNG_BOOK1_VARIANTS, inquiryOnly: true, image: "/devices/sgbk2.png" },
+  { id: "sgbk_book5", label: "Galaxy Book 5", year: "2025", topPrice: 639, variants: SAMSUNG_BOOK5_VARIANTS, image: "/devices/sgbk4u.png" },
+  { id: "sgbk_book4", label: "Galaxy Book 4", year: "2024", topPrice: 446, variants: SAMSUNG_BOOK4_VARIANTS, image: "/devices/sgbk4u.png" },
+  { id: "sgbk_book3", label: "Galaxy Book 3", year: "2023", topPrice: 446, variants: SAMSUNG_BOOK3_VARIANTS, image: "/devices/sgbk3u.png" },
+  { id: "sgbk_book2", label: "Galaxy Book 2", year: "2022", topPrice: 243, variants: SAMSUNG_BOOK2_VARIANTS, image: "/devices/sgbk2.png" },
+  { id: "sgbk_book1", label: "Galaxy Book", year: "2020–2021", topPrice: 140, variants: SAMSUNG_BOOK1_VARIANTS, image: "/devices/sgbk2.png" },
 ];
 
 // LG LAPTOPS — three-level tree mirroring itsworthmore.com.
@@ -1762,26 +1762,26 @@ const LG_GRAM_SUPERSLIM_15_VARIANTS = [
 ];
 
 const LG_GRAM_SUB_SERIES = [
-  { id: "lg_gram_14", label: "Gram 14", year: "14-inch", topPrice: 0, variants: LG_GRAM_14_VARIANTS, inquiryOnly: true, image: "/devices/lg_gr14_24.png" },
-  { id: "lg_gram_14_2in1", label: "Gram 14 (2-in-1)", year: "14-inch convertible", topPrice: 0, variants: LG_GRAM_14_2IN1_VARIANTS, inquiryOnly: true, image: "/devices/lg_gr14t_24.png" },
-  { id: "lg_gram_15", label: "Gram 15", year: "15-inch", topPrice: 0, variants: LG_GRAM_15_VARIANTS, inquiryOnly: true, image: "/devices/lg_gr15_23.png" },
-  { id: "lg_gram_16", label: "Gram 16", year: "16-inch", topPrice: 0, variants: LG_GRAM_16_VARIANTS, inquiryOnly: true, image: "/devices/lg_gr16_24.png" },
-  { id: "lg_gram_16_2in1", label: "Gram 16 (2-in-1)", year: "16-inch convertible", topPrice: 0, variants: LG_GRAM_16_2IN1_VARIANTS, inquiryOnly: true, image: "/devices/lg_gr16t_24.png" },
-  { id: "lg_gram_17", label: "Gram 17", year: "17-inch", topPrice: 0, variants: LG_GRAM_17_VARIANTS, inquiryOnly: true, image: "/devices/lg_gr17_24.png" },
+  { id: "lg_gram_14", label: "Gram 14", year: "14-inch", topPrice: 252, variants: LG_GRAM_14_VARIANTS, image: "/devices/lg_gr14_24.png" },
+  { id: "lg_gram_14_2in1", label: "Gram 14 (2-in-1)", year: "14-inch convertible", topPrice: 252, variants: LG_GRAM_14_2IN1_VARIANTS, image: "/devices/lg_gr14t_24.png" },
+  { id: "lg_gram_15", label: "Gram 15", year: "15-inch", topPrice: 252, variants: LG_GRAM_15_VARIANTS, image: "/devices/lg_gr15_23.png" },
+  { id: "lg_gram_16", label: "Gram 16", year: "16-inch", topPrice: 252, variants: LG_GRAM_16_VARIANTS, image: "/devices/lg_gr16_24.png" },
+  { id: "lg_gram_16_2in1", label: "Gram 16 (2-in-1)", year: "16-inch convertible", topPrice: 252, variants: LG_GRAM_16_2IN1_VARIANTS, image: "/devices/lg_gr16t_24.png" },
+  { id: "lg_gram_17", label: "Gram 17", year: "17-inch", topPrice: 252, variants: LG_GRAM_17_VARIANTS, image: "/devices/lg_gr17_24.png" },
 ];
 const LG_GRAM_PRO_SUB_SERIES = [
-  { id: "lg_grampro_16", label: "Gram Pro 16", year: "16-inch", topPrice: 0, variants: LG_GRAM_PRO_16_VARIANTS, inquiryOnly: true, image: "/devices/lg_grpro16_25.png" },
-  { id: "lg_grampro_16_2in1", label: "Gram Pro 16 (2-in-1)", year: "16-inch convertible", topPrice: 0, variants: LG_GRAM_PRO_16_2IN1_VARIANTS, inquiryOnly: true, image: "/devices/lg_grpro16t_24.png" },
-  { id: "lg_grampro_17", label: "Gram Pro 17", year: "17-inch", topPrice: 0, variants: LG_GRAM_PRO_17_VARIANTS, inquiryOnly: true, image: "/devices/lg_grpro17_25.png" },
+  { id: "lg_grampro_16", label: "Gram Pro 16", year: "16-inch", topPrice: 639, variants: LG_GRAM_PRO_16_VARIANTS, image: "/devices/lg_grpro16_25.png" },
+  { id: "lg_grampro_16_2in1", label: "Gram Pro 16 (2-in-1)", year: "16-inch convertible", topPrice: 639, variants: LG_GRAM_PRO_16_2IN1_VARIANTS, image: "/devices/lg_grpro16t_24.png" },
+  { id: "lg_grampro_17", label: "Gram Pro 17", year: "17-inch", topPrice: 639, variants: LG_GRAM_PRO_17_VARIANTS, image: "/devices/lg_grpro17_25.png" },
 ];
 const LG_GRAM_SUPERSLIM_SUB_SERIES = [
-  { id: "lg_superslim_15", label: "Gram SuperSlim 15", year: "Ultra-thin", topPrice: 0, variants: LG_GRAM_SUPERSLIM_15_VARIANTS, inquiryOnly: true, image: "/devices/lg_grultra15.png" },
+  { id: "lg_superslim_15", label: "Gram SuperSlim 15", year: "Ultra-thin", topPrice: 378, variants: LG_GRAM_SUPERSLIM_15_VARIANTS, image: "/devices/lg_grultra15.png" },
 ];
 
 const LG_PC_SERIES = [
-  { id: "lg_gram", label: "Gram", year: "Standard ultraportable", topPrice: 0, subSeries: LG_GRAM_SUB_SERIES, inquiryOnly: true, image: "/devices/lg_gr16_24.png" },
-  { id: "lg_grampro", label: "Gram Pro", year: "Performance", topPrice: 0, subSeries: LG_GRAM_PRO_SUB_SERIES, inquiryOnly: true, image: "/devices/lg_grpro16_25.png" },
-  { id: "lg_superslim", label: "Gram SuperSlim", year: "Ultra-thin", topPrice: 0, subSeries: LG_GRAM_SUPERSLIM_SUB_SERIES, inquiryOnly: true, image: "/devices/lg_grultra15.png" },
+  { id: "lg_gram", label: "Gram", year: "Standard ultraportable", topPrice: 252, subSeries: LG_GRAM_SUB_SERIES, image: "/devices/lg_gr16_24.png" },
+  { id: "lg_grampro", label: "Gram Pro", year: "Performance", topPrice: 639, subSeries: LG_GRAM_PRO_SUB_SERIES, image: "/devices/lg_grpro16_25.png" },
+  { id: "lg_superslim", label: "Gram SuperSlim", year: "Ultra-thin", topPrice: 378, subSeries: LG_GRAM_SUPERSLIM_SUB_SERIES, image: "/devices/lg_grultra15.png" },
 ];
 const LG_PC_ALL_SUB_SERIES = [
   ...LG_GRAM_SUB_SERIES, ...LG_GRAM_PRO_SUB_SERIES, ...LG_GRAM_SUPERSLIM_SUB_SERIES,
@@ -2179,25 +2179,25 @@ const DELL_XPS_SUB_SERIES = [
   { id: "dell_xps_17", label: "XPS 17", year: "17-inch", topPrice: 0, variants: DELL_XPS_17_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
 ];
 const DELL_LATITUDE_SUB_SERIES = [
-  { id: "dell_lat_3000", label: "Latitude 3000", year: "Entry business", topPrice: 0, variants: DELL_LATITUDE_3000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
-  { id: "dell_lat_5000", label: "Latitude 5000", year: "Mainstream", topPrice: 0, variants: DELL_LATITUDE_5000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
-  { id: "dell_lat_7000", label: "Latitude 7000", year: "Premium", topPrice: 0, variants: DELL_LATITUDE_7000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
-  { id: "dell_lat_9000", label: "Latitude 9000", year: "Ultra-premium", topPrice: 0, variants: DELL_LATITUDE_9000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_lat_3000", label: "Latitude 3000", year: "Entry business", topPrice: 40, variants: DELL_LATITUDE_3000_VARIANTS, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_lat_5000", label: "Latitude 5000", year: "Mainstream", topPrice: 266, variants: DELL_LATITUDE_5000_VARIANTS, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_lat_7000", label: "Latitude 7000", year: "Premium", topPrice: 342, variants: DELL_LATITUDE_7000_VARIANTS, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_lat_9000", label: "Latitude 9000", year: "Ultra-premium", topPrice: 585, variants: DELL_LATITUDE_9000_VARIANTS, image: "/devices/dell-latitude.jpg" },
 ];
 const DELL_INSPIRON_SUB_SERIES = [
-  { id: "dell_insp_3000", label: "Inspiron 3000", year: "Essential", topPrice: 0, variants: DELL_INSPIRON_3000_VARIANTS, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
-  { id: "dell_insp_5000", label: "Inspiron 5000", year: "Mainstream", topPrice: 0, variants: DELL_INSPIRON_5000_VARIANTS, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
-  { id: "dell_insp_7000", label: "Inspiron 7000", year: "Performance", topPrice: 0, variants: DELL_INSPIRON_7000_VARIANTS, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dell_insp_3000", label: "Inspiron 3000", year: "Essential", topPrice: 45, variants: DELL_INSPIRON_3000_VARIANTS, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dell_insp_5000", label: "Inspiron 5000", year: "Mainstream", topPrice: 252, variants: DELL_INSPIRON_5000_VARIANTS, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dell_insp_7000", label: "Inspiron 7000", year: "Performance", topPrice: 284, variants: DELL_INSPIRON_7000_VARIANTS, image: "/devices/dell-inspiron-15.webp" },
 ];
 const DELL_PRECISION_SUB_SERIES = [
-  { id: "dell_prec_3000", label: "Precision 3000", year: "Entry mobile WS", topPrice: 0, variants: DELL_PRECISION_3000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
-  { id: "dell_prec_5000", label: "Precision 5000", year: "Performance mobile", topPrice: 0, variants: DELL_PRECISION_5000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
-  { id: "dell_prec_7000", label: "Precision 7000", year: "Ultimate mobile", topPrice: 0, variants: DELL_PRECISION_7000_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_prec_3000", label: "Precision 3000", year: "Entry mobile WS", topPrice: 720, variants: DELL_PRECISION_3000_VARIANTS, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_prec_5000", label: "Precision 5000", year: "Performance mobile", topPrice: 720, variants: DELL_PRECISION_5000_VARIANTS, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_prec_7000", label: "Precision 7000", year: "Ultimate mobile", topPrice: 720, variants: DELL_PRECISION_7000_VARIANTS, image: "/devices/dell-latitude.jpg" },
 ];
 const DELL_VOSTRO_SUB_SERIES = [
-  { id: "dell_vostro_3000", label: "Vostro 3000", year: "Small business", topPrice: 0, variants: DELL_VOSTRO_3000_VARIANTS, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dell_vostro_3000", label: "Vostro 3000", year: "Small business", topPrice: 36, variants: DELL_VOSTRO_3000_VARIANTS, image: "/devices/dell-inspiron-15.webp" },
   { id: "dell_vostro_5000", label: "Vostro 5000", year: "Mid-range", topPrice: 0, variants: DELL_VOSTRO_5000_VARIANTS, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
-  { id: "dell_vostro_7000", label: "Vostro 7000", year: "Performance", topPrice: 0, variants: DELL_VOSTRO_7000_VARIANTS, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dell_vostro_7000", label: "Vostro 7000", year: "Performance", topPrice: 148, variants: DELL_VOSTRO_7000_VARIANTS, image: "/devices/dell-inspiron-15.webp" },
 ];
 const DELL_G_SUB_SERIES = [
   { id: "dell_g3", label: "G3", year: "Entry gaming", topPrice: 0, variants: DELL_G3_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
@@ -2207,21 +2207,21 @@ const DELL_G_SUB_SERIES = [
   { id: "dell_g16", label: "G16", year: "16-inch gaming", topPrice: 0, variants: DELL_G16_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
 ];
 const DELL_PRO_SUB_SERIES = [
-  { id: "dell_pro_13", label: "Dell Pro 13", year: "13-inch", topPrice: 0, variants: DELL_PRO_13_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
-  { id: "dell_pro_14", label: "Dell Pro 14", year: "14-inch", topPrice: 0, variants: DELL_PRO_14_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
-  { id: "dell_pro_16", label: "Dell Pro 16", year: "16-inch", topPrice: 0, variants: DELL_PRO_16_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_pro_13", label: "Dell Pro 13", year: "13-inch", topPrice: 630, variants: DELL_PRO_13_VARIANTS, image: "/devices/dell-xps.webp" },
+  { id: "dell_pro_14", label: "Dell Pro 14", year: "14-inch", topPrice: 1156, variants: DELL_PRO_14_VARIANTS, image: "/devices/dell-xps.webp" },
+  { id: "dell_pro_16", label: "Dell Pro 16", year: "16-inch", topPrice: 1665, variants: DELL_PRO_16_VARIANTS, image: "/devices/dell-xps.webp" },
 ];
 const DELL_RUGGED_SUB_SERIES = [
   { id: "dell_lat_rugged", label: "Latitude Rugged", year: "Field-tough", topPrice: 0, variants: DELL_LAT_RUGGED_VARIANTS, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
 ];
 const DELL_PC_SERIES = [
   { id: "dell_xps", label: "XPS", year: "Premium consumer", topPrice: 0, subSeries: DELL_XPS_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-xps.webp" },
-  { id: "dell_latitude", label: "Latitude", year: "Business", topPrice: 0, subSeries: DELL_LATITUDE_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
-  { id: "dell_inspiron", label: "Inspiron", year: "Everyday", topPrice: 0, subSeries: DELL_INSPIRON_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
-  { id: "dell_precision", label: "Precision", year: "Mobile workstation", topPrice: 0, subSeries: DELL_PRECISION_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
-  { id: "dell_vostro", label: "Vostro", year: "Small-business", topPrice: 0, subSeries: DELL_VOSTRO_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dell_latitude", label: "Latitude", year: "Business", topPrice: 585, subSeries: DELL_LATITUDE_SUB_SERIES, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_inspiron", label: "Inspiron", year: "Everyday", topPrice: 284, subSeries: DELL_INSPIRON_SUB_SERIES, image: "/devices/dell-inspiron-15.webp" },
+  { id: "dell_precision", label: "Precision", year: "Mobile workstation", topPrice: 720, subSeries: DELL_PRECISION_SUB_SERIES, image: "/devices/dell-latitude.jpg" },
+  { id: "dell_vostro", label: "Vostro", year: "Small-business", topPrice: 148, subSeries: DELL_VOSTRO_SUB_SERIES, image: "/devices/dell-inspiron-15.webp" },
   { id: "dell_g", label: "G Series", year: "Gaming", topPrice: 0, subSeries: DELL_G_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-xps.webp" },
-  { id: "dell_pro", label: "Dell Pro", year: "AI-class business", topPrice: 0, subSeries: DELL_PRO_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_pro", label: "Dell Pro", year: "AI-class business", topPrice: 1665, subSeries: DELL_PRO_SUB_SERIES, image: "/devices/dell-xps.webp" },
   { id: "dell_rugged", label: "Rugged", year: "Field/military", topPrice: 0, subSeries: DELL_RUGGED_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
 ];
 const DELL_PC_ALL_SUB_SERIES = [
@@ -2292,7 +2292,7 @@ const PS4_VARIANTS = [
   { id: "ps4slim", label: "PlayStation 4 Slim", base: 0, inquiryOnly: true, image: "/devices/ps4-slim.webp" },
 ];
 const SONY_SERIES = [
-  { id: "ps5_family", label: "PlayStation 5", year: "Pro · Std · Slim", topPrice: 300, image: "/ps5-series.webp", variants: PS5_VARIANTS },
+  { id: "ps5_family", label: "PlayStation 5", year: "Pro · Std · Slim", topPrice: 450, image: "/ps5-series.webp", variants: PS5_VARIANTS },
   { id: "ps4_family", label: "PlayStation 4", year: "Pro · Std · Slim", topPrice: 150, image: "/ps4-series.webp", variants: PS4_VARIANTS },
 ];
 const SONY_MODELS = [...PS5_VARIANTS, ...PS4_VARIANTS];
