@@ -164,6 +164,69 @@ def rule_pc_specs_have_chips() -> list[Finding]:
     return [Finding("pc-specs-shape", "fail", f"{len(bad)} PC specs missing chips/memory", bad)]
 
 
+def rule_topprice_drift() -> list[Finding]:
+    """Every series/sub-series entry has topPrice. It should equal the
+    max base of the variants underneath it (or recursively for sub-
+    series). When it drifts, the picker card shows the wrong "Up to $X"
+    ceiling — exact same bug class Skywalker flagged on ASUS that hit
+    74 entries across the site (commit 47ab881).
+    """
+    if not PAGE.exists():
+        return []
+    src = PAGE.read_text()
+
+    def max_base(name: str) -> int:
+        start = src.find(f"const {name} = [")
+        if start < 0:
+            return 0
+        end = src.find("];", start)
+        return max((int(m.group(1)) for m in re.finditer(r"base:\s*(\d+)", src[start:end])), default=0)
+
+    def max_for_subseries(name: str) -> int:
+        start = src.find(f"const {name} = [")
+        if start < 0:
+            return 0
+        end = src.find("];", start)
+        body = src[start:end]
+        return max((max_base(a) for a in re.findall(r"variants:\s*(\w+_VARIANTS)", body)), default=0)
+
+    entry_re = re.compile(
+        r'\{\s*id:\s*"([^"]+)",\s*label:\s*"([^"]+)"[^}]*?topPrice:\s*(\d+)[^}]*?'
+        r'(?:variants|subSeries):\s*(\w+)'
+    )
+    drift = []
+    for m in entry_re.finditer(src):
+        eid, label, top, arr = m.group(1), m.group(2), int(m.group(3)), m.group(4)
+        actual = max_for_subseries(arr) if "SUB_SERIES" in arr else max_base(arr)
+        if actual > 0 and abs(actual - top) > 10:
+            drift.append(f"{eid}: topPrice=${top} actual=${actual}")
+    if not drift:
+        return [Finding("topprice-drift", "info", "every series topPrice matches variant max")]
+    return [Finding("topprice-drift", "fail", f"{len(drift)} series have stale topPrice (run scripts/fix-toppirce.py)", drift)]
+
+
+def rule_inquiry_vs_base_consistency() -> list[Finding]:
+    """A variant should NOT be both inquiryOnly:true AND base > 0. The
+    picker UI hides the price when inquiryOnly is set — so any base > 0
+    on an inquiryOnly variant is invisible/wasted data.
+    """
+    if not PAGE.exists():
+        return []
+    src = PAGE.read_text()
+    # Variant lines with both base and inquiryOnly
+    bad = []
+    for m in re.finditer(
+        r'\{\s*id:\s*"([^"]+)",\s*label:\s*"([^"]+)",\s*base:\s*(\d+),\s*inquiryOnly:\s*true',
+        src,
+    ):
+        vid, label, base = m.group(1), m.group(2), int(m.group(3))
+        if base > 0:
+            bad.append(f"{vid}: base=${base} but inquiryOnly:true ({label})")
+    if not bad:
+        return [Finding("inquiry-vs-base", "info", "no inquiryOnly variants have base > 0")]
+    return [Finding("inquiry-vs-base", "warn", f"{len(bad)} variants are inquiryOnly with a real base price", bad)]
+
+
 def rule_page_variants_have_image() -> list[Finding]:
     """Every variant must reference a file under public/devices/.
     Doesn't verify the file exists (cheap+fast lint); flags obvious typos.
@@ -184,6 +247,8 @@ RULES: list[Callable[[], list[Finding]]] = [
     rule_page_tsx_duplicate_ids,
     rule_pc_specs_have_chips,
     rule_pc_specs_baseline_quote_nonzero,
+    rule_topprice_drift,
+    rule_inquiry_vs_base_consistency,
     rule_page_variants_have_image,
 ]
 
