@@ -118,6 +118,34 @@ def rule_page_tsx_duplicate_ids() -> list[Finding]:
     return [Finding("page-duplicate-ids", "warn", f"{len(dupes)} duplicated variant ids", dupes)]
 
 
+def rule_pc_specs_baseline_quote_nonzero() -> list[Finding]:
+    """Simulate the baseline additive quote (chip[0] + ram[0] + storage[0])
+    for every PC_LAPTOP_SPECS entry and confirm it's non-zero. This is
+    what caught the chip-adj-zero bug class (X1 Carbon Gen 13 was showing
+    $0 baseline quote). Inquiry-only specs (base_price=0) are intentional
+    and skipped.
+    """
+    if not PC_SPECS.exists():
+        return []
+    d = json.loads(PC_SPECS.read_text())
+    bad = []
+    for vid, s in d.items():
+        if s.get("_inquiry_only"):
+            continue
+        if not s.get("processors") or not s.get("memory") or not s.get("storage"):
+            continue
+        chip = s["processors"][0].get("adj", 0)
+        ram = s["memory"][0].get("adj", 0)
+        stor = s["storage"][0].get("adj", 0)
+        iwm = chip + ram + stor
+        ours = round(iwm * 0.9)
+        if ours <= 0:
+            bad.append(f"{vid}: chip0=${chip} ram0=${ram} stor0=${stor} -> $0 quote")
+    if not bad:
+        return [Finding("pc-specs-baseline-quote", "info", f"all {len(d)} PC specs give non-zero baseline quote")]
+    return [Finding("pc-specs-baseline-quote", "fail", f"{len(bad)} PC specs would show $0 at baseline config", bad)]
+
+
 def rule_pc_specs_have_chips() -> list[Finding]:
     """Every entry in pc-laptop-specs.json must have processors ≥ 1.
     This is the application-side mirror of the LG bug.
@@ -155,6 +183,7 @@ RULES: list[Callable[[], list[Finding]]] = [
     rule_price_floor_pc_laptops,
     rule_page_tsx_duplicate_ids,
     rule_pc_specs_have_chips,
+    rule_pc_specs_baseline_quote_nonzero,
     rule_page_variants_have_image,
 ]
 

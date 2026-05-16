@@ -3147,7 +3147,7 @@ const FAQS = [
   { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
 ];
 
-type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "graphics" | "condition" | "broken-functional" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "extras" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
+type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "graphics" | "displayresolution" | "condition" | "broken-functional" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "extras" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
 
 // Brand-specific extra questions. A device family can declare a list of
 // follow-up questions (disc drive / controllers / hours flown / band
@@ -3570,6 +3570,9 @@ type MacSpec = {
   // surface this between storage and condition when populated; MacBooks
   // never have it.
   graphics?: MacSpecOption[];
+  // Optional display-resolution step (FHD / QHD / OLED on flagships).
+  // Sits between graphics and displayglass.
+  display?: MacSpecOption[];
   hasNanoGlass?: boolean;
 };
 const MACBOOK_SPECS: Record<string, MacSpec> = {
@@ -4979,6 +4982,7 @@ export default function Home() {
   const [processor, setProcessor] = useState<MacSpecOption | null>(null);
   const [memory, setMemory] = useState<MacSpecOption | null>(null);
   const [graphics, setGraphics] = useState<MacSpecOption | null>(null);
+  const [displayResolution, setDisplayResolution] = useState<MacSpecOption | null>(null);
   const [displayGlass, setDisplayGlass] = useState<MacSpecOption | null>(null);
   const [batteryHealth, setBatteryHealth] = useState<(typeof BATTERY_HEALTH_OPTIONS)[number] | null>(null);
   const [charger, setCharger] = useState<(typeof CHARGER_OPTIONS)[number] | null>(null);
@@ -5413,12 +5417,13 @@ export default function Home() {
         const ram = (memory as MacSpecOption | null)?.adj ?? 0;
         const stor = (storage as MacSpecOption | null)?.adj ?? 0;
         const gpu = (graphics as MacSpecOption | null)?.adj ?? 0;
+        const disp = (displayResolution as MacSpecOption | null)?.adj ?? 0;
         const MCOND: Record<string, number> = { sealed: 50, mint: 0, verygood: -50, good: -110, fair: -220 };
         const cond = MCOND[condition?.id ?? "mint"] ?? 0;
         const nano = displayGlass?.id === "nano" ? 50 : 0;
         const batt = batteryHealth?.id === "poor" ? -80 : 0;
         const chrg = charger?.id === "no" ? -50 : 0;
-        const iwm = chip + ram + stor + gpu + cond + nano + batt + chrg + extrasAdjSum;
+        const iwm = chip + ram + stor + gpu + disp + cond + nano + batt + chrg + extrasAdjSum;
         return Math.max(0, Math.round(iwm * 0.90 * promoOnly)) + promoFlatBonus;
       })()
     : useDirectPricing
@@ -5469,9 +5474,15 @@ export default function Home() {
     else if (step === "processor") { setStep("model"); setModel(null); }
     else if (step === "memory") { setStep("processor"); setProcessor(null); }
     else if (step === "graphics") { setStep("storage"); setStorage(null); }
-    else if (step === "displayglass") {
+    else if (step === "displayresolution") {
       const spec = model ? getMacSpec(model.id) : null;
       if (spec?.graphics && spec.graphics.length > 0) { setStep("graphics"); setGraphics(null); }
+      else { setStep("storage"); setStorage(null); }
+    }
+    else if (step === "displayglass") {
+      const spec = model ? getMacSpec(model.id) : null;
+      if (spec?.display && spec.display.length > 0) { setStep("displayresolution"); setDisplayResolution(null); }
+      else if (spec?.graphics && spec.graphics.length > 0) { setStep("graphics"); setGraphics(null); }
       else { setStep("storage"); setStorage(null); }
     }
     else if (step === "batteryhealth") { setStep("condition"); setCondition(null); }
@@ -5499,11 +5510,12 @@ export default function Home() {
     }
     else if (step === "condition") {
       if (model && hasAdditiveSpecs(model.id)) {
-        // Spec'd flow back-nav: condition came after one of these in order
-        // of preference: displayglass (MacBook nano), graphics (PC gaming),
-        // or storage.
+        // Spec'd flow back-nav: condition came after one of these in
+        // order of preference: displayglass (MacBook nano), display
+        // resolution (PC), graphics (PC gaming), or storage.
         const spec = getMacSpec(model.id);
         if (spec?.hasNanoGlass) { setStep("displayglass"); setDisplayGlass(null); }
+        else if (spec?.display && spec.display.length > 0) { setStep("displayresolution"); setDisplayResolution(null); }
         else if (spec?.graphics && spec.graphics.length > 0) { setStep("graphics"); setGraphics(null); }
         else { setStep("storage"); setStorage(null); }
       } else {
@@ -5571,7 +5583,7 @@ export default function Home() {
     setHandoffMethod(null);
     setShipStreet(""); setShipUnit(""); setShipCity(""); setShipState("TX"); setShipZip("");
     setLocalArea(null);
-    setProcessor(null); setMemory(null); setGraphics(null); setDisplayGlass(null);
+    setProcessor(null); setMemory(null); setGraphics(null); setDisplayResolution(null); setDisplayGlass(null);
     setBatteryHealth(null); setCharger(null); setBrokenPhotoUrl(null);
     setExtras({}); setExtrasIndex(0);
   };
@@ -8497,12 +8509,51 @@ export default function Home() {
                   {(getMacSpec(model.id)?.graphics || []).map((g) => (
                     <button key={g.id} onClick={() => {
                       setGraphics(g);
-                      const next: Step = (getMacSpec(model.id)?.hasNanoGlass ?? false) ? "displayglass" : "condition";
+                      const spec = getMacSpec(model.id);
+                      const next: Step =
+                        (spec?.display && spec.display.length > 0) ? "displayresolution" :
+                        (spec?.hasNanoGlass ? "displayglass" : "condition");
                       setStep(next); pushHistory(next);
                     }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{g.label}</p>
                         {g.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{g.sub}</p>}
+                      </div>
+                      <svg className="w-4 h-4 text-[#e6e6e6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: DISPLAY RESOLUTION — flagship PC gaming laptops where IWM
+          prices FHD vs QHD vs UHD/OLED panels separately. */}
+      {step === "displayresolution" && page === "home" && model && hasAdditiveSpecs(model.id) && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+              <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                Back
+              </button>
+              {selectionPanelMobile}
+              <h2 className="text-2xl lg:text-3xl font-extrabold mb-1">Select Display</h2>
+              <p className="text-[#b8b8b8] text-xs mb-3">Check <span className="text-[#e6e6e6] font-semibold">Settings &gt; System &gt; Display</span> for resolution.</p>
+              <div className="tcc-selection-frame">
+                <div className="space-y-2">
+                  {(getMacSpec(model.id)?.display || []).map((d) => (
+                    <button key={d.id} onClick={() => {
+                      setDisplayResolution(d);
+                      const next: Step = (getMacSpec(model.id)?.hasNanoGlass ?? false) ? "displayglass" : "condition";
+                      setStep(next); pushHistory(next);
+                    }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-extrabold text-[15px] text-white leading-tight">{d.label}</p>
+                        {d.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{d.sub}</p>}
                       </div>
                       <svg className="w-4 h-4 text-[#e6e6e6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                     </button>
@@ -8738,9 +8789,11 @@ export default function Home() {
                         setStorage(s as unknown as typeof ALL_STORAGES[0]);
                         if (hasAdditiveSpecs(model.id)) {
                           const spec = getMacSpec(model.id);
-                          // Order: storage → [graphics if any] → [displayglass on MacBook] → condition
+                          // Order: storage → [graphics] → [display resolution]
+                          // → [displayglass on MacBook] → condition
                           const next: Step =
                             (spec?.graphics && spec.graphics.length > 0) ? "graphics" :
+                            (spec?.display && spec.display.length > 0) ? "displayresolution" :
                             (spec?.hasNanoGlass ? "displayglass" : "condition");
                           setStep(next); pushHistory(next);
                           return;

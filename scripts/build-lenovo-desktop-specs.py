@@ -43,7 +43,7 @@ def to_macspec(entry):
     chips = entry.get("chips", [])
     ram = entry.get("ram_tiers", [])
     storage = entry.get("storage_tiers", [])
-    gpu = entry.get("gpu_tiers", [])
+    gpu_labels = entry.get("gpu_tiers", [])
 
     # Flatten chip groups (research listed them as comma-sep strings, expand)
     flat_chips = []
@@ -70,18 +70,24 @@ def to_macspec(entry):
         {"id": storage_id(s), "label": s, "sub": "", "multiplier": 1.0, "adj": 0}
         for s in storage
     ]
+    # Surface GPU options as a graphics step (intake info, no $ deltas
+    # since these are research-agent specs not IWM-priced).
+    graphics = [
+        {"id": slug(g), "label": g, "sub": "", "multiplier": 1.0, "adj": 0}
+        for g in gpu_labels
+    ]
     return {
         "base_price": 0,
         "processors": processors,
         "memory": memory,
         "storage": storage_opts,
+        "graphics": graphics,
         "condition_adj": {},
         "battery_adj": {},
         "charger_adj": {},
         "hasNanoGlass": False,
         "_inquiry_only": True,
         "_form_factor": entry.get("form_factor", ""),
-        "_gpu_tiers": gpu,
         "_market_value_usd": entry.get("market_value_usd", ""),
     }
 

@@ -134,13 +134,18 @@ def to_macspec(entry):
         return None
 
     chips = entry.get("chips", [])
+    # MacBook semantics: chip.adj is the ABSOLUTE IWM price for that chip
+    # at baseline RAM/storage/condition. The IWM tree gives us a delta
+    # from chip[0] but the math needs the absolute, so re-anchor here.
+    # Without this, picking baseline-chip + baseline-RAM + baseline-storage
+    # gave a $0 quote — the LG-class bug class 2.
     processors = [
         {
             "id": chip_id(c["label"]),
             "label": c["label"],
             "sub": "",
             "multiplier": 1.0,
-            "adj": int(c.get("adj", 0)),
+            "adj": int(base) + int(c.get("adj", 0)),
         }
         for c in chips
     ]
@@ -176,12 +181,18 @@ def to_macspec(entry):
     gpu = []
     for label, val in (entry.get("gpu_adj") or {}).items():
         gpu.append({"id": chip_id(label), "label": label, "sub": "", "multiplier": 1.0, "adj": int(val)})
+    # Display resolution (FHD / 2K / QHD / UHD / OLED) on flagship gaming
+    # laptops where IWM prices it as a separate choice.
+    display = []
+    for label, val in (entry.get("display_adj") or {}).items():
+        display.append({"id": chip_id(label), "label": label, "sub": "", "multiplier": 1.0, "adj": int(val)})
     return {
         "base_price": int(base),
         "processors": processors,
         "memory": memory,
         "storage": storage,
         "graphics": gpu,
+        "display": display,
         "condition_adj": entry.get("condition_adj", {}),
         "battery_adj": entry.get("battery_adj", {}),
         "charger_adj": entry.get("charger_adj", {}),
