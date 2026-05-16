@@ -1554,7 +1554,7 @@ const ALIENWARE_13_VARIANTS = [
 ];
 const ALIENWARE_SERIES = [
   { id: "aw_m_series", label: "M Series", year: "m15 / m16 / m17 / m18", topPrice: 1480, variants: ALIENWARE_M_SERIES_VARIANTS, image: "/devices/alienware-m18.webp" },
-  { id: "aw_x_series", label: "X Series", year: "x14 / x15 / x16 / x17", topPrice: 1197, variants: ALIENWARE_X_SERIES_VARIANTS, image: "/devices/alienware-x17.webp" },
+  { id: "aw_x_series", label: "X Series", year: "x14 / x15 / x16 / x17", topPrice: 1197, variants: ALIENWARE_X_SERIES_VARIANTS, image: "/devices/alienware-x16.webp" },
   { id: "aw_area_series", label: "Area Series", year: "Area-51m / Area-51", topPrice: 2205, variants: ALIENWARE_AREA_SERIES_VARIANTS, image: "/devices/alienware-18-area-51.webp" },
   { id: "aw_aurora_laptop", label: "Aurora Laptop", year: "2026 — New", topPrice: 810, variants: ALIENWARE_AURORA_LAPTOP_VARIANTS, image: "/devices/alienware-16x-aurora.webp" },
   { id: "aw_17", label: "Alienware 17", year: "Legacy 17\"", topPrice: 0, variants: ALIENWARE_17_VARIANTS, inquiryOnly: true, image: "/devices/alienware-17-r5.webp" },
