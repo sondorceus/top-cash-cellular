@@ -5448,8 +5448,17 @@ export default function Home() {
           ? (specCondAdj[condId] ?? 0)
           : (MCOND[condId] ?? 0);
         const nano = displayGlass?.id === "nano" ? 50 : 0;
-        const batt = batteryHealth?.id === "poor" ? -80 : 0;
-        const chrg = charger?.id === "no" ? -50 : 0;
+        // Prefer per-model IWM battery/charger adj when scraped; fall
+        // back to MacBook-calibrated defaults for MacBooks and any spec
+        // without IWM data.
+        const specBatt = model ? getMacSpec(model.id)?.battery_adj : undefined;
+        const specChrg = model ? getMacSpec(model.id)?.charger_adj : undefined;
+        const batt = specBatt && batteryHealth?.id
+          ? (specBatt[batteryHealth.id] ?? specBatt["poor"] ?? 0)
+          : (batteryHealth?.id === "poor" ? -80 : 0);
+        const chrg = specChrg && charger?.id
+          ? (specChrg[charger.id] ?? specChrg["no"] ?? 0)
+          : (charger?.id === "no" ? -50 : 0);
         const iwm = chip + ram + stor + gpu + disp + cond + nano + batt + chrg + extrasAdjSum;
         return Math.max(0, Math.round(iwm * 0.90 * promoOnly)) + promoFlatBonus;
       })()
