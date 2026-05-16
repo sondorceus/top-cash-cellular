@@ -111,10 +111,24 @@ jobs:
         timeout-minutes: 90
       - name: Apply IWM × 0.90 to page.tsx
         run: python scripts/apply-iwm-pc-laptop-prices.py
+      - name: Scrape IWM additive specs (chip / RAM / storage / GPU / display)
+        # Walks the embedded pricingData tree per URL — fast since no quiz
+        # walk needed. ~15 min for the full pass.
+        run: python scripts/scrape-iwm-laptop-specs.py
+        timeout-minutes: 60
+      - name: Merge spec shards + rebuild pc-laptop-specs.json
+        run: |
+          # The single-process scrape writes to /tmp/iwm_laptop_specs_progress.json;
+          # copy it to where the build script expects.
+          cp /tmp/iwm_laptop_specs_progress.json pc-laptop-iwm-adjustments.json || true
+          python scripts/build-pc-laptop-specs.py
+          python scripts/build-lenovo-desktop-specs.py
+      - name: Run verifier
+        run: python scripts/verifier.py || true
       - name: Detect changes
         id: diff
         run: |
-          if git diff --quiet app/page.tsx public/comps/iwm-pc-laptop-prices.json; then
+          if git diff --quiet app/page.tsx public/comps/iwm-pc-laptop-prices.json public/comps/pc-laptop-specs.json pc-laptop-iwm-adjustments.json; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -123,17 +137,21 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "chore: refresh PC laptop prices (weekly IWM × 0.90)"
-          title: "Weekly PC laptop price refresh — IWM × 0.90"
+          commit-message: "chore: refresh PC laptop prices + additive specs (weekly IWM)"
+          title: "Weekly PC laptop refresh — prices + additive specs"
           body: |
-            Automated weekly refresh of non-Apple laptop prices in `app/page.tsx`
+            Automated weekly refresh of non-Apple laptop pricing in `app/page.tsx`
+            and the additive spec data behind PC_LAPTOP_SPECS
             (Lenovo / HP / Dell / Alienware / ASUS / Acer / LG / Samsung Galaxy
             Book / Razer / MSI).
 
-            Scraped from itsworthmore.com Flawless condition; applied at
-            IWM × 0.90 per Skywalker's "scraper owns the table" rule.
-
-            Raw scrape: `public/comps/iwm-pc-laptop-prices.json`.
+            **Two scrapes run in this job:**
+            - Flawless base prices → `public/comps/iwm-pc-laptop-prices.json`,
+              applied to `app/page.tsx` at IWM × 0.90 (Skywalker's rule).
+            - Per-submodel additive deltas (chip / RAM / storage / GPU / display
+              / condition / battery / charger) → `pc-laptop-iwm-adjustments.json`,
+              transformed into `public/comps/pc-laptop-specs.json` for runtime
+              fetch.
 
             Review the diff — wildly-off prices may indicate a quiz-flow
             change on IWM, or a fuzzy-match drift for brands without bridge
