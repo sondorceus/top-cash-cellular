@@ -109,7 +109,7 @@ function needsManualReview(modelName: string, quoteAmt: number): boolean {
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings, handoff } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional } = data;
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
 
   // Dedup check — wider window for custom-quote flows (free-text descriptions)
@@ -121,6 +121,13 @@ export async function POST(req: NextRequest) {
   const photoLines = (photos as string[] | undefined)?.length
     ? [`Photos: ${(photos as string[]).join(" | ")}`]
     : [];
+
+  const brokenLines: string[] = [];
+  if (brokenFunctional === false) brokenLines.push("Broken: NOT FUNCTIONAL — manual review");
+  else if (brokenFunctional === true) brokenLines.push("Broken: still functional");
+  if (brokenGlass === "front") brokenLines.push("Glass: FRONT (display) cracked");
+  else if (brokenGlass === "back") brokenLines.push("Glass: BACK only cracked (display intact)");
+  else if (brokenGlass === "both") brokenLines.push("Glass: BOTH front and back cracked");
 
   const imeiLines: string[] = [];
   if (imei) imeiLines.push(`IMEI: ${imei}`);
@@ -188,6 +195,7 @@ export async function POST(req: NextRequest) {
     `Condition: ${condition}`,
     quote ? `Quote: $${quote}` : `Quote: TBD (custom)`,
     `Payout: ${payout}`,
+    ...brokenLines,
     ...reviewLines,
     ...marginLines,
     ...imeiLines,

@@ -3378,7 +3378,7 @@ const FAQS = [
   { q: "What if the package weighs more than the label says?", a: "Don't worry about it. The prepaid label is on our shipping account, so if your box comes in heavier than the label estimated, FedEx / UPS bills us for the difference — never you. The only thing you need to do is make sure the box actually contains the device you quoted." },
 ];
 
-type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "graphics" | "displayresolution" | "condition" | "broken-functional" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "extras" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
+type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "graphics" | "displayresolution" | "condition" | "broken-functional" | "broken-glass" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "extras" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
 
 // Brand-specific extra questions. A device family can declare a list of
 // follow-up questions (disc drive / controllers / hours flown / band
@@ -5647,6 +5647,11 @@ export default function Home() {
   const [storage, setStorage] = useState<typeof ALL_STORAGES[0] | null>(null);
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
   const [brokenFunctional, setBrokenFunctional] = useState<boolean | null>(null);
+  // Phone-specific follow-up to "broken" — which side of the glass is
+  // cracked. Front (display) is a bigger hit to resale than back, both
+  // is the worst. Collected for the lead notes; future pricing math
+  // can read off this field too.
+  const [brokenGlass, setBrokenGlass] = useState<"front" | "back" | "both" | null>(null);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
   // MacBook-specific picks (Wave 1). Only used when the picked model
   // has a MACBOOK_SPECS entry; otherwise these stay null and the legacy
@@ -6248,6 +6253,7 @@ export default function Home() {
       else { setStep("condition"); setCondition(null); }
     }
     else if (step === "broken-functional") { setStep("condition"); setCondition(null); setBrokenFunctional(null); }
+    else if (step === "broken-glass") { setStep("broken-functional"); setBrokenFunctional(null); setBrokenGlass(null); }
     else if (step === "carrier") { setStep("storage"); setStorage(null); }
     else if (step === "carrier-lock") { setStep("carrier"); setCarrier(null); }
     else if (step === "quote") {
@@ -9732,10 +9738,12 @@ export default function Home() {
                     // Broken: ask functional question before continuing
                     if (c.id === "broken") {
                       setBrokenFunctional(null); // reset
+                      setBrokenGlass(null);
                       setStep("broken-functional" as Step); pushHistory("broken-functional" as Step);
                       return;
                     }
                     setBrokenFunctional(null); // clear for non-broken
+                    setBrokenGlass(null);
                     // Spec'd flow: condition comes AFTER storage. Laptops go
                     // to battery health; desktops skip battery/charger and
                     // route to extras (GPU, accessories) or quote.
@@ -9860,6 +9868,13 @@ export default function Home() {
                 <button
                   onClick={() => {
                     setBrokenFunctional(true);
+                    // PHONE follow-up: ask which glass is cracked. Front
+                    // (display) hurts resale most, back is mostly cosmetic.
+                    if (isPhoneFlow) {
+                      setBrokenGlass(null);
+                      setStep("broken-glass" as Step); pushHistory("broken-glass" as Step);
+                      return;
+                    }
                     // Continue normal flow — functional broken gets a price
                     if (model && hasAdditiveSpecs(model.id)) {
                       const isDskType = deviceType?.endsWith("_desktop") ?? false;
@@ -9910,6 +9925,60 @@ export default function Home() {
                     <p className="text-[#b8b8b8] text-xs mt-0.5">Won&apos;t power on, dead screen, non-responsive touch, water damage, or major hardware failure</p>
                   </div>
                 </button>
+              </div>
+            </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: BROKEN GLASS (phones only) — runs after broken-functional
+          when the user says the device still works. Front (display) glass
+          is the bigger resale hit; back-only is mostly cosmetic. */}
+      {step === "broken-glass" && page === "home" && model && condition?.id === "broken" && isPhoneFlow && (
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+            <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+            {selectionPanelMobile}
+            <h2 className="text-xl lg:text-3xl font-extrabold mb-2">Which glass is cracked?</h2>
+            <p className="text-[#b8b8b8] text-sm mb-4">Back-only damage hurts resale less than a cracked display, so we want to know exactly what's going on.</p>
+            {stepProgress}
+            <div className="tcc-selection-frame">
+              <div className="space-y-2">
+                {([
+                  { id: "front", emoji: "📱", title: "Front (display) only", sub: "Front screen is cracked. Back is intact." },
+                  { id: "back", emoji: "🪞", title: "Back only", sub: "Back glass is cracked. Front display is clean." },
+                  { id: "both", emoji: "💥", title: "Both front and back", sub: "Both sides are cracked." },
+                ] as { id: "front" | "back" | "both"; emoji: string; title: string; sub: string }[]).map(g => (
+                  <button
+                    key={g.id}
+                    onClick={() => {
+                      setBrokenGlass(g.id);
+                      // Continue with the same routing the broken-functional
+                      // Yes-branch uses for phones (none of the additive /
+                      // PC / desktop paths apply to phones, so go straight
+                      // to extras-or-storage like the original).
+                      if (getBrandExtras(deviceType, model?.id).length > 0) {
+                        setExtras({}); setExtrasIndex(0);
+                        setStep("extras"); pushHistory("extras"); return;
+                      }
+                      const ns: Step = "storage";
+                      setStep(ns); pushHistory(ns);
+                    }}
+                    className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                  >
+                    <div className="text-3xl">{g.emoji}</div>
+                    <div className="flex-1">
+                      <p className="font-extrabold text-[15px] text-white">{g.title}</p>
+                      <p className="text-[#b8b8b8] text-xs mt-0.5">{g.sub}</p>
+                    </div>
+                  </button>
+                ))}
               </div>
             </div>
             </div>
@@ -10475,7 +10544,7 @@ export default function Home() {
                 const res = await fetch("/api/lead", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: photoUrls, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload }),
+                  body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: photoUrls, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined }),
                 });
                 if (!res.ok) throw new Error('Failed');
                 if (email || phone) {
