@@ -60,7 +60,7 @@ def rule_lg_class_submodel_bug() -> list[Finding]:
     """
     if not IWM_ADJ.exists():
         return []
-    d = json.loads(IWM_ADJ.read_text())
+    d = json.loads(IWM_ADJ.read_text(encoding="utf-8"))
     bad = []
     for k, v in d.items():
         # check both legacy flat shape and v2 submodels shape
@@ -74,6 +74,14 @@ def rule_lg_class_submodel_bug() -> list[Finding]:
     return [Finding("lg-class-submodel-bug", "fail", f"{len(bad)} priced entries with empty chips", bad)]
 
 
+# Known-legitimate cheap entries — confirmed against IWM Flawless and
+# the underlying chassis year. Add a slug here only after verifying the
+# model is genuinely a pre-2022 budget machine.
+LEGACY_LOW_PRICE_OK = {
+    "latitude-3000-series-laptop/latitude-3000-13",  # Latitude 3300, 2018 13" budget — IWM Flawless $15
+}
+
+
 def rule_price_floor_pc_laptops() -> list[Finding]:
     """Sanity floor on PC laptop prices — if a 2022+ laptop is under $30,
     something is probably wrong. Cheap legacy entries are fine; this
@@ -81,16 +89,18 @@ def rule_price_floor_pc_laptops() -> list[Finding]:
     """
     if not IWM_PRICES.exists():
         return []
-    d = json.loads(IWM_PRICES.read_text())
+    d = json.loads(IWM_PRICES.read_text(encoding="utf-8"))
     suspicious = []
     for k, v in d.items():
+        if k in LEGACY_LOW_PRICE_OK:
+            continue
         p = v.get("iwm_flawless")
         if p is None:
             continue
         if 0 < p < 30:
             suspicious.append(f"{k}: ${p}")
     if not suspicious:
-        return [Finding("pc-price-floor", "info", "no PC laptop priced under $30")]
+        return [Finding("pc-price-floor", "info", "no PC laptop priced under $30 (legacy allowlist applied)")]
     return [Finding("pc-price-floor", "warn", f"{len(suspicious)} PC laptops priced under $30 (verify these aren't 2022+ models)", suspicious)]
 
 
@@ -103,7 +113,7 @@ def rule_page_tsx_duplicate_ids() -> list[Finding]:
     """
     if not PAGE.exists():
         return []
-    src = PAGE.read_text()
+    src = PAGE.read_text(encoding="utf-8")
     # Match only real variant objects: id + label + (base | inquiryOnly | image).
     # That excludes brand_extras options ({id,label,multiplier}), edition
     # entries ({id,label,adj}), MODEL_GROUPS rows, etc.
@@ -131,7 +141,7 @@ def rule_pc_specs_baseline_quote_nonzero() -> list[Finding]:
     """
     if not PC_SPECS.exists():
         return []
-    d = json.loads(PC_SPECS.read_text())
+    d = json.loads(PC_SPECS.read_text(encoding="utf-8"))
     bad = []
     for vid, s in d.items():
         if s.get("_inquiry_only"):
@@ -156,7 +166,7 @@ def rule_pc_specs_have_chips() -> list[Finding]:
     """
     if not PC_SPECS.exists():
         return []
-    d = json.loads(PC_SPECS.read_text())
+    d = json.loads(PC_SPECS.read_text(encoding="utf-8"))
     bad = []
     for vid, s in d.items():
         if not s.get("processors"):
@@ -177,7 +187,7 @@ def rule_topprice_drift() -> list[Finding]:
     """
     if not PAGE.exists():
         return []
-    src = PAGE.read_text()
+    src = PAGE.read_text(encoding="utf-8")
 
     def max_base(name: str) -> int:
         start = src.find(f"const {name} = [")
@@ -216,7 +226,7 @@ def rule_inquiry_vs_base_consistency() -> list[Finding]:
     """
     if not PAGE.exists():
         return []
-    src = PAGE.read_text()
+    src = PAGE.read_text(encoding="utf-8")
     # Variant lines with both base and inquiryOnly
     bad = []
     for m in re.finditer(
@@ -238,7 +248,7 @@ def rule_page_variants_have_image() -> list[Finding]:
     paths that don't match either pattern."""
     if not PAGE.exists():
         return []
-    src = PAGE.read_text()
+    src = PAGE.read_text(encoding="utf-8")
     images = re.findall(r'image:\s*"([^"]+)"', src)
     ok_re = re.compile(r"^/(devices/|[\w-]+\.(png|jpg|jpeg|webp|svg))")
     bad = [img for img in images if img and not ok_re.match(img) and not img.startswith("http")]
@@ -258,8 +268,8 @@ def rule_tablet_specs_match_scrape() -> list[Finding]:
     adj_path = ROOT / "iwm-tablet-adjustments.json"
     if not PAGE.exists() or not adj_path.exists():
         return []
-    src = PAGE.read_text()
-    iwm = json.loads(adj_path.read_text())
+    src = PAGE.read_text(encoding="utf-8")
+    iwm = json.loads(adj_path.read_text(encoding="utf-8"))
 
     # Parse the inline MAP from gen-tablet-specs.py — easier than
     # importing. Each line: "vid": "iwm-key",
@@ -267,7 +277,7 @@ def rule_tablet_specs_match_scrape() -> list[Finding]:
     mapping = {}
     if map_path.exists():
         in_map = False
-        for line in map_path.read_text().splitlines():
+        for line in map_path.read_text(encoding="utf-8").splitlines():
             if "MAP = {" in line: in_map = True; continue
             if in_map and line.strip() == "}": break
             if in_map:

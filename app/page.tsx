@@ -8891,22 +8891,78 @@ export default function Home() {
               </>
             )}
 
-            {/* Surface: All variants flat */}
-            {deviceType === "surface" && (
-              <>
-                <div className="space-y-2">
-                  {surfaceVariants.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                      <p className="font-semibold text-[15px]">{m.label}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
-                        <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            {/* Surface: 3 main categories from IWM (Pro / Pro X / Go) with
+                era sub-groups under Pro, plus an "Other Microsoft Devices"
+                section for inquiry-only legacy hardware (Book / Studio /
+                Original / Duo). Matches the iPad / MacBook tree pattern. */}
+            {deviceType === "surface" && (() => {
+              type SubGroup = { label?: string; year?: string; ids: string[] };
+              type Section  = { label: string; year: string; subGroups: SubGroup[] };
+              const sections: Section[] = [
+                { label: "Microsoft Surface Pro", year: "2013 – 2026", subGroups: [
+                  { label: "Copilot+ · Snapdragon X", year: "2024–2026", ids: ["surfpro12_13", "surfpro12_12", "surfpro11"] },
+                  { label: "Intel / AMD",             year: "2020–2023", ids: ["surfpro10biz", "surfpro9", "surfpro8", "surfpro7p", "surfpro7"] },
+                  { label: "Legacy",                  year: "2013–2019", ids: ["surfpro6", "surfpro5_2017", "surfpro4", "surfpro3", "surfpro2", "surfpro1"] },
+                ]},
+                { label: "Microsoft Surface Pro X", year: "ARM · 2019 – 2020", subGroups: [
+                  { ids: ["surfprox2020", "surfprox2019"] },
+                ]},
+                { label: "Microsoft Surface Go", year: "Compact · 2018 – 2024", subGroups: [
+                  { ids: ["surfgo4", "surfgo3", "surfgo2", "surfgo1"] },
+                ]},
+                { label: "Other Microsoft Devices", year: "Get a quote", subGroups: [
+                  { label: "Surface Book / Laptop Studio", ids: ["surfstudio2", "surfstudio1", "surfbook3", "surfbook2", "surfbook1"] },
+                  { label: "Original (Non-Pro)",           ids: ["surf3", "surf2", "surfrt"] },
+                  { label: "Surface Duo",                  ids: ["surfduo2", "surfduo1"] },
+                ]},
+              ];
+              const byId = new Map(surfaceVariants.map(m => [m.id, m]));
+              return (
+                <div className="space-y-8">
+                  {sections.map(section => {
+                    const populated = section.subGroups
+                      .map(g => ({ ...g, variants: g.ids.map(id => byId.get(id)).filter(Boolean) as typeof surfaceVariants }))
+                      .filter(g => g.variants.length > 0);
+                    if (populated.length === 0) return null;
+                    return (
+                      <div key={section.label}>
+                        <div className="flex items-center gap-3 mb-3">
+                          <p className="text-[11px] md:text-xs font-extrabold tracking-[0.22em] uppercase text-[#00c853]">{section.label}</p>
+                          <span className="text-[10px] text-[#888]">{section.year}</span>
+                          <div className="flex-1 h-px bg-gradient-to-r from-[#00c853]/40 via-white/15 to-transparent" />
+                        </div>
+                        <div className="space-y-4">
+                          {populated.map((g, gi) => (
+                            <div key={g.label || gi}>
+                              {g.label && (
+                                <div className="flex items-center gap-2 mb-1.5 pl-1">
+                                  <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#e6e6e6]/70">{g.label}</p>
+                                  {g.year && <span className="text-[9px] text-[#888]">{g.year}</span>}
+                                </div>
+                              )}
+                              <div className="space-y-2">
+                                {g.variants.map((m) => {
+                                  const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
+                                  return (
+                                    <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                                      <p className="font-semibold text-[15px]">{m.label}</p>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a Quote" : `Up to $${getMaxPrice(m, "surface")}`}</span>
+                                        <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                                      </div>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </button>
-                  ))}
+                    );
+                  })}
                 </div>
-              </>
-            )}
+              );
+            })()}
 
             {/* Alienware: 7 series boxes mirroring IWM (M / X / Area / Aurora / 17 / 15 / 13) */}
             {deviceType === "alienware" && !selectedSeries && (
