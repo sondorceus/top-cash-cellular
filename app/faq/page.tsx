@@ -34,7 +34,11 @@ const FAQ = [
   },
   {
     q: "How do I know your prices are higher than Apple Trade-In or my carrier?",
-    a: "On the quote page we show a side-by-side comparison with Apple Trade-In and major carriers, plus the dollar difference. If you find a higher legitimate offer elsewhere, click the price-match pill on your quote and we'll beat it by $25.",
+    a: "Our homepage has a side-by-side comparison with Apple Trade-In and major carriers so you can sanity-check before you sell. If you find a higher legitimate offer elsewhere, click the \"Got a higher offer?\" pill on your quote and we'll beat it by $25.",
+  },
+  {
+    q: "What if my package weighs more than the prepaid label says?",
+    a: "The prepaid label runs on our shipping account, so if your box comes in heavier than the label estimated, FedEx / UPS bills us — never you. Just make sure the package contains the device you quoted.",
   },
   {
     q: "What happens to my data?",
