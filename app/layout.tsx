@@ -73,6 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-8H5VGFLJ71" />
+        <script src="https://accounts.google.com/gsi/client" async defer />
         <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8H5VGFLJ71');gtag('config','AW-18099653912');` }} />
         <meta name="google-site-verification" content="BZt20XeVKiVl8Pb0tnXR0LwGJnweRfDtDUdInz1O2tU" />
         <meta name="trustpilot-one-time-domain-verification-id" content="bb9ae689-f93e-4f7a-b089-a9ca8f8c4bd5" />

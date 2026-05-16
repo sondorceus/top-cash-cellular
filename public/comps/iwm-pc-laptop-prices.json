@@ -1,0 +1,4232 @@
+{
+  "acer-aspire-laptop/galaxy-buds": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "galaxy-buds",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:25:08+00:00",
+    "series": "acer-aspire-laptop",
+    "url": "https://www.itsworthmore.com/sell/acer-aspire-laptop/galaxy-buds"
+  },
+  "acer-aspire-laptop/galaxy-buds-live": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "galaxy-buds-live",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:25:23+00:00",
+    "series": "acer-aspire-laptop",
+    "url": "https://www.itsworthmore.com/sell/acer-aspire-laptop/galaxy-buds-live"
+  },
+  "acer-aspire-laptop/galaxy-buds-plus": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "galaxy-buds-plus",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:25:10+00:00",
+    "series": "acer-aspire-laptop",
+    "url": "https://www.itsworthmore.com/sell/acer-aspire-laptop/galaxy-buds-plus"
+  },
+  "alienware-area-series-laptop/alienware-16-area-51": {
+    "done": true,
+    "iwm_flawless": 2450,
+    "model": "alienware-16-area-51",
+    "our_price": 2205,
+    "scraped_at": "2026-05-14T00:36:00+00:00",
+    "series": "alienware-area-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/alienware-area-series-laptop/alienware-16-area-51"
+  },
+  "alienware-area-series-laptop/alienware-18-area-51": {
+    "done": true,
+    "iwm_flawless": 2125,
+    "model": "alienware-18-area-51",
+    "our_price": 1912,
+    "scraped_at": "2026-05-14T00:36:32+00:00",
+    "series": "alienware-area-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/alienware-area-series-laptop/alienware-18-area-51"
+  },
+  "alienware-area-series-laptop/alienware-area-51m": {
+    "done": true,
+    "iwm_flawless": 745,
+    "model": "alienware-area-51m",
+    "our_price": 670,
+    "scraped_at": "2026-05-14T00:25:46+00:00",
+    "series": "alienware-area-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/alienware-area-series-laptop/alienware-area-51m"
+  },
+  "alienware-aurora-laptop/alienware-16-aurora": {
+    "done": true,
+    "iwm_flawless": 840,
+    "model": "alienware-16-aurora",
+    "our_price": 756,
+    "scraped_at": "2026-05-14T00:37:48+00:00",
+    "series": "alienware-aurora-laptop",
+    "url": "https://www.itsworthmore.com/sell/alienware-aurora-laptop/alienware-16-aurora"
+  },
+  "alienware-aurora-laptop/alienware-16x-aurora": {
+    "done": true,
+    "iwm_flawless": 900,
+    "model": "alienware-16x-aurora",
+    "our_price": 810,
+    "scraped_at": "2026-05-14T00:37:45+00:00",
+    "series": "alienware-aurora-laptop",
+    "url": "https://www.itsworthmore.com/sell/alienware-aurora-laptop/alienware-16x-aurora"
+  },
+  "alienware-m-series-laptop/alienware-m15": {
+    "done": true,
+    "iwm_flawless": 925,
+    "model": "alienware-m15",
+    "our_price": 832,
+    "scraped_at": "2026-05-14T00:25:42+00:00",
+    "series": "alienware-m-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/alienware-m-series-laptop/alienware-m15"
+  },
+  "alienware-m-series-laptop/alienware-m16": {
+    "done": true,
+    "iwm_flawless": 1080,
+    "model": "alienware-m16",
+    "our_price": 972,
+    "scraped_at": "2026-05-14T00:31:27+00:00",
+    "series": "alienware-m-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/alienware-m-series-laptop/alienware-m16"
+  },
+  "alienware-m-series-laptop/alienware-m17": {
+    "done": true,
+    "iwm_flawless": 930,
+    "model": "alienware-m17",
+    "our_price": 837,
+    "scraped_at": "2026-05-14T00:25:46+00:00",
+    "series": "alienware-m-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/alienware-m-series-laptop/alienware-m17"
+  },
+  "alienware-m-series-laptop/alienware-m18": {
+    "done": true,
+    "iwm_flawless": 1645,
+    "model": "alienware-m18",
+    "our_price": 1480,
+    "scraped_at": "2026-05-14T00:31:37+00:00",
+    "series": "alienware-m-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/alienware-m-series-laptop/alienware-m18"
+  },
+  "alienware-x-series-laptop/alienware-x14": {
+    "done": true,
+    "iwm_flawless": 825,
+    "model": "alienware-x14",
+    "our_price": 742,
+    "scraped_at": "2026-05-14T00:31:32+00:00",
+    "series": "alienware-x-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/alienware-x-series-laptop/alienware-x14"
+  },
+  "alienware-x-series-laptop/alienware-x15": {
+    "done": true,
+    "iwm_flawless": 975,
+    "model": "alienware-x15",
+    "our_price": 877,
+    "scraped_at": "2026-05-14T00:31:27+00:00",
+    "series": "alienware-x-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/alienware-x-series-laptop/alienware-x15"
+  },
+  "alienware-x-series-laptop/alienware-x16": {
+    "done": true,
+    "iwm_flawless": 1330,
+    "model": "alienware-x16",
+    "our_price": 1197,
+    "scraped_at": "2026-05-14T00:31:42+00:00",
+    "series": "alienware-x-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/alienware-x-series-laptop/alienware-x16"
+  },
+  "alienware-x-series-laptop/alienware-x17": {
+    "done": true,
+    "iwm_flawless": 1100,
+    "model": "alienware-x17",
+    "our_price": 990,
+    "scraped_at": "2026-05-14T00:31:53+00:00",
+    "series": "alienware-x-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/alienware-x-series-laptop/alienware-x17"
+  },
+  "asus-laptop/asus-chromebook": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "asus-chromebook",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:26:41+00:00",
+    "series": "asus-laptop",
+    "url": "https://www.itsworthmore.com/sell/asus-laptop/asus-chromebook"
+  },
+  "dell-14-laptop/dell-14-plus-2-in-1-db04250": {
+    "done": true,
+    "iwm_flawless": 325,
+    "model": "dell-14-plus-2-in-1-db04250",
+    "our_price": 292,
+    "scraped_at": "2026-05-14T00:37:23+00:00",
+    "series": "dell-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-14-laptop/dell-14-plus-2-in-1-db04250"
+  },
+  "dell-14-laptop/dell-14-plus-2-in-1-db04255": {
+    "done": true,
+    "iwm_flawless": 265,
+    "model": "dell-14-plus-2-in-1-db04255",
+    "our_price": 238,
+    "scraped_at": "2026-05-14T00:38:37+00:00",
+    "series": "dell-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-14-laptop/dell-14-plus-2-in-1-db04255"
+  },
+  "dell-14-laptop/dell-14-plus-db14250": {
+    "done": true,
+    "iwm_flawless": 410,
+    "model": "dell-14-plus-db14250",
+    "our_price": 369,
+    "scraped_at": "2026-05-14T00:38:07+00:00",
+    "series": "dell-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-14-laptop/dell-14-plus-db14250"
+  },
+  "dell-14-laptop/dell-14-plus-db14255": {
+    "done": true,
+    "iwm_flawless": 230,
+    "model": "dell-14-plus-db14255",
+    "our_price": 207,
+    "scraped_at": "2026-05-14T00:38:15+00:00",
+    "series": "dell-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-14-laptop/dell-14-plus-db14255"
+  },
+  "dell-15-laptop/dell-15-dc15250": {
+    "done": true,
+    "iwm_flawless": 200,
+    "model": "dell-15-dc15250",
+    "our_price": 180,
+    "scraped_at": "2026-05-14T00:39:00+00:00",
+    "series": "dell-15-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-15-laptop/dell-15-dc15250"
+  },
+  "dell-15-laptop/dell-15-dc15255": {
+    "done": true,
+    "iwm_flawless": 170,
+    "model": "dell-15-dc15255",
+    "our_price": 153,
+    "scraped_at": "2026-05-14T00:38:25+00:00",
+    "series": "dell-15-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-15-laptop/dell-15-dc15255"
+  },
+  "dell-16-laptop/dell-16-dc16250": {
+    "done": true,
+    "iwm_flawless": 270,
+    "model": "dell-16-dc16250",
+    "our_price": 243,
+    "scraped_at": "2026-05-14T00:36:34+00:00",
+    "series": "dell-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-16-laptop/dell-16-dc16250"
+  },
+  "dell-16-laptop/dell-16-dc16255": {
+    "done": true,
+    "iwm_flawless": 345,
+    "model": "dell-16-dc16255",
+    "our_price": 310,
+    "scraped_at": "2026-05-14T00:39:28+00:00",
+    "series": "dell-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-16-laptop/dell-16-dc16255"
+  },
+  "dell-16-laptop/dell-16-dc16256": {
+    "done": true,
+    "iwm_flawless": 180,
+    "model": "dell-16-dc16256",
+    "our_price": 162,
+    "scraped_at": "2026-05-14T00:39:17+00:00",
+    "series": "dell-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-16-laptop/dell-16-dc16256"
+  },
+  "dell-16-laptop/dell-16-plus-2-in-1-db06250": {
+    "done": true,
+    "iwm_flawless": 400,
+    "model": "dell-16-plus-2-in-1-db06250",
+    "our_price": 360,
+    "scraped_at": "2026-05-14T00:37:05+00:00",
+    "series": "dell-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-16-laptop/dell-16-plus-2-in-1-db06250"
+  },
+  "dell-16-laptop/dell-16-plus-db16250": {
+    "done": true,
+    "iwm_flawless": 425,
+    "model": "dell-16-plus-db16250",
+    "our_price": 382,
+    "scraped_at": "2026-05-14T00:38:49+00:00",
+    "series": "dell-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-16-laptop/dell-16-plus-db16250"
+  },
+  "dell-16-laptop/dell-16-plus-db16255": {
+    "done": true,
+    "iwm_flawless": 400,
+    "model": "dell-16-plus-db16255",
+    "our_price": 360,
+    "scraped_at": "2026-05-14T00:37:00+00:00",
+    "series": "dell-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-16-laptop/dell-16-plus-db16255"
+  },
+  "dell-laptop/dell-chromebook": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "dell-chromebook",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:27:03+00:00",
+    "series": "dell-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-laptop/dell-chromebook"
+  },
+  "dell-pro-13-laptop/dell-pro-13-plus--2-in-1-pb13250": {
+    "done": true,
+    "iwm_flawless": 450,
+    "model": "dell-pro-13-plus--2-in-1-pb13250",
+    "our_price": 405,
+    "scraped_at": "2026-05-14T00:38:03+00:00",
+    "series": "dell-pro-13-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-13-laptop/dell-pro-13-plus--2-in-1-pb13250"
+  },
+  "dell-pro-13-laptop/dell-pro-13-plus--2-in-1-pb13255": {
+    "done": true,
+    "iwm_flawless": 550,
+    "model": "dell-pro-13-plus--2-in-1-pb13255",
+    "our_price": 495,
+    "scraped_at": "2026-05-14T00:39:41+00:00",
+    "series": "dell-pro-13-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-13-laptop/dell-pro-13-plus--2-in-1-pb13255"
+  },
+  "dell-pro-13-laptop/dell-pro-13-plus-pb13250": {
+    "done": true,
+    "iwm_flawless": 375,
+    "model": "dell-pro-13-plus-pb13250",
+    "our_price": 337,
+    "scraped_at": "2026-05-14T00:36:29+00:00",
+    "series": "dell-pro-13-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-13-laptop/dell-pro-13-plus-pb13250"
+  },
+  "dell-pro-13-laptop/dell-pro-13-plus-pb13255": {
+    "done": true,
+    "iwm_flawless": 475,
+    "model": "dell-pro-13-plus-pb13255",
+    "our_price": 427,
+    "scraped_at": "2026-05-14T00:39:12+00:00",
+    "series": "dell-pro-13-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-13-laptop/dell-pro-13-plus-pb13255"
+  },
+  "dell-pro-13-laptop/dell-pro-13-premium-pa13250": {
+    "done": true,
+    "iwm_flawless": 700,
+    "model": "dell-pro-13-premium-pa13250",
+    "our_price": 630,
+    "scraped_at": "2026-05-14T00:34:51+00:00",
+    "series": "dell-pro-13-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-13-laptop/dell-pro-13-premium-pa13250"
+  },
+  "dell-pro-14-laptop/dell-pro-14-essential-pv14250": {
+    "done": true,
+    "iwm_flawless": 260,
+    "model": "dell-pro-14-essential-pv14250",
+    "our_price": 234,
+    "scraped_at": "2026-05-14T00:40:22+00:00",
+    "series": "dell-pro-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-14-essential-pv14250"
+  },
+  "dell-pro-14-laptop/dell-pro-14-essential-pv14255": {
+    "done": true,
+    "iwm_flawless": 315,
+    "model": "dell-pro-14-essential-pv14255",
+    "our_price": 283,
+    "scraped_at": "2026-05-14T00:40:19+00:00",
+    "series": "dell-pro-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-14-essential-pv14255"
+  },
+  "dell-pro-14-laptop/dell-pro-14-pc14250": {
+    "done": true,
+    "iwm_flawless": 340,
+    "model": "dell-pro-14-pc14250",
+    "our_price": 306,
+    "scraped_at": "2026-05-14T00:37:59+00:00",
+    "series": "dell-pro-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-14-pc14250"
+  },
+  "dell-pro-14-laptop/dell-pro-14-pc14255": {
+    "done": true,
+    "iwm_flawless": 340,
+    "model": "dell-pro-14-pc14255",
+    "our_price": 306,
+    "scraped_at": "2026-05-14T00:38:08+00:00",
+    "series": "dell-pro-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-14-pc14255"
+  },
+  "dell-pro-14-laptop/dell-pro-14-plus-2-in-1-pb14250": {
+    "done": true,
+    "iwm_flawless": 500,
+    "model": "dell-pro-14-plus-2-in-1-pb14250",
+    "our_price": 450,
+    "scraped_at": "2026-05-14T00:36:22+00:00",
+    "series": "dell-pro-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-14-plus-2-in-1-pb14250"
+  },
+  "dell-pro-14-laptop/dell-pro-14-plus-2-in-1-pb14255": {
+    "done": true,
+    "iwm_flawless": 600,
+    "model": "dell-pro-14-plus-2-in-1-pb14255",
+    "our_price": 540,
+    "scraped_at": "2026-05-14T00:39:38+00:00",
+    "series": "dell-pro-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-14-plus-2-in-1-pb14255"
+  },
+  "dell-pro-14-laptop/dell-pro-14-plus-pb14250": {
+    "done": true,
+    "iwm_flawless": 490,
+    "model": "dell-pro-14-plus-pb14250",
+    "our_price": 441,
+    "scraped_at": "2026-05-14T00:36:47+00:00",
+    "series": "dell-pro-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-14-plus-pb14250"
+  },
+  "dell-pro-14-laptop/dell-pro-14-plus-pb14255": {
+    "done": true,
+    "iwm_flawless": 625,
+    "model": "dell-pro-14-plus-pb14255",
+    "our_price": 562,
+    "scraped_at": "2026-05-14T00:40:09+00:00",
+    "series": "dell-pro-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-14-plus-pb14255"
+  },
+  "dell-pro-14-laptop/dell-pro-14-premium-pa14250": {
+    "done": true,
+    "iwm_flawless": 505,
+    "model": "dell-pro-14-premium-pa14250",
+    "our_price": 454,
+    "scraped_at": "2026-05-14T00:36:52+00:00",
+    "series": "dell-pro-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-14-premium-pa14250"
+  },
+  "dell-pro-14-laptop/dell-pro-max-14-mc14250": {
+    "done": true,
+    "iwm_flawless": 825,
+    "model": "dell-pro-max-14-mc14250",
+    "our_price": 742,
+    "scraped_at": "2026-05-14T00:38:19+00:00",
+    "series": "dell-pro-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-max-14-mc14250"
+  },
+  "dell-pro-14-laptop/dell-pro-max-14-mc14255": {
+    "done": true,
+    "iwm_flawless": 625,
+    "model": "dell-pro-max-14-mc14255",
+    "our_price": 562,
+    "scraped_at": "2026-05-14T00:40:07+00:00",
+    "series": "dell-pro-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-max-14-mc14255"
+  },
+  "dell-pro-14-laptop/dell-pro-max-14-premium-ma14250": {
+    "done": true,
+    "iwm_flawless": 1285,
+    "model": "dell-pro-max-14-premium-ma14250",
+    "our_price": 1156,
+    "scraped_at": "2026-05-14T00:39:51+00:00",
+    "series": "dell-pro-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-max-14-premium-ma14250"
+  },
+  "dell-pro-15-laptop/dell-pro-15-essential-pv15250": {
+    "done": true,
+    "iwm_flawless": 230,
+    "model": "dell-pro-15-essential-pv15250",
+    "our_price": 207,
+    "scraped_at": "2026-05-14T00:39:30+00:00",
+    "series": "dell-pro-15-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-15-laptop/dell-pro-15-essential-pv15250"
+  },
+  "dell-pro-15-laptop/dell-pro-15-essential-pv15255": {
+    "done": true,
+    "iwm_flawless": 230,
+    "model": "dell-pro-15-essential-pv15255",
+    "our_price": 207,
+    "scraped_at": "2026-05-14T00:39:10+00:00",
+    "series": "dell-pro-15-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-15-laptop/dell-pro-15-essential-pv15255"
+  },
+  "dell-pro-16-laptop/dell-pro-16-pc16250": {
+    "done": true,
+    "iwm_flawless": 325,
+    "model": "dell-pro-16-pc16250",
+    "our_price": 292,
+    "scraped_at": "2026-05-14T00:37:28+00:00",
+    "series": "dell-pro-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-16-laptop/dell-pro-16-pc16250"
+  },
+  "dell-pro-16-laptop/dell-pro-16-pc16255": {
+    "done": true,
+    "iwm_flawless": 420,
+    "model": "dell-pro-16-pc16255",
+    "our_price": 378,
+    "scraped_at": "2026-05-14T00:37:36+00:00",
+    "series": "dell-pro-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-16-laptop/dell-pro-16-pc16255"
+  },
+  "dell-pro-16-laptop/dell-pro-16-plus-pb16250": {
+    "done": true,
+    "iwm_flawless": 480,
+    "model": "dell-pro-16-plus-pb16250",
+    "our_price": 432,
+    "scraped_at": "2026-05-14T00:34:30+00:00",
+    "series": "dell-pro-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-16-laptop/dell-pro-16-plus-pb16250"
+  },
+  "dell-pro-16-laptop/dell-pro-16-plus-pb16255": {
+    "done": true,
+    "iwm_flawless": 475,
+    "model": "dell-pro-16-plus-pb16255",
+    "our_price": 427,
+    "scraped_at": "2026-05-14T00:37:40+00:00",
+    "series": "dell-pro-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-16-laptop/dell-pro-16-plus-pb16255"
+  },
+  "dell-pro-16-laptop/dell-pro-max-16-mc16250": {
+    "done": true,
+    "iwm_flawless": 850,
+    "model": "dell-pro-max-16-mc16250",
+    "our_price": 765,
+    "scraped_at": "2026-05-14T00:38:50+00:00",
+    "series": "dell-pro-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-16-laptop/dell-pro-max-16-mc16250"
+  },
+  "dell-pro-16-laptop/dell-pro-max-16-mc16255": {
+    "done": true,
+    "iwm_flawless": 1200,
+    "model": "dell-pro-max-16-mc16255",
+    "our_price": 1080,
+    "scraped_at": "2026-05-14T00:38:56+00:00",
+    "series": "dell-pro-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-16-laptop/dell-pro-max-16-mc16255"
+  },
+  "dell-pro-16-laptop/dell-pro-max-16-plus-mb16250": {
+    "done": true,
+    "iwm_flawless": 1600,
+    "model": "dell-pro-max-16-plus-mb16250",
+    "our_price": 1440,
+    "scraped_at": "2026-05-14T00:38:28+00:00",
+    "series": "dell-pro-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-16-laptop/dell-pro-max-16-plus-mb16250"
+  },
+  "dell-pro-16-laptop/dell-pro-max-16-premium-ma16250": {
+    "done": true,
+    "iwm_flawless": 1850,
+    "model": "dell-pro-max-16-premium-ma16250",
+    "our_price": 1665,
+    "scraped_at": "2026-05-14T00:38:46+00:00",
+    "series": "dell-pro-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-16-laptop/dell-pro-max-16-premium-ma16250"
+  },
+  "dell-pro-18-laptop/dell-pro-max-18-plus-mb18250": {
+    "done": true,
+    "iwm_flawless": 1500,
+    "model": "dell-pro-max-18-plus-mb18250",
+    "our_price": 1350,
+    "scraped_at": "2026-05-14T00:38:43+00:00",
+    "series": "dell-pro-18-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-18-laptop/dell-pro-max-18-plus-mb18250"
+  },
+  "dell-pro-18-laptop/intel-core-ultra-5-series-2": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "intel-core-ultra-5-series-2",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:44:13+00:00",
+    "series": "dell-pro-18-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-18-laptop/intel-core-ultra-5-series-2"
+  },
+  "dell-pro-18-laptop/intel-core-ultra-7-series-2": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "intel-core-ultra-7-series-2",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:18+00:00",
+    "series": "dell-pro-18-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-18-laptop/intel-core-ultra-7-series-2"
+  },
+  "dell-pro-18-laptop/intel-core-ultra-9-series-2": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "intel-core-ultra-9-series-2",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:40+00:00",
+    "series": "dell-pro-18-laptop",
+    "url": "https://www.itsworthmore.com/sell/dell-pro-18-laptop/intel-core-ultra-9-series-2"
+  },
+  "expert-laptop/expertbook": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "expertbook",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:25:13+00:00",
+    "series": "expert-laptop",
+    "url": "https://www.itsworthmore.com/sell/expert-laptop/expertbook"
+  },
+  "expert-laptop/expertbook-b1": {
+    "done": true,
+    "iwm_flawless": 280,
+    "model": "expertbook-b1",
+    "our_price": 252,
+    "scraped_at": "2026-05-14T00:36:55+00:00",
+    "series": "expert-laptop",
+    "url": "https://www.itsworthmore.com/sell/expert-laptop/expertbook-b1"
+  },
+  "expert-laptop/expertbook-b2": {
+    "done": true,
+    "iwm_flawless": 210,
+    "model": "expertbook-b2",
+    "our_price": 189,
+    "scraped_at": "2026-05-14T00:37:01+00:00",
+    "series": "expert-laptop",
+    "url": "https://www.itsworthmore.com/sell/expert-laptop/expertbook-b2"
+  },
+  "expert-laptop/expertbook-b3": {
+    "done": true,
+    "iwm_flawless": 460,
+    "model": "expertbook-b3",
+    "our_price": 414,
+    "scraped_at": "2026-05-14T00:36:47+00:00",
+    "series": "expert-laptop",
+    "url": "https://www.itsworthmore.com/sell/expert-laptop/expertbook-b3"
+  },
+  "expert-laptop/expertbook-b5": {
+    "done": true,
+    "iwm_flawless": 255,
+    "model": "expertbook-b5",
+    "our_price": 229,
+    "scraped_at": "2026-05-14T00:37:13+00:00",
+    "series": "expert-laptop",
+    "url": "https://www.itsworthmore.com/sell/expert-laptop/expertbook-b5"
+  },
+  "expert-laptop/expertbook-b9": {
+    "done": true,
+    "iwm_flawless": 120,
+    "model": "expertbook-b9",
+    "our_price": 108,
+    "scraped_at": "2026-05-14T00:36:41+00:00",
+    "series": "expert-laptop",
+    "url": "https://www.itsworthmore.com/sell/expert-laptop/expertbook-b9"
+  },
+  "expert-laptop/expertbook-p1": {
+    "done": true,
+    "iwm_flawless": 380,
+    "model": "expertbook-p1",
+    "our_price": 342,
+    "scraped_at": "2026-05-14T00:37:27+00:00",
+    "series": "expert-laptop",
+    "url": "https://www.itsworthmore.com/sell/expert-laptop/expertbook-p1"
+  },
+  "expert-laptop/expertbook-p5": {
+    "done": true,
+    "iwm_flawless": 330,
+    "model": "expertbook-p5",
+    "our_price": 297,
+    "scraped_at": "2026-05-14T00:37:18+00:00",
+    "series": "expert-laptop",
+    "url": "https://www.itsworthmore.com/sell/expert-laptop/expertbook-p5"
+  },
+  "g-series-laptop/3500": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "3500",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:55+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/3500"
+  },
+  "g-series-laptop/3579": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "3579",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:56+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/3579"
+  },
+  "g-series-laptop/3590": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "3590",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:03+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/3590"
+  },
+  "g-series-laptop/3779": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "3779",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:18+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/3779"
+  },
+  "g-series-laptop/5500": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5500",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:00+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/5500"
+  },
+  "g-series-laptop/5505-se": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5505-se",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:22+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/5505-se"
+  },
+  "g-series-laptop/5510": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5510",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:29+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/5510"
+  },
+  "g-series-laptop/5511": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5511",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:14+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/5511"
+  },
+  "g-series-laptop/5515": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5515",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:44:06+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/5515"
+  },
+  "g-series-laptop/5520": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5520",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:11+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/5520"
+  },
+  "g-series-laptop/5521": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5521",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:32+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/5521"
+  },
+  "g-series-laptop/5525": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5525",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:18+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/5525"
+  },
+  "g-series-laptop/5530": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5530",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:44:10+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/5530"
+  },
+  "g-series-laptop/5535": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5535",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:14+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/5535"
+  },
+  "g-series-laptop/5587": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5587",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:07+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/5587"
+  },
+  "g-series-laptop/5590": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5590",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:59+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/5590"
+  },
+  "g-series-laptop/7500": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "7500",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:03+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/7500"
+  },
+  "g-series-laptop/7588": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "7588",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:25+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/7588"
+  },
+  "g-series-laptop/7590": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "7590",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:11+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/7590"
+  },
+  "g-series-laptop/7620": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "7620",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:36+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/7620"
+  },
+  "g-series-laptop/7630": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "7630",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:22+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/7630"
+  },
+  "g-series-laptop/7700": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "7700",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:07+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/7700"
+  },
+  "g-series-laptop/7790": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "7790",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:44:03+00:00",
+    "series": "g-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/g-series-laptop/7790"
+  },
+  "google-laptop/google-pixelbook-go": {
+    "done": true,
+    "iwm_flawless": 170,
+    "model": "google-pixelbook-go",
+    "our_price": 153,
+    "scraped_at": "2026-05-14T00:25:37+00:00",
+    "series": "google-laptop",
+    "url": "https://www.itsworthmore.com/sell/google-laptop/google-pixelbook-go"
+  },
+  "hp-chromebook-laptop/hp-chromebook": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "hp-chromebook",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:26:59+00:00",
+    "series": "hp-chromebook-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-chromebook-laptop/hp-chromebook"
+  },
+  "hp-elitebook-ultra/hp-elitebook-ultra-g1i": {
+    "done": true,
+    "iwm_flawless": 475,
+    "model": "hp-elitebook-ultra-g1i",
+    "our_price": 427,
+    "scraped_at": "2026-05-14T00:41:50+00:00",
+    "series": "hp-elitebook-ultra",
+    "url": "https://www.itsworthmore.com/sell/hp-elitebook-ultra/hp-elitebook-ultra-g1i"
+  },
+  "hp-elitebook-ultra/hp-elitebook-ultra-g1q": {
+    "done": true,
+    "iwm_flawless": 290,
+    "model": "hp-elitebook-ultra-g1q",
+    "our_price": 261,
+    "scraped_at": "2026-05-14T00:42:06+00:00",
+    "series": "hp-elitebook-ultra",
+    "url": "https://www.itsworthmore.com/sell/hp-elitebook-ultra/hp-elitebook-ultra-g1q"
+  },
+  "hp-elitebook/hp-elitebook-g10": {
+    "done": true,
+    "iwm_flawless": 460,
+    "model": "hp-elitebook-g10",
+    "our_price": 414,
+    "scraped_at": "2026-05-14T00:41:23+00:00",
+    "series": "hp-elitebook",
+    "url": "https://www.itsworthmore.com/sell/hp-elitebook/hp-elitebook-g10"
+  },
+  "hp-elitebook/hp-elitebook-g11": {
+    "done": true,
+    "iwm_flawless": 400,
+    "model": "hp-elitebook-g11",
+    "our_price": 360,
+    "scraped_at": "2026-05-14T00:41:39+00:00",
+    "series": "hp-elitebook",
+    "url": "https://www.itsworthmore.com/sell/hp-elitebook/hp-elitebook-g11"
+  },
+  "hp-elitebook/hp-elitebook-g1a": {
+    "done": true,
+    "iwm_flawless": 450,
+    "model": "hp-elitebook-g1a",
+    "our_price": 405,
+    "scraped_at": "2026-05-14T00:41:08+00:00",
+    "series": "hp-elitebook",
+    "url": "https://www.itsworthmore.com/sell/hp-elitebook/hp-elitebook-g1a"
+  },
+  "hp-elitebook/hp-elitebook-g1i": {
+    "done": true,
+    "iwm_flawless": 375,
+    "model": "hp-elitebook-g1i",
+    "our_price": 337,
+    "scraped_at": "2026-05-14T00:41:40+00:00",
+    "series": "hp-elitebook",
+    "url": "https://www.itsworthmore.com/sell/hp-elitebook/hp-elitebook-g1i"
+  },
+  "hp-elitebook/hp-elitebook-g1q": {
+    "done": true,
+    "iwm_flawless": 465,
+    "model": "hp-elitebook-g1q",
+    "our_price": 418,
+    "scraped_at": "2026-05-14T00:41:14+00:00",
+    "series": "hp-elitebook",
+    "url": "https://www.itsworthmore.com/sell/hp-elitebook/hp-elitebook-g1q"
+  },
+  "hp-elitebook/hp-elitebook-g4": {
+    "done": true,
+    "iwm_flawless": 90,
+    "model": "hp-elitebook-g4",
+    "our_price": 81,
+    "scraped_at": "2026-05-14T00:41:42+00:00",
+    "series": "hp-elitebook",
+    "url": "https://www.itsworthmore.com/sell/hp-elitebook/hp-elitebook-g4"
+  },
+  "hp-elitebook/hp-elitebook-g5": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "hp-elitebook-g5",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:08+00:00",
+    "series": "hp-elitebook",
+    "url": "https://www.itsworthmore.com/sell/hp-elitebook/hp-elitebook-g5"
+  },
+  "hp-elitebook/hp-elitebook-g6": {
+    "done": true,
+    "iwm_flawless": 115,
+    "model": "hp-elitebook-g6",
+    "our_price": 103,
+    "scraped_at": "2026-05-14T00:41:37+00:00",
+    "series": "hp-elitebook",
+    "url": "https://www.itsworthmore.com/sell/hp-elitebook/hp-elitebook-g6"
+  },
+  "hp-elitebook/hp-elitebook-g7": {
+    "done": true,
+    "iwm_flawless": 165,
+    "model": "hp-elitebook-g7",
+    "our_price": 148,
+    "scraped_at": "2026-05-14T00:41:53+00:00",
+    "series": "hp-elitebook",
+    "url": "https://www.itsworthmore.com/sell/hp-elitebook/hp-elitebook-g7"
+  },
+  "hp-elitebook/hp-elitebook-g8": {
+    "done": true,
+    "iwm_flawless": 210,
+    "model": "hp-elitebook-g8",
+    "our_price": 189,
+    "scraped_at": "2026-05-14T00:41:29+00:00",
+    "series": "hp-elitebook",
+    "url": "https://www.itsworthmore.com/sell/hp-elitebook/hp-elitebook-g8"
+  },
+  "hp-elitebook/hp-elitebook-g9": {
+    "done": true,
+    "iwm_flawless": 220,
+    "model": "hp-elitebook-g9",
+    "our_price": 198,
+    "scraped_at": "2026-05-14T00:41:54+00:00",
+    "series": "hp-elitebook",
+    "url": "https://www.itsworthmore.com/sell/hp-elitebook/hp-elitebook-g9"
+  },
+  "hp-omen-laptop/hp-omen-15": {
+    "done": true,
+    "iwm_flawless": 480,
+    "model": "hp-omen-15",
+    "our_price": 432,
+    "scraped_at": "2026-05-14T00:26:02+00:00",
+    "series": "hp-omen-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-laptop/hp-omen-15"
+  },
+  "hp-omen-laptop/hp-omen-16": {
+    "done": true,
+    "iwm_flawless": 520,
+    "model": "hp-omen-16",
+    "our_price": 468,
+    "scraped_at": "2026-05-14T00:26:29+00:00",
+    "series": "hp-omen-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-laptop/hp-omen-16"
+  },
+  "hp-omen-laptop/hp-omen-17": {
+    "done": true,
+    "iwm_flawless": 885,
+    "model": "hp-omen-17",
+    "our_price": 796,
+    "scraped_at": "2026-05-14T00:26:10+00:00",
+    "series": "hp-omen-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-laptop/hp-omen-17"
+  },
+  "hp-omen-max-laptop/amd-ryzen-ai-7-h-350": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "amd-ryzen-ai-7-h-350",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:53+00:00",
+    "series": "hp-omen-max-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-max-laptop/amd-ryzen-ai-7-h-350"
+  },
+  "hp-omen-max-laptop/amd-ryzen-ai-9-hx-375": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "amd-ryzen-ai-9-hx-375",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:56+00:00",
+    "series": "hp-omen-max-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-max-laptop/amd-ryzen-ai-9-hx-375"
+  },
+  "hp-omen-max-laptop/hp-omen-max-16": {
+    "done": true,
+    "iwm_flawless": 1050,
+    "model": "hp-omen-max-16",
+    "our_price": 945,
+    "scraped_at": "2026-05-14T00:35:40+00:00",
+    "series": "hp-omen-max-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-max-laptop/hp-omen-max-16"
+  },
+  "hp-omen-max-laptop/intel-core-ultra-7-series-2": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "intel-core-ultra-7-series-2",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:20+00:00",
+    "series": "hp-omen-max-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-max-laptop/intel-core-ultra-7-series-2"
+  },
+  "hp-omen-max-laptop/intel-core-ultra-9-series-2": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "intel-core-ultra-9-series-2",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:02+00:00",
+    "series": "hp-omen-max-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-max-laptop/intel-core-ultra-9-series-2"
+  },
+  "hp-omen-slim-laptop/hp-omen-slim-16": {
+    "done": true,
+    "iwm_flawless": 515,
+    "model": "hp-omen-slim-16",
+    "our_price": 463,
+    "scraped_at": "2026-05-14T00:37:53+00:00",
+    "series": "hp-omen-slim-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-slim-laptop/hp-omen-slim-16"
+  },
+  "hp-omen-slim-laptop/intel-core-ultra-5-series-2": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "intel-core-ultra-5-series-2",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:57+00:00",
+    "series": "hp-omen-slim-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-slim-laptop/intel-core-ultra-5-series-2"
+  },
+  "hp-omen-slim-laptop/intel-core-ultra-7-series-2": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "intel-core-ultra-7-series-2",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:59+00:00",
+    "series": "hp-omen-slim-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-slim-laptop/intel-core-ultra-7-series-2"
+  },
+  "hp-omen-slim-laptop/intel-core-ultra-9-series-2": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "intel-core-ultra-9-series-2",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:24+00:00",
+    "series": "hp-omen-slim-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-slim-laptop/intel-core-ultra-9-series-2"
+  },
+  "hp-omen-transcend-laptop/hp-omen-transcend-14": {
+    "done": true,
+    "iwm_flawless": 775,
+    "model": "hp-omen-transcend-14",
+    "our_price": 697,
+    "scraped_at": "2026-05-14T00:35:34+00:00",
+    "series": "hp-omen-transcend-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-transcend-laptop/hp-omen-transcend-14"
+  },
+  "hp-omen-transcend-laptop/hp-omen-transcend-16": {
+    "done": true,
+    "iwm_flawless": 615,
+    "model": "hp-omen-transcend-16",
+    "our_price": 553,
+    "scraped_at": "2026-05-14T00:36:03+00:00",
+    "series": "hp-omen-transcend-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-omen-transcend-laptop/hp-omen-transcend-16"
+  },
+  "hp-omnibook-ultra/hp-omnibook-ultra-flip": {
+    "done": true,
+    "iwm_flawless": 510,
+    "model": "hp-omnibook-ultra-flip",
+    "our_price": 459,
+    "scraped_at": "2026-05-14T00:39:56+00:00",
+    "series": "hp-omnibook-ultra",
+    "url": "https://www.itsworthmore.com/sell/hp-omnibook-ultra/hp-omnibook-ultra-flip"
+  },
+  "hp-omnibook/hp-omnibook-3": {
+    "done": true,
+    "iwm_flawless": 340,
+    "model": "hp-omnibook-3",
+    "our_price": 306,
+    "scraped_at": "2026-05-14T00:39:37+00:00",
+    "series": "hp-omnibook",
+    "url": "https://www.itsworthmore.com/sell/hp-omnibook/hp-omnibook-3"
+  },
+  "hp-omnibook/hp-omnibook-7": {
+    "done": true,
+    "iwm_flawless": 500,
+    "model": "hp-omnibook-7",
+    "our_price": 450,
+    "scraped_at": "2026-05-14T00:39:22+00:00",
+    "series": "hp-omnibook",
+    "url": "https://www.itsworthmore.com/sell/hp-omnibook/hp-omnibook-7"
+  },
+  "hp-omnibook/hp-omnibook-7-aero": {
+    "done": true,
+    "iwm_flawless": 500,
+    "model": "hp-omnibook-7-aero",
+    "our_price": 450,
+    "scraped_at": "2026-05-14T00:39:25+00:00",
+    "series": "hp-omnibook",
+    "url": "https://www.itsworthmore.com/sell/hp-omnibook/hp-omnibook-7-aero"
+  },
+  "hp-omnibook/hp-omnibook-7-flip": {
+    "done": true,
+    "iwm_flawless": 350,
+    "model": "hp-omnibook-7-flip",
+    "our_price": 315,
+    "scraped_at": "2026-05-14T00:39:53+00:00",
+    "series": "hp-omnibook",
+    "url": "https://www.itsworthmore.com/sell/hp-omnibook/hp-omnibook-7-flip"
+  },
+  "hp-omnibook/hp-omnibook-x": {
+    "done": true,
+    "iwm_flawless": 480,
+    "model": "hp-omnibook-x",
+    "our_price": 432,
+    "scraped_at": "2026-05-14T00:24:51+00:00",
+    "series": "hp-omnibook",
+    "url": "https://www.itsworthmore.com/sell/hp-omnibook/hp-omnibook-x"
+  },
+  "hp-omnibook/hp-omnibook-x-flip": {
+    "done": true,
+    "iwm_flawless": 400,
+    "model": "hp-omnibook-x-flip",
+    "our_price": 360,
+    "scraped_at": "2026-05-14T00:39:42+00:00",
+    "series": "hp-omnibook",
+    "url": "https://www.itsworthmore.com/sell/hp-omnibook/hp-omnibook-x-flip"
+  },
+  "hp-victus-laptop/hp-victus": {
+    "done": true,
+    "iwm_flawless": 335,
+    "model": "hp-victus",
+    "our_price": 301,
+    "scraped_at": "2026-05-14T00:26:17+00:00",
+    "series": "hp-victus-laptop",
+    "url": "https://www.itsworthmore.com/sell/hp-victus-laptop/hp-victus"
+  },
+  "inspiron-3000-series-laptop/inspiron-3000-14": {
+    "done": true,
+    "iwm_flawless": 40,
+    "model": "inspiron-3000-14",
+    "our_price": 36,
+    "scraped_at": "2026-05-14T00:27:30+00:00",
+    "series": "inspiron-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/inspiron-3000-series-laptop/inspiron-3000-14"
+  },
+  "inspiron-3000-series-laptop/inspiron-3000-15": {
+    "done": true,
+    "iwm_flawless": 30,
+    "model": "inspiron-3000-15",
+    "our_price": 27,
+    "scraped_at": "2026-05-14T00:27:49+00:00",
+    "series": "inspiron-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/inspiron-3000-series-laptop/inspiron-3000-15"
+  },
+  "inspiron-3000-series-laptop/inspiron-3000-17": {
+    "done": true,
+    "iwm_flawless": 50,
+    "model": "inspiron-3000-17",
+    "our_price": 45,
+    "scraped_at": "2026-05-14T00:27:54+00:00",
+    "series": "inspiron-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/inspiron-3000-series-laptop/inspiron-3000-17"
+  },
+  "inspiron-5000-series-laptop/inspiron-5000-13": {
+    "done": true,
+    "iwm_flawless": 65,
+    "model": "inspiron-5000-13",
+    "our_price": 58,
+    "scraped_at": "2026-05-14T00:27:14+00:00",
+    "series": "inspiron-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/inspiron-5000-series-laptop/inspiron-5000-13"
+  },
+  "inspiron-5000-series-laptop/inspiron-5000-14": {
+    "done": true,
+    "iwm_flawless": 50,
+    "model": "inspiron-5000-14",
+    "our_price": 45,
+    "scraped_at": "2026-05-14T00:27:20+00:00",
+    "series": "inspiron-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/inspiron-5000-series-laptop/inspiron-5000-14"
+  },
+  "inspiron-5000-series-laptop/inspiron-5000-15": {
+    "done": true,
+    "iwm_flawless": 130,
+    "model": "inspiron-5000-15",
+    "our_price": 117,
+    "scraped_at": "2026-05-14T00:27:17+00:00",
+    "series": "inspiron-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/inspiron-5000-series-laptop/inspiron-5000-15"
+  },
+  "inspiron-5000-series-laptop/inspiron-5000-16": {
+    "done": true,
+    "iwm_flawless": 280,
+    "model": "inspiron-5000-16",
+    "our_price": 252,
+    "scraped_at": "2026-05-14T00:27:35+00:00",
+    "series": "inspiron-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/inspiron-5000-series-laptop/inspiron-5000-16"
+  },
+  "inspiron-5000-series-laptop/inspiron-5000-17": {
+    "done": true,
+    "iwm_flawless": 50,
+    "model": "inspiron-5000-17",
+    "our_price": 45,
+    "scraped_at": "2026-05-14T00:27:27+00:00",
+    "series": "inspiron-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/inspiron-5000-series-laptop/inspiron-5000-17"
+  },
+  "inspiron-7000-series-laptop/inspiron-7000-13": {
+    "done": true,
+    "iwm_flawless": 85,
+    "model": "inspiron-7000-13",
+    "our_price": 76,
+    "scraped_at": "2026-05-14T00:27:08+00:00",
+    "series": "inspiron-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/inspiron-7000-series-laptop/inspiron-7000-13"
+  },
+  "inspiron-7000-series-laptop/inspiron-7000-14": {
+    "done": true,
+    "iwm_flawless": 60,
+    "model": "inspiron-7000-14",
+    "our_price": 54,
+    "scraped_at": "2026-05-14T00:27:00+00:00",
+    "series": "inspiron-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/inspiron-7000-series-laptop/inspiron-7000-14"
+  },
+  "inspiron-7000-series-laptop/inspiron-7000-15": {
+    "done": true,
+    "iwm_flawless": 120,
+    "model": "inspiron-7000-15",
+    "our_price": 108,
+    "scraped_at": "2026-05-14T00:27:06+00:00",
+    "series": "inspiron-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/inspiron-7000-series-laptop/inspiron-7000-15"
+  },
+  "inspiron-7000-series-laptop/inspiron-7000-16": {
+    "done": true,
+    "iwm_flawless": 315,
+    "model": "inspiron-7000-16",
+    "our_price": 283,
+    "scraped_at": "2026-05-14T00:27:03+00:00",
+    "series": "inspiron-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/inspiron-7000-series-laptop/inspiron-7000-16"
+  },
+  "inspiron-7000-series-laptop/inspiron-7000-17": {
+    "done": true,
+    "iwm_flawless": 310,
+    "model": "inspiron-7000-17",
+    "our_price": 279,
+    "scraped_at": "2026-05-14T00:27:21+00:00",
+    "series": "inspiron-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/inspiron-7000-series-laptop/inspiron-7000-17"
+  },
+  "laptop/windows-laptop": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "windows-laptop",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:25:06+00:00",
+    "series": "laptop",
+    "url": "https://www.itsworthmore.com/sell/laptop/windows-laptop"
+  },
+  "latitude-3000-series-laptop/latitude-3000-13": {
+    "done": true,
+    "iwm_flawless": 15,
+    "model": "latitude-3000-13",
+    "our_price": 13,
+    "scraped_at": "2026-05-14T00:28:20+00:00",
+    "series": "latitude-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-3000-series-laptop/latitude-3000-13"
+  },
+  "latitude-3000-series-laptop/latitude-3000-14": {
+    "done": true,
+    "iwm_flawless": 45,
+    "model": "latitude-3000-14",
+    "our_price": 40,
+    "scraped_at": "2026-05-14T00:28:26+00:00",
+    "series": "latitude-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-3000-series-laptop/latitude-3000-14"
+  },
+  "latitude-3000-series-laptop/latitude-3000-15": {
+    "done": true,
+    "iwm_flawless": 40,
+    "model": "latitude-3000-15",
+    "our_price": 36,
+    "scraped_at": "2026-05-14T00:28:45+00:00",
+    "series": "latitude-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-3000-series-laptop/latitude-3000-15"
+  },
+  "latitude-5000-series-laptop/latitude-5000-12": {
+    "done": true,
+    "iwm_flawless": 45,
+    "model": "latitude-5000-12",
+    "our_price": 40,
+    "scraped_at": "2026-05-14T00:28:40+00:00",
+    "series": "latitude-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-5000-series-laptop/latitude-5000-12"
+  },
+  "latitude-5000-series-laptop/latitude-5000-13": {
+    "done": true,
+    "iwm_flawless": 295,
+    "model": "latitude-5000-13",
+    "our_price": 265,
+    "scraped_at": "2026-05-14T00:28:47+00:00",
+    "series": "latitude-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-5000-series-laptop/latitude-5000-13"
+  },
+  "latitude-5000-series-laptop/latitude-5000-14": {
+    "done": true,
+    "iwm_flawless": 75,
+    "model": "latitude-5000-14",
+    "our_price": 67,
+    "scraped_at": "2026-05-14T00:28:55+00:00",
+    "series": "latitude-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-5000-series-laptop/latitude-5000-14"
+  },
+  "latitude-5000-series-laptop/latitude-5000-15": {
+    "done": true,
+    "iwm_flawless": 65,
+    "model": "latitude-5000-15",
+    "our_price": 58,
+    "scraped_at": "2026-05-14T00:28:52+00:00",
+    "series": "latitude-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-5000-series-laptop/latitude-5000-15"
+  },
+  "latitude-7000-series-laptop/latitude-7000-12": {
+    "done": true,
+    "iwm_flawless": 40,
+    "model": "latitude-7000-12",
+    "our_price": 36,
+    "scraped_at": "2026-05-14T00:27:33+00:00",
+    "series": "latitude-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-7000-series-laptop/latitude-7000-12"
+  },
+  "latitude-7000-series-laptop/latitude-7000-13": {
+    "done": true,
+    "iwm_flawless": 70,
+    "model": "latitude-7000-13",
+    "our_price": 63,
+    "scraped_at": "2026-05-14T00:28:17+00:00",
+    "series": "latitude-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-7000-series-laptop/latitude-7000-13"
+  },
+  "latitude-7000-series-laptop/latitude-7000-14": {
+    "done": true,
+    "iwm_flawless": 35,
+    "model": "latitude-7000-14",
+    "our_price": 31,
+    "scraped_at": "2026-05-14T00:28:31+00:00",
+    "series": "latitude-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-7000-series-laptop/latitude-7000-14"
+  },
+  "latitude-7000-series-laptop/latitude-7000-15": {
+    "done": true,
+    "iwm_flawless": 165,
+    "model": "latitude-7000-15",
+    "our_price": 148,
+    "scraped_at": "2026-05-14T00:28:25+00:00",
+    "series": "latitude-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-7000-series-laptop/latitude-7000-15"
+  },
+  "latitude-7000-series-laptop/latitude-7000-16": {
+    "done": true,
+    "iwm_flawless": 380,
+    "model": "latitude-7000-16",
+    "our_price": 342,
+    "scraped_at": "2026-05-14T00:29:06+00:00",
+    "series": "latitude-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-7000-series-laptop/latitude-7000-16"
+  },
+  "latitude-9000-series-laptop/latitude-9000-13": {
+    "done": true,
+    "iwm_flawless": 325,
+    "model": "latitude-9000-13",
+    "our_price": 292,
+    "scraped_at": "2026-05-14T00:28:34+00:00",
+    "series": "latitude-9000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-9000-series-laptop/latitude-9000-13"
+  },
+  "latitude-9000-series-laptop/latitude-9000-14": {
+    "done": true,
+    "iwm_flawless": 650,
+    "model": "latitude-9000-14",
+    "our_price": 585,
+    "scraped_at": "2026-05-14T00:28:38+00:00",
+    "series": "latitude-9000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-9000-series-laptop/latitude-9000-14"
+  },
+  "latitude-9000-series-laptop/latitude-9000-15": {
+    "done": true,
+    "iwm_flawless": 215,
+    "model": "latitude-9000-15",
+    "our_price": 193,
+    "scraped_at": "2026-05-14T00:28:58+00:00",
+    "series": "latitude-9000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/latitude-9000-series-laptop/latitude-9000-15"
+  },
+  "latitude-rugged-series/latitude-5430-rugged": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "latitude-5430-rugged",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:25+00:00",
+    "series": "latitude-rugged-series",
+    "url": "https://www.itsworthmore.com/sell/latitude-rugged-series/latitude-5430-rugged"
+  },
+  "latitude-rugged-series/latitude-7330-rugged-extreme": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "latitude-7330-rugged-extreme",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:44:17+00:00",
+    "series": "latitude-rugged-series",
+    "url": "https://www.itsworthmore.com/sell/latitude-rugged-series/latitude-7330-rugged-extreme"
+  },
+  "lenovo-chromebook-laptop/lenovo-chromebook": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "lenovo-chromebook",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:26:44+00:00",
+    "series": "lenovo-chromebook-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-chromebook-laptop/lenovo-chromebook"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-1": {
+    "done": true,
+    "iwm_flawless": 165,
+    "model": "lenovo-ideapad-1",
+    "our_price": 148,
+    "scraped_at": "2026-05-14T00:40:05+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-1"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-3": {
+    "done": true,
+    "iwm_flawless": 140,
+    "model": "lenovo-ideapad-3",
+    "our_price": 126,
+    "scraped_at": "2026-05-14T00:33:36+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-3"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-330s": {
+    "done": true,
+    "iwm_flawless": 45,
+    "model": "lenovo-ideapad-330s",
+    "our_price": 40,
+    "scraped_at": "2026-05-14T00:33:20+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-330s"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-3i": {
+    "done": true,
+    "iwm_flawless": 45,
+    "model": "lenovo-ideapad-3i",
+    "our_price": 40,
+    "scraped_at": "2026-05-14T00:25:47+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-3i"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-5": {
+    "done": true,
+    "iwm_flawless": 105,
+    "model": "lenovo-ideapad-5",
+    "our_price": 94,
+    "scraped_at": "2026-05-14T00:33:32+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-5"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-5i-2-in-1": {
+    "done": true,
+    "iwm_flawless": 215,
+    "model": "lenovo-ideapad-5i-2-in-1",
+    "our_price": 193,
+    "scraped_at": "2026-05-14T00:38:11+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-5i-2-in-1"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-730s": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "lenovo-ideapad-730s",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:33:25+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-730s"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-flex-5": {
+    "done": true,
+    "iwm_flawless": 205,
+    "model": "lenovo-ideapad-flex-5",
+    "our_price": 184,
+    "scraped_at": "2026-05-14T00:33:09+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-flex-5"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-flex-5i": {
+    "done": true,
+    "iwm_flawless": 240,
+    "model": "lenovo-ideapad-flex-5i",
+    "our_price": 216,
+    "scraped_at": "2026-05-14T00:33:30+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-flex-5i"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-gaming-3": {
+    "done": true,
+    "iwm_flawless": 385,
+    "model": "lenovo-ideapad-gaming-3",
+    "our_price": 346,
+    "scraped_at": "2026-05-14T00:37:40+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-gaming-3"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-gaming-3i": {
+    "done": true,
+    "iwm_flawless": 225,
+    "model": "lenovo-ideapad-gaming-3i",
+    "our_price": 202,
+    "scraped_at": "2026-05-14T00:37:14+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-gaming-3i"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-l340": {
+    "done": true,
+    "iwm_flawless": 80,
+    "model": "lenovo-ideapad-l340",
+    "our_price": 72,
+    "scraped_at": "2026-05-14T00:33:22+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-l340"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-s340": {
+    "done": true,
+    "iwm_flawless": 35,
+    "model": "lenovo-ideapad-s340",
+    "our_price": 31,
+    "scraped_at": "2026-05-14T00:33:44+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-s340"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-s540": {
+    "done": true,
+    "iwm_flawless": 35,
+    "model": "lenovo-ideapad-s540",
+    "our_price": 31,
+    "scraped_at": "2026-05-14T00:33:56+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-s540"
+  },
+  "lenovo-ideapad-laptop/lenovo-ideapad-slim-7": {
+    "done": true,
+    "iwm_flawless": 120,
+    "model": "lenovo-ideapad-slim-7",
+    "our_price": 108,
+    "scraped_at": "2026-05-14T00:33:29+00:00",
+    "series": "lenovo-ideapad-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-slim-7"
+  },
+  "lenovo-legion-laptop/lenovo-legion-5": {
+    "done": true,
+    "iwm_flawless": 555,
+    "model": "lenovo-legion-5",
+    "our_price": 499,
+    "scraped_at": "2026-05-14T00:32:09+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-5"
+  },
+  "lenovo-legion-laptop/lenovo-legion-5-pro": {
+    "done": true,
+    "iwm_flawless": 895,
+    "model": "lenovo-legion-5-pro",
+    "our_price": 805,
+    "scraped_at": "2026-05-14T00:32:29+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-5-pro"
+  },
+  "lenovo-legion-laptop/lenovo-legion-5i": {
+    "done": true,
+    "iwm_flawless": 380,
+    "model": "lenovo-legion-5i",
+    "our_price": 342,
+    "scraped_at": "2026-05-14T00:31:57+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-5i"
+  },
+  "lenovo-legion-laptop/lenovo-legion-5i-pro": {
+    "done": true,
+    "iwm_flawless": 500,
+    "model": "lenovo-legion-5i-pro",
+    "our_price": 450,
+    "scraped_at": "2026-05-14T00:32:48+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-5i-pro"
+  },
+  "lenovo-legion-laptop/lenovo-legion-7": {
+    "done": true,
+    "iwm_flawless": 825,
+    "model": "lenovo-legion-7",
+    "our_price": 742,
+    "scraped_at": "2026-05-14T00:32:26+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-7"
+  },
+  "lenovo-legion-laptop/lenovo-legion-7-pro": {
+    "done": true,
+    "iwm_flawless": 1700,
+    "model": "lenovo-legion-7-pro",
+    "our_price": 1530,
+    "scraped_at": "2026-05-14T00:32:43+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-7-pro"
+  },
+  "lenovo-legion-laptop/lenovo-legion-7i": {
+    "done": true,
+    "iwm_flawless": 620,
+    "model": "lenovo-legion-7i",
+    "our_price": 558,
+    "scraped_at": "2026-05-14T00:31:47+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-7i"
+  },
+  "lenovo-legion-laptop/lenovo-legion-7i-pro": {
+    "done": true,
+    "iwm_flawless": 1475,
+    "model": "lenovo-legion-7i-pro",
+    "our_price": 1327,
+    "scraped_at": "2026-05-14T00:32:40+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-7i-pro"
+  },
+  "lenovo-legion-laptop/lenovo-legion-9i": {
+    "done": true,
+    "iwm_flawless": 1400,
+    "model": "lenovo-legion-9i",
+    "our_price": 1260,
+    "scraped_at": "2026-05-14T00:32:40+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-9i"
+  },
+  "lenovo-legion-laptop/lenovo-legion-slim-5": {
+    "done": true,
+    "iwm_flawless": 850,
+    "model": "lenovo-legion-slim-5",
+    "our_price": 765,
+    "scraped_at": "2026-05-14T00:33:02+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-slim-5"
+  },
+  "lenovo-legion-laptop/lenovo-legion-slim-5i": {
+    "done": true,
+    "iwm_flawless": 475,
+    "model": "lenovo-legion-slim-5i",
+    "our_price": 427,
+    "scraped_at": "2026-05-14T00:32:54+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-slim-5i"
+  },
+  "lenovo-legion-laptop/lenovo-legion-slim-7": {
+    "done": true,
+    "iwm_flawless": 625,
+    "model": "lenovo-legion-slim-7",
+    "our_price": 562,
+    "scraped_at": "2026-05-14T00:31:43+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-slim-7"
+  },
+  "lenovo-legion-laptop/lenovo-legion-slim-7i": {
+    "done": true,
+    "iwm_flawless": 600,
+    "model": "lenovo-legion-slim-7i",
+    "our_price": 540,
+    "scraped_at": "2026-05-14T00:32:56+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-slim-7i"
+  },
+  "lenovo-legion-laptop/lenovo-legion-y520": {
+    "done": true,
+    "iwm_flawless": 95,
+    "model": "lenovo-legion-y520",
+    "our_price": 85,
+    "scraped_at": "2026-05-14T00:32:25+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-y520"
+  },
+  "lenovo-legion-laptop/lenovo-legion-y530": {
+    "done": true,
+    "iwm_flawless": 175,
+    "model": "lenovo-legion-y530",
+    "our_price": 157,
+    "scraped_at": "2026-05-14T00:32:36+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-y530"
+  },
+  "lenovo-legion-laptop/lenovo-legion-y540": {
+    "done": true,
+    "iwm_flawless": 350,
+    "model": "lenovo-legion-y540",
+    "our_price": 315,
+    "scraped_at": "2026-05-14T00:32:11+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-y540"
+  },
+  "lenovo-legion-laptop/lenovo-legion-y545": {
+    "done": true,
+    "iwm_flawless": 265,
+    "model": "lenovo-legion-y545",
+    "our_price": 238,
+    "scraped_at": "2026-05-14T00:32:15+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-y545"
+  },
+  "lenovo-legion-laptop/lenovo-legion-y7000p": {
+    "done": true,
+    "iwm_flawless": 230,
+    "model": "lenovo-legion-y7000p",
+    "our_price": 207,
+    "scraped_at": "2026-05-14T00:32:11+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-y7000p"
+  },
+  "lenovo-legion-laptop/lenovo-legion-y720": {
+    "done": true,
+    "iwm_flawless": 135,
+    "model": "lenovo-legion-y720",
+    "our_price": 121,
+    "scraped_at": "2026-05-14T00:32:25+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-y720"
+  },
+  "lenovo-legion-laptop/lenovo-legion-y730": {
+    "done": true,
+    "iwm_flawless": 125,
+    "model": "lenovo-legion-y730",
+    "our_price": 112,
+    "scraped_at": "2026-05-14T00:31:56+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-y730"
+  },
+  "lenovo-legion-laptop/lenovo-legion-y740": {
+    "done": true,
+    "iwm_flawless": 310,
+    "model": "lenovo-legion-y740",
+    "our_price": 279,
+    "scraped_at": "2026-05-14T00:32:01+00:00",
+    "series": "lenovo-legion-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-legion-laptop/lenovo-legion-y740"
+  },
+  "lenovo-loq-series-laptop/lenovo-loq-15": {
+    "done": true,
+    "iwm_flawless": 555,
+    "model": "lenovo-loq-15",
+    "our_price": 499,
+    "scraped_at": "2026-05-14T00:36:10+00:00",
+    "series": "lenovo-loq-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-loq-series-laptop/lenovo-loq-15"
+  },
+  "lenovo-loq-series-laptop/lenovo-loq-17": {
+    "done": true,
+    "iwm_flawless": 525,
+    "model": "lenovo-loq-17",
+    "our_price": 472,
+    "scraped_at": "2026-05-14T00:39:15+00:00",
+    "series": "lenovo-loq-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-loq-series-laptop/lenovo-loq-17"
+  },
+  "lenovo-slim-laptop/lenovo-slim-7": {
+    "done": true,
+    "iwm_flawless": 395,
+    "model": "lenovo-slim-7",
+    "our_price": 355,
+    "scraped_at": "2026-05-14T00:36:08+00:00",
+    "series": "lenovo-slim-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-slim-laptop/lenovo-slim-7"
+  },
+  "lenovo-slim-laptop/lenovo-slim-7-pro-x": {
+    "done": true,
+    "iwm_flawless": 500,
+    "model": "lenovo-slim-7-pro-x",
+    "our_price": 450,
+    "scraped_at": "2026-05-14T00:37:31+00:00",
+    "series": "lenovo-slim-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-slim-laptop/lenovo-slim-7-pro-x"
+  },
+  "lenovo-slim-laptop/lenovo-slim-7i": {
+    "done": true,
+    "iwm_flawless": 250,
+    "model": "lenovo-slim-7i",
+    "our_price": 225,
+    "scraped_at": "2026-05-14T00:36:38+00:00",
+    "series": "lenovo-slim-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-slim-laptop/lenovo-slim-7i"
+  },
+  "lenovo-slim-laptop/lenovo-slim-7i-pro-x": {
+    "done": true,
+    "iwm_flawless": 360,
+    "model": "lenovo-slim-7i-pro-x",
+    "our_price": 324,
+    "scraped_at": "2026-05-14T00:38:35+00:00",
+    "series": "lenovo-slim-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-slim-laptop/lenovo-slim-7i-pro-x"
+  },
+  "lenovo-slim-laptop/lenovo-slim-pro-7": {
+    "done": true,
+    "iwm_flawless": 495,
+    "model": "lenovo-slim-pro-7",
+    "our_price": 445,
+    "scraped_at": "2026-05-14T00:36:15+00:00",
+    "series": "lenovo-slim-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-slim-laptop/lenovo-slim-pro-7"
+  },
+  "lenovo-slim-laptop/lenovo-slim-pro-9i": {
+    "done": true,
+    "iwm_flawless": 655,
+    "model": "lenovo-slim-pro-9i",
+    "our_price": 589,
+    "scraped_at": "2026-05-14T00:37:08+00:00",
+    "series": "lenovo-slim-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-slim-laptop/lenovo-slim-pro-9i"
+  },
+  "lenovo-thinkbook-series/lenovo-thinkbook-13-series/thinkbook-13s": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "thinkbook-13s",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:29+00:00",
+    "series": "lenovo-thinkbook-series/lenovo-thinkbook-13-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkbook-series/lenovo-thinkbook-13-series/thinkbook-13s"
+  },
+  "lenovo-thinkbook-series/lenovo-thinkbook-13-series/thinkbook-13x": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "thinkbook-13x",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:03+00:00",
+    "series": "lenovo-thinkbook-series/lenovo-thinkbook-13-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkbook-series/lenovo-thinkbook-13-series/thinkbook-13x"
+  },
+  "lenovo-thinkbook-series/lenovo-thinkbook-14-series/thinkbook-14": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "thinkbook-14",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:01+00:00",
+    "series": "lenovo-thinkbook-series/lenovo-thinkbook-14-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkbook-series/lenovo-thinkbook-14-series/thinkbook-14"
+  },
+  "lenovo-thinkbook-series/lenovo-thinkbook-14-series/thinkbook-14p": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "thinkbook-14p",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:33+00:00",
+    "series": "lenovo-thinkbook-series/lenovo-thinkbook-14-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkbook-series/lenovo-thinkbook-14-series/thinkbook-14p"
+  },
+  "lenovo-thinkbook-series/lenovo-thinkbook-14-series/thinkbook-14s": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "thinkbook-14s",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:07+00:00",
+    "series": "lenovo-thinkbook-series/lenovo-thinkbook-14-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkbook-series/lenovo-thinkbook-14-series/thinkbook-14s"
+  },
+  "lenovo-thinkbook-series/lenovo-thinkbook-14-series/thinkbook-14s-yoga": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "thinkbook-14s-yoga",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:32+00:00",
+    "series": "lenovo-thinkbook-series/lenovo-thinkbook-14-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkbook-series/lenovo-thinkbook-14-series/thinkbook-14s-yoga"
+  },
+  "lenovo-thinkbook-series/lenovo-thinkbook-15-series/thinkbook-15": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "thinkbook-15",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:05+00:00",
+    "series": "lenovo-thinkbook-series/lenovo-thinkbook-15-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkbook-series/lenovo-thinkbook-15-series/thinkbook-15"
+  },
+  "lenovo-thinkbook-series/lenovo-thinkbook-15-series/thinkbook-15p": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "thinkbook-15p",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:36+00:00",
+    "series": "lenovo-thinkbook-series/lenovo-thinkbook-15-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkbook-series/lenovo-thinkbook-15-series/thinkbook-15p"
+  },
+  "lenovo-thinkbook-series/lenovo-thinkbook-16-series/thinkbook-16": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "thinkbook-16",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:36+00:00",
+    "series": "lenovo-thinkbook-series/lenovo-thinkbook-16-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkbook-series/lenovo-thinkbook-16-series/thinkbook-16"
+  },
+  "lenovo-thinkbook-series/lenovo-thinkbook-16-series/thinkbook-16p": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "thinkbook-16p",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:10+00:00",
+    "series": "lenovo-thinkbook-series/lenovo-thinkbook-16-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkbook-series/lenovo-thinkbook-16-series/thinkbook-16p"
+  },
+  "lenovo-thinkpad-e14-laptop/lenovo-thinkpad-e14-gen-5": {
+    "done": true,
+    "iwm_flawless": 265,
+    "model": "lenovo-thinkpad-e14-gen-5",
+    "our_price": 238,
+    "scraped_at": "2026-05-14T00:34:56+00:00",
+    "series": "lenovo-thinkpad-e14-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-e14-laptop/lenovo-thinkpad-e14-gen-5"
+  },
+  "lenovo-thinkpad-e14-laptop/lenovo-thinkpad-e14-gen-6": {
+    "done": true,
+    "iwm_flawless": 280,
+    "model": "lenovo-thinkpad-e14-gen-6",
+    "our_price": 252,
+    "scraped_at": "2026-05-14T00:35:25+00:00",
+    "series": "lenovo-thinkpad-e14-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-e14-laptop/lenovo-thinkpad-e14-gen-6"
+  },
+  "lenovo-thinkpad-e14-laptop/lenovo-thinkpad-e14-gen-7": {
+    "done": true,
+    "iwm_flawless": 280,
+    "model": "lenovo-thinkpad-e14-gen-7",
+    "our_price": 252,
+    "scraped_at": "2026-05-14T00:39:51+00:00",
+    "series": "lenovo-thinkpad-e14-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-e14-laptop/lenovo-thinkpad-e14-gen-7"
+  },
+  "lenovo-thinkpad-e15-laptop/lenovo-thinkpad-e15-gen-4": {
+    "done": true,
+    "iwm_flawless": 190,
+    "model": "lenovo-thinkpad-e15-gen-4",
+    "our_price": 171,
+    "scraped_at": "2026-05-14T00:35:48+00:00",
+    "series": "lenovo-thinkpad-e15-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-e15-laptop/lenovo-thinkpad-e15-gen-4"
+  },
+  "lenovo-thinkpad-e16-laptop/lenovo-thinkpad-e16-gen-1": {
+    "done": true,
+    "iwm_flawless": 170,
+    "model": "lenovo-thinkpad-e16-gen-1",
+    "our_price": 153,
+    "scraped_at": "2026-05-14T00:35:01+00:00",
+    "series": "lenovo-thinkpad-e16-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-e16-laptop/lenovo-thinkpad-e16-gen-1"
+  },
+  "lenovo-thinkpad-e16-laptop/lenovo-thinkpad-e16-gen-2": {
+    "done": true,
+    "iwm_flawless": 360,
+    "model": "lenovo-thinkpad-e16-gen-2",
+    "our_price": 324,
+    "scraped_at": "2026-05-14T00:35:30+00:00",
+    "series": "lenovo-thinkpad-e16-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-e16-laptop/lenovo-thinkpad-e16-gen-2"
+  },
+  "lenovo-thinkpad-e16-laptop/lenovo-thinkpad-e16-gen-3": {
+    "done": true,
+    "iwm_flawless": 390,
+    "model": "lenovo-thinkpad-e16-gen-3",
+    "our_price": 351,
+    "scraped_at": "2026-05-14T00:37:55+00:00",
+    "series": "lenovo-thinkpad-e16-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-e16-laptop/lenovo-thinkpad-e16-gen-3"
+  },
+  "lenovo-thinkpad-l-series/lenovo-thinkpad-l13-series": {
+    "done": true,
+    "iwm_flawless": 305,
+    "model": "lenovo-thinkpad-l13-series",
+    "our_price": 274,
+    "scraped_at": "2026-05-14T00:41:19+00:00",
+    "series": "lenovo-thinkpad-l-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-l-series/lenovo-thinkpad-l13-series"
+  },
+  "lenovo-thinkpad-l-series/lenovo-thinkpad-l14-series": {
+    "done": true,
+    "iwm_flawless": 395,
+    "model": "lenovo-thinkpad-l14-series",
+    "our_price": 355,
+    "scraped_at": "2026-05-14T00:40:47+00:00",
+    "series": "lenovo-thinkpad-l-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-l-series/lenovo-thinkpad-l14-series"
+  },
+  "lenovo-thinkpad-l-series/lenovo-thinkpad-l15-series": {
+    "done": true,
+    "iwm_flawless": 250,
+    "model": "lenovo-thinkpad-l15-series",
+    "our_price": 225,
+    "scraped_at": "2026-05-14T00:41:15+00:00",
+    "series": "lenovo-thinkpad-l-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-l-series/lenovo-thinkpad-l15-series"
+  },
+  "lenovo-thinkpad-l-series/lenovo-thinkpad-l16-series": {
+    "done": true,
+    "iwm_flawless": 250,
+    "model": "lenovo-thinkpad-l16-series",
+    "our_price": 225,
+    "scraped_at": "2026-05-14T00:40:50+00:00",
+    "series": "lenovo-thinkpad-l-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-l-series/lenovo-thinkpad-l16-series"
+  },
+  "lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p43": {
+    "done": true,
+    "iwm_flawless": 80,
+    "model": "lenovo-thinkpad-p43",
+    "our_price": 72,
+    "scraped_at": "2026-05-14T00:27:41+00:00",
+    "series": "lenovo-thinkpad-p-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p43"
+  },
+  "lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p50": {
+    "done": true,
+    "iwm_flawless": 50,
+    "model": "lenovo-thinkpad-p50",
+    "our_price": 45,
+    "scraped_at": "2026-05-14T00:27:47+00:00",
+    "series": "lenovo-thinkpad-p-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p50"
+  },
+  "lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p51": {
+    "done": true,
+    "iwm_flawless": 70,
+    "model": "lenovo-thinkpad-p51",
+    "our_price": 63,
+    "scraped_at": "2026-05-14T00:27:44+00:00",
+    "series": "lenovo-thinkpad-p-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p51"
+  },
+  "lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p52": {
+    "done": true,
+    "iwm_flawless": 120,
+    "model": "lenovo-thinkpad-p52",
+    "our_price": 108,
+    "scraped_at": "2026-05-14T00:28:04+00:00",
+    "series": "lenovo-thinkpad-p-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p52"
+  },
+  "lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p53": {
+    "done": true,
+    "iwm_flawless": 150,
+    "model": "lenovo-thinkpad-p53",
+    "our_price": 135,
+    "scraped_at": "2026-05-14T00:28:00+00:00",
+    "series": "lenovo-thinkpad-p-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p53"
+  },
+  "lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p70": {
+    "done": true,
+    "iwm_flawless": 155,
+    "model": "lenovo-thinkpad-p70",
+    "our_price": 139,
+    "scraped_at": "2026-05-14T00:27:57+00:00",
+    "series": "lenovo-thinkpad-p-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p70"
+  },
+  "lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p71": {
+    "done": true,
+    "iwm_flawless": 265,
+    "model": "lenovo-thinkpad-p71",
+    "our_price": 238,
+    "scraped_at": "2026-05-14T00:28:08+00:00",
+    "series": "lenovo-thinkpad-p-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p71"
+  },
+  "lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p72": {
+    "done": true,
+    "iwm_flawless": 240,
+    "model": "lenovo-thinkpad-p72",
+    "our_price": 216,
+    "scraped_at": "2026-05-14T00:28:14+00:00",
+    "series": "lenovo-thinkpad-p-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p72"
+  },
+  "lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p73": {
+    "done": true,
+    "iwm_flawless": 420,
+    "model": "lenovo-thinkpad-p73",
+    "our_price": 378,
+    "scraped_at": "2026-05-14T00:28:11+00:00",
+    "series": "lenovo-thinkpad-p-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-p-series-laptop/lenovo-thinkpad-p73"
+  },
+  "lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-2-in-1": {
+    "done": true,
+    "iwm_flawless": 675,
+    "model": "lenovo-thinkpad-x1-2-in-1",
+    "our_price": 607,
+    "scraped_at": "2026-05-14T00:40:32+00:00",
+    "series": "lenovo-thinkpad-x1-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-2-in-1"
+  },
+  "lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-carbon": {
+    "done": true,
+    "iwm_flawless": 150,
+    "model": "lenovo-thinkpad-x1-carbon",
+    "our_price": 135,
+    "scraped_at": "2026-05-14T00:40:34+00:00",
+    "series": "lenovo-thinkpad-x1-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-carbon"
+  },
+  "lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-extreme": {
+    "done": true,
+    "iwm_flawless": 190,
+    "model": "lenovo-thinkpad-x1-extreme",
+    "our_price": 171,
+    "scraped_at": "2026-05-14T00:40:18+00:00",
+    "series": "lenovo-thinkpad-x1-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-extreme"
+  },
+  "lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-fold": {
+    "done": true,
+    "iwm_flawless": 700,
+    "model": "lenovo-thinkpad-x1-fold",
+    "our_price": 630,
+    "scraped_at": "2026-05-14T00:40:45+00:00",
+    "series": "lenovo-thinkpad-x1-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-fold"
+  },
+  "lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-nano": {
+    "done": true,
+    "iwm_flawless": 510,
+    "model": "lenovo-thinkpad-x1-nano",
+    "our_price": 459,
+    "scraped_at": "2026-05-14T00:40:17+00:00",
+    "series": "lenovo-thinkpad-x1-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-nano"
+  },
+  "lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-titanium-yoga": {
+    "done": true,
+    "iwm_flawless": 240,
+    "model": "lenovo-thinkpad-x1-titanium-yoga",
+    "our_price": 216,
+    "scraped_at": "2026-05-14T00:40:59+00:00",
+    "series": "lenovo-thinkpad-x1-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-titanium-yoga"
+  },
+  "lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-yoga": {
+    "done": true,
+    "iwm_flawless": 125,
+    "model": "lenovo-thinkpad-x1-yoga",
+    "our_price": 112,
+    "scraped_at": "2026-05-14T00:40:48+00:00",
+    "series": "lenovo-thinkpad-x1-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x1-series/lenovo-thinkpad-x1-yoga"
+  },
+  "lenovo-thinkpad-x13-series-laptop/lenovo-thinkpad-x13": {
+    "done": true,
+    "iwm_flawless": 590,
+    "model": "lenovo-thinkpad-x13",
+    "our_price": 531,
+    "scraped_at": "2026-05-14T00:30:33+00:00",
+    "series": "lenovo-thinkpad-x13-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x13-series-laptop/lenovo-thinkpad-x13"
+  },
+  "lenovo-thinkpad-x13-series-laptop/lenovo-thinkpad-x13-2-in-1": {
+    "done": true,
+    "iwm_flawless": 400,
+    "model": "lenovo-thinkpad-x13-2-in-1",
+    "our_price": 360,
+    "scraped_at": "2026-05-14T00:40:32+00:00",
+    "series": "lenovo-thinkpad-x13-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x13-series-laptop/lenovo-thinkpad-x13-2-in-1"
+  },
+  "lenovo-thinkpad-x13-series-laptop/lenovo-thinkpad-x13-yoga": {
+    "done": true,
+    "iwm_flawless": 375,
+    "model": "lenovo-thinkpad-x13-yoga",
+    "our_price": 337,
+    "scraped_at": "2026-05-14T00:30:38+00:00",
+    "series": "lenovo-thinkpad-x13-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x13-series-laptop/lenovo-thinkpad-x13-yoga"
+  },
+  "lenovo-thinkpad-x13-series-laptop/lenovo-thinkpad-x13s": {
+    "done": true,
+    "iwm_flawless": 255,
+    "model": "lenovo-thinkpad-x13s",
+    "our_price": 229,
+    "scraped_at": "2026-05-14T00:30:36+00:00",
+    "series": "lenovo-thinkpad-x13-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x13-series-laptop/lenovo-thinkpad-x13s"
+  },
+  "lenovo-thinkpad-x390-series-laptop/lenovo-thinkpad-x390-series": {
+    "done": true,
+    "iwm_flawless": 90,
+    "model": "lenovo-thinkpad-x390-series",
+    "our_price": 81,
+    "scraped_at": "2026-05-14T00:26:18+00:00",
+    "series": "lenovo-thinkpad-x390-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x390-series-laptop/lenovo-thinkpad-x390-series"
+  },
+  "lenovo-thinkpad-x390-series-laptop/x390": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "x390",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:40:30+00:00",
+    "series": "lenovo-thinkpad-x390-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x390-series-laptop/x390"
+  },
+  "lenovo-thinkpad-x390-series-laptop/x390-yoga": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "x390-yoga",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:02+00:00",
+    "series": "lenovo-thinkpad-x390-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x390-series-laptop/x390-yoga"
+  },
+  "lenovo-thinkpad-x9-series-laptop/lenovo-thinkpad-x9": {
+    "done": true,
+    "iwm_flawless": 750,
+    "model": "lenovo-thinkpad-x9",
+    "our_price": 675,
+    "scraped_at": "2026-05-14T00:34:42+00:00",
+    "series": "lenovo-thinkpad-x9-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x9-series-laptop/lenovo-thinkpad-x9"
+  },
+  "lenovo-thinkpad-x9-series-laptop/x9-14": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "x9-14",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:40:46+00:00",
+    "series": "lenovo-thinkpad-x9-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x9-series-laptop/x9-14"
+  },
+  "lenovo-thinkpad-x9-series-laptop/x9-15": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "x9-15",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:41:12+00:00",
+    "series": "lenovo-thinkpad-x9-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-x9-series-laptop/x9-15"
+  },
+  "lenovo-thinkpad-z-series/lenovo-thinkpad-z13": {
+    "done": true,
+    "iwm_flawless": 455,
+    "model": "lenovo-thinkpad-z13",
+    "our_price": 409,
+    "scraped_at": "2026-05-14T00:41:05+00:00",
+    "series": "lenovo-thinkpad-z-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-z-series/lenovo-thinkpad-z13"
+  },
+  "lenovo-thinkpad-z-series/lenovo-thinkpad-z16": {
+    "done": true,
+    "iwm_flawless": 625,
+    "model": "lenovo-thinkpad-z16",
+    "our_price": 562,
+    "scraped_at": "2026-05-14T00:40:34+00:00",
+    "series": "lenovo-thinkpad-z-series",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-z-series/lenovo-thinkpad-z16"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-6": {
+    "done": true,
+    "iwm_flawless": 240,
+    "model": "lenovo-yoga-6",
+    "our_price": 216,
+    "scraped_at": "2026-05-14T00:30:57+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-6"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-7": {
+    "done": true,
+    "iwm_flawless": 370,
+    "model": "lenovo-yoga-7",
+    "our_price": 333,
+    "scraped_at": "2026-05-14T00:31:13+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-7"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-710": {
+    "done": true,
+    "iwm_flawless": 80,
+    "model": "lenovo-yoga-710",
+    "our_price": 72,
+    "scraped_at": "2026-05-14T00:30:46+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-710"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-720": {
+    "done": true,
+    "iwm_flawless": 70,
+    "model": "lenovo-yoga-720",
+    "our_price": 63,
+    "scraped_at": "2026-05-14T00:30:51+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-720"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-7i": {
+    "done": true,
+    "iwm_flawless": 200,
+    "model": "lenovo-yoga-7i",
+    "our_price": 180,
+    "scraped_at": "2026-05-14T00:31:10+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-7i"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-920": {
+    "done": true,
+    "iwm_flawless": 120,
+    "model": "lenovo-yoga-920",
+    "our_price": 108,
+    "scraped_at": "2026-05-14T00:30:48+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-920"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-9i": {
+    "done": true,
+    "iwm_flawless": 395,
+    "model": "lenovo-yoga-9i",
+    "our_price": 355,
+    "scraped_at": "2026-05-14T00:31:00+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-9i"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-book-9i": {
+    "done": true,
+    "iwm_flawless": 650,
+    "model": "lenovo-yoga-book-9i",
+    "our_price": 585,
+    "scraped_at": "2026-05-14T00:34:00+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-book-9i"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-c630": {
+    "done": true,
+    "iwm_flawless": 55,
+    "model": "lenovo-yoga-c630",
+    "our_price": 49,
+    "scraped_at": "2026-05-14T00:31:05+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-c630"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-c640": {
+    "done": true,
+    "iwm_flawless": 55,
+    "model": "lenovo-yoga-c640",
+    "our_price": 49,
+    "scraped_at": "2026-05-14T00:31:01+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-c640"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-c740": {
+    "done": true,
+    "iwm_flawless": 150,
+    "model": "lenovo-yoga-c740",
+    "our_price": 135,
+    "scraped_at": "2026-05-14T00:31:23+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-c740"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-c930": {
+    "done": true,
+    "iwm_flawless": 105,
+    "model": "lenovo-yoga-c930",
+    "our_price": 94,
+    "scraped_at": "2026-05-14T00:31:15+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-c930"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-c940": {
+    "done": true,
+    "iwm_flawless": 210,
+    "model": "lenovo-yoga-c940",
+    "our_price": 189,
+    "scraped_at": "2026-05-14T00:31:18+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-c940"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-pro-7": {
+    "done": true,
+    "iwm_flawless": 375,
+    "model": "lenovo-yoga-pro-7",
+    "our_price": 337,
+    "scraped_at": "2026-05-14T00:34:37+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-pro-7"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-pro-9i": {
+    "done": true,
+    "iwm_flawless": 560,
+    "model": "lenovo-yoga-pro-9i",
+    "our_price": 504,
+    "scraped_at": "2026-05-14T00:34:16+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-pro-9i"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-slim-7i": {
+    "done": true,
+    "iwm_flawless": 395,
+    "model": "lenovo-yoga-slim-7i",
+    "our_price": 355,
+    "scraped_at": "2026-05-14T00:34:07+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-slim-7i"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-slim-7x": {
+    "done": true,
+    "iwm_flawless": 465,
+    "model": "lenovo-yoga-slim-7x",
+    "our_price": 418,
+    "scraped_at": "2026-05-14T00:34:04+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-slim-7x"
+  },
+  "lenovo-yoga-laptop/lenovo-yoga-slim-9i": {
+    "done": true,
+    "iwm_flawless": 610,
+    "model": "lenovo-yoga-slim-9i",
+    "our_price": 549,
+    "scraped_at": "2026-05-14T00:35:05+00:00",
+    "series": "lenovo-yoga-laptop",
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-laptop/lenovo-yoga-slim-9i"
+  },
+  "lg-laptop/lg-gram": {
+    "done": true,
+    "iwm_flawless": 280,
+    "model": "lg-gram",
+    "our_price": 252,
+    "scraped_at": "2026-05-14T00:25:17+00:00",
+    "series": "lg-laptop",
+    "url": "https://www.itsworthmore.com/sell/lg-laptop/lg-gram"
+  },
+  "lg-laptop/lg-gram-pro": {
+    "done": true,
+    "iwm_flawless": 710,
+    "model": "lg-gram-pro",
+    "our_price": 639,
+    "scraped_at": "2026-05-14T00:35:10+00:00",
+    "series": "lg-laptop",
+    "url": "https://www.itsworthmore.com/sell/lg-laptop/lg-gram-pro"
+  },
+  "lg-laptop/lg-gram-superslim": {
+    "done": true,
+    "iwm_flawless": 420,
+    "model": "lg-gram-superslim",
+    "our_price": 378,
+    "scraped_at": "2026-05-14T00:34:48+00:00",
+    "series": "lg-laptop",
+    "url": "https://www.itsworthmore.com/sell/lg-laptop/lg-gram-superslim"
+  },
+  "msi-laptop/micro-star-international-bravo": {
+    "done": true,
+    "iwm_flawless": 440,
+    "model": "micro-star-international-bravo",
+    "our_price": 396,
+    "scraped_at": "2026-05-14T00:38:20+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-bravo"
+  },
+  "msi-laptop/micro-star-international-creator": {
+    "done": true,
+    "iwm_flawless": 675,
+    "model": "micro-star-international-creator",
+    "our_price": 607,
+    "scraped_at": "2026-05-14T00:35:53+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-creator"
+  },
+  "msi-laptop/micro-star-international-creator-pro": {
+    "done": true,
+    "iwm_flawless": 750,
+    "model": "micro-star-international-creator-pro",
+    "our_price": 675,
+    "scraped_at": "2026-05-14T00:36:17+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-creator-pro"
+  },
+  "msi-laptop/micro-star-international-crosshair": {
+    "done": true,
+    "iwm_flawless": 465,
+    "model": "micro-star-international-crosshair",
+    "our_price": 418,
+    "scraped_at": "2026-05-14T00:33:17+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-crosshair"
+  },
+  "msi-laptop/micro-star-international-cyborg": {
+    "done": true,
+    "iwm_flawless": 465,
+    "model": "micro-star-international-cyborg",
+    "our_price": 418,
+    "scraped_at": "2026-05-14T00:33:10+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-cyborg"
+  },
+  "msi-laptop/micro-star-international-katana": {
+    "done": true,
+    "iwm_flawless": 390,
+    "model": "micro-star-international-katana",
+    "our_price": 351,
+    "scraped_at": "2026-05-14T00:26:48+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-katana"
+  },
+  "msi-laptop/micro-star-international-leopard": {
+    "done": true,
+    "iwm_flawless": 480,
+    "model": "micro-star-international-leopard",
+    "our_price": 432,
+    "scraped_at": "2026-05-14T00:29:08+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-leopard"
+  },
+  "msi-laptop/micro-star-international-pulse": {
+    "done": true,
+    "iwm_flawless": 425,
+    "model": "micro-star-international-pulse",
+    "our_price": 382,
+    "scraped_at": "2026-05-14T00:26:45+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-pulse"
+  },
+  "msi-laptop/micro-star-international-raider": {
+    "done": true,
+    "iwm_flawless": 2025,
+    "model": "micro-star-international-raider",
+    "our_price": 1822,
+    "scraped_at": "2026-05-14T00:26:33+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-raider"
+  },
+  "msi-laptop/micro-star-international-stealth": {
+    "done": true,
+    "iwm_flawless": 765,
+    "model": "micro-star-international-stealth",
+    "our_price": 688,
+    "scraped_at": "2026-05-14T00:26:26+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-stealth"
+  },
+  "msi-laptop/micro-star-international-sword": {
+    "done": true,
+    "iwm_flawless": 900,
+    "model": "micro-star-international-sword",
+    "our_price": 810,
+    "scraped_at": "2026-05-14T00:33:07+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-sword"
+  },
+  "msi-laptop/micro-star-international-thin": {
+    "done": true,
+    "iwm_flawless": 270,
+    "model": "micro-star-international-thin",
+    "our_price": 243,
+    "scraped_at": "2026-05-14T00:26:54+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-thin"
+  },
+  "msi-laptop/micro-star-international-titan": {
+    "done": true,
+    "iwm_flawless": 3125,
+    "model": "micro-star-international-titan",
+    "our_price": 2812,
+    "scraped_at": "2026-05-14T00:26:45+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-titan"
+  },
+  "msi-laptop/micro-star-international-vector": {
+    "done": true,
+    "iwm_flawless": 1160,
+    "model": "micro-star-international-vector",
+    "our_price": 1044,
+    "scraped_at": "2026-05-14T00:32:54+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-vector"
+  },
+  "msi-laptop/micro-star-international-workstation-series": {
+    "done": true,
+    "iwm_flawless": 575,
+    "model": "micro-star-international-workstation-series",
+    "our_price": 517,
+    "scraped_at": "2026-05-14T00:36:23+00:00",
+    "series": "msi-laptop",
+    "url": "https://www.itsworthmore.com/sell/msi-laptop/micro-star-international-workstation-series"
+  },
+  "panasonic-laptop/panasonic-toughbook-fz-40": {
+    "done": true,
+    "iwm_flawless": 2550,
+    "model": "panasonic-toughbook-fz-40",
+    "our_price": 2295,
+    "scraped_at": "2026-05-14T00:34:58+00:00",
+    "series": "panasonic-laptop",
+    "url": "https://www.itsworthmore.com/sell/panasonic-laptop/panasonic-toughbook-fz-40"
+  },
+  "panasonic-laptop/panasonic-toughbook-fz-55": {
+    "done": true,
+    "iwm_flawless": 430,
+    "model": "panasonic-toughbook-fz-55",
+    "our_price": 387,
+    "scraped_at": "2026-05-14T00:34:35+00:00",
+    "series": "panasonic-laptop",
+    "url": "https://www.itsworthmore.com/sell/panasonic-laptop/panasonic-toughbook-fz-55"
+  },
+  "precision-3000-series-laptop/precision-3000-series-14": {
+    "done": true,
+    "iwm_flawless": 385,
+    "model": "precision-3000-series-14",
+    "our_price": 346,
+    "scraped_at": "2026-05-14T00:29:12+00:00",
+    "series": "precision-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/precision-3000-series-laptop/precision-3000-series-14"
+  },
+  "precision-3000-series-laptop/precision-3000-series-15": {
+    "done": true,
+    "iwm_flawless": 800,
+    "model": "precision-3000-series-15",
+    "our_price": 720,
+    "scraped_at": "2026-05-14T00:29:01+00:00",
+    "series": "precision-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/precision-3000-series-laptop/precision-3000-series-15"
+  },
+  "proart-laptop/proart-p16": {
+    "done": true,
+    "iwm_flawless": 1800,
+    "model": "proart-p16",
+    "our_price": 1620,
+    "scraped_at": "2026-05-14T00:35:42+00:00",
+    "series": "proart-laptop",
+    "url": "https://www.itsworthmore.com/sell/proart-laptop/proart-p16"
+  },
+  "proart-laptop/proart-px13": {
+    "done": true,
+    "iwm_flawless": 980,
+    "model": "proart-px13",
+    "our_price": 882,
+    "scraped_at": "2026-05-14T00:35:20+00:00",
+    "series": "proart-laptop",
+    "url": "https://www.itsworthmore.com/sell/proart-laptop/proart-px13"
+  },
+  "proart-laptop/proart-pz13": {
+    "done": true,
+    "iwm_flawless": 525,
+    "model": "proart-pz13",
+    "our_price": 472,
+    "scraped_at": "2026-05-14T00:35:50+00:00",
+    "series": "proart-laptop",
+    "url": "https://www.itsworthmore.com/sell/proart-laptop/proart-pz13"
+  },
+  "proart-laptop/proart-pz14": {
+    "done": true,
+    "iwm_flawless": 625,
+    "model": "proart-pz14",
+    "our_price": 562,
+    "scraped_at": "2026-05-14T00:40:03+00:00",
+    "series": "proart-laptop",
+    "url": "https://www.itsworthmore.com/sell/proart-laptop/proart-pz14"
+  },
+  "proart-laptop/proart-studiobook-16": {
+    "done": true,
+    "iwm_flawless": 1125,
+    "model": "proart-studiobook-16",
+    "our_price": 1012,
+    "scraped_at": "2026-05-14T00:35:56+00:00",
+    "series": "proart-laptop",
+    "url": "https://www.itsworthmore.com/sell/proart-laptop/proart-studiobook-16"
+  },
+  "proart-laptop/proart-studiobook-pro-16": {
+    "done": true,
+    "iwm_flawless": 1475,
+    "model": "proart-studiobook-pro-16",
+    "our_price": 1327,
+    "scraped_at": "2026-05-14T00:35:26+00:00",
+    "series": "proart-laptop",
+    "url": "https://www.itsworthmore.com/sell/proart-laptop/proart-studiobook-pro-16"
+  },
+  "razer-blade-laptop/razer-blade-13": {
+    "done": true,
+    "iwm_flawless": 180,
+    "model": "razer-blade-13",
+    "our_price": 162,
+    "scraped_at": "2026-05-14T00:24:54+00:00",
+    "series": "razer-blade-laptop",
+    "url": "https://www.itsworthmore.com/sell/razer-blade-laptop/razer-blade-13"
+  },
+  "razer-blade-laptop/razer-blade-14": {
+    "done": true,
+    "iwm_flawless": 180,
+    "model": "razer-blade-14",
+    "our_price": 162,
+    "scraped_at": "2026-05-14T00:25:15+00:00",
+    "series": "razer-blade-laptop",
+    "url": "https://www.itsworthmore.com/sell/razer-blade-laptop/razer-blade-14"
+  },
+  "razer-blade-laptop/razer-blade-15": {
+    "done": true,
+    "iwm_flawless": 1060,
+    "model": "razer-blade-15",
+    "our_price": 954,
+    "scraped_at": "2026-05-14T00:24:52+00:00",
+    "series": "razer-blade-laptop",
+    "url": "https://www.itsworthmore.com/sell/razer-blade-laptop/razer-blade-15"
+  },
+  "razer-blade-laptop/razer-blade-16": {
+    "done": true,
+    "iwm_flawless": 1550,
+    "model": "razer-blade-16",
+    "our_price": 1395,
+    "scraped_at": "2026-05-14T00:25:08+00:00",
+    "series": "razer-blade-laptop",
+    "url": "https://www.itsworthmore.com/sell/razer-blade-laptop/razer-blade-16"
+  },
+  "razer-blade-laptop/razer-blade-17-testing": {
+    "done": true,
+    "iwm_flawless": 875,
+    "model": "razer-blade-17-testing",
+    "our_price": 787,
+    "scraped_at": "2026-05-14T00:25:06+00:00",
+    "series": "razer-blade-laptop",
+    "url": "https://www.itsworthmore.com/sell/razer-blade-laptop/razer-blade-17-testing"
+  },
+  "razer-blade-laptop/razer-blade-18": {
+    "done": true,
+    "iwm_flawless": 1800,
+    "model": "razer-blade-18",
+    "our_price": 1620,
+    "scraped_at": "2026-05-14T00:24:53+00:00",
+    "series": "razer-blade-laptop",
+    "url": "https://www.itsworthmore.com/sell/razer-blade-laptop/razer-blade-18"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-flow-x13-gv301": {
+    "done": true,
+    "iwm_flawless": 515,
+    "model": "republic-of-gamers-flow-x13-gv301",
+    "our_price": 463,
+    "scraped_at": "2026-05-14T00:45:05+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-flow-x13-gv301"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-flow-x13-gv302": {
+    "done": true,
+    "iwm_flawless": 1150,
+    "model": "republic-of-gamers-flow-x13-gv302",
+    "our_price": 1035,
+    "scraped_at": "2026-05-14T00:44:40+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-flow-x13-gv302"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-flow-x16-gv601": {
+    "done": true,
+    "iwm_flawless": 1075,
+    "model": "republic-of-gamers-flow-x16-gv601",
+    "our_price": 967,
+    "scraped_at": "2026-05-14T00:45:30+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-flow-x16-gv601"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-flow-z13-acrnm-rmt02-gz301": {
+    "done": true,
+    "iwm_flawless": 1350,
+    "model": "republic-of-gamers-flow-z13-acrnm-rmt02-gz301",
+    "our_price": 1215,
+    "scraped_at": "2026-05-14T00:44:35+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-flow-z13-acrnm-rmt02-gz301"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-flow-z13-gz301": {
+    "done": true,
+    "iwm_flawless": 585,
+    "model": "republic-of-gamers-flow-z13-gz301",
+    "our_price": 526,
+    "scraped_at": "2026-05-14T00:44:50+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-flow-z13-gz301"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-flow-z13-gz302": {
+    "done": true,
+    "iwm_flawless": 1200,
+    "model": "republic-of-gamers-flow-z13-gz302",
+    "our_price": 1080,
+    "scraped_at": "2026-05-14T00:44:26+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-flow-z13-gz302"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-flow-z13-kjp-gz302": {
+    "done": true,
+    "iwm_flawless": 1170,
+    "model": "republic-of-gamers-flow-z13-kjp-gz302",
+    "our_price": 1053,
+    "scraped_at": "2026-05-14T00:45:16+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-flow-z13-kjp-gz302"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-g15-g512": {
+    "done": true,
+    "iwm_flawless": 375,
+    "model": "republic-of-gamers-strix-g15-g512",
+    "our_price": 337,
+    "scraped_at": "2026-05-14T00:44:13+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-g15-g512"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-g15-g513": {
+    "done": true,
+    "iwm_flawless": 675,
+    "model": "republic-of-gamers-strix-g15-g513",
+    "our_price": 607,
+    "scraped_at": "2026-05-14T00:45:02+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-g15-g513"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-g16-g614": {
+    "done": true,
+    "iwm_flawless": 900,
+    "model": "republic-of-gamers-strix-g16-g614",
+    "our_price": 810,
+    "scraped_at": "2026-05-14T00:44:09+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-g16-g614"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-g16-g615": {
+    "done": true,
+    "iwm_flawless": 1000,
+    "model": "republic-of-gamers-strix-g16-g615",
+    "our_price": 900,
+    "scraped_at": "2026-05-14T00:44:24+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-g16-g615"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-g17-g712": {
+    "done": true,
+    "iwm_flawless": 380,
+    "model": "republic-of-gamers-strix-g17-g712",
+    "our_price": 342,
+    "scraped_at": "2026-05-14T00:44:00+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-g17-g712"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-g17-g713": {
+    "done": true,
+    "iwm_flawless": 940,
+    "model": "republic-of-gamers-strix-g17-g713",
+    "our_price": 846,
+    "scraped_at": "2026-05-14T00:44:48+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-g17-g713"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-g18-g814": {
+    "done": true,
+    "iwm_flawless": 900,
+    "model": "republic-of-gamers-strix-g18-g814",
+    "our_price": 810,
+    "scraped_at": "2026-05-14T00:43:55+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-g18-g814"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-g18-g815": {
+    "done": true,
+    "iwm_flawless": 1460,
+    "model": "republic-of-gamers-strix-g18-g815",
+    "our_price": 1314,
+    "scraped_at": "2026-05-14T00:44:11+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-g18-g815"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-g531": {
+    "done": true,
+    "iwm_flawless": 180,
+    "model": "republic-of-gamers-strix-g531",
+    "our_price": 162,
+    "scraped_at": "2026-05-14T00:44:22+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-g531"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-g731": {
+    "done": true,
+    "iwm_flawless": 190,
+    "model": "republic-of-gamers-strix-g731",
+    "our_price": 171,
+    "scraped_at": "2026-05-14T00:44:38+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-g731"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-scar-15-g532": {
+    "done": true,
+    "iwm_flawless": 405,
+    "model": "republic-of-gamers-strix-scar-15-g532",
+    "our_price": 364,
+    "scraped_at": "2026-05-14T00:43:48+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-scar-15-g532"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-scar-15-g533": {
+    "done": true,
+    "iwm_flawless": 750,
+    "model": "republic-of-gamers-strix-scar-15-g533",
+    "our_price": 675,
+    "scraped_at": "2026-05-14T00:44:34+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-scar-15-g533"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-scar-16-g634": {
+    "done": true,
+    "iwm_flawless": 1550,
+    "model": "republic-of-gamers-strix-scar-16-g634",
+    "our_price": 1395,
+    "scraped_at": "2026-05-14T00:43:41+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-scar-16-g634"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-scar-16-g635": {
+    "done": true,
+    "iwm_flawless": 2070,
+    "model": "republic-of-gamers-strix-scar-16-g635",
+    "our_price": 1863,
+    "scraped_at": "2026-05-14T00:43:57+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-scar-16-g635"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-scar-17-g732": {
+    "done": true,
+    "iwm_flawless": 385,
+    "model": "republic-of-gamers-strix-scar-17-g732",
+    "our_price": 346,
+    "scraped_at": "2026-05-14T00:43:35+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-scar-17-g732"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-scar-17-g733": {
+    "done": true,
+    "iwm_flawless": 925,
+    "model": "republic-of-gamers-strix-scar-17-g733",
+    "our_price": 832,
+    "scraped_at": "2026-05-14T00:44:21+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-scar-17-g733"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-scar-17-se-g733": {
+    "done": true,
+    "iwm_flawless": 1050,
+    "model": "republic-of-gamers-strix-scar-17-se-g733",
+    "our_price": 945,
+    "scraped_at": "2026-05-14T00:43:29+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-scar-17-se-g733"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-scar-18-g834": {
+    "done": true,
+    "iwm_flawless": 1625,
+    "model": "republic-of-gamers-strix-scar-18-g834",
+    "our_price": 1462,
+    "scraped_at": "2026-05-14T00:43:43+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-scar-18-g834"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-strix-scar-18-g835": {
+    "done": true,
+    "iwm_flawless": 2125,
+    "model": "republic-of-gamers-strix-scar-18-g835",
+    "our_price": 1912,
+    "scraped_at": "2026-05-14T00:43:22+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-strix-scar-18-g835"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-duo-15-gx550": {
+    "done": true,
+    "iwm_flawless": 710,
+    "model": "republic-of-gamers-zephyrus-duo-15-gx550",
+    "our_price": 639,
+    "scraped_at": "2026-05-14T00:44:50+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-duo-15-gx550"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-duo-15-se-gx551": {
+    "done": true,
+    "iwm_flawless": 1175,
+    "model": "republic-of-gamers-zephyrus-duo-15-se-gx551",
+    "our_price": 1057,
+    "scraped_at": "2026-05-14T00:45:44+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-duo-15-se-gx551"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-duo-16-gx650": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "republic-of-gamers-zephyrus-duo-16-gx650",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:44:54+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-duo-16-gx650"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-g14-ga401": {
+    "done": true,
+    "iwm_flawless": 550,
+    "model": "republic-of-gamers-zephyrus-g14-ga401",
+    "our_price": 495,
+    "scraped_at": "2026-05-14T00:45:19+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-g14-ga401"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-g14-ga402": {
+    "done": true,
+    "iwm_flawless": 1160,
+    "model": "republic-of-gamers-zephyrus-g14-ga402",
+    "our_price": 1044,
+    "scraped_at": "2026-05-14T00:45:03+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-g14-ga402"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-g14-ga403": {
+    "done": true,
+    "iwm_flawless": 1300,
+    "model": "republic-of-gamers-zephyrus-g14-ga403",
+    "our_price": 1170,
+    "scraped_at": "2026-05-14T00:45:57+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-g14-ga403"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-g15-ga502": {
+    "done": true,
+    "iwm_flawless": 330,
+    "model": "republic-of-gamers-zephyrus-g15-ga502",
+    "our_price": 297,
+    "scraped_at": "2026-05-14T00:45:39+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-g15-ga502"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-g15-ga503": {
+    "done": true,
+    "iwm_flawless": 690,
+    "model": "republic-of-gamers-zephyrus-g15-ga503",
+    "our_price": 621,
+    "scraped_at": "2026-05-14T00:45:33+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-g15-ga503"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-g16-ga605": {
+    "done": true,
+    "iwm_flawless": 1025,
+    "model": "republic-of-gamers-zephyrus-g16-ga605",
+    "our_price": 922,
+    "scraped_at": "2026-05-14T00:45:18+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-g16-ga605"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-g16-gu603": {
+    "done": true,
+    "iwm_flawless": 700,
+    "model": "republic-of-gamers-zephyrus-g16-gu603",
+    "our_price": 630,
+    "scraped_at": "2026-05-14T00:46:11+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-g16-gu603"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-g16-gu605": {
+    "done": true,
+    "iwm_flawless": 1300,
+    "model": "republic-of-gamers-zephyrus-g16-gu605",
+    "our_price": 1170,
+    "scraped_at": "2026-05-14T00:45:51+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-g16-gu605"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-m-gm501": {
+    "done": true,
+    "iwm_flawless": 200,
+    "model": "republic-of-gamers-zephyrus-m-gm501",
+    "our_price": 180,
+    "scraped_at": "2026-05-14T00:45:46+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-m-gm501"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-m15-gu502": {
+    "done": true,
+    "iwm_flawless": 460,
+    "model": "republic-of-gamers-zephyrus-m15-gu502",
+    "our_price": 414,
+    "scraped_at": "2026-05-14T00:45:31+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-m15-gu502"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-m16-gu603": {
+    "done": true,
+    "iwm_flawless": 580,
+    "model": "republic-of-gamers-zephyrus-m16-gu603",
+    "our_price": 522,
+    "scraped_at": "2026-05-14T00:46:25+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-m16-gu603"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-m16-gu604": {
+    "done": true,
+    "iwm_flawless": 1380,
+    "model": "republic-of-gamers-zephyrus-m16-gu604",
+    "our_price": 1242,
+    "scraped_at": "2026-05-14T00:46:05+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-m16-gu604"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-s-gx531": {
+    "done": true,
+    "iwm_flawless": 325,
+    "model": "republic-of-gamers-zephyrus-s-gx531",
+    "our_price": 292,
+    "scraped_at": "2026-05-14T00:45:58+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-s-gx531"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-s15-gx502": {
+    "done": true,
+    "iwm_flawless": 325,
+    "model": "republic-of-gamers-zephyrus-s15-gx502",
+    "our_price": 292,
+    "scraped_at": "2026-05-14T00:45:45+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-s15-gx502"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-s17-gx701": {
+    "done": true,
+    "iwm_flawless": 335,
+    "model": "republic-of-gamers-zephyrus-s17-gx701",
+    "our_price": 301,
+    "scraped_at": "2026-05-14T00:46:38+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-s17-gx701"
+  },
+  "republic-of-gamers-laptop/republic-of-gamers-zephyrus-s17-gx703": {
+    "done": true,
+    "iwm_flawless": 640,
+    "model": "republic-of-gamers-zephyrus-s17-gx703",
+    "our_price": 576,
+    "scraped_at": "2026-05-14T00:46:18+00:00",
+    "series": "republic-of-gamers-laptop",
+    "url": "https://www.itsworthmore.com/sell/republic-of-gamers-laptop/republic-of-gamers-zephyrus-s17-gx703"
+  },
+  "samsung-laptop/galaxy-book": {
+    "done": true,
+    "iwm_flawless": 155,
+    "model": "galaxy-book",
+    "our_price": 139,
+    "scraped_at": "2026-05-14T00:25:22+00:00",
+    "series": "samsung-laptop",
+    "url": "https://www.itsworthmore.com/sell/samsung-laptop/galaxy-book"
+  },
+  "samsung-laptop/galaxy-book2": {
+    "done": true,
+    "iwm_flawless": 270,
+    "model": "galaxy-book2",
+    "our_price": 243,
+    "scraped_at": "2026-05-14T00:26:01+00:00",
+    "series": "samsung-laptop",
+    "url": "https://www.itsworthmore.com/sell/samsung-laptop/galaxy-book2"
+  },
+  "samsung-laptop/galaxy-book3": {
+    "done": true,
+    "iwm_flawless": 495,
+    "model": "galaxy-book3",
+    "our_price": 445,
+    "scraped_at": "2026-05-14T00:26:32+00:00",
+    "series": "samsung-laptop",
+    "url": "https://www.itsworthmore.com/sell/samsung-laptop/galaxy-book3"
+  },
+  "samsung-laptop/galaxy-book4": {
+    "done": true,
+    "iwm_flawless": 495,
+    "model": "galaxy-book4",
+    "our_price": 445,
+    "scraped_at": "2026-05-14T00:25:31+00:00",
+    "series": "samsung-laptop",
+    "url": "https://www.itsworthmore.com/sell/samsung-laptop/galaxy-book4"
+  },
+  "samsung-laptop/galaxy-book5": {
+    "done": true,
+    "iwm_flawless": 710,
+    "model": "galaxy-book5",
+    "our_price": 639,
+    "scraped_at": "2026-05-14T00:34:21+00:00",
+    "series": "samsung-laptop",
+    "url": "https://www.itsworthmore.com/sell/samsung-laptop/galaxy-book5"
+  },
+  "samsung-laptop/samsung-chromebook": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "samsung-chromebook",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:26:49+00:00",
+    "series": "samsung-laptop",
+    "url": "https://www.itsworthmore.com/sell/samsung-laptop/samsung-chromebook"
+  },
+  "sony-laptop/sony-vaio": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "sony-vaio",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:25:27+00:00",
+    "series": "sony-laptop",
+    "url": "https://www.itsworthmore.com/sell/sony-laptop/sony-vaio"
+  },
+  "the-ultimate-force-laptop/tuf-a14-laptop": {
+    "done": true,
+    "iwm_flawless": 785,
+    "model": "tuf-a14-laptop",
+    "our_price": 706,
+    "scraped_at": "2026-05-14T00:39:01+00:00",
+    "series": "the-ultimate-force-laptop",
+    "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-a14-laptop"
+  },
+  "the-ultimate-force-laptop/tuf-a15-laptop": {
+    "done": true,
+    "iwm_flawless": 540,
+    "model": "tuf-a15-laptop",
+    "our_price": 486,
+    "scraped_at": "2026-05-14T00:34:10+00:00",
+    "series": "the-ultimate-force-laptop",
+    "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-a15-laptop"
+  },
+  "the-ultimate-force-laptop/tuf-a16-laptop": {
+    "done": true,
+    "iwm_flawless": 860,
+    "model": "tuf-a16-laptop",
+    "our_price": 774,
+    "scraped_at": "2026-05-14T00:33:50+00:00",
+    "series": "the-ultimate-force-laptop",
+    "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-a16-laptop"
+  },
+  "the-ultimate-force-laptop/tuf-a17-laptop": {
+    "done": true,
+    "iwm_flawless": 620,
+    "model": "tuf-a17-laptop",
+    "our_price": 558,
+    "scraped_at": "2026-05-14T00:33:47+00:00",
+    "series": "the-ultimate-force-laptop",
+    "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-a17-laptop"
+  },
+  "the-ultimate-force-laptop/tuf-a18-laptop": {
+    "done": true,
+    "iwm_flawless": 815,
+    "model": "tuf-a18-laptop",
+    "our_price": 733,
+    "scraped_at": "2026-05-14T00:39:04+00:00",
+    "series": "the-ultimate-force-laptop",
+    "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-a18-laptop"
+  },
+  "the-ultimate-force-laptop/tuf-f15-laptop": {
+    "done": true,
+    "iwm_flawless": 430,
+    "model": "tuf-f15-laptop",
+    "our_price": 387,
+    "scraped_at": "2026-05-14T00:33:53+00:00",
+    "series": "the-ultimate-force-laptop",
+    "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-f15-laptop"
+  },
+  "the-ultimate-force-laptop/tuf-f16-laptop": {
+    "done": true,
+    "iwm_flawless": 550,
+    "model": "tuf-f16-laptop",
+    "our_price": 495,
+    "scraped_at": "2026-05-14T00:38:33+00:00",
+    "series": "the-ultimate-force-laptop",
+    "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-f16-laptop"
+  },
+  "the-ultimate-force-laptop/tuf-f17-laptop": {
+    "done": true,
+    "iwm_flawless": 335,
+    "model": "tuf-f17-laptop",
+    "our_price": 301,
+    "scraped_at": "2026-05-14T00:34:24+00:00",
+    "series": "the-ultimate-force-laptop",
+    "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-f17-laptop"
+  },
+  "the-ultimate-force-laptop/tuf-fx504-laptop": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "tuf-fx504-laptop",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:33:46+00:00",
+    "series": "the-ultimate-force-laptop",
+    "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-fx504-laptop"
+  },
+  "the-ultimate-force-laptop/tuf-fx505-laptop": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "tuf-fx505-laptop",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:33:43+00:00",
+    "series": "the-ultimate-force-laptop",
+    "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-fx505-laptop"
+  },
+  "the-ultimate-force-laptop/tuf-fx705-laptop": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "tuf-fx705-laptop",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:33:49+00:00",
+    "series": "the-ultimate-force-laptop",
+    "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-fx705-laptop"
+  },
+  "tuf-laptop/tuf-a14-laptop": {
+    "done": true,
+    "iwm_flawless": 785,
+    "model": "tuf-a14-laptop",
+    "our_price": 706,
+    "scraped_at": "2026-05-14T00:46:24+00:00",
+    "series": "tuf-laptop",
+    "url": "https://www.itsworthmore.com/sell/tuf-laptop/tuf-a14-laptop"
+  },
+  "tuf-laptop/tuf-a15-laptop": {
+    "done": true,
+    "iwm_flawless": 540,
+    "model": "tuf-a15-laptop",
+    "our_price": 486,
+    "scraped_at": "2026-05-14T00:46:32+00:00",
+    "series": "tuf-laptop",
+    "url": "https://www.itsworthmore.com/sell/tuf-laptop/tuf-a15-laptop"
+  },
+  "tuf-laptop/tuf-a16-laptop": {
+    "done": true,
+    "iwm_flawless": 860,
+    "model": "tuf-a16-laptop",
+    "our_price": 774,
+    "scraped_at": "2026-05-14T00:46:51+00:00",
+    "series": "tuf-laptop",
+    "url": "https://www.itsworthmore.com/sell/tuf-laptop/tuf-a16-laptop"
+  },
+  "tuf-laptop/tuf-a17-laptop": {
+    "done": true,
+    "iwm_flawless": 620,
+    "model": "tuf-a17-laptop",
+    "our_price": 558,
+    "scraped_at": "2026-05-14T00:45:58+00:00",
+    "series": "tuf-laptop",
+    "url": "https://www.itsworthmore.com/sell/tuf-laptop/tuf-a17-laptop"
+  },
+  "tuf-laptop/tuf-a18-laptop": {
+    "done": true,
+    "iwm_flawless": 815,
+    "model": "tuf-a18-laptop",
+    "our_price": 733,
+    "scraped_at": "2026-05-14T00:46:10+00:00",
+    "series": "tuf-laptop",
+    "url": "https://www.itsworthmore.com/sell/tuf-laptop/tuf-a18-laptop"
+  },
+  "tuf-laptop/tuf-f15-laptop": {
+    "done": true,
+    "iwm_flawless": 430,
+    "model": "tuf-f15-laptop",
+    "our_price": 387,
+    "scraped_at": "2026-05-14T00:46:46+00:00",
+    "series": "tuf-laptop",
+    "url": "https://www.itsworthmore.com/sell/tuf-laptop/tuf-f15-laptop"
+  },
+  "tuf-laptop/tuf-f16-laptop": {
+    "done": true,
+    "iwm_flawless": 550,
+    "model": "tuf-f16-laptop",
+    "our_price": 495,
+    "scraped_at": "2026-05-14T00:47:05+00:00",
+    "series": "tuf-laptop",
+    "url": "https://www.itsworthmore.com/sell/tuf-laptop/tuf-f16-laptop"
+  },
+  "tuf-laptop/tuf-f17-laptop": {
+    "done": true,
+    "iwm_flawless": 335,
+    "model": "tuf-f17-laptop",
+    "our_price": 301,
+    "scraped_at": "2026-05-14T00:46:11+00:00",
+    "series": "tuf-laptop",
+    "url": "https://www.itsworthmore.com/sell/tuf-laptop/tuf-f17-laptop"
+  },
+  "vivobook-14-laptop/vivobook-14": {
+    "done": true,
+    "iwm_flawless": 125,
+    "model": "vivobook-14",
+    "our_price": 112,
+    "scraped_at": "2026-05-14T00:29:16+00:00",
+    "series": "vivobook-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/vivobook-14-laptop/vivobook-14"
+  },
+  "vivobook-14-laptop/vivobook-14x": {
+    "done": true,
+    "iwm_flawless": 165,
+    "model": "vivobook-14x",
+    "our_price": 148,
+    "scraped_at": "2026-05-14T00:29:27+00:00",
+    "series": "vivobook-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/vivobook-14-laptop/vivobook-14x"
+  },
+  "vivobook-14-laptop/vivobook-s-14": {
+    "done": true,
+    "iwm_flawless": 30,
+    "model": "vivobook-s-14",
+    "our_price": 27,
+    "scraped_at": "2026-05-14T00:29:22+00:00",
+    "series": "vivobook-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/vivobook-14-laptop/vivobook-s-14"
+  },
+  "vivobook-14-laptop/vivobook-s-14x": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "vivobook-s-14x",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:34:13+00:00",
+    "series": "vivobook-14-laptop",
+    "url": "https://www.itsworthmore.com/sell/vivobook-14-laptop/vivobook-s-14x"
+  },
+  "vivobook-15-laptop/vivobook-15": {
+    "done": true,
+    "iwm_flawless": 70,
+    "model": "vivobook-15",
+    "our_price": 63,
+    "scraped_at": "2026-05-14T00:29:19+00:00",
+    "series": "vivobook-15-laptop",
+    "url": "https://www.itsworthmore.com/sell/vivobook-15-laptop/vivobook-15"
+  },
+  "vivobook-15-laptop/vivobook-15x": {
+    "done": true,
+    "iwm_flawless": 140,
+    "model": "vivobook-15x",
+    "our_price": 126,
+    "scraped_at": "2026-05-14T00:29:34+00:00",
+    "series": "vivobook-15-laptop",
+    "url": "https://www.itsworthmore.com/sell/vivobook-15-laptop/vivobook-15x"
+  },
+  "vivobook-15-laptop/vivobook-pro-15": {
+    "done": true,
+    "iwm_flawless": 425,
+    "model": "vivobook-pro-15",
+    "our_price": 382,
+    "scraped_at": "2026-05-14T00:29:28+00:00",
+    "series": "vivobook-15-laptop",
+    "url": "https://www.itsworthmore.com/sell/vivobook-15-laptop/vivobook-pro-15"
+  },
+  "vivobook-15-laptop/vivobook-pro-15x": {
+    "done": true,
+    "iwm_flawless": 315,
+    "model": "vivobook-pro-15x",
+    "our_price": 283,
+    "scraped_at": "2026-05-14T00:29:32+00:00",
+    "series": "vivobook-15-laptop",
+    "url": "https://www.itsworthmore.com/sell/vivobook-15-laptop/vivobook-pro-15x"
+  },
+  "vivobook-15-laptop/vivobook-s-15": {
+    "done": true,
+    "iwm_flawless": 80,
+    "model": "vivobook-s-15",
+    "our_price": 72,
+    "scraped_at": "2026-05-14T00:29:41+00:00",
+    "series": "vivobook-15-laptop",
+    "url": "https://www.itsworthmore.com/sell/vivobook-15-laptop/vivobook-s-15"
+  },
+  "vivobook-16-laptop/vivobook-16": {
+    "done": true,
+    "iwm_flawless": 250,
+    "model": "vivobook-16",
+    "our_price": 225,
+    "scraped_at": "2026-05-14T00:29:54+00:00",
+    "series": "vivobook-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/vivobook-16-laptop/vivobook-16"
+  },
+  "vivobook-16-laptop/vivobook-s-16": {
+    "done": true,
+    "iwm_flawless": 370,
+    "model": "vivobook-s-16",
+    "our_price": 333,
+    "scraped_at": "2026-05-14T00:35:17+00:00",
+    "series": "vivobook-16-laptop",
+    "url": "https://www.itsworthmore.com/sell/vivobook-16-laptop/vivobook-s-16"
+  },
+  "vostro-3000-series-laptop/3420": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "3420",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:30+00:00",
+    "series": "vostro-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-3000-series-laptop/3420"
+  },
+  "vostro-3000-series-laptop/3430": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "3430",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:00+00:00",
+    "series": "vostro-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-3000-series-laptop/3430"
+  },
+  "vostro-3000-series-laptop/3500": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "3500",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:34+00:00",
+    "series": "vostro-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-3000-series-laptop/3500"
+  },
+  "vostro-3000-series-laptop/3510": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "3510",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:56+00:00",
+    "series": "vostro-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-3000-series-laptop/3510"
+  },
+  "vostro-3000-series-laptop/3520": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "3520",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:42+00:00",
+    "series": "vostro-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-3000-series-laptop/3520"
+  },
+  "vostro-3000-series-laptop/3530": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "3530",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:45+00:00",
+    "series": "vostro-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-3000-series-laptop/3530"
+  },
+  "vostro-3000-series-laptop/3535": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "3535",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:37+00:00",
+    "series": "vostro-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-3000-series-laptop/3535"
+  },
+  "vostro-3000-series-laptop/3590": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "3590",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:34+00:00",
+    "series": "vostro-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-3000-series-laptop/3590"
+  },
+  "vostro-3000-series-laptop/3591": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "3591",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:38+00:00",
+    "series": "vostro-3000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-3000-series-laptop/3591"
+  },
+  "vostro-5000-series-laptop/5301": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5301",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:42+00:00",
+    "series": "vostro-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-5000-series-laptop/5301"
+  },
+  "vostro-5000-series-laptop/5401": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5401",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:03+00:00",
+    "series": "vostro-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-5000-series-laptop/5401"
+  },
+  "vostro-5000-series-laptop/5402": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5402",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:49+00:00",
+    "series": "vostro-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-5000-series-laptop/5402"
+  },
+  "vostro-5000-series-laptop/5410": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5410",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:41+00:00",
+    "series": "vostro-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-5000-series-laptop/5410"
+  },
+  "vostro-5000-series-laptop/5490": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5490",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:45+00:00",
+    "series": "vostro-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-5000-series-laptop/5490"
+  },
+  "vostro-5000-series-laptop/5501": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5501",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:07+00:00",
+    "series": "vostro-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-5000-series-laptop/5501"
+  },
+  "vostro-5000-series-laptop/5502": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5502",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:53+00:00",
+    "series": "vostro-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-5000-series-laptop/5502"
+  },
+  "vostro-5000-series-laptop/5510": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5510",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:45+00:00",
+    "series": "vostro-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-5000-series-laptop/5510"
+  },
+  "vostro-5000-series-laptop/5581": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5581",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:49+00:00",
+    "series": "vostro-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-5000-series-laptop/5581"
+  },
+  "vostro-5000-series-laptop/5590": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5590",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:11+00:00",
+    "series": "vostro-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-5000-series-laptop/5590"
+  },
+  "vostro-5000-series-laptop/5620": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5620",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:56+00:00",
+    "series": "vostro-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-5000-series-laptop/5620"
+  },
+  "vostro-5000-series-laptop/5630": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "5630",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:48+00:00",
+    "series": "vostro-5000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-5000-series-laptop/5630"
+  },
+  "vostro-7000-series-laptop/7500": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "7500",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:53+00:00",
+    "series": "vostro-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-7000-series-laptop/7500"
+  },
+  "vostro-7000-series-laptop/7510": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "7510",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:14+00:00",
+    "series": "vostro-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-7000-series-laptop/7510"
+  },
+  "vostro-7000-series-laptop/7590": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "7590",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:00+00:00",
+    "series": "vostro-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-7000-series-laptop/7590"
+  },
+  "vostro-7000-series-laptop/7620": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "7620",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:52+00:00",
+    "series": "vostro-7000-series-laptop",
+    "url": "https://www.itsworthmore.com/sell/vostro-7000-series-laptop/7620"
+  },
+  "xps-laptop/xps-13-7390": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-7390",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:06+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-7390"
+  },
+  "xps-laptop/xps-13-7390-2-in-1": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-7390-2-in-1",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:01+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-7390-2-in-1"
+  },
+  "xps-laptop/xps-13-9300": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-9300",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:03+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-9300"
+  },
+  "xps-laptop/xps-13-9305": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-9305",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:27+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-9305"
+  },
+  "xps-laptop/xps-13-9310": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-9310",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:10+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-9310"
+  },
+  "xps-laptop/xps-13-9310-2-in-1": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-9310-2-in-1",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:04+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-9310-2-in-1"
+  },
+  "xps-laptop/xps-13-9315": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-9315",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:07+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-9315"
+  },
+  "xps-laptop/xps-13-9315-2-in-1": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-9315-2-in-1",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:31+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-9315-2-in-1"
+  },
+  "xps-laptop/xps-13-9340": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-9340",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:08+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-9340"
+  },
+  "xps-laptop/xps-13-9345": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-9345",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:10+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-9345"
+  },
+  "xps-laptop/xps-13-9350": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-9350",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:34+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-9350"
+  },
+  "xps-laptop/xps-13-9360": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-9360",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:20+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-9360"
+  },
+  "xps-laptop/xps-13-9365-2-in-1": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-9365-2-in-1",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:12+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-9365-2-in-1"
+  },
+  "xps-laptop/xps-13-9370": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-9370",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:16+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-9370"
+  },
+  "xps-laptop/xps-13-9380": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-9380",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:38+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-9380"
+  },
+  "xps-laptop/xps-13-laptop": {
+    "done": true,
+    "iwm_flawless": 150,
+    "model": "xps-13-laptop",
+    "our_price": 135,
+    "scraped_at": "2026-05-14T00:26:15+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-laptop"
+  },
+  "xps-laptop/xps-13-plus-9320": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-13-plus-9320",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:16+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-13-plus-9320"
+  },
+  "xps-laptop/xps-14-9440": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-14-9440",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:24+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-14-9440"
+  },
+  "xps-laptop/xps-14-da14260": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-14-da14260",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:15+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-14-da14260"
+  },
+  "xps-laptop/xps-14-laptop": {
+    "done": true,
+    "iwm_flawless": 750,
+    "model": "xps-14-laptop",
+    "our_price": 675,
+    "scraped_at": "2026-05-14T00:25:32+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-14-laptop"
+  },
+  "xps-laptop/xps-15-7590": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-15-7590",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:20+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-15-7590"
+  },
+  "xps-laptop/xps-15-9500": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-15-9500",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:42+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-15-9500"
+  },
+  "xps-laptop/xps-15-9510": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-15-9510",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:27+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-15-9510"
+  },
+  "xps-laptop/xps-15-9520": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-15-9520",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:19+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-15-9520"
+  },
+  "xps-laptop/xps-15-9530": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-15-9530",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:24+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-15-9530"
+  },
+  "xps-laptop/xps-15-9550": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-15-9550",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:45+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-15-9550"
+  },
+  "xps-laptop/xps-15-9560": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-15-9560",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:31+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-15-9560"
+  },
+  "xps-laptop/xps-15-9570": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-15-9570",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:23+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-15-9570"
+  },
+  "xps-laptop/xps-15-9575-2-in-1": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-15-9575-2-in-1",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:27+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-15-9575-2-in-1"
+  },
+  "xps-laptop/xps-15-laptop": {
+    "done": true,
+    "iwm_flawless": 140,
+    "model": "xps-15-laptop",
+    "our_price": 126,
+    "scraped_at": "2026-05-14T00:25:57+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-15-laptop"
+  },
+  "xps-laptop/xps-16-9640": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-16-9640",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:49+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-16-9640"
+  },
+  "xps-laptop/xps-16-da16260": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-16-da16260",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:34+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-16-da16260"
+  },
+  "xps-laptop/xps-16-laptop": {
+    "done": true,
+    "iwm_flawless": 800,
+    "model": "xps-16-laptop",
+    "our_price": 720,
+    "scraped_at": "2026-05-14T00:25:27+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-16-laptop"
+  },
+  "xps-laptop/xps-17-9700": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-17-9700",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:43:26+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-17-9700"
+  },
+  "xps-laptop/xps-17-9710": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-17-9710",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:31+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-17-9710"
+  },
+  "xps-laptop/xps-17-9720": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-17-9720",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:53+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-17-9720"
+  },
+  "xps-laptop/xps-17-9730": {
+    "done": true,
+    "iwm_flawless": null,
+    "model": "xps-17-9730",
+    "our_price": null,
+    "scraped_at": "2026-05-14T00:42:38+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-17-9730"
+  },
+  "xps-laptop/xps-17-laptop": {
+    "done": true,
+    "iwm_flawless": 2030,
+    "model": "xps-17-laptop",
+    "our_price": 1827,
+    "scraped_at": "2026-05-14T00:26:01+00:00",
+    "series": "xps-laptop",
+    "url": "https://www.itsworthmore.com/sell/xps-laptop/xps-17-laptop"
+  },
+  "zenbook-laptop/zenbook-13": {
+    "done": true,
+    "iwm_flawless": 85,
+    "model": "zenbook-13",
+    "our_price": 76,
+    "scraped_at": "2026-05-14T00:29:42+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-13"
+  },
+  "zenbook-laptop/zenbook-14": {
+    "done": true,
+    "iwm_flawless": 80,
+    "model": "zenbook-14",
+    "our_price": 72,
+    "scraped_at": "2026-05-14T00:29:54+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-14"
+  },
+  "zenbook-laptop/zenbook-14x": {
+    "done": true,
+    "iwm_flawless": 260,
+    "model": "zenbook-14x",
+    "our_price": 234,
+    "scraped_at": "2026-05-14T00:29:59+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-14x"
+  },
+  "zenbook-laptop/zenbook-15": {
+    "done": true,
+    "iwm_flawless": 100,
+    "model": "zenbook-15",
+    "our_price": 90,
+    "scraped_at": "2026-05-14T00:30:12+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-15"
+  },
+  "zenbook-laptop/zenbook-a-14": {
+    "done": true,
+    "iwm_flawless": 380,
+    "model": "zenbook-a-14",
+    "our_price": 342,
+    "scraped_at": "2026-05-14T00:35:08+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-a-14"
+  },
+  "zenbook-laptop/zenbook-duo-14": {
+    "done": true,
+    "iwm_flawless": 370,
+    "model": "zenbook-duo-14",
+    "our_price": 333,
+    "scraped_at": "2026-05-14T00:30:19+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-duo-14"
+  },
+  "zenbook-laptop/zenbook-flip-13": {
+    "done": true,
+    "iwm_flawless": 235,
+    "model": "zenbook-flip-13",
+    "our_price": 211,
+    "scraped_at": "2026-05-14T00:29:44+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-flip-13"
+  },
+  "zenbook-laptop/zenbook-flip-15": {
+    "done": true,
+    "iwm_flawless": 140,
+    "model": "zenbook-flip-15",
+    "our_price": 126,
+    "scraped_at": "2026-05-14T00:30:10+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-flip-15"
+  },
+  "zenbook-laptop/zenbook-pro-14": {
+    "done": true,
+    "iwm_flawless": 750,
+    "model": "zenbook-pro-14",
+    "our_price": 675,
+    "scraped_at": "2026-05-14T00:29:56+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-pro-14"
+  },
+  "zenbook-laptop/zenbook-pro-14-duo": {
+    "done": true,
+    "iwm_flawless": 510,
+    "model": "zenbook-pro-14-duo",
+    "our_price": 459,
+    "scraped_at": "2026-05-14T00:30:08+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-pro-14-duo"
+  },
+  "zenbook-laptop/zenbook-pro-15": {
+    "done": true,
+    "iwm_flawless": 135,
+    "model": "zenbook-pro-15",
+    "our_price": 121,
+    "scraped_at": "2026-05-14T00:30:31+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-pro-15"
+  },
+  "zenbook-laptop/zenbook-pro-15-flip": {
+    "done": true,
+    "iwm_flawless": 320,
+    "model": "zenbook-pro-15-flip",
+    "our_price": 288,
+    "scraped_at": "2026-05-14T00:30:20+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-pro-15-flip"
+  },
+  "zenbook-laptop/zenbook-pro-16x": {
+    "done": true,
+    "iwm_flawless": 1200,
+    "model": "zenbook-pro-16x",
+    "our_price": 1080,
+    "scraped_at": "2026-05-14T00:30:23+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-pro-16x"
+  },
+  "zenbook-laptop/zenbook-pro-17": {
+    "done": true,
+    "iwm_flawless": 350,
+    "model": "zenbook-pro-17",
+    "our_price": 315,
+    "scraped_at": "2026-05-14T00:30:44+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-pro-17"
+  },
+  "zenbook-laptop/zenbook-pro-duo-15": {
+    "done": true,
+    "iwm_flawless": 540,
+    "model": "zenbook-pro-duo-15",
+    "our_price": 486,
+    "scraped_at": "2026-05-14T00:30:25+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-pro-duo-15"
+  },
+  "zenbook-laptop/zenbook-s-13": {
+    "done": true,
+    "iwm_flawless": 75,
+    "model": "zenbook-s-13",
+    "our_price": 67,
+    "scraped_at": "2026-05-14T00:29:47+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-s-13"
+  },
+  "zenbook-laptop/zenbook-s-13-flip": {
+    "done": true,
+    "iwm_flawless": 265,
+    "model": "zenbook-s-13-flip",
+    "our_price": 238,
+    "scraped_at": "2026-05-14T00:30:07+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-s-13-flip"
+  },
+  "zenbook-laptop/zenbook-s-14": {
+    "done": true,
+    "iwm_flawless": 550,
+    "model": "zenbook-s-14",
+    "our_price": 495,
+    "scraped_at": "2026-05-14T00:35:14+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-s-14"
+  },
+  "zenbook-laptop/zenbook-s-16": {
+    "done": true,
+    "iwm_flawless": 590,
+    "model": "zenbook-s-16",
+    "our_price": 531,
+    "scraped_at": "2026-05-14T00:35:37+00:00",
+    "series": "zenbook-laptop",
+    "url": "https://www.itsworthmore.com/sell/zenbook-laptop/zenbook-s-16"
+  }
+}
