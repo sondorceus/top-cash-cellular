@@ -3336,6 +3336,14 @@ const maxAccessoryBonus = (dt?: string | null): number => {
   if (dt === "iphone") return 10;
   return 0;
 };
+// Popular-device bonus mirrors the runtime quote bonus so the 'Up to $X'
+// card label matches what the quote step actually awards. Phones always
+// qualify; iPad ceilings assume cellular (top connectivity tier).
+const maxPopularDeviceBonus = (dt?: string | null): number => {
+  if (dt === "iphone" || dt === "android" || dt === "pixel") return 25;
+  if (dt === "ipad") return 25;
+  return 0;
+};
 const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): number => {
   const table = PRICE_TABLE[m.id];
   if (table) {
@@ -3345,11 +3353,11 @@ const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): numb
         if (price > topPrice) topPrice = price;
       }
     }
-    if (topPrice > 0) return topPrice + maxAccessoryBonus(dt);
+    if (topPrice > 0) return topPrice + maxAccessoryBonus(dt) + maxPopularDeviceBonus(dt);
   }
   if (!m.base) return 0;
   const computed = Math.round(m.base * getMaxStorageMult(m.id) * getTopConditionMult(dt) * TOP_CARRIER_MULT);
-  return computed + maxAccessoryBonus(dt);
+  return computed + maxAccessoryBonus(dt) + maxPopularDeviceBonus(dt);
 };
 
 const PAYOUTS = [
@@ -6126,7 +6134,11 @@ export default function Home() {
       : model && condition && model.base
         ? Math.max(0, Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * nonCarrierMultiplier + extrasAdjSum)) + promoFlatBonus
         : 0;
-  const quote = baseQuote + accessoryBonus;
+  // Popular-device bonus: phones + cellular iPads get +$25 over IWM
+  // so we beat IWM on the categories with the most inbound volume.
+  // Skywalker directive 2026-05-16.
+  const popularDeviceBonus = (isPhoneFlow || isIpadCellular) && baseQuote > 0 ? 25 : 0;
+  const quote = baseQuote + accessoryBonus + popularDeviceBonus;
   // Minimum offer threshold — below this we lose money on shipping +
   // processing. Show "Manual quote" instead of a dollar amount.
   // User can still add to cart; we review manually before paying out.
