@@ -1,0 +1,1904 @@
+{
+  "dji_avata_2": {
+    "count": 0,
+    "model_label": "DJI Avata 2",
+    "iwm_flawless": 375,
+    "our_payout_iwm_x_0.90": 338,
+    "scraped_at": "2026-05-16T21:01:40.988210+00:00"
+  },
+  "dji_fpv": {
+    "count": 30,
+    "min": 112.0,
+    "max": 850.0,
+    "median": 194.495,
+    "mean": 305.73,
+    "samples": [
+      {
+        "price": 450.0,
+        "title": "DJI Avata 2 FPV drone and 3 batteries (No Remote)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 180.0,
+        "title": "DJI Goggles\ud83d\udca5V1 FPV Glasses for Mavic Pro/Spark/Phantom 4 Series\ud83d\udca5GREAT COND.\ud83d\udca5\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 500.0,
+        "title": "DJI Goggles 3 FPV Goggles for DJI Avata 2, Mini 4 Pro, Air 3,Neo,Neo 2- Tracking\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 434.0,
+        "title": "DJI Goggles 3 FPV Goggles For DJI Avata 2 Mini 4 Mavic 3 Pro Air 3/3S Neo Drones\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 184.95,
+        "title": "DJI FPV Goggles V2 FGDB28 - Custom Skin & Headstrap - Used\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 175.0,
+        "title": "DJI FPV Fly More Kit Includes 2 Smart Batteries and Charging Hub\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 135.0,
+        "title": "DJI FPV Remote Controller 3 Gray Remote Control w/ Neck Strap, MPN FC3BGC\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 204.0,
+        "title": "Original DJI FPV Goggles V2\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 209.99,
+        "title": "Original DJI FPV Goggles V2 | Tested\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 160.99,
+        "title": "DJI FPV Remote Controller 3 - Grey (Open Box)\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI FPV",
+    "iwm_flawless": 275,
+    "our_payout_iwm_x_0.90": 248,
+    "est_margin": -54,
+    "est_margin_pct": -21.6,
+    "scraped_at": "2026-05-16T21:01:45.181983+00:00"
+  },
+  "dji_avata": {
+    "count": 14,
+    "min": 133.2,
+    "max": 888.0,
+    "median": 351.5,
+    "mean": 407.14,
+    "samples": [
+      {
+        "price": 404.0,
+        "title": "DJI Goggles 2 for Avata, Air 3, Mavic 3, Mavic 3 Pro, 3 Classic, Mini 4 Pro\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 474.8,
+        "title": "DJI Goggles 2 Motion Combo for Avata, Air 3, Mavic 3, Mavic 3 Pro, Mini 4 Pro\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 269.0,
+        "title": "DJI RC 2 Controller RC331 for DJI Avata 360/Neo 2/Air 3/Mini 4 Pro-US Stock OEM\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 139.0,
+        "title": "DJI FPV Remote Controller 2 For Avata & FPV Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 133.2,
+        "title": "DJI FPV Remote Controller 2 For Avata & FPV Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 259.99,
+        "title": "DJI RC 2 Controller RC331 for DJI Avata 360/Neo 2/Air 3/Mini 4 Pro/Flip-In Stock\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 888.0,
+        "title": "\u3010360\u3011DJI Avata Motion Fly More Combo Drones *USA In Stock * 1-2 SHIPPING\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 299.0,
+        "title": "DJI RC 2 Controller RC331 for DJI Avata 360 /Neo/Neo 2/Air 3/Mini 4/5 Pro NEW\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 450.0,
+        "title": "DJI Avata with FPV control, Motion Controller, Goggles, 2x Batteries, carry bag\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 455.0,
+        "title": "DJI Goggles 2 for Avata, Air 3, Mavic 3, Mavic 3 Pro, 3 Classic, Mini 4 Pro\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Avata",
+    "iwm_flawless": 215,
+    "our_payout_iwm_x_0.90": 194,
+    "est_margin": 158,
+    "est_margin_pct": 81.2,
+    "scraped_at": "2026-05-16T21:01:49.450577+00:00"
+  },
+  "dji_mavic_pro": {
+    "count": 9,
+    "min": 41.83,
+    "max": 268.69,
+    "median": 55.9,
+    "mean": 112.2,
+    "samples": [
+      {
+        "price": 44.95,
+        "title": "DJI Mavic Pro Remote Controller GL200A \u2013 Radio Transmitter for Mavic Pro Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 268.69,
+        "title": "DJI Mavic Pro Camera Drone Bundle w/ ND Filters, Batteries, Pelican IM2275\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 41.83,
+        "title": "Genuine DJI Mavic Pro/Platinum GL200A Radio Remote Controller Transmitter\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 147.99,
+        "title": "DJI Goggles Glasses for Mavic Pro/Air/Mavic 2/Spark/Phantom 4 Series\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 151.5,
+        "title": "DJI Mavic Pro UltraHD 4K Camera Drone with Controller...\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 200.0,
+        "title": "DJI Mavic Pro Quadcopter with Remote Controller - Grey\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 49.0,
+        "title": "DJI Mavic Pro/Platinum GL200A Radio Remote Control Controller Transmitter\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 55.9,
+        "title": "Original DJI Mavic Pro / Platinum GL200A Radio Remote Controller Transmitter\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 49.95,
+        "title": "DJI Mavic Pro (M1P) Drone Remote Controller GL200A \u2013 OEM \u2013 Blue Skin \u2013 Used\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mavic Pro",
+    "iwm_flawless": 80,
+    "our_payout_iwm_x_0.90": 72,
+    "est_margin": -16,
+    "est_margin_pct": -22.4,
+    "scraped_at": "2026-05-16T21:01:54.349672+00:00"
+  },
+  "dji_mavic_pro_platinum": {
+    "count": 7,
+    "min": 202.0,
+    "max": 1299.0,
+    "median": 350.0,
+    "mean": 515.57,
+    "samples": [
+      {
+        "price": 350.0,
+        "title": "DJI Mavic Pro Platinum Fly More Combo Drone set\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1299.0,
+        "title": "DJI Mavic Pro Platinum Fly More Combo **USED GOOD**\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 273.0,
+        "title": "DJI Mavic Pro Platinum Camera Drone Remote Control with 3 Batteries\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 202.0,
+        "title": "DJI Mavic Pro Platinum M1X with Parts and Accessories\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 785.0,
+        "title": "DJI Mavic Pro Platinum Fly More Combo Drone With Several Upgrade/ Extra\u2019s\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 350.0,
+        "title": "DJI Mavic Pro Platinum Camera Drone Remote Control with Batteries\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 350.0,
+        "title": "DJI Mavic Pro Platinum Drone Wide Angle Camera Kit, Remote, Accessories\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mavic Pro Platinum",
+    "iwm_flawless": 175,
+    "our_payout_iwm_x_0.90": 158,
+    "est_margin": 192,
+    "est_margin_pct": 121.5,
+    "scraped_at": "2026-05-16T21:01:58.518512+00:00"
+  },
+  "dji_mavic_2_pro": {
+    "count": 20,
+    "min": 70.77,
+    "max": 600.0,
+    "median": 289.0,
+    "mean": 353.73,
+    "samples": [
+      {
+        "price": 276.99,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/Air 2S/Mini 2/Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 299.0,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/2S Mini 2/Phantom 4 Pro HDR 4K\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 276.99,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/Air 2S/Mini 2/Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 499.95,
+        "title": "DJI Mavic 2 Pro Drone - Gray (Drone Only)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 559.06,
+        "title": "DJI Mavic 2 Pro Drone with 3-Axis Gimbal, Hasselblad L1D-20c 20MP Camera and Rem\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 78.0,
+        "title": "DJI Mavic 2 Pro/Zoom Remote Controller RC1A/RC1B with Joysticks\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 600.0,
+        "title": "DJI Mavic 2 Pro 4K Camera D\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 276.99,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/Air 2S/Mini 2/Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 70.77,
+        "title": "Genuine DJI Mavic 2 Pro/Zoom Remote Controller RC1A/RC1B with Joysticks\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 500.0,
+        "title": "DJI Mavic 2 Pro Drone Bundle | Very Good Condition | 3 Batteries, Bag & Extras\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mavic 2 Pro",
+    "iwm_flawless": 230,
+    "our_payout_iwm_x_0.90": 207,
+    "est_margin": 82,
+    "est_margin_pct": 39.6,
+    "scraped_at": "2026-05-16T21:02:03.093393+00:00"
+  },
+  "dji_mavic_2_zoom": {
+    "count": 8,
+    "min": 374.99,
+    "max": 999.0,
+    "median": 464.475,
+    "mean": 545.37,
+    "samples": [
+      {
+        "price": 450.0,
+        "title": "*MINT* DJI Mavic 2 Zoom Camera Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 650.0,
+        "title": "DJI Mavic 2 Zoom (Under 1 Hour Flight Time!) Relisted - Scam bidder.\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 560.0,
+        "title": "DJI Mavic 2 Zoom (Under 1 Hour Flight Time!)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 374.99,
+        "title": "DJI Mavic 2 Zoom Drone Aircraft Only\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 999.0,
+        "title": "DJI Mavic 2 Zoom (Certified Refurbished)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 425.0,
+        "title": "DJI Mavic 2 Zoom \u2013 Drone Only \u2013\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 478.95,
+        "title": "DJI Mavic 2 Zoom 4K Ultra HD Camera Drone (Drone Only)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 424.99,
+        "title": "DJI Mavic 2 Zoom Camera Drone L1Z\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mavic 2 Zoom",
+    "iwm_flawless": 225,
+    "our_payout_iwm_x_0.90": 202,
+    "est_margin": 262,
+    "est_margin_pct": 129.9,
+    "scraped_at": "2026-05-16T21:02:07.291167+00:00"
+  },
+  "dji_mavic_3": {
+    "count": 6,
+    "min": 189.8,
+    "max": 1599.0,
+    "median": 266.99,
+    "mean": 532.1,
+    "samples": [
+      {
+        "price": 266.99,
+        "title": "DJI RC Pro Enterprise Smart Controller RM510B for Mavic 3T/3E/3M Drones\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 266.99,
+        "title": "DJI RC Pro Enterprise Smart Controller RM510B for Mavic 3T/3E/3M Drones\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1599.0,
+        "title": "DJI Mavic 3 Fly More Combo with all original accessories + DJI RC Pro Remote\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 679.0,
+        "title": "DJI Mavic 3 Mini Pro Fly More Combo Camera Drone (with RC Remote)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 190.8,
+        "title": "DJI RC Pro Smart Controller RM510 for Mavic 3/3 Pro/3 Classic/Mini 3 Pro/Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 189.8,
+        "title": "DJI RC Pro Smart Controller RM510 for Mavic 3/3 Pro/3 Classic/Mini 3 Pro/Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mavic 3",
+    "iwm_flawless": 600,
+    "our_payout_iwm_x_0.90": 540,
+    "est_margin": -273,
+    "est_margin_pct": -50.6,
+    "scraped_at": "2026-05-16T21:02:11.801935+00:00"
+  },
+  "dji_mavic_3_classic": {
+    "count": 8,
+    "min": 700.0,
+    "max": 1300.0,
+    "median": 1174.995,
+    "mean": 1114.12,
+    "samples": [
+      {
+        "price": 1250.0,
+        "title": "DJI Mavic 3 Classic Fly More Combo + Freewell ND Filter ~ Used\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1225.0,
+        "title": "DJI MAVIC 3 Classic Camera Drone With Remote Control\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1150.0,
+        "title": "DJI Mavic 3 Classic Drone Hasselblad Camera Remote Control & Accessories\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1199.99,
+        "title": "DJI Mavic 3 Classic (Bundled DJI RC) Fly More Combo L2C\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1300.0,
+        "title": "DJI Mavic 3 Classic Camera Drone (with RC Remote) - Gray And Many Accessories\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 700.0,
+        "title": "DJI Mavic 3 Classic Ready to Fly Camera Drone w/ RC Controller & ND Filters\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 989.99,
+        "title": "DJI Mavic 3 Classic Drone Quadcopter w/ DJI RC (RM330)/Gimbal Cover - Very Good\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1097.99,
+        "title": "DJI Mavic 3 Classic 4K Quadcopter Camera Drone RM330\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mavic 3 Classic",
+    "iwm_flawless": 575,
+    "our_payout_iwm_x_0.90": 518,
+    "est_margin": 657,
+    "est_margin_pct": 126.8,
+    "scraped_at": "2026-05-16T21:02:16.126156+00:00"
+  },
+  "dji_mavic_3_pro": {
+    "count": 10,
+    "min": 404.0,
+    "max": 2399.0,
+    "median": 1487.5,
+    "mean": 1288.06,
+    "samples": [
+      {
+        "price": 404.0,
+        "title": "DJI Goggles 2 for Avata, Air 3, Mavic 3, Mavic 3 Pro, 3 Classic, Mini 4 Pro\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 474.8,
+        "title": "DJI Goggles 2 Motion Combo for Avata, Air 3, Mavic 3, Mavic 3 Pro, Mini 4 Pro\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1769.0,
+        "title": "tested Unbound used - DJI Mavic 3 Pro Aircraft Only Replacement Unit\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 498.75,
+        "title": "DJI Goggles 3 Motion Combo For DJI Avata 2 Mini 4 Mavic 3 Pro Air 3/3S Neo Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1500.0,
+        "title": "DJI Mavic 3 Pro (No Controller) Ships From USA\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1805.0,
+        "title": "DJI Mavic 3 Pro Drone Fly More Combo with the amazing RC Pro Cont.- SKU#2018368\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 455.0,
+        "title": "DJI Goggles 2 for Avata, Air 3, Mavic 3, Mavic 3 Pro, 3 Classic, Mini 4 Pro\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1475.0,
+        "title": "DJI Mavic 3 Pro With DJI RC Flagship Triple Camera Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2399.0,
+        "title": "New DJI Mavic 3 Pro Drone with Fly More Combo & RC Pro Remote (RM510) - Unbound\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2100.0,
+        "title": "DJI Mavic 3 Pro Drone W/ Fly More Combo/ RC controller\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mavic 3 Pro",
+    "iwm_flawless": 1075,
+    "our_payout_iwm_x_0.90": 968,
+    "est_margin": 520,
+    "est_margin_pct": 53.7,
+    "scraped_at": "2026-05-16T21:02:20.327152+00:00"
+  },
+  "dji_inspire_1": {
+    "count": 24,
+    "min": 84.99,
+    "max": 2000.0,
+    "median": 290.0,
+    "mean": 480.57,
+    "samples": [
+      {
+        "price": 360.0,
+        "title": "DJI Inspire 1 Drone (No Camera) w/ 3 Batteries & Remote - Working With Damage\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1160.0,
+        "title": "DJI Inspire 1 V2.0 Drone X3 Camera FULL SET With 6 Batteries 12 Propellors\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 509.95,
+        "title": "DJI Inspire 1 T600 Drone Only \u2013 Tested Working \u2013 Monster Stickers \u2013 Used\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 220.0,
+        "title": "DJI Zenmuse Z3 3.5x Zoom 4K Aerial Camera for Inspire 1 Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 600.0,
+        "title": "DJI Inspire 1 Drone Kit Zenmuse X3 2 Batteries 2 Controllers ND Filter - Works\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 218.95,
+        "title": "DJI Zenmuse X3 Camera for Inspire 1 Tested Working Replacement\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2000.0,
+        "title": "DJI Inspire 1 with Zenmuse visible and thermal IR gimbals\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1500.0,
+        "title": "DJI Inspire 1, FLIR 640x512 Camera, 6 Batteries, Remote Control\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 155.0,
+        "title": "DJI Inspire 1 Zenmuse X3 Gimbal and Camera Unit - CP-BX-000049\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 500.0,
+        "title": "DJI Inspire 1 \u2014 Complete Dual-Operator Kit | Film-Ready with Zenmuse x3 4K\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Inspire 1",
+    "iwm_flawless": 275,
+    "our_payout_iwm_x_0.90": 248,
+    "est_margin": 42,
+    "est_margin_pct": 16.9,
+    "scraped_at": "2026-05-16T21:02:24.950061+00:00"
+  },
+  "dji_inspire_2": {
+    "count": 16,
+    "min": 339.0,
+    "max": 2850.0,
+    "median": 1550.0,
+    "mean": 1587.3,
+    "samples": [
+      {
+        "price": 1153.77,
+        "title": "DJI Inspire 2 Awesome Bundle\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1600.0,
+        "title": "DJI Inspire 2 X5S 12mm Olympus + Extras - Perfect condition But Needs Controller\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1225.0,
+        "title": "DJI Inspire 2 with Zenmuse X5S (BATTERIES TESTED)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1725.0,
+        "title": "FREE SHIPPING DJI Inspire 2 Drone Used in Great Condition with Lots of Extras\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1780.0,
+        "title": "DJI Drone Inspire 2 T650A 4 Batteries 20 cycles Remote X5S *Tested*\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1100.0,
+        "title": "DJI Inspire 2 Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2024.0,
+        "title": "DJI Inspire 2 X7 ProRes RAW Cinema Drone Kit \u2013 X7 Camera 12 TB50 Cendence\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1225.0,
+        "title": "DJI Inspire 2 with Zenmuse X5S (BATTERIES TESTED)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 339.0,
+        "title": "DJI ZENMUSE X5S 5.2K 4K Gimbal Camera for Inspire 2 Matrice 200 - 210 - X5S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2050.0,
+        "title": "DJI INSPIRE 2 Drone Package - Complete Set with Extras\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Inspire 2",
+    "iwm_flawless": 1100,
+    "our_payout_iwm_x_0.90": 990,
+    "est_margin": 560,
+    "est_margin_pct": 56.6,
+    "scraped_at": "2026-05-16T21:02:29.155471+00:00"
+  },
+  "dji_mavic_air_2": {
+    "count": 12,
+    "min": 120.99,
+    "max": 550.0,
+    "median": 349.995,
+    "mean": 329.5,
+    "samples": [
+      {
+        "price": 295.0,
+        "title": "NEW LISTINGDJI Mavic Air 2 4K w/ Extras\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 450.0,
+        "title": "DJI Mavic Air 2 Drone 4K Camera Quadcopter Foldable with 3 Batteries\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 120.99,
+        "title": "Genuine DJI Mavic Air 2 4K 3-axis Gimbal Camera Assembly Replacement Parts\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 120.99,
+        "title": "Genuine DJI Mavic Air 2 4K 3-axis Gimbal Camera Assembly Replacement Parts\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 550.0,
+        "title": "DJI Mavic Air 2 Drone Quadcopter UAV With 48mp Camera Fly More Combo Kit\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 425.0,
+        "title": "DJI Mavic Air 2. Very Good Condition. Lightly Used.\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 434.99,
+        "title": "DJI Mavic Air 2 4K Quadcopter Camera Drone CP.MA.00000176\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 175.0,
+        "title": "DJI Mavic Air 2 Drone Only Parts/Repair\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 350.0,
+        "title": "DJI Mavic Air 2 Ready-to-Fly Camera Drone w/ Remote Controller, 3 Batteries\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 549.99,
+        "title": "DJI Mavic Air 2 4K/60fps Fly More Combo - Mint Condition & 3 Batteries Tested\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mavic Air 2",
+    "iwm_flawless": 160,
+    "our_payout_iwm_x_0.90": 144,
+    "est_margin": 206,
+    "est_margin_pct": 143.1,
+    "scraped_at": "2026-05-16T21:02:33.523888+00:00"
+  },
+  "dji_air_2s": {
+    "count": 37,
+    "min": 106.2,
+    "max": 700.0,
+    "median": 190.8,
+    "mean": 297.66,
+    "samples": [
+      {
+        "price": 141.99,
+        "title": "DJI RC Pro Smart Controller RM510 for Mavic 3/3 Pro/3 Classic/Mini 3 Pro/Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 276.99,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/Air 2S/Mini 2/Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 276.99,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/Air 2S/Mini 2/Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 142.0,
+        "title": "DJI RC Pro Smart Controller RM510 for Mavic 3/3 Pro/3 Classic/Mini 3 Pro/Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 141.99,
+        "title": "DJI RC Pro Smart Controller RM510 for Mavic 3/3 Pro/3 Classic/Mini 3 Pro/Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 106.99,
+        "title": "DJI RC Remote Controller RM330 for DJI Mini 3 Pro, Mavic 3/Cine/Classic, Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 700.0,
+        "title": "DJI Air 2S Fly More Combo Drone Quadcopter - Grey (CP.MA.00000346.01)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 141.99,
+        "title": "DJI RC Pro Smart Controller RM510 for Mavic 3/3 Pro/3 Classic/Mini 3 Pro/Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 276.99,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/Air 2S/Mini 2/Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 141.99,
+        "title": "DJI RC Pro Smart Controller RM510 for Mavic 3/3 Pro/3 Classic/Mini 3 Pro/Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Air 2S",
+    "iwm_flawless": 300,
+    "our_payout_iwm_x_0.90": 270,
+    "est_margin": -79,
+    "est_margin_pct": -29.3,
+    "scraped_at": "2026-05-16T21:02:37.932282+00:00"
+  },
+  "dji_air_3": {
+    "count": 26,
+    "min": 255.0,
+    "max": 1299.0,
+    "median": 499.375,
+    "mean": 652.44,
+    "samples": [
+      {
+        "price": 500.0,
+        "title": "DJI Goggles 3 FPV Goggles for DJI Avata 2, Mini 4 Pro, Air 3,Neo,Neo 2- Tracking\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 404.0,
+        "title": "DJI Goggles 2 for Avata, Air 3, Mavic 3, Mavic 3 Pro, 3 Classic, Mini 4 Pro\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 474.8,
+        "title": "DJI Goggles 2 Motion Combo for Avata, Air 3, Mavic 3, Mavic 3 Pro, Mini 4 Pro\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 255.0,
+        "title": "DJI Mavic Air 3-Axis Gimbal 4K Camera Drone 21 Minute Flight Time 98% NEW BLACK\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 256.0,
+        "title": "DJI Mavic Air 3-Axis Gimbal 4K Camera Drone 21 Minute Flight Time 98% COOL\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 900.0,
+        "title": "NEW LISTINGDJI Air 3 Ready to Fly Camera Drone Obstacle Avoidance Remote Controller\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 749.49,
+        "title": "BOUND DJI Air 3 4K Camera Drone with RC-N2 RC151 Remote #BA9006\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1000.0,
+        "title": "DJI Air 3 Fly More Combo Camera Drone (with RC 2 Remote) with extras\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 269.0,
+        "title": "DJI RC 2 Controller RC331 for DJI Avata 360/Neo 2/Air 3/Mini 4 Pro-US Stock OEM\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1000.0,
+        "title": "DJI Air 3 Fly More Combo Camera Drone (with RC 2 Remote) with extras\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Air 3",
+    "iwm_flawless": 510,
+    "our_payout_iwm_x_0.90": 459,
+    "est_margin": 40,
+    "est_margin_pct": 8.8,
+    "scraped_at": "2026-05-16T21:02:42.309339+00:00"
+  },
+  "dji_mavic_mini": {
+    "count": 5,
+    "min": 48.8,
+    "max": 239.95,
+    "median": 154.99,
+    "mean": 147.75,
+    "samples": [
+      {
+        "price": 85.0,
+        "title": "DJI MAVIC MINI BATTERIES PLUS 3 BATTERIES (70% Life Ish.\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 48.8,
+        "title": "Original DJI Mavic Mini Drone Remote Controller DJI Mavic Mini MR1SS5\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 239.95,
+        "title": "DJI Mavic Mini Quadcopter Drone with 2.7K Gimbal-Stabilized 12MP Camera\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 209.99,
+        "title": "DJI Mavic Mini Camera Drone CP.MA.00000120.01\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 154.99,
+        "title": "DJI Mavic Mini Camera Drone Everyday Flycam MTISS5\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mavic Mini",
+    "iwm_flawless": 45,
+    "our_payout_iwm_x_0.90": 40,
+    "est_margin": 115,
+    "est_margin_pct": 287.5,
+    "scraped_at": "2026-05-16T21:02:46.942205+00:00"
+  },
+  "dji_mini_2": {
+    "count": 6,
+    "min": 30.0,
+    "max": 299.0,
+    "median": 158.49,
+    "mean": 159.31,
+    "samples": [
+      {
+        "price": 30.0,
+        "title": "DJI RC-N1 Remote Controller RC231 for Mavic 3, Mini 3, Mini 2, Air 2S (Used)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 276.99,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/Air 2S/Mini 2/Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 299.0,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/2S Mini 2/Phantom 4 Pro HDR 4K\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 276.99,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/Air 2S/Mini 2/Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 39.99,
+        "title": "DJI RC-N1 Remote Controller RC231 for Mavic 3, Mini 3, Mini 2, Air 2S (Used)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 32.9,
+        "title": "DJI Mini 2 Hub: Bidirectional Charging for Your Drone and Devices\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mini 2",
+    "iwm_flawless": 90,
+    "our_payout_iwm_x_0.90": 81,
+    "est_margin": 77,
+    "est_margin_pct": 95.7,
+    "scraped_at": "2026-05-16T21:02:51.092247+00:00"
+  },
+  "dji_mini_se": {
+    "count": 15,
+    "min": 44.99,
+    "max": 670.0,
+    "median": 155.99,
+    "mean": 213.8,
+    "samples": [
+      {
+        "price": 199.0,
+        "title": "DJI Mini SE Drone With Controller MT2SS5 In Box Never Flown\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 149.99,
+        "title": "DJI Mini SE 2.7K Camera Drone With Controller & Box - MT2SS5 - Free Shipping!\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 150.0,
+        "title": "DJI Mini SE Camera Drone with Remote * Cosmetic Damage *** View Photos **\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 44.99,
+        "title": "GENUINE DJI Mini 1 / Mini SE Remote Control MR1SS5\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 159.0,
+        "title": "DJl Mini SE Quadcopter with Remote Controller (CP.MA.00000324.01)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 155.99,
+        "title": "DJI Mini SE Drone With Controller MT2SS5 W/Box FREE SHIPPING\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 49.3,
+        "title": "DJI Genuine Mini 1 / Mini SE Controller opened box Used C2\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 49.8,
+        "title": "DJI Genuine Mini 1 / Mini SE Controller opened box Used C2\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 289.0,
+        "title": "DJI Mini SE Drone Fly More Kit 4 Batteries RC-N1 Controller Extras Excellent\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 159.99,
+        "title": "DJI Mini SE Folding Camera Drone N/A\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mini SE",
+    "iwm_flawless": 60,
+    "our_payout_iwm_x_0.90": 54,
+    "est_margin": 102,
+    "est_margin_pct": 188.9,
+    "scraped_at": "2026-05-16T21:02:55.913050+00:00"
+  },
+  "dji_mini_3": {
+    "count": 10,
+    "min": 132.0,
+    "max": 449.99,
+    "median": 347.525,
+    "mean": 324.01,
+    "samples": [
+      {
+        "price": 400.0,
+        "title": "NEW LISTINGDJI Mini 3 Fly More Combo Kit Camera Drone Combo\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 284.05,
+        "title": "DJI Mini 3 4K HDR Vertical Shooting 38min Flight Sub 249g Not registered\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 179.0,
+        "title": "DJI RC Pro RM510B/ RM510 for Mavic Air2s/ Mini 3/ Mavic 3/classic/Pro/3T/3E\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 299.99,
+        "title": "DJI Mini 3 Ready to Fly Remote Control Drone + Built-In Screen Controller\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 335.0,
+        "title": "DJI Mini 3 (DJI RC),Lightweight 3xMechanical Gimbal Camera Drones 4K,GPS Return\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 132.0,
+        "title": "DJI RC Pro Smart Controller RM510 for Mavic 3/3 Pro/3 Classic/Mini 3Pro US Stock\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 449.99,
+        "title": "DJI Mini 3 Fly More Combo Drone (DJI RC),Camera Drones,3 Batteries,32800ft(10km)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 385.0,
+        "title": "DJI Mini 3 Aerial Drone Camera with RC Remote Controller Screen\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 360.05,
+        "title": "DJI Mini 3 (DJI RC), Lightweight 3x Mechanical Gimbal Drones Not registered\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 415.0,
+        "title": "DJI Mini 3 Photography Drone and DJI RC Remote with Screen Bundle Open Box\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mini 3",
+    "iwm_flawless": 175,
+    "our_payout_iwm_x_0.90": 158,
+    "est_margin": 190,
+    "est_margin_pct": 120.0,
+    "scraped_at": "2026-05-16T21:03:00.280573+00:00"
+  },
+  "dji_mini_3_pro": {
+    "count": 21,
+    "min": 82.0,
+    "max": 725.0,
+    "median": 141.99,
+    "mean": 245.02,
+    "samples": [
+      {
+        "price": 141.99,
+        "title": "DJI RC Pro Smart Controller RM510 for Mavic 3/3 Pro/3 Classic/Mini 3 Pro/Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 113.0,
+        "title": "NEW DJI RC-N3 Controller for Flip/Neo/Air 3/Mini 4 Pro(NOT Air 2/Mini 3 Pro)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 82.0,
+        "title": "DJI RC Remote Controller RM330 for DJI Mini 3 Pro, Mavic 3/Cine/Classic, Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 142.0,
+        "title": "DJI RC Pro Smart Controller RM510 for Mavic 3/3 Pro/3 Classic/Mini 3 Pro/Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 524.99,
+        "title": "DJI Mini 3 Pro 4K Quadcopter Camera Drone MT3M3VD\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 141.99,
+        "title": "DJI RC Pro Smart Controller RM510 for Mavic 3/3 Pro/3 Classic/Mini 3 Pro/Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 106.99,
+        "title": "DJI RC Remote Controller RM330 for DJI Mini 3 Pro, Mavic 3/Cine/Classic, Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 141.99,
+        "title": "DJI RC Pro Smart Controller RM510 for Mavic 3/3 Pro/3 Classic/Mini 3 Pro/Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 141.99,
+        "title": "DJI RC Pro Smart Controller RM510 for Mavic 3/3 Pro/3 Classic/Mini 3 Pro/Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 141.0,
+        "title": "DJI RC Pro Smart Controller for Mavic 3/3 Pro/3 Classic/Mini 3 Pro/Air 2S-RM510\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mini 3 Pro",
+    "iwm_flawless": 220,
+    "our_payout_iwm_x_0.90": 198,
+    "est_margin": -56,
+    "est_margin_pct": -28.3,
+    "scraped_at": "2026-05-16T21:03:05.318550+00:00"
+  },
+  "dji_mini_2_se": {
+    "count": 30,
+    "min": 35.0,
+    "max": 319.99,
+    "median": 210.245,
+    "mean": 201.97,
+    "samples": [
+      {
+        "price": 149.89,
+        "title": "DJI Mini 2 SE 2023 Action Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 230.0,
+        "title": "DJI Mini 2 SE Fly More Combo Camera Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 169.0,
+        "title": "DJI Mini 2 SE Camera Drone 249g Low Use!\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 198.95,
+        "title": "DJI Mini 2 SE Mini Drone MT25D READ\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 168.5,
+        "title": "DJI Mini 2 SE Drone MT2SD\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 205.99,
+        "title": "DJI Mini 2 SE\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 137.5,
+        "title": "DJI Mini 2 SE 2.7K Camera Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 230.0,
+        "title": "DJI Mini 2 SE, Lightweight Mini Drone with QHD Video, 10km Max Video\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 35.0,
+        "title": "DJI Mini 2 / Mini 2 SE RC-N1 Remote Controller - Compatible with Air 2S\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 209.99,
+        "title": "DJI Mini 2 SE Camera Drone MT2SD\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mini 2 SE",
+    "iwm_flawless": 75,
+    "our_payout_iwm_x_0.90": 68,
+    "est_margin": 142,
+    "est_margin_pct": 209.2,
+    "scraped_at": "2026-05-16T21:03:09.533885+00:00"
+  },
+  "dji_mini_4_pro": {
+    "count": 28,
+    "min": 105.5,
+    "max": 880.0,
+    "median": 481.99,
+    "mean": 496.76,
+    "samples": [
+      {
+        "price": 850.0,
+        "title": "DJI Mini 4 Pro Fly More Combo Camera Drone (with RC 2 Remote)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 500.0,
+        "title": "DJI Goggles 3 FPV Goggles for DJI Avata 2, Mini 4 Pro, Air 3,Neo,Neo 2- Tracking\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 815.0,
+        "title": "DJI Mini 4 Pro Fly More Combo RC 2 Remote Drone 4K w/ ND Filters\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 755.0,
+        "title": "NEW LISTINGDji Mini 4 Pro\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 404.0,
+        "title": "DJI Goggles 2 for Avata, Air 3, Mavic 3, Mavic 3 Pro, 3 Classic, Mini 4 Pro\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 113.0,
+        "title": "NEW DJI RC-N3 Controller for Flip/Neo/Air 3/Mini 4 Pro(NOT Air 2/Mini 3 Pro)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 474.8,
+        "title": "DJI Goggles 2 Motion Combo for Avata, Air 3, Mavic 3, Mavic 3 Pro, Mini 4 Pro\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 269.0,
+        "title": "DJI RC 2 Controller RC331 for DJI Avata 360/Neo 2/Air 3/Mini 4 Pro-US Stock OEM\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 255.0,
+        "title": "DJI RC 2\u3010DJI Flip/DJI Air 3S/DJI Mini 4 Pro/DJI Neo (Open Box)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 481.99,
+        "title": "DJI Goggles 3 FPV Goggles for DJI Avata 2, Mini 4 Pro, Air 3,Neo,Neo 2- Tracking\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mini 4 Pro",
+    "iwm_flawless": 350,
+    "our_payout_iwm_x_0.90": 315,
+    "est_margin": 167,
+    "est_margin_pct": 53.0,
+    "scraped_at": "2026-05-16T21:03:14.235388+00:00"
+  },
+  "dji_phantom_4": {
+    "count": 12,
+    "min": 69.24,
+    "max": 400.0,
+    "median": 211.5,
+    "mean": 224.5,
+    "samples": [
+      {
+        "price": 147.99,
+        "title": "DJI Goggles Glasses for Mavic Pro/Air/Mavic 2/Spark/Phantom 4 Series\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 400.0,
+        "title": "dji phantom 4 With Accessories\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 399.99,
+        "title": "DJI Phantom 4 4K Camera Drone WM330A\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 154.99,
+        "title": "DJI Goggles RE Racing Edition for Mavic Air/Mavic Pro/Mavic 2/Phantom 4 Series\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 299.99,
+        "title": "DJI Phantom 4 4K Quadcopter Camera Drone WM330A\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 99.98,
+        "title": "DJI Goggles RE Racing Edition for Mavic Air Mavic Pro/Mavic 2/Phantom 4 Series\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 198.0,
+        "title": "DJI Goggles RE Racing Edition for Mavic Air/Mavic Pro/Mavic 2/Phantom 4 Series\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 244.99,
+        "title": "DJI Phantom 4 Camera Drone WM330A and GL300C Controller\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 225.0,
+        "title": "DJI Phantom 4 4K Camera Drone - White\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 134.99,
+        "title": "DJI Goggles Glasses for Mavic Pro/Air/Mavic 2/Spark/Phantom 4 Series\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Phantom 4",
+    "iwm_flawless": 105,
+    "our_payout_iwm_x_0.90": 94,
+    "est_margin": 118,
+    "est_margin_pct": 125.0,
+    "scraped_at": "2026-05-16T21:03:18.786654+00:00"
+  },
+  "dji_phantom_4_advanced": {
+    "count": 19,
+    "min": 119.2,
+    "max": 605.02,
+    "median": 249.0,
+    "mean": 262.95,
+    "samples": [
+      {
+        "price": 150.0,
+        "title": "DJI Phantom 4 Advanced Drone 4k\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 299.0,
+        "title": "DJI Phantom 4 Advanced & Professional Camera & Gimbal -- Great Video!\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 249.0,
+        "title": "DJI Phantom 4 Advanced & Professional Camera & Gimbal - Great Video!\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 276.0,
+        "title": "DJI Phantom 4 Advanced 4K Camera Quadcopter Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 424.95,
+        "title": "DJI Phantom 4 Advanced 4K Camera Drone - White WM332A Bundle DRONE + CAMERA ONLY\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 185.0,
+        "title": "DJI Phantom 4 Advanced WM332A Drone Only White \u2013 Replacement Aircraft \u2013No Camera\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 299.0,
+        "title": "DJI Phantom 4 Advanced & Professional Camera & Gimbal --- Great Video!\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 605.02,
+        "title": "DJI Phantom 4 Advanced Quadcopter Drone with Standard Remote - SKU#2024218\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 149.0,
+        "title": "DJI Phantom 4 Advanced & Professional Camera & Gimbal - Needs Repair\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 275.0,
+        "title": "DJI Phantom 4 Advanced 4K Drone Great Cond\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Phantom 4 Advanced",
+    "iwm_flawless": 115,
+    "our_payout_iwm_x_0.90": 104,
+    "est_margin": 145,
+    "est_margin_pct": 139.4,
+    "scraped_at": "2026-05-16T21:03:23.319332+00:00"
+  },
+  "dji_phantom_4_pro": {
+    "count": 30,
+    "min": 85.0,
+    "max": 1000.0,
+    "median": 278.0,
+    "mean": 331.81,
+    "samples": [
+      {
+        "price": 276.99,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/Air 2S/Mini 2/Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 299.0,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/2S Mini 2/Phantom 4 Pro HDR 4K\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 276.99,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/Air 2S/Mini 2/Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 85.0,
+        "title": "DJI Phantom 4 Pro Transmitter Remote Controller GL300F - Obsidian Edition\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 276.99,
+        "title": "DJI Smart Controller for Mavic 2 Pro/Zoom/Air 2/Air 2S/Mini 2/Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 572.0,
+        "title": "Genuine DJI Phantom 4 Pro - Camera quadcopter Drone WM331A - Read Description\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 276.99,
+        "title": "DJI Smart Controller for Mavic 2 Pro /Zoom /Air 2 /2S Mini 2 /Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 85.0,
+        "title": "DJI Phantom 4 Pro Transmitter Remote Controller GL300F - Obsidian Edition\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 899.95,
+        "title": "DJI Phantom 4 Pro V2.0 4K Camera Drone - White WM331S Bundle DRONE + CAMERA ONLY\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 255.0,
+        "title": "DJI Phantom 4 Pro Drone With Controller And 2 Batteries And Parts Drone\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Phantom 4 Pro",
+    "iwm_flawless": 210,
+    "our_payout_iwm_x_0.90": 189,
+    "est_margin": 89,
+    "est_margin_pct": 47.1,
+    "scraped_at": "2026-05-16T21:03:27.444617+00:00"
+  },
+  "dji_phantom_4_pro_v2": {
+    "count": 9,
+    "min": 110.0,
+    "max": 1000.0,
+    "median": 400.0,
+    "mean": 503.67,
+    "samples": [
+      {
+        "price": 899.95,
+        "title": "DJI Phantom 4 Pro V2.0 4K Camera Drone - White WM331S Bundle DRONE + CAMERA ONLY\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 110.0,
+        "title": "DJI Phantom 4 Pro V2.0 Remote Controller (GL300L) - Tested & Working\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1000.0,
+        "title": "DJI Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 400.0,
+        "title": "DJI Phantom 4 Pro v2 Ready to Fly Drone Remote Control with Accessories\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 635.0,
+        "title": "DJI Phantom 4 Pro V2.0\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 279.05,
+        "title": "DJI Smart Control-RM500 for Mavic 2 Pro/Zoom, Air 2/2S, Mini 2, Phantom 4 Pro V2\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 149.99,
+        "title": "DJI Phantom 4 Pro V2.0 Remote Controller w Built in LED Screen GL300K\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 700.0,
+        "title": "DJI Phantom 4 Pro V2.0 - 0 Flight Hours\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 359.0,
+        "title": "DJI Smart Controller RM500 Mavic 2 Pro Zoom/Air 2/2S Mini 2 / Phantom 4 Pro V2 -\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Phantom 4 Pro v2",
+    "iwm_flawless": 325,
+    "our_payout_iwm_x_0.90": 292,
+    "est_margin": 108,
+    "est_margin_pct": 37.0,
+    "scraped_at": "2026-05-16T21:03:32.924321+00:00"
+  },
+  "dji_spark": {
+    "count": 35,
+    "min": 34.99,
+    "max": 214.12,
+    "median": 99.95,
+    "mean": 98.68,
+    "samples": [
+      {
+        "price": 41.88,
+        "title": "Original DJI Spark Remote Controller For Spark GL100A\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 199.0,
+        "title": "DJI Spark Fly More Combo Camera Drone with 2 batteries and controller Works LN\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 41.88,
+        "title": "Original DJI Spark Remote Controller For Spark GL100A\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 147.99,
+        "title": "DJI Goggles Glasses for Mavic Pro/Air/Mavic 2/Spark/Phantom 4 Series\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 55.0,
+        "title": "DJI SPARK USED\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 118.95,
+        "title": "DJI Spark Replacement Drone (Red) with Stabilized Gimbal Camera Working\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 139.0,
+        "title": "DJI Spark Drone (drone, Controller, 2 Batteries, Extra Wings)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 34.99,
+        "title": "DJI Remote Controller for Spark-Model GL100A\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 118.95,
+        "title": "DJI Spark Replacement Drone (Green) Gimbal Camera Tested Working\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 44.95,
+        "title": "DJI Spark Remote Controller GL100A \u2013 Tested & Working\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Spark",
+    "iwm_flawless": 50,
+    "our_payout_iwm_x_0.90": 45,
+    "est_margin": 55,
+    "est_margin_pct": 122.1,
+    "scraped_at": "2026-05-16T21:03:37.558374+00:00"
+  },
+  "dji_mavic_3_pro_cine": {
+    "count": 15,
+    "min": 1288.0,
+    "max": 3799.0,
+    "median": 2400.0,
+    "mean": 2424.67,
+    "samples": [
+      {
+        "price": 2400.0,
+        "title": "DJI Mavic 3 Pro Cine Premium Combo Camera Drone (with RC Pro Remote)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2600.0,
+        "title": "DJI Mavic 3 Pro Cine RC Pro Bundle \u2014 6 Batteries + ND Filters + ThinkTank+Extras\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2600.0,
+        "title": "DJI Mavic 3 Pro Cine RC Pro Bundle \u2014 6 Batteries + ND Filters + ThinkTank+Extras\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2600.0,
+        "title": "DJI Mavic 3 Pro Cine RC Pro Bundle \u2014 6 Batteries + ND Filters + ThinkTank+Extras\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2950.0,
+        "title": "DJI Mavic 3 Pro Cine Premium Combo RC Pro Sealed Box Zero Flight Time\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 3799.0,
+        "title": "New DJI Mavic 3 Pro Cine Drone with Premium Combo RC Pro Remote 1TB Internal SSD\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2500.0,
+        "title": "New Sealed DJI Mavic 3 Pro Cine w/ Internal 1TB SSD (Drone Only)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2550.0,
+        "title": "DJI Mavic 3 Pro Cine Premium Combo (DJI RC Pro), NEVER BOUND, DJI Care Refresh\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1288.0,
+        "title": "NEVER FLOWN / UNDER WARRANTY DJI Mavic 3 Pro Cine Premium Combo w/ RC Pro Remote\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2095.0,
+        "title": "DJI Mavic 3 Pro Cine Premium Combo Camera Drone (with RC Pro Remote)\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mavic 3 Pro Cine",
+    "iwm_flawless": 1275,
+    "our_payout_iwm_x_0.90": 1148,
+    "est_margin": 1252,
+    "est_margin_pct": 109.1,
+    "scraped_at": "2026-05-16T21:03:41.632271+00:00"
+  },
+  "dji_mavic_3_cine": {
+    "count": 11,
+    "min": 897.88,
+    "max": 2495.0,
+    "median": 1699.0,
+    "mean": 1756.32,
+    "samples": [
+      {
+        "price": 1550.0,
+        "title": "DJI Mavic 3 Cine Drone 1TB Apple ProRes | DJI RC | ND Filters | Charging Hub\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1678.99,
+        "title": "DJI Mavic 3 Cine Camera Drone L2P\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1878.63,
+        "title": "DJI Mavic 3 Cine Professional Drone 5K HD Video, Remote Control, Accessories Kit\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2196.0,
+        "title": "DJI Mavic 3 Cine Premium Combo New-Open-Box Never Used Mint Condition Drone NOS\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 897.88,
+        "title": "Original DJI RC PRO Controller Work for Dji Mavic 3 /Mavic 3 Cine Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2025.0,
+        "title": "DJI Mavic 3 Cine Camera Drone (with RC Pro Remote & Premium Package)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1699.0,
+        "title": "DJI Mavic 3 Cine Drone with RC Pro Remote & Premium Combo Package\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1499.0,
+        "title": "DJI Mavic 3 Cine Drone with RC Pro Remote & Premium Combo Package\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1650.0,
+        "title": "DJI Mavic 3 Cine Premium Combo Camera Drone with RC Pro Remote in Black\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2495.0,
+        "title": "dji mavic 3 cine premium combo 1TB Apple ProRes RC Pro remote Drone KIT ND filte\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mavic 3 Cine",
+    "iwm_flawless": 1150,
+    "our_payout_iwm_x_0.90": 1035,
+    "est_margin": 664,
+    "est_margin_pct": 64.2,
+    "scraped_at": "2026-05-16T21:03:45.797677+00:00"
+  },
+  "dji_air_3s": {
+    "count": 44,
+    "min": 223.5,
+    "max": 1700.0,
+    "median": 1137.99,
+    "mean": 1101.41,
+    "samples": [
+      {
+        "price": 255.0,
+        "title": "DJI RC 2\u3010DJI Flip/DJI Air 3S/DJI Mini 4 Pro/DJI Neo (Open Box)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 979.0,
+        "title": "DJI Air 3S Fly More Combo(RC-N3),Drone 1\"CMOS Wide-Angle,4K,Medium Tele Camera\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1299.0,
+        "title": "DJI Air 3S Fly More Combo (RC 2) 4K Dual-Camera Drone, 45Min Flight Open Box\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 939.55,
+        "title": "DJI Air 3S (RC-N3), Drone Camera 4K, Dual-Camera Drone 1\" CMOS Wide-Angle Camera\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1169.0,
+        "title": "\ud83d\udd25DJI Air 3S Fly More combo\ud83d\udd25DJI RC2 *OPEN-BOX* Japan\ud83d\udeeb\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1250.0,
+        "title": "DJI Air 3S Fly More\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1249.99,
+        "title": "DJl Air 3S Fly More Combo Drone(DJl RC 2)4K,1\"CMOS Wide-Angle/Medium Tele Camera\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1239.99,
+        "title": "DJl Air 3S Fly More Combo Drone (DJl RC 2+3 Batteries)1\"CMOS Wide-Angle+4K/60fps\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1049.99,
+        "title": "DJI Air 3S Fly More Combo(RC-N3),Drone 1\"CMOS Wide-Angle,4K,Medium Tele Camera\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1150.0,
+        "title": "DJI Air 3S Fly More Combo RC-N3 ,Drone 1\"CMOS Wide-Angle,4K USA\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Air 3S",
+    "iwm_flawless": 605,
+    "our_payout_iwm_x_0.90": 544,
+    "est_margin": 594,
+    "est_margin_pct": 109.2,
+    "scraped_at": "2026-05-16T21:03:50.064798+00:00"
+  },
+  "dji_flip": {
+    "count": 38,
+    "min": 69.99,
+    "max": 730.0,
+    "median": 440.495,
+    "mean": 430.44,
+    "samples": [
+      {
+        "price": 69.99,
+        "title": "NEW LISTINGDJI RC-N3 Controller for Flip/Neo/Air 3/Mini 4 pro\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 113.0,
+        "title": "NEW DJI RC-N3 Controller for Flip/Neo/Air 3/Mini 4 Pro(NOT Air 2/Mini 3 Pro)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 255.0,
+        "title": "DJI RC 2\u3010DJI Flip/DJI Air 3S/DJI Mini 4 Pro/DJI Neo (Open Box)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 259.99,
+        "title": "DJI RC 2 Controller RC331 for DJI Avata 360/Neo 2/Air 3/Mini 4 Pro/Flip-In Stock\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 259.99,
+        "title": "DJI RC 2 Controller RC331 for Neo/Air 3/Mini 4 Pro/Flip-NOT for Air 2/Mini 3 Pro\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 539.0,
+        "title": "DJI Flip (RC 2) (Certified Refurbished)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 485.01,
+        "title": "DJI Flip Drone with RC 2 Remote Controller\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 532.0,
+        "title": "DJI Flip Drone Fly More Combo With RC 2 Screen Remote Controller\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 369.0,
+        "title": "DJI Flip (RC-N3) (Certified Refurbished)\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 329.0,
+        "title": "DJI Flip Drone RC-N3 Remote Controller US Stock\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Flip",
+    "iwm_flawless": 160,
+    "our_payout_iwm_x_0.90": 144,
+    "est_margin": 296,
+    "est_margin_pct": 205.9,
+    "scraped_at": "2026-05-16T21:03:54.878074+00:00"
+  },
+  "dji_mavic_4_pro": {
+    "count": 8,
+    "min": 873.62,
+    "max": 3249.0,
+    "median": 2049.5,
+    "mean": 1927.33,
+    "samples": [
+      {
+        "price": 2150.0,
+        "title": "\ud83d\udd25DJI Drone MAVIC 4 Pro Fly More Combo \ud83d\udca1DJI RC 2 *Refurbished*\ud83d\ude81Japan Ship Now\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 3249.0,
+        "title": "DJI Mavic 4 Pro Creator Combo \u2014 Open Box, Completely Unused\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 996.99,
+        "title": "DJI RC Pro 2 Remote Controller High-bright LED for Mavic 4 Pro/Air 3S/Mini 4 Pro\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2149.0,
+        "title": "DJI Mavic 4 Pro Flymore Combo Drone (DJI RC 2) USA In Stock 2-4 SHIPPING\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 873.62,
+        "title": "DJI RC Pro 2 Controller for Mavic 4 Pro Drone\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 2150.0,
+        "title": "DJI Mavic 4 Pro Drone Fly More Combo with RC 2 Remote Controller\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1950.0,
+        "title": "DJI Mavic 4 Pro Drone with DJI RC 2 Ships From Usa\nOpens in a new window or tab",
+        "cond": ""
+      },
+      {
+        "price": 1899.99,
+        "title": "DJI Mavic 4 Pro FLAGSHIP Camera Drone ONLY Replacement for Lost/Crashed Aircraft\nOpens in a new window or tab",
+        "cond": ""
+      }
+    ],
+    "model_label": "DJI Mavic 4 Pro",
+    "iwm_flawless": 1500,
+    "our_payout_iwm_x_0.90": 1350,
+    "est_margin": 700,
+    "est_margin_pct": 51.8,
+    "scraped_at": "2026-05-16T21:03:59.250045+00:00"
+  }
+}
