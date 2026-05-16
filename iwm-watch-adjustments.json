@@ -1,0 +1,3315 @@
+{
+  "garmin-smartwatch/garmin-approach": {
+    "band_adj": {
+      "No": -15,
+      "Yes": 0
+    },
+    "base_price": 75,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging cable": 1,
+      "original box": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": 15,
+      "good": 40,
+      "mint": 60,
+      "sealed": 75
+    },
+    "connectivity_adj": {},
+    "edition_adj": {},
+    "iwm_name": "Garmin Approach",
+    "model": "garmin-approach",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:31:24+00:00",
+    "series": "garmin-smartwatch",
+    "size_adj": {},
+    "storage_adj": {},
+    "submodels": {
+      "approach-s42": {
+        "band_adj": {
+          "No": -15,
+          "Yes": 0
+        },
+        "base_price": 75,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 15,
+          "good": 40,
+          "mint": 60,
+          "sealed": 75
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Approach S42",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "approach-s44": {
+        "band_adj": {
+          "No": -15,
+          "Yes": 0
+        },
+        "base_price": 105,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 25,
+          "good": 75,
+          "mint": 90,
+          "sealed": 105
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Approach S44",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "approach-s50": {
+        "band_adj": {
+          "No": -15,
+          "Yes": 0
+        },
+        "base_price": 150,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 70,
+          "good": 110,
+          "mint": 130,
+          "sealed": 150
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Approach S50",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "approach-s62": {
+        "band_adj": {
+          "No": -25,
+          "Yes": 0
+        },
+        "base_price": 120,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 45,
+          "good": 80,
+          "mint": 100,
+          "sealed": 120
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Approach S62",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "approach-s70": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 220,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 110,
+          "good": 180,
+          "mint": 200,
+          "sealed": 220
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Approach S70",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "42MM": 0,
+          "47MM": 20
+        },
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/garmin-smartwatch/garmin-approach"
+  },
+  "garmin-smartwatch/garmin-descent": {
+    "band_adj": {
+      "No": -30,
+      "Yes": 0
+    },
+    "base_price": 10,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging cable": 5,
+      "original box": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": 150,
+      "good": 210,
+      "mint": 230,
+      "sealed": 255
+    },
+    "connectivity_adj": {},
+    "edition_adj": {
+      "Descent G1": -10,
+      "Descent G1 Solar": 0,
+      "Descent G1 Solar Ocean Edition": 15,
+      "Descent Mk2": -10,
+      "Descent Mk2S": 15,
+      "Descent Mk2i": 25,
+      "Descent Mk3": 440,
+      "Descent Mk3i": 590
+    },
+    "iwm_name": "Garmin Descent",
+    "model": "garmin-descent",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:31:27+00:00",
+    "series": "garmin-smartwatch",
+    "size_adj": {
+      "43MM": 0,
+      "51MM": 35
+    },
+    "storage_adj": {},
+    "submodels": {
+      "descent-g1": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 10,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 150,
+          "good": 210,
+          "mint": 230,
+          "sealed": 255
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Descent G1": -10,
+          "Descent G1 Solar": 0,
+          "Descent G1 Solar Ocean Edition": 15,
+          "Descent Mk2": -10,
+          "Descent Mk2S": 15,
+          "Descent Mk2i": 25,
+          "Descent Mk3": 440,
+          "Descent Mk3i": 590
+        },
+        "model_label": "Descent G1",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "43MM": 0,
+          "51MM": 35
+        },
+        "storage_adj": {}
+      },
+      "descent-g2": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 255,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 150,
+          "good": 210,
+          "mint": 230,
+          "sealed": 255
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Descent G2",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "descent-mk1": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 170,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 70,
+          "good": 130,
+          "mint": 150,
+          "sealed": 170
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Descent Mk1",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "descent-mk2": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 10,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 150,
+          "good": 210,
+          "mint": 230,
+          "sealed": 255
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Descent G1": -10,
+          "Descent G1 Solar": 0,
+          "Descent G1 Solar Ocean Edition": 15,
+          "Descent Mk2": -10,
+          "Descent Mk2S": 15,
+          "Descent Mk2i": 25,
+          "Descent Mk3": 440,
+          "Descent Mk3i": 590
+        },
+        "model_label": "Descent Mk2",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "43MM": 0,
+          "51MM": 35
+        },
+        "storage_adj": {}
+      },
+      "descent-mk3": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 10,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 150,
+          "good": 210,
+          "mint": 230,
+          "sealed": 255
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Descent G1": -10,
+          "Descent G1 Solar": 0,
+          "Descent G1 Solar Ocean Edition": 15,
+          "Descent Mk2": -10,
+          "Descent Mk2S": 15,
+          "Descent Mk2i": 25,
+          "Descent Mk3": 440,
+          "Descent Mk3i": 590
+        },
+        "model_label": "Descent Mk3",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "43MM": 0,
+          "51MM": 35
+        },
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/garmin-smartwatch/garmin-descent"
+  },
+  "garmin-smartwatch/garmin-enduro": {
+    "band_adj": {
+      "No": -30,
+      "Yes": 0
+    },
+    "base_price": 90,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging cable": 5,
+      "original box": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": 25,
+      "good": 50,
+      "mint": 70,
+      "sealed": 90
+    },
+    "connectivity_adj": {},
+    "edition_adj": {},
+    "iwm_name": "Garmin Enduro",
+    "model": "garmin-enduro",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:31:29+00:00",
+    "series": "garmin-smartwatch",
+    "size_adj": {},
+    "storage_adj": {},
+    "submodels": {
+      "enduro": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 90,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 25,
+          "good": 50,
+          "mint": 70,
+          "sealed": 90
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Enduro",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "enduro-2": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 200,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 100,
+          "good": 160,
+          "mint": 180,
+          "sealed": 200
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Enduro 2",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "enduro-3": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 410,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 280,
+          "good": 340,
+          "mint": 370,
+          "sealed": 410
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Enduro 3",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/garmin-smartwatch/garmin-enduro"
+  },
+  "garmin-smartwatch/garmin-epix": {
+    "band_adj": {
+      "No": -40,
+      "Yes": 0
+    },
+    "base_price": 15,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging cable": 5,
+      "original box": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": 50,
+      "good": 80,
+      "mint": 100,
+      "sealed": 130
+    },
+    "connectivity_adj": {},
+    "edition_adj": {
+      "Epix (Gen 2) Sapphire Edition": 0,
+      "Epix (Gen 2) Standard Edition": -15,
+      "Epix Pro (Gen 2) Sapphire Edition": 15,
+      "Epix Pro (Gen 2) Standard Edition": -15
+    },
+    "iwm_name": "Garmin Epix",
+    "model": "garmin-epix",
+    "operational_adj": {},
+    "scraped_at": "2026-05-16T06:31:32+00:00",
+    "series": "garmin-smartwatch",
+    "size_adj": {
+      "42MM": 0,
+      "47MM": 10,
+      "51MM": 15
+    },
+    "storage_adj": {},
+    "submodels": {
+      "epix-gen-2": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 15,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 50,
+          "good": 80,
+          "mint": 100,
+          "sealed": 130
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Epix (Gen 2) Sapphire Edition": 0,
+          "Epix (Gen 2) Standard Edition": -15,
+          "Epix Pro (Gen 2) Sapphire Edition": 15,
+          "Epix Pro (Gen 2) Standard Edition": -15
+        },
+        "model_label": "Epix (Gen 2)",
+        "operational_adj": {},
+        "size_adj": {
+          "42MM": 0,
+          "47MM": 10,
+          "51MM": 15
+        },
+        "storage_adj": {}
+      },
+      "epix-pro-gen-2": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 15,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 50,
+          "good": 80,
+          "mint": 100,
+          "sealed": 130
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Epix (Gen 2) Sapphire Edition": 0,
+          "Epix (Gen 2) Standard Edition": -15,
+          "Epix Pro (Gen 2) Sapphire Edition": 15,
+          "Epix Pro (Gen 2) Standard Edition": -15
+        },
+        "model_label": "Epix Pro (Gen 2)",
+        "operational_adj": {},
+        "size_adj": {
+          "42MM": 0,
+          "47MM": 10,
+          "51MM": 15
+        },
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/garmin-smartwatch/garmin-epix"
+  },
+  "garmin-smartwatch/garmin-fenix": {
+    "band_adj": {
+      "No": -30,
+      "Yes": 0
+    },
+    "base_price": 130,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging cable": 5,
+      "original box": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -90,
+      "good": -40,
+      "mint": 0,
+      "sealed": 20
+    },
+    "connectivity_adj": {},
+    "edition_adj": {
+      "Fenix 7 Pro Sapphire Solar Edition": 120,
+      "Fenix 7 Pro Solar Edition": 80,
+      "Fenix 7 Sapphire Solar Edition": 30,
+      "Fenix 7 Standard Edition": 0
+    },
+    "iwm_name": "Garmin Fenix",
+    "model": "garmin-fenix",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:31:34+00:00",
+    "series": "garmin-smartwatch",
+    "size_adj": {},
+    "storage_adj": {},
+    "submodels": {
+      "fenix-7": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 130,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -90,
+          "good": -40,
+          "mint": 0,
+          "sealed": 20
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Fenix 7 Pro Sapphire Solar Edition": 120,
+          "Fenix 7 Pro Solar Edition": 80,
+          "Fenix 7 Sapphire Solar Edition": 30,
+          "Fenix 7 Standard Edition": 0
+        },
+        "model_label": "Fenix 7",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "fenix-7s": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 160,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -80,
+          "good": -40,
+          "mint": 0,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Fenix 7S Pro Sapphire Solar Edition": 100,
+          "Fenix 7S Pro Solar Edition": 50,
+          "Fenix 7S Sapphire Solar Edition": 70,
+          "Fenix 7S Solar Edition": 10,
+          "Fenix 7S Standard Edition": 0
+        },
+        "model_label": "Fenix 7S",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "fenix-7x": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 140,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -95,
+          "good": -40,
+          "mint": 0,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Fenix 7X Pro Sapphire Solar Edition": 135,
+          "Fenix 7X Pro Solar Edition": 85,
+          "Fenix 7X Sapphire Solar Edition": 30,
+          "Fenix 7X Solar Edition": 0
+        },
+        "model_label": "Fenix 7X",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "fenix-8-amoled": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 380,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -160,
+          "good": -65,
+          "mint": 0,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Fenix 8 AMOLED Edition": 0,
+          "Fenix 8 AMOLED Sapphire Edition": 30
+        },
+        "model_label": "Fenix 8 AMOLED",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "43MM": 0,
+          "47MM": 10,
+          "51MM": 20
+        },
+        "storage_adj": {}
+      },
+      "fenix-8-pro": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 525,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -95,
+          "good": -50,
+          "mint": 0,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Fenix 8 Pro AMOLED Edition": 0,
+          "Fenix 8 Pro MICROLED Edition": 25
+        },
+        "model_label": "Fenix 8 Pro",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "47MM": 0,
+          "51MM": 25
+        },
+        "storage_adj": {}
+      },
+      "fenix-8-solar": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 450,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -95,
+          "good": -45,
+          "mint": 0,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Fenix 8 Solar Sapphire Edition": 0
+        },
+        "model_label": "Fenix 8 Solar",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "47MM": 0,
+          "51MM": 25
+        },
+        "storage_adj": {}
+      },
+      "fenix-e": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 225,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -65,
+          "good": -25,
+          "mint": 0,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Fenix E AMOLED Edition": 0
+        },
+        "model_label": "Fenix E",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/garmin-smartwatch/garmin-fenix"
+  },
+  "garmin-smartwatch/garmin-forerunner": {
+    "band_adj": {
+      "No": -20,
+      "Yes": 0
+    },
+    "base_price": 85,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging cable": 5,
+      "original box": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": 25,
+      "good": 55,
+      "mint": 70,
+      "sealed": 85
+    },
+    "connectivity_adj": {},
+    "edition_adj": {},
+    "iwm_name": "Garmin Forerunner",
+    "model": "garmin-forerunner",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:31:37+00:00",
+    "series": "garmin-smartwatch",
+    "size_adj": {},
+    "storage_adj": {},
+    "submodels": {
+      "forerunner-165": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 85,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 25,
+          "good": 55,
+          "mint": 70,
+          "sealed": 85
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 165",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-165-music": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 85,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 25,
+          "good": 55,
+          "mint": 70,
+          "sealed": 85
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 165 Music",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-245": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 60,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 10,
+          "good": 30,
+          "mint": 45,
+          "sealed": 60
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 245",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-245-music": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 60,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 10,
+          "good": 30,
+          "mint": 45,
+          "sealed": 60
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 245 Music",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-255": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 100,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 35,
+          "good": 70,
+          "mint": 85,
+          "sealed": 100
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 255",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-255-music": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 100,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 35,
+          "good": 70,
+          "mint": 85,
+          "sealed": 100
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 255 Music",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-255s": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 100,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 35,
+          "good": 70,
+          "mint": 85,
+          "sealed": 100
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 255S",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-255s-music": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 100,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 35,
+          "good": 70,
+          "mint": 85,
+          "sealed": 100
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 255S Music",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-265": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 150,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 70,
+          "good": 110,
+          "mint": 130,
+          "sealed": 150
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 265",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-265s": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 150,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 70,
+          "good": 110,
+          "mint": 130,
+          "sealed": 150
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 265S",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-570": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 225,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 105,
+          "good": 175,
+          "mint": 200,
+          "sealed": 225
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 570",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "42mm": 0,
+          "47mm": 10
+        },
+        "storage_adj": {}
+      },
+      "forerunner-745": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 40,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 5,
+          "good": 15,
+          "mint": 25,
+          "sealed": 40
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 745",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-945": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 80,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 20,
+          "good": 45,
+          "mint": 60,
+          "sealed": 80
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 945",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-945-lte": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 80,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 20,
+          "good": 45,
+          "mint": 60,
+          "sealed": 80
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 945 LTE",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-955": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 175,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 75,
+          "good": 130,
+          "mint": 150,
+          "sealed": 175
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 955",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-955-solar": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 175,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 75,
+          "good": 130,
+          "mint": 150,
+          "sealed": 175
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 955 Solar",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-965": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 235,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 110,
+          "good": 185,
+          "mint": 210,
+          "sealed": 235
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 965",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "forerunner-970": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 365,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 230,
+          "good": 310,
+          "mint": 340,
+          "sealed": 365
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Forerunner 970",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/garmin-smartwatch/garmin-forerunner"
+  },
+  "garmin-smartwatch/garmin-instinct": {
+    "band_adj": {
+      "No": -5,
+      "Yes": 0
+    },
+    "base_price": 10,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging cable": 1,
+      "original box": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": 25,
+      "good": 10,
+      "mint": 20,
+      "sealed": 30
+    },
+    "connectivity_adj": {},
+    "edition_adj": {
+      "Instinct 2 Camo Edition": 0,
+      "Instinct 2 Solar": 0,
+      "Instinct 2 Solar Surf Edition": 15,
+      "Instinct 2 Solar Tactical Edition": 30,
+      "Instinct 2 Standard Edition": -10,
+      "Instinct 2 Surf Edition": 0,
+      "Instinct 2 d\u0113zl Edition": 10,
+      "Instinct 2S Camo Edition": 0,
+      "Instinct 2S Solar": 10,
+      "Instinct 2S Solar Surf Edition": 15,
+      "Instinct 2S Standard Edition": -10,
+      "Instinct 2X Solar": -10,
+      "Instinct 2X Solar Tactical Edition": 20,
+      "Instinct 3 AMOLED": -10,
+      "Instinct 3 Solar": 0,
+      "Instinct 3 Solar Tactical Edition": 15,
+      "Instinct Crossover": -10,
+      "Instinct Crossover Solar": 0,
+      "Instinct Crossover Solar Tactical": 10
+    },
+    "iwm_name": "Garmin Instinct",
+    "model": "garmin-instinct",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:31:39+00:00",
+    "series": "garmin-smartwatch",
+    "size_adj": {
+      "40mm": 0,
+      "45mm": 5,
+      "50mm": 20
+    },
+    "storage_adj": {},
+    "submodels": {
+      "instinct-2": {
+        "band_adj": {
+          "No": -5,
+          "Yes": 0
+        },
+        "base_price": 10,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 25,
+          "good": 10,
+          "mint": 20,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Instinct 2 Camo Edition": 0,
+          "Instinct 2 Solar": 0,
+          "Instinct 2 Solar Surf Edition": 15,
+          "Instinct 2 Solar Tactical Edition": 30,
+          "Instinct 2 Standard Edition": -10,
+          "Instinct 2 Surf Edition": 0,
+          "Instinct 2 d\u0113zl Edition": 10,
+          "Instinct 2S Camo Edition": 0,
+          "Instinct 2S Solar": 10,
+          "Instinct 2S Solar Surf Edition": 15,
+          "Instinct 2S Standard Edition": -10,
+          "Instinct 2X Solar": -10,
+          "Instinct 2X Solar Tactical Edition": 20,
+          "Instinct 3 AMOLED": -10,
+          "Instinct 3 Solar": 0,
+          "Instinct 3 Solar Tactical Edition": 15,
+          "Instinct Crossover": -10,
+          "Instinct Crossover Solar": 0,
+          "Instinct Crossover Solar Tactical": 10
+        },
+        "model_label": "Instinct 2",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "40mm": 0,
+          "45mm": 5,
+          "50mm": 20
+        },
+        "storage_adj": {}
+      },
+      "instinct-2s": {
+        "band_adj": {
+          "No": -5,
+          "Yes": 0
+        },
+        "base_price": 10,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 25,
+          "good": 10,
+          "mint": 20,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Instinct 2 Camo Edition": 0,
+          "Instinct 2 Solar": 0,
+          "Instinct 2 Solar Surf Edition": 15,
+          "Instinct 2 Solar Tactical Edition": 30,
+          "Instinct 2 Standard Edition": -10,
+          "Instinct 2 Surf Edition": 0,
+          "Instinct 2 d\u0113zl Edition": 10,
+          "Instinct 2S Camo Edition": 0,
+          "Instinct 2S Solar": 10,
+          "Instinct 2S Solar Surf Edition": 15,
+          "Instinct 2S Standard Edition": -10,
+          "Instinct 2X Solar": -10,
+          "Instinct 2X Solar Tactical Edition": 20,
+          "Instinct 3 AMOLED": -10,
+          "Instinct 3 Solar": 0,
+          "Instinct 3 Solar Tactical Edition": 15,
+          "Instinct Crossover": -10,
+          "Instinct Crossover Solar": 0,
+          "Instinct Crossover Solar Tactical": 10
+        },
+        "model_label": "Instinct 2S",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "40mm": 0,
+          "45mm": 5,
+          "50mm": 20
+        },
+        "storage_adj": {}
+      },
+      "instinct-2x": {
+        "band_adj": {
+          "No": -5,
+          "Yes": 0
+        },
+        "base_price": 10,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 25,
+          "good": 10,
+          "mint": 20,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Instinct 2 Camo Edition": 0,
+          "Instinct 2 Solar": 0,
+          "Instinct 2 Solar Surf Edition": 15,
+          "Instinct 2 Solar Tactical Edition": 30,
+          "Instinct 2 Standard Edition": -10,
+          "Instinct 2 Surf Edition": 0,
+          "Instinct 2 d\u0113zl Edition": 10,
+          "Instinct 2S Camo Edition": 0,
+          "Instinct 2S Solar": 10,
+          "Instinct 2S Solar Surf Edition": 15,
+          "Instinct 2S Standard Edition": -10,
+          "Instinct 2X Solar": -10,
+          "Instinct 2X Solar Tactical Edition": 20,
+          "Instinct 3 AMOLED": -10,
+          "Instinct 3 Solar": 0,
+          "Instinct 3 Solar Tactical Edition": 15,
+          "Instinct Crossover": -10,
+          "Instinct Crossover Solar": 0,
+          "Instinct Crossover Solar Tactical": 10
+        },
+        "model_label": "Instinct 2X",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "40mm": 0,
+          "45mm": 5,
+          "50mm": 20
+        },
+        "storage_adj": {}
+      },
+      "instinct-3": {
+        "band_adj": {
+          "No": -5,
+          "Yes": 0
+        },
+        "base_price": 10,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 25,
+          "good": 10,
+          "mint": 20,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Instinct 2 Camo Edition": 0,
+          "Instinct 2 Solar": 0,
+          "Instinct 2 Solar Surf Edition": 15,
+          "Instinct 2 Solar Tactical Edition": 30,
+          "Instinct 2 Standard Edition": -10,
+          "Instinct 2 Surf Edition": 0,
+          "Instinct 2 d\u0113zl Edition": 10,
+          "Instinct 2S Camo Edition": 0,
+          "Instinct 2S Solar": 10,
+          "Instinct 2S Solar Surf Edition": 15,
+          "Instinct 2S Standard Edition": -10,
+          "Instinct 2X Solar": -10,
+          "Instinct 2X Solar Tactical Edition": 20,
+          "Instinct 3 AMOLED": -10,
+          "Instinct 3 Solar": 0,
+          "Instinct 3 Solar Tactical Edition": 15,
+          "Instinct Crossover": -10,
+          "Instinct Crossover Solar": 0,
+          "Instinct Crossover Solar Tactical": 10
+        },
+        "model_label": "Instinct 3",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "40mm": 0,
+          "45mm": 5,
+          "50mm": 20
+        },
+        "storage_adj": {}
+      },
+      "instinct-crossover": {
+        "band_adj": {
+          "No": -5,
+          "Yes": 0
+        },
+        "base_price": 10,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 25,
+          "good": 10,
+          "mint": 20,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Instinct 2 Camo Edition": 0,
+          "Instinct 2 Solar": 0,
+          "Instinct 2 Solar Surf Edition": 15,
+          "Instinct 2 Solar Tactical Edition": 30,
+          "Instinct 2 Standard Edition": -10,
+          "Instinct 2 Surf Edition": 0,
+          "Instinct 2 d\u0113zl Edition": 10,
+          "Instinct 2S Camo Edition": 0,
+          "Instinct 2S Solar": 10,
+          "Instinct 2S Solar Surf Edition": 15,
+          "Instinct 2S Standard Edition": -10,
+          "Instinct 2X Solar": -10,
+          "Instinct 2X Solar Tactical Edition": 20,
+          "Instinct 3 AMOLED": -10,
+          "Instinct 3 Solar": 0,
+          "Instinct 3 Solar Tactical Edition": 15,
+          "Instinct Crossover": -10,
+          "Instinct Crossover Solar": 0,
+          "Instinct Crossover Solar Tactical": 10
+        },
+        "model_label": "Instinct Crossover",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "40mm": 0,
+          "45mm": 5,
+          "50mm": 20
+        },
+        "storage_adj": {}
+      },
+      "instinct-e": {
+        "band_adj": {
+          "No": -5,
+          "Yes": 0
+        },
+        "base_price": 30,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 25,
+          "good": 10,
+          "mint": 20,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Instinct E",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "40mm": 0,
+          "45mm": 5
+        },
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/garmin-smartwatch/garmin-instinct"
+  },
+  "garmin-smartwatch/garmin-lily": {
+    "band_adj": {
+      "No": -20,
+      "Yes": 0
+    },
+    "base_price": 25,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging cable": 1,
+      "original box": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -40,
+      "good": -20,
+      "mint": 0,
+      "sealed": 25
+    },
+    "connectivity_adj": {},
+    "edition_adj": {},
+    "iwm_name": "Garmin Lily",
+    "model": "garmin-lily",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:31:42+00:00",
+    "series": "garmin-smartwatch",
+    "size_adj": {},
+    "storage_adj": {},
+    "submodels": {
+      "lily-2": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 25,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -40,
+          "good": -20,
+          "mint": 0,
+          "sealed": 25
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Lily 2",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "lily-2-active": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 25,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -40,
+          "good": -20,
+          "mint": 0,
+          "sealed": 25
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Lily 2 Active",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "lily-2-classic": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 25,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -40,
+          "good": -20,
+          "mint": 0,
+          "sealed": 25
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Lily 2 Classic",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/garmin-smartwatch/garmin-lily"
+  },
+  "garmin-smartwatch/garmin-marq": {
+    "band_adj": {
+      "No": -40,
+      "Yes": 0
+    },
+    "base_price": 150,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging cable": 5,
+      "original box": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -140,
+      "good": -60,
+      "mint": 0,
+      "sealed": 40
+    },
+    "connectivity_adj": {},
+    "edition_adj": {
+      "MARQ Adventurer": 100,
+      "MARQ Adventurer (Gen 2)": 575,
+      "MARQ Athlete": 0,
+      "MARQ Athlete (Gen 2)": 500,
+      "MARQ Aviator": 125,
+      "MARQ Aviator (Gen 2)": 575,
+      "MARQ Captain": 30,
+      "MARQ Captain (Gen 2)": 550,
+      "MARQ Commander": 50,
+      "MARQ Commander (Gen 2)": 1250,
+      "MARQ Golfer": 150,
+      "MARQ Golfer (Gen 2)": 800
+    },
+    "iwm_name": "Garmin MARQ",
+    "model": "garmin-marq",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:31:44+00:00",
+    "series": "garmin-smartwatch",
+    "size_adj": {},
+    "storage_adj": {},
+    "submodels": {
+      "marq-adventurer": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 150,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -140,
+          "good": -60,
+          "mint": 0,
+          "sealed": 40
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "MARQ Adventurer": 100,
+          "MARQ Adventurer (Gen 2)": 575,
+          "MARQ Athlete": 0,
+          "MARQ Athlete (Gen 2)": 500,
+          "MARQ Aviator": 125,
+          "MARQ Aviator (Gen 2)": 575,
+          "MARQ Captain": 30,
+          "MARQ Captain (Gen 2)": 550,
+          "MARQ Commander": 50,
+          "MARQ Commander (Gen 2)": 1250,
+          "MARQ Golfer": 150,
+          "MARQ Golfer (Gen 2)": 800
+        },
+        "model_label": "MARQ Adventurer",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "marq-athlete": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 150,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -140,
+          "good": -60,
+          "mint": 0,
+          "sealed": 40
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "MARQ Adventurer": 100,
+          "MARQ Adventurer (Gen 2)": 575,
+          "MARQ Athlete": 0,
+          "MARQ Athlete (Gen 2)": 500,
+          "MARQ Aviator": 125,
+          "MARQ Aviator (Gen 2)": 575,
+          "MARQ Captain": 30,
+          "MARQ Captain (Gen 2)": 550,
+          "MARQ Commander": 50,
+          "MARQ Commander (Gen 2)": 1250,
+          "MARQ Golfer": 150,
+          "MARQ Golfer (Gen 2)": 800
+        },
+        "model_label": "MARQ Athlete",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "marq-aviator": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 150,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -140,
+          "good": -60,
+          "mint": 0,
+          "sealed": 40
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "MARQ Adventurer": 100,
+          "MARQ Adventurer (Gen 2)": 575,
+          "MARQ Athlete": 0,
+          "MARQ Athlete (Gen 2)": 500,
+          "MARQ Aviator": 125,
+          "MARQ Aviator (Gen 2)": 575,
+          "MARQ Captain": 30,
+          "MARQ Captain (Gen 2)": 550,
+          "MARQ Commander": 50,
+          "MARQ Commander (Gen 2)": 1250,
+          "MARQ Golfer": 150,
+          "MARQ Golfer (Gen 2)": 800
+        },
+        "model_label": "MARQ Aviator",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "marq-captain": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 150,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -140,
+          "good": -60,
+          "mint": 0,
+          "sealed": 40
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "MARQ Adventurer": 100,
+          "MARQ Adventurer (Gen 2)": 575,
+          "MARQ Athlete": 0,
+          "MARQ Athlete (Gen 2)": 500,
+          "MARQ Aviator": 125,
+          "MARQ Aviator (Gen 2)": 575,
+          "MARQ Captain": 30,
+          "MARQ Captain (Gen 2)": 550,
+          "MARQ Commander": 50,
+          "MARQ Commander (Gen 2)": 1250,
+          "MARQ Golfer": 150,
+          "MARQ Golfer (Gen 2)": 800
+        },
+        "model_label": "MARQ Captain",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "marq-commander": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 150,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -140,
+          "good": -60,
+          "mint": 0,
+          "sealed": 40
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "MARQ Adventurer": 100,
+          "MARQ Adventurer (Gen 2)": 575,
+          "MARQ Athlete": 0,
+          "MARQ Athlete (Gen 2)": 500,
+          "MARQ Aviator": 125,
+          "MARQ Aviator (Gen 2)": 575,
+          "MARQ Captain": 30,
+          "MARQ Captain (Gen 2)": 550,
+          "MARQ Commander": 50,
+          "MARQ Commander (Gen 2)": 1250,
+          "MARQ Golfer": 150,
+          "MARQ Golfer (Gen 2)": 800
+        },
+        "model_label": "MARQ Commander",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "marq-golfer": {
+        "band_adj": {
+          "No": -40,
+          "Yes": 0
+        },
+        "base_price": 150,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -140,
+          "good": -60,
+          "mint": 0,
+          "sealed": 40
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "MARQ Adventurer": 100,
+          "MARQ Adventurer (Gen 2)": 575,
+          "MARQ Athlete": 0,
+          "MARQ Athlete (Gen 2)": 500,
+          "MARQ Aviator": 125,
+          "MARQ Aviator (Gen 2)": 575,
+          "MARQ Captain": 30,
+          "MARQ Captain (Gen 2)": 550,
+          "MARQ Commander": 50,
+          "MARQ Commander (Gen 2)": 1250,
+          "MARQ Golfer": 150,
+          "MARQ Golfer (Gen 2)": 800
+        },
+        "model_label": "MARQ Golfer",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/garmin-smartwatch/garmin-marq"
+  },
+  "garmin-smartwatch/garmin-quatix": {
+    "band_adj": {
+      "No": -20,
+      "Yes": 0
+    },
+    "base_price": 20,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging cable": 5,
+      "original box": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": 20,
+      "good": 45,
+      "mint": 60,
+      "sealed": 80
+    },
+    "connectivity_adj": {},
+    "edition_adj": {
+      "Quatix 6": -20,
+      "Quatix 6 Titanium": 0,
+      "Quatix 6X Solar": 0,
+      "Quatix 7 Pro": -20,
+      "Quatix 7 Sapphire Edition": 30,
+      "Quatix 7 Standard Edition": -20,
+      "Quatix 7X Solar Edition": 0,
+      "Quatix 8 AMOLED": -20
+    },
+    "iwm_name": "Garmin Quatix",
+    "model": "garmin-quatix",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:31:47+00:00",
+    "series": "garmin-smartwatch",
+    "size_adj": {
+      "47mm": 0,
+      "51mm": 15
+    },
+    "storage_adj": {},
+    "submodels": {
+      "quatix-6": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 20,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 20,
+          "good": 45,
+          "mint": 60,
+          "sealed": 80
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Quatix 6": -20,
+          "Quatix 6 Titanium": 0,
+          "Quatix 6X Solar": 0,
+          "Quatix 7 Pro": -20,
+          "Quatix 7 Sapphire Edition": 30,
+          "Quatix 7 Standard Edition": -20,
+          "Quatix 7X Solar Edition": 0,
+          "Quatix 8 AMOLED": -20
+        },
+        "model_label": "Quatix 6",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "47mm": 0,
+          "51mm": 15
+        },
+        "storage_adj": {}
+      },
+      "quatix-7": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 20,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 20,
+          "good": 45,
+          "mint": 60,
+          "sealed": 80
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Quatix 6": -20,
+          "Quatix 6 Titanium": 0,
+          "Quatix 6X Solar": 0,
+          "Quatix 7 Pro": -20,
+          "Quatix 7 Sapphire Edition": 30,
+          "Quatix 7 Standard Edition": -20,
+          "Quatix 7X Solar Edition": 0,
+          "Quatix 8 AMOLED": -20
+        },
+        "model_label": "Quatix 7",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "47mm": 0,
+          "51mm": 15
+        },
+        "storage_adj": {}
+      },
+      "quatix-8": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 20,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 20,
+          "good": 45,
+          "mint": 60,
+          "sealed": 80
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Quatix 6": -20,
+          "Quatix 6 Titanium": 0,
+          "Quatix 6X Solar": 0,
+          "Quatix 7 Pro": -20,
+          "Quatix 7 Sapphire Edition": 30,
+          "Quatix 7 Standard Edition": -20,
+          "Quatix 7X Solar Edition": 0,
+          "Quatix 8 AMOLED": -20
+        },
+        "model_label": "Quatix 8",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "47mm": 0,
+          "51mm": 15
+        },
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/garmin-smartwatch/garmin-quatix"
+  },
+  "garmin-smartwatch/garmin-tactix": {
+    "band_adj": {
+      "No": -30,
+      "Yes": 0
+    },
+    "base_price": 0,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging cable": 5,
+      "original box": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": 210,
+      "good": 270,
+      "mint": 300,
+      "sealed": 330
+    },
+    "connectivity_adj": {},
+    "edition_adj": {
+      "Tactix 7 AMOLED Edition": 0,
+      "Tactix 7 Pro Ballistics Edition": 0,
+      "Tactix 7 Pro Edition": -100,
+      "Tactix 7 Standard Edition": 0,
+      "Tactix 8 AMOLED Edition": 0,
+      "Tactix 8 Solar Edition": 0,
+      "Tactix 8 Solar Elite Edition": 0,
+      "Tactix Delta Sapphire Edition": 0,
+      "Tactix Delta Solar Ballistics Edition": 0,
+      "Tactix Delta Solar Edition": 0
+    },
+    "iwm_name": "Garmin Tactix",
+    "model": "garmin-tactix",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:31:50+00:00",
+    "series": "garmin-smartwatch",
+    "size_adj": {
+      "47mm": 0,
+      "51mm": 25
+    },
+    "storage_adj": {},
+    "submodels": {
+      "tactix-7": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 0,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 210,
+          "good": 270,
+          "mint": 300,
+          "sealed": 330
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Tactix 7 AMOLED Edition": 0,
+          "Tactix 7 Pro Ballistics Edition": 0,
+          "Tactix 7 Pro Edition": -100,
+          "Tactix 7 Standard Edition": 0,
+          "Tactix 8 AMOLED Edition": 0,
+          "Tactix 8 Solar Edition": 0,
+          "Tactix 8 Solar Elite Edition": 0,
+          "Tactix Delta Sapphire Edition": 0,
+          "Tactix Delta Solar Ballistics Edition": 0,
+          "Tactix Delta Solar Edition": 0
+        },
+        "model_label": "Tactix 7",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "47mm": 0,
+          "51mm": 25
+        },
+        "storage_adj": {}
+      },
+      "tactix-8": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 0,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 210,
+          "good": 270,
+          "mint": 300,
+          "sealed": 330
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Tactix 7 AMOLED Edition": 0,
+          "Tactix 7 Pro Ballistics Edition": 0,
+          "Tactix 7 Pro Edition": -100,
+          "Tactix 7 Standard Edition": 0,
+          "Tactix 8 AMOLED Edition": 0,
+          "Tactix 8 Solar Edition": 0,
+          "Tactix 8 Solar Elite Edition": 0,
+          "Tactix Delta Sapphire Edition": 0,
+          "Tactix Delta Solar Ballistics Edition": 0,
+          "Tactix Delta Solar Edition": 0
+        },
+        "model_label": "Tactix 8",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "47mm": 0,
+          "51mm": 25
+        },
+        "storage_adj": {}
+      },
+      "tactix-delta": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 0,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 5,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 210,
+          "good": 270,
+          "mint": 300,
+          "sealed": 330
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Tactix 7 AMOLED Edition": 0,
+          "Tactix 7 Pro Ballistics Edition": 0,
+          "Tactix 7 Pro Edition": -100,
+          "Tactix 7 Standard Edition": 0,
+          "Tactix 8 AMOLED Edition": 0,
+          "Tactix 8 Solar Edition": 0,
+          "Tactix 8 Solar Elite Edition": 0,
+          "Tactix Delta Sapphire Edition": 0,
+          "Tactix Delta Solar Ballistics Edition": 0,
+          "Tactix Delta Solar Edition": 0
+        },
+        "model_label": "Tactix Delta",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "47mm": 0,
+          "51mm": 25
+        },
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/garmin-smartwatch/garmin-tactix"
+  },
+  "garmin-smartwatch/garmin-venu": {
+    "band_adj": {
+      "No": -35,
+      "Yes": 0
+    },
+    "base_price": 350,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging cable": 1,
+      "original box": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": 210,
+      "good": 270,
+      "mint": 300,
+      "sealed": 350
+    },
+    "connectivity_adj": {},
+    "edition_adj": {},
+    "iwm_name": "Garmin Venu",
+    "model": "garmin-venu",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:31:52+00:00",
+    "series": "garmin-smartwatch",
+    "size_adj": {},
+    "storage_adj": {},
+    "submodels": {
+      "venu-2": {
+        "band_adj": {
+          "No": -35,
+          "Yes": 0
+        },
+        "base_price": 350,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 210,
+          "good": 270,
+          "mint": 300,
+          "sealed": 350
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Venu 2",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "venu-3": {
+        "band_adj": {
+          "No": -35,
+          "Yes": 0
+        },
+        "base_price": 5,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 210,
+          "good": 270,
+          "mint": 300,
+          "sealed": 350
+        },
+        "connectivity_adj": {},
+        "edition_adj": {
+          "Venu 2": -5,
+          "Venu 2 Plus": 10,
+          "Venu 2S": 0,
+          "Venu 3": -5,
+          "Venu 3S": 15
+        },
+        "model_label": "Venu 3",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "41mm": 0,
+          "45mm": 0
+        },
+        "storage_adj": {}
+      },
+      "venu-4": {
+        "band_adj": {
+          "No": -30,
+          "Yes": 0
+        },
+        "base_price": 220,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -70,
+          "good": -30,
+          "mint": 0,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Venu 4",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "41mm": 0,
+          "45mm": 0
+        },
+        "storage_adj": {}
+      },
+      "venu-x1": {
+        "band_adj": {
+          "No": -35,
+          "Yes": 0
+        },
+        "base_price": 350,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 210,
+          "good": 270,
+          "mint": 300,
+          "sealed": 350
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Venu X1",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/garmin-smartwatch/garmin-venu"
+  },
+  "garmin-smartwatch/garmin-vivoactive": {
+    "band_adj": {
+      "No": -10,
+      "Yes": 0
+    },
+    "base_price": 30,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging cable": 1,
+      "original box": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": 0,
+      "good": 10,
+      "mint": 20,
+      "sealed": 30
+    },
+    "connectivity_adj": {},
+    "edition_adj": {},
+    "iwm_name": "Garmin Vivoactive",
+    "model": "garmin-vivoactive",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:31:55+00:00",
+    "series": "garmin-smartwatch",
+    "size_adj": {},
+    "storage_adj": {},
+    "submodels": {
+      "vivoactive-4": {
+        "band_adj": {
+          "No": -10,
+          "Yes": 0
+        },
+        "base_price": 30,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 0,
+          "good": 10,
+          "mint": 20,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Vivoactive 4",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "vivoactive-4s": {
+        "band_adj": {
+          "No": -10,
+          "Yes": 0
+        },
+        "base_price": 30,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 0,
+          "good": 10,
+          "mint": 20,
+          "sealed": 30
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Vivoactive 4S",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "vivoactive-5": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 55,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 10,
+          "good": 25,
+          "mint": 40,
+          "sealed": 55
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Vivoactive 5",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      },
+      "vivoactive-6": {
+        "band_adj": {
+          "No": -20,
+          "Yes": 0
+        },
+        "base_price": 125,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging cable": 1,
+          "original box": 1
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 45,
+          "good": 80,
+          "mint": 100,
+          "sealed": 125
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "Vivoactive 6",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/garmin-smartwatch/garmin-vivoactive"
+  },
+  "samsung-watch/samsung-galaxy-watch-7": {
+    "band_adj": {
+      "Athleisure": 0,
+      "Fabric": 0,
+      "No": -20,
+      "Sport": 0,
+      "Yes": 0
+    },
+    "base_price": 20,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging dock + adapter": 1,
+      "original box": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -20,
+      "good": -10,
+      "mint": 0,
+      "sealed": 15
+    },
+    "connectivity_adj": {
+      "(Bluetooth / Wi-Fi + 4G LTE)": 5,
+      "(Bluetooth / Wi-Fi)": 0
+    },
+    "edition_adj": {},
+    "iwm_name": "Samsung Galaxy Watch7",
+    "model": "samsung-galaxy-watch-7",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:31:57+00:00",
+    "series": "samsung-watch",
+    "size_adj": {
+      "40MM": 0,
+      "44MM": 5
+    },
+    "storage_adj": {},
+    "submodels": {
+      "": {
+        "band_adj": {
+          "Athleisure": 0,
+          "Fabric": 0,
+          "No": -20,
+          "Sport": 0,
+          "Yes": 0
+        },
+        "base_price": 20,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging dock + adapter": 1,
+          "original box": 0
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -20,
+          "good": -10,
+          "mint": 0,
+          "sealed": 15
+        },
+        "connectivity_adj": {
+          "(Bluetooth / Wi-Fi + 4G LTE)": 5,
+          "(Bluetooth / Wi-Fi)": 0
+        },
+        "edition_adj": {},
+        "model_label": "",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "40MM": 0,
+          "44MM": 5
+        },
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-watch/samsung-galaxy-watch-7"
+  },
+  "samsung-watch/samsung-galaxy-watch-8": {
+    "band_adj": {
+      "Athleisure": 0,
+      "Fabric": 0,
+      "Hybrid": 0,
+      "No": -25,
+      "Sport": 0,
+      "Yes": 0
+    },
+    "base_price": 70,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging dock + cable": 1,
+      "original box": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -50,
+      "good": -20,
+      "mint": 0,
+      "sealed": 25
+    },
+    "connectivity_adj": {
+      "(Bluetooth / Wi-Fi + 4G LTE)": 10,
+      "(Bluetooth / Wi-Fi)": 0
+    },
+    "edition_adj": {},
+    "iwm_name": "Samsung Galaxy Watch8",
+    "model": "samsung-galaxy-watch-8",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:32:00+00:00",
+    "series": "samsung-watch",
+    "size_adj": {
+      "40MM": 0,
+      "44MM": 5
+    },
+    "storage_adj": {},
+    "submodels": {
+      "": {
+        "band_adj": {
+          "Athleisure": 0,
+          "Fabric": 0,
+          "Hybrid": 0,
+          "No": -25,
+          "Sport": 0,
+          "Yes": 0
+        },
+        "base_price": 70,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging dock + cable": 1,
+          "original box": 0
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -50,
+          "good": -20,
+          "mint": 0,
+          "sealed": 25
+        },
+        "connectivity_adj": {
+          "(Bluetooth / Wi-Fi + 4G LTE)": 10,
+          "(Bluetooth / Wi-Fi)": 0
+        },
+        "edition_adj": {},
+        "model_label": "",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {
+          "40MM": 0,
+          "44MM": 5
+        },
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-watch/samsung-galaxy-watch-8"
+  },
+  "samsung-watch/samsung-galaxy-watch-8-classic": {
+    "band_adj": {
+      "Athleisure": 0,
+      "Fabric": 0,
+      "Hybrid": 0,
+      "No": -25,
+      "Sport": 0,
+      "Yes": 0
+    },
+    "base_price": 110,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging dock + cable": 1,
+      "original box": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -50,
+      "good": -25,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -10
+    },
+    "connectivity_adj": {
+      "(Bluetooth / Wi-Fi + 4G LTE)": 10,
+      "(Bluetooth / Wi-Fi)": 0
+    },
+    "edition_adj": {},
+    "iwm_name": "Samsung Galaxy Watch8 Classic",
+    "model": "samsung-galaxy-watch-8-classic",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:32:03+00:00",
+    "series": "samsung-watch",
+    "size_adj": {},
+    "storage_adj": {},
+    "submodels": {
+      "": {
+        "band_adj": {
+          "Athleisure": 0,
+          "Fabric": 0,
+          "Hybrid": 0,
+          "No": -25,
+          "Sport": 0,
+          "Yes": 0
+        },
+        "base_price": 110,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging dock + cable": 1,
+          "original box": 0
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": -50,
+          "good": -25,
+          "mint": 0,
+          "sealed": 25,
+          "verygood": -10
+        },
+        "connectivity_adj": {
+          "(Bluetooth / Wi-Fi + 4G LTE)": 10,
+          "(Bluetooth / Wi-Fi)": 0
+        },
+        "edition_adj": {},
+        "model_label": "",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-watch/samsung-galaxy-watch-8-classic"
+  },
+  "samsung-watch/samsung-galaxy-watch-ultra": {
+    "band_adj": {
+      "Marine": 0,
+      "No": -25,
+      "Peakform": 0,
+      "Trail": 0,
+      "Yes": 0
+    },
+    "base_price": 125,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging dock + adapter": 5,
+      "original box": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": 25,
+      "good": 65,
+      "mint": 100,
+      "sealed": 125,
+      "verygood": 85
+    },
+    "connectivity_adj": {},
+    "edition_adj": {},
+    "iwm_name": "Samsung Galaxy Watch Ultra",
+    "model": "samsung-galaxy-watch-ultra",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:32:06+00:00",
+    "series": "samsung-watch",
+    "size_adj": {},
+    "storage_adj": {},
+    "submodels": {
+      "": {
+        "band_adj": {
+          "Marine": 0,
+          "No": -25,
+          "Peakform": 0,
+          "Trail": 0,
+          "Yes": 0
+        },
+        "base_price": 125,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging dock + adapter": 5,
+          "original box": 0
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 25,
+          "good": 65,
+          "mint": 100,
+          "sealed": 125,
+          "verygood": 85
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-watch/samsung-galaxy-watch-ultra"
+  },
+  "samsung-watch/samsung-galaxy-watch-ultra-2025": {
+    "band_adj": {
+      "Marine": 0,
+      "No": -30,
+      "Peakform": 0,
+      "Trail": 0,
+      "Yes": 0
+    },
+    "base_price": 195,
+    "battery_adj": {},
+    "case_adj": {},
+    "charger_adj": {
+      "charging dock + cable": 5,
+      "original box": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": 80,
+      "good": 125,
+      "mint": 160,
+      "sealed": 195,
+      "verygood": 145
+    },
+    "connectivity_adj": {},
+    "edition_adj": {},
+    "iwm_name": "Samsung Galaxy Watch Ultra (2025)",
+    "model": "samsung-galaxy-watch-ultra-2025",
+    "operational_adj": {
+      "no": 0,
+      "yes": 0
+    },
+    "scraped_at": "2026-05-16T06:32:09+00:00",
+    "series": "samsung-watch",
+    "size_adj": {},
+    "storage_adj": {},
+    "submodels": {
+      "": {
+        "band_adj": {
+          "Marine": 0,
+          "No": -30,
+          "Peakform": 0,
+          "Trail": 0,
+          "Yes": 0
+        },
+        "base_price": 195,
+        "battery_adj": {},
+        "case_adj": {},
+        "charger_adj": {
+          "charging dock + cable": 5,
+          "original box": 0
+        },
+        "condition_adj": {
+          "broken": 0,
+          "fair": 80,
+          "good": 125,
+          "mint": 160,
+          "sealed": 195,
+          "verygood": 145
+        },
+        "connectivity_adj": {},
+        "edition_adj": {},
+        "model_label": "",
+        "operational_adj": {
+          "no": 0,
+          "yes": 0
+        },
+        "size_adj": {},
+        "storage_adj": {}
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/samsung-watch/samsung-galaxy-watch-ultra-2025"
+  }
+}

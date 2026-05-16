@@ -2373,23 +2373,86 @@ const PIXELWATCH_MODELS = [
   { id: "pw1", label: "Pixel Watch", base: 80, image: "/devices/pixel-watch.jpg" },
 ];
 
+// Garmin & Samsung Watch variants — auto-generated from IWM scrape
+// (iwm-watch-adjustments.json). Base = IWM Flawless × 0.90 per submodel.
+// Per-edition deltas for series that ship in multiple trims (Fenix,
+// Epix, Instinct, etc.) live in GARMIN_EDITIONS below and surface as
+// a brand_extras question. Regen via scripts/scrape-iwm-watches.py +
+// scripts/gen-watch-page-code.py.
 const GARMIN_MODELS = [
-  { id: "gfenix7", label: "Fenix 7", base: 0 },
-  { id: "gfenix7s", label: "Fenix 7S", base: 0 },
-  { id: "gepix2", label: "Epix Gen 2", base: 0 },
-  { id: "gfr965", label: "Forerunner 965", base: 0 },
-  { id: "gfr265", label: "Forerunner 265", base: 0 },
-  { id: "gvenu3", label: "Venu 3", base: 0 },
-  { id: "gvenu2", label: "Venu 2", base: 0 },
+  { id: "gfenix8pro", label: "Fenix 8 Pro", base: 472, image: "/devices/pixel-watch.png" },
+  { id: "gfenix8solar", label: "Fenix 8 Solar", base: 405, image: "/devices/pixel-watch.png" },
+  { id: "gfenix8amoled", label: "Fenix 8 AMOLED", base: 342, image: "/devices/pixel-watch.png" },
+  { id: "gfenixe", label: "Fenix E", base: 202, image: "/devices/pixel-watch.png" },
+  { id: "gfenix7s", label: "Fenix 7S", base: 144, image: "/devices/pixel-watch.png" },
+  { id: "gfenix7x", label: "Fenix 7X", base: 126, image: "/devices/pixel-watch.png" },
+  { id: "gfenix7", label: "Fenix 7", base: 117, image: "/devices/pixel-watch.png" },
+  { id: "gepixgen2", label: "Epix Gen 2", base: 14, image: "/devices/pixel-watch.png" },
+  { id: "gepixprogen2", label: "Epix Pro Gen 2", base: 14, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner970", label: "Forerunner 970", base: 328, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner965", label: "Forerunner 965", base: 212, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner570", label: "Forerunner 570", base: 202, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner955", label: "Forerunner 955", base: 158, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner955solar", label: "Forerunner 955 Solar", base: 158, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner265", label: "Forerunner 265", base: 135, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner265s", label: "Forerunner 265S", base: 135, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner255", label: "Forerunner 255", base: 90, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner255music", label: "Forerunner 255 Music", base: 90, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner255s", label: "Forerunner 255S", base: 90, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner255smusic", label: "Forerunner 255S Music", base: 90, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner165", label: "Forerunner 165", base: 76, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner165music", label: "Forerunner 165 Music", base: 76, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner945", label: "Forerunner 945", base: 72, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner945lte", label: "Forerunner 945 LTE", base: 72, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner245", label: "Forerunner 245", base: 54, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner245music", label: "Forerunner 245 Music", base: 54, image: "/devices/pixel-watch.png" },
+  { id: "gforerunner745", label: "Forerunner 745", base: 36, image: "/devices/pixel-watch.png" },
+  { id: "gvenu2", label: "Venu 2", base: 315, image: "/devices/pixel-watch.png" },
+  { id: "gvenux1", label: "Venu X1", base: 315, image: "/devices/pixel-watch.png" },
+  { id: "gvenu4", label: "Venu 4", base: 198, image: "/devices/pixel-watch.png" },
+  { id: "gvivoactive6", label: "Vivoactive 6", base: 112, image: "/devices/pixel-watch.png" },
+  { id: "gvivoactive5", label: "Vivoactive 5", base: 50, image: "/devices/pixel-watch.png" },
+  { id: "gvivoactive4", label: "Vivoactive 4", base: 27, image: "/devices/pixel-watch.png" },
+  { id: "gvivoactive4s", label: "Vivoactive 4S", base: 27, image: "/devices/pixel-watch.png" },
+  { id: "ginstincte", label: "Instinct E", base: 27, image: "/devices/pixel-watch.png" },
+  { id: "ginstinct2", label: "Instinct 2", base: 9, image: "/devices/pixel-watch.png" },
+  { id: "ginstinct2s", label: "Instinct 2S", base: 9, image: "/devices/pixel-watch.png" },
+  { id: "ginstinct2x", label: "Instinct 2X", base: 9, image: "/devices/pixel-watch.png" },
+  { id: "ginstinct3", label: "Instinct 3", base: 9, image: "/devices/pixel-watch.png" },
+  { id: "ginstinctcrossover", label: "Instinct Crossover", base: 9, image: "/devices/pixel-watch.png" },
+  { id: "gapproachs70", label: "Approach S70", base: 198, image: "/devices/pixel-watch.png" },
+  { id: "gapproachs50", label: "Approach S50", base: 135, image: "/devices/pixel-watch.png" },
+  { id: "gapproachs62", label: "Approach S62", base: 108, image: "/devices/pixel-watch.png" },
+  { id: "gapproachs44", label: "Approach S44", base: 94, image: "/devices/pixel-watch.png" },
+  { id: "gapproachs42", label: "Approach S42", base: 68, image: "/devices/pixel-watch.png" },
+  { id: "gdescentg2", label: "Descent G2", base: 230, image: "/devices/pixel-watch.png" },
+  { id: "gdescentmk1", label: "Descent Mk1", base: 153, image: "/devices/pixel-watch.png" },
+  { id: "gdescentg1", label: "Descent G1", base: 9, image: "/devices/pixel-watch.png" },
+  { id: "gdescentmk2", label: "Descent Mk2", base: 9, image: "/devices/pixel-watch.png" },
+  { id: "gdescentmk3", label: "Descent Mk3", base: 9, image: "/devices/pixel-watch.png" },
+  { id: "genduro3", label: "Enduro 3", base: 369, image: "/devices/pixel-watch.png" },
+  { id: "genduro2", label: "Enduro 2", base: 180, image: "/devices/pixel-watch.png" },
+  { id: "genduroorig", label: "Enduro", base: 81, image: "/devices/pixel-watch.png" },
+  { id: "gmarqadventurer", label: "MARQ Adventurer", base: 135, image: "/devices/pixel-watch.png" },
+  { id: "gmarqathlete", label: "MARQ Athlete", base: 135, image: "/devices/pixel-watch.png" },
+  { id: "gmarqaviator", label: "MARQ Aviator", base: 135, image: "/devices/pixel-watch.png" },
+  { id: "gmarqcaptain", label: "MARQ Captain", base: 135, image: "/devices/pixel-watch.png" },
+  { id: "gmarqcommander", label: "MARQ Commander", base: 135, image: "/devices/pixel-watch.png" },
+  { id: "gmarqgolfer", label: "MARQ Golfer", base: 135, image: "/devices/pixel-watch.png" },
+  { id: "gquatix6", label: "Quatix 6", base: 18, image: "/devices/pixel-watch.png" },
+  { id: "gquatix7", label: "Quatix 7", base: 18, image: "/devices/pixel-watch.png" },
+  { id: "gquatix8", label: "Quatix 8", base: 18, image: "/devices/pixel-watch.png" },
+  { id: "glily2", label: "Lily 2", base: 22, image: "/devices/pixel-watch.png" },
+  { id: "glily2active", label: "Lily 2 Active", base: 22, image: "/devices/pixel-watch.png" },
+  { id: "glily2classic", label: "Lily 2 Classic", base: 22, image: "/devices/pixel-watch.png" },
 ];
 
 const SAMSUNGWATCH_MODELS = [
-  { id: "sgwu", label: "Galaxy Watch Ultra", base: 350, image: "/devices/samsung-watch-7.webp" },
-  { id: "sgw7", label: "Galaxy Watch 7", base: 150, image: "/devices/samsung-watch-7.webp" },
-  { id: "sgw6c", label: "Galaxy Watch 6 Classic", base: 0, image: "/devices/samsung-watch-6-classic.webp" },
-  { id: "sgw6", label: "Galaxy Watch 6", base: 0, image: "/devices/samsung-watch-6.webp" },
-  { id: "sgw5p", label: "Galaxy Watch 5 Pro", base: 0, image: "/devices/samsung-watch-5-pro.webp" },
-  { id: "sgw5", label: "Galaxy Watch 5", base: 0, image: "/devices/samsung-watch-5.webp" },
+  { id: "sgwu25", label: "Galaxy Watch Ultra (2025)", base: 176, image: "/devices/samsung-watch-7.webp" },
+  { id: "sgwu", label: "Galaxy Watch Ultra", base: 112, image: "/devices/samsung-watch-7.webp" },
+  { id: "sgw8c", label: "Galaxy Watch 8 Classic", base: 99, image: "/devices/samsung-watch-7.webp" },
+  { id: "sgw8", label: "Galaxy Watch 8", base: 63, image: "/devices/samsung-watch-7.webp" },
+  { id: "sgw7", label: "Galaxy Watch 7", base: 18, image: "/devices/samsung-watch-7.webp" },
 ];
 
 const DJI_MODELS = [
@@ -2403,6 +2466,58 @@ const DJI_MODELS = [
   { id: "djiflip", label: "DJI Flip" },
   { id: "djispark", label: "DJI Spark" },
 ];
+
+// Per-variant edition map for Garmin series that ship multiple trims
+// (Fenix 7/7S/7X/8 each have Standard / Solar / Sapphire / Pro / etc.).
+// Surfaces as a brand_extras "edition" question when the selected
+// variant has an entry here. Adj values already discounted by ×0.90.
+const GARMIN_EDITIONS: Record<string, Array<{id: string; label: string; adj: number}>> = {
+  gfenix8pro: [
+    { id: "fenix_8_pro_amoled_edition", label: "Fenix 8 Pro AMOLED Edition", adj: 1 },
+    { id: "fenix_8_pro_microled_edition", label: "Fenix 8 Pro MICROLED Edition", adj: 22 },
+  ],
+  gfenix8solar: [
+    { id: "fenix_8_solar_sapphire_edition", label: "Fenix 8 Solar Sapphire Edition", adj: 1 },
+  ],
+  gfenix8amoled: [
+    { id: "fenix_8_amoled_edition", label: "Fenix 8 AMOLED Edition", adj: 1 },
+    { id: "fenix_8_amoled_sapphire_editio", label: "Fenix 8 AMOLED Sapphire Edition", adj: 27 },
+  ],
+  gfenixe: [
+    { id: "fenix_e_amoled_edition", label: "Fenix E AMOLED Edition", adj: 1 },
+  ],
+  gfenix7s: [
+    { id: "fenix_7s_standard_edition", label: "Fenix 7S Standard Edition", adj: 1 },
+    { id: "fenix_7s_solar_edition", label: "Fenix 7S Solar Edition", adj: 9 },
+    { id: "fenix_7s_pro_solar_edition", label: "Fenix 7S Pro Solar Edition", adj: 45 },
+    { id: "fenix_7s_sapphire_solar_editio", label: "Fenix 7S Sapphire Solar Edition", adj: 63 },
+    { id: "fenix_7s_pro_sapphire_solar_ed", label: "Fenix 7S Pro Sapphire Solar Edition", adj: 90 },
+  ],
+  gfenix7x: [
+    { id: "fenix_7x_solar_edition", label: "Fenix 7X Solar Edition", adj: 1 },
+    { id: "fenix_7x_sapphire_solar_editio", label: "Fenix 7X Sapphire Solar Edition", adj: 27 },
+    { id: "fenix_7x_pro_solar_edition", label: "Fenix 7X Pro Solar Edition", adj: 76 },
+    { id: "fenix_7x_pro_sapphire_solar_ed", label: "Fenix 7X Pro Sapphire Solar Edition", adj: 122 },
+  ],
+  gfenix7: [
+    { id: "fenix_7_standard_edition", label: "Fenix 7 Standard Edition", adj: 1 },
+    { id: "fenix_7_sapphire_solar_edition", label: "Fenix 7 Sapphire Solar Edition", adj: 27 },
+    { id: "fenix_7_pro_solar_edition", label: "Fenix 7 Pro Solar Edition", adj: 72 },
+    { id: "fenix_7_pro_sapphire_solar_edi", label: "Fenix 7 Pro Sapphire Solar Edition", adj: 108 },
+  ],
+  gepixgen2: [
+    { id: "epix_gen_2_standard_edition", label: "Epix (Gen 2) Standard Edition", adj: 1 },
+    { id: "epix_pro_gen_2_standard_editio", label: "Epix Pro (Gen 2) Standard Edition", adj: 1 },
+    { id: "epix_gen_2_sapphire_edition", label: "Epix (Gen 2) Sapphire Edition", adj: 1 },
+    { id: "epix_pro_gen_2_sapphire_editio", label: "Epix Pro (Gen 2) Sapphire Edition", adj: 14 },
+  ],
+  gepixprogen2: [
+    { id: "epix_gen_2_standard_edition", label: "Epix (Gen 2) Standard Edition", adj: 1 },
+    { id: "epix_pro_gen_2_standard_editio", label: "Epix Pro (Gen 2) Standard Edition", adj: 1 },
+    { id: "epix_gen_2_sapphire_edition", label: "Epix (Gen 2) Sapphire Edition", adj: 1 },
+    { id: "epix_pro_gen_2_sapphire_editio", label: "Epix Pro (Gen 2) Sapphire Edition", adj: 14 },
+  ],
+};
 
 // Apple Vision Pro — single device entry. Storage is a runtime question
 // (256GB / 512GB / 1TB), and generation is a separate question (M2 2024
@@ -2583,10 +2698,10 @@ const MODEL_GROUPS: Record<string, ModelGroup[]> = {
     { label: "SE",         year: "2020–2022", ids: ["awse2", "awse1"] },
   ],
   samsungwatch: [
-    { label: "Ultra",      year: "2024",      ids: ["sgwu"] },
-    { label: "Watch 7",    year: "2024",      ids: ["sgw7"] },
-    { label: "Watch 6",    year: "2023",      ids: ["sgw6c", "sgw6"] },
-    { label: "Watch 5",    year: "2022",      ids: ["sgw5p", "sgw5"] },
+    { label: "Ultra (2025)", year: "2025", ids: ["sgwu25"] },
+    { label: "Ultra",        year: "2024", ids: ["sgwu"] },
+    { label: "Watch 8",      year: "2025", ids: ["sgw8c", "sgw8"] },
+    { label: "Watch 7",      year: "2024", ids: ["sgw7"] },
   ],
   pixelwatch: [
     { label: "Pixel Watch 3", year: "2024", ids: ["pw3"] },
@@ -2594,10 +2709,18 @@ const MODEL_GROUPS: Record<string, ModelGroup[]> = {
     { label: "Pixel Watch",   year: "2022", ids: ["pw1"] },
   ],
   garmin: [
-    { label: "Fenix",      ids: ["gfenix7", "gfenix7s"] },
-    { label: "Epix",       ids: ["gepix2"] },
-    { label: "Forerunner", ids: ["gfr965", "gfr265"] },
-    { label: "Venu",       ids: ["gvenu3", "gvenu2"] },
+    { label: "Fenix",      ids: ["gfenix8pro", "gfenix8solar", "gfenix8amoled", "gfenixe", "gfenix7s", "gfenix7x", "gfenix7"] },
+    { label: "Epix",       ids: ["gepixgen2", "gepixprogen2"] },
+    { label: "Forerunner", ids: ["gforerunner970", "gforerunner965", "gforerunner570", "gforerunner955", "gforerunner955solar", "gforerunner265", "gforerunner265s", "gforerunner255", "gforerunner255music", "gforerunner255s", "gforerunner255smusic", "gforerunner165", "gforerunner165music", "gforerunner945", "gforerunner945lte", "gforerunner245", "gforerunner245music", "gforerunner745"] },
+    { label: "Venu",       ids: ["gvenu2", "gvenux1", "gvenu4"] },
+    { label: "Vivoactive", ids: ["gvivoactive6", "gvivoactive5", "gvivoactive4", "gvivoactive4s"] },
+    { label: "Instinct",   ids: ["ginstincte", "ginstinct2", "ginstinct2s", "ginstinct2x", "ginstinct3", "ginstinctcrossover"] },
+    { label: "Approach",   ids: ["gapproachs70", "gapproachs50", "gapproachs62", "gapproachs44", "gapproachs42"] },
+    { label: "Descent",    ids: ["gdescentg2", "gdescentmk1", "gdescentg1", "gdescentmk2", "gdescentmk3"] },
+    { label: "Enduro",     ids: ["genduro3", "genduro2", "genduroorig"] },
+    { label: "MARQ",       ids: ["gmarqadventurer", "gmarqathlete", "gmarqaviator", "gmarqcaptain", "gmarqcommander", "gmarqgolfer"] },
+    { label: "Quatix",     ids: ["gquatix6", "gquatix7", "gquatix8"] },
+    { label: "Lily",       ids: ["glily2", "glily2active", "glily2classic"] },
   ],
   sony: [
     { label: "PlayStation 5", year: "2020–2024", ids: ["ps5pro", "ps5slim", "ps5"] },
@@ -3334,18 +3457,41 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
     ]},
   ],
   samsungwatch: [
-    { id: "connectivity", question: "Bluetooth only or LTE?", helper: "LTE models can make calls without your phone nearby.", options: [
-      { id: "bt",  label: "Bluetooth only",  multiplier: 1.00 },
-      { id: "lte", label: "LTE (Cellular)",  multiplier: 1.10 },
+    { id: "connectivity", question: "Bluetooth only or LTE?", helper: "LTE models can make calls without your phone nearby.",
+      guide: { title: "How to check connectivity", steps: [
+        "Open Settings on the watch → About Watch → Status.",
+        "Look for a SIM section. LTE models show carrier + IMEI; BT-only models say 'No SIM'.",
+        "Or check the case back — LTE models are engraved 'LTE'.",
+      ]},
+      options: [
+      { id: "bt",  label: "Bluetooth only",  multiplier: 1.00, adj: 0 },
+      { id: "lte", label: "LTE (Cellular)",  multiplier: 1.00, adj: 5 },
     ]},
-    { id: "size", question: "Case size?", options: [
-      { id: "small", label: "Small (40-43mm)", multiplier: 1.00 },
-      { id: "large", label: "Large (44-47mm)", multiplier: 1.05 },
+    { id: "size", question: "Case size?", helper: "Printed on the underside of the watch.",
+      guide: { title: "How to find the case size", steps: [
+        "Remove the watch from your wrist.",
+        "Look at the underside (against the skin) — Samsung prints the size next to the model number.",
+        "Common sizes: 40mm, 43mm (Watch 8), 44mm, 47mm (Ultra).",
+      ]},
+      options: [
+      { id: "small", label: "Small (40-43mm)", multiplier: 1.00, adj: 0 },
+      { id: "large", label: "Large (44-47mm)", multiplier: 1.00, adj: 5 },
     ]},
-    { id: "band", question: "Band included?", options: [
-      { id: "oem",   label: "Yes — original Samsung band", multiplier: 1.05 },
-      { id: "third", label: "Yes — 3rd-party band",        multiplier: 1.00 },
-      { id: "none",  label: "No band",                     multiplier: 0.90 },
+    { id: "band", question: "Is the band original (OEM)?",
+      guide: { title: "How to verify OEM", steps: [
+        "Original Samsung bands have 'Samsung' printed on the inside, near the lug.",
+        "OEM clasps say 'Samsung'; 3rd-party clasps are usually unbranded.",
+        "If the band came in the original box, it's OEM.",
+      ]},
+      options: [
+      { id: "oem",   label: "Yes — original Samsung band", multiplier: 1.00, adj: 0 },
+      { id: "third", label: "Yes — 3rd-party band",        multiplier: 1.00, adj: -10 },
+      { id: "none",  label: "No band",                     multiplier: 1.00, adj: -20 },
+    ]},
+    { id: "charger", question: "Charging dock included?",
+      options: [
+      { id: "yes", label: "Yes — original puck",  multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No",                   multiplier: 1.00, adj: -8 },
     ]},
   ],
   pixelwatch: [
@@ -3364,14 +3510,29 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
     ]},
   ],
   garmin: [
-    { id: "band", question: "Band included?", options: [
-      { id: "oem",   label: "Yes — original Garmin band",  multiplier: 1.05 },
-      { id: "third", label: "Yes — 3rd-party band",        multiplier: 1.00 },
-      { id: "none",  label: "No band",                     multiplier: 0.90 },
+    // Edition question: only appears when the selected model has an
+    // entry in GARMIN_EDITIONS (Fenix 7/7S/7X/8 series + Epix Gen 2).
+    // Resolution happens in getBrandExtras at render time.
+    { id: "band", question: "Is the band original (OEM)?", helper: "Original Garmin bands include 'Garmin' on the underside.",
+      guide: { title: "How to verify OEM Garmin band", steps: [
+        "Flip the band over — original Garmin bands print 'Garmin' near the lug.",
+        "OEM QuickFit bands have a metal release lever; aftermarket usually use thread or pin.",
+        "If the watch came in its original box with the band, it's OEM.",
+      ]},
+      options: [
+      { id: "oem",   label: "Yes — original Garmin band",  multiplier: 1.00, adj: 0 },
+      { id: "third", label: "Yes — 3rd-party band",        multiplier: 1.00, adj: -8 },
+      { id: "none",  label: "No band",                     multiplier: 1.00, adj: -25 },
     ]},
-    { id: "charger", question: "Charging cable included?", options: [
-      { id: "yes", label: "Yes",  multiplier: 1.00 },
-      { id: "no",  label: "No",   multiplier: 0.92 },
+    { id: "charger", question: "Charging cable included?", helper: "Garmin's proprietary 4-pin cable — sells for $20+ separately.",
+      options: [
+      { id: "yes", label: "Yes",  multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No",   multiplier: 1.00, adj: -15 },
+    ]},
+    { id: "box", question: "Original box?",
+      options: [
+      { id: "yes", label: "Yes",  multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No",   multiplier: 1.00, adj: -3 },
     ]},
   ],
   // VR — accessories matter a lot
@@ -3681,6 +3842,29 @@ const getBrandExtras = (dt: string | null | undefined, modelId?: string | null |
   // inquiry-only so they never reach this code path, but guard anyway.
   if (dt === "lenovo" && modelId !== "ln_tp_x1_carbon") {
     return base.filter(q => q.id !== "display");
+  }
+  // Garmin — inject a per-model "edition" question for Fenix / Epix
+  // submodels that ship multiple trims. Adj already discounted ×0.90.
+  if (dt === "garmin" && modelId && GARMIN_EDITIONS[modelId]) {
+    const editions = GARMIN_EDITIONS[modelId].map(e => ({
+      id: e.id,
+      label: e.adj > 0 ? `${e.label} (+$${e.adj})` : e.label,
+      multiplier: 1.00,
+      adj: e.adj,
+    }));
+    const editionQ: BrandExtra = {
+      id: "edition",
+      question: "Which exact edition?",
+      helper: "Look at the bezel material + 'Solar' / 'Sapphire' / 'Pro' markings on the back.",
+      guide: { title: "How to find the exact edition", steps: [
+        "On the watch: Settings → System → About — the model name is printed at the top.",
+        "Or flip the watch: the back is engraved with the full model name.",
+        "Or check the box: the full edition name is printed on the side label.",
+        "Sapphire editions have a darker, more reflective lens; Solar editions have a thin ring around the dial.",
+      ]},
+      options: editions,
+    };
+    return [editionQ, ...base];
   }
   return base;
 };
