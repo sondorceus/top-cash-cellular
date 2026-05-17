@@ -5950,6 +5950,12 @@ export default function Home() {
   // option to add pictures for each having a tab".
   const [photosByItemKey, setPhotosByItemKey] = useState<Record<string, string[]>>({});
   const [activePhotoKey, setActivePhotoKey] = useState<string>("");
+  // Snapshot of the cart at submission time. We clear cartItems on
+  // submit so the cart icon resets, but the "done" screen still needs
+  // the device list to render the multi-device confirmation. Skywalker
+  // 2026-05-17 — "when I submit it only shows 1 device on both the
+  // page confirmation and on email it should reflect multiple".
+  const [submittedDevices, setSubmittedDevices] = useState<Array<{ model: string; storage: string; condition: string; price: number; quantity: number; image?: string }> | null>(null);
   // Carrier balance status — captured at checkout as a Yes / No question.
   // Skywalker 2026-05-17 — we DO buy devices that aren't fully paid off
   // but the offer may be reduced because the carrier can blacklist them.
@@ -10982,35 +10988,47 @@ export default function Home() {
                 const liveMap: Record<string, string[]> = activePhotoKey
                   ? { ...photosByItemKey, [activePhotoKey]: photoUrls }
                   : photosByItemKey;
-                // Multi-device cart → one lead POST per cart item (each
-                // carrying its own photos). Single device → single lead
-                // with the full spec payload as before. Skywalker
-                // 2026-05-17.
+                // Multi-device cart → ONE consolidated lead POST that
+                // carries a `devices` array (one entry per cart item, each
+                // with its own photos). Skywalker 2026-05-17: "when
+                // customers have mutiple it all comes in as separate
+                // leads we need to make one need highly organized".
+                // Single device → standard single-lead POST with the
+                // full spec payload.
                 const isMultiCart = cartItems.length > 1;
                 if (isMultiCart) {
-                  for (const it of cartItems) {
+                  const devicesPayload = cartItems.map((it) => {
                     const key = `${it.modelId}-${it.storage}-${it.condition}`;
-                    const itemPhotos = liveMap[key] ?? [];
-                    const r = await fetch("/api/lead", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        name, phone, email,
-                        device: deviceType,
-                        model: it.model,
-                        storage: it.storage,
-                        condition: it.condition,
-                        carrier: carrier?.label,
-                        quote: it.price * it.quantity,
-                        payout: payout?.label,
-                        quantity: it.quantity,
-                        photos: itemPhotos,
-                        handoff: handoffPayload,
-                        paidOff,
-                      }),
-                    });
-                    if (!r.ok) throw new Error("Failed");
-                  }
+                    return {
+                      model: it.model,
+                      storage: it.storage,
+                      condition: it.condition,
+                      quote: it.price * it.quantity,
+                      quantity: it.quantity,
+                      photos: liveMap[key] ?? [],
+                    };
+                  });
+                  const totalQuote = devicesPayload.reduce((s, d) => s + (d.quote || 0), 0);
+                  const r = await fetch("/api/lead", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      name, phone, email,
+                      device: deviceType,
+                      // Headline model is intentionally a summary string
+                      // so the existing lead-table model column reads
+                      // sensibly for multi-item submissions.
+                      model: `${cartItems.length} devices — ${cartItems[0].model}${cartItems.length > 1 ? ` + ${cartItems.length - 1} more` : ""}`,
+                      condition: "Multi-device",
+                      carrier: carrier?.label,
+                      quote: totalQuote,
+                      payout: payout?.label,
+                      handoff: handoffPayload,
+                      paidOff,
+                      devices: devicesPayload,
+                    }),
+                  });
+                  if (!r.ok) throw new Error("Failed");
                 } else {
                   const singleKey = model && condition ? `${model.id}-${storage?.label || 'N/A'}-${condition.label}` : "";
                   const singlePhotos = (singleKey && liveMap[singleKey]) || photoUrls;
@@ -11022,11 +11040,29 @@ export default function Home() {
                   if (!res.ok) throw new Error('Failed');
                 }
                 if (email || phone) {
+                  const confirmBody = isMultiCart
+                    ? { name, phone, email, carrier: carrier?.label, payout: payout?.label, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity })) }
+                    : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity };
                   fetch("/api/confirm", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity }),
+                    body: JSON.stringify(confirmBody),
                   }).catch(() => {});
+                }
+                // Snapshot the submitted cart for the "done" screen
+                // BEFORE clearing — the done screen needs to render
+                // every device, not just the current funnel state.
+                if (isMultiCart) {
+                  setSubmittedDevices(cartItems.map((it) => ({ ...it })));
+                } else if (model && condition) {
+                  setSubmittedDevices([{
+                    model: model.label,
+                    storage: storage?.label || "N/A",
+                    condition: condition.label,
+                    price: quote * quantity,
+                    quantity,
+                    image: model.image,
+                  }]);
                 }
                 // Wipe cart + session after submission. Previously only the
                 // session was cleared, so the cart icon kept showing the
@@ -11418,32 +11454,77 @@ export default function Home() {
               <p className="text-[#d4d4d4] text-sm max-w-md mx-auto px-2">We&apos;ll reach out within the hour. Here&apos;s your receipt:</p>
             </div>
 
-            {/* Receipt card — glass + inset rim + green accent line */}
+            {/* Receipt card — glass + inset rim + green accent line.
+                Multi-device submissions render the full device list +
+                grand total; single device keeps the inline display.
+                Skywalker 2026-05-17. */}
             <div className="tcc-card rounded-2xl p-4 lg:p-6 mb-4 lg:mb-5 text-left relative overflow-hidden">
               <span aria-hidden className="absolute left-0 top-0 bottom-0 w-1" style={{ background: "linear-gradient(180deg, #00e676 0%, #00a039 100%)" }} />
-              <div className="flex items-start justify-between gap-3 lg:gap-4 mb-4">
-                <div className="min-w-0 flex-1">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Quoted</p>
-                  <p className="font-extrabold text-[16px] lg:text-[18px] text-white leading-tight break-words">{model.label}</p>
-                  <p className="text-[#d4d4d4] text-[11px] lg:text-xs mt-1 break-words">{storage?.label} · {getConditionLabel(condition, deviceType).label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Payout</p>
-                  {isManualQuote || isPendingQuote
-                    ? <p className="text-white font-extrabold text-lg leading-none">Custom quote</p>
-                    : <p className="text-[#00c853] font-extrabold text-2xl lg:text-3xl leading-none" style={{ textShadow: "0 0 18px rgba(0,200,83,0.4)" }}>${quote * quantity}</p>
-                  }
-                </div>
-              </div>
-              <div className="border-t border-white/10 pt-3 lg:pt-4 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[#00c853] text-xs font-bold shrink-0">
-                  {name.charAt(0).toUpperCase()}
-                </div>
-                <div className="flex-1 min-w-0 text-sm">
-                  <p className="text-white font-semibold truncate">{name}</p>
-                  <p className="text-[#a8a8a8] text-xs truncate">{phone}{email ? ` · ${email}` : ''}</p>
-                </div>
-              </div>
+              {submittedDevices && submittedDevices.length > 1 ? (
+                <>
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold">Quoted · {submittedDevices.length} devices</p>
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold">Payout · {payout.label}</p>
+                  </div>
+                  <div className="divide-y divide-white/10">
+                    {submittedDevices.map((d, i) => (
+                      <div key={i} className="py-2.5 flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-[rgba(15,15,15,0.6)] border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                          {d.image
+                            ? <img src={d.image} alt="" className="w-full h-full object-contain p-0.5" />
+                            : <span className="text-base opacity-40">📱</span>}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-white text-[13px] font-bold leading-tight truncate">{d.model}</p>
+                          <p className="text-[#b8b8b8] text-[11px] leading-tight truncate">{[d.storage, d.condition].filter(Boolean).join(" · ")}{d.quantity > 1 ? ` · ×${d.quantity}` : ""}</p>
+                        </div>
+                        <p className="text-[#00c853] font-extrabold text-[14px] shrink-0">${d.price * d.quantity}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-white/15 flex items-baseline justify-between">
+                    <span className="text-[12px] uppercase tracking-wider text-[#e6e6e6] font-bold">Total payout</span>
+                    <span className="text-[#00c853] font-extrabold text-2xl lg:text-3xl" style={{ textShadow: "0 0 18px rgba(0,200,83,0.4)" }}>
+                      ${submittedDevices.reduce((s, d) => s + d.price * d.quantity, 0)}
+                    </span>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-white/10 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[#00c853] text-xs font-bold shrink-0">
+                      {name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex-1 min-w-0 text-sm">
+                      <p className="text-white font-semibold truncate">{name}</p>
+                      <p className="text-[#a8a8a8] text-xs truncate">{phone}{email ? ` · ${email}` : ''}</p>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-start justify-between gap-3 lg:gap-4 mb-4">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Quoted</p>
+                      <p className="font-extrabold text-[16px] lg:text-[18px] text-white leading-tight break-words">{model.label}</p>
+                      <p className="text-[#d4d4d4] text-[11px] lg:text-xs mt-1 break-words">{storage?.label} · {getConditionLabel(condition, deviceType).label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Payout</p>
+                      {isManualQuote || isPendingQuote
+                        ? <p className="text-white font-extrabold text-lg leading-none">Custom quote</p>
+                        : <p className="text-[#00c853] font-extrabold text-2xl lg:text-3xl leading-none" style={{ textShadow: "0 0 18px rgba(0,200,83,0.4)" }}>${quote * quantity}</p>
+                      }
+                    </div>
+                  </div>
+                  <div className="border-t border-white/10 pt-3 lg:pt-4 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[#00c853] text-xs font-bold shrink-0">
+                      {name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex-1 min-w-0 text-sm">
+                      <p className="text-white font-semibold truncate">{name}</p>
+                      <p className="text-[#a8a8a8] text-xs truncate">{phone}{email ? ` · ${email}` : ''}</p>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* HANDOFF SUMMARY — they already picked on the contact step; just

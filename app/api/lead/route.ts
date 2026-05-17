@@ -109,7 +109,7 @@ function needsManualReview(modelName: string, quoteAmt: number): boolean {
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices } = data;
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
 
   // Dedup check — wider window for custom-quote flows (free-text descriptions)
@@ -121,6 +121,26 @@ export async function POST(req: NextRequest) {
   const photoLines = (photos as string[] | undefined)?.length
     ? [`Photos: ${(photos as string[]).join(" | ")}`]
     : [];
+
+  // Multi-device submission — Skywalker 2026-05-17: "when customers
+  // have mutiple it all comes in as separate leads we need to make
+  // one need highly organized". Single consolidated lead with an
+  // indented device block per item.
+  type DeviceEntry = { model?: string; storage?: string; condition?: string; quote?: number; quantity?: number; photos?: string[] };
+  const deviceList = Array.isArray(devices) ? (devices as DeviceEntry[]).filter((d) => d && (d.model || d.condition)) : [];
+  const isMulti = deviceList.length > 1;
+  const multiLines: string[] = [];
+  if (isMulti) {
+    multiLines.push(`Devices: ${deviceList.length}`);
+    deviceList.forEach((d, i) => {
+      multiLines.push(`  ${i + 1}. ${d.model || "—"}${d.storage ? ` · ${d.storage}` : ""}${d.condition ? ` · ${d.condition}` : ""}${d.quote ? ` · $${d.quote}` : ""}${d.quantity && d.quantity > 1 ? ` (×${d.quantity})` : ""}`);
+      if (Array.isArray(d.photos) && d.photos.length > 0) {
+        multiLines.push(`     Photos: ${d.photos.join(" | ")}`);
+      }
+    });
+    const total = deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0);
+    multiLines.push(`Total payout: $${total}`);
+  }
 
   const brokenLines: string[] = [];
   if (brokenFunctional === false) brokenLines.push("Broken: NOT FUNCTIONAL — manual review");
@@ -209,25 +229,36 @@ export async function POST(req: NextRequest) {
     reviewLines.push("Verify: condition matches description, check IMEI, confirm config (chip/RAM/storage)");
   }
 
-  const leadBody = [
-    `[NEW BUYBACK LEAD]${reviewRequired ? " ⚠️ NEEDS REVIEW" : ""}`,
-    `Name: ${name}`,
-    `Phone: ${phone}`,
-    email ? `Email: ${email}` : null,
-    `Device: ${device} — ${model}`,
-    storage ? `Storage: ${storage}` : null,
-    carrier ? `Carrier: ${carrier}` : null,
-    `Condition: ${condition}`,
-    quote ? `Quote: $${quote}` : `Quote: TBD (custom)`,
-    `Payout: ${payout}`,
-    ...specLines,
-    ...brokenLines,
-    ...reviewLines,
-    ...marginLines,
-    ...imeiLines,
-    ...photoLines,
-    ...handoffLines,
-  ].filter(Boolean).join("\n");
+  const leadBody = isMulti
+    ? [
+        `[NEW BUYBACK LEAD — ${deviceList.length} DEVICES]`,
+        `Name: ${name}`,
+        `Phone: ${phone}`,
+        email ? `Email: ${email}` : null,
+        carrier ? `Carrier: ${carrier}` : null,
+        `Payout: ${payout}`,
+        ...multiLines,
+        ...handoffLines,
+      ].filter(Boolean).join("\n")
+    : [
+        `[NEW BUYBACK LEAD]${reviewRequired ? " ⚠️ NEEDS REVIEW" : ""}`,
+        `Name: ${name}`,
+        `Phone: ${phone}`,
+        email ? `Email: ${email}` : null,
+        `Device: ${device} — ${model}`,
+        storage ? `Storage: ${storage}` : null,
+        carrier ? `Carrier: ${carrier}` : null,
+        `Condition: ${condition}`,
+        quote ? `Quote: $${quote}` : `Quote: TBD (custom)`,
+        `Payout: ${payout}`,
+        ...specLines,
+        ...brokenLines,
+        ...reviewLines,
+        ...marginLines,
+        ...imeiLines,
+        ...photoLines,
+        ...handoffLines,
+      ].filter(Boolean).join("\n");
 
   try {
     await fetch(`${MC_API}/api/comms`, {

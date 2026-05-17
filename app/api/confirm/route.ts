@@ -23,7 +23,23 @@ async function sendSms(to: string, body: string): Promise<boolean> {
 }
 
 export async function POST(req: NextRequest) {
-  const { name, email, phone, model, storage, condition, quote, payout } = await req.json();
+  const body = await req.json();
+  const { name, email, phone, payout, devices } = body;
+  // Single-device fields fall back when no `devices` array is present.
+  let { model, storage, condition, quote } = body;
+  // Multi-device confirmation — collapse to a single visible "device"
+  // row (the headline) and override the offer total. Skywalker 2026-05-17:
+  // "when I submit it only shows 1 device on both the page confirmation
+  // and on email it should reflect multiple".
+  const deviceArr: Array<{ model?: string; storage?: string; condition?: string; quote?: number; quantity?: number }> =
+    Array.isArray(devices) ? devices : [];
+  const isMulti = deviceArr.length > 1;
+  if (isMulti) {
+    quote = deviceArr.reduce((s, d) => s + (Number(d.quote) || 0) * (Number(d.quantity) || 1), 0);
+    model = `${deviceArr.length} devices`;
+    storage = "Multiple";
+    condition = "See list below";
+  }
 
   if (!email && !phone) return NextResponse.json({ ok: false, error: "No contact info" });
 
@@ -75,9 +91,10 @@ export async function POST(req: NextRequest) {
 </td></tr>
 <tr><td style="padding:16px 24px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+${isMulti ? deviceArr.map((d) => `<tr><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:0"><div style="color:#fff;font-size:13px;font-weight:700;line-height:1.3">${d.model || "—"}</div><div style="color:#888;font-size:11px;margin-top:2px">${[d.storage, d.condition].filter(Boolean).join(" · ")}${d.quantity && d.quantity > 1 ? ` · ×${d.quantity}` : ""}</div></td><td style="text-align:right;padding:0"><div style="color:#00c853;font-size:14px;font-weight:800">$${(Number(d.quote) || 0) * (Number(d.quantity) || 1)}</div></td></tr></table></td></tr>`).join("") : `
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Device</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06);font-weight:600">${model}</td></tr>
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Storage</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${storage || "N/A"}</td></tr>
-<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Condition</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${condition}</td></tr>
+<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Condition</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${condition}</td></tr>`}
 <tr><td style="padding:8px 0;color:#888;font-size:13px">Payout</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:700">${payout}</td></tr>
 </table>
 </td></tr>
