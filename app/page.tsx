@@ -10793,7 +10793,7 @@ export default function Home() {
               <form onSubmit={(e) => {
                 e.preventDefault();
                 if (!email) return;
-                fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Guest", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
+                fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Guest", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-4">
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 tcc-input text-sm" />
@@ -10819,7 +10819,7 @@ export default function Home() {
                     return;
                   }
                   if (d.name) setName(d.name);
-                  await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: d.name || "Returning Customer", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
+                  await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: d.name || "Returning Customer", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});
                   setStep("payout"); pushHistory("payout");
                 } catch {
                   setLoginError("Couldn't verify — try again or use Guest Checkout above.");
@@ -10848,7 +10848,7 @@ export default function Home() {
                   const gName = (payload.name as string) || "Google User";
                   if (gEmail && !email) setEmail(gEmail);
                   if (gName) setName(gName);
-                  fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: gName, phone: "", email: gEmail, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity }) }).catch(() => {});
+                  fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: gName, phone: "", email: gEmail, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});
                   setStep("payout"); pushHistory("payout");
                 }}
               />

@@ -18,6 +18,8 @@ interface Lead {
   imei?: string;
   imeiWarnings?: string[];
   photos?: string[];
+  brokenGlass?: "front" | "back" | "both" | null;
+  brokenFunctional?: boolean | null;
   status: string;
   statusUpdatedAt?: string;
   latestNote?: string;
@@ -741,6 +743,28 @@ export default function AdminPage() {
                         {[lead.storage, lead.condition].filter(Boolean).join(" · ")}
                         {lead.imei && <span className="ml-1 text-[#d4d4d4] font-mono">· {lead.imei.slice(-6)}</span>}
                       </p>
+                      {/* Damage badges — surface front/back-glass + functional
+                          status so the tech doesn't have to dig into the body.
+                          Skywalker 2026-05-17. */}
+                      {(lead.brokenGlass || lead.brokenFunctional === false) && (
+                        <div className="flex gap-1.5 mt-1.5 flex-wrap">
+                          {lead.brokenGlass === "front" && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-500/15 text-orange-200 border border-orange-500/30">FRONT GLASS</span>
+                          )}
+                          {lead.brokenGlass === "back" && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-500/15 text-yellow-200 border border-yellow-500/30">BACK GLASS</span>
+                          )}
+                          {lead.brokenGlass === "both" && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/15 text-red-200 border border-red-500/30">BOTH GLASS</span>
+                          )}
+                          {lead.brokenFunctional === false && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-100 border border-red-500/40">⚠️ NOT FUNCTIONAL</span>
+                          )}
+                          {lead.brokenFunctional === true && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-200 border border-emerald-500/30">Still powers on</span>
+                          )}
+                        </div>
+                      )}
                       {lead.photos && lead.photos.length > 0 && (
                         <div className="flex gap-1 mt-1.5">
                           {lead.photos.slice(0, 3).map((url, i) => (

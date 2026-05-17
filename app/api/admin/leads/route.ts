@@ -25,6 +25,11 @@ interface AdminLead {
   imei?: string;
   imeiWarnings?: string[];
   photos?: string[];
+  // Broken-condition detail surfaced from the lead body. Skywalker
+  // 2026-05-17 — staff page must show front/back-glass status so the
+  // tech knows what damage to expect at handoff.
+  brokenGlass?: "front" | "back" | "both" | null;
+  brokenFunctional?: boolean | null;
   status: string;
   statusUpdatedAt?: string;
   latestNote?: string;
@@ -100,6 +105,24 @@ export async function GET(req: NextRequest) {
     const photos = photosLine ? photosLine.split(" | ").map((s) => s.trim()).filter(Boolean) : undefined;
     const warningsMatch = m.body.match(/\[IMEI WARNINGS\]\s*([^\n]+)/i);
     const imeiWarnings = warningsMatch ? warningsMatch[1].split(" | ").map((s) => s.trim()).filter(Boolean) : undefined;
+    // Parse the broken-condition lines that /api/lead writes into the
+    // comms body — "Glass: FRONT|BACK only|BOTH ... cracked" and
+    // "Broken: NOT FUNCTIONAL|still functional".
+    const glassLine = parseField(m.body, "Glass");
+    let brokenGlass: AdminLead["brokenGlass"] = undefined;
+    if (glassLine) {
+      const g = glassLine.toLowerCase();
+      if (g.includes("both")) brokenGlass = "both";
+      else if (g.startsWith("front") || g.includes("front (display)")) brokenGlass = "front";
+      else if (g.startsWith("back")) brokenGlass = "back";
+    }
+    const brokenLine = parseField(m.body, "Broken");
+    let brokenFunctional: AdminLead["brokenFunctional"] = undefined;
+    if (brokenLine) {
+      const b = brokenLine.toLowerCase();
+      if (b.includes("not functional")) brokenFunctional = false;
+      else if (b.includes("still functional")) brokenFunctional = true;
+    }
     const notes = notesByLead.get(m.id) || [];
     notes.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
     const latestNote = notes[0];
@@ -131,6 +154,8 @@ export async function GET(req: NextRequest) {
       imei: parseField(m.body, "IMEI"),
       imeiWarnings,
       photos,
+      brokenGlass,
+      brokenFunctional,
       status: status?.status || "quote_requested",
       statusUpdatedAt: status?.timestamp,
       latestNote: latestNote?.text,
