@@ -2290,12 +2290,35 @@ const ALIENWARE_DESKTOP_MODELS = [
   { id: "awarea51desktop", label: "Area-51 Desktop", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51-desktop.webp" },
 ];
 
+// MSI desktops — prices and SKUs from IWM web-head scrape 2026-05-17.
+// Each base = IWM Flawless × max-storage × 0.90 (top-config baseline).
+// IWM source URLs:
+//   /sell/msi-desktop/msi-aegis-gaming-desktop
+//   /sell/msi-desktop/msi-codex-gaming-desktop
+//   /sell/msi-desktop/msi-trident-gaming-desktop
+// Old SKUs (MEG Trident X2, MAG Codex 6, etc.) renamed to match IWM's
+// labels so the lead body carries the SKU IWM would price against.
 const MSI_DESKTOP_MODELS = [
-  { id: "msiinfinity", label: "MEG Trident X2", base: 338, inquiryOnly: false, image: "/devices/msi-trident.webp" },
-  { id: "msitrident", label: "MAG Trident S5", base: 135, inquiryOnly: false, image: "/devices/msi-trident.webp" },
-  { id: "msinightblade", label: "MAG Codex 6", base: 225, inquiryOnly: false, image: "/devices/msi-codex.webp" },
-  { id: "msicodex5", label: "MAG Codex 5", base: 90, inquiryOnly: false, image: "/devices/msi-codex.webp" },
-  { id: "msipro", label: "PRO DP180", base: 220, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
+  // Aegis flagship gaming
+  { id: "msiaegisrs",  label: "Aegis RS",  base: 810, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
+  { id: "msiaegisr",   label: "Aegis R",   base: 729, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
+  { id: "msiaegiszs",  label: "Aegis ZS",  base: 500, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
+  { id: "msiaegisrs2", label: "Aegis RS2", base: 387, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
+  { id: "msiaegisr2",  label: "Aegis R2",  base: 387, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
+  { id: "msiaegisti5", label: "Aegis Ti5", base: 333, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
+  { id: "msiaegiszs2", label: "Aegis ZS2", base: 333, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
+  { id: "msiaegisse",  label: "Aegis SE",  base: 243, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
+  // Trident compact gaming
+  { id: "msitridentx",  label: "Trident X",  base: 644, inquiryOnly: false, image: "/devices/msi-trident.webp" },
+  { id: "msitridentas", label: "Trident AS", base: 464, inquiryOnly: false, image: "/devices/msi-trident.webp" },
+  { id: "msiinfinity",  label: "Trident X2", base: 387, inquiryOnly: false, image: "/devices/msi-trident.webp" },
+  { id: "msitrident",   label: "Trident 3",  base: 346, inquiryOnly: false, image: "/devices/msi-trident.webp" },
+  // Codex entry/mid gaming
+  { id: "msicodexr2",   label: "Codex R2",   base: 495, inquiryOnly: false, image: "/devices/msi-codex.webp" },
+  { id: "msinightblade", label: "Codex R",   base: 446, inquiryOnly: false, image: "/devices/msi-codex.webp" },
+  { id: "msicodex5",    label: "Codex Z",    base: 342, inquiryOnly: false, image: "/devices/msi-codex.webp" },
+  // PRO line — IWM doesn't list, manual only
+  { id: "msipro", label: "PRO DP180", base: 0, inquiryOnly: true, image: "/devices/msi-aegis.webp" },
 ];
 
 const IPAD_SERIES = [
@@ -3080,11 +3103,23 @@ const STORAGE_MAP: Record<string, string[]> = {
   awaurorar15: ["512", "1tb"],
   awaurorar13: ["512", "1tb"],
   // MSI Desktops
-  msiinfinity: ["1tb"],
-  msitrident: ["512", "1tb"],
-  msinightblade: ["512", "1tb"],
-  msicodex5: ["512", "1tb"],
-  msipro: ["256", "512"],
+  // MSI desktop storage tiers — matches IWM's options per model.
+  msiaegisrs:   ["512", "1tb", "2tb"],
+  msiaegisr:    ["512", "1tb", "2tb"],
+  msiaegiszs:   ["512", "1tb", "2tb"],
+  msiaegisrs2:  ["1tb", "2tb"],
+  msiaegisr2:   ["1tb", "2tb"],
+  msiaegisti5:  ["1tb", "2tb"],
+  msiaegiszs2:  ["1tb", "2tb"],
+  msiaegisse:   ["1tb", "2tb"],
+  msitridentx:  ["1tb", "2tb"],
+  msitridentas: ["512", "1tb", "2tb"],
+  msiinfinity:  ["1tb", "2tb"],
+  msitrident:   ["512", "1tb", "2tb"],
+  msicodexr2:   ["512", "1tb", "2tb"],
+  msinightblade: ["512", "1tb", "2tb"],
+  msicodex5:    ["1tb", "2tb"],
+  msipro:       ["256", "512"],
   // iPads — Apple's iPad Pro M4 and M5 both ship in 256/512/1TB/2TB
   // (max storage is 2TB on the Pro line). Previously missing 2TB.
   ipadpro13m5: ["256", "512", "1tb", "2tb"],

@@ -33,8 +33,15 @@ OUR_MULT = 0.90  # Skywalker directive: pay 10% less than IWM
 
 def fetch_html(url: str) -> str:
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        return resp.read().decode("utf-8", errors="replace")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return resp.read().decode("utf-8", errors="replace")
+    except urllib.error.HTTPError as e:
+        print(f"  HTTP {e.code} — {url}")
+        return ""
+    except Exception as e:
+        print(f"  ERROR {e!r} — {url}")
+        return ""
 
 
 def extract_quiz_blob(html: str):
@@ -57,20 +64,39 @@ def extract_quiz_blob(html: str):
 
 def grid_per_model(quiz):
     """Return {model_label: {storage_label: {condition_label: iwm_price}}}.
-    First entry in the quiz is the model picker, rest are per-model branches."""
+    First entry in the quiz is the model picker, rest are per-model branches.
+    SUMS the MAX value_current from every other question (processor, RAM,
+    GPU, secondary drive, accessories...) so the reported price reflects
+    a TOP-configured device at the chosen storage + condition."""
     out = {}
     for entry in quiz[1:]:  # skip the "Models" picker
-        name = entry.get("name", "?").split(". ", 1)[-1]
+        raw_name = entry.get("name", "?")
+        # Skip metadata-only entries (Brand New Terms, etc.)
+        if raw_name.lower().endswith("terms"):
+            continue
+        # Strip leading "2. " / "Draft. 4. " prefixes
+        name = re.sub(r'^(Draft\.\s*)?\d+\.\s*', '', raw_name)
         questions = entry.get("questions", [])
-        storage_q = next((q for q in questions if "storage" in (q.get("text") or "").lower()), None)
+        storage_q = next((q for q in questions if "storage" in (q.get("text") or "").lower() and "secondary" not in (q.get("text") or "").lower()), None)
         cond_q = next((q for q in questions if "condition" in (q.get("text") or "").lower()), None)
+        # Anything else (processor, RAM, GPU, secondary, accessories, etc.)
+        # contributes its MAX value_current as part of the top-config base.
+        extras_max = 0
+        for q in questions:
+            text = (q.get("text") or "").lower()
+            if "storage" in text and "secondary" not in text: continue
+            if "condition" in text: continue
+            answers = q.get("answers", [])
+            vals = [a.get("value_current") or 0 for a in answers]
+            if vals:
+                extras_max += max(vals)
         storages = [(a["text"], a.get("value_current") or 0) for a in (storage_q["answers"] if storage_q else [{"text": "-", "value_current": 0}])]
         conds = [(a["text"], a.get("value_current") or 0) for a in (cond_q["answers"] if cond_q else [])]
         out[name] = {}
         for s_lbl, s_val in storages:
             out[name][s_lbl] = {}
             for c_lbl, c_val in conds:
-                out[name][s_lbl][c_lbl] = s_val + c_val
+                out[name][s_lbl][c_lbl] = s_val + c_val + extras_max
     return out
 
 
@@ -82,6 +108,8 @@ def main():
     url = args[0]
     want_json = "--json" in args
     html = fetch_html(url)
+    if not html:
+        sys.exit(2)
     quiz = extract_quiz_blob(html)
     if not quiz:
         print(f"No quiz blob found on {url}")
