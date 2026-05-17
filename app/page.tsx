@@ -5805,20 +5805,28 @@ export default function Home() {
     }
   }, []);
 
-  // Auto-prefill name + email when the customer has a Google session.
-  // Hits /api/auth/me on mount; if signed-in, drops the values into the
-  // existing contact-step state so the seller doesn't retype them.
-  // Skywalker 2026-05-17 Google OAuth rollout.
+  // Auto-prefill name + email when the customer has a Google session,
+  // and stash the user info so the nav can show a "Hi, {first}" chip
+  // instead of the generic Login button. Skywalker 2026-05-17.
+  const [customerUser, setCustomerUser] = useState<{ email: string; name?: string; picture?: string } | null>(null);
+  const [customerMenuOpen, setCustomerMenuOpen] = useState(false);
   useEffect(() => {
     fetch("/api/auth/me", { cache: "no-store" })
       .then((r) => r.json())
       .then((me) => {
         if (!me?.authenticated) return;
+        setCustomerUser({ email: me.email, name: me.name, picture: me.picture });
         if (me.name) setName((cur) => cur || me.name);
         if (me.email) setEmail((cur) => cur || me.email);
       })
       .catch(() => {});
   }, []);
+  const signOutCustomer = async () => {
+    setCustomerMenuOpen(false);
+    await fetch("/api/auth/signout", { method: "POST" }).catch(() => {});
+    setCustomerUser(null);
+    window.location.reload();
+  };
 
   // Flat search index across all device categories — populated once at module scope below
   // (see SEARCH_INDEX const further down)
@@ -7549,15 +7557,59 @@ export default function Home() {
 
             {/* DESKTOP divider + login/name (lg+ only) */}
             <span className="hidden lg:inline-block h-5 w-px bg-white/10" />
-            <button
-              onClick={() => setLookupOpen(true)}
-              className="hidden lg:flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-[#00c853] hover:text-[#00e676] hover:bg-white/5 transition cursor-pointer tap-press rounded-full"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-              {lookupResult?.found && lookupResult.name
-                ? `Hi, ${lookupResult.name.split(" ")[0]}`
-                : "Login"}
-            </button>
+            {customerUser ? (
+              // Signed-in via Google — show avatar + first name with a
+              // small dropdown menu for Sign out. Clicking the chip
+              // anywhere else opens past trades (lookup modal route).
+              <div className="hidden lg:block relative">
+                <button
+                  onClick={() => setCustomerMenuOpen((v) => !v)}
+                  className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-white/[0.07] border border-white/10 hover:bg-white/[0.10] transition cursor-pointer"
+                  aria-haspopup="menu"
+                  aria-expanded={customerMenuOpen}
+                >
+                  {customerUser.picture ? (
+                    <img src={customerUser.picture} alt="" className="w-6 h-6 rounded-full" />
+                  ) : (
+                    <span className="w-6 h-6 rounded-full bg-[#00c853]/25 text-[#00c853] text-xs font-bold flex items-center justify-center">
+                      {(customerUser.name || customerUser.email).charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                  <span className="text-sm font-semibold text-[#00c853]">Hi, {customerUser.name?.split(" ")[0] || customerUser.email.split("@")[0]}</span>
+                  <svg className={`w-3 h-3 text-[#00c853] transition-transform ${customerMenuOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                {customerMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-[#111] border border-white/10 rounded-2xl shadow-2xl p-2 z-50">
+                    <div className="px-3 py-2 border-b border-white/10">
+                      <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold">Signed in as</p>
+                      <p className="text-sm text-white font-semibold truncate" title={customerUser.email}>{customerUser.email}</p>
+                    </div>
+                    <button
+                      onClick={() => { setCustomerMenuOpen(false); setLookupOpen(true); }}
+                      className="w-full text-left px-3 py-2 rounded-lg text-sm text-[#dcdcdc] hover:bg-white/5 hover:text-white transition cursor-pointer"
+                    >
+                      Past trades
+                    </button>
+                    <button
+                      onClick={signOutCustomer}
+                      className="w-full text-left px-3 py-2 rounded-lg text-sm text-[#ff8088] hover:bg-[#ff5566]/10 hover:text-[#ff5566] transition cursor-pointer"
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => setLookupOpen(true)}
+                className="hidden lg:flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-[#00c853] hover:text-[#00e676] hover:bg-white/5 transition cursor-pointer tap-press rounded-full"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                {lookupResult?.found && lookupResult.name
+                  ? `Hi, ${lookupResult.name.split(" ")[0]}`
+                  : "Login"}
+              </button>
+            )}
 
             {/* MOBILE/TABLET: hamburger */}
             <button
@@ -7730,18 +7782,36 @@ export default function Home() {
               )}
             </div>
 
-            {/* LOGIN — opens lookup modal. Shows first name if a past lookup matched. */}
-            <button
-              onClick={() => { setMobileMenuOpen(false); setLookupOpen(true); }}
-              className="w-full flex items-center gap-3 px-5 py-4 hover:bg-white/[0.06] transition tap-press border-b border-white/10"
-            >
-              <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-              <span className="text-base font-semibold text-[#00c853]">
-                {lookupResult?.found && lookupResult.name
-                  ? `Hi, ${lookupResult.name.split(" ")[0]}`
-                  : "Login"}
-              </span>
-            </button>
+            {/* LOGIN — Google chip when signed in, lookup-opener otherwise. */}
+            {customerUser ? (
+              <div className="w-full px-5 py-4 border-b border-white/10 flex items-center gap-3">
+                {customerUser.picture ? (
+                  <img src={customerUser.picture} alt="" className="w-9 h-9 rounded-full" />
+                ) : (
+                  <span className="w-9 h-9 rounded-full bg-[#00c853]/20 text-[#00c853] flex items-center justify-center text-sm font-bold">{(customerUser.name || customerUser.email).charAt(0).toUpperCase()}</span>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-[#00c853]">Hi, {customerUser.name?.split(" ")[0] || customerUser.email.split("@")[0]}</p>
+                  <p className="text-[11px] text-[#888] truncate">{customerUser.email}</p>
+                </div>
+                <button
+                  onClick={signOutCustomer}
+                  className="text-[11px] text-[#ff8088] hover:text-[#ff5566] font-semibold cursor-pointer transition"
+                >Sign out</button>
+              </div>
+            ) : (
+              <button
+                onClick={() => { setMobileMenuOpen(false); setLookupOpen(true); }}
+                className="w-full flex items-center gap-3 px-5 py-4 hover:bg-white/[0.06] transition tap-press border-b border-white/10"
+              >
+                <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                <span className="text-base font-semibold text-[#00c853]">
+                  {lookupResult?.found && lookupResult.name
+                    ? `Hi, ${lookupResult.name.split(" ")[0]}`
+                    : "Login"}
+                </span>
+              </button>
+            )}
 
             {/* Bottom CTA — Sell Now (Email Us already lives under Support) */}
             <div className="p-5">
@@ -11158,7 +11228,36 @@ export default function Home() {
             )}
 
             <h2 className="text-xl font-bold mb-1">Almost done</h2>
-            <p className="text-[#e6e6e6] text-sm mb-6">We&apos;ll contact you to arrange pickup &amp; payment</p>
+            <p className="text-[#e6e6e6] text-sm mb-4">We&apos;ll contact you to arrange pickup &amp; payment</p>
+
+            {/* Google sign-in shortcut — skips typing name + email
+                entirely. Only shown when the seller is NOT already
+                signed in. Skywalker 2026-05-17. */}
+            {!customerUser && (
+              <div className="mb-5">
+                <a
+                  href={`/api/auth/google?returnTo=${encodeURIComponent(typeof window !== "undefined" ? window.location.pathname + window.location.search : "/")}`}
+                  className="w-full inline-flex items-center justify-center gap-2 bg-white text-[#1a1a1a] py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#f0f0f0] transition"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                  Continue with Google
+                </a>
+                <div className="flex items-center gap-3 mt-3">
+                  <span className="flex-1 h-px bg-white/10" />
+                  <span className="text-[10px] uppercase tracking-wider text-[#888] font-bold">or fill in below</span>
+                  <span className="flex-1 h-px bg-white/10" />
+                </div>
+              </div>
+            )}
+            {customerUser && (
+              <div className="mb-5 bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl px-4 py-3 flex items-center gap-3">
+                {customerUser.picture && <img src={customerUser.picture} alt="" className="w-8 h-8 rounded-full" />}
+                <div className="flex-1 min-w-0 text-sm">
+                  <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-wider">Signed in with Google</p>
+                  <p className="text-white font-semibold truncate">{customerUser.name || customerUser.email}</p>
+                </div>
+              </div>
+            )}
 
             <form onSubmit={async (e) => {
               e.preventDefault();
