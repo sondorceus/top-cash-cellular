@@ -6881,7 +6881,7 @@ export default function Home() {
                       setCategory(h.category);
                       setDeviceType(h.deviceType);
                       if (h.seriesId) setSelectedSeries(h.seriesId);
-                      setModel({ id: h.modelId, label: h.label, base: h.base });
+                      setModel({ id: h.modelId, label: h.label, base: h.base, image: h.image });
                       setSearchQuery("");
                       setStep("condition");
                       pushHistory("condition");
@@ -7044,7 +7044,7 @@ export default function Home() {
                             onClick={() => {
                               setCategory(d.cat);
                               setDeviceType(d.dt);
-                              setModel({ id: d.model, label: d.title, base: d.floor });
+                              setModel({ id: d.model, label: d.title, base: d.floor, image: d.photo });
                               setStep("condition");
                               pushHistory("condition");
                             }}
