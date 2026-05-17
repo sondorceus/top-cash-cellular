@@ -242,6 +242,28 @@ export default function AdminPage() {
     }
   };
 
+  // Tracks per-lead "Copied!" flash for the review-link button.
+  // Skywalker 2026-05-17: "give them to ask for reviews" — admin needs a
+  // one-click way to grab a personalized review URL per customer.
+  const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
+  const copyReviewLink = async (lead: Lead) => {
+    const params = new URLSearchParams();
+    if (lead.name) params.set("name", lead.name);
+    const dev = lead.model || lead.device;
+    if (dev) params.set("device", dev);
+    const qs = params.toString();
+    const url = `https://topcashcellular.com/reviews/new${qs ? `?${qs}` : ""}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedLinkId(lead.id);
+      setTimeout(() => setCopiedLinkId((cur) => (cur === lead.id ? null : cur)), 2500);
+    } catch {
+      // Some browsers block clipboard without user gesture; fall back to
+      // window.prompt so the operator can manually copy the URL.
+      window.prompt("Copy this review link:", url);
+    }
+  };
+
   const saveNote = async (lead: Lead) => {
     if (!token || !noteDraft.trim()) return;
     setNoteSavingId(lead.id);
@@ -1226,6 +1248,17 @@ export default function AdminPage() {
                           <button type="button" onClick={() => { setNoteOpenId(lead.id); setNoteDraft(""); }} className="text-[10px] text-[#c5c5c5] hover:text-[#d4d4d4] transition mt-1 cursor-pointer">+ {lead.latestNote ? "Add another note" : "Add internal note"}</button>
                         )}
                       </div>
+                      {/* Review-link grab — one click puts the per-customer
+                          review URL on the clipboard so Skywalker can text
+                          or hand it to them after the meetup. */}
+                      <button
+                        type="button"
+                        onClick={() => copyReviewLink(lead)}
+                        className={`mt-1.5 inline-flex items-center gap-1 text-[10px] font-bold transition cursor-pointer px-2 py-1 rounded border ${copiedLinkId === lead.id ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300" : "bg-[#ffb400]/10 border-[#ffb400]/30 text-[#ffd54f] hover:bg-[#ffb400]/20"}`}
+                        title="Copy a review link prefilled with this customer's name + device"
+                      >
+                        {copiedLinkId === lead.id ? "✓ Copied! Paste in SMS or print/QR" : "★ Copy review link"}
+                      </button>
                     </div>
                     <div className="text-sm">
                       <p className="font-semibold text-[#00c853]">{lead.quote || "—"}</p>

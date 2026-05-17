@@ -11945,35 +11945,10 @@ export default function Home() {
               )}
             </div>
 
-            {/* REVIEW CTA — auto-ask for feedback right after the customer
-                confirms their sell. Soft prompt, prefills name + device so
-                /reviews/new opens with the trade already typed in. */}
-            <div className="tcc-card rounded-2xl p-4 lg:p-5 mb-5 text-left relative overflow-hidden">
-              <span aria-hidden className="absolute left-0 top-0 bottom-0 w-1" style={{ background: "linear-gradient(180deg, #ffd54f 0%, #ffb400 100%)" }} />
-              <div className="flex items-start gap-3">
-                <div className="shrink-0 w-9 h-9 rounded-full bg-[#ffb400]/15 border border-[#ffb400]/30 flex items-center justify-center">
-                  <span className="text-lg leading-none">★</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-white font-bold text-[14px] lg:text-[15px] leading-tight">Help future Austin sellers — leave a quick review</p>
-                  <p className="text-[#bdbdbd] text-[12px] leading-snug mt-0.5">Takes 30 seconds. We&apos;ll prefill the device for you.</p>
-                </div>
-              </div>
-              <a
-                href={(() => {
-                  const dev = (submittedDevices && submittedDevices[0]?.model) || model?.label || "";
-                  const params = new URLSearchParams();
-                  if (name) params.set("name", name);
-                  if (dev) params.set("device", dev);
-                  const qs = params.toString();
-                  return qs ? `/reviews/new?${qs}` : "/reviews/new";
-                })()}
-                className="mt-3 inline-flex items-center justify-center gap-2 w-full bg-[#ffb400] hover:bg-[#ffc733] text-[#1a1100] font-bold text-sm px-4 py-2.5 rounded-full transition cursor-pointer"
-              >
-                Leave a review
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
-              </a>
-            </div>
+            {/* No review CTA here — the customer hasn't actually completed
+                a trade yet, asking for a review at submission time is
+                premature. Skywalker 2026-05-17. The "Met & Thanked"
+                admin status sends the review request AFTER the handoff. */}
 
             <div className="text-center">
               <button onClick={reset} className="inline-flex items-center gap-2 text-[#00c853] font-semibold text-sm cursor-pointer hover:underline px-4 py-2">
