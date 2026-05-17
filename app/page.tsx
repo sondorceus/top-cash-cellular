@@ -7677,11 +7677,17 @@ export default function Home() {
                     lookups, not duplicate variant definitions. */}
                 {([
                   { model: "ip17pm", title: "iPhone 17 Pro Max", floor: 767, photo: "/devices/iphone-17-pro-max-test.png", dt: "iphone" as const, cat: "phones" as const },
-                  { model: "gs25u", title: "Galaxy S25 Ultra", floor: 414, photo: "/devices/gs25u.webp", dt: "android" as const, cat: "phones" as const },
+                  // gs25u photo is edge-to-edge (no padding) so it visually
+                  // dominates next to the others. Render it one notch
+                  // smaller to keep the row balanced.
+                  { model: "gs25u", title: "Galaxy S25 Ultra", floor: 414, photo: "/devices/gs25u.webp", dt: "android" as const, cat: "phones" as const, tight: true },
                   { model: "mbp16m4", title: "MacBook Pro 16\" M4", floor: 1456, photo: "/devices/macbook-pro-m4.webp", dt: "macbook" as const, cat: "computers" as const },
                   { model: "ipadpro13m5", title: "iPad Pro 13\" M5", floor: 610, photo: "/devices/ipad-pro-13-m5.webp", dt: "ipad" as const, cat: "tablets" as const },
                 ]).map(d => {
                   const topPrice = getMaxPrice({ id: d.model, base: d.floor }, d.dt);
+                  const imgCls = (d as { tight?: boolean }).tight
+                    ? "w-12 h-12 md:w-16 md:h-16 object-contain mb-2"
+                    : "w-16 h-16 md:w-20 md:h-20 object-contain mb-2";
                   return (
                     <button
                       key={d.model}
@@ -7694,7 +7700,7 @@ export default function Home() {
                       }}
                       className="group bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press"
                     >
-                      <img src={d.photo} alt={d.title} className="w-16 h-16 md:w-20 md:h-20 object-contain mb-2" loading="lazy" />
+                      <img src={d.photo} alt={d.title} className={imgCls} loading="lazy" />
                       <p className="text-white text-[11px] md:text-xs font-semibold leading-tight mb-1 min-h-[2.2em]">{d.title}</p>
                       <p className="text-[#00c853] text-lg md:text-xl font-extrabold leading-none">up to ${topPrice}</p>
                       <p className="text-[#e6e6e6] text-[10px] mt-1.5 group-hover:text-[#00c853] transition font-semibold">Get my quote →</p>
