@@ -1902,7 +1902,13 @@ const ASUS_DESKTOP_MODELS = [
   // (chassis only), not a complete gaming PC. Removed 2026-05-17 so
   // sellers don't get an inflated quote against an empty enclosure.
   { id: "asrogflow", label: "ROG NUC", base: 0, inquiryOnly: true, image: "/devices/asus-rog-desktop.webp" },
-  { id: "astufgaming", label: "TUF Gaming Desktop", base: 0, inquiryOnly: true, image: "/devices/asus-rog-desktop.webp" },
+  // TUF Gaming Desktop split into real SKUs 2026-05-17 — the generic
+  // "TUF Gaming Desktop" entry made the lead useless. IWM does not list
+  // any TUF Desktops (only TUF laptops), so pricing stays inquiry-only
+  // until manual baselines are set.
+  { id: "astuft500_26", label: "TUF Gaming TM500 (2026)", base: 0, inquiryOnly: true, image: "/devices/asus-rog-desktop.webp" },
+  { id: "astuft500_25", label: "TUF Gaming T500 (2025)", base: 0, inquiryOnly: true, image: "/devices/asus-rog-desktop.webp" },
+  { id: "astuffx10cp", label: "TUF Gaming FX10CP", base: 0, inquiryOnly: true, image: "/devices/asus-rog-desktop.webp" },
   { id: "asexperpro", label: "ExpertCenter D5", base: 0, inquiryOnly: true, image: "/devices/asus-rog-desktop.webp" },
   { id: "asnuc14", label: "NUC 14 Pro", base: 675, inquiryOnly: false, image: "/devices/asus-rog-desktop.webp" },
 ];
@@ -3057,7 +3063,9 @@ const STORAGE_MAP: Record<string, string[]> = {
   // Asus Desktops
   asrogstrix: ["512", "1tb"],
   asrogflow: ["512", "1tb"],
-  astufgaming: ["512", "1tb"],
+  astuft500_26: ["512", "1tb", "2tb"],
+  astuft500_25: ["512", "1tb"],
+  astuffx10cp: ["512", "1tb"],
   asexperpro: ["256", "512"],
   asnuc14: ["256", "512"],
   // Alienware Desktops
