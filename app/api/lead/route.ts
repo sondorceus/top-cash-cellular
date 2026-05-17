@@ -126,7 +126,28 @@ export async function POST(req: NextRequest) {
   // have mutiple it all comes in as separate leads we need to make
   // one need highly organized". Single consolidated lead with an
   // indented device block per item.
-  type DeviceEntry = { model?: string; storage?: string; condition?: string; quote?: number; quantity?: number; photos?: string[] };
+  type DeviceEntry = {
+    model?: string;
+    storage?: string;
+    condition?: string;
+    quote?: number;
+    quantity?: number;
+    photos?: string[];
+    carrier?: string;
+    connectivity?: string;
+    processor?: string;
+    memory?: string;
+    graphics?: string;
+    displayResolution?: string;
+    displayGlass?: string;
+    batteryHealth?: string;
+    charger?: string;
+    extras?: string[];
+    brokenGlass?: "front" | "back" | "both" | null;
+    brokenFunctional?: boolean | null;
+    paidOff?: boolean | null;
+    imei?: string;
+  };
   const deviceList = Array.isArray(devices) ? (devices as DeviceEntry[]).filter((d) => d && (d.model || d.condition)) : [];
   const isMulti = deviceList.length > 1;
   const multiLines: string[] = [];
@@ -134,6 +155,31 @@ export async function POST(req: NextRequest) {
     multiLines.push(`Devices: ${deviceList.length}`);
     deviceList.forEach((d, i) => {
       multiLines.push(`  ${i + 1}. ${d.model || "—"}${d.storage ? ` · ${d.storage}` : ""}${d.condition ? ` · ${d.condition}` : ""}${d.quote ? ` · $${d.quote}` : ""}${d.quantity && d.quantity > 1 ? ` (×${d.quantity})` : ""}`);
+      // Per-device specs — indented under the device line so the admin
+      // parser can pick them up via the "[Spec]: <value>" prefix. Each
+      // line is the same key the single-device flow uses (Chip / RAM /
+      // GPU / Display / Battery health / etc.) so one parser handles
+      // both. Skywalker 2026-05-17: "all the important meat are missing".
+      const specBits: string[] = [];
+      if (d.processor)         specBits.push(`Chip: ${d.processor}`);
+      if (d.memory)            specBits.push(`RAM: ${d.memory}`);
+      if (d.graphics)          specBits.push(`GPU: ${d.graphics}`);
+      if (d.displayResolution) specBits.push(`Display: ${d.displayResolution}`);
+      if (d.displayGlass)      specBits.push(`Display glass: ${d.displayGlass}`);
+      if (d.batteryHealth)     specBits.push(`Battery health: ${d.batteryHealth}`);
+      if (d.charger)           specBits.push(`Charger: ${d.charger}`);
+      if (d.carrier)           specBits.push(`Carrier: ${d.carrier}`);
+      if (d.connectivity)      specBits.push(`Connectivity: ${d.connectivity}`);
+      if (d.imei)              specBits.push(`IMEI: ${d.imei}`);
+      if (Array.isArray(d.extras) && d.extras.length > 0) specBits.push(`Extras: ${d.extras.join(", ")}`);
+      if (d.paidOff === false) specBits.push("Balance: ⚠️ NOT PAID OFF");
+      else if (d.paidOff === true) specBits.push("Balance: Fully paid off");
+      if (d.brokenFunctional === false) specBits.push("Broken: NOT FUNCTIONAL");
+      else if (d.brokenFunctional === true) specBits.push("Broken: still functional");
+      if (d.brokenGlass === "front") specBits.push("Glass: FRONT (display) cracked");
+      else if (d.brokenGlass === "back") specBits.push("Glass: BACK only cracked");
+      else if (d.brokenGlass === "both") specBits.push("Glass: BOTH front and back cracked");
+      for (const bit of specBits) multiLines.push(`     ${bit}`);
       if (Array.isArray(d.photos) && d.photos.length > 0) {
         multiLines.push(`     Photos: ${d.photos.join(" | ")}`);
       }

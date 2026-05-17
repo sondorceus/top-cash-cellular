@@ -45,7 +45,31 @@ interface AdminLead {
   // Multi-device leads — when one lead bundles N items, the indented
   // device block from /api/lead gets parsed here so staff sees each
   // unit without dropping into the raw body. Skywalker 2026-05-17.
-  devices?: Array<{ model: string; storage?: string; condition?: string; quote?: number; quantity?: number; photos?: string[] }>;
+  devices?: Array<{
+    model: string;
+    storage?: string;
+    condition?: string;
+    quote?: number;
+    quantity?: number;
+    photos?: string[];
+    // Per-device specs surfaced from the indented lines under each
+    // device entry in the lead body. Lets staff price each unit in a
+    // bundled trade without flying blind.
+    carrier?: string;
+    connectivity?: string;
+    processor?: string;
+    memory?: string;
+    graphics?: string;
+    displayResolution?: string;
+    displayGlass?: string;
+    batteryHealth?: string;
+    charger?: string;
+    extras?: string[];
+    brokenGlass?: "front" | "back" | "both" | null;
+    brokenFunctional?: boolean | null;
+    paidOff?: boolean | null;
+    imei?: string;
+  }>;
   deviceCount?: number;
   totalPayout?: number;
   // Soft-trash metadata. Populated for leads in the Trash view. The
@@ -233,27 +257,74 @@ export async function GET(req: NextRequest) {
     const devicesHeaderMatch = m.body.match(/^Devices:\s*(\d+)\s*$/m);
     if (devicesHeaderMatch) {
       deviceCount = parseInt(devicesHeaderMatch[1], 10);
-      // Lines like "  3. <label> · <storage>? · <condition>? · $<quote>?"
-      const deviceLineRe = /^\s{2,4}(\d+)\.\s+([^·\n]+?)(?:\s·\s+([^·\n]+?))?(?:\s·\s+([^·\n$]+?))?(?:\s·\s+\$([0-9,]+))?(?:\s+\(×(\d+)\))?\s*$/gm;
+      // Split the body into lines so we can walk each indented device
+      // entry + grab the indented spec lines that follow it (Chip / RAM
+      // / Battery / Photos / etc.) until the next numbered device or the
+      // "Total payout" footer.
+      const bodyLines = m.body.split("\n");
+      const deviceLineRe = /^\s{2,4}(\d+)\.\s+([^·\n]+?)(?:\s·\s+([^·\n]+?))?(?:\s·\s+([^·\n$]+?))?(?:\s·\s+\$([0-9,]+))?(?:\s+\(×(\d+)\))?\s*$/;
+      const specLineRe = /^\s{4,}([A-Z][^:]+):\s*(.+)$/;
       devices = [];
-      let dm: RegExpExecArray | null;
-      while ((dm = deviceLineRe.exec(m.body)) !== null) {
-        const [, , dLabel, dStorage, dCondition, dQuoteStr, dQtyStr] = dm;
-        const idx = devices.length;
-        devices.push({
-          model: dLabel.trim(),
-          storage: dStorage?.trim() || undefined,
-          condition: dCondition?.trim() || undefined,
-          quote: dQuoteStr ? parseInt(dQuoteStr.replace(/,/g, ""), 10) : undefined,
-          quantity: dQtyStr ? parseInt(dQtyStr, 10) : undefined,
-        });
-        // Look-ahead for the "     Photos: url1 | url2" line that follows.
-        const afterLine = m.body.slice(deviceLineRe.lastIndex).split("\n", 1)[0];
-        const photosMatch = afterLine.match(/^\s+Photos:\s*(.+)$/);
-        if (photosMatch) {
-          devices[idx].photos = photosMatch[1].split(" | ").map((s) => s.trim()).filter(Boolean);
+      let current: NonNullable<AdminLead["devices"]>[number] | null = null;
+      const flush = () => { if (current) devices!.push(current); current = null; };
+      for (const line of bodyLines) {
+        const dm = line.match(deviceLineRe);
+        if (dm) {
+          flush();
+          const [, , dLabel, dStorage, dCondition, dQuoteStr, dQtyStr] = dm;
+          current = {
+            model: dLabel.trim(),
+            storage: dStorage?.trim() || undefined,
+            condition: dCondition?.trim() || undefined,
+            quote: dQuoteStr ? parseInt(dQuoteStr.replace(/,/g, ""), 10) : undefined,
+            quantity: dQtyStr ? parseInt(dQtyStr, 10) : undefined,
+          };
+          continue;
+        }
+        if (!current) continue;
+        // Footer terminates the per-device block.
+        if (/^Total payout:/.test(line)) { flush(); break; }
+        const sm = line.match(specLineRe);
+        if (!sm) continue;
+        const key = sm[1].trim().toLowerCase();
+        const val = sm[2].trim();
+        switch (key) {
+          case "chip":          current.processor = val; break;
+          case "ram":           current.memory = val; break;
+          case "gpu":           current.graphics = val; break;
+          case "display":       current.displayResolution = val; break;
+          case "display glass": current.displayGlass = val; break;
+          case "battery health":current.batteryHealth = val; break;
+          case "charger":       current.charger = val; break;
+          case "carrier":       current.carrier = val; break;
+          case "connectivity":  current.connectivity = val; break;
+          case "imei":          current.imei = val; break;
+          case "extras":        current.extras = val.split(",").map((s) => s.trim()).filter(Boolean); break;
+          case "balance": {
+            const v = val.toLowerCase();
+            if (v.includes("not paid")) current.paidOff = false;
+            else if (v.includes("fully paid") || v.includes("paid off")) current.paidOff = true;
+            break;
+          }
+          case "broken": {
+            const v = val.toLowerCase();
+            if (v.includes("not functional")) current.brokenFunctional = false;
+            else if (v.includes("still functional")) current.brokenFunctional = true;
+            break;
+          }
+          case "glass": {
+            const v = val.toLowerCase();
+            if (v.includes("both")) current.brokenGlass = "both";
+            else if (v.startsWith("front") || v.includes("front (display)")) current.brokenGlass = "front";
+            else if (v.startsWith("back")) current.brokenGlass = "back";
+            break;
+          }
+          case "photos":
+            current.photos = val.split(" | ").map((s) => s.trim()).filter(Boolean);
+            break;
         }
       }
+      flush();
       if (devices.length === 0) devices = undefined;
       const totalMatch = m.body.match(/Total payout:\s*\$([0-9,]+)/);
       if (totalMatch) totalPayout = parseInt(totalMatch[1].replace(/,/g, ""), 10);

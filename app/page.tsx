@@ -5995,7 +5995,35 @@ export default function Home() {
   };
   // Returning-customer hint at the contact step (Option A chunk 3 — server-side detection)
   const [returningHint, setReturningHint] = useState<{ name?: string; leadCount: number } | null>(null);
-  const [cartItems, setCartItems] = useState<Array<{ model: string; modelId: string; storage: string; condition: string; price: number; quantity: number; image?: string }>>([]);
+  // Cart items snapshot the full funnel state at add-to-cart time so every
+  // device in a multi-item submission carries its own chip/RAM/GPU/battery/
+  // etc. answers through to the staff backend. Without these per-device
+  // specs Skywalker was making blind offers on bundled trades. Skywalker
+  // 2026-05-17.
+  type CartItem = {
+    model: string;
+    modelId: string;
+    storage: string;
+    condition: string;
+    price: number;
+    quantity: number;
+    image?: string;
+    carrier?: string;
+    connectivity?: string;
+    processor?: string;
+    memory?: string;
+    graphics?: string;
+    displayResolution?: string;
+    displayGlass?: string;
+    batteryHealth?: string;
+    charger?: string;
+    extras?: string[];
+    brokenGlass?: "front" | "back" | "both" | null;
+    brokenFunctional?: boolean | null;
+    paidOff?: boolean | null;
+    imei?: string;
+  };
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
   // Bump counter — increments every time an item is added so the cart
   // icon + badge can re-animate (key change forces remount + keyframe).
@@ -10731,14 +10759,42 @@ export default function Home() {
               <button
                 onClick={() => {
                   if (model && condition) {
+                    // Capture EVERY spec the funnel asked about so each cart
+                    // entry carries its full pricing context to the backend.
+                    // Skywalker 2026-05-17 — "all the important meat are
+                    // missing from the backend".
+                    const extrasArr = Object.values(extras).map((x) => x.label).filter(Boolean);
+                    const itemSnapshot: CartItem = {
+                      model: model.label,
+                      modelId: model.id,
+                      storage: storage?.label || "N/A",
+                      condition: condition.label,
+                      price: quote,
+                      quantity: 1,
+                      image: model.image,
+                      carrier: carrier?.label,
+                      connectivity: connectivity?.label,
+                      processor: processor?.label,
+                      memory: memory?.label,
+                      graphics: graphics?.label,
+                      displayResolution: displayResolution?.label,
+                      displayGlass: displayGlass?.label,
+                      batteryHealth: batteryHealth?.label,
+                      charger: charger?.label,
+                      extras: extrasArr.length > 0 ? extrasArr : undefined,
+                      brokenGlass: condition.id === "broken" && isPhoneFlow ? brokenGlass : undefined,
+                      brokenFunctional: condition.id === "broken" ? brokenFunctional : undefined,
+                      paidOff: paidOff ?? undefined,
+                      imei: imeiInput.replace(/\D/g, "") || undefined,
+                    };
                     setCartItems(prev => {
                       const key = `${model.id}-${storage?.label || ''}-${condition.label}`;
                       const existing = prev.find(i => `${i.modelId}-${i.storage}-${i.condition}` === key);
                       // Re-adding the same config bumps the quantity by 1
-                      // and refreshes the price. The cart's +/- pills can
-                      // also adjust.
-                      if (existing) return prev.map(i => `${i.modelId}-${i.storage}-${i.condition}` === key ? { ...i, price: quote, quantity: i.quantity + 1, image: model.image ?? i.image } : i);
-                      return [...prev, { model: model.label, modelId: model.id, storage: storage?.label || 'N/A', condition: condition.label, price: quote, quantity: 1, image: model.image }];
+                      // and refreshes the price + specs. The cart's +/- pills
+                      // can also adjust.
+                      if (existing) return prev.map(i => `${i.modelId}-${i.storage}-${i.condition}` === key ? { ...itemSnapshot, quantity: i.quantity + 1, image: model.image ?? i.image } : i);
+                      return [...prev, itemSnapshot];
                     });
                     setCartBump(b => b + 1);
                     setCartToast({ model: model.label, price: quote });
@@ -11137,6 +11193,23 @@ export default function Home() {
                       quote: it.price * it.quantity,
                       quantity: it.quantity,
                       photos: liveMap[key] ?? [],
+                      // Pass every captured spec through. /api/lead writes
+                      // these as indented lines under each device so the
+                      // admin sees chip/RAM/GPU/battery/etc. per item.
+                      carrier: it.carrier,
+                      connectivity: it.connectivity,
+                      processor: it.processor,
+                      memory: it.memory,
+                      graphics: it.graphics,
+                      displayResolution: it.displayResolution,
+                      displayGlass: it.displayGlass,
+                      batteryHealth: it.batteryHealth,
+                      charger: it.charger,
+                      extras: it.extras,
+                      brokenGlass: it.brokenGlass,
+                      brokenFunctional: it.brokenFunctional,
+                      paidOff: it.paidOff,
+                      imei: it.imei,
                     };
                   });
                   const totalQuote = devicesPayload.reduce((s, d) => s + (d.quote || 0), 0);

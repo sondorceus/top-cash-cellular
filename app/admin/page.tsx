@@ -30,7 +30,28 @@ interface Lead {
   connectivity?: string;
   extras?: string[];
   paidOff?: boolean | null;
-  devices?: Array<{ model: string; storage?: string; condition?: string; quote?: number; quantity?: number; photos?: string[] }>;
+  devices?: Array<{
+    model: string;
+    storage?: string;
+    condition?: string;
+    quote?: number;
+    quantity?: number;
+    photos?: string[];
+    carrier?: string;
+    connectivity?: string;
+    processor?: string;
+    memory?: string;
+    graphics?: string;
+    displayResolution?: string;
+    displayGlass?: string;
+    batteryHealth?: string;
+    charger?: string;
+    extras?: string[];
+    brokenGlass?: "front" | "back" | "both" | null;
+    brokenFunctional?: boolean | null;
+    paidOff?: boolean | null;
+    imei?: string;
+  }>;
   deviceCount?: number;
   totalPayout?: number;
   // Populated when the lead is rendered in the Trash view.
@@ -973,29 +994,58 @@ export default function AdminPage() {
                           per device. Skywalker 2026-05-17: was just
                           seeing "Multi-device (3)" with no detail. */}
                       {lead.devices && lead.devices.length > 0 && (
-                        <div className="mt-1.5 bg-[#00c853]/[0.06] border border-[#00c853]/25 rounded-md p-2 space-y-1">
+                        <div className="mt-1.5 bg-[#00c853]/[0.06] border border-[#00c853]/25 rounded-md p-2 space-y-2">
                           <p className="text-[10px] font-bold uppercase tracking-wider text-[#00c853]">
                             {lead.deviceCount || lead.devices.length} devices{lead.totalPayout ? ` · total $${lead.totalPayout}` : ""}
                           </p>
-                          {lead.devices.map((d, i) => (
-                            <div key={i} className="text-[11px] text-[#e5e5e5] flex flex-wrap items-center gap-x-2">
-                              <span className="text-[#8a8a8a] font-mono">{i + 1}.</span>
-                              <span className="font-semibold text-white">{d.model}</span>
-                              {d.storage && <span className="text-[#c5c5c5]">· {d.storage}</span>}
-                              {d.condition && <span className="text-[#c5c5c5]">· {d.condition}</span>}
-                              {d.quote != null && <span className="text-[#00c853] font-bold">· ${d.quote}</span>}
-                              {d.quantity && d.quantity > 1 && <span className="text-[#c5c5c5]">×{d.quantity}</span>}
-                              {d.photos && d.photos.length > 0 && (
-                                <span className="ml-1 flex gap-1">
-                                  {d.photos.slice(0, 3).map((url, j) => (
-                                    <a key={j} href={url} target="_blank" rel="noopener noreferrer" className="block w-5 h-5 rounded overflow-hidden border border-white/10 hover:border-[#00c853] transition" title={`Device ${i + 1} photo ${j + 1}`}>
-                                      <img src={url} alt="" className="w-full h-full object-cover" />
-                                    </a>
-                                  ))}
-                                </span>
-                              )}
-                            </div>
-                          ))}
+                          {lead.devices.map((d, i) => {
+                            const hasSpecs = d.processor || d.memory || d.graphics || d.displayResolution || d.displayGlass || d.batteryHealth || d.charger || d.carrier || d.connectivity || d.imei || (d.extras && d.extras.length > 0);
+                            return (
+                              <div key={i} className="border-t border-[#00c853]/15 first:border-t-0 pt-1.5 first:pt-0">
+                                <div className="text-[11px] text-[#e5e5e5] flex flex-wrap items-center gap-x-2">
+                                  <span className="text-[#8a8a8a] font-mono">{i + 1}.</span>
+                                  <span className="font-semibold text-white">{d.model}</span>
+                                  {d.storage && <span className="text-[#c5c5c5]">· {d.storage}</span>}
+                                  {d.condition && <span className="text-[#c5c5c5]">· {d.condition}</span>}
+                                  {d.quote != null && <span className="text-[#00c853] font-bold">· ${d.quote}</span>}
+                                  {d.quantity && d.quantity > 1 && <span className="text-[#c5c5c5]">×{d.quantity}</span>}
+                                  {d.photos && d.photos.length > 0 && (
+                                    <span className="ml-1 flex gap-1">
+                                      {d.photos.slice(0, 3).map((url, j) => (
+                                        <a key={j} href={url} target="_blank" rel="noopener noreferrer" className="block w-5 h-5 rounded overflow-hidden border border-white/10 hover:border-[#00c853] transition" title={`Device ${i + 1} photo ${j + 1}`}>
+                                          <img src={url} alt="" className="w-full h-full object-cover" />
+                                        </a>
+                                      ))}
+                                    </span>
+                                  )}
+                                </div>
+                                {hasSpecs && (
+                                  <div className="mt-1 ml-4 grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-0.5 text-[10.5px]">
+                                    {d.processor         && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Chip:</span> <span className="text-white font-medium">{d.processor}</span></p>}
+                                    {d.memory            && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">RAM:</span> <span className="text-white font-medium">{d.memory}</span></p>}
+                                    {d.graphics          && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">GPU:</span> <span className="text-white font-medium">{d.graphics}</span></p>}
+                                    {d.displayResolution && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Display:</span> <span className="text-white font-medium">{d.displayResolution}</span></p>}
+                                    {d.displayGlass      && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Glass:</span> <span className="text-white font-medium">{d.displayGlass}</span></p>}
+                                    {d.batteryHealth     && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Battery:</span> <span className={`font-medium ${/poor/i.test(d.batteryHealth) ? "text-yellow-300" : "text-white"}`}>{d.batteryHealth}</span></p>}
+                                    {d.charger           && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Charger:</span> <span className="text-white font-medium">{d.charger}</span></p>}
+                                    {d.carrier           && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Carrier:</span> <span className="text-white font-medium">{d.carrier}</span></p>}
+                                    {d.connectivity      && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Connectivity:</span> <span className="text-white font-medium">{d.connectivity}</span></p>}
+                                    {d.imei              && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">IMEI:</span> <span className="text-white font-medium font-mono">…{d.imei.slice(-6)}</span></p>}
+                                    {d.extras && d.extras.length > 0 && <p className="text-[#c5c5c5] sm:col-span-2"><span className="text-[#8a8a8a]">Extras:</span> <span className="text-white font-medium">{d.extras.join(", ")}</span></p>}
+                                  </div>
+                                )}
+                                {(d.brokenGlass || d.brokenFunctional === false || d.paidOff === false) && (
+                                  <div className="ml-4 mt-1 flex flex-wrap gap-1">
+                                    {d.brokenGlass === "front" && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-orange-500/15 text-orange-200 border border-orange-500/30">FRONT GLASS</span>}
+                                    {d.brokenGlass === "back" && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-yellow-500/15 text-yellow-200 border border-yellow-500/30">BACK GLASS</span>}
+                                    {d.brokenGlass === "both" && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500/15 text-red-200 border border-red-500/30">BOTH GLASS</span>}
+                                    {d.brokenFunctional === false && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500/20 text-red-100 border border-red-500/40">⚠️ NOT FUNCTIONAL</span>}
+                                    {d.paidOff === false && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/20 text-amber-100 border border-amber-500/40">⚠️ BALANCE OWED</span>}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                       {/* Full spec answers — chip, RAM, GPU, display,
