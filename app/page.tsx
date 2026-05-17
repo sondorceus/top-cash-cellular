@@ -5975,23 +5975,26 @@ export default function Home() {
   }, []);
 
   // Scroll to top whenever step changes (so the new screen starts at
-  // the top, not at the button the user just clicked). On Android the
-  // "smooth" behavior often leaves the page stuck at the previous
-  // scroll position when the new section is short — looks like the
-  // page "jumped to the footer". Snap instantly and re-snap on the
-  // next animation frame so any late-rendering content also lands at
-  // the top. Mirrors the pattern at line ~10044 where buttons trigger
-  // step changes manually.
+  // the top, not at the button the user just clicked). On Android +
+  // iOS Safari the browser's scroll-restoration anchor often wins a
+  // single-shot scrollTo when the previous section was tall (e.g.
+  // user scrolled to bottom of checkout, taps Back). Re-snap on every
+  // animation frame for ~400ms to defeat the anchor. Skywalker
+  // 2026-05-17 follow-up — "the same thing is still happening on
+  // mobile for me" after the initial fix.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    requestAnimationFrame(() => {
+    const snap = () => {
       window.scrollTo(0, 0);
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
-    });
+    };
+    snap();
+    requestAnimationFrame(snap);
+    const t1 = setTimeout(snap, 50);
+    const t2 = setTimeout(snap, 150);
+    const t3 = setTimeout(snap, 350);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [step, page]);
 
   // Returning-customer detection at contact step — debounced lookup as user types phone/email
