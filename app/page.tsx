@@ -5785,6 +5785,10 @@ export default function Home() {
   const [shipCity, setShipCity] = useState("");
   const [shipState, setShipState] = useState("TX");
   const [shipZip, setShipZip] = useState("");
+  // Does the seller already have a box to ship in? Captured upfront so we
+  // can include packaging with the label (or know to ship a box) instead
+  // of finding out after the fact via support email.
+  const [shipHasBox, setShipHasBox] = useState<"yes" | "no" | null>(null);
   // Google Places autocomplete on the shipping street field — mirrors
   // ATX Gadget's implementation. User types, Google suggests US
   // addresses, click → parsed into our 5 split fields (street / unit
@@ -6062,6 +6066,7 @@ export default function Home() {
           if (s.shipCity) setShipCity(s.shipCity);
           if (s.shipState) setShipState(s.shipState);
           if (s.shipZip) setShipZip(s.shipZip);
+          if (s.shipHasBox) setShipHasBox(s.shipHasBox);
           setStep(s.step);
         }
       }
@@ -6088,11 +6093,11 @@ export default function Home() {
     try {
       localStorage.setItem("tcc-session", JSON.stringify({
         step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email,
-        handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip,
+        handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, shipHasBox,
         ts: Date.now(),
       }));
     } catch {}
-  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip]);
+  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, shipHasBox]);
 
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrierMultiplierFor(carrier?.id, carrierLock?.id);
@@ -10865,7 +10870,7 @@ export default function Home() {
               }
               try {
                 const handoffPayload = handoffMethod === "ship"
-                  ? { method: "ship", address: { street: shipStreet, unit: shipUnit, city: shipCity, state: shipState, zip: shipZip } }
+                  ? { method: "ship", address: { street: shipStreet, unit: shipUnit, city: shipCity, state: shipState, zip: shipZip }, hasBox: shipHasBox ?? undefined }
                   : { method: "local" };
                 const res = await fetch("/api/lead", {
                   method: "POST",
@@ -10928,7 +10933,26 @@ export default function Home() {
                       <input required maxLength={2} value={shipState} onChange={e => setShipState(e.target.value.toUpperCase().slice(0,2))} placeholder="State" autoComplete="address-level1" className="w-full px-4 py-3 tcc-input uppercase" />
                     </div>
                     <input required inputMode="numeric" pattern="\d{5}" maxLength={5} value={shipZip} onChange={e => setShipZip(e.target.value.replace(/\D/g, "").slice(0,5))} placeholder="ZIP" autoComplete="postal-code" className="w-full px-4 py-3 tcc-input" />
-                    <p className="text-[#888] text-[11px] leading-relaxed">USPS prepaid label hits {email || "your email"} within the hour. Drop the box at any USPS — we cover return shipping.</p>
+                    {/* Packaging check — pre-flight so a seller without a
+                        box doesn't get a label they can't use. We'll ship
+                        a packaging kit instead if they need one. */}
+                    <div className="mt-2">
+                      <label className="block text-xs font-medium text-[#e6e6e6] mb-2 uppercase tracking-wider">Do you have a box to ship in?</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button type="button" onClick={() => setShipHasBox("yes")} className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border transition cursor-pointer tap-press ${shipHasBox === "yes" ? "bg-[#00c853]/15 border-[#00c853]/60 text-white" : "bg-white/[0.04] border-white/15 text-[#e6e6e6] hover:bg-white/[0.07]"}`}>
+                          <span className="text-base">📦</span>
+                          <span className="text-[13px] font-bold">Yes, I have one</span>
+                        </button>
+                        <button type="button" onClick={() => setShipHasBox("no")} className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border transition cursor-pointer tap-press ${shipHasBox === "no" ? "bg-[#00c853]/15 border-[#00c853]/60 text-white" : "bg-white/[0.04] border-white/15 text-[#e6e6e6] hover:bg-white/[0.07]"}`}>
+                          <span className="text-base">📭</span>
+                          <span className="text-[13px] font-bold">No — send me one</span>
+                        </button>
+                      </div>
+                      {shipHasBox === "no" && (
+                        <p className="text-[#00c853] text-[11px] leading-relaxed mt-2">✓ We'll include a padded box and protective wrap with your label — no extra charge.</p>
+                      )}
+                    </div>
+                    <p className="text-[#888] text-[11px] leading-relaxed">Prepaid label hits {email || "your email"} within the hour. Drop the box at any FedEx or UPS — we cover return shipping.</p>
                   </div>
                 )}
 
@@ -10951,16 +10975,23 @@ export default function Home() {
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={50} placeholder="Your name" className="w-full px-4 py-3.5 tcc-input text-sm" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">Phone</label>
+                <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
+                  Phone {handoffMethod === "ship" ? <span className="normal-case text-[11px] text-[#888]">(optional — we'll email everything)</span> : <span className="normal-case text-[11px] text-[#888]">(needed — we'll text to coordinate)</span>}
+                </label>
                 <input type="tel" value={phone} onChange={(e) => {
                   const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
                   if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
                   else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                   else setPhone(digits);
-                }} required pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 tcc-input text-sm" />
-                <p className="text-[#e6e6e6] text-[11px] leading-relaxed mt-1.5">By submitting, you agree to receive SMS updates about your trade-in from Top Cash Cellular. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</p>
+                }} required={handoffMethod !== "ship"} pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                {phone && <p className="text-[#e6e6e6] text-[11px] leading-relaxed mt-1.5">By submitting, you agree to receive SMS updates about your trade-in from Top Cash Cellular. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</p>}
               </div>
-              {email && <p className="text-[#e6e6e6] text-xs">Email: {email}</p>}
+              {email && (
+                <p className="text-[#e6e6e6] text-xs">
+                  Email: {email}
+                  {handoffMethod === "ship" && <span className="ml-1 text-[#00c853] font-semibold">— your prepaid label goes here</span>}
+                </p>
+              )}
               <div>
                 <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
                   IMEI / Serial <span className="normal-case text-[12px]">(optional — speeds up verification, dial *#06#)</span>

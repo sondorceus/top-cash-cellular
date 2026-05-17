@@ -137,12 +137,14 @@ export async function POST(req: NextRequest) {
 
   const handoffLines: string[] = [];
   if (handoff && typeof handoff === "object") {
-    const h = handoff as { method?: string; address?: Record<string, string>; area?: string };
+    const h = handoff as { method?: string; address?: Record<string, string>; area?: string; hasBox?: "yes" | "no" };
     if (h.method === "ship" && h.address) {
       const { street, unit, city, state, zip } = h.address;
       handoffLines.push("--- Handoff: SHIPPING ---");
       handoffLines.push(`Address: ${street}${unit ? `, ${unit}` : ""}, ${city}, ${state} ${zip}`);
-      handoffLines.push("Action: Email USPS prepaid label.");
+      if (h.hasBox === "no") handoffLines.push("Packaging: ⚠️ Seller needs a box — include a padded shipping kit with the label.");
+      else if (h.hasBox === "yes") handoffLines.push("Packaging: Seller has a box.");
+      handoffLines.push("Action: Email FedEx/UPS prepaid label" + (h.hasBox === "no" ? " + ship packaging kit." : "."));
     } else if (h.method === "local") {
       handoffLines.push("--- Handoff: LOCAL MEETUP ---");
       if (h.area) handoffLines.push(`Area: ${h.area}`);
