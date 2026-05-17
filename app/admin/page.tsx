@@ -51,12 +51,24 @@ const STATUS_OPTIONS = [
   { value: "shipped", label: "📦 Shipped / drop-off", color: "#4fc3f7" },
   { value: "received", label: "📬 Received", color: "#7c4dff" },
   { value: "tested", label: "🔍 Tested", color: "#ff9100" },
+  // "Met & Thanked" terminates a local-meetup lead. Triggers the same
+  // SMS+email pipeline as "Paid" but with a thank-you-and-review message
+  // tailored to in-person handoffs. Trustpilot invite goes out on both.
+  { value: "met", label: "🤝 Met & Thanked", color: "#ffb400" },
   { value: "paid", label: "💵 Paid", color: "#00c853" },
   { value: "rejected", label: "❌ Rejected", color: "#ef5350" },
 ];
 
 function statusMeta(value: string) {
   return STATUS_OPTIONS.find((s) => s.value === value) || STATUS_OPTIONS[0];
+}
+
+// Terminal "we got paid / they got cash" statuses. Both count as completed
+// revenue events for stats, filters, and conversion. "paid" is the digital
+// payout flow; "met" is the in-person meetup handoff.
+const PAID_STATUSES = new Set(["paid", "met"]);
+function isPaid(status?: string): boolean {
+  return !!status && PAID_STATUSES.has(status);
 }
 
 function timeAgo(iso?: string): string {
@@ -438,18 +450,18 @@ export default function AdminPage() {
       const ts = new Date(l.timestamp).getTime();
       if (ts >= weekAgo) thisWeek++;
       if (ts >= monthAgo) thisMonth++;
-      if (l.status === "paid") paidCount++;
+      if (isPaid(l.status)) paidCount++;
       if (l.status !== "rejected") nonRejectedCount++;
       const dollars = l.quote?.match(/\d+/)?.[0];
       const dollarValue = dollars ? parseInt(dollars, 10) : 0;
       if (dollarValue > 0) { quoteSum += dollarValue; quoteN++; }
       // Revenue = sum of paid quotes (all-time and this-month)
-      if (l.status === "paid" && dollarValue > 0) {
+      if (isPaid(l.status) && dollarValue > 0) {
         revenue += dollarValue;
         if (l.statusUpdatedAt && new Date(l.statusUpdatedAt).getTime() >= monthAgo) revenueMonth += dollarValue;
       }
-      // Payout latency = lead created → status "paid" timestamp, in hours
-      if (l.status === "paid" && l.statusUpdatedAt) {
+      // Payout latency = lead created → terminal-status timestamp, in hours
+      if (isPaid(l.status) && l.statusUpdatedAt) {
         const hours = (new Date(l.statusUpdatedAt).getTime() - ts) / 3600000;
         if (hours > 0 && hours < 24 * 90) { payoutLatencySum += hours; payoutLatencyN++; }
       }
@@ -546,7 +558,7 @@ export default function AdminPage() {
     });
   })();
   const historyTotalPaid = historyLeads
-    .filter((l) => l.status === "paid")
+    .filter((l) => isPaid(l.status))
     .reduce((s, l) => s + (parseInt(l.quote?.match(/\d+/)?.[0] || "0", 10) || 0), 0);
 
   const saveStatus = async (lead: Lead, newStatus: string, reason?: string) => {
@@ -615,8 +627,8 @@ export default function AdminPage() {
               {(() => {
                 const statusFiltered = filteredLeads.filter((l) => {
                   if (statusFilter === "all") return true;
-                  if (statusFilter === "active") return l.status !== "paid" && l.status !== "rejected";
-                  if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
+                  if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
+                  if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
                   return l.status === statusFilter;
                 });
                 if (statusFilter === "all" && !searchQuery) {
@@ -647,8 +659,8 @@ export default function AdminPage() {
               onClick={() => {
                 const view = filteredLeads.filter((l) => {
                   if (statusFilter === "all") return true;
-                  if (statusFilter === "active") return l.status !== "paid" && l.status !== "rejected";
-                  if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
+                  if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
+                  if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
                   return l.status === statusFilter;
                 });
                 exportFilteredCsv(view);
@@ -784,8 +796,8 @@ export default function AdminPage() {
                   checked={(() => {
                     const visible = filteredLeads.filter((l) => {
                       if (statusFilter === "all") return true;
-                      if (statusFilter === "active") return l.status !== "paid" && l.status !== "rejected";
-                      if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
+                      if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
+                      if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
                       if (statusFilter === "stale") return isStale(l);
                       return l.status === statusFilter;
                     });
@@ -794,8 +806,8 @@ export default function AdminPage() {
                   onChange={(e) => {
                     const visible = filteredLeads.filter((l) => {
                       if (statusFilter === "all") return true;
-                      if (statusFilter === "active") return l.status !== "paid" && l.status !== "rejected";
-                      if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
+                      if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
+                      if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
                       if (statusFilter === "stale") return isStale(l);
                       return l.status === statusFilter;
                     });
@@ -814,8 +826,8 @@ export default function AdminPage() {
             <ul className="divide-y divide-white/5">
               {filteredLeads.filter((l) => {
                 if (statusFilter === "all") return true;
-                if (statusFilter === "active") return l.status !== "paid" && l.status !== "rejected";
-                if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
+                if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
+                if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
                 if (statusFilter === "stale") return isStale(l);
                 return l.status === statusFilter;
               }).map((lead) => {

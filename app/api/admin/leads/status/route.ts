@@ -7,7 +7,21 @@ const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
 
-const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "rejected"];
+// "met" = local meetup completed (cash handoff in person). Distinct from
+// "paid" which is the digital payout flow. Both terminate the trade and
+// both trigger a review-request SMS/email + Trustpilot invite.
+const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "met", "rejected"];
+
+// Build the review link with name + device prefilled so the customer
+// lands on /reviews/new with the form already populated. Used by both
+// the SMS and email templates for the "paid" and "met" statuses.
+function buildReviewUrl(name?: string, device?: string): string {
+  const params = new URLSearchParams();
+  if (name) params.set("name", name);
+  if (device) params.set("device", device);
+  const qs = params.toString();
+  return qs ? `https://topcashcellular.com/reviews/new?${qs}` : "https://topcashcellular.com/reviews/new";
+}
 
 function checkAuth(req: NextRequest): boolean {
   const headerToken = req.headers.get("x-admin-token");
@@ -44,7 +58,9 @@ function smsTemplate(status: string, ctx: { name?: string; device?: string; quot
     case "tested":
       return `Top Cash: ${dev} passed inspection ✅ Finalizing your ${ctx.quote || "payout"} via ${ctx.payout || "your chosen method"} now.`;
     case "paid":
-      return `Top Cash: ${ctx.quote || "Payment"} sent via ${ctx.payout || "your method"}! Thanks for selling with us, ${first}. — TCC Austin`;
+      return `Top Cash: ${ctx.quote || "Payment"} sent via ${ctx.payout || "your method"}! Thanks for selling with us, ${first}. Mind leaving a 30-sec review? ${buildReviewUrl(ctx.name, ctx.device)}`;
+    case "met":
+      return `Top Cash: Thanks for meeting up, ${first}! Hope you're happy with the trade. If you had a smooth experience, mind leaving a quick review? ${buildReviewUrl(ctx.name, ctx.device)}`;
     case "rejected":
       if (ctx.rejectionReason) {
         return `Top Cash: Hi ${first}, we couldn't accept ${dev} — ${ctx.rejectionReason}. Email topcashcellular@gmail.com if you'd like to discuss.`;
@@ -64,6 +80,7 @@ async function emailStatus(to: string, status: string, ctx: { name?: string; dev
     received: `We received ${dev}`,
     tested: `${dev} passed inspection`,
     paid: `Payment sent — thanks!`,
+    met: `Thanks for the trade — quick review?`,
     rejected: `Issue with ${dev}`,
   };
   const subject = subjectMap[status] || `Status update on your trade-in`;
@@ -77,10 +94,16 @@ async function emailStatus(to: string, status: string, ctx: { name?: string; dev
         received: "Device received",
         tested: "Inspection passed",
         paid: "Payment sent",
+        met: "Thanks for the trade",
         rejected: "Action needed",
       };
       return map[status] || "Status update";
     })();
+    // On the two terminal statuses (paid / met) swap the default "Reply
+    // to email" CTA for a one-click review button. Links to /reviews/new
+    // with name + device prefilled so the customer doesn't have to retype.
+    const isReviewAsk = status === "paid" || status === "met";
+    const reviewUrl = buildReviewUrl(ctx.name, ctx.device);
     const html = `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -136,7 +159,9 @@ async function emailStatus(to: string, status: string, ctx: { name?: string; dev
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
             <tr>
               <td style="text-align:center">
-                <a href="mailto:topcashcellular@gmail.com" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply to this email</a>
+                ${isReviewAsk
+                  ? `<a href="${reviewUrl}" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#ffd54f 0%,#ffb400 60%,#e69900 100%);color:#1a1100;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(255,180,0,0.35)">★ Leave a review</a>`
+                  : `<a href="mailto:topcashcellular@gmail.com" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply to this email</a>`}
               </td>
             </tr>
           </table>
@@ -155,15 +180,16 @@ async function emailStatus(to: string, status: string, ctx: { name?: string; dev
   </div>
 </body>
 </html>`;
-    // BCC Trustpilot's invite address only on the final 'paid' email so
-    // they auto-send a review invitation once the customer has actually
-    // been paid. (Inviting at any earlier stage would feel premature.)
+    // BCC Trustpilot's invite address on the two terminal statuses (paid
+    // and met) so they auto-send a review invitation once the customer
+    // has either been paid digitally or met in person. Earlier stages
+    // are excluded — inviting at received/tested would feel premature.
     const TRUSTPILOT_BCC = "topcashcellular.com+edf80bdc00@invite.trustpilot.com";
     const r = await resend.emails.send({
       from: "Top Cash Cellular <noreply@topcashcellular.com>",
       replyTo: "topcashcellular@gmail.com",
       to,
-      ...(status === "paid" ? { bcc: TRUSTPILOT_BCC } : {}),
+      ...(isReviewAsk ? { bcc: TRUSTPILOT_BCC } : {}),
       subject: `${subject} — Top Cash Cellular`,
       html,
       text: body,

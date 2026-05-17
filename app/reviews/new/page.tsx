@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { SlideOnScrollNav } from "../../components/SlideOnScrollNav";
 
-export default function NewReviewPage() {
+function NewReviewInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
   const [rating, setRating] = useState(0);
@@ -15,6 +17,16 @@ export default function NewReviewPage() {
   const [device, setDevice] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Prefill name + device from the URL so customers landing here from the
+  // post-submission CTA (or the thank-you SMS) don't have to retype what
+  // they already entered. Only fires on mount; user can still edit either.
+  useEffect(() => {
+    const prefillName = searchParams.get("name");
+    const prefillDevice = searchParams.get("device");
+    if (prefillName) setName(prefillName);
+    if (prefillDevice) setDevice(prefillDevice);
+  }, [searchParams]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,14 +56,14 @@ export default function NewReviewPage() {
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
-      <header className="px-4 sm:px-6 py-4 flex items-center justify-between border-b border-white/10 sticky top-0 bg-[#0a0a0a]/95 backdrop-blur z-10">
+      <SlideOnScrollNav className="px-4 sm:px-6 py-4 flex items-center justify-between border-b border-white/10 sticky top-0 bg-[#0a0a0a]/95 backdrop-blur z-10">
         <Link href="/" className="text-xl font-bold tracking-tight">
           Top Cash <span className="text-[#00c853]">Cellular</span>
         </Link>
         <Link href="/reviews" className="text-sm text-[#dcdcdc] hover:text-white transition">
           ← Reviews
         </Link>
-      </header>
+      </SlideOnScrollNav>
 
       <section className="px-4 sm:px-6 py-8 sm:py-12 max-w-xl mx-auto">
         <h1 className="text-3xl sm:text-4xl font-bold mb-2">Leave a review</h1>
@@ -151,5 +163,15 @@ export default function NewReviewPage() {
         </form>
       </section>
     </main>
+  );
+}
+
+export default function NewReviewPage() {
+  // Suspense boundary required by Next 15 around useSearchParams so the
+  // page can still pre-render statically; the params hydrate on the client.
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-[#0a0a0a]" />}>
+      <NewReviewInner />
+    </Suspense>
   );
 }
