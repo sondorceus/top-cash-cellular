@@ -10800,7 +10800,7 @@ export default function Home() {
       )}
 
       {/* STEP: CHECKOUT (email capture) */}
-      {step === "checkout" && page === "home" && model && condition && (
+      {step === "checkout" && page === "home" && ((model && condition) || cartItems.length > 0) && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {checkoutSummary}
@@ -10910,16 +10910,16 @@ export default function Home() {
       {step === "payout" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
-            {/* Multi-device cart → show the full Order Summary (list +
-                total) like the checkout-review step. Single-device →
-                keep the editable selection panel. Skywalker 2026-05-17. */}
-            {cartItems.length > 1 ? checkoutSummary : selectionPanel}
+            {/* Any cart contents → use the multi-line Order Summary
+                (works for 1+ items and survives a funnel-state reset).
+                Funnel state without cart → editable selection panel. */}
+            {cartItems.length > 0 ? checkoutSummary : selectionPanel}
             <div className="flex-1 min-w-0">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            {cartItems.length > 1 ? checkoutSummaryMobile : selectionPanelMobile}
+            {cartItems.length > 0 ? checkoutSummaryMobile : selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
             <p className="text-[#e6e6e6] text-sm mb-3">Select your preferred payout method</p>
             {/* Cash is only available for in-person handoffs — we can't mail
@@ -10947,20 +10947,18 @@ export default function Home() {
       )}
 
       {/* STEP: CONTACT INFO */}
-      {step === "contact" && page === "home" && model && condition && payout && (
+      {step === "contact" && page === "home" && payout && ((model && condition) || cartItems.length > 0) && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
-            {/* Multi-device cart → show the full Order Summary so the
-                customer sees the whole list + total while filling the
-                final form. Single-device → keep the editable selection
-                panel. Skywalker 2026-05-17. */}
-            {cartItems.length > 1 ? checkoutSummary : selectionPanel}
+            {/* Any cart contents → use the multi-line Order Summary
+                (works for 1+ items and survives a funnel-state reset). */}
+            {cartItems.length > 0 ? checkoutSummary : selectionPanel}
             <div className="flex-1 min-w-0">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            {cartItems.length > 1 ? checkoutSummaryMobile : selectionPanelMobile}
+            {cartItems.length > 0 ? checkoutSummaryMobile : selectionPanelMobile}
 
             {returningHint && returningHint.leadCount > 0 && (
               <div className="bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 mb-5 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
@@ -11435,7 +11433,7 @@ export default function Home() {
       )}
 
       {/* STEP: DONE */}
-      {step === "done" && page === "home" && model && condition && payout && (
+      {step === "done" && page === "home" && payout && ((model && condition) || (submittedDevices && submittedDevices.length > 0)) && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl mx-auto px-4 pt-6 lg:pt-10 pb-12">
             {/* Hero — beveled green tile with checkmark + glow rim */}
@@ -11503,20 +11501,35 @@ export default function Home() {
                 </>
               ) : (
                 <>
-                  <div className="flex items-start justify-between gap-3 lg:gap-4 mb-4">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Quoted</p>
-                      <p className="font-extrabold text-[16px] lg:text-[18px] text-white leading-tight break-words">{model.label}</p>
-                      <p className="text-[#d4d4d4] text-[11px] lg:text-xs mt-1 break-words">{storage?.label} · {getConditionLabel(condition, deviceType).label} · {payout.label}{quantity > 1 ? ` · ×${quantity}` : ''}</p>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Payout</p>
-                      {isManualQuote || isPendingQuote
-                        ? <p className="text-white font-extrabold text-lg leading-none">Custom quote</p>
-                        : <p className="text-[#00c853] font-extrabold text-2xl lg:text-3xl leading-none" style={{ textShadow: "0 0 18px rgba(0,200,83,0.4)" }}>${quote * quantity}</p>
-                      }
-                    </div>
-                  </div>
+                  {(() => {
+                    // Single-device done row — prefer submittedDevices[0]
+                    // (which has the actual values at submit time) over
+                    // the live funnel state, so a refresh between checkout
+                    // and submit doesn't blank the receipt.
+                    const sd = submittedDevices && submittedDevices[0];
+                    const lbl = sd?.model || model?.label || "";
+                    const sub = sd
+                      ? [sd.storage, sd.condition].filter(Boolean).join(" · ")
+                      : `${storage?.label} · ${condition ? getConditionLabel(condition, deviceType).label : ""}`;
+                    const qty = sd?.quantity ?? quantity;
+                    const price = sd ? sd.price * sd.quantity : quote * quantity;
+                    return (
+                      <div className="flex items-start justify-between gap-3 lg:gap-4 mb-4">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Quoted</p>
+                          <p className="font-extrabold text-[16px] lg:text-[18px] text-white leading-tight break-words">{lbl}</p>
+                          <p className="text-[#d4d4d4] text-[11px] lg:text-xs mt-1 break-words">{sub} · {payout.label}{qty > 1 ? ` · ×${qty}` : ''}</p>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Payout</p>
+                          {isManualQuote || isPendingQuote
+                            ? <p className="text-white font-extrabold text-lg leading-none">Custom quote</p>
+                            : <p className="text-[#00c853] font-extrabold text-2xl lg:text-3xl leading-none" style={{ textShadow: "0 0 18px rgba(0,200,83,0.4)" }}>${price}</p>
+                          }
+                        </div>
+                      </div>
+                    );
+                  })()}
                   <div className="border-t border-white/10 pt-3 lg:pt-4 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[#00c853] text-xs font-bold shrink-0">
                       {name.charAt(0).toUpperCase()}
