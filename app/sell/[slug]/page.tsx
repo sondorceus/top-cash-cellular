@@ -253,7 +253,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
             </div>
           </Link>
           <div className="flex items-center gap-3">
-            <HeaderSearch className="hidden sm:flex" />
+            <HeaderSearch className="flex w-40 sm:w-56 md:w-64" />
             <Link href="/" className="bg-[#00c853] text-[#0a0a0a] px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition whitespace-nowrap">
               Get Quote
             </Link>

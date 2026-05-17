@@ -43,7 +43,7 @@ export function HeaderSearch({ className = "" }: { className?: string }) {
         onChange={(e) => setQ(e.target.value)}
         placeholder="Search device"
         aria-label="Search devices"
-        className="w-32 sm:w-44 md:w-56 pl-9 pr-3 py-2 bg-white/[0.07] border border-white/15 rounded-full text-[13px] text-white placeholder:text-[#a0a0a0] focus:outline-none focus:bg-white/[0.10] focus:border-[#00c853] focus:ring-2 focus:ring-[#00c853]/20 transition"
+        className="w-full pl-9 pr-3 py-2 bg-white/[0.07] border border-white/15 rounded-full text-[13px] text-white placeholder:text-[#a0a0a0] focus:outline-none focus:bg-white/[0.10] focus:border-[#00c853] focus:ring-2 focus:ring-[#00c853]/20 transition"
       />
     </form>
   );

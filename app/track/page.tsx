@@ -150,7 +150,7 @@ function TrackInner() {
             </div>
           </Link>
           <div className="flex items-center gap-3">
-            <HeaderSearch className="hidden sm:flex" />
+            <HeaderSearch className="flex w-40 sm:w-56 md:w-64" />
             <Link href="/" className="text-xs text-[#dcdcdc] hover:text-white whitespace-nowrap">← Home</Link>
           </div>
         </div>

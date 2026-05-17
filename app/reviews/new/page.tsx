@@ -62,7 +62,7 @@ function NewReviewInner() {
           Top Cash <span className="text-[#00c853]">Cellular</span>
         </Link>
         <div className="flex items-center gap-3">
-          <HeaderSearch className="hidden sm:flex" />
+          <HeaderSearch className="flex w-40 sm:w-56 md:w-64" />
           <Link href="/reviews" className="text-sm text-[#dcdcdc] hover:text-white transition whitespace-nowrap">
             ← Reviews
           </Link>

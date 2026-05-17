@@ -4,6 +4,7 @@ import Script from "next/script";
 import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT } from "./lib/resell-estimates";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
 import { SlideOnScrollNav } from "./components/SlideOnScrollNav";
+import { HeaderSearch } from "./components/HeaderSearch";
 
 const BRAND = "Top Cash Cellular";
 const EMAIL = "topcashcellular@gmail.com";
@@ -7527,10 +7528,14 @@ export default function Home() {
             </button>
           </div>
         </div>
-        {/* Search bar lives inline above each device-picker grid (step:
-            device / category / brand / model) instead of inside the nav.
-            Keeps the sticky header short and stops the search input from
-            bleeding through the mega-menu backdrop blur. */}
+        {/* HEADER SEARCH — sticky in the nav across the whole site,
+            including the home funnel. Pushes /?q=<query> which the home
+            page reads to prefill the full inline search. Wraps the
+            existing inline search the funnel already has — this is the
+            always-visible entry point Skywalker called out. */}
+        <div className="px-4 lg:px-8 pb-3 -mt-1 flex justify-center">
+          <HeaderSearch className="w-full max-w-xl" />
+        </div>
         {/* FUNNEL PROGRESS BAR — last row of the nav so it always sits
             directly under whatever else is in the sticky header, no
             hardcoded top offsets to maintain. */}
