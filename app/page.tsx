@@ -5453,7 +5453,7 @@ function ReviewsCarousel({ reviews }: { reviews: { name: string; loc: string; te
             <div key={i} className="snap-start flex-shrink-0 w-[280px] md:w-[320px] bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
               <div className="flex gap-0.5 mb-3 text-[#ffb400] text-sm">{"★".repeat(r.stars)}</div>
               <p className="text-white text-sm leading-relaxed mb-4 min-h-[80px]">&ldquo;{r.text}&rdquo;</p>
-              <div className="flex items-center gap-2 pt-3 border-t border-white/5">
+              <div className="flex items-center gap-2 pt-3 border-t border-white/10">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00c853] to-[#00a039] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">{r.name[0]}</div>
                 <div className="min-w-0">
                   <div className="text-white text-sm font-semibold leading-tight truncate">{r.name}</div>
@@ -6774,7 +6774,7 @@ export default function Home() {
   const checkoutTotal = checkoutLines.reduce((s, l) => s + l.price * l.quantity, 0);
   const checkoutHasPending = checkoutLines.some(l => l.isPending);
   const renderCheckoutRow = (l: typeof checkoutLines[number], i: number) => (
-    <div key={i} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
+    <div key={i} className="flex items-center gap-3 py-2 border-b border-white/10 last:border-0">
       <div className="shrink-0 w-10 h-10 rounded-lg bg-[rgba(15,15,15,0.6)] border border-white/10 flex items-center justify-center overflow-hidden">
         {l.image ? (
           <img src={l.image} alt="" className="w-full h-full object-contain p-0.5" />
@@ -6848,7 +6848,7 @@ export default function Home() {
         onChange={(e) => setSearchQuery(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Escape") setSearchQuery(""); }}
         placeholder="Search device — iPhone, Galaxy, MacBook..."
-        className="w-full pl-10 pr-10 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition"
+        className="w-full pl-10 pr-10 py-3 bg-white/[0.07] border border-white/20 rounded-2xl text-sm text-white placeholder:text-[#a0a0a0] focus:outline-none focus:bg-white/[0.10] focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/15 transition shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
       />
       <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#e6e6e6] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
       {searchQuery.length > 0 && (
@@ -6990,7 +6990,7 @@ export default function Home() {
                       setStep("condition");
                       pushHistory("condition");
                     }}
-                    className="w-full text-left px-4 py-2.5 hover:bg-white/5 transition flex items-center gap-3 border-b border-white/5 last:border-0 cursor-pointer"
+                    className="w-full text-left px-4 py-2.5 hover:bg-white/5 transition flex items-center gap-3 border-b border-white/10 last:border-0 cursor-pointer"
                   >
                     {h.image ? (
                       <img src={h.image} alt={h.label} loading="lazy" className="w-10 h-10 object-contain flex-shrink-0 rounded-md bg-white/5" />
@@ -7069,7 +7069,7 @@ export default function Home() {
         </button>
         <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between relative">
           {/* LEFT: logo */}
-          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer group tap-press rounded-full shrink-0 bg-white/[0.04] border border-white/10 hover:bg-white/[0.07] pl-1.5 pr-3 py-1 transition">
+          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer group tap-press rounded-full shrink-0 bg-white/[0.07] border border-white/10 hover:bg-white/[0.07] pl-1.5 pr-3 py-1 transition">
             <span className="flex items-center gap-2">
               <span className="relative w-9 h-9 rounded-xl tcc-logo-card flex items-center justify-center">
                 <span className="absolute inset-0 rounded-xl pointer-events-none" style={{ background: "radial-gradient(circle at 28% 25%, rgba(0,230,118,0.18), transparent 65%)" }}></span>
@@ -7096,7 +7096,7 @@ export default function Home() {
           </button>
 
           {/* CENTER (lg+ only, absolutely centered relative to the nav row): Sell / Bulk / Support */}
-          <div className="hidden lg:flex items-center gap-2 absolute left-1/2 -translate-x-1/2 bg-white/[0.04] border border-white/10 rounded-full px-2 py-1">
+          <div className="hidden lg:flex items-center gap-2 absolute left-1/2 -translate-x-1/2 bg-white/[0.07] border border-white/10 rounded-full px-2 py-1">
             {/* SELL — mega menu, dropdown centered under the trigger */}
             <div className="group relative" onMouseEnter={() => setMegaMenuOpen("sell")} onMouseLeave={() => setMegaMenuOpen(null)}>
               <button
@@ -7126,14 +7126,14 @@ export default function Home() {
                       <button
                         key={cat.id}
                         onClick={() => { setCategory(cat.id); setStep("brand"); pushHistory("brand"); }}
-                        className="group/cat flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer tap-press"
+                        className="group/cat flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer tap-press"
                       >
                         <CategoryIcon id={cat.id} className="w-9 h-9 text-white group-hover/cat:text-[#00c853] transition" />
                         <p className="text-[13px] font-semibold text-white">{cat.label}</p>
                       </button>
                     ))}
                   </div>
-                  <div className="mt-5 pt-5 border-t border-white/5">
+                  <div className="mt-5 pt-5 border-t border-white/10">
                     <div className="flex items-center justify-between mb-3">
                       <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em]">Hot today</p>
                       <span className="inline-flex items-center gap-1.5 text-[10px] text-[#00c853] font-bold uppercase tracking-wider">
@@ -7163,7 +7163,7 @@ export default function Home() {
                               setStep("condition");
                               pushHistory("condition");
                             }}
-                            className="flex flex-col items-center text-center gap-1 p-3 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer tap-press"
+                            className="flex flex-col items-center text-center gap-1 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer tap-press"
                           >
                             {isTight ? (
                               <div className="w-12 h-12 mb-1 flex items-center justify-center p-2">
@@ -7201,21 +7201,21 @@ export default function Home() {
                   <div className="grid grid-cols-2 gap-3">
                     {/* LEFT — action cards */}
                     <div className="space-y-2">
-                      <a href="/bulk" className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
+                      <a href="/bulk" className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
                         <span className="text-2xl shrink-0">📦</span>
                         <div className="min-w-0">
                           <p className="text-[13px] font-bold text-white group-hover/blk:text-[#00c853] transition">Get a bulk quote</p>
                           <p className="text-[11px] text-[#b8b8b8] mt-0.5 leading-snug">One submission, one payout, volume pricing.</p>
                         </div>
                       </a>
-                      <a href={EMAIL_HREF} className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
+                      <a href={EMAIL_HREF} className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
                         <span className="text-2xl shrink-0">🤝</span>
                         <div className="min-w-0">
                           <p className="text-[13px] font-bold text-white group-hover/blk:text-[#00c853] transition">Talk to bulk team</p>
                           <p className="text-[11px] text-[#b8b8b8] mt-0.5 leading-snug">Custom contracts, NDAs, decommissioning.</p>
                         </div>
                       </a>
-                      <a href="tel:+18775492056" className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
+                      <a href="tel:+18775492056" className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
                         <span className="text-2xl shrink-0">📞</span>
                         <div className="min-w-0">
                           <p className="text-[13px] font-bold text-white group-hover/blk:text-[#00c853] transition">Call bulk line</p>
@@ -7224,7 +7224,7 @@ export default function Home() {
                       </a>
                     </div>
                     {/* RIGHT — inline FAQ */}
-                    <div className="bg-white/[0.02] rounded-2xl p-4 border border-white/5">
+                    <div className="bg-white/[0.05] rounded-2xl p-4 border border-white/10">
                       <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Bulk FAQ</p>
                       <div className="space-y-3">
                         {[
@@ -7242,7 +7242,7 @@ export default function Home() {
                     </div>
                   </div>
                   {/* FOOTER — volume tier strip */}
-                  <div className="mt-5 pt-4 border-t border-white/5 grid grid-cols-3 gap-3">
+                  <div className="mt-5 pt-4 border-t border-white/10 grid grid-cols-3 gap-3">
                     {[
                       { tier: "10+", note: "Priority pickup" },
                       { tier: "25+", note: "Free NIST wipe report" },
@@ -7285,7 +7285,7 @@ export default function Home() {
                         { href: "/track", icon: "📍", title: "Track your trade", sub: "Status, payout, tracking #" },
                         { href: EMAIL_HREF, icon: "✉️", title: "Email us", sub: "Same business day reply" },
                       ]).map(item => (
-                        <a key={item.title} href={item.href} className="group/sup flex items-start gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
+                        <a key={item.title} href={item.href} className="group/sup flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
                           <span className={`text-2xl shrink-0 ${item.iconColor ?? ""}`}>{item.icon}</span>
                           <div className="min-w-0">
                             <p className="text-[13px] font-bold text-white group-hover/sup:text-[#00c853] transition leading-tight">{item.title}</p>
@@ -7295,7 +7295,7 @@ export default function Home() {
                       ))}
                     </div>
                     {/* RIGHT — inline answers to most-asked questions */}
-                    <div className="bg-white/[0.02] rounded-2xl p-4 border border-white/5">
+                    <div className="bg-white/[0.05] rounded-2xl p-4 border border-white/10">
                       <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Top questions</p>
                       <div className="space-y-3">
                         {[
@@ -7326,7 +7326,7 @@ export default function Home() {
           </div>
 
           {/* RIGHT: cart + login/name (desktop) | cart + hamburger (mobile) — wrapped in matching pill */}
-          <div className="flex items-center gap-1 shrink-0 bg-white/[0.04] border border-white/10 rounded-full px-1.5 py-1">
+          <div className="flex items-center gap-1 shrink-0 bg-white/[0.07] border border-white/10 rounded-full px-1.5 py-1">
             {/* TEXT US — mobile-only quick SMS button. Was a floating bottom-right
                 FAB; moved here so the bottom of the screen stays clean. */}
             <a
@@ -7425,10 +7425,10 @@ export default function Home() {
             </div>
 
             {/* SELL section */}
-            <div className="border-b border-white/5">
+            <div className="border-b border-white/10">
               <button
                 onClick={() => setMobileMenuExpanded(mobileMenuExpanded === "sell" ? null : "sell")}
-                className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/[0.03] transition tap-press"
+                className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/[0.06] transition tap-press"
               >
                 <span className="text-base font-semibold text-white">Sell</span>
                 <svg className={`w-4 h-4 text-white/50 transition ${mobileMenuExpanded === "sell" ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
@@ -7448,7 +7448,7 @@ export default function Home() {
                     <button
                       key={cat.id}
                       onClick={() => { setMobileMenuOpen(false); setCategory(cat.id); setStep("brand"); pushHistory("brand"); }}
-                      className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press"
+                      className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/[0.06] border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press"
                     >
                       <CategoryIcon id={cat.id} className="w-7 h-7 mb-1 text-white" />
                       <p className="text-[11px] font-semibold text-white">{cat.label}</p>
@@ -7459,10 +7459,10 @@ export default function Home() {
             </div>
 
             {/* BULK section */}
-            <div className="border-b border-white/5">
+            <div className="border-b border-white/10">
               <button
                 onClick={() => setMobileMenuExpanded(mobileMenuExpanded === "bulk" ? null : "bulk")}
-                className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/[0.03] transition tap-press"
+                className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/[0.06] transition tap-press"
               >
                 <span className="text-base font-semibold text-white">Bulk</span>
                 <svg className={`w-4 h-4 text-white/50 transition ${mobileMenuExpanded === "bulk" ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
@@ -7488,10 +7488,10 @@ export default function Home() {
             </div>
 
             {/* SUPPORT section */}
-            <div className="border-b border-white/5">
+            <div className="border-b border-white/10">
               <button
                 onClick={() => setMobileMenuExpanded(mobileMenuExpanded === "support" ? null : "support")}
-                className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/[0.03] transition tap-press"
+                className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/[0.06] transition tap-press"
               >
                 <span className="text-base font-semibold text-white">Support</span>
                 <svg className={`w-4 h-4 text-white/50 transition ${mobileMenuExpanded === "support" ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
@@ -7540,7 +7540,7 @@ export default function Home() {
             {/* LOGIN — opens lookup modal. Shows first name if a past lookup matched. */}
             <button
               onClick={() => { setMobileMenuOpen(false); setLookupOpen(true); }}
-              className="w-full flex items-center gap-3 px-5 py-4 hover:bg-white/[0.03] transition tap-press border-b border-white/5"
+              className="w-full flex items-center gap-3 px-5 py-4 hover:bg-white/[0.06] transition tap-press border-b border-white/10"
             >
               <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
               <span className="text-base font-semibold text-[#00c853]">
@@ -7763,7 +7763,7 @@ export default function Home() {
                   {lookupResult.leads && lookupResult.leads.length > 0 && (
                     <div className="space-y-1.5 mb-4 max-h-48 overflow-y-auto">
                       {lookupResult.leads.slice(0, 5).map((l, i) => (
-                        <div key={i} className="text-xs bg-white/[0.03] border border-white/5 rounded-lg px-3 py-2">
+                        <div key={i} className="text-xs bg-white/[0.06] border border-white/10 rounded-lg px-3 py-2">
                           <div className="text-white font-medium">{l.device || "Device"} {l.model ? `— ${l.model}` : ""}</div>
                           <div className="text-[#e6e6e6]">{l.quote || "—"} · {new Date(l.timestamp).toLocaleDateString()}</div>
                         </div>
@@ -7775,7 +7775,7 @@ export default function Home() {
               )}
               {lookupResult && !lookupResult.found && (
                 <>
-                  <div className="bg-white/[0.03] border border-white/10 rounded-xl p-4 mb-4 text-center">
+                  <div className="bg-white/[0.06] border border-white/10 rounded-xl p-4 mb-4 text-center">
                     <p className="text-white font-semibold mb-1">No past trades found</p>
                     <p className="text-[#e6e6e6] text-sm">First time? No worries — start a fresh quote and we&apos;ll save it for next time.</p>
                   </div>
@@ -7789,7 +7789,7 @@ export default function Home() {
 
       {/* BREADCRUMB */}
       {showBreadcrumbs && (
-        <div className="bg-[#0a0a0a] border-b border-white/5">
+        <div className="bg-[#0a0a0a] border-b border-white/10">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-2 flex items-center gap-1.5 text-xs overflow-x-auto whitespace-nowrap scrollbar-hide">
             {breadcrumbs.map((c, i) => (
               <span key={i} className="flex items-center gap-1.5 flex-shrink-0">
@@ -7946,7 +7946,7 @@ export default function Home() {
                         setStep("condition");
                         pushHistory("condition");
                       }}
-                      className="group bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press"
+                      className="group bg-white/[0.07] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press"
                     >
                       {isTight ? (
                         <div className={tightWrapCls}>
@@ -11143,7 +11143,7 @@ export default function Home() {
                 <h2 className="text-2xl md:text-3xl font-bold leading-tight reveal" data-stagger="1">Why cash beats trade-in</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 reveal" data-stagger="2">
+                <div className="bg-white/[0.06] border border-white/10 rounded-2xl p-5 reveal" data-stagger="2">
                   <p className="text-xs font-bold uppercase tracking-wider text-[#bdbdbd] mb-1">Apple Trade-In</p>
                   <p className="text-white text-2xl font-bold mb-2">Lowball</p>
                   <ul className="text-[#e6e6e6] text-sm space-y-1 list-disc list-inside">
@@ -11152,7 +11152,7 @@ export default function Home() {
                     <li>No cash option</li>
                   </ul>
                 </div>
-                <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 reveal" data-stagger="3">
+                <div className="bg-white/[0.06] border border-white/10 rounded-2xl p-5 reveal" data-stagger="3">
                   <p className="text-xs font-bold uppercase tracking-wider text-[#bdbdbd] mb-1">Carrier Trade-In</p>
                   <p className="text-white text-2xl font-bold mb-2">36-Month Drip</p>
                   <ul className="text-[#e6e6e6] text-sm space-y-1 list-disc list-inside">

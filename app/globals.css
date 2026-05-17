@@ -294,24 +294,27 @@ button:hover > .tcc-brand-tile {
 }
 
 .tcc-card {
-  background: rgba(15, 15, 15, 0.5);
+  /* Was rgba(15,15,15,0.5) — dark grey on a dark grey page barely lifts.
+     Switched to a faint white overlay so the card actually reads as
+     elevated. Stronger border + slightly brighter rim light. */
+  background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   /* inset highlight at top-left simulates rim light catching the edge; outer
      shadow gives the card depth against the dark page */
   box-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 0.06),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.08),
     0 10px 30px rgba(0, 0, 0, 0.5);
   transition: transform 300ms ease, background 300ms ease, border-color 300ms ease, box-shadow 300ms ease, filter 300ms ease;
 }
 .tcc-card:hover {
   transform: translateY(-3px);
-  background: rgba(15, 15, 15, 0.85);
+  background: rgba(255, 255, 255, 0.07);
   border-color: #00c853;
   box-shadow:
-    inset 0 0 10px rgba(0, 200, 83, 0.08),
-    0 0 8px rgba(0, 200, 83, 0.18),
+    inset 0 0 10px rgba(0, 200, 83, 0.10),
+    0 0 8px rgba(0, 200, 83, 0.22),
     0 14px 32px rgba(0, 0, 0, 0.55);
 }
 /* When the card is hovered the inner icons brighten too — gives the
@@ -357,12 +360,17 @@ button:hover > .tcc-brand-tile {
    up bright green on focus. No full box border (sleeker, more "techy").
    Placeholder text recedes; typed text pumps to pure white. */
 .tcc-input {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid transparent;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  /* Was rgba(0,0,0,0.4) — black on a #0a0a0a page = visually invisible.
+     Lifted to a faint white overlay so the field reads as an elevated
+     surface against the dark bg. Subtle inset highlight at the top edge
+     adds dimensionality (catches "light" from above). */
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
   color: #fff;
   transition: background 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
   border-radius: 0.75rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
   /* iOS Safari auto-zooms whenever an input's computed font-size is below
      16px on focus. We force 16px on mobile so the contact/IMEI page
      doesn't yank the viewport when the user taps in. Desktop keeps the
@@ -372,10 +380,10 @@ button:hover > .tcc-brand-tile {
 @media (min-width: 1024px) {
   .tcc-input { font-size: 0.875rem; }
 }
-.tcc-input:hover { background: rgba(0, 0, 0, 0.5); border-bottom-color: rgba(255, 255, 255, 0.28); }
-.tcc-input:focus { outline: none; border-bottom-color: #00c853; box-shadow: 0 4px 12px -4px rgba(0, 200, 83, 0.5); background: rgba(0, 0, 0, 0.55); }
-.tcc-input::placeholder { color: #6a6a6a; }
-.tcc-input:focus::placeholder { color: #8a8a8a; }
+.tcc-input:hover { background: rgba(255, 255, 255, 0.065); border-color: rgba(255, 255, 255, 0.16); border-bottom-color: rgba(255, 255, 255, 0.38); }
+.tcc-input:focus { outline: none; border-color: rgba(0, 200, 83, 0.6); border-bottom-color: #00c853; box-shadow: 0 0 0 4px rgba(0, 200, 83, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.06); background: rgba(255, 255, 255, 0.07); }
+.tcc-input::placeholder { color: #8a8a8a; }
+.tcc-input:focus::placeholder { color: #a8a8a8; }
 
 /* Primary CTA — beveled gradient green button with a thin white rim at
    top and a soft outer green glow. Reads tactile / pressable instead
