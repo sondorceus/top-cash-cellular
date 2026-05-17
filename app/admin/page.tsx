@@ -94,6 +94,11 @@ export default function AdminPage() {
   const [smsThreads, setSmsThreads] = useState<Record<string, { loading: boolean; messages?: { sid: string; body: string; direction: string; timestamp: string }[]; error?: string }>>({});
   const [recentlyChanged, setRecentlyChanged] = useState<Record<string, number>>({});
   const [autoRefresh, setAutoRefresh] = useState(true);
+  // Customer history modal — opens when staff clicks a lead's email or
+  // phone. Shows every lead (paid + pending + rejected) from the same
+  // identity so repeat sellers, lifetime value, and prior disputes are
+  // visible at a glance. Built client-side off the leads array.
+  const [historyKey, setHistoryKey] = useState<{ kind: "email" | "phone"; value: string } | null>(null);
   const [adjustingId, setAdjustingId] = useState<string | null>(null);
   const [adjustQuote, setAdjustQuote] = useState<string>("");
   const [adjustReason, setAdjustReason] = useState<string>("");
@@ -471,6 +476,69 @@ export default function AdminPage() {
   const isStale = (lead: Lead) => stalenessFor(lead) !== "ok";
   const staleCount = dedupedLeads.filter(isStale).length;
 
+  // CSV export — dumps the current filtered view (after search + filter)
+  // as a CSV file the user can drop into Sheets / Excel / QuickBooks.
+  const exportFilteredCsv = (filteredView: Lead[]) => {
+    const cols = [
+      ["timestamp", (l: Lead) => l.timestamp],
+      ["status", (l: Lead) => l.status],
+      ["name", (l: Lead) => l.name || ""],
+      ["phone", (l: Lead) => l.phone || ""],
+      ["email", (l: Lead) => l.email || ""],
+      ["device", (l: Lead) => l.device || ""],
+      ["model", (l: Lead) => l.model || ""],
+      ["storage", (l: Lead) => l.storage || ""],
+      ["condition", (l: Lead) => l.condition || ""],
+      ["carrier", (l: Lead) => l.carrier || ""],
+      ["quote", (l: Lead) => l.quote || ""],
+      ["payout", (l: Lead) => l.payout || ""],
+      ["imei", (l: Lead) => l.imei || ""],
+      ["processor", (l: Lead) => l.processor || ""],
+      ["memory", (l: Lead) => l.memory || ""],
+      ["graphics", (l: Lead) => l.graphics || ""],
+      ["batteryHealth", (l: Lead) => l.batteryHealth || ""],
+      ["brokenGlass", (l: Lead) => l.brokenGlass || ""],
+      ["brokenFunctional", (l: Lead) => (l.brokenFunctional === false ? "no" : l.brokenFunctional === true ? "yes" : "")],
+      ["paidOff", (l: Lead) => (l.paidOff === false ? "no" : l.paidOff === true ? "yes" : "")],
+      ["resellEstimate", (l: Lead) => l.resellEstimate?.toString() || ""],
+      ["marginPercent", (l: Lead) => l.marginPercent?.toString() || ""],
+      ["marginFlag", (l: Lead) => l.marginFlag || ""],
+      ["statusUpdatedAt", (l: Lead) => l.statusUpdatedAt || ""],
+      ["latestNote", (l: Lead) => l.latestNote || ""],
+      ["photoCount", (l: Lead) => (l.photos?.length || 0).toString()],
+    ] as [string, (l: Lead) => string][];
+    const esc = (v: string) => `"${v.replace(/"/g, '""').replace(/\r?\n/g, " ")}"`;
+    const header = cols.map(([k]) => esc(k)).join(",");
+    const rows = filteredView.map((l) => cols.map(([, fn]) => esc(fn(l))).join(","));
+    const csv = [header, ...rows].join("\r\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-");
+    a.download = `tcc-leads-${stamp}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // Customer history — every lead that matches the given email or phone
+  // (normalized). Used by the history modal opened from a lead row.
+  const historyLeads = ((): Lead[] => {
+    if (!historyKey) return [];
+    const target = historyKey.value.toLowerCase().trim();
+    return dedupedLeads.filter((l) => {
+      const v = historyKey.kind === "email" ? (l.email || "").toLowerCase().trim()
+        : (l.phone || "").replace(/\D/g, "");
+      const t = historyKey.kind === "email" ? target : target.replace(/\D/g, "");
+      return v && v === t;
+    });
+  })();
+  const historyTotalPaid = historyLeads
+    .filter((l) => l.status === "paid")
+    .reduce((s, l) => s + (parseInt(l.quote?.match(/\d+/)?.[0] || "0", 10) || 0), 0);
+
   const saveStatus = async (lead: Lead, newStatus: string, reason?: string) => {
     if (!token || newStatus === lead.status) return;
     setSavingId(lead.id);
@@ -561,6 +629,25 @@ export default function AdminPage() {
             </button>
             <button onClick={fetchLeads} disabled={loading} className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm hover:bg-white/10 transition disabled:opacity-50 cursor-pointer">
               {loading ? "Loading…" : "Refresh"}
+            </button>
+            {/* CSV export — dumps the current filtered view (after
+                search + status filter) as a CSV file. Includes status,
+                payout, margin, contact, spec fields, photo count. */}
+            <button
+              onClick={() => {
+                const view = filteredLeads.filter((l) => {
+                  if (statusFilter === "all") return true;
+                  if (statusFilter === "active") return l.status !== "paid" && l.status !== "rejected";
+                  if (statusFilter === "completed") return l.status === "paid" || l.status === "rejected";
+                  return l.status === statusFilter;
+                });
+                exportFilteredCsv(view);
+              }}
+              disabled={filteredLeads.length === 0}
+              title="Download the current filtered view as CSV (Sheets/Excel/QuickBooks)"
+              className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm hover:bg-white/10 transition disabled:opacity-40 cursor-pointer"
+            >
+              📥 Export CSV
             </button>
             <button onClick={handleLogout} className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm hover:bg-white/10 transition cursor-pointer">
               Sign out
@@ -755,7 +842,14 @@ export default function AdminPage() {
                     <div className="text-xs text-[#d4d4d4] space-y-0.5">
                       {lead.phone && (
                         <p className="flex items-center gap-2 flex-wrap">
-                          <span>{lead.phone}</span>
+                          <button
+                            type="button"
+                            onClick={() => setHistoryKey({ kind: "phone", value: lead.phone! })}
+                            title="See all leads from this phone"
+                            className="hover:text-[#00c853] hover:underline cursor-pointer"
+                          >
+                            {lead.phone}
+                          </button>
                           <button
                             type="button"
                             onClick={() => {
@@ -772,7 +866,16 @@ export default function AdminPage() {
                           </button>
                         </p>
                       )}
-                      {lead.email && <p className="text-[#dcdcdc] truncate" title={lead.email}>{lead.email}</p>}
+                      {lead.email && (
+                        <button
+                          type="button"
+                          onClick={() => setHistoryKey({ kind: "email", value: lead.email! })}
+                          title="See all leads from this email"
+                          className="block text-[#dcdcdc] truncate hover:text-[#00c853] hover:underline cursor-pointer text-left"
+                        >
+                          {lead.email}
+                        </button>
+                      )}
                     </div>
                     <div className="text-sm">
                       <p className="font-medium flex items-center gap-2 flex-wrap">
@@ -1109,6 +1212,73 @@ export default function AdminPage() {
               >
                 {bulkSaving ? "Updating…" : "Apply"}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CUSTOMER HISTORY MODAL — clicking an email or phone on a lead
+          row opens this drawer with every previous lead that matches.
+          Repeat-seller intel: lifetime value, prior disputes, currently
+          open trades. Closes on backdrop click or Esc. */}
+      {historyKey && (
+        <div
+          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-[fadeIn_0.15s_ease-out]"
+          onClick={() => setHistoryKey(null)}
+        >
+          <div
+            className="bg-[#0a0a0a] border border-white/15 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[88vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-[#0a0a0a] border-b border-white/10 px-5 py-4 flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Customer history</p>
+                <h2 className="text-xl font-bold text-white truncate">{historyKey.value}</h2>
+                <p className="text-xs text-[#a0a0a0] mt-1">
+                  {historyLeads.length} {historyLeads.length === 1 ? "lead" : "leads"}
+                  {historyTotalPaid > 0 && <span className="text-[#00c853]"> · ${historyTotalPaid} lifetime paid</span>}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setHistoryKey(null)}
+                aria-label="Close"
+                className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer shrink-0"
+              >
+                <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="p-5 space-y-3">
+              {historyLeads.length === 0 ? (
+                <p className="text-[#888] text-sm italic">No leads found.</p>
+              ) : (
+                historyLeads.map((h) => {
+                  const m = statusMeta(h.status);
+                  return (
+                    <div key={h.id} className="bg-white/[0.04] border border-white/10 rounded-xl p-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-white text-sm font-bold truncate">{h.model || h.device || "—"}</p>
+                          <p className="text-[#bdbdbd] text-xs mt-0.5">
+                            {[h.storage, h.condition, h.carrier].filter(Boolean).join(" · ")}
+                          </p>
+                          <p className="text-[#888] text-[11px] mt-1">{timeAgo(h.timestamp)} · {new Date(h.timestamp).toLocaleDateString()}</p>
+                        </div>
+                        <div className="text-right shrink-0">
+                          {h.quote && <p className="text-[#00c853] font-bold text-base">{h.quote}</p>}
+                          <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: m.color + "22", color: m.color, border: `1px solid ${m.color}55` }}>{m.label}</span>
+                        </div>
+                      </div>
+                      {h.latestNote && (
+                        <p className="text-[11px] text-[#d4d4d4] mt-2 bg-white/[0.03] border-l-2 border-[#00c853]/40 pl-2 py-1">
+                          <span className="text-[#888] uppercase tracking-wider text-[9px] font-bold">Note: </span>
+                          {h.latestNote.slice(0, 200)}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
