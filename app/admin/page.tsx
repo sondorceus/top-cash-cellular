@@ -267,7 +267,17 @@ export default function AdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ leadId: lead.id, reason: `deleted via admin UI for ${label}` }),
       });
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      if (!r.ok) {
+        // Surface the server's error body (e.g. "MC API key not
+        // configured on Vercel...") rather than a generic HTTP code so
+        // the operator can act on it without grep'ing through logs.
+        let detail = `HTTP ${r.status}`;
+        try {
+          const errBody = await r.json();
+          if (errBody?.error) detail = errBody.error;
+        } catch {}
+        throw new Error(detail);
+      }
       // Optimistic — remove from current list. Next auto-refresh will
       // re-confirm via the deleted-marker filter.
       setLeads((prev) => prev.filter((l) => l.id !== lead.id));

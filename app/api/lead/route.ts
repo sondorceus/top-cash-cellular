@@ -180,7 +180,7 @@ export async function POST(req: NextRequest) {
 
   const handoffLines: string[] = [];
   if (handoff && typeof handoff === "object") {
-    const h = handoff as { method?: string; address?: Record<string, string>; area?: string; hasBox?: "yes" | "no" };
+    const h = handoff as { method?: string; address?: Record<string, string>; area?: string; hasBox?: "yes" | "no"; slot?: { id: string; date: string; time: string; label?: string } };
     if (h.method === "ship" && h.address) {
       const { street, unit, city, state, zip } = h.address;
       handoffLines.push("--- Handoff: SHIPPING ---");
@@ -191,7 +191,15 @@ export async function POST(req: NextRequest) {
     } else if (h.method === "local") {
       handoffLines.push("--- Handoff: LOCAL MEETUP ---");
       if (h.area) handoffLines.push(`Area: ${h.area}`);
-      handoffLines.push("Action: Reach out to schedule meetup time and location.");
+      if (h.slot) {
+        const [hh, mm] = h.slot.time.split(":").map(Number);
+        const ampm = hh >= 12 ? "PM" : "AM";
+        const h12 = hh % 12 || 12;
+        handoffLines.push(`Slot: ${h.slot.date} ${h12}:${String(mm).padStart(2, "0")} ${ampm}${h.slot.label ? ` · ${h.slot.label}` : ""} (id=${h.slot.id})`);
+        handoffLines.push("Action: Confirm meetup spot with seller for the booked window.");
+      } else {
+        handoffLines.push("Action: Reach out to schedule meetup time and location.");
+      }
     }
   }
 

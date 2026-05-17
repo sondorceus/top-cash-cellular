@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Script from "next/script";
 import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT } from "./lib/resell-estimates";
+import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
 
 const BRAND = "Top Cash Cellular";
 const EMAIL = "topcashcellular@gmail.com";
@@ -5798,6 +5799,30 @@ export default function Home() {
   // can include packaging with the label (or know to ship a box) instead
   // of finding out after the fact via support email.
   const [shipHasBox, setShipHasBox] = useState<"yes" | "no" | null>(null);
+  // Local-meetup slot picker — Skywalker stocks specific time slots on
+  // /admin/slots; customer picks one on the contact step. Booked via
+  // MC's atomic POST /api/slots/:id/book on form submit so two sellers
+  // can't double-book the same window. State holds (a) the slot list
+  // fetched from MC on mount, (b) the customer's chosen slot, and (c)
+  // any error from the fetch / book call.
+  const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  const [slotError, setSlotError] = useState<string | null>(null);
+  // Fetch open upcoming slots whenever the user lands on the contact
+  // step with handoffMethod=local. Filtered to today + later, open
+  // only. Cap at 18 displayed.
+  useEffect(() => {
+    if (step !== "contact" || handoffMethod !== "local") return;
+    let alive = true;
+    setSlotsLoading(true);
+    const fromDate = new Date().toISOString().slice(0, 10);
+    listSlots({ openOnly: true, fromDate })
+      .then((s) => { if (alive) setAvailableSlots(s.slice(0, 18)); })
+      .catch(() => {})
+      .finally(() => { if (alive) setSlotsLoading(false); });
+    return () => { alive = false; };
+  }, [step, handoffMethod]);
   // Google Places autocomplete on the shipping street field — mirrors
   // ATX Gadget's implementation. User types, Google suggests US
   // addresses, click → parsed into our 5 split fields (street / unit
@@ -10980,9 +11005,38 @@ export default function Home() {
                 alert("Please fill in your full shipping address."); return;
               }
               try {
+                // Book the chosen local slot before creating the lead.
+                // If the slot was taken between page-load and submit
+                // (someone else picked it), bookSlot returns ok:false
+                // with 409 — surface inline and bail so the seller can
+                // re-pick instead of losing data / getting a confusing
+                // half-submitted state.
+                let bookedSlotInfo: { id: string; date: string; time: string; label?: string } | undefined;
+                if (handoffMethod === "local" && selectedSlot) {
+                  const r = await bookSlot(selectedSlot.id, {
+                    sellerName: name,
+                    sellerPhone: phone || undefined,
+                    sellerEmail: email || undefined,
+                    deviceLabel: model?.label,
+                  });
+                  if (!r.ok) {
+                    setSlotError(r.error === "already booked"
+                      ? "That window was just taken — please pick another."
+                      : `Couldn't reserve that window: ${r.error}`);
+                    // Refresh open slots so the booked one drops off.
+                    try {
+                      const fromDate = new Date().toISOString().slice(0, 10);
+                      const fresh = await listSlots({ openOnly: true, fromDate });
+                      setAvailableSlots(fresh.slice(0, 18));
+                    } catch {}
+                    setSelectedSlot(null);
+                    return;
+                  }
+                  bookedSlotInfo = { id: selectedSlot.id, date: selectedSlot.date, time: selectedSlot.time, label: selectedSlot.label };
+                }
                 const handoffPayload = handoffMethod === "ship"
                   ? { method: "ship", address: { street: shipStreet, unit: shipUnit, city: shipCity, state: shipState, zip: shipZip }, hasBox: shipHasBox ?? undefined }
-                  : { method: "local" };
+                  : { method: "local", slot: bookedSlotInfo };
                 // Snapshot the currently-edited photos into the active
                 // tab's slot before submission so the latest edits make
                 // it into the per-item submission below.
@@ -11143,15 +11197,58 @@ export default function Home() {
                 )}
 
                 {handoffMethod === "local" && (
-                  <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#00c853]/5 border border-[#00c853]/20">
-                    <svg className="w-5 h-5 text-[#00c853] shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <p className="text-white text-sm font-bold leading-tight">Local meetup</p>
-                        <button type="button" onClick={() => setHandoffMethod("ship")} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to shipping</button>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#00c853]/5 border border-[#00c853]/20">
+                      <svg className="w-5 h-5 text-[#00c853] shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <p className="text-white text-sm font-bold leading-tight">Local meetup</p>
+                          <button type="button" onClick={() => setHandoffMethod("ship")} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to shipping</button>
+                        </div>
+                        <p className="text-[#bdbdbd] text-xs leading-snug">
+                          {availableSlots.length > 0
+                            ? "Pick an open meetup window below. We'll confirm the exact location via text."
+                            : "We'll text or email you within the hour to coordinate a time and a public spot in Austin you're comfortable with."}
+                        </p>
                       </div>
-                      <p className="text-[#bdbdbd] text-xs leading-snug">We&apos;ll text or email you within the hour to coordinate a time and a public spot in Austin you&apos;re comfortable with.</p>
                     </div>
+
+                    {/* SLOT PICKER — appears only when Skywalker has
+                        published open slots via /admin/slots. Atomic
+                        book on form submit prevents double-booking. */}
+                    {(slotsLoading || availableSlots.length > 0) && (
+                      <div>
+                        <label className="block text-xs font-medium text-[#e6e6e6] mb-2 uppercase tracking-wider">Pick a meetup time</label>
+                        {slotsLoading ? (
+                          <p className="text-[11px] text-[#888]">Loading available windows…</p>
+                        ) : (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {availableSlots.map((s) => {
+                              const isPicked = selectedSlot?.id === s.id;
+                              const dateLabel = new Date(s.date + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+                              const [h, mm] = s.time.split(":").map(Number);
+                              const ampm = h >= 12 ? "PM" : "AM";
+                              const h12 = h % 12 || 12;
+                              const timeLabel = `${h12}:${String(mm).padStart(2, "0")} ${ampm}`;
+                              return (
+                                <button
+                                  type="button"
+                                  key={s.id}
+                                  onClick={() => { setSelectedSlot(s); setSlotError(null); }}
+                                  className={`text-left px-3 py-2.5 rounded-xl border transition cursor-pointer tap-press ${isPicked ? "bg-[#00c853]/15 border-[#00c853]/60" : "bg-white/[0.05] border-white/15 hover:bg-white/[0.08] hover:border-white/25"}`}
+                                >
+                                  <p className="text-white text-[13px] font-bold leading-tight">{dateLabel} · {timeLabel}</p>
+                                  {s.label && <p className="text-[#bdbdbd] text-[11px] mt-0.5 leading-tight">{s.label}</p>}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                        {slotError && (
+                          <p className="text-[11px] text-[#ff8088] mt-2">{slotError}</p>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

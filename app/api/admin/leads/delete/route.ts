@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
-const MC_KEY = process.env.MC_API_KEY || "";
+// Fall back to NEXT_PUBLIC_MC_API_KEY when MC_API_KEY isn't set on
+// Vercel. The public key works for /api/comms POST and prevents the
+// admin Delete button from 502-ing while we're still finalizing the
+// server-side env config.
+const MC_KEY = process.env.MC_API_KEY || process.env.NEXT_PUBLIC_MC_API_KEY || "";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
 
 // Soft-delete a lead. MC /api/comms doesn't support DELETE, so we post
@@ -34,6 +38,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "leadId required" }, { status: 400 });
   }
 
+  // Fast-fail if MC_API_KEY isn't configured — surface a specific
+  // error message so the admin UI shows "MC API key not configured"
+  // instead of a generic 502 (which tripped Skywalker on 2026-05-17).
+  if (!MC_KEY) {
+    return NextResponse.json(
+      { error: "MC API key not configured on Vercel — set MC_API_KEY (server) or NEXT_PUBLIC_MC_API_KEY (public)." },
+      { status: 503 },
+    );
+  }
+
   // Post the soft-delete marker to MC comms.
   const markerBody = `[DELETED-LEAD: ${leadId}]${reason ? ` [REASON: ${reason}]` : ""}`;
   try {
@@ -50,7 +64,11 @@ export async function POST(req: NextRequest) {
       }),
     });
     if (!r.ok) {
-      return NextResponse.json({ error: "MC unavailable", status: r.status }, { status: 502 });
+      const body = await r.text().catch(() => "");
+      return NextResponse.json(
+        { error: `MC returned ${r.status}${body ? ` — ${body.slice(0, 200)}` : ""}` },
+        { status: 502 },
+      );
     }
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : "MC error" }, { status: 502 });
