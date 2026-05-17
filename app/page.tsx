@@ -7154,17 +7154,10 @@ export default function Home() {
             </button>
           </div>
         </div>
-        {/* GLOBAL SEARCH ROW — second row of the sticky nav. Visible on
-            every step on both desktop and mobile so users can jump to a
-            model from anywhere. Hidden on non-home subpages (about,
-            privacy, etc.) where it would have no target. */}
-        {page === "home" && (
-          <div className="border-t border-white/5 px-4 lg:px-8 py-2.5">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-3xl mx-auto">
-              {searchBar}
-            </div>
-          </div>
-        )}
+        {/* Search bar lives inline above each device-picker grid (step:
+            device / category / brand / model) instead of inside the nav.
+            Keeps the sticky header short and stops the search input from
+            bleeding through the mega-menu backdrop blur. */}
         {/* FUNNEL PROGRESS BAR — last row of the nav so it always sits
             directly under whatever else is in the sticky header, no
             hardcoded top offsets to maintain. */}
@@ -7676,10 +7669,15 @@ export default function Home() {
               </span>
             </div>
 
+            {/* INLINE SEARCH — sits right above the quick-quote cards
+                so the search input is anchored to the devices it
+                searches, not bleeding through the nav blur. */}
+            <div className="mt-8">{searchBar}</div>
+
             {/* INSTANT QUOTE WIDGET — 4 hero cards for the most-asked
                 devices. Click jumps straight to the condition step with
                 the model pre-selected, skipping category/brand/model. */}
-            <div className="mt-8">
+            <div className="mt-4">
               <div className="flex items-center justify-between mb-3">
                 <p className="text-[#e6e6e6] text-xs font-semibold uppercase tracking-wider">Quick quote — pick yours</p>
                 <span className="text-[10px] text-[#00c853] font-bold uppercase tracking-wider">Top dollar today</span>
@@ -8020,7 +8018,8 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl font-bold mb-1">What are you selling?</h2>
-            <p className="text-[#e6e6e6] text-sm mb-6">Pick a category, or search by name at the top.</p>
+            <p className="text-[#e6e6e6] text-sm mb-4">Pick a category, or search by name below.</p>
+            <div className="mb-6">{searchBar}</div>
             <div className="grid grid-cols-4 md:grid-cols-5 gap-2 md:gap-3">
               {[
                 { id: "phones" as const, label: "Sell Phone" },
@@ -8258,7 +8257,8 @@ export default function Home() {
               Back
             </button>
             <h2 className="text-2xl md:text-3xl font-bold mb-1">Select your brand</h2>
-            <p className="text-[#e6e6e6] text-sm mb-6">{category === "phones" ? "Phone brands" : category === "tablets" ? "Tablet brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : category === "watches" ? "Smartwatch brands" : category === "drones" ? "Drone brands" : category === "vr" ? "VR headset brands" : "Console brands"}</p>
+            <p className="text-[#e6e6e6] text-sm mb-4">{category === "phones" ? "Phone brands" : category === "tablets" ? "Tablet brands" : category === "computers" ? "Laptop brands" : category === "desktops" ? "Desktop brands" : category === "watches" ? "Smartwatch brands" : category === "drones" ? "Drone brands" : category === "vr" ? "VR headset brands" : "Console brands"}</p>
+            <div className="mb-6">{searchBar}</div>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {category === "phones" && [
                 { id: "iphone" as const, label: "Apple iPhone", sub: "iPhone 11 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg> },
@@ -8396,6 +8396,8 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
+
+            <div className="mb-6">{searchBar}</div>
 
             {/* iPhone: grouped by generation (17 / 16 / 15 / ... / 11)
                 with a thin uppercase divider above each set so the
