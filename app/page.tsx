@@ -2283,9 +2283,14 @@ const DELL_PC_ALL_SUB_SERIES = [
 
 const ALIENWARE_DESKTOP_MODELS = [
   { id: "awaurorar16", label: "Aurora R16", base: 340, image: "/devices/alienware-aurora-r16.webp" },
-  { id: "awaurorar15", label: "Aurora R15", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r15.webp" },
+  // R15 / R13 prices scraped from IWM via head scraper 2026-05-17.
+  // Base = i7 / 1TB SSD / Flawless × 0.90 (mid-tier chip + storage):
+  //   R15 i7 1TB Flawless $785 → $706
+  //   R13 i7 1TB Flawless $340 → $306
+  // Higher-spec configs scale up via storage multipliers downstream.
+  { id: "awaurorar15", label: "Aurora R15", base: 706, inquiryOnly: false, image: "/devices/alienware-aurora-r15.webp" },
   { id: "awaurorar14", label: "Aurora R14", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r14.webp" },
-  { id: "awaurorar13", label: "Aurora R13", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r13.webp" },
+  { id: "awaurorar13", label: "Aurora R13", base: 306, inquiryOnly: false, image: "/devices/alienware-aurora-r13.webp" },
   { id: "awaurorar12", label: "Aurora R12", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r12.webp" },
   { id: "awaurorar10", label: "Aurora R10", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r10.webp" },
   { id: "awarea51desktop", label: "Area-51 Desktop", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51-desktop.webp" },
@@ -3101,8 +3106,8 @@ const STORAGE_MAP: Record<string, string[]> = {
   asnuc14: ["256", "512"],
   // Alienware Desktops
   awaurorar16: ["512", "1tb"],
-  awaurorar15: ["512", "1tb"],
-  awaurorar13: ["512", "1tb"],
+  awaurorar15: ["256", "512", "1tb", "2tb", "4tb"],
+  awaurorar13: ["256", "512", "1tb", "2tb"],
   // MSI Desktops
   // MSI desktop storage tiers — matches IWM's options per model.
   msiaegisrs:   ["512", "1tb", "2tb"],
