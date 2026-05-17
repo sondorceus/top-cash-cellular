@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Script from "next/script";
+import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT } from "./lib/resell-estimates";
 
 const BRAND = "Top Cash Cellular";
 const EMAIL = "topcashcellular@gmail.com";
@@ -6272,7 +6273,30 @@ export default function Home() {
   // price. Front-only or back-only damage stays at the regular
   // broken-tier value. Skywalker directive 2026-05-17.
   const bothGlassPenalty = (isPhoneFlow && condition?.id === "broken" && brokenGlass === "both" && baseQuote > 0) ? -30 : 0;
-  const quote = Math.max(0, baseQuote + accessoryBonus + popularDeviceBonus + bothGlassPenalty);
+  const rawQuote = Math.max(0, baseQuote + accessoryBonus + popularDeviceBonus + bothGlassPenalty);
+
+  // MARGIN GUARDRAIL — never quote more than 25% under resell value.
+  // Catches cases like a broken iPhone 17 Pro Max that the IWM-derived
+  // PRICE_TABLE was over-quoting (was $357, real broken resell is
+  // ~$324 — we'd lose money). Cap the quote at resell × 0.75 so we
+  // always keep a healthy margin. When resell is unknown for the
+  // model, force manual review instead of guessing. Skywalker directive
+  // 2026-05-17 after a live -$43 LOSS lead came in.
+  const workingResell = model ? getResellEstimate(model.label) : null;
+  const condMult = resellMultiplierForCondition(condition?.id, brokenGlass);
+  const estResellNow = workingResell != null ? Math.round(workingResell * condMult) : null;
+  const marginCap = estResellNow != null ? Math.round(estResellNow * MARGIN_FLOOR_MULT) : null;
+  // Apply cap silently if base quote exceeds it.
+  const quoteAfterCap = (marginCap != null && rawQuote > marginCap) ? marginCap : rawQuote;
+  // Force manual review when:
+  //   (a) the model has no resell comp at all (we can't sanity-check), OR
+  //   (b) the cap would push us below the existing MIN_OFFER threshold
+  // The customer sees "Manual review" instead of a number; staff sets
+  // the real offer over text after seeing photos / handling the unit.
+  const needsMarginReview =
+    (model?.base != null && model.base > 0 && workingResell == null) ||
+    (marginCap != null && marginCap < MIN_OFFER);
+  const quote = quoteAfterCap;
   // Minimum offer threshold — below this we lose money on shipping +
   // processing. Show "Manual quote" instead of a dollar amount.
   // User can still add to cart; we review manually before paying out.
@@ -6283,7 +6307,7 @@ export default function Home() {
   // 'Pending quote'.
   const isPendingQuote = !model?.base;
   const isBrokenNonFunctional = condition?.id === "broken" && brokenFunctional === false;
-  const isManualQuote = isBelowMinimum || isBrokenNonFunctional;
+  const isManualQuote = isBelowMinimum || isBrokenNonFunctional || needsMarginReview;
   const needsReview = MANUAL_REVIEW_DEVICES.has(model?.id ?? "");
 
   const maxQuoteFor = (v: { id: string; base: number }) => {
@@ -10432,6 +10456,23 @@ export default function Home() {
             {!isManualQuote && !isPendingQuote && quantity > 1 && <p className="text-[#e6e6e6] text-sm mb-2">${quote} each × {quantity}</p>}
             {!isManualQuote && !isPendingQuote && quantity === 1 && <div className="mb-3" />}
 
+            {/* QUOTE-MAY-CHANGE DISCLAIMER + PHOTO ENCOURAGEMENT —
+                Only on damaged-condition quotes (broken / fair). Sets
+                expectations honestly that the number can shift after
+                we see the device, and pushes the seller toward
+                uploading photos which lock in the quote faster + reduce
+                surprises at handoff. Skywalker directive 2026-05-17. */}
+            {!isManualQuote && !isPendingQuote && (condition?.id === "broken" || condition?.id === "fair") && (
+              <div className="max-w-md mx-auto lg:mx-0 mb-3 px-3 py-2.5 rounded-xl bg-[#00c853]/[0.07] border border-[#00c853]/25 text-left">
+                <p className="text-[12px] text-white font-semibold leading-snug">
+                  📸 Add photos to lock in this quote
+                </p>
+                <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
+                  We&apos;ll ask for photos at the next step. Photos help us confirm the condition and stick to this price. Without photos, the final offer may shift after our inspection.
+                </p>
+              </div>
+            )}
+
             {/* Accessory bonus — only when it actually moves price and not manual quote */}
             {!isManualQuote && !isPendingQuote && showAccessoryQuestion && accessoryBonusAmount > 0 && (
               <div className="max-w-md mx-auto mb-4">
@@ -11059,7 +11100,9 @@ export default function Home() {
 
               <div>
                 <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
-                  Device Photos <span className="normal-case text-[12px]">(optional — up to 3, speeds up payout)</span>
+                  Device Photos {condition?.id === "broken" || condition?.id === "fair"
+                    ? <span className="normal-case text-[12px] text-[#00c853]">— recommended for {condition?.id === "broken" ? "broken" : "worn"} devices to lock in your quote</span>
+                    : <span className="normal-case text-[12px]">(optional — up to 3, speeds up payout)</span>}
                 </label>
                 {photoUrls.length < 3 && (
                   <label className={`flex flex-col items-center justify-center w-full h-28 bg-white/5 border-2 border-dashed border-white/15 rounded-xl cursor-pointer hover:bg-white/10 hover:border-[#00c853]/30 transition ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
