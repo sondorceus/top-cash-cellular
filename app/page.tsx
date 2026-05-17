@@ -6443,6 +6443,13 @@ export default function Home() {
     else if (step === "checkout") setStep("quote");
     else if (step === "payout") setStep("checkout");
     else if (step === "contact") setStep("payout"); pushHistory("payout");
+    // After any back-step transition, scroll to the top of the new step.
+    // Without this, the previous step's scroll-Y is preserved and on a
+    // shorter incoming step the user ends up parked in the footer area —
+    // Skywalker 2026-05-17 "go to checkout and don't submit and go back
+    // on Home Screen it still goes to footer". Instant scroll (not
+    // smooth) so it lands before paint.
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   };
 
   const reset = () => {
