@@ -10476,47 +10476,94 @@ export default function Home() {
                 the trust strip below. Disabled on lg+ where the row is inline. */}
             <div className="lg:hidden h-24" />
 
-            <div className="mt-6 space-y-3 text-left">
-              <div className="flex items-center gap-3"><span className="text-lg">💰</span><span className="text-sm text-[#e5e5e5]">No selling fees</span></div>
-              <div className="flex items-center gap-3"><span className="text-lg">🛡️</span><span className="text-sm text-[#e5e5e5]">Zero fraud risk</span></div>
-              <div className="flex items-center gap-3"><span className="text-lg">📦</span><span className="text-sm text-[#e5e5e5]">Free shipping via FedEx or UPS</span></div>
-              <div className="flex items-center gap-3"><span className="text-lg">⚡</span><span className="text-sm text-[#e5e5e5]">Same-day pickup &amp; 24-hour processing</span></div>
-              <div className="flex items-start gap-3">
-                <span className="text-lg leading-none">💳</span>
-                <div className="flex-1">
-                  <p className="text-sm text-[#e5e5e5] mb-2">Get paid your way</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-bold">💵 Cash</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#00d54b] text-white text-[10px] font-bold">Cash App</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#6D1ED4] text-white text-[10px] font-bold">Zelle</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#f7931a] text-white text-[10px] font-bold">₿ BTC</span>
+            {/* TRUST STRIP — adapts to whichever handoff method the user
+                picked on the landing dual-path buttons. Different copy
+                for local meetup vs prepaid shipping; falls back to a
+                hybrid set when the user hasn't chosen yet. */}
+            {(() => {
+              const localBullets = [
+                { icon: "💵", text: "Cash on the spot at handoff" },
+                { icon: "📍", text: "Meet at any safe public location you choose" },
+                { icon: "🚗", text: "Mobile pickup — we come to you" },
+                { icon: "⚡", text: "Inspection + payout in under 15 minutes" },
+              ];
+              const shipBullets = [
+                { icon: "💰", text: "No selling fees" },
+                { icon: "📦", text: "Free prepaid FedEx or UPS label" },
+                { icon: "🛡️", text: "$100 carrier insurance included" },
+                { icon: "⚡", text: "Same-day payout after we verify" },
+              ];
+              const neutralBullets = [
+                { icon: "💰", text: "No selling fees" },
+                { icon: "🛡️", text: "Zero fraud risk" },
+                { icon: "📦", text: "Free FedEx/UPS shipping OR local meetup" },
+                { icon: "⚡", text: "15-min cash local · 24-hr payout shipped" },
+              ];
+              const bullets = handoffMethod === "local" ? localBullets : handoffMethod === "ship" ? shipBullets : neutralBullets;
+              return (
+                <div className="mt-6 space-y-3 text-left">
+                  {bullets.map(b => (
+                    <div key={b.text} className="flex items-center gap-3">
+                      <span className="text-lg">{b.icon}</span>
+                      <span className="text-sm text-[#e5e5e5]">{b.text}</span>
+                    </div>
+                  ))}
+                  <div className="flex items-start gap-3">
+                    <span className="text-lg leading-none">💳</span>
+                    <div className="flex-1">
+                      <p className="text-sm text-[#e5e5e5] mb-2">Get paid your way</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-bold">💵 Cash</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#00d54b] text-white text-[10px] font-bold">Cash App</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#6D1ED4] text-white text-[10px] font-bold">Zelle</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#f7931a] text-white text-[10px] font-bold">₿ BTC</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              );
+            })()}
 
-            <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5 text-left">
-              <h3 className="text-base font-bold text-white mb-1">The Top Cash Guarantee</h3>
-              <p className="text-[#e6e6e6] text-xs mb-4">Your device, your terms. Here&apos;s what we stand behind.</p>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm font-semibold text-[#e5e5e5]">🎯 Transparent Pricing</p>
-                  <p className="text-xs text-[#e6e6e6] mt-1">What you see is what you get. No surprise deductions, no bait-and-switch. Your quote is based on the condition you select.</p>
+            {/* TOP CASH GUARANTEE — Local meetup gets cash-in-hand and
+                walk-away messaging; shipping gets photo-report and
+                free-return-ship messaging. */}
+            {(() => {
+              const guarantees = handoffMethod === "local" ? [
+                { icon: "🎯", title: "Transparent Pricing", body: "What you see is what you get. We walk through the device with you in person before paying — no surprise deductions, no haggling." },
+                { icon: "🤝", title: "Inspection in Front of You", body: "Test the device together at handoff. We tell you exactly what we checked and how it matched your description before any cash changes hands." },
+                { icon: "🔄", title: "Walk Away Anytime", body: "Not happy with our final offer? Just don't hand over the device — no obligation, no pressure, no hard feelings." },
+                { icon: "⚡", title: "Cash in 15 Minutes", body: "Quote → meet → inspect → cash. Average local handoff wraps in under 15 minutes. Cash on the spot, or Zelle / Cash App / Venmo / BTC instantly." },
+              ] : handoffMethod === "ship" ? [
+                { icon: "🎯", title: "Transparent Pricing", body: "Your quote is what we pay if the device matches your description. If anything differs we email photos + a written explanation before adjusting — never a silent change." },
+                { icon: "🛡️", title: "Insured Shipping", body: "Prepaid FedEx / UPS label includes $100 carrier insurance. For higher-value devices, add extra coverage at the counter (a few dollars, the clerk handles it)." },
+                { icon: "🔄", title: "Free Return Ship", body: "If you reject our revised offer for any reason, we ship the device back to you at our cost — no questions asked." },
+                { icon: "⚡", title: "Same-Day Payout", body: "Most payouts go out the same business day we receive and verify. Cash App + Zelle land in minutes; Bitcoin sends on-chain in ~30 minutes." },
+              ] : [
+                { icon: "🎯", title: "Transparent Pricing", body: "What you see is what you get. No surprise deductions, no bait-and-switch. Your quote is based on the condition you select." },
+                { icon: "🤝", title: "Honest Inspections", body: "If anything differs from your description, we'll walk you through our findings before adjusting — no silent changes." },
+                { icon: "🔄", title: "No Pressure, No Strings", body: "Changed your mind? Not happy with the final offer? We'll return your device — no questions asked." },
+                { icon: "⚡", title: "Same-Day Payout", body: "Austin local? Get paid on the spot. Shipping in? Most payouts hit within 24 hours of device arrival." },
+              ];
+              const subtitle = handoffMethod === "local"
+                ? "Local meetup. Cash on the spot. Here's what we stand behind."
+                : handoffMethod === "ship"
+                ? "Shipping in. Insured, tracked, paid fast. Here's what we stand behind."
+                : "Your device, your terms. Here's what we stand behind.";
+              return (
+                <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5 text-left">
+                  <h3 className="text-base font-bold text-white mb-1">The Top Cash Guarantee</h3>
+                  <p className="text-[#e6e6e6] text-xs mb-4">{subtitle}</p>
+                  <div className="space-y-4">
+                    {guarantees.map(g => (
+                      <div key={g.title}>
+                        <p className="text-sm font-semibold text-[#e5e5e5]">{g.icon} {g.title}</p>
+                        <p className="text-xs text-[#e6e6e6] mt-1">{g.body}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-[#e5e5e5]">🤝 Honest Inspections</p>
-                  <p className="text-xs text-[#e6e6e6] mt-1">If anything differs from your description, we&apos;ll walk you through our findings before adjusting — no silent changes.</p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-[#e5e5e5]">🔄 No Pressure, No Strings</p>
-                  <p className="text-xs text-[#e6e6e6] mt-1">Changed your mind? Not happy with the final offer? We&apos;ll return your device — no questions asked.</p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-[#e5e5e5]">⚡ Same-Day Payout</p>
-                  <p className="text-xs text-[#e6e6e6] mt-1">Austin local? Get paid on the spot. Cash, Cash App, Zelle, or BTC — your call.</p>
-                </div>
-              </div>
-            </div>
+              );
+            })()}
 
             <div className="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5 text-left">
               <h3 className="text-base font-bold text-white mb-4">Why Sellers Choose Top Cash</h3>
