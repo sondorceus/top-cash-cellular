@@ -5938,6 +5938,10 @@ export default function Home() {
   const [inquirySent, setInquirySent] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  // Surface upload errors to the user. Skywalker 2026-05-17 — without
+  // this, failed uploads silently swallow and the photo flow appears
+  // to do nothing.
+  const [photoError, setPhotoError] = useState<string | null>(null);
   const [inquiryDesc, setInquiryDesc] = useState("");
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -8476,20 +8480,32 @@ export default function Home() {
                         const files = e.target.files;
                         if (!files?.length) return;
                         setUploading(true);
+                        setPhotoError(null);
                         const urls: string[] = [...photoUrls];
+                        let firstErr: string | null = null;
                         for (const file of Array.from(files)) {
+                          if (file.size > 20 * 1024 * 1024) { firstErr = firstErr || `Photo "${file.name}" is over 20MB — try a smaller image.`; continue; }
                           try {
                             const fd = new FormData();
                             fd.append("file", file);
                             const res = await fetch("/api/upload", { method: "POST", body: fd });
-                            const data = await res.json();
-                            if (data.url) urls.push(data.url);
-                          } catch {}
+                            const data = await res.json().catch(() => ({}));
+                            if (!res.ok) { firstErr = firstErr || (data?.error ? `Upload failed: ${data.error}` : `Upload failed (HTTP ${res.status}).`); continue; }
+                            if (data?.url) urls.push(data.url);
+                            else firstErr = firstErr || "Upload returned no URL.";
+                          } catch (err) {
+                            firstErr = firstErr || `Upload error: ${(err as Error).message || "network failure"}`;
+                          }
                         }
                         setPhotoUrls(urls);
+                        if (firstErr) setPhotoError(firstErr);
                         setUploading(false);
+                        e.target.value = "";
                       }} />
                     </label>
+                    {photoError && (
+                      <p className="mt-2 text-xs text-red-300 bg-red-900/20 border border-red-700/40 rounded-lg px-3 py-2">{photoError}</p>
+                    )}
                     {photoUrls.length > 0 && (
                       <div className="flex gap-2 mt-2 flex-wrap">
                         {photoUrls.map((url, i) => (
@@ -11114,23 +11130,33 @@ export default function Home() {
                       const files = e.target.files;
                       if (!files?.length) return;
                       setUploading(true);
+                      setPhotoError(null);
                       const urls: string[] = [...photoUrls];
+                      let firstErr: string | null = null;
                       for (const file of Array.from(files)) {
                         if (urls.length >= 3) break;
-                        if (file.size > 10 * 1024 * 1024) { alert("Photo must be under 10MB"); continue; }
+                        if (file.size > 20 * 1024 * 1024) { firstErr = firstErr || `Photo "${file.name}" is over 20MB.`; continue; }
                         try {
                           const fd = new FormData();
                           fd.append("file", file);
                           const res = await fetch("/api/upload", { method: "POST", body: fd });
-                          const data = await res.json();
-                          if (data.url) urls.push(data.url);
-                        } catch {}
+                          const data = await res.json().catch(() => ({}));
+                          if (!res.ok) { firstErr = firstErr || (data?.error ? `Upload failed: ${data.error}` : `Upload failed (HTTP ${res.status}).`); continue; }
+                          if (data?.url) urls.push(data.url);
+                          else firstErr = firstErr || "Upload returned no URL.";
+                        } catch (err) {
+                          firstErr = firstErr || `Upload error: ${(err as Error).message || "network failure"}`;
+                        }
                       }
                       setPhotoUrls(urls);
+                      if (firstErr) setPhotoError(firstErr);
                       setUploading(false);
                       e.target.value = "";
                     }} />
                   </label>
+                )}
+                {photoError && (
+                  <p className="mt-2 text-xs text-red-300 bg-red-900/20 border border-red-700/40 rounded-lg px-3 py-2">{photoError}</p>
                 )}
                 {photoUrls.length > 0 && (
                   <div className="flex gap-2 mt-2 flex-wrap">
