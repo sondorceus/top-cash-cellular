@@ -5718,6 +5718,14 @@ export default function Home() {
   // is the worst. Collected for the lead notes; future pricing math
   // can read off this field too.
   const [brokenGlass, setBrokenGlass] = useState<"front" | "back" | "both" | null>(null);
+  // Phones we sell whose back is NOT glass — asking "back glass cracked?"
+  // would be nonsensical. Auto-skip the broken-glass step on these and
+  // assume any damage is on the front (display). Researched 2026-05-17:
+  // Pixel 5 = polycarbonate-coated aluminum back, Pixel 5a = plastic
+  // body. Every other phone in our catalog (iPhone 11+ has Apple glass
+  // back for wireless charging; Samsung S20+/Z Fold/Flip + Pixel 6+ all
+  // ship with Gorilla Glass / equivalent on the back).
+  const PHONES_WITHOUT_BACK_GLASS = new Set<string>(["px5", "px5a"]);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
   // MacBook-specific picks (Wave 1). Only used when the picked model
   // has a MACBOOK_SPECS entry; otherwise these stay null and the legacy
@@ -10148,10 +10156,18 @@ export default function Home() {
                     setBrokenFunctional(true);
                     // PHONE follow-up: ask which glass is cracked. Front
                     // (display) hurts resale most, back is mostly cosmetic.
+                    // Skipped for phones without a back glass (Pixel 5 /
+                    // 5a) — auto-set to "front" since that's the only
+                    // glass that can be damaged on those.
                     if (isPhoneFlow) {
-                      setBrokenGlass(null);
-                      setStep("broken-glass" as Step); pushHistory("broken-glass" as Step);
-                      return;
+                      if (model && PHONES_WITHOUT_BACK_GLASS.has(model.id)) {
+                        setBrokenGlass("front");
+                        // Fall through to the normal post-glass routing below
+                      } else {
+                        setBrokenGlass(null);
+                        setStep("broken-glass" as Step); pushHistory("broken-glass" as Step);
+                        return;
+                      }
                     }
                     // Continue normal flow — functional broken gets a price
                     if (model && hasAdditiveSpecs(model.id)) {
