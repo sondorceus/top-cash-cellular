@@ -9160,15 +9160,18 @@ export default function Home() {
             {deviceType === "lenovo_tab" && (
               <>
                 <div className="space-y-2">
-                  {lenovoTabVariants.map((m) => (
-                    <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                      <p className="font-semibold text-[15px]">{m.label}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
-                        <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                      </div>
-                    </button>
-                  ))}
+                  {lenovoTabVariants.map((m) => {
+                    const inq = (m as { inquiryOnly?: boolean }).inquiryOnly;
+                    return (
+                      <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                        <p className="font-semibold text-[15px]">{m.label}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m, deviceType)}`}</span>
+                          <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </>
             )}
@@ -9337,6 +9340,7 @@ export default function Home() {
                         <div className="space-y-2">
                           {g.variants.map((m) => {
                             const mImage = (m as { image?: string }).image;
+                            const inq = (m as { inquiryOnly?: boolean }).inquiryOnly;
                             return (
                               <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                                 {mImage ? (
@@ -9346,7 +9350,7 @@ export default function Home() {
                                 )}
                                 <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                                 <div className="flex items-center gap-2">
-                                  <span className="text-[#00c853] font-bold text-sm">Get Offer</span>
+                                  <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m, deviceType)}`}</span>
                                   <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                                 </div>
                               </button>
