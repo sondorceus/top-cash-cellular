@@ -5787,6 +5787,22 @@ export default function Home() {
   ]);
   const [chatLoading, setChatLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  // Lets the global <HeaderSearch> on /faq, /bulk, /reviews, etc. land
+  // a user on the funnel with their query already typed in. Reads ?q=
+  // from the URL once on mount, then scrubs it so a refresh doesn't
+  // re-trigger the search dropdown unexpectedly.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    if (q && q.trim()) {
+      setSearchQuery(q.trim());
+      params.delete("q");
+      const newSearch = params.toString();
+      const newUrl = `${window.location.pathname}${newSearch ? `?${newSearch}` : ""}${window.location.hash}`;
+      window.history.replaceState(null, "", newUrl);
+    }
+  }, []);
 
   // Flat search index across all device categories — populated once at module scope below
   // (see SEARCH_INDEX const further down)

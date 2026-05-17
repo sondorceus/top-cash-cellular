@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { SlideOnScrollNav } from "../../components/SlideOnScrollNav";
+import { HeaderSearch } from "../../components/HeaderSearch";
 
 function NewReviewInner() {
   const router = useRouter();
@@ -60,9 +61,12 @@ function NewReviewInner() {
         <Link href="/" className="text-xl font-bold tracking-tight">
           Top Cash <span className="text-[#00c853]">Cellular</span>
         </Link>
-        <Link href="/reviews" className="text-sm text-[#dcdcdc] hover:text-white transition">
-          ← Reviews
-        </Link>
+        <div className="flex items-center gap-3">
+          <HeaderSearch className="hidden sm:flex" />
+          <Link href="/reviews" className="text-sm text-[#dcdcdc] hover:text-white transition whitespace-nowrap">
+            ← Reviews
+          </Link>
+        </div>
       </SlideOnScrollNav>
 
       <section className="px-4 sm:px-6 py-8 sm:py-12 max-w-xl mx-auto">

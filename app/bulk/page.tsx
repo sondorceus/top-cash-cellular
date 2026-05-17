@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { SlideOnScrollNav } from "../components/SlideOnScrollNav";
+import { HeaderSearch } from "../components/HeaderSearch";
 
 export default function BulkPage() {
   const [name, setName] = useState("");
@@ -61,7 +62,10 @@ export default function BulkPage() {
               <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="text-xs text-[#dcdcdc] hover:text-white">← Single device?</Link>
+          <div className="flex items-center gap-3">
+            <HeaderSearch className="hidden sm:flex" />
+            <Link href="/" className="text-xs text-[#dcdcdc] hover:text-white whitespace-nowrap">← Single device?</Link>
+          </div>
         </div>
       </SlideOnScrollNav>
 

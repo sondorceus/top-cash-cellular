@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { SlideOnScrollNav } from "../components/SlideOnScrollNav";
+import { HeaderSearch } from "../components/HeaderSearch";
 
 interface Lead {
   id: string;
@@ -148,7 +149,10 @@ function TrackInner() {
               <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="text-xs text-[#dcdcdc] hover:text-white">← Home</Link>
+          <div className="flex items-center gap-3">
+            <HeaderSearch className="hidden sm:flex" />
+            <Link href="/" className="text-xs text-[#dcdcdc] hover:text-white whitespace-nowrap">← Home</Link>
+          </div>
         </div>
       </SlideOnScrollNav>
 

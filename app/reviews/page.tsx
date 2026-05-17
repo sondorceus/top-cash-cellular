@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { Review } from "../api/reviews/route";
 import { SlideOnScrollNav } from "../components/SlideOnScrollNav";
+import { HeaderSearch } from "../components/HeaderSearch";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -66,12 +67,15 @@ export default async function ReviewsPage() {
         <Link href="/" className="text-xl font-bold tracking-tight">
           Top Cash <span className="text-[#00c853]">Cellular</span>
         </Link>
-        <Link
-          href="/reviews/new"
-          className="bg-[#00c853] text-black px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#00e676] transition"
-        >
-          Leave a review
-        </Link>
+        <div className="flex items-center gap-3">
+          <HeaderSearch className="hidden sm:flex" />
+          <Link
+            href="/reviews/new"
+            className="bg-[#00c853] text-black px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#00e676] transition whitespace-nowrap"
+          >
+            Leave a review
+          </Link>
+        </div>
       </SlideOnScrollNav>
 
       <section className="px-4 sm:px-6 py-10 max-w-3xl mx-auto">

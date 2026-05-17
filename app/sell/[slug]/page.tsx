@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SlideOnScrollNav } from "../../components/SlideOnScrollNav";
+import { HeaderSearch } from "../../components/HeaderSearch";
 
 const DEVICES = [
   // ── iPhone (synced from main catalog 2026-05-11) ──
@@ -251,9 +252,12 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
               <span className="text-[9px] font-semibold tracking-[0.15em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="bg-[#00c853] text-[#0a0a0a] px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition">
-            Get Quote
-          </Link>
+          <div className="flex items-center gap-3">
+            <HeaderSearch className="hidden sm:flex" />
+            <Link href="/" className="bg-[#00c853] text-[#0a0a0a] px-4 py-2 rounded-full text-xs font-semibold hover:bg-[#00e676] transition whitespace-nowrap">
+              Get Quote
+            </Link>
+          </div>
         </div>
       </SlideOnScrollNav>
 

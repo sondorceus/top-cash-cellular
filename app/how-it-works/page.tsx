@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SlideOnScrollNav } from "../components/SlideOnScrollNav";
+import { HeaderSearch } from "../components/HeaderSearch";
 
 export const metadata: Metadata = {
   title: "How It Works — Top Cash Cellular | 3 Steps to Cash",
@@ -55,7 +56,10 @@ export default function HowItWorksPage() {
               <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
             </div>
           </Link>
-          <Link href="/" className="text-xs text-[#dcdcdc] hover:text-white">← Sell now</Link>
+          <div className="flex items-center gap-3">
+            <HeaderSearch className="hidden sm:flex" />
+            <Link href="/" className="text-xs text-[#dcdcdc] hover:text-white whitespace-nowrap">← Sell now</Link>
+          </div>
         </div>
       </SlideOnScrollNav>
 
