@@ -2581,18 +2581,26 @@ const APPLE_VR_MODELS = [
   { id: "avp_m2", label: "Apple Vision Pro (M2, 2024)",   base: 1305, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
 ];
 
-// Per-model product photos sourced from Swappa 2026-05-17
-// (static.swappa.com/media/product/...). Prices await IWM scrape — IWM
-// has only one combined Meta Quest VR product page, no per-model pricing
-// surface us a base from automatically.
+// Photos: Swappa per-model 2026-05-17.
+// Prices: scraped from IWM via the universal Playwright scraper 2026-05-17.
+// IWM has ONE generic Meta Quest VR product page that doesn't split by
+// model — they ask only storage (64/128/256) + condition. So every Quest
+// variant in our catalog maps to the IWM tier closest to its storage,
+// then base = IWM Flawless × 0.90 per Skywalker's "10 off IWM" directive.
+//
+// IWM Flawless prices (scraped):
+//   64GB=$20, 128GB=$50, 256GB=$110
+// Quest 3 (512GB) and Quest Pro have no IWM 512+ tier, so they use the
+// 256GB IWM number — pricing is conservative for those flagships.
+// Manual override is fair game if you want a better Quest Pro price.
 const META_VR_MODELS = [
-  { id: "mq3s256", label: "Meta Quest 3S (256GB)", base: 0, inquiryOnly: true, image: "/devices/meta-quest-3s.png" },
-  { id: "mq3128",  label: "Meta Quest 3S (128GB)", base: 0, inquiryOnly: true, image: "/devices/meta-quest-3s.png" },
-  { id: "mq3",     label: "Meta Quest 3 (512GB)",  base: 0, inquiryOnly: true, image: "/devices/meta-quest-3.png" },
-  { id: "mq3b",    label: "Meta Quest 3 (128GB)",  base: 0, inquiryOnly: true, image: "/devices/meta-quest-3.png" },
-  { id: "mq2256",  label: "Meta Quest 2 (256GB)",  base: 0, inquiryOnly: true, image: "/devices/meta-quest-2.png" },
-  { id: "mq2128",  label: "Meta Quest 2 (128GB)",  base: 0, inquiryOnly: true, image: "/devices/meta-quest-2.png" },
-  { id: "mqpro",   label: "Meta Quest Pro",        base: 0, inquiryOnly: true, image: "/devices/meta-quest-pro.png" },
+  { id: "mq3s256", label: "Meta Quest 3S (256GB)", base: 99, inquiryOnly: false, image: "/devices/meta-quest-3s.png" },
+  { id: "mq3128",  label: "Meta Quest 3S (128GB)", base: 45, inquiryOnly: false, image: "/devices/meta-quest-3s.png" },
+  { id: "mq3",     label: "Meta Quest 3 (512GB)",  base: 99, inquiryOnly: false, image: "/devices/meta-quest-3.png" },
+  { id: "mq3b",    label: "Meta Quest 3 (128GB)",  base: 45, inquiryOnly: false, image: "/devices/meta-quest-3.png" },
+  { id: "mq2256",  label: "Meta Quest 2 (256GB)",  base: 99, inquiryOnly: false, image: "/devices/meta-quest-2.png" },
+  { id: "mq2128",  label: "Meta Quest 2 (128GB)",  base: 45, inquiryOnly: false, image: "/devices/meta-quest-2.png" },
+  { id: "mqpro",   label: "Meta Quest Pro",        base: 99, inquiryOnly: false, image: "/devices/meta-quest-pro.png" },
 ];
 
 const VALVE_VR_MODELS = [
