@@ -28,9 +28,8 @@ export async function GET(req: NextRequest) {
   let cursor: string | undefined = undefined;
 
   try {
-    do {
-      const page = await list({ cursor, limit: 1000, prefix: "devices/" });
-      cursor = page.cursor;
+    while (true) {
+      const page: Awaited<ReturnType<typeof list>> = await list({ cursor, limit: 1000, prefix: "devices/" });
       const toDelete: string[] = [];
       for (const b of page.blobs) {
         scanned++;
@@ -41,7 +40,9 @@ export async function GET(req: NextRequest) {
         await del(toDelete);
         deleted += toDelete.length;
       }
-    } while (cursor);
+      if (!page.cursor) break;
+      cursor = page.cursor;
+    }
     return NextResponse.json({ ok: true, deleted, scanned, ttlHours: 24 });
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message, deleted, scanned }, { status: 500 });
