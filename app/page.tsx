@@ -6990,10 +6990,13 @@ export default function Home() {
                 Sell
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
-              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[560px] max-w-[calc(100vw-2rem)]">
-                <div className="bg-[#111] border border-white/10 rounded-2xl shadow-2xl p-4">
-                  <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em] mb-3 px-2 text-center">Sell your device</p>
-                  <div className="grid grid-cols-4 gap-2">
+              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[720px] max-w-[calc(100vw-2rem)]">
+                <div className="bg-[#111] border border-white/10 rounded-3xl shadow-2xl p-6">
+                  <div className="flex items-center justify-between mb-5">
+                    <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em]">Sell your device</p>
+                    <p className="text-[#9a9a9a] text-[11px]">Pick a category — instant quote in 30 sec</p>
+                  </div>
+                  <div className="grid grid-cols-4 gap-3">
                     {[
                       { id: "phones" as const, label: "Phone" },
                       { id: "tablets" as const, label: "Tablet" },
@@ -7007,12 +7010,49 @@ export default function Home() {
                       <button
                         key={cat.id}
                         onClick={() => { setCategory(cat.id); setStep("brand"); pushHistory("brand"); }}
-                        className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press"
+                        className="group/cat flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer tap-press"
                       >
-                        <CategoryIcon id={cat.id} className="w-7 h-7 mb-1 text-white" />
-                        <p className="text-xs font-semibold text-white">{cat.label}</p>
+                        <CategoryIcon id={cat.id} className="w-9 h-9 text-white group-hover/cat:text-[#00c853] transition" />
+                        <p className="text-[13px] font-semibold text-white">{cat.label}</p>
                       </button>
                     ))}
+                  </div>
+                  <div className="mt-5 pt-5 border-t border-white/5">
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em]">Hot today</p>
+                      <span className="inline-flex items-center gap-1.5 text-[10px] text-[#00c853] font-bold uppercase tracking-wider">
+                        <span className="relative flex h-1.5 w-1.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00c853] opacity-75"></span><span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00c853]"></span></span>
+                        Live prices
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-4 gap-3">
+                      {([
+                        { model: "ip17pm", title: "iPhone 17 Pro Max", floor: 767, photo: "/devices/iphone-17-pro-max-test.png", dt: "iphone" as const, cat: "phones" as const },
+                        { model: "gs25u", title: "Galaxy S25 Ultra", floor: 414, photo: "/devices/gs25u.webp", dt: "android" as const, cat: "phones" as const, tight: true },
+                        { model: "mbp16m4", title: "MacBook Pro 16\" M4", floor: 1456, photo: "/devices/macbook-pro-m4.webp", dt: "macbook" as const, cat: "computers" as const },
+                        { model: "ipadpro13m5", title: "iPad Pro 13\"", floor: 610, photo: "/devices/ipad-pro-13-m5.webp", dt: "ipad" as const, cat: "tablets" as const },
+                      ]).map(d => {
+                        const topPrice = getMaxPrice({ id: d.model, base: d.floor }, d.dt);
+                        const imgCls = (d as { tight?: boolean }).tight ? "w-10 h-10" : "w-12 h-12";
+                        return (
+                          <button
+                            key={d.model}
+                            onClick={() => {
+                              setCategory(d.cat);
+                              setDeviceType(d.dt);
+                              setModel({ id: d.model, label: d.title, base: d.floor });
+                              setStep("condition");
+                              pushHistory("condition");
+                            }}
+                            className="flex flex-col items-center text-center gap-1 p-3 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer tap-press"
+                          >
+                            <img src={d.photo} alt={d.title} className={`${imgCls} object-contain mb-1`} loading="lazy" />
+                            <p className="text-[11px] font-semibold text-white leading-tight min-h-[2.2em]">{d.title}</p>
+                            <p className="text-[#00c853] text-sm font-extrabold leading-none">up to ${topPrice}</p>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -7027,22 +7067,27 @@ export default function Home() {
                 Bulk
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </a>
-              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[260px]">
-                <div className="bg-[#111] border border-white/10 rounded-2xl shadow-2xl p-2">
-                  <a href="/bulk" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl">📦</span>
-                    <div>
-                      <p className="text-sm font-semibold text-white">Get a bulk quote</p>
-                      <p className="text-[11px] text-[#e6e6e6]">10+ devices? Volume pricing.</p>
+              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[380px] max-w-[calc(100vw-2rem)]">
+                <div className="bg-[#111] border border-white/10 rounded-3xl shadow-2xl p-5">
+                  <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em] mb-4">Bulk trade-ins</p>
+                  <a href="/bulk" className="group/blk flex items-start gap-4 p-3 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200 mb-2">
+                    <span className="text-3xl shrink-0">📦</span>
+                    <div className="min-w-0">
+                      <p className="text-[14px] font-bold text-white group-hover/blk:text-[#00c853] transition">Get a bulk quote</p>
+                      <p className="text-[12px] text-[#b8b8b8] mt-0.5 leading-relaxed">10+ devices? One submission, one payout, volume pricing.</p>
                     </div>
                   </a>
-                  <a href={EMAIL_HREF} className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl">✉️</span>
-                    <div>
-                      <p className="text-sm font-semibold text-white">Talk to bulk team</p>
-                      <p className="text-[11px] text-[#e6e6e6]">Custom contracts welcome.</p>
+                  <a href={EMAIL_HREF} className="group/blk flex items-start gap-4 p-3 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
+                    <span className="text-3xl shrink-0">🤝</span>
+                    <div className="min-w-0">
+                      <p className="text-[14px] font-bold text-white group-hover/blk:text-[#00c853] transition">Talk to bulk team</p>
+                      <p className="text-[12px] text-[#b8b8b8] mt-0.5 leading-relaxed">Custom contracts, NDAs, business decommissioning.</p>
                     </div>
                   </a>
+                  <div className="mt-4 pt-4 border-t border-white/5 flex items-center gap-2">
+                    <span className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold">Volume tiers</span>
+                    <span className="text-[11px] text-[#9a9a9a]">10+ = priority · 50+ = enterprise</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -7055,42 +7100,34 @@ export default function Home() {
                 Support
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
-              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[280px]">
-                <div className="bg-[#111] border border-white/10 rounded-2xl shadow-2xl p-2">
-                  <a href="/how-it-works" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl">🧭</span>
-                    <div>
-                      <p className="text-sm font-semibold text-white">How it works</p>
-                      <p className="text-[11px] text-[#e6e6e6]">From drawer to dollars in 3 steps.</p>
-                    </div>
-                  </a>
-                  <a href="/faq" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl">❓</span>
-                    <div>
-                      <p className="text-sm font-semibold text-white">FAQ</p>
-                      <p className="text-[11px] text-[#e6e6e6]">Common questions, plain answers.</p>
-                    </div>
-                  </a>
-                  <a href="/reviews" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl text-[#ffb400]">★</span>
-                    <div>
-                      <p className="text-sm font-semibold text-white">Reviews</p>
-                      <p className="text-[11px] text-[#e6e6e6]">4.9 — read what customers say.</p>
-                    </div>
-                  </a>
-                  <a href={EMAIL_HREF} className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl">✉️</span>
-                    <div>
-                      <p className="text-sm font-semibold text-white">Email us</p>
-                      <p className="text-[11px] text-[#e6e6e6]">We reply same business day.</p>
-                    </div>
-                  </a>
-                  <a href="tel:+18775492056" className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl">📞</span>
-                    <div>
-                      <p className="text-sm font-semibold text-white">Call us</p>
-                      <p className="text-[11px] text-[#e6e6e6]">(877) 549-2056</p>
-                    </div>
+              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out absolute top-full right-0 pt-3 z-50 w-[420px] max-w-[calc(100vw-2rem)]">
+                <div className="bg-[#111] border border-white/10 rounded-3xl shadow-2xl p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em]">Help &amp; info</p>
+                    <span className="inline-flex items-center gap-1.5 text-[10px] text-[#00c853] font-bold uppercase tracking-wider">
+                      <span className="relative flex h-1.5 w-1.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00c853] opacity-75"></span><span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00c853]"></span></span>
+                      Reply in ~1 hr
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {([
+                      { href: "/how-it-works", icon: "🧭", title: "How it works", sub: "Drawer to dollars in 3 steps" },
+                      { href: "/faq", icon: "❓", title: "FAQ", sub: "Plain answers, common questions" },
+                      { href: "/reviews", icon: "★", title: "Reviews", sub: "★ 4.9 from real sellers", iconColor: "text-[#ffb400]" },
+                      { href: EMAIL_HREF, icon: "✉️", title: "Email us", sub: "Same business day reply" },
+                    ]).map(item => (
+                      <a key={item.title} href={item.href} className="group/sup flex items-start gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
+                        <span className={`text-2xl shrink-0 ${item.iconColor ?? ""}`}>{item.icon}</span>
+                        <div className="min-w-0">
+                          <p className="text-[13px] font-bold text-white group-hover/sup:text-[#00c853] transition leading-tight">{item.title}</p>
+                          <p className="text-[11px] text-[#b8b8b8] mt-1 leading-snug">{item.sub}</p>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                  <a href="tel:+18775492056" className="mt-3 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#00c853]/15 border border-[#00c853]/40 hover:bg-[#00c853]/25 transition-all duration-200 group/call">
+                    <span className="text-lg">📞</span>
+                    <span className="text-[13px] font-bold text-[#00c853]">Call (877) 549-2056</span>
                   </a>
                 </div>
               </div>
