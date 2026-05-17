@@ -109,7 +109,7 @@ function needsManualReview(modelName: string, quoteAmt: number): boolean {
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras } = data;
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
 
   // Dedup check — wider window for custom-quote flows (free-text descriptions)
@@ -128,6 +128,25 @@ export async function POST(req: NextRequest) {
   if (brokenGlass === "front") brokenLines.push("Glass: FRONT (display) cracked");
   else if (brokenGlass === "back") brokenLines.push("Glass: BACK only cracked (display intact)");
   else if (brokenGlass === "both") brokenLines.push("Glass: BOTH front and back cracked");
+
+  // Full spec answers from the funnel — Skywalker 2026-05-17: "all
+  // questions need to be in staff for accurate pricing not half". For
+  // MacBooks the chip/RAM/GPU/display drive most of the resell value;
+  // for phones the battery health and OEM-charger flag matter; for
+  // tablets the connectivity (WiFi vs cellular). Without these surfaced
+  // staff can't price the device — they're guessing.
+  const specLines: string[] = [];
+  if (processor)         specLines.push(`Chip: ${processor}`);
+  if (memory)            specLines.push(`RAM: ${memory}`);
+  if (graphics)          specLines.push(`GPU: ${graphics}`);
+  if (displayResolution) specLines.push(`Display: ${displayResolution}`);
+  if (displayGlass)      specLines.push(`Display glass: ${displayGlass}`);
+  if (batteryHealth)     specLines.push(`Battery health: ${batteryHealth}`);
+  if (charger)           specLines.push(`Charger: ${charger}`);
+  if (connectivity)      specLines.push(`Connectivity: ${connectivity}`);
+  if (Array.isArray(extras) && extras.length > 0) {
+    specLines.push(`Extras: ${(extras as string[]).join(", ")}`);
+  }
 
   const imeiLines: string[] = [];
   if (imei) imeiLines.push(`IMEI: ${imei}`);
@@ -197,6 +216,7 @@ export async function POST(req: NextRequest) {
     `Condition: ${condition}`,
     quote ? `Quote: $${quote}` : `Quote: TBD (custom)`,
     `Payout: ${payout}`,
+    ...specLines,
     ...brokenLines,
     ...reviewLines,
     ...marginLines,

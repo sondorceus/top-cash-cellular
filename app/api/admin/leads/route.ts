@@ -30,6 +30,17 @@ interface AdminLead {
   // tech knows what damage to expect at handoff.
   brokenGlass?: "front" | "back" | "both" | null;
   brokenFunctional?: boolean | null;
+  // Full spec answers from the funnel — surfaced so staff can price
+  // accurately without dropping into the body text. Skywalker 2026-05-17.
+  processor?: string;
+  memory?: string;
+  graphics?: string;
+  displayResolution?: string;
+  displayGlass?: string;
+  batteryHealth?: string;
+  charger?: string;
+  connectivity?: string;
+  extras?: string[];
   status: string;
   statusUpdatedAt?: string;
   latestNote?: string;
@@ -123,6 +134,8 @@ export async function GET(req: NextRequest) {
       if (b.includes("not functional")) brokenFunctional = false;
       else if (b.includes("still functional")) brokenFunctional = true;
     }
+    const extrasLine = parseField(m.body, "Extras");
+    const extras = extrasLine ? extrasLine.split(",").map((s) => s.trim()).filter(Boolean) : undefined;
     const notes = notesByLead.get(m.id) || [];
     notes.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
     const latestNote = notes[0];
@@ -156,6 +169,15 @@ export async function GET(req: NextRequest) {
       photos,
       brokenGlass,
       brokenFunctional,
+      processor:         parseField(m.body, "Chip"),
+      memory:            parseField(m.body, "RAM"),
+      graphics:          parseField(m.body, "GPU"),
+      displayResolution: parseField(m.body, "Display"),
+      displayGlass:      parseField(m.body, "Display glass"),
+      batteryHealth:     parseField(m.body, "Battery health"),
+      charger:           parseField(m.body, "Charger"),
+      connectivity:      parseField(m.body, "Connectivity"),
+      extras,
       status: status?.status || "quote_requested",
       statusUpdatedAt: status?.timestamp,
       latestNote: latestNote?.text,

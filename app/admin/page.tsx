@@ -20,6 +20,15 @@ interface Lead {
   photos?: string[];
   brokenGlass?: "front" | "back" | "both" | null;
   brokenFunctional?: boolean | null;
+  processor?: string;
+  memory?: string;
+  graphics?: string;
+  displayResolution?: string;
+  displayGlass?: string;
+  batteryHealth?: string;
+  charger?: string;
+  connectivity?: string;
+  extras?: string[];
   status: string;
   statusUpdatedAt?: string;
   latestNote?: string;
@@ -743,6 +752,24 @@ export default function AdminPage() {
                         {[lead.storage, lead.condition].filter(Boolean).join(" · ")}
                         {lead.imei && <span className="ml-1 text-[#d4d4d4] font-mono">· {lead.imei.slice(-6)}</span>}
                       </p>
+                      {/* Full spec answers — chip, RAM, GPU, display,
+                          battery, charger, connectivity, extras. Skywalker
+                          2026-05-17 — staff was making offers blind without
+                          these. Shown as a dense key:value list right under
+                          the basic device line so it's all visible at glance. */}
+                      {(lead.processor || lead.memory || lead.graphics || lead.displayResolution || lead.displayGlass || lead.batteryHealth || lead.charger || lead.connectivity || (lead.extras && lead.extras.length > 0)) && (
+                        <div className="mt-1.5 grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-0.5 text-[11px]">
+                          {lead.processor         && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Chip:</span> <span className="text-white font-medium">{lead.processor}</span></p>}
+                          {lead.memory            && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">RAM:</span> <span className="text-white font-medium">{lead.memory}</span></p>}
+                          {lead.graphics          && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">GPU:</span> <span className="text-white font-medium">{lead.graphics}</span></p>}
+                          {lead.displayResolution && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Display:</span> <span className="text-white font-medium">{lead.displayResolution}</span></p>}
+                          {lead.displayGlass      && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Glass:</span> <span className="text-white font-medium">{lead.displayGlass}</span></p>}
+                          {lead.batteryHealth     && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Battery:</span> <span className={`font-medium ${/poor/i.test(lead.batteryHealth) ? "text-yellow-300" : "text-white"}`}>{lead.batteryHealth}</span></p>}
+                          {lead.charger           && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Charger:</span> <span className="text-white font-medium">{lead.charger}</span></p>}
+                          {lead.connectivity      && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Connectivity:</span> <span className="text-white font-medium">{lead.connectivity}</span></p>}
+                          {lead.extras && lead.extras.length > 0 && <p className="text-[#c5c5c5] sm:col-span-2"><span className="text-[#8a8a8a]">Extras:</span> <span className="text-white font-medium">{lead.extras.join(", ")}</span></p>}
+                        </div>
+                      )}
                       {/* Damage badges — surface front/back-glass + functional
                           status so the tech doesn't have to dig into the body.
                           Skywalker 2026-05-17. */}
