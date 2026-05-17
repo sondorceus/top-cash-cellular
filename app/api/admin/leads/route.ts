@@ -88,13 +88,20 @@ export async function GET(req: NextRequest) {
   const data = await r.json();
   const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
 
-  // Pass 1: index status updates + notes by lead id.
+  // Pass 1: index status updates + notes + soft-deletes by lead id.
   // Status post format: "[STATUS: <status>] [LEAD: <leadId>]"
-  // Note post format: "[NOTE: <text>] [LEAD: <leadId>]"
+  // Note post format:   "[NOTE: <text>] [LEAD: <leadId>]"
+  // Delete marker:      "[DELETED-LEAD: <leadId>] [REASON: <opt>]"
   const statusByLead = new Map<string, { status: string; timestamp: string }>();
   const notesByLead = new Map<string, { text: string; timestamp: string }[]>();
+  const deletedLeadIds = new Set<string>();
   for (const m of messages) {
     if (!m.body) continue;
+    // Soft-delete marker — collect first so we can skip the corresponding
+    // lead in pass 2. Uses its own bracket key (not [LEAD: <id>]) so it
+    // doesn't get caught by the status/note loops below.
+    const dm = m.body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
+    if (dm) deletedLeadIds.add(dm[1]);
     const lm = m.body.match(/\[LEAD:\s*([\w-]+)\]/i);
     if (!lm) continue;
     const leadId = lm[1];
@@ -121,6 +128,8 @@ export async function GET(req: NextRequest) {
     // Skywalker 2026-05-17: multi-device leads were getting skipped
     // because the literal includes() check missed them.
     if (!m.body || !/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
+    // Skip leads that have been soft-deleted via /api/admin/leads/delete.
+    if (deletedLeadIds.has(m.id)) continue;
     const deviceLine = parseField(m.body, "Device");
     const status = statusByLead.get(m.id);
     const photosLine = parseField(m.body, "Photos");

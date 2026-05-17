@@ -82,6 +82,7 @@ export default function AdminPage() {
   const [savedFlash, setSavedFlash] = useState<Record<string, { sms: boolean; email: boolean } | null>>({});
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [rejectionReason, setRejectionReason] = useState<string>("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [noteOpenId, setNoteOpenId] = useState<string | null>(null);
   const [noteDraft, setNoteDraft] = useState<string>("");
   const [noteSavingId, setNoteSavingId] = useState<string | null>(null);
@@ -242,6 +243,33 @@ export default function AdminPage() {
       setError(e instanceof Error ? e.message : "Failed to load leads");
     } finally {
       setLoading(false);
+    }
+  }, [token]);
+
+  // Soft-delete a lead. Posts a [DELETED-LEAD: <id>] marker comm to MC;
+  // the admin GET filters it out of future fetches. PII stays in MC for
+  // audit (hard-delete would need MC-side support).
+  const deleteLead = useCallback(async (lead: Lead) => {
+    if (!token) return;
+    const label = lead.name || lead.email || lead.phone || lead.id;
+    const ok = confirm(`Delete the lead from "${label}"?\n\nThis hides it from the admin feed. The original record stays in MC comms for audit. This action is logged.`);
+    if (!ok) return;
+    setDeletingId(lead.id);
+    setError(null);
+    try {
+      const r = await fetch(`/api/admin/leads/delete?token=${encodeURIComponent(token)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId: lead.id, reason: `deleted via admin UI for ${label}` }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      // Optimistic — remove from current list. Next auto-refresh will
+      // re-confirm via the deleted-marker filter.
+      setLeads((prev) => prev.filter((l) => l.id !== lead.id));
+    } catch (e) {
+      setError(e instanceof Error ? `Delete failed: ${e.message}` : "Delete failed");
+    } finally {
+      setDeletingId(null);
     }
   }, [token]);
 
@@ -950,6 +978,19 @@ export default function AdminPage() {
                       {savingId === lead.id && (
                         <p className="text-[10px] text-[#dcdcdc] mt-1">Saving…</p>
                       )}
+                      {/* Delete (soft) — hides this lead from the admin
+                          feed permanently. Underlying MC comm stays for
+                          audit. Hard-delete (PII scrub) needs MC-side
+                          support; flagged as follow-up. */}
+                      <button
+                        type="button"
+                        onClick={() => deleteLead(lead)}
+                        disabled={deletingId === lead.id}
+                        className="mt-1.5 text-[10px] text-[#ff8088] hover:text-[#ff5566] border border-[#ff5566]/30 hover:border-[#ff5566]/60 rounded px-2 py-1 transition cursor-pointer disabled:opacity-50"
+                        title="Hide this lead from the admin feed (audit log preserved)"
+                      >
+                        {deletingId === lead.id ? "Deleting…" : "🗑 Delete"}
+                      </button>
                       {savedFlash[lead.id] && (
                         <p className="text-[10px] text-[#00c853] mt-1">
                           ✓ Saved{savedFlash[lead.id]!.sms ? " · SMS sent" : ""}{savedFlash[lead.id]!.email ? " · email sent" : ""}
