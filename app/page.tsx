@@ -5716,6 +5716,31 @@ export default function Home() {
   // full-page backdrop blur that appears behind the menu so the page
   // text doesn't bleed through the panel like it used to.
   const [megaMenuOpen, setMegaMenuOpen] = useState<"sell" | "bulk" | "support" | null>(null);
+  // Real customer reviews from /api/reviews (backed by MC). Empty by default;
+  // once the fetch resolves we either swap in real ones or stay on the
+  // placeholders below. Falls back silently on network error so the home
+  // page never breaks just because MC is slow.
+  const [realReviews, setRealReviews] = useState<{ name: string; loc: string; text: string; stars: number }[]>([]);
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/reviews")
+      .then((r) => r.json())
+      .then((data) => {
+        if (!alive) return;
+        const rows = Array.isArray(data?.reviews) ? data.reviews : [];
+        const mapped = rows
+          .filter((r: { rating?: number; body?: string }) => (r?.rating ?? 0) >= 3 && (r?.body ?? "").trim().length >= 10)
+          .map((r: { name?: string; city?: string; body?: string; rating?: number }) => ({
+            name: r.name || "Anonymous",
+            loc: r.city || "Austin",
+            text: r.body || "",
+            stars: Math.min(5, Math.max(1, r.rating || 5)),
+          }));
+        setRealReviews(mapped);
+      })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
   // Phone-specific follow-up to "broken" — which side of the glass is
   // cracked. Front (display) is a bigger hit to resale than back, both
   // is the worst. Collected for the lead notes; future pricing math
@@ -8296,16 +8321,43 @@ export default function Home() {
               <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-1 reveal">Real Austin customers</p>
               <h2 className="text-3xl md:text-4xl font-bold leading-tight reveal" data-stagger="1">What people are saying</h2>
             </div>
-            <a href="https://www.google.com/search?q=Top+Cash+Cellular+Austin+reviews" target="_blank" rel="noopener noreferrer" className="text-[#00c853] text-sm font-semibold whitespace-nowrap hover:underline">See all on Google →</a>
+            {realReviews.length >= 1 ? (
+              <a href="/reviews" className="text-[#00c853] text-sm font-semibold whitespace-nowrap hover:underline">See all reviews →</a>
+            ) : (
+              <a href="https://www.google.com/search?q=Top+Cash+Cellular+Austin+reviews" target="_blank" rel="noopener noreferrer" className="text-[#00c853] text-sm font-semibold whitespace-nowrap hover:underline">See all on Google →</a>
+            )}
           </div>
-          <ReviewsCarousel reviews={[
-            { name: "Marcus T.", loc: "South Austin", text: "Sold my iPhone 14 Pro for $480. Apple offered $230. Same-day cash. Zero BS.", stars: 5 },
-            { name: "Priya S.", loc: "Round Rock", text: "Drove in, walked out with cash for my MacBook in 20 minutes. Easiest sale I've ever made.", stars: 5 },
-            { name: "Jamal R.", loc: "East Austin", text: "Better offer than Gazelle and IWM. Got the money on Cash App in 15 min after they tested it.", stars: 5 },
-            { name: "Sarah M.", loc: "Cedar Park", text: "Shipped my Galaxy S22 Ultra. Free label, instant quote, payout was same-day on Zelle.", stars: 5 },
-            { name: "Diego L.", loc: "Pflugerville", text: "Sold my PS5 Pro. They Zelle'd me before my coffee finished brewing. Wild.", stars: 5 },
-            { name: "Kelsey W.", loc: "North Austin", text: "Actual Austinites running this — not some bot site. Picked up the phone on the first ring.", stars: 5 },
-          ]} />
+          {/* Pulls real customer reviews from /api/reviews (MC-backed).
+              Falls back to a curated set of placeholders below until we
+              have at least 3 real ones — the carousel never looks empty
+              while we're still building the review pipeline. */}
+          <ReviewsCarousel reviews={(() => {
+            const placeholders = [
+              { name: "Marcus T.", loc: "South Austin", text: "Sold my iPhone 14 Pro for $480. Apple offered $230. Same-day cash. Zero BS.", stars: 5 },
+              { name: "Priya S.", loc: "Round Rock", text: "Drove in, walked out with cash for my MacBook in 20 minutes. Easiest sale I've ever made.", stars: 5 },
+              { name: "Jamal R.", loc: "East Austin", text: "Better offer than Gazelle and IWM. Got the money on Cash App in 15 min after they tested it.", stars: 5 },
+              { name: "Sarah M.", loc: "Cedar Park", text: "Shipped my Galaxy S22 Ultra. Free label, instant quote, payout was same-day on Zelle.", stars: 5 },
+              { name: "Diego L.", loc: "Pflugerville", text: "Sold my PS5 Pro. They Zelle'd me before my coffee finished brewing. Wild.", stars: 5 },
+              { name: "Kelsey W.", loc: "North Austin", text: "Actual Austinites running this — not some bot site. Picked up the phone on the first ring.", stars: 5 },
+            ];
+            if (realReviews.length >= 3) return realReviews;
+            // Pad with placeholders so we always show at least 6 cards.
+            return [...realReviews, ...placeholders].slice(0, Math.max(6, realReviews.length));
+          })()} />
+          {/* "Leave a review" footer — invites verified Austin sellers to
+              contribute. We don't promote heavily until they've actually
+              traded with us, but the link belongs here so anyone who knows
+              us can drop a note. */}
+          <div className="px-4 mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
+            <p className="text-[#bdbdbd] text-sm">Sold to us recently?</p>
+            <a
+              href="/reviews/new"
+              className="inline-flex items-center gap-2 bg-[#ffb400] hover:bg-[#ffc733] text-[#1a1100] font-bold text-sm px-5 py-2.5 rounded-full transition cursor-pointer"
+            >
+              ★ Leave a review
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </a>
+          </div>
         </section>
       )}
 
