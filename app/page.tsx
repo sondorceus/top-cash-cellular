@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Script from "next/script";
 import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT } from "./lib/resell-estimates";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
+import { SlideOnScrollNav } from "./components/SlideOnScrollNav";
 
 const BRAND = "Top Cash Cellular";
 const EMAIL = "topcashcellular@gmail.com";
@@ -7143,8 +7144,10 @@ export default function Home() {
           </div>
         );
       })()}
-      {/* NAV */}
-      <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
+      {/* NAV — slides out of view on scroll-down so it doesn't cover the
+          middle of the screen while reading; slides back in on scroll-up
+          or when returning to the top. */}
+      <SlideOnScrollNav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         {/* PROMO STRIP — own row above the logo + menu so it never feels squeezed.
             Click to claim the weekly bonus; bonus only applies once claimed. */}
         <button
@@ -7495,7 +7498,7 @@ export default function Home() {
             <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${({category: 8, brand: 15, model: 22, storage: 32, condition: 42, carrier: 52, quote: 62, checkout: 72, payout: 82, contact: 92} as Record<string,number>)[step] ?? 0}%` }} />
           </div>
         )}
-      </nav>
+      </SlideOnScrollNav>
 
       {/* MEGA-MENU BACKDROP — IWM-style blur. Sits at z-30 so the nav
           (z-40) stays clear on top, but the page content underneath

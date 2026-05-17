@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { SlideOnScrollNav } from "../components/SlideOnScrollNav";
 
 interface Lead {
   id: string;
@@ -131,7 +132,7 @@ function TrackInner() {
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
-      <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
+      <SlideOnScrollNav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <span className="w-9 h-9 rounded-xl bg-black border border-white/15 flex items-center justify-center">
@@ -149,7 +150,7 @@ function TrackInner() {
           </Link>
           <Link href="/" className="text-xs text-[#dcdcdc] hover:text-white">← Home</Link>
         </div>
-      </nav>
+      </SlideOnScrollNav>
 
       <div className="max-w-2xl mx-auto px-4 pt-10 pb-16">
         <h1 className="text-3xl md:text-4xl font-bold mb-2">Track your trade-in</h1>

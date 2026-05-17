@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SlideOnScrollNav } from "../components/SlideOnScrollNav";
 
 export const metadata: Metadata = {
   title: "How It Works — Top Cash Cellular | 3 Steps to Cash",
@@ -38,7 +39,7 @@ const PROMISES = [
 export default function HowItWorksPage() {
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
-      <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
+      <SlideOnScrollNav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <span className="w-9 h-9 rounded-xl bg-black border border-white/15 flex items-center justify-center">
@@ -56,7 +57,7 @@ export default function HowItWorksPage() {
           </Link>
           <Link href="/" className="text-xs text-[#dcdcdc] hover:text-white">← Sell now</Link>
         </div>
-      </nav>
+      </SlideOnScrollNav>
 
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-16">
         <h1 className="text-4xl font-bold mb-3">How It Works</h1>

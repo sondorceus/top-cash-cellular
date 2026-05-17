@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SlideOnScrollNav } from "../../components/SlideOnScrollNav";
 
 const DEVICES = [
   // ── iPhone (synced from main catalog 2026-05-11) ──
@@ -242,7 +243,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
-      <nav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
+      <SlideOnScrollNav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <div className="flex flex-col leading-none">
@@ -254,7 +255,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
             Get Quote
           </Link>
         </div>
-      </nav>
+      </SlideOnScrollNav>
 
       <section className="max-w-lg mx-auto px-4 pt-10 pb-8">
         <Link href="/" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition">
