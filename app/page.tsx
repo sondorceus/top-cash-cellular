@@ -2581,14 +2581,18 @@ const APPLE_VR_MODELS = [
   { id: "avp_m2", label: "Apple Vision Pro (M2, 2024)",   base: 1305, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
 ];
 
+// Per-model product photos sourced from Swappa 2026-05-17
+// (static.swappa.com/media/product/...). Prices await IWM scrape — IWM
+// has only one combined Meta Quest VR product page, no per-model pricing
+// surface us a base from automatically.
 const META_VR_MODELS = [
-  { id: "mq3s256", label: "Meta Quest 3S (256GB)", image: "/devices/meta-quest-3.jpg" },
-  { id: "mq3128", label: "Meta Quest 3S (128GB)", image: "/devices/meta-quest-3.jpg" },
-  { id: "mq3", label: "Meta Quest 3 (512GB)", image: "/devices/meta-quest-3.jpg" },
-  { id: "mq3b", label: "Meta Quest 3 (128GB)", image: "/devices/meta-quest-3.jpg" },
-  { id: "mq2256", label: "Meta Quest 2 (256GB)" },
-  { id: "mq2128", label: "Meta Quest 2 (128GB)" },
-  { id: "mqpro", label: "Meta Quest Pro" },
+  { id: "mq3s256", label: "Meta Quest 3S (256GB)", base: 0, inquiryOnly: true, image: "/devices/meta-quest-3s.png" },
+  { id: "mq3128",  label: "Meta Quest 3S (128GB)", base: 0, inquiryOnly: true, image: "/devices/meta-quest-3s.png" },
+  { id: "mq3",     label: "Meta Quest 3 (512GB)",  base: 0, inquiryOnly: true, image: "/devices/meta-quest-3.png" },
+  { id: "mq3b",    label: "Meta Quest 3 (128GB)",  base: 0, inquiryOnly: true, image: "/devices/meta-quest-3.png" },
+  { id: "mq2256",  label: "Meta Quest 2 (256GB)",  base: 0, inquiryOnly: true, image: "/devices/meta-quest-2.png" },
+  { id: "mq2128",  label: "Meta Quest 2 (128GB)",  base: 0, inquiryOnly: true, image: "/devices/meta-quest-2.png" },
+  { id: "mqpro",   label: "Meta Quest Pro",        base: 0, inquiryOnly: true, image: "/devices/meta-quest-pro.png" },
 ];
 
 const VALVE_VR_MODELS = [
@@ -3813,11 +3817,10 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
   ],
   // VR — accessories matter a lot
   meta_vr: [
-    { id: "storage", question: "Storage capacity?", helper: "Quest 3 ships in 128 / 512; Quest 3S in 128 / 256; Quest 2 in 128 / 256.", options: [
-      { id: "128", label: "128 GB", multiplier: 1.00 },
-      { id: "256", label: "256 GB", multiplier: 1.12 },
-      { id: "512", label: "512 GB", multiplier: 1.25 },
-    ]},
+    // Storage question removed 2026-05-17 — variants already split per
+    // storage tier ("Meta Quest 3 (512GB)" etc.) with base prices baked
+    // in. Asking again double-counted the storage multiplier on top of
+    // the variant's already-correct base.
     { id: "controllers", question: "Touch controllers included?", options: [
       { id: "both", label: "Both controllers", multiplier: 1.00 },
       { id: "one",  label: "One controller",   multiplier: 0.88 },
