@@ -6259,7 +6259,12 @@ export default function Home() {
   // so we beat IWM on the categories with the most inbound volume.
   // Skywalker directive 2026-05-16.
   const popularDeviceBonus = (isPhoneFlow || isIpadCellular) && baseQuote > 0 ? 25 : 0;
-  const quote = baseQuote + accessoryBonus + popularDeviceBonus;
+  // Both-glass penalty: when a phone has BOTH front display + back
+  // glass cracked, deduct an extra $30 on top of the broken-tier
+  // price. Front-only or back-only damage stays at the regular
+  // broken-tier value. Skywalker directive 2026-05-17.
+  const bothGlassPenalty = (isPhoneFlow && condition?.id === "broken" && brokenGlass === "both" && baseQuote > 0) ? -30 : 0;
+  const quote = Math.max(0, baseQuote + accessoryBonus + popularDeviceBonus + bothGlassPenalty);
   // Minimum offer threshold — below this we lose money on shipping +
   // processing. Show "Manual quote" instead of a dollar amount.
   // User can still add to cart; we review manually before paying out.
@@ -10224,10 +10229,10 @@ export default function Home() {
             <div className="tcc-selection-frame">
               <div className="space-y-2">
                 {([
-                  { id: "front", emoji: "📱", title: "Front (display) only", sub: "Front screen is cracked. Back is intact." },
-                  { id: "back", emoji: "🪞", title: "Back only", sub: "Back glass is cracked. Front display is clean." },
-                  { id: "both", emoji: "💥", title: "Both front and back", sub: "Both sides are cracked." },
-                ] as { id: "front" | "back" | "both"; emoji: string; title: string; sub: string }[]).map(g => (
+                  { id: "front", title: "Front (display) only", sub: "Front screen is cracked. Back is intact." },
+                  { id: "back", title: "Back only", sub: "Back glass is cracked. Front display is clean." },
+                  { id: "both", title: "Both front and back", sub: "Both sides are cracked." },
+                ] as { id: "front" | "back" | "both"; title: string; sub: string }[]).map(g => (
                   <button
                     key={g.id}
                     onClick={() => {
@@ -10243,9 +10248,8 @@ export default function Home() {
                       const ns: Step = "storage";
                       setStep(ns); pushHistory(ns);
                     }}
-                    className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                    className="tcc-card group w-full flex items-center px-4 py-3 rounded-xl cursor-pointer text-left"
                   >
-                    <div className="text-3xl">{g.emoji}</div>
                     <div className="flex-1">
                       <p className="font-extrabold text-[15px] text-white">{g.title}</p>
                       <p className="text-[#b8b8b8] text-xs mt-0.5">{g.sub}</p>
