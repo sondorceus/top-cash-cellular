@@ -3499,13 +3499,10 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
   // Adj values derived from IWM Galaxy Tab S10 Ultra tree × 0.90 and
   // hold roughly across the S-series (Samsung uses the same matrix).
   samsung_tab: [
-    { id: "storage", question: "Storage capacity?", helper: "Settings → About tablet → Storage.",
-      guide: { title: "How to find your tablet's storage", steps: [
-        "Open Settings.",
-        "Tap About tablet → Storage.",
-        "Look for 'Total space' — common sizes: 64 GB / 128 GB / 256 GB / 512 GB / 1 TB.",
-      ]}, options: TABLET_STORAGE_OPTIONS,
-    },
+    // Storage removed 2026-05-17 — TABLET_SPECS already drives a per-storage
+    // step earlier in the funnel for every stabs* variant. Asking again here
+    // double-counted the storage multiplier on top of the PRICE_TABLE tier
+    // (same bug pattern we fixed for Meta Quest).
     { id: "carrier", question: "Wi-Fi only or LTE/5G?", helper: "Unlocked cellular models pay $30+ more than Wi-Fi only.",
       guide: { title: "How to check connectivity", steps: [
         "Settings → Connections → Mobile networks. If you see a carrier or 'No SIM', it's a cellular model.",
@@ -3577,7 +3574,8 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
   // Lenovo Tab — same storage matrix as Samsung; no S Pen question
   // because most Lenovo tabs ship without a stylus.
   lenovo_tab: [
-    { id: "storage", question: "Storage capacity?", helper: "Settings → System → Storage.", options: TABLET_STORAGE_OPTIONS },
+    // Storage removed 2026-05-17 — same double-ask bug as samsung_tab.
+    // legtabg3 / legy900_2026 have storage in TABLET_SPECS already.
     { id: "charger", question: "Charger included?", options: [
       { id: "yes", label: "Yes", multiplier: 1.00, adj: 0 },
       { id: "no",  label: "No",  multiplier: 1.00, adj: -8 },
@@ -3590,7 +3588,7 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
   // OnePlus Pad / Pad 2 / Pad 3 / Pad Go 2 — storage only, no LTE
   // variants on US models.
   oneplus_tab: [
-    { id: "storage", question: "Storage capacity?", helper: "Settings → About device → Storage.", options: TABLET_STORAGE_OPTIONS },
+    // Storage removed 2026-05-17 — TABLET_SPECS drives storage step earlier.
     { id: "stylus", question: "OnePlus Stylo included?", helper: "OnePlus Pad 2/3 ship with the magnetic Stylo stylus — adds ~$30 if included.",
       options: [
       { id: "yes", label: "Yes — Stylo included", multiplier: 1.00, adj: 27 },
@@ -3607,10 +3605,8 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
   ],
   // Google Pixel Tablet — comes with charging dock, storage 128 / 256.
   google_tab: [
-    { id: "storage", question: "Storage capacity?", helper: "Settings → About tablet → Storage.", options: [
-      { id: "128", label: "128 GB", multiplier: 1.00, adj: 0 },
-      { id: "256", label: "256 GB", multiplier: 1.00, adj: 25 },
-    ]},
+    // Storage removed 2026-05-17 — gpixeltab has 128/256 storage step
+    // in TABLET_SPECS already.
     { id: "dock", question: "Charging speaker dock included?", helper: "The white speaker base — Pixel Tablet ships with one. Adds $40+ if included.",
       guide: { title: "How to identify the dock", steps: [
         "The Pixel Tablet ships with a circular white base that doubles as a speaker and stand.",
