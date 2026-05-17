@@ -10888,13 +10888,16 @@ export default function Home() {
       {step === "payout" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
-            {selectionPanel}
+            {/* Multi-device cart → show the full Order Summary (list +
+                total) like the checkout-review step. Single-device →
+                keep the editable selection panel. Skywalker 2026-05-17. */}
+            {cartItems.length > 1 ? checkoutSummary : selectionPanel}
             <div className="flex-1 min-w-0">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            {selectionPanelMobile}
+            {cartItems.length > 1 ? checkoutSummaryMobile : selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
             <p className="text-[#e6e6e6] text-sm mb-3">Select your preferred payout method</p>
             {/* Cash is only available for in-person handoffs — we can't mail
@@ -10925,13 +10928,17 @@ export default function Home() {
       {step === "contact" && page === "home" && model && condition && payout && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
-            {selectionPanel}
+            {/* Multi-device cart → show the full Order Summary so the
+                customer sees the whole list + total while filling the
+                final form. Single-device → keep the editable selection
+                panel. Skywalker 2026-05-17. */}
+            {cartItems.length > 1 ? checkoutSummary : selectionPanel}
             <div className="flex-1 min-w-0">
             <button onClick={handleBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
-            {selectionPanelMobile}
+            {cartItems.length > 1 ? checkoutSummaryMobile : selectionPanelMobile}
 
             {returningHint && returningHint.leadCount > 0 && (
               <div className="bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 mb-5 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
