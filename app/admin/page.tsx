@@ -33,6 +33,9 @@ interface Lead {
   devices?: Array<{ model: string; storage?: string; condition?: string; quote?: number; quantity?: number; photos?: string[] }>;
   deviceCount?: number;
   totalPayout?: number;
+  // Populated when the lead is rendered in the Trash view.
+  deletedAt?: string;
+  hoursToAutoPurge?: number;
   status: string;
   statusUpdatedAt?: string;
   latestNote?: string;
@@ -106,6 +109,10 @@ export default function AdminPage() {
   const [smsThreads, setSmsThreads] = useState<Record<string, { loading: boolean; messages?: { sid: string; body: string; direction: string; timestamp: string }[]; error?: string }>>({});
   const [recentlyChanged, setRecentlyChanged] = useState<Record<string, number>>({});
   const [autoRefresh, setAutoRefresh] = useState(true);
+  // Active vs Trash view. Trashed leads stay recoverable for 24h then
+  // auto-purge. Skywalker 2026-05-17 "save my quotes for 24hr".
+  const [view, setView] = useState<"active" | "trash">("active");
+  const [restoringId, setRestoringId] = useState<string | null>(null);
   // Customer history modal — opens when staff clicks a lead's email or
   // phone. Shows every lead (paid + pending + rejected) from the same
   // identity so repeat sellers, lifetime value, and prior disputes are
@@ -246,7 +253,7 @@ export default function AdminPage() {
     setLoading(true);
     setError(null);
     try {
-      const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}`, { cache: "no-store" });
+      const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}&view=${view}`, { cache: "no-store" });
       if (r.status === 401) {
         setError("Invalid token");
         setToken("");
@@ -261,15 +268,16 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, view]);
 
-  // Soft-delete a lead. Posts a [DELETED-LEAD: <id>] marker comm to MC;
-  // the admin GET filters it out of future fetches. PII stays in MC for
-  // audit (hard-delete would need MC-side support).
+  // Soft-trash a lead. Posts a [DELETED-LEAD: <id>] marker comm to MC.
+  // The lead disappears from the Active view but stays recoverable in
+  // the Trash view for 24h before auto-purge. Skywalker 2026-05-17
+  // "save my quotes for 24hr".
   const deleteLead = useCallback(async (lead: Lead) => {
     if (!token) return;
     const label = lead.name || lead.email || lead.phone || lead.id;
-    const ok = confirm(`Delete the lead from "${label}"?\n\nThis hides it from the admin feed. The original record stays in MC comms for audit. This action is logged.`);
+    const ok = confirm(`Move "${label}" to Trash?\n\nThe lead will be hidden from the Active feed but stays recoverable in Trash for 24 hours. After 24h it auto-purges.`);
     if (!ok) return;
     setDeletingId(lead.id);
     setError(null);
@@ -300,6 +308,34 @@ export default function AdminPage() {
     }
   }, [token]);
 
+  // Restore a trashed lead. Posts a [RESTORED-LEAD: <id>] marker that
+  // the admin GET treats as un-trashing when newer than the matching
+  // [DELETED-LEAD: <id>] marker. Skywalker 2026-05-17.
+  const restoreLead = useCallback(async (lead: Lead) => {
+    if (!token) return;
+    setRestoringId(lead.id);
+    setError(null);
+    try {
+      const r = await fetch(`/api/admin/leads/restore?token=${encodeURIComponent(token)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId: lead.id }),
+      });
+      if (!r.ok) {
+        let detail = `HTTP ${r.status}`;
+        try { const errBody = await r.json(); if (errBody?.error) detail = errBody.error; } catch {}
+        throw new Error(detail);
+      }
+      // Optimistic — remove from current Trash view. Next auto-refresh
+      // will surface it back in Active.
+      setLeads((prev) => prev.filter((l) => l.id !== lead.id));
+    } catch (e) {
+      setError(e instanceof Error ? `Restore failed: ${e.message}` : "Restore failed");
+    } finally {
+      setRestoringId(null);
+    }
+  }, [token]);
+
   useEffect(() => {
     if (token) fetchLeads();
   }, [token, fetchLeads]);
@@ -311,7 +347,7 @@ export default function AdminPage() {
     const tick = async () => {
       if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
       try {
-        const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}`, { cache: "no-store" });
+        const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}&view=${view}`, { cache: "no-store" });
         if (!r.ok) return;
         const d = await r.json();
         const next: Lead[] = d.leads || [];
@@ -337,7 +373,7 @@ export default function AdminPage() {
     // Tightened from 15s to 5s 2026-05-17 — Skywalker reported staleness.
     const interval = setInterval(tick, 5000);
     return () => clearInterval(interval);
-  }, [token, autoRefresh]);
+  }, [token, autoRefresh, view]);
 
   // Clean up the "recently changed" highlights after 4s.
   useEffect(() => {
@@ -642,6 +678,20 @@ export default function AdminPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            {/* Active / Trash toggle. Trashed leads stay recoverable for
+                24h before auto-purge. Skywalker 2026-05-17. */}
+            <div className="flex items-center bg-white/5 border border-white/10 rounded-lg overflow-hidden text-xs font-semibold">
+              <button
+                onClick={() => setView("active")}
+                className={`px-3 py-2 transition cursor-pointer ${view === "active" ? "bg-[#00c853]/15 text-[#00c853]" : "text-[#dcdcdc] hover:bg-white/10"}`}
+                title="Show active leads"
+              >Active</button>
+              <button
+                onClick={() => setView("trash")}
+                className={`px-3 py-2 transition cursor-pointer border-l border-white/10 ${view === "trash" ? "bg-amber-500/15 text-amber-300" : "text-[#dcdcdc] hover:bg-white/10"}`}
+                title="Show trashed leads (auto-purge after 24h)"
+              >🗑 Trash</button>
+            </div>
             <button
               onClick={() => setAutoRefresh((v) => !v)}
               title={autoRefresh ? "Auto-refresh ON (every 5s)" : "Auto-refresh OFF"}
@@ -1103,19 +1153,36 @@ export default function AdminPage() {
                       {savingId === lead.id && (
                         <p className="text-[10px] text-[#dcdcdc] mt-1">Saving…</p>
                       )}
-                      {/* Delete (soft) — hides this lead from the admin
-                          feed permanently. Underlying MC comm stays for
-                          audit. Hard-delete (PII scrub) needs MC-side
-                          support; flagged as follow-up. */}
-                      <button
-                        type="button"
-                        onClick={() => deleteLead(lead)}
-                        disabled={deletingId === lead.id}
-                        className="mt-1.5 text-[10px] text-[#ff8088] hover:text-[#ff5566] border border-[#ff5566]/30 hover:border-[#ff5566]/60 rounded px-2 py-1 transition cursor-pointer disabled:opacity-50"
-                        title="Hide this lead from the admin feed (audit log preserved)"
-                      >
-                        {deletingId === lead.id ? "Deleting…" : "🗑 Delete"}
-                      </button>
+                      {/* Trash / Restore — in Active view this moves the
+                          lead to Trash (recoverable for 24h). In Trash
+                          view this restores it. Skywalker 2026-05-17
+                          "save my quotes for 24hr". */}
+                      {view === "trash" ? (
+                        <div className="mt-1.5 space-y-1">
+                          {typeof lead.hoursToAutoPurge === "number" && (
+                            <p className="text-[10px] text-amber-300">⏳ Auto-purge in {lead.hoursToAutoPurge}h</p>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => restoreLead(lead)}
+                            disabled={restoringId === lead.id}
+                            className="text-[10px] text-[#00c853] hover:text-[#00e676] border border-[#00c853]/40 hover:border-[#00c853]/70 rounded px-2 py-1 transition cursor-pointer disabled:opacity-50"
+                            title="Move this lead back to the Active feed"
+                          >
+                            {restoringId === lead.id ? "Restoring…" : "↻ Restore"}
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => deleteLead(lead)}
+                          disabled={deletingId === lead.id}
+                          className="mt-1.5 text-[10px] text-[#ff8088] hover:text-[#ff5566] border border-[#ff5566]/30 hover:border-[#ff5566]/60 rounded px-2 py-1 transition cursor-pointer disabled:opacity-50"
+                          title="Move to Trash — recoverable for 24h"
+                        >
+                          {deletingId === lead.id ? "Trashing…" : "🗑 Trash"}
+                        </button>
+                      )}
                       {savedFlash[lead.id] && (
                         <p className="text-[10px] text-[#00c853] mt-1">
                           ✓ Saved{savedFlash[lead.id]!.sms ? " · SMS sent" : ""}{savedFlash[lead.id]!.email ? " · email sent" : ""}

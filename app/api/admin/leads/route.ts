@@ -48,6 +48,11 @@ interface AdminLead {
   devices?: Array<{ model: string; storage?: string; condition?: string; quote?: number; quantity?: number; photos?: string[] }>;
   deviceCount?: number;
   totalPayout?: number;
+  // Soft-trash metadata. Populated for leads in the Trash view. The
+  // hoursToAutoPurge field counts down from 24h since deletedAt.
+  // Skywalker 2026-05-17: "next time save my quotes for 24hr".
+  deletedAt?: string;
+  hoursToAutoPurge?: number;
   status: string;
   statusUpdatedAt?: string;
   latestNote?: string;
@@ -88,20 +93,36 @@ export async function GET(req: NextRequest) {
   const data = await r.json();
   const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
 
-  // Pass 1: index status updates + notes + soft-deletes by lead id.
-  // Status post format: "[STATUS: <status>] [LEAD: <leadId>]"
-  // Note post format:   "[NOTE: <text>] [LEAD: <leadId>]"
-  // Delete marker:      "[DELETED-LEAD: <leadId>] [REASON: <opt>]"
+  // Pass 1: index status updates + notes + soft-deletes + restores by lead id.
+  // Status post format:  "[STATUS: <status>] [LEAD: <leadId>]"
+  // Note post format:    "[NOTE: <text>] [LEAD: <leadId>]"
+  // Delete marker:       "[DELETED-LEAD: <leadId>] [REASON: <opt>]"
+  // Restore marker:      "[RESTORED-LEAD: <leadId>]"
+  //
+  // Trash semantics (Skywalker 2026-05-17 "save my quotes for 24hr"):
+  // For each leadId we keep the MOST RECENT delete or restore. If the
+  // latest event is a delete and it's within 24h, the lead is "in trash"
+  // (recoverable). If the latest is a delete >24h ago, the lead is
+  // hard-purged from the feed entirely. If the latest is a restore, the
+  // lead is active again.
   const statusByLead = new Map<string, { status: string; timestamp: string }>();
   const notesByLead = new Map<string, { text: string; timestamp: string }[]>();
-  const deletedLeadIds = new Set<string>();
+  const deletedAtByLead = new Map<string, string>();  // most-recent deletion timestamp
+  const restoredAtByLead = new Map<string, string>(); // most-recent restore timestamp
   for (const m of messages) {
     if (!m.body) continue;
-    // Soft-delete marker — collect first so we can skip the corresponding
-    // lead in pass 2. Uses its own bracket key (not [LEAD: <id>]) so it
-    // doesn't get caught by the status/note loops below.
     const dm = m.body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
-    if (dm) deletedLeadIds.add(dm[1]);
+    if (dm) {
+      const id = dm[1];
+      const prev = deletedAtByLead.get(id);
+      if (!prev || m.timestamp > prev) deletedAtByLead.set(id, m.timestamp);
+    }
+    const rm = m.body.match(/\[RESTORED-LEAD:\s*([\w-]+)\]/i);
+    if (rm) {
+      const id = rm[1];
+      const prev = restoredAtByLead.get(id);
+      if (!prev || m.timestamp > prev) restoredAtByLead.set(id, m.timestamp);
+    }
     const lm = m.body.match(/\[LEAD:\s*([\w-]+)\]/i);
     if (!lm) continue;
     const leadId = lm[1];
@@ -120,6 +141,21 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // Determine each lead's bucket — active / trashed (recoverable) / purged.
+  const TRASH_TTL_MS = 24 * 60 * 60 * 1000;
+  const nowMs = Date.now();
+  const view = (req.nextUrl.searchParams.get("view") || "active").toLowerCase(); // active | trash | all
+  function bucketFor(leadId: string): { kind: "active" } | { kind: "trashed"; deletedAt: string; hoursLeft: number } | { kind: "purged" } {
+    const delAt = deletedAtByLead.get(leadId);
+    const resAt = restoredAtByLead.get(leadId);
+    if (!delAt) return { kind: "active" };
+    // Restored after the last delete → active again.
+    if (resAt && resAt > delAt) return { kind: "active" };
+    const ageMs = nowMs - new Date(delAt).getTime();
+    if (ageMs >= TRASH_TTL_MS) return { kind: "purged" };
+    return { kind: "trashed", deletedAt: delAt, hoursLeft: Math.max(0, Math.round((TRASH_TTL_MS - ageMs) / (60 * 60 * 1000))) };
+  }
+
   // Pass 2: collect leads.
   const leads: AdminLead[] = [];
   for (const m of messages) {
@@ -128,8 +164,15 @@ export async function GET(req: NextRequest) {
     // Skywalker 2026-05-17: multi-device leads were getting skipped
     // because the literal includes() check missed them.
     if (!m.body || !/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
-    // Skip leads that have been soft-deleted via /api/admin/leads/delete.
-    if (deletedLeadIds.has(m.id)) continue;
+    // Bucket the lead. `view` controls which buckets are included:
+    //   active (default) → only active leads
+    //   trash            → only trashed-within-24h leads (with metadata)
+    //   all              → active + trashed
+    // Purged (>24h since delete) leads never surface in any view.
+    const bucket = bucketFor(m.id);
+    if (bucket.kind === "purged") continue;
+    if (view === "active" && bucket.kind !== "active") continue;
+    if (view === "trash"  && bucket.kind !== "trashed") continue;
     const deviceLine = parseField(m.body, "Device");
     const status = statusByLead.get(m.id);
     const photosLine = parseField(m.body, "Photos");
@@ -247,6 +290,8 @@ export async function GET(req: NextRequest) {
       devices,
       deviceCount,
       totalPayout,
+      deletedAt:        bucket.kind === "trashed" ? bucket.deletedAt : undefined,
+      hoursToAutoPurge: bucket.kind === "trashed" ? bucket.hoursLeft : undefined,
       status: status?.status || "quote_requested",
       statusUpdatedAt: status?.timestamp,
       latestNote: latestNote?.text,
