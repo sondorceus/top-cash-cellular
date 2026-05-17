@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
+import Script from "next/script";
 
 const BRAND = "Top Cash Cellular";
 const EMAIL = "topcashcellular@gmail.com";
@@ -5492,6 +5493,16 @@ declare global {
           prompt: () => void;
         };
       };
+      maps: {
+        places: {
+          Autocomplete: new (input: HTMLInputElement, opts?: unknown) => {
+            addListener: (event: string, cb: () => void) => void;
+            getPlace: () => { address_components?: Array<{ short_name: string; long_name: string; types: string[] }>; formatted_address?: string };
+            setBounds: (b: unknown) => void;
+          };
+        };
+        LatLngBounds: new (sw: { lat: number; lng: number }, ne: { lat: number; lng: number }) => unknown;
+      };
     };
   }
 }
@@ -5769,6 +5780,48 @@ export default function Home() {
   const [shipCity, setShipCity] = useState("");
   const [shipState, setShipState] = useState("TX");
   const [shipZip, setShipZip] = useState("");
+  // Google Places autocomplete on the shipping street field — mirrors
+  // ATX Gadget's implementation. User types, Google suggests US
+  // addresses, click → parsed into our 5 split fields (street / unit
+  // is left alone / city / state / zip) so we keep structured data
+  // while saving the seller a bunch of typing.
+  const shipStreetRef = useRef<HTMLInputElement>(null);
+  const shipAutoRef = useRef<unknown>(null); // holds the Autocomplete instance; we never call methods on it after init
+  const initShipAutocomplete = useCallback(() => {
+    if (!shipStreetRef.current || shipAutoRef.current || typeof window === "undefined" || !window.google?.maps?.places) return;
+    const ac = new window.google.maps.places.Autocomplete(shipStreetRef.current, {
+      types: ["address"],
+      componentRestrictions: { country: "us" },
+      fields: ["address_components", "formatted_address"],
+    });
+    ac.addListener("place_changed", () => {
+      const place = ac.getPlace();
+      const parts = place?.address_components || [];
+      const get = (type: string, useShort = false) => {
+        const c = parts.find(p => p.types.includes(type));
+        return c ? (useShort ? c.short_name : c.long_name) : "";
+      };
+      const streetNum = get("street_number");
+      const route = get("route");
+      const street = [streetNum, route].filter(Boolean).join(" ").trim();
+      const city = get("locality") || get("sublocality") || get("postal_town");
+      const state = get("administrative_area_level_1", true);
+      const zip = get("postal_code");
+      if (street) setShipStreet(street);
+      if (city) setShipCity(city);
+      if (state) setShipState(state.toUpperCase().slice(0, 2));
+      if (zip) setShipZip(zip);
+    });
+    shipAutoRef.current = ac;
+  }, []);
+  // Re-init autocomplete when the user switches to shipping mode (or
+  // the contact step renders the input). 100ms delay gives React a
+  // tick to mount the input element.
+  useEffect(() => {
+    if (handoffMethod !== "ship") return;
+    const t = setTimeout(() => initShipAutocomplete(), 100);
+    return () => clearTimeout(t);
+  }, [handoffMethod, initShipAutocomplete]);
   const [localArea, setLocalArea] = useState<string | null>(null);
   const AUSTIN_AREAS = [
     { id: "south", label: "South Austin", desc: "South Lamar, 78704, Bouldin" },
@@ -6953,6 +7006,17 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
+      {/* Google Maps Places script — powers the shipping address
+          autocomplete. lazyOnload so it doesn't block first paint;
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY must be set in Vercel env.
+          Mirrors the implementation on atx-gadget-fix. */}
+      {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY && (
+        <Script
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+          strategy="lazyOnload"
+          onLoad={() => initShipAutocomplete()}
+        />
+      )}
       {/* CART TOAST — fixed top-center on mobile, top-right on lg.
           Slides up + fades. Auto-dismisses after 2.4s. Two variants:
           'add' (green check, ✓) and 'remove' (red minus, ×). */}
@@ -10841,7 +10905,7 @@ export default function Home() {
                       <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">Shipping address</label>
                       <button type="button" onClick={() => { setHandoffMethod("local"); setLocalArea(null); }} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to local meetup instead</button>
                     </div>
-                    <input required value={shipStreet} onChange={e => setShipStreet(e.target.value)} placeholder="Street address" autoComplete="address-line1" className="w-full px-4 py-3 tcc-input" />
+                    <input ref={shipStreetRef} required value={shipStreet} onChange={e => setShipStreet(e.target.value)} placeholder="Start typing your address…" autoComplete="off" className="w-full px-4 py-3 tcc-input" />
                     <input value={shipUnit} onChange={e => setShipUnit(e.target.value)} placeholder="Apt / Suite (optional)" autoComplete="address-line2" className="w-full px-4 py-3 tcc-input" />
                     <div className="grid grid-cols-3 gap-2">
                       <input required value={shipCity} onChange={e => setShipCity(e.target.value)} placeholder="City" autoComplete="address-level2" className="col-span-2 w-full px-4 py-3 tcc-input" />
