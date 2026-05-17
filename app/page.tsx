@@ -5647,6 +5647,10 @@ export default function Home() {
   const [storage, setStorage] = useState<typeof ALL_STORAGES[0] | null>(null);
   const [condition, setCondition] = useState<typeof CONDITIONS[0] | null>(null);
   const [brokenFunctional, setBrokenFunctional] = useState<boolean | null>(null);
+  // Tracks which desktop mega-menu is currently hovered open. Drives the
+  // full-page backdrop blur that appears behind the menu so the page
+  // text doesn't bleed through the panel like it used to.
+  const [megaMenuOpen, setMegaMenuOpen] = useState<"sell" | "bulk" | "support" | null>(null);
   // Phone-specific follow-up to "broken" — which side of the glass is
   // cracked. Front (display) is a bigger hit to resale than back, both
   // is the worst. Collected for the lead notes; future pricing math
@@ -6978,7 +6982,7 @@ export default function Home() {
           {/* CENTER (lg+ only, absolutely centered relative to the nav row): Sell / Bulk / Support */}
           <div className="hidden lg:flex items-center gap-2 absolute left-1/2 -translate-x-1/2 bg-white/[0.04] border border-white/10 rounded-full px-2 py-1">
             {/* SELL — mega menu, dropdown centered under the trigger */}
-            <div className="group relative">
+            <div className="group relative" onMouseEnter={() => setMegaMenuOpen("sell")} onMouseLeave={() => setMegaMenuOpen(null)}>
               <button
                 onClick={() => { setStep("category"); pushHistory("category"); }}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-full text-[15px] font-semibold text-white hover:text-[#00c853] hover:bg-white/5 transition cursor-pointer"
@@ -7015,7 +7019,7 @@ export default function Home() {
             </div>
 
             {/* BULK */}
-            <div className="group relative">
+            <div className="group relative" onMouseEnter={() => setMegaMenuOpen("bulk")} onMouseLeave={() => setMegaMenuOpen(null)}>
               <a
                 href="/bulk"
                 className="flex items-center gap-2 px-5 py-2.5 rounded-full text-[15px] font-semibold text-white hover:text-[#00c853] hover:bg-white/5 transition cursor-pointer"
@@ -7044,7 +7048,7 @@ export default function Home() {
             </div>
 
             {/* SUPPORT */}
-            <div className="group relative">
+            <div className="group relative" onMouseEnter={() => setMegaMenuOpen("support")} onMouseLeave={() => setMegaMenuOpen(null)}>
               <button
                 className="flex items-center gap-2 px-5 py-2.5 rounded-full text-[15px] font-semibold text-white hover:text-[#00c853] hover:bg-white/5 transition cursor-pointer"
               >
@@ -7170,6 +7174,17 @@ export default function Home() {
           </div>
         )}
       </nav>
+
+      {/* MEGA-MENU BACKDROP — IWM-style blur. Sits at z-30 so the nav
+          (z-40) stays clear on top, but the page content underneath
+          gets fully blurred when any desktop mega-menu is hovered open.
+          Replaces the old behavior where the menu panel floated over
+          unblurred page text and looked half-transparent. pointer-events
+          stay off so this never steals hover from the trigger. */}
+      <div
+        aria-hidden
+        className={`fixed inset-0 z-30 pointer-events-none transition-opacity duration-200 ease-out backdrop-blur-md bg-black/40 ${megaMenuOpen ? "opacity-100" : "opacity-0"}`}
+      />
 
       {/* MOBILE MENU DRAWER — same Sell/Bulk/Support/Login structure as the desktop mega-menu, accordion-style */}
       {mobileMenuOpen && (
