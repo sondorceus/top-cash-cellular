@@ -264,7 +264,16 @@ export default function AdminPage() {
   const [statusFilter, setStatusFilter] = useState<string>("active");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  // Hydrate token from URL or localStorage
+  // Google sign-in info (rendered in the header when present). proxy.ts
+  // already gates this page to admin emails, so if we got here at all,
+  // /api/auth/me should be authenticated + isAdmin. Falling back to the
+  // legacy token paste UI if /api/auth/me is somehow unreachable.
+  const [googleUser, setGoogleUser] = useState<{ email: string; name?: string; picture?: string } | null>(null);
+
+  // Hydrate token from URL or localStorage, AND auto-unlock via Google
+  // session if present. proxy.ts injects x-admin-token server-side when
+  // the session is admin, so any non-empty client token works — we use
+  // a "google" sentinel just to satisfy the existing if-token guards.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const urlToken = new URLSearchParams(window.location.search).get("token");
@@ -275,6 +284,17 @@ export default function AdminPage() {
     } else if (stored) {
       setToken(stored);
     }
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((me) => {
+        if (me?.authenticated && me?.isAdmin) {
+          setGoogleUser({ email: me.email, name: me.name, picture: me.picture });
+          // If no legacy token already loaded, use the sentinel so the
+          // existing fetches fire (proxy injects the real header).
+          setToken((t) => t || "google");
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const fetchLeads = useCallback(async () => {
@@ -658,26 +678,41 @@ export default function AdminPage() {
     }
   };
 
-  // Token gate
+  // Token gate. proxy.ts now bounces unauthorized users to Google sign-in
+  // before this page even renders. The form below stays as a fallback for
+  // direct-token entry (env-disaster recovery): if Google OAuth is broken
+  // or the email isn't allowlisted, the operator can still get in with
+  // the legacy ADMIN_TOKEN by appending ?token=... to the URL.
   if (!token) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-black text-white px-4">
-        <form onSubmit={handleLogin} className="w-full max-w-sm bg-white/5 border border-white/10 rounded-2xl p-6">
+        <div className="w-full max-w-sm bg-white/5 border border-white/10 rounded-2xl p-6">
           <h1 className="text-xl font-bold mb-1">TCC Staff Ops</h1>
-          <p className="text-[#dcdcdc] text-sm mb-5">Enter admin token to continue.</p>
-          <input
-            type="password"
-            value={tokenInput}
-            onChange={(e) => setTokenInput(e.target.value)}
-            placeholder="admin token"
-            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] focus:ring-4 focus:ring-[#00c853]/10 transition mb-3"
-            autoFocus
-          />
-          {error && <p className="text-[#ef5350] text-xs mb-3">{error}</p>}
-          <button type="submit" className="w-full bg-[#00c853] text-[#0a0a0a] py-3 rounded-xl text-sm font-semibold cursor-pointer hover:bg-[#00e676] transition">
-            Sign in
-          </button>
-        </form>
+          <p className="text-[#dcdcdc] text-sm mb-5">Sign in with your Google account to continue.</p>
+          <a
+            href={`/api/auth/google?returnTo=${encodeURIComponent("/admin")}`}
+            className="w-full inline-flex items-center justify-center gap-2 bg-white text-[#1a1a1a] py-3 rounded-xl text-sm font-semibold cursor-pointer hover:bg-[#f0f0f0] transition"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Sign in with Google
+          </a>
+          {error && <p className="text-[#ef5350] text-xs mt-3 text-center">{error}</p>}
+          <details className="mt-5 text-[11px] text-[#888]">
+            <summary className="cursor-pointer hover:text-[#bbb]">Admin recovery (token)</summary>
+            <form onSubmit={handleLogin} className="mt-3">
+              <input
+                type="password"
+                value={tokenInput}
+                onChange={(e) => setTokenInput(e.target.value)}
+                placeholder="admin token"
+                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-xs text-white placeholder:text-[#666] focus:outline-none focus:border-[#00c853] transition mb-2"
+              />
+              <button type="submit" className="w-full bg-white/10 text-white py-2 rounded text-xs font-semibold cursor-pointer hover:bg-white/20 transition">
+                Use legacy token
+              </button>
+            </form>
+          </details>
+        </div>
       </main>
     );
   }
@@ -707,6 +742,28 @@ export default function AdminPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            {/* Google user chip — only renders when /api/auth/me returned
+                an authenticated admin. Click signs out + redirects to
+                Google login on next nav. */}
+            {googleUser && (
+              <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full pl-1 pr-3 py-1">
+                {googleUser.picture ? (
+                  <img src={googleUser.picture} alt="" className="w-7 h-7 rounded-full" />
+                ) : (
+                  <span className="w-7 h-7 rounded-full bg-[#00c853]/20 text-[#00c853] flex items-center justify-center text-xs font-bold">{(googleUser.name || googleUser.email).charAt(0).toUpperCase()}</span>
+                )}
+                <span className="text-xs text-white font-semibold max-w-[140px] truncate" title={googleUser.email}>{googleUser.name?.split(" ")[0] || googleUser.email}</span>
+                <button
+                  onClick={async () => {
+                    await fetch("/api/auth/signout", { method: "POST" });
+                    localStorage.removeItem("tcc-admin-token");
+                    window.location.href = "/admin";
+                  }}
+                  title="Sign out"
+                  className="text-[#888] hover:text-[#ff5566] text-xs font-semibold cursor-pointer transition ml-1"
+                >Sign out</button>
+              </div>
+            )}
             {/* Active / Trash toggle. Trashed leads stay recoverable for
                 24h before auto-purge. Skywalker 2026-05-17. */}
             <div className="flex items-center bg-white/5 border border-white/10 rounded-lg overflow-hidden text-xs font-semibold">
