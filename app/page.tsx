@@ -12402,7 +12402,23 @@ export default function Home() {
                     <p className="text-[#c8c8c8] text-xs text-right">{itemCount} {itemCount === 1 ? "device" : "devices"} · Free shipping</p>
                   </div>
                   <button
-                    onClick={() => { setCartOpen(false); setStep("checkout"); pushHistory("checkout"); }}
+                    onClick={() => {
+                      // Always force the user back to the funnel page
+                      // before transitioning into the checkout step.
+                      // Without this, if they were on /privacy /faq
+                      // /about /etc. (any setPage non-home state), the
+                      // checkout section never renders because its
+                      // mount condition is `step === "checkout" &&
+                      // page === "home"`, and they get stranded on
+                      // the page they came from — Skywalker 2026-05-17
+                      // "click on cart and hit proceed it just goes
+                      // to the footer".
+                      setCartOpen(false);
+                      setPage("home");
+                      setStep("checkout");
+                      pushHistory("checkout");
+                      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+                    }}
                     className="tcc-button-primary w-full py-4 text-base font-extrabold"
                   >
                     Proceed to Checkout →
