@@ -8691,6 +8691,7 @@ export default function Home() {
                       <div className="space-y-2">
                         {g.variants.map((m) => {
                           const mImage = (m as { image?: string }).image;
+                          const inq = (m as { inquiryOnly?: boolean }).inquiryOnly;
                           return (
                             <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                               {mImage ? (
@@ -8700,7 +8701,7 @@ export default function Home() {
                               )}
                               <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                               <div className="flex items-center gap-2">
-                                <span className="text-[#00c853] font-bold text-sm">Get an offer</span>
+                                <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m, deviceType)}`}</span>
                                 <svg className="w-4 h-4 text-[#e6e6e6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                               </div>
                             </button>
@@ -8922,7 +8923,7 @@ export default function Home() {
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[10px] text-center px-1 leading-tight">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                      {s.topPrice ? <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p> : null}
                     </button>
                   ))}
                 </div>
@@ -8948,7 +8949,7 @@ export default function Home() {
                         )}
                         <p className="font-bold text-sm text-center">{s.label}</p>
                         <p className="text-[#e6e6e6] text-[11px] text-center">{s.year}</p>
-                        <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                        {s.topPrice ? <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p> : null}
                       </button>
                     ))}
                   </div>
@@ -8967,7 +8968,7 @@ export default function Home() {
                       <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[10px] text-center">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                      {s.topPrice ? <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p> : null}
                     </button>
                   ))}
                 </div>
@@ -8985,7 +8986,7 @@ export default function Home() {
                       <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[10px] text-center">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                      {s.topPrice ? <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p> : null}
                     </button>
                   ))}
                 </div>
@@ -9007,7 +9008,7 @@ export default function Home() {
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[10px] text-center px-1 leading-tight">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                      {s.topPrice ? <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p> : null}
                     </button>
                   ))}
                 </div>
@@ -9033,7 +9034,7 @@ export default function Home() {
                         )}
                         <p className="font-bold text-sm text-center">{s.label}</p>
                         <p className="text-[#e6e6e6] text-[11px] text-center">{s.year}</p>
-                        <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                        {s.topPrice ? <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p> : null}
                       </button>
                     ))}
                   </div>
@@ -9056,7 +9057,7 @@ export default function Home() {
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[10px] text-center px-1 leading-tight">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                      {s.topPrice ? <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p> : null}
                     </button>
                   ))}
                 </div>
@@ -9078,7 +9079,7 @@ export default function Home() {
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[10px] text-center px-1 leading-tight">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                      {s.topPrice ? <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p> : null}
                     </button>
                   ))}
                 </div>
@@ -9104,7 +9105,7 @@ export default function Home() {
                         )}
                         <p className="font-bold text-sm text-center">{s.label}</p>
                         <p className="text-[#e6e6e6] text-[10px] text-center">{s.year}</p>
-                        <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                        {s.topPrice ? <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p> : null}
                       </button>
                     ))}
                   </div>
@@ -9127,7 +9128,7 @@ export default function Home() {
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[10px]">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">{s.topPrice ? `Up to $${s.topPrice}` : "Get an offer"}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">{s.topPrice ? `Up to $${s.topPrice}` : null}</p>
                     </button>
                   ))}
                 </div>
@@ -9149,7 +9150,7 @@ export default function Home() {
                       )}
                       <p className="font-bold text-base">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[11px]">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">{s.topPrice ? `Up to $${s.topPrice}` : "Get an offer"}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">{s.topPrice ? `Up to $${s.topPrice}` : null}</p>
                     </button>
                   ))}
                 </div>
@@ -9264,7 +9265,7 @@ export default function Home() {
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[10px]">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Get an offer</p>
+                      {s.topPrice ? <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p> : null}
                     </button>
                   ))}
                 </div>
