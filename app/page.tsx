@@ -10583,7 +10583,9 @@ export default function Home() {
                     <div className="flex-1">
                       <p className="text-sm text-[#e5e5e5] mb-2">Get paid your way</p>
                       <div className="flex flex-wrap gap-1.5">
-                        <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-bold">💵 Cash</span>
+                        {handoffMethod !== "ship" && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-bold">💵 Cash</span>
+                        )}
                         <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#00d54b] text-white text-[10px] font-bold">Cash App</span>
                         <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#6D1ED4] text-white text-[10px] font-bold">Zelle</span>
                         <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#f7931a] text-white text-[10px] font-bold">₿ BTC</span>
@@ -10805,9 +10807,17 @@ export default function Home() {
             </button>
             {selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
-            <p className="text-[#e6e6e6] text-sm mb-6">Select your preferred payout method</p>
+            <p className="text-[#e6e6e6] text-sm mb-3">Select your preferred payout method</p>
+            {/* Cash is only available for in-person handoffs — we can't mail
+                physical cash. If the seller picked Shipping on the landing,
+                filter Cash out and tell them why so they don't go hunting. */}
+            {handoffMethod === "ship" && (
+              <div className="mb-4 px-3 py-2 rounded-lg bg-[#00c853]/5 border border-[#00c853]/20 text-[12px] text-[#bdbdbd] leading-snug">
+                <span className="text-[#00c853] font-bold">Heads up:</span> Cash isn't shown — we can't mail physical cash. All digital payouts (Cash App / Zelle / Bitcoin) land within minutes of receipt.
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-3">
-              {PAYOUTS.map((p) => (
+              {PAYOUTS.filter(p => handoffMethod !== "ship" || p.id !== "cash").map((p) => (
                 <button
                   key={p.id}
                   onClick={() => { setPayout(p); setStep("contact"); pushHistory("contact"); }}
@@ -11466,7 +11476,7 @@ export default function Home() {
                 {[
                   { num: "1", title: "Get an instant quote", desc: "Select your device, model, storage, and condition. See your price in 30 seconds." },
                   { num: "2", title: "Choose how to sell", desc: "Meet us locally in Austin or ship your device for free from anywhere in the US." },
-                  { num: "3", title: "Get paid instantly", desc: "We verify your device and pay you on the spot. Cash, Cash App, Zelle, or BTC." },
+                  { num: "3", title: "Get paid instantly", desc: "We verify your device and pay you. Cash (local meetup only), Cash App, Zelle, or BTC." },
                 ].map((step) => (
                   <div key={step.num} className="flex items-start gap-4 bg-white/5 rounded-2xl p-4 border border-white/10">
                     <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-sm font-bold shrink-0">{step.num}</div>
