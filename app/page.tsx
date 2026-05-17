@@ -5822,6 +5822,39 @@ export default function Home() {
     const t = setTimeout(() => initShipAutocomplete(), 100);
     return () => clearTimeout(t);
   }, [handoffMethod, initShipAutocomplete]);
+
+  // Local-meetup address autocomplete — same Google Places SDK but
+  // bound to a single freeform field (we don't need split city/state/
+  // zip for local handoffs, just the formatted address so the
+  // dispatcher knows where the seller is).
+  const [localAddress, setLocalAddress] = useState("");
+  const localAddrRef = useRef<HTMLInputElement>(null);
+  const localAutoRef = useRef<unknown>(null);
+  const initLocalAutocomplete = useCallback(() => {
+    if (!localAddrRef.current || localAutoRef.current || typeof window === "undefined" || !window.google?.maps?.places) return;
+    const ac = new window.google.maps.places.Autocomplete(localAddrRef.current, {
+      types: ["address"],
+      componentRestrictions: { country: "us" },
+      fields: ["formatted_address"],
+    });
+    // Bias suggestions to the Austin metro so neighborhood landmarks
+    // come up first (matches atx-gadget's bounds).
+    ac.setBounds(new window.google.maps.LatLngBounds(
+      { lat: 30.1, lng: -98.0 },
+      { lat: 30.6, lng: -97.5 }
+    ));
+    ac.addListener("place_changed", () => {
+      const place = ac.getPlace();
+      if (place?.formatted_address) setLocalAddress(place.formatted_address);
+    });
+    localAutoRef.current = ac;
+  }, []);
+  useEffect(() => {
+    if (handoffMethod !== "local") return;
+    const t = setTimeout(() => initLocalAutocomplete(), 100);
+    return () => clearTimeout(t);
+  }, [handoffMethod, initLocalAutocomplete]);
+
   const [localArea, setLocalArea] = useState<string | null>(null);
   const AUSTIN_AREAS = [
     { id: "south", label: "South Austin", desc: "South Lamar, 78704, Bouldin" },
@@ -6056,6 +6089,7 @@ export default function Home() {
           if (s.shipCity) setShipCity(s.shipCity);
           if (s.shipState) setShipState(s.shipState);
           if (s.shipZip) setShipZip(s.shipZip);
+          if (s.localAddress) setLocalAddress(s.localAddress);
           setStep(s.step);
         }
       }
@@ -6082,11 +6116,11 @@ export default function Home() {
     try {
       localStorage.setItem("tcc-session", JSON.stringify({
         step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email,
-        handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip,
+        handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, localAddress,
         ts: Date.now(),
       }));
     } catch {}
-  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip]);
+  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, localAddress]);
 
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrierMultiplierFor(carrier?.id, carrierLock?.id);
@@ -7014,7 +7048,7 @@ export default function Home() {
         <Script
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
           strategy="lazyOnload"
-          onLoad={() => initShipAutocomplete()}
+          onLoad={() => { initShipAutocomplete(); initLocalAutocomplete(); }}
         />
       )}
       {/* CART TOAST — fixed top-center on mobile, top-right on lg.
@@ -10850,7 +10884,7 @@ export default function Home() {
               try {
                 const handoffPayload = handoffMethod === "ship"
                   ? { method: "ship", address: { street: shipStreet, unit: shipUnit, city: shipCity, state: shipState, zip: shipZip } }
-                  : { method: "local" };
+                  : { method: "local", area: localAddress.trim() || undefined };
                 const res = await fetch("/api/lead", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
@@ -10917,15 +10951,21 @@ export default function Home() {
                 )}
 
                 {handoffMethod === "local" && (
-                  <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#00c853]/5 border border-[#00c853]/20">
-                    <svg className="w-5 h-5 text-[#00c853] shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <p className="text-white text-sm font-bold leading-tight">Local meetup</p>
-                        <button type="button" onClick={() => setHandoffMethod("ship")} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to shipping</button>
-                      </div>
-                      <p className="text-[#bdbdbd] text-xs leading-snug">We&apos;ll text or email you within the hour to coordinate a time and a public spot in Austin you&apos;re comfortable with.</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">Where should we meet?</label>
+                      <button type="button" onClick={() => setHandoffMethod("ship")} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to shipping instead</button>
                     </div>
+                    <input
+                      ref={localAddrRef}
+                      type="text"
+                      value={localAddress}
+                      onChange={(e) => setLocalAddress(e.target.value)}
+                      placeholder="Your address, work address, or a landmark like 'Whole Foods on Lamar'"
+                      autoComplete="off"
+                      className="w-full px-4 py-3 tcc-input"
+                    />
+                    <p className="text-[#888] text-[11px] leading-relaxed">Optional — helps us pick the closest mobile tech. We&apos;ll text {phone || "you"} within the hour to confirm a time and a public spot you&apos;re comfortable with.</p>
                   </div>
                 )}
               </div>
