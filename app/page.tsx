@@ -5942,6 +5942,14 @@ export default function Home() {
   // this, failed uploads silently swallow and the photo flow appears
   // to do nothing.
   const [photoError, setPhotoError] = useState<string | null>(null);
+  // Per-cart-item photo collections. Lets the customer add photos for
+  // EACH device in a multi-device cart, not just the last one. Keyed by
+  // `${modelId}-${storage}-${condition}` (same key the cart de-dups on).
+  // Skywalker 2026-05-17: "when customers check out with multiple
+  // devices it only shows 1 at a time at check out ... give them the
+  // option to add pictures for each having a tab".
+  const [photosByItemKey, setPhotosByItemKey] = useState<Record<string, string[]>>({});
+  const [activePhotoKey, setActivePhotoKey] = useState<string>("");
   const [inquiryDesc, setInquiryDesc] = useState("");
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -10948,12 +10956,50 @@ export default function Home() {
                 const handoffPayload = handoffMethod === "ship"
                   ? { method: "ship", address: { street: shipStreet, unit: shipUnit, city: shipCity, state: shipState, zip: shipZip }, hasBox: shipHasBox ?? undefined }
                   : { method: "local" };
-                const res = await fetch("/api/lead", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: photoUrls, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean) }),
-                });
-                if (!res.ok) throw new Error('Failed');
+                // Snapshot the currently-edited photos into the active
+                // tab's slot before submission so the latest edits make
+                // it into the per-item submission below.
+                const liveMap: Record<string, string[]> = activePhotoKey
+                  ? { ...photosByItemKey, [activePhotoKey]: photoUrls }
+                  : photosByItemKey;
+                // Multi-device cart → one lead POST per cart item (each
+                // carrying its own photos). Single device → single lead
+                // with the full spec payload as before. Skywalker
+                // 2026-05-17.
+                const isMultiCart = cartItems.length > 1;
+                if (isMultiCart) {
+                  for (const it of cartItems) {
+                    const key = `${it.modelId}-${it.storage}-${it.condition}`;
+                    const itemPhotos = liveMap[key] ?? [];
+                    const r = await fetch("/api/lead", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        name, phone, email,
+                        device: deviceType,
+                        model: it.model,
+                        storage: it.storage,
+                        condition: it.condition,
+                        carrier: carrier?.label,
+                        quote: it.price * it.quantity,
+                        payout: payout?.label,
+                        quantity: it.quantity,
+                        photos: itemPhotos,
+                        handoff: handoffPayload,
+                      }),
+                    });
+                    if (!r.ok) throw new Error("Failed");
+                  }
+                } else {
+                  const singleKey = model && condition ? `${model.id}-${storage?.label || 'N/A'}-${condition.label}` : "";
+                  const singlePhotos = (singleKey && liveMap[singleKey]) || photoUrls;
+                  const res = await fetch("/api/lead", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean) }),
+                  });
+                  if (!res.ok) throw new Error('Failed');
+                }
                 if (email || phone) {
                   fetch("/api/confirm", {
                     method: "POST",
@@ -11114,11 +11160,73 @@ export default function Home() {
                 )}
               </div>
 
+              {/* Multi-device PHOTO TABS — only when cart has 2+ items.
+                  Each tab lets the customer upload a distinct photo set
+                  per device (Skywalker 2026-05-17 "give them the option
+                  to add pictures for each having a tab"). Sealed-tier
+                  items don't need photos — their tab shows a "no photos
+                  needed" note instead of the grid. */}
+              {cartItems.length > 1 && (() => {
+                const items = cartItems.map((it, idx) => ({
+                  ...it,
+                  __idx: idx,
+                  __key: `${it.modelId}-${it.storage}-${it.condition}`,
+                  __isSealed: /^(sealed|brand[- ]?new|new in box|nib)$/i.test(it.condition),
+                }));
+                const effective = activePhotoKey || items[0].__key;
+                const active = items.find((i) => i.__key === effective) || items[0];
+                const switchTo = (key: string) => {
+                  // Snapshot current photos into the leaving tab's slot,
+                  // then load the next tab's photos.
+                  setPhotosByItemKey((prev) => ({ ...prev, [effective]: photoUrls }));
+                  setPhotoUrls(photosByItemKey[key] ?? []);
+                  setActivePhotoKey(key);
+                };
+                if (effective !== activePhotoKey) {
+                  // First render — initialize lazily without triggering loop
+                  setTimeout(() => setActivePhotoKey(effective), 0);
+                }
+                return (
+                  <div className="mb-2 pb-3 border-b border-white/8">
+                    <label className="block text-xs font-medium text-[#e6e6e6] mb-2 uppercase tracking-wider">
+                      Add photos for each device <span className="normal-case text-[12px]">({items.length} in cart)</span>
+                    </label>
+                    <div className="flex gap-1.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                      {items.map((it) => {
+                        const isActive = it.__key === effective;
+                        const count = (photosByItemKey[it.__key] ?? (it.__key === effective ? photoUrls : [])).length;
+                        return (
+                          <button
+                            key={it.__key}
+                            type="button"
+                            onClick={() => switchTo(it.__key)}
+                            className={`shrink-0 px-3 py-2 rounded-lg border text-left transition cursor-pointer
+                              ${isActive ? "bg-[#00c853]/15 border-[#00c853]/45 text-white" : "bg-white/5 border-white/10 text-[#c5c5c5] hover:bg-white/10"}`}
+                          >
+                            <p className="text-[11px] font-bold leading-tight whitespace-nowrap">{it.model}</p>
+                            <p className="text-[9px] uppercase tracking-wider opacity-70 mt-0.5">
+                              {it.__isSealed ? "Sealed · no photos needed" : `${count}/3 photos`}
+                            </p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {active.__isSealed && (
+                      <div className="mt-3 bg-emerald-500/8 border border-emerald-500/25 rounded-xl px-3 py-2.5">
+                        <p className="text-[12px] text-emerald-200 font-semibold">📦 Brand new in sealed box</p>
+                        <p className="text-[11px] text-emerald-100/70 mt-0.5">No photos needed for this device — staff verifies at handoff.</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
               <div>
                 <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
-                  Device Photos {condition?.id === "broken" || condition?.id === "fair"
-                    ? <span className="normal-case text-[12px] text-[#00c853]">— recommended for {condition?.id === "broken" ? "broken" : "worn"} devices to lock in your quote</span>
-                    : <span className="normal-case text-[12px]">(optional — up to 3, speeds up payout)</span>}
+                  {cartItems.length > 1
+                    ? <>Photos for <span className="text-[#00c853]">{(cartItems.find((it) => `${it.modelId}-${it.storage}-${it.condition}` === activePhotoKey)?.model) || cartItems[0].model}</span></>
+                    : <>Device Photos {condition?.id === "broken" || condition?.id === "fair"
+                        ? <span className="normal-case text-[12px] text-[#00c853]">— recommended for {condition?.id === "broken" ? "broken" : "worn"} devices to lock in your quote</span>
+                        : <span className="normal-case text-[12px]">(optional — up to 3, speeds up payout)</span>}</>}
                 </label>
                 {/* PHOTO CAPTURE — 3-slot grid (Front / Back / Screen On)
                     per Skywalker 2026-05-17 "lets create a nice ui for
