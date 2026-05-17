@@ -8113,7 +8113,6 @@ export default function Home() {
               { num: "1", title: "Back up your data", body: "iCloud, Google One, or your computer — whatever works. Takes minutes." },
               { num: "2", title: "Turn off Find My iPhone", body: "Settings → [your name] → Find My → Find My iPhone → off. Required before we can pay." },
               { num: "3", title: "Charge to at least 20%", body: "We need to power-on test the device. 20% is plenty." },
-              { num: "4", title: "Bring your ID", body: "Texas DL or US passport. Required by Austin's pawn / secondhand-goods ordinance." },
             ].map((item, i) => (
               <div key={item.num} className="flex items-start gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 reveal" data-stagger={Math.min(i + 2, 8)}>
                 <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-sm font-bold shrink-0">{item.num}</div>
