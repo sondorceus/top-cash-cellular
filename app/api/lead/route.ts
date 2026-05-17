@@ -235,7 +235,12 @@ export async function POST(req: NextRequest) {
         `Name: ${name}`,
         `Phone: ${phone}`,
         email ? `Email: ${email}` : null,
+        // Headline summary so the staff feed's model column reads
+        // sensibly without parsing the indented device list.
+        `Device: ${device || "multi"} — ${model || `${deviceList.length} devices`}`,
+        `Condition: Multi-device (${deviceList.length})`,
         carrier ? `Carrier: ${carrier}` : null,
+        `Quote: $${deviceList.reduce((s, d) => s + (Number(d.quote) || 0) * (Number(d.quantity) || 1), 0)}`,
         `Payout: ${payout}`,
         ...multiLines,
         ...handoffLines,

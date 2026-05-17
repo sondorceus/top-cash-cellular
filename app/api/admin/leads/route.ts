@@ -110,7 +110,11 @@ export async function GET(req: NextRequest) {
   // Pass 2: collect leads.
   const leads: AdminLead[] = [];
   for (const m of messages) {
-    if (!m.body || !m.body.includes("[NEW BUYBACK LEAD]")) continue;
+    // Match BOTH the single-device header "[NEW BUYBACK LEAD]" AND
+    // the multi-device header "[NEW BUYBACK LEAD — N DEVICES]".
+    // Skywalker 2026-05-17: multi-device leads were getting skipped
+    // because the literal includes() check missed them.
+    if (!m.body || !/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
     const deviceLine = parseField(m.body, "Device");
     const status = statusByLead.get(m.id);
     const photosLine = parseField(m.body, "Photos");
