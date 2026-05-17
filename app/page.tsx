@@ -10884,7 +10884,13 @@ export default function Home() {
                     body: JSON.stringify({ name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity }),
                   }).catch(() => {});
                 }
-                localStorage.removeItem("tcc-session"); setStep("done"); pushHistory("done");
+                // Wipe cart + session after submission. Previously only the
+                // session was cleared, so the cart icon kept showing the
+                // device the user just successfully submitted — confusing.
+                setCartItems([]);
+                try { localStorage.removeItem("tcc-cart"); } catch {}
+                localStorage.removeItem("tcc-session");
+                setStep("done"); pushHistory("done");
               } catch { alert("Something went wrong. Please try again or call us directly."); }
             }} className="space-y-4">
               {/* HANDOFF SECTION — if the user picked Local or Shipping on the
