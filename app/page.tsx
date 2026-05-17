@@ -7034,7 +7034,10 @@ export default function Home() {
                         { model: "ipadpro13m5", title: "iPad Pro 13\"", floor: 610, photo: "/devices/ipad-pro-13-m5.webp", dt: "ipad" as const, cat: "tablets" as const },
                       ]).map(d => {
                         const topPrice = getMaxPrice({ id: d.model, base: d.floor }, d.dt);
-                        const imgCls = (d as { tight?: boolean }).tight ? "w-9 h-9" : "w-12 h-12";
+                        // Same tight wrap pattern as the hero widget: edge-to-edge
+                        // photos render inside a same-size slot with explicit
+                        // padding so they don't visually dominate the row.
+                        const isTight = (d as { tight?: boolean }).tight;
                         return (
                           <button
                             key={d.model}
@@ -7047,7 +7050,13 @@ export default function Home() {
                             }}
                             className="flex flex-col items-center text-center gap-1 p-3 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer tap-press"
                           >
-                            <img src={d.photo} alt={d.title} className={`${imgCls} object-contain mb-1`} loading="lazy" />
+                            {isTight ? (
+                              <div className="w-12 h-12 mb-1 flex items-center justify-center p-2">
+                                <img src={d.photo} alt={d.title} className="w-full h-full object-contain" loading="lazy" />
+                              </div>
+                            ) : (
+                              <img src={d.photo} alt={d.title} className="w-12 h-12 object-contain mb-1" loading="lazy" />
+                            )}
                             <p className="text-[11px] font-semibold text-white leading-tight min-h-[2.2em]">{d.title}</p>
                             <p className="text-[#00c853] text-sm font-extrabold leading-none">up to ${topPrice}</p>
                           </button>
@@ -7802,9 +7811,16 @@ export default function Home() {
                   { model: "ipadpro13m5", title: "iPad Pro 13\" M5", floor: 610, photo: "/devices/ipad-pro-13-m5.webp", dt: "ipad" as const, cat: "tablets" as const },
                 ]).map(d => {
                   const topPrice = getMaxPrice({ id: d.model, base: d.floor }, d.dt);
-                  const imgCls = (d as { tight?: boolean }).tight
-                    ? "w-10 h-10 md:w-14 md:h-14 object-contain mb-2"
-                    : "w-16 h-16 md:w-20 md:h-20 object-contain mb-2";
+                  // Default: image fills its w-16/w-20 slot directly.
+                  // 'tight': image lives inside the SAME-size slot but
+                  // with explicit padding, so edge-to-edge product photos
+                  // (e.g. the Samsung press composite) end up visually
+                  // smaller and balanced with naturally-padded shots
+                  // like iPhone / MacBook / iPad. Slot size stays
+                  // constant so the row's vertical rhythm is preserved.
+                  const isTight = (d as { tight?: boolean }).tight;
+                  const imgCls = "w-16 h-16 md:w-20 md:h-20 object-contain mb-2";
+                  const tightWrapCls = "w-16 h-16 md:w-20 md:h-20 mb-2 flex items-center justify-center p-3 md:p-4";
                   return (
                     <button
                       key={d.model}
@@ -7817,7 +7833,13 @@ export default function Home() {
                       }}
                       className="group bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press"
                     >
-                      <img src={d.photo} alt={d.title} className={imgCls} loading="lazy" />
+                      {isTight ? (
+                        <div className={tightWrapCls}>
+                          <img src={d.photo} alt={d.title} className="w-full h-full object-contain" loading="lazy" />
+                        </div>
+                      ) : (
+                        <img src={d.photo} alt={d.title} className={imgCls} loading="lazy" />
+                      )}
                       <p className="text-white text-[11px] md:text-xs font-semibold leading-tight mb-1 min-h-[2.2em]">{d.title}</p>
                       <p className="text-[#00c853] text-lg md:text-xl font-extrabold leading-none">up to ${topPrice}</p>
                       <p className="text-[#e6e6e6] text-[10px] mt-1.5 group-hover:text-[#00c853] transition font-semibold">Get my quote →</p>
