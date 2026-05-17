@@ -41,6 +41,7 @@ interface AdminLead {
   charger?: string;
   connectivity?: string;
   extras?: string[];
+  paidOff?: boolean | null;
   status: string;
   statusUpdatedAt?: string;
   latestNote?: string;
@@ -136,6 +137,13 @@ export async function GET(req: NextRequest) {
     }
     const extrasLine = parseField(m.body, "Extras");
     const extras = extrasLine ? extrasLine.split(",").map((s) => s.trim()).filter(Boolean) : undefined;
+    const balanceLine = parseField(m.body, "Balance");
+    let paidOff: AdminLead["paidOff"] = undefined;
+    if (balanceLine) {
+      const b = balanceLine.toLowerCase();
+      if (b.includes("not paid")) paidOff = false;
+      else if (b.includes("fully paid") || b.includes("paid off")) paidOff = true;
+    }
     const notes = notesByLead.get(m.id) || [];
     notes.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
     const latestNote = notes[0];
@@ -178,6 +186,7 @@ export async function GET(req: NextRequest) {
       charger:           parseField(m.body, "Charger"),
       connectivity:      parseField(m.body, "Connectivity"),
       extras,
+      paidOff,
       status: status?.status || "quote_requested",
       statusUpdatedAt: status?.timestamp,
       latestNote: latestNote?.text,

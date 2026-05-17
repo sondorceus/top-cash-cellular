@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
 <div style="font-size:11px;color:#00c853;letter-spacing:0.18em;text-transform:uppercase;font-weight:800;margin-bottom:10px">Before we meet</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px">
 <tr><td style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;color:#d4d4d4;line-height:1.55"><strong style="color:#fff">Required:</strong> Reset your device and turn off "Find My" or Android Activation Lock.</td></tr>
-<tr><td style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;color:#d4d4d4;line-height:1.55"><strong style="color:#fff">Optional:</strong> Confirm the device is fully paid off (financed offers may be adjusted up to 75%).</td></tr>
+<tr><td style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;color:#d4d4d4;line-height:1.55"><strong style="color:#fff">Check:</strong> Confirm there's no outstanding balance with your carrier — see our <a href="https://topcashcellular.com/faq" style="color:#00c853;text-decoration:none">FAQ</a> for how this affects the offer.</td></tr>
 <tr><td style="padding:14px 20px;font-size:13px;color:#d4d4d4;line-height:1.55"><strong style="color:#fff">Optional:</strong> Remove SIM, SD card, screen protector, and case.</td></tr>
 </table>
 </td></tr>

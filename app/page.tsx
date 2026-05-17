@@ -2863,10 +2863,10 @@ const getDeviceGroups = <T extends { id: string }>(deviceType: string | null | u
 
 const CONDITIONS = [
   { id: "sealed", label: "Sealed", desc: "Factory sealed, never opened", multiplier: 1.03, icon: "📦", details: ["Still in factory original sealed packaging", "Plastic wrap or seal is intact and has not been tampered with", "Device has never been activated or powered on", "Must include original box with matching serial number", "Contains all original accessories unopened"] },
-  { id: "mint", label: "Mint", desc: "Like new, zero signs of use", multiplier: 1.0, icon: "✨", details: ["Zero scratches, scuffs, or other marks — looks brand new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 90% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
-  { id: "verygood", label: "Very Good", desc: "Minimal use, barely noticeable wear", multiplier: 0.969, icon: "💎", details: ["Very light scratches or scuffs barely visible — no dents or dings", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
-  { id: "good", label: "Good", desc: "Normal wear, fully functional", multiplier: 0.969, icon: "👍", details: ["Light to moderate signs of wear — visible scratches and/or minor dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended", "Must be paid off and free of any financial obligations"] },
-  { id: "fair", label: "Fair", desc: "Heavy wear, still functional", multiplier: 0.852, icon: "👌", details: ["Heavy signs of wear — deep scratches, dents, or scuffs", "Display is free of cracks but may have minor blemishes", "Battery may be below 80% capacity", "Powers on and functions as intended", "Must be paid off and free of any financial obligations"] },
+  { id: "mint", label: "Mint", desc: "Like new, zero signs of use", multiplier: 1.0, icon: "✨", details: ["Zero scratches, scuffs, or other marks — looks brand new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 90% capacity", "Powers on and functions 100% as intended"] },
+  { id: "verygood", label: "Very Good", desc: "Minimal use, barely noticeable wear", multiplier: 0.969, icon: "💎", details: ["Very light scratches or scuffs barely visible — no dents or dings", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended"] },
+  { id: "good", label: "Good", desc: "Normal wear, fully functional", multiplier: 0.969, icon: "👍", details: ["Light to moderate signs of wear — visible scratches and/or minor dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended"] },
+  { id: "fair", label: "Fair", desc: "Heavy wear, still functional", multiplier: 0.852, icon: "👌", details: ["Heavy signs of wear — deep scratches, dents, or scuffs", "Display is free of cracks but may have minor blemishes", "Battery may be below 80% capacity", "Powers on and functions as intended"] },
   { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: "⚠️", details: ["Cracked screen, broken buttons, or damaged housing", "Display defects such as dead pixels, white spots, or burn-in", "May have functional issues — touchscreen, speakers, cameras", "Device still powers on", "No signs of liquid intrusion or water damage"] },
 ];
 
@@ -5950,6 +5950,12 @@ export default function Home() {
   // option to add pictures for each having a tab".
   const [photosByItemKey, setPhotosByItemKey] = useState<Record<string, string[]>>({});
   const [activePhotoKey, setActivePhotoKey] = useState<string>("");
+  // Carrier balance status — captured at checkout as a Yes / No question.
+  // Skywalker 2026-05-17 — we DO buy devices that aren't fully paid off
+  // but the offer may be reduced because the carrier can blacklist them.
+  // Surfaced to staff in the lead body. Stolen-reported devices are out
+  // of scope here (separate filter).
+  const [paidOff, setPaidOff] = useState<boolean | null>(null);
   const [inquiryDesc, setInquiryDesc] = useState("");
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -10993,6 +10999,7 @@ export default function Home() {
                         quantity: it.quantity,
                         photos: itemPhotos,
                         handoff: handoffPayload,
+                        paidOff,
                       }),
                     });
                     if (!r.ok) throw new Error("Failed");
@@ -11003,7 +11010,7 @@ export default function Home() {
                   const res = await fetch("/api/lead", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean) }),
+                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff }),
                   });
                   if (!res.ok) throw new Error('Failed');
                 }
@@ -11164,6 +11171,42 @@ export default function Home() {
                 )}
                 {imeiState === "error" && imeiResult?.error && (
                   <p className="text-xs text-red-400 mt-1.5">{imeiResult.error}</p>
+                )}
+              </div>
+
+              {/* Carrier-balance Yes / No — Skywalker 2026-05-17. Captures
+                  whether the device is fully paid off so staff can adjust
+                  the offer for blacklist risk on financed devices. */}
+              <div>
+                <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
+                  Carrier balance status
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPaidOff(true)}
+                    className={`px-3 py-3 rounded-xl border text-left transition cursor-pointer
+                      ${paidOff === true ? "bg-[#00c853]/15 border-[#00c853]/45 text-white" : "bg-white/5 border-white/10 text-[#c5c5c5] hover:bg-white/10"}`}
+                  >
+                    <p className="text-[13px] font-bold leading-tight">No balance owed</p>
+                    <p className="text-[11px] opacity-70 mt-0.5">Device is fully paid off</p>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaidOff(false)}
+                    className={`px-3 py-3 rounded-xl border text-left transition cursor-pointer
+                      ${paidOff === false ? "bg-amber-500/15 border-amber-500/45 text-white" : "bg-white/5 border-white/10 text-[#c5c5c5] hover:bg-white/10"}`}
+                  >
+                    <p className="text-[13px] font-bold leading-tight">Balance still owed</p>
+                    <p className="text-[11px] opacity-70 mt-0.5">Financed or installment plan</p>
+                  </button>
+                </div>
+                {paidOff === false && (
+                  <div className="mt-2 px-3 py-2.5 rounded-lg bg-amber-500/8 border border-amber-500/25">
+                    <p className="text-[12px] text-amber-200 leading-snug">
+                      Heads up — devices with an outstanding balance can be blacklisted by the carrier, which lowers their resale value. We&apos;ll still make an offer, but it may be reduced. See our <a href="/faq" className="underline">FAQ</a> for details.
+                    </p>
+                  </div>
                 )}
               </div>
 

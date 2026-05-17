@@ -49,6 +49,10 @@ const FAQ = [
     a: "Yes — most of them. Pick the 'Broken' tier when getting your quote. Some catastrophic damage (severe water, motherboard failure with no power) may be priced as parts.",
   },
   {
+    q: "What if my device still has a balance on it?",
+    a: "We can still buy devices that aren't fully paid off — but the offer may be lower. Carriers can blacklist a device for unpaid balance, which makes it unsellable on the secondary market. We adjust the offer to account for that risk. Stolen or fraud-reported devices are different — those we do not buy.",
+  },
+  {
     q: "How do coupon codes work?",
     a: "Enter the code on the quote page before adding to cart. Active codes apply a percentage bonus on top of your quote. Codes can be combined with promotions.",
   },

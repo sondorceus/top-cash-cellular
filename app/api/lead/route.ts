@@ -109,7 +109,7 @@ function needsManualReview(modelName: string, quoteAmt: number): boolean {
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff } = data;
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
 
   // Dedup check — wider window for custom-quote flows (free-text descriptions)
@@ -147,6 +147,10 @@ export async function POST(req: NextRequest) {
   if (Array.isArray(extras) && extras.length > 0) {
     specLines.push(`Extras: ${(extras as string[]).join(", ")}`);
   }
+  // Carrier balance status — Skywalker 2026-05-17. We DO buy devices
+  // with a balance, but the offer is adjusted for blacklist risk.
+  if (paidOff === false) specLines.push("Balance: ⚠️ NOT PAID OFF — blacklist risk, adjust offer");
+  else if (paidOff === true) specLines.push("Balance: Fully paid off");
 
   const imeiLines: string[] = [];
   if (imei) imeiLines.push(`IMEI: ${imei}`);

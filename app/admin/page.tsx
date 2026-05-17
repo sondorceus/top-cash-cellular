@@ -29,6 +29,7 @@ interface Lead {
   charger?: string;
   connectivity?: string;
   extras?: string[];
+  paidOff?: boolean | null;
   status: string;
   statusUpdatedAt?: string;
   latestNote?: string;
@@ -768,6 +769,14 @@ export default function AdminPage() {
                           {lead.charger           && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Charger:</span> <span className="text-white font-medium">{lead.charger}</span></p>}
                           {lead.connectivity      && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Connectivity:</span> <span className="text-white font-medium">{lead.connectivity}</span></p>}
                           {lead.extras && lead.extras.length > 0 && <p className="text-[#c5c5c5] sm:col-span-2"><span className="text-[#8a8a8a]">Extras:</span> <span className="text-white font-medium">{lead.extras.join(", ")}</span></p>}
+                        </div>
+                      )}
+                      {/* Carrier-balance badge — surfaces the paid-off
+                          status front-and-center so staff can adjust the
+                          offer for blacklist risk. Skywalker 2026-05-17. */}
+                      {lead.paidOff === false && (
+                        <div className="mt-1.5">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-100 border border-amber-500/40">⚠️ BALANCE OWED · blacklist risk</span>
                         </div>
                       )}
                       {/* Damage badges — surface front/back-glass + functional
