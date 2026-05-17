@@ -47,6 +47,14 @@ interface Lead {
   grossMargin?: number;
   marginPercent?: number;
   marginFlag?: string;
+  // Handoff metadata so staff knows shipping vs local + the address /
+  // slot the seller picked. Skywalker 2026-05-17.
+  handoffMethod?: "ship" | "local";
+  shipAddress?: string;
+  shipPackaging?: string;
+  localArea?: string;
+  localSlot?: string;
+  handoffAction?: string;
 }
 
 const STATUS_OPTIONS = [
@@ -1047,6 +1055,39 @@ export default function AdminPage() {
                           ))}
                           {lead.photos.length > 3 && (
                             <span className="w-10 h-10 rounded bg-white/5 border border-white/10 flex items-center justify-center text-[10px] text-[#dcdcdc]">+{lead.photos.length - 3}</span>
+                          )}
+                        </div>
+                      )}
+                      {/* Handoff block — surfaces shipping address +
+                          packaging or local meetup area + slot + the
+                          action staff needs to take. Skywalker 2026-05-17. */}
+                      {lead.handoffMethod && (
+                        <div className={`mt-1.5 rounded-md p-2 border ${lead.handoffMethod === "ship" ? "bg-sky-500/[0.06] border-sky-500/30" : "bg-emerald-500/[0.06] border-emerald-500/30"}`}>
+                          <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${lead.handoffMethod === "ship" ? "text-sky-300" : "text-emerald-300"}`}>
+                            {lead.handoffMethod === "ship" ? "📦 Shipping" : "🤝 Local Meetup"}
+                          </p>
+                          {lead.handoffMethod === "ship" && (
+                            <>
+                              {lead.shipAddress && (
+                                <p className="text-[11px] text-[#e5e5e5]"><span className="text-[#8a8a8a]">Address:</span> <a href={`https://maps.google.com/?q=${encodeURIComponent(lead.shipAddress)}`} target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#00c853] hover:underline">{lead.shipAddress}</a></p>
+                              )}
+                              {lead.shipPackaging && (
+                                <p className="text-[11px] text-[#c5c5c5]"><span className="text-[#8a8a8a]">Packaging:</span> <span className="text-white">{lead.shipPackaging}</span></p>
+                              )}
+                            </>
+                          )}
+                          {lead.handoffMethod === "local" && (
+                            <>
+                              {lead.localArea && (
+                                <p className="text-[11px] text-[#e5e5e5]"><span className="text-[#8a8a8a]">Area:</span> <span className="text-white">{lead.localArea}</span></p>
+                              )}
+                              {lead.localSlot && (
+                                <p className="text-[11px] text-[#e5e5e5]"><span className="text-[#8a8a8a]">Slot:</span> <span className="text-white font-bold">{lead.localSlot}</span></p>
+                              )}
+                            </>
+                          )}
+                          {lead.handoffAction && (
+                            <p className="text-[11px] text-[#c5c5c5] mt-0.5 italic"><span className="text-[#8a8a8a] not-italic">Next:</span> {lead.handoffAction}</p>
                           )}
                         </div>
                       )}

@@ -63,9 +63,20 @@ interface AdminLead {
   grossMargin?: number;
   marginPercent?: number;
   marginFlag?: string; // "healthy" | "thin" | "low" | "manual"
+  // Handoff details parsed out of /api/lead's body. Staff needs these to
+  // know whether to print a shipping label or text the seller about a
+  // meetup. Skywalker 2026-05-17.
+  handoffMethod?: "ship" | "local";
+  shipAddress?: string;
+  shipPackaging?: string;
+  localArea?: string;
+  localSlot?: string;
+  handoffAction?: string;
 }
 
-const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "rejected"];
+// Includes "met" (in-person handoff terminal) alongside "paid" (digital
+// payout terminal) — Skywalker 2026-05-17.
+const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "met", "rejected"];
 
 function parseField(body: string, key: string): string | undefined {
   const m = body.match(new RegExp(`${key}:\\s*([^\\n]+)`, "i"));
@@ -83,7 +94,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const r = await fetch(`${MC_API}/api/comms?limit=300`, {
+  // Bumped 300 → 1000 so lead backlog of 100+ stays addressable. Each
+  // lead can have status / note / delete / restore comms in addition to
+  // the original [NEW BUYBACK LEAD], so 300 was running thin.
+  const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
     headers: { "x-api-key": MC_KEY },
     cache: "no-store",
   });
@@ -244,6 +258,19 @@ export async function GET(req: NextRequest) {
       const totalMatch = m.body.match(/Total payout:\s*\$([0-9,]+)/);
       if (totalMatch) totalPayout = parseInt(totalMatch[1].replace(/,/g, ""), 10);
     }
+    // Handoff method + details. /api/lead writes a header line like
+    //   "--- Handoff: SHIPPING ---" or "--- Handoff: LOCAL MEETUP ---"
+    // followed by Address/Packaging/Area/Slot/Action lines. Surface the
+    // method as a typed enum and each detail as its own field so the
+    // admin UI can render them neatly without re-parsing the body.
+    let handoffMethod: AdminLead["handoffMethod"] = undefined;
+    if (/--- Handoff:\s*SHIPPING/i.test(m.body)) handoffMethod = "ship";
+    else if (/--- Handoff:\s*LOCAL MEETUP/i.test(m.body)) handoffMethod = "local";
+    const shipAddress = parseField(m.body, "Address");
+    const shipPackaging = parseField(m.body, "Packaging");
+    const localArea = parseField(m.body, "Area");
+    const localSlot = parseField(m.body, "Slot");
+    const handoffAction = parseField(m.body, "Action");
     const notes = notesByLead.get(m.id) || [];
     notes.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
     const latestNote = notes[0];
@@ -301,9 +328,19 @@ export async function GET(req: NextRequest) {
       grossMargin,
       marginPercent,
       marginFlag,
+      handoffMethod,
+      shipAddress,
+      shipPackaging,
+      localArea,
+      localSlot,
+      handoffAction,
     });
   }
 
   leads.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
-  return NextResponse.json({ leads: leads.slice(0, 50), count: leads.length });
+  // Cap raised from 50 → 200 so Skywalker can see the full backlog from
+  // the admin without paging. MC returns 300 messages per fetch and most
+  // are non-lead chatter, so 200 leaves headroom without breaking the
+  // page render.
+  return NextResponse.json({ leads: leads.slice(0, 200), count: leads.length });
 }
