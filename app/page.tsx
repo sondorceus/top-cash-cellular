@@ -11120,53 +11120,104 @@ export default function Home() {
                     ? <span className="normal-case text-[12px] text-[#00c853]">— recommended for {condition?.id === "broken" ? "broken" : "worn"} devices to lock in your quote</span>
                     : <span className="normal-case text-[12px]">(optional — up to 3, speeds up payout)</span>}
                 </label>
-                {photoUrls.length < 3 && (
-                  <label className={`flex flex-col items-center justify-center w-full h-28 bg-white/5 border-2 border-dashed border-white/15 rounded-xl cursor-pointer hover:bg-white/10 hover:border-[#00c853]/30 transition ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
-                    <svg className="w-8 h-8 text-[#d4d4d4] mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    <span className="text-[#d4d4d4] text-xs">
-                      {uploading ? "Uploading…" : photoUrls.length === 0 ? "Tap to add front, back & screen-on photos" : `Add another (${photoUrls.length}/3)`}
-                    </span>
-                    <input type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={async (e) => {
-                      const files = e.target.files;
-                      if (!files?.length) return;
-                      setUploading(true);
-                      setPhotoError(null);
-                      const urls: string[] = [...photoUrls];
-                      let firstErr: string | null = null;
-                      for (const file of Array.from(files)) {
-                        if (urls.length >= 3) break;
-                        if (file.size > 20 * 1024 * 1024) { firstErr = firstErr || `Photo "${file.name}" is over 20MB.`; continue; }
-                        try {
-                          const fd = new FormData();
-                          fd.append("file", file);
-                          const res = await fetch("/api/upload", { method: "POST", body: fd });
-                          const data = await res.json().catch(() => ({}));
-                          if (!res.ok) { firstErr = firstErr || (data?.error ? `Upload failed: ${data.error}` : `Upload failed (HTTP ${res.status}).`); continue; }
-                          if (data?.url) urls.push(data.url);
-                          else firstErr = firstErr || "Upload returned no URL.";
-                        } catch (err) {
-                          firstErr = firstErr || `Upload error: ${(err as Error).message || "network failure"}`;
-                        }
-                      }
-                      setPhotoUrls(urls);
-                      if (firstErr) setPhotoError(firstErr);
-                      setUploading(false);
-                      e.target.value = "";
-                    }} />
-                  </label>
+                {/* PHOTO CAPTURE — 3-slot grid (Front / Back / Screen On)
+                    per Skywalker 2026-05-17 "lets create a nice ui for
+                    photo taking". Each slot is its own clickable target
+                    with an icon + contextual label so customers know
+                    exactly what to capture. Filled slots show the
+                    thumbnail with a remove × overlay. Slots fill in
+                    order — the next-up slot pulses green. The legacy
+                    single-button fallback rendering below is unused now
+                    but left in case we want to revert. */}
+                <div className="grid grid-cols-3 gap-2">
+                  {([
+                    { label: "Front",     hint: "Face up",   icon: "screen" as const },
+                    { label: "Back",      hint: "Logo side", icon: "back"   as const },
+                    { label: "Screen On", hint: "Powered",   icon: "power"  as const },
+                  ]).map((slot, i) => {
+                    const url = photoUrls[i];
+                    if (url) {
+                      return (
+                        <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-white/15">
+                          <img src={url} alt={`${slot.label} photo`} className="w-full h-full object-cover" />
+                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent px-2 py-1.5">
+                            <p className="text-[10px] uppercase tracking-wider text-white font-bold">{slot.label}</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setPhotoUrls(photoUrls.filter((_, j) => j !== i))}
+                            aria-label={`Remove ${slot.label} photo`}
+                            className="absolute top-1.5 right-1.5 w-7 h-7 bg-black/75 backdrop-blur-sm rounded-full text-white text-lg font-bold flex items-center justify-center cursor-pointer hover:bg-red-500 transition"
+                          >×</button>
+                        </div>
+                      );
+                    }
+                    const isNextUp = i === photoUrls.length;
+                    const isLocked = i > photoUrls.length;
+                    return (
+                      <label
+                        key={i}
+                        className={`relative aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center text-center px-1.5 transition
+                          ${isLocked ? "bg-white/[0.02] border-white/8 cursor-not-allowed opacity-50" : "bg-white/5 border-white/20 cursor-pointer hover:bg-white/10 hover:border-[#00c853]/50"}
+                          ${isNextUp && !uploading && !isLocked ? "border-[#00c853]/45 shadow-[0_0_0_3px_rgba(0,200,83,0.08)]" : ""}
+                          ${uploading ? "opacity-50 pointer-events-none" : ""}`}
+                      >
+                        <svg className={`w-7 h-7 mb-1 ${isNextUp && !isLocked ? "text-[#00c853]" : "text-[#d4d4d4]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+                          {slot.icon === "screen" && (<><rect x="6" y="3" width="12" height="18" rx="2" /><line x1="11" y1="18" x2="13" y2="18" /></>)}
+                          {slot.icon === "back" && (<><rect x="6" y="3" width="12" height="18" rx="2" /><circle cx="12" cy="9" r="1.5" /><circle cx="12" cy="9" r="3" strokeDasharray="2 2" /></>)}
+                          {slot.icon === "power" && (<><rect x="6" y="3" width="12" height="18" rx="2" /><path d="M10.5 9.5 V12 M13.5 9.5 V12 M9.5 14 q2.5 2 5 0" strokeLinecap="round" /></>)}
+                        </svg>
+                        <p className="text-[10px] uppercase tracking-wider font-bold text-white leading-tight">{slot.label}</p>
+                        <p className="text-[9px] text-[#a8a8a8] mt-0.5 leading-tight">{slot.hint}</p>
+                        {isNextUp && !uploading && !isLocked && (
+                          <span className="absolute top-1.5 left-1.5 text-[8px] uppercase tracking-wider font-bold text-[#00c853] bg-[#00c853]/15 px-1.5 py-0.5 rounded">Tap</span>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          capture="environment"
+                          disabled={isLocked || uploading}
+                          className="hidden"
+                          onChange={async (e) => {
+                            const files = e.target.files;
+                            if (!files?.length) return;
+                            setUploading(true);
+                            setPhotoError(null);
+                            const urls: string[] = [...photoUrls];
+                            let firstErr: string | null = null;
+                            for (const file of Array.from(files)) {
+                              if (urls.length >= 3) break;
+                              if (file.size > 20 * 1024 * 1024) { firstErr = firstErr || `Photo "${file.name}" is over 20MB.`; continue; }
+                              try {
+                                const fd = new FormData();
+                                fd.append("file", file);
+                                const res = await fetch("/api/upload", { method: "POST", body: fd });
+                                const data = await res.json().catch(() => ({}));
+                                if (!res.ok) { firstErr = firstErr || (data?.error ? `Upload failed: ${data.error}` : `Upload failed (HTTP ${res.status}).`); continue; }
+                                if (data?.url) urls.push(data.url);
+                                else firstErr = firstErr || "Upload returned no URL.";
+                              } catch (err) {
+                                firstErr = firstErr || `Upload error: ${(err as Error).message || "network failure"}`;
+                              }
+                            }
+                            setPhotoUrls(urls);
+                            if (firstErr) setPhotoError(firstErr);
+                            setUploading(false);
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                    );
+                  })}
+                </div>
+                {uploading && (
+                  <p className="mt-2 text-xs text-[#00c853] flex items-center gap-1.5">
+                    <span className="inline-block w-3 h-3 rounded-full border-2 border-[#00c853] border-t-transparent animate-spin" />
+                    Uploading…
+                  </p>
                 )}
                 {photoError && (
                   <p className="mt-2 text-xs text-red-300 bg-red-900/20 border border-red-700/40 rounded-lg px-3 py-2">{photoError}</p>
-                )}
-                {photoUrls.length > 0 && (
-                  <div className="flex gap-2 mt-2 flex-wrap">
-                    {photoUrls.map((url, i) => (
-                      <div key={i} className="relative">
-                        <img src={url} alt={`Device photo ${i + 1}`} className="w-20 h-20 object-cover rounded-lg border border-white/10" />
-                        <button type="button" onClick={() => setPhotoUrls(photoUrls.filter((_, j) => j !== i))} aria-label="Remove photo" className="absolute -top-1.5 -right-1.5 w-6 h-6 bg-red-500 rounded-full text-white text-xs font-bold flex items-center justify-center cursor-pointer hover:bg-red-600">×</button>
-                      </div>
-                    ))}
-                  </div>
                 )}
               </div>
               <p className="text-[#c5c5c5] text-[11px] text-center leading-relaxed">By submitting, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
