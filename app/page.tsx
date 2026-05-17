@@ -1186,7 +1186,7 @@ const PIXEL_SERIES = [
     { id: "px7", label: "Pixel 7", base: 48, image: "/devices/pixel-7.webp" },
     { id: "px7a", label: "Pixel 7a", base: 11, image: "/devices/pixel-7a.webp" },
     { id: "px6", label: "Pixel 6", base: 42, image: "/devices/pixel-6.webp" },
-    { id: "px6a", label: "Pixel 6a", base: 0, image: "/devices/pixel-6a.webp" },
+    { id: "px6a", label: "Pixel 6a", base: 0, inquiryOnly: true, image: "/devices/pixel-6a.webp" },
     { id: "px5", label: "Pixel 5", base: 53, image: "/devices/px5.webp" },
     { id: "px5a", label: "Pixel 5a (5G)", base: 32, image: "/devices/px5a.webp" },
   ]},
@@ -1240,7 +1240,7 @@ const MACBOOK_AIR_MODELS = [
 // the 256GB Atlas Open price (- $250); the storage multiplier on the
 // storage step bumps it for 512GB selections.
 const MACBOOK_NEO_MODELS = [
-  { id: "mbneo13", label: "MacBook Neo 13\" (A18 Pro, 2026)", base: 0 },
+  { id: "mbneo13", label: "MacBook Neo 13\" (A18 Pro, 2026)", base: 0, inquiryOnly: true },
 ];
 const MACBOOK_CLASSIC_MODELS = [
   { id: "mb12_2017", label: "MacBook 12\" (2017)", base: 0, inquiryOnly: true },
@@ -1493,11 +1493,11 @@ const LENOVO_PC_SERIES = [
 const LENOVO_PC_ALL_SUB_SERIES: { id: string; label: string; variants: { id: string; label: string; base: number }[] }[] = [];
 
 const DELL_MODELS = [
-  { id: "dxps17", label: "XPS 17 (2024)", base: 0, image: "/devices/dell-xps.webp" },
+  { id: "dxps17", label: "XPS 17 (2024)", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
   { id: "dxps15", label: "XPS 15 (2024)", base: 620, image: "/devices/dell-xps.webp" },
   { id: "dxps13", label: "XPS 13 (2024)", base: 420, image: "/devices/dell-xps.webp" },
-  { id: "dxps15g23", label: "XPS 15 (2023)", base: 0, image: "/devices/dell-xps.webp" },
-  { id: "dxps13g23", label: "XPS 13 (2023)", base: 0, image: "/devices/dell-xps.webp" },
+  { id: "dxps15g23", label: "XPS 15 (2023)", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dxps13g23", label: "XPS 13 (2023)", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
   { id: "dlat7440", label: "Latitude 7440", base: 630, inquiryOnly: false, image: "/devices/dell-latitude.jpg" },
   { id: "dlat5540", label: "Latitude 5540", base: 630, inquiryOnly: false, image: "/devices/dell-latitude.jpg" },
   { id: "dinsp16p", label: "Inspiron 16 Plus", base: 284, inquiryOnly: false, image: "/devices/dell-inspiron-15.webp" },
@@ -1871,37 +1871,37 @@ const APPLE_DESKTOP_MODELS = [
 ];
 
 const DELL_DESKTOP_MODELS = [
-  { id: "doptiplex7010", label: "OptiPlex 7010", base: 0, image: "/devices/dell-optiplex-tower.webp" },
-  { id: "doptiplex5000", label: "OptiPlex 5000", base: 0, image: "/devices/dell-optiplex-sff.webp" },
-  { id: "dxps8960", label: "XPS Desktop 8960", base: 0, image: "/devices/dell-xps-8960.webp" },
-  { id: "dxps8950", label: "XPS Desktop 8950", base: 0, image: "/devices/dell-xps-8950.webp" },
-  { id: "dinsp3030", label: "Inspiron 3030 Desktop", base: 0 },
-  { id: "dprecision3680", label: "Precision 3680", base: 0, image: "/devices/dell-optiplex-tower.webp" },
+  { id: "doptiplex7010", label: "OptiPlex 7010", base: 0, inquiryOnly: true, image: "/devices/dell-optiplex-tower.webp" },
+  { id: "doptiplex5000", label: "OptiPlex 5000", base: 0, inquiryOnly: true, image: "/devices/dell-optiplex-sff.webp" },
+  { id: "dxps8960", label: "XPS Desktop 8960", base: 0, inquiryOnly: true, image: "/devices/dell-xps-8960.webp" },
+  { id: "dxps8950", label: "XPS Desktop 8950", base: 0, inquiryOnly: true, image: "/devices/dell-xps-8950.webp" },
+  { id: "dinsp3030", label: "Inspiron 3030 Desktop", base: 0, inquiryOnly: true },
+  { id: "dprecision3680", label: "Precision 3680", base: 0, inquiryOnly: true, image: "/devices/dell-optiplex-tower.webp" },
 ];
 
 const LENOVO_DESKTOP_MODELS = [
-  { id: "lnthinkm", label: "ThinkCentre M920", base: 0, image: "/devices/lenovo-thinkcentre-tower.webp" },
-  { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 0, image: "/devices/lenovo-thinkcentre-tiny.webp" },
+  { id: "lnthinkm", label: "ThinkCentre M920", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkcentre-tower.webp" },
+  { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkcentre-tiny.webp" },
   { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 342, inquiryOnly: false, image: "/devices/lenovo-thinkcentre-tower.webp" },
   { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 558, inquiryOnly: false, image: "/devices/lenovo-thinkcentre-tower.webp" },
-  { id: "lnideactower", label: "IdeaCentre 5i", base: 0, image: "/devices/lenovo-thinkcentre-sff.webp" },
+  { id: "lnideactower", label: "IdeaCentre 5i", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkcentre-sff.webp" },
 ];
 
 const HP_DESKTOP_MODELS = [
-  { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 0, image: "/devices/hp-elitedesk-800.webp" },
-  { id: "hpprodesk", label: "ProDesk 400 G9", base: 0, image: "/devices/hp-prodesk-400.webp" },
-  { id: "hpomendsk", label: "OMEN 45L Desktop", base: 800, image: "/devices/hp-omen-45l.webp" },
-  { id: "hpomen40", label: "OMEN 40L Desktop", base: 0, image: "/devices/hp-omen-35l.webp" },
-  { id: "hpenvy34", label: "Envy 34 All-in-One", base: 0, image: "/devices/lenovo-ideacentre.webp" },
-  { id: "hppav32", label: "Pavilion 32 All-in-One", base: 0, image: "/devices/lenovo-ideacentre.webp" },
+  { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 0, inquiryOnly: true, image: "/devices/hp-elitedesk-800.webp" },
+  { id: "hpprodesk", label: "ProDesk 400 G9", base: 0, inquiryOnly: true, image: "/devices/hp-prodesk-400.webp" },
+  { id: "hpomendsk", label: "OMEN 45L Desktop", base: 800, inquiryOnly: false, image: "/devices/hp-omen-45l.webp" },
+  { id: "hpomen40", label: "OMEN 40L Desktop", base: 0, inquiryOnly: true, image: "/devices/hp-omen-35l.webp" },
+  { id: "hpenvy34", label: "Envy 34 All-in-One", base: 0, inquiryOnly: true, image: "/devices/lenovo-ideacentre.webp" },
+  { id: "hppav32", label: "Pavilion 32 All-in-One", base: 0, inquiryOnly: true, image: "/devices/lenovo-ideacentre.webp" },
 ];
 
 const ASUS_DESKTOP_MODELS = [
-  { id: "asrogstrix", label: "ROG Strix G16CH", base: 0, image: "/devices/asus-rog-desktop.webp" },
-  { id: "asroghyper", label: "ROG Hyperion", base: 0, image: "/devices/asus-rog-desktop.webp" },
-  { id: "asrogflow", label: "ROG NUC", base: 0, image: "/devices/asus-rog-desktop.webp" },
-  { id: "astufgaming", label: "TUF Gaming Desktop", base: 0, image: "/devices/asus-rog-desktop.webp" },
-  { id: "asexperpro", label: "ExpertCenter D5", base: 0, image: "/devices/asus-rog-desktop.webp" },
+  { id: "asrogstrix", label: "ROG Strix G16CH", base: 0, inquiryOnly: true, image: "/devices/asus-rog-desktop.webp" },
+  { id: "asroghyper", label: "ROG Hyperion", base: 0, inquiryOnly: true, image: "/devices/asus-rog-desktop.webp" },
+  { id: "asrogflow", label: "ROG NUC", base: 0, inquiryOnly: true, image: "/devices/asus-rog-desktop.webp" },
+  { id: "astufgaming", label: "TUF Gaming Desktop", base: 0, inquiryOnly: true, image: "/devices/asus-rog-desktop.webp" },
+  { id: "asexperpro", label: "ExpertCenter D5", base: 0, inquiryOnly: true, image: "/devices/asus-rog-desktop.webp" },
   { id: "asnuc14", label: "NUC 14 Pro", base: 675, inquiryOnly: false, image: "/devices/asus-rog-desktop.webp" },
 ];
 
@@ -2274,9 +2274,9 @@ const DELL_PC_ALL_SUB_SERIES = [
 
 const ALIENWARE_DESKTOP_MODELS = [
   { id: "awaurorar16", label: "Aurora R16", base: 340, image: "/devices/alienware-aurora-r16.webp" },
-  { id: "awaurorar15", label: "Aurora R15", base: 0, image: "/devices/alienware-aurora-r15.webp" },
+  { id: "awaurorar15", label: "Aurora R15", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r15.webp" },
   { id: "awaurorar14", label: "Aurora R14", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r14.webp" },
-  { id: "awaurorar13", label: "Aurora R13", base: 0, image: "/devices/alienware-aurora-r13.webp" },
+  { id: "awaurorar13", label: "Aurora R13", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r13.webp" },
   { id: "awaurorar12", label: "Aurora R12", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r12.webp" },
   { id: "awaurorar10", label: "Aurora R10", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r10.webp" },
   { id: "awarea51desktop", label: "Area-51 Desktop", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51-desktop.webp" },
@@ -2364,7 +2364,7 @@ const APPLEWATCH_MODELS = [
   { id: "aws8", label: "Apple Watch Series 8", base: 170, image: "/devices/apple-watch-series-8.webp" },
   { id: "aws7", label: "Apple Watch Series 7", base: 120, image: "/devices/apple-watch-series-7.webp" },
   { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 130, image: "/devices/apple-watch-se-2.webp" },
-  { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 0, image: "/devices/apple-watch-se-1.webp" },
+  { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 0, inquiryOnly: true, image: "/devices/apple-watch-se-1.webp" },
 ];
 
 const PIXELWATCH_MODELS = [
