@@ -42,6 +42,12 @@ interface AdminLead {
   connectivity?: string;
   extras?: string[];
   paidOff?: boolean | null;
+  // Multi-device leads — when one lead bundles N items, the indented
+  // device block from /api/lead gets parsed here so staff sees each
+  // unit without dropping into the raw body. Skywalker 2026-05-17.
+  devices?: Array<{ model: string; storage?: string; condition?: string; quote?: number; quantity?: number; photos?: string[] }>;
+  deviceCount?: number;
+  totalPayout?: number;
   status: string;
   statusUpdatedAt?: string;
   latestNote?: string;
@@ -148,6 +154,44 @@ export async function GET(req: NextRequest) {
       if (b.includes("not paid")) paidOff = false;
       else if (b.includes("fully paid") || b.includes("paid off")) paidOff = true;
     }
+    // Multi-device parsing — /api/lead writes lines like:
+    //   Devices: 3
+    //     1. iPhone 17 Pro Max · 256GB · Flawless · $700
+    //     2. iPhone 16 · 128GB · Good · $250
+    //        Photos: https://... | https://...
+    //     3. MacBook Pro 14" M4 · 512GB · Mint · $1000
+    //   Total payout: $1950
+    let deviceCount: number | undefined = undefined;
+    let totalPayout: number | undefined = undefined;
+    let devices: AdminLead["devices"] = undefined;
+    const devicesHeaderMatch = m.body.match(/^Devices:\s*(\d+)\s*$/m);
+    if (devicesHeaderMatch) {
+      deviceCount = parseInt(devicesHeaderMatch[1], 10);
+      // Lines like "  3. <label> · <storage>? · <condition>? · $<quote>?"
+      const deviceLineRe = /^\s{2,4}(\d+)\.\s+([^·\n]+?)(?:\s·\s+([^·\n]+?))?(?:\s·\s+([^·\n$]+?))?(?:\s·\s+\$([0-9,]+))?(?:\s+\(×(\d+)\))?\s*$/gm;
+      devices = [];
+      let dm: RegExpExecArray | null;
+      while ((dm = deviceLineRe.exec(m.body)) !== null) {
+        const [, , dLabel, dStorage, dCondition, dQuoteStr, dQtyStr] = dm;
+        const idx = devices.length;
+        devices.push({
+          model: dLabel.trim(),
+          storage: dStorage?.trim() || undefined,
+          condition: dCondition?.trim() || undefined,
+          quote: dQuoteStr ? parseInt(dQuoteStr.replace(/,/g, ""), 10) : undefined,
+          quantity: dQtyStr ? parseInt(dQtyStr, 10) : undefined,
+        });
+        // Look-ahead for the "     Photos: url1 | url2" line that follows.
+        const afterLine = m.body.slice(deviceLineRe.lastIndex).split("\n", 1)[0];
+        const photosMatch = afterLine.match(/^\s+Photos:\s*(.+)$/);
+        if (photosMatch) {
+          devices[idx].photos = photosMatch[1].split(" | ").map((s) => s.trim()).filter(Boolean);
+        }
+      }
+      if (devices.length === 0) devices = undefined;
+      const totalMatch = m.body.match(/Total payout:\s*\$([0-9,]+)/);
+      if (totalMatch) totalPayout = parseInt(totalMatch[1].replace(/,/g, ""), 10);
+    }
     const notes = notesByLead.get(m.id) || [];
     notes.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
     const latestNote = notes[0];
@@ -191,6 +235,9 @@ export async function GET(req: NextRequest) {
       connectivity:      parseField(m.body, "Connectivity"),
       extras,
       paidOff,
+      devices,
+      deviceCount,
+      totalPayout,
       status: status?.status || "quote_requested",
       statusUpdatedAt: status?.timestamp,
       latestNote: latestNote?.text,

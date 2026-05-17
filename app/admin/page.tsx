@@ -30,6 +30,9 @@ interface Lead {
   connectivity?: string;
   extras?: string[];
   paidOff?: boolean | null;
+  devices?: Array<{ model: string; storage?: string; condition?: string; quote?: number; quantity?: number; photos?: string[] }>;
+  deviceCount?: number;
+  totalPayout?: number;
   status: string;
   statusUpdatedAt?: string;
   latestNote?: string;
@@ -276,7 +279,8 @@ export default function AdminPage() {
         });
       } catch {}
     };
-    const interval = setInterval(tick, 15000);
+    // Tightened from 15s to 5s 2026-05-17 — Skywalker reported staleness.
+    const interval = setInterval(tick, 5000);
     return () => clearInterval(interval);
   }, [token, autoRefresh]);
 
@@ -522,7 +526,7 @@ export default function AdminPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setAutoRefresh((v) => !v)}
-              title={autoRefresh ? "Auto-refresh ON (every 15s)" : "Auto-refresh OFF"}
+              title={autoRefresh ? "Auto-refresh ON (every 5s)" : "Auto-refresh OFF"}
               className={`px-3 py-2 border rounded-lg text-xs font-semibold transition cursor-pointer ${autoRefresh ? "bg-[#00c853]/15 border-[#00c853]/40 text-[#00c853]" : "bg-white/5 border-white/10 text-[#dcdcdc] hover:bg-white/10"}`}
             >
               {autoRefresh ? "🟢 Live" : "⏸ Paused"}
@@ -753,6 +757,36 @@ export default function AdminPage() {
                         {[lead.storage, lead.condition].filter(Boolean).join(" · ")}
                         {lead.imei && <span className="ml-1 text-[#d4d4d4] font-mono">· {lead.imei.slice(-6)}</span>}
                       </p>
+                      {/* Multi-device breakdown — when one lead bundles
+                          N items, show each unit so staff can quote
+                          per device. Skywalker 2026-05-17: was just
+                          seeing "Multi-device (3)" with no detail. */}
+                      {lead.devices && lead.devices.length > 0 && (
+                        <div className="mt-1.5 bg-[#00c853]/[0.06] border border-[#00c853]/25 rounded-md p-2 space-y-1">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#00c853]">
+                            {lead.deviceCount || lead.devices.length} devices{lead.totalPayout ? ` · total $${lead.totalPayout}` : ""}
+                          </p>
+                          {lead.devices.map((d, i) => (
+                            <div key={i} className="text-[11px] text-[#e5e5e5] flex flex-wrap items-center gap-x-2">
+                              <span className="text-[#8a8a8a] font-mono">{i + 1}.</span>
+                              <span className="font-semibold text-white">{d.model}</span>
+                              {d.storage && <span className="text-[#c5c5c5]">· {d.storage}</span>}
+                              {d.condition && <span className="text-[#c5c5c5]">· {d.condition}</span>}
+                              {d.quote != null && <span className="text-[#00c853] font-bold">· ${d.quote}</span>}
+                              {d.quantity && d.quantity > 1 && <span className="text-[#c5c5c5]">×{d.quantity}</span>}
+                              {d.photos && d.photos.length > 0 && (
+                                <span className="ml-1 flex gap-1">
+                                  {d.photos.slice(0, 3).map((url, j) => (
+                                    <a key={j} href={url} target="_blank" rel="noopener noreferrer" className="block w-5 h-5 rounded overflow-hidden border border-white/10 hover:border-[#00c853] transition" title={`Device ${i + 1} photo ${j + 1}`}>
+                                      <img src={url} alt="" className="w-full h-full object-cover" />
+                                    </a>
+                                  ))}
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       {/* Full spec answers — chip, RAM, GPU, display,
                           battery, charger, connectivity, extras. Skywalker
                           2026-05-17 — staff was making offers blind without
