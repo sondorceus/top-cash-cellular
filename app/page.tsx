@@ -7034,7 +7034,7 @@ export default function Home() {
                         { model: "ipadpro13m5", title: "iPad Pro 13\"", floor: 610, photo: "/devices/ipad-pro-13-m5.webp", dt: "ipad" as const, cat: "tablets" as const },
                       ]).map(d => {
                         const topPrice = getMaxPrice({ id: d.model, base: d.floor }, d.dt);
-                        const imgCls = (d as { tight?: boolean }).tight ? "w-10 h-10" : "w-12 h-12";
+                        const imgCls = (d as { tight?: boolean }).tight ? "w-9 h-9" : "w-12 h-12";
                         return (
                           <button
                             key={d.model}
@@ -7737,7 +7737,7 @@ export default function Home() {
                 ]).map(d => {
                   const topPrice = getMaxPrice({ id: d.model, base: d.floor }, d.dt);
                   const imgCls = (d as { tight?: boolean }).tight
-                    ? "w-12 h-12 md:w-16 md:h-16 object-contain mb-2"
+                    ? "w-10 h-10 md:w-14 md:h-14 object-contain mb-2"
                     : "w-16 h-16 md:w-20 md:h-20 object-contain mb-2";
                   return (
                     <button
