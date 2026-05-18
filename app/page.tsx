@@ -5943,6 +5943,11 @@ export default function Home() {
   // stays false → user types in the plain manual input. No dead-end.
   const [placesAutocompleteReady, setPlacesAutocompleteReady] = useState(false);
   const initShipAutocomplete = useCallback(async () => {
+    // DISABLED 2026-05-18 — Google's PlaceAutocompleteElement
+    // fullscreens on mobile and we can't suppress it. See JSX
+    // comment near the manual input for the revival path.
+    return;
+    // eslint-disable-next-line no-unreachable
     if (!shipAutocompleteContainerRef.current || shipAutoRef.current) return;
     if (typeof window === "undefined" || !window.google?.maps?.importLibrary) return;
     try {
@@ -7544,20 +7549,11 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
-      {/* Google Maps Places script — uses the new PlaceAutocompleteElement
-          API (since legacy Autocomplete is blocked for Cloud projects
-          created after 2025-03-01). loading=async required for the new
-          API to populate importLibrary properly. v=weekly opts into the
-          latest weekly channel which always has the new element. The
-          init runs from a polling useEffect on the contact step, not
-          from this onLoad (so the script can load before user reaches
-          the address step). Skywalker 2026-05-18. */}
-      {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY && (
-        <Script
-          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&v=weekly&loading=async`}
-          strategy="afterInteractive"
-        />
-      )}
+      {/* Google Maps script removed 2026-05-18 — PlaceAutocompleteElement
+          full-screened on mobile and we couldn't suppress it. Manual
+          address inputs work fine. Re-enable when we wire a custom
+          dropdown against the Places API REST endpoint that stays
+          inline + brand-styled. */}
       {/* CART TOAST — fixed top-center on mobile, top-right on lg.
           Slides up + fades. Auto-dismisses after 2.4s. Two variants:
           'add' (green check, ✓) and 'remove' (red minus, ×). */}
@@ -11918,28 +11914,18 @@ export default function Home() {
                       <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">Shipping address</label>
                       <button type="button" onClick={() => { setHandoffMethod("local"); setLocalArea(null); }} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to local meetup instead</button>
                     </div>
-                    {/* Google Places autocomplete (new PlaceAutocompleteElement
-                        API since legacy Autocomplete is blocked for Cloud
-                        projects after 2025-03-01). The element appends
-                        itself here on script load. If it never loads
-                        (billing missing, key invalid, network error) the
-                        manual input below shows instead so the user is
-                        never stuck. Skywalker 2026-05-18.
-                        Container always rendered (no display:none) —
-                        Google's web component needs a visible parent
-                        with non-zero dimensions to compute its shadow
-                        DOM. Hiding the wrap until ready was the
-                        chicken-and-egg that broke autocomplete. We
-                        use the wrap's empty-when-unattached state as
-                        the natural fallback: if PAE never appends,
-                        the wrap is just an empty no-height div. */}
-                    <div
-                      ref={shipAutocompleteContainerRef}
-                      className="tcc-place-autocomplete-wrap"
-                    />
-                    {!placesAutocompleteReady && (
-                      <input required value={shipStreet} onChange={e => setShipStreet(e.target.value)} placeholder="Street address" autoComplete="street-address" className="w-full px-4 py-3 tcc-input" />
-                    )}
+                    {/* Manual address entry — Google's new
+                        PlaceAutocompleteElement was disabled
+                        2026-05-18 because it hijacks the full
+                        viewport on mobile focus (confirmed via
+                        IMG_5737 screenshot — blank white page with
+                        just the input + back arrow). Google's docs
+                        don't expose a way to suppress the fullscreen
+                        takeover. Plain inputs work fine; if we want
+                        autocomplete back, the path is a custom REST
+                        dropdown against Places API (New) — keeps us
+                        inline + brand-styled. */}
+                    <input required value={shipStreet} onChange={e => setShipStreet(e.target.value)} placeholder="Street address" autoComplete="street-address" className="w-full px-4 py-3 tcc-input" />
                     <input value={shipUnit} onChange={e => setShipUnit(e.target.value)} placeholder="Apt / Suite (optional)" autoComplete="address-line2" className="w-full px-4 py-3 tcc-input" />
                     <div className="grid grid-cols-3 gap-2">
                       <input required value={shipCity} onChange={e => setShipCity(e.target.value)} placeholder="City" autoComplete="address-level2" className="col-span-2 w-full px-4 py-3 tcc-input" />
