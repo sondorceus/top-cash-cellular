@@ -8119,34 +8119,36 @@ export default function Home() {
       {step === "device" && page === "home" && (
         <section className="relative animate-[fadeIn_0.3s_ease-out] overflow-hidden">
           {/* HERO BACKDROP — decorative-only mock-hero per Skywalker
-              2026-05-17. Renders the multi-device illustration + dim
-              ghost text behind the real hero. All text is heavily
-              blurred + low-opacity so it reads as a design element,
-              not competing copy. Hidden on small mobile so the real
-              hero stays clean. Pointer-events disabled so it doesn't
-              eat clicks meant for the foreground CTAs. */}
-          <div aria-hidden className="hidden md:block pointer-events-none absolute inset-0 z-0 select-none">
+              2026-05-17. Visible on all screen sizes (mobile too —
+              Skywalker confirmed he wants to see it from his iPhone).
+              On mobile the text column drops to single-column / smaller,
+              and the device grid takes the lower half so it stacks
+              behind the real hero copy. All text heavily blurred +
+              low-opacity so it reads as design pattern, not copy.
+              Pointer-events disabled so it doesnt eat foreground CTA
+              taps. */}
+          <div aria-hidden className="pointer-events-none absolute inset-0 z-0 select-none">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(15,30,80,0.18),transparent_60%)]" />
-            <div className="absolute inset-0 max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-12 grid grid-cols-12 gap-12 items-center opacity-[0.18]">
-              <div className="col-span-6 space-y-4" style={{ filter: "blur(4px)" }}>
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold uppercase tracking-wide">⚡ Instant Multi-Device Buyback</span>
-                <p className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-none text-white">Sell your iPhones, iPads, Watches, and MacBooks.</p>
-                <p className="text-slate-400 text-base sm:text-lg max-w-lg">Turn all your used Apple tech into instant cash. highest market value for multiple devices, with seamless Mobile Meetups in the Austin area.</p>
-                <div className="flex gap-4 pt-2">
+            <div className="absolute inset-0 max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-8 md:py-12 flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-12 items-center opacity-25">
+              <div className="md:col-span-6 space-y-3 md:space-y-4 w-full" style={{ filter: "blur(4px)" }}>
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] md:text-xs font-semibold uppercase tracking-wide">⚡ Instant Multi-Device Buyback</span>
+                <p className="text-2xl sm:text-4xl lg:text-6xl font-extrabold leading-none text-white">Sell your iPhones, iPads, Watches, and MacBooks.</p>
+                <p className="hidden md:block text-slate-400 text-base sm:text-lg max-w-lg">Turn all your used Apple tech into instant cash. highest market value for multiple devices, with seamless Mobile Meetups in the Austin area.</p>
+                <div className="hidden md:flex gap-4 pt-2">
                   <span className="px-8 py-4 bg-emerald-500 text-slate-950 font-bold rounded-xl">Get Instant Multi-Quote</span>
                   <span className="px-8 py-4 bg-slate-900 text-slate-200 font-semibold rounded-xl border border-slate-800">Schedule Mobile Meetup</span>
                 </div>
               </div>
-              <div className="col-span-6 flex justify-center items-center" style={{ filter: "blur(1px)" }}>
-                <div className="w-full max-w-xl aspect-square p-4 bg-slate-900/60 border border-slate-800/60 rounded-3xl backdrop-blur-sm grid grid-cols-2 grid-rows-2 gap-4">
+              <div className="md:col-span-6 flex justify-center items-center w-full" style={{ filter: "blur(1px)" }}>
+                <div className="w-full max-w-xs md:max-w-xl aspect-square p-3 md:p-4 bg-slate-900/60 border border-slate-800/60 rounded-2xl md:rounded-3xl backdrop-blur-sm grid grid-cols-2 grid-rows-2 gap-2 md:gap-4">
                   {[
                     "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=600&auto=format&fit=crop",
                     "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?q=80&w=600&auto=format&fit=crop",
                     "https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=600&auto=format&fit=crop",
                     "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=600&auto=format&fit=crop",
                   ].map((src, i) => (
-                    <div key={i} className="flex items-center justify-center p-2 rounded-2xl bg-slate-950/70 border border-slate-800/80">
-                      <img src={src} alt="" className="h-20 w-auto object-contain aspect-square" loading="lazy" />
+                    <div key={i} className="flex items-center justify-center p-1.5 md:p-2 rounded-xl md:rounded-2xl bg-slate-950/70 border border-slate-800/80">
+                      <img src={src} alt="" className="h-12 md:h-20 w-auto object-contain aspect-square" loading="lazy" />
                     </div>
                   ))}
                 </div>
@@ -8154,8 +8156,8 @@ export default function Home() {
             </div>
             {/* Top + bottom fade so the backdrop sits under the real
                 hero without a hard edge against the surrounding sections. */}
-            <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-[#0a0a0a] to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-12 md:h-16 bg-gradient-to-b from-[#0a0a0a] to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-20 md:h-24 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
           </div>
           {/* Promo banner moved into the top nav (between logo and menu). */}
           <div className="relative z-10 max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
