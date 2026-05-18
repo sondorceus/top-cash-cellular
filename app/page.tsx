@@ -11156,6 +11156,27 @@ export default function Home() {
             {!isManualQuote && !isPendingQuote && quantity > 1 && <p className="text-[#e6e6e6] text-sm mb-2">${quote} each × {quantity}</p>}
             {!isManualQuote && !isPendingQuote && quantity === 1 && <div className="mb-3" />}
 
+            {/* FINAL-PAYOUT REASSURANCE — anti-IWM-bait-and-switch
+                positioning. Competitors (IWM in particular) show a
+                higher headline quote then chip it down at inspection.
+                Our quote already includes carrier deduction, condition
+                grading, etc., so what the customer sees is what they
+                get. Skywalker 2026-05-18. Skip this for fair/broken
+                conditions — those legitimately can shift if photos
+                reveal worse damage, and the existing disclaimer
+                below handles that case honestly. */}
+            {!isManualQuote && !isPendingQuote && condition?.id !== "broken" && condition?.id !== "fair" && (
+              <div className="max-w-md mx-auto lg:mx-0 mb-3 px-3 py-2.5 rounded-xl bg-[#00c853]/[0.1] border border-[#00c853]/35 text-left flex items-start gap-2.5">
+                <span className="text-[#00c853] text-lg leading-none mt-0.5">✓</span>
+                <div>
+                  <p className="text-[12px] text-white font-bold leading-tight">This is your final payout</p>
+                  <p className="text-[11px] text-[#bdbdbd] mt-0.5 leading-snug">
+                    No surprise deductions at inspection. The number you see is the number you get.
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* QUOTE-MAY-CHANGE DISCLAIMER + PHOTO ENCOURAGEMENT —
                 Only on damaged-condition quotes (broken / fair). Sets
                 expectations honestly that the number can shift after
