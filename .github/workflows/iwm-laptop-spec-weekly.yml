@@ -1,0 +1,61 @@
+name: IWM laptop spec weekly refresh
+
+# Smart tracking system per Skywalker 2026-05-18. Pulls fresh IWM
+# prices for every priced laptop variant every Monday morning, diffs
+# vs the current pc-laptop-specs.json, applies any meaningful changes,
+# and posts a summary to MC comms. Uses the head-scrape tool (no
+# headless browser needed) so the whole run takes < 2 min.
+
+on:
+  schedule:
+    # Every Monday at 13:00 UTC (8:00 AM CT)
+    - cron: "0 13 * * 1"
+  # Manual trigger from the Actions tab
+  workflow_dispatch:
+    inputs:
+      brand:
+        description: "Brand filter (e.g. legion, omen) — leave blank for all"
+        required: false
+        default: ""
+
+jobs:
+  laptop-spec-refresh:
+    name: Refresh laptop spec prices from IWM
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run weekly refresh (apply + post MC)
+        env:
+          BRAND: ${{ github.event.inputs.brand }}
+        run: |
+          ARGS="--apply --post-mc"
+          if [ -n "$BRAND" ]; then ARGS="$ARGS --brand $BRAND"; fi
+          python scripts/weekly-iwm-refresh.py $ARGS
+        timeout-minutes: 10
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/comps/pc-laptop-specs.json
+          if git diff --cached --quiet; then
+            echo "No changes — nothing to commit."
+            exit 0
+          fi
+          git commit -m "weekly IWM laptop spec refresh ($(date +%Y-%m-%d))
+
+          Automated weekly diff vs IWM. See the matching MC comms message
+          for which models moved + by how much.
+          "
+          git push
