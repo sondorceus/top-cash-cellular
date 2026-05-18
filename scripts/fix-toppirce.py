@@ -15,7 +15,7 @@ PAGE = Path(__file__).parent.parent / "app" / "page.tsx"
 
 
 def main():
-    src = PAGE.read_text()
+    src = PAGE.read_text(encoding="utf-8")
 
     def max_base_for_array(name: str) -> int:
         start = src.find(f"const {name} = [")
@@ -76,7 +76,7 @@ def main():
     edits.sort(key=lambda e: -e[0])
     for start, end, replacement, eid, oldtop, newtop in edits:
         new_src = new_src[:start] + replacement + new_src[end:]
-    PAGE.write_text(new_src)
+    PAGE.write_text(new_src, encoding="utf-8")
     print(f"Fixed {len(edits)} series/sub-series entries:")
     for start, end, replacement, eid, oldtop, newtop in sorted(edits, key=lambda e: e[3]):
         change = f"${oldtop}->${newtop}"

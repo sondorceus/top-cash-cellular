@@ -1478,7 +1478,7 @@ const LENOVO_PC_SERIES = [
   { id: "lenovo_tp_x1", label: "ThinkPad X1", year: "Premium ultrabook", topPrice: 652, variants: LENOVO_TP_X1_VARIANTS, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "lenovo_tp_x9", label: "ThinkPad X9", year: "Aura Edition", topPrice: 675, variants: LENOVO_TP_X9_VARIANTS, image: "/devices/ln_tp_x9_14.png" },
   { id: "lenovo_tp_x13", label: "ThinkPad X13", year: "13-inch business", topPrice: 441, variants: LENOVO_TP_X13_VARIANTS, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "lenovo_tp_x390", label: "ThinkPad X390", year: "Legacy 13.3-inch", topPrice: 81, variants: LENOVO_TP_X390_VARIANTS, image: "/devices/ln_tp_x390.png" },
+  { id: "lenovo_tp_x390", label: "ThinkPad X390", year: "Legacy 13.3-inch", topPrice: 139, variants: LENOVO_TP_X390_VARIANTS, image: "/devices/ln_tp_x390.png" },
   { id: "lenovo_tp_t", label: "ThinkPad T", year: "Workhorse business", topPrice: 81, variants: LENOVO_TP_T_VARIANTS, image: "/devices/ln_tp_t.png" },
   { id: "lenovo_tp_p", label: "ThinkPad P", year: "Mobile workstation", topPrice: 378, variants: LENOVO_TP_P_VARIANTS, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "lenovo_tp_l", label: "ThinkPad L", year: "Mainstream business", topPrice: 310, variants: LENOVO_TP_L_VARIANTS, image: "/devices/lenovo-laptop-generic.svg" },
@@ -1683,7 +1683,7 @@ const HP_PC_SERIES = [
   { id: "hp_pavilion", label: "Pavilion", year: "Everyday", topPrice: 194, variants: HP_PAVILION_VARIANTS, image: "/devices/hp-pavilion-hp-pavilion-15.png" },
   { id: "hp_probook", label: "ProBook", year: "SMB business", topPrice: 297, variants: HP_PROBOOK_VARIANTS, image: "/devices/hp-probook-hp-probook-g11.png" },
   { id: "hp_spectre", label: "Spectre", year: "Premium consumer", topPrice: 248, variants: HP_SPECTRE_VARIANTS, image: "/devices/hp-spectre-hp-spectre-14-x360.png" },
-  { id: "hp_victus", label: "Victus", year: "Entry gaming", topPrice: 0, variants: HP_VICTUS_VARIANTS, inquiryOnly: true, image: "/devices/hp-spectre-x360.webp" },
+  { id: "hp_victus", label: "Victus", year: "Entry gaming", topPrice: 164, variants: HP_VICTUS_VARIANTS, image: "/devices/hp-spectre-x360.webp" },
   { id: "hp_zbook", label: "ZBook", year: "Mobile workstation", topPrice: 900, variants: HP_ZBOOK_VARIANTS, image: "/devices/hp-zbook-hp-zbook-g11.png" },
   { id: "hp_notebook", label: "Notebook", year: "Budget", topPrice: 76, variants: HP_NOTEBOOK_VARIANTS, image: "/devices/hp-notebook-hp-notebook-15.png" },
 ];
@@ -1703,8 +1703,8 @@ const ACER_PREDATOR_VARIANTS = [
   { id: "ac_pred_triton", label: "Predator Triton", base: 1575, image: "/devices/acer-predator-acer-predator-triton.png" },
 ];
 const ACER_PC_SERIES = [
-  { id: "ac_nitro", label: "Nitro", year: "Mainstream gaming", topPrice: 0, variants: ACER_NITRO_VARIANTS, inquiryOnly: true, image: "/devices/acer-nitro-acer-nitro-16.png" },
-  { id: "ac_predator", label: "Predator", year: "Premium gaming", topPrice: 0, variants: ACER_PREDATOR_VARIANTS, inquiryOnly: true, image: "/devices/acer-predator-acer-predator-helios.png" },
+  { id: "ac_nitro", label: "Nitro", year: "Mainstream gaming", topPrice: 680, variants: ACER_NITRO_VARIANTS, image: "/devices/acer-nitro-acer-nitro-16.png" },
+  { id: "ac_predator", label: "Predator", year: "Premium gaming", topPrice: 1575, variants: ACER_PREDATOR_VARIANTS, image: "/devices/acer-predator-acer-predator-helios.png" },
 ];
 
 // SAMSUNG GALAXY BOOK — IWM uses .answers quiz UI for all 5 generations,

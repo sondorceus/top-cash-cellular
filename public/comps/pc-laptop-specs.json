@@ -49288,56 +49288,56 @@
       {
         "id": "triton_300_se",
         "label": "Triton 300 SE",
-        "adj": 0,
+        "adj": 364,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "triton_500",
         "label": "Triton 500",
-        "adj": 35,
+        "adj": 399,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "triton_300",
         "label": "Triton 300",
-        "adj": 55,
+        "adj": 419,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "triton_500_se",
         "label": "Triton 500 SE",
-        "adj": 165,
+        "adj": 529,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "triton_neo_16",
         "label": "Triton Neo 16",
-        "adj": 170,
+        "adj": 534,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "triton_14",
         "label": "Triton 14",
-        "adj": 190,
+        "adj": 554,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "triton_16",
         "label": "Triton 16",
-        "adj": 360,
+        "adj": 724,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "triton_17_x",
         "label": "Triton 17 X",
-        "adj": 1245,
+        "adj": 1609,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -49421,21 +49421,21 @@
       {
         "id": "9i_gen_8",
         "label": "9i Gen 8",
-        "adj": 0,
+        "adj": 1260,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "9i_gen_9",
         "label": "9i Gen 9",
-        "adj": 275,
+        "adj": 1535,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "9i_gen_10",
         "label": "9i Gen 10",
-        "adj": 1700,
+        "adj": 2960,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -49512,70 +49512,70 @@
       {
         "id": "helios_300",
         "label": "Helios 300",
-        "adj": 0,
+        "adj": 392,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "helios_500",
         "label": "Helios 500",
-        "adj": 25,
+        "adj": 417,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "helios_700",
         "label": "Helios 700",
-        "adj": 25,
+        "adj": 417,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "helios_neo_14",
         "label": "Helios Neo 14",
-        "adj": 230,
+        "adj": 622,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "helios_neo_16",
         "label": "Helios Neo 16",
-        "adj": 415,
+        "adj": 807,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "helios_neo_18",
         "label": "Helios Neo 18",
-        "adj": 515,
+        "adj": 907,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "helios_16",
         "label": "Helios 16",
-        "adj": 525,
+        "adj": 917,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "helios_neo_16s_ai",
         "label": "Helios Neo 16S AI",
-        "adj": 565,
+        "adj": 957,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "helios_neo_16_ai",
         "label": "Helios Neo 16 AI",
-        "adj": 805,
+        "adj": 1197,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "helios_18",
         "label": "Helios 18",
-        "adj": 865,
+        "adj": 1257,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -49666,14 +49666,14 @@
       {
         "id": "ryzen",
         "label": "Ryzen",
-        "adj": 0,
+        "adj": 315,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "intel",
         "label": "Intel",
-        "adj": 500,
+        "adj": 815,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -49757,35 +49757,35 @@
       {
         "id": "7th_8th_9th_gen",
         "label": "7th/8th/9th gen.",
-        "adj": 0,
+        "adj": 171,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "10th_11th_gen",
         "label": "10th/11th gen.",
-        "adj": 35,
+        "adj": 206,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "2025_models",
         "label": "2025 Models",
-        "adj": 70,
+        "adj": 241,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "12th_13th_14th_gen",
         "label": "12th/13th/14th gen.",
-        "adj": 310,
+        "adj": 481,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "i9_12th_13th",
         "label": "i9 12th/13th",
-        "adj": 335,
+        "adj": 506,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -49876,28 +49876,28 @@
       {
         "id": "v_17",
         "label": "V 17",
-        "adj": 0,
+        "adj": 45,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "v_16",
         "label": "V 16",
-        "adj": 595,
+        "adj": 640,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "v_14",
         "label": "V 14",
-        "adj": 600,
+        "adj": 645,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "v_15",
         "label": "V 15",
-        "adj": 630,
+        "adj": 675,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -49981,56 +49981,56 @@
       {
         "id": "2025_models",
         "label": "2025 models",
-        "adj": 0,
+        "adj": 108,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "high_processor",
         "label": "High Processor",
-        "adj": 270,
+        "adj": 378,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "amd_ryzen_5",
         "label": "AMD Ryzen 5",
-        "adj": 505,
+        "adj": 613,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "amd_ryzen_7",
         "label": "AMD Ryzen 7",
-        "adj": 555,
+        "adj": 663,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "intel_core_i5",
         "label": "Intel Core i5",
-        "adj": 630,
+        "adj": 738,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "amd_ryzen_9",
         "label": "AMD Ryzen 9",
-        "adj": 655,
+        "adj": 763,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "intel_core_i7",
         "label": "Intel Core i7",
-        "adj": 705,
+        "adj": 813,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "intel_core_i9",
         "label": "Intel Core i9",
-        "adj": 820,
+        "adj": 928,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -50128,14 +50128,14 @@
       {
         "id": "ultra",
         "label": "Ultra",
-        "adj": 0,
+        "adj": 180,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "ultra_series_2",
         "label": "Ultra Series 2",
-        "adj": 25,
+        "adj": 205,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -50219,49 +50219,49 @@
       {
         "id": "7th_8th_gen",
         "label": "7th/8th Gen",
-        "adj": 0,
+        "adj": 18,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "9th_gen",
         "label": "9th Gen",
-        "adj": 35,
+        "adj": 53,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "10th_gen",
         "label": "10th Gen",
-        "adj": 40,
+        "adj": 58,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "11th_gen",
         "label": "11th Gen",
-        "adj": 60,
+        "adj": 78,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "12th_gen",
         "label": "12th Gen",
-        "adj": 80,
+        "adj": 98,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "13th_gen",
         "label": "13th Gen",
-        "adj": 85,
+        "adj": 103,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "ryzen",
         "label": "Ryzen",
-        "adj": 420,
+        "adj": 438,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -50366,7 +50366,7 @@
       {
         "id": "galaxy_book3",
         "label": "Galaxy Book3",
-        "adj": 0,
+        "adj": 198,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -50428,7 +50428,7 @@
       {
         "id": "galaxy_book3_360",
         "label": "Galaxy Book3 360",
-        "adj": 0,
+        "adj": 328,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -50498,7 +50498,7 @@
       {
         "id": "galaxy_book3_pro",
         "label": "Galaxy Book3 Pro",
-        "adj": 0,
+        "adj": 387,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -50568,7 +50568,7 @@
       {
         "id": "galaxy_book3_pro_360",
         "label": "Galaxy Book3 Pro 360",
-        "adj": 0,
+        "adj": 356,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -50638,7 +50638,7 @@
       {
         "id": "galaxy_book3_ultra",
         "label": "Galaxy Book3 Ultra",
-        "adj": 0,
+        "adj": 549,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -50715,42 +50715,42 @@
       {
         "id": "high_processor",
         "label": "High Processor",
-        "adj": 0,
+        "adj": 153,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "amd_ryzen_5",
         "label": "AMD Ryzen 5",
-        "adj": 320,
+        "adj": 473,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "intel_core_i5",
         "label": "Intel Core i5",
-        "adj": 350,
+        "adj": 503,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "intel_core_i7",
         "label": "Intel Core i7",
-        "adj": 370,
+        "adj": 523,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "amd_ryzen_9",
         "label": "AMD Ryzen 9",
-        "adj": 375,
+        "adj": 528,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "amd_ryzen_7",
         "label": "AMD Ryzen 7",
-        "adj": 380,
+        "adj": 533,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -50847,28 +50847,28 @@
       {
         "id": "16in",
         "label": "16in",
-        "adj": 0,
+        "adj": 279,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "14in",
         "label": "14in",
-        "adj": 5,
+        "adj": 284,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "15in",
         "label": "15in",
-        "adj": 375,
+        "adj": 654,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "13in",
         "label": "13in",
-        "adj": 465,
+        "adj": 744,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -50979,7 +50979,7 @@
       {
         "id": "gen_1",
         "label": "Gen 1",
-        "adj": 0,
+        "adj": 270,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -51055,21 +51055,21 @@
       {
         "id": "630_640_650",
         "label": "630/640/650",
-        "adj": 0,
+        "adj": 32,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "435_445_455_635_aero",
         "label": "435/445/455/635 Aero",
-        "adj": 15,
+        "adj": 47,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "430_440_450",
         "label": "430/440/450",
-        "adj": 30,
+        "adj": 62,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -51152,21 +51152,21 @@
       {
         "id": "7_9th_gen_cpu",
         "label": "7-9th Gen CPU",
-        "adj": 0,
+        "adj": 14,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "ryzen_cpu",
         "label": "Ryzen CPU",
-        "adj": 5,
+        "adj": 19,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "10_11th_gen_cpu",
         "label": "10-11th Gen CPU",
-        "adj": 15,
+        "adj": 29,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -51256,14 +51256,14 @@
       {
         "id": "430_440_450_470",
         "label": "430/440/450/470",
-        "adj": 0,
+        "adj": 36,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "445_455_x360",
         "label": "445/455/x360",
-        "adj": 20,
+        "adj": 56,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -51339,28 +51339,28 @@
       {
         "id": "gen_1",
         "label": "Gen 1",
-        "adj": 0,
+        "adj": 382,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "gen_2",
         "label": "Gen 2",
-        "adj": 95,
+        "adj": 477,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "gen_3",
         "label": "Gen 3",
-        "adj": 275,
+        "adj": 657,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "gen_4",
         "label": "Gen 4",
-        "adj": 360,
+        "adj": 742,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -51451,21 +51451,21 @@
       {
         "id": "low_value_cpu",
         "label": "Low Value CPU",
-        "adj": 0,
+        "adj": 9,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "med_value_cpu",
         "label": "Med Value CPU",
-        "adj": 40,
+        "adj": 49,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "high_value_cpu",
         "label": "High Value CPU",
-        "adj": 60,
+        "adj": 69,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -51569,21 +51569,21 @@
       {
         "id": "i5",
         "label": "i5",
-        "adj": 0,
+        "adj": 4,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "i7_7_9th_gen",
         "label": "i7 7-9th gen",
-        "adj": 0,
+        "adj": 4,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "i7_10_11th_gen",
         "label": "i7 10-11th gen",
-        "adj": 0,
+        "adj": 4,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -51680,42 +51680,42 @@
       {
         "id": "draft_7th_gen_cpu",
         "label": "DRAFT 7th Gen CPU",
-        "adj": 0,
+        "adj": 18,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "draft_8th_gen_cpu",
         "label": "DRAFT 8th Gen CPU",
-        "adj": 0,
+        "adj": 18,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "draft_10th_gen_cpu",
         "label": "DRAFT 10th Gen CPU",
-        "adj": 5,
+        "adj": 23,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "draft_ryzen_cpu",
         "label": "DRAFT Ryzen CPU",
-        "adj": 5,
+        "adj": 23,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "draft_11th_gen_cpu",
         "label": "DRAFT 11th Gen CPU",
-        "adj": 15,
+        "adj": 33,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "draft_12th_gen_cpu",
         "label": "DRAFT 12th Gen CPU",
-        "adj": 30,
+        "adj": 48,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -51805,14 +51805,14 @@
       {
         "id": "x390",
         "label": "X390",
-        "adj": 0,
+        "adj": 94,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "x390_yoga",
         "label": "X390 Yoga",
-        "adj": 15,
+        "adj": 109,
         "multiplier": 1.0,
         "sub": ""
       }
@@ -51888,21 +51888,21 @@
       {
         "id": "up_to_12th_5_6000_series",
         "label": "Up to 12th/5-6000 Series",
-        "adj": 0,
+        "adj": 54,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "core_ai_series",
         "label": "Core/AI-Series",
-        "adj": 30,
+        "adj": 84,
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "id": "13th_7_8000_series",
         "label": "13th/7-8000 Series",
-        "adj": 80,
+        "adj": 134,
         "multiplier": 1.0,
         "sub": ""
       }
