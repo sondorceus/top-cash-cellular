@@ -5431,7 +5431,7 @@ function CountUp({ end, decimals = 0, prefix = "", suffix = "", duration = 1400 
 }
 
 // ReviewsCarousel: scroll-snap carousel with prev/next arrows + dot indicators
-function ReviewsCarousel({ reviews }: { reviews: { name: string; loc: string; text: string; stars: number }[] }) {
+function ReviewsCarousel({ reviews }: { reviews: { name: string; loc: string; text: string; stars: number; verified?: boolean }[] }) {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
   useEffect(() => {
@@ -5467,7 +5467,14 @@ function ReviewsCarousel({ reviews }: { reviews: { name: string; loc: string; te
         <div className="flex gap-3 snap-x snap-mandatory">
           {reviews.map((r, i) => (
             <div key={i} className="snap-start flex-shrink-0 w-[280px] md:w-[320px] bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
-              <div className="flex gap-0.5 mb-3 text-[#ffb400] text-sm">{"★".repeat(r.stars)}</div>
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <div className="flex gap-0.5 text-[#ffb400] text-sm">{"★".repeat(r.stars)}</div>
+                {r.verified && (
+                  <span className="inline-flex items-center gap-1 text-[9px] font-extrabold uppercase tracking-wider text-[#7be8a8] bg-[#00c853]/12 border border-[#00c853]/40 rounded-full px-2 py-0.5" title="Verified seller — review submitted via a one-use link after their trade closed">
+                    ✓ Verified
+                  </span>
+                )}
+              </div>
               <p className="text-white text-sm leading-relaxed mb-4 min-h-[80px]">&ldquo;{r.text}&rdquo;</p>
               <div className="flex items-center gap-2 pt-3 border-t border-white/10">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00c853] to-[#00a039] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">{r.name[0]}</div>
@@ -5748,7 +5755,7 @@ export default function Home() {
   // once the fetch resolves we either swap in real ones or stay on the
   // placeholders below. Falls back silently on network error so the home
   // page never breaks just because MC is slow.
-  const [realReviews, setRealReviews] = useState<{ name: string; loc: string; text: string; stars: number }[]>([]);
+  const [realReviews, setRealReviews] = useState<{ name: string; loc: string; text: string; stars: number; verified?: boolean }[]>([]);
   useEffect(() => {
     let alive = true;
     fetch("/api/reviews")
@@ -5758,11 +5765,12 @@ export default function Home() {
         const rows = Array.isArray(data?.reviews) ? data.reviews : [];
         const mapped = rows
           .filter((r: { rating?: number; body?: string }) => (r?.rating ?? 0) >= 3 && (r?.body ?? "").trim().length >= 10)
-          .map((r: { name?: string; city?: string; body?: string; rating?: number }) => ({
+          .map((r: { name?: string; city?: string; body?: string; rating?: number; verified?: boolean }) => ({
             name: r.name || "Anonymous",
             loc: r.city || "Austin",
             text: r.body || "",
             stars: Math.min(5, Math.max(1, r.rating || 5)),
+            verified: r.verified === true,
           }));
         setRealReviews(mapped);
       })

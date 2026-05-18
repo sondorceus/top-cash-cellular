@@ -100,7 +100,14 @@ export default async function ReviewsPage() {
               <li key={r.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div>
-                    <div className="font-semibold">{r.name}{r.city ? <span className="text-[#dcdcdc] font-normal"> · {r.city}</span> : null}</div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold">{r.name}{r.city ? <span className="text-[#dcdcdc] font-normal"> · {r.city}</span> : null}</span>
+                      {r.verified ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider text-[#7be8a8] bg-[#00c853]/12 border border-[#00c853]/40 rounded-full px-2 py-0.5" title="Verified seller — review submitted via a one-use link after their trade closed">
+                          ✓ Verified
+                        </span>
+                      ) : null}
+                    </div>
                     <div className="flex items-center gap-2 mt-1">
                       <Stars rating={r.rating} />
                       <span className="text-[#c5c5c5] text-xs">{timeAgo(r.createdAt)}</span>

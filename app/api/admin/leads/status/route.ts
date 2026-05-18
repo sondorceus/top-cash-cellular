@@ -107,16 +107,62 @@ function smsTemplate(status: string, ctx: TemplateCtx): string {
   }
 }
 
+// Email body builder — paid/met get a multi-paragraph, warm,
+// signed-by-a-human body. Other statuses fall back to the short
+// SMS-derived copy (already fine for transactional notices).
+// Skywalker 2026-05-18 "create a thank you template, sound nice and
+// professional, do research".
+//
+// Pattern researched against Backmarket, Apple, Stripe, ItsWorthMore
+// post-sale emails. Common ingredients of the good ones:
+//   1. Personal subject — first name + the dollar amount or device
+//   2. Acknowledge the SPECIFIC trade (proof we're not a bot)
+//   3. The ask, framed as a favor not a demand
+//   4. A graceful out ("if something went wrong, tell us FIRST")
+//   5. Signed by a person, not a brand
+function emailBodyHtml(status: string, ctx: TemplateCtx): string {
+  const first = ctx.name?.split(" ")[0] || "there";
+  const dev = ctx.device || "your device";
+  if (status === "paid") {
+    return `
+<p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">
+  Your trade is wrapped — payment for <strong style="color:#fff">${dev}</strong>${ctx.payout ? ` is on its way via <strong style="color:#fff">${ctx.payout}</strong>` : " is on its way"}. Thanks for trusting a small Austin business with it. We genuinely don&apos;t take it lightly.
+</p>
+<p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">
+  One small favor — if your experience was a good one, would you drop a 30-second review? The link below is yours alone, single-use, expires in 60 days. Every honest review helps the next Austinite find us instead of getting lowballed by a stranger online.
+</p>
+<div style="margin:0 0 4px;font-size:14px;line-height:1.6;color:#dcdcdc;background:rgba(255,180,0,0.06);border:1px solid rgba(255,180,0,0.22);border-left:3px solid #ffb400;border-radius:10px;padding:14px 16px">
+  <strong style="color:#fff">If something went sideways</strong> — wrong amount, slow payout, anything off — please hit reply <em>first</em>. We&apos;d rather make it right than read about it. We&apos;re a small team. We&apos;ll answer.
+</div>`;
+  }
+  if (status === "met") {
+    return `
+<p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">
+  Cash exchanged, trade done — thanks for meeting up today, ${first}. Hope the handoff felt smooth. We genuinely appreciate every Austinite who picks a local outfit over a faceless website.
+</p>
+<p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">
+  One small favor — if today went well, would you drop a 30-second review? The link below is yours alone, single-use, expires in 60 days. It helps the next Austin seller find us.
+</p>
+<div style="margin:0 0 4px;font-size:14px;line-height:1.6;color:#dcdcdc;background:rgba(255,180,0,0.06);border:1px solid rgba(255,180,0,0.22);border-left:3px solid #ffb400;border-radius:10px;padding:14px 16px">
+  <strong style="color:#fff">Something off?</strong> Hit reply first — we&apos;d rather make it right than read about it on a review. Small team, real humans, we&apos;ll answer.
+</div>`;
+  }
+  // Other statuses — keep the existing tight transactional copy.
+  return `<div style="font-size:15px;color:#e6e6e6;line-height:1.65">${smsTemplate(status, ctx)}</div>`;
+}
+
 async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
   if (!process.env.RESEND_API_KEY) return false;
   const first = ctx.name?.split(" ")[0] || "there";
   const dev = ctx.device || "your device";
+  // Warmer, more specific subjects on paid/met — the two moments
+  // where it matters. Other statuses stay tight + transactional.
   const subjectMap: Record<string, string> = {
     shipped: `Your shipping label is on the way`,
     received: `We received ${dev}`,
     tested: `${dev} passed inspection`,
-    paid: `Payment sent — thanks!`,
-    met: `Thanks for the trade — quick review?`,
+    paid: `${first}, your ${ctx.quote || "payment"} is out — and a small favor`,
+    met: `Thanks for meeting up today, ${first} — quick favor?`,
     rejected: `Issue with ${dev}`,
   };
   const subject = subjectMap[status] || `Status update on your trade-in`;
@@ -173,7 +219,7 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
       <tr>
         <td style="padding:28px 28px 8px 28px">
           <div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:14px">Hi ${first},</div>
-          <div style="font-size:15px;color:#e6e6e6;line-height:1.65">${body}</div>
+          ${emailBodyHtml(status, ctx)}
         </td>
       </tr>
       <tr>
@@ -206,6 +252,14 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
           </table>
         </td>
       </tr>
+      ${(status === "paid" || status === "met") ? `<tr>
+        <td style="padding:8px 28px 24px 28px">
+          <div style="font-size:14px;color:#e6e6e6;line-height:1.6">
+            — Skywalker &amp; the Top Cash team<br>
+            <span style="color:#888;font-size:12px">Austin, TX · a small business · real humans</span>
+          </div>
+        </td>
+      </tr>` : ""}
       <tr>
         <td style="padding:0 28px 28px 28px">
           <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:18px"></div>
