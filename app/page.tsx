@@ -6079,6 +6079,11 @@ export default function Home() {
   // Used by the done page to render a Print-your-label CTA for shipping
   // customers. Skywalker 2026-05-17.
   const [submittedLabel, setSubmittedLabel] = useState<{ tracking: string; url: string; service: string } | null>(null);
+  // Tracks the contact-step submit so the button can disable + show
+  // progress copy while the lead POST + FedEx label mint (2-4s for ship
+  // handoffs) is in flight. Without this the user could rage-click submit
+  // and fire multiple leads. Skywalker 2026-05-18.
+  const [submittingLead, setSubmittingLead] = useState(false);
   // Carrier balance status — captured at checkout as a Yes / No question.
   // Skywalker 2026-05-17 — we DO buy devices that aren't fully paid off
   // but the offer may be reduced because the carrier can blacklist them.
@@ -8565,7 +8570,7 @@ export default function Home() {
           <div className="space-y-2">
             {[
               { q: "How do I get paid?", a: "Local Austin meetup — paid on the spot, under 5 minutes once we've inspected. Shipping — most payouts hit your account within 24 hours of the device arriving at our facility. Methods: Cash (local only), Cash App, Zelle, or BTC." },
-              { q: "Do you ship for free?", a: "Yes — every offer over $50 gets a free prepaid USPS label. We also offer free Austin pickup for local sellers." },
+              { q: "Do you ship for free?", a: "Yes — every offer over $50 gets a free prepaid FedEx Ground label. The label is emailed instantly when you complete checkout. We also offer free Austin pickup for local sellers." },
               { q: "What if my device shows up worth less than the quote?", a: "We send you a revised offer. If you don't like it, we ship the device back to you free of charge. No pressure, no surprises." },
               { q: "Are you really in Austin?", a: "Yes — Austin-based and real humans. You can drop off locally for same-day cash, or ship from anywhere in the US." },
               { q: "How fast is the quote?", a: "Instant. Pick your device, condition, and storage and we show you the offer right then. No signup, no email required." },
@@ -11294,10 +11299,12 @@ export default function Home() {
 
             <form onSubmit={async (e) => {
               e.preventDefault();
+              if (submittingLead) return;
               if (!handoffMethod) { alert("Pick a handoff method (Ship or Local) first."); return; }
               if (handoffMethod === "ship" && (!shipStreet || !shipCity || !shipState || !shipZip)) {
                 alert("Please fill in your full shipping address."); return;
               }
+              setSubmittingLead(true);
               try {
                 // Book the chosen local slot before creating the lead.
                 // If the slot was taken between page-load and submit
@@ -11449,6 +11456,7 @@ export default function Home() {
                 localStorage.removeItem("tcc-session");
                 setStep("done"); pushHistory("done");
               } catch { alert("Something went wrong. Please try again or call us directly."); }
+              finally { setSubmittingLead(false); }
             }} className="space-y-4">
               {/* HANDOFF SECTION — if the user picked Local or Shipping on the
                   hero, we already know the method. Only show the relevant
@@ -11842,8 +11850,14 @@ export default function Home() {
                 )}
               </div>
               <p className="text-[#c5c5c5] text-[11px] text-center leading-relaxed">By submitting, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
-              <button type="submit" className="tcc-button-primary w-full py-4 text-base font-extrabold">
-                Submit &amp; Get Paid
+              <button
+                type="submit"
+                disabled={submittingLead}
+                className="tcc-button-primary w-full py-4 text-base font-extrabold disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {submittingLead
+                  ? (handoffMethod === "ship" ? "Generating your FedEx label…" : "Submitting…")
+                  : "Submit & Get Paid"}
               </button>
             </form>
             </div>
@@ -12080,8 +12094,8 @@ export default function Home() {
               <p className="text-[#e6e6e6] text-sm text-center mb-8">Mail your device from anywhere in the US. We pay shipping.</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {[
-                  { num: "1", icon: "📦", title: "Pack", desc: "We send you a free prepaid shipping label" },
-                  { num: "2", icon: "✈️", title: "Ship", desc: "Drop it off at any USPS or UPS location" },
+                  { num: "1", icon: "📦", title: "Pack", desc: "We email you a free prepaid FedEx Ground label" },
+                  { num: "2", icon: "✈️", title: "Ship", desc: "Drop it off at any FedEx location" },
                   { num: "3", icon: "💸", title: "Get Paid", desc: "Payment sent same day we receive it" },
                 ].map((s) => (
                   <div key={s.num} className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">

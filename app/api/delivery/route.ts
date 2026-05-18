@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     lines.push("--- Shipping Address ---");
     lines.push(`${street}${unit ? `, ${unit}` : ""}`);
     lines.push(`${city}, ${state} ${zip}`);
-    lines.push("Action: Generate USPS prepaid label and email to customer.");
+    lines.push("Action: Generate FedEx prepaid label and email to customer (auto-fires on submit; staff regenerate via /admin if needed).");
   }
   if (method === "local" && area) {
     lines.push(`Meetup area: ${area}`);

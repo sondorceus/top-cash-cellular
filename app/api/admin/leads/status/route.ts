@@ -52,7 +52,7 @@ function smsTemplate(status: string, ctx: { name?: string; device?: string; quot
   const first = ctx.name?.split(" ")[0] || "there";
   switch (status) {
     case "shipped":
-      return `Top Cash: Hi ${first}, your shipping label is on the way. Drop ${dev} at any USPS — we'll text you when it arrives. Questions? Email topcashcellular@gmail.com`;
+      return `Top Cash: Hi ${first}, your prepaid FedEx label is in your inbox. Drop ${dev} at any FedEx location — we'll text you when it arrives. Questions? Email topcashcellular@gmail.com`;
     case "received":
       return `Top Cash: We got ${dev}, ${first}! Testing now — payout within 24 hrs. Questions? Email topcashcellular@gmail.com`;
     case "tested":
