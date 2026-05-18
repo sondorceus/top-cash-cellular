@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logComm } from "../../../../lib/comms-log";
+import { emailHeader } from "../../../../lib/email-shell";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -44,10 +45,9 @@ async function emailAdjust(to: string, name: string | undefined, device: string 
     const { Resend } = await import("resend");
     const resend = new Resend(process.env.RESEND_API_KEY);
     const html = `<!DOCTYPE html><html><body style="margin:0;padding:24px;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,sans-serif">
-<table width="600" style="max-width:600px;margin:0 auto;background:#111;border:1px solid #222;border-radius:12px;padding:24px">
-<tr><td>
-<div style="font-size:22px;font-weight:800;color:#00c853;margin-bottom:8px">💰 Top Cash Cellular</div>
-<div style="font-size:14px;color:#888;margin-bottom:20px">Austin's #1 Device Buyback</div>
+<table width="600" style="max-width:600px;margin:0 auto;background:#111;border:1px solid #222;border-radius:12px;overflow:hidden">
+<tr><td style="padding:0">${emailHeader({ title: "Updated offer", eyebrow: "Top Cash Cellular · Austin, TX" })}</td></tr>
+<tr><td style="padding:24px">
 <div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:12px">Hi ${first},</div>
 <div style="font-size:15px;color:#ccc;line-height:1.6;margin-bottom:16px">After in-person inspection, we adjusted the offer for ${dev}.</div>
 <div style="background:#1a1a2e;border:1px solid #333;border-radius:10px;padding:16px;margin-bottom:16px;text-align:center">

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { emailHeader } from "../../lib/email-shell";
 
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
@@ -68,20 +69,9 @@ export async function POST(req: NextRequest) {
 <tr><td align="center" style="padding:32px 16px">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;margin:0 auto;border-collapse:separate;background:#1a1a1d;border:1px solid rgba(255,255,255,0.06);border-radius:18px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.18)">
 
-<!-- Hero header — green gradient with inset rim light -->
-<tr><td style="background:linear-gradient(135deg,#00e676 0%,#00a039 100%);padding:28px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-<tr>
-<td style="vertical-align:middle">
-<div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#0a0a0a;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div>
-<div style="font-size:24px;font-weight:800;color:#0a0a0a;line-height:1.15">You're locked in</div>
-</td>
-<td style="vertical-align:middle;text-align:right">
-<div style="display:inline-block;padding:8px 14px;background:rgba(10,10,10,0.18);border:1px solid rgba(10,10,10,0.22);border-radius:999px;font-size:11px;font-weight:800;color:#0a0a0a;letter-spacing:0.1em;text-transform:uppercase">Austin, TX</div>
-</td>
-</tr>
-</table>
-</td></tr>
+<!-- Hero header — logo + brand + locked-in title. Shared header
+     ensures every TCC email looks consistent. -->
+<tr><td style="padding:0">${emailHeader({ title: "You're locked in", eyebrow: "Top Cash Cellular · Austin, TX" })}</td></tr>
 
 <!-- Welcome -->
 <tr><td style="padding:28px 28px 12px 28px">

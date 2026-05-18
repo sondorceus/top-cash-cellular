@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
+import { emailHeader } from "../../../lib/email-shell";
 
 // Hourly reminder cron — Skywalker 2026-05-18 "remind 24hr after they
 // get quote to meet/respond/ship, make custom depending on shipping
@@ -103,7 +104,7 @@ function wrapEmail(opts: { title: string; bodyHtml: string; ctaHref?: string; ct
   const cta = opts.ctaHref && opts.ctaLabel
     ? `<div style="text-align:center;margin:24px 0 12px"><a href="${opts.ctaHref}" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,${accent} 0%,${accent} 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:0 4px 14px rgba(0,200,83,0.35)">${opts.ctaLabel}</a></div>`
     : "";
-  return `<!doctype html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#0a0a0a;color:#e6e6e6;margin:0;padding:32px 16px"><div style="max-width:600px;margin:0 auto;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden"><div style="background:linear-gradient(135deg,${accent} 0%,#00a039 100%);padding:24px 28px;color:#0a0a0a"><div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div><div style="font-size:22px;font-weight:800;line-height:1.1">${opts.title}</div></div><div style="padding:28px">${opts.bodyHtml}${cta}<p style="font-size:12px;color:#888;line-height:1.6;margin:24px 0 0;text-align:center;border-top:1px solid rgba(255,255,255,0.08);padding-top:18px">Questions? Reply or write to <a href="mailto:CustomerService@topcashcells.com" style="color:${accent};text-decoration:none">CustomerService@topcashcells.com</a></p></div></div></body></html>`;
+  return `<!doctype html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#0a0a0a;color:#e6e6e6;margin:0;padding:32px 16px"><div style="max-width:600px;margin:0 auto;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden">${emailHeader({ title: opts.title, eyebrow: "Top Cash Cellular · Austin, TX", accentFrom: accent, accentTo: "#00a039" })}<div style="padding:28px">${opts.bodyHtml}${cta}<p style="font-size:12px;color:#888;line-height:1.6;margin:24px 0 0;text-align:center;border-top:1px solid rgba(255,255,255,0.08);padding-top:18px">Questions? Reply or write to <a href="mailto:CustomerService@topcashcells.com" style="color:${accent};text-decoration:none">CustomerService@topcashcells.com</a></p></div></div></body></html>`;
 }
 
 type LeadShape = {
