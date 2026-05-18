@@ -12477,9 +12477,16 @@ export default function Home() {
           </div>
           <div className="border-t border-[#00c853]/15 pt-6 text-center">
             <p className="text-[11px] text-[#cfcfcf]/70 mb-3">© 2026 {BRAND}</p>
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-4 flex-wrap">
               <a href="https://atxgadgetfix.com" target="_blank" rel="noopener noreferrer" className="text-[11px] text-[#cfcfcf] hover:text-[#00c853] transition">
                 Need a repair? ATX Gadget Fix →
+              </a>
+              <span className="text-[#cfcfcf]/30 text-[10px]">·</span>
+              {/* Staff sign-in — discreet link to the leads dashboard. The
+                  /admin route is gated by Google OAuth, so customers who
+                  click this just see a "sign in" prompt. */}
+              <a href="/admin" className="text-[11px] text-[#cfcfcf]/50 hover:text-[#00c853] transition">
+                Staff
               </a>
             </div>
           </div>
