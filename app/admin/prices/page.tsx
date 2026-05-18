@@ -52,8 +52,9 @@ type PriceTable = Record<string, Record<string, Record<string, number>>>;
 type CarrierTable = Record<string, Record<string, number>>;
 type Payload = {
   baseline: { priceTable: PriceTable; carrierDeductions: CarrierTable };
-  overrides: { priceTable: PriceTable; carrierDeductions: CarrierTable };
+  overrides: { priceTable: PriceTable; carrierDeductions: CarrierTable & { updatedAt?: string } };
   effective: { priceTable: PriceTable; carrierDeductions: CarrierTable };
+  history?: Array<{ url: string; pathname: string; uploadedAt: string }>;
 };
 
 export default function PricesAdminPage() {
@@ -139,17 +140,25 @@ export default function PricesAdminPage() {
     return false;
   };
 
-  const save = async () => {
-    if (!token) {
-      const t = window.prompt("Admin token? (will remember in this browser)");
-      if (!t) return;
+  const getToken = (): string | null => {
+    let t = token || localStorage.getItem("tcc-admin-token") || "";
+    if (!t) {
+      const prompted = window.prompt("Admin token? (will remember in this browser)");
+      if (!prompted) return null;
+      t = prompted;
       setToken(t);
       localStorage.setItem("tcc-admin-token", t);
     }
+    return t;
+  };
+
+  const save = async () => {
+    const t = getToken();
+    if (!t) return;
     setSaving(true);
     setLastSaveMsg(null);
     try {
-      const r = await fetch(`/api/admin/prices?token=${encodeURIComponent(token || localStorage.getItem("tcc-admin-token") || "")}`, {
+      const r = await fetch(`/api/admin/prices?token=${encodeURIComponent(t)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ priceTable: edits.price, carrierDeductions: edits.carrier }),
@@ -162,12 +171,73 @@ export default function PricesAdminPage() {
       const j = await r.json();
       setLastSaveMsg(`✓ Saved at ${new Date(j.updatedAt).toLocaleTimeString()} — ${j.overrideModels} model override(s) live`);
       setEdits({ price: {}, carrier: {} });
-      // Reload baseline + overrides
       const refresh = await fetch("/api/admin/prices");
       setData(await refresh.json());
     } finally {
       setSaving(false);
     }
+  };
+
+  const undoAll = () => {
+    if (Object.keys(edits.price).length === 0 && Object.keys(edits.carrier).length === 0) return;
+    if (!window.confirm(`Discard ${editCount} unsaved edit${editCount === 1 ? "" : "s"}?`)) return;
+    setEdits({ price: {}, carrier: {} });
+    // Bump the data ref so inputs reset to their saved/baseline values
+    setData((d) => (d ? { ...d } : d));
+  };
+
+  const resetCell = async (model: string, storage: string, cond: string) => {
+    if (!window.confirm(`Revert ${model} / ${storage} / ${cond} back to the baseline?`)) return;
+    const t = getToken();
+    if (!t) return;
+    const cell = `${model}/${storage}/${cond}`;
+    const r = await fetch(`/api/admin/prices?cell=${encodeURIComponent(cell)}&token=${encodeURIComponent(t)}`, { method: "DELETE" });
+    if (!r.ok) {
+      const j = await r.json().catch(() => ({}));
+      setLastSaveMsg(`Reset failed: ${r.status} ${j.error || ""}`);
+      return;
+    }
+    setLastSaveMsg(`✓ Reverted ${cell} to baseline`);
+    const refresh = await fetch("/api/admin/prices");
+    setData(await refresh.json());
+  };
+
+  const resetCarrier = async (model: string) => {
+    if (!window.confirm(`Revert carrier deductions for ${model} back to baseline?`)) return;
+    const t = getToken();
+    if (!t) return;
+    const r = await fetch(`/api/admin/prices?carrier=${encodeURIComponent(model)}&token=${encodeURIComponent(t)}`, { method: "DELETE" });
+    if (!r.ok) return;
+    setLastSaveMsg(`✓ Reverted ${model} carrier deductions to baseline`);
+    const refresh = await fetch("/api/admin/prices");
+    setData(await refresh.json());
+  };
+
+  const resetModel = async (model: string) => {
+    if (!window.confirm(`Revert EVERY ${model} cell back to baseline?`)) return;
+    const t = getToken();
+    if (!t) return;
+    const r = await fetch(`/api/admin/prices?model=${encodeURIComponent(model)}&token=${encodeURIComponent(t)}`, { method: "DELETE" });
+    if (!r.ok) return;
+    setLastSaveMsg(`✓ Reverted all ${model} overrides`);
+    const refresh = await fetch("/api/admin/prices");
+    setData(await refresh.json());
+  };
+
+  const resetAll = async () => {
+    if (!window.confirm(`⚠️ This wipes EVERY price override on the site and reverts everything to the bundled defaults. Continue?`)) return;
+    const t = getToken();
+    if (!t) return;
+    const r = await fetch(`/api/admin/prices?token=${encodeURIComponent(t)}`, { method: "DELETE" });
+    if (!r.ok) {
+      const j = await r.json().catch(() => ({}));
+      setLastSaveMsg(`Reset all failed: ${r.status} ${j.error || ""}`);
+      return;
+    }
+    setLastSaveMsg(`✓ All overrides cleared`);
+    setEdits({ price: {}, carrier: {} });
+    const refresh = await fetch("/api/admin/prices");
+    setData(await refresh.json());
   };
 
   const groupNames = Array.from(grouped.keys()).sort();
@@ -194,12 +264,28 @@ export default function PricesAdminPage() {
           <span className="text-xs text-[#888]">
             {editCount} edit{editCount === 1 ? "" : "s"} pending
           </span>
+          {editCount > 0 && (
+            <button
+              onClick={undoAll}
+              className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-bold cursor-pointer transition"
+              title="Throw away all unsaved edits"
+            >
+              ↶ Undo
+            </button>
+          )}
           <button
             onClick={save}
             disabled={editCount === 0 || saving}
             className="px-4 py-1.5 rounded-lg bg-[#00c853] text-black text-sm font-bold disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer hover:bg-[#00e676] transition"
           >
             {saving ? "Saving…" : `Save ${editCount}`}
+          </button>
+          <button
+            onClick={resetAll}
+            className="px-3 py-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/25 border border-red-500/40 text-red-300 text-xs font-bold cursor-pointer transition"
+            title="Wipe ALL price overrides and revert to bundled defaults"
+          >
+            ⚠ Reset All
           </button>
         </div>
         {lastSaveMsg && (
@@ -247,21 +333,45 @@ export default function PricesAdminPage() {
                           <code className="text-[13px] font-bold text-white">{modelId}</code>
                           {carrier && (
                             <span className="flex items-center gap-1 text-[11px] text-[#888]">
-                              <span>Carrier deduction:</span>
-                              {CARRIER_KEYS.map((c) => (
-                                <label key={c} className="inline-flex items-center gap-1">
-                                  <span className="uppercase text-[10px]">{c}</span>
-                                  <input
-                                    type="number"
-                                    defaultValue={effectiveCarrier(modelId, c) ?? 0}
-                                    onChange={(e) => setCarrierCell(modelId, c, parseInt(e.target.value) || 0)}
-                                    className={`w-16 px-1.5 py-0.5 text-[11px] text-right bg-black/60 rounded border ${
-                                      isOverridden(modelId, undefined, undefined, c) ? "border-[#00c853]/50" : "border-white/15"
-                                    }`}
-                                  />
-                                </label>
-                              ))}
+                              <span>Carrier:</span>
+                              {CARRIER_KEYS.map((c) => {
+                                const ov = isOverridden(modelId, undefined, undefined, c);
+                                return (
+                                  <label key={c} className="inline-flex items-center gap-1">
+                                    <span className="uppercase text-[10px]">{c}</span>
+                                    <input
+                                      key={`${modelId}-car-${c}-${data.overrides?.priceTable && JSON.stringify(data.overrides.carrierDeductions[modelId])}`}
+                                      type="number"
+                                      defaultValue={effectiveCarrier(modelId, c) ?? 0}
+                                      onChange={(e) => setCarrierCell(modelId, c, parseInt(e.target.value) || 0)}
+                                      className={`w-16 px-1.5 py-0.5 text-[11px] text-right bg-black/60 rounded border ${
+                                        ov ? "border-[#00c853]/50" : "border-white/15"
+                                      }`}
+                                    />
+                                  </label>
+                                );
+                              })}
+                              {data.overrides.carrierDeductions[modelId] && (
+                                <button
+                                  type="button"
+                                  onClick={() => resetCarrier(modelId)}
+                                  className="ml-1 text-[10px] text-[#888] hover:text-[#00c853] cursor-pointer"
+                                  title="Revert this model's carrier deductions to baseline"
+                                >
+                                  ↺
+                                </button>
+                              )}
                             </span>
+                          )}
+                          {data.overrides.priceTable[modelId] && (
+                            <button
+                              type="button"
+                              onClick={() => resetModel(modelId)}
+                              className="ml-auto px-2 py-0.5 text-[10px] rounded bg-white/5 hover:bg-red-500/20 hover:text-red-300 border border-white/10 text-[#888] cursor-pointer transition"
+                              title="Revert every cell on this model back to baseline"
+                            >
+                              ↺ revert model
+                            </button>
                           )}
                         </div>
                         <table className="w-full text-[12px]">
@@ -282,19 +392,33 @@ export default function PricesAdminPage() {
                                 {CONDITION_ORDER.map((cond) => {
                                   const v = effectivePrice(modelId, stor, cond);
                                   const overridden = isOverridden(modelId, stor, cond);
+                                  const savedOverride = data.overrides.priceTable[modelId]?.[stor]?.[cond] !== undefined;
                                   return (
                                     <td key={cond} className="px-0.5 py-1">
                                       {v === undefined ? (
                                         <span className="block text-[10px] text-[#444] text-right">—</span>
                                       ) : (
-                                        <input
-                                          type="number"
-                                          defaultValue={v}
-                                          onChange={(e) => setPriceCell(modelId, stor, cond, parseInt(e.target.value) || 0)}
-                                          className={`w-16 px-1.5 py-0.5 text-right bg-black/60 rounded border ${
-                                            overridden ? "border-[#00c853]/50 text-[#00c853]" : "border-white/15"
-                                          }`}
-                                        />
+                                        <div className="flex items-center justify-end gap-0.5">
+                                          <input
+                                            key={`${modelId}-${stor}-${cond}-${v}`}
+                                            type="number"
+                                            defaultValue={v}
+                                            onChange={(e) => setPriceCell(modelId, stor, cond, parseInt(e.target.value) || 0)}
+                                            className={`w-16 px-1.5 py-0.5 text-right bg-black/60 rounded border ${
+                                              overridden ? "border-[#00c853]/50 text-[#00c853]" : "border-white/15"
+                                            }`}
+                                          />
+                                          {savedOverride && (
+                                            <button
+                                              type="button"
+                                              onClick={() => resetCell(modelId, stor, cond)}
+                                              className="text-[10px] text-[#888] hover:text-[#00c853] cursor-pointer w-4"
+                                              title="Revert this cell to baseline"
+                                            >
+                                              ↺
+                                            </button>
+                                          )}
+                                        </div>
                                       )}
                                     </td>
                                   );

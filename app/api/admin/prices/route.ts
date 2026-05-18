@@ -1,23 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PRICE_TABLE, CARRIER_DEDUCTIONS } from "../../../data/prices";
-import { put, list } from "@vercel/blob";
+import { put, list, del } from "@vercel/blob";
 
 // Price-editor backend. Stores admin overrides as a single JSON document
 // on Vercel Blob (we already use Blob for FedEx labels, so no new infra).
 //
-//   GET  /api/admin/prices         → public; returns { baseline, overrides }
-//                                    so the admin UI can render the full grid
-//                                    AND so the customer funnel can fetch
-//                                    overrides on mount and merge at lookup.
-//   POST /api/admin/prices         → auth required; takes { priceTable,
-//                                    carrierDeductions } (sparse overrides
-//                                    only) and persists them to Blob.
+//   GET    /api/admin/prices            → public; returns
+//                                          { baseline, overrides, effective,
+//                                            history: [{ url, timestamp }] }
+//   POST   /api/admin/prices            → auth; merges { priceTable,
+//                                          carrierDeductions } into stored
+//                                          overrides. Snapshots the previous
+//                                          version into history before
+//                                          overwriting (last 10 kept).
+//   DELETE /api/admin/prices            → auth; clear ALL overrides.
+//   DELETE /api/admin/prices?model=ip17p          → auth; clear one model
+//                                          from both price+carrier tables.
+//   DELETE /api/admin/prices?cell=ip17p/256/sealed → auth; clear one cell.
 //
 // Auth is the same token used by /api/admin/leads (TCC_ADMIN_TOKEN env, or
 // fallback "topcash-admin-2026"). Pass via ?token= or x-admin-token header.
 
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
 const BLOB_KEY = "prices/overrides.json";
+const HISTORY_PREFIX = "prices/history/";
+const HISTORY_LIMIT = 10;
 
 function checkAuth(req: NextRequest): boolean {
   const headerToken = req.headers.get("x-admin-token");
@@ -69,8 +76,45 @@ function deepMerge<T>(base: T, overlay: Partial<T>): T {
   return out as T;
 }
 
+// History: list snapshot files under prices/history/, newest first.
+async function readHistory(): Promise<Array<{ url: string; pathname: string; uploadedAt: string }>> {
+  try {
+    const { blobs } = await list({ prefix: HISTORY_PREFIX, limit: HISTORY_LIMIT * 2 });
+    return blobs
+      .map((b) => ({ url: b.url, pathname: b.pathname, uploadedAt: b.uploadedAt.toISOString() }))
+      .sort((a, b) => b.uploadedAt.localeCompare(a.uploadedAt))
+      .slice(0, HISTORY_LIMIT);
+  } catch {
+    return [];
+  }
+}
+
+// Snapshot the current overrides into history before overwriting. Ring-
+// buffer behavior: prune anything beyond HISTORY_LIMIT.
+async function snapshotToHistory(current: OverridesShape) {
+  if (Object.keys(current.priceTable).length === 0 && Object.keys(current.carrierDeductions).length === 0) {
+    return;
+  }
+  const ts = new Date().toISOString().replace(/[:.]/g, "-");
+  try {
+    await put(`${HISTORY_PREFIX}${ts}.json`, JSON.stringify(current, null, 2), {
+      access: "public",
+      contentType: "application/json",
+      addRandomSuffix: false,
+      allowOverwrite: false,
+    });
+    // Prune anything beyond the limit (oldest first)
+    const all = await readHistory();
+    const stale = all.slice(HISTORY_LIMIT);
+    for (const s of stale) {
+      try { await del(s.url); } catch {}
+    }
+  } catch {}
+}
+
 export async function GET() {
   const overrides = await readOverrides();
+  const history = await readHistory();
   return NextResponse.json({
     baseline: {
       priceTable: PRICE_TABLE,
@@ -81,6 +125,7 @@ export async function GET() {
       priceTable: deepMerge(PRICE_TABLE, overrides.priceTable),
       carrierDeductions: deepMerge(CARRIER_DEDUCTIONS, overrides.carrierDeductions),
     },
+    history,
   });
 }
 
@@ -95,15 +140,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Bad JSON" }, { status: 400 });
   }
 
-  // Read current overrides + merge in the partial update
+  // Read current overrides + snapshot before mutating (so an admin can roll
+  // back if they regret a save)
   const current = await readOverrides();
+  await snapshotToHistory(current);
+
   const merged: OverridesShape = {
     priceTable: deepMerge(current.priceTable, body.priceTable || {}),
     carrierDeductions: deepMerge(current.carrierDeductions, body.carrierDeductions || {}),
     updatedAt: new Date().toISOString(),
   };
 
-  // Write back to Blob (overwrite, no random suffix so we have a stable URL)
   await put(BLOB_KEY, JSON.stringify(merged, null, 2), {
     access: "public",
     contentType: "application/json",
@@ -118,5 +165,69 @@ export async function POST(req: NextRequest) {
     overrideModels,
     carrierOverrides,
     updatedAt: merged.updatedAt,
+  });
+}
+
+// DELETE supports three scopes:
+//   no params       → clear ALL overrides (also snapshots first)
+//   ?model=ip17p    → strip every override for one model
+//   ?cell=ip17p/256/sealed → revert one specific cell
+//   ?carrier=ip17p  → strip carrier deductions for one model
+export async function DELETE(req: NextRequest) {
+  if (!checkAuth(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const model = req.nextUrl.searchParams.get("model");
+  const cell = req.nextUrl.searchParams.get("cell");
+  const carrier = req.nextUrl.searchParams.get("carrier");
+  const current = await readOverrides();
+  await snapshotToHistory(current);
+
+  let next: OverridesShape = current;
+  let action = "clear-all";
+  if (cell) {
+    // Expect "modelId/storage/condition"
+    const [m, s, c] = cell.split("/");
+    if (m && s && c && next.priceTable[m]?.[s]?.[c] !== undefined) {
+      delete next.priceTable[m][s][c];
+      if (Object.keys(next.priceTable[m][s]).length === 0) delete next.priceTable[m][s];
+      if (Object.keys(next.priceTable[m]).length === 0) delete next.priceTable[m];
+    }
+    action = `clear-cell:${cell}`;
+  } else if (carrier) {
+    delete next.carrierDeductions[carrier];
+    action = `clear-carrier:${carrier}`;
+  } else if (model) {
+    delete next.priceTable[model];
+    delete next.carrierDeductions[model];
+    action = `clear-model:${model}`;
+  } else {
+    next = { priceTable: {}, carrierDeductions: {} };
+  }
+  next.updatedAt = new Date().toISOString();
+
+  // If nothing left, wipe the blob entirely; otherwise rewrite
+  const empty = Object.keys(next.priceTable).length === 0 && Object.keys(next.carrierDeductions).length === 0;
+  if (empty) {
+    try {
+      const { blobs } = await list({ prefix: BLOB_KEY, limit: 5 });
+      for (const b of blobs.filter((x) => x.pathname === BLOB_KEY)) {
+        await del(b.url);
+      }
+    } catch {}
+  } else {
+    await put(BLOB_KEY, JSON.stringify(next, null, 2), {
+      access: "public",
+      contentType: "application/json",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+    });
+  }
+
+  return NextResponse.json({
+    ok: true,
+    action,
+    overrideModels: Object.keys(next.priceTable).length,
+    carrierOverrides: Object.keys(next.carrierDeductions).length,
   });
 }
