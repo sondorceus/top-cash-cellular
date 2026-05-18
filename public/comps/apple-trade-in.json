@@ -1,15 +1,15 @@
 {
   "_doc": "Apple Trade-In max published values per model id. Refreshed monthly by scripts/refresh-apple-comps.py via .github/workflows/refresh-comps.yml. Frontend reads this at runtime when device is in the Apple family and falls back to COMP_SOURCES percentage if the model id isn't here.",
   "source": "https://www.apple.com/shop/trade-in",
-  "updatedAt": "2026-05-12T03:15:00Z",
+  "updatedAt": "2026-05-18T09:43:50Z",
   "values": {
     "ip17pm": 700,
     "ip17p": 530,
     "ip17air": 415,
     "ip17": 330,
     "ip17e": 200,
-    "ip16pm": 660,
-    "ip16p": 530,
+    "ip16pm": 685,
+    "ip16p": 685,
     "ip16plus": 380,
     "ip16": 300,
     "ip16e": 190,
@@ -31,7 +31,6 @@
     "ip11pm": 200,
     "ip11p": 160,
     "ip11": 120,
-
     "mbp16_m5pmax_2026": 1100,
     "mbp14_m5pmax_2026": 850,
     "mbp14_m5_2025": 600,
@@ -48,7 +47,6 @@
     "mba15m2": 370,
     "mba13m2": 290,
     "mba13m1": 190,
-
     "ipadpro13m5": 730,
     "ipadpro11m5": 560,
     "ipadair13m3": 310,
@@ -58,7 +56,6 @@
     "ipadpro11m4": 500,
     "ipadair13m2": 260,
     "ipadair11m2": 210,
-
     "aw_ultra3": 300,
     "aw_ultra2": 260,
     "aw_ultra": 220,
