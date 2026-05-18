@@ -19,14 +19,25 @@ import { getSessionFromRequest, isAdminEmail } from "./app/lib/auth";
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // /admin page gate — redirect to Google sign-in if unauthed or not on
-  // the admin allowlist.
+  // /admin page gate — three outcomes:
+  //   1. /admin/forbidden is the not-authorized landing page; always
+  //      allow through so we don't infinite-loop a signed-in non-admin
+  //      back to Google.
+  //   2. Not signed in at all → bounce to Google sign-in with returnTo
+  //      so the user lands back where they wanted.
+  //   3. Signed in but email not on the allowlist → send to the
+  //      forbidden page instead of re-running auth (which would just
+  //      authenticate them as the same non-admin email again).
   if (pathname.startsWith("/admin")) {
+    if (pathname === "/admin/forbidden") return NextResponse.next();
     const session = getSessionFromRequest(req);
-    if (!session || !isAdminEmail(session.email)) {
+    if (!session) {
       const url = new URL("/api/auth/google", req.url);
       url.searchParams.set("returnTo", pathname);
       return NextResponse.redirect(url);
+    }
+    if (!isAdminEmail(session.email)) {
+      return NextResponse.redirect(new URL("/admin/forbidden", req.url));
     }
     return NextResponse.next();
   }
