@@ -1591,7 +1591,7 @@ const HP_ELITEBOOK_STD_VARIANTS = [
   { id: "hp_eb_g8", label: "EliteBook G8", base: 189, inquiryOnly: false, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g8.png" },
   { id: "hp_eb_g7", label: "EliteBook G7", base: 148, inquiryOnly: false, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g7.png" },
   { id: "hp_eb_g6", label: "EliteBook G6", base: 104, inquiryOnly: false, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g6.png" },
-  { id: "hp_eb_g5", label: "EliteBook G5", base: 1, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g5.png" },
+  { id: "hp_eb_g5", label: "EliteBook G5", base: 180, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g5.png" },
   { id: "hp_eb_g4", label: "EliteBook G4", base: 81, inquiryOnly: false, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g4.png" },
 ];
 const HP_ELITEBOOK_ULTRA_VARIANTS = [
@@ -1701,13 +1701,13 @@ const HP_PC_ALL_SUB_SERIES = [
 const ACER_NITRO_VARIANTS = [
   { id: "ac_nitro_17", label: "Nitro 17", base: 0, inquiryOnly: true, image: "/devices/acer-nitro-acer-nitro-17.png" },
   { id: "ac_nitro_16", label: "Nitro 16", base: 0, inquiryOnly: true, image: "/devices/acer-nitro-acer-nitro-16.png" },
-  { id: "ac_nitro_v", label: "Nitro V", base: 0, inquiryOnly: true, image: "/devices/acer-nitro-acer-nitro-v.png" },
+  { id: "ac_nitro_v", label: "Nitro V", base: 680, image: "/devices/acer-nitro-acer-nitro-v.png" },
   { id: "ac_nitro_7", label: "Nitro 7", base: 0, inquiryOnly: true, image: "/devices/acer-nitro-acer-nitro-7.png" },
-  { id: "ac_nitro_5", label: "Nitro 5", base: 0, inquiryOnly: true, image: "/devices/acer-nitro-acer-nitro-5.png" },
+  { id: "ac_nitro_5", label: "Nitro 5", base: 441, image: "/devices/acer-nitro-acer-nitro-5.png" },
 ];
 const ACER_PREDATOR_VARIANTS = [
-  { id: "ac_pred_helios", label: "Predator Helios", base: 0, inquiryOnly: true, image: "/devices/acer-predator-acer-predator-helios.png" },
-  { id: "ac_pred_triton", label: "Predator Triton", base: 0, inquiryOnly: true, image: "/devices/acer-predator-acer-predator-triton.png" },
+  { id: "ac_pred_helios", label: "Predator Helios", base: 1260, image: "/devices/acer-predator-acer-predator-helios.png" },
+  { id: "ac_pred_triton", label: "Predator Triton", base: 1575, image: "/devices/acer-predator-acer-predator-triton.png" },
 ];
 const ACER_PC_SERIES = [
   { id: "ac_nitro", label: "Nitro", year: "Mainstream gaming", topPrice: 0, variants: ACER_NITRO_VARIANTS, inquiryOnly: true, image: "/devices/acer-nitro-acer-nitro-16.png" },
