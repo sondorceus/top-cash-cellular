@@ -11625,12 +11625,13 @@ export default function Home() {
             {cartItems.length > 0 ? checkoutSummaryMobile : selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
             <p className="text-[#e6e6e6] text-sm mb-3">Select your preferred payout method</p>
-            {/* Cash is ONLY available for in-person handoffs — can't mail
-                physical cash. Tightened 2026-05-17: only show cash when
-                handoffMethod is explicitly "local". Previously showed for
-                null/undefined too, which let cash leak into shipping
-                flows that didn't pick a handoff. */}
-            {handoffMethod !== "local" && (
+            {/* Cash heads-up — only shown when the user hasn't picked a
+                handoff yet (so they understand Cash is local-only). When
+                they've explicitly picked Ship, we hide ANY Cash mention
+                so the option doesn't even cross their mind. Skywalker
+                2026-05-18 "remove the cash option from showing on the
+                shipping side". */}
+            {!handoffMethod && (
               <div className="mb-4 px-3 py-2 rounded-lg bg-[#00c853]/5 border border-[#00c853]/20 text-[12px] text-[#bdbdbd] leading-snug">
                 <span className="text-[#00c853] font-bold">Heads up:</span> Cash payouts are available for local Austin pickups only. All digital methods (Cash App / Zelle / Bitcoin) land within minutes of receipt for shipped trades.
               </div>
