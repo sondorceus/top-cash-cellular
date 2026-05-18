@@ -213,14 +213,20 @@ export async function POST(req: NextRequest) {
   }
 
   // Auto-fire FedEx label generation when a ship-handoff lead transitions
-  // to "shipped". The status endpoint already has the customer's name,
-  // phone, email; shipAddress comes from the lead's parsed handoff data
-  // (admin client should pass it for ship leads). We call the label
-  // endpoint silently so its own email doesn't double up with the
-  // status email below — status email already mentions the label flow.
-  // Skywalker 2026-05-17.
+  // to "shipped". Triple-gated: the lead must be a ship handoff (UI
+  // hides the path for local), the status must be "shipped", AND the
+  // payload must carry a structured shipAddress with all required
+  // fields. Local meetups can never trigger a label generation —
+  // Skywalker 2026-05-17 ("only when they click shipping not local").
   let labelResult: { tracking?: string; labelUrl?: string; error?: string } | undefined;
-  if (status === "shipped" && shipAddress && phone && name) {
+  const hasFullShipAddress =
+    shipAddress &&
+    typeof shipAddress === "object" &&
+    typeof shipAddress.street === "string" && shipAddress.street.trim().length > 0 &&
+    typeof shipAddress.city === "string" && shipAddress.city.trim().length > 0 &&
+    typeof shipAddress.state === "string" && shipAddress.state.trim().length === 2 &&
+    typeof shipAddress.zip === "string" && /^\d{5}/.test(shipAddress.zip);
+  if (status === "shipped" && hasFullShipAddress && phone && name) {
     try {
       const labelReq = await fetch(`${new URL(req.url).origin}/api/admin/leads/label?token=${encodeURIComponent(ADMIN_TOKEN)}`, {
         method: "POST",

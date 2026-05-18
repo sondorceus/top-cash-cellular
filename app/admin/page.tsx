@@ -740,6 +740,14 @@ export default function AdminPage() {
   const saveStatus = async (lead: Lead, newStatus: string, reason?: string) => {
     if (!token || newStatus === lead.status) return;
     setSavingId(lead.id);
+    // Only pass shipAddress when the lead is a SHIPPING handoff AND
+    // we're flipping it to "shipped". Local meetups never get a
+    // FedEx label generated on status change. Skywalker 2026-05-17.
+    let shipAddressPayload: { street: string; unit?: string; city: string; state: string; zip: string } | undefined;
+    if (newStatus === "shipped" && lead.handoffMethod === "ship") {
+      const parsed = parseShipAddress(lead.shipAddress);
+      if (parsed) shipAddressPayload = parsed;
+    }
     try {
       const r = await fetch(`/api/admin/leads/status?token=${encodeURIComponent(token)}`, {
         method: "POST",
@@ -754,6 +762,7 @@ export default function AdminPage() {
           quote: lead.quote,
           payout: lead.payout,
           rejectionReason: newStatus === "rejected" ? reason : undefined,
+          shipAddress: shipAddressPayload,
         }),
       });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
