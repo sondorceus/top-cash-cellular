@@ -6025,13 +6025,16 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [handoffMethod, step, initShipAutocomplete]);
   // Cash is local-only. If the user picked Cash while on Local and then
-  // clicks "Switch to shipping" on the contact step, the previously-
-  // selected Cash would otherwise carry over → invalid combo at submit.
-  // Force-clear payout so they re-pick a shippable method. Skywalker
-  // 2026-05-18.
+  // switches to shipping, clear the payout (invalid combo at submit) AND
+  // send them back to the payout step. Without the step reset the user
+  // sits on the contact step with payout=null, which fails the contact
+  // section's `payout && (…)` gate → entire form unmounts → viewport
+  // falls through to the footer (Skywalker 2026-05-18 "famous footer"
+  // bug report).
   useEffect(() => {
     if (handoffMethod === "ship" && payout?.id === "cash") {
       setPayout(null);
+      setStep("payout");
     }
   }, [handoffMethod, payout]);
 
@@ -11625,15 +11628,18 @@ export default function Home() {
             {cartItems.length > 0 ? checkoutSummaryMobile : selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
             <p className="text-[#e6e6e6] text-sm mb-3">Select your preferred payout method</p>
-            {/* Cash heads-up — only shown when the user hasn't picked a
-                handoff yet (so they understand Cash is local-only). When
-                they've explicitly picked Ship, we hide ANY Cash mention
-                so the option doesn't even cross their mind. Skywalker
-                2026-05-18 "remove the cash option from showing on the
-                shipping side". */}
+            {/* Payout speed heads-up — only shown when the user hasn't
+                picked a handoff yet. Deliberately does NOT mention "Cash"
+                even by name — Skywalker 2026-05-18 customer-confusion
+                report: shipping customers were reading the old "Cash
+                payouts are available for local Austin pickups only"
+                copy and asking for cash anyway. Cash is a separate
+                button that only appears in the option grid when the
+                user has explicitly picked local handoff, which is the
+                clearest signal possible. */}
             {!handoffMethod && (
               <div className="mb-4 px-3 py-2 rounded-lg bg-[#00c853]/5 border border-[#00c853]/20 text-[12px] text-[#bdbdbd] leading-snug">
-                <span className="text-[#00c853] font-bold">Heads up:</span> Cash payouts are available for local Austin pickups only. All digital methods (Cash App / Zelle / Bitcoin) land within minutes of receipt for shipped trades.
+                <span className="text-[#00c853] font-bold">Heads up:</span> All digital methods (Cash App / Zelle / Bitcoin) land within minutes of receipt.
               </div>
             )}
             <div className="grid grid-cols-2 gap-3">
@@ -11964,7 +11970,23 @@ export default function Home() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-1">
                           <p className="text-white text-sm font-bold leading-tight">Local meetup</p>
-                          <button type="button" onClick={() => setHandoffMethod("ship")} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to shipping</button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setHandoffMethod("ship");
+                              // Local's slot picker can render much taller than
+                              // ship's address form. Without an explicit scroll
+                              // the page reflows and dumps the user at the
+                              // footer. Wait a tick for the ship section to
+                              // mount, then scroll its address into view.
+                              setTimeout(() => {
+                                shipAutocompleteContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                              }, 50);
+                            }}
+                            className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer"
+                          >
+                            Switch to shipping
+                          </button>
                         </div>
                         <p className="text-[#bdbdbd] text-xs leading-snug">
                           {availableSlots.length > 0
