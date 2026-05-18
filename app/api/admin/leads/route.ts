@@ -96,6 +96,11 @@ interface AdminLead {
   localArea?: string;
   localSlot?: string;
   handoffAction?: string;
+  // FedEx label info, populated from [LABEL: <leadId>] markers in MC.
+  // Surfaces the latest label per lead (regenerate-friendly).
+  fedexTracking?: string;
+  fedexLabelUrl?: string;
+  fedexService?: string;
 }
 
 // Includes "met" (in-person handoff terminal) alongside "paid" (digital
@@ -145,6 +150,9 @@ export async function GET(req: NextRequest) {
   // lead is active again.
   const statusByLead = new Map<string, { status: string; timestamp: string }>();
   const notesByLead = new Map<string, { text: string; timestamp: string }[]>();
+  // Latest FedEx label per lead. We keep only the most recent so
+  // regenerating overrides the prior label on the UI.
+  const labelByLead = new Map<string, { tracking: string; url: string; service?: string; timestamp: string }>();
   const deletedAtByLead = new Map<string, string>();  // most-recent deletion timestamp
   const restoredAtByLead = new Map<string, string>(); // most-recent restore timestamp
   for (const m of messages) {
@@ -176,6 +184,19 @@ export async function GET(req: NextRequest) {
       const arr = notesByLead.get(leadId) || [];
       arr.push({ text: nm[1].trim(), timestamp: m.timestamp });
       notesByLead.set(leadId, arr);
+    }
+    // FedEx label marker: "[LABEL: <leadId>] tracking=X url=Y service=Z"
+    const lblMarker = m.body.match(/\[LABEL:\s*([\w-]+)\]/i);
+    if (lblMarker && lblMarker[1] === leadId) {
+      const t = m.body.match(/tracking=([^\s]+)/i)?.[1];
+      const u = m.body.match(/url=([^\s]+)/i)?.[1];
+      const sv = m.body.match(/service=([^\s]+)/i)?.[1];
+      if (t && u) {
+        const prev = labelByLead.get(leadId);
+        if (!prev || m.timestamp > prev.timestamp) {
+          labelByLead.set(leadId, { tracking: t, url: u, service: sv, timestamp: m.timestamp });
+        }
+      }
     }
   }
 
@@ -405,6 +426,9 @@ export async function GET(req: NextRequest) {
       localArea,
       localSlot,
       handoffAction,
+      fedexTracking: labelByLead.get(m.id)?.tracking,
+      fedexLabelUrl: labelByLead.get(m.id)?.url,
+      fedexService: labelByLead.get(m.id)?.service,
     });
   }
 

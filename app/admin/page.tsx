@@ -76,6 +76,9 @@ interface Lead {
   localArea?: string;
   localSlot?: string;
   handoffAction?: string;
+  fedexTracking?: string;
+  fedexLabelUrl?: string;
+  fedexService?: string;
 }
 
 const STATUS_OPTIONS = [
@@ -261,6 +264,72 @@ export default function AdminPage() {
       // Some browsers block clipboard without user gesture; fall back to
       // window.prompt so the operator can manually copy the URL.
       window.prompt("Copy this review link:", url);
+    }
+  };
+
+  // FedEx label generation. Parses the address from lead.shipAddress
+  // (formatted by /api/lead as "street[, unit], city, ST zip") and POSTs
+  // to /api/admin/leads/label. Tracking + label URL stamp onto the lead
+  // via MC [LABEL: ...] marker, so the next /api/admin/leads GET picks
+  // them up automatically. Skywalker 2026-05-17.
+  const [labelGeneratingId, setLabelGeneratingId] = useState<string | null>(null);
+  const [labelErrorById, setLabelErrorById] = useState<Record<string, string>>({});
+  const parseShipAddress = (raw: string | undefined) => {
+    if (!raw) return null;
+    // Format: "street[, unit], city, ST zip"
+    const parts = raw.split(",").map((s) => s.trim()).filter(Boolean);
+    if (parts.length < 3) return null;
+    const last = parts[parts.length - 1];
+    const stZip = last.match(/^([A-Z]{2})\s+(\d{5})/i);
+    if (!stZip) return null;
+    const city = parts[parts.length - 2];
+    const street = parts[0];
+    const unit = parts.length >= 4 ? parts[1] : undefined;
+    return { street, unit, city, state: stZip[1].toUpperCase(), zip: stZip[2] };
+  };
+  const generateLabel = async (lead: Lead) => {
+    if (!token) return;
+    const addr = parseShipAddress(lead.shipAddress);
+    if (!addr) {
+      setLabelErrorById((s) => ({ ...s, [lead.id]: "Couldn't parse shipping address" }));
+      return;
+    }
+    if (!lead.name || !lead.phone) {
+      setLabelErrorById((s) => ({ ...s, [lead.id]: "Missing customer name or phone" }));
+      return;
+    }
+    setLabelGeneratingId(lead.id);
+    setLabelErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
+    try {
+      const r = await fetch(`/api/admin/leads/label?token=${encodeURIComponent(token)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          leadId: lead.id,
+          deviceLabel: lead.model || lead.device,
+          customerEmail: lead.email,
+          customer: {
+            customerName: lead.name,
+            customerPhone: lead.phone,
+            customerStreet: addr.street,
+            customerUnit: addr.unit,
+            customerCity: addr.city,
+            customerState: addr.state,
+            customerZip: addr.zip,
+          },
+        }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setLabelErrorById((s) => ({ ...s, [lead.id]: d.error || `HTTP ${r.status}` }));
+      } else {
+        // Optimistic update — admin auto-refresh will overwrite from MC.
+        setLeads((cur) => cur.map((l) => l.id === lead.id ? { ...l, fedexTracking: d.tracking, fedexLabelUrl: d.labelUrl, fedexService: d.serviceType } : l));
+      }
+    } catch (e) {
+      setLabelErrorById((s) => ({ ...s, [lead.id]: e instanceof Error ? e.message : "Network error" }));
+    } finally {
+      setLabelGeneratingId(null);
     }
   };
 
@@ -1217,6 +1286,63 @@ export default function AdminPage() {
                           )}
                           {lead.handoffAction && (
                             <p className="text-[11px] text-[#c5c5c5] mt-0.5 italic"><span className="text-[#8a8a8a] not-italic">Next:</span> {lead.handoffAction}</p>
+                          )}
+                          {/* FedEx label section — only for ship leads.
+                              Shows either the existing tracking+PDF link
+                              or a Generate button. Skywalker 2026-05-17. */}
+                          {lead.handoffMethod === "ship" && (
+                            <div className="mt-2 pt-2 border-t border-sky-500/15">
+                              {lead.fedexTracking && lead.fedexLabelUrl ? (
+                                <div className="space-y-1">
+                                  <p className="text-[10px] font-bold uppercase tracking-wider text-sky-300">📄 FedEx label</p>
+                                  <p className="text-[11px] text-[#e5e5e5]">
+                                    <span className="text-[#8a8a8a]">Tracking:</span>{" "}
+                                    <a
+                                      href={`https://www.fedex.com/fedextrack/?trknbr=${lead.fedexTracking}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-white font-mono font-bold hover:text-[#00c853] hover:underline"
+                                    >
+                                      {lead.fedexTracking}
+                                    </a>
+                                  </p>
+                                  <div className="flex flex-wrap gap-1.5 mt-1">
+                                    <a
+                                      href={lead.fedexLabelUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded bg-sky-500/15 border border-sky-500/40 text-sky-200 hover:bg-sky-500/25 transition cursor-pointer"
+                                    >
+                                      Open label PDF ↗
+                                    </a>
+                                    <button
+                                      type="button"
+                                      onClick={() => generateLabel(lead)}
+                                      disabled={labelGeneratingId === lead.id}
+                                      className="text-[10px] font-bold px-2 py-1 rounded bg-white/5 border border-white/10 text-[#dcdcdc] hover:bg-white/10 transition cursor-pointer disabled:opacity-50"
+                                      title="Generate a new label (replaces the current one)"
+                                    >
+                                      {labelGeneratingId === lead.id ? "Regenerating…" : "↻ Regenerate"}
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div>
+                                  <button
+                                    type="button"
+                                    onClick={() => generateLabel(lead)}
+                                    disabled={labelGeneratingId === lead.id || !lead.shipAddress || !lead.phone}
+                                    className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded bg-sky-500/15 border border-sky-500/40 text-sky-200 hover:bg-sky-500/25 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                                    title={!lead.shipAddress ? "No shipping address on file" : !lead.phone ? "Customer phone required" : "Generate FedEx prepaid drop-off label"}
+                                  >
+                                    {labelGeneratingId === lead.id ? "Generating FedEx label…" : "📄 Generate FedEx label"}
+                                  </button>
+                                  {labelErrorById[lead.id] && (
+                                    <p className="text-[10px] text-red-300 mt-1">⚠️ {labelErrorById[lead.id]}</p>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           )}
                         </div>
                       )}

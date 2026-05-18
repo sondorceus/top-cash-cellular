@@ -206,10 +206,50 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { leadId, status, name, phone, email, device, quote, payout, rejectionReason } = body;
+  const { leadId, status, name, phone, email, device, quote, payout, rejectionReason, shipAddress } = body;
 
   if (!leadId || !status || !STATUSES.includes(status)) {
     return NextResponse.json({ error: "leadId and valid status required" }, { status: 400 });
+  }
+
+  // Auto-fire FedEx label generation when a ship-handoff lead transitions
+  // to "shipped". The status endpoint already has the customer's name,
+  // phone, email; shipAddress comes from the lead's parsed handoff data
+  // (admin client should pass it for ship leads). We call the label
+  // endpoint silently so its own email doesn't double up with the
+  // status email below — status email already mentions the label flow.
+  // Skywalker 2026-05-17.
+  let labelResult: { tracking?: string; labelUrl?: string; error?: string } | undefined;
+  if (status === "shipped" && shipAddress && phone && name) {
+    try {
+      const labelReq = await fetch(`${new URL(req.url).origin}/api/admin/leads/label?token=${encodeURIComponent(ADMIN_TOKEN)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-token": ADMIN_TOKEN },
+        body: JSON.stringify({
+          leadId,
+          deviceLabel: device,
+          customerEmail: email,
+          silent: false, // let the label route send its own dedicated label email
+          customer: {
+            customerName: name,
+            customerPhone: phone,
+            customerStreet: shipAddress.street || "",
+            customerUnit: shipAddress.unit || undefined,
+            customerCity: shipAddress.city || "",
+            customerState: shipAddress.state || "",
+            customerZip: shipAddress.zip || "",
+          },
+        }),
+      });
+      const d = await labelReq.json().catch(() => ({}));
+      if (labelReq.ok) {
+        labelResult = { tracking: d.tracking, labelUrl: d.labelUrl };
+      } else {
+        labelResult = { error: d.error || `label HTTP ${labelReq.status}` };
+      }
+    } catch (e) {
+      labelResult = { error: e instanceof Error ? e.message : "label fetch failed" };
+    }
   }
 
   // 1. Persist by posting [STATUS: ...] [LEAD: ...] reply to MC comms.
@@ -238,5 +278,5 @@ export async function POST(req: NextRequest) {
     email ? emailStatus(email, status, ctx) : Promise.resolve(false),
   ]);
 
-  return NextResponse.json({ ok: true, mcOk, smsSent, emailSent, status });
+  return NextResponse.json({ ok: true, mcOk, smsSent, emailSent, status, label: labelResult });
 }
