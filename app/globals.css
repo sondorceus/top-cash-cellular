@@ -490,3 +490,41 @@ img {
 @media (prefers-reduced-motion: reduce) {
   img { animation: none; }
 }
+
+/* ----------------------------------------------------------------
+   Google Places Autocomplete dropdown (.pac-container)
+   ----------------------------------------------------------------
+   Google attaches .pac-container directly to <body> with its own
+   z-index. Bump above our own overlays + theme it to match the
+   dark site palette so suggestions look native to the form,
+   not like a bolted-on Google panel. Most common silent failure
+   is the dropdown being painted UNDER the contact-step backdrop
+   on iOS Safari — !important + z-index 9999 fixes that.
+   ---------------------------------------------------------------- */
+.pac-container {
+  z-index: 9999 !important;
+  background: #161618 !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-top: none !important;
+  border-radius: 0 0 14px 14px !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55) !important;
+  padding: 4px 0 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  margin-top: 2px;
+}
+.pac-item {
+  padding: 10px 14px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.04) !important;
+  color: #e6e6e6 !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+}
+.pac-item:first-child { border-top: none !important; }
+.pac-item:hover, .pac-item-selected {
+  background: rgba(0, 200, 83, 0.10) !important;
+}
+.pac-item-query { color: #ffffff !important; font-weight: 700 !important; font-size: 13px !important; }
+.pac-matched { color: #00c853 !important; }
+/* Google's "powered by Google" footer — recolor so it doesn't look
+   like a stark white blob on our dark dropdown. */
+.pac-logo:after { filter: invert(0.85) hue-rotate(180deg) brightness(0.7); }
