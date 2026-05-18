@@ -49342,7 +49342,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -49411,7 +49440,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -49522,7 +49580,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -49591,7 +49678,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -49674,7 +49790,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -49757,7 +49902,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -49861,7 +50035,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -49937,7 +50140,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50034,7 +50266,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50110,7 +50371,29 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50150,7 +50433,29 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50198,7 +50503,29 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50246,7 +50573,29 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50294,7 +50643,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50377,7 +50755,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50466,7 +50873,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50548,7 +50984,29 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50616,7 +51074,29 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50691,7 +51171,29 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50766,7 +51268,29 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50841,7 +51365,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -50917,7 +51470,29 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -51013,7 +51588,29 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -51123,7 +51720,29 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -51198,7 +51817,29 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
@@ -51266,7 +51907,36 @@
         "sub": ""
       }
     ],
-    "memory": [],
+    "memory": [
+      {
+        "id": "r8",
+        "label": "8GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r16",
+        "label": "16GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r32",
+        "label": "32GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "r64",
+        "label": "64GB RAM",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
     "graphics": [],
     "display": [],
     "storage": [
