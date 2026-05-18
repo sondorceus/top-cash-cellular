@@ -5929,48 +5929,33 @@ export default function Home() {
   // addresses, click → parsed into our 5 split fields (street / unit
   // is left alone / city / state / zip) so we keep structured data
   // while saving the seller a bunch of typing.
-  // Address autocomplete uses Google's new PlaceAutocompleteElement
-  // (custom HTML element) since the legacy google.maps.places.Autocomplete
-  // constructor is unavailable to Cloud projects created after 2025-03-01.
-  // The element is appended into shipAutocompleteContainer; we listen for
-  // its "gmp-select" event and pull the structured address back into our
-  // form state. Skywalker 2026-05-18.
-  const shipAutocompleteContainerRef = useRef<HTMLDivElement>(null);
+  // Address autocomplete — Skywalker 2026-05-18 swapped to ATX
+  // Gadget's Google Maps API key, whose Cloud project predates the
+  // March-2025 cutoff. The pre-cutoff project still has access to
+  // the LEGACY google.maps.places.Autocomplete constructor, which
+  // renders as an inline dropdown under the input (no mobile
+  // fullscreen takeover). Same pattern atxgadgetfix.com uses live.
+  // Binds via shipStreetRef on the actual <input>. Onload from the
+  // Maps Script tag, plus a polling effect when the user reaches
+  // the contact step in case the script loaded earlier.
+  const shipStreetRef = useRef<HTMLInputElement>(null);
   const shipAutoRef = useRef<unknown>(null);
-  // Flips true the moment the new element is appended successfully. UI
-  // hides the manual fallback input + shows the Places element instead.
-  // If Places never loads (billing missing, API restriction, etc.) this
-  // stays false → user types in the plain manual input. No dead-end.
-  const [placesAutocompleteReady, setPlacesAutocompleteReady] = useState(false);
-  const initShipAutocomplete = useCallback(async () => {
-    // DISABLED 2026-05-18 — Google's PlaceAutocompleteElement
-    // fullscreens on mobile and we can't suppress it. See JSX
-    // comment near the manual input for the revival path.
-    return;
-    // eslint-disable-next-line no-unreachable
-    if (!shipAutocompleteContainerRef.current || shipAutoRef.current) return;
-    if (typeof window === "undefined" || !window.google?.maps?.importLibrary) return;
+  const initShipAutocomplete = useCallback(() => {
+    if (!shipStreetRef.current || shipAutoRef.current) return;
+    if (typeof window === "undefined" || !window.google?.maps?.places?.Autocomplete) return;
     try {
-      const placesLib = await window.google.maps.importLibrary("places");
-      const PAE = placesLib.PlaceAutocompleteElement;
-      if (!PAE) return;
-      const el = new PAE({
-        includedRegionCodes: ["us"],
+      const ac = new window.google.maps.places.Autocomplete(shipStreetRef.current, {
         types: ["address"],
+        componentRestrictions: { country: "us" },
+        fields: ["address_components", "formatted_address"],
       });
-      // Theme via CSS parts (see globals.css .gmp-place-autocomplete).
-      el.setAttribute("class", "tcc-place-autocomplete");
-      el.setAttribute("placeholder", "Start typing your address…");
-      el.addEventListener("gmp-select", async (e: Event) => {
-        type Comp = { types?: string[]; longText?: string; shortText?: string };
-        type GmpSelectEvent = Event & { placePrediction?: { toPlace: () => { fetchFields: (opts: { fields: string[] }) => Promise<unknown>; addressComponents?: Comp[]; formattedAddress?: string } } };
-        const place = (e as GmpSelectEvent).placePrediction?.toPlace();
-        if (!place) return;
-        await place.fetchFields({ fields: ["addressComponents", "formattedAddress"] });
-        const parts: Comp[] = place.addressComponents || [];
+      ac.addListener("place_changed", () => {
+        type Comp = { types?: string[]; long_name?: string; short_name?: string };
+        const place = ac.getPlace() as { address_components?: Comp[] };
+        const parts: Comp[] = place?.address_components || [];
         const get = (type: string, useShort = false): string => {
           const c = parts.find((p) => p.types?.includes(type));
-          return c ? (useShort ? c.shortText : c.longText) || "" : "";
+          return c ? (useShort ? c.short_name : c.long_name) || "" : "";
         };
         const streetNum = get("street_number");
         const route = get("route");
@@ -5983,52 +5968,40 @@ export default function Home() {
         if (state) setShipState(state.toUpperCase().slice(0, 2));
         if (zip) setShipZip(zip);
       });
-      shipAutocompleteContainerRef.current.appendChild(el);
-      shipAutoRef.current = el;
-      setPlacesAutocompleteReady(true);
-      // Watchdog: if the element fails to render a visible internal input
-      // within 3 seconds (Google billing missing, shadow DOM broken, etc.)
-      // fall back to the manual input. Without this the user stares at
-      // an empty white block forever. Skywalker 2026-05-18.
-      setTimeout(() => {
-        const node = shipAutoRef.current as HTMLElement | null;
-        if (!node) return;
-        const rect = node.getBoundingClientRect();
-        if (rect.height < 20 || rect.width < 100) {
-          if (typeof console !== "undefined") console.warn("Places element rendered too small — falling back to manual input.");
-          try { node.remove(); } catch {}
-          shipAutoRef.current = null;
-          setPlacesAutocompleteReady(false);
-        }
-      }, 3000);
+      shipAutoRef.current = ac;
     } catch (err) {
       if (typeof console !== "undefined") console.warn("Places autocomplete init failed:", err);
     }
   }, []);
-  // Re-init autocomplete when the user switches to shipping mode AND
-  // is on the contact step (which is where the address input mounts).
-  // The Google Maps script uses lazyOnload, so it might not be ready
-  // when the input first appears — poll up to ~3s for both the input
-  // ref and window.google.maps.places to be available, then init.
-  // Skywalker 2026-05-18: autocomplete wasn't firing live because the
-  // earlier single-shot 100ms timeout fired before lazyOnload resolved.
+  // Re-init when the user switches to shipping mode AND is on the
+  // contact step (which is where the address input mounts). The
+  // Maps script also calls initShipAutocomplete via onLoad, so this
+  // is the "user mounted the input after script loaded" path. Poll
+  // every 100ms for up to 10s — slow mobile connections can take a
+  // while to fetch the 681KB Places bundle.
   useEffect(() => {
     if (handoffMethod !== "ship" || step !== "contact") return;
     let tries = 0;
     const interval = setInterval(() => {
       if (
         typeof window !== "undefined" &&
-        window.google?.maps?.importLibrary &&
-        shipAutocompleteContainerRef.current &&
+        window.google?.maps?.places?.Autocomplete &&
+        shipStreetRef.current &&
         !shipAutoRef.current
       ) {
         initShipAutocomplete();
         clearInterval(interval);
       }
-      if (++tries > 30) clearInterval(interval);
+      if (++tries > 100) clearInterval(interval); // bail after ~10s
     }, 100);
     return () => clearInterval(interval);
   }, [handoffMethod, step, initShipAutocomplete]);
+  // When the user switches away from ship, drop the Autocomplete
+  // handle so the next switch-to-ship rebinds against the freshly
+  // mounted input (refs change when the conditional input remounts).
+  useEffect(() => {
+    if (handoffMethod !== "ship") shipAutoRef.current = null;
+  }, [handoffMethod]);
   // Cash is local-only. If the user picked Cash while on Local and then
   // clicks "Switch to shipping" on the contact step, the previously-
   // selected Cash would otherwise carry over → invalid combo at submit.
@@ -7549,11 +7522,19 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
-      {/* Google Maps script removed 2026-05-18 — PlaceAutocompleteElement
-          full-screened on mobile and we couldn't suppress it. Manual
-          address inputs work fine. Re-enable when we wire a custom
-          dropdown against the Places API REST endpoint that stays
-          inline + brand-styled. */}
+      {/* Google Maps Places (LEGACY constructor) — Skywalker 2026-05-18
+          swapped to ATX Gadget's API key (its Cloud project predates
+          March 2025 so the legacy google.maps.places.Autocomplete
+          constructor still works). Legacy = inline dropdown under the
+          input, no mobile fullscreen takeover. Same mechanism that
+          atxgadgetfix.com uses successfully. */}
+      {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY && (
+        <Script
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+          strategy="afterInteractive"
+          onLoad={() => initShipAutocomplete()}
+        />
+      )}
       {/* CART TOAST — fixed top-center on mobile, top-right on lg.
           Slides up + fades. Auto-dismisses after 2.4s. Two variants:
           'add' (green check, ✓) and 'remove' (red minus, ×). */}
@@ -11914,18 +11895,16 @@ export default function Home() {
                       <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">Shipping address</label>
                       <button type="button" onClick={() => { setHandoffMethod("local"); setLocalArea(null); }} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to local meetup instead</button>
                     </div>
-                    {/* Manual address entry — Google's new
-                        PlaceAutocompleteElement was disabled
-                        2026-05-18 because it hijacks the full
-                        viewport on mobile focus (confirmed via
-                        IMG_5737 screenshot — blank white page with
-                        just the input + back arrow). Google's docs
-                        don't expose a way to suppress the fullscreen
-                        takeover. Plain inputs work fine; if we want
-                        autocomplete back, the path is a custom REST
-                        dropdown against Places API (New) — keeps us
-                        inline + brand-styled. */}
-                    <input required value={shipStreet} onChange={e => setShipStreet(e.target.value)} placeholder="Street address" autoComplete="street-address" className="w-full px-4 py-3 tcc-input" />
+                    {/* Address input — bound to the legacy
+                        google.maps.places.Autocomplete constructor
+                        via shipStreetRef. ATX Gadget's pre-cutoff API
+                        key lets us use this; new TCC-cluster keys
+                        couldn't. Inline dropdown, no mobile fullscreen.
+                        onFocus is a fallback init in case the polling
+                        useEffect didn't bind yet. autoComplete="off"
+                        prevents browser autofill from fighting the
+                        Places dropdown. Skywalker 2026-05-18. */}
+                    <input ref={shipStreetRef} required value={shipStreet} onChange={e => setShipStreet(e.target.value)} onFocus={() => initShipAutocomplete()} placeholder="Start typing your address…" autoComplete="off" className="w-full px-4 py-3 tcc-input" />
                     <input value={shipUnit} onChange={e => setShipUnit(e.target.value)} placeholder="Apt / Suite (optional)" autoComplete="address-line2" className="w-full px-4 py-3 tcc-input" />
                     <div className="grid grid-cols-3 gap-2">
                       <input required value={shipCity} onChange={e => setShipCity(e.target.value)} placeholder="City" autoComplete="address-level2" className="col-span-2 w-full px-4 py-3 tcc-input" />
