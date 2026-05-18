@@ -11924,11 +11924,18 @@ export default function Home() {
                         itself here on script load. If it never loads
                         (billing missing, key invalid, network error) the
                         manual input below shows instead so the user is
-                        never stuck. Skywalker 2026-05-18. */}
+                        never stuck. Skywalker 2026-05-18.
+                        Container always rendered (no display:none) —
+                        Google's web component needs a visible parent
+                        with non-zero dimensions to compute its shadow
+                        DOM. Hiding the wrap until ready was the
+                        chicken-and-egg that broke autocomplete. We
+                        use the wrap's empty-when-unattached state as
+                        the natural fallback: if PAE never appends,
+                        the wrap is just an empty no-height div. */}
                     <div
                       ref={shipAutocompleteContainerRef}
                       className="tcc-place-autocomplete-wrap"
-                      style={{ display: placesAutocompleteReady ? "block" : "none" }}
                     />
                     {!placesAutocompleteReady && (
                       <input required value={shipStreet} onChange={e => setShipStreet(e.target.value)} placeholder="Street address" autoComplete="street-address" className="w-full px-4 py-3 tcc-input" />
