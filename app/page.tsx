@@ -2534,9 +2534,9 @@ const DJI_MODELS = [
   { id: "dji_phantom_4_pro", label: "DJI Phantom 4 Pro", base: 189, image: "/devices/dji_phantom_4_pro.png" },
   { id: "dji_phantom_4_advanced", label: "DJI Phantom 4 Advanced", base: 104, image: "/devices/dji_phantom_4.png" },
   { id: "dji_phantom_4", label: "DJI Phantom 4", base: 94, image: "/devices/dji_phantom_4.png" },
-  { id: "dji_phantom_3_pro", label: "DJI Phantom 3 Pro", base: 0, inquiryOnly: true, image: "/djiphantom.png" },
-  { id: "dji_phantom_3_advanced", label: "DJI Phantom 3 Advanced", base: 0, inquiryOnly: true, image: "/djiphantom.png" },
-  { id: "dji_phantom_3_standard", label: "DJI Phantom 3 Standard", base: 0, inquiryOnly: true, image: "/djiphantom.png" },
+  { id: "dji_phantom_3_pro", label: "DJI Phantom 3 Pro", base: 0, inquiryOnly: true, image: "/devices/dji_phantom_3.png" },
+  { id: "dji_phantom_3_advanced", label: "DJI Phantom 3 Advanced", base: 0, inquiryOnly: true, image: "/devices/dji_phantom_3.png" },
+  { id: "dji_phantom_3_standard", label: "DJI Phantom 3 Standard", base: 0, inquiryOnly: true, image: "/devices/dji_phantom_3.png" },
   // Flip
   { id: "dji_flip", label: "DJI Flip", base: 144, image: "/devices/dji_flip.png" },
   // Spark
