@@ -49,6 +49,12 @@ interface AdminLead {
   bestContact?: "text" | "call" | "email";
   customerNote?: string;
   quantity?: number;
+  // TCPA opt-in disposition (yes/no) for the captured phone. Lets
+  // staff see at a glance whether they can SMS this customer.
+  smsOptIn?: boolean;
+  // First-touch attribution captured on the funnel landing — UTM
+  // bits + referrer host, parsed back out of the "Source: ..." line.
+  source?: { source?: string; medium?: string; campaign?: string; term?: string; content?: string; referrer?: string; landed?: string; raw: string };
   // Multi-device leads — when one lead bundles N items, the indented
   // device block from /api/lead gets parsed here so staff sees each
   // unit without dropping into the raw body. Skywalker 2026-05-17.
@@ -103,6 +109,11 @@ interface AdminLead {
   localArea?: string;
   localSlot?: string;
   handoffAction?: string;
+  // Stale-lead flag — true when the lead is in a non-terminal status
+  // (anything other than paid/met/rejected) AND the most recent
+  // status update (or submission if never updated) is older than 7
+  // days. Skywalker 2026-05-18 — surfaces forgotten leads in admin.
+  staleHours?: number;
   // FedEx label info, populated from [LABEL: <leadId>] markers in MC.
   // Surfaces the latest label per lead (regenerate-friendly).
   fedexTracking?: string;
@@ -448,6 +459,25 @@ export async function GET(req: NextRequest) {
         const n = raw ? parseInt(raw, 10) : NaN;
         return Number.isFinite(n) ? n : undefined;
       })(),
+      smsOptIn: (() => {
+        const raw = parseField(m.body, "SMS opt-in")?.toLowerCase();
+        if (raw === "yes") return true;
+        if (raw === "no") return false;
+        return undefined;
+      })(),
+      source: (() => {
+        const raw = parseField(m.body, "Source");
+        if (!raw) return undefined;
+        // Bits are " · " separated key=value pairs (source=X · medium=Y …)
+        const out: { source?: string; medium?: string; campaign?: string; term?: string; content?: string; referrer?: string; landed?: string; raw: string } = { raw };
+        for (const part of raw.split(/\s·\s|\s\|\s/)) {
+          const m2 = part.match(/^(source|medium|campaign|term|content|ref|referrer|landed)=(.+)$/i);
+          if (!m2) continue;
+          const k = m2[1].toLowerCase() === "ref" ? "referrer" : m2[1].toLowerCase();
+          (out as Record<string, string>)[k] = m2[2].trim();
+        }
+        return out;
+      })(),
       devices,
       deviceCount,
       totalPayout,
@@ -468,6 +498,15 @@ export async function GET(req: NextRequest) {
       localArea,
       localSlot,
       handoffAction,
+      staleHours: (() => {
+        // Terminal statuses don't get stale — they're done.
+        const s = (status?.status || "quote_requested").toLowerCase();
+        if (s === "paid" || s === "met" || s === "rejected") return undefined;
+        const lastTs = status?.timestamp || m.timestamp;
+        const ageMs = Date.now() - new Date(lastTs).getTime();
+        const hours = Math.floor(ageMs / (60 * 60 * 1000));
+        return hours >= 168 ? hours : undefined; // 7 days
+      })(),
       fedexTracking: labelByLead.get(m.id)?.tracking,
       fedexLabelUrl: labelByLead.get(m.id)?.url,
       fedexService: labelByLead.get(m.id)?.service,

@@ -83,6 +83,9 @@ interface Lead {
   bestContact?: "text" | "call" | "email";
   customerNote?: string;
   quantity?: number;
+  smsOptIn?: boolean;
+  source?: { source?: string; medium?: string; campaign?: string; term?: string; content?: string; referrer?: string; landed?: string; raw: string };
+  staleHours?: number;
 }
 
 const STATUS_OPTIONS = [
@@ -1298,7 +1301,7 @@ export default function AdminPage() {
                           best contact". Badge sits above the spec block so
                           staff sees how to reach the seller before the
                           deep-dive specs. */}
-                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1)) && (
+                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source) && (
                         <div className="mt-1.5 flex flex-wrap items-start gap-1.5">
                           {lead.bestContact && (
                             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#00c853]/15 text-[#7be8a8] border border-[#00c853]/35 uppercase tracking-wider">
@@ -1308,6 +1311,33 @@ export default function AdminPage() {
                           {lead.quantity && lead.quantity > 1 && (
                             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-500/15 text-sky-200 border border-sky-500/35 uppercase tracking-wider">
                               ×{lead.quantity} units
+                            </span>
+                          )}
+                          {/* SMS opt-in NO is the actionable case — staff
+                              should NOT text this customer. Don't render a
+                              badge for YES (it's the default + happy path). */}
+                          {lead.smsOptIn === false && lead.phone && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/15 text-red-200 border border-red-500/40 uppercase tracking-wider" title="Customer did not opt in to SMS — do NOT text them">
+                              🚫 NO SMS
+                            </span>
+                          )}
+                          {/* Stale-lead alert — non-terminal lead older than
+                              7 days since last status update. Skywalker
+                              2026-05-18 — pings forgotten leads. */}
+                          {lead.staleHours && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-amber-100 border border-amber-500/45 uppercase tracking-wider" title={`No status update in ${lead.staleHours} hours`}>
+                              ⏰ Stale · {lead.staleHours >= 24 ? `${Math.floor(lead.staleHours / 24)}d` : `${lead.staleHours}h`}
+                            </span>
+                          )}
+                          {/* Source attribution — show the top channel
+                              compactly. Full breakdown lives in title hover. */}
+                          {lead.source && (
+                            <span
+                              className="px-2 py-0.5 rounded text-[10px] font-bold bg-violet-500/15 text-violet-200 border border-violet-500/35 uppercase tracking-wider"
+                              title={lead.source.raw}
+                            >
+                              📍 {lead.source.source || lead.source.referrer || "direct"}
+                              {lead.source.campaign ? ` · ${lead.source.campaign}` : ""}
                             </span>
                           )}
                           {lead.customerNote && (

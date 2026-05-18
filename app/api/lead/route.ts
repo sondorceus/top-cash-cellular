@@ -112,7 +112,15 @@ function needsManualReview(modelName: string, quoteAmt: number): boolean {
 export async function POST(req: NextRequest) {
   const data = await req.json();
   let { payout } = data;
-  const { name, phone, email, device, model, storage, condition, carrier, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution } = data;
+  // TCPA defense in depth — client checkbox is `required`, but a
+  // bypass (DevTools, malformed client) could submit phone without
+  // consent. Reject any phone-bearing lead that didn't get explicit
+  // smsOptIn=true. Ship handoffs without a phone don't need consent
+  // (we'll only email).
+  if (phone && typeof phone === "string" && phone.replace(/\D/g, "").length >= 10 && smsOptIn !== true) {
+    return NextResponse.json({ error: "SMS consent required when providing a phone number." }, { status: 400 });
+  }
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
 
   // Server-side guard: Cash is local-only. If a ship handoff slips
@@ -257,6 +265,29 @@ export async function POST(req: NextRequest) {
   if (typeof notes === "string" && notes.trim()) {
     const clean = notes.replace(/[\r\n]+/g, " · ").trim().slice(0, 500);
     customerMetaLines.push(`Note from customer: ${clean}`);
+  }
+  // Record SMS-consent disposition (TCPA audit trail). When phone is
+  // absent the lead won't get SMS regardless, so we omit the line.
+  if (phone) {
+    customerMetaLines.push(`SMS opt-in: ${smsOptIn === true ? "YES" : "no"}`);
+  }
+  // Source attribution — UTM params + referrer captured on first
+  // landing, persisted to localStorage with 30-day TTL, then sent
+  // with the submit. Tells Skywalker which channel (Google Ads vs
+  // organic vs referral) is actually producing customers.
+  if (attribution && typeof attribution === "object") {
+    const a = attribution as { source?: string; medium?: string; campaign?: string; term?: string; content?: string; referrer?: string; landed?: string };
+    const bits: string[] = [];
+    if (a.source) bits.push(`source=${a.source}`);
+    if (a.medium) bits.push(`medium=${a.medium}`);
+    if (a.campaign) bits.push(`campaign=${a.campaign}`);
+    if (a.term) bits.push(`term=${a.term}`);
+    if (a.content) bits.push(`content=${a.content}`);
+    if (a.referrer) bits.push(`ref=${a.referrer.slice(0, 120)}`);
+    if (a.landed) bits.push(`landed=${a.landed}`);
+    if (bits.length > 0) {
+      customerMetaLines.push(`Source: ${bits.join(" · ").slice(0, 480)}`);
+    }
   }
 
   const handoffLines: string[] = [];

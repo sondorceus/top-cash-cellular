@@ -6035,6 +6035,13 @@ export default function Home() {
   type BestContact = "text" | "call" | "email";
   const [bestContact, setBestContact] = useState<BestContact | null>(null);
   const [customerNote, setCustomerNote] = useState("");
+  // Explicit SMS opt-in checkbox — TCPA Class-A compliance. Today an
+  // implied-consent paragraph runs under the phone field; that's
+  // defensible for transactional messages but borderline for anything
+  // that drifts toward marketing. Real unchecked checkbox eliminates
+  // the gray area. Server rejects POST if phone present + smsOptIn !==
+  // true (defense in depth — client may be bypassed).
+  const [smsOptIn, setSmsOptIn] = useState(false);
   // IMEI / serial validator (optional, contact step)
   const [imeiInput, setImeiInput] = useState("");
   const [imeiState, setImeiState] = useState<"idle" | "checking" | "ok" | "warn" | "error">("idle");
@@ -6299,6 +6306,67 @@ export default function Home() {
     } catch {}
     cartHydrated.current = true;
   }, []);
+
+  // First-touch attribution. Capture UTM params + referrer the first
+  // time a user lands on the site within a 30-day window. Persist to
+  // localStorage so the channel that ACTUALLY drove the visit survives
+  // through cart abandonment + funnel restart. Skywalker 2026-05-18:
+  // we have zero source-of-truth on where leads come from today.
+  // First-touch (not last-touch) on purpose — once a customer arrives
+  // via "Google Ads · iphone-trade-in", we want credit to stay there
+  // even if they re-visit organically before submitting.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const STORAGE_KEY = "tcc-attribution";
+      const TTL_MS = 30 * 24 * 60 * 60 * 1000;
+      const existing = localStorage.getItem(STORAGE_KEY);
+      if (existing) {
+        const parsed = JSON.parse(existing);
+        if (parsed && Date.now() - (parsed.ts || 0) < TTL_MS) return; // first-touch already captured + fresh
+      }
+      const params = new URLSearchParams(window.location.search);
+      const utm = {
+        source: params.get("utm_source") || undefined,
+        medium: params.get("utm_medium") || undefined,
+        campaign: params.get("utm_campaign") || undefined,
+        term: params.get("utm_term") || undefined,
+        content: params.get("utm_content") || undefined,
+      };
+      const hasUtm = Object.values(utm).some(Boolean);
+      // Pull a clean referrer host — full URLs leak query strings + are
+      // noisy in admin. If no referrer + no UTM, save a "direct" marker
+      // so we don't keep re-reading on every render.
+      let referrer: string | undefined;
+      if (document.referrer) {
+        try { referrer = new URL(document.referrer).host; } catch { referrer = document.referrer.slice(0, 80); }
+      }
+      const sameOrigin = referrer && referrer === window.location.host;
+      const payload = {
+        ts: Date.now(),
+        landed: window.location.pathname,
+        ...(hasUtm ? utm : {}),
+        ...(referrer && !sameOrigin ? { referrer } : {}),
+        ...(!hasUtm && !referrer ? { source: "direct" } : {}),
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    } catch {}
+  }, []);
+  // Helper to read the current attribution payload back when submitting.
+  const readAttribution = (): Record<string, string> | undefined => {
+    if (typeof window === "undefined") return undefined;
+    try {
+      const raw = localStorage.getItem("tcc-attribution");
+      if (!raw) return undefined;
+      const p = JSON.parse(raw) as Record<string, unknown>;
+      const out: Record<string, string> = {};
+      for (const k of ["source", "medium", "campaign", "term", "content", "referrer", "landed"]) {
+        const v = p[k];
+        if (typeof v === "string" && v) out[k] = v;
+      }
+      return Object.keys(out).length > 0 ? out : undefined;
+    } catch { return undefined; }
+  };
 
   useEffect(() => {
     try {
@@ -6811,7 +6879,7 @@ export default function Home() {
     setProcessor(null); setMemory(null); setGraphics(null); setDisplayResolution(null); setDisplayGlass(null);
     setBatteryHealth(null); setCharger(null); setBrokenPhotoUrl(null);
     setExtras({}); setExtrasIndex(0);
-    setBestContact(null); setCustomerNote("");
+    setBestContact(null); setCustomerNote(""); setSmsOptIn(false);
   };
 
   // Brand → flat variant lists (the series intermediate step was removed
@@ -9000,7 +9068,7 @@ export default function Home() {
                     await fetch("/api/lead", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ name, phone, email, device: inquiryCategory, model: model.label, storage: "N/A", condition: condition.label, quote: 0, payout: "TBD", notes: "Custom device - full flow submission", photos: photoUrls }),
+                      body: JSON.stringify({ name, phone, email, device: inquiryCategory, model: model.label, storage: "N/A", condition: condition.label, quote: 0, payout: "TBD", notes: "Custom device - full flow submission", photos: photoUrls, smsOptIn, attribution: readAttribution() }),
                     });
                   } catch {}
                   setInquirySent(true);
@@ -9020,7 +9088,18 @@ export default function Home() {
                       else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                       else setPhone(digits);
                     }} required placeholder="(512) 555-0000" className="w-full px-4 py-3.5 tcc-input text-sm" />
-                    <p className="text-[#e6e6e6] text-[11px] leading-relaxed mt-1.5">By submitting, you agree to receive SMS updates about your trade-in from Top Cash Cellular. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</p>
+                    <label className="mt-2 flex items-start gap-2.5 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={smsOptIn}
+                        onChange={(e) => setSmsOptIn(e.target.checked)}
+                        required
+                        className="mt-0.5 w-4 h-4 shrink-0 rounded border-white/25 bg-white/5 accent-[#00c853] cursor-pointer"
+                      />
+                      <span className="text-[#e6e6e6] text-[11px] leading-relaxed">
+                        I agree to receive SMS updates about my trade-in. Msg &amp; data rates apply, reply STOP to opt out.
+                      </span>
+                    </label>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">Email</label>
@@ -11671,6 +11750,8 @@ export default function Home() {
                       devices: devicesPayload,
                       bestContact,
                       notes: customerNote.trim() || undefined,
+                      smsOptIn,
+                      attribution: readAttribution(),
                     }),
                   });
                   if (!r.ok) throw new Error("Failed");
@@ -11683,7 +11764,7 @@ export default function Home() {
                   const res = await fetch("/api/lead", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined }),
+                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution() }),
                   });
                   if (!res.ok) throw new Error('Failed');
                   const d = await res.json().catch(() => ({}));
@@ -11867,7 +11948,20 @@ export default function Home() {
                   else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                   else setPhone(digits);
                 }} required={handoffMethod !== "ship"} pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 tcc-input text-sm" />
-                {phone && <p className="text-[#e6e6e6] text-[11px] leading-relaxed mt-1.5">By submitting, you agree to receive SMS updates about your trade-in from Top Cash Cellular. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.</p>}
+                {phone && (
+                  <label className="mt-2 flex items-start gap-2.5 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={smsOptIn}
+                      onChange={(e) => setSmsOptIn(e.target.checked)}
+                      required={handoffMethod !== "ship"}
+                      className="mt-0.5 w-4 h-4 shrink-0 rounded border-white/25 bg-white/5 accent-[#00c853] cursor-pointer"
+                    />
+                    <span className="text-[#e6e6e6] text-[11px] leading-relaxed">
+                      I agree to receive SMS updates about my trade-in from Top Cash Cellular at the number above. Msg &amp; data rates may apply, msg frequency varies, reply STOP to opt out, HELP for help. See our <a href="/privacy" className="underline hover:text-[#00c853]">privacy policy</a>.
+                    </span>
+                  </label>
+                )}
               </div>
               {email && (
                 <p className="text-[#e6e6e6] text-xs">
