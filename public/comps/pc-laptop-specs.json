@@ -49281,5 +49281,822 @@
         "sub": ""
       }
     ]
+  },
+  "ac_pred_triton": {
+    "base_price": 364,
+    "processors": [
+      {
+        "id": "triton_300_se",
+        "label": "Triton 300 SE",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "triton_500",
+        "label": "Triton 500",
+        "adj": 35,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "triton_300",
+        "label": "Triton 300",
+        "adj": 55,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "triton_500_se",
+        "label": "Triton 500 SE",
+        "adj": 165,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "triton_neo_16",
+        "label": "Triton Neo 16",
+        "adj": 170,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "triton_14",
+        "label": "Triton 14",
+        "adj": 190,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "triton_16",
+        "label": "Triton 16",
+        "adj": 360,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "triton_17_x",
+        "label": "Triton 17 X",
+        "adj": 1245,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "memory": [],
+    "graphics": [],
+    "display": [],
+    "storage": [
+      {
+        "id": "s512",
+        "label": "512GB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s2t",
+        "label": "2TB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s1t",
+        "label": "1TB",
+        "adj": 30,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "condition_adj": {
+      "sealed": 26,
+      "mint": 0,
+      "verygood": -100,
+      "good": -64,
+      "fair": -186,
+      "broken": -650
+    },
+    "battery_adj": {
+      "good": 0,
+      "poor": -50
+    },
+    "charger_adj": {
+      "yes": 0,
+      "no": -25
+    },
+    "hasNanoGlass": false
+  },
+  "ln_legion_9i": {
+    "base_price": 1260,
+    "processors": [
+      {
+        "id": "9i_gen_8",
+        "label": "9i Gen 8",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "9i_gen_9",
+        "label": "9i Gen 9",
+        "adj": 275,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "9i_gen_10",
+        "label": "9i Gen 10",
+        "adj": 1700,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "memory": [],
+    "graphics": [],
+    "display": [],
+    "storage": [
+      {
+        "id": "s1t",
+        "label": "1TB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s2t",
+        "label": "2TB",
+        "adj": 100,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "condition_adj": {
+      "sealed": 50,
+      "mint": 0,
+      "verygood": -87,
+      "good": -208,
+      "fair": -533,
+      "broken": 0
+    },
+    "battery_adj": {
+      "good": 0,
+      "poor": -50
+    },
+    "charger_adj": {
+      "yes": 0,
+      "no": -25
+    },
+    "hasNanoGlass": false
+  },
+  "ac_pred_helios": {
+    "base_price": 392,
+    "processors": [
+      {
+        "id": "helios_300",
+        "label": "Helios 300",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "helios_500",
+        "label": "Helios 500",
+        "adj": 25,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "helios_700",
+        "label": "Helios 700",
+        "adj": 25,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "helios_neo_14",
+        "label": "Helios Neo 14",
+        "adj": 230,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "helios_neo_16",
+        "label": "Helios Neo 16",
+        "adj": 415,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "helios_neo_18",
+        "label": "Helios Neo 18",
+        "adj": 515,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "helios_16",
+        "label": "Helios 16",
+        "adj": 525,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "helios_neo_16s_ai",
+        "label": "Helios Neo 16S AI",
+        "adj": 565,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "helios_neo_16_ai",
+        "label": "Helios Neo 16 AI",
+        "adj": 805,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "helios_18",
+        "label": "Helios 18",
+        "adj": 865,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "memory": [],
+    "graphics": [],
+    "display": [],
+    "storage": [
+      {
+        "id": "s256",
+        "label": "256GB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s512",
+        "label": "512GB",
+        "adj": 15,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s1t",
+        "label": "1TB",
+        "adj": 30,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s2t",
+        "label": "2TB",
+        "adj": 50,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "condition_adj": {
+      "sealed": 26,
+      "mint": 0,
+      "verygood": -37,
+      "good": -70,
+      "fair": -182,
+      "broken": 0
+    },
+    "battery_adj": {
+      "good": 0,
+      "poor": -50
+    },
+    "charger_adj": {
+      "yes": 0,
+      "no": -25
+    },
+    "hasNanoGlass": false
+  },
+  "hp_omen_max": {
+    "base_price": 315,
+    "processors": [
+      {
+        "id": "ryzen",
+        "label": "Ryzen",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "intel",
+        "label": "Intel",
+        "adj": 500,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "memory": [],
+    "graphics": [],
+    "display": [],
+    "storage": [
+      {
+        "id": "s512",
+        "label": "512GB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s1t",
+        "label": "1TB",
+        "adj": 50,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s2t",
+        "label": "2TB",
+        "adj": 100,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "condition_adj": {
+      "sealed": 50,
+      "mint": 0,
+      "verygood": -60,
+      "good": -92,
+      "fair": -290,
+      "broken": 0
+    },
+    "battery_adj": {
+      "good": 0,
+      "poor": -50
+    },
+    "charger_adj": {
+      "yes": 0,
+      "no": -25
+    },
+    "hasNanoGlass": false
+  },
+  "hp_omen_17": {
+    "base_price": 171,
+    "processors": [
+      {
+        "id": "7th_8th_9th_gen",
+        "label": "7th/8th/9th gen.",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "10th_11th_gen",
+        "label": "10th/11th gen.",
+        "adj": 35,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "2025_models",
+        "label": "2025 Models",
+        "adj": 70,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "12th_13th_14th_gen",
+        "label": "12th/13th/14th gen.",
+        "adj": 310,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "i9_12th_13th",
+        "label": "i9 12th/13th",
+        "adj": 335,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "memory": [],
+    "graphics": [],
+    "display": [],
+    "storage": [
+      {
+        "id": "s128",
+        "label": "128GB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s256",
+        "label": "256GB",
+        "adj": 10,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s512",
+        "label": "512GB",
+        "adj": 25,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s1t",
+        "label": "1TB",
+        "adj": 40,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "condition_adj": {
+      "sealed": 27,
+      "mint": 0,
+      "verygood": -39,
+      "good": -56,
+      "fair": -114,
+      "broken": -329
+    },
+    "battery_adj": {
+      "good": 0,
+      "poor": -50
+    },
+    "charger_adj": {
+      "yes": 0,
+      "no": -25
+    },
+    "hasNanoGlass": false
+  },
+  "ac_nitro_v": {
+    "base_price": 45,
+    "processors": [
+      {
+        "id": "v_17",
+        "label": "V 17",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "v_16",
+        "label": "V 16",
+        "adj": 595,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "v_14",
+        "label": "V 14",
+        "adj": 600,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "v_15",
+        "label": "V 15",
+        "adj": 630,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "memory": [],
+    "graphics": [],
+    "display": [],
+    "storage": [
+      {
+        "id": "s512",
+        "label": "512GB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s1t",
+        "label": "1TB",
+        "adj": 25,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s2t",
+        "label": "2TB",
+        "adj": 50,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "condition_adj": {
+      "sealed": 30,
+      "mint": 0,
+      "verygood": -37,
+      "good": -69,
+      "fair": -166,
+      "broken": 0
+    },
+    "battery_adj": {
+      "good": 0,
+      "poor": -50
+    },
+    "charger_adj": {
+      "yes": 0,
+      "no": -25
+    },
+    "hasNanoGlass": false
+  },
+  "hp_omen_16": {
+    "base_price": 108,
+    "processors": [
+      {
+        "id": "2025_models",
+        "label": "2025 models",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "high_processor",
+        "label": "High Processor",
+        "adj": 270,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "amd_ryzen_5",
+        "label": "AMD Ryzen 5",
+        "adj": 505,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "amd_ryzen_7",
+        "label": "AMD Ryzen 7",
+        "adj": 555,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "intel_core_i5",
+        "label": "Intel Core i5",
+        "adj": 630,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "amd_ryzen_9",
+        "label": "AMD Ryzen 9",
+        "adj": 655,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "intel_core_i7",
+        "label": "Intel Core i7",
+        "adj": 705,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "intel_core_i9",
+        "label": "Intel Core i9",
+        "adj": 820,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "memory": [],
+    "graphics": [],
+    "display": [],
+    "storage": [
+      {
+        "id": "s256",
+        "label": "256GB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s2t",
+        "label": "2TB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s512",
+        "label": "512GB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s128",
+        "label": "128GB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s1t",
+        "label": "1TB",
+        "adj": 25,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "condition_adj": {
+      "sealed": 27,
+      "mint": 0,
+      "verygood": -35,
+      "good": -53,
+      "fair": -113,
+      "broken": -284
+    },
+    "battery_adj": {
+      "good": 0,
+      "poor": -50
+    },
+    "charger_adj": {
+      "yes": 0,
+      "no": -25
+    },
+    "hasNanoGlass": false
+  },
+  "hp_omen_slim": {
+    "base_price": 180,
+    "processors": [
+      {
+        "id": "ultra",
+        "label": "Ultra",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "ultra_series_2",
+        "label": "Ultra Series 2",
+        "adj": 25,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "memory": [],
+    "graphics": [],
+    "display": [],
+    "storage": [
+      {
+        "id": "s512",
+        "label": "512GB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s1t",
+        "label": "1TB",
+        "adj": 50,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s2t",
+        "label": "2TB",
+        "adj": 100,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "condition_adj": {
+      "sealed": 30,
+      "mint": 0,
+      "verygood": -55,
+      "good": -112,
+      "fair": -305,
+      "broken": 0
+    },
+    "battery_adj": {
+      "good": 0,
+      "poor": -50
+    },
+    "charger_adj": {
+      "yes": 0,
+      "no": -25
+    },
+    "hasNanoGlass": false
+  },
+  "ac_nitro_5": {
+    "base_price": 18,
+    "processors": [
+      {
+        "id": "7th_8th_gen",
+        "label": "7th/8th Gen",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "9th_gen",
+        "label": "9th Gen",
+        "adj": 35,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "10th_gen",
+        "label": "10th Gen",
+        "adj": 40,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "11th_gen",
+        "label": "11th Gen",
+        "adj": 60,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "12th_gen",
+        "label": "12th Gen",
+        "adj": 80,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "13th_gen",
+        "label": "13th Gen",
+        "adj": 85,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "ryzen",
+        "label": "Ryzen",
+        "adj": 420,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "memory": [],
+    "graphics": [],
+    "display": [],
+    "storage": [
+      {
+        "id": "s1th",
+        "label": "1TB HDD",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s2t",
+        "label": "2TB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s128",
+        "label": "128GB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s256",
+        "label": "256GB",
+        "adj": 10,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s512",
+        "label": "512GB",
+        "adj": 25,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s1t",
+        "label": "1TB",
+        "adj": 40,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "condition_adj": {
+      "sealed": 18,
+      "mint": 0,
+      "verygood": -30,
+      "good": -44,
+      "fair": -108,
+      "broken": 0
+    },
+    "battery_adj": {
+      "good": 0,
+      "poor": -50
+    },
+    "charger_adj": {
+      "yes": 0,
+      "no": -25
+    },
+    "hasNanoGlass": false
   }
 }
