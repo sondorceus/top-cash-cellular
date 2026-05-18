@@ -1708,10 +1708,10 @@ export default function AdminPage() {
                         {lead.idCaptured ? (
                           <div className="flex flex-wrap items-center gap-2">
                             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-200 border border-emerald-500/45 uppercase tracking-wider">
-                              ✓ ID · {lead.idCaptured.type} · ****{lead.idCaptured.last4} · DOB {lead.idCaptured.dobYear}
+                              ✓ ID · {lead.idCaptured?.type} · ****{lead.idCaptured?.last4} · DOB {lead.idCaptured?.dobYear}
                             </span>
                             <a
-                              href={lead.idCaptured.photoUrl}
+                              href={lead.idCaptured?.photoUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/[0.06] text-[#dcdcdc] border border-white/15 hover:bg-white/[0.1] transition cursor-pointer"
