@@ -8230,7 +8230,7 @@ export default function Home() {
                 { label: "Cash App", icon: "💚" },
                 { label: "Venmo", icon: "🟦" },
                 { label: "BTC", icon: "₿" },
-              ].filter(p => handoffMethod !== "ship" || p.label !== "Cash").map(p => (
+              ].filter(p => p.label !== "Cash" || handoffMethod === "local").map(p => (
                 <span key={p.label} className="inline-flex items-center gap-1 bg-white/5 border border-white/10 text-[#e6e6e6] text-[11px] font-semibold px-2 py-1 rounded-full">
                   <span className="text-[12px] leading-none">{p.icon}</span>
                   {p.label}
@@ -12148,7 +12148,7 @@ export default function Home() {
                   <p className="text-[#00c853] text-2xl font-bold mb-2">Instant Cash</p>
                   <ul className="text-white text-sm space-y-1 list-disc list-inside">
                     <li>Competitive, fair pricing</li>
-                    <li><strong>{handoffMethod === "ship" ? "Cash App, Zelle, or Venmo" : "Cash, Zelle, or Venmo"}</strong> — same day</li>
+                    <li><strong>{handoffMethod === "local" ? "Cash, Zelle, or Venmo" : "Cash App, Zelle, or Venmo"}</strong> — same day</li>
                     <li>No strings, no carrier lock-in</li>
                   </ul>
                 </div>
@@ -12243,7 +12243,7 @@ export default function Home() {
                     { method: "Cash App / Zelle", icon: "⚡", timeline: "Under 5 min", desc: "Sent while you watch. Hits your account instantly.", highlight: false },
                     { method: "Bitcoin (BTC)", icon: "₿", timeline: "Under 30 min", desc: "Sent on-chain to your wallet. Confirmation in minutes.", highlight: false },
                     { method: "Ship To Us", icon: "📦", timeline: "Same day received", desc: "We inspect and pay within hours of receiving your device.", highlight: false },
-                  ].filter(p => handoffMethod !== "ship" || p.method !== "Cash").map((p, i) => (
+                  ].filter(p => p.method !== "Cash" || handoffMethod === "local").map((p, i) => (
                     <div key={`${dup}-${i}`} className={`flex-shrink-0 w-[280px] flex items-start gap-3 rounded-2xl p-4 border ${p.highlight ? "bg-[#00c853]/10 border-[#00c853]/30" : "bg-white/5 border-white/10"}`}>
                       <span className="text-2xl shrink-0">{p.icon}</span>
                       <div className="flex-1 min-w-0">
