@@ -477,6 +477,11 @@ button:hover > .tcc-brand-tile {
   .hero-fade-up, .hero-scale-in { animation: none; }
 }
 
+/* Hide the horizontal scrollbar on rails (e.g. the mobile category
+   strip under the nav). Content still scrolls — just no chrome. */
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
 /* Smooth image loading — fade in once decoded (prevents flash of broken/empty images during page load) */
 @keyframes imgFadeIn {
   from { opacity: 0; }

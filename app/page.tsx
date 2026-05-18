@@ -7739,6 +7739,50 @@ export default function Home() {
         <div className="px-4 lg:px-8 pb-3 -mt-1 flex justify-center">
           <HeaderSearch className="w-full max-w-xl" />
         </div>
+        {/* MOBILE CATEGORY RAIL — horizontal scroll strip with the 8
+            sell categories. Tappable 64x76 tiles, big-enough touch
+            targets, fade-on-right hint to suggest scrollability.
+            Mobile/tablet only (lg+ has the centered mega-dropdown in
+            the nav row). Lives inside SlideOnScrollNav so it slides
+            up with the rest of the header on scroll-down. Skywalker
+            2026-05-18 "let's upgrade design and flow" — discoverability
+            win: customers no longer need to find/expand the hamburger
+            to reach Sell categories. Hidden on funnel steps after
+            "device" so it doesn't fight with the step they're on. */}
+        {step === "device" && page === "home" && (
+          <div className="lg:hidden relative border-t border-white/[0.06]">
+            <div className="overflow-x-auto no-scrollbar -mx-px">
+              <div className="flex gap-2 px-3 py-2.5 min-w-max">
+                {([
+                  { id: "phones" as const, label: "Phones" },
+                  { id: "tablets" as const, label: "Tablets" },
+                  { id: "computers" as const, label: "Laptops" },
+                  { id: "desktops" as const, label: "Desktops" },
+                  { id: "watches" as const, label: "Watches" },
+                  { id: "consoles" as const, label: "Consoles" },
+                  { id: "drones" as const, label: "Drones" },
+                  { id: "vr" as const, label: "VR" },
+                ]).map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => {
+                      setCategory(cat.id);
+                      setStep("brand");
+                      pushHistory("brand");
+                    }}
+                    className="flex flex-col items-center justify-center gap-1 w-16 shrink-0 px-2 py-2 rounded-2xl bg-white/[0.04] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/45 active:bg-[#00c853]/15 transition cursor-pointer tap-press"
+                  >
+                    <CategoryIcon id={cat.id} className="w-7 h-7 text-white" />
+                    <p className="text-[11px] font-bold text-white leading-none">{cat.label}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+            {/* Right-edge fade — tells the user there's more off-screen */}
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#0a0a0a] to-transparent" />
+          </div>
+        )}
         {/* FUNNEL PROGRESS BAR — last row of the nav so it always sits
             directly under whatever else is in the sticky header, no
             hardcoded top offsets to maintain. */}
