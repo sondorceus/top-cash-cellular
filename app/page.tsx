@@ -11385,7 +11385,7 @@ export default function Home() {
                   bookedSlotInfo = { id: selectedSlot.id, date: selectedSlot.date, time: selectedSlot.time, label: selectedSlot.label };
                 }
                 const handoffPayload = handoffMethod === "ship"
-                  ? { method: "ship", address: { street: shipStreet, unit: shipUnit, city: shipCity, state: shipState, zip: shipZip }, hasBox: shipHasBox ?? undefined }
+                  ? { method: "ship", address: { street: shipStreet, unit: shipUnit, city: shipCity, state: shipState, zip: shipZip } }
                   : { method: "local", slot: bookedSlotInfo };
                 // Snapshot the currently-edited photos into the active
                 // tab's slot before submission so the latest edits make
@@ -11554,26 +11554,14 @@ export default function Home() {
                       <input required maxLength={2} value={shipState} onChange={e => setShipState(e.target.value.toUpperCase().slice(0,2))} placeholder="State" autoComplete="address-level1" className="w-full px-4 py-3 tcc-input uppercase" />
                     </div>
                     <input required inputMode="numeric" pattern="\d{5}" maxLength={5} value={shipZip} onChange={e => setShipZip(e.target.value.replace(/\D/g, "").slice(0,5))} placeholder="ZIP" autoComplete="postal-code" className="w-full px-4 py-3 tcc-input" />
-                    {/* Packaging check — pre-flight so a seller without a
-                        box doesn't get a label they can't use. We'll ship
-                        a packaging kit instead if they need one. */}
-                    <div className="mt-2">
-                      <label className="block text-xs font-medium text-[#e6e6e6] mb-2 uppercase tracking-wider">Do you have a box to ship in?</label>
-                      <div className="grid grid-cols-2 gap-2">
-                        <button type="button" onClick={() => setShipHasBox("yes")} className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border transition cursor-pointer tap-press ${shipHasBox === "yes" ? "bg-[#00c853]/15 border-[#00c853]/60 text-white" : "bg-white/[0.04] border-white/15 text-[#e6e6e6] hover:bg-white/[0.07]"}`}>
-                          <span className="text-base">📦</span>
-                          <span className="text-[13px] font-bold">Yes, I have one</span>
-                        </button>
-                        <button type="button" onClick={() => setShipHasBox("no")} className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border transition cursor-pointer tap-press ${shipHasBox === "no" ? "bg-[#00c853]/15 border-[#00c853]/60 text-white" : "bg-white/[0.04] border-white/15 text-[#e6e6e6] hover:bg-white/[0.07]"}`}>
-                          <span className="text-base">📭</span>
-                          <span className="text-[13px] font-bold">No — send me one</span>
-                        </button>
-                      </div>
-                      {shipHasBox === "no" && (
-                        <p className="text-[#00c853] text-[11px] leading-relaxed mt-2">✓ We'll include a padded box and protective wrap with your label — no extra charge.</p>
-                      )}
+                    {/* Box-question removed 2026-05-18 — customers source
+                        their own box. We don't ship packaging kits. The
+                        confirmation email's packaging checklist explains
+                        what works (padded mailer, any plain box). */}
+                    <div className="mt-2 bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2.5 text-[11px] text-[#bdbdbd] leading-snug">
+                      <span className="text-[#00c853] font-bold">📦 You provide the box.</span> Any plain padded mailer or small box works for phones; bigger trades use any unmarked box. We&apos;ll email packing tips with your label.
                     </div>
-                    <p className="text-[#888] text-[11px] leading-relaxed">Prepaid label hits {email || "your email"} within the hour. Drop the box at any FedEx or UPS — we cover return shipping.</p>
+                    <p className="text-[#888] text-[11px] leading-relaxed">Prepaid label hits {email || "your email"} within the hour. Drop the box at any FedEx location — we cover return shipping.</p>
                   </div>
                 )}
 
