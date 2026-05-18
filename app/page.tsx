@@ -6812,7 +6812,12 @@ export default function Home() {
       }
     }
     else if (step === "storage") {
-      if (model && hasAdditiveSpecs(model.id)) { setStep("memory"); setMemory(null); }
+      if (model && hasAdditiveSpecs(model.id)) {
+        // Back-skip empty steps: if memory is empty, go to processor.
+        const spec = getMacSpec(model.id);
+        if (spec?.memory && spec.memory.length > 0) { setStep("memory"); setMemory(null); }
+        else { setStep("processor"); setProcessor(null); }
+      }
       else if (deviceType === "ipad") { setStep("connectivity"); setConnectivity(null); }
       else { setStep("condition"); setCondition(null); }
     }
@@ -10262,7 +10267,18 @@ export default function Home() {
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
                   {(getMacSpec(model.id)?.processors || []).map((p) => (
-                    <button key={p.id} onClick={() => { setProcessor(p); setStep("memory"); pushHistory("memory"); }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                    <button key={p.id} onClick={() => {
+                      setProcessor(p);
+                      // Skip the memory step when the spec has no RAM options
+                      // (typical for laptops where RAM doesn't vary much by
+                      // SKU). Without this skip the user lands on an empty
+                      // memory picker. Skywalker 2026-05-18.
+                      const spec = getMacSpec(model?.id);
+                      const next: Step = (spec?.memory && spec.memory.length > 0)
+                        ? "memory"
+                        : "storage";
+                      setStep(next); pushHistory(next);
+                    }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{p.label}</p>
                         {p.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{p.sub}</p>}
