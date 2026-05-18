@@ -6294,36 +6294,79 @@ export default function Home() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("tcc-session");
-      if (saved) {
-        const s = JSON.parse(saved);
-        if (s.step && s.step !== "done" && Date.now() - (s.ts || 0) < 7 * 24 * 60 * 60 * 1000) {
-          if (s.deviceType) setDeviceType(s.deviceType);
-          if (s.selectedSeries) setSelectedSeries(s.selectedSeries);
-          if (s.model) setModel(s.model);
-          if (s.storage) setStorage(s.storage);
-          if (s.condition) setCondition(s.condition);
-          if (s.carrier) setCarrier(s.carrier);
-          if (s.quantity) setQuantity(s.quantity);
-          if (s.email) setEmail(s.email);
-          // Hero handoff pick must survive refreshes — otherwise the contact
-          // step asks again and feels redundant. Restore everything we put
-          // into the session payload.
-          if (s.handoffMethod) setHandoffMethod(s.handoffMethod);
-          if (s.shipStreet) setShipStreet(s.shipStreet);
-          if (s.shipUnit) setShipUnit(s.shipUnit);
-          if (s.shipCity) setShipCity(s.shipCity);
-          if (s.shipState) setShipState(s.shipState);
-          if (s.shipZip) setShipZip(s.shipZip);
-          if (s.shipHasBox) setShipHasBox(s.shipHasBox);
-          // Payout has to be restored too — without it, refreshing on the
-          // contact step makes the gate condition `payout && ...` fail
-          // and the page falls through to the footer. Skywalker 2026-05-18.
-          if (s.payout) setPayout(s.payout);
-          if (s.name) setName(s.name);
-          if (s.phone) setPhone(s.phone);
-          setStep(s.step);
+      if (!saved) return;
+      const s = JSON.parse(saved);
+      if (!s.step || s.step === "done" || Date.now() - (s.ts || 0) >= 7 * 24 * 60 * 60 * 1000) return;
+
+      // PERMANENT FIX for the "page falls through to footer" bug
+      // (Skywalker 2026-05-18, recurring). Each step's render gate
+      // requires specific pieces of state — if we restore to a step
+      // but the required state is missing (e.g. localStorage was
+      // partially cleared, an old session format, payout deleted,
+      // etc.), every step section's gate fails and the user sees ONLY
+      // the universal footer. Solution: validate the saved step
+      // against its render-gate requirements BEFORE setting it. If
+      // anything's missing → drop to step="device" so the home hero
+      // always renders.
+      const requirementsMet = (() => {
+        switch (s.step) {
+          // Funnel-tail steps that require a full quote in state
+          case "contact":
+          case "payout":
+          case "checkout":
+          case "quote":
+            return !!(s.model && s.condition && (s.step !== "contact" || s.payout));
+          // Mid-funnel steps that require at least model + deviceType
+          case "carrier-lock":
+          case "carrier":
+          case "connectivity":
+          case "storage":
+          case "condition":
+          case "displayglass":
+          case "processor":
+          case "memory":
+          case "graphics":
+          case "batteryhealth":
+          case "charger":
+          case "extras":
+            return !!(s.model && s.deviceType);
+          // Early picker steps need only deviceType (or nothing)
+          case "model":
+            return !!s.deviceType;
+          case "brand":
+          case "category":
+          case "device":
+            return true;
+          default:
+            // Unknown step — better to land on home than show empty.
+            return false;
         }
+      })();
+      if (!requirementsMet) {
+        // Stale / partial session — quietly reset so user lands on home.
+        localStorage.removeItem("tcc-session");
+        return;
       }
+
+      if (s.deviceType) setDeviceType(s.deviceType);
+      if (s.selectedSeries) setSelectedSeries(s.selectedSeries);
+      if (s.model) setModel(s.model);
+      if (s.storage) setStorage(s.storage);
+      if (s.condition) setCondition(s.condition);
+      if (s.carrier) setCarrier(s.carrier);
+      if (s.quantity) setQuantity(s.quantity);
+      if (s.email) setEmail(s.email);
+      if (s.handoffMethod) setHandoffMethod(s.handoffMethod);
+      if (s.shipStreet) setShipStreet(s.shipStreet);
+      if (s.shipUnit) setShipUnit(s.shipUnit);
+      if (s.shipCity) setShipCity(s.shipCity);
+      if (s.shipState) setShipState(s.shipState);
+      if (s.shipZip) setShipZip(s.shipZip);
+      if (s.shipHasBox) setShipHasBox(s.shipHasBox);
+      if (s.payout) setPayout(s.payout);
+      if (s.name) setName(s.name);
+      if (s.phone) setPhone(s.phone);
+      setStep(s.step);
     } catch {}
   }, []);
 
