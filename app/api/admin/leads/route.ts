@@ -42,6 +42,13 @@ interface AdminLead {
   connectivity?: string;
   extras?: string[];
   paidOff?: boolean | null;
+  // Customer-meta from the contact step — Skywalker 2026-05-18 "make
+  // sure im getting every detail". bestContact is how the seller
+  // wants to be reached; customerNote is the free-form "anything
+  // else?" answer; quantity is the single-device unit count.
+  bestContact?: "text" | "call" | "email";
+  customerNote?: string;
+  quantity?: number;
   // Multi-device leads — when one lead bundles N items, the indented
   // device block from /api/lead gets parsed here so staff sees each
   // unit without dropping into the raw body. Skywalker 2026-05-17.
@@ -430,6 +437,17 @@ export async function GET(req: NextRequest) {
       connectivity:      parseField(m.body, "Connectivity"),
       extras,
       paidOff,
+      bestContact: (() => {
+        const raw = parseField(m.body, "Best contact")?.toLowerCase();
+        if (raw === "text" || raw === "call" || raw === "email") return raw;
+        return undefined;
+      })(),
+      customerNote: parseField(m.body, "Note from customer"),
+      quantity: (() => {
+        const raw = parseField(m.body, "Quantity");
+        const n = raw ? parseInt(raw, 10) : NaN;
+        return Number.isFinite(n) ? n : undefined;
+      })(),
       devices,
       deviceCount,
       totalPayout,

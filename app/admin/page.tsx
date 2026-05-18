@@ -80,6 +80,9 @@ interface Lead {
   fedexLabelUrl?: string;
   fedexService?: string;
   fedexLabelError?: { kind: string; reason: string; at: string };
+  bestContact?: "text" | "call" | "email";
+  customerNote?: string;
+  quantity?: number;
 }
 
 const STATUS_OPTIONS = [
@@ -1288,6 +1291,31 @@ export default function AdminPage() {
                               </div>
                             );
                           })}
+                        </div>
+                      )}
+                      {/* Best-contact badge + customer note — Skywalker
+                          2026-05-18 "make sure im getting every detail …
+                          best contact". Badge sits above the spec block so
+                          staff sees how to reach the seller before the
+                          deep-dive specs. */}
+                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1)) && (
+                        <div className="mt-1.5 flex flex-wrap items-start gap-1.5">
+                          {lead.bestContact && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#00c853]/15 text-[#7be8a8] border border-[#00c853]/35 uppercase tracking-wider">
+                              {lead.bestContact === "text" ? "💬 Prefers TEXT" : lead.bestContact === "call" ? "📞 Prefers CALL" : "✉️ Prefers EMAIL"}
+                            </span>
+                          )}
+                          {lead.quantity && lead.quantity > 1 && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-500/15 text-sky-200 border border-sky-500/35 uppercase tracking-wider">
+                              ×{lead.quantity} units
+                            </span>
+                          )}
+                          {lead.customerNote && (
+                            <div className="w-full mt-0.5 rounded-md bg-amber-500/8 border border-amber-500/30 px-2 py-1.5">
+                              <p className="text-[9px] uppercase tracking-[0.15em] text-amber-300 font-bold mb-0.5">📝 Customer note</p>
+                              <p className="text-[11.5px] text-amber-100 leading-snug break-words">{lead.customerNote}</p>
+                            </div>
+                          )}
                         </div>
                       )}
                       {/* Full spec answers — chip, RAM, GPU, display,

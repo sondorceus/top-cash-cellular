@@ -112,7 +112,7 @@ function needsManualReview(modelName: string, quoteAmt: number): boolean {
 export async function POST(req: NextRequest) {
   const data = await req.json();
   let { payout } = data;
-  const { name, phone, email, device, model, storage, condition, carrier, quote, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes } = data;
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
 
   // Server-side guard: Cash is local-only. If a ship handoff slips
@@ -240,6 +240,25 @@ export async function POST(req: NextRequest) {
     imeiLines.push(`[IMEI WARNINGS] ${(imeiWarnings as string[]).join(" | ")}`);
   }
 
+  // Customer-level meta lines — best contact preference, free-form
+  // note, quantity (single-device only). Skywalker 2026-05-18 "make
+  // sure im getting every detail". These travel as plain "Key: value"
+  // lines so admin's existing parseField helper picks them up. Notes
+  // can contain newlines so we collapse to " · " to keep a single
+  // line. Capped at 500 chars (client also caps, defense in depth).
+  const customerMetaLines: string[] = [];
+  const qtyNum = typeof quantity === "number" ? quantity : parseInt(quantity as string);
+  if (Number.isFinite(qtyNum) && qtyNum > 1 && !Array.isArray(devices)) {
+    customerMetaLines.push(`Quantity: ${qtyNum}`);
+  }
+  if (typeof bestContact === "string" && /^(text|call|email)$/i.test(bestContact)) {
+    customerMetaLines.push(`Best contact: ${bestContact.toUpperCase()}`);
+  }
+  if (typeof notes === "string" && notes.trim()) {
+    const clean = notes.replace(/[\r\n]+/g, " · ").trim().slice(0, 500);
+    customerMetaLines.push(`Note from customer: ${clean}`);
+  }
+
   const handoffLines: string[] = [];
   if (handoff && typeof handoff === "object") {
     const h = handoff as { method?: string; address?: Record<string, string>; area?: string; slot?: { id: string; date: string; time: string; label?: string } };
@@ -311,6 +330,7 @@ export async function POST(req: NextRequest) {
         carrier ? `Carrier: ${carrier}` : null,
         `Quote: $${deviceList.reduce((s, d) => s + (Number(d.quote) || 0) * (Number(d.quantity) || 1), 0)}`,
         `Payout: ${payout}`,
+        ...customerMetaLines,
         ...multiLines,
         ...handoffLines,
       ].filter(Boolean).join("\n")
@@ -325,6 +345,7 @@ export async function POST(req: NextRequest) {
         `Condition: ${condition}`,
         quote ? `Quote: $${quote}` : `Quote: TBD (custom)`,
         `Payout: ${payout}`,
+        ...customerMetaLines,
         ...specLines,
         ...brokenLines,
         ...reviewLines,

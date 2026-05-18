@@ -6026,6 +6026,15 @@ export default function Home() {
     { id: "cp", label: "Cedar Park / Leander", desc: "Cedar Park, Leander, 78613" },
     { id: "georgetown", label: "Georgetown / North", desc: "Georgetown + further north" },
   ];
+  // Contact step extras — Skywalker 2026-05-18 "make sure im getting
+  // every detail: number email full spec best contact shipping vs
+  // local". bestContact lets the seller pick how they'd rather hear
+  // back (Text / Call / Email) so staff doesn't bounce them across
+  // channels. customerNote is a free-form "anything else we should
+  // know" field — building buzzers, work hours, accessories, etc.
+  type BestContact = "text" | "call" | "email";
+  const [bestContact, setBestContact] = useState<BestContact | null>(null);
+  const [customerNote, setCustomerNote] = useState("");
   // IMEI / serial validator (optional, contact step)
   const [imeiInput, setImeiInput] = useState("");
   const [imeiState, setImeiState] = useState<"idle" | "checking" | "ok" | "warn" | "error">("idle");
@@ -6802,6 +6811,7 @@ export default function Home() {
     setProcessor(null); setMemory(null); setGraphics(null); setDisplayResolution(null); setDisplayGlass(null);
     setBatteryHealth(null); setCharger(null); setBrokenPhotoUrl(null);
     setExtras({}); setExtrasIndex(0);
+    setBestContact(null); setCustomerNote("");
   };
 
   // Brand → flat variant lists (the series intermediate step was removed
@@ -11659,6 +11669,8 @@ export default function Home() {
                       handoff: handoffPayload,
                       paidOff,
                       devices: devicesPayload,
+                      bestContact,
+                      notes: customerNote.trim() || undefined,
                     }),
                   });
                   if (!r.ok) throw new Error("Failed");
@@ -11671,7 +11683,7 @@ export default function Home() {
                   const res = await fetch("/api/lead", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff }),
+                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined }),
                   });
                   if (!res.ok) throw new Error('Failed');
                   const d = await res.json().catch(() => ({}));
@@ -11900,6 +11912,58 @@ export default function Home() {
                 )}
                 {imeiState === "error" && imeiResult?.error && (
                   <p className="text-xs text-red-400 mt-1.5">{imeiResult.error}</p>
+                )}
+              </div>
+
+              {/* Best contact method — Skywalker 2026-05-18 "make sure
+                  im getting every detail … best contact". Three-way
+                  pick. Choices the customer skipped show as null and
+                  staff falls back to the contact most relevant to the
+                  handoff (text for local, email for ship). */}
+              <div>
+                <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
+                  Best way to reach you <span className="normal-case text-[11px] text-[#888]">(optional)</span>
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {([
+                    { id: "text" as const, label: "Text", emoji: "💬", hint: "SMS" },
+                    { id: "call" as const, label: "Call", emoji: "📞", hint: "Phone" },
+                    { id: "email" as const, label: "Email", emoji: "✉️", hint: "Inbox" },
+                  ]).map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setBestContact(bestContact === opt.id ? null : opt.id)}
+                      className={`px-3 py-3 rounded-xl border text-center transition cursor-pointer tap-press
+                        ${bestContact === opt.id ? "bg-[#00c853]/15 border-[#00c853]/45 text-white" : "bg-white/5 border-white/10 text-[#c5c5c5] hover:bg-white/10"}`}
+                    >
+                      <p className="text-base leading-none mb-1">{opt.emoji}</p>
+                      <p className="text-[13px] font-bold leading-tight">{opt.label}</p>
+                      <p className="text-[10px] opacity-60 mt-0.5">{opt.hint}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Free-form "anything else?" note — Skywalker 2026-05-18.
+                  Customers often need to tell us building buzzers, work
+                  hours, device quirks (e.g. "back glass has a sticker
+                  that won't come off"), accessories etc. Free-form keeps
+                  it general; trimmed + 500-char capped server-side. */}
+              <div>
+                <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
+                  Anything else we should know? <span className="normal-case text-[11px] text-[#888]">(optional)</span>
+                </label>
+                <textarea
+                  value={customerNote}
+                  onChange={(e) => setCustomerNote(e.target.value.slice(0, 500))}
+                  rows={2}
+                  maxLength={500}
+                  placeholder="Building buzzer, accessory details, device quirks, best time to reach you…"
+                  className="w-full px-4 py-3 tcc-input text-sm resize-none"
+                />
+                {customerNote.length > 0 && (
+                  <p className="text-[10px] text-[#888] mt-1 text-right">{customerNote.length}/500</p>
                 )}
               </div>
 
