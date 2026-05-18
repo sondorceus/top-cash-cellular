@@ -85,9 +85,19 @@ export default async function ReviewsPage() {
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 mb-8 text-center">
-          <div className="text-6xl font-bold text-[#00c853]">{avg.toFixed(1)}</div>
-          <div className="my-1 flex justify-center"><Stars rating={Math.round(avg)} /></div>
-          <div className="text-[#dcdcdc] text-sm">{count || 127} reviews</div>
+          {count > 0 ? (
+            <>
+              <div className="text-6xl font-bold text-[#00c853]">{avg.toFixed(1)}</div>
+              <div className="my-1 flex justify-center"><Stars rating={Math.round(avg)} /></div>
+              <div className="text-[#dcdcdc] text-sm">{count} review{count === 1 ? "" : "s"}</div>
+            </>
+          ) : (
+            <>
+              <p className="text-4xl mb-2">★</p>
+              <p className="text-white font-bold text-base mb-1">No reviews yet — be our first</p>
+              <p className="text-[#bdbdbd] text-sm">Sold to us recently? Drop a 30-second note to help the next person trust us.</p>
+            </>
+          )}
         </div>
 
         {count === 0 ? null : (

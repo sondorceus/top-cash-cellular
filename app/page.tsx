@@ -8837,23 +8837,28 @@ export default function Home() {
               <a href="https://www.google.com/search?q=Top+Cash+Cellular+Austin+reviews" target="_blank" rel="noopener noreferrer" className="text-[#00c853] text-sm font-semibold whitespace-nowrap hover:underline">See all on Google →</a>
             )}
           </div>
-          {/* Pulls real customer reviews from /api/reviews (MC-backed).
-              Falls back to a curated set of placeholders below until we
-              have at least 3 real ones — the carousel never looks empty
-              while we're still building the review pipeline. */}
-          <ReviewsCarousel reviews={(() => {
-            const placeholders = [
-              { name: "Marcus T.", loc: "South Austin", text: "Sold my iPhone 14 Pro for $480. Apple offered $230. Same-day cash. Zero BS.", stars: 5 },
-              { name: "Priya S.", loc: "Round Rock", text: "Drove in, walked out with cash for my MacBook in 20 minutes. Easiest sale I've ever made.", stars: 5 },
-              { name: "Jamal R.", loc: "East Austin", text: "Better offer than Gazelle and IWM. Got the money on Cash App in 15 min after they tested it.", stars: 5 },
-              { name: "Sarah M.", loc: "Cedar Park", text: "Shipped my Galaxy S22 Ultra. Free label, instant quote, payout was same-day on Zelle.", stars: 5 },
-              { name: "Diego L.", loc: "Pflugerville", text: "Sold my PS5 Pro. They Zelle'd me before my coffee finished brewing. Wild.", stars: 5 },
-              { name: "Kelsey W.", loc: "North Austin", text: "Actual Austinites running this — not some bot site. Picked up the phone on the first ring.", stars: 5 },
-            ];
-            if (realReviews.length >= 3) return realReviews;
-            // Pad with placeholders so we always show at least 6 cards.
-            return [...realReviews, ...placeholders].slice(0, Math.max(6, realReviews.length));
-          })()} />
+          {/* Real customer reviews from /api/reviews (MC-backed). NO
+              placeholders / fake names — FTC Endorsement Guides + TX
+              DTPA make fabricated testimonials a real liability, and
+              fake reviews next to a real one cheapen the real one.
+              Skywalker 2026-05-18 "build real reviews — we already
+              got 1, let's start". When realReviews.length === 0 we
+              swap the carousel for a "be the first" CTA below. */}
+          {realReviews.length > 0 ? (
+            <ReviewsCarousel reviews={realReviews} />
+          ) : (
+            <div className="px-4 mx-auto max-w-md text-center bg-white/[0.04] border border-white/10 rounded-2xl py-8 px-6">
+              <p className="text-4xl mb-2">★</p>
+              <p className="text-white font-bold text-base mb-1">Be one of our first reviewers</p>
+              <p className="text-[#bdbdbd] text-sm leading-relaxed mb-4">Sold to us recently? Drop a quick note about your experience — it helps the next Austinite trust us.</p>
+              <a
+                href="/reviews/new"
+                className="inline-flex items-center gap-2 bg-[#ffb400] hover:bg-[#ffc733] text-[#1a1100] font-bold text-sm px-5 py-2.5 rounded-full transition cursor-pointer"
+              >
+                ★ Leave the first review
+              </a>
+            </div>
+          )}
           {/* "Leave a review" footer — invites verified Austin sellers to
               contribute. We don't promote heavily until they've actually
               traded with us, but the link belongs here so anyone who knows
