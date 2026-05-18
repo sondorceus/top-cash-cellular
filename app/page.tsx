@@ -5504,12 +5504,27 @@ declare global {
       };
       maps: {
         places: {
+          // Legacy API (deprecated for new Cloud projects on 2025-03-01) — kept
+          // here for the type only; runtime code uses PlaceAutocompleteElement.
           Autocomplete: new (input: HTMLInputElement, opts?: unknown) => {
             addListener: (event: string, cb: () => void) => void;
             getPlace: () => { address_components?: Array<{ short_name: string; long_name: string; types: string[] }>; formatted_address?: string };
             setBounds: (b: unknown) => void;
           };
         };
+        importLibrary: (name: string) => Promise<{
+          // Returned shape when name === "places". We only type the pieces we use.
+          PlaceAutocompleteElement?: new (opts?: {
+            includedRegionCodes?: string[];
+            componentRestrictions?: { country: string | string[] };
+            requestedLanguage?: string;
+            requestedRegion?: string;
+            types?: string[];
+          }) => HTMLElement & {
+            addEventListener: (event: string, cb: (e: { placePrediction?: { toPlace: () => { fetchFields: (opts: { fields: string[] }) => Promise<unknown>; addressComponents?: Array<{ types?: string[]; longText?: string; shortText?: string }>; formattedAddress?: string } } }) => void) => void;
+            value?: string;
+          };
+        }>;
         LatLngBounds: new (sw: { lat: number; lng: number }, ne: { lat: number; lng: number }) => unknown;
       };
     };
@@ -5894,34 +5909,62 @@ export default function Home() {
   // addresses, click → parsed into our 5 split fields (street / unit
   // is left alone / city / state / zip) so we keep structured data
   // while saving the seller a bunch of typing.
-  const shipStreetRef = useRef<HTMLInputElement>(null);
-  const shipAutoRef = useRef<unknown>(null); // holds the Autocomplete instance; we never call methods on it after init
-  const initShipAutocomplete = useCallback(() => {
-    if (!shipStreetRef.current || shipAutoRef.current || typeof window === "undefined" || !window.google?.maps?.places) return;
-    const ac = new window.google.maps.places.Autocomplete(shipStreetRef.current, {
-      types: ["address"],
-      componentRestrictions: { country: "us" },
-      fields: ["address_components", "formatted_address"],
-    });
-    ac.addListener("place_changed", () => {
-      const place = ac.getPlace();
-      const parts = place?.address_components || [];
-      const get = (type: string, useShort = false) => {
-        const c = parts.find(p => p.types.includes(type));
-        return c ? (useShort ? c.short_name : c.long_name) : "";
-      };
-      const streetNum = get("street_number");
-      const route = get("route");
-      const street = [streetNum, route].filter(Boolean).join(" ").trim();
-      const city = get("locality") || get("sublocality") || get("postal_town");
-      const state = get("administrative_area_level_1", true);
-      const zip = get("postal_code");
-      if (street) setShipStreet(street);
-      if (city) setShipCity(city);
-      if (state) setShipState(state.toUpperCase().slice(0, 2));
-      if (zip) setShipZip(zip);
-    });
-    shipAutoRef.current = ac;
+  // Address autocomplete uses Google's new PlaceAutocompleteElement
+  // (custom HTML element) since the legacy google.maps.places.Autocomplete
+  // constructor is unavailable to Cloud projects created after 2025-03-01.
+  // The element is appended into shipAutocompleteContainer; we listen for
+  // its "gmp-select" event and pull the structured address back into our
+  // form state. Skywalker 2026-05-18.
+  const shipAutocompleteContainerRef = useRef<HTMLDivElement>(null);
+  const shipAutoRef = useRef<unknown>(null);
+  // Flips true the moment the new element is appended successfully. UI
+  // hides the manual fallback input + shows the Places element instead.
+  // If Places never loads (billing missing, API restriction, etc.) this
+  // stays false → user types in the plain manual input. No dead-end.
+  const [placesAutocompleteReady, setPlacesAutocompleteReady] = useState(false);
+  const initShipAutocomplete = useCallback(async () => {
+    if (!shipAutocompleteContainerRef.current || shipAutoRef.current) return;
+    if (typeof window === "undefined" || !window.google?.maps?.importLibrary) return;
+    try {
+      const placesLib = await window.google.maps.importLibrary("places");
+      const PAE = placesLib.PlaceAutocompleteElement;
+      if (!PAE) return;
+      const el = new PAE({
+        includedRegionCodes: ["us"],
+        types: ["address"],
+      });
+      // Theme via CSS parts (see globals.css .gmp-place-autocomplete).
+      el.setAttribute("class", "tcc-place-autocomplete");
+      el.setAttribute("placeholder", "Start typing your address…");
+      el.addEventListener("gmp-select", async (e: Event) => {
+        type Comp = { types?: string[]; longText?: string; shortText?: string };
+        type GmpSelectEvent = Event & { placePrediction?: { toPlace: () => { fetchFields: (opts: { fields: string[] }) => Promise<unknown>; addressComponents?: Comp[]; formattedAddress?: string } } };
+        const place = (e as GmpSelectEvent).placePrediction?.toPlace();
+        if (!place) return;
+        await place.fetchFields({ fields: ["addressComponents", "formattedAddress"] });
+        const parts: Comp[] = place.addressComponents || [];
+        const get = (type: string, useShort = false): string => {
+          const c = parts.find((p) => p.types?.includes(type));
+          return c ? (useShort ? c.shortText : c.longText) || "" : "";
+        };
+        const streetNum = get("street_number");
+        const route = get("route");
+        const street = [streetNum, route].filter(Boolean).join(" ").trim();
+        const city = get("locality") || get("sublocality") || get("postal_town");
+        const state = get("administrative_area_level_1", true);
+        const zip = get("postal_code");
+        if (street) setShipStreet(street);
+        if (city) setShipCity(city);
+        if (state) setShipState(state.toUpperCase().slice(0, 2));
+        if (zip) setShipZip(zip);
+      });
+      shipAutocompleteContainerRef.current.appendChild(el);
+      shipAutoRef.current = el;
+      setPlacesAutocompleteReady(true);
+    } catch (err) {
+      // Silently fail — manual input fallback stays visible.
+      if (typeof console !== "undefined") console.warn("Places autocomplete init failed:", err);
+    }
   }, []);
   // Re-init autocomplete when the user switches to shipping mode AND
   // is on the contact step (which is where the address input mounts).
@@ -5936,14 +5979,14 @@ export default function Home() {
     const interval = setInterval(() => {
       if (
         typeof window !== "undefined" &&
-        window.google?.maps?.places &&
-        shipStreetRef.current &&
+        window.google?.maps?.importLibrary &&
+        shipAutocompleteContainerRef.current &&
         !shipAutoRef.current
       ) {
         initShipAutocomplete();
         clearInterval(interval);
       }
-      if (++tries > 30) clearInterval(interval); // bail after ~3s
+      if (++tries > 30) clearInterval(interval);
     }, 100);
     return () => clearInterval(interval);
   }, [handoffMethod, step, initShipAutocomplete]);
@@ -7243,18 +7286,18 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
-      {/* Google Maps Places script — powers the shipping address
-          autocomplete. afterInteractive (was lazyOnload) so the script
-          starts loading the moment the page is interactive — by the
-          time a shipping customer reaches the contact step the script
-          is ready. lazyOnload only loaded on idle, which left the
-          autocomplete dead for fast clickers. Skywalker 2026-05-18.
-          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY must be set in Vercel env. */}
+      {/* Google Maps Places script — uses the new PlaceAutocompleteElement
+          API (since legacy Autocomplete is blocked for Cloud projects
+          created after 2025-03-01). loading=async required for the new
+          API to populate importLibrary properly. v=weekly opts into the
+          latest weekly channel which always has the new element. The
+          init runs from a polling useEffect on the contact step, not
+          from this onLoad (so the script can load before user reaches
+          the address step). Skywalker 2026-05-18. */}
       {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY && (
         <Script
-          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&v=weekly&loading=async`}
           strategy="afterInteractive"
-          onLoad={() => initShipAutocomplete()}
         />
       )}
       {/* CART TOAST — fixed top-center on mobile, top-right on lg.
@@ -11547,7 +11590,21 @@ export default function Home() {
                       <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">Shipping address</label>
                       <button type="button" onClick={() => { setHandoffMethod("local"); setLocalArea(null); }} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to local meetup instead</button>
                     </div>
-                    <input ref={shipStreetRef} required value={shipStreet} onChange={e => setShipStreet(e.target.value)} placeholder="Start typing your address…" autoComplete="off" className="w-full px-4 py-3 tcc-input" />
+                    {/* Google Places autocomplete (new PlaceAutocompleteElement
+                        API since legacy Autocomplete is blocked for Cloud
+                        projects after 2025-03-01). The element appends
+                        itself here on script load. If it never loads
+                        (billing missing, key invalid, network error) the
+                        manual input below shows instead so the user is
+                        never stuck. Skywalker 2026-05-18. */}
+                    <div
+                      ref={shipAutocompleteContainerRef}
+                      className="tcc-place-autocomplete-wrap"
+                      style={{ display: placesAutocompleteReady ? "block" : "none" }}
+                    />
+                    {!placesAutocompleteReady && (
+                      <input required value={shipStreet} onChange={e => setShipStreet(e.target.value)} placeholder="Street address" autoComplete="street-address" className="w-full px-4 py-3 tcc-input" />
+                    )}
                     <input value={shipUnit} onChange={e => setShipUnit(e.target.value)} placeholder="Apt / Suite (optional)" autoComplete="address-line2" className="w-full px-4 py-3 tcc-input" />
                     <div className="grid grid-cols-3 gap-2">
                       <input required value={shipCity} onChange={e => setShipCity(e.target.value)} placeholder="City" autoComplete="address-level2" className="col-span-2 w-full px-4 py-3 tcc-input" />

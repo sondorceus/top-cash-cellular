@@ -528,3 +528,62 @@ img {
 /* Google's "powered by Google" footer — recolor so it doesn't look
    like a stark white blob on our dark dropdown. */
 .pac-logo:after { filter: invert(0.85) hue-rotate(180deg) brightness(0.7); }
+
+/* ----------------------------------------------------------------
+   New Places API — gmp-place-autocomplete custom element
+   ----------------------------------------------------------------
+   Replaces the legacy .pac-container styling for Cloud projects
+   created after 2025-03-01. The element renders its own shadow
+   DOM input + dropdown; we restyle via CSS parts and CSS vars
+   to match the existing .tcc-input look. Skywalker 2026-05-18.
+   ---------------------------------------------------------------- */
+.tcc-place-autocomplete-wrap {
+  width: 100%;
+}
+gmp-place-autocomplete {
+  display: block;
+  width: 100%;
+  --gmp-color-on-surface: #ffffff;
+  --gmp-color-on-surface-variant: #c5c5c5;
+  --gmp-color-outline: rgba(255, 255, 255, 0.15);
+  --gmp-color-surface: rgba(255, 255, 255, 0.05);
+  --gmp-color-primary: #00c853;
+  --gmp-color-surface-container: #161618;
+  --gmp-color-surface-container-low: #1a1a1d;
+  --gmp-font-family-base: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --gmp-font-family-headline: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --gmp-border-radius: 12px;
+  border-radius: 12px;
+}
+/* Component exposes some inner parts — input, dropdown, item — via ::part */
+gmp-place-autocomplete::part(input) {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 12px !important;
+  padding: 12px 16px !important;
+  color: #ffffff !important;
+  font-size: 14px !important;
+  width: 100%;
+}
+gmp-place-autocomplete::part(input):focus {
+  border-color: #00c853 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(0, 200, 83, 0.15) !important;
+}
+gmp-place-autocomplete::part(prediction-list) {
+  background: #161618 !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55) !important;
+  z-index: 9999 !important;
+}
+gmp-place-autocomplete::part(prediction-item) {
+  color: #e6e6e6 !important;
+  background: transparent !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+}
+gmp-place-autocomplete::part(prediction-item):hover,
+gmp-place-autocomplete::part(prediction-item-selected) {
+  background: rgba(0, 200, 83, 0.10) !important;
+}
