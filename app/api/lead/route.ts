@@ -142,6 +142,44 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, deduped: true });
   }
 
+  // Coupon redemption — Skywalker 2026-05-18 review-reward feature.
+  // Tries to redeem the customer's $25 thank-you code if they
+  // entered one. Identity is bound to email + phone on mint, so the
+  // PATCH refuses if the redeemer doesn't match. Failures (invalid,
+  // used, expired, mismatch) silently skip applying the bonus —
+  // the lead still saves, just without the +$25. Runs BEFORE line
+  // construction so couponLines + margin math both see the result.
+  let couponApplied: { code: string; value: number } | null = null;
+  let couponError: string | null = null;
+  if (typeof couponCode === "string" && couponCode.trim()) {
+    const cleanCode = couponCode.trim().toUpperCase();
+    try {
+      const phoneDigits = (phone || "").replace(/\D/g, "");
+      const cr = await fetch(`${MC_API}/api/coupons`, {
+        method: "PATCH",
+        headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: cleanCode,
+          action: "redeem",
+          email: (email || "").toLowerCase().trim(),
+          phone: phoneDigits,
+        }),
+      });
+      const cd = await cr.json().catch(() => ({}));
+      if (cr.ok && cd?.coupon?.value) {
+        couponApplied = { code: cd.coupon.code || cleanCode, value: Number(cd.coupon.value) || 0 };
+      } else {
+        couponError = cd?.error || `Coupon couldn't be applied (${cr.status})`;
+      }
+    } catch (e) {
+      couponError = e instanceof Error ? e.message : "Coupon service unavailable";
+    }
+  }
+  const baseQuoteNum = typeof quote === "number" ? quote : parseInt(quote as string) || 0;
+  // Bonus from the coupon is applied AFTER margin reference but
+  // BEFORE line construction so couponLines can render the totals.
+  const quoteNum = baseQuoteNum + (couponApplied?.value || 0);
+
   const photoLines = (photos as string[] | undefined)?.length
     ? [`Photos: ${(photos as string[]).join(" | ")}`]
     : [];
@@ -327,50 +365,14 @@ export async function POST(req: NextRequest) {
   }
 
   // Margin analysis — estimate profit on this deal. Resell value is the
-  // Coupon redemption — Skywalker 2026-05-18 review-reward feature.
-  // Tries to redeem the customer's $25 thank-you code if they
-  // entered one. Identity is bound to email + phone on mint, so the
-  // PATCH refuses if the redeemer doesn't match. Failures (invalid,
-  // used, expired, mismatch) silently skip applying the bonus —
-  // the lead still saves, just without the +$25.
-  let couponApplied: { code: string; value: number } | null = null;
-  let couponError: string | null = null;
-  if (typeof couponCode === "string" && couponCode.trim()) {
-    const cleanCode = couponCode.trim().toUpperCase();
-    try {
-      const phoneDigits = (phone || "").replace(/\D/g, "");
-      const cr = await fetch(`${MC_API}/api/coupons`, {
-        method: "PATCH",
-        headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          code: cleanCode,
-          action: "redeem",
-          email: (email || "").toLowerCase().trim(),
-          phone: phoneDigits,
-        }),
-      });
-      const cd = await cr.json().catch(() => ({}));
-      if (cr.ok && cd?.coupon?.value) {
-        couponApplied = { code: cd.coupon.code || cleanCode, value: Number(cd.coupon.value) || 0 };
-      } else {
-        couponError = cd?.error || `Coupon couldn't be applied (${cr.status})`;
-      }
-    } catch (e) {
-      couponError = e instanceof Error ? e.message : "Coupon service unavailable";
-    }
-  }
-
   // working-condition Swappa mid price, scaled down for damaged devices
   // (broken phones sell for parts at ~30% of working). Without this
   // condition scaling, broken-tier quotes claimed huge fake margins.
+  // quoteNum (computed above) includes the coupon bonus so margin math
+  // reflects the real outlay.
   const resellWorking = getResellEstimate(model as string);
   const condMult = resellMultiplierForCondition(condition as string);
   const resellEst = resellWorking != null ? Math.round(resellWorking * condMult) : null;
-  const baseQuoteNum = typeof quote === "number" ? quote : parseInt(quote as string) || 0;
-  // Bonus from the coupon is applied AFTER margin math so the resell-
-  // vs-payout report stays honest (margin reflects what we're paying
-  // BEFORE the customer's loyalty bonus).
-  const quoteNum = baseQuoteNum + (couponApplied?.value || 0);
   const marginLines: string[] = [];
   if (resellEst && quoteNum > 0) {
     const margin = resellEst - quoteNum;
