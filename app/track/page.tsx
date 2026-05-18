@@ -17,6 +17,10 @@ interface Lead {
   payout?: string;
   status: string;
   statusUpdatedAt?: string;
+  fedexTracking?: string;
+  fedexLabelUrl?: string;
+  fedexService?: string;
+  shipExpectingLabel?: boolean;
 }
 
 const PIPELINE = [
@@ -198,6 +202,42 @@ function TrackInner() {
                   </div>
                 </div>
                 <ProgressBar status={lead.status} />
+                {lead.fedexTracking && lead.fedexLabelUrl && (
+                  <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-4 mb-3">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Your FedEx label</p>
+                    <p className="text-white text-sm font-mono mb-3 break-all">{lead.fedexTracking}</p>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <a
+                        href={lead.fedexLabelUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 px-4 py-2.5 bg-[#00c853] text-[#0a0a0a] rounded-lg text-sm font-semibold text-center hover:bg-[#00e676] transition"
+                      >
+                        📄 Download label (PDF)
+                      </a>
+                      <a
+                        href={`https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(lead.fedexTracking)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 px-4 py-2.5 bg-white/5 border border-white/15 text-white rounded-lg text-sm font-semibold text-center hover:bg-white/10 transition"
+                      >
+                        Track on FedEx →
+                      </a>
+                    </div>
+                    {lead.fedexService && (
+                      <p className="text-[#c5c5c5] text-[10px] mt-2">Service: {lead.fedexService}</p>
+                    )}
+                  </div>
+                )}
+                {lead.shipExpectingLabel && !lead.fedexTracking && (
+                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-3">
+                    <p className="text-amber-300 text-sm font-semibold mb-1">📦 Label is on the way</p>
+                    <p className="text-[#dcdcdc] text-xs leading-relaxed">
+                      Your shipping label is being prepared. If you don't see it in your email within an hour, reply to <a href="mailto:topcashcellular@gmail.com" className="underline">topcashcellular@gmail.com</a> with this lead ID and we'll resend it.
+                    </p>
+                    <p className="text-[#c5c5c5] text-[10px] font-mono mt-2">Lead ID: {lead.id}</p>
+                  </div>
+                )}
                 <p className="text-[#c5c5c5] text-[11px] text-center">
                   {lead.statusUpdatedAt
                     ? `Last update ${timeAgo(lead.statusUpdatedAt)} · ${lead.payout || "TBD"}`

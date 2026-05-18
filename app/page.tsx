@@ -6079,6 +6079,7 @@ export default function Home() {
   // Used by the done page to render a Print-your-label CTA for shipping
   // customers. Skywalker 2026-05-17.
   const [submittedLabel, setSubmittedLabel] = useState<{ tracking: string; url: string; service: string } | null>(null);
+  const [submittedLabelError, setSubmittedLabelError] = useState<{ kind: "ADDRESS_INVALID" | "SERVICE_UNAVAILABLE"; hint: string } | null>(null);
   // Tracks the contact-step submit so the button can disable + show
   // progress copy while the lead POST + FedEx label mint (2-4s for ship
   // handoffs) is in flight. Without this the user could rage-click submit
@@ -11410,6 +11411,7 @@ export default function Home() {
                   if (!r.ok) throw new Error("Failed");
                   const d = await r.json().catch(() => ({}));
                   if (d?.fedexLabel) leadLabel = d.fedexLabel;
+                  if (d?.fedexError) setSubmittedLabelError(d.fedexError);
                 } else {
                   const singleKey = model && condition ? `${model.id}-${storage?.label || 'N/A'}-${condition.label}` : "";
                   const singlePhotos = (singleKey && liveMap[singleKey]) || photoUrls;
@@ -11421,6 +11423,7 @@ export default function Home() {
                   if (!res.ok) throw new Error('Failed');
                   const d = await res.json().catch(() => ({}));
                   if (d?.fedexLabel) leadLabel = d.fedexLabel;
+                  if (d?.fedexError) setSubmittedLabelError(d.fedexError);
                 }
                 setSubmittedLabel(leadLabel);
                 if (email || phone) {
@@ -12003,6 +12006,26 @@ export default function Home() {
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
                       </a>
                       <p className="text-[10px] text-[#888] mt-2 text-center">Also sent to {email || "your inbox"}</p>
+                    </>
+                  ) : submittedLabelError?.kind === "ADDRESS_INVALID" ? (
+                    <>
+                      <p className="text-white text-base font-bold mb-1">⚠️ We couldn&apos;t print your label yet</p>
+                      <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">{submittedLabelError.hint}</p>
+                      <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 mb-3">
+                        <p className="text-[10px] uppercase tracking-wider text-amber-300 font-bold mb-1">Address you entered</p>
+                        <p className="text-white text-xs leading-snug">{shipStreet}{shipUnit ? `, ${shipUnit}` : ""}<br/>{shipCity}, {shipState} {shipZip}</p>
+                      </div>
+                      <a
+                        href={`mailto:topcashcellular@gmail.com?subject=${encodeURIComponent("Fix shipping address for my trade-in")}&body=${encodeURIComponent(`Hi — my address didn't validate with FedEx. Please use this corrected address:\n\nName: ${name}\nPhone: ${phone}\nCorrected address:\n\n(replace this line with your corrected street, city, state, ZIP)\n\nDevice: ${(submittedDevices && submittedDevices.length > 0) ? submittedDevices.map((it) => `${it.model} (${it.condition})`).join(", ") : ""}`)}`}
+                        className="inline-flex items-center justify-center gap-2 w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-sm px-4 py-3 rounded-full transition cursor-pointer"
+                      >
+                        Email us your correction
+                      </a>
+                    </>
+                  ) : submittedLabelError?.kind === "SERVICE_UNAVAILABLE" ? (
+                    <>
+                      <p className="text-white text-base font-bold mb-1">📦 Your label is on the way</p>
+                      <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">{submittedLabelError.hint}</p>
                     </>
                   ) : (
                     <>

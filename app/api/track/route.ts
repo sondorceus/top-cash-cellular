@@ -19,6 +19,18 @@ interface TrackedLead {
   payout?: string;
   status: string;
   statusUpdatedAt?: string;
+  // FedEx label info — only ship-handoff leads. Parsed from the
+  // [LABEL: leadId] marker that /api/lead writes to MC when a label
+  // is minted at submission time. Skywalker 2026-05-17 #2 "lost-
+  // label recovery" — customers who lose the email need a way to
+  // self-serve.
+  fedexTracking?: string;
+  fedexLabelUrl?: string;
+  fedexService?: string;
+  // True for ship-handoff leads that should have a label but the
+  // marker is missing — surfaces a "label is on the way / contact
+  // staff" message so the customer doesn't see silence.
+  shipExpectingLabel?: boolean;
 }
 
 const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "rejected"];
@@ -53,6 +65,8 @@ export async function POST(req: NextRequest) {
 
   // Pass 1: collect status updates by lead id.
   const statusByLead = new Map<string, { status: string; timestamp: string }>();
+  // Pass 1.5: collect FedEx label info by lead id (most recent wins).
+  const labelByLead = new Map<string, { tracking: string; url: string; service?: string; timestamp: string }>();
   for (const m of messages) {
     if (!m.body) continue;
     const sm = m.body.match(/\[STATUS:\s*(\w+)\]/i);
@@ -64,6 +78,20 @@ export async function POST(req: NextRequest) {
         statusByLead.set(leadId, { status: sm[1].toLowerCase(), timestamp: m.timestamp });
       }
     }
+    // [LABEL: leadId] tracking=... url=... service=...
+    const labelHead = m.body.match(/\[LABEL:\s*([\w-]+)\]/i);
+    if (labelHead) {
+      const leadId = labelHead[1];
+      const tracking = m.body.match(/tracking=([^\s\n]+)/i)?.[1];
+      const url = m.body.match(/url=([^\s\n]+)/i)?.[1];
+      const service = m.body.match(/service=([^\s\n]+)/i)?.[1];
+      if (tracking && url) {
+        const existing = labelByLead.get(leadId);
+        if (!existing || m.timestamp > existing.timestamp) {
+          labelByLead.set(leadId, { tracking, url, service, timestamp: m.timestamp });
+        }
+      }
+    }
   }
 
   // Pass 2: collect leads matching this contact.
@@ -71,7 +99,13 @@ export async function POST(req: NextRequest) {
   for (const m of messages) {
     if (!m.body) continue;
     const body = m.body;
-    if (!body.includes("[NEW BUYBACK LEAD]") && !body.includes("[CHAT LEAD]")) continue;
+    // Match single-device "[NEW BUYBACK LEAD]" AND multi-device
+    // "[NEW BUYBACK LEAD — N DEVICES]" (Skywalker 2026-05-17 fix —
+    // same literal-substring bug that hid multi-device leads from
+    // the admin feed; cddb81e was the parallel admin fix).
+    const isBuyback = /\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(body);
+    const isChat = body.includes("[CHAT LEAD]");
+    if (!isBuyback && !isChat) continue;
     const bodyLower = body.toLowerCase();
     const phoneMatch = normPhone && normalizePhone(body).includes(normPhone);
     const emailMatch = normEmail && bodyLower.includes(normEmail);
@@ -79,6 +113,12 @@ export async function POST(req: NextRequest) {
 
     const deviceLine = parseField(body, "Device");
     const status = statusByLead.get(m.id);
+    const label = labelByLead.get(m.id);
+    // Ship-handoff leads include "Handoff: Ship via FedEx" (or
+    // "Shipping" in the multi-device summary). Used to flag the
+    // "label expected but not posted yet" state so customers don't
+    // get silence.
+    const isShipHandoff = /handoff:\s*ship/i.test(body) || /handoff:\s*shipping/i.test(body);
     leads.push({
       id: m.id,
       timestamp: m.timestamp,
@@ -90,6 +130,10 @@ export async function POST(req: NextRequest) {
       payout: parseField(body, "Payout"),
       status: status?.status || "quote_requested",
       statusUpdatedAt: status?.timestamp,
+      fedexTracking: label?.tracking,
+      fedexLabelUrl: label?.url,
+      fedexService: label?.service,
+      shipExpectingLabel: isShipHandoff && !label,
     });
   }
 

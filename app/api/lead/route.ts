@@ -351,6 +351,14 @@ export async function POST(req: NextRequest) {
   // meetups never call FedEx. Failures here are non-fatal — the lead is
   // already saved; staff can regenerate from /admin if needed.
   let fedexLabel: { tracking: string; url: string; service: string } | null = null;
+  // When a ship-handoff label can't be minted, we tell the customer
+  // why on the done page — so they can fix a bad address themselves
+  // instead of staring at a silent dead-end. Classified to two kinds:
+  //   ADDRESS_INVALID: customer-fixable (street/city/state/zip wrong)
+  //   SERVICE_UNAVAILABLE: our problem (auth, downstream FedEx outage)
+  // We never echo the raw FedEx response back — it can include keys
+  // or internal codes. Only a sanitized human-readable hint.
+  let fedexError: { kind: "ADDRESS_INVALID" | "SERVICE_UNAVAILABLE"; hint: string } | null = null;
   if (handoff && typeof handoff === "object") {
     const h = handoff as { method?: string; address?: { street?: string; unit?: string; city?: string; state?: string; zip?: string } };
     const a = h.address;
@@ -396,9 +404,32 @@ export async function POST(req: NextRequest) {
             }),
           });
         } catch {}
-      } catch {
-        // Swallow — lead is saved, label is non-fatal. Operator can
-        // retry via the admin Generate FedEx label button.
+      } catch (err) {
+        // Classify so the done page can show actionable feedback.
+        // FedEx error bodies contain JSON like:
+        //   {"errors":[{"code":"ADDRESS.STATEORPROVINCECODE.INVALID",...}]}
+        // We look for ADDRESS / POSTAL / CITY / STATE / STREET tokens.
+        const raw = err instanceof Error ? err.message : String(err);
+        const addressy = /address|postal|street|city|state|zip/i.test(raw);
+        fedexError = addressy
+          ? { kind: "ADDRESS_INVALID", hint: "FedEx couldn't validate your shipping address. Please double-check the street, city, state, and ZIP — then email topcashcellular@gmail.com with the correction and we'll resend your label." }
+          : { kind: "SERVICE_UNAVAILABLE", hint: "We couldn't print your FedEx label right now. Your trade-in is saved — we'll email your label as soon as the issue clears (usually within an hour)." };
+        // Post a marker so admin can see which leads need a manual
+        // label generation. Sanitized message — no FedEx key leakage.
+        try {
+          await fetch(`${MC_API}/api/comms`, {
+            method: "POST",
+            headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              from: "topcash-web",
+              fromName: "Top Cash Cellular",
+              role: "system",
+              body: `[LABEL-FAILED: ${leadId}] kind=${fedexError.kind} reason=${raw.replace(/[\n\r]/g, " ").slice(0, 300)}`,
+              tags: ["fedex-label", "failed"],
+              priority: "high",
+            }),
+          });
+        } catch {}
       }
     }
   }
@@ -419,5 +450,5 @@ export async function POST(req: NextRequest) {
     } catch {}
   }
 
-  return NextResponse.json({ ok: true, leadId, fedexLabel });
+  return NextResponse.json({ ok: true, leadId, fedexLabel, fedexError });
 }
