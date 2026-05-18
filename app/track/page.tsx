@@ -53,7 +53,7 @@ function ProgressBar({ status }: { status: string }) {
     return (
       <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 my-3">
         <p className="text-red-400 text-sm font-semibold flex items-center gap-2">
-          <span>⚠️</span> Issue with this device — please email topcashcellular@gmail.com
+          <span>⚠️</span> Issue with this device — please email CustomerService@topcashcells.com
         </p>
       </div>
     );
@@ -233,7 +233,7 @@ function TrackInner() {
                   <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-3">
                     <p className="text-amber-300 text-sm font-semibold mb-1">📦 Label is on the way</p>
                     <p className="text-[#dcdcdc] text-xs leading-relaxed">
-                      Your shipping label is being prepared. If you don't see it in your email within an hour, reply to <a href="mailto:topcashcellular@gmail.com" className="underline">topcashcellular@gmail.com</a> with this lead ID and we'll resend it.
+                      Your shipping label is being prepared. If you don't see it in your email within an hour, reply to <a href="mailto:CustomerService@topcashcells.com" className="underline">CustomerService@topcashcells.com</a> with this lead ID and we'll resend it.
                     </p>
                     <p className="text-[#c5c5c5] text-[10px] font-mono mt-2">Lead ID: {lead.id}</p>
                   </div>

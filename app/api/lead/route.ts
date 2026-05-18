@@ -462,7 +462,7 @@ export async function POST(req: NextRequest) {
         const raw = err instanceof Error ? err.message : String(err);
         const addressy = /address|postal|street|city|state|zip/i.test(raw);
         fedexError = addressy
-          ? { kind: "ADDRESS_INVALID", hint: "FedEx couldn't validate your shipping address. Please double-check the street, city, state, and ZIP — then email topcashcellular@gmail.com with the correction and we'll resend your label." }
+          ? { kind: "ADDRESS_INVALID", hint: "FedEx couldn't validate your shipping address. Please double-check the street, city, state, and ZIP — then email CustomerService@topcashcells.com with the correction and we'll resend your label." }
           : { kind: "SERVICE_UNAVAILABLE", hint: "We couldn't print your FedEx label right now. Your trade-in is saved — we'll email your label as soon as the issue clears (usually within an hour)." };
         // Post a marker so admin can see which leads need a manual
         // label generation. Sanitized message — no FedEx key leakage.

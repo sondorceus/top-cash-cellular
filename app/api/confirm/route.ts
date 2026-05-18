@@ -340,7 +340,7 @@ ${hasLabel ? `
 
 <!-- CTA -->
 <tr><td style="padding:18px 28px 6px 28px;text-align:center">
-<a href="mailto:topcashcellular@gmail.com" style="display:inline-block;padding:14px 32px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply with questions</a>
+<a href="mailto:CustomerService@topcashcells.com" style="display:inline-block;padding:14px 32px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply with questions</a>
 </td></tr>
 
 <!-- TRUST STRIP — 3 trust badges, builds confidence before footer -->
@@ -413,7 +413,7 @@ ${phone ? `<tr><td style="padding:4px 0;color:#888;font-size:12px">Phone</td><td
 <tr><td style="padding:24px 28px 28px 28px">
 <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:18px"></div>
 <div style="text-align:center">
-<div style="margin-bottom:6px"><a href="mailto:topcashcellular@gmail.com" style="color:#00c853;text-decoration:none;font-size:14px;font-weight:700">topcashcellular@gmail.com</a></div>
+<div style="margin-bottom:6px"><a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-size:14px;font-weight:700">CustomerService@topcashcells.com</a></div>
 <div style="font-size:12px;color:#666;line-height:1.5">Top Cash Cellular · Austin, TX · <a href="https://topcashcellular.com" style="color:#666;text-decoration:none">topcashcellular.com</a></div>
 <div style="font-size:11px;color:#555;margin-top:6px">Questions? Just reply to this email.</div>
 </div>
@@ -427,14 +427,14 @@ ${phone ? `<tr><td style="padding:4px 0;color:#888;font-size:12px">Phone</td><td
 
     const textFallback = hasLabel
       ? `Hi ${name || "there"}, your $${quote} quote for ${model} is locked. Your prepaid FedEx label is ready — tracking ${fedexLabel.tracking}, download: ${fedexLabel.url}. Print, tape to a padded box, drop at any FedEx location. Top Cash Cellular, Austin TX.`
-      : `Hi ${name || "there"}, your $${quote} quote for ${model} (${condition}, ${storage || "N/A"}) is locked for 7 days. We'll contact you within the hour. Reply to this email or write to topcashcellular@gmail.com — Top Cash Cellular, Austin TX`;
+      : `Hi ${name || "there"}, your $${quote} quote for ${model} (${condition}, ${storage || "N/A"}) is locked for 7 days. We'll contact you within the hour. Reply to this email or write to CustomerService@topcashcells.com — Top Cash Cellular, Austin TX`;
 
     try {
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
       const result = await resend.emails.send({
         from: "Top Cash Cellular <noreply@topcashcellular.com>",
-        replyTo: "topcashcellular@gmail.com",
+        replyTo: "CustomerService@topcashcells.com",
         to: email,
         subject: `Your $${quote} quote for ${model} — Top Cash Cellular`,
         html: htmlEmail,

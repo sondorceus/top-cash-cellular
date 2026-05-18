@@ -7,8 +7,8 @@ import { SlideOnScrollNav } from "./components/SlideOnScrollNav";
 import { HeaderSearch } from "./components/HeaderSearch";
 
 const BRAND = "Top Cash Cellular";
-const EMAIL = "topcashcellular@gmail.com";
-const EMAIL_HREF = "mailto:topcashcellular@gmail.com";
+const EMAIL = "CustomerService@topcashcells.com";
+const EMAIL_HREF = "mailto:CustomerService@topcashcells.com";
 
 // Category icons — bold filled silhouette style inspired by IWM but with our
 // own twist: a chunky body shape in soft white/15 fill, a 2px currentColor
@@ -12068,7 +12068,7 @@ export default function Home() {
                         <p className="text-white text-xs leading-snug">{shipStreet}{shipUnit ? `, ${shipUnit}` : ""}<br/>{shipCity}, {shipState} {shipZip}</p>
                       </div>
                       <a
-                        href={`mailto:topcashcellular@gmail.com?subject=${encodeURIComponent("Fix shipping address for my trade-in")}&body=${encodeURIComponent(`Hi — my address didn't validate with FedEx. Please use this corrected address:\n\nName: ${name}\nPhone: ${phone}\nCorrected address:\n\n(replace this line with your corrected street, city, state, ZIP)\n\nDevice: ${(submittedDevices && submittedDevices.length > 0) ? submittedDevices.map((it) => `${it.model} (${it.condition})`).join(", ") : ""}`)}`}
+                        href={`mailto:CustomerService@topcashcells.com?subject=${encodeURIComponent("Fix shipping address for my trade-in")}&body=${encodeURIComponent(`Hi — my address didn't validate with FedEx. Please use this corrected address:\n\nName: ${name}\nPhone: ${phone}\nCorrected address:\n\n(replace this line with your corrected street, city, state, ZIP)\n\nDevice: ${(submittedDevices && submittedDevices.length > 0) ? submittedDevices.map((it) => `${it.model} (${it.condition})`).join(", ") : ""}`)}`}
                         className="inline-flex items-center justify-center gap-2 w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-sm px-4 py-3 rounded-full transition cursor-pointer"
                       >
                         Email us your correction

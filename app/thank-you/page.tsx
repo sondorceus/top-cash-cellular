@@ -34,7 +34,7 @@ export default function ThankYou() {
             Back to Home
           </a>
         </div>
-        <p className="text-[#555] text-xs mt-6">Questions? Email <a href="mailto:topcashcellular@gmail.com" className="text-[#00c853] hover:underline">topcashcellular@gmail.com</a></p>
+        <p className="text-[#555] text-xs mt-6">Questions? Email <a href="mailto:CustomerService@topcashcells.com" className="text-[#00c853] hover:underline">CustomerService@topcashcells.com</a></p>
       </div>
     </main>
   );

@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     const first = (customerName || "there").split(" ")[0];
     const r = await resend.emails.send({
       from: "Top Cash Cellular <noreply@topcashcellular.com>",
-      replyTo: "topcashcellular@gmail.com",
+      replyTo: "CustomerService@topcashcells.com",
       to,
       subject: `Your FedEx label (resent) — Top Cash Cellular`,
       text: `Hi ${first},\n\nHere's your prepaid FedEx label again — sent at your request:\n\nDownload: ${labelUrl}\nTracking: ${tracking} (${serviceType})\n\nPrint the PDF, tape it to your padded box, and drop the package at any FedEx location.\n\nQuestions? Reply to this email.\n\n— Top Cash Cellular`,
