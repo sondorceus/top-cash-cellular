@@ -82,7 +82,16 @@ function NewReviewInner() {
         setSubmitting(false);
         return;
       }
-      router.push("/reviews/thank-you");
+      // Pass the minted coupon to the thank-you page so it can render
+      // the reward code prominently. Skywalker 2026-05-18 "$25 added
+      // to whatever device they sell in the future". Code is also
+      // emailed to the customer separately so they don't have to keep
+      // this tab open to keep it.
+      const couponParams = new URLSearchParams();
+      if (data.coupon?.code) couponParams.set("code", data.coupon.code);
+      if (data.coupon?.value) couponParams.set("value", String(data.coupon.value));
+      if (data.coupon?.expiresAt) couponParams.set("expires", data.coupon.expiresAt);
+      router.push(`/reviews/thank-you${couponParams.toString() ? `?${couponParams.toString()}` : ""}`);
     } catch {
       setError("Network error. Try again?");
       setSubmitting(false);

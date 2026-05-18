@@ -85,6 +85,54 @@ async function notifyOwner(review: { name: string; rating: number; body: string;
   }
 }
 
+// Customer-side coupon email — fires the moment the review is stored
+// AND the coupon is minted. Skywalker 2026-05-18 "$25 added to
+// whatever device they sell in the future". Best-effort: failures
+// don't break submission; customer also sees the code on
+// /reviews/thank-you and the code is bound to their email so they
+// can always email us to retrieve it.
+async function mailCoupon(opts: { to: string; firstName: string; code: string; value: number; expiresAt: string }) {
+  if (!process.env.RESEND_API_KEY) return false;
+  try {
+    const { Resend } = await import("resend");
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const expDate = new Date(opts.expiresAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    const subject = `Your $${opts.value} thank-you coupon — ${opts.code}`;
+    const html = `<!doctype html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#0a0a0a;color:#e6e6e6;margin:0;padding:32px 16px">
+<div style="max-width:600px;margin:0 auto;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
+  <div style="background:linear-gradient(135deg,#ffd54f 0%,#ffb400 60%,#e69900 100%);padding:24px 28px;color:#1a1100">
+    <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;opacity:0.75;margin-bottom:4px">Top Cash Cellular</div>
+    <div style="font-size:22px;font-weight:800;line-height:1.1">Thanks for the review — here's $${opts.value} for next time</div>
+  </div>
+  <div style="padding:28px">
+    <p style="margin:0 0 14px;font-size:16px;color:#fff;font-weight:700">Hi ${opts.firstName},</p>
+    <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#e6e6e6">Genuinely appreciate you taking 30 seconds to share your experience. As a small thanks, here's a $${opts.value} bonus you can apply to your next trade with us — no minimum, no fine print, just $${opts.value} added to whatever device you sell next.</p>
+    <div style="background:rgba(255,180,0,0.08);border:2px dashed rgba(255,180,0,0.5);border-radius:14px;padding:22px;margin:0 0 20px;text-align:center">
+      <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#ffd54f;font-weight:800;margin-bottom:8px">Your code</div>
+      <div style="font-size:28px;font-family:ui-monospace,'SF Mono',monospace;font-weight:800;color:#fff;letter-spacing:0.12em">${opts.code}</div>
+      <div style="font-size:12px;color:#bdbdbd;margin-top:10px">Expires ${expDate} · One use · Bound to ${opts.to}</div>
+    </div>
+    <p style="margin:0 0 14px;font-size:14px;line-height:1.65;color:#dcdcdc">Just paste this code when you're checking out your next trade — we'll add $${opts.value} to whatever your offer is. The code only works with the email above, so it can't be passed around (we'd rather give YOU a fresh one next time than reward a stranger).</p>
+    <div style="text-align:center;margin:24px 0 8px"><a href="https://topcashcellular.com" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px">Get a quote →</a></div>
+    <p style="margin:18px 0 0;font-size:14px;color:#e6e6e6;line-height:1.6">— Skywalker &amp; the Top Cash team<br><span style="color:#888;font-size:12px">Austin, TX · a small business · real humans</span></p>
+    <div style="margin:24px 0 0;padding-top:18px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;color:#888;line-height:1.6;text-align:center">Lost this email? Reply or write to <a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-weight:600">CustomerService@topcashcells.com</a> and we'll resend.</div>
+  </div>
+</div></body></html>`;
+    const text = `Hi ${opts.firstName},\n\nThanks for the review — here's $${opts.value} added to your next trade.\n\nYour code: ${opts.code}\nExpires: ${expDate}\nOne use · Bound to ${opts.to}\n\nPaste it at checkout next time you sell to us and we'll add $${opts.value} to whatever your offer is.\n\nGet a quote: https://topcashcellular.com\n\n— Skywalker & the Top Cash team\nAustin, TX`;
+    const r = await resend.emails.send({
+      from: "Top Cash Cellular <noreply@topcashcellular.com>",
+      replyTo: "CustomerService@topcashcells.com",
+      to: opts.to,
+      subject,
+      html,
+      text,
+    });
+    return !!(r?.data?.id);
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const token = String(body.token || "").trim();
@@ -96,7 +144,7 @@ export async function POST(req: NextRequest) {
   if (!token || token.length < 32) {
     return NextResponse.json({ error: "Review submissions require a verified link from your trade confirmation email." }, { status: 401 });
   }
-  let verification: { valid?: boolean; leadId?: string; error?: string };
+  let verification: { valid?: boolean; leadId?: string; error?: string; email?: string; phone?: string; name?: string };
   try {
     const origin = new URL(req.url).origin;
     const v = await fetch(`${origin}/api/reviews/verify-token?token=${encodeURIComponent(token)}`, { cache: "no-store" });
@@ -150,7 +198,47 @@ export async function POST(req: NextRequest) {
       city: body.city ? String(body.city).trim() : undefined,
       title: body.title ? String(body.title).trim() : undefined,
     }).catch(() => {});
-    return NextResponse.json({ ok: true, id: data.review?.id });
+
+    // Mint the $25 review-reward coupon. Bound to the customer's
+    // email + phone (from the verified lead) so it can't be sold.
+    // Skywalker 2026-05-18 "$25 added to whatever device they sell in
+    // the future". MC's POST /api/coupons de-dupes by reviewId so a
+    // retry never mints twice. We DO await so we can include the
+    // code in the response — the /reviews/thank-you page shows it.
+    let coupon: { code?: string; value?: number; expiresAt?: string } | undefined;
+    try {
+      const cr = await fetch(`${MC_API}/api/coupons`, {
+        method: "POST",
+        headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reviewId: data.review?.id,
+          leadId: verification.leadId,
+          name: String(body.name || verification.name || "").trim(),
+          email: verification.email,
+          phone: verification.phone,
+          value: 25,
+        }),
+      });
+      if (cr.ok) {
+        const cd = await cr.json();
+        if (cd?.coupon?.code) {
+          coupon = { code: cd.coupon.code, value: cd.coupon.value, expiresAt: cd.coupon.expiresAt };
+          // Send the coupon to the customer via email — best-effort.
+          // Owner-side notify already fired separately above.
+          if (verification.email) {
+            mailCoupon({
+              to: verification.email,
+              firstName: (verification.name || body.name || "there").split(" ")[0],
+              code: coupon.code as string,
+              value: coupon.value || 25,
+              expiresAt: coupon.expiresAt as string,
+            }).catch(() => {});
+          }
+        }
+      }
+    } catch {}
+
+    return NextResponse.json({ ok: true, id: data.review?.id, coupon });
   } catch (e) {
     return NextResponse.json({ error: "Network error. Please try again." }, { status: 502 });
   }

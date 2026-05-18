@@ -154,6 +154,12 @@ interface AdminLead {
   // without leaving the lead. Empty if no review yet (or if pre-token
   // and not yet manually attributed).
   review?: { id: string; rating: number; title?: string; body: string; verified?: boolean; createdAt: string };
+  // Coupon applied at submission — parsed from the "Coupon applied:
+  // TCC-XXXX (+$25 thank-you bonus)" line we write in the lead body.
+  // Empty if the customer didn't apply one (or attempted one that
+  // failed identity check — those write a "Coupon attempt:" line
+  // which we'd surface separately if needed).
+  couponApplied?: { code: string; value: number };
 }
 
 // Includes "met" (in-person handoff terminal) alongside "paid" (digital
@@ -675,6 +681,14 @@ export async function GET(req: NextRequest) {
           verified: rev.verified,
           createdAt: rev.createdAt,
         };
+      })(),
+      couponApplied: (() => {
+        // Parse the "Coupon applied: TCC-XXXX (+$N thank-you bonus)" line.
+        const m2 = m.body?.match(/Coupon applied:\s*(\S+)\s*\(\+\$(\d+)/i);
+        if (!m2) return undefined;
+        const value = parseInt(m2[2], 10);
+        if (!Number.isFinite(value)) return undefined;
+        return { code: m2[1], value };
       })(),
     });
   }

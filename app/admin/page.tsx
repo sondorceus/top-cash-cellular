@@ -93,6 +93,7 @@ interface Lead {
   idCaptured?: { type: string; last4: string; dobYear: string; photoUrl: string; at: string };
   reviewToken?: string;
   review?: { id: string; rating: number; title?: string; body: string; verified?: boolean; createdAt: string };
+  couponApplied?: { code: string; value: number };
 }
 
 const STATUS_OPTIONS = [
@@ -1431,7 +1432,7 @@ export default function AdminPage() {
                           best contact". Badge sits above the spec block so
                           staff sees how to reach the seller before the
                           deep-dive specs. */}
-                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source || lead.priorLeads || lead.commsSent || lead.payoutConfirmation) && (
+                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source || lead.priorLeads || lead.commsSent || lead.payoutConfirmation || lead.couponApplied) && (
                         <div className="mt-1.5 flex flex-wrap items-start gap-1.5">
                           {/* Returning-customer pill — Skywalker 2026-05-18.
                               Surfaces priorLeads + lifetime $ so staff knows
@@ -1442,6 +1443,17 @@ export default function AdminPage() {
                               title={`${lead.priorLeads} prior trade${lead.priorLeads === 1 ? "" : "s"} from this customer${lead.lifetimeSpend ? `, $${lead.lifetimeSpend.toLocaleString()} paid out previously` : ""}`}
                             >
                               🔁 Returning · {lead.priorLeads} prior{lead.lifetimeSpend ? ` · $${lead.lifetimeSpend.toLocaleString()}` : ""}
+                            </span>
+                          )}
+                          {/* Coupon-applied pill — customer redeemed a
+                              review-reward code on this trade. Quote
+                              has been auto-bumped by the bonus value. */}
+                          {lead.couponApplied && (
+                            <span
+                              className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#ffb400]/15 text-[#ffd54f] border border-[#ffb400]/45 uppercase tracking-wider"
+                              title={`Customer redeemed ${lead.couponApplied.code} for a $${lead.couponApplied.value} thank-you bonus on this trade`}
+                            >
+                              🎁 Coupon · {lead.couponApplied.code} · +${lead.couponApplied.value}
                             </span>
                           )}
                           {/* Payout confirmation pill — set when status is

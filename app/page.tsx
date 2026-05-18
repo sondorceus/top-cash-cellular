@@ -6062,6 +6062,42 @@ export default function Home() {
   // the gray area. Server rejects POST if phone present + smsOptIn !==
   // true (defense in depth — client may be bypassed).
   const [smsOptIn, setSmsOptIn] = useState(false);
+  // Coupon code entry on contact step — Skywalker 2026-05-18 review-
+  // reward feature. Customer who left a review gets a $25 code they
+  // can apply to their next trade. Client-side check is informational
+  // only; /api/lead does the authoritative redeem at submit.
+  const [couponInput, setCouponInput] = useState("");
+  const [couponState, setCouponState] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
+  const [couponValid, setCouponValid] = useState<{ code: string; value: number } | null>(null);
+  const [couponMessage, setCouponMessage] = useState<string>("");
+  const checkCoupon = async () => {
+    const raw = couponInput.trim().toUpperCase();
+    if (!raw) {
+      setCouponState("idle"); setCouponValid(null); setCouponMessage("");
+      return;
+    }
+    setCouponState("checking");
+    setCouponMessage("");
+    try {
+      const params = new URLSearchParams({ code: raw });
+      if (email) params.set("email", email);
+      if (phone) params.set("phone", phone.replace(/\D/g, ""));
+      const r = await fetch(`/api/coupons/check?${params}`, { cache: "no-store" });
+      const d = await r.json().catch(() => ({}));
+      if (r.ok && d.valid) {
+        setCouponState("valid");
+        setCouponValid({ code: d.code, value: d.value });
+        setCouponMessage(d.identityMatched ? `✓ $${d.value} bonus will be added at checkout` : `✓ $${d.value} bonus available — enter the email/phone the code was issued to`);
+      } else {
+        setCouponState("invalid");
+        setCouponValid(null);
+        setCouponMessage(d.error || "Code not valid");
+      }
+    } catch {
+      setCouponState("invalid");
+      setCouponMessage("Couldn't verify the code right now");
+    }
+  };
   // IMEI / serial validator (optional, contact step)
   const [imeiInput, setImeiInput] = useState("");
   const [imeiState, setImeiState] = useState<"idle" | "checking" | "ok" | "warn" | "error">("idle");
@@ -6905,6 +6941,7 @@ export default function Home() {
     setBatteryHealth(null); setCharger(null); setBrokenPhotoUrl(null);
     setExtras({}); setExtrasIndex(0);
     setBestContact(null); setCustomerNote(""); setSmsOptIn(false);
+    setCouponInput(""); setCouponState("idle"); setCouponValid(null); setCouponMessage("");
   };
 
   // Brand → flat variant lists (the series intermediate step was removed
@@ -11786,6 +11823,7 @@ export default function Home() {
                       notes: customerNote.trim() || undefined,
                       smsOptIn,
                       attribution: readAttribution(),
+                      couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined),
                     }),
                   });
                   if (!r.ok) throw new Error("Failed");
@@ -11798,7 +11836,7 @@ export default function Home() {
                   const res = await fetch("/api/lead", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution() }),
+                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined) }),
                   });
                   if (!res.ok) throw new Error('Failed');
                   const d = await res.json().catch(() => ({}));
@@ -12092,6 +12130,48 @@ export default function Home() {
                 />
                 {customerNote.length > 0 && (
                   <p className="text-[10px] text-[#888] mt-1 text-right">{customerNote.length}/500</p>
+                )}
+              </div>
+
+              {/* Coupon / thank-you code — Skywalker 2026-05-18 review-
+                  reward feature. Customer enters their TCC-XXXX code,
+                  hits Apply, sees a "$25 will be added" confirmation.
+                  Server does the authoritative redeem at submit so
+                  client-side tampering can't fake a discount. */}
+              <div>
+                <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
+                  Have a thank-you code? <span className="normal-case text-[11px] text-[#888]">(optional)</span>
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponInput}
+                    onChange={(e) => {
+                      setCouponInput(e.target.value.toUpperCase());
+                      if (couponState !== "idle") { setCouponState("idle"); setCouponValid(null); setCouponMessage(""); }
+                    }}
+                    placeholder="TCC-XXXXXXXX"
+                    maxLength={20}
+                    className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-base lg:text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition tracking-wider font-mono uppercase"
+                  />
+                  <button
+                    type="button"
+                    onClick={checkCoupon}
+                    disabled={couponState === "checking" || couponInput.trim().length < 6}
+                    className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-semibold hover:bg-white/10 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    {couponState === "checking" ? "…" : "Apply"}
+                  </button>
+                </div>
+                {couponState === "valid" && couponValid && (
+                  <div className="mt-1.5 px-3 py-2 bg-[#00c853]/10 border border-[#00c853]/30 rounded-lg">
+                    <p className="text-xs text-[#7be8a8] font-semibold">{couponMessage}</p>
+                  </div>
+                )}
+                {couponState === "invalid" && (
+                  <div className="mt-1.5 px-3 py-2 bg-red-500/10 border border-red-500/30 rounded-lg">
+                    <p className="text-xs text-red-300">{couponMessage}</p>
+                  </div>
                 )}
               </div>
 

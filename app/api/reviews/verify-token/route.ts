@@ -85,10 +85,27 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ valid: false, error: "Review access requires a completed trade" }, { status: 401 });
   }
 
+  // Pull the original lead body so /api/reviews can bind the coupon
+  // to the customer's email + phone. Token-mint markers only carry
+  // name + device; identity (email/phone) lives in the lead body.
+  let leadEmail: string | undefined;
+  let leadPhone: string | undefined;
+  for (const m of messages) {
+    if (m.id === tokenLeadId && m.body) {
+      const e = m.body.match(/^Email:\s*(.+)$/im)?.[1]?.trim();
+      const p = m.body.match(/^Phone:\s*(.+)$/im)?.[1]?.trim();
+      if (e) leadEmail = e;
+      if (p) leadPhone = p;
+      break;
+    }
+  }
+
   return NextResponse.json({
     valid: true,
     leadId: tokenLeadId,
     name: tokenName,
     device: tokenDevice,
+    email: leadEmail,
+    phone: leadPhone,
   });
 }
