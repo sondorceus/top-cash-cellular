@@ -1365,7 +1365,7 @@ export default function AdminPage() {
                         )}
                       </p>
                       <p className="text-[#c5c5c5] text-xs">
-                        {[lead.storage, lead.condition].filter(Boolean).join(" · ")}
+                        {[lead.storage, lead.condition, lead.carrier].filter(Boolean).join(" · ")}
                         {lead.imei && <span className="ml-1 text-[#d4d4d4] font-mono">· {lead.imei.slice(-6)}</span>}
                       </p>
                       {/* Multi-device breakdown — when one lead bundles
