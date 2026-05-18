@@ -101,6 +101,12 @@ interface AdminLead {
   fedexTracking?: string;
   fedexLabelUrl?: string;
   fedexService?: string;
+  // Most recent FedEx label FAILURE (ADDRESS_INVALID or
+  // SERVICE_UNAVAILABLE) parsed from [LABEL-FAILED: leadId] markers
+  // that /api/lead writes when FedEx rejects auto-generation. Cleared
+  // when a successful [LABEL:] later wins on timestamp. Skywalker
+  // 2026-05-18 — admin manager surface.
+  fedexLabelError?: { kind: string; reason: string; at: string };
 }
 
 // Includes "met" (in-person handoff terminal) alongside "paid" (digital
@@ -153,6 +159,7 @@ export async function GET(req: NextRequest) {
   // Latest FedEx label per lead. We keep only the most recent so
   // regenerating overrides the prior label on the UI.
   const labelByLead = new Map<string, { tracking: string; url: string; service?: string; timestamp: string }>();
+  const labelErrorByLead = new Map<string, { kind: string; reason: string; timestamp: string }>();
   const deletedAtByLead = new Map<string, string>();  // most-recent deletion timestamp
   const restoredAtByLead = new Map<string, string>(); // most-recent restore timestamp
   for (const m of messages) {
@@ -169,6 +176,36 @@ export async function GET(req: NextRequest) {
       const prev = restoredAtByLead.get(id);
       if (!prev || m.timestamp > prev) restoredAtByLead.set(id, m.timestamp);
     }
+    // FedEx label SUCCESS marker — self-contained (no separate [LEAD:]
+    // tag). Must be parsed OUTSIDE the [LEAD:]-gated block below or
+    // auto-generated labels from /api/lead never index. Skywalker
+    // 2026-05-18 bug fix.
+    // Format: "[LABEL: <leadId>] tracking=X url=Y service=Z"
+    const lblMarker = m.body.match(/\[LABEL:\s*([\w-]+)\]/i);
+    if (lblMarker) {
+      const lid = lblMarker[1];
+      const t = m.body.match(/tracking=([^\s]+)/i)?.[1];
+      const u = m.body.match(/url=([^\s]+)/i)?.[1];
+      const sv = m.body.match(/service=([^\s]+)/i)?.[1];
+      if (t && u) {
+        const prev = labelByLead.get(lid);
+        if (!prev || m.timestamp > prev.timestamp) {
+          labelByLead.set(lid, { tracking: t, url: u, service: sv, timestamp: m.timestamp });
+        }
+      }
+    }
+    // FedEx label FAILURE marker — same self-contained shape.
+    // Format: "[LABEL-FAILED: <leadId>] kind=X reason=..."
+    const failMarker = m.body.match(/\[LABEL-FAILED:\s*([\w-]+)\]/i);
+    if (failMarker) {
+      const lid = failMarker[1];
+      const kind = m.body.match(/kind=([^\s]+)/i)?.[1] || "UNKNOWN";
+      const reason = m.body.match(/reason=(.+)$/im)?.[1]?.trim() || "";
+      const prev = labelErrorByLead.get(lid);
+      if (!prev || m.timestamp > prev.timestamp) {
+        labelErrorByLead.set(lid, { kind, reason, timestamp: m.timestamp });
+      }
+    }
     const lm = m.body.match(/\[LEAD:\s*([\w-]+)\]/i);
     if (!lm) continue;
     const leadId = lm[1];
@@ -184,19 +221,6 @@ export async function GET(req: NextRequest) {
       const arr = notesByLead.get(leadId) || [];
       arr.push({ text: nm[1].trim(), timestamp: m.timestamp });
       notesByLead.set(leadId, arr);
-    }
-    // FedEx label marker: "[LABEL: <leadId>] tracking=X url=Y service=Z"
-    const lblMarker = m.body.match(/\[LABEL:\s*([\w-]+)\]/i);
-    if (lblMarker && lblMarker[1] === leadId) {
-      const t = m.body.match(/tracking=([^\s]+)/i)?.[1];
-      const u = m.body.match(/url=([^\s]+)/i)?.[1];
-      const sv = m.body.match(/service=([^\s]+)/i)?.[1];
-      if (t && u) {
-        const prev = labelByLead.get(leadId);
-        if (!prev || m.timestamp > prev.timestamp) {
-          labelByLead.set(leadId, { tracking: t, url: u, service: sv, timestamp: m.timestamp });
-        }
-      }
     }
   }
 
@@ -429,6 +453,15 @@ export async function GET(req: NextRequest) {
       fedexTracking: labelByLead.get(m.id)?.tracking,
       fedexLabelUrl: labelByLead.get(m.id)?.url,
       fedexService: labelByLead.get(m.id)?.service,
+      // Only surface the error if there's no successful label that
+      // came AFTER it (regeneration cleared the failure).
+      fedexLabelError: (() => {
+        const err = labelErrorByLead.get(m.id);
+        if (!err) return undefined;
+        const ok = labelByLead.get(m.id);
+        if (ok && ok.timestamp > err.timestamp) return undefined;
+        return { kind: err.kind, reason: err.reason, at: err.timestamp };
+      })(),
     });
   }
 

@@ -79,6 +79,7 @@ interface Lead {
   fedexTracking?: string;
   fedexLabelUrl?: string;
   fedexService?: string;
+  fedexLabelError?: { kind: string; reason: string; at: string };
 }
 
 const STATUS_OPTIONS = [
@@ -274,6 +275,18 @@ export default function AdminPage() {
   // them up automatically. Skywalker 2026-05-17.
   const [labelGeneratingId, setLabelGeneratingId] = useState<string | null>(null);
   const [labelErrorById, setLabelErrorById] = useState<Record<string, string>>({});
+  // Resend tracks separately from generate so the spinner only shows on
+  // the resend button.
+  const [labelResendingId, setLabelResendingId] = useState<string | null>(null);
+  const [labelResendOkById, setLabelResendOkById] = useState<Record<string, boolean>>({});
+  // Edit-address-and-retry. When `addressEditId === lead.id`, the lead
+  // row renders an inline form with editable fields. Submitting POSTs
+  // to /api/admin/leads/label with the new address; on success the
+  // form collapses and the lead row gets the new tracking.
+  const [addressEditId, setAddressEditId] = useState<string | null>(null);
+  const [addressDraft, setAddressDraft] = useState<{
+    street: string; unit: string; city: string; state: string; zip: string;
+  }>({ street: "", unit: "", city: "", state: "", zip: "" });
   const parseShipAddress = (raw: string | undefined) => {
     if (!raw) return null;
     // Format: "street[, unit], city, ST zip"
@@ -287,13 +300,23 @@ export default function AdminPage() {
     const unit = parts.length >= 4 ? parts[1] : undefined;
     return { street, unit, city, state: stZip[1].toUpperCase(), zip: stZip[2] };
   };
-  const generateLabel = async (lead: Lead) => {
+  const openAddressEdit = (lead: Lead) => {
+    const parsed = parseShipAddress(lead.shipAddress);
+    setAddressDraft({
+      street: parsed?.street || "",
+      unit: parsed?.unit || "",
+      city: parsed?.city || "",
+      state: parsed?.state || "",
+      zip: parsed?.zip || "",
+    });
+    setAddressEditId(lead.id);
+    setLabelErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
+  };
+  // Shared label-generation worker — takes an explicit address (so
+  // edit-and-retry can pass the staff-corrected version, while the
+  // basic generateLabel keeps using whatever's on the lead).
+  const callGenerateLabel = async (lead: Lead, addr: { street: string; unit?: string; city: string; state: string; zip: string }) => {
     if (!token) return;
-    const addr = parseShipAddress(lead.shipAddress);
-    if (!addr) {
-      setLabelErrorById((s) => ({ ...s, [lead.id]: "Couldn't parse shipping address" }));
-      return;
-    }
     if (!lead.name || !lead.phone) {
       setLabelErrorById((s) => ({ ...s, [lead.id]: "Missing customer name or phone" }));
       return;
@@ -323,13 +346,75 @@ export default function AdminPage() {
       if (!r.ok) {
         setLabelErrorById((s) => ({ ...s, [lead.id]: d.error || `HTTP ${r.status}` }));
       } else {
-        // Optimistic update — admin auto-refresh will overwrite from MC.
-        setLeads((cur) => cur.map((l) => l.id === lead.id ? { ...l, fedexTracking: d.tracking, fedexLabelUrl: d.labelUrl, fedexService: d.serviceType } : l));
+        // Optimistic update + clear any prior fedexLabelError so the
+        // failed-state UI collapses immediately. Auto-refresh from MC
+        // will reconcile within 30s.
+        setLeads((cur) => cur.map((l) => l.id === lead.id ? { ...l, fedexTracking: d.tracking, fedexLabelUrl: d.labelUrl, fedexService: d.serviceType, fedexLabelError: undefined } : l));
+        setAddressEditId(null);
       }
     } catch (e) {
       setLabelErrorById((s) => ({ ...s, [lead.id]: e instanceof Error ? e.message : "Network error" }));
     } finally {
       setLabelGeneratingId(null);
+    }
+  };
+  const generateLabel = async (lead: Lead) => {
+    const addr = parseShipAddress(lead.shipAddress);
+    if (!addr) {
+      setLabelErrorById((s) => ({ ...s, [lead.id]: "Couldn't parse shipping address — use Edit address & retry" }));
+      return;
+    }
+    await callGenerateLabel(lead, addr);
+  };
+  const retryWithEditedAddress = async (lead: Lead) => {
+    if (!addressDraft.street.trim() || !addressDraft.city.trim() || !addressDraft.state.trim() || !addressDraft.zip.trim()) {
+      setLabelErrorById((s) => ({ ...s, [lead.id]: "Street, city, state, ZIP required" }));
+      return;
+    }
+    await callGenerateLabel(lead, {
+      street: addressDraft.street.trim(),
+      unit: addressDraft.unit.trim() || undefined,
+      city: addressDraft.city.trim(),
+      state: addressDraft.state.trim().toUpperCase(),
+      zip: addressDraft.zip.trim().slice(0, 5),
+    });
+  };
+  const resendLabelEmail = async (lead: Lead) => {
+    if (!token) return;
+    if (!lead.email) {
+      setLabelErrorById((s) => ({ ...s, [lead.id]: "No customer email on file" }));
+      return;
+    }
+    if (!lead.fedexTracking || !lead.fedexLabelUrl) {
+      setLabelErrorById((s) => ({ ...s, [lead.id]: "No existing label to resend — generate one first" }));
+      return;
+    }
+    setLabelResendingId(lead.id);
+    setLabelErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
+    try {
+      const r = await fetch(`/api/admin/leads/label-resend?token=${encodeURIComponent(token)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: lead.email,
+          customerName: lead.name,
+          tracking: lead.fedexTracking,
+          labelUrl: lead.fedexLabelUrl,
+          serviceType: lead.fedexService,
+        }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setLabelErrorById((s) => ({ ...s, [lead.id]: d.error || `HTTP ${r.status}` }));
+      } else {
+        setLabelResendOkById((s) => ({ ...s, [lead.id]: true }));
+        // Auto-clear the success badge after 4s.
+        setTimeout(() => setLabelResendOkById((s) => { const c = { ...s }; delete c[lead.id]; return c; }), 4000);
+      }
+    } catch (e) {
+      setLabelErrorById((s) => ({ ...s, [lead.id]: e instanceof Error ? e.message : "Network error" }));
+    } finally {
+      setLabelResendingId(null);
     }
   };
 
@@ -1326,29 +1411,134 @@ export default function AdminPage() {
                                     </a>
                                     <button
                                       type="button"
+                                      onClick={() => resendLabelEmail(lead)}
+                                      disabled={labelResendingId === lead.id || !lead.email}
+                                      className="text-[10px] font-bold px-2 py-1 rounded bg-emerald-500/15 border border-emerald-500/40 text-emerald-200 hover:bg-emerald-500/25 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                                      title={!lead.email ? "No customer email on file" : "Email the existing label PDF to the customer again — no new FedEx mint"}
+                                    >
+                                      {labelResendingId === lead.id ? "Sending…" : labelResendOkById[lead.id] ? "✓ Sent" : "📧 Resend email"}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => openAddressEdit(lead)}
+                                      disabled={labelGeneratingId === lead.id}
+                                      className="text-[10px] font-bold px-2 py-1 rounded bg-white/5 border border-white/10 text-[#dcdcdc] hover:bg-white/10 transition cursor-pointer disabled:opacity-50"
+                                      title="Correct the shipping address and mint a new label"
+                                    >
+                                      ✏️ Edit address
+                                    </button>
+                                    <button
+                                      type="button"
                                       onClick={() => generateLabel(lead)}
                                       disabled={labelGeneratingId === lead.id}
                                       className="text-[10px] font-bold px-2 py-1 rounded bg-white/5 border border-white/10 text-[#dcdcdc] hover:bg-white/10 transition cursor-pointer disabled:opacity-50"
-                                      title="Generate a new label (replaces the current one)"
+                                      title="Generate a new label using the same address (replaces the current one)"
                                     >
                                       {labelGeneratingId === lead.id ? "Regenerating…" : "↻ Regenerate"}
                                     </button>
                                   </div>
-                                </div>
-                              ) : (
-                                <div>
-                                  <button
-                                    type="button"
-                                    onClick={() => generateLabel(lead)}
-                                    disabled={labelGeneratingId === lead.id || !lead.shipAddress || !lead.phone}
-                                    className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded bg-sky-500/15 border border-sky-500/40 text-sky-200 hover:bg-sky-500/25 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                                    title={!lead.shipAddress ? "No shipping address on file" : !lead.phone ? "Customer phone required" : "Generate FedEx prepaid drop-off label"}
-                                  >
-                                    {labelGeneratingId === lead.id ? "Generating FedEx label…" : "📄 Generate FedEx label"}
-                                  </button>
                                   {labelErrorById[lead.id] && (
                                     <p className="text-[10px] text-red-300 mt-1">⚠️ {labelErrorById[lead.id]}</p>
                                   )}
+                                </div>
+                              ) : (
+                                <div>
+                                  {lead.fedexLabelError && (
+                                    <div className="mb-2 rounded bg-red-500/15 border border-red-500/40 px-2 py-1.5">
+                                      <p className="text-[10px] font-bold uppercase tracking-wider text-red-300">⚠️ Label failed: {lead.fedexLabelError.kind}</p>
+                                      {lead.fedexLabelError.reason && (
+                                        <p className="text-[10px] text-red-200/80 mt-0.5 break-words" title={lead.fedexLabelError.reason}>{lead.fedexLabelError.reason.length > 140 ? lead.fedexLabelError.reason.slice(0, 140) + "…" : lead.fedexLabelError.reason}</p>
+                                      )}
+                                    </div>
+                                  )}
+                                  <div className="flex flex-wrap gap-1.5">
+                                    <button
+                                      type="button"
+                                      onClick={() => generateLabel(lead)}
+                                      disabled={labelGeneratingId === lead.id || !lead.shipAddress || !lead.phone}
+                                      className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded bg-sky-500/15 border border-sky-500/40 text-sky-200 hover:bg-sky-500/25 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                                      title={!lead.shipAddress ? "No shipping address on file — use Edit address" : !lead.phone ? "Customer phone required" : "Generate FedEx prepaid drop-off label"}
+                                    >
+                                      {labelGeneratingId === lead.id ? "Generating FedEx label…" : "📄 Generate FedEx label"}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => openAddressEdit(lead)}
+                                      disabled={labelGeneratingId === lead.id || !lead.phone}
+                                      className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded bg-white/5 border border-white/10 text-[#dcdcdc] hover:bg-white/10 transition cursor-pointer disabled:opacity-50"
+                                      title="Type or paste a corrected address before generating"
+                                    >
+                                      ✏️ Edit address & retry
+                                    </button>
+                                  </div>
+                                  {labelErrorById[lead.id] && (
+                                    <p className="text-[10px] text-red-300 mt-1">⚠️ {labelErrorById[lead.id]}</p>
+                                  )}
+                                </div>
+                              )}
+                              {/* Inline address editor — collapses any
+                                  generate/regenerate state so staff sees
+                                  exactly the form they're submitting. */}
+                              {addressEditId === lead.id && (
+                                <div className="mt-2 rounded-lg bg-white/[0.04] border border-white/10 p-2 space-y-1.5">
+                                  <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">✏️ Edit shipping address</p>
+                                  <input
+                                    type="text"
+                                    value={addressDraft.street}
+                                    onChange={(e) => setAddressDraft((s) => ({ ...s, street: e.target.value }))}
+                                    placeholder="Street address"
+                                    className="w-full px-2 py-1 bg-white/5 border border-white/10 rounded text-[11px] text-white placeholder:text-[#888] focus:outline-none focus:border-[#00c853]"
+                                  />
+                                  <input
+                                    type="text"
+                                    value={addressDraft.unit}
+                                    onChange={(e) => setAddressDraft((s) => ({ ...s, unit: e.target.value }))}
+                                    placeholder="Apt / Unit (optional)"
+                                    className="w-full px-2 py-1 bg-white/5 border border-white/10 rounded text-[11px] text-white placeholder:text-[#888] focus:outline-none focus:border-[#00c853]"
+                                  />
+                                  <div className="grid grid-cols-3 gap-1.5">
+                                    <input
+                                      type="text"
+                                      value={addressDraft.city}
+                                      onChange={(e) => setAddressDraft((s) => ({ ...s, city: e.target.value }))}
+                                      placeholder="City"
+                                      className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[11px] text-white placeholder:text-[#888] focus:outline-none focus:border-[#00c853]"
+                                    />
+                                    <input
+                                      type="text"
+                                      value={addressDraft.state}
+                                      onChange={(e) => setAddressDraft((s) => ({ ...s, state: e.target.value.toUpperCase() }))}
+                                      placeholder="ST"
+                                      maxLength={2}
+                                      className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[11px] text-white placeholder:text-[#888] focus:outline-none focus:border-[#00c853] uppercase"
+                                    />
+                                    <input
+                                      type="text"
+                                      value={addressDraft.zip}
+                                      onChange={(e) => setAddressDraft((s) => ({ ...s, zip: e.target.value.replace(/\D/g, "").slice(0, 5) }))}
+                                      placeholder="ZIP"
+                                      inputMode="numeric"
+                                      maxLength={5}
+                                      className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[11px] text-white placeholder:text-[#888] focus:outline-none focus:border-[#00c853]"
+                                    />
+                                  </div>
+                                  <div className="flex flex-wrap gap-1.5">
+                                    <button
+                                      type="button"
+                                      onClick={() => retryWithEditedAddress(lead)}
+                                      disabled={labelGeneratingId === lead.id}
+                                      className="text-[11px] font-bold px-2.5 py-1 rounded bg-[#00c853] text-[#0a0a0a] hover:bg-[#00e676] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                                    >
+                                      {labelGeneratingId === lead.id ? "Generating…" : "Generate with this address"}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => setAddressEditId(null)}
+                                      className="text-[11px] px-2.5 py-1 rounded bg-white/5 border border-white/10 text-[#d4d4d4] hover:bg-white/10 cursor-pointer"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
                                 </div>
                               )}
                             </div>
