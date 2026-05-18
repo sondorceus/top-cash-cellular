@@ -12462,6 +12462,90 @@ export default function Home() {
               )}
             </div>
 
+            {/* HOW SHIPPING WORKS — 4-step expanded guide, ship handoffs
+                only. Skywalker 2026-05-18 IMG_5736 mockup → "We need to
+                add more info to this page: how it works, shipping steps,
+                boxes, faq link". Mirrors IWM's pattern but tuned to our
+                dark theme. Same content lands in the confirmation email
+                next pass. */}
+            {handoffMethod === "ship" && (
+              <div className="tcc-card rounded-2xl p-5 mb-6">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Okay, I sold!</p>
+                <h3 className="text-white text-base font-bold mb-3">Shipping your device — fast, free, easy</h3>
+                <ol className="space-y-3.5">
+                  {[
+                    {
+                      n: 1,
+                      title: "Prep your device",
+                      bullets: [
+                        { required: true, text: "Sign out + reset (Find My / Activation Lock OFF on iPhone, factory reset for Android)" },
+                        { required: false, text: "Remove SIM + SD cards (we don't need them)" },
+                      ],
+                      note: "If a device arrives still activation-locked or account-locked we can't pay out — heads up.",
+                    },
+                    {
+                      n: 2,
+                      title: "Pack the box",
+                      bullets: [
+                        { required: false, text: "Any plain box or padded mailer — Amazon boxes work great" },
+                        { required: false, text: "Wrap the device in cloth, bubble wrap, or a t-shirt" },
+                        { required: false, text: "Pack tight so nothing rattles" },
+                        { required: false, text: "Tape it shut on all seams" },
+                      ],
+                      note: submittedDevices && submittedDevices.length > 1 ? "One box for all your devices is totally fine — pad between them." : undefined,
+                    },
+                    {
+                      n: 3,
+                      title: "Attach the label",
+                      bullets: [
+                        { required: true, text: "Print the FedEx label PDF (above) — full size, no scaling" },
+                        { required: true, text: "Tape it FLAT to the largest side, barcode visible + uncreased" },
+                      ],
+                      note: "Don't cover the barcode with shiny tape — matte packing tape works best.",
+                    },
+                    {
+                      n: 4,
+                      title: "Drop it off",
+                      bullets: [
+                        { required: false, text: "Any FedEx location, no appointment needed" },
+                        { required: false, text: "Within 21 days of this quote (after that prices may shift)" },
+                      ],
+                      note: "We'll text you the moment it lands in Austin. Inspection + payout usually within 24 hrs of arrival.",
+                    },
+                  ].map((step) => (
+                    <li key={step.n} className="flex gap-3">
+                      <div className="shrink-0 w-7 h-7 rounded-full bg-[#00c853]/15 border border-[#00c853]/40 flex items-center justify-center text-[#00c853] text-xs font-extrabold">{step.n}</div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white text-sm font-bold mb-1">{step.title}</p>
+                        <ul className="space-y-1">
+                          {step.bullets.map((b, i) => (
+                            <li key={i} className="flex items-start gap-2 text-[12px] leading-snug">
+                              <span className={`mt-0.5 text-[10px] font-extrabold uppercase tracking-wider shrink-0 ${b.required ? "text-amber-300" : "text-[#888]"}`}>{b.required ? "Required" : "Optional"}</span>
+                              <span className="text-[#dcdcdc]">{b.text}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        {step.note && (
+                          <p className="text-[11px] text-[#888] italic leading-snug mt-1.5">{step.note}</p>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+                <div className="mt-4 pt-4 border-t border-white/8 flex flex-wrap items-center gap-3 text-[12px]">
+                  <a href="/faq" target="_blank" className="text-[#00c853] hover:text-[#00e676] font-semibold cursor-pointer">📖 FAQ — full shipping + payout details</a>
+                  <span className="text-[#666]">·</span>
+                  <a href="mailto:CustomerService@topcashcells.com" className="text-[#dcdcdc] hover:text-white cursor-pointer">✉️ Questions? Email us</a>
+                  {phone && (
+                    <>
+                      <span className="text-[#666]">·</span>
+                      <a href="/track" className="text-[#dcdcdc] hover:text-white cursor-pointer">🔍 Track your trade</a>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* No review CTA here — the customer hasn't actually completed
                 a trade yet, asking for a review at submission time is
                 premature. Skywalker 2026-05-17. The "Met & Thanked"
