@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
-import { createReturnLabel, deviceKindFromString } from "../../lib/fedex";
+import { createReturnLabel, deviceKindFromString, aggregateWeight, shouldBlockAutoShip } from "../../lib/fedex";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -383,7 +383,42 @@ export async function POST(req: NextRequest) {
       typeof a.zip === "string" && /^\d{5}/.test(a.zip);
     const phoneDigits = String(phone || "").replace(/\D/g, "");
     if (h.method === "ship" && hasFullAddress && phoneDigits.length >= 10 && leadId) {
-      try {
+      // Multi-device shipments fit in ONE box. Total weight = sum of
+      // per-device defaults + 2 lb packaging. Skywalker 2026-05-18:
+      // FedEx bills the actual scanned weight regardless of what we
+      // declare — but declaring the realistic weight upfront sets the
+      // right service tier and avoids correction surcharges of $5-15.
+      const deviceKinds = isMulti
+        ? deviceList.map((d) => ({ deviceKind: deviceKindFromString(d.model || "") }))
+        : [{ deviceKind: deviceKindFromString(model as string) }];
+      const totalWeight = aggregateWeight(deviceKinds);
+
+      // Auto-skip when ANY device in the order is too heavy/expensive
+      // to ship blindly (desktops). Staff will quote the actual label
+      // cost via the admin Generate FedEx label button after sanity-
+      // checking the package contents. We continue past this block
+      // (lead still saves) but skip the FedEx call.
+      const blockedReason = deviceKinds
+        .map((d) => shouldBlockAutoShip(d.deviceKind))
+        .find((r) => r);
+      if (blockedReason) {
+        try {
+          await fetch(`${MC_API}/api/comms`, {
+            method: "POST",
+            headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              from: "topcash-web",
+              fromName: "Top Cash Cellular",
+              role: "system",
+              body: `[LABEL-WITHHELD: ${leadId}] reason=${blockedReason}`,
+              tags: ["fedex-label", "blocked"],
+              priority: "normal",
+            }),
+          });
+        } catch {}
+        fedexError = { kind: "SERVICE_UNAVAILABLE", hint: blockedReason };
+        // Don't try {} below — go straight to the catch path equivalent.
+      } else { try {
         const label = await createReturnLabel({
           customerName: String(name),
           customerPhone: phoneDigits,
@@ -393,6 +428,7 @@ export async function POST(req: NextRequest) {
           customerState: a!.state!,
           customerZip: a!.zip!,
           deviceKind: deviceKindFromString(model as string),
+          weightLbs: totalWeight,
         });
         // Upload to Vercel Blob — random suffix so the tracking number
         // alone can't be pivoted to a leaked label.
@@ -444,6 +480,7 @@ export async function POST(req: NextRequest) {
             }),
           });
         } catch {}
+      }
       }
     }
   }

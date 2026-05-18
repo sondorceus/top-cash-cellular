@@ -107,20 +107,48 @@ export type LabelResult = {
   serviceType: string;
 };
 
+// Per-device weight defaults calibrated against real device weights
+// (PS5 ~10 lb, Mac Pro 40 lb, gaming PCs 30+ lb). These get OVER-stated
+// slightly to cover box + packaging + small accessories. FedEx bills
+// based on ACTUAL scanned weight regardless, so over-estimating here
+// just sets the right rate-class for the initial label; it doesn't add
+// cost. Under-estimating risks "weight correction" surcharges of
+// $5-15 per package. Skywalker 2026-05-18.
 function defaultWeight(kind?: LabelInputs["deviceKind"]): number {
   switch (kind) {
     case "phone":
     case "tablet":
-      return 1;
+      return 2;  // device + padded mailer
     case "laptop":
-      return 5;
+      return 6;  // 4 lb device + 2 lb box/padding
     case "console":
-      return 8;
+      return 12; // PS5/Xbox ~10 lb + box overhead
     case "desktop":
-      return 25;
+      return 35; // Mac Pro tower 40 lb / iMac 22 + huge box / gaming 30+
     default:
-      return 2;
+      return 3;
   }
+}
+
+// Aggregate weight across multiple devices in a single package. Used
+// when /api/lead receives a multi-device cart with a ship handoff —
+// FedEx sees ONE package with everything inside, billed by total
+// weight + dimensions. Plus a 2 lb floor for the box itself.
+export function aggregateWeight(devices: Array<{ deviceKind?: LabelInputs["deviceKind"] }>): number {
+  if (!devices.length) return 3;
+  const sum = devices.reduce((s, d) => s + defaultWeight(d.deviceKind), 0);
+  return Math.max(3, sum + 2); // +2 lb packaging overhead
+}
+
+// Devices we should NOT auto-ship — too heavy or fragile. Customer
+// should be steered to local pickup OR staff manually quotes the
+// label cost before mint. Returns a friendly reason string for the
+// admin / customer messaging.
+export function shouldBlockAutoShip(kind?: LabelInputs["deviceKind"]): string | null {
+  if (kind === "desktop") {
+    return "Desktops are heavy enough that FedEx ground can cost $40-80 in shipping. Staff will quote you a label or arrange local pickup before printing.";
+  }
+  return null;
 }
 
 function digitsOnly(s: string): string {

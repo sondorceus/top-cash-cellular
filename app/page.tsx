@@ -8600,7 +8600,8 @@ export default function Home() {
           <div className="space-y-2">
             {[
               { q: "How do I get paid?", a: "Local Austin meetup — paid on the spot, under 5 minutes once we've inspected. Shipping — most payouts hit your account within 24 hours of the device arriving at our facility. Methods: Cash (local only), Cash App, Zelle, or BTC." },
-              { q: "Do you ship for free?", a: "Yes — every offer over $50 gets a free prepaid FedEx Ground label. The label is emailed instantly when you complete checkout. We also offer free Austin pickup for local sellers." },
+              { q: "Do you ship for free?", a: "Yes — every offer over $50 gets a free prepaid FedEx Ground label, emailed instantly when you complete checkout. Have multiple devices? Pack them all in ONE box and use the same label — saves you a trip and keeps everything together. We also offer free Austin pickup for local sellers." },
+              { q: "What if I'm shipping a desktop or something heavy?", a: "For desktops, gaming PCs, or anything 25+ lbs, we hold off on auto-generating the label so we can quote shipping correctly first. We'll email you a custom label within an hour — usually FedEx Ground, sometimes with a few dollars in carrier insurance for the higher-value item. You'll never pay anything yourself." },
               { q: "What if my device shows up worth less than the quote?", a: "We send you a revised offer. If you don't like it, we ship the device back to you free of charge. No pressure, no surprises." },
               { q: "Are you really in Austin?", a: "Yes — Austin-based and real humans. You can drop off locally for same-day cash, or ship from anywhere in the US." },
               { q: "How fast is the quote?", a: "Instant. Pick your device, condition, and storage and we show you the offer right then. No signup, no email required." },
@@ -12037,7 +12038,11 @@ export default function Home() {
                   {submittedLabel ? (
                     <>
                       <p className="text-white text-base font-bold mb-1">📦 Your prepaid FedEx label is ready</p>
-                      <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">Print it, tape it to a padded box, and drop at any FedEx location — no appointment needed. We&apos;ll text you the moment it arrives.</p>
+                      <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">
+                        Print it, tape it to a padded box, and drop at any FedEx location — no appointment needed.
+                        {submittedDevices && submittedDevices.length > 1 ? " One box can hold all your devices — saves us both the hassle." : ""}
+                        {" "}We&apos;ll text you the moment it arrives.
+                      </p>
                       <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-3 mb-3">
                         <p className="text-[10px] uppercase tracking-wider text-[#00c853] font-bold mb-1">Tracking</p>
                         <p className="text-white font-mono font-bold text-sm break-all">{submittedLabel.tracking}</p>
