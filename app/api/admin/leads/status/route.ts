@@ -207,7 +207,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { leadId, status, name, phone, email, device, quote, payout, rejectionReason, shipAddress } = body;
+  const { leadId, status, name, phone, email, device, quote, payout, rejectionReason, shipAddress, payoutConfirmation } = body;
 
   if (!leadId || !status || !STATUSES.includes(status)) {
     return NextResponse.json({ error: "leadId and valid status required" }, { status: 400 });
@@ -261,7 +261,26 @@ export async function POST(req: NextRequest) {
 
   // 1. Persist by posting [STATUS: ...] [LEAD: ...] reply to MC comms.
   const reasonLine = status === "rejected" && rejectionReason ? `\nReason: ${rejectionReason}` : "";
-  const statusBody = `[STATUS: ${status}] [LEAD: ${leadId}]\nDevice: ${device || "—"}\nCustomer: ${name || "—"}\nQuote: ${quote || "—"}\nPayout: ${payout || "—"}${reasonLine}`;
+  // Payout confirmation — captured when admin marks "paid" or "met".
+  // Format: "method:reference" (e.g. "zelle:CONF-12345", "venmo:@son",
+  // "cashapp:$skywalker", "btc:txhash", "cash:in-person-handoff").
+  // Cleaned + 200-char capped server-side. Skywalker 2026-05-18 audit
+  // trail — no more "did we actually pay them?" bookkeeping holes.
+  const payoutConfLine = (status === "paid" || status === "met") && payoutConfirmation && typeof payoutConfirmation === "object"
+    ? (() => {
+        const pc = payoutConfirmation as { method?: string; reference?: string; note?: string };
+        const m = (pc.method || "").toString().slice(0, 40).replace(/[\r\n]+/g, " ").trim();
+        const r = (pc.reference || "").toString().slice(0, 120).replace(/[\r\n]+/g, " ").trim();
+        const n = (pc.note || "").toString().slice(0, 200).replace(/[\r\n]+/g, " ").trim();
+        if (!m && !r && !n) return "";
+        const bits: string[] = [];
+        if (m) bits.push(`method=${m}`);
+        if (r) bits.push(`ref=${r}`);
+        if (n) bits.push(`note=${n}`);
+        return `\nPayout-confirmation: ${bits.join(" · ")}`;
+      })()
+    : "";
+  const statusBody = `[STATUS: ${status}] [LEAD: ${leadId}]\nDevice: ${device || "—"}\nCustomer: ${name || "—"}\nQuote: ${quote || "—"}\nPayout: ${payout || "—"}${reasonLine}${payoutConfLine}`;
   let mcOk = false;
   try {
     const r = await fetch(`${MC_API}/api/comms`, {

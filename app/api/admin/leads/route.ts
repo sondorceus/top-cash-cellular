@@ -123,6 +123,11 @@ interface AdminLead {
   // Communication audit trail — count of staff comms sent per lead,
   // parsed from [COMM-SENT: leadId] markers. Skywalker 2026-05-18.
   commsSent?: { sms: number; email: number; lastAt?: string };
+  // Funded-payout confirmation, parsed from the most recent
+  // "Payout-confirmation: method=X · ref=Y · note=Z" line attached
+  // to the [STATUS: paid|met] marker. Skywalker 2026-05-18 — answers
+  // "did we actually pay them, and how?" without digging into MC.
+  payoutConfirmation?: { method?: string; reference?: string; note?: string; at: string };
   // FedEx label info, populated from [LABEL: <leadId>] markers in MC.
   // Surfaces the latest label per lead (regenerate-friendly).
   fedexTracking?: string;
@@ -182,6 +187,9 @@ export async function GET(req: NextRequest) {
   // hard-purged from the feed entirely. If the latest is a restore, the
   // lead is active again.
   const statusByLead = new Map<string, { status: string; timestamp: string }>();
+  // Payout confirmations keyed by lead — captured on the [STATUS: paid|met]
+  // marker's Payout-confirmation line. Most recent wins.
+  const payoutConfirmByLead = new Map<string, { method?: string; reference?: string; note?: string; timestamp: string }>();
   const notesByLead = new Map<string, { text: string; timestamp: string }[]>();
   // Latest FedEx label per lead. We keep only the most recent so
   // regenerating overrides the prior label on the UI.
@@ -257,6 +265,18 @@ export async function GET(req: NextRequest) {
       const existing = statusByLead.get(leadId);
       if (!existing || m.timestamp > existing.timestamp) {
         statusByLead.set(leadId, { status: sm[1].toLowerCase(), timestamp: m.timestamp });
+      }
+      // Payout-confirmation line lives inside the same [STATUS: paid|met]
+      // message body. Parse it alongside.
+      const pcLine = m.body.match(/Payout-confirmation:\s*(.+)$/im)?.[1];
+      if (pcLine && (sm[1].toLowerCase() === "paid" || sm[1].toLowerCase() === "met")) {
+        const method = pcLine.match(/method=([^·\n]+)/i)?.[1]?.trim();
+        const reference = pcLine.match(/ref=([^·\n]+)/i)?.[1]?.trim();
+        const note = pcLine.match(/note=(.+)$/i)?.[1]?.trim();
+        const prev = payoutConfirmByLead.get(leadId);
+        if (!prev || m.timestamp > prev.timestamp) {
+          payoutConfirmByLead.set(leadId, { method, reference, note, timestamp: m.timestamp });
+        }
       }
     }
     const nm = m.body.match(/\[NOTE:\s*([^\]]+)\]/i);
@@ -545,6 +565,11 @@ export async function GET(req: NextRequest) {
         return { kind: err.kind, reason: err.reason, at: err.timestamp };
       })(),
       commsSent: commsByLead.get(m.id),
+      payoutConfirmation: (() => {
+        const pc = payoutConfirmByLead.get(m.id);
+        if (!pc) return undefined;
+        return { method: pc.method, reference: pc.reference, note: pc.note, at: pc.timestamp };
+      })(),
     });
   }
 

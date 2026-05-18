@@ -89,6 +89,7 @@ interface Lead {
   priorLeads?: number;
   lifetimeSpend?: number;
   commsSent?: { sms: number; email: number; lastAt?: string };
+  payoutConfirmation?: { method?: string; reference?: string; note?: string; at: string };
 }
 
 const STATUS_OPTIONS = [
@@ -138,6 +139,13 @@ export default function AdminPage() {
   const [savingId, setSavingId] = useState<string | null>(null);
   const [savedFlash, setSavedFlash] = useState<Record<string, { sms: boolean; email: boolean } | null>>({});
   const [rejectingId, setRejectingId] = useState<string | null>(null);
+  // Payout-confirmation capture — gated by status flip to paid/met.
+  // Skywalker 2026-05-18 "did we actually pay them, and how?".
+  const [payingId, setPayingId] = useState<string | null>(null);
+  const [payingStatus, setPayingStatus] = useState<"paid" | "met">("paid");
+  const [payoutMethod, setPayoutMethod] = useState<string>("");
+  const [payoutReference, setPayoutReference] = useState<string>("");
+  const [payoutNote, setPayoutNote] = useState<string>("");
   const [rejectionReason, setRejectionReason] = useState<string>("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [noteOpenId, setNoteOpenId] = useState<string | null>(null);
@@ -832,7 +840,7 @@ export default function AdminPage() {
     .filter((l) => isPaid(l.status))
     .reduce((s, l) => s + (parseInt(l.quote?.match(/\d+/)?.[0] || "0", 10) || 0), 0);
 
-  const saveStatus = async (lead: Lead, newStatus: string, reason?: string) => {
+  const saveStatus = async (lead: Lead, newStatus: string, reason?: string, payoutConfirmation?: { method: string; reference: string; note: string }) => {
     if (!token || newStatus === lead.status) return;
     setSavingId(lead.id);
     // Only pass shipAddress when the lead is a SHIPPING handoff AND
@@ -858,6 +866,7 @@ export default function AdminPage() {
           payout: lead.payout,
           rejectionReason: newStatus === "rejected" ? reason : undefined,
           shipAddress: shipAddressPayload,
+          payoutConfirmation,
         }),
       });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -1305,7 +1314,7 @@ export default function AdminPage() {
                           best contact". Badge sits above the spec block so
                           staff sees how to reach the seller before the
                           deep-dive specs. */}
-                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source || lead.priorLeads || lead.commsSent) && (
+                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source || lead.priorLeads || lead.commsSent || lead.payoutConfirmation) && (
                         <div className="mt-1.5 flex flex-wrap items-start gap-1.5">
                           {/* Returning-customer pill — Skywalker 2026-05-18.
                               Surfaces priorLeads + lifetime $ so staff knows
@@ -1316,6 +1325,16 @@ export default function AdminPage() {
                               title={`${lead.priorLeads} prior trade${lead.priorLeads === 1 ? "" : "s"} from this customer${lead.lifetimeSpend ? `, $${lead.lifetimeSpend.toLocaleString()} paid out previously` : ""}`}
                             >
                               🔁 Returning · {lead.priorLeads} prior{lead.lifetimeSpend ? ` · $${lead.lifetimeSpend.toLocaleString()}` : ""}
+                            </span>
+                          )}
+                          {/* Payout confirmation pill — set when status is
+                              paid/met and staff captured the method+ref. */}
+                          {lead.payoutConfirmation && (lead.payoutConfirmation.method || lead.payoutConfirmation.reference) && (
+                            <span
+                              className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-200 border border-emerald-500/40 uppercase tracking-wider"
+                              title={`Paid via ${lead.payoutConfirmation.method || "?"}${lead.payoutConfirmation.reference ? ` · ${lead.payoutConfirmation.reference}` : ""}${lead.payoutConfirmation.note ? ` · ${lead.payoutConfirmation.note}` : ""} · ${new Date(lead.payoutConfirmation.at).toLocaleString()}`}
+                            >
+                              ✓ Paid · {lead.payoutConfirmation.method || "?"}{lead.payoutConfirmation.reference ? ` · ${lead.payoutConfirmation.reference.slice(0, 18)}` : ""}
                             </span>
                           )}
                           {/* Comms-sent count — Skywalker 2026-05-18 audit
@@ -1733,6 +1752,28 @@ export default function AdminPage() {
                             setPendingStatus((p) => ({ ...p, [lead.id]: v }));
                             return;
                           }
+                          // Paid / met — capture the payout confirmation
+                          // BEFORE persisting the status. Skywalker
+                          // 2026-05-18 audit trail.
+                          if ((v === "paid" || v === "met") && lead.status !== v) {
+                            setPayingId(lead.id);
+                            setPayingStatus(v);
+                            // Sensible defaults: cash for in-person met,
+                            // pre-fill method from the customer's payout
+                            // choice for paid (e.g. "Cash App", "Zelle").
+                            const defaultMethod = v === "met" ? "cash"
+                              : (lead.payout || "").toLowerCase().includes("zelle") ? "zelle"
+                              : (lead.payout || "").toLowerCase().includes("venmo") ? "venmo"
+                              : (lead.payout || "").toLowerCase().includes("cash app") ? "cashapp"
+                              : (lead.payout || "").toLowerCase().includes("paypal") ? "paypal"
+                              : (lead.payout || "").toLowerCase().includes("bitcoin") || (lead.payout || "").toLowerCase().includes("btc") ? "btc"
+                              : "";
+                            setPayoutMethod(defaultMethod);
+                            setPayoutReference("");
+                            setPayoutNote("");
+                            setPendingStatus((p) => ({ ...p, [lead.id]: v }));
+                            return;
+                          }
                           setPendingStatus((p) => ({ ...p, [lead.id]: v }));
                           saveStatus(lead, v);
                         }}
@@ -1823,6 +1864,74 @@ export default function AdminPage() {
                             <button
                               type="button"
                               onClick={() => { setRejectingId(null); setRejectionReason(""); setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; }); }}
+                              className="px-2 py-1.5 bg-white/5 border border-white/10 rounded text-[11px] text-[#d4d4d4] hover:bg-white/10 transition cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {payingId === lead.id && (
+                        <div className="mt-2 p-2.5 bg-[#00c853]/8 border border-[#00c853]/30 rounded-lg space-y-2 max-w-[300px]">
+                          <p className="text-[10px] text-[#7be8a8] font-bold uppercase tracking-wider">💰 Confirm payout · {payingStatus === "met" ? "in person" : "digital"}</p>
+                          <select
+                            value={payoutMethod}
+                            onChange={(e) => setPayoutMethod(e.target.value)}
+                            className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#00c853] cursor-pointer"
+                          >
+                            <option value="">— how did you pay them? —</option>
+                            <option value="cash">Cash (in person)</option>
+                            <option value="zelle">Zelle</option>
+                            <option value="venmo">Venmo</option>
+                            <option value="cashapp">Cash App</option>
+                            <option value="paypal">PayPal</option>
+                            <option value="btc">Bitcoin / crypto</option>
+                            <option value="check">Check</option>
+                            <option value="other">Other</option>
+                          </select>
+                          {payoutMethod && payoutMethod !== "cash" && (
+                            <input
+                              type="text"
+                              value={payoutReference}
+                              onChange={(e) => setPayoutReference(e.target.value)}
+                              placeholder={
+                                payoutMethod === "zelle" ? "Zelle confirmation # / ref"
+                                : payoutMethod === "venmo" ? "Venmo handle or txn ID"
+                                : payoutMethod === "cashapp" ? "$cashtag or txn ID"
+                                : payoutMethod === "paypal" ? "PayPal txn ID"
+                                : payoutMethod === "btc" ? "Tx hash"
+                                : payoutMethod === "check" ? "Check #"
+                                : "Reference / ID"
+                              }
+                              className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#00c853]"
+                            />
+                          )}
+                          <input
+                            type="text"
+                            value={payoutNote}
+                            onChange={(e) => setPayoutNote(e.target.value)}
+                            placeholder="Note (optional)"
+                            className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#00c853]"
+                          />
+                          <div className="flex gap-1.5">
+                            <button
+                              type="button"
+                              disabled={!payoutMethod || (payoutMethod !== "cash" && !payoutReference.trim())}
+                              onClick={() => {
+                                saveStatus(lead, payingStatus, undefined, {
+                                  method: payoutMethod,
+                                  reference: payoutReference.trim(),
+                                  note: payoutNote.trim(),
+                                });
+                                setPayingId(null);
+                              }}
+                              className="flex-1 px-2 py-1.5 bg-[#00c853] text-[#0a0a0a] rounded text-[11px] font-bold hover:bg-[#00e676] transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                              {payingStatus === "met" ? "Mark Met & Thanked" : "Mark Paid"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => { setPayingId(null); setPayoutMethod(""); setPayoutReference(""); setPayoutNote(""); setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; }); }}
                               className="px-2 py-1.5 bg-white/5 border border-white/10 rounded text-[11px] text-[#d4d4d4] hover:bg-white/10 transition cursor-pointer"
                             >
                               Cancel
