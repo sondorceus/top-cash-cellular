@@ -29,7 +29,20 @@ function checkAuth(req: NextRequest): boolean {
   return headerToken === ADMIN_TOKEN || queryToken === ADMIN_TOKEN;
 }
 
+// Feature flag. Skywalker 2026-05-18 "we are small, can't store
+// private info safely yet". Vercel Blob is public-URL-only — fine
+// for device photos, NOT fine for government IDs even with random
+// path suffixes. Endpoint refuses calls until proper signed-URL
+// storage is in place. Flip TCC_ID_CAPTURE_ENABLED=true to re-enable.
+const ID_CAPTURE_ENABLED = process.env.TCC_ID_CAPTURE_ENABLED === "true";
+
 export async function POST(req: NextRequest) {
+  if (!ID_CAPTURE_ENABLED) {
+    return NextResponse.json(
+      { error: "ID capture is disabled — needs secure-storage upgrade before re-enabling. Set TCC_ID_CAPTURE_ENABLED=true once signed-URL Blob storage is in place." },
+      { status: 410 },
+    );
+  }
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

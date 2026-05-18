@@ -1697,12 +1697,13 @@ export default function AdminPage() {
                           )}
                         </div>
                       )}
-                      {/* ID-capture (Texas Secondhand Dealer Act) —
-                          Skywalker 2026-05-18 #2. Shown if captured
-                          (green pill + view-photo link) OR if not yet
-                          captured and the quote is ≥ $500 (mandatory)
-                          OR always as a quiet "+ Capture ID" link
-                          (optional). */}
+                      {/* ID-capture UI intentionally hidden — Skywalker
+                          2026-05-18 "we are small, can't store private
+                          info safely yet". Backend route + parser stay
+                          intact for when signed-URL storage lands. Flip
+                          NEXT_PUBLIC_TCC_ID_CAPTURE_ENABLED=true to
+                          surface this section again. */}
+                      {false && (
                       <div className="mt-2">
                         {lead.idCaptured ? (
                           <div className="flex flex-wrap items-center gap-2">
@@ -1799,6 +1800,7 @@ export default function AdminPage() {
                           })()
                         )}
                       </div>
+                      )}
                       {/* Notes */}
                       <div className="mt-1.5">
                         {lead.latestNote && (
