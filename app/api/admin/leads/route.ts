@@ -167,8 +167,18 @@ interface AdminLead {
 const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "met", "rejected"];
 
 function parseField(body: string, key: string): string | undefined {
-  const m = body.match(new RegExp(`${key}:\\s*([^\\n]+)`, "i"));
-  return m ? m[1].trim() : undefined;
+  // Anchor to start-of-line and only allow inline whitespace ([ \t]*)
+  // after the key. The previous \s* was greedy AND included \n, so an
+  // empty field swallowed the next line's content — e.g. "Phone: \n
+  // Email: rose@x.com" parsed phone as "Email: rose@x.com". Bug surfaced
+  // on every customer who didn't fill phone (Skywalker 2026-05-18 "Rose"
+  // lead). Also use [^\n]* (zero-or-more) so an explicitly-empty field
+  // matches as "" rather than failing to match → we still collapse to
+  // undefined via the v || undefined return.
+  const m = body.match(new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i"));
+  if (!m) return undefined;
+  const v = m[1].trim();
+  return v || undefined;
 }
 
 function checkAuth(req: NextRequest): boolean {

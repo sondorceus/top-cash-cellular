@@ -28,8 +28,13 @@ function normalizePhone(p: string): string {
 function parseLeadBody(body: string, timestamp: string): PastLead | null {
   if (!body.includes("[NEW BUYBACK LEAD]") && !body.includes("[CHAT LEAD]")) return null;
   const get = (key: string) => {
-    const m = body.match(new RegExp(`${key}:\\s*([^\\n]+)`, "i"));
-    return m ? m[1].trim() : undefined;
+    // Anchor to line-start; only inline whitespace ([ \t]*) after the key.
+    // Avoids \s* (which includes \n) swallowing the next field when value
+    // is empty. See app/api/admin/leads/route.ts for full bug context.
+    const m = body.match(new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i"));
+    if (!m) return undefined;
+    const v = m[1].trim();
+    return v || undefined;
   };
   return {
     name: get("Name"),
