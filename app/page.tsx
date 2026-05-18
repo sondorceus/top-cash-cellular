@@ -4682,7 +4682,26 @@ function GoogleSignInButton({ onCredential }: { onCredential: (p: GoogleCredenti
   );
 }
 
+type PriceOverrides = {
+  priceTable: Record<string, Record<string, Record<string, number>>>;
+  carrierDeductions: Record<string, Record<string, number>>;
+};
+
 export default function Home() {
+  // Price overrides — pulled on mount from /api/admin/prices. Lets
+  // Skywalker edit prices via /admin/prices and have them apply
+  // without a redeploy (the lookupPrice block below checks this
+  // first, falls back to the bundled PRICE_TABLE / CARRIER_DEDUCTIONS).
+  // Skywalker 2026-05-18 self-serve price editor.
+  const [priceOverrides, setPriceOverrides] = useState<PriceOverrides | null>(null);
+  useEffect(() => {
+    fetch("/api/admin/prices")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.overrides) setPriceOverrides(d.overrides);
+      })
+      .catch(() => {});
+  }, []);
   const [step, setStep] = useState<Step>("device");
   const [category, setCategory] = useState<"phones" | "tablets" | "computers" | "desktops" | "consoles" | "watches" | "drones" | "vr" | null>(null);
   const [deviceType, setDeviceType] = useState<DeviceType>(null);
@@ -5735,8 +5754,17 @@ export default function Home() {
   // Direct price lookup — if the table has an exact price for this
   // device × storage × condition, use it instead of multiplier math.
   // Carrier deductions are flat $ amounts from CARRIER_DEDUCTIONS, not multipliers.
-  const lookupPrice = PRICE_TABLE[model?.id ?? ""]?.[storage?.id ?? "base"]?.[condition?.id ?? ""];
-  const carrierDeduction = CARRIER_DEDUCTIONS[model?.id ?? ""]?.[carrier?.id ?? ""] ?? 0;
+  // Admin overrides (from /api/admin/prices, saved at /admin/prices) are
+  // checked FIRST so Skywalker's edits go live within seconds of saving
+  // without redeploying. Falls back to the bundled tables below if no
+  // override exists for this cell. Skywalker 2026-05-18 self-serve editor.
+  const lookupPrice =
+    priceOverrides?.priceTable?.[model?.id ?? ""]?.[storage?.id ?? "base"]?.[condition?.id ?? ""]
+    ?? PRICE_TABLE[model?.id ?? ""]?.[storage?.id ?? "base"]?.[condition?.id ?? ""];
+  const carrierDeduction =
+    priceOverrides?.carrierDeductions?.[model?.id ?? ""]?.[carrier?.id ?? ""]
+    ?? CARRIER_DEDUCTIONS[model?.id ?? ""]?.[carrier?.id ?? ""]
+    ?? 0;
   // Lock deduction: Verizon $0 only if unlocked. All carriers lose ~$200 if locked.
   const lockDeduction = (carrier?.id !== "unlocked" && carrierLock?.id === "yes") ? 200 : 0;
   const totalCarrierDeduction = carrierDeduction + lockDeduction;
