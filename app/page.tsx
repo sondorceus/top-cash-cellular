@@ -6308,14 +6308,33 @@ export default function Home() {
       // against its render-gate requirements BEFORE setting it. If
       // anything's missing → drop to step="device" so the home hero
       // always renders.
+      //
+      // Cart-aware: the late-funnel steps (quote, checkout, payout,
+      // contact) accept EITHER a funnel-in-progress (model+condition)
+      // OR cart items. The cart lives in a separate tcc-cart entry,
+      // so we peek at that here too. Otherwise customers who quoted
+      // entirely via the cart get bounced to home on refresh. Fixed
+      // 2026-05-18.
+      const hasCartItems = (() => {
+        try {
+          const raw = localStorage.getItem("tcc-cart");
+          if (!raw) return false;
+          const c = JSON.parse(raw);
+          return Array.isArray(c?.items) && c.items.length > 0;
+        } catch {
+          return false;
+        }
+      })();
       const requirementsMet = (() => {
         switch (s.step) {
-          // Funnel-tail steps that require a full quote in state
+          // Funnel-tail steps: need EITHER a quote in funnel state OR
+          // items in the cart. Contact specifically also needs payout.
           case "contact":
+            return ((!!s.model && !!s.condition) || hasCartItems) && !!s.payout;
           case "payout":
           case "checkout":
           case "quote":
-            return !!(s.model && s.condition && (s.step !== "contact" || s.payout));
+            return (!!s.model && !!s.condition) || hasCartItems;
           // Mid-funnel steps that require at least model + deviceType
           case "carrier-lock":
           case "carrier":
