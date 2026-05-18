@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     const htmlEmail = `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#e6e6e6">
+<body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;color:#e6e6e6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0a0a0a">
 <tr><td align="center" style="padding:32px 16px">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;margin:0 auto;border-collapse:separate;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
@@ -130,6 +130,78 @@ ${hasLabel ? `
 </td></tr>
 </table>
 </td></tr>
+
+<!-- HOW TO SHIP — 3 visual steps with icons, ship customers only -->
+<tr><td style="padding:28px 28px 8px 28px">
+<div style="font-size:13px;color:#fff;font-weight:800;margin-bottom:14px;letter-spacing:-0.01em">How to ship in 3 steps</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+  <td width="50%" valign="top" style="padding:0 8px 0 0">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px">
+      <tr><td style="padding:16px 14px;text-align:center">
+        <div style="font-size:32px;line-height:1;margin-bottom:8px">🖨️</div>
+        <div style="font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:#00c853;font-weight:800;margin-bottom:4px">Step 1</div>
+        <div style="font-size:13px;color:#fff;font-weight:700;line-height:1.3;margin-bottom:6px">Print the label</div>
+        <div style="font-size:11px;color:#a8a8a8;line-height:1.5">Any home printer on plain 8.5×11 paper. No special label paper needed.</div>
+      </td></tr>
+    </table>
+  </td>
+  <td width="50%" valign="top" style="padding:0 0 0 8px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px">
+      <tr><td style="padding:16px 14px;text-align:center">
+        <div style="font-size:32px;line-height:1;margin-bottom:8px">📦</div>
+        <div style="font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:#00c853;font-weight:800;margin-bottom:4px">Step 2</div>
+        <div style="font-size:13px;color:#fff;font-weight:700;line-height:1.3;margin-bottom:6px">Pack &amp; tape</div>
+        <div style="font-size:11px;color:#a8a8a8;line-height:1.5">${(deviceArr.length > 1) ? `All ${deviceArr.length} devices in ONE padded box.` : `Padded mailer or box, wrap in bubble or clothing.`} Tape label to top.</div>
+      </td></tr>
+    </table>
+  </td>
+</tr>
+<tr><td colspan="2" style="padding:14px 0 0 0">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px">
+    <tr><td style="padding:16px 18px">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td width="50" valign="middle" style="padding-right:14px"><div style="font-size:32px;line-height:1">🚚</div></td>
+          <td valign="middle">
+            <div style="font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:#00c853;font-weight:800;margin-bottom:2px">Step 3</div>
+            <div style="font-size:13px;color:#fff;font-weight:700;line-height:1.3;margin-bottom:4px">Drop at any FedEx location</div>
+            <div style="font-size:11px;color:#a8a8a8;line-height:1.5">No appointment, no waiting in line — just hand it to the counter or use a self-service drop box. FedEx Office stores stay open late.</div>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</td></tr>
+</table>
+</td></tr>
+
+<!-- TURNAROUND TIMELINE — ship customers only, sets expectations -->
+<tr><td style="padding:24px 28px 8px 28px">
+<div style="font-size:13px;color:#fff;font-weight:800;margin-bottom:14px;letter-spacing:-0.01em">When do I get paid?</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px">
+<tr><td style="padding:6px 18px">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td width="80" valign="middle" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><div style="font-size:11px;color:#00c853;font-weight:800;letter-spacing:0.05em">Today</div></td>
+      <td valign="middle" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;color:#e6e6e6;line-height:1.5">You print + drop the package</td>
+    </tr>
+    <tr>
+      <td width="80" valign="middle" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><div style="font-size:11px;color:#00c853;font-weight:800;letter-spacing:0.05em">2-5 days</div></td>
+      <td valign="middle" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;color:#e6e6e6;line-height:1.5">FedEx Ground transit — we text you when it arrives</td>
+    </tr>
+    <tr>
+      <td width="80" valign="middle" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><div style="font-size:11px;color:#00c853;font-weight:800;letter-spacing:0.05em">24 hours</div></td>
+      <td valign="middle" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;color:#e6e6e6;line-height:1.5">We inspect + confirm the quote (matches what you described = no change)</td>
+    </tr>
+    <tr>
+      <td width="80" valign="middle" style="padding:12px 0"><div style="font-size:11px;color:#00c853;font-weight:800;letter-spacing:0.05em">Same day</div></td>
+      <td valign="middle" style="padding:12px 0;font-size:13px;color:#e6e6e6;line-height:1.5">Payment sent via your chosen method — Cash App / Zelle / Bitcoin in minutes</td>
+    </tr>
+  </table>
+</td></tr>
+</table>
+</td></tr>
 ` : ''}
 
 <!-- What Happens Next — copy adapts based on shipping vs local -->
@@ -162,12 +234,47 @@ ${hasLabel ? `
 <a href="mailto:topcashcellular@gmail.com" style="display:inline-block;padding:14px 32px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply with questions</a>
 </td></tr>
 
+<!-- TRUST STRIP — 3 trust badges, builds confidence before footer -->
+<tr><td style="padding:24px 28px 8px 28px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+  <td width="33%" valign="top" style="padding:0 4px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;text-align:center">
+      <tr><td style="padding:14px 8px">
+        <div style="font-size:24px;line-height:1;margin-bottom:6px">🛡️</div>
+        <div style="font-size:11px;color:#fff;font-weight:700;line-height:1.3">$100 insured</div>
+        <div style="font-size:10px;color:#888;line-height:1.4;margin-top:2px">In transit, covered</div>
+      </td></tr>
+    </table>
+  </td>
+  <td width="33%" valign="top" style="padding:0 4px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;text-align:center">
+      <tr><td style="padding:14px 8px">
+        <div style="font-size:24px;line-height:1;margin-bottom:6px">↩️</div>
+        <div style="font-size:11px;color:#fff;font-weight:700;line-height:1.3">No-risk return</div>
+        <div style="font-size:10px;color:#888;line-height:1.4;margin-top:2px">Don't like the offer? We ship it back free</div>
+      </td></tr>
+    </table>
+  </td>
+  <td width="33%" valign="top" style="padding:0 4px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;text-align:center">
+      <tr><td style="padding:14px 8px">
+        <div style="font-size:24px;line-height:1;margin-bottom:6px">⭐</div>
+        <div style="font-size:11px;color:#fff;font-weight:700;line-height:1.3">Austin-owned</div>
+        <div style="font-size:10px;color:#888;line-height:1.4;margin-top:2px">Real people, real reviews</div>
+      </td></tr>
+    </table>
+  </td>
+</tr>
+</table>
+</td></tr>
+
 <!-- Handoff note — adapts to shipping vs local -->
 <tr><td style="padding:18px 28px 8px 28px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(0,200,83,0.06);border:1px solid rgba(0,200,83,0.22);border-radius:12px">
 <tr><td style="padding:14px 18px;font-size:13px;color:#e6e6e6;line-height:1.55;text-align:center">
 ${isShipping
-  ? `<strong style=\"color:#00c853\">Shipping insurance:</strong> Your package is covered up to $100 in transit via FedEx Ground.`
+  ? `<strong style=\"color:#00c853\">Wrong address?</strong> Reply to this email within the hour and we'll resend a corrected label. Need help? Text or call <a href=\"tel:+18775492056\" style=\"color:#00c853;text-decoration:none;font-weight:700\">(877) 549-2056</a>.`
   : `<strong style=\"color:#00c853\">Austin local?</strong> We meet locally — no shipping. Prefer to ship? Reply and we'll send a prepaid label.`}
 </td></tr>
 </table>
