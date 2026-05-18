@@ -3430,7 +3430,7 @@ const PAYOUTS = [
 
 const FAQS = [
   { q: "How does the process work?", a: "Select your device, choose its condition, and get an instant quote. Accept the offer, pick your payout method, and we'll arrange a local pickup in Austin." },
-  { q: "How fast will I get paid?", a: "Same day for local Austin pickups. We pay on the spot via your preferred method — Cash, Cash App, Zelle, or BTC." },
+  { q: "How fast will I get paid?", a: "Same day for local Austin pickups. We pay on the spot via your preferred method — Cash (local only), Cash App, Zelle, or BTC." },
   { q: "What if my device is cracked or damaged?", a: "We buy devices in any condition. Damaged phones get a lower offer, but you'll still get cash. Select 'Fair' or 'Poor' condition for an accurate quote." },
   { q: "Are the quotes guaranteed?", a: "Quotes are based on the condition you select. Final price is confirmed during inspection at pickup — if the device matches your description, you get the quoted price." },
   { q: "What devices do you buy?", a: "Phones (iPhone 11+, Samsung Galaxy S21+, Google Pixel 5+, OnePlus, Z Fold / Z Flip), iPads + Samsung / Lenovo / OnePlus / Google tablets, MacBooks + Windows laptops (Lenovo, Dell, HP, Acer, ASUS, Alienware, LG, Samsung, Microsoft Surface), Apple / Samsung / Pixel / Garmin watches, PlayStation / Xbox / Nintendo consoles, DJI drones, and VR headsets (Vision Pro, Meta Quest, Valve Index, PSVR). If you don't see your category, pick \"Other\" and we'll send a manual quote." },
@@ -8451,7 +8451,7 @@ export default function Home() {
             {[
               { n: 1, icon: "💸", title: "Get an instant quote", body: "Pick your device, condition, and storage. We show you the offer in seconds — no signup needed." },
               { n: 2, icon: "📦", title: "Ship free or drop off", body: "Print our prepaid label, or drop off in Austin. We pay shipping. Carrier insurance included up to $100 — for higher-value devices we recommend adding extra coverage at the counter." },
-              { n: 3, icon: "💵", title: "Get paid same-day", body: "Cash, Cash App, Zelle, or BTC. Local meetup: paid on the spot (under 5 min). Shipping: most payouts hit within 24 hours of device arriving." },
+              { n: 3, icon: "💵", title: "Get paid same-day", body: "Cash App, Zelle, or BTC for shipped trades. Local meetup adds Cash and pays on the spot (under 5 min). Shipped payouts hit within 24 hours of device arriving." },
             ].map((s, i) => (
               <div key={s.n} className="relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
                 <div className="absolute -top-3 -left-2 w-9 h-9 rounded-full bg-[#00c853] text-[#0a0a0a] text-sm font-bold flex items-center justify-center shadow-lg shadow-[#00c853]/30">{s.n}</div>
@@ -10992,7 +10992,7 @@ export default function Home() {
                     <div className="flex-1">
                       <p className="text-sm text-[#e5e5e5] mb-2">Get paid your way</p>
                       <div className="flex flex-wrap gap-1.5">
-                        {handoffMethod !== "ship" && (
+                        {handoffMethod === "local" && (
                           <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-bold">💵 Cash</span>
                         )}
                         <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#00d54b] text-white text-[10px] font-bold">Cash App</span>
@@ -11220,16 +11220,18 @@ export default function Home() {
             {cartItems.length > 0 ? checkoutSummaryMobile : selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
             <p className="text-[#e6e6e6] text-sm mb-3">Select your preferred payout method</p>
-            {/* Cash is only available for in-person handoffs — we can't mail
-                physical cash. If the seller picked Shipping on the landing,
-                filter Cash out and tell them why so they don't go hunting. */}
-            {handoffMethod === "ship" && (
+            {/* Cash is ONLY available for in-person handoffs — can't mail
+                physical cash. Tightened 2026-05-17: only show cash when
+                handoffMethod is explicitly "local". Previously showed for
+                null/undefined too, which let cash leak into shipping
+                flows that didn't pick a handoff. */}
+            {handoffMethod !== "local" && (
               <div className="mb-4 px-3 py-2 rounded-lg bg-[#00c853]/5 border border-[#00c853]/20 text-[12px] text-[#bdbdbd] leading-snug">
-                <span className="text-[#00c853] font-bold">Heads up:</span> Cash isn't shown — we can't mail physical cash. All digital payouts (Cash App / Zelle / Bitcoin) land within minutes of receipt.
+                <span className="text-[#00c853] font-bold">Heads up:</span> Cash payouts are available for local Austin pickups only. All digital methods (Cash App / Zelle / Bitcoin) land within minutes of receipt for shipped trades.
               </div>
             )}
             <div className="grid grid-cols-2 gap-3">
-              {PAYOUTS.filter(p => handoffMethod !== "ship" || p.id !== "cash").map((p) => (
+              {PAYOUTS.filter(p => handoffMethod === "local" || p.id !== "cash").map((p) => (
                 <button
                   key={p.id}
                   onClick={() => { setPayout(p); setStep("contact"); pushHistory("contact"); }}
