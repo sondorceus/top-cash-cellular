@@ -5924,106 +5924,88 @@ export default function Home() {
       .finally(() => { if (alive) setSlotsLoading(false); });
     return () => { alive = false; };
   }, [step, handoffMethod]);
-  // Google Places autocomplete on the shipping street field — mirrors
-  // ATX Gadget's implementation. User types, Google suggests US
-  // addresses, click → parsed into our 5 split fields (street / unit
-  // is left alone / city / state / zip) so we keep structured data
-  // while saving the seller a bunch of typing.
-  // Address autocomplete uses Google's new PlaceAutocompleteElement
-  // (custom HTML element) since the legacy google.maps.places.Autocomplete
-  // constructor is unavailable to Cloud projects created after 2025-03-01.
-  // The element is appended into shipAutocompleteContainer; we listen for
-  // its "gmp-select" event and pull the structured address back into our
-  // form state. Skywalker 2026-05-18.
-  const shipAutocompleteContainerRef = useRef<HTMLDivElement>(null);
-  const shipAutoRef = useRef<unknown>(null);
-  // Flips true the moment the new element is appended successfully. UI
-  // hides the manual fallback input + shows the Places element instead.
-  // If Places never loads (billing missing, API restriction, etc.) this
-  // stays false → user types in the plain manual input. No dead-end.
-  const [placesAutocompleteReady, setPlacesAutocompleteReady] = useState(false);
-  const initShipAutocomplete = useCallback(async () => {
-    if (!shipAutocompleteContainerRef.current || shipAutoRef.current) return;
-    if (typeof window === "undefined" || !window.google?.maps?.importLibrary) return;
-    try {
-      const placesLib = await window.google.maps.importLibrary("places");
-      const PAE = placesLib.PlaceAutocompleteElement;
-      if (!PAE) return;
-      const el = new PAE({
-        includedRegionCodes: ["us"],
-        types: ["address"],
-      });
-      // Theme via CSS parts (see globals.css .gmp-place-autocomplete).
-      el.setAttribute("class", "tcc-place-autocomplete");
-      el.setAttribute("placeholder", "Start typing your address…");
-      el.addEventListener("gmp-select", async (e: Event) => {
-        type Comp = { types?: string[]; longText?: string; shortText?: string };
-        type GmpSelectEvent = Event & { placePrediction?: { toPlace: () => { fetchFields: (opts: { fields: string[] }) => Promise<unknown>; addressComponents?: Comp[]; formattedAddress?: string } } };
-        const place = (e as GmpSelectEvent).placePrediction?.toPlace();
-        if (!place) return;
-        await place.fetchFields({ fields: ["addressComponents", "formattedAddress"] });
-        const parts: Comp[] = place.addressComponents || [];
-        const get = (type: string, useShort = false): string => {
-          const c = parts.find((p) => p.types?.includes(type));
-          return c ? (useShort ? c.shortText : c.longText) || "" : "";
-        };
-        const streetNum = get("street_number");
-        const route = get("route");
-        const street = [streetNum, route].filter(Boolean).join(" ").trim();
-        const city = get("locality") || get("sublocality") || get("postal_town");
-        const state = get("administrative_area_level_1", true);
-        const zip = get("postal_code");
-        if (street) setShipStreet(street);
-        if (city) setShipCity(city);
-        if (state) setShipState(state.toUpperCase().slice(0, 2));
-        if (zip) setShipZip(zip);
-      });
-      shipAutocompleteContainerRef.current.appendChild(el);
-      shipAutoRef.current = el;
-      setPlacesAutocompleteReady(true);
-      // Watchdog: if the element fails to render a visible internal input
-      // within 3 seconds (Google billing missing, shadow DOM broken, etc.)
-      // fall back to the manual input. Without this the user stares at
-      // an empty white block forever. Skywalker 2026-05-18.
-      setTimeout(() => {
-        const node = shipAutoRef.current as HTMLElement | null;
-        if (!node) return;
-        const rect = node.getBoundingClientRect();
-        if (rect.height < 20 || rect.width < 100) {
-          if (typeof console !== "undefined") console.warn("Places element rendered too small — falling back to manual input.");
-          try { node.remove(); } catch {}
-          shipAutoRef.current = null;
-          setPlacesAutocompleteReady(false);
-        }
-      }, 3000);
-    } catch (err) {
-      if (typeof console !== "undefined") console.warn("Places autocomplete init failed:", err);
+  // Google Places autocomplete on the shipping street field. Goes
+  // through our own /api/places-autocomplete and /api/places-details
+  // proxies (which talk to Google's Places API New server-to-server)
+  // and we render the suggestion list as a plain dropdown under our
+  // own <input>. This deliberately replaces Google's
+  // PlaceAutocompleteElement web component, which triggered a
+  // fullscreen takeover on mobile focus — the UX Skywalker hated
+  // (commit 8a57181 disabled it entirely; this swap brings the
+  // feature back without the takeover). 2026-05-18.
+  const shipStreetInputRef = useRef<HTMLInputElement>(null);
+  const [placeSuggestions, setPlaceSuggestions] = useState<Array<{ placeId: string; text: string }>>([]);
+  const [showPlaceDropdown, setShowPlaceDropdown] = useState(false);
+  // Google bills autocomplete-then-details together as one session
+  // when the same token is passed to both. We rotate the token after
+  // each pick so the next typing cycle starts fresh.
+  const placeSessionTokenRef = useRef<string>("");
+  // Set true right before we programmatically populate shipStreet
+  // from a picked suggestion, so the debounced fetcher (keyed on
+  // shipStreet) doesn't immediately fire another autocomplete
+  // request for the just-pasted street.
+  const placeJustPickedRef = useRef(false);
+  const ensurePlaceSession = useCallback(() => {
+    if (!placeSessionTokenRef.current) {
+      placeSessionTokenRef.current = (typeof crypto !== "undefined" && "randomUUID" in crypto)
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     }
+    return placeSessionTokenRef.current;
   }, []);
-  // Re-init autocomplete when the user switches to shipping mode AND
-  // is on the contact step (which is where the address input mounts).
-  // The Google Maps script uses lazyOnload, so it might not be ready
-  // when the input first appears — poll up to ~3s for both the input
-  // ref and window.google.maps.places to be available, then init.
-  // Skywalker 2026-05-18: autocomplete wasn't firing live because the
-  // earlier single-shot 100ms timeout fired before lazyOnload resolved.
+  // Debounced fetch — fires 200ms after the user stops typing in
+  // the ship street field. Only active when the user is on the
+  // contact step in shipping mode (matches where the input is
+  // mounted), and short-circuits when shipStreet was just set
+  // programmatically by picking a suggestion.
   useEffect(() => {
     if (handoffMethod !== "ship" || step !== "contact") return;
-    let tries = 0;
-    const interval = setInterval(() => {
-      if (
-        typeof window !== "undefined" &&
-        window.google?.maps?.importLibrary &&
-        shipAutocompleteContainerRef.current &&
-        !shipAutoRef.current
-      ) {
-        initShipAutocomplete();
-        clearInterval(interval);
-      }
-      if (++tries > 30) clearInterval(interval);
-    }, 100);
-    return () => clearInterval(interval);
-  }, [handoffMethod, step, initShipAutocomplete]);
+    if (placeJustPickedRef.current) {
+      placeJustPickedRef.current = false;
+      return;
+    }
+    if (!shipStreet || shipStreet.length < 3) {
+      setPlaceSuggestions([]);
+      return;
+    }
+    const t = setTimeout(async () => {
+      try {
+        const r = await fetch("/api/places-autocomplete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ input: shipStreet, sessionToken: ensurePlaceSession() }),
+        });
+        if (!r.ok) return;
+        const d = await r.json();
+        setPlaceSuggestions(Array.isArray(d.suggestions) ? d.suggestions : []);
+      } catch {}
+    }, 200);
+    return () => clearTimeout(t);
+  }, [shipStreet, handoffMethod, step, ensurePlaceSession]);
+  // Picking a suggestion: hit /api/places-details to get parsed
+  // address components, populate the 5 split fields, then rotate
+  // the session token so the next typing cycle starts a new
+  // billing session.
+  const pickPlaceSuggestion = useCallback(async (placeId: string) => {
+    setShowPlaceDropdown(false);
+    setPlaceSuggestions([]);
+    try {
+      const r = await fetch("/api/places-details", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ placeId, sessionToken: placeSessionTokenRef.current }),
+      });
+      if (!r.ok) return;
+      const d = await r.json();
+      placeJustPickedRef.current = true;
+      if (d.street) setShipStreet(d.street);
+      if (d.city) setShipCity(d.city);
+      if (d.state) setShipState(d.state);
+      if (d.zip) setShipZip(d.zip);
+    } catch {} finally {
+      placeSessionTokenRef.current = "";
+    }
+  }, []);
   // Cash is local-only. If the user picked Cash while on Local and then
   // switches to shipping, clear the payout (invalid combo at submit) AND
   // send them back to the payout step. Without the step reset the user
@@ -7547,20 +7529,14 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
-      {/* Google Maps Places script — uses the new PlaceAutocompleteElement
-          API (since legacy Autocomplete is blocked for Cloud projects
-          created after 2025-03-01). loading=async required for the new
-          API to populate importLibrary properly. v=weekly opts into the
-          latest weekly channel which always has the new element. The
-          init runs from a polling useEffect on the contact step, not
-          from this onLoad (so the script can load before user reaches
-          the address step). Skywalker 2026-05-18. */}
-      {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY && (
-        <Script
-          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&v=weekly&loading=async`}
-          strategy="afterInteractive"
-        />
-      )}
+      {/* Google Maps JS script removed 2026-05-18. We no longer load any
+          client-side Google library — the shipping address autocomplete
+          calls our own /api/places-autocomplete + /api/places-details
+          proxies (which talk to Google's Places API New server-to-server)
+          and renders an inline custom dropdown under the address input.
+          Sidesteps the mobile fullscreen takeover the
+          PlaceAutocompleteElement triggers on focus, and keeps the
+          Maps key off the client entirely. */}
       {/* CART TOAST — fixed top-center on mobile, top-right on lg.
           Slides up + fades. Auto-dismisses after 2.4s. Two variants:
           'add' (green check, ✓) and 'remove' (red minus, ×). */}
@@ -11924,28 +11900,44 @@ export default function Home() {
                       <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">Shipping address</label>
                       <button type="button" onClick={() => { setHandoffMethod("local"); setLocalArea(null); }} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to local meetup instead</button>
                     </div>
-                    {/* Google Places autocomplete (new PlaceAutocompleteElement
-                        API since legacy Autocomplete is blocked for Cloud
-                        projects after 2025-03-01). The element appends
-                        itself here on script load. If it never loads
-                        (billing missing, key invalid, network error) the
-                        manual input below shows instead so the user is
-                        never stuck. Skywalker 2026-05-18.
-                        Container always rendered (no display:none) —
-                        Google's web component needs a visible parent
-                        with non-zero dimensions to compute its shadow
-                        DOM. Hiding the wrap until ready was the
-                        chicken-and-egg that broke autocomplete. We
-                        use the wrap's empty-when-unattached state as
-                        the natural fallback: if PAE never appends,
-                        the wrap is just an empty no-height div. */}
-                    <div
-                      ref={shipAutocompleteContainerRef}
-                      className="tcc-place-autocomplete-wrap"
-                    />
-                    {!placesAutocompleteReady && (
-                      <input required value={shipStreet} onChange={e => setShipStreet(e.target.value)} placeholder="Street address" autoComplete="street-address" className="w-full px-4 py-3 tcc-input" />
-                    )}
+                    {/* Address autocomplete — plain input + custom dropdown,
+                        backed by /api/places-autocomplete (suggestions) and
+                        /api/places-details (parsed address). Replaces the
+                        PlaceAutocompleteElement web component which forced
+                        a mobile fullscreen takeover on focus. Suggestions
+                        appear as an inline list underneath; user taps one
+                        and the parsed street / city / state / zip get
+                        filled. autoComplete="off" stops browsers from
+                        racing our dropdown with their own. Skywalker
+                        2026-05-18. */}
+                    <div className="relative">
+                      <input
+                        ref={shipStreetInputRef}
+                        required
+                        value={shipStreet}
+                        onChange={(e) => setShipStreet(e.target.value)}
+                        onFocus={() => setShowPlaceDropdown(true)}
+                        onBlur={() => setTimeout(() => setShowPlaceDropdown(false), 150)}
+                        placeholder="Start typing your address…"
+                        autoComplete="off"
+                        className="w-full px-4 py-3 tcc-input"
+                      />
+                      {showPlaceDropdown && placeSuggestions.length > 0 && (
+                        <ul className="absolute z-30 left-0 right-0 mt-1 bg-[#181818] border border-white/15 rounded-xl overflow-hidden shadow-xl max-h-72 overflow-y-auto">
+                          {placeSuggestions.map((s) => (
+                            <li key={s.placeId}>
+                              <button
+                                type="button"
+                                onMouseDown={(e) => { e.preventDefault(); pickPlaceSuggestion(s.placeId); }}
+                                className="w-full text-left px-4 py-3 text-sm text-white hover:bg-white/[0.08] border-b border-white/5 last:border-0 cursor-pointer"
+                              >
+                                {s.text}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
                     <input value={shipUnit} onChange={e => setShipUnit(e.target.value)} placeholder="Apt / Suite (optional)" autoComplete="address-line2" className="w-full px-4 py-3 tcc-input" />
                     <div className="grid grid-cols-3 gap-2">
                       <input required value={shipCity} onChange={e => setShipCity(e.target.value)} placeholder="City" autoComplete="address-level2" className="col-span-2 w-full px-4 py-3 tcc-input" />
@@ -11980,7 +11972,7 @@ export default function Home() {
                               // footer. Wait a tick for the ship section to
                               // mount, then scroll its address into view.
                               setTimeout(() => {
-                                shipAutocompleteContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                                shipStreetInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
                               }, 50);
                             }}
                             className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer"
