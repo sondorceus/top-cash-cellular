@@ -5961,8 +5961,22 @@ export default function Home() {
       shipAutocompleteContainerRef.current.appendChild(el);
       shipAutoRef.current = el;
       setPlacesAutocompleteReady(true);
+      // Watchdog: if the element fails to render a visible internal input
+      // within 3 seconds (Google billing missing, shadow DOM broken, etc.)
+      // fall back to the manual input. Without this the user stares at
+      // an empty white block forever. Skywalker 2026-05-18.
+      setTimeout(() => {
+        const node = shipAutoRef.current as HTMLElement | null;
+        if (!node) return;
+        const rect = node.getBoundingClientRect();
+        if (rect.height < 20 || rect.width < 100) {
+          if (typeof console !== "undefined") console.warn("Places element rendered too small — falling back to manual input.");
+          try { node.remove(); } catch {}
+          shipAutoRef.current = null;
+          setPlacesAutocompleteReady(false);
+        }
+      }, 3000);
     } catch (err) {
-      // Silently fail — manual input fallback stays visible.
       if (typeof console !== "undefined") console.warn("Places autocomplete init failed:", err);
     }
   }, []);
