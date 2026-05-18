@@ -1189,7 +1189,7 @@ const PIXEL_SERIES = [
     { id: "px8", label: "Pixel 8", base: 127, image: "/devices/pixel-8.webp" },
     { id: "px8a", label: "Pixel 8a", base: 95, image: "/devices/pixel-8a.webp" },
     { id: "px7", label: "Pixel 7", base: 48, image: "/devices/pixel-7.webp" },
-    { id: "px7a", label: "Pixel 7a", base: 11, image: "/devices/pixel-7a.webp" },
+    { id: "px7a", label: "Pixel 7a", base: 75, image: "/devices/pixel-7a.webp" },
     { id: "px6", label: "Pixel 6", base: 42, image: "/devices/pixel-6.webp" },
     { id: "px6a", label: "Pixel 6a", base: 0, inquiryOnly: true, image: "/devices/pixel-6a.webp" },
     { id: "px5", label: "Pixel 5", base: 53, image: "/devices/px5.webp" },
