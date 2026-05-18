@@ -11270,7 +11270,25 @@ export default function Home() {
               </div>
             )}
             <div className="grid grid-cols-2 gap-3">
-              {PAYOUTS.filter(p => handoffMethod === "local" || p.id !== "cash").map((p) => (
+              {/* Explicit per-handoff payout lists so there's no way Cash
+                  can render for shipping. Filter approach was correct but
+                  Skywalker kept seeing Cash on mobile shipping — guessing
+                  cache or some edge case. Hard-coding both lists removes
+                  any doubt. Skywalker 2026-05-18. */}
+              {(handoffMethod === "local"
+                ? [
+                    { id: "cash",    label: "Cash" },
+                    { id: "cashapp", label: "Cash App" },
+                    { id: "zelle",   label: "Zelle" },
+                    { id: "btc",     label: "Bitcoin" },
+                  ]
+                : [
+                    // SHIPPING (or unset) — Cash is excluded, no exceptions
+                    { id: "cashapp", label: "Cash App" },
+                    { id: "zelle",   label: "Zelle" },
+                    { id: "btc",     label: "Bitcoin" },
+                  ]
+              ).map((p) => (
                 <button
                   key={p.id}
                   onClick={() => { setPayout(p); setStep("contact"); pushHistory("contact"); }}
