@@ -90,6 +90,7 @@ interface Lead {
   lifetimeSpend?: number;
   commsSent?: { sms: number; email: number; lastAt?: string };
   payoutConfirmation?: { method?: string; reference?: string; note?: string; at: string };
+  idCaptured?: { type: string; last4: string; dobYear: string; photoUrl: string; at: string };
 }
 
 const STATUS_OPTIONS = [
@@ -146,6 +147,51 @@ export default function AdminPage() {
   const [payoutMethod, setPayoutMethod] = useState<string>("");
   const [payoutReference, setPayoutReference] = useState<string>("");
   const [payoutNote, setPayoutNote] = useState<string>("");
+  // ID-capture (Texas Secondhand Dealer Act). When `idCaptureId === lead.id`
+  // the lead row renders the inline capture form.
+  const [idCaptureId, setIdCaptureId] = useState<string | null>(null);
+  const [idType, setIdType] = useState<string>("DL");
+  const [idNumber, setIdNumber] = useState<string>("");
+  const [idDob, setIdDob] = useState<string>("");
+  const [idFile, setIdFile] = useState<File | null>(null);
+  const [idUploadingId, setIdUploadingId] = useState<string | null>(null);
+  const [idErrorById, setIdErrorById] = useState<Record<string, string>>({});
+  const submitIdCapture = async (lead: Lead) => {
+    if (!token) return;
+    if (!idType || !idNumber.trim() || !idDob || !idFile) {
+      setIdErrorById((s) => ({ ...s, [lead.id]: "Type, ID number, DOB, and photo all required" }));
+      return;
+    }
+    setIdUploadingId(lead.id);
+    setIdErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
+    try {
+      const form = new FormData();
+      form.append("leadId", lead.id);
+      form.append("idType", idType);
+      form.append("idNumber", idNumber.trim());
+      form.append("dob", idDob);
+      form.append("photo", idFile);
+      const r = await fetch(`/api/admin/leads/id-capture?token=${encodeURIComponent(token)}`, {
+        method: "POST",
+        body: form,
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setIdErrorById((s) => ({ ...s, [lead.id]: d.error || `HTTP ${r.status}` }));
+      } else {
+        setLeads((cur) => cur.map((l) => l.id === lead.id ? {
+          ...l,
+          idCaptured: { type: d.idType, last4: d.last4, dobYear: d.dobYear, photoUrl: d.photoUrl, at: new Date().toISOString() },
+        } : l));
+        setIdCaptureId(null);
+        setIdNumber(""); setIdDob(""); setIdFile(null);
+      }
+    } catch (e) {
+      setIdErrorById((s) => ({ ...s, [lead.id]: e instanceof Error ? e.message : "Network error" }));
+    } finally {
+      setIdUploadingId(null);
+    }
+  };
   const [rejectionReason, setRejectionReason] = useState<string>("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [noteOpenId, setNoteOpenId] = useState<string | null>(null);
@@ -1651,6 +1697,108 @@ export default function AdminPage() {
                           )}
                         </div>
                       )}
+                      {/* ID-capture (Texas Secondhand Dealer Act) —
+                          Skywalker 2026-05-18 #2. Shown if captured
+                          (green pill + view-photo link) OR if not yet
+                          captured and the quote is ≥ $500 (mandatory)
+                          OR always as a quiet "+ Capture ID" link
+                          (optional). */}
+                      <div className="mt-2">
+                        {lead.idCaptured ? (
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-200 border border-emerald-500/45 uppercase tracking-wider">
+                              ✓ ID · {lead.idCaptured.type} · ****{lead.idCaptured.last4} · DOB {lead.idCaptured.dobYear}
+                            </span>
+                            <a
+                              href={lead.idCaptured.photoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/[0.06] text-[#dcdcdc] border border-white/15 hover:bg-white/[0.1] transition cursor-pointer"
+                            >
+                              View ID photo ↗
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => { setIdCaptureId(lead.id); setIdType(lead.idCaptured!.type || "DL"); setIdNumber(""); setIdDob(""); setIdFile(null); }}
+                              className="text-[10px] text-[#888] hover:text-[#dcdcdc] underline cursor-pointer"
+                              title="Re-capture (e.g. wrong photo, expired ID)"
+                            >
+                              re-capture
+                            </button>
+                          </div>
+                        ) : idCaptureId === lead.id ? (
+                          <div className="rounded-lg bg-white/[0.04] border border-amber-500/30 p-2.5 space-y-1.5 max-w-[360px]">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">🪪 Capture seller ID</p>
+                            <p className="text-[10px] text-[#bdbdbd] leading-snug">Texas Secondhand Dealer Act — required for resale. Photo + DOB + ID# stored 2 years. Never displayed to customer.</p>
+                            <select
+                              value={idType}
+                              onChange={(e) => setIdType(e.target.value)}
+                              className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#00c853] cursor-pointer"
+                            >
+                              <option value="DL">Driver&apos;s License</option>
+                              <option value="STATE_ID">State ID</option>
+                              <option value="PASSPORT">Passport</option>
+                              <option value="MILITARY">Military ID</option>
+                              <option value="OTHER">Other government ID</option>
+                            </select>
+                            <input
+                              type="text"
+                              value={idNumber}
+                              onChange={(e) => setIdNumber(e.target.value)}
+                              placeholder="ID number (full — only last 4 shown later)"
+                              className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#00c853]"
+                            />
+                            <input
+                              type="date"
+                              value={idDob}
+                              onChange={(e) => setIdDob(e.target.value)}
+                              className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#00c853]"
+                            />
+                            <input
+                              type="file"
+                              accept="image/*"
+                              capture="environment"
+                              onChange={(e) => setIdFile(e.target.files?.[0] || null)}
+                              className="w-full text-[11px] text-[#dcdcdc] file:mr-2 file:px-2 file:py-1 file:rounded file:border-0 file:bg-[#00c853]/20 file:text-[#7be8a8] file:cursor-pointer cursor-pointer"
+                            />
+                            {idErrorById[lead.id] && (
+                              <p className="text-[10px] text-red-300">⚠️ {idErrorById[lead.id]}</p>
+                            )}
+                            <div className="flex gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => submitIdCapture(lead)}
+                                disabled={idUploadingId === lead.id}
+                                className="flex-1 px-2 py-1.5 bg-[#00c853] text-[#0a0a0a] rounded text-[11px] font-bold hover:bg-[#00e676] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                              >
+                                {idUploadingId === lead.id ? "Uploading…" : "Save ID"}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => { setIdCaptureId(null); setIdNumber(""); setIdDob(""); setIdFile(null); setIdErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; }); }}
+                                className="px-2 py-1.5 bg-white/5 border border-white/10 rounded text-[11px] text-[#d4d4d4] hover:bg-white/10 cursor-pointer"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          (() => {
+                            const quoteN = parseInt((lead.quote || lead.totalPayout?.toString() || "").replace(/[^\d]/g, "")) || 0;
+                            const required = quoteN >= 500;
+                            return (
+                              <button
+                                type="button"
+                                onClick={() => { setIdCaptureId(lead.id); setIdType("DL"); setIdNumber(""); setIdDob(""); setIdFile(null); }}
+                                className={`text-[10px] font-bold px-2 py-1 rounded border transition cursor-pointer ${required ? "bg-amber-500/15 text-amber-200 border-amber-500/40 hover:bg-amber-500/25" : "bg-white/5 text-[#bdbdbd] border-white/10 hover:bg-white/10"}`}
+                                title={required ? "Quote ≥ $500 — Texas Secondhand Dealer Act requires ID capture before payout" : "Optional ID capture for compliance records"}
+                              >
+                                🪪 {required ? "ID REQUIRED" : "Capture ID"}{required ? " (≥$500)" : ""}
+                              </button>
+                            );
+                          })()
+                        )}
+                      </div>
                       {/* Notes */}
                       <div className="mt-1.5">
                         {lead.latestNote && (

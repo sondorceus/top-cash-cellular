@@ -128,6 +128,10 @@ interface AdminLead {
   // to the [STATUS: paid|met] marker. Skywalker 2026-05-18 — answers
   // "did we actually pay them, and how?" without digging into MC.
   payoutConfirmation?: { method?: string; reference?: string; note?: string; at: string };
+  // Texas Secondhand Dealer Act ID capture, parsed from
+  // [ID-CAPTURED: leadId] markers. Most recent wins. We never surface
+  // the full ID# — only last4 + DOB year + the photo URL.
+  idCaptured?: { type: string; last4: string; dobYear: string; photoUrl: string; at: string };
   // FedEx label info, populated from [LABEL: <leadId>] markers in MC.
   // Surfaces the latest label per lead (regenerate-friendly).
   fedexTracking?: string;
@@ -196,6 +200,7 @@ export async function GET(req: NextRequest) {
   const labelByLead = new Map<string, { tracking: string; url: string; service?: string; timestamp: string }>();
   const labelErrorByLead = new Map<string, { kind: string; reason: string; timestamp: string }>();
   const commsByLead = new Map<string, { sms: number; email: number; lastAt?: string }>();
+  const idCapturedByLead = new Map<string, { type: string; last4: string; dobYear: string; photoUrl: string; timestamp: string }>();
   const deletedAtByLead = new Map<string, string>();  // most-recent deletion timestamp
   const restoredAtByLead = new Map<string, string>(); // most-recent restore timestamp
   for (const m of messages) {
@@ -228,6 +233,20 @@ export async function GET(req: NextRequest) {
         if (!prev || m.timestamp > prev.timestamp) {
           labelByLead.set(lid, { tracking: t, url: u, service: sv, timestamp: m.timestamp });
         }
+      }
+    }
+    // ID-capture marker — Texas Secondhand Dealer Act compliance.
+    // "[ID-CAPTURED: leadId] type=DL id_last4=1234 dob_year=1989 photo=url"
+    const idMarker = m.body.match(/\[ID-CAPTURED:\s*([\w-]+)\]/i);
+    if (idMarker) {
+      const lid = idMarker[1];
+      const type = m.body.match(/type=([^\s]+)/i)?.[1] || "OTHER";
+      const last4 = m.body.match(/id_last4=([^\s]+)/i)?.[1] || "";
+      const dobYear = m.body.match(/dob_year=(\d{4})/i)?.[1] || "";
+      const photoUrl = m.body.match(/photo=([^\s]+)/i)?.[1] || "";
+      const prev = idCapturedByLead.get(lid);
+      if (!prev || m.timestamp > prev.timestamp) {
+        idCapturedByLead.set(lid, { type, last4, dobYear, photoUrl, timestamp: m.timestamp });
       }
     }
     // Communication audit trail — "[COMM-SENT: leadId] channel=sms|email …"
@@ -569,6 +588,11 @@ export async function GET(req: NextRequest) {
         const pc = payoutConfirmByLead.get(m.id);
         if (!pc) return undefined;
         return { method: pc.method, reference: pc.reference, note: pc.note, at: pc.timestamp };
+      })(),
+      idCaptured: (() => {
+        const ic = idCapturedByLead.get(m.id);
+        if (!ic) return undefined;
+        return { type: ic.type, last4: ic.last4, dobYear: ic.dobYear, photoUrl: ic.photoUrl, at: ic.timestamp };
       })(),
     });
   }
