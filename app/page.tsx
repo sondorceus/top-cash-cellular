@@ -8122,47 +8122,13 @@ export default function Home() {
 
       {/* STEP: DEVICE TYPE */}
       {step === "device" && page === "home" && (
-        <section className="relative animate-[fadeIn_0.3s_ease-out] overflow-hidden">
-          {/* HERO BACKDROP — Skywalker 2026-05-17 latest snippet:
-              "Turn your old tech into instant cash" hero with a single
-              device-array image on the right. Embedded as a blurred
-              backdrop behind the real device-picker hero (hero-only,
-              NOT site-wide per his rollback). Text heavily blurred so
-              it reads as a layout shape, not competing copy. */}
-          <div aria-hidden className="pointer-events-none absolute inset-0 z-0 select-none">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(15,30,80,0.18),transparent_60%)]" />
-            <div className="absolute inset-0 max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-8 md:py-12 flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-12 items-center opacity-[0.40]">
-              <div className="md:col-span-5 space-y-3 md:space-y-4 w-full" style={{ filter: "blur(4px)" }}>
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] md:text-xs font-semibold uppercase tracking-wide">⚡ Instant Multi-Device Buyback</span>
-                <p className="text-2xl sm:text-4xl lg:text-6xl font-extrabold leading-none text-white">Turn your old tech into instant cash.</p>
-                <p className="hidden md:block text-slate-400 text-base sm:text-lg max-w-lg">Get premium market rates for your iPhones, iPads, and Apple Watches. Enjoy secure payouts with simple, localized drop-offs and seamless meetups.</p>
-                <div className="hidden md:flex gap-4 pt-2">
-                  <span className="px-8 py-4 bg-emerald-500 text-slate-950 font-bold rounded-xl">Get Your Quote</span>
-                  <span className="px-8 py-4 bg-slate-900 text-slate-200 font-semibold rounded-xl border border-slate-800">See How It Works</span>
-                </div>
-              </div>
-              <div className="md:col-span-7 flex justify-center items-center w-full" style={{ filter: "blur(1.5px)" }}>
-                <div className="relative w-full rounded-2xl border border-slate-800 bg-slate-900/30 p-2">
-                  <div className="grid grid-cols-2 grid-rows-2 gap-2 md:gap-3 aspect-[4/3] rounded-xl overflow-hidden">
-                    {[
-                      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=600&auto=format&fit=crop",
-                      "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?q=80&w=600&auto=format&fit=crop",
-                      "https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=600&auto=format&fit=crop",
-                      "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=600&auto=format&fit=crop",
-                    ].map((src, i) => (
-                      <div key={i} className="rounded-lg bg-slate-950/60 border border-slate-800/60 flex items-center justify-center overflow-hidden">
-                        <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="absolute inset-x-0 top-0 h-12 md:h-16 bg-gradient-to-b from-[#0a0a0a] to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 h-20 md:h-24 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
-          </div>
+        <section className="animate-[fadeIn_0.3s_ease-out]">
+          {/* Hero backdrop removed 2026-05-17 per Skywalker — looked
+              bad in production. The faded multi-device decoration was
+              competing with the actual hero copy instead of receding.
+              Reverted to clean dark hero. */}
           {/* Promo banner moved into the top nav (between logo and menu). */}
-          <div className="relative z-10 max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <h1 className="text-4xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up" style={{ letterSpacing: "-0.03em" }}>
               Get top dollar<br />for your device.
             </h1>
