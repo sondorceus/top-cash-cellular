@@ -6301,6 +6301,12 @@ export default function Home() {
           if (s.shipState) setShipState(s.shipState);
           if (s.shipZip) setShipZip(s.shipZip);
           if (s.shipHasBox) setShipHasBox(s.shipHasBox);
+          // Payout has to be restored too — without it, refreshing on the
+          // contact step makes the gate condition `payout && ...` fail
+          // and the page falls through to the footer. Skywalker 2026-05-18.
+          if (s.payout) setPayout(s.payout);
+          if (s.name) setName(s.name);
+          if (s.phone) setPhone(s.phone);
           setStep(s.step);
         }
       }
@@ -6328,10 +6334,11 @@ export default function Home() {
       localStorage.setItem("tcc-session", JSON.stringify({
         step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email,
         handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, shipHasBox,
+        payout, name, phone,
         ts: Date.now(),
       }));
     } catch {}
-  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, shipHasBox]);
+  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, shipHasBox, payout, name, phone]);
 
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrierMultiplierFor(carrier?.id, carrierLock?.id);
