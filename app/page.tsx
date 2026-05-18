@@ -5923,14 +5923,30 @@ export default function Home() {
     });
     shipAutoRef.current = ac;
   }, []);
-  // Re-init autocomplete when the user switches to shipping mode (or
-  // the contact step renders the input). 100ms delay gives React a
-  // tick to mount the input element.
+  // Re-init autocomplete when the user switches to shipping mode AND
+  // is on the contact step (which is where the address input mounts).
+  // The Google Maps script uses lazyOnload, so it might not be ready
+  // when the input first appears — poll up to ~3s for both the input
+  // ref and window.google.maps.places to be available, then init.
+  // Skywalker 2026-05-18: autocomplete wasn't firing live because the
+  // earlier single-shot 100ms timeout fired before lazyOnload resolved.
   useEffect(() => {
-    if (handoffMethod !== "ship") return;
-    const t = setTimeout(() => initShipAutocomplete(), 100);
-    return () => clearTimeout(t);
-  }, [handoffMethod, initShipAutocomplete]);
+    if (handoffMethod !== "ship" || step !== "contact") return;
+    let tries = 0;
+    const interval = setInterval(() => {
+      if (
+        typeof window !== "undefined" &&
+        window.google?.maps?.places &&
+        shipStreetRef.current &&
+        !shipAutoRef.current
+      ) {
+        initShipAutocomplete();
+        clearInterval(interval);
+      }
+      if (++tries > 30) clearInterval(interval); // bail after ~3s
+    }, 100);
+    return () => clearInterval(interval);
+  }, [handoffMethod, step, initShipAutocomplete]);
   // Cash is local-only. If the user picked Cash while on Local and then
   // clicks "Switch to shipping" on the contact step, the previously-
   // selected Cash would otherwise carry over → invalid combo at submit.
@@ -7228,13 +7244,16 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
       {/* Google Maps Places script — powers the shipping address
-          autocomplete. lazyOnload so it doesn't block first paint;
-          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY must be set in Vercel env.
-          Mirrors the implementation on atx-gadget-fix. */}
+          autocomplete. afterInteractive (was lazyOnload) so the script
+          starts loading the moment the page is interactive — by the
+          time a shipping customer reaches the contact step the script
+          is ready. lazyOnload only loaded on idle, which left the
+          autocomplete dead for fast clickers. Skywalker 2026-05-18.
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY must be set in Vercel env. */}
       {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY && (
         <Script
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
-          strategy="lazyOnload"
+          strategy="afterInteractive"
           onLoad={() => initShipAutocomplete()}
         />
       )}
