@@ -1,0 +1,943 @@
+// =========================================================================
+// PRICE DATA
+// =========================================================================
+// Extracted from app/page.tsx 2026-05-18 so the admin UI (/admin/prices)
+// and API routes can read/write the price grid without parsing the React
+// component. The customer funnel imports these constants directly; an
+// admin can override individual cells via /api/admin/prices, which writes
+// to Vercel Blob — the funnel merges those overrides at request time.
+// =========================================================================
+
+export const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
+  // iPhone 17 family — Atlas Mobile wholesale carrier-gap (NIB Sealed
+  // Unlocked − Locked). "Other" = gap + $100 per Skywalker's rule.
+  // Verizon and Unlocked: no entry → defaults to $0 deduction.
+  ip17pm: { att: 335, tmobile: 335, other: 435 },
+  ip17p:  { att: 280, tmobile: 280, other: 380 },
+  ip17air: { att: 355, tmobile: 355, other: 455 },
+  ip17:   { att: 195, tmobile: 195, other: 295 },
+  ip17e:  { att: 200, tmobile: 200, other: 300 },
+  // iPhone 16 series
+  ip16pm: { att: 120, tmobile: 105, other: 500 },
+  ip16p:  { att: 100, tmobile: 90, other: 400 },
+  ip16plus: { att: 80, tmobile: 80, other: 300 },
+  ip16:   { att: 80, tmobile: 80, other: 300 },
+  ip16e:  { att: 50, tmobile: 60, other: 150 },
+  // iPhone 15 series
+  ip15pm: { att: 100, tmobile: 100, other: 400 },
+  ip15p:  { att: 80, tmobile: 80, other: 300 },
+  ip15plus: { att: 70, tmobile: 70, other: 250 },
+  ip15:   { att: 60, tmobile: 60, other: 200 },
+  // iPhone 14 series
+  ip14pm: { att: 60, tmobile: 100, other: 200 },
+  ip14p:  { att: 50, tmobile: 80, other: 150 },
+  ip14plus: { att: 40, tmobile: 60, other: 100 },
+  ip14:   { att: 40, tmobile: 80, other: 100 },
+  // iPhone 13 series
+  ip13pm: { att: 50, tmobile: 80, other: 150 },
+  ip13p:  { att: 40, tmobile: 60, other: 100 },
+  ip13:   { att: 30, tmobile: 50, other: 70 },
+  // Older iPhones — smaller deductions
+  ip12pm: { att: 30, tmobile: 40, other: 70 },
+  ip12p:  { att: 25, tmobile: 35, other: 50 },
+  ip12:   { att: 20, tmobile: 30, other: 50 },
+  ip11pm: { att: 20, tmobile: 30, other: 50 },
+  ip11p:  { att: 15, tmobile: 25, other: 40 },
+  ip11:   { att: 15, tmobile: 20, other: 40 },
+  // Samsung S series
+  gs26u:  { att: 90, tmobile: 125, other: 200 },
+  gs25u:  { att: 90, tmobile: 125, other: 200 },
+  gs24u:  { att: 80, tmobile: 100, other: 150 },
+  gs23u:  { att: 50, tmobile: 70, other: 100 },
+  gs26p:  { att: 80, tmobile: 100, other: 150 },
+  gs25p:  { att: 70, tmobile: 100, other: 150 },
+  gs26:   { att: 60, tmobile: 80, other: 100 },
+  gs25:   { att: 50, tmobile: 70, other: 100 },
+  gs24:   { att: 40, tmobile: 50, other: 80 },
+  // Samsung Z series
+  gzfold7: { att: 80, tmobile: 100, other: 200 },
+  gzfold6: { att: 60, tmobile: 80, other: 150 },
+  gzflip7: { att: 50, tmobile: 70, other: 100 },
+  gzflip6: { att: 40, tmobile: 50, other: 80 },
+  // Galaxy Note series
+  gnote10:    { att: 40, tmobile: 60, other: 100 },
+  gnote10p:   { att: 40, tmobile: 60, other: 100 },
+  gnote10p5g: { att: 40, tmobile: 60, other: 100 },
+  gnote20:    { att: 20, tmobile: 30, other: 50 },
+  gnote9:     { att: 20, tmobile: 30, other: 50 },
+  // Galaxy S20 series
+  gs20:   { att: 20, tmobile: 30, other: 50 },
+  gs20fe: { att: 20, tmobile: 30, other: 50 },
+  gs20p:  { att: 20, tmobile: 30, other: 50 },
+  gs20u:  { att: 40, tmobile: 60, other: 100 },
+  // Galaxy S21 series
+  gs21:   { att: 20, tmobile: 30, other: 50 },
+  gs21fe: { att: 20, tmobile: 30, other: 50 },
+  gs21p:  { att: 20, tmobile: 30, other: 50 },
+  gs21u:  { att: 20, tmobile: 30, other: 50 },
+  // Galaxy S22 series
+  gs22:   { att: 20, tmobile: 30, other: 50 },
+  gs22p:  { att: 20, tmobile: 30, other: 50 },
+  gs22u:  { att: 40, tmobile: 60, other: 100 },
+  // Galaxy S23 series
+  gs23:   { att: 40, tmobile: 60, other: 100 },
+  gs23fe: { att: 20, tmobile: 30, other: 50 },
+  gs23p:  { att: 40, tmobile: 60, other: 100 },
+  // Galaxy S24/S25 additions
+  gs24fe: { att: 40, tmobile: 60, other: 100 },
+  gs24p:  { att: 40, tmobile: 60, other: 100 },
+  gs25edge: { att: 60, tmobile: 80, other: 150 },
+  gs25fe: { att: 40, tmobile: 60, other: 100 },
+  // Galaxy Z Flip older
+  gzflip3: { att: 20, tmobile: 30, other: 50 },
+  gzflip4: { att: 20, tmobile: 30, other: 50 },
+  gzflip5: { att: 40, tmobile: 60, other: 100 },
+  // Galaxy Z Fold older
+  gzfold3: { att: 40, tmobile: 60, other: 100 },
+  gzfold4: { att: 40, tmobile: 60, other: 100 },
+  gzfold5: { att: 40, tmobile: 60, other: 100 },
+  gztrifold: { att: 100, tmobile: 120, other: 400 },
+  // iPhone mini models
+  ip12mini: { att: 20, tmobile: 30, other: 50 },
+  ip13mini: { att: 40, tmobile: 60, other: 100 },
+  // Pixel 10 series
+  px10:    { att: 40, tmobile: 60, other: 100 },
+  px10a:   { att: 40, tmobile: 60, other: 100 },
+  px10p:   { att: 60, tmobile: 80, other: 150 },
+  px10pxl: { att: 60, tmobile: 80, other: 150 },
+  // Pixel older models
+  px5:  { att: 20, tmobile: 30, other: 50 },
+  px5a: { att: 20, tmobile: 30, other: 50 },
+  px6:  { att: 20, tmobile: 30, other: 50 },
+  px6p: { att: 20, tmobile: 30, other: 50 },
+  px7:  { att: 20, tmobile: 30, other: 50 },
+  px7a: { att: 20, tmobile: 30, other: 50 },
+  px7p: { att: 40, tmobile: 60, other: 100 },
+  px8:  { att: 40, tmobile: 60, other: 100 },
+  px8a: { att: 40, tmobile: 60, other: 100 },
+  px8p: { att: 40, tmobile: 60, other: 100 },
+  px9:  { att: 40, tmobile: 60, other: 100 },
+  px9a: { att: 40, tmobile: 60, other: 100 },
+  px9p: { att: 40, tmobile: 60, other: 100 },
+  px9pfold: { att: 60, tmobile: 80, other: 150 },
+  px9pxl: { att: 40, tmobile: 60, other: 100 },
+  pxfold: { att: 40, tmobile: 60, other: 100 },
+};
+
+// Minimum offer threshold — below this we lose money on shipping + processing.
+// Devices below this get "Manual review & custom quote" instead of a dollar amount.
+export const MIN_OFFER = 25;
+
+// High-value devices that require manual review before payout.
+// Quote is shown to customer but backend flags the lead for owner approval.
+export const MANUAL_REVIEW_DEVICES = new Set([
+  "macstudiom4m", "macprom2u", "macstudiom4u",
+  "mbp14m3", "mbp16m3", "mbp16_m5pmax_2026",
+  "macstudiom2m", "mbp16m4", "mba_m5_2026",
+  "macstudiom2u", "macminim4", "gztrifold",
+]);
+
+export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
+  ip11: {
+    "128": { broken: 20, fair: 76, good: 95, mint: 109, sealed: 138 },
+    "256": { broken: 21, fair: 90, good: 109, mint: 124, sealed: 152 },
+    "64": { broken: 19, fair: 43, good: 62, mint: 76, sealed: 124 },
+  },
+  ip11p: {
+    "256": { broken: 26, fair: 90, good: 119, mint: 133, sealed: 152 },
+    "512": { broken: 28, fair: 114, good: 142, mint: 157, sealed: 171 },
+    "64": { broken: 24, fair: 62, good: 90, mint: 104, sealed: 124 },
+  },
+  ip11pm: {
+    "256": { fair: 133, good: 162, mint: 180, sealed: 204 },
+    "512": { fair: 152, good: 180, mint: 200, sealed: 209 },
+    "64": { fair: 128, good: 157, mint: 176, sealed: 195 },
+  },
+  ip12: {
+    "128": { fair: 90, good: 119, mint: 138, sealed: 142 },
+    "256": { fair: 104, good: 133, mint: 152, sealed: 147 },
+    "64": { fair: 62, good: 90, mint: 109, sealed: 133 },
+  },
+  ip12mini: {
+    "128": { fair: 48, good: 71, mint: 86, sealed: 109 },
+    "256": { fair: 52, good: 76, mint: 90, sealed: 114 },
+    "64": { fair: 19, good: 43, mint: 57, sealed: 104 },
+  },
+  ip12p: {
+    "128": { fair: 95, good: 142, mint: 162, sealed: 195 },
+    "256": { fair: 133, good: 180, mint: 200, sealed: 209 },
+    "512": { fair: 133, good: 180, mint: 200, sealed: 218 },
+  },
+  ip12pm: {
+    "128": { fair: 138, good: 195, mint: 209, sealed: 238 },
+    "256": { fair: 157, good: 214, mint: 228, sealed: 276 },
+    "512": { fair: 171, good: 228, mint: 242, sealed: 304 },
+  },
+  ip13: {
+    "128": { broken: 48, fair: 104, good: 142, mint: 162, sealed: 190, verygood: 152 },
+    "256": { broken: 52, fair: 138, good: 176, mint: 195, sealed: 218, verygood: 185 },
+    "512": { broken: 57, fair: 147, good: 185, mint: 204, sealed: 238, verygood: 195 },
+  },
+  ip13mini: {
+    "128": { fair: 76, good: 124, mint: 152, sealed: 180, verygood: 133 },
+    "256": { fair: 104, good: 152, mint: 180, sealed: 190, verygood: 162 },
+    "512": { fair: 124, good: 171, mint: 200, sealed: 195, verygood: 180 },
+  },
+  ip13p: {
+    "128": { broken: 62, fair: 147, good: 204, mint: 233, sealed: 261, verygood: 218 },
+    "1tb": { broken: 71, fair: 214, good: 271, mint: 299, sealed: 451, verygood: 285 },
+    "256": { broken: 66, fair: 180, good: 238, mint: 266, sealed: 332, verygood: 252 },
+    "512": { broken: 68, fair: 204, good: 261, mint: 290, sealed: 404, verygood: 276 },
+  },
+  ip13pm: {
+    "128": { broken: 81, fair: 195, good: 252, mint: 280, sealed: 337, verygood: 266 },
+    "1tb": { broken: 95, fair: 261, good: 318, mint: 347, sealed: 408, verygood: 332 },
+    "256": { broken: 86, fair: 238, good: 294, mint: 323, sealed: 361, verygood: 309 },
+    "512": { broken: 90, fair: 247, good: 304, mint: 332, sealed: 385, verygood: 318 },
+  },
+  ip14: {
+    "128": { broken: 57, fair: 109, good: 152, mint: 176, sealed: 223, verygood: 166 },
+    "256": { broken: 62, fair: 142, good: 185, mint: 209, sealed: 247, verygood: 200 },
+    "512": { broken: 64, fair: 214, good: 256, mint: 280, sealed: 271, verygood: 271 },
+  },
+  ip14p: {
+    "128": { broken: 119, fair: 180, good: 238, mint: 285, sealed: 314, verygood: 256 },
+    "1tb": { broken: 138, fair: 256, good: 314, mint: 361, sealed: 370, verygood: 332 },
+    "256": { broken: 128, fair: 209, good: 266, mint: 314, sealed: 337, verygood: 285 },
+    "512": { broken: 133, fair: 238, good: 294, mint: 342, sealed: 352, verygood: 314 },
+  },
+  ip14plus: {
+    "128": { broken: 90, fair: 142, good: 180, mint: 209, sealed: 247, verygood: 195 },
+    "256": { broken: 95, fair: 180, good: 218, mint: 247, sealed: 294, verygood: 233 },
+    "512": { broken: 100, fair: 200, good: 238, mint: 266, sealed: 318, verygood: 252 },
+  },
+  ip14pm: {
+    "128": { broken: 152, fair: 256, good: 314, mint: 361, sealed: 390, verygood: 323 },
+    "1tb": { broken: 209, fair: 332, good: 390, mint: 437, sealed: 446, verygood: 399 },
+    "256": { broken: 171, fair: 276, good: 332, mint: 380, sealed: 418, verygood: 342 },
+    "512": { broken: 190, fair: 304, good: 361, mint: 408, sealed: 428, verygood: 370 },
+  },
+  ip15: {
+    "128": { broken: 95, fair: 204, good: 242, mint: 280, sealed: 328, verygood: 266 },
+    "256": { broken: 104, fair: 242, good: 280, mint: 318, sealed: 375, verygood: 304 },
+    "512": { broken: 109, fair: 271, good: 309, mint: 347, sealed: 423, verygood: 332 },
+  },
+  ip15p: {
+    "128": { broken: 180, fair: 261, good: 309, mint: 356, sealed: 394, verygood: 328 },
+    "1tb": { broken: 228, fair: 375, good: 423, mint: 470, sealed: 513, verygood: 442 },
+    "256": { broken: 200, fair: 309, good: 356, mint: 404, sealed: 442, verygood: 375 },
+    "512": { broken: 209, fair: 337, good: 385, mint: 432, sealed: 466, verygood: 404 },
+  },
+  ip15plus: {
+    "128": { broken: 138, fair: 228, good: 266, mint: 314, sealed: 361, verygood: 285 },
+    "256": { broken: 147, fair: 252, good: 290, mint: 337, sealed: 408, verygood: 309 },
+    "512": { broken: 157, fair: 304, good: 342, mint: 390, sealed: 432, verygood: 361 },
+  },
+  ip15pm: {
+    "1tb": { broken: 190, fair: 437, good: 480, mint: 522, sealed: 556, verygood: 504 },
+    "256": { broken: 171, fair: 361, good: 404, mint: 446, sealed: 508, verygood: 428 },
+    "512": { broken: 180, fair: 394, good: 437, mint: 480, sealed: 532, verygood: 461 },
+  },
+  ip16: {
+    "128": { broken: 171, fair: 309, good: 366, mint: 413, sealed: 451, verygood: 380 },
+    "256": { broken: 209, fair: 347, good: 404, mint: 451, sealed: 504, verygood: 418 },
+    "512": { broken: 247, fair: 375, good: 432, mint: 480, sealed: 556, verygood: 446 },
+  },
+  ip16e: {
+    "128": { broken: 66, fair: 152, good: 214, mint: 247, sealed: 285, verygood: 228 },
+    "256": { broken: 86, fair: 218, good: 280, mint: 314, sealed: 337, verygood: 294 },
+    "512": { broken: 104, fair: 266, good: 328, mint: 361, sealed: 390, verygood: 342 },
+  },
+  ip16p: {
+    "128": { broken: 261, fair: 356, good: 437, mint: 484, sealed: 504, verygood: 461 },
+    "1tb": { broken: 332, fair: 499, good: 580, mint: 627, sealed: 646, verygood: 603 },
+    "256": { broken: 271, fair: 404, good: 484, mint: 532, sealed: 551, verygood: 508 },
+    "512": { broken: 309, fair: 442, good: 522, mint: 570, sealed: 598, verygood: 546 },
+  },
+  ip16plus: {
+    "128": { broken: 204, fair: 356, good: 404, mint: 432, sealed: 470, verygood: 418 },
+    "256": { broken: 242, fair: 394, good: 442, mint: 470, sealed: 518, verygood: 456 },
+    "512": { broken: 280, fair: 428, good: 475, mint: 504, sealed: 565, verygood: 489 },
+  },
+  ip16pm: {
+    "1tb": { broken: 332, fair: 651, good: 712, mint: 741, sealed: 874, verygood: 722 },
+    "256": { broken: 266, fair: 518, good: 580, mint: 608, sealed: 684, verygood: 589 },
+    "512": { broken: 294, fair: 570, good: 632, mint: 660, sealed: 779, verygood: 641 },
+  },
+  // iPhone 17 PRICE_TABLE — Atlas Mobile wholesale buy sheet minus $100
+  // buffer. Unlocked headlines; per-carrier deductions live in
+  // CARRIER_DEDUCTIONS above. Skywalker 2026-05-18 — replaces older
+  // numbers that were under-paying on premium (Pro/Pro Max) and
+  // over-paying on low-end (17/17e) relative to Atlas + buffer.
+  ip17: {
+    "256": { broken: 145, fair: 305, good: 460, mint: 490, sealed: 520, verygood: 480 },
+    "512": { broken: 195, fair: 370, good: 540, mint: 570, sealed: 660, verygood: 560 },
+  },
+  ip17air: {
+    "1tb": { broken: 215, fair: 375, good: 720, mint: 750, sealed: 810, verygood: 740 },
+    "256": { broken: 145, fair: 260, good: 520, mint: 550, sealed: 660, verygood: 540 },
+    "512": { broken: 170, fair: 305, good: 620, mint: 650, sealed: 750, verygood: 640 },
+  },
+  ip17e: {
+    "256": { broken: 100, fair: 160, good: 240, mint: 270, sealed: 270, verygood: 260 },
+    "512": { broken: 140, fair: 190, good: 280, mint: 310, sealed: 310, verygood: 300 },
+  },
+  ip17p: {
+    "1tb": { broken: 420, fair: 685, good: 980, mint: 1010, sealed: 1190, verygood: 1000 },
+    "256": { broken: 350, fair: 550, good: 750, mint: 780, sealed: 900, verygood: 770 },
+    "512": { broken: 385, fair: 595, good: 850, mint: 880, sealed: 1010, verygood: 870 },
+  },
+  ip17pm: {
+    "1tb": { broken: 550, fair: 755, good: 1040, mint: 1070, sealed: 1345, verygood: 1060 },
+    "256": { broken: 440, fair: 645, good: 850, mint: 880, sealed: 1020, verygood: 870 },
+    "2tb": { broken: 595, fair: 820, good: 1140, mint: 1170, sealed: 1600, verygood: 1160 },
+    "512": { broken: 485, fair: 690, good: 945, mint: 975, sealed: 1150, verygood: 965 },
+  },
+  // === SAMSUNG S SERIES (10% below IWM) ===
+  gs24: {
+    "128": { broken: 50, fair: 117, good: 162, mint: 189, sealed: 216, verygood: 171 },
+    "256": { broken: 54, fair: 144, good: 189, mint: 216, sealed: 248, verygood: 198 },
+    "512": { fair: 117, good: 162, mint: 189, sealed: 216, verygood: 171 },
+  },
+  gs24u: {
+    "1tb": { broken: 153, fair: 342, good: 423, mint: 468, sealed: 590, verygood: 441 },
+    "256": { broken: 135, fair: 270, good: 351, mint: 396, sealed: 432, verygood: 369 },
+    "512": { broken: 144, fair: 288, good: 369, mint: 414, sealed: 500, verygood: 387 },
+  },
+  gs25: {
+    "128": { broken: 54, fair: 189, good: 238, mint: 261, sealed: 297, verygood: 248 },
+    "256": { broken: 58, fair: 225, good: 274, mint: 297, sealed: 328, verygood: 284 },
+    "512": { broken: 54, fair: 189, good: 238, mint: 261, sealed: 297, verygood: 248 },
+  },
+  gs25p: {
+    "256": { broken: 72, fair: 261, good: 306, mint: 360, sealed: 396, verygood: 324 },
+    "512": { broken: 81, fair: 315, good: 360, mint: 414, sealed: 441, verygood: 378 },
+  },
+  gs25u: {
+    "1tb": { broken: 153, fair: 486, good: 540, mint: 580, sealed: 603, verygood: 554 },
+    "256": { broken: 135, fair: 418, good: 472, mint: 513, sealed: 558, verygood: 486 },
+    "512": { broken: 144, fair: 441, good: 495, mint: 536, sealed: 580, verygood: 508 },
+  },
+  gs26: {
+    "256": { broken: 90, fair: 284, good: 356, mint: 405, sealed: 450, verygood: 378 },
+    "512": { broken: 99, fair: 306, good: 378, mint: 428, sealed: 477, verygood: 400 },
+  },
+  gs26p: {
+    "256": { broken: 108, fair: 306, good: 387, mint: 450, sealed: 495, verygood: 414 },
+    "512": { broken: 117, fair: 342, good: 423, mint: 486, sealed: 540, verygood: 450 },
+  },
+  gs26u: {
+    "1tb": { broken: 144, fair: 468, good: 576, mint: 657, sealed: 720, verygood: 612 },
+    "256": { broken: 126, fair: 396, good: 504, mint: 585, sealed: 630, verygood: 540 },
+    "512": { broken: 135, fair: 432, good: 540, mint: 621, sealed: 675, verygood: 576 },
+  },
+  // === SAMSUNG Z SERIES ===
+  gzflip5: {
+    "256": { broken: 68, fair: 104, good: 148, mint: 176, sealed: 202, verygood: 158 },
+    "512": { broken: 72, fair: 117, good: 162, mint: 189, sealed: 248, verygood: 171 },
+  },
+  gzflip6: {
+    "256": { broken: 54, fair: 158, good: 198, mint: 234, sealed: 261, verygood: 216 },
+    "512": { broken: 63, fair: 176, good: 216, mint: 252, sealed: 306, verygood: 234 },
+  },
+  gzflip7: {
+    "256": { broken: 45, fair: 292, good: 351, mint: 387, sealed: 423, verygood: 369 },
+    "512": { broken: 58, fair: 306, good: 364, mint: 400, sealed: 468, verygood: 382 },
+  },
+  gzfold5: {
+    "1tb": { broken: 50, fair: 248, good: 292, mint: 320, sealed: 364, verygood: 302 },
+    "256": { broken: 45, fair: 212, good: 256, mint: 284, sealed: 310, verygood: 266 },
+    "512": { broken: 48, fair: 230, good: 274, mint: 302, sealed: 338, verygood: 284 },
+  },
+  gzfold6: {
+    "1tb": { broken: 99, fair: 369, good: 414, mint: 468, sealed: 504, verygood: 450 },
+    "256": { broken: 90, fair: 306, good: 351, mint: 405, sealed: 450, verygood: 387 },
+    "512": { broken: 94, fair: 342, good: 387, mint: 441, sealed: 477, verygood: 423 },
+  },
+  gzfold7: {
+    "1tb": { broken: 144, fair: 603, good: 693, mint: 738, sealed: 765, verygood: 729 },
+    "256": { broken: 135, fair: 540, good: 630, mint: 675, sealed: 711, verygood: 666 },
+    "512": { broken: 140, fair: 576, good: 666, mint: 711, sealed: 738, verygood: 702 },
+  },
+  gztrifold: {
+    "1tb": { broken: 189, fair: 945, good: 1395, mint: 1845, sealed: 2138, verygood: 1620 },
+    "512": { broken: 180, fair: 900, good: 1350, mint: 1800, sealed: 2070, verygood: 1575 },
+  },
+  // === PIXEL (10% below IWM) ===
+  px10pxl: {
+    "1tb": { broken: 126, fair: 378, good: 432, mint: 450, sealed: 477, verygood: 441 },
+    "256": { broken: 104, fair: 333, good: 387, mint: 405, sealed: 432, verygood: 396 },
+    "512": { broken: 112, fair: 364, good: 418, mint: 436, sealed: 464, verygood: 428 },
+  },
+  px10p: {
+    "128": { broken: 68, fair: 252, good: 315, mint: 360, sealed: 387, verygood: 337 },
+    "1tb": { broken: 81, fair: 333, good: 396, mint: 441, sealed: 468, verygood: 418 },
+    "256": { broken: 72, fair: 288, good: 351, mint: 396, sealed: 423, verygood: 373 },
+    "512": { broken: 76, fair: 319, good: 382, mint: 427, sealed: 454, verygood: 405 },
+  },
+  px10: {
+    "128": { broken: 68, fair: 216, good: 274, mint: 297, sealed: 333, verygood: 288 },
+    "256": { broken: 76, fair: 234, good: 292, mint: 315, sealed: 356, verygood: 306 },
+  },
+  px9pxl: {
+    "128": { broken: 68, fair: 189, good: 243, mint: 288, sealed: 315, verygood: 261 },
+    "1tb": { broken: 74, fair: 243, good: 297, mint: 342, sealed: 396, verygood: 315 },
+    "256": { broken: 72, fair: 207, good: 261, mint: 306, sealed: 351, verygood: 279 },
+    "512": { broken: 72, fair: 225, good: 279, mint: 324, sealed: 382, verygood: 297 },
+  },
+  px9p: {
+    "128": { broken: 45, fair: 126, good: 180, mint: 216, sealed: 243, verygood: 189 },
+    "1tb": { broken: 50, fair: 194, good: 248, mint: 284, sealed: 324, verygood: 256 },
+    "256": { broken: 47, fair: 153, good: 207, mint: 243, sealed: 279, verygood: 216 },
+    "512": { broken: 49, fair: 171, good: 225, mint: 261, sealed: 310, verygood: 234 },
+  },
+  px9: {
+    "128": { broken: 40, fair: 112, good: 153, mint: 198, sealed: 225, verygood: 171 },
+    "256": { broken: 45, fair: 130, good: 175, mint: 220, sealed: 247, verygood: 193 },
+  },
+  px8p: {
+    "128": { broken: 32, fair: 112, good: 144, mint: 184, sealed: 207, verygood: 162 },
+    "1tb": { broken: 36, fair: 148, good: 180, mint: 220, sealed: 274, verygood: 198 },
+    "256": { broken: 33, fair: 122, good: 153, mint: 194, sealed: 243, verygood: 171 },
+    "512": { broken: 34, fair: 140, good: 171, mint: 212, sealed: 261, verygood: 189 },
+  },
+  // === CONSOLES (10% below IWM) ===
+  ps5pro: {
+    "base": { broken: 8, fair: 297, good: 378, mint: 450, sealed: 495, verygood: 414 },
+  },
+  ps5slim: {
+    "base": { broken: 8, fair: 99, good: 171, mint: 225, sealed: 252, verygood: 198 },
+  },
+  ps5: {
+    "base": { broken: 8, fair: 112, good: 180, mint: 238, sealed: 270, verygood: 212 },
+  },
+  nsw2: {
+    "base": { broken: 54, fair: 153, good: 225, mint: 248, sealed: 279 },
+  },
+  nswoled: {
+    "base": { broken: 21, fair: 36, good: 72, mint: 90, sealed: 112 },
+  },
+  // === AUDIT FIXES — devices that were >15% off with multiplier fallback ===
+  gs23u: {
+    "1tb": { broken: 33, fair: 212, good: 261, mint: 292, sealed: 310, verygood: 279 },
+    "256": { broken: 32, fair: 158, good: 207, mint: 238, sealed: 266, verygood: 225 },
+    "512": { broken: 32, fair: 176, good: 225, mint: 256, sealed: 288, verygood: 243 },
+  },
+  gs22: {
+    "128": { broken: 18, fair: 36, good: 58, mint: 72, sealed: 90 },
+    "256": { broken: 22, fair: 45, good: 68, mint: 81, sealed: 108 },
+  },
+  gzflip4: {
+    "128": { broken: 14, fair: 9, good: 27, mint: 36, sealed: 50 },
+    "256": { broken: 14, fair: 14, good: 32, mint: 40, sealed: 54 },
+    "512": { broken: 15, fair: 14, good: 32, mint: 40, sealed: 58 },
+  },
+  px8: {
+    "128": { broken: 22, fair: 68, good: 108, mint: 126, sealed: 166, verygood: 117 },
+    "256": { broken: 27, fair: 90, good: 130, mint: 148, sealed: 189, verygood: 140 },
+  },
+  // === AUDIT ROUND 2 — 5 more devices with >15% multiplier error ===
+  gs24p: {
+    "256": { broken: 72, fair: 144, good: 198, mint: 230, sealed: 266, verygood: 212 },
+    "512": { broken: 81, fair: 180, good: 234, mint: 266, sealed: 310, verygood: 248 },
+  },
+  gs21: {
+    "128": { broken: 9, fair: 18, good: 27, mint: 40, sealed: 68 },
+    "256": { broken: 9, fair: 27, good: 36, mint: 50, sealed: 86 },
+  },
+  px7p: {
+    "128": { broken: 22, fair: 45, good: 72, mint: 108, sealed: 135 },
+    "256": { broken: 27, fair: 58, good: 86, mint: 122, sealed: 144 },
+    "512": { broken: 29, fair: 63, good: 90, mint: 126, sealed: 148 },
+  },
+  gs20: {
+    "base": { broken: 14, fair: 45, good: 58, mint: 68, sealed: 90 },
+  },
+  // === FULL IWM SCRAPE — all remaining devices ===
+  gnote10: {
+    "base": { broken: 9, sealed: 99 },
+    "brandnew": { fair: 140, good: 162, mint: 171 },
+    "broken": { fair: 50, good: 72, mint: 81 },
+    "fair": { fair: 81, good: 104, mint: 112 },
+    "flawless": { fair: 112, good: 135, mint: 144 },
+    "good": { fair: 104, good: 126, mint: 135 },
+  },
+  gnote10p: {
+    "256": { broken: 38, fair: 45, good: 99, mint: 117, sealed: 135 },
+    "512": { broken: 47, fair: 54, good: 108, mint: 126, sealed: 158 },
+  },
+  gnote10p5g: {
+    "256": { broken: 36, fair: 45, good: 99, mint: 117, sealed: 135 },
+    "512": { broken: 50, fair: 58, good: 112, mint: 130, sealed: 158 },
+  },
+  gnote20: {
+    "128": { fair: 68, good: 81, mint: 90, sealed: 117 },
+    "256": { fair: 76, good: 90, mint: 99, sealed: 130 },
+  },
+  gnote9: {
+    "128": { broken: 9, fair: 27, good: 54, mint: 68, sealed: 94 },
+    "512": { broken: 18, fair: 36, good: 63, mint: 76, sealed: 113 },
+  },
+  gs20fe: {
+    "128": { broken: 14, fair: 18, good: 32, mint: 40, sealed: 63 },
+    "256": { broken: 22, fair: 27, good: 40, mint: 50, sealed: 81 },
+  },
+  gs20p: {
+    "128": { broken: 14, fair: 36, good: 68, mint: 76, sealed: 104 },
+    "512": { broken: 15, fair: 58, good: 90, mint: 99, sealed: 130 },
+  },
+  gs20u: {
+    "128": { broken: 14, fair: 68, good: 104, mint: 122, sealed: 148 },
+    "256": { broken: 18, fair: 76, good: 112, mint: 130, sealed: 158 },
+    "512": { broken: 22, fair: 86, good: 122, mint: 140, sealed: 166 },
+  },
+  gs21fe: {
+    "128": { broken: 9, fair: 22, good: 27, mint: 36, sealed: 54 },
+    "256": { broken: 14, fair: 32, good: 36, mint: 45, sealed: 72 },
+  },
+  gs21p: {
+    "128": { broken: 14, fair: 36, good: 54, mint: 63, sealed: 90 },
+    "256": { broken: 14, fair: 45, good: 63, mint: 72, sealed: 118 },
+  },
+  gs21u: {
+    "128": { broken: 22, fair: 54, good: 72, mint: 81, sealed: 99 },
+    "256": { broken: 24, fair: 63, good: 81, mint: 90, sealed: 108 },
+    "512": { broken: 25, fair: 68, good: 86, mint: 94, sealed: 112 },
+  },
+  gs22p: {
+    "128": { broken: 22, fair: 63, good: 86, mint: 99, sealed: 126 },
+    "256": { broken: 27, fair: 72, good: 94, mint: 108, sealed: 148 },
+  },
+  gs22u: {
+    "128": { broken: 27, fair: 76, good: 108, mint: 126, sealed: 162 },
+    "1tb": { broken: 27, fair: 99, good: 130, mint: 148, sealed: 280 },
+    "256": { broken: 27, fair: 90, good: 122, mint: 140, sealed: 204 },
+    "512": { broken: 27, fair: 94, good: 126, mint: 144, sealed: 242 },
+  },
+  gs23: {
+    "128": { broken: 22, fair: 72, good: 94, mint: 117, sealed: 153, verygood: 108 },
+    "256": { broken: 23, fair: 90, good: 112, mint: 135, sealed: 184, verygood: 126 },
+    "512": { broken: 23, fair: 94, good: 117, mint: 140, sealed: 198, verygood: 130 },
+  },
+  gs23fe: {
+    "128": { broken: 14, fair: 32, good: 63, mint: 81, sealed: 90, verygood: 68 },
+    "256": { broken: 15, fair: 40, good: 72, mint: 90, sealed: 108, verygood: 76 },
+  },
+  gs23p: {
+    "128": { broken: 72, sealed: 207 },
+    "256": { broken: 76, fair: 112, good: 162, mint: 180, sealed: 234, verygood: 171 },
+    "512": { broken: 78, fair: 122, good: 171, mint: 189, sealed: 252, verygood: 180 },
+  },
+  gs24fe: {
+    "128": { broken: 22, fair: 72, good: 117, mint: 135, sealed: 171, verygood: 126 },
+    "256": { broken: 32, fair: 90, good: 135, mint: 153, sealed: 189, verygood: 144 },
+  },
+  gs25edge: {
+    "256": { broken: 90, fair: 234, good: 279, mint: 315, sealed: 351, verygood: 288 },
+    "512": { broken: 99, fair: 256, good: 302, mint: 338, sealed: 382, verygood: 310 },
+  },
+  gs25fe: {
+    "128": { broken: 22, fair: 72, good: 194, mint: 220, sealed: 256, verygood: 202 },
+    "256": { broken: 32, fair: 90, good: 212, mint: 238, sealed: 274, verygood: 220 },
+    "512": { broken: 22, sealed: 256 },
+  },
+  gzflip3: {
+    "128": { broken: 9, fair: 14, good: 27, mint: 36, sealed: 54 },
+    "256": { broken: 14, fair: 22, good: 36, mint: 45, sealed: 68 },
+  },
+  gzfold3: {
+    "256": { broken: 18, fair: 72, good: 108, mint: 126, sealed: 153 },
+    "512": { broken: 22, fair: 86, good: 122, mint: 140, sealed: 180 },
+  },
+  gzfold4: {
+    "1tb": { broken: 27, fair: 144, good: 189, mint: 220, sealed: 270, verygood: 202 },
+    "256": { broken: 22, fair: 112, good: 158, mint: 189, sealed: 216, verygood: 171 },
+    "512": { broken: 25, fair: 130, good: 176, mint: 207, sealed: 243, verygood: 189 },
+  },
+  ipad10: {
+    "256": { broken: 33, fair: 108, good: 144, mint: 171, sealed: 198, verygood: 158 },
+    "64": { fair: 63, good: 99, mint: 126, sealed: 153, verygood: 113 },
+  },
+  ipad9: {
+    "256": { fair: 43, good: 76, mint: 86, sealed: 100, verygood: 81 },
+    "64": { fair: 28, good: 62, mint: 71, sealed: 90, verygood: 66 },
+  },
+  ipadair11m2: {
+    "128": { broken: 128, fair: 190, good: 242, mint: 276, sealed: 304, verygood: 252 },
+    "1tb": { broken: 200, fair: 332, good: 385, mint: 418, sealed: 446, verygood: 394 },
+    "256": { broken: 152, fair: 218, good: 271, mint: 304, sealed: 352, verygood: 280 },
+    "512": { broken: 176, fair: 276, good: 328, mint: 361, sealed: 399, verygood: 337 },
+  },
+  ipadair11m3: {
+    "128": { broken: 119, fair: 167, good: 225, mint: 270, sealed: 297, verygood: 257 },
+    "1tb": { broken: 190, fair: 302, good: 360, mint: 405, sealed: 432, verygood: 392 },
+    "256": { broken: 142, fair: 189, good: 248, mint: 293, sealed: 320, verygood: 279 },
+    "512": { broken: 166, fair: 234, good: 293, mint: 338, sealed: 365, verygood: 324 },
+  },
+  ipadair13m2: {
+    "128": { broken: 100, fair: 242, good: 290, mint: 337, sealed: 375, verygood: 309 },
+    "1tb": { broken: 142, fair: 385, good: 432, mint: 480, sealed: 470, verygood: 451 },
+    "256": { broken: 124, fair: 290, good: 337, mint: 385, sealed: 423, verygood: 356 },
+    "512": { broken: 133, fair: 337, good: 385, mint: 432, sealed: 446, verygood: 404 },
+  },
+  ipadmini6: {
+    "256": { broken: 40, fair: 133, good: 171, mint: 190, sealed: 195 },
+    "64": { broken: 38, fair: 95, good: 133, mint: 152, sealed: 171 },
+  },
+  ipadmini7: {
+    "128": { broken: 57, fair: 171, good: 216, mint: 234, sealed: 261, verygood: 234 },
+    "256": { broken: 66, fair: 207, good: 252, mint: 270, sealed: 297, verygood: 270 },
+    "512": { broken: 76, fair: 306, good: 351, mint: 369, sealed: 396, verygood: 369 },
+  },
+  ipadpro11g4: {
+    "128": { broken: 95, fair: 252, good: 294, mint: 332, sealed: 361, verygood: 314 },
+    "1tb": { broken: 109, fair: 394, good: 437, mint: 475, sealed: 598, verygood: 456 },
+    "256": { broken: 100, fair: 299, good: 342, mint: 380, sealed: 408, verygood: 361 },
+    "2tb": { broken: 114, fair: 442, good: 484, mint: 522, sealed: 765, verygood: 504 },
+    "512": { broken: 104, fair: 323, good: 366, mint: 404, sealed: 456, verygood: 385 },
+  },
+  ipadpro11m4: {
+    "1tb": { broken: 285, fair: 495, good: 549, mint: 585, sealed: 621, verygood: 567 },
+    "256": { broken: 190, fair: 360, good: 414, mint: 450, sealed: 486, verygood: 432 },
+    "2tb": { broken: 332, fair: 563, good: 617, mint: 653, sealed: 689, verygood: 635 },
+    "512": { broken: 238, fair: 405, good: 459, mint: 495, sealed: 531, verygood: 477 },
+  },
+  ipadpro11m5: {
+    "1tb": { broken: 261, fair: 608, good: 656, mint: 712, sealed: 808, verygood: 674 },
+    "256": { broken: 166, fair: 466, good: 513, mint: 570, sealed: 618, verygood: 532 },
+    "2tb": { broken: 309, fair: 703, good: 750, mint: 808, sealed: 902, verygood: 770 },
+    "512": { broken: 214, fair: 513, good: 560, mint: 618, sealed: 665, verygood: 580 },
+  },
+  ipadpro129g6: {
+    "128": { broken: 119, fair: 242, good: 304, mint: 390, sealed: 456, verygood: 342 },
+    "1tb": { broken: 152, fair: 352, good: 413, mint: 499, sealed: 598, verygood: 451 },
+    "256": { broken: 128, fair: 280, good: 342, mint: 428, sealed: 527, verygood: 380 },
+    "2tb": { broken: 166, fair: 394, good: 456, mint: 542, sealed: 646, verygood: 494 },
+    "512": { broken: 133, fair: 299, good: 361, mint: 446, sealed: 551, verygood: 399 },
+  },
+  ipadpro13m4: {
+    "1tb": { broken: 238, fair: 518, good: 580, mint: 627, sealed: 788, verygood: 598 },
+    "256": { broken: 190, fair: 404, good: 466, mint: 513, sealed: 551, verygood: 484 },
+    "2tb": { broken: 261, fair: 622, good: 684, mint: 732, sealed: 978, verygood: 703 },
+    "512": { broken: 214, fair: 461, good: 522, mint: 570, sealed: 646, verygood: 542 },
+  },
+  ipadpro13m5: {
+    "1tb": { broken: 332, fair: 738, good: 792, mint: 864, sealed: 900, verygood: 819 },
+    "256": { broken: 261, fair: 513, good: 567, mint: 639, sealed: 675, verygood: 594 },
+    "2tb": { broken: 356, fair: 873, good: 927, mint: 999, sealed: 1035, verygood: 954 },
+    "512": { broken: 285, fair: 603, good: 657, mint: 729, sealed: 765, verygood: 684 },
+  },
+  px10a: {
+    "128": { broken: 45, fair: 99, good: 153, mint: 198, sealed: 225, verygood: 180 },
+    "256": { broken: 54, fair: 117, good: 171, mint: 216, sealed: 248, verygood: 198 },
+  },
+  px5: {
+    "base": { broken: 4, fair: 18, good: 32, mint: 40, sealed: 54 },
+  },
+  px5a: {
+    "base": { broken: 27, fair: 22, good: 32, mint: 36, sealed: 50 },
+  },
+  px6: {
+    "128": { broken: 9, fair: 32, good: 45, mint: 58, sealed: 86 },
+    "256": { broken: 11, fair: 40, good: 54, mint: 68, sealed: 99 },
+  },
+  px6p: {
+    "128": { broken: 14, fair: 40, good: 68, mint: 81, sealed: 108 },
+    "256": { broken: 14, fair: 50, good: 76, mint: 90, sealed: 112 },
+    "512": { broken: 14, fair: 54, good: 81, mint: 94, sealed: 117 },
+  },
+  px7: {
+    "128": { broken: 14, fair: 36, good: 51, mint: 63, sealed: 99 },
+    "256": { broken: 22, fair: 54, good: 69, mint: 81, sealed: 108 },
+  },
+  px7a: {
+    "base": { broken: 14, fair: 45, good: 63, mint: 72, sealed: 99 },
+  },
+  px8a: {
+    "128": { broken: 18, fair: 72, good: 108, mint: 126, sealed: 162, verygood: 117 },
+    "256": { broken: 18, fair: 81, good: 117, mint: 135, sealed: 184, verygood: 126 },
+  },
+  px9a: {
+    "128": { broken: 45, fair: 90, good: 130, mint: 158, sealed: 189, verygood: 140 },
+    "256": { broken: 50, fair: 108, good: 148, mint: 176, sealed: 212, verygood: 158 },
+  },
+  px9pfold: {
+    "256": { broken: 99, fair: 292, good: 360, mint: 405, sealed: 450, verygood: 378 },
+    "512": { broken: 108, fair: 320, good: 387, mint: 432, sealed: 540, verygood: 405 },
+  },
+  pxfold: {
+    "256": { broken: 32, fair: 90, good: 135, mint: 158, sealed: 202, verygood: 144 },
+    "512": { broken: 32, fair: 126, good: 171, mint: 194, sealed: 248, verygood: 180 },
+  },
+  switch: {
+    "base": { broken: 21, fair: 32, good: 54, mint: 81, sealed: 108, verygood: 68 },
+  },
+  switchlite: {
+    "base": { broken: 21, fair: 22, good: 36, mint: 50, sealed: 68 },
+  },
+  xone: {
+    "base": { broken: 21, fair: 54, good: 81, mint: 99, sealed: 117 },
+  },
+
+  // === MACBOOKS + WATCHES + REMAINING ===
+  awu1: {
+    "base": { fair: 36, good: 86, mint: 126, sealed: 144, verygood: 108 },
+  },
+  awu2: {
+    "base": { fair: 90, good: 135, mint: 180, sealed: 216, verygood: 162 },
+  },
+  awu3: {
+    "base": { broken: 45, fair: 171, good: 252, mint: 302, sealed: 338, verygood: 279 },
+  },
+  mba13m3: {
+    "1tb": { fair: 432, good: 540, mint: 648, sealed: 693, verygood: 594 },
+    "2tb": { fair: 544, good: 652, mint: 760, sealed: 806, verygood: 706 },
+  },
+  mba15m3: {
+    "1tb": { fair: 472, good: 594, mint: 675, sealed: 729, verygood: 634 },
+    "2tb": { fair: 562, good: 684, mint: 765, sealed: 819, verygood: 724 },
+  },
+  mba_m4_2025: {
+    "1tb": { fair: 531, good: 644, mint: 778, sealed: 824, verygood: 711 },
+    "2tb": { fair: 711, good: 824, mint: 958, sealed: 1004, verygood: 891 },
+  },
+  mba_m5_2026: {
+    "1tb": { fair: 585, good: 698, mint: 832, sealed: 922, verygood: 765 },
+    "2tb": { fair: 900, good: 1012, mint: 1148, sealed: 1238, verygood: 1080 },
+    "4tb": { fair: 1350, good: 1462, mint: 1598, sealed: 1688, verygood: 1530 },
+  },
+  mbp13m1: {
+    "2tb": { fair: 468, good: 558, mint: 626, sealed: 675, verygood: 616 },
+  },
+  mbp14m2: {
+    "2tb": { fair: 630, good: 765, mint: 945, sealed: 990, verygood: 855 },
+    "4tb": { fair: 810, good: 945, mint: 1125, sealed: 1170, verygood: 1035 },
+    "8tb": { fair: 900, good: 1125, mint: 1350, sealed: 1404, verygood: 1215 },
+  },
+  mbp14m3: {
+    "1tb": { fair: 891, good: 981, mint: 1080, sealed: 1107, verygood: 1030 },
+    "2tb": { fair: 900, good: 1080, mint: 1215, sealed: 1260, verygood: 1148 },
+    "4tb": { fair: 1035, good: 1215, mint: 1395, sealed: 1462, verygood: 1314 },
+    "512": { fair: 756, good: 846, mint: 945, sealed: 972, verygood: 896 },
+    "8tb": { fair: 2160, good: 2565, mint: 2835, sealed: 2925, verygood: 2700 },
+  },
+  mbp16_m5pmax_2026: {
+    "2tb": { fair: 2340, good: 2475, mint: 2610, sealed: 2745, verygood: 2542 },
+  },
+  mbp16m2: {
+    "2tb": { fair: 1215, good: 1408, mint: 1620, sealed: 1665, verygood: 1521 },
+    "4tb": { fair: 1170, good: 1418, mint: 1710, sealed: 1778, verygood: 1575 },
+    "8tb": { fair: 1350, good: 1598, mint: 1890, sealed: 1958, verygood: 1755 },
+  },
+  mbp16m3: {
+    "2tb": { fair: 1350, good: 1485, mint: 1665, sealed: 1732, verygood: 1575 },
+    "4tb": { fair: 1620, good: 1755, mint: 1935, sealed: 2002, verygood: 1845 },
+    "8tb": { fair: 1845, good: 2025, mint: 2295, sealed: 2362, verygood: 2160 },
+  },
+  mbp16m4: {
+    "2tb": { fair: 1935, good: 2070, mint: 2205, sealed: 2295, verygood: 2138 },
+  },
+  xss: {
+    "base": { broken: 21, fair: 54, good: 90, mint: 135, sealed: 158, verygood: 112 },
+    "carbonblack": { broken: 43, fair: 86, good: 148, mint: 184, sealed: 220, verygood: 166 },
+  },
+  aws10: {
+    "base": { fair: 23, good: 59, mint: 95, sealed: 117, verygood: 77 },
+  },
+  aws7: {
+    "base": { good: 9, mint: 27, sealed: 40, verygood: 18 },
+  },
+  aws8: {
+    "base": { good: 18, mint: 40, sealed: 63, verygood: 27 },
+  },
+  aws9: {
+    "base": { fair: 14, good: 40, mint: 63, sealed: 81, verygood: 50 },
+  },
+  awse2: {
+    "base": { good: 9, mint: 18, sealed: 40 },
+  },
+  mba13m2: {
+    "1tb": { fair: 310, good: 387, mint: 446, sealed: 482, verygood: 418 },
+    "256": { fair: 198, good: 274, mint: 333, sealed: 369, verygood: 306 },
+    "2tb": { fair: 356, good: 432, mint: 490, sealed: 526, verygood: 464 },
+    "512": { fair: 243, good: 320, mint: 378, sealed: 414, verygood: 351 },
+  },
+  mba15m2: {
+    "1tb": { fair: 374, good: 441, mint: 486, sealed: 513, verygood: 464 },
+    "256": { fair: 284, good: 351, mint: 396, sealed: 423, verygood: 374 },
+    "2tb": { fair: 464, good: 531, mint: 576, sealed: 603, verygood: 554 },
+    "512": { fair: 328, good: 396, mint: 441, sealed: 468, verygood: 418 },
+  },
+  mbp14_m5_2025: {
+    "1tb": { fair: 788, good: 891, mint: 990, sealed: 1058, verygood: 936 },
+    "2tb": { fair: 878, good: 981, mint: 1080, sealed: 1148, verygood: 1026 },
+    "4tb": { fair: 1102, good: 1206, mint: 1305, sealed: 1372, verygood: 1251 },
+    "512": { fair: 652, good: 756, mint: 855, sealed: 922, verygood: 801 },
+  },
+  mbp14_m5pmax_2026: {
+    "1tb": { fair: 788, good: 891, mint: 990, sealed: 1058, verygood: 936 },
+    "2tb": { fair: 878, good: 981, mint: 1080, sealed: 1148, verygood: 1026 },
+    "4tb": { fair: 1102, good: 1206, mint: 1305, sealed: 1372, verygood: 1251 },
+    "512": { fair: 652, good: 756, mint: 855, sealed: 922, verygood: 801 },
+  },
+  mbp14m4: {
+    "1tb": { fair: 765, good: 868, mint: 968, sealed: 1012, verygood: 914 },
+    "2tb": { fair: 878, good: 981, mint: 1080, sealed: 1125, verygood: 1026 },
+    "512": { fair: 652, good: 756, mint: 855, sealed: 900, verygood: 801 },
+  },
+  ps4: {
+    "base": { broken: 8, fair: 14, good: 27, mint: 45, sealed: 63 },
+  },
+  ps4pro: {
+    "base": { broken: 21, fair: 45, good: 86, mint: 108, sealed: 135 },
+  },
+  // === WATCHES + DESKTOPS + CONSOLES (IWM scrape) ===
+  macminim4p: {
+    "1tb": { fair: 626, good: 680, mint: 742, sealed: 788, verygood: 720 },
+    "256gb": { fair: 356, good: 410, mint: 472, sealed: 518, verygood: 450 },
+    "2tb": { fair: 896, good: 950, mint: 1012, sealed: 1058, verygood: 990 },
+    "512gb": { fair: 490, good: 544, mint: 608, sealed: 652, verygood: 585 },
+  },
+  macprom2u: {
+    "1tb": { fair: 2340, good: 2745, mint: 3150, sealed: 3420, verygood: 2970 },
+    "2tb": { fair: 2475, good: 2880, mint: 3285, sealed: 3555, verygood: 3105 },
+    "4tb": { fair: 2610, good: 3015, mint: 3420, sealed: 3690, verygood: 3240 },
+    "8tb": { fair: 2880, good: 3285, mint: 3690, sealed: 3960, verygood: 3510 },
+  },
+  macstudiom2u: {
+    "1tb": { fair: 675, good: 796, mint: 945, sealed: 1012, verygood: 891 },
+    "2tb": { fair: 810, good: 932, mint: 1080, sealed: 1148, verygood: 1026 },
+    "4tb": { fair: 1080, good: 1202, mint: 1350, sealed: 1418, verygood: 1296 },
+    "512gb": { fair: 540, good: 662, mint: 810, sealed: 878, verygood: 756 },
+    "8tb": { fair: 1260, good: 1382, mint: 1530, sealed: 1598, verygood: 1476 },
+  },
+  macstudiom4u: {
+    "1tb": { fair: 1665, good: 1822, mint: 1980, sealed: 2115, verygood: 1912 },
+    "2tb": { fair: 1890, good: 2048, mint: 2205, sealed: 2340, verygood: 2138 },
+    "4tb": { fair: 2160, good: 2318, mint: 2475, sealed: 2610, verygood: 2408 },
+    "512gb": { fair: 1440, good: 1598, mint: 1755, sealed: 1890, verygood: 1688 },
+    "8tb": { fair: 2520, good: 2678, mint: 2835, sealed: 2970, verygood: 2768 },
+  },
+  pw1: {
+    "base": { fair: 4, good: 9, mint: 18, sealed: 32 },
+  },
+  imac24m1: {
+    "16gbunifiedmemory": { fair: 279, good: 324, mint: 360, sealed: 387, verygood: 342 },
+    "1tb": { fair: 306, good: 351, mint: 387, sealed: 414, verygood: 369 },
+    "256gb": { fair: 234, good: 279, mint: 315, sealed: 342, verygood: 297 },
+    "512gb": { fair: 270, good: 315, mint: 351, sealed: 378, verygood: 333 },
+    "8gbunifiedmemory": { fair: 234, good: 279, mint: 315, sealed: 342, verygood: 297 },
+  },
+  imac24m3: {
+    "16gbunifiedmemory": { fair: 261, good: 333, mint: 405, sealed: 450, verygood: 369 },
+    "1tb": { fair: 306, good: 378, mint: 450, sealed: 495, verygood: 414 },
+    "24gbunifiedmemory": { fair: 306, good: 378, mint: 450, sealed: 495, verygood: 414 },
+    "256gb": { fair: 216, good: 288, mint: 360, sealed: 405, verygood: 324 },
+    "512gb": { fair: 261, good: 333, mint: 405, sealed: 450, verygood: 369 },
+    "8gbunifiedmemory": { fair: 216, good: 288, mint: 360, sealed: 405, verygood: 324 },
+  },
+  imac24m4: {
+    "16gbunifiedmemory": { fair: 315, good: 428, mint: 518, sealed: 585, verygood: 472 },
+    "1tb": { fair: 540, good: 652, mint: 742, sealed: 810, verygood: 698 },
+    "24gbunifiedmemory": { fair: 495, good: 608, mint: 698, sealed: 765, verygood: 652 },
+    "256gb": { fair: 315, good: 428, mint: 518, sealed: 585, verygood: 472 },
+    "512gb": { fair: 428, good: 540, mint: 630, sealed: 698, verygood: 585 },
+  },
+  macminim1: {
+    "1tb": { fair: 315, good: 342, mint: 360, sealed: 382, verygood: 351 },
+    "256gb": { fair: 248, good: 274, mint: 292, sealed: 315, verygood: 284 },
+    "2tb": { fair: 360, good: 387, mint: 405, sealed: 428, verygood: 396 },
+    "512gb": { fair: 270, good: 297, mint: 315, sealed: 338, verygood: 306 },
+  },
+  macminim2: {
+    "16gbunifiedmemory": { fair: 243, good: 297, mint: 360, sealed: 396, verygood: 338 },
+    "1tb": { fair: 266, good: 320, mint: 382, sealed: 418, verygood: 360 },
+    "24gbunifiedmemory": { fair: 288, good: 342, mint: 405, sealed: 441, verygood: 382 },
+    "256gb": { fair: 198, good: 252, mint: 315, sealed: 351, verygood: 292 },
+    "2tb": { fair: 333, good: 387, mint: 450, sealed: 486, verygood: 428 },
+    "512gb": { fair: 230, good: 284, mint: 346, sealed: 382, verygood: 324 },
+    "8gbunifiedmemory": { fair: 198, good: 252, mint: 315, sealed: 351, verygood: 292 },
+  },
+  macminim4: {
+    "16gbunifiedmemory": { fair: 356, good: 410, mint: 472, sealed: 518, verygood: 450 },
+    "1tb": { fair: 626, good: 680, mint: 742, sealed: 788, verygood: 720 },
+    "24gbunifiedmemory": { fair: 536, good: 590, mint: 652, sealed: 698, verygood: 630 },
+    "256gb": { fair: 356, good: 410, mint: 472, sealed: 518, verygood: 450 },
+    "2tb": { fair: 896, good: 950, mint: 1012, sealed: 1058, verygood: 990 },
+    "32gbunifiedmemory": { fair: 716, good: 770, mint: 832, sealed: 878, verygood: 810 },
+    "512gb": { fair: 490, good: 544, mint: 608, sealed: 652, verygood: 585 },
+  },
+  macstudiom2m: {
+    "1tb": { fair: 675, good: 796, mint: 945, sealed: 1012, verygood: 891 },
+    "2tb": { fair: 810, good: 932, mint: 1080, sealed: 1148, verygood: 1026 },
+    "32gbunifiedmemory": { fair: 540, good: 662, mint: 810, sealed: 878, verygood: 756 },
+    "4tb": { fair: 1080, good: 1202, mint: 1350, sealed: 1418, verygood: 1296 },
+    "512gb": { fair: 540, good: 662, mint: 810, sealed: 878, verygood: 756 },
+    "64gbunifiedmemory": { fair: 855, good: 976, mint: 1125, sealed: 1192, verygood: 1071 },
+    "8tb": { fair: 1260, good: 1382, mint: 1530, sealed: 1598, verygood: 1476 },
+  },
+  macstudiom4m: {
+    "1tb": { fair: 1665, good: 1822, mint: 1980, sealed: 2115, verygood: 1912 },
+    "2tb": { fair: 1890, good: 2048, mint: 2205, sealed: 2340, verygood: 2138 },
+    "36gbunifiedmemory": { fair: 1440, good: 1598, mint: 1755, sealed: 1890, verygood: 1688 },
+    "4tb": { fair: 2160, good: 2318, mint: 2475, sealed: 2610, verygood: 2408 },
+    "512gb": { fair: 1440, good: 1598, mint: 1755, sealed: 1890, verygood: 1688 },
+    "8tb": { fair: 2520, good: 2678, mint: 2835, sealed: 2970, verygood: 2768 },
+  },
+  pw2: {
+    "base": { fair: 4, good: 9, mint: 18, sealed: 32 },
+  },
+  pw3: {
+    "pixelwatch3bluetoothwifi": { fair: 4, good: 18, mint: 27, sealed: 54 },
+    "pixelwatch3bluetoothwifi4glte": { broken: 4, fair: 9, good: 22, mint: 32, sealed: 58 },
+  },
+  pw4: {
+    "pixelwatch4bluetoothwifi": { fair: 27, good: 72, mint: 108, sealed: 144, verygood: 90 },
+    "pixelwatch4bluetoothwifi4glte": { broken: 9, fair: 36, good: 81, mint: 117, sealed: 153, verygood: 99 },
+  },
+  sgw7: {
+    "bluetoothwifi": { good: 9, mint: 18, sealed: 32 },
+    "bluetoothwifi4glte": { fair: 4, good: 14, mint: 22, sealed: 36 },
+  },
+  sgw8: {
+    "bluetoothwifi": { fair: 18, good: 45, mint: 63, sealed: 86 },
+    "bluetoothwifi4glte": { fair: 27, good: 54, mint: 72, sealed: 94 },
+  },
+  sgw8c: {
+    "bluetoothwifi": { fair: 54, good: 76, mint: 99, sealed: 122, verygood: 90 },
+    "bluetoothwifi4glte": { fair: 63, good: 86, mint: 108, sealed: 130, verygood: 99 },
+  },
+  sgwu: {
+    "base": { fair: 22, good: 58, mint: 90, sealed: 112, verygood: 76 },
+  },
+  sgwu25: {
+    "base": { fair: 72, good: 112, mint: 144, sealed: 176, verygood: 130 },
+  },
+  switchv2: {
+    "base": { broken: 21, fair: 32, good: 54, mint: 81, sealed: 108, verygood: 68 },
+  },
+  xsx: {
+    "1tb": { broken: 8, fair: 162, good: 225, mint: 274, sealed: 315, verygood: 252 },
+    "2tb": { broken: 8, fair: 252, good: 342, mint: 387, sealed: 428, verygood: 369 },
+  },
+  // === SAMSUNG TABLETS (10% below IWM) ===
+  stabs11u: {
+    "256": { broken: 90, fair: 369, good: 468, mint: 513, sealed: 567, verygood: 495 },
+    "512": { broken: 99, fair: 423, good: 522, mint: 567, sealed: 621, verygood: 549 },
+    "1tb": { broken: 104, fair: 481, good: 580, mint: 625, sealed: 679, verygood: 607 },
+  },
+  stabs11: {
+    "128": { broken: 58, fair: 225, good: 288, mint: 324, sealed: 342, verygood: 306 },
+    "256": { broken: 63, fair: 247, good: 310, mint: 346, sealed: 364, verygood: 328 },
+    "512": { broken: 68, fair: 270, good: 333, mint: 369, sealed: 387, verygood: 351 },
+  },
+  stabs10u: {
+    "256": { broken: 76, fair: 333, good: 382, mint: 418, sealed: 454, verygood: 400 },
+    "512": { broken: 81, fair: 369, good: 418, mint: 454, sealed: 490, verygood: 436 },
+    "1tb": { broken: 86, fair: 436, good: 486, mint: 522, sealed: 558, verygood: 504 },
+  },
+  stabs9: {
+    "128": { broken: 22, fair: 121, good: 171, mint: 198, sealed: 225, verygood: 180 },
+    "256": { broken: 27, fair: 139, good: 189, mint: 216, sealed: 238, verygood: 198 },
+  },
+};
