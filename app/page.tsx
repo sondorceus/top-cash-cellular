@@ -395,29 +395,34 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "256": { broken: 266, fair: 518, good: 580, mint: 608, sealed: 684, verygood: 589 },
     "512": { broken: 294, fair: 570, good: 632, mint: 660, sealed: 779, verygood: 641 },
   },
+  // iPhone 17 PRICE_TABLE — Atlas Mobile wholesale buy sheet minus $100
+  // buffer. Unlocked headlines; per-carrier deductions live in
+  // CARRIER_DEDUCTIONS above. Skywalker 2026-05-18 — replaces older
+  // numbers that were under-paying on premium (Pro/Pro Max) and
+  // over-paying on low-end (17/17e) relative to Atlas + buffer.
   ip17: {
-    "256": { broken: 247, fair: 418, good: 494, mint: 546, sealed: 589, verygood: 518 },
-    "512": { broken: 323, fair: 513, good: 589, mint: 641, sealed: 694, verygood: 613 },
+    "256": { broken: 145, fair: 305, good: 460, mint: 490, sealed: 520, verygood: 480 },
+    "512": { broken: 195, fair: 370, good: 540, mint: 570, sealed: 660, verygood: 560 },
   },
   ip17air: {
-    "1tb": { broken: 332, fair: 575, good: 636, mint: 703, sealed: 793, verygood: 656 },
-    "256": { broken: 218, fair: 446, good: 508, mint: 575, sealed: 622, verygood: 527 },
-    "512": { broken: 294, fair: 504, good: 565, mint: 632, sealed: 727, verygood: 584 },
+    "1tb": { broken: 215, fair: 375, good: 720, mint: 750, sealed: 810, verygood: 740 },
+    "256": { broken: 145, fair: 260, good: 520, mint: 550, sealed: 660, verygood: 540 },
+    "512": { broken: 170, fair: 305, good: 620, mint: 650, sealed: 750, verygood: 640 },
   },
   ip17e: {
-    "256": { broken: 95, fair: 238, good: 299, mint: 342, sealed: 356, verygood: 318 },
-    "512": { broken: 114, fair: 285, good: 347, mint: 390, sealed: 408, verygood: 366 },
+    "256": { broken: 100, fair: 160, good: 240, mint: 270, sealed: 270, verygood: 260 },
+    "512": { broken: 140, fair: 190, good: 280, mint: 310, sealed: 310, verygood: 300 },
   },
   ip17p: {
-    "1tb": { broken: 437, fair: 689, good: 822, mint: 898, sealed: 993, verygood: 850 },
-    "256": { broken: 285, fair: 546, good: 679, mint: 755, sealed: 803, verygood: 708 },
-    "512": { broken: 399, fair: 641, good: 774, mint: 850, sealed: 945, verygood: 803 },
+    "1tb": { broken: 420, fair: 685, good: 980, mint: 1010, sealed: 1190, verygood: 1000 },
+    "256": { broken: 350, fair: 550, good: 750, mint: 780, sealed: 900, verygood: 770 },
+    "512": { broken: 385, fair: 595, good: 850, mint: 880, sealed: 1010, verygood: 870 },
   },
   ip17pm: {
-    "1tb": { broken: 399, fair: 874, good: 969, mint: 1016, sealed: 1078, verygood: 988 },
-    "256": { broken: 332, fair: 717, good: 812, mint: 860, sealed: 888, verygood: 831 },
-    "2tb": { broken: 475, fair: 907, good: 1002, mint: 1050, sealed: 1268, verygood: 1021 },
-    "512": { broken: 361, fair: 812, good: 907, mint: 955, sealed: 983, verygood: 926 },
+    "1tb": { broken: 550, fair: 755, good: 1040, mint: 1070, sealed: 1345, verygood: 1060 },
+    "256": { broken: 440, fair: 645, good: 850, mint: 880, sealed: 1020, verygood: 870 },
+    "2tb": { broken: 595, fair: 820, good: 1140, mint: 1170, sealed: 1600, verygood: 1160 },
+    "512": { broken: 485, fair: 690, good: 945, mint: 975, sealed: 1150, verygood: 965 },
   },
   // === SAMSUNG S SERIES (10% below IWM) ===
   gs24: {
