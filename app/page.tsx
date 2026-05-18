@@ -7583,7 +7583,7 @@ export default function Home() {
                         { href: "/faq", icon: "❓", title: "Full FAQ", sub: "Plain answers, common questions" },
                         { href: "/reviews", icon: "★", title: "Reviews", sub: "★ 4.9 from real sellers", iconColor: "text-[#ffb400]" },
                         { href: "/track", icon: "📍", title: "Track your trade", sub: "Status, payout, tracking #" },
-                        { href: EMAIL_HREF, icon: "✉️", title: "Email us", sub: "Same business day reply" },
+                        { href: EMAIL_HREF, icon: "✉️", title: "Email customer service", sub: "CustomerService@topcashcells.com · same business day" },
                       ]).map(item => (
                         <a key={item.title} href={item.href} className="group/sup flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
                           <span className={`text-2xl shrink-0 ${item.iconColor ?? ""}`}>{item.icon}</span>
@@ -7874,9 +7874,9 @@ export default function Home() {
                   </a>
                   <a href={EMAIL_HREF} onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
                     <span className="text-xl">✉️</span>
-                    <div>
-                      <p className="text-sm font-semibold text-white">Email us</p>
-                      <p className="text-[11px] text-[#e6e6e6]">We reply same business day.</p>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-white">Customer service</p>
+                      <p className="text-[11px] text-[#e6e6e6] truncate">CustomerService@topcashcells.com</p>
                     </div>
                   </a>
                   <a href="tel:+18775492056" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
@@ -12823,6 +12823,19 @@ export default function Home() {
                 <p className="text-xs text-[#9a9a9a] pt-2">Austin, TX · Mon–Sat 8 AM–8 PM</p>
               </div>
             </div>
+          </div>
+          {/* CUSTOMER SERVICE CONTACT CARD — email displayed as readable
+              text, not just behind a clickable label. Skywalker
+              2026-05-18 "add that email for customers wanting to reach
+              out". Centered above the © so it's the last thing a customer
+              sees while scrolling and easy to spot when they need help. */}
+          <div className="border-t border-[#00c853]/15 pt-6 mb-6 text-center">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Customer Service</p>
+            <a href={EMAIL_HREF} className="inline-flex items-center gap-2 text-sm text-white hover:text-[#00c853] transition font-semibold">
+              <span className="text-base">✉️</span>
+              CustomerService@topcashcells.com
+            </a>
+            <p className="text-[11px] text-[#9a9a9a] mt-2">We reply within one business day · Mon–Sat 8 AM–8 PM CT</p>
           </div>
           <div className="border-t border-[#00c853]/15 pt-6 text-center">
             <p className="text-[11px] text-[#cfcfcf]/70 mb-3">© 2026 {BRAND}</p>
