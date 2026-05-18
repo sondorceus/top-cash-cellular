@@ -1711,48 +1711,48 @@ const ACER_PC_SERIES = [
 // so no per-model photos. Each variant uses the existing series-level
 // placeholder (/devices/sgbk*.png) where one matches.
 const SAMSUNG_BOOK5_VARIANTS = [
-  { id: "sgbk_5", label: "Galaxy Book5", base: 639, inquiryOnly: false, image: "/devices/sgbk4.png" },
-  { id: "sgbk_5_360", label: "Galaxy Book5 360", base: 639, inquiryOnly: false, image: "/devices/sgbk4p.png" },
-  { id: "sgbk_5_pro", label: "Galaxy Book5 Pro", base: 639, inquiryOnly: false, image: "/devices/sgbk4pro.png" },
-  { id: "sgbk_5_pro_360", label: "Galaxy Book5 Pro 360", base: 639, inquiryOnly: false, image: "/devices/sgbk4p.png" },
+  { id: "sgbk_5", label: "Galaxy Book5", base: 639, inquiryOnly: false, image: "/devices/sgbk_5.png" },
+  { id: "sgbk_5_360", label: "Galaxy Book5 360", base: 639, inquiryOnly: false, image: "/devices/sgbk_5_360.png" },
+  { id: "sgbk_5_pro", label: "Galaxy Book5 Pro", base: 639, inquiryOnly: false, image: "/devices/sgbk_5_pro.png" },
+  { id: "sgbk_5_pro_360", label: "Galaxy Book5 Pro 360", base: 639, inquiryOnly: false, image: "/devices/sgbk_5_pro_360.png" },
 ];
 const SAMSUNG_BOOK4_VARIANTS = [
-  { id: "sgbk_4", label: "Galaxy Book4", base: 446, inquiryOnly: false, image: "/devices/sgbk4.png" },
-  { id: "sgbk_4_360", label: "Galaxy Book4 360", base: 446, inquiryOnly: false, image: "/devices/sgbk4p.png" },
-  { id: "sgbk_4_pro", label: "Galaxy Book4 Pro", base: 446, inquiryOnly: false, image: "/devices/sgbk4pro.png" },
-  { id: "sgbk_4_pro_360", label: "Galaxy Book4 Pro 360", base: 446, inquiryOnly: false, image: "/devices/sgbk4p.png" },
-  { id: "sgbk_4_ultra", label: "Galaxy Book4 Ultra", base: 446, inquiryOnly: false, image: "/devices/sgbk4u.png" },
-  { id: "sgbk_4_edge", label: "Galaxy Book4 Edge", base: 446, inquiryOnly: false, image: "/devices/sgbk4pro.png" },
+  { id: "sgbk_4", label: "Galaxy Book4", base: 446, inquiryOnly: false, image: "/devices/sgbk_4.png" },
+  { id: "sgbk_4_360", label: "Galaxy Book4 360", base: 446, inquiryOnly: false, image: "/devices/sgbk_4_360.png" },
+  { id: "sgbk_4_pro", label: "Galaxy Book4 Pro", base: 446, inquiryOnly: false, image: "/devices/sgbk_4_pro.png" },
+  { id: "sgbk_4_pro_360", label: "Galaxy Book4 Pro 360", base: 446, inquiryOnly: false, image: "/devices/sgbk_4_pro_360.png" },
+  { id: "sgbk_4_ultra", label: "Galaxy Book4 Ultra", base: 446, inquiryOnly: false, image: "/devices/sgbk_4_ultra.png" },
+  { id: "sgbk_4_edge", label: "Galaxy Book4 Edge", base: 446, inquiryOnly: false, image: "/devices/sgbk_4_edge.png" },
 ];
 const SAMSUNG_BOOK3_VARIANTS = [
-  { id: "sgbk_3", label: "Galaxy Book3", base: 446, inquiryOnly: false, image: "/devices/sgbk3.png" },
-  { id: "sgbk_3_360", label: "Galaxy Book3 360", base: 446, inquiryOnly: false, image: "/devices/sgbk3p.png" },
-  { id: "sgbk_3_pro", label: "Galaxy Book3 Pro", base: 446, inquiryOnly: false, image: "/devices/sgbk3pro.png" },
-  { id: "sgbk_3_pro_360", label: "Galaxy Book3 Pro 360", base: 446, inquiryOnly: false, image: "/devices/sgbk3p.png" },
-  { id: "sgbk_3_ultra", label: "Galaxy Book3 Ultra", base: 446, inquiryOnly: false, image: "/devices/sgbk3u.png" },
+  { id: "sgbk_3", label: "Galaxy Book3", base: 446, inquiryOnly: false, image: "/devices/sgbk_3.png" },
+  { id: "sgbk_3_360", label: "Galaxy Book3 360", base: 446, inquiryOnly: false, image: "/devices/sgbk_3_360.png" },
+  { id: "sgbk_3_pro", label: "Galaxy Book3 Pro", base: 446, inquiryOnly: false, image: "/devices/sgbk_3_pro.png" },
+  { id: "sgbk_3_pro_360", label: "Galaxy Book3 Pro 360", base: 446, inquiryOnly: false, image: "/devices/sgbk_3_pro_360.png" },
+  { id: "sgbk_3_ultra", label: "Galaxy Book3 Ultra", base: 446, inquiryOnly: false, image: "/devices/sgbk_3_ultra.png" },
 ];
 const SAMSUNG_BOOK2_VARIANTS = [
-  { id: "sgbk_2", label: "Galaxy Book2", base: 243, inquiryOnly: false, image: "/devices/sgbk2.png" },
-  { id: "sgbk_2_360", label: "Galaxy Book2 360", base: 243, inquiryOnly: false, image: "/devices/sgbk2p.png" },
-  { id: "sgbk_2_pro", label: "Galaxy Book2 Pro", base: 243, inquiryOnly: false, image: "/devices/sgbk2p.png" },
-  { id: "sgbk_2_pro_360", label: "Galaxy Book2 Pro 360", base: 243, inquiryOnly: false, image: "/devices/sgbk2p.png" },
+  { id: "sgbk_2", label: "Galaxy Book2", base: 243, inquiryOnly: false, image: "/devices/sgbk_2.png" },
+  { id: "sgbk_2_360", label: "Galaxy Book2 360", base: 243, inquiryOnly: false, image: "/devices/sgbk_2_360.png" },
+  { id: "sgbk_2_pro", label: "Galaxy Book2 Pro", base: 243, inquiryOnly: false, image: "/devices/sgbk_2_pro.png" },
+  { id: "sgbk_2_pro_360", label: "Galaxy Book2 Pro 360", base: 243, inquiryOnly: false, image: "/devices/sgbk_2_pro_360.png" },
 ];
 const SAMSUNG_BOOK1_VARIANTS = [
-  { id: "sgbk_1", label: "Galaxy Book", base: 140, inquiryOnly: false, image: "/devices/sgbk2.png" },
-  { id: "sgbk_1_pro", label: "Galaxy Book Pro", base: 140, inquiryOnly: false, image: "/devices/sgbk2p.png" },
-  { id: "sgbk_1_pro_360", label: "Galaxy Book Pro 360", base: 140, inquiryOnly: false, image: "/devices/sgbk2p.png" },
-  { id: "sgbk_1_ion", label: "Galaxy Book Ion", base: 140, inquiryOnly: false, image: "/devices/sgbk2.png" },
-  { id: "sgbk_1_flex", label: "Galaxy Book Flex", base: 140, inquiryOnly: false, image: "/devices/sgbk2p.png" },
-  { id: "sgbk_1_flex_alpha", label: "Galaxy Book Flex Alpha", base: 140, inquiryOnly: false, image: "/devices/sgbk2p.png" },
-  { id: "sgbk_1_flex2_alpha", label: "Galaxy Book Flex2 Alpha", base: 140, inquiryOnly: false, image: "/devices/sgbk2p.png" },
-  { id: "sgbk_1_odyssey", label: "Galaxy Book Odyssey", base: 140, inquiryOnly: false, image: "/devices/sgbk2.png" },
+  { id: "sgbk_1", label: "Galaxy Book", base: 140, inquiryOnly: false, image: "/devices/sgbk_1.png" },
+  { id: "sgbk_1_pro", label: "Galaxy Book Pro", base: 140, inquiryOnly: false, image: "/devices/sgbk_1_pro.png" },
+  { id: "sgbk_1_pro_360", label: "Galaxy Book Pro 360", base: 140, inquiryOnly: false, image: "/devices/sgbk_1_pro_360.png" },
+  { id: "sgbk_1_ion", label: "Galaxy Book Ion", base: 140, inquiryOnly: false, image: "/devices/sgbk_1_ion.png" },
+  { id: "sgbk_1_flex", label: "Galaxy Book Flex", base: 140, inquiryOnly: false, image: "/devices/sgbk_1_flex.png" },
+  { id: "sgbk_1_flex_alpha", label: "Galaxy Book Flex Alpha", base: 140, inquiryOnly: false, image: "/devices/sgbk_1_flex_alpha.png" },
+  { id: "sgbk_1_flex2_alpha", label: "Galaxy Book Flex2 Alpha", base: 140, inquiryOnly: false, image: "/devices/sgbk_1_flex2_alpha.png" },
+  { id: "sgbk_1_odyssey", label: "Galaxy Book Odyssey", base: 140, inquiryOnly: false, image: "/devices/sgbk_1_odyssey.png" },
 ];
 const SAMSUNG_PC_SERIES = [
-  { id: "sgbk_book5", label: "Galaxy Book 5", year: "2025", topPrice: 639, variants: SAMSUNG_BOOK5_VARIANTS, image: "/devices/sgbk4u.png" },
-  { id: "sgbk_book4", label: "Galaxy Book 4", year: "2024", topPrice: 446, variants: SAMSUNG_BOOK4_VARIANTS, image: "/devices/sgbk4u.png" },
-  { id: "sgbk_book3", label: "Galaxy Book 3", year: "2023", topPrice: 446, variants: SAMSUNG_BOOK3_VARIANTS, image: "/devices/sgbk3u.png" },
-  { id: "sgbk_book2", label: "Galaxy Book 2", year: "2022", topPrice: 243, variants: SAMSUNG_BOOK2_VARIANTS, image: "/devices/sgbk2.png" },
-  { id: "sgbk_book1", label: "Galaxy Book", year: "2020–2021", topPrice: 140, variants: SAMSUNG_BOOK1_VARIANTS, image: "/devices/sgbk2.png" },
+  { id: "sgbk_book5", label: "Galaxy Book 5", year: "2025", topPrice: 639, variants: SAMSUNG_BOOK5_VARIANTS, image: "/devices/sgbk_5_pro.png" },
+  { id: "sgbk_book4", label: "Galaxy Book 4", year: "2024", topPrice: 446, variants: SAMSUNG_BOOK4_VARIANTS, image: "/devices/sgbk_4_ultra.png" },
+  { id: "sgbk_book3", label: "Galaxy Book 3", year: "2023", topPrice: 446, variants: SAMSUNG_BOOK3_VARIANTS, image: "/devices/sgbk_3_ultra.png" },
+  { id: "sgbk_book2", label: "Galaxy Book 2", year: "2022", topPrice: 243, variants: SAMSUNG_BOOK2_VARIANTS, image: "/devices/sgbk_2_pro.png" },
+  { id: "sgbk_book1", label: "Galaxy Book", year: "2020–2021", topPrice: 140, variants: SAMSUNG_BOOK1_VARIANTS, image: "/devices/sgbk_1_pro.png" },
 ];
 
 // LG LAPTOPS — three-level tree mirroring itsworthmore.com.
