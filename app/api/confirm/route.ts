@@ -105,13 +105,55 @@ ${isMulti ? deviceArr.map((d) => `<tr><td style="padding:10px 0;border-bottom:1p
 </table>
 </td></tr>
 
-<!-- Device Prep -->
-<tr><td style="padding:24px 28px 8px 28px">
-<div style="font-size:11px;color:#00c853;letter-spacing:0.18em;text-transform:uppercase;font-weight:800;margin-bottom:10px">Before we meet</div>
+<!-- DEVICE PREPARATION CHECKLIST — checkbox-style, requireds first -->
+<tr><td style="padding:28px 28px 8px 28px">
+<div style="font-size:13px;color:#fff;font-weight:800;margin-bottom:14px;letter-spacing:-0.01em">Device preparation</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px">
-<tr><td style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;color:#d4d4d4;line-height:1.55"><strong style="color:#fff">Required:</strong> Reset your device and turn off "Find My" or Android Activation Lock.</td></tr>
-<tr><td style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;color:#d4d4d4;line-height:1.55"><strong style="color:#fff">Check:</strong> Confirm there's no outstanding balance with your carrier — see our <a href="https://topcashcellular.com/faq" style="color:#00c853;text-decoration:none">FAQ</a> for how this affects the offer.</td></tr>
-<tr><td style="padding:14px 20px;font-size:13px;color:#d4d4d4;line-height:1.55"><strong style="color:#fff">Optional:</strong> Remove SIM, SD card, screen protector, and case.</td></tr>
+<tr><td style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06)">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td width="28" valign="top" style="padding-right:12px;padding-top:1px"><div style="width:18px;height:18px;border-radius:5px;background:#00c853;color:#0a0a0a;text-align:center;font-weight:800;font-size:13px;line-height:18px">✓</div></td>
+      <td valign="top">
+        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#ff6b60;font-weight:800;margin-bottom:3px">Required</div>
+        <div style="font-size:13px;color:#fff;font-weight:700;line-height:1.4;margin-bottom:3px">Reset your device + turn off Find My / Activation Lock</div>
+        <div style="font-size:11px;color:#a8a8a8;line-height:1.5">Activation-locked devices don't qualify for free return shipping. iPhone: Settings → [your name] → Find My → Find My iPhone → off. Android: Settings → Accounts → remove Google account.</div>
+      </td>
+    </tr>
+  </table>
+</td></tr>
+<tr><td style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06)">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td width="28" valign="top" style="padding-right:12px;padding-top:1px"><div style="width:18px;height:18px;border-radius:5px;background:#00c853;color:#0a0a0a;text-align:center;font-weight:800;font-size:13px;line-height:18px">✓</div></td>
+      <td valign="top">
+        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#ff6b60;font-weight:800;margin-bottom:3px">Required</div>
+        <div style="font-size:13px;color:#fff;font-weight:700;line-height:1.4;margin-bottom:3px">Confirm device is paid off with your carrier</div>
+        <div style="font-size:11px;color:#a8a8a8;line-height:1.5">Devices with an outstanding carrier balance can get blacklisted at any time — we'll still buy them, but at a reduced offer (typically 50-75% of quote). Honest answer up front saves both of us a return trip.</div>
+      </td>
+    </tr>
+  </table>
+</td></tr>
+<tr><td style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06)">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td width="28" valign="top" style="padding-right:12px;padding-top:1px"><div style="width:18px;height:18px;border-radius:5px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.20);text-align:center;font-weight:800;font-size:13px;line-height:18px;color:#a8a8a8">○</div></td>
+      <td valign="top">
+        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#a8a8a8;font-weight:800;margin-bottom:3px">Optional</div>
+        <div style="font-size:13px;color:#fff;font-weight:700;line-height:1.4;margin-bottom:3px">Remove SIM, SD card, screen protector, case</div>
+        <div style="font-size:11px;color:#a8a8a8;line-height:1.5">We'll wipe these on arrival regardless, but pulling them now means nothing of yours travels with the device.</div>
+      </td>
+    </tr>
+  </table>
+</td></tr>
+<tr><td style="padding:14px 20px;background:rgba(255,107,96,0.06)">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td valign="top">
+        <div style="font-size:12px;color:#ff8088;line-height:1.55"><strong style="color:#ff6b60">Heads up:</strong> if your device arrives still activation-locked or doesn't match the model you submitted, we'll ask you to cover return shipping. Disclose damage or carrier balance up front and we'll work with you.</div>
+      </td>
+    </tr>
+  </table>
+</td></tr>
 </table>
 </td></tr>
 
@@ -173,6 +215,66 @@ ${hasLabel ? `
     </td></tr>
   </table>
 </td></tr>
+</table>
+</td></tr>
+
+<!-- PACKAGING CHECKLIST — ship customers only -->
+<tr><td style="padding:24px 28px 8px 28px">
+<div style="font-size:13px;color:#fff;font-weight:800;margin-bottom:14px;letter-spacing:-0.01em">Packaging checklist</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px">
+  <tr><td style="padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.06)">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td width="26" valign="top" style="padding-right:10px;padding-top:1px"><div style="width:16px;height:16px;border-radius:4px;background:#00c853;color:#0a0a0a;text-align:center;font-weight:800;font-size:11px;line-height:16px">✓</div></td>
+      <td valign="top" style="font-size:12px;color:#e6e6e6;line-height:1.55"><strong style="color:#fff">Use a plain box.</strong> Padded mailer or any 6×4×2-ish padded envelope works for phones. ${(deviceArr.length > 1) ? `All ${deviceArr.length} devices fit in ONE box together — saves you a trip and keeps everything together.` : ""}</td>
+    </tr></table>
+  </td></tr>
+  <tr><td style="padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(255,180,0,0.04)">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td width="26" valign="top" style="padding-right:10px;padding-top:1px"><div style="width:16px;height:16px;border-radius:4px;background:#ffb400;color:#1a1100;text-align:center;font-weight:800;font-size:11px;line-height:16px">!</div></td>
+      <td valign="top" style="font-size:12px;color:#e6e6e6;line-height:1.55"><strong style="color:#ffd54f">Don't use the original Apple / Samsung / carrier box.</strong> Branded device packaging is a magnet for porch + transit theft. A plain unmarked box keeps it discreet.</td>
+    </tr></table>
+  </td></tr>
+  <tr><td style="padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.06)">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td width="26" valign="top" style="padding-right:10px;padding-top:1px"><div style="width:16px;height:16px;border-radius:4px;background:#00c853;color:#0a0a0a;text-align:center;font-weight:800;font-size:11px;line-height:16px">✓</div></td>
+      <td valign="top" style="font-size:12px;color:#e6e6e6;line-height:1.55"><strong style="color:#fff">Cushion the device.</strong> Bubble wrap, balled-up paper, or even an old t-shirt around it. Filler so nothing rattles. No bag of sand, just snug.</td>
+    </tr></table>
+  </td></tr>
+  <tr><td style="padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.06)">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td width="26" valign="top" style="padding-right:10px;padding-top:1px"><div style="width:16px;height:16px;border-radius:4px;background:#00c853;color:#0a0a0a;text-align:center;font-weight:800;font-size:11px;line-height:16px">✓</div></td>
+      <td valign="top" style="font-size:12px;color:#e6e6e6;line-height:1.55"><strong style="color:#fff">Tape it shut.</strong> All seams, both ends. Packing tape ideally, but masking tape works in a pinch.</td>
+    </tr></table>
+  </td></tr>
+  <tr><td style="padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.06)">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td width="26" valign="top" style="padding-right:10px;padding-top:1px"><div style="width:16px;height:16px;border-radius:4px;background:#00c853;color:#0a0a0a;text-align:center;font-weight:800;font-size:11px;line-height:16px">✓</div></td>
+      <td valign="top" style="font-size:12px;color:#e6e6e6;line-height:1.55"><strong style="color:#fff">Stick the label on flat — barcode visible.</strong> One clear strip of tape over the whole label is best. No bumps, no folds, no tape strips across the barcode itself (FedEx scanners need to read it).</td>
+    </tr></table>
+  </td></tr>
+  <tr><td style="padding:12px 18px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td width="26" valign="top" style="padding-right:10px;padding-top:1px"><div style="width:16px;height:16px;border-radius:4px;background:#00c853;color:#0a0a0a;text-align:center;font-weight:800;font-size:11px;line-height:16px">✓</div></td>
+      <td valign="top" style="font-size:12px;color:#e6e6e6;line-height:1.55"><strong style="color:#fff">Drop within 7 days</strong> to lock in your $${quote} offer. Past that we may need to re-quote based on current market rates.</td>
+    </tr></table>
+  </td></tr>
+</table>
+</td></tr>
+
+<!-- HAZMAT NOTE — lithium battery warning, required for any device w/ battery -->
+<tr><td style="padding:18px 28px 4px 28px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,180,0,0.06);border:1px solid rgba(255,180,0,0.25);border-left:3px solid #ffb400;border-radius:12px">
+  <tr><td style="padding:14px 18px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td width="40" valign="top" style="padding-right:12px"><div style="font-size:24px;line-height:1">🔋</div></td>
+        <td valign="top">
+          <div style="font-size:12px;color:#ffd54f;font-weight:800;letter-spacing:0.04em;margin-bottom:4px">Battery (lithium) shipping note</div>
+          <div style="font-size:11px;color:#e6e6e6;line-height:1.55">Most phones, tablets, and laptops contain lithium batteries. FedEx handles these as "Section II" lithium-ion shipments — your label already covers the proper hazmat marking, no extra paperwork from you. Don't ship a device that's swollen, leaking, or visibly damaged on the battery — reply to this email and we'll arrange safe local pickup instead.</div>
+        </td>
+      </tr>
+    </table>
+  </td></tr>
 </table>
 </td></tr>
 
