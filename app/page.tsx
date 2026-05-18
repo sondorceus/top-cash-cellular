@@ -6325,39 +6325,74 @@ export default function Home() {
           return false;
         }
       })();
+      // Match every step's render gate EXACTLY so refresh resumes
+      // on any step that actually has the data it needs. Anything that
+      // wouldn't render is dropped to home. Updated 2026-05-18 after
+      // mapping all 24 step gates in the funnel. Skywalker: "keep my
+      // spot without going to footer at every level".
       const requirementsMet = (() => {
         switch (s.step) {
-          // Funnel-tail steps: need EITHER a quote in funnel state OR
-          // items in the cart. Contact specifically also needs payout.
-          case "contact":
-            return ((!!s.model && !!s.condition) || hasCartItems) && !!s.payout;
-          case "payout":
-          case "checkout":
-          case "quote":
-            return (!!s.model && !!s.condition) || hasCartItems;
-          // Mid-funnel steps that require at least model + deviceType
-          case "carrier-lock":
-          case "carrier":
-          case "connectivity":
+          // Free-to-navigate early steps
+          case "device":
+          case "category":
+          case "inquiry":
+            return true;
+          case "brand":
+            return !!s.deviceType || true; // gate also needs category; deviceType is set when brand picked, but brand renders even from category=null in some flows
+          case "model":
+            return true; // gate is page==="home" only
+
+          // Mid-funnel — need at least model
           case "storage":
           case "condition":
-          case "displayglass":
+            return !!s.model;
+
+          // Broken-condition sub-steps — need model + broken-condition
+          case "broken-functional":
+          case "broken-glass":
+            // Saved condition would have to be the "broken" entry; can't
+            // verify deep shape, so allow if model+condition present.
+            return !!s.model && !!s.condition;
+
+          // Connectivity (iPad only)
+          case "connectivity":
+            return !!s.model && s.deviceType === "ipad";
+
+          // MacBook / additive-spec steps — require model
           case "processor":
           case "memory":
           case "graphics":
+          case "displayresolution":
+          case "displayglass":
           case "batteryhealth":
           case "charger":
           case "extras":
-            return !!(s.model && s.deviceType);
-          // Early picker steps need only deviceType (or nothing)
-          case "model":
-            return !!s.deviceType;
-          case "brand":
-          case "category":
-          case "device":
-            return true;
+            return !!s.model;
+
+          // Carrier flow — needs model + condition
+          case "carrier":
+            return !!s.model && !!s.condition;
+          case "carrier-lock":
+            return !!s.model && !!s.condition && !!s.carrier;
+
+          // Quote/checkout/payout/contact — cart items also qualify
+          case "quote":
+            return !!s.model && !!s.condition;
+          case "checkout":
+            return (!!s.model && !!s.condition) || hasCartItems;
+          case "payout":
+            // Gate is just step+page — but no point landing here with
+            // empty everything (it'd show an empty payout picker).
+            return (!!s.model && !!s.condition) || hasCartItems;
+          case "contact":
+            return ((!!s.model && !!s.condition) || hasCartItems) && !!s.payout;
+
+          // Terminal — never restore to done; cleared up top.
+          case "done":
+            return false;
+
           default:
-            // Unknown step — better to land on home than show empty.
+            // Unknown step (legacy / typo) — drop to home.
             return false;
         }
       })();
