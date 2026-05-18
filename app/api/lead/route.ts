@@ -111,8 +111,22 @@ function needsManualReview(modelName: string, quoteAmt: number): boolean {
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const { name, phone, email, device, model, storage, condition, carrier, quote, payout, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices } = data;
+  let { payout } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, quote, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices } = data;
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
+
+  // Server-side guard: Cash is local-only. If a ship handoff slips
+  // through with payout=Cash (client filter bypass, stale state, bad
+  // client), coerce to "Cash App" so the lead still saves but doesn't
+  // promise an impossible payment method. Staff will catch in admin.
+  // Skywalker 2026-05-18.
+  if (
+    handoff && typeof handoff === "object" &&
+    (handoff as { method?: string }).method === "ship" &&
+    typeof payout === "string" && payout.toLowerCase() === "cash"
+  ) {
+    payout = "Cash App (coerced — Cash not valid for shipping)";
+  }
 
   // Dedup check — wider window for custom-quote flows (free-text descriptions)
   const isCustom = !quote || quote === 0 || quote === "0";

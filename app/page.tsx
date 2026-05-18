@@ -5931,6 +5931,16 @@ export default function Home() {
     const t = setTimeout(() => initShipAutocomplete(), 100);
     return () => clearTimeout(t);
   }, [handoffMethod, initShipAutocomplete]);
+  // Cash is local-only. If the user picked Cash while on Local and then
+  // clicks "Switch to shipping" on the contact step, the previously-
+  // selected Cash would otherwise carry over → invalid combo at submit.
+  // Force-clear payout so they re-pick a shippable method. Skywalker
+  // 2026-05-18.
+  useEffect(() => {
+    if (handoffMethod === "ship" && payout?.id === "cash") {
+      setPayout(null);
+    }
+  }, [handoffMethod, payout]);
 
   const [localArea, setLocalArea] = useState<string | null>(null);
   const AUSTIN_AREAS = [
@@ -13017,7 +13027,12 @@ export default function Home() {
                   <div className="mt-4 grid grid-cols-3 gap-2 text-center">
                     <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight">⚡<br />Same-day<br />payout</div>
                     <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight">🔒<br />On-site<br />data wipe</div>
-                    <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight">💵<br />Cash · Zelle<br />Cash App · BTC</div>
+                    <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight">
+                      💵<br />
+                      {handoffMethod === "ship"
+                        ? <>Cash App · Zelle<br />Venmo · BTC</>
+                        : <>Cash · Zelle<br />Cash App · BTC</>}
+                    </div>
                   </div>
                 </div>
               )}
