@@ -69,12 +69,6 @@ export default async function ReviewsPage() {
         </Link>
         <div className="flex items-center gap-3">
           <HeaderSearch className="flex w-40 sm:w-56 md:w-64" />
-          <Link
-            href="/reviews/new"
-            className="bg-[#00c853] text-black px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#00e676] transition whitespace-nowrap"
-          >
-            Leave a review
-          </Link>
         </div>
       </SlideOnScrollNav>
 
@@ -125,13 +119,11 @@ export default async function ReviewsPage() {
           </ul>
         )}
 
-        <div className="text-center mt-10">
-          <Link
-            href="/reviews/new"
-            className="inline-block bg-[#00c853] text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-[#00e676] transition"
-          >
-            Share your experience
-          </Link>
+        <div className="text-center mt-10 px-6 py-6 bg-white/[0.04] border border-white/10 rounded-2xl max-w-lg mx-auto">
+          <p className="text-[#7be8a8] text-[10px] font-bold uppercase tracking-[0.18em] mb-2">✓ Verified customers only</p>
+          <p className="text-white font-semibold text-base mb-2">Reviews here are real</p>
+          <p className="text-[#bdbdbd] text-sm leading-relaxed mb-3">We don&apos;t accept reviews from strangers off the internet. Every review on this page comes from a one-use link we email to the customer after we&apos;ve paid out their trade. It keeps reviews honest — for you, and for the next person reading.</p>
+          <a href="mailto:CustomerService@topcashcells.com?subject=Need%20my%20review%20link" className="inline-block text-[#dcdcdc] hover:text-[#00c853] text-xs underline">Sold to us and didn&apos;t get a link? Email us</a>
         </div>
 
         <div className="text-center mt-12 pt-8 border-t border-white/10">

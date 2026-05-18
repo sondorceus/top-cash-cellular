@@ -91,6 +91,7 @@ interface Lead {
   commsSent?: { sms: number; email: number; lastAt?: string };
   payoutConfirmation?: { method?: string; reference?: string; note?: string; at: string };
   idCaptured?: { type: string; last4: string; dobYear: string; photoUrl: string; at: string };
+  reviewToken?: string;
 }
 
 const STATUS_OPTIONS = [
@@ -314,12 +315,20 @@ export default function AdminPage() {
   // one-click way to grab a personalized review URL per customer.
   const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
   const copyReviewLink = async (lead: Lead) => {
+    // Strict gate — review links require a minted single-use token,
+    // which only gets created when status flips to paid/met. If no
+    // active token exists (lead never marked paid, or token already
+    // used, or expired), refuse and explain. Skywalker 2026-05-18.
+    if (!lead.reviewToken) {
+      alert("No active review link for this lead. Mark the lead as Paid or Met first to generate one. If the customer already used their link, mark Paid again to mint a fresh one.");
+      return;
+    }
     const params = new URLSearchParams();
+    params.set("token", lead.reviewToken);
     if (lead.name) params.set("name", lead.name);
     const dev = lead.model || lead.device;
     if (dev) params.set("device", dev);
-    const qs = params.toString();
-    const url = `https://topcashcellular.com/reviews/new${qs ? `?${qs}` : ""}`;
+    const url = `https://topcashcellular.com/reviews/new?${params.toString()}`;
     try {
       await navigator.clipboard.writeText(url);
       setCopiedLinkId(lead.id);

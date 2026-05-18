@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomBytes } from "crypto";
 import { logComm } from "../../../../lib/comms-log";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -13,15 +14,44 @@ const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
 // both trigger a review-request SMS/email + Trustpilot invite.
 const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "met", "rejected"];
 
-// Build the review link with name + device prefilled so the customer
-// lands on /reviews/new with the form already populated. Used by both
-// the SMS and email templates for the "paid" and "met" statuses.
-function buildReviewUrl(name?: string, device?: string): string {
+// Single-use review token, minted ONLY when admin flips a lead to paid
+// or met. Skywalker 2026-05-18 "BE STRICT — random people can't see
+// review page. Even if customer checkout, if not marked paid, can't
+// review". The token is the customer's ticket to /reviews/new; no
+// other path issues one. 60-day TTL keeps stale links from re-opening
+// the door long after the trade.
+function mintReviewToken(): string {
+  return randomBytes(32).toString("hex");
+}
+
+async function postReviewTokenMarker(leadId: string, token: string, name?: string, device?: string) {
+  const expiresAt = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(); // 60-day TTL
+  const marker = `[REVIEW-TOKEN: ${leadId}] token=${token} expires=${expiresAt}${name ? ` name=${name.replace(/[\s·]+/g, "_").slice(0, 60)}` : ""}${device ? ` device=${device.replace(/[\s·]+/g, "_").slice(0, 60)}` : ""}`;
+  try {
+    await fetch(`${MC_API}/api/comms`, {
+      method: "POST",
+      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "tcc-admin",
+        fromName: "TCC Admin",
+        role: "system",
+        body: marker,
+        tags: ["review-token", "minted"],
+        priority: "low",
+      }),
+    });
+  } catch {}
+}
+
+// Build the review link with the single-use token + prefilled name +
+// device. /reviews/new refuses to render the form without a valid token
+// in the URL, so the token IS the access control.
+function buildReviewUrl(token: string, name?: string, device?: string): string {
   const params = new URLSearchParams();
+  params.set("token", token);
   if (name) params.set("name", name);
   if (device) params.set("device", device);
-  const qs = params.toString();
-  return qs ? `https://topcashcellular.com/reviews/new?${qs}` : "https://topcashcellular.com/reviews/new";
+  return `https://topcashcellular.com/reviews/new?${params.toString()}`;
 }
 
 function checkAuth(req: NextRequest): boolean {
@@ -48,9 +78,14 @@ async function sendSms(to: string, body: string): Promise<boolean> {
   } catch { return false; }
 }
 
-function smsTemplate(status: string, ctx: { name?: string; device?: string; quote?: string; payout?: string; rejectionReason?: string }): string {
+type TemplateCtx = { name?: string; device?: string; quote?: string; payout?: string; rejectionReason?: string; reviewToken?: string };
+
+function smsTemplate(status: string, ctx: TemplateCtx): string {
   const dev = ctx.device || "your device";
   const first = ctx.name?.split(" ")[0] || "there";
+  // Token-gated review URL — only fires for paid/met where the caller
+  // minted a token. Without one, the SMS skips the review CTA entirely.
+  const reviewLink = ctx.reviewToken ? buildReviewUrl(ctx.reviewToken, ctx.name, ctx.device) : "";
   switch (status) {
     case "shipped":
       return `Top Cash: Hi ${first}, your prepaid FedEx label is in your inbox. Drop ${dev} at any FedEx location — we'll text you when it arrives. Questions? Email CustomerService@topcashcells.com`;
@@ -59,9 +94,9 @@ function smsTemplate(status: string, ctx: { name?: string; device?: string; quot
     case "tested":
       return `Top Cash: ${dev} passed inspection ✅ Finalizing your ${ctx.quote || "payout"} via ${ctx.payout || "your chosen method"} now.`;
     case "paid":
-      return `Top Cash: ${ctx.quote || "Payment"} sent via ${ctx.payout || "your method"}! Thanks for selling with us, ${first}. Mind leaving a 30-sec review? ${buildReviewUrl(ctx.name, ctx.device)}`;
+      return `Top Cash: ${ctx.quote || "Payment"} sent via ${ctx.payout || "your method"}! Thanks for selling with us, ${first}.${reviewLink ? ` Mind leaving a 30-sec review? ${reviewLink}` : ""}`;
     case "met":
-      return `Top Cash: Thanks for meeting up, ${first}! Hope you're happy with the trade. If you had a smooth experience, mind leaving a quick review? ${buildReviewUrl(ctx.name, ctx.device)}`;
+      return `Top Cash: Thanks for meeting up, ${first}! Hope you're happy with the trade.${reviewLink ? ` If you had a smooth experience, mind leaving a quick review? ${reviewLink}` : ""}`;
     case "rejected":
       if (ctx.rejectionReason) {
         return `Top Cash: Hi ${first}, we couldn't accept ${dev} — ${ctx.rejectionReason}. Email CustomerService@topcashcells.com if you'd like to discuss.`;
@@ -72,7 +107,7 @@ function smsTemplate(status: string, ctx: { name?: string; device?: string; quot
   }
 }
 
-async function emailStatus(to: string, status: string, ctx: { name?: string; device?: string; quote?: string; payout?: string; rejectionReason?: string }) {
+async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
   if (!process.env.RESEND_API_KEY) return false;
   const first = ctx.name?.split(" ")[0] || "there";
   const dev = ctx.device || "your device";
@@ -103,8 +138,11 @@ async function emailStatus(to: string, status: string, ctx: { name?: string; dev
     // On the two terminal statuses (paid / met) swap the default "Reply
     // to email" CTA for a one-click review button. Links to /reviews/new
     // with name + device prefilled so the customer doesn't have to retype.
-    const isReviewAsk = status === "paid" || status === "met";
-    const reviewUrl = buildReviewUrl(ctx.name, ctx.device);
+    // Review CTA renders only when we minted a token for this lead.
+    // Status flips that DON'T grant token access (e.g. paid without a
+    // token mint failure) silently swap back to the support CTA.
+    const isReviewAsk = (status === "paid" || status === "met") && !!ctx.reviewToken;
+    const reviewUrl = ctx.reviewToken ? buildReviewUrl(ctx.reviewToken, ctx.name, ctx.device) : "";
     const html = `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -297,8 +335,20 @@ export async function POST(req: NextRequest) {
     mcOk = r.ok;
   } catch {}
 
+  // Mint a single-use review token IF this flip is paid/met. The
+  // token is the customer's ticket to /reviews/new — no token, no
+  // review. Skywalker 2026-05-18 "BE STRICT — random people can't
+  // see the review page. Even if customer checkout, if not marked
+  // paid, can't review". 60-day TTL, marker persisted to MC so the
+  // verify-token endpoint can validate it later.
+  let reviewToken: string | undefined;
+  if (status === "paid" || status === "met") {
+    reviewToken = mintReviewToken();
+    await postReviewTokenMarker(leadId, reviewToken, name, device);
+  }
+
   // 2. Fire SMS + email in parallel.
-  const ctx = { name, device, quote, payout, rejectionReason };
+  const ctx: TemplateCtx = { name, device, quote, payout, rejectionReason, reviewToken };
   const [smsSent, emailSent] = await Promise.all([
     phone ? sendSms(phone, smsTemplate(status, ctx)) : Promise.resolve(false),
     email ? emailStatus(email, status, ctx) : Promise.resolve(false),

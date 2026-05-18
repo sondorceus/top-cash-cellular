@@ -8868,29 +8868,20 @@ export default function Home() {
           ) : (
             <div className="px-4 mx-auto max-w-md text-center bg-white/[0.04] border border-white/10 rounded-2xl py-8 px-6">
               <p className="text-4xl mb-2">★</p>
-              <p className="text-white font-bold text-base mb-1">Be one of our first reviewers</p>
-              <p className="text-[#bdbdbd] text-sm leading-relaxed mb-4">Sold to us recently? Drop a quick note about your experience — it helps the next Austinite trust us.</p>
-              <a
-                href="/reviews/new"
-                className="inline-flex items-center gap-2 bg-[#ffb400] hover:bg-[#ffc733] text-[#1a1100] font-bold text-sm px-5 py-2.5 rounded-full transition cursor-pointer"
-              >
-                ★ Leave the first review
-              </a>
+              <p className="text-white font-bold text-base mb-1">Reviews coming soon</p>
+              <p className="text-[#bdbdbd] text-sm leading-relaxed">Reviews on this page are only from customers we&apos;ve completed a trade with — verified, real Austin sellers. The wall takes a beat to fill up.</p>
             </div>
           )}
-          {/* "Leave a review" footer — invites verified Austin sellers to
-              contribute. We don't promote heavily until they've actually
-              traded with us, but the link belongs here so anyone who knows
-              us can drop a note. */}
-          <div className="px-4 mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
-            <p className="text-[#bdbdbd] text-sm">Sold to us recently?</p>
-            <a
-              href="/reviews/new"
-              className="inline-flex items-center gap-2 bg-[#ffb400] hover:bg-[#ffc733] text-[#1a1100] font-bold text-sm px-5 py-2.5 rounded-full transition cursor-pointer"
-            >
-              ★ Leave a review
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
-            </a>
+          {/* "Verified-only" trust footer — replaces the old public
+              "Leave a review" CTA. Skywalker 2026-05-18: random people
+              can't see the review form anymore. Only customers we've
+              flipped to paid/met get a one-use link via email. This
+              copy explains the policy so visitors don't think we're
+              missing a button. */}
+          <div className="px-4 mt-6 flex flex-col sm:flex-row items-center justify-center gap-2 text-center text-[#888] text-[12px] leading-snug">
+            <span>★ Verified customers only — review link comes in your payout email.</span>
+            <span className="hidden sm:inline">·</span>
+            <a href="mailto:CustomerService@topcashcells.com?subject=Need%20my%20review%20link" className="text-[#dcdcdc] hover:text-[#00c853] underline">Lost yours? Email us</a>
           </div>
         </section>
       )}

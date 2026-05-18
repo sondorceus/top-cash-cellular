@@ -83,6 +83,27 @@ async function notifyOwner(review: { name: string; rating: number; body: string;
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
+  const token = String(body.token || "").trim();
+
+  // STRICT GATE — Skywalker 2026-05-18 "BE STRICT. Random people can't
+  // see review page. Even if customer checkout, if not marked paid,
+  // can't review". Token is required. Token must verify (in-paid/met
+  // status + not expired + not previously used). No token, no review.
+  if (!token || token.length < 32) {
+    return NextResponse.json({ error: "Review submissions require a verified link from your trade confirmation email." }, { status: 401 });
+  }
+  let verification: { valid?: boolean; leadId?: string; error?: string };
+  try {
+    const origin = new URL(req.url).origin;
+    const v = await fetch(`${origin}/api/reviews/verify-token?token=${encodeURIComponent(token)}`, { cache: "no-store" });
+    verification = await v.json();
+    if (!v.ok || !verification.valid) {
+      return NextResponse.json({ error: verification.error || "Invalid or expired review link" }, { status: 401 });
+    }
+  } catch {
+    return NextResponse.json({ error: "Could not verify review link. Try again in a moment." }, { status: 502 });
+  }
+
   try {
     const r = await fetch(`${MC_API}/api/reviews`, {
       method: "POST",
@@ -91,6 +112,23 @@ export async function POST(req: NextRequest) {
     });
     const data = await r.json();
     if (!r.ok) return NextResponse.json({ error: data.error || "Submission failed." }, { status: r.status });
+
+    // Burn the token — post a [REVIEW-USED: token=X] marker so this
+    // token can never submit again. The verify-token endpoint refuses
+    // any submission once this marker exists.
+    fetch(`${MC_API}/api/comms`, {
+      method: "POST",
+      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "tcc-admin",
+        fromName: "TCC Admin",
+        role: "system",
+        body: `[REVIEW-USED: ${token}] leadId=${verification.leadId || ""} reviewId=${data.review?.id || ""}`,
+        tags: ["review-token", "used"],
+        priority: "low",
+      }),
+    }).catch(() => {});
+
     // Fire owner notification after MC accepts the review. Don't await —
     // customer should see thank-you immediately, owner notif can land in
     // the background. Resolves to undefined on error (caught inside).
