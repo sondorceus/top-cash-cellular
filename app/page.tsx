@@ -3349,19 +3349,35 @@ const HIGH_MARGIN_DEVICE_TYPES = new Set<string>([
   "macbook", "samsung_pc", "lenovo", "dell", "alienware", "hp", "acer", "lg_pc", "asus_pc",
   // Desktops
   "apple_desktop", "dell_desktop", "lenovo_desktop", "hp_desktop", "asus_desktop", "alienware_desktop", "msi_desktop",
+  // Watches — sealed-in-box Apple Watch Ultra / Pixel Watch / Galaxy Watch
+  // command a real resale premium, so the 6-tier ladder (sealed + mint +
+  // verygood + good + fair + broken) is the right ask. Garmin stays on
+  // the simple ladder below — Garmin fans buy used and the mint/very-good
+  // split doesn't move the offer enough to justify the extra step.
+  "applewatch", "pixelwatch", "samsungwatch",
+  // Drones + VR — sealed/new units are common on resale (new owner upgrade
+  // path), and the broken tier matters for crashed drones / cracked VR
+  // lenses. Full 6-tier ladder.
+  "dji", "apple_vr", "meta_vr", "valve_vr", "psvr",
 ]);
 const isHighMarginType = (dt: string | null | undefined): boolean => !!dt && HIGH_MARGIN_DEVICE_TYPES.has(dt);
-// Simplified conditions for consoles/watches — fewer tiers, less confusing
+// Simplified conditions for consoles + Garmin — fewer tiers, less
+// confusing for categories where the mint/very-good split doesn't move
+// the offer. Includes broken so honest sellers of a dead PS5 / cracked
+// Fenix can still get a real quote (broken-functional step still fires
+// after they pick broken, same as every other device type).
 const SIMPLE_CONDITIONS = [
   { id: "sealed", label: "New / Sealed", desc: "Factory sealed, never opened", multiplier: 1.03, icon: "📦", details: ["Still in original sealed packaging", "All accessories included and unopened", "Never been used or powered on"] },
   { id: "good", label: "Good", desc: "Works perfectly, normal wear", multiplier: 0.969, icon: "👍", details: ["Powers on and functions 100% as intended", "Normal cosmetic wear — scratches, scuffs OK", "All buttons and ports work", "Includes power cable"] },
   { id: "fair", label: "Fair / Beat Up", desc: "Heavy wear but still works", multiplier: 0.852, icon: "👌", details: ["Powers on and functions as intended", "Heavy cosmetic wear — dents, deep scratches", "May have minor functional issues", "Includes power cable"] },
+  { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: "⚠️", details: ["Won't power on, dead HDMI/display, or major hardware failure", "Cracked housing or broken buttons", "Includes power cable if available", "We'll text you a final quote after inspection"] },
 ];
-// Device types that use simplified 3-tier conditions
+// Device types that use the SIMPLE 4-tier condition ladder (sealed /
+// good / fair / broken). Everything else uses the full 6-tier CONDITIONS
+// ladder via HIGH_MARGIN_DEVICE_TYPES above, or 5-tier (full minus
+// sealed) when neither set matches.
 const SIMPLE_CONDITION_TYPES = new Set([
-  "console", "sony", "microsoft", "nintendo", "steam",
-  "watch", "apple_watch", "samsung_watch", "google_watch", "garmin", "fitbit",
-  "drone", "dji",
+  "console", "sony", "microsoft", "nintendo", "garmin",
 ]);
 const usesSimpleConditions = (dt: string | null | undefined): boolean => !!dt && SIMPLE_CONDITION_TYPES.has(dt);
 const getConditionsFor = (dt: string | null | undefined) => {
@@ -3445,7 +3461,7 @@ type ExtraOption = { id: string; label: string; sub?: string; multiplier: number
 // short-circuit follow-ups like "which band?" when the user already said
 // "no band". When showIf returns false, the renderer auto-advances past
 // the question instead of showing it.
-type BrandExtra = { id: string; question: string; helper?: string; options: ExtraOption[]; showIf?: (extras: Record<string, ExtraOption | undefined>) => boolean;
+type BrandExtra = { id: string; question: string; helper?: string; options: ExtraOption[]; showIf?: (extras: Record<string, ExtraOption | undefined>, condition?: { id: string } | null) => boolean;
   // Optional step-by-step guide shown when the user clicks "How do I check this?"
   // — useful for questions where the answer requires inspection or knowledge
   // the seller may not immediately have (AVP Optic ID, EyeSight glass, etc.).
@@ -3742,10 +3758,13 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
   ],
   // Smartwatches — band makes a big resale difference
   applewatch: [
-    // Functional check first. "No" returns a near-zero multiplier (0.02)
-    // which drops the quote below MIN_OFFER and triggers the
-    // "Manual review needed" flow on the quote step.
-    { id: "functional", question: "Is the watch fully functional?", helper: "Powers on, touchscreen and buttons respond, all sensors work.", options: [
+    // Functional check — only when condition isn't already "broken".
+    // The broken-functional step covers the broken case, so asking
+    // again here would be a double-ask. For non-broken conditions, the
+    // 0.02 multiplier on "no" drops the quote below MIN_OFFER and
+    // triggers the "Manual review needed" flow on the quote step
+    // (catch-all for a "mint" watch that doesn't actually power on).
+    { id: "functional", question: "Is the watch fully functional?", helper: "Powers on, touchscreen and buttons respond, all sensors work.", showIf: (_extras, cond) => cond?.id !== "broken", options: [
       { id: "yes", label: "Yes — fully working", multiplier: 1.00 },
       { id: "no",  label: "No — needs repair or won't power on", sub: "We'll text you a custom quote", multiplier: 0.02 },
     ]},
@@ -10526,8 +10545,10 @@ export default function Home() {
           return null;
         }
         // Auto-skip questions whose showIf predicate says they don't apply
-        // given current answers (e.g. "which band?" when user said no band).
-        if (q.showIf && !q.showIf(extras)) {
+        // given current answers (e.g. "which band?" when user said no band,
+        // or applewatch's "functional?" extra when broken-functional
+        // already covered the same ground).
+        if (q.showIf && !q.showIf(extras, condition)) {
           setTimeout(() => setExtrasIndex(i => i + 1), 0);
           return null;
         }
@@ -10574,7 +10595,7 @@ export default function Home() {
                           let nextIdx = extrasIndex + 1;
                           while (nextIdx < list.length) {
                             const peek = list[nextIdx];
-                            if (peek.showIf && !peek.showIf(nextExtras)) nextIdx++;
+                            if (peek.showIf && !peek.showIf(nextExtras, condition)) nextIdx++;
                             else break;
                           }
                           if (nextIdx < list.length) {
