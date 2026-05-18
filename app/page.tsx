@@ -144,16 +144,11 @@ function CarrierIcon({ id, className = "" }: { id: CarrierIconId; className?: st
 // Verizon/Unlocked = $0 (base price). AT&T, T-Mobile, Other have deductions.
 const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
   // iPhone 17 series
-  // iPhone 17 carrier deductions mirrored from IWM's pricingData
-  // (decoded 2026-05-18). PRICE_TABLE base for these 4 models was
-  // also bumped to IWM's Unlocked headline so the carrier-deducted
-  // payouts match IWM's per-carrier final number. ip17air kept as-is
-  // because IWM doesn't list that model yet.
-  ip17pm: { att: 120, tmobile: 105, other: 600 },
-  ip17p:  { att: 50,  tmobile: 75,  other: 480 },
+  ip17pm: { att: 120, tmobile: 105, other: 500 },
+  ip17p:  { att: 120, tmobile: 105, other: 500 },
   ip17air: { att: 100, tmobile: 90, other: 400 },
-  ip17:   { att: 50,  tmobile: 75,  other: 350 },
-  ip17e:  { att: 50,  tmobile: 75,  other: 200 },
+  ip17:   { att: 100, tmobile: 90, other: 400 },
+  ip17e:  { att: 60, tmobile: 80, other: 200 },
   // iPhone 16 series
   ip16pm: { att: 120, tmobile: 105, other: 500 },
   ip16p:  { att: 100, tmobile: 90, other: 400 },
@@ -401,8 +396,8 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "512": { broken: 294, fair: 570, good: 632, mint: 660, sealed: 779, verygood: 641 },
   },
   ip17: {
-    "256": { broken: 260, fair: 440, good: 520, mint: 575, sealed: 620, verygood: 545 },
-    "512": { broken: 370, fair: 550, good: 630, mint: 685, sealed: 730, verygood: 655 },
+    "256": { broken: 247, fair: 418, good: 494, mint: 546, sealed: 589, verygood: 518 },
+    "512": { broken: 323, fair: 513, good: 589, mint: 641, sealed: 694, verygood: 613 },
   },
   ip17air: {
     "1tb": { broken: 332, fair: 575, good: 636, mint: 703, sealed: 793, verygood: 656 },
@@ -410,19 +405,19 @@ const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
     "512": { broken: 294, fair: 504, good: 565, mint: 632, sealed: 727, verygood: 584 },
   },
   ip17e: {
-    "256": { broken: 135, fair: 235, good: 300, mint: 345, sealed: 375, verygood: 320 },
-    "512": { broken: 190, fair: 290, good: 355, mint: 400, sealed: 430, verygood: 375 },
+    "256": { broken: 95, fair: 238, good: 299, mint: 342, sealed: 356, verygood: 318 },
+    "512": { broken: 114, fair: 285, good: 347, mint: 390, sealed: 408, verygood: 366 },
   },
   ip17p: {
-    "1tb": { broken: 500, fair: 775, good: 915, mint: 995, sealed: 1045, verygood: 945 },
-    "256": { broken: 300, fair: 575, good: 715, mint: 795, sealed: 845, verygood: 745 },
-    "512": { broken: 450, fair: 725, good: 865, mint: 945, sealed: 995, verygood: 895 },
+    "1tb": { broken: 437, fair: 689, good: 822, mint: 898, sealed: 993, verygood: 850 },
+    "256": { broken: 285, fair: 546, good: 679, mint: 755, sealed: 803, verygood: 708 },
+    "512": { broken: 399, fair: 641, good: 774, mint: 850, sealed: 945, verygood: 803 },
   },
   ip17pm: {
-    "1tb": { broken: 550, fair: 955, good: 1055, mint: 1105, sealed: 1135, verygood: 1075 },
-    "256": { broken: 350, fair: 755, good: 855, mint: 905, sealed: 935, verygood: 875 },
-    "2tb": { broken: 750, fair: 1155, good: 1255, mint: 1305, sealed: 1335, verygood: 1275 },
-    "512": { broken: 450, fair: 855, good: 955, mint: 1005, sealed: 1035, verygood: 975 },
+    "1tb": { broken: 399, fair: 874, good: 969, mint: 1016, sealed: 1078, verygood: 988 },
+    "256": { broken: 332, fair: 717, good: 812, mint: 860, sealed: 888, verygood: 831 },
+    "2tb": { broken: 475, fair: 907, good: 1002, mint: 1050, sealed: 1268, verygood: 1021 },
+    "512": { broken: 361, fair: 812, good: 907, mint: 955, sealed: 983, verygood: 926 },
   },
   // === SAMSUNG S SERIES (10% below IWM) ===
   gs24: {
