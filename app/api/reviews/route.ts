@@ -109,14 +109,16 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Stamp verified:true on the upstream payload — this caller has
-    // already validated the token + lead-is-paid-or-met. MC trusts
-    // it because the call uses MC_API_KEY. Token-gated submissions
-    // get the ✓ Verified Seller badge on display.
+    // Stamp verified:true + the leadId on the upstream payload. The
+    // caller has already validated the token + lead-is-paid-or-met
+    // via /api/reviews/verify-token, so we have a trustworthy
+    // leadId in `verification`. MC trusts the payload because the
+    // call uses MC_API_KEY. Token-gated submissions land with the
+    // verified badge AND attribute to the right lead in /admin.
     const r = await fetch(`${MC_API}/api/reviews`, {
       method: "POST",
       headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({ ...body, verified: true }),
+      body: JSON.stringify({ ...body, verified: true, leadId: verification.leadId }),
     });
     const data = await r.json();
     if (!r.ok) return NextResponse.json({ error: data.error || "Submission failed." }, { status: r.status });

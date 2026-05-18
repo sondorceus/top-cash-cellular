@@ -148,6 +148,12 @@ interface AdminLead {
   // when a successful [LABEL:] later wins on timestamp. Skywalker
   // 2026-05-18 — admin manager surface.
   fedexLabelError?: { kind: string; reason: string; at: string };
+  // Customer review left for this lead. Pulled from MC's /api/reviews
+  // store by joining on leadId. Skywalker 2026-05-18 — admin row
+  // shows the rating + body so staff can see what the customer said
+  // without leaving the lead. Empty if no review yet (or if pre-token
+  // and not yet manually attributed).
+  review?: { id: string; rating: number; title?: string; body: string; verified?: boolean; createdAt: string };
 }
 
 // Includes "met" (in-person handoff terminal) alongside "paid" (digital
@@ -173,15 +179,45 @@ export async function GET(req: NextRequest) {
   // Bumped 300 → 1000 so lead backlog of 100+ stays addressable. Each
   // lead can have status / note / delete / restore comms in addition to
   // the original [NEW BUYBACK LEAD], so 300 was running thin.
-  const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
-    headers: { "x-api-key": MC_KEY },
-    cache: "no-store",
-  });
+  // Also pull customer reviews so admin row can render the attached
+  // review inline (Skywalker 2026-05-18 "I should be able to see what
+  // they review on the back end").
+  const [r, reviewsRes] = await Promise.all([
+    fetch(`${MC_API}/api/comms?limit=1000`, {
+      headers: { "x-api-key": MC_KEY },
+      cache: "no-store",
+    }),
+    fetch(`${MC_API}/api/reviews?limit=500`, {
+      headers: { "x-api-key": MC_KEY },
+      cache: "no-store",
+    }),
+  ]);
   if (!r.ok) {
     return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
   }
   const data = await r.json();
   const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
+
+  // Index reviews by leadId. Reviews without a leadId (pre-token,
+  // unbackfilled) stay un-attached — they still show on /reviews
+  // publicly, just not inline on a lead row.
+  type ReviewRow = { id: string; leadId?: string; rating: number; title?: string; body: string; verified?: boolean; createdAt: string };
+  const reviewsByLead = new Map<string, ReviewRow>();
+  if (reviewsRes.ok) {
+    try {
+      const rData = await reviewsRes.json();
+      const reviews: ReviewRow[] = Array.isArray(rData.reviews) ? rData.reviews : [];
+      for (const rev of reviews) {
+        if (!rev.leadId) continue;
+        // Keep the most-recent review per lead (a customer could resubmit
+        // if we re-mint a token, though strict gate makes that rare).
+        const prev = reviewsByLead.get(rev.leadId);
+        if (!prev || (rev.createdAt && prev.createdAt && rev.createdAt > prev.createdAt)) {
+          reviewsByLead.set(rev.leadId, rev);
+        }
+      }
+    } catch {}
+  }
 
   // Pass 1: index status updates + notes + soft-deletes + restores by lead id.
   // Status post format:  "[STATUS: <status>] [LEAD: <leadId>]"
@@ -627,6 +663,18 @@ export async function GET(req: NextRequest) {
         if (usedReviewTokens.has(rt.token)) return undefined;
         if (rt.expires && new Date(rt.expires).getTime() < Date.now()) return undefined;
         return rt.token;
+      })(),
+      review: (() => {
+        const rev = reviewsByLead.get(m.id);
+        if (!rev) return undefined;
+        return {
+          id: rev.id,
+          rating: rev.rating,
+          title: rev.title,
+          body: rev.body,
+          verified: rev.verified,
+          createdAt: rev.createdAt,
+        };
       })(),
     });
   }

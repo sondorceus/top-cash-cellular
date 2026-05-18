@@ -165,7 +165,7 @@ function templateReviewReminder(lead: LeadShape, reviewUrl: string) {
     emailHtml: wrapEmail({
       title: "★ Leave a quick review?",
       accent: "#ffb400",
-      bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Yesterday we paid out your ${device} trade — hope it was a good experience.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">If it was, it would mean a ton if you could drop a 30-second review. It helps the next Austin seller trust us.</p><p style="font-size:13px;color:#888;line-height:1.5;margin:0">Single-use link — only works once.</p>`,
+      bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Yesterday we paid out your ${device} trade — hope it was a good experience.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">If it was, it would mean a ton if you could drop a 30-second review. It helps the next person find us instead of getting lowballed by a faceless website.</p><p style="font-size:13px;color:#888;line-height:1.5;margin:0">Single-use link — only works once.</p>`,
       ctaHref: reviewUrl,
       ctaLabel: "★ Leave a review",
     }),

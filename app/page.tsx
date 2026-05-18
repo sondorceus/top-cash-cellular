@@ -8877,7 +8877,7 @@ export default function Home() {
             <div className="px-4 mx-auto max-w-md text-center bg-white/[0.04] border border-white/10 rounded-2xl py-8 px-6">
               <p className="text-4xl mb-2">★</p>
               <p className="text-white font-bold text-base mb-1">Reviews coming soon</p>
-              <p className="text-[#bdbdbd] text-sm leading-relaxed">Reviews on this page are only from customers we&apos;ve completed a trade with — verified, real Austin sellers. The wall takes a beat to fill up.</p>
+              <p className="text-[#bdbdbd] text-sm leading-relaxed">Reviews on this page are only from customers we&apos;ve completed a trade with — verified, real sellers. The wall takes a beat to fill up.</p>
             </div>
           )}
           {/* "Verified-only" trust footer — replaces the old public

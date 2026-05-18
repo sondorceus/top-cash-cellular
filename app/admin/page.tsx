@@ -92,6 +92,7 @@ interface Lead {
   payoutConfirmation?: { method?: string; reference?: string; note?: string; at: string };
   idCaptured?: { type: string; last4: string; dobYear: string; photoUrl: string; at: string };
   reviewToken?: string;
+  review?: { id: string; rating: number; title?: string; body: string; verified?: boolean; createdAt: string };
 }
 
 const STATUS_OPTIONS = [
@@ -307,6 +308,67 @@ export default function AdminPage() {
     } finally {
       setBulkSaving(false);
       setTimeout(() => setBulkProgress(null), 1500);
+    }
+  };
+
+  // Custom email composer — Skywalker 2026-05-18 "I should also be
+  // able to send custom email there, not just resend. I do like the
+  // resend idea though." When `emailComposeId === lead.id`, the row
+  // renders an inline composer (subject + body + Send/Cancel).
+  const [emailComposeId, setEmailComposeId] = useState<string | null>(null);
+  const [emailSubject, setEmailSubject] = useState<string>("");
+  const [emailBody, setEmailBody] = useState<string>("");
+  const [emailSendingId, setEmailSendingId] = useState<string | null>(null);
+  const [emailErrorById, setEmailErrorById] = useState<Record<string, string>>({});
+  const [emailSentById, setEmailSentById] = useState<Record<string, boolean>>({});
+  const openEmailComposer = (lead: Lead) => {
+    setEmailComposeId(lead.id);
+    setEmailSubject("");
+    setEmailBody("");
+    setEmailErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
+  };
+  const sendCustomEmail = async (lead: Lead) => {
+    if (!token) return;
+    if (!lead.email) {
+      setEmailErrorById((s) => ({ ...s, [lead.id]: "No customer email on file" }));
+      return;
+    }
+    if (!emailSubject.trim() || emailSubject.trim().length < 2) {
+      setEmailErrorById((s) => ({ ...s, [lead.id]: "Subject required" }));
+      return;
+    }
+    if (!emailBody.trim() || emailBody.trim().length < 5) {
+      setEmailErrorById((s) => ({ ...s, [lead.id]: "Body too short" }));
+      return;
+    }
+    setEmailSendingId(lead.id);
+    setEmailErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
+    try {
+      const r = await fetch(`/api/admin/leads/email?token=${encodeURIComponent(token)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          leadId: lead.id,
+          to: lead.email,
+          subject: emailSubject.trim(),
+          body: emailBody.trim(),
+          customerFirstName: lead.name,
+        }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setEmailErrorById((s) => ({ ...s, [lead.id]: d.error || `HTTP ${r.status}` }));
+      } else {
+        setEmailSentById((s) => ({ ...s, [lead.id]: true }));
+        setEmailComposeId(null);
+        setEmailSubject("");
+        setEmailBody("");
+        setTimeout(() => setEmailSentById((s) => { const c = { ...s }; delete c[lead.id]; return c; }), 4000);
+      }
+    } catch (e) {
+      setEmailErrorById((s) => ({ ...s, [lead.id]: e instanceof Error ? e.message : "Network error" }));
+    } finally {
+      setEmailSendingId(null);
     }
   };
 
@@ -1810,6 +1872,26 @@ export default function AdminPage() {
                         )}
                       </div>
                       )}
+                      {/* Customer review attached to this lead. Surfaces
+                          inline so staff sees exactly what the customer
+                          said + the rating without leaving the row. */}
+                      {lead.review && (
+                        <div className="mt-2 rounded-lg bg-[#ffb400]/8 border border-[#ffb400]/30 px-3 py-2.5">
+                          <div className="flex items-center justify-between gap-2 mb-1.5">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[#ffb400] text-sm font-bold leading-none">{"★".repeat(lead.review.rating)}<span className="text-white/15">{"★".repeat(5 - lead.review.rating)}</span></span>
+                              {lead.review.verified && (
+                                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wider bg-[#00c853]/15 text-[#7be8a8] border border-[#00c853]/40">✓ Verified</span>
+                              )}
+                            </div>
+                            <span className="text-[10px] text-[#888]">{new Date(lead.review.createdAt).toLocaleDateString()}</span>
+                          </div>
+                          {lead.review.title && (
+                            <p className="text-[12px] font-bold text-white leading-tight mb-1 break-words">{lead.review.title}</p>
+                          )}
+                          <p className="text-[11.5px] text-[#e6e6e6] leading-snug break-words italic">&ldquo;{lead.review.body}&rdquo;</p>
+                        </div>
+                      )}
                       {/* Notes */}
                       <div className="mt-1.5">
                         {lead.latestNote && (
@@ -1838,17 +1920,78 @@ export default function AdminPage() {
                           <button type="button" onClick={() => { setNoteOpenId(lead.id); setNoteDraft(""); }} className="text-[10px] text-[#c5c5c5] hover:text-[#d4d4d4] transition mt-1 cursor-pointer">+ {lead.latestNote ? "Add another note" : "Add internal note"}</button>
                         )}
                       </div>
-                      {/* Review-link grab — one click puts the per-customer
-                          review URL on the clipboard so Skywalker can text
-                          or hand it to them after the meetup. */}
-                      <button
-                        type="button"
-                        onClick={() => copyReviewLink(lead)}
-                        className={`mt-1.5 inline-flex items-center gap-1 text-[10px] font-bold transition cursor-pointer px-2 py-1 rounded border ${copiedLinkId === lead.id ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300" : "bg-[#ffb400]/10 border-[#ffb400]/30 text-[#ffd54f] hover:bg-[#ffb400]/20"}`}
-                        title="Copy a review link prefilled with this customer's name + device"
-                      >
-                        {copiedLinkId === lead.id ? "✓ Copied! Paste in SMS or print/QR" : "★ Copy review link"}
-                      </button>
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        {/* Review-link grab — one click puts the per-customer
+                            review URL on the clipboard so Skywalker can text
+                            or hand it to them after the meetup. */}
+                        <button
+                          type="button"
+                          onClick={() => copyReviewLink(lead)}
+                          className={`inline-flex items-center gap-1 text-[10px] font-bold transition cursor-pointer px-2 py-1 rounded border ${copiedLinkId === lead.id ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300" : "bg-[#ffb400]/10 border-[#ffb400]/30 text-[#ffd54f] hover:bg-[#ffb400]/20"}`}
+                          title="Copy a review link prefilled with this customer's name + device"
+                        >
+                          {copiedLinkId === lead.id ? "✓ Copied! Paste in SMS or print/QR" : "★ Copy review link"}
+                        </button>
+                        {/* Custom email composer — send a one-off message
+                            using Resend with the TCC brand wrapper. */}
+                        <button
+                          type="button"
+                          onClick={() => openEmailComposer(lead)}
+                          disabled={!lead.email}
+                          className="inline-flex items-center gap-1 text-[10px] font-bold transition cursor-pointer px-2 py-1 rounded border bg-sky-500/10 border-sky-500/35 text-sky-200 hover:bg-sky-500/20 disabled:opacity-40 disabled:cursor-not-allowed"
+                          title={lead.email ? "Send a one-off custom email to this customer" : "No customer email on file"}
+                        >
+                          {emailSentById[lead.id] ? "✓ Sent" : "✉️ Email"}
+                        </button>
+                      </div>
+                      {/* Inline custom-email composer — toggles open when
+                          ✉️ Email is clicked. Subject + body + Send/Cancel.
+                          Uses Resend behind the scenes with the TCC HTML
+                          template; staff doesn't have to think about HTML. */}
+                      {emailComposeId === lead.id && (
+                        <div className="mt-2 rounded-lg bg-white/[0.04] border border-sky-500/30 p-2.5 space-y-1.5 max-w-[420px]">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-sky-300">✉️ Email {lead.email}</p>
+                          <input
+                            type="text"
+                            value={emailSubject}
+                            onChange={(e) => setEmailSubject(e.target.value)}
+                            placeholder="Subject (shows in the inbox preview)"
+                            maxLength={200}
+                            className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-sky-400"
+                          />
+                          <textarea
+                            value={emailBody}
+                            onChange={(e) => setEmailBody(e.target.value)}
+                            placeholder="Write your message… blank lines = paragraph breaks. The TCC header + signature + footer wrap automatically."
+                            rows={6}
+                            maxLength={5000}
+                            className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white leading-relaxed focus:outline-none focus:border-sky-400 resize-none"
+                          />
+                          <div className="flex items-center justify-between text-[10px] text-[#888]">
+                            <span>{emailBody.length}/5000 · Hi {(lead.name || "there").split(" ")[0]}, … — Skywalker &amp; team</span>
+                          </div>
+                          {emailErrorById[lead.id] && (
+                            <p className="text-[10px] text-red-300">⚠️ {emailErrorById[lead.id]}</p>
+                          )}
+                          <div className="flex gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => sendCustomEmail(lead)}
+                              disabled={emailSendingId === lead.id || !emailSubject.trim() || emailBody.trim().length < 5}
+                              className="flex-1 px-2 py-1.5 bg-sky-500 text-white rounded text-[11px] font-bold hover:bg-sky-400 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                              {emailSendingId === lead.id ? "Sending…" : "Send email"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => { setEmailComposeId(null); setEmailSubject(""); setEmailBody(""); }}
+                              className="px-2 py-1.5 bg-white/5 border border-white/10 rounded text-[11px] text-[#d4d4d4] hover:bg-white/10 cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <div className="text-sm">
                       <p className="font-semibold text-[#00c853]">{lead.quote || "—"}</p>

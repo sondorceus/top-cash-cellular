@@ -124,24 +124,32 @@ function emailBodyHtml(status: string, ctx: TemplateCtx): string {
   const first = ctx.name?.split(" ")[0] || "there";
   const dev = ctx.device || "your device";
   if (status === "paid") {
+    // "Paid" serves both ship + local-digital-payout. Avoid Austin-
+    // specific language here so ship customers (often out-of-state)
+    // don't think the review is only relevant to Austin locals.
+    // Skywalker 2026-05-18: "remove language like Austin unless you
+    // wanna do separate review for Austin and shipping — shippers
+    // read Austin-only text on review they won't review".
     return `
 <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">
-  Your trade is wrapped — payment for <strong style="color:#fff">${dev}</strong>${ctx.payout ? ` is on its way via <strong style="color:#fff">${ctx.payout}</strong>` : " is on its way"}. Thanks for trusting a small Austin business with it. We genuinely don&apos;t take it lightly.
+  Your trade is wrapped — payment for <strong style="color:#fff">${dev}</strong>${ctx.payout ? ` is on its way via <strong style="color:#fff">${ctx.payout}</strong>` : " is on its way"}. Thanks for trusting a small business with it. We genuinely don&apos;t take it lightly.
 </p>
 <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">
-  One small favor — if your experience was a good one, would you drop a 30-second review? The link below is yours alone, single-use, expires in 60 days. Every honest review helps the next Austinite find us instead of getting lowballed by a stranger online.
+  One small favor — if your experience was a good one, would you drop a 30-second review? The link below is yours alone, single-use, expires in 60 days. Every honest review helps the next person find us instead of getting lowballed by a faceless website.
 </p>
 <div style="margin:0 0 4px;font-size:14px;line-height:1.6;color:#dcdcdc;background:rgba(255,180,0,0.06);border:1px solid rgba(255,180,0,0.22);border-left:3px solid #ffb400;border-radius:10px;padding:14px 16px">
   <strong style="color:#fff">If something went sideways</strong> — wrong amount, slow payout, anything off — please hit reply <em>first</em>. We&apos;d rather make it right than read about it. We&apos;re a small team. We&apos;ll answer.
 </div>`;
   }
   if (status === "met") {
+    // "Met" is always a local handoff in person — Austin language is
+    // accurate AND warm here. Keep it.
     return `
 <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">
-  Cash exchanged, trade done — thanks for meeting up today, ${first}. Hope the handoff felt smooth. We genuinely appreciate every Austinite who picks a local outfit over a faceless website.
+  Cash exchanged, trade done — thanks for meeting up today, ${first}. Hope the handoff felt smooth. We genuinely appreciate every local who picks a small outfit over a faceless website.
 </p>
 <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">
-  One small favor — if today went well, would you drop a 30-second review? The link below is yours alone, single-use, expires in 60 days. It helps the next Austin seller find us.
+  One small favor — if today went well, would you drop a 30-second review? The link below is yours alone, single-use, expires in 60 days. It helps the next person find us.
 </p>
 <div style="margin:0 0 4px;font-size:14px;line-height:1.6;color:#dcdcdc;background:rgba(255,180,0,0.06);border:1px solid rgba(255,180,0,0.22);border-left:3px solid #ffb400;border-radius:10px;padding:14px 16px">
   <strong style="color:#fff">Something off?</strong> Hit reply first — we&apos;d rather make it right than read about it on a review. Small team, real humans, we&apos;ll answer.

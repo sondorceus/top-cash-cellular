@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://topcashcellular.com/reviews" },
   openGraph: {
     title: "Customer Reviews — Top Cash Cellular",
-    description: "Real reviews from Austin sellers. See what customers say about our buyback service.",
+    description: "Real reviews from real sellers. See what customers say about our buyback service.",
     url: "https://topcashcellular.com/reviews",
     type: "website",
   },
@@ -75,7 +75,7 @@ export default async function ReviewsPage() {
       <section className="px-4 sm:px-6 py-10 max-w-3xl mx-auto">
         <div className="text-center mb-10">
           <h1 className="text-4xl sm:text-5xl font-bold mb-3">Customer reviews</h1>
-          <p className="text-[#dcdcdc] text-lg">Real Austin sellers. Real experiences.</p>
+          <p className="text-[#dcdcdc] text-lg">Real sellers. Real experiences.</p>
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 mb-8 text-center">
