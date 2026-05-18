@@ -24,11 +24,18 @@ async function sendSms(to: string, body: string): Promise<boolean> {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { name, email, phone, payout, devices, handoffMethod, fedexLabel } = body;
+  const { name, email, phone, devices, handoffMethod, fedexLabel } = body;
+  let { payout } = body;
   // fedexLabel = { tracking, url, service } when /api/lead minted a label.
   // Only ship handoffs get one — local meetups stay on the existing copy.
   const isShipping = handoffMethod === "ship";
   const hasLabel = isShipping && fedexLabel && fedexLabel.url && fedexLabel.tracking;
+  // Defensive: even if a stale client somehow sent payout="Cash" for a
+  // ship handoff, the email should NEVER display "Cash" since we can't
+  // mail physical cash. Coerce to "Cash App". Skywalker 2026-05-18.
+  if (isShipping && typeof payout === "string" && payout.trim().toLowerCase() === "cash") {
+    payout = "Cash App";
+  }
   // Single-device fields fall back when no `devices` array is present.
   let { model, storage, condition, quote } = body;
   // Multi-device confirmation — collapse to a single visible "device"
@@ -56,10 +63,10 @@ export async function POST(req: NextRequest) {
     const htmlEmail = `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;color:#e6e6e6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0a0a0a">
+<body style="margin:0;padding:0;background:#e8e8eb;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;color:#e6e6e6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#e8e8eb">
 <tr><td align="center" style="padding:32px 16px">
-<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;margin:0 auto;border-collapse:separate;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;margin:0 auto;border-collapse:separate;background:#1a1a1d;border:1px solid rgba(255,255,255,0.06);border-radius:18px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.18)">
 
 <!-- Hero header — green gradient with inset rim light -->
 <tr><td style="background:linear-gradient(135deg,#00e676 0%,#00a039 100%);padding:28px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
