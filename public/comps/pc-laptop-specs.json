@@ -51179,5 +51179,141 @@
       "no": -25
     },
     "hasNanoGlass": false
+  },
+  "ln_tp_x390_yoga": {
+    "base_price": 94,
+    "processors": [
+      {
+        "id": "x390",
+        "label": "X390",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "x390_yoga",
+        "label": "X390 Yoga",
+        "adj": 15,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "memory": [],
+    "graphics": [],
+    "display": [],
+    "storage": [
+      {
+        "id": "s256",
+        "label": "256GB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s512",
+        "label": "512GB",
+        "adj": 15,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s1t",
+        "label": "1TB",
+        "adj": 30,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "condition_adj": {
+      "sealed": 15,
+      "mint": 0,
+      "good": -18,
+      "fair": -38,
+      "broken": 0
+    },
+    "battery_adj": {
+      "good": 0,
+      "poor": -50
+    },
+    "charger_adj": {
+      "yes": 0,
+      "no": -25
+    },
+    "hasNanoGlass": false
+  },
+  "hp_victus_15": {
+    "base_price": 54,
+    "processors": [
+      {
+        "id": "up_to_12th_5_6000_series",
+        "label": "Up to 12th/5-6000 Series",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "core_ai_series",
+        "label": "Core/AI-Series",
+        "adj": 30,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "13th_7_8000_series",
+        "label": "13th/7-8000 Series",
+        "adj": 80,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "memory": [],
+    "graphics": [],
+    "display": [],
+    "storage": [
+      {
+        "id": "s256",
+        "label": "256GB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s2t",
+        "label": "2TB",
+        "adj": 0,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s512",
+        "label": "512GB",
+        "adj": 15,
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "id": "s1t",
+        "label": "1TB",
+        "adj": 30,
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "condition_adj": {
+      "sealed": 27,
+      "mint": 0,
+      "good": -66,
+      "fair": -149,
+      "broken": 0
+    },
+    "battery_adj": {
+      "good": 0,
+      "poor": -50
+    },
+    "charger_adj": {
+      "yes": 0,
+      "no": -25
+    },
+    "hasNanoGlass": false
   }
 }

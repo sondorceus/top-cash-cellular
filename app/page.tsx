@@ -1313,7 +1313,7 @@ const LENOVO_TP_X13_VARIANTS = [
 ];
 const LENOVO_TP_X390_VARIANTS = [
   { id: "ln_tp_x390", label: "ThinkPad X390", base: 81, inquiryOnly: false, image: "/devices/ln_tp_x390.png" },
-  { id: "ln_tp_x390_yoga", label: "ThinkPad X390 Yoga", base: 0, inquiryOnly: true, image: "/devices/ln_tp_x390_yoga.png" },
+  { id: "ln_tp_x390_yoga", label: "ThinkPad X390 Yoga", base: 139, image: "/devices/ln_tp_x390_yoga.png" },
 ];
 const LENOVO_TP_X9_VARIANTS = [
   { id: "ln_tp_x9_14", label: "ThinkPad X9 14", base: 675, inquiryOnly: false, image: "/devices/ln_tp_x9_14.png" },
@@ -1326,7 +1326,6 @@ const LENOVO_TP_Z_VARIANTS = [
   { id: "ln_tp_z13_g1", label: "ThinkPad Z13 Gen 1", base: 243, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
 ];
 const LENOVO_TP_P_VARIANTS = [
-  { id: "ln_tp_p43", label: "ThinkPad P43", base: 72, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_p50", label: "ThinkPad P50", base: 45, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_p51", label: "ThinkPad P51", base: 63, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_p52", label: "ThinkPad P52", base: 108, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
@@ -1425,7 +1424,6 @@ const LENOVO_LEGION_VARIANTS = [
   { id: "ln_legion_slim_5i", label: "Legion Slim 5i", base: 428, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_y740", label: "Legion Y740", base: 279, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_y730", label: "Legion Y730", base: 112, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_legion_y720", label: "Legion Y720", base: 122, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_y545", label: "Legion Y545", base: 238, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_y540", label: "Legion Y540", base: 315, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_y530", label: "Legion Y530", base: 158, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
@@ -1640,7 +1638,6 @@ const HP_OMNIBOOK_VARIANTS = [
 const HP_PAVILION_VARIANTS = [
   { id: "hp_pav_gaming", label: "Pavilion Gaming", base: 112, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-gaming.png" },
   { id: "hp_pav_14", label: "Pavilion 14", base: 45, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-14.png" },
-  { id: "hp_pav_15", label: "Pavilion 15", base: 58, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-15.png" },
   { id: "hp_pav_16", label: "Pavilion 16", base: 194, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-16.png" },
   { id: "hp_pav_x360", label: "Pavilion x360", base: 76, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-x360.png" },
 ];
@@ -1660,8 +1657,7 @@ const HP_SPECTRE_VARIANTS = [
   { id: "hp_spec_16", label: "Spectre x360 16", base: 248, inquiryOnly: false, image: "/devices/hp-spectre-hp-spectre-16-x360.png" },
 ];
 const HP_VICTUS_VARIANTS = [
-  { id: "hp_victus_15", label: "Victus 15", base: 0, inquiryOnly: true, image: "/devices/hp_victus_15.png" },
-  { id: "hp_victus_16", label: "Victus 16", base: 0, inquiryOnly: true, image: "/devices/hp_victus_16.png" },
+  { id: "hp_victus_15", label: "Victus 15", base: 164, image: "/devices/hp_victus_15.png" },
 ];
 const HP_ZBOOK_VARIANTS = [
   { id: "hp_zb_g11", label: "ZBook G11", base: 900, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g11.png" },
@@ -1699,10 +1695,7 @@ const HP_PC_ALL_SUB_SERIES = [
 // ACER LAPTOPS — IWM only carries Nitro and Predator (no Aspire/Swift).
 // 7 models scraped 2026-05-10, all with per-product photos.
 const ACER_NITRO_VARIANTS = [
-  { id: "ac_nitro_17", label: "Nitro 17", base: 0, inquiryOnly: true, image: "/devices/acer-nitro-acer-nitro-17.png" },
-  { id: "ac_nitro_16", label: "Nitro 16", base: 0, inquiryOnly: true, image: "/devices/acer-nitro-acer-nitro-16.png" },
   { id: "ac_nitro_v", label: "Nitro V", base: 680, image: "/devices/acer-nitro-acer-nitro-v.png" },
-  { id: "ac_nitro_7", label: "Nitro 7", base: 0, inquiryOnly: true, image: "/devices/acer-nitro-acer-nitro-7.png" },
   { id: "ac_nitro_5", label: "Nitro 5", base: 441, image: "/devices/acer-nitro-acer-nitro-5.png" },
 ];
 const ACER_PREDATOR_VARIANTS = [
