@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { logComm } from "../../../../lib/comms-log";
-import { emailHeader } from "../../../../lib/email-shell";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -205,7 +204,25 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
   <div style="background:#0a0a0a;padding:32px 16px">
     <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;border-collapse:separate;border-spacing:0;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
       <tr>
-        <td style="padding:0">${emailHeader({ title: accentLabel, eyebrow: "Top Cash Cellular · Austin, TX" })}</td>
+        <td style="padding:0">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td style="background:linear-gradient(135deg,#00e676 0%,#00a039 100%);padding:24px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="vertical-align:middle">
+                      <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#0a0a0a;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div>
+                      <div style="font-size:22px;font-weight:800;color:#0a0a0a;line-height:1.1">${accentLabel}</div>
+                    </td>
+                    <td style="vertical-align:middle;text-align:right">
+                      <div style="display:inline-block;padding:8px 14px;background:rgba(10,10,10,0.18);border:1px solid rgba(10,10,10,0.22);border-radius:999px;font-size:11px;font-weight:800;color:#0a0a0a;letter-spacing:0.1em;text-transform:uppercase">Austin, TX</div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
       </tr>
       <tr>
         <td style="padding:28px 28px 8px 28px">
