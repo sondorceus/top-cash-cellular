@@ -8126,7 +8126,7 @@ export default function Home() {
               it reads as a layout shape, not competing copy. */}
           <div aria-hidden className="pointer-events-none absolute inset-0 z-0 select-none">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(15,30,80,0.18),transparent_60%)]" />
-            <div className="absolute inset-0 max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-8 md:py-12 flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-12 items-center opacity-[0.30]">
+            <div className="absolute inset-0 max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-8 md:py-12 flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-12 items-center opacity-[0.40]">
               <div className="md:col-span-5 space-y-3 md:space-y-4 w-full" style={{ filter: "blur(4px)" }}>
                 <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] md:text-xs font-semibold uppercase tracking-wide">⚡ Instant Multi-Device Buyback</span>
                 <p className="text-2xl sm:text-4xl lg:text-6xl font-extrabold leading-none text-white">Turn your old tech into instant cash.</p>
