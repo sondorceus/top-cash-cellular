@@ -6075,6 +6075,10 @@ export default function Home() {
   // 2026-05-17 — "when I submit it only shows 1 device on both the
   // page confirmation and on email it should reflect multiple".
   const [submittedDevices, setSubmittedDevices] = useState<Array<{ model: string; storage: string; condition: string; price: number; quantity: number; image?: string }> | null>(null);
+  // FedEx label info returned from /api/lead when a ship lead was submitted.
+  // Used by the done page to render a Print-your-label CTA for shipping
+  // customers. Skywalker 2026-05-17.
+  const [submittedLabel, setSubmittedLabel] = useState<{ tracking: string; url: string; service: string } | null>(null);
   // Carrier balance status — captured at checkout as a Yes / No question.
   // Skywalker 2026-05-17 — we DO buy devices that aren't fully paid off
   // but the offer may be reduced because the carrier can blacklist them.
@@ -11341,6 +11345,12 @@ export default function Home() {
                 // Single device → standard single-lead POST with the
                 // full spec payload.
                 const isMultiCart = cartItems.length > 1;
+                // Capture the FedEx label info from /api/lead's response
+                // when a ship handoff was submitted. Plumbs through to
+                // /api/confirm (so the email shows the label) AND to the
+                // done page (so the customer sees a "print your label"
+                // CTA right away). Local meetups: leadLabel stays null.
+                let leadLabel: { tracking: string; url: string; service: string } | null = null;
                 if (isMultiCart) {
                   const devicesPayload = cartItems.map((it) => {
                     const key = `${it.modelId}-${it.storage}-${it.condition}`;
@@ -11391,6 +11401,8 @@ export default function Home() {
                     }),
                   });
                   if (!r.ok) throw new Error("Failed");
+                  const d = await r.json().catch(() => ({}));
+                  if (d?.fedexLabel) leadLabel = d.fedexLabel;
                 } else {
                   const singleKey = model && condition ? `${model.id}-${storage?.label || 'N/A'}-${condition.label}` : "";
                   const singlePhotos = (singleKey && liveMap[singleKey]) || photoUrls;
@@ -11400,11 +11412,14 @@ export default function Home() {
                     body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff }),
                   });
                   if (!res.ok) throw new Error('Failed');
+                  const d = await res.json().catch(() => ({}));
+                  if (d?.fedexLabel) leadLabel = d.fedexLabel;
                 }
+                setSubmittedLabel(leadLabel);
                 if (email || phone) {
                   const confirmBody = isMultiCart
-                    ? { name, phone, email, carrier: carrier?.label, payout: payout?.label, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity })) }
-                    : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity };
+                    ? { name, phone, email, carrier: carrier?.label, payout: payout?.label, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity })), handoffMethod, fedexLabel: leadLabel }
+                    : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, handoffMethod, fedexLabel: leadLabel };
                   fetch("/api/confirm", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -11948,15 +11963,41 @@ export default function Home() {
             </div>
 
             {/* HANDOFF SUMMARY — they already picked on the contact step; just
-                echo it back so they know what happens next. No fork here. */}
+                echo it back so they know what happens next. For ship
+                handoffs with a minted FedEx label, swap the "label on
+                the way" copy for the actual Download Label CTA + tracking. */}
             <div className="tcc-card rounded-2xl p-5 mb-6">
               {handoffMethod === "ship" ? (
                 <>
                   <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Shipping</p>
-                  <p className="text-white text-base font-bold mb-1">Your label is on the way</p>
-                  <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">USPS prepaid label hits {email || "your email"} within the hour. Drop the box at any post office — we cover return shipping.</p>
+                  {submittedLabel ? (
+                    <>
+                      <p className="text-white text-base font-bold mb-1">📦 Your prepaid FedEx label is ready</p>
+                      <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">Print it, tape it to a padded box, and drop at any FedEx location — no appointment needed. We&apos;ll text you the moment it arrives.</p>
+                      <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-3 mb-3">
+                        <p className="text-[10px] uppercase tracking-wider text-[#00c853] font-bold mb-1">Tracking</p>
+                        <p className="text-white font-mono font-bold text-sm break-all">{submittedLabel.tracking}</p>
+                        <p className="text-[11px] text-[#a8a8a8] mt-0.5">{submittedLabel.service.replace(/_/g, " ")}</p>
+                      </div>
+                      <a
+                        href={submittedLabel.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-2 w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-sm px-4 py-3 rounded-full transition cursor-pointer"
+                      >
+                        Download label PDF
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+                      </a>
+                      <p className="text-[10px] text-[#888] mt-2 text-center">Also sent to {email || "your inbox"}</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-white text-base font-bold mb-1">Your label is on the way</p>
+                      <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">Prepaid FedEx label hits {email || "your email"} within the hour. Drop the box at any FedEx location — we cover return shipping.</p>
+                    </>
+                  )}
                   {(shipStreet || shipCity) && (
-                    <p className="text-[#888] text-[11px] leading-snug">Ship from: {shipStreet}{shipUnit ? `, ${shipUnit}` : ""}, {shipCity}, {shipState} {shipZip}</p>
+                    <p className="text-[#888] text-[11px] leading-snug mt-3">Ship from: {shipStreet}{shipUnit ? `, ${shipUnit}` : ""}, {shipCity}, {shipState} {shipZip}</p>
                   )}
                 </>
               ) : handoffMethod === "local" ? (

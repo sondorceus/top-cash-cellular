@@ -24,7 +24,11 @@ async function sendSms(to: string, body: string): Promise<boolean> {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { name, email, phone, payout, devices } = body;
+  const { name, email, phone, payout, devices, handoffMethod, fedexLabel } = body;
+  // fedexLabel = { tracking, url, service } when /api/lead minted a label.
+  // Only ship handoffs get one — local meetups stay on the existing copy.
+  const isShipping = handoffMethod === "ship";
+  const hasLabel = isShipping && fedexLabel && fedexLabel.url && fedexLabel.tracking;
   // Single-device fields fall back when no `devices` array is present.
   let { model, storage, condition, quote } = body;
   // Multi-device confirmation — collapse to a single visible "device"
@@ -111,7 +115,24 @@ ${isMulti ? deviceArr.map((d) => `<tr><td style="padding:10px 0;border-bottom:1p
 </table>
 </td></tr>
 
-<!-- What Happens Next -->
+<!-- LABEL SECTION (ship only, when a label was minted at submission) -->
+${hasLabel ? `
+<tr><td style="padding:24px 28px 8px 28px">
+<div style="font-size:11px;color:#00c853;letter-spacing:0.18em;text-transform:uppercase;font-weight:800;margin-bottom:10px">📦 Your FedEx label — ready to go</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(0,200,83,0.06);border:1px solid rgba(0,200,83,0.30);border-left:3px solid #00c853;border-radius:14px">
+<tr><td style="padding:18px 20px">
+<div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#00c853;font-weight:800;margin-bottom:6px">Tracking</div>
+<div style="font-size:16px;color:#fff;font-weight:700;font-family:ui-monospace,SFMono-Regular,monospace">${fedexLabel.tracking}</div>
+<div style="font-size:12px;color:#b8b8b8;margin-top:4px">${String(fedexLabel.service || "").replace(/_/g, " ")} · prepaid · drop at any FedEx location</div>
+<div style="margin-top:14px;text-align:center">
+<a href="${fedexLabel.url}" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Download label PDF</a>
+</div>
+</td></tr>
+</table>
+</td></tr>
+` : ''}
+
+<!-- What Happens Next — copy adapts based on shipping vs local -->
 <tr><td style="padding:24px 28px 8px 28px">
 <div style="font-size:11px;color:#00c853;letter-spacing:0.18em;text-transform:uppercase;font-weight:800;margin-bottom:10px">What happens next</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -119,19 +140,19 @@ ${isMulti ? deviceArr.map((d) => `<tr><td style="padding:10px 0;border-bottom:1p
 <td width="40" valign="top" style="padding:8px 0">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00e676 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">1</td></tr></table>
 </td>
-<td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">We reach out to schedule a local meetup</td>
+<td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isShipping ? "Print your prepaid label and tape it to a padded box" : "We reach out to schedule a local meetup"}</td>
 </tr>
 <tr>
 <td width="40" valign="top" style="padding:8px 0">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00e676 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">2</td></tr></table>
 </td>
-<td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">Quick inspection confirms the quote</td>
+<td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isShipping ? "Drop at any FedEx location — no appointment needed" : "Quick inspection confirms the quote"}</td>
 </tr>
 <tr>
 <td width="40" valign="top" style="padding:8px 0">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00e676 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">3</td></tr></table>
 </td>
-<td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">You get paid on the spot — Cash, Cash App, Zelle, or BTC</td>
+<td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isShipping ? "We inspect on arrival + pay within 24h via Cash App / Zelle / Bitcoin" : "You get paid on the spot — Cash, Cash App, Zelle, or BTC"}</td>
 </tr>
 </table>
 </td></tr>
@@ -141,11 +162,13 @@ ${isMulti ? deviceArr.map((d) => `<tr><td style="padding:10px 0;border-bottom:1p
 <a href="mailto:topcashcellular@gmail.com" style="display:inline-block;padding:14px 32px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply with questions</a>
 </td></tr>
 
-<!-- Local note -->
+<!-- Handoff note — adapts to shipping vs local -->
 <tr><td style="padding:18px 28px 8px 28px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(0,200,83,0.06);border:1px solid rgba(0,200,83,0.22);border-radius:12px">
 <tr><td style="padding:14px 18px;font-size:13px;color:#e6e6e6;line-height:1.55;text-align:center">
-<strong style="color:#00c853">Austin local?</strong> We meet locally — no shipping. Prefer to ship? Reply and we'll send a prepaid label.
+${isShipping
+  ? `<strong style=\"color:#00c853\">Shipping insurance:</strong> Your package is covered up to $100 in transit via FedEx Ground.`
+  : `<strong style=\"color:#00c853\">Austin local?</strong> We meet locally — no shipping. Prefer to ship? Reply and we'll send a prepaid label.`}
 </td></tr>
 </table>
 </td></tr>
@@ -186,7 +209,9 @@ ${phone ? `<tr><td style="padding:4px 0;color:#888;font-size:12px">Phone</td><td
 </body>
 </html>`;
 
-    const textFallback = `Hi ${name || "there"}, your $${quote} quote for ${model} (${condition}, ${storage || "N/A"}) is locked for 7 days. We'll contact you within the hour. Reply to this email or write to topcashcellular@gmail.com — Top Cash Cellular, Austin TX`;
+    const textFallback = hasLabel
+      ? `Hi ${name || "there"}, your $${quote} quote for ${model} is locked. Your prepaid FedEx label is ready — tracking ${fedexLabel.tracking}, download: ${fedexLabel.url}. Print, tape to a padded box, drop at any FedEx location. Top Cash Cellular, Austin TX.`
+      : `Hi ${name || "there"}, your $${quote} quote for ${model} (${condition}, ${storage || "N/A"}) is locked for 7 days. We'll contact you within the hour. Reply to this email or write to topcashcellular@gmail.com — Top Cash Cellular, Austin TX`;
 
     try {
       const { Resend } = await import("resend");
@@ -204,7 +229,9 @@ ${phone ? `<tr><td style="padding:4px 0;color:#888;font-size:12px">Phone</td><td
   }
 
   if (phone) {
-    const smsBody = `Top Cash Cellular: Your $${quote} quote for ${model} is locked for 7 days! We'll contact you within the hour. Questions? Call (877) 549-2056`;
+    const smsBody = hasLabel
+      ? `Top Cash Cellular: $${quote} quote locked for ${model}. Your prepaid FedEx label is ready — tracking ${fedexLabel.tracking}. Download: ${fedexLabel.url}`
+      : `Top Cash Cellular: Your $${quote} quote for ${model} is locked for 7 days! We'll contact you within the hour. Questions? Call (877) 549-2056`;
     smsSent = await sendSms(phone, smsBody);
   }
 

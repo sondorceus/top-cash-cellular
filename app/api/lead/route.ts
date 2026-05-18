@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { put } from "@vercel/blob";
+import { createReturnLabel, deviceKindFromString } from "../../lib/fedex";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -319,8 +321,12 @@ export async function POST(req: NextRequest) {
         ...handoffLines,
       ].filter(Boolean).join("\n");
 
+  // Post the lead to MC and capture the assigned message ID — used as the
+  // leadId for the [LABEL: <id>] marker below so the admin lead row picks
+  // up tracking automatically.
+  let leadId: string | null = null;
   try {
-    await fetch(`${MC_API}/api/comms`, {
+    const r = await fetch(`${MC_API}/api/comms`, {
       method: "POST",
       headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -332,7 +338,70 @@ export async function POST(req: NextRequest) {
         priority: "urgent",
       }),
     });
+    if (r.ok) {
+      const data = await r.json().catch(() => ({}));
+      leadId = data?.message?.id || null;
+    }
   } catch {}
+
+  // FedEx prepaid label — only for SHIP handoffs with a complete address
+  // AND a customer phone (FedEx requires it). We mint at submission time
+  // (rather than waiting for admin "shipped" status) so the customer can
+  // print + drop their device immediately. Skywalker 2026-05-17. Local
+  // meetups never call FedEx. Failures here are non-fatal — the lead is
+  // already saved; staff can regenerate from /admin if needed.
+  let fedexLabel: { tracking: string; url: string; service: string } | null = null;
+  if (handoff && typeof handoff === "object") {
+    const h = handoff as { method?: string; address?: { street?: string; unit?: string; city?: string; state?: string; zip?: string } };
+    const a = h.address;
+    const hasFullAddress =
+      !!a && typeof a.street === "string" && a.street.trim() &&
+      typeof a.city === "string" && a.city.trim() &&
+      typeof a.state === "string" && a.state.trim().length === 2 &&
+      typeof a.zip === "string" && /^\d{5}/.test(a.zip);
+    const phoneDigits = String(phone || "").replace(/\D/g, "");
+    if (h.method === "ship" && hasFullAddress && phoneDigits.length >= 10 && leadId) {
+      try {
+        const label = await createReturnLabel({
+          customerName: String(name),
+          customerPhone: phoneDigits,
+          customerStreet: a!.street!,
+          customerUnit: a!.unit,
+          customerCity: a!.city!,
+          customerState: a!.state!,
+          customerZip: a!.zip!,
+          deviceKind: deviceKindFromString(model as string),
+        });
+        // Upload to Vercel Blob — random suffix so the tracking number
+        // alone can't be pivoted to a leaked label.
+        const pdfBytes = Buffer.from(label.labelPdfBase64, "base64");
+        const blob = await put(`fedex-labels/${leadId}-${Date.now()}.pdf`, pdfBytes, {
+          access: "public",
+          contentType: "application/pdf",
+        });
+        fedexLabel = { tracking: label.trackingNumber, url: blob.url, service: label.serviceType };
+        // Post the [LABEL: <leadId>] marker so the admin GET parser
+        // attaches tracking + URL to the lead row.
+        try {
+          await fetch(`${MC_API}/api/comms`, {
+            method: "POST",
+            headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              from: "topcash-web",
+              fromName: "Top Cash Cellular",
+              role: "system",
+              body: `[LABEL: ${leadId}] tracking=${label.trackingNumber} url=${blob.url} service=${label.serviceType}`,
+              tags: ["fedex-label", "auto-generated"],
+              priority: "low",
+            }),
+          });
+        } catch {}
+      } catch {
+        // Swallow — lead is saved, label is non-fatal. Operator can
+        // retry via the admin Generate FedEx label button.
+      }
+    }
+  }
 
   if (TWILIO_SID && TWILIO_AUTH) {
     const photoNote = (photos as string[] | undefined)?.length ? ` Photos: ${(photos as string[])[0]}` : "";
@@ -350,5 +419,5 @@ export async function POST(req: NextRequest) {
     } catch {}
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, leadId, fedexLabel });
 }
