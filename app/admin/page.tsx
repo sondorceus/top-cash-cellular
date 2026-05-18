@@ -1064,6 +1064,22 @@ export default function AdminPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            {/* Quick-nav links to sibling admin pages so staff don't have to
+                remember URLs. Add new ones here as they ship. */}
+            <a
+              href="/admin/prices"
+              className="px-3 py-1.5 rounded-lg bg-[#00c853]/10 hover:bg-[#00c853]/20 border border-[#00c853]/40 text-[#00c853] text-xs font-bold cursor-pointer transition"
+              title="Edit phone / MacBook / iPad prices"
+            >
+              💲 Prices
+            </a>
+            <a
+              href="/admin/slots"
+              className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
+              title="Open meetup slots for local pickups"
+            >
+              🗓️ Slots
+            </a>
             {/* Google user chip — only renders when /api/auth/me returned
                 an authenticated admin. Click signs out + redirects to
                 Google login on next nav. */}

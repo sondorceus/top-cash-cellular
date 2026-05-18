@@ -177,6 +177,13 @@ export default function PricesAdminPage() {
     <main className="min-h-screen bg-[#0a0a0a] text-white">
       <div className="sticky top-0 z-20 bg-[#0a0a0a]/95 backdrop-blur border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4 flex-wrap">
+          <a
+            href="/admin"
+            className="text-[#888] hover:text-[#00c853] text-xs font-semibold transition"
+            title="Back to leads dashboard"
+          >
+            ← Leads
+          </a>
           <h1 className="text-lg font-extrabold tracking-tight">TCC · Price Editor</h1>
           <input
             value={filter}
