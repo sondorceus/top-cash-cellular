@@ -114,6 +114,15 @@ interface AdminLead {
   // status update (or submission if never updated) is older than 7
   // days. Skywalker 2026-05-18 — surfaces forgotten leads in admin.
   staleHours?: number;
+  // Customer history — number of PRIOR leads from the same customer
+  // (matched on normalized phone OR lowercased email, whichever
+  // matches first), plus lifetime $ summed from those prior leads.
+  // Doesn't include the current lead. Skywalker 2026-05-18.
+  priorLeads?: number;
+  lifetimeSpend?: number;
+  // Communication audit trail — count of staff comms sent per lead,
+  // parsed from [COMM-SENT: leadId] markers. Skywalker 2026-05-18.
+  commsSent?: { sms: number; email: number; lastAt?: string };
   // FedEx label info, populated from [LABEL: <leadId>] markers in MC.
   // Surfaces the latest label per lead (regenerate-friendly).
   fedexTracking?: string;
@@ -178,6 +187,7 @@ export async function GET(req: NextRequest) {
   // regenerating overrides the prior label on the UI.
   const labelByLead = new Map<string, { tracking: string; url: string; service?: string; timestamp: string }>();
   const labelErrorByLead = new Map<string, { kind: string; reason: string; timestamp: string }>();
+  const commsByLead = new Map<string, { sms: number; email: number; lastAt?: string }>();
   const deletedAtByLead = new Map<string, string>();  // most-recent deletion timestamp
   const restoredAtByLead = new Map<string, string>(); // most-recent restore timestamp
   for (const m of messages) {
@@ -211,6 +221,21 @@ export async function GET(req: NextRequest) {
           labelByLead.set(lid, { tracking: t, url: u, service: sv, timestamp: m.timestamp });
         }
       }
+    }
+    // Communication audit trail — "[COMM-SENT: leadId] channel=sms|email …"
+    // markers posted by admin SMS/status/label routes when staff
+    // messages the customer. Skywalker 2026-05-18 — admin row shows
+    // how many comms went out + when. Self-contained (no [LEAD:]
+    // gate), parsed BEFORE the lm guard.
+    const commMarker = m.body.match(/\[COMM-SENT:\s*([\w-]+)\]/i);
+    if (commMarker) {
+      const lid = commMarker[1];
+      const channel = (m.body.match(/channel=([^\s]+)/i)?.[1] || "").toLowerCase();
+      const slot = commsByLead.get(lid) || { sms: 0, email: 0 };
+      if (channel === "sms") slot.sms += 1;
+      else if (channel === "email") slot.email += 1;
+      if (!slot.lastAt || m.timestamp > slot.lastAt) slot.lastAt = m.timestamp;
+      commsByLead.set(lid, slot);
     }
     // FedEx label FAILURE marker — same self-contained shape.
     // Format: "[LABEL-FAILED: <leadId>] kind=X reason=..."
@@ -519,10 +544,66 @@ export async function GET(req: NextRequest) {
         if (ok && ok.timestamp > err.timestamp) return undefined;
         return { kind: err.kind, reason: err.reason, at: err.timestamp };
       })(),
+      commsSent: commsByLead.get(m.id),
     });
   }
 
   leads.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+
+  // Customer history pass — Skywalker 2026-05-18 "customers history on
+  // returning leads". Index every lead by normalized phone digits AND
+  // lowercased email so a returning customer gets matched on either.
+  // Then for each lead, count prior leads + sum the prior quote dollars.
+  // PRIOR means strictly before this lead's timestamp; doesn't count the
+  // current lead. Lifetime $ uses totalPayout for multi-device (already
+  // summed) or quote for single-device.
+  function quoteToInt(q?: string | number): number {
+    if (typeof q === "number") return q;
+    if (!q) return 0;
+    const m = String(q).match(/(\d[\d,]*)/);
+    return m ? parseInt(m[1].replace(/,/g, ""), 10) || 0 : 0;
+  }
+  const customerIndex = new Map<string, Array<{ ts: string; spend: number }>>();
+  const pushIdx = (key: string | undefined, ts: string, spend: number) => {
+    if (!key) return;
+    const arr = customerIndex.get(key) || [];
+    arr.push({ ts, spend });
+    customerIndex.set(key, arr);
+  };
+  for (const l of leads) {
+    const spend = l.totalPayout ?? quoteToInt(l.quote);
+    const phoneKey = l.phone ? l.phone.replace(/\D/g, "") : undefined;
+    const emailKey = l.email ? l.email.toLowerCase().trim() : undefined;
+    pushIdx(phoneKey, l.timestamp, spend);
+    if (emailKey && emailKey !== phoneKey) pushIdx(emailKey, l.timestamp, spend);
+  }
+  for (const l of leads) {
+    const phoneKey = l.phone ? l.phone.replace(/\D/g, "") : undefined;
+    const emailKey = l.email ? l.email.toLowerCase().trim() : undefined;
+    // Union prior leads from BOTH keys (so a customer who used a phone
+    // last time + email this time still gets matched). Dedupe by ts.
+    const seen = new Set<string>();
+    let priorCount = 0;
+    let lifetime = 0;
+    const accumulate = (key?: string) => {
+      if (!key) return;
+      const arr = customerIndex.get(key) || [];
+      for (const entry of arr) {
+        if (entry.ts >= l.timestamp) continue; // strictly prior
+        if (seen.has(entry.ts)) continue;
+        seen.add(entry.ts);
+        priorCount += 1;
+        lifetime += entry.spend;
+      }
+    };
+    accumulate(phoneKey);
+    accumulate(emailKey);
+    if (priorCount > 0) {
+      l.priorLeads = priorCount;
+      l.lifetimeSpend = lifetime;
+    }
+  }
+
   // Cap raised from 50 → 200 so Skywalker can see the full backlog from
   // the admin without paging. MC returns 300 messages per fetch and most
   // are non-lead chatter, so 200 leaves headroom without breaking the

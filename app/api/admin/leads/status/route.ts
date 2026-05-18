@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { logComm } from "../../../../lib/comms-log";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -283,6 +284,9 @@ export async function POST(req: NextRequest) {
     phone ? sendSms(phone, smsTemplate(status, ctx)) : Promise.resolve(false),
     email ? emailStatus(email, status, ctx) : Promise.resolve(false),
   ]);
+  // Audit-trail markers — best-effort, don't block the response.
+  if (smsSent && phone) logComm({ leadId, channel: "sms", kind: "status", to: phone, subject: `status=${status}` });
+  if (emailSent && email) logComm({ leadId, channel: "email", kind: "status", to: email, subject: `status=${status}` });
 
   return NextResponse.json({ ok: true, mcOk, smsSent, emailSent, status, label: labelResult });
 }

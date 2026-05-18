@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { logComm } from "../../../../lib/comms-log";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -101,6 +102,8 @@ export async function POST(req: NextRequest) {
     phone ? sendSms(phone, smsBody) : Promise.resolve(false),
     email ? emailAdjust(email, name, device, newQuote, reason) : Promise.resolve(false),
   ]);
+  if (smsSent && phone) logComm({ leadId, channel: "sms", kind: "adjust", to: phone, subject: `adjusted to $${newQuote}` });
+  if (emailSent && email) logComm({ leadId, channel: "email", kind: "adjust", to: email, subject: `adjusted to $${newQuote}` });
 
   return NextResponse.json({ ok: true, mcOk, smsSent, emailSent, newQuote, reason });
 }

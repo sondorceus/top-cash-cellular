@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { logComm } from "../../../../lib/comms-log";
 
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
 
@@ -14,6 +15,7 @@ function checkAuth(req: NextRequest): boolean {
 }
 
 type Payload = {
+  leadId?: string;
   to: string;
   customerName: string;
   tracking: string;
@@ -31,7 +33,7 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
-  const { to, customerName, tracking, labelUrl, serviceType = "FEDEX_GROUND" } = payload;
+  const { leadId, to, customerName, tracking, labelUrl, serviceType = "FEDEX_GROUND" } = payload;
   if (!to || !labelUrl || !tracking) {
     return NextResponse.json({ error: "to, tracking, and labelUrl are required" }, { status: 400 });
   }
@@ -52,6 +54,9 @@ export async function POST(req: NextRequest) {
     });
     if (!r?.data?.id) {
       return NextResponse.json({ error: "Resend accepted nothing back" }, { status: 502 });
+    }
+    if (leadId) {
+      logComm({ leadId, channel: "email", kind: "label-resend", to, subject: `Resent label ${tracking}` });
     }
     return NextResponse.json({ ok: true, emailId: r.data.id });
   } catch (e) {

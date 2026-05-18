@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { createReturnLabel, deviceKindFromString, type LabelInputs } from "../../../../lib/fedex";
+import { logComm } from "../../../../lib/comms-log";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -125,6 +126,9 @@ export async function POST(req: NextRequest) {
   let emailSent = false;
   if (!silent && customerEmail) {
     emailSent = await emailLabel(customerEmail, customer.customerName, label.trackingNumber, labelUrl, label.serviceType);
+    if (emailSent) {
+      logComm({ leadId, channel: "email", kind: "label", to: customerEmail, subject: `FedEx label ${label.trackingNumber}` });
+    }
   }
 
   return NextResponse.json({

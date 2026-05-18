@@ -86,6 +86,9 @@ interface Lead {
   smsOptIn?: boolean;
   source?: { source?: string; medium?: string; campaign?: string; term?: string; content?: string; referrer?: string; landed?: string; raw: string };
   staleHours?: number;
+  priorLeads?: number;
+  lifetimeSpend?: number;
+  commsSent?: { sms: number; email: number; lastAt?: string };
 }
 
 const STATUS_OPTIONS = [
@@ -402,6 +405,7 @@ export default function AdminPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          leadId: lead.id,
           to: lead.email,
           customerName: lead.name,
           tracking: lead.fedexTracking,
@@ -1301,8 +1305,33 @@ export default function AdminPage() {
                           best contact". Badge sits above the spec block so
                           staff sees how to reach the seller before the
                           deep-dive specs. */}
-                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source) && (
+                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source || lead.priorLeads || lead.commsSent) && (
                         <div className="mt-1.5 flex flex-wrap items-start gap-1.5">
+                          {/* Returning-customer pill — Skywalker 2026-05-18.
+                              Surfaces priorLeads + lifetime $ so staff knows
+                              they're talking to a repeat seller. */}
+                          {lead.priorLeads && lead.priorLeads > 0 && (
+                            <span
+                              className="px-2 py-0.5 rounded text-[10px] font-bold bg-fuchsia-500/15 text-fuchsia-200 border border-fuchsia-500/40 uppercase tracking-wider"
+                              title={`${lead.priorLeads} prior trade${lead.priorLeads === 1 ? "" : "s"} from this customer${lead.lifetimeSpend ? `, $${lead.lifetimeSpend.toLocaleString()} paid out previously` : ""}`}
+                            >
+                              🔁 Returning · {lead.priorLeads} prior{lead.lifetimeSpend ? ` · $${lead.lifetimeSpend.toLocaleString()}` : ""}
+                            </span>
+                          )}
+                          {/* Comms-sent count — Skywalker 2026-05-18 audit
+                              trail. Shows how many touches we've already had
+                              with the customer + when the most recent one
+                              went out. */}
+                          {lead.commsSent && (lead.commsSent.sms + lead.commsSent.email > 0) && (
+                            <span
+                              className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/[0.06] text-[#dcdcdc] border border-white/15 uppercase tracking-wider"
+                              title={`${lead.commsSent.sms} SMS · ${lead.commsSent.email} emails sent${lead.commsSent.lastAt ? ` · last ${new Date(lead.commsSent.lastAt).toLocaleString()}` : ""}`}
+                            >
+                              {lead.commsSent.sms > 0 && `💬 ${lead.commsSent.sms}`}
+                              {lead.commsSent.sms > 0 && lead.commsSent.email > 0 && " · "}
+                              {lead.commsSent.email > 0 && `✉️ ${lead.commsSent.email}`}
+                            </span>
+                          )}
                           {lead.bestContact && (
                             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#00c853]/15 text-[#7be8a8] border border-[#00c853]/35 uppercase tracking-wider">
                               {lead.bestContact === "text" ? "💬 Prefers TEXT" : lead.bestContact === "call" ? "📞 Prefers CALL" : "✉️ Prefers EMAIL"}
