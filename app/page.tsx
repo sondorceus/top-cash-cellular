@@ -10060,20 +10060,36 @@ export default function Home() {
 
             <h2 className="text-2xl font-bold mb-1">Checkout</h2>
 
-            {/* LABEL PROGRESS BANNER — Skywalker 2026-05-19: customers
+            {/* CHECKOUT PROGRESS BANNER — Skywalker 2026-05-19: customers
                 were stopping at "Continue As Guest" expecting their
                 FedEx label, but the label only mints at the final
                 submit on the contact step. Make the 3-step progress
-                obvious on every step so nobody quits halfway. */}
-            <div className="mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
-              <span className="text-lg leading-none mt-0.5">📦</span>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-[#00c853] leading-tight">Step 1 of 3 — your <FedExMark /> label generates on the final step</p>
-                <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
-                  <span className="text-white font-semibold">1. Account</span> (you&apos;re here) → <span className="text-[#888]">2. Payment</span> → <span className="text-[#888]">3. Shipping address & submit</span>. Your prepaid label hits your inbox the moment you submit the last step — usually under 30 seconds.
-                </p>
+                obvious on every step so nobody quits halfway.
+                Skywalker 2026-05-19 follow-up: local-meetup users got
+                this same FedEx copy even though they're meeting in
+                Austin — branch the banner so shipping copy never
+                shows on the local path. */}
+            {handoffMethod === "local" ? (
+              <div className="mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
+                <span className="text-lg leading-none mt-0.5">📍</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-[#00c853] leading-tight">Step 1 of 3 — Austin local meetup</p>
+                  <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
+                    <span className="text-white font-semibold">1. Account</span> (you&apos;re here) → <span className="text-[#888]">2. Payment</span> → <span className="text-[#888]">3. Pick your meetup slot & submit</span>. No label, no shipping — we&apos;ll coordinate a meetup spot in Austin the moment you submit.
+                  </p>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
+                <span className="text-lg leading-none mt-0.5">📦</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-[#00c853] leading-tight">Step 1 of 3 — your <FedExMark /> label generates on the final step</p>
+                  <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
+                    <span className="text-white font-semibold">1. Account</span> (you&apos;re here) → <span className="text-[#888]">2. Payment</span> → <span className="text-[#888]">3. Shipping address & submit</span>. Your prepaid label hits your inbox the moment you submit the last step — usually under 30 seconds.
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* SECTION 1: ACCOUNT */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-4">
@@ -10090,7 +10106,7 @@ export default function Home() {
               }} className="space-y-3 mb-4">
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 tcc-input text-sm" />
                 <button type="submit" className="tcc-button-primary w-full py-4 text-base font-extrabold">Continue As Guest →</button>
-                <p className="text-[11px] text-[#888] text-center mt-1">Next: pick payment method, then enter shipping address for your free <FedExMark /> label</p>
+                <p className="text-[11px] text-[#888] text-center mt-1">{handoffMethod === "local" ? "Next: pick payment method, then book your Austin meetup slot" : <>Next: pick payment method, then enter shipping address for your free <FedExMark /> label</>}</p>
               </form>
 
               <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#d4d4d4] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
@@ -10153,10 +10169,21 @@ export default function Home() {
               <p className="text-[#e6e6e6] text-xs">Select your payout method after completing account setup.</p>
             </div>
 
-            {/* SECTION 3: SHIPPING */}
+            {/* SECTION 3: HANDOFF — copy branches on local vs ship so a
+                customer who picked "sell local" never sees prepaid-label
+                language. Skywalker 2026-05-19. */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-4">
-              <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Shipping</h3>
-              <p className="text-[#e6e6e6] text-xs">Austin local? We meet locally! Or reply for a free prepaid shipping label.</p>
+              {handoffMethod === "local" ? (
+                <>
+                  <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Meetup</h3>
+                  <p className="text-[#e6e6e6] text-xs">Austin local meetup. Cash on the spot — we&apos;ll text you to coordinate a public spot near you.</p>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Shipping</h3>
+                  <p className="text-[#e6e6e6] text-xs">Free prepaid <FedExMark /> label emailed the moment you submit. Drop the box at any FedEx location.</p>
+                </>
+              )}
             </div>
 
             {/* SECTION 4: OPTIONS & TERMS */}
@@ -10185,16 +10212,29 @@ export default function Home() {
             {cartItems.length > 0 ? checkoutSummaryMobile : selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
 
-            {/* LABEL PROGRESS BANNER — see checkout step for context */}
-            <div className="mt-2 mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
-              <span className="text-lg leading-none mt-0.5">📦</span>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-[#00c853] leading-tight">Step 2 of 3 — one more step after this for your label</p>
-                <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
-                  <span className="text-[#888]">1. Account ✓</span> → <span className="text-white font-semibold">2. Payment</span> (you&apos;re here) → <span className="text-[#888]">3. Shipping address & submit</span>. Your prepaid <FedExMark /> label generates the second you submit the next page.
-                </p>
+            {/* PROGRESS BANNER — branches on handoff so local-meetup
+                customers don't see FedEx / label copy. Skywalker 2026-05-19. */}
+            {handoffMethod === "local" ? (
+              <div className="mt-2 mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
+                <span className="text-lg leading-none mt-0.5">📍</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-[#00c853] leading-tight">Step 2 of 3 — pick your payout, then your meetup slot</p>
+                  <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
+                    <span className="text-[#888]">1. Account ✓</span> → <span className="text-white font-semibold">2. Payment</span> (you&apos;re here) → <span className="text-[#888]">3. Pick meetup slot &amp; submit</span>. No label, no shipping — we coordinate a meetup spot in Austin the moment you submit.
+                  </p>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="mt-2 mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
+                <span className="text-lg leading-none mt-0.5">📦</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-[#00c853] leading-tight">Step 2 of 3 — one more step after this for your label</p>
+                  <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
+                    <span className="text-[#888]">1. Account ✓</span> → <span className="text-white font-semibold">2. Payment</span> (you&apos;re here) → <span className="text-[#888]">3. Shipping address & submit</span>. Your prepaid <FedExMark /> label generates the second you submit the next page.
+                  </p>
+                </div>
+              </div>
+            )}
             <p className="text-[#e6e6e6] text-sm mb-3">Select your preferred payout method</p>
             {/* Payout speed heads-up — only shown when the user hasn't
                 picked a handoff yet. Deliberately does NOT mention "Cash"
