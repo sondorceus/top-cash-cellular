@@ -86,13 +86,20 @@ function smsTemplate(status: string, ctx: TemplateCtx): string {
   // Token-gated review URL — only fires for paid/met where the caller
   // minted a token. Without one, the SMS skips the review CTA entirely.
   const reviewLink = ctx.reviewToken ? buildReviewUrl(ctx.reviewToken, ctx.name, ctx.device) : "";
+  // Short tracking link customers can tap from SMS / email to see their
+  // device's stage in the pipeline. Skywalker 2026-05-19.
+  const trackLink = ctx.phone
+    ? `https://topcashcellular.com/track?phone=${encodeURIComponent(ctx.phone)}`
+    : ctx.email
+    ? `https://topcashcellular.com/track?email=${encodeURIComponent(ctx.email)}`
+    : "https://topcashcellular.com/track";
   switch (status) {
     case "shipped":
-      return `Top Cash: Hi ${first}, your prepaid FedEx label is in your inbox. Drop ${dev} at any FedEx location — we'll text you when it arrives. Questions? Email CustomerService@topcashcells.com`;
+      return `Top Cash: Hi ${first}, your prepaid FedEx label is in your inbox. Drop ${dev} at any FedEx location. Track status anytime: ${trackLink}`;
     case "received":
-      return `Top Cash: We got ${dev}, ${first}! Testing now — payout within 24 hrs. Questions? Email CustomerService@topcashcells.com`;
+      return `Top Cash: We got ${dev}, ${first}! Testing now — payout within 24 hrs. Track: ${trackLink}`;
     case "tested":
-      return `Top Cash: ${dev} passed inspection ✅ Finalizing your ${ctx.quote || "payout"} via ${ctx.payout || "your chosen method"} now.`;
+      return `Top Cash: ${dev} passed inspection ✅ Finalizing your ${ctx.quote || "payout"} via ${ctx.payout || "your chosen method"} now. Track: ${trackLink}`;
     case "paid":
       return `Top Cash: ${ctx.quote || "Payment"} sent via ${ctx.payout || "your method"}! Thanks for selling with us, ${first}.${reviewLink ? ` Mind leaving a 30-sec review? ${reviewLink}` : ""}`;
     case "met":
@@ -266,6 +273,17 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
             — Skywalker &amp; the Top Cash team<br>
             <span style="color:#888;font-size:12px">Austin, TX · a small business · real humans</span>
           </div>
+        </td>
+      </tr>` : ""}
+      ${status !== "paid" && status !== "met" && status !== "rejected" && (ctx.phone || ctx.email) ? `<tr>
+        <td style="padding:0 28px 20px 28px">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.10);border-radius:12px">
+            <tr><td style="padding:14px 18px">
+              <div style="font-size:11px;color:#00c853;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:6px">Track your trade anytime</div>
+              <div style="font-size:13px;color:#dcdcdc;line-height:1.55">See live status, FedEx tracking, payout method — bookmark this:</div>
+              <div style="margin-top:10px"><a href="https://topcashcellular.com/track?${ctx.phone ? `phone=${encodeURIComponent(ctx.phone)}` : `email=${encodeURIComponent(ctx.email || "")}`}" style="display:inline-block;padding:10px 22px;background:rgba(0,200,83,0.12);color:#00c853;border:1px solid rgba(0,200,83,0.35);border-radius:999px;text-decoration:none;font-weight:700;font-size:13px">📍 Track your trade →</a></div>
+            </td></tr>
+          </table>
         </td>
       </tr>` : ""}
       <tr>

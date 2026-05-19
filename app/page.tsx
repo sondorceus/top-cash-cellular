@@ -11471,6 +11471,28 @@ export default function Home() {
               )}
             </div>
 
+            {/* TRACK YOUR TRADE — self-serve status page. Always visible
+                on done step so customers know they can check status
+                without texting us. Skywalker 2026-05-19. */}
+            {(phone || email) && (
+              <div className="tcc-card rounded-2xl p-5 mb-6">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Track your trade</p>
+                <p className="text-white text-base font-bold mb-1">📍 Bookmark this link</p>
+                <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">
+                  See live status, FedEx scans, and your payout method anytime — no password, just your phone or email.
+                </p>
+                <a
+                  href={`/track?${phone ? `phone=${encodeURIComponent(phone.replace(/\D/g, ""))}` : `email=${encodeURIComponent(email || "")}`}`}
+                  className="inline-flex items-center justify-center gap-2 w-full bg-white/5 hover:bg-white/10 border border-white/15 text-white font-extrabold text-sm px-4 py-3 rounded-full transition cursor-pointer"
+                >
+                  Open my tracking page →
+                </a>
+                <p className="text-[10px] text-[#888] mt-2 text-center">
+                  Also linked in the confirmation email we just sent.
+                </p>
+              </div>
+            )}
+
             {/* HOW SHIPPING WORKS — 4-step expanded guide, ship handoffs
                 only. Skywalker 2026-05-18 IMG_5736 mockup → "We need to
                 add more info to this page: how it works, shipping steps,

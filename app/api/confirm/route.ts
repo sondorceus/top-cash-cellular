@@ -352,6 +352,18 @@ One label covers the entire package — you don&#39;t need ${deviceArr.length} s
 </table>
 </td></tr>
 
+<!-- TRACK YOUR TRADE — self-serve status page so customers can check
+     where their device is without texting us -->
+${(phoneDigits || email) ? `<tr><td style="padding:18px 28px 0 28px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.10);border-radius:14px">
+<tr><td style="padding:16px 20px">
+<div style="font-size:11px;color:#00c853;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:6px">Track your trade anytime</div>
+<div style="font-size:13px;color:#dcdcdc;line-height:1.55;margin-bottom:12px">Live status, FedEx scans, payout method. Bookmark it — no password needed.</div>
+<a href="https://topcashcellular.com/track?${phoneDigits ? `phone=${encodeURIComponent(phoneDigits)}` : `email=${encodeURIComponent(email || "")}`}" style="display:inline-block;padding:10px 22px;background:rgba(0,200,83,0.12);color:#00c853;border:1px solid rgba(0,200,83,0.35);border-radius:999px;text-decoration:none;font-weight:700;font-size:13px">📍 Track your trade →</a>
+</td></tr>
+</table>
+</td></tr>` : ""}
+
 <!-- CTA -->
 <tr><td style="padding:18px 28px 6px 28px;text-align:center">
 <a href="mailto:CustomerService@topcashcells.com" style="display:inline-block;padding:14px 32px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply with questions</a>
