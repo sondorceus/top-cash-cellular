@@ -6193,11 +6193,17 @@ export default function Home() {
                       <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold">Signed in as</p>
                       <p className="text-sm text-white font-semibold truncate" title={customerUser.email}>{customerUser.email}</p>
                     </div>
+                    <a
+                      href="/account"
+                      className="block w-full text-left px-3 py-2 rounded-lg text-sm text-[#dcdcdc] hover:bg-white/5 hover:text-white transition cursor-pointer"
+                    >
+                      My account
+                    </a>
                     <button
                       onClick={() => { setCustomerMenuOpen(false); setLookupOpen(true); }}
                       className="w-full text-left px-3 py-2 rounded-lg text-sm text-[#dcdcdc] hover:bg-white/5 hover:text-white transition cursor-pointer"
                     >
-                      Past trades
+                      Quick lookup
                     </button>
                     <button
                       onClick={signOutCustomer}
@@ -6478,21 +6484,23 @@ export default function Home() {
 
             {/* LOGIN — Google chip when signed in, lookup-opener otherwise. */}
             {customerUser ? (
-              <div className="w-full px-5 py-4 border-b border-white/10 flex items-center gap-3">
-                {customerUser.picture ? (
-                  <img src={customerUser.picture} alt="" className="w-9 h-9 rounded-full" />
-                ) : (
-                  <span className="w-9 h-9 rounded-full bg-[#00c853]/20 text-[#00c853] flex items-center justify-center text-sm font-bold">{(customerUser.name || customerUser.email).charAt(0).toUpperCase()}</span>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-[#00c853]">Hi, {customerUser.name?.split(" ")[0] || customerUser.email.split("@")[0]}</p>
-                  <p className="text-[11px] text-[#888] truncate">{customerUser.email}</p>
-                </div>
+              <>
+                <a href="/account" className="w-full px-5 py-4 border-b border-white/10 flex items-center gap-3 hover:bg-white/[0.06] transition cursor-pointer">
+                  {customerUser.picture ? (
+                    <img src={customerUser.picture} alt="" className="w-9 h-9 rounded-full" />
+                  ) : (
+                    <span className="w-9 h-9 rounded-full bg-[#00c853]/20 text-[#00c853] flex items-center justify-center text-sm font-bold">{(customerUser.name || customerUser.email).charAt(0).toUpperCase()}</span>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-[#00c853]">Hi, {customerUser.name?.split(" ")[0] || customerUser.email.split("@")[0]}</p>
+                    <p className="text-[11px] text-[#888] truncate">View my account →</p>
+                  </div>
+                </a>
                 <button
                   onClick={signOutCustomer}
-                  className="text-[11px] text-[#ff8088] hover:text-[#ff5566] font-semibold cursor-pointer transition"
+                  className="w-full px-5 py-3 text-left text-[#ff8088] hover:bg-[#ff5566]/10 hover:text-[#ff5566] text-sm font-semibold cursor-pointer transition border-b border-white/10"
                 >Sign out</button>
-              </div>
+              </>
             ) : (
               <button
                 onClick={() => { setMobileMenuOpen(false); setLookupOpen(true); }}
@@ -10128,6 +10136,10 @@ export default function Home() {
                     return;
                   }
                   if (d.name) setName(d.name);
+                  // Persist the customer cookie so this person sees their
+                  // account history on future visits without re-typing email.
+                  // Fire-and-forget — funnel never blocks on this.
+                  fetch("/api/account/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) }).catch(() => {});
                   await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: d.name || "Returning Customer", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});
                   setStep("payout"); pushHistory("payout");
                 } catch {

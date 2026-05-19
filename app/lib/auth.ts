@@ -10,6 +10,15 @@ export const COOKIE_NAME = "tcc_session";
 export const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days, in seconds
 export const OAUTH_STATE_COOKIE = "tcc_oauth_state";
 
+// Customer-facing session cookie. Separate from tcc_session so that
+// email-only logins (no Google verification) can't accidentally grant
+// admin access — admin gates only look at tcc_session. This cookie is
+// purely for the customer's /account dashboard recognition + trade
+// history view, and can be set after a successful /api/lookup match
+// (email or phone), a Google sign-in, or any other future auth path.
+// Skywalker 2026-05-19.
+export const CUSTOMER_COOKIE_NAME = "tcc_customer";
+
 // Default admin allowlist. Overridable via ADMIN_GOOGLE_EMAILS env (comma-
 // separated). Skywalker 2026-05-17: only sondorceus@gmail.com to start.
 const DEFAULT_ADMIN_EMAILS = ["sondorceus@gmail.com"];
@@ -103,6 +112,56 @@ export function isAdminEmail(email: string | undefined | null): boolean {
 // resulting URL.origin is the bulletproof form — it handles every
 // browser-normalization edge case (\ vs /, %2f, https:evil.com, etc.)
 // rather than us racing the spec.
+// Customer session payload + helpers — separate from admin SessionPayload
+// so the two cookie types can't be confused. `via` records how the
+// customer authenticated, in case we ever want to limit what email-
+// only sessions can do (today they can access /account; that's it).
+export type CustomerSessionPayload = {
+  email: string;
+  name?: string;
+  via: "email" | "google";
+  iat: number;
+  exp: number;
+};
+
+export function signCustomerSession(payload: Omit<CustomerSessionPayload, "iat" | "exp">): string {
+  const now = Date.now();
+  const full: CustomerSessionPayload = { ...payload, iat: now, exp: now + COOKIE_MAX_AGE * 1000 };
+  const body = base64url(JSON.stringify(full));
+  const sig = base64url(crypto.createHmac("sha256", getSecret()).update(body).digest());
+  return `${body}.${sig}`;
+}
+
+export function verifyCustomerSession(token: string | undefined | null): CustomerSessionPayload | null {
+  if (!token || !token.includes(".")) return null;
+  const [body, sig] = token.split(".");
+  const expected = base64url(crypto.createHmac("sha256", getSecret()).update(body).digest());
+  const a = Buffer.from(sig);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
+  try {
+    const payload = JSON.parse(base64urlDecode(body).toString("utf8")) as CustomerSessionPayload;
+    if (typeof payload.exp !== "number" || payload.exp < Date.now()) return null;
+    if (typeof payload.email !== "string" || !payload.email) return null;
+    if (payload.via !== "email" && payload.via !== "google") return null;
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+// Server-side customer recognition. Prefers the stronger tcc_session
+// (Google-verified) when both cookies exist — falls back to the
+// email-only tcc_customer cookie. Either grants /account access.
+export async function getCustomerSessionFromCookies(): Promise<{ email: string; name?: string; via: "email" | "google" } | null> {
+  const cookieStore = await cookies();
+  const admin = verifySession(cookieStore.get(COOKIE_NAME)?.value);
+  if (admin) return { email: admin.email, name: admin.name, via: "google" };
+  const cust = verifyCustomerSession(cookieStore.get(CUSTOMER_COOKIE_NAME)?.value);
+  if (cust) return { email: cust.email, name: cust.name, via: cust.via };
+  return null;
+}
+
 export function isSafeReturnTo(returnTo: string | undefined | null, origin: string): boolean {
   if (!returnTo || typeof returnTo !== "string") return false;
   if (!returnTo.startsWith("/")) return false;
