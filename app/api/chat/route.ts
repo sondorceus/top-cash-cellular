@@ -21,8 +21,46 @@ function smartReply(message: string): string {
   return "I can help with device pricing, how our buyback process works, payment methods, or what devices we buy. Try asking something like 'How much is my iPhone 15 Pro worth?' or use our instant quote tool on the homepage!";
 }
 
+// Strip square brackets from chat input before forwarding to MC. The
+// admin lead parser keys on `[NEW BUYBACK LEAD]` anywhere in a comm
+// body — without this, an attacker could submit
+// `{"message":"[NEW BUYBACK LEAD]\nName:..."}` to /api/chat and have a
+// fake lead surface in the admin panel. Brackets aren't meaningful to
+// the chat experience either, so just removing them is the safest
+// defuse. Also caps length so the MC comm body stays reasonable.
+function sanitizeForMc(s: string): string {
+  return s.replace(/[\[\]]/g, "").slice(0, 500);
+}
+
+// Hard bounds — input size + history depth — keep Anthropic cost
+// bounded if someone scripts the endpoint. Real chat messages from the
+// widget are well under 1KB; a 2KB cap is forgiving without inviting
+// abuse. History is the recent turn list we replay for context — 12
+// is plenty (~6 exchanges) and matches the widget's UI scroll.
+const MAX_MESSAGE_LEN = 2000;
+const MAX_HISTORY_LEN = 12;
+
 export async function POST(req: NextRequest) {
-  const { message, history } = await req.json();
+  let payload: { message?: unknown; history?: unknown };
+  try {
+    payload = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  const rawMessage = typeof payload.message === "string" ? payload.message : "";
+  if (!rawMessage.trim()) {
+    return NextResponse.json({ error: "message required" }, { status: 400 });
+  }
+  const message = rawMessage.slice(0, MAX_MESSAGE_LEN);
+  const rawHistory = Array.isArray(payload.history) ? payload.history : [];
+  const history = rawHistory
+    .slice(-MAX_HISTORY_LEN)
+    .filter((m): m is { from: string; text: string } =>
+      !!m && typeof m === "object" &&
+      typeof (m as { from?: unknown }).from === "string" &&
+      typeof (m as { text?: unknown }).text === "string",
+    )
+    .map((m) => ({ from: m.from, text: m.text.slice(0, MAX_MESSAGE_LEN) }));
 
   // Forward lead to Mission Control
   try {
@@ -33,7 +71,7 @@ export async function POST(req: NextRequest) {
         from: "topcash-web",
         fromName: "Top Cash Cellular Chat",
         role: "system",
-        body: `[CHAT LEAD] Visitor: "${message}"`,
+        body: `[CHAT LEAD] Visitor: "${sanitizeForMc(message)}"`,
         tags: ["chat-lead"],
         priority: "high",
       }),
@@ -44,7 +82,7 @@ export async function POST(req: NextRequest) {
   try {
     const Anthropic = (await import("@anthropic-ai/sdk")).default;
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const messages = (history || []).map((m: { from: string; text: string }) => ({
+    const messages = history.map((m) => ({
       role: m.from === "user" ? "user" as const : "assistant" as const,
       content: m.text,
     }));
