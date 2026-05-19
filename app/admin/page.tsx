@@ -2133,7 +2133,6 @@ export default function AdminPage() {
                                       {lead.fedexLabelError.reason && (
                                         <p className="text-[10px] text-red-200/80 mt-0.5 break-words" title={lead.fedexLabelError.reason}>{lead.fedexLabelError.reason.length > 140 ? lead.fedexLabelError.reason.slice(0, 140) + "…" : lead.fedexLabelError.reason}</p>
                                       )}
-                                      <p className="text-[9px] text-red-200/60 mt-1 italic">Auto-retry runs every 30 min for transient FedEx outages.</p>
                                     </div>
                                   )}
                                   <div className="flex flex-wrap gap-1.5">
