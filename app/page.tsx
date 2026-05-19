@@ -9568,7 +9568,7 @@ export default function Home() {
                       onClick={() => setChatOpen(true)}
                       className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-[12px] font-semibold text-amber-200 cursor-pointer transition"
                     >
-                      \ud83d\udcac Tell us what&apos;s wrong with it
+                      💬 Chat with us for a custom quote
                     </button>
                   )}
                 </>
