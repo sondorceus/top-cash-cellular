@@ -1217,7 +1217,7 @@ export default function PricesAdminPage() {
               {(expanded.__ebay ?? !!filterLower) && (
                 <div className="border-t border-purple-500/20 px-5 py-3 space-y-3">
                   <p className="text-[11px] text-[#bdbdbd]">
-                    Actual final sale prices from <a href="https://www.ebay.com/" target="_blank" rel="noreferrer" className="text-purple-300 hover:underline">eBay</a> completed listings, bucketed by storage + condition. Sealed/used/broken map to eBay&apos;s &quot;Brand New&quot;/&quot;Pre-Owned&quot;/&quot;For parts&quot;. Two numbers per cell: <span className="text-purple-200 font-bold">gross</span> = what the buyer paid, <span className="text-purple-200 font-bold">net</span> = what the seller pocketed after 13.25% Final Value Fee + $0.40 fixed + ~$10 shipping. Net is the apples-to-apples vs Atlas wholesale. Outliers rejected via IQR + half-median + Atlas-floor. Refresh: <code className="text-[#00c853]">python scripts/scrape-ebay-sold.py --atlas-only</code>.
+                    Actual final sale prices from <a href="https://www.ebay.com/" target="_blank" rel="noreferrer" className="text-purple-300 hover:underline">eBay</a> completed listings, bucketed by storage + condition. Sealed/used/broken map to eBay&apos;s &quot;Brand New&quot;/&quot;Pre-Owned&quot;/&quot;For parts&quot;. Two numbers per cell: <span className="text-purple-200 font-bold">gross</span> = what the buyer paid, <span className="text-purple-200 font-bold">net</span> = what the seller pocketed after 13% Final Value Fee + $0.40 fixed + family shipping. Net is the apples-to-apples vs Atlas wholesale (Atlas pays gross minus shipping only — no FVF). Outliers rejected via IQR + half-median + Atlas-floor. Refresh: <code className="text-[#00c853]">python scripts/scrape-ebay-sold.py --atlas-only</code>.
                   </p>
                   <div className="bg-black/30 border border-white/5 rounded-xl overflow-hidden">
                     <div className="overflow-x-auto px-3 py-2">
@@ -1233,7 +1233,11 @@ export default function PricesAdminPage() {
                                 rows.push({
                                   storage, cond,
                                   gross: Math.round(c.average),
-                                  net: c.net_average != null ? Math.round(c.net_average) : Math.round(c.average * 0.8675 - 10.4),
+                                  // Recompute net from gross with Skywalker's 13% FVF
+                                  // instead of trusting the pre-baked net_average
+                                  // (which was scraped at the old per-category rates).
+                                  // Conservative ~$10.40 deduction = $0.40 fixed + $10 ship.
+                                  net: Math.round(c.average * 0.87 - 10.4),
                                   n: c.count,
                                 });
                               }

@@ -299,11 +299,12 @@ def extract_sold(page, query, pages=2):
 
 # eBay seller economics — what the seller actually pockets per sale.
 #
-# Final Value Fee for "Cell Phones & Smartphones" category in 2026 is
-# 12% standard. Top Rated Plus sellers get a 10% discount → 10.8%.
-# Store-subscription sellers can hit as low as ~3% on certain promo
-# categories. Skywalker's actual rate may be lower — override via
-# env var TCC_EBAY_FVF (e.g. TCC_EBAY_FVF=0.035 if his account is at 3.5%).
+# Skywalker 2026-05-19: eBay charges 13% across all categories on his
+# account. Earlier per-category 12/13.25/15% split was a published-
+# schedule estimate and didn't match his actual statements. We flatten
+# every family to 13% so net_* fields in the output JSON line up with
+# what hits his bank. Override per-family via env vars if his account
+# ever changes.
 #
 # Plus a $0.40 fixed per-order fee ($0.30 if order ≤ $10).
 #
@@ -311,17 +312,14 @@ def extract_sold(page, query, pages=2):
 # (small flat-rate box), laptops and consoles are heavy + insured. Set
 # via TCC_EBAY_SHIP_PHONE etc. env vars if you ship differently.
 import os
-# Per-category FVF rates. Range 12-15% per eBay's 2026 schedule.
-# Skywalker directive: pick the higher end where we have margin room
-# (safer profit estimate). Override any with TCC_EBAY_FVF_{FAMILY} env vars.
 EBAY_FVF_BY_FAMILY = {
-    "phone":   float(os.environ.get("TCC_EBAY_FVF_PHONE",   "0.12")),    # Cell Phones
-    "tablet":  float(os.environ.get("TCC_EBAY_FVF_TABLET",  "0.12")),    # same as phones
-    "laptop":  float(os.environ.get("TCC_EBAY_FVF_LAPTOP",  "0.1325")),  # Computers
-    "console": float(os.environ.get("TCC_EBAY_FVF_CONSOLE", "0.1325")),  # Video Games
-    "watch":   float(os.environ.get("TCC_EBAY_FVF_WATCH",   "0.15")),    # Watches (premium)
-    "drone":   float(os.environ.get("TCC_EBAY_FVF_DRONE",   "0.1325")),
-    "vr":      float(os.environ.get("TCC_EBAY_FVF_VR",      "0.1325")),
+    "phone":   float(os.environ.get("TCC_EBAY_FVF_PHONE",   "0.13")),
+    "tablet":  float(os.environ.get("TCC_EBAY_FVF_TABLET",  "0.13")),
+    "laptop":  float(os.environ.get("TCC_EBAY_FVF_LAPTOP",  "0.13")),
+    "console": float(os.environ.get("TCC_EBAY_FVF_CONSOLE", "0.13")),
+    "watch":   float(os.environ.get("TCC_EBAY_FVF_WATCH",   "0.13")),
+    "drone":   float(os.environ.get("TCC_EBAY_FVF_DRONE",   "0.13")),
+    "vr":      float(os.environ.get("TCC_EBAY_FVF_VR",      "0.13")),
 }
 EBAY_FIXED_FEE = 0.40
 SHIP_BY_FAMILY = {

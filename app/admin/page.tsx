@@ -2426,7 +2426,7 @@ export default function AdminPage() {
                             const tone = a.marginPct >= 25 ? "text-emerald-400" : a.marginPct >= 10 ? "text-yellow-400" : "text-red-400";
                             const carrierTag = a.carrierKey === "unlocked" ? "" : ` · ${a.carrierKey.toUpperCase()}`;
                             return (
-                              <div className="px-2 py-1 rounded-md bg-white/[0.03] border border-white/10" title={`Atlas wholesale buy ($${a.resell}) − customer quote ($${lead.compMargin!.quote ?? "?"}) = $${a.margin} margin (${a.marginPct}%)${carrierTag}`}>
+                              <div className="px-2 py-1 rounded-md bg-white/[0.03] border border-white/10" title={`Atlas wholesale ($${a.resell}) − outbound ship − customer quote ($${lead.compMargin!.quote ?? "?"}) = $${a.margin} margin (${a.marginPct}%)${carrierTag}`}>
                                 <span className="text-[#888]">Atlas{carrierTag}: </span>
                                 <span className="text-white">${a.resell}</span>
                                 <span className={`ml-1 ${tone}`}>{a.margin >= 0 ? "+" : ""}${a.margin} ({a.marginPct}%)</span>
@@ -2437,7 +2437,7 @@ export default function AdminPage() {
                             const e = lead.compMargin!.ebay!;
                             const tone = e.marginPct >= 25 ? "text-emerald-400" : e.marginPct >= 10 ? "text-yellow-400" : "text-red-400";
                             return (
-                              <div className="px-2 py-1 rounded-md bg-white/[0.03] border border-white/10" title={`eBay net-of-fees median ($${e.netMedian}, n=${e.sampleCount}) − customer quote ($${lead.compMargin!.quote ?? "?"}) = $${e.margin} margin (${e.marginPct}%)`}>
+                              <div className="px-2 py-1 rounded-md bg-white/[0.03] border border-white/10" title={`eBay net after 13% FVF + $0.40 + outbound ship ($${e.netMedian}, n=${e.sampleCount}) − customer quote ($${lead.compMargin!.quote ?? "?"}) = $${e.margin} margin (${e.marginPct}%)`}>
                                 <span className="text-[#888]">eBay net ({e.sampleCount}): </span>
                                 <span className="text-white">${e.netMedian}</span>
                                 <span className={`ml-1 ${tone}`}>{e.margin >= 0 ? "+" : ""}${e.margin} ({e.marginPct}%)</span>

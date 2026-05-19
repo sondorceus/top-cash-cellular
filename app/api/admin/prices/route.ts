@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PRICE_TABLE, CARRIER_DEDUCTIONS, BASE_PRICED_MODELS, MACBOOK_SPECS, type MacSpec } from "../../../data/prices";
 import { getResellEstimate } from "../../../lib/resell-estimates";
 import { lookupAtlasResell } from "../../../lib/atlas-lookup";
+import { ebayGrossToNet, atlasResellToNet } from "../../../lib/comp-economics";
 import skuLabelsJson from "../../../data/sku-labels.json";
 import { put, list, del } from "@vercel/blob";
 import { promises as fs } from "fs";
@@ -330,8 +331,11 @@ function setCell(
   sku: string, stor: string, cond: string, carrierKey: string,
   payout: number, resell: number,
 ) {
-  const margin = resell - payout;
-  const marginPct = resell > 0 ? Math.round((margin / resell) * 100) : 0;
+  // Atlas margin = atlas_resell − outbound shipping − payout to customer.
+  // Skywalker 2026-05-19: "atlas just shipping cost" — no FVF on this side.
+  const atlasNet = atlasResellToNet(resell, sku);
+  const margin = atlasNet - payout;
+  const marginPct = atlasNet > 0 ? Math.round((margin / atlasNet) * 100) : 0;
   if (!out[sku]) out[sku] = {};
   if (!out[sku][stor]) out[sku][stor] = {};
   if (!out[sku][stor][cond]) out[sku][stor][cond] = {};
@@ -349,36 +353,41 @@ function buildMarginMap(
   // The model-level chip should reflect the BEST resell channel — we're
   // the operator, we choose whether to wholesale to Atlas, list on eBay,
   // or sell on Swappa. If even the best channel shows red, the model
-  // truly loses money. Take the MAX of three signals per SKU:
-  //   1. Atlas grade_a (max across per-cell matrix)
-  //   2. eBay net-median (max across by_cell buckets)
-  //   3. RESELL_ESTIMATES single-point (legacy / fallback for devices
-  //      Atlas + eBay don't cover, like VR / drones / Garmin watches)
-  // Skywalker 2026-05-19.
+  // truly loses money. Take the MAX of three NET signals per SKU:
+  //   1. Atlas grade_a NET (max across per-cell matrix, − ship)
+  //   2. eBay NET from gross median (− 13% FVF − $0.40 − ship)
+  //   3. RESELL_ESTIMATES single-point (private-sale midpoint; no
+  //      marketplace fees to deduct — Swappa is essentially gross)
+  // Skywalker 2026-05-19: eBay is 13% FVF, Atlas is shipping-only.
   const bestResellForSku = (sku: string, label: string): number | null => {
     let best = 0;
-    // (1) Atlas per-cell max
+    // (1) Atlas per-cell max NET (resell − ship)
     const cellMap = perCellMargin?.[sku];
     if (cellMap) {
       for (const stor of Object.values(cellMap)) {
         for (const cond of Object.values(stor)) {
           for (const cell of Object.values(cond)) {
-            if (cell.resell > best) best = cell.resell;
+            const net = atlasResellToNet(cell.resell, sku);
+            if (net > best) best = net;
           }
         }
       }
     }
-    // (2) eBay net-median max across all (storage, condition) buckets
+    // (2) eBay NET from gross median — recompute with the current 13%
+    // FVF instead of trusting the pre-baked 12% net_median in the JSON.
     const ebayModel = ebay?.models?.[sku];
     if (ebayModel?.by_cell) {
       for (const stor of Object.values(ebayModel.by_cell)) {
         for (const cell of Object.values(stor)) {
-          const v = (cell as { net_median?: number; median?: number }).net_median;
-          if (typeof v === "number" && v > best) best = v;
+          const gross = (cell as { median?: number }).median;
+          if (typeof gross !== "number") continue;
+          const net = ebayGrossToNet(gross, sku);
+          if (net > best) best = net;
         }
       }
     }
-    // (3) Single-point Swappa-mid / curated estimate
+    // (3) Single-point Swappa-mid / curated estimate (private-sale,
+    // no marketplace cut — treat as net).
     const single = getResellEstimate(label);
     if (single != null && single > best) best = single;
     return best > 0 ? best : null;

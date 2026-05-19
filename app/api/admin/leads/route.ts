@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 import { lookupAtlasResell, type AtlasReference } from "../../../lib/atlas-lookup";
+import { ebayGrossToNet, atlasResellToNet } from "../../../lib/comp-economics";
 import skuLabelsJson from "../../../data/sku-labels.json";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -109,6 +110,10 @@ function ebayBucketForCondition(cond: string | null): "sealed" | "used" | "broke
 }
 
 // Look up a lead's eBay net-median resale value for its exact cell.
+// Recomputes net from the stored GROSS median using the current FVF +
+// shipping config (comp-economics), so the pre-baked net_median field
+// in ebay-sold.json (which was scraped at the old 12% FVF) doesn't
+// drift from Skywalker's real 13% account rate. Skywalker 2026-05-19.
 function lookupEbayNet(
   ebay: EbayReference,
   sku: string,
@@ -122,15 +127,16 @@ function lookupEbayNet(
   // Storage-keyed: by_cell[storage][bucket]
   if (storage && model.by_cell[storage]) {
     const cell = model.by_cell[storage][bucket];
-    if (cell?.net_median) return { netMedian: cell.net_median, sampleCount: cell.count };
+    if (cell?.median) return { netMedian: ebayGrossToNet(cell.median, sku), sampleCount: cell.count };
   }
   // Fallback: try ANY storage if the lead's storage isn't represented.
   // Take the storage bucket with the most samples.
   let best: { netMedian: number; sampleCount: number } | null = null;
   for (const stor of Object.values(model.by_cell)) {
     const cell = stor[bucket];
-    if (!cell?.net_median) continue;
-    if (!best || cell.count > best.sampleCount) best = { netMedian: cell.net_median, sampleCount: cell.count };
+    if (!cell?.median) continue;
+    const net = ebayGrossToNet(cell.median, sku);
+    if (!best || cell.count > best.sampleCount) best = { netMedian: net, sampleCount: cell.count };
   }
   return best;
 }
@@ -1054,10 +1060,13 @@ export async function GET(req: NextRequest) {
       // record carrier).
       const atlasResell = lookupAtlasResell(atlas, sku, primaryModel, storage, condition || "mint", carrier);
       if (atlasResell != null && quote != null) {
+        // Atlas charges no FVF — only outbound shipping cost gets
+        // deducted from the wholesale resell. Skywalker 2026-05-19.
+        const atlasNet = atlasResellToNet(atlasResell, sku);
         comp.atlas = {
           resell: atlasResell,
-          margin: atlasResell - quote,
-          marginPct: atlasResell > 0 ? Math.round(((atlasResell - quote) / atlasResell) * 100) : 0,
+          margin: atlasNet - quote,
+          marginPct: atlasNet > 0 ? Math.round(((atlasNet - quote) / atlasNet) * 100) : 0,
           carrierKey: carrier || "unlocked",
         };
       }
