@@ -77,7 +77,9 @@ def load_atlas():
 def find_atlas_for(mid, storage, atlas):
     """Look up Atlas grade dict for a model_id + storage. Returns
     {grade: dollars} or None."""
-    # iPhones — iphones_used has storage in the key
+    # iPhones — iphones_used for grade_a..grade_d, iphones_nib for sealed.
+    # Atlas pays a real "true new in box" premium that the used.swap_hso
+    # column undersells, so sealed comparisons need the NIB sheet.
     if mid.startswith("ip") and not mid.startswith("ipad"):
         label_map = {
             "ip11": "iPhone 11", "ip11p": "iPhone 11 Pro", "ip11pm": "iPhone 11 Pro Max",
@@ -92,7 +94,13 @@ def find_atlas_for(mid, storage, atlas):
         if not label: return None
         storage_label = {"64":"64GB","128":"128GB","256":"256GB","512":"512GB","1tb":"1TB","2tb":"2TB"}.get(storage, storage)
         key = f"{label} {storage_label} Unlocked"
-        return atlas["categories"].get("iphones_used", {}).get(key)
+        used = atlas["categories"].get("iphones_used", {}).get(key, {})
+        nib  = atlas["categories"].get("iphones_nib",  {}).get(key, {})
+        # Merge: used grades + NIB sealed/open override swap_hso if NIB exists
+        merged = dict(used) if used else {}
+        if nib.get("sealed") is not None:
+            merged["swap_hso"] = nib["sealed"]  # repoint our sealed → NIB sealed
+        return merged or None
     # Samsung Galaxy / Z / Note — samsung category, list format
     if mid.startswith(("gs", "gz", "gnote")):
         label_map = {
