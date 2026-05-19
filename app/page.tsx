@@ -10316,24 +10316,44 @@ export default function Home() {
                 }
                 setSubmittedLabel(leadLabel);
                 // GA4 conversion event — fires once per successful
-                // submission. Passes `value` + `currency` (GA4 standard
-                // params) so the event ships revenue. Skywalker just
-                // needs to mark `funnel_submit` as a conversion in
-                // GA4's Events admin and link GA4 → Google Ads; the
-                // existing AW-18099653912 tag will auto-import.
-                // (Removed the standalone gtag("event","conversion",
-                // {send_to: ".../lead_submit"}) — that was a placeholder
-                // pointing at a label that doesn't exist in the Ads
-                // account, which would have shown up as Unverified in
-                // Google Ads diagnostics.)
+                // submission. Critical: we ship ESTIMATED PROFIT MARGIN
+                // as the `value`, not the customer's quote (which is
+                // our cost). Skywalker 2026-05-19 caught this — we're
+                // BUYING from customers, so Google Ads needs to optimize
+                // toward HIGH-margin leads, not high-cost ones.
+                //
+                //  - Single device with Atlas resell comp:
+                //      margin = max(quote × 10%, resell − quote)
+                //    Floors at 10% of quote so capped quotes still
+                //    show positive (the cap = 75% of resell so the
+                //    25% margin is locked in).
+                //  - Single device without a resell comp:
+                //      margin = quote × 20%   (rough estimate)
+                //  - Multi-cart bundle: same 20% rule on cart total.
+                //
+                // We ALSO ship the gross quote as a separate `quote`
+                // param so downstream analytics can still see what
+                // we paid the customer.
                 try {
                   const g = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
                   if (g) {
+                    const grossQuote = isMultiCart
+                      ? cartItems.reduce((s, it) => s + (it.price || 0) * (it.quantity || 1), 0)
+                      : (quote * quantity);
+                    const estMargin = (() => {
+                      if (isMultiCart) return Math.max(0, Math.round(grossQuote * 0.20));
+                      if (estResellNow != null && estResellNow > 0) {
+                        const floor = Math.round(grossQuote * 0.10);
+                        return Math.max(floor, Math.round(estResellNow - grossQuote));
+                      }
+                      return Math.max(0, Math.round(grossQuote * 0.20));
+                    })();
                     g("event", "funnel_submit", {
                       device: deviceType,
                       model: model?.label,
                       multi: isMultiCart,
-                      value: quote * quantity,
+                      quote: grossQuote,
+                      value: estMargin,
                       currency: "USD",
                     });
                   }
