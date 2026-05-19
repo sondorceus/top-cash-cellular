@@ -27,6 +27,10 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { name, email, phone, devices, handoffMethod, fedexLabel } = body;
   let { payout } = body;
+  // Phone normalized to digits-only for the /track URL — parallel commit
+  // 3707f6e referenced phoneDigits before declaring it. Restoring the
+  // intended derivation here so the type-check passes.
+  const phoneDigits = typeof phone === "string" ? phone.replace(/\D/g, "") : "";
   // fedexLabel = { tracking, url, service } when /api/lead minted a label.
   // Only ship handoffs get one — local meetups stay on the existing copy.
   const isShipping = handoffMethod === "ship";

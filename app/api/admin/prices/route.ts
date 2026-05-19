@@ -249,16 +249,18 @@ export async function GET() {
   // each device so Skywalker can spot loss-makers at a glance.
   const effectivePriceTable = deepMerge(PRICE_TABLE, overrides.priceTable);
   const effectiveCarrierDeductions = deepMerge(CARRIER_DEDUCTIONS, overrides.carrierDeductions);
-  const marginByModel = buildMarginMap(effectivePriceTable, overrides.baseOverrides);
   // Per-cell margin matrix — every (sku, storage, condition) cell against
   // its matching Atlas variant. Includes carrier-locked-per-carrier-tier
   // when Atlas has a locked row. Used by /admin/prices to render a chip
-  // under each input.
+  // under each input. Built BEFORE the model-level margin map so the
+  // latter can reuse its max-resell value (apples-to-apples comparison
+  // against max-config payout instead of single-storage RESELL_ESTIMATES).
   const perCellMargin = buildPerCellMarginMap(
     effectivePriceTable,
     effectiveCarrierDeductions,
     atlasReference,
   );
+  const marginByModel = buildMarginMap(effectivePriceTable, overrides.baseOverrides, perCellMargin);
   return NextResponse.json({
     baseline: {
       priceTable: PRICE_TABLE,
@@ -340,8 +342,30 @@ type MarginRow = { label: string; payout: number; resell: number | null; margin:
 function buildMarginMap(
   effectivePriceTable: Record<string, Record<string, Record<string, number>>>,
   baseOverrides: Record<string, number>,
+  perCellMargin?: Record<string, Record<string, Record<string, Record<string, CellMarginRow>>>>,
 ): Record<string, MarginRow> {
   const out: Record<string, MarginRow> = {};
+  // Find the max Atlas resell across all per-cell variants for a SKU.
+  // Used in preference to the single-point getResellEstimate(label) so
+  // the model-level chip compares max-config payout against max-config
+  // resell — an apples-to-apples picture instead of comparing 8TB-Sealed
+  // payout against 256GB-grade_a resell and falsely showing red. Skywalker
+  // 2026-05-19. Falls back to getResellEstimate when no per-cell data
+  // exists for the SKU (most BASE_PRICED devices, anything without an
+  // Atlas comp).
+  const maxResellForSku = (sku: string): number | null => {
+    const m = perCellMargin?.[sku];
+    if (!m) return null;
+    let best = 0;
+    for (const stor of Object.values(m)) {
+      for (const cond of Object.values(stor)) {
+        for (const cell of Object.values(cond)) {
+          if (cell.resell > best) best = cell.resell;
+        }
+      }
+    }
+    return best > 0 ? best : null;
+  };
   // PRICE_TABLE entries — max payout across storage × condition matrix
   for (const [sku, storages] of Object.entries(effectivePriceTable)) {
     const label = SKU_LABELS[sku];
@@ -353,7 +377,7 @@ function buildMarginMap(
       }
     }
     if (maxPayout === 0) continue;
-    const resell = getResellEstimate(label);
+    const resell = maxResellForSku(sku) ?? getResellEstimate(label);
     out[sku] = makeRow(label, maxPayout, resell);
   }
   // BASE_PRICED entries — base is the max payout; override if set
@@ -362,7 +386,7 @@ function buildMarginMap(
     if (m.inquiryOnly) continue;
     const payout = baseOverrides[sku] ?? m.base;
     if (!payout || payout <= 0) continue;
-    const resell = getResellEstimate(m.label);
+    const resell = maxResellForSku(sku) ?? getResellEstimate(m.label);
     out[sku] = makeRow(m.label, payout, resell);
   }
   return out;

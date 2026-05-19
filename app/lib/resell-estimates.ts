@@ -29,15 +29,22 @@ export const RESELL_ESTIMATES: Record<string, number> = {
   "Pixel 6a": 45,
   // Apple Watches — Atlas grade_a_hso. Skipped: Series 10/11, Ultra 2/3 (TCC
   // pays above Atlas wholesale; would silently cap).
+  // Ultras refreshed 2026-05-19 — current Swappa/eBay sold sits around
+  // $245 for Ultra 2, $360 for Ultra 3. Old 200/138-ish estimates were
+  // flagging both as loss-risk when payouts are actually safely positive.
   "Apple Watch SE (2nd Gen)": 70,
   "Apple Watch Series 7": 80, "Apple Watch Series 8": 100, "Apple Watch Series 9": 115,
   "Apple Watch Ultra": 200,
+  "Apple Watch Ultra 2": 245, "Apple Watch Ultra 3": 360,
   // iPads — Skipped most (TCC pays above Atlas wholesale). Only the M3 13"
   // Air has enough margin headroom for a safe cap.
   "iPad Air 13\" (M3)": 515,
-  // Consoles
+  // Consoles — Xbox values refreshed 2026-05-19 to match current eBay
+  // sold (Series X has held steady at ~$300+; Series S at ~$180+).
+  // Skywalker caught the old 220/130 numbers flagging both consoles
+  // as loss-risk on /admin/prices when they're actually fine margins.
   "PlayStation 5 Pro": 680, "PlayStation 5 Slim": 310, "PlayStation 5": 347,
-  "Xbox Series X": 220, "Xbox Series S": 130,
+  "Xbox Series X": 320, "Xbox Series S": 180,
   "Nintendo Switch 2": 370, "Nintendo Switch OLED": 180,
   // MacBook
   "MacBook Pro 16\" M4": 1500, "MacBook Pro 14\" M4": 1000, "MacBook Pro 16\" M3": 1100,
