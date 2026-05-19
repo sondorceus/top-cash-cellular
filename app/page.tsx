@@ -5826,7 +5826,7 @@ export default function Home() {
         </button>
         <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between relative">
           {/* LEFT: logo */}
-          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer group tap-press rounded-full shrink-0 bg-white/[0.07] border border-white/10 hover:bg-white/[0.07] pl-1.5 pr-3 py-1 transition">
+          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer group tap-press rounded-full shrink-0 bg-white/[0.12] border border-white/10 hover:bg-white/[0.12] pl-1.5 pr-3 py-1 transition">
             <span className="flex items-center gap-2">
               <span className="relative w-9 h-9 rounded-xl tcc-logo-card flex items-center justify-center">
                 <span className="absolute inset-0 rounded-xl pointer-events-none" style={{ background: "radial-gradient(circle at 28% 25%, rgba(0,230,118,0.18), transparent 65%)" }}></span>
@@ -5853,7 +5853,7 @@ export default function Home() {
           </button>
 
           {/* CENTER (lg+ only, absolutely centered relative to the nav row): Sell / Bulk / Support */}
-          <div className="hidden lg:flex items-center gap-2 absolute left-1/2 -translate-x-1/2 bg-white/[0.07] border border-white/10 rounded-full px-2 py-1">
+          <div className="hidden lg:flex items-center gap-2 absolute left-1/2 -translate-x-1/2 bg-white/[0.12] border border-white/10 rounded-full px-2 py-1">
             {/* SELL — mega menu, dropdown centered under the trigger */}
             <div className="group relative" onMouseEnter={() => setMegaMenuOpen("sell")} onMouseLeave={() => setMegaMenuOpen(null)}>
               <button
@@ -6083,7 +6083,7 @@ export default function Home() {
           </div>
 
           {/* RIGHT: cart + login/name (desktop) | cart + hamburger (mobile) — wrapped in matching pill */}
-          <div className="flex items-center gap-1 shrink-0 bg-white/[0.07] border border-white/10 rounded-full px-1.5 py-1">
+          <div className="flex items-center gap-1 shrink-0 bg-white/[0.12] border border-white/10 rounded-full px-1.5 py-1">
             {/* SEARCH — sits to the LEFT of the cart on every screen
                 size. On <sm (mobile) and ≥lg (desktop) this is the only
                 search entry point. On sm-lg the tablet shows a wider
@@ -6133,7 +6133,7 @@ export default function Home() {
               <div className="hidden lg:block relative">
                 <button
                   onClick={() => setCustomerMenuOpen((v) => !v)}
-                  className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-white/[0.07] border border-white/10 hover:bg-white/[0.10] transition cursor-pointer"
+                  className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-white/[0.12] border border-white/10 hover:bg-white/[0.16] transition cursor-pointer"
                   aria-haspopup="menu"
                   aria-expanded={customerMenuOpen}
                 >
@@ -10250,7 +10250,7 @@ export default function Home() {
                       style={{ fontFamily: "Univers, 'Helvetica Neue', Helvetica, Arial, sans-serif" }}
                     >
                       <span style={{ color: "#4D148C" }}>Fed</span>
-                      <span style={{ color: "#FF6600" }}>Ex</span>
+                      <span style={{ color: "#E65900" }}>Ex</span>
                     </span>
                     <p className="text-sm font-bold text-amber-200 leading-tight">label</p>
                   </div>
