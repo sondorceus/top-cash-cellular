@@ -102,6 +102,19 @@ interface Lead {
   reviewToken?: string;
   review?: { id: string; rating: number; title?: string; body: string; verified?: boolean; createdAt: string };
   couponApplied?: { code: string; value: number };
+  // Counter-offer state — set when staff has minted a revised offer for
+  // this lead. status reflects customer response (or "pending" if they
+  // haven't replied yet). Surfaces on the lead row as a badge + lets
+  // staff re-mint after a decline.
+  counterOffer?: {
+    status: "pending" | "accepted" | "declined";
+    originalQuote: number;
+    offer: number;
+    reason: string;
+    sentAt: string;
+    respondedAt?: string;
+    customerNote?: string;
+  };
 }
 
 const STATUS_OPTIONS = [
@@ -391,6 +404,94 @@ export default function AdminPage() {
       setEmailSendingId(null);
     }
   };
+
+  // Counter-offer modal state. Holds the lead being negotiated plus the
+  // staff-entered offer + reason. When `counterOfferLead === null` the
+  // modal is hidden. After successful POST, `counterOfferSentFor` holds
+  // the lead id for ~3s so the row's badge flips immediately (admin GET
+  // will reconcile next refresh).
+  const [counterOfferLead, setCounterOfferLead] = useState<Lead | null>(null);
+  const [counterOfferAmount, setCounterOfferAmount] = useState<string>("");
+  const [counterOfferReason, setCounterOfferReason] = useState<string>("");
+  const [counterOfferSending, setCounterOfferSending] = useState<boolean>(false);
+  const [counterOfferError, setCounterOfferError] = useState<string>("");
+  const [counterOfferSentFor, setCounterOfferSentFor] = useState<string | null>(null);
+
+  const openCounterOffer = useCallback((lead: Lead) => {
+    setCounterOfferLead(lead);
+    // Default amount: last counter (so re-mint after decline is one tap)
+    // or empty so staff thinks deliberately. Reason is always blank —
+    // we don't reuse the prior reason.
+    setCounterOfferAmount(lead.counterOffer ? String(lead.counterOffer.offer) : "");
+    setCounterOfferReason("");
+    setCounterOfferError("");
+  }, []);
+
+  const closeCounterOffer = useCallback(() => {
+    setCounterOfferLead(null);
+    setCounterOfferAmount("");
+    setCounterOfferReason("");
+    setCounterOfferError("");
+  }, []);
+
+  const submitCounterOffer = useCallback(async () => {
+    if (!counterOfferLead || !token) return;
+    const offer = parseInt(counterOfferAmount, 10);
+    if (!Number.isFinite(offer) || offer < 0) {
+      setCounterOfferError("Enter a valid dollar amount.");
+      return;
+    }
+    const reason = counterOfferReason.trim();
+    if (reason.length < 10) {
+      setCounterOfferError("Reason should be at least a short sentence — the customer reads this verbatim.");
+      return;
+    }
+    // Original quote — parse out the leading $N from the quote string.
+    const quoteStr = counterOfferLead.quote || "";
+    const origMatch = quoteStr.match(/\$?(\d+)/);
+    const originalQuote = origMatch ? parseInt(origMatch[1], 10) : counterOfferLead.totalPayout || 0;
+    if (!originalQuote) {
+      setCounterOfferError("Can't determine the original quote on this lead.");
+      return;
+    }
+    setCounterOfferSending(true);
+    setCounterOfferError("");
+    try {
+      const r = await fetch(`/api/admin/leads/counter-offer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-token": token },
+        body: JSON.stringify({
+          leadId: counterOfferLead.id,
+          name: counterOfferLead.name,
+          phone: counterOfferLead.phone,
+          email: counterOfferLead.email,
+          device: counterOfferLead.model || counterOfferLead.device,
+          originalQuote,
+          offer,
+          reason,
+        }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setCounterOfferError(d.error || `HTTP ${r.status}`);
+        return;
+      }
+      // Optimistic row update — flip the badge to pending immediately.
+      const sentAt = new Date().toISOString();
+      const leadId = counterOfferLead.id;
+      setLeads((cur) => cur.map((l) => l.id === leadId ? {
+        ...l,
+        counterOffer: { status: "pending" as const, originalQuote, offer, reason, sentAt },
+      } : l));
+      setCounterOfferSentFor(leadId);
+      setTimeout(() => setCounterOfferSentFor((cur) => (cur === leadId ? null : cur)), 3500);
+      closeCounterOffer();
+    } catch (e) {
+      setCounterOfferError(e instanceof Error ? e.message : "Network error");
+    } finally {
+      setCounterOfferSending(false);
+    }
+  }, [counterOfferLead, counterOfferAmount, counterOfferReason, token, closeCounterOffer]);
 
   // Tracks per-lead "Copied!" flash for the review-link button.
   // Skywalker 2026-05-17: "give them to ask for reviews" — admin needs a
@@ -2133,7 +2234,42 @@ export default function AdminPage() {
                         >
                           {emailSentById[lead.id] ? "✓ Sent" : "✉️ Email"}
                         </button>
+                        {/* Counter-offer — third path between accept-as-
+                            quoted and full reject. Opens a modal asking
+                            for the revised dollar amount + a customer-
+                            facing reason. Disabled once an offer is
+                            pending (re-mint after a decline is fine). */}
+                        <button
+                          type="button"
+                          onClick={() => openCounterOffer(lead)}
+                          disabled={!lead.phone && !lead.email}
+                          className={`inline-flex items-center gap-1 text-[10px] font-bold transition cursor-pointer px-2 py-1 rounded border ${
+                            lead.counterOffer?.status === "pending"
+                              ? "bg-amber-500/15 border-amber-500/45 text-amber-200 hover:bg-amber-500/25"
+                              : lead.counterOffer?.status === "accepted"
+                                ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-200 hover:bg-emerald-500/25"
+                                : lead.counterOffer?.status === "declined"
+                                  ? "bg-red-500/15 border-red-500/40 text-red-200 hover:bg-red-500/25"
+                                  : "bg-purple-500/10 border-purple-500/35 text-purple-200 hover:bg-purple-500/20"
+                          } disabled:opacity-40 disabled:cursor-not-allowed`}
+                          title={!lead.phone && !lead.email ? "Need phone or email to send the offer" : lead.counterOffer ? `Last offer: $${lead.counterOffer.offer} (${lead.counterOffer.status})` : "Send the customer a revised offer with the reason"}
+                        >
+                          {lead.counterOffer?.status === "pending"
+                            ? `⏳ Counter $${lead.counterOffer.offer} pending`
+                            : lead.counterOffer?.status === "accepted"
+                              ? `✓ Counter $${lead.counterOffer.offer} accepted`
+                              : lead.counterOffer?.status === "declined"
+                                ? `✗ Counter $${lead.counterOffer.offer} declined — re-mint?`
+                                : "💬 Counter-offer"}
+                        </button>
                       </div>
+                      {/* Customer note from counter-response, if present. */}
+                      {lead.counterOffer?.customerNote && (
+                        <div className="mt-1.5 text-[11px] text-[#dcdcdc] bg-purple-500/10 border border-purple-500/30 border-l-2 border-l-purple-400 pl-2 py-1 rounded-sm">
+                          <span className="text-[9px] uppercase tracking-wider text-purple-300 font-bold">Customer note: </span>
+                          <span className="break-words">{lead.counterOffer.customerNote}</span>
+                        </div>
+                      )}
                       {/* Inline custom-email composer — toggles open when
                           ✉️ Email is clicked. Subject + body + Send/Cancel.
                           Uses Resend behind the scenes with the TCC HTML
@@ -2667,6 +2803,94 @@ export default function AdminPage() {
               )}
             </div>
           </div>
+        </div>
+      )}
+      {/* Counter-offer modal. Opens when staff clicks "Counter-offer" on
+          any lead row. POSTs to /api/admin/leads/counter-offer which
+          mints a tokenized accept-or-decline link and sends the
+          customer SMS + email. */}
+      {counterOfferLead && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+          onClick={(e) => { if (e.target === e.currentTarget && !counterOfferSending) closeCounterOffer(); }}
+        >
+          <div className="w-full max-w-lg bg-[#0f0f0f] border border-purple-500/30 rounded-2xl p-5 shadow-2xl">
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-purple-300 font-bold">💬 Counter-offer</p>
+                <h2 className="text-lg font-bold text-white mt-0.5">{counterOfferLead.name || counterOfferLead.id}</h2>
+                <p className="text-[11px] text-[#888] mt-0.5">{counterOfferLead.model || counterOfferLead.device}{counterOfferLead.storage ? ` · ${counterOfferLead.storage}` : ""}{counterOfferLead.condition ? ` · ${counterOfferLead.condition}` : ""}</p>
+              </div>
+              <button
+                type="button"
+                onClick={closeCounterOffer}
+                disabled={counterOfferSending}
+                className="text-[#888] hover:text-white text-lg leading-none px-1 cursor-pointer disabled:opacity-40"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-3 flex items-baseline justify-between">
+              <span className="text-[10px] uppercase tracking-wider text-[#888] font-bold">Original quote</span>
+              <span className="text-2xl font-bold text-[#00c853]">{counterOfferLead.quote || "—"}</span>
+            </div>
+
+            <label className="block text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold mb-1">Revised offer ($)</label>
+            <input
+              type="number"
+              min="0"
+              value={counterOfferAmount}
+              onChange={(e) => setCounterOfferAmount(e.target.value)}
+              disabled={counterOfferSending}
+              autoFocus
+              className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-base text-white focus:outline-none focus:border-purple-400 transition mb-3 disabled:opacity-50"
+              placeholder="e.g. 320"
+            />
+
+            <label className="block text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold mb-1">Reason (customer sees this verbatim)</label>
+            <textarea
+              value={counterOfferReason}
+              onChange={(e) => setCounterOfferReason(e.target.value)}
+              disabled={counterOfferSending}
+              rows={4}
+              maxLength={500}
+              className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white leading-relaxed focus:outline-none focus:border-purple-400 transition resize-none disabled:opacity-50"
+              placeholder="Be honest and specific. e.g. 'Back glass has a hairline crack we couldn't see in your photos. Otherwise everything functions perfectly.'"
+            />
+            <p className="text-[10px] text-[#888] mt-1">{counterOfferReason.length}/500 · Goes verbatim in their SMS + email.</p>
+
+            {counterOfferError && (
+              <p className="text-[11px] text-red-300 mt-2">⚠️ {counterOfferError}</p>
+            )}
+
+            <div className="flex gap-2 mt-4">
+              <button
+                type="button"
+                onClick={submitCounterOffer}
+                disabled={counterOfferSending || !counterOfferAmount.trim() || counterOfferReason.trim().length < 10}
+                className="flex-1 px-4 py-2.5 bg-gradient-to-b from-purple-500 to-purple-600 text-white font-bold text-sm rounded-full hover:from-purple-400 hover:to-purple-500 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              >
+                {counterOfferSending ? "Sending…" : `Send revised offer${counterOfferAmount ? ` ($${counterOfferAmount})` : ""}`}
+              </button>
+              <button
+                type="button"
+                onClick={closeCounterOffer}
+                disabled={counterOfferSending}
+                className="px-4 py-2.5 bg-white/5 border border-white/10 rounded-full text-sm text-[#dcdcdc] hover:bg-white/10 cursor-pointer disabled:opacity-40"
+              >
+                Cancel
+              </button>
+            </div>
+            <p className="text-[10px] text-[#666] mt-3 leading-relaxed">
+              Customer gets a SMS{counterOfferLead.email ? " + email" : ""} with an accept/decline link. Accept → we pay {counterOfferLead.payout || "via their chosen method"}. Decline → we ship back free.
+            </p>
+          </div>
+        </div>
+      )}
+      {counterOfferSentFor && (
+        <div className="fixed top-4 right-4 z-50 bg-emerald-500/15 border border-emerald-500/40 text-emerald-200 px-4 py-2 rounded-lg shadow-lg text-sm font-bold">
+          ✓ Counter-offer sent
         </div>
       )}
     </main>

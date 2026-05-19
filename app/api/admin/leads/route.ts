@@ -335,6 +335,21 @@ interface AdminLead {
     atlas?: { resell: number; margin: number; marginPct: number; carrierKey: string };
     ebay?: { netMedian: number; sampleCount: number; margin: number; marginPct: number };
   };
+  // Counter-offer state, parsed from [COUNTER-OFFER: leadId] +
+  // [COUNTER-RESPONSE: leadId] markers. status:
+  //  - "pending"  → offer sent, customer hasn't responded
+  //  - "accepted" → customer accepted the revised offer
+  //  - "declined" → customer declined (we ship the device back)
+  // Missing when no counter-offer has ever been minted for this lead.
+  counterOffer?: {
+    status: "pending" | "accepted" | "declined";
+    originalQuote: number;
+    offer: number;
+    reason: string;
+    sentAt: string;
+    respondedAt?: string;
+    customerNote?: string;
+  };
 }
 
 // Includes "met" (in-person handoff terminal) alongside "paid" (digital
@@ -438,6 +453,10 @@ export async function GET(req: NextRequest) {
   // ACTIVE token iff one is minted, not yet used, and not yet expired.
   const reviewTokenByLead = new Map<string, { token: string; expires?: string; timestamp: string }>();
   const usedReviewTokens = new Set<string>();
+  // Counter-offer state per lead. We keep the MOST RECENT offer + its
+  // response (if any). Re-minting an offer overrides the prior one.
+  const counterOfferByLead = new Map<string, { originalQuote: number; offer: number; reason: string; timestamp: string }>();
+  const counterResponseByLead = new Map<string, { response: "accept" | "decline"; timestamp: string; note?: string }>();
   const deletedAtByLead = new Map<string, string>();  // most-recent deletion timestamp
   const restoredAtByLead = new Map<string, string>(); // most-recent restore timestamp
   for (const m of messages) {
@@ -517,6 +536,39 @@ export async function GET(req: NextRequest) {
       else if (channel === "email") slot.email += 1;
       if (!slot.lastAt || m.timestamp > slot.lastAt) slot.lastAt = m.timestamp;
       commsByLead.set(lid, slot);
+    }
+    // Counter-offer mint marker — admin posts this when staff sends a
+    // revised offer to a customer. Format:
+    // "[COUNTER-OFFER: <leadId>] original=$X offer=$Y reason=... token=..."
+    const coMarker = m.body.match(/\[COUNTER-OFFER:\s*([\w-]+)\]/i);
+    if (coMarker) {
+      const lid = coMarker[1];
+      const orig = parseInt(m.body.match(/original=\$?(\d+)/i)?.[1] || "", 10);
+      const offer = parseInt(m.body.match(/offer=\$?(\d+)/i)?.[1] || "", 10);
+      // Reason runs until the next " token=" or end-of-line. Greedy
+      // grab so multi-word reasons survive.
+      const reason = m.body.match(/reason=(.+?)(?=\s+token=|\s*$)/im)?.[1]?.trim() || "";
+      if (Number.isFinite(orig) && Number.isFinite(offer)) {
+        const prev = counterOfferByLead.get(lid);
+        if (!prev || m.timestamp > prev.timestamp) {
+          counterOfferByLead.set(lid, { originalQuote: orig, offer, reason, timestamp: m.timestamp });
+        }
+      }
+    }
+    // Counter-offer response marker — posted by the customer-side
+    // /api/counter-offer/respond endpoint.
+    // Format: "[COUNTER-RESPONSE: leadId] response=accept|decline ..."
+    const crMarker = m.body.match(/\[COUNTER-RESPONSE:\s*([\w-]+)\]/i);
+    if (crMarker) {
+      const lid = crMarker[1];
+      const resp = m.body.match(/response=(accept|decline)/i)?.[1]?.toLowerCase();
+      const note = m.body.match(/note=(.+?)$/im)?.[1]?.trim();
+      if (resp === "accept" || resp === "decline") {
+        const prev = counterResponseByLead.get(lid);
+        if (!prev || m.timestamp > prev.timestamp) {
+          counterResponseByLead.set(lid, { response: resp, timestamp: m.timestamp, note });
+        }
+      }
     }
     // FedEx label FAILURE marker — same self-contained shape.
     // Format: "[LABEL-FAILED: <leadId>] kind=X reason=..."
@@ -880,6 +932,29 @@ export async function GET(req: NextRequest) {
           body: rev.body,
           verified: rev.verified,
           createdAt: rev.createdAt,
+        };
+      })(),
+      counterOffer: (() => {
+        const co = counterOfferByLead.get(m.id);
+        if (!co) return undefined;
+        const cr = counterResponseByLead.get(m.id);
+        // Pair an offer with a response only if the response came AFTER
+        // the most recent offer. A response timestamped before the
+        // latest mint is stale (staff re-issued after a decline).
+        const paired = cr && cr.timestamp >= co.timestamp ? cr : undefined;
+        const status: "pending" | "accepted" | "declined" = !paired
+          ? "pending"
+          : paired.response === "accept"
+            ? "accepted"
+            : "declined";
+        return {
+          status,
+          originalQuote: co.originalQuote,
+          offer: co.offer,
+          reason: co.reason,
+          sentAt: co.timestamp,
+          respondedAt: paired?.timestamp,
+          customerNote: paired?.note,
         };
       })(),
       couponApplied: (() => {

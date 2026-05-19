@@ -79,7 +79,7 @@ async function sendSms(to: string, body: string): Promise<boolean> {
   } catch { return false; }
 }
 
-type TemplateCtx = { name?: string; device?: string; quote?: string; payout?: string; rejectionReason?: string; reviewToken?: string };
+type TemplateCtx = { name?: string; device?: string; quote?: string; payout?: string; rejectionReason?: string; reviewToken?: string; phone?: string; email?: string };
 
 function smsTemplate(status: string, ctx: TemplateCtx): string {
   const dev = ctx.device || "your device";

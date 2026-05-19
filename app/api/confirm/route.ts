@@ -61,6 +61,9 @@ export async function POST(req: NextRequest) {
   if (email && process.env.RESEND_API_KEY) {
     const offerNum = Date.now().toString(36).toUpperCase();
     const offerDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    // Digits-only phone for the /track URL query string. Falls back to
+    // empty so the template's `phoneDigits || email` ternary picks email.
+    const phoneDigits = phone ? phone.replace(/\D/g, "") : "";
     const htmlEmail = `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
