@@ -101,10 +101,15 @@ function MarginChip({ row }: { row?: MarginRow }) {
     pct >= 10 ? "text-yellow-300 bg-yellow-500/10 border-yellow-500/30" :
     "text-red-300 bg-red-500/10 border-red-500/40";
   const sign = pct >= 0 ? "+" : "";
+  // Tooltip flags the Atlas-variant assumption: the resell value is the
+  // grade_a unlocked 256GB (smallest standard tier) Atlas buy price.
+  // Real exit value varies — carrier-locked is ~25-30% less, 1TB/2TB pay
+  // more, broken/cracked drop to grade_c/d/DOA. The chip is a single-point
+  // representative estimate, not per-cell exact.
   return (
     <span
       className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${tone}`}
-      title={`Max payout $${row.payout} · resell est $${row.resell} · margin ${row.margin && row.margin >= 0 ? "+" : ""}$${row.margin}`}
+      title={`Max payout $${row.payout} · resell est $${row.resell} (Atlas grade_a unlocked) · margin ${row.margin && row.margin >= 0 ? "+" : ""}$${row.margin}\n\nNote: Atlas pays less for carrier-locked (~−25%) and broken/cracked (grade_c/d/DOA tiers). Higher storage tiers (1TB/2TB) pay more. This chip is a representative single-point estimate.`}
     >
       {sign}{pct}%
     </span>
@@ -525,6 +530,11 @@ export default function PricesAdminPage() {
             </div>
           );
         })()}
+        <p className="text-[10px] text-[#666] -mt-3 leading-snug max-w-3xl">
+          Resell estimate = Atlas grade_a unlocked 256GB. Carrier-locked / broken /
+          higher-storage variants exit Atlas at materially different prices —
+          chip is a representative point, not exact for every cell.
+        </p>
 
         {/* SIMPLE BASE-PRICE DEVICES — VR, drones, Garmin. These models
             have a single `base` field (no storage × condition grid),
