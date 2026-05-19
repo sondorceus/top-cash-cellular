@@ -11952,12 +11952,17 @@ export default function Home() {
                   used to read "Skywalker & the Top Cash team". Personal
                   voice lives here so the customer touchpoints stay
                   professional. Skywalker 2026-05-19. */}
+              {/* Founder backstory — safety-and-convenience angle.
+                  IWM positions on sustainability ("give good tech a
+                  second chance"); we sit next to them on the customer-
+                  safety / no-sketchy-meetup angle. Skywalker 2026-05-19. */}
               <h2 className="text-xl font-bold mb-4">Our story</h2>
               <div className="space-y-4 mb-8 text-[#e6e6e6] text-sm leading-relaxed">
-                <p>I&apos;m Skywalker — I&apos;ve spent the last ten years buying electronics here in Austin. iPhones, MacBooks, game consoles, drones, you name it. Mostly cash-in-hand local meetups at coffee shops and parking lots, the way the resale scene actually works when you cut out the middlemen.</p>
-                <p>What kept bugging me: the difference between what I could pay sellers and what the big trade-in programs offered them was huge. Carrier trade-ins, mail-in sites with hidden &quot;condition adjustments&quot;, marketplaces full of scams — none of it was friendly to the person actually trying to sell a device they owned and took care of.</p>
-                <p>So I built Top Cash Cellular to put that decade of pricing experience into a tool anyone can use. An instant quote that&apos;s actually fair, transparent grading you can sanity-check yourself, prepaid FedEx labels for sellers outside Austin, and same-day payment when the device shows up. No mystery deductions, no &quot;your quote was lowered to $X&quot; emails three days after you mailed it.</p>
-                <p>The site you&apos;re reading went live in May 2026 after a few months of nights-and-weekends building. It&apos;s small — me + a tiny team handling intake, inspection, and payout — but that&apos;s the point. You&apos;re dealing with a real person who&apos;s been in this market long enough to know what your device is actually worth.</p>
+                <p>I&apos;m Skywalker — I&apos;ve spent the last ten years buying electronics here in Austin. iPhones, MacBooks, game consoles, drones, you name it. Cash-in-hand at coffee shops, gas stations, mall parking lots — the way the resale scene actually works.</p>
+                <p>Doing it that long, you see the dark side of it. Stories every month: someone meeting a stranger from OfferUp to sell a MacBook gets robbed at gunpoint. A college kid driving across town with a Switch hands it to a buyer who jumps in a car and peels off. People walking into apartment complexes alone because that&apos;s where the &quot;buyer&quot; said to meet. The convenience of marketplace apps quietly costs people their phones, their money, and sometimes their safety.</p>
+                <p>Top Cash Cellular is the opposite of that. <strong className="text-white">One business, one face, one location.</strong> You get an honest quote in 30 seconds, you ship your device with a free FedEx label (or meet me at a known public spot if you&apos;re in Austin), and you get paid the day we receive it. No driving across town with a thousand dollars of electronics in your front seat. No texting back-and-forth with a stranger whose Facebook profile was made last week. No &quot;is this person real or about to scam me&quot; gut check.</p>
+                <p>That&apos;s the whole pitch: <strong className="text-white">safe, convenient, fair.</strong> Ten years of pricing experience baked into an instant-quote tool, transparent grading you can sanity-check yourself, and same-day payment from a business that&apos;ll still be here next month. You save the time. You save the hassle. You don&apos;t put yourself in a situation that ends up on the local news.</p>
+                <p>The site went live in May 2026. It&apos;s small — me + a tiny team handling intake, inspection, and payout — but that&apos;s the point. You&apos;re dealing with a real person who&apos;s been in this market long enough to know what your device is actually worth, and you never have to wonder who&apos;s on the other end of the trade.</p>
                 <p>Got a question or a weird device you&apos;re not sure we&apos;ll buy? Email me directly: <a href={EMAIL_HREF} className="text-[#00c853] hover:underline font-semibold">{EMAIL}</a>. I read every message.</p>
               </div>
 
@@ -11983,10 +11988,11 @@ export default function Home() {
               <h2 className="text-xl font-bold mb-4">Why sell to us?</h2>
               <div className="space-y-3 mb-8">
                 {[
+                  { icon: "🛡️", title: "Skip the sketchy meetup", desc: "No driving across town with a thousand dollars of electronics in your front seat. No strangers from OfferUp or Facebook Marketplace. One real business, one face, one trusted public spot — or ship it and never leave home." },
                   { icon: "💰", title: "Highest payouts in Austin", desc: "We consistently beat Apple, carrier, and marketplace prices by 20-40%. Get a quote and compare." },
                   { icon: "⚡", title: "Paid on the spot", desc: "Cash, Cash App, Zelle, or BTC — your choice. No waiting for checks or bank transfers." },
-                  { icon: "🤝", title: "Local & personal", desc: "We meet you at a convenient Austin location. Face-to-face, safe, and quick. 5 minutes and you're done." },
-                  { icon: "📦", title: "Nationwide shipping", desc: "Not in Austin? No problem. We send a free prepaid label. Ship your device, get paid same day we receive it." },
+                  { icon: "🤝", title: "Local & personal", desc: "We meet you at a known public Austin spot. Face-to-face, safe, and quick. 5 minutes and you're done." },
+                  { icon: "📦", title: "Nationwide shipping", desc: "Not in Austin? No problem. We send a free prepaid FedEx label. Ship your device, get paid same day we receive it — never leave the house." },
                   { icon: "📱", title: "We buy everything", desc: "iPhones, Samsung Galaxy, MacBooks, PS5, Xbox, Nintendo Switch. Working, cracked, or water damaged." },
                   { icon: "🔒", title: "7-day price lock", desc: "Your quote is locked for 7 days. Take your time deciding — the price won't change." },
                 ].map((item) => (
