@@ -76,17 +76,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-8H5VGFLJ71" />
         <script src="https://accounts.google.com/gsi/client" async defer />
         <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8H5VGFLJ71');gtag('config','AW-18099653912');` }} />
-        {/* Microsoft Clarity — heatmaps + session recordings. Activates
-            only when NEXT_PUBLIC_CLARITY_ID is set in Vercel env (free
-            account at clarity.microsoft.com). No data collected until
-            then. Skywalker 2026-05-19 Tier-1 data-driven push. */}
-        {process.env.NEXT_PUBLIC_CLARITY_ID && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","${process.env.NEXT_PUBLIC_CLARITY_ID}");`,
-            }}
-          />
-        )}
+        {/* Microsoft Clarity — heatmaps + session recordings.
+            Project wtgnj60bjp (clarity.microsoft.com → Top Cash).
+            Skywalker 2026-05-19 Tier-1 data-driven push. Public tag,
+            safe to hardcode. Env var NEXT_PUBLIC_CLARITY_ID still
+            overrides if ever rotated. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","${process.env.NEXT_PUBLIC_CLARITY_ID || "wtgnj60bjp"}");`,
+          }}
+        />
         {/* First-party visitor ID — generates on first visit, persists in
             cookie + localStorage across sessions. Attached to every GA4
             event via dataLayer + sent to /api/lead so we can correlate
