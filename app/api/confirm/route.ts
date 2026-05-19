@@ -38,8 +38,24 @@ export async function POST(req: NextRequest) {
   const phoneDigits = typeof phone === "string" ? phone.replace(/\D/g, "") : "";
   // fedexLabel = { tracking, url, service } when /api/lead minted a label.
   // Only ship handoffs get one — local meetups stay on the existing copy.
+  //
+  // SECURITY: validate the URL is OUR Vercel blob domain before
+  // inserting it into the customer email. Without this check an
+  // attacker can call /api/confirm with email=victim and
+  // fedexLabel.url=http://evil-phish.com/label.pdf, and Resend would
+  // send a phishing email from our verified domain. We mint labels to
+  // a fixed Vercel blob path (fedex-labels/...pdf); anything else is
+  // either tampered or stale. Tracking similarly restricted to the
+  // shape FedEx actually returns (digits + a few letters).
+  const isVercelBlobUrl = (u: unknown): u is string =>
+    typeof u === "string" &&
+    /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/fedex-labels\/[\w.\-/]+\.pdf$/i.test(u);
+  const isValidTracking = (t: unknown): t is string =>
+    typeof t === "string" && /^[A-Z0-9]{8,30}$/i.test(t);
+  const labelUrlOk = !!fedexLabel && isVercelBlobUrl(fedexLabel.url);
+  const labelTrackingOk = !!fedexLabel && isValidTracking(fedexLabel.tracking);
   const isShipping = handoffMethod === "ship";
-  const hasLabel = isShipping && fedexLabel && fedexLabel.url && fedexLabel.tracking;
+  const hasLabel = isShipping && labelUrlOk && labelTrackingOk;
   // Defensive: even if a stale client somehow sent payout="Cash" for a
   // ship handoff, the email should NEVER display "Cash" since we can't
   // mail physical cash. Coerce to "Cash App". Skywalker 2026-05-18.
