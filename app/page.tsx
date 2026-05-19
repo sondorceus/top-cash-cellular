@@ -6041,7 +6041,9 @@ export default function Home() {
             page reads to prefill the full inline search. Wraps the
             existing inline search the funnel already has — this is the
             always-visible entry point Skywalker called out. */}
-        <div className="px-4 lg:px-8 pb-3 -mt-1 flex justify-center">
+        {/* Hidden on mobile per Skywalker 2026-05-19 — felt cramped at the
+            top of phone screens. Tablet/desktop keep it. */}
+        <div className="hidden sm:flex px-4 lg:px-8 pb-3 -mt-1 justify-center">
           <HeaderSearch className="w-full max-w-xl" />
         </div>
         {/* MOBILE CATEGORY RAIL — horizontal scroll strip with the 8
@@ -6054,8 +6056,12 @@ export default function Home() {
             win: customers no longer need to find/expand the hamburger
             to reach Sell categories. Hidden on funnel steps after
             "device" so it doesn't fight with the step they're on. */}
+        {/* Tablet-only category rail (was mobile + tablet; Skywalker
+            2026-05-19 asked to drop it on phones — feels cramped above
+            the funnel start). lg+ has the centered mega-dropdown, so this
+            now only shows in the tablet range (sm/md). */}
         {step === "device" && page === "home" && (
-          <div className="lg:hidden relative border-t border-white/[0.06]">
+          <div className="hidden sm:block lg:hidden relative border-t border-white/[0.06]">
             <div className="overflow-x-auto no-scrollbar -mx-px">
               <div className="flex gap-2 px-3 py-2.5 min-w-max">
                 {([
