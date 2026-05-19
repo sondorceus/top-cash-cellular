@@ -56,7 +56,7 @@ interface Lead {
   totalPayout?: number;
   // Populated when the lead is rendered in the Trash view.
   deletedAt?: string;
-  hoursToAutoPurge?: number;
+  hoursToAutoPurge?: number | null;
   status: string;
   statusUpdatedAt?: string;
   latestNote?: string;
@@ -653,12 +653,19 @@ export default function AdminPage() {
 
   // Soft-trash a lead. Posts a [DELETED-LEAD: <id>] marker comm to MC.
   // The lead disappears from the Active view but stays recoverable in
-  // the Trash view for 24h before auto-purge. Skywalker 2026-05-17
-  // "save my quotes for 24hr".
+  // the Trash view. Auto-purge policy (Skywalker 2026-05-19):
+  //   - Active in-flight leads: stay in Trash indefinitely (never lose
+  //     a customer's data on a misclick).
+  //   - Finished leads (paid/met/rejected): auto-purge from Trash after
+  //     24h to keep the view clean. MC comms history is permanent.
   const deleteLead = useCallback(async (lead: Lead) => {
     if (!token) return;
     const label = lead.name || lead.email || lead.phone || lead.id;
-    const ok = confirm(`Move "${label}" to Trash?\n\nThe lead will be hidden from the Active feed but stays recoverable in Trash for 24 hours. After 24h it auto-purges.`);
+    const isFinished = lead.status === "paid" || lead.status === "met" || lead.status === "rejected";
+    const ttlNote = isFinished
+      ? "Stays in Trash for 24 hours, then auto-purges."
+      : "Active lead — stays in Trash indefinitely (never auto-purges). MC comms history is permanent regardless.";
+    const ok = confirm(`Move "${label}" to Trash?\n\n${ttlNote}\n\nIt will be hidden from the Active feed but recoverable from the Trash view.`);
     if (!ok) return;
     setDeletingId(lead.id);
     setError(null);
@@ -1169,7 +1176,7 @@ export default function AdminPage() {
               <button
                 onClick={() => setView("trash")}
                 className={`px-3 py-2 transition cursor-pointer border-l border-white/10 ${view === "trash" ? "bg-amber-500/15 text-amber-300" : "text-[#dcdcdc] hover:bg-white/10"}`}
-                title="Show trashed leads (auto-purge after 24h)"
+                title="Show trashed leads — active leads stay indefinitely; finished leads (paid/met/rejected) auto-purge after 24h"
               >🗑 Trash</button>
             </div>
             <button
@@ -2310,9 +2317,11 @@ export default function AdminPage() {
                           "save my quotes for 24hr". */}
                       {view === "trash" ? (
                         <div className="mt-1.5 space-y-1">
-                          {typeof lead.hoursToAutoPurge === "number" && (
+                          {typeof lead.hoursToAutoPurge === "number" ? (
                             <p className="text-[10px] text-amber-300">⏳ Auto-purge in {lead.hoursToAutoPurge}h</p>
-                          )}
+                          ) : lead.deletedAt ? (
+                            <p className="text-[10px] text-[#888]">🔒 Kept indefinitely — active lead won&apos;t auto-purge</p>
+                          ) : null}
                           <button
                             type="button"
                             onClick={() => restoreLead(lead)}

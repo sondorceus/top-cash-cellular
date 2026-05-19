@@ -246,7 +246,7 @@ interface AdminLead {
   // hoursToAutoPurge field counts down from 24h since deletedAt.
   // Skywalker 2026-05-17: "next time save my quotes for 24hr".
   deletedAt?: string;
-  hoursToAutoPurge?: number;
+  hoursToAutoPurge?: number | null;
   status: string;
   statusUpdatedAt?: string;
   latestNote?: string;
@@ -561,18 +561,31 @@ export async function GET(req: NextRequest) {
   }
 
   // Determine each lead's bucket — active / trashed (recoverable) / purged.
-  const TRASH_TTL_MS = 24 * 60 * 60 * 1000;
+  //
+  // Auto-purge policy (Skywalker 2026-05-19):
+  //   - ACTIVE (in-flight) leads — paid hasn't happened yet, customer
+  //     could still come back: NEVER auto-purge. Stays in Trash
+  //     indefinitely so we don't lose any data on a misclick.
+  //   - FINISHED leads (paid / met / rejected) — money's settled, lead
+  //     is closed: auto-purge from trash after 24h to keep the view
+  //     uncluttered. Comms history in MC is permanent regardless.
+  const TRASH_TTL_FINISHED_MS = 24 * 60 * 60 * 1000;
   const nowMs = Date.now();
   const view = (req.nextUrl.searchParams.get("view") || "active").toLowerCase(); // active | trash | all
-  function bucketFor(leadId: string): { kind: "active" } | { kind: "trashed"; deletedAt: string; hoursLeft: number } | { kind: "purged" } {
+  const FINISHED_STATUSES = new Set(["paid", "met", "rejected"]);
+  function bucketFor(leadId: string, status?: string): { kind: "active" } | { kind: "trashed"; deletedAt: string; hoursLeft: number | null } | { kind: "purged" } {
     const delAt = deletedAtByLead.get(leadId);
     const resAt = restoredAtByLead.get(leadId);
     if (!delAt) return { kind: "active" };
-    // Restored after the last delete → active again.
     if (resAt && resAt > delAt) return { kind: "active" };
     const ageMs = nowMs - new Date(delAt).getTime();
-    if (ageMs >= TRASH_TTL_MS) return { kind: "purged" };
-    return { kind: "trashed", deletedAt: delAt, hoursLeft: Math.max(0, Math.round((TRASH_TTL_MS - ageMs) / (60 * 60 * 1000))) };
+    const isFinished = status ? FINISHED_STATUSES.has(status) : false;
+    // Only finished leads auto-purge. Active leads stay in trash forever.
+    if (isFinished && ageMs >= TRASH_TTL_FINISHED_MS) return { kind: "purged" };
+    const hoursLeft = isFinished
+      ? Math.max(0, Math.round((TRASH_TTL_FINISHED_MS - ageMs) / (60 * 60 * 1000)))
+      : null; // null = no expiry
+    return { kind: "trashed", deletedAt: delAt, hoursLeft };
   }
 
   // Pass 2: collect leads.
@@ -583,17 +596,15 @@ export async function GET(req: NextRequest) {
     // Skywalker 2026-05-17: multi-device leads were getting skipped
     // because the literal includes() check missed them.
     if (!m.body || !/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
-    // Bucket the lead. `view` controls which buckets are included:
-    //   active (default) → only active leads
-    //   trash            → only trashed-within-24h leads (with metadata)
-    //   all              → active + trashed
-    // Purged (>24h since delete) leads never surface in any view.
-    const bucket = bucketFor(m.id);
+    // Status drives the auto-purge policy (active leads stay forever in
+    // trash, finished leads purge after 24h) so look it up before
+    // bucketing. Skywalker 2026-05-19.
+    const status = statusByLead.get(m.id);
+    const bucket = bucketFor(m.id, status);
     if (bucket.kind === "purged") continue;
     if (view === "active" && bucket.kind !== "active") continue;
     if (view === "trash"  && bucket.kind !== "trashed") continue;
     const deviceLine = parseField(m.body, "Device");
-    const status = statusByLead.get(m.id);
     const photosLine = parseField(m.body, "Photos");
     const photos = photosLine ? photosLine.split(" | ").map((s) => s.trim()).filter(Boolean) : undefined;
     const warningsMatch = m.body.match(/\[IMEI WARNINGS\]\s*([^\n]+)/i);
@@ -800,7 +811,10 @@ export async function GET(req: NextRequest) {
       deviceCount,
       totalPayout,
       deletedAt:        bucket.kind === "trashed" ? bucket.deletedAt : undefined,
-      hoursToAutoPurge: bucket.kind === "trashed" ? bucket.hoursLeft : undefined,
+      // null hoursLeft means "no auto-purge" (active in-flight lead) —
+      // pass through as null so the UI can display "kept indefinitely"
+      // instead of a countdown.
+      hoursToAutoPurge: bucket.kind === "trashed" ? (bucket.hoursLeft ?? null) : undefined,
       status: status?.status || "quote_requested",
       statusUpdatedAt: status?.timestamp,
       latestNote: latestNote?.text,
