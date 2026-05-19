@@ -5962,6 +5962,27 @@ export default function Home() {
               </svg>
             </a>
 
+            {/* SEARCH — sits to the LEFT of the cart on every screen
+                size. On <sm (mobile) and ≥lg (desktop) this is the only
+                search entry point. On sm-lg the tablet shows a wider
+                inline search bar below the nav, so we hide the icon
+                there to avoid duplicating. Click opens an inline
+                dropdown anchored under the right nav cluster. Skywalker
+                2026-05-19: needs to sit clean next to cart not be in
+                its own row. */}
+            <button
+              onClick={() => setSearchOpen((v) => !v)}
+              aria-label="Search devices"
+              aria-expanded={searchOpen}
+              title="Search devices"
+              className="sm:hidden lg:flex w-9 h-9 rounded-full hover:bg-white/10 hover:text-[#00c853] flex items-center justify-center cursor-pointer tap-press transition"
+            >
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <circle cx="11" cy="11" r="7" />
+                <path strokeLinecap="round" d="m20 20-3.5-3.5" />
+              </svg>
+            </button>
+
             {/* CART — always visible on every screen size. Bumps + glows
                 when items are added (cartBump key change retriggers the
                 cart-bump keyframe). */}
@@ -6064,42 +6085,36 @@ export default function Home() {
             Desktop (lg+): collapsed to a 🔍 icon by default; click to
             expand the bar inline. Closes on Esc or click-outside.
             Skywalker 2026-05-19. */}
+        {/* Tablet (sm-lg): full inline search bar lives in its own row
+            beneath the nav. Hidden on <sm (mobile uses the cluster icon)
+            and ≥lg (desktop uses the cluster icon). */}
         <div className="hidden sm:flex lg:hidden px-4 pb-3 -mt-1 justify-center">
           <HeaderSearch className="w-full max-w-xl" />
         </div>
-        <div className="hidden lg:flex px-4 lg:px-8 pb-3 -mt-1 justify-end relative">
-          {searchOpen ? (
-            <div
-              className="flex items-center gap-2 animate-[fadeIn_0.15s_ease-out]"
-              onKeyDown={(e) => { if (e.key === "Escape") setSearchOpen(false); }}
-            >
-              <HeaderSearch className="w-[28rem]" />
+
+        {/* Mobile + desktop dropdown: when the cluster icon is clicked,
+            the search bar drops down centered under the nav. Tablet path
+            never enters this branch since its bar is always visible. */}
+        {searchOpen && (
+          <div
+            className="sm:hidden lg:block border-t border-white/5 bg-[#0a0a0a]/95 backdrop-blur px-4 lg:px-8 py-3 animate-[fadeIn_0.15s_ease-out]"
+            onKeyDown={(e) => { if (e.key === "Escape") setSearchOpen(false); }}
+          >
+            <div className="max-w-7xl mx-auto flex items-center gap-2 justify-end">
+              <HeaderSearch className="w-full max-w-xl lg:w-[28rem] lg:max-w-none" />
               <button
                 type="button"
                 onClick={() => setSearchOpen(false)}
                 aria-label="Close search"
-                className="w-7 h-7 rounded-full flex items-center justify-center text-[#888] hover:text-white hover:bg-white/10 transition cursor-pointer"
+                className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-[#888] hover:text-white hover:bg-white/10 transition cursor-pointer"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" />
                 </svg>
               </button>
             </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setSearchOpen(true)}
-              aria-label="Search devices"
-              title="Search devices"
-              className="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-[#cfcfcf] hover:bg-white/10 hover:text-white transition cursor-pointer"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="7" />
-                <path strokeLinecap="round" d="m20 20-3.5-3.5" />
-              </svg>
-            </button>
-          )}
-        </div>
+          </div>
+        )}
         {/* MOBILE CATEGORY RAIL — horizontal scroll strip with the 8
             sell categories. Tappable 64x76 tiles, big-enough touch
             targets, fade-on-right hint to suggest scrollability.
