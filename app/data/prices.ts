@@ -428,9 +428,11 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 22, fair: 45, good: 68, mint: 81, sealed: 108 },
   },
   gzflip4: {
-    "128": { broken: 14, fair: 9, good: 27, mint: 36, sealed: 50 },
-    "256": { broken: 14, fair: 14, good: 32, mint: 40, sealed: 54 },
-    "512": { broken: 15, fair: 14, good: 32, mint: 40, sealed: 58 },
+    // Re-priced 2026-05-19 from IWM scrape — prior cells were 0.20-0.46x of
+    // IWM × 0.9, sending Z Flip 4 sellers straight to IWM. Now at IWM × 0.9.
+    "128": { broken: 18, fair: 45, good: 81, mint: 90, sealed: 108 },
+    "256": { broken: 19, fair: 54, good: 90, mint: 99, sealed: 126 },
+    "512": { broken: 20, fair: 59, good: 95, mint: 104, sealed: 135 },
   },
   px8: {
     "128": { broken: 22, fair: 68, good: 108, mint: 126, sealed: 166, verygood: 117 },
@@ -542,17 +544,21 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "512": { broken: 22, sealed: 256 },
   },
   gzflip3: {
-    "128": { broken: 9, fair: 14, good: 27, mint: 36, sealed: 54 },
-    "256": { broken: 14, fair: 22, good: 36, mint: 45, sealed: 68 },
+    // Re-priced 2026-05-19 from IWM scrape — prior cells were 0.39-0.67x of
+    // IWM × 0.9. Now at IWM × 0.9.
+    "128": { broken: 14, fair: 36, good: 68, mint: 81, sealed: 104 },
+    "256": { broken: 18, fair: 45, good: 77, mint: 90, sealed: 117 },
   },
   gzfold3: {
     "256": { broken: 18, fair: 72, good: 108, mint: 126, sealed: 153 },
     "512": { broken: 22, fair: 86, good: 122, mint: 140, sealed: 180 },
   },
   gzfold4: {
-    "1tb": { broken: 27, fair: 144, good: 189, mint: 220, sealed: 270, verygood: 202 },
-    "256": { broken: 22, fair: 112, good: 158, mint: 189, sealed: 216, verygood: 171 },
-    "512": { broken: 25, fair: 130, good: 176, mint: 207, sealed: 243, verygood: 189 },
+    // Re-priced 2026-05-19 — broken tier was 0.35-0.38x of IWM × 0.9, fair 0.69x.
+    // Mint/sealed were already close. Now at IWM × 0.9 across the board.
+    "1tb": { broken: 72, fair: 194, good: 248, mint: 275, sealed: 333, verygood: 261 },
+    "256": { broken: 63, fair: 162, good: 216, mint: 243, sealed: 279, verygood: 230 },
+    "512": { broken: 68, fair: 180, good: 234, mint: 261, sealed: 306, verygood: 248 },
   },
   ipad10: {
     "256": { broken: 33, fair: 108, good: 144, mint: 171, sealed: 198, verygood: 158 },
@@ -666,8 +672,10 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "512": { broken: 108, fair: 320, good: 387, mint: 432, sealed: 540, verygood: 405 },
   },
   pxfold: {
-    "256": { broken: 32, fair: 90, good: 135, mint: 158, sealed: 202, verygood: 144 },
-    "512": { broken: 32, fair: 126, good: 171, mint: 194, sealed: 248, verygood: 180 },
+    // Re-priced 2026-05-19 from IWM scrape — prior cells were 0.47-0.68x of
+    // IWM × 0.9. Now at IWM × 0.9 (verygood interp'd between mint and good).
+    "256": { broken: 68, fair: 180, good: 243, mint: 279, sealed: 297, verygood: 261 },
+    "512": { broken: 72, fair: 216, good: 279, mint: 315, sealed: 342, verygood: 297 },
   },
   switch: {
     "base": { broken: 21, fair: 32, good: 54, mint: 81, sealed: 108, verygood: 68 },
