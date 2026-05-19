@@ -260,7 +260,7 @@ export async function GET() {
     effectiveCarrierDeductions,
     atlasReference,
   );
-  const marginByModel = buildMarginMap(effectivePriceTable, overrides.baseOverrides, perCellMargin);
+  const marginByModel = buildMarginMap(effectivePriceTable, overrides.baseOverrides, perCellMargin, ebayReference);
   return NextResponse.json({
     baseline: {
       priceTable: PRICE_TABLE,
@@ -343,27 +343,44 @@ function buildMarginMap(
   effectivePriceTable: Record<string, Record<string, Record<string, number>>>,
   baseOverrides: Record<string, number>,
   perCellMargin?: Record<string, Record<string, Record<string, Record<string, CellMarginRow>>>>,
+  ebay?: Awaited<ReturnType<typeof loadEbayReference>>,
 ): Record<string, MarginRow> {
   const out: Record<string, MarginRow> = {};
-  // Find the max Atlas resell across all per-cell variants for a SKU.
-  // Used in preference to the single-point getResellEstimate(label) so
-  // the model-level chip compares max-config payout against max-config
-  // resell — an apples-to-apples picture instead of comparing 8TB-Sealed
-  // payout against 256GB-grade_a resell and falsely showing red. Skywalker
-  // 2026-05-19. Falls back to getResellEstimate when no per-cell data
-  // exists for the SKU (most BASE_PRICED devices, anything without an
-  // Atlas comp).
-  const maxResellForSku = (sku: string): number | null => {
-    const m = perCellMargin?.[sku];
-    if (!m) return null;
+  // The model-level chip should reflect the BEST resell channel — we're
+  // the operator, we choose whether to wholesale to Atlas, list on eBay,
+  // or sell on Swappa. If even the best channel shows red, the model
+  // truly loses money. Take the MAX of three signals per SKU:
+  //   1. Atlas grade_a (max across per-cell matrix)
+  //   2. eBay net-median (max across by_cell buckets)
+  //   3. RESELL_ESTIMATES single-point (legacy / fallback for devices
+  //      Atlas + eBay don't cover, like VR / drones / Garmin watches)
+  // Skywalker 2026-05-19.
+  const bestResellForSku = (sku: string, label: string): number | null => {
     let best = 0;
-    for (const stor of Object.values(m)) {
-      for (const cond of Object.values(stor)) {
-        for (const cell of Object.values(cond)) {
-          if (cell.resell > best) best = cell.resell;
+    // (1) Atlas per-cell max
+    const cellMap = perCellMargin?.[sku];
+    if (cellMap) {
+      for (const stor of Object.values(cellMap)) {
+        for (const cond of Object.values(stor)) {
+          for (const cell of Object.values(cond)) {
+            if (cell.resell > best) best = cell.resell;
+          }
         }
       }
     }
+    // (2) eBay net-median max across all (storage, condition) buckets
+    const ebayModel = ebay?.models?.[sku];
+    if (ebayModel?.by_cell) {
+      for (const stor of Object.values(ebayModel.by_cell)) {
+        for (const cell of Object.values(stor)) {
+          const v = (cell as { net_median?: number; median?: number }).net_median;
+          if (typeof v === "number" && v > best) best = v;
+        }
+      }
+    }
+    // (3) Single-point Swappa-mid / curated estimate
+    const single = getResellEstimate(label);
+    if (single != null && single > best) best = single;
     return best > 0 ? best : null;
   };
   // PRICE_TABLE entries — max payout across storage × condition matrix
@@ -377,7 +394,7 @@ function buildMarginMap(
       }
     }
     if (maxPayout === 0) continue;
-    const resell = maxResellForSku(sku) ?? getResellEstimate(label);
+    const resell = bestResellForSku(sku, label);
     out[sku] = makeRow(label, maxPayout, resell);
   }
   // BASE_PRICED entries — base is the max payout; override if set
@@ -386,7 +403,7 @@ function buildMarginMap(
     if (m.inquiryOnly) continue;
     const payout = baseOverrides[sku] ?? m.base;
     if (!payout || payout <= 0) continue;
-    const resell = maxResellForSku(sku) ?? getResellEstimate(m.label);
+    const resell = bestResellForSku(sku, m.label);
     out[sku] = makeRow(m.label, payout, resell);
   }
   return out;
