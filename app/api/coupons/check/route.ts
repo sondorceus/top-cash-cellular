@@ -13,6 +13,9 @@ export async function GET(req: NextRequest) {
   const email = (req.nextUrl.searchParams.get("email") || "").trim().toLowerCase();
   const phone = (req.nextUrl.searchParams.get("phone") || "").replace(/\D/g, "");
   if (!code) return NextResponse.json({ valid: false, error: "Code required" }, { status: 400 });
+  // Bound code length — coupons are TCC-XXXX format (~8 chars). A
+  // megabyte string from a script doesn't get to traverse MC.
+  if (code.length > 64) return NextResponse.json({ valid: false, error: "Code not found or already used" }, { status: 404 });
 
   try {
     // MC's GET /api/coupons supports filtering — just pull this one.
@@ -50,6 +53,9 @@ export async function GET(req: NextRequest) {
       identityMatched: !!(emailMatch || phoneMatch),
     });
   } catch (e) {
-    return NextResponse.json({ valid: false, error: e instanceof Error ? e.message : "Verification failed" }, { status: 502 });
+    // Server-side log only — don't echo error.message to public
+    // callers (can include internal hostnames, DNS state, etc.).
+    console.warn("[coupons/check] verify failed:", e instanceof Error ? e.message : e);
+    return NextResponse.json({ valid: false, error: "Verification failed" }, { status: 502 });
   }
 }
