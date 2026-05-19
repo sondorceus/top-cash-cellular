@@ -1051,6 +1051,7 @@ export default function AdminPage() {
                   if (statusFilter === "all") return true;
                   if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
                   if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
+                  if (statusFilter === "stale") return isStale(l);
                   return l.status === statusFilter;
                 });
                 if (statusFilter === "all" && !searchQuery) {
@@ -1134,6 +1135,7 @@ export default function AdminPage() {
                   if (statusFilter === "all") return true;
                   if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
                   if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
+                  if (statusFilter === "stale") return isStale(l);
                   return l.status === statusFilter;
                 });
                 exportFilteredCsv(view);
@@ -1149,6 +1151,97 @@ export default function AdminPage() {
             </button>
           </div>
         </div>
+
+        {/* NEEDS-ATTENTION BANNER — surfaces the top stale leads at the
+            top of the page so they don't get lost in the feed. Renders
+            only when at least one lead is over its SLA target. Each row
+            is clickable: clicking the banner header filters the list to
+            stale only; clicking a row jumps to that lead. */}
+        {staleCount > 0 && view === "active" && (() => {
+          const staleLeads = dedupedLeads
+            .filter(isStale)
+            .sort((a, b) => {
+              const sa = stalenessFor(a) === "red" ? 0 : 1;
+              const sb = stalenessFor(b) === "red" ? 0 : 1;
+              if (sa !== sb) return sa - sb;
+              const la = new Date(a.statusUpdatedAt || a.timestamp).getTime();
+              const lb = new Date(b.statusUpdatedAt || b.timestamp).getTime();
+              return la - lb; // oldest first within tier
+            })
+            .slice(0, 5);
+          const redCount = dedupedLeads.filter((l) => stalenessFor(l) === "red").length;
+          return (
+            <div className="mb-4 sm:mb-5 bg-gradient-to-r from-red-500/10 via-amber-500/10 to-amber-500/5 border border-red-500/30 rounded-2xl overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setStatusFilter("stale")}
+                className="w-full px-4 sm:px-5 py-3 flex items-center justify-between text-left hover:bg-red-500/5 transition cursor-pointer border-b border-red-500/20"
+                title="Filter the list to stale leads only"
+              >
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-base">{redCount > 0 ? "🔴" : "🟡"}</span>
+                  <span className="font-bold text-white text-sm sm:text-base">
+                    {staleCount} lead{staleCount === 1 ? "" : "s"} need{staleCount === 1 ? "s" : ""} attention
+                  </span>
+                  {redCount > 0 && (
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-red-300 bg-red-500/15 border border-red-500/30 rounded px-1.5 py-0.5">
+                      {redCount} past alert
+                    </span>
+                  )}
+                </div>
+                <span className="text-xs text-[#cfcfcf] hidden sm:inline">View all →</span>
+              </button>
+              <ul className="divide-y divide-white/5">
+                {staleLeads.map((l) => {
+                  const stale = stalenessFor(l);
+                  const last = new Date(l.statusUpdatedAt || l.timestamp).getTime();
+                  const hrs = Math.floor((Date.now() - last) / 3600000);
+                  const isRed = stale === "red";
+                  return (
+                    <li key={l.id} className="px-4 sm:px-5 py-2 flex items-center gap-3 hover:bg-white/[0.02] transition">
+                      <span className={`text-base ${isRed ? "" : ""}`}>{isRed ? "🔴" : "🟡"}</span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-white truncate">
+                          {l.name || l.email || l.phone || l.id}
+                          <span className="ml-2 text-[#bdbdbd] text-xs font-normal">· {l.model || l.device || "—"}</span>
+                        </p>
+                        <p className="text-[11px] text-[#cfcfcf]">
+                          <span className={`font-bold ${isRed ? "text-red-300" : "text-yellow-300"}`}>{hrs}h</span>
+                          {" in "}
+                          <span className="font-mono">{l.status.replace("_", " ")}</span>
+                          {l.quote && <span className="ml-2 text-[#00c853] font-semibold">{l.quote}</span>}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setStatusFilter("stale");
+                          // Best-effort scroll to the row once the filter is applied
+                          setTimeout(() => {
+                            const el = document.querySelector(`[data-lead-id="${l.id}"]`);
+                            if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                          }, 100);
+                        }}
+                        className="text-[11px] text-[#00c853] hover:text-[#00e676] font-semibold cursor-pointer"
+                      >
+                        Jump →
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+              {staleCount > 5 && (
+                <button
+                  type="button"
+                  onClick={() => setStatusFilter("stale")}
+                  className="w-full px-4 sm:px-5 py-2 text-[12px] text-[#bdbdbd] hover:text-white hover:bg-white/[0.03] transition cursor-pointer"
+                >
+                  + {staleCount - 5} more stale lead{staleCount - 5 === 1 ? "" : "s"} — view all
+                </button>
+              )}
+            </div>
+          );
+        })()}
 
         {leads.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 sm:gap-3 mb-4">
@@ -1307,7 +1400,7 @@ export default function AdminPage() {
                 const current = pendingStatus[lead.id] ?? lead.status;
                 const meta = statusMeta(current);
                 return (
-                  <li key={lead.id} className={`px-5 py-4 grid md:grid-cols-[auto_1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 items-center hover:bg-white/[0.02] transition ${selectedIds.has(lead.id) ? "bg-[#00c853]/5" : ""} ${recentlyChanged[lead.id] ? "animate-[pulse_2s_ease-out_2] ring-1 ring-[#00c853]/40" : ""}`}>
+                  <li key={lead.id} data-lead-id={lead.id} className={`px-5 py-4 grid md:grid-cols-[auto_1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 items-center hover:bg-white/[0.02] transition ${selectedIds.has(lead.id) ? "bg-[#00c853]/5" : ""} ${recentlyChanged[lead.id] ? "animate-[pulse_2s_ease-out_2] ring-1 ring-[#00c853]/40" : ""}`}>
                     <div className="w-4">
                       <input type="checkbox" aria-label={`Select ${lead.name || lead.id}`} checked={selectedIds.has(lead.id)} onChange={() => toggleSelect(lead.id)} className="cursor-pointer accent-[#00c853]" />
                     </div>
