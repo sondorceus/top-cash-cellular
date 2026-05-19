@@ -124,7 +124,12 @@ function needsManualReview(modelName: string, quoteAmt: number): boolean {
 }
 
 export async function POST(req: NextRequest) {
-  const data = await req.json();
+  let data;
+  try {
+    data = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
   let { payout } = data;
   const { name, phone, email, device, model, storage, condition, carrier, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode } = data;
   // TCPA defense in depth — client checkbox is `required`, but a
