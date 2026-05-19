@@ -3689,6 +3689,9 @@ export default function Home() {
   const [page, setPage] = useState<"home" | "about" | "privacy" | "terms" | "grading" | "shipping" | "affiliate" | "itad" | "blog" | "cookies" | "accessibility">("home");
   const [model, setModel] = useState<{ id: string; label: string; base?: number; image?: string } | null>(null);
   const [helpTopic, setHelpTopic] = useState<"storage" | "carrier" | null>(null);
+  // Skywalker 2026-05-19: desktop wanted a tiny search icon at the top
+  // instead of the always-visible search bar. Click expands inline.
+  const [searchOpen, setSearchOpen] = useState(false);
   const [loginError, setLoginError] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
   // Declared up here (instead of next to the other funnel-selection states)
@@ -6041,10 +6044,46 @@ export default function Home() {
             page reads to prefill the full inline search. Wraps the
             existing inline search the funnel already has — this is the
             always-visible entry point Skywalker called out. */}
-        {/* Hidden on mobile per Skywalker 2026-05-19 — felt cramped at the
-            top of phone screens. Tablet/desktop keep it. */}
-        <div className="hidden sm:flex px-4 lg:px-8 pb-3 -mt-1 justify-center">
+        {/* Mobile (<sm): hidden entirely.
+            Tablet (sm–lg): full inline search bar.
+            Desktop (lg+): collapsed to a 🔍 icon by default; click to
+            expand the bar inline. Closes on Esc or click-outside.
+            Skywalker 2026-05-19. */}
+        <div className="hidden sm:flex lg:hidden px-4 pb-3 -mt-1 justify-center">
           <HeaderSearch className="w-full max-w-xl" />
+        </div>
+        <div className="hidden lg:flex px-4 lg:px-8 pb-3 -mt-1 justify-end relative">
+          {searchOpen ? (
+            <div
+              className="flex items-center gap-2 animate-[fadeIn_0.15s_ease-out]"
+              onKeyDown={(e) => { if (e.key === "Escape") setSearchOpen(false); }}
+            >
+              <HeaderSearch className="w-[28rem]" />
+              <button
+                type="button"
+                onClick={() => setSearchOpen(false)}
+                aria-label="Close search"
+                className="w-7 h-7 rounded-full flex items-center justify-center text-[#888] hover:text-white hover:bg-white/10 transition cursor-pointer"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              aria-label="Search devices"
+              title="Search devices"
+              className="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-[#cfcfcf] hover:bg-white/10 hover:text-white transition cursor-pointer"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="7" />
+                <path strokeLinecap="round" d="m20 20-3.5-3.5" />
+              </svg>
+            </button>
+          )}
         </div>
         {/* MOBILE CATEGORY RAIL — horizontal scroll strip with the 8
             sell categories. Tappable 64x76 tiles, big-enough touch
