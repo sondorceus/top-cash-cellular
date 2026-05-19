@@ -1,0 +1,430 @@
+#!/usr/bin/env python3
+"""Scrape eBay sold-listings for every priced device in PRICE_TABLE.
+
+Captures completed-listing prices from the last ~90 days. Used as a
+margin reference alongside Atlas wholesale: eBay is the actual final
+sale price (whatever buyers actually paid), Atlas is what we'd get if
+we sell to them wholesale. eBay typically pays more (private sale
+premium) but with fees + shipping + return risk.
+
+Output: public/comps/ebay-sold.json keyed by our model id, with
+per-storage aggregates (count, min/max/median/mean, sample titles).
+
+Run:
+  python3 scripts/scrape-ebay-sold.py                  # full catalog
+  python3 scripts/scrape-ebay-sold.py --only ip17pm    # one model
+  python3 scripts/scrape-ebay-sold.py --category iphone # one family
+  python3 scripts/scrape-ebay-sold.py --limit 5        # first N models
+"""
+from __future__ import annotations
+import argparse, json, re, sys, time, statistics
+from datetime import datetime, timezone
+from pathlib import Path
+from playwright.sync_api import sync_playwright
+
+ROOT = Path(__file__).parent.parent
+PRICES_TS = ROOT / "app" / "data" / "prices.ts"
+OUT = ROOT / "public" / "comps" / "ebay-sold.json"
+UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"
+
+# Map model_id → (search_label, family, accessory_filter_words, sibling_disambig)
+# search_label is what we'd type into eBay search ("iPhone 17 Pro Max").
+# family is a phrase that MUST appear in the listing title to match.
+LABEL_MAP = {
+    # iPhones
+    "ip11":     ("iPhone 11",          "iphone 11"),
+    "ip11p":    ("iPhone 11 Pro",      "iphone 11 pro"),
+    "ip11pm":   ("iPhone 11 Pro Max",  "iphone 11 pro max"),
+    "ip12mini": ("iPhone 12 mini",     "iphone 12 mini"),
+    "ip12":     ("iPhone 12",          "iphone 12"),
+    "ip12p":    ("iPhone 12 Pro",      "iphone 12 pro"),
+    "ip12pm":   ("iPhone 12 Pro Max",  "iphone 12 pro max"),
+    "ip13mini": ("iPhone 13 mini",     "iphone 13 mini"),
+    "ip13":     ("iPhone 13",          "iphone 13"),
+    "ip13p":    ("iPhone 13 Pro",      "iphone 13 pro"),
+    "ip13pm":   ("iPhone 13 Pro Max",  "iphone 13 pro max"),
+    "ip14":     ("iPhone 14",          "iphone 14"),
+    "ip14plus": ("iPhone 14 Plus",     "iphone 14 plus"),
+    "ip14p":    ("iPhone 14 Pro",      "iphone 14 pro"),
+    "ip14pm":   ("iPhone 14 Pro Max",  "iphone 14 pro max"),
+    "ip15":     ("iPhone 15",          "iphone 15"),
+    "ip15plus": ("iPhone 15 Plus",     "iphone 15 plus"),
+    "ip15p":    ("iPhone 15 Pro",      "iphone 15 pro"),
+    "ip15pm":   ("iPhone 15 Pro Max",  "iphone 15 pro max"),
+    "ip16":     ("iPhone 16",          "iphone 16"),
+    "ip16e":    ("iPhone 16e",         "iphone 16e"),
+    "ip16plus": ("iPhone 16 Plus",     "iphone 16 plus"),
+    "ip16p":    ("iPhone 16 Pro",      "iphone 16 pro"),
+    "ip16pm":   ("iPhone 16 Pro Max",  "iphone 16 pro max"),
+    "ip17":     ("iPhone 17",          "iphone 17"),
+    "ip17e":    ("iPhone 17e",         "iphone 17e"),
+    "ip17air":  ("iPhone Air",         "iphone air"),
+    "ip17p":    ("iPhone 17 Pro",      "iphone 17 pro"),
+    "ip17pm":   ("iPhone 17 Pro Max",  "iphone 17 pro max"),
+
+    # Samsung Galaxy S
+    "gs20":   ("Galaxy S20",       "galaxy s20"),
+    "gs20p":  ("Galaxy S20+",      "galaxy s20+"),
+    "gs20u":  ("Galaxy S20 Ultra", "galaxy s20 ultra"),
+    "gs20fe": ("Galaxy S20 FE",    "galaxy s20 fe"),
+    "gs21":   ("Galaxy S21",       "galaxy s21"),
+    "gs21p":  ("Galaxy S21+",      "galaxy s21+"),
+    "gs21u":  ("Galaxy S21 Ultra", "galaxy s21 ultra"),
+    "gs21fe": ("Galaxy S21 FE",    "galaxy s21 fe"),
+    "gs22":   ("Galaxy S22",       "galaxy s22"),
+    "gs22p":  ("Galaxy S22+",      "galaxy s22+"),
+    "gs22u":  ("Galaxy S22 Ultra", "galaxy s22 ultra"),
+    "gs23":   ("Galaxy S23",       "galaxy s23"),
+    "gs23p":  ("Galaxy S23+",      "galaxy s23+"),
+    "gs23u":  ("Galaxy S23 Ultra", "galaxy s23 ultra"),
+    "gs23fe": ("Galaxy S23 FE",    "galaxy s23 fe"),
+    "gs24":   ("Galaxy S24",       "galaxy s24"),
+    "gs24p":  ("Galaxy S24+",      "galaxy s24+"),
+    "gs24u":  ("Galaxy S24 Ultra", "galaxy s24 ultra"),
+    "gs24fe": ("Galaxy S24 FE",    "galaxy s24 fe"),
+    "gs25":   ("Galaxy S25",       "galaxy s25"),
+    "gs25p":  ("Galaxy S25+",      "galaxy s25+"),
+    "gs25u":  ("Galaxy S25 Ultra", "galaxy s25 ultra"),
+    "gs25fe": ("Galaxy S25 FE",    "galaxy s25 fe"),
+    "gs25edge":("Galaxy S25 Edge", "galaxy s25 edge"),
+    "gs26":   ("Galaxy S26",       "galaxy s26"),
+    "gs26p":  ("Galaxy S26+",      "galaxy s26+"),
+    "gs26u":  ("Galaxy S26 Ultra", "galaxy s26 ultra"),
+
+    # Galaxy Z foldables
+    "gzflip3": ("Galaxy Z Flip 3", "galaxy z flip 3"),
+    "gzflip4": ("Galaxy Z Flip 4", "galaxy z flip 4"),
+    "gzflip5": ("Galaxy Z Flip 5", "galaxy z flip 5"),
+    "gzflip6": ("Galaxy Z Flip 6", "galaxy z flip 6"),
+    "gzflip7": ("Galaxy Z Flip 7", "galaxy z flip 7"),
+    "gzfold3": ("Galaxy Z Fold 3", "galaxy z fold 3"),
+    "gzfold4": ("Galaxy Z Fold 4", "galaxy z fold 4"),
+    "gzfold5": ("Galaxy Z Fold 5", "galaxy z fold 5"),
+    "gzfold6": ("Galaxy Z Fold 6", "galaxy z fold 6"),
+    "gzfold7": ("Galaxy Z Fold 7", "galaxy z fold 7"),
+
+    # Pixel
+    "px5":     ("Google Pixel 5",        "pixel 5"),
+    "px5a":    ("Google Pixel 5a",       "pixel 5a"),
+    "px6":     ("Google Pixel 6",        "pixel 6"),
+    "px6p":    ("Google Pixel 6 Pro",    "pixel 6 pro"),
+    "px7":     ("Google Pixel 7",        "pixel 7"),
+    "px7a":    ("Google Pixel 7a",       "pixel 7a"),
+    "px7p":    ("Google Pixel 7 Pro",    "pixel 7 pro"),
+    "px8":     ("Google Pixel 8",        "pixel 8"),
+    "px8a":    ("Google Pixel 8a",       "pixel 8a"),
+    "px8p":    ("Google Pixel 8 Pro",    "pixel 8 pro"),
+    "px9":     ("Google Pixel 9",        "pixel 9"),
+    "px9a":    ("Google Pixel 9a",       "pixel 9a"),
+    "px9p":    ("Google Pixel 9 Pro",    "pixel 9 pro"),
+    "px9pxl":  ("Google Pixel 9 Pro XL", "pixel 9 pro xl"),
+    "px9pfold":("Google Pixel 9 Pro Fold","pixel 9 pro fold"),
+    "px10":    ("Google Pixel 10",       "pixel 10"),
+    "px10a":   ("Google Pixel 10a",      "pixel 10a"),
+    "px10p":   ("Google Pixel 10 Pro",   "pixel 10 pro"),
+    "px10pxl": ("Google Pixel 10 Pro XL","pixel 10 pro xl"),
+    "pxfold":  ("Google Pixel Fold",     "pixel fold"),
+
+    # Consoles
+    "ps4":     ("PlayStation 4",       "playstation 4"),
+    "ps4pro":  ("PlayStation 4 Pro",   "playstation 4 pro"),
+    "ps5":     ("PlayStation 5",       "playstation 5"),
+    "ps5slim": ("PlayStation 5 Slim",  "playstation 5 slim"),
+    "ps5pro":  ("PlayStation 5 Pro",   "playstation 5 pro"),
+    "xss":     ("Xbox Series S",       "xbox series s"),
+    "xsx":     ("Xbox Series X",       "xbox series x"),
+    "switch":  ("Nintendo Switch",     "nintendo switch"),
+    "switchv2":("Nintendo Switch V2",  "nintendo switch v2"),
+    "switchlite":("Nintendo Switch Lite","nintendo switch lite"),
+    "nswoled": ("Nintendo Switch OLED","nintendo switch oled"),
+    "nsw2":    ("Nintendo Switch 2",   "nintendo switch 2"),
+
+    # Watches
+    "aws7":    ("Apple Watch Series 7", "apple watch series 7"),
+    "aws8":    ("Apple Watch Series 8", "apple watch series 8"),
+    "aws9":    ("Apple Watch Series 9", "apple watch series 9"),
+    "aws10":   ("Apple Watch Series 10","apple watch series 10"),
+    "awse2":   ("Apple Watch SE",       "apple watch se"),
+    "awu1":    ("Apple Watch Ultra",    "apple watch ultra"),
+    "awu2":    ("Apple Watch Ultra 2",  "apple watch ultra 2"),
+    "awu3":    ("Apple Watch Ultra 3",  "apple watch ultra 3"),
+    "pw1":     ("Pixel Watch",          "pixel watch"),
+    "pw2":     ("Pixel Watch 2",        "pixel watch 2"),
+    "pw3":     ("Pixel Watch 3",        "pixel watch 3"),
+    "pw4":     ("Pixel Watch 4",        "pixel watch 4"),
+    "sgw7":    ("Galaxy Watch 7",       "galaxy watch 7"),
+    "sgw8":    ("Galaxy Watch 8",       "galaxy watch 8"),
+    "sgw8c":   ("Galaxy Watch 8 Classic","galaxy watch 8 classic"),
+    "sgwu":    ("Galaxy Watch Ultra",   "galaxy watch ultra"),
+    "sgwu25":  ("Galaxy Watch Ultra 2025","galaxy watch ultra 2025"),
+
+    # MacBooks
+    "mba13m2":   ("MacBook Air 13 M2",       "macbook air 13"),
+    "mba15m2":   ("MacBook Air 15 M2",       "macbook air 15"),
+    "mba13m3":   ("MacBook Air 13 M3",       "macbook air 13"),
+    "mba15m3":   ("MacBook Air 15 M3",       "macbook air 15"),
+    "mba_m4_2025":("MacBook Air M4 2025",    "macbook air"),
+    "mba_m5_2026":("MacBook Air M5 2026",    "macbook air"),
+    "mbp13m1":   ("MacBook Pro 13 M1",       "macbook pro 13"),
+    "mbp14m2":   ("MacBook Pro 14 M2",       "macbook pro 14"),
+    "mbp14m3":   ("MacBook Pro 14 M3",       "macbook pro 14"),
+    "mbp14m4":   ("MacBook Pro 14 M4",       "macbook pro 14"),
+    "mbp14_m5_2025":     ("MacBook Pro 14 M5 2025", "macbook pro 14"),
+    "mbp14_m5pmax_2026": ("MacBook Pro 14 M5 Pro Max 2026", "macbook pro 14"),
+    "mbp16m2":   ("MacBook Pro 16 M2",       "macbook pro 16"),
+    "mbp16m3":   ("MacBook Pro 16 M3",       "macbook pro 16"),
+    "mbp16m4":   ("MacBook Pro 16 M4",       "macbook pro 16"),
+    "mbp16_m5pmax_2026": ("MacBook Pro 16 M5 Pro Max 2026", "macbook pro 16"),
+
+    # iPads
+    "ipad9":         ("iPad 9th Gen",            "ipad 9"),
+    "ipad10":        ("iPad 10th Gen",           "ipad 10"),
+    "ipadair11m2":   ("iPad Air 11 M2",          "ipad air"),
+    "ipadair13m2":   ("iPad Air 13 M2",          "ipad air"),
+    "ipadair11m3":   ("iPad Air 11 M3",          "ipad air"),
+    "ipadair13m3":   ("iPad Air 13 M3",          "ipad air"),
+    "ipadmini6":     ("iPad Mini 6",             "ipad mini"),
+    "ipadmini7":     ("iPad Mini 7",             "ipad mini"),
+    "ipadpro11g4":   ("iPad Pro 11 4th Gen M2",  "ipad pro 11"),
+    "ipadpro129g6":  ("iPad Pro 12.9 6th Gen M2","ipad pro 12.9"),
+    "ipadpro11m4":   ("iPad Pro 11 M4",          "ipad pro 11"),
+    "ipadpro13m4":   ("iPad Pro 13 M4",          "ipad pro 13"),
+    "ipadpro11m5":   ("iPad Pro 11 M5",          "ipad pro 11"),
+    "ipadpro13m5":   ("iPad Pro 13 M5",          "ipad pro 13"),
+}
+
+# Family-level disambiguation: when one query matches multiple variant tiers
+# (e.g. "iPhone 17" also matches "iPhone 17 Pro Max"), reject titles that
+# contain higher-tier suffixes from the same family.
+DISAMBIG = {
+    "iphone 17":       ["pro max", "pro", "air", "plus", "17e"],
+    "iphone 16":       ["pro max", "pro", "plus", "16e"],
+    "iphone 15":       ["pro max", "pro", "plus"],
+    "iphone 14":       ["pro max", "pro", "plus"],
+    "iphone 13":       ["pro max", "pro", "mini"],
+    "iphone 12":       ["pro max", "pro", "mini"],
+    "iphone 11":       ["pro max", "pro"],
+    "iphone 17 pro":   ["max"],
+    "iphone 16 pro":   ["max"],
+    "iphone 15 pro":   ["max"],
+    "iphone 14 pro":   ["max"],
+    "iphone 13 pro":   ["max"],
+    "iphone 12 pro":   ["max"],
+    "iphone 11 pro":   ["max"],
+    "galaxy s20":      ["plus", "ultra", "fe"],
+    "galaxy s21":      ["plus", "ultra", "fe"],
+    "galaxy s22":      ["plus", "ultra", "fe"],
+    "galaxy s23":      ["plus", "ultra", "fe"],
+    "galaxy s24":      ["plus", "ultra", "fe"],
+    "galaxy s25":      ["plus", "ultra", "fe", "edge"],
+    "galaxy s26":      ["plus", "ultra", "fe"],
+    "pixel 8":         ["pro", "8a"],
+    "pixel 9":         ["pro", "9a", "fold"],
+    "pixel 9 pro":     ["xl", "fold"],
+    "pixel 10":        ["pro", "10a", "fold"],
+    "pixel 10 pro":    ["xl", "fold"],
+    "playstation 4":   ["pro", "slim"],
+    "playstation 5":   ["pro", "slim"],
+    "nintendo switch": ["lite", "oled", "v2", "2"],
+    "apple watch":     ["series", "ultra", "se"],
+    "galaxy watch":    ["classic", "ultra"],
+}
+
+# Words that indicate parts/accessories, not the full device
+ACCESSORY_WORDS = (
+    "case ", "cases ", "screen protector", "charger only", "cable only",
+    "battery only", "for parts", "parts only", "broken for parts",
+    "as is", "icloud locked", "icloud-locked", "activation locked",
+    "blacklisted", "blocked", "bad esn", "for repair only",
+    "wallet case", "phone case", "screen cover", "tempered glass",
+    "lightning cable", "wireless charger", "stand only", "manual only",
+    "box only", "empty box",
+)
+
+
+def parse_price(s):
+    if not s: return None
+    # Handle ranges "$100 to $200"
+    nums = re.findall(r"\d+(?:,\d{3})*(?:\.\d{2})?", s)
+    if not nums: return None
+    # Take first price (usually the actual sold price; ranges are bid auctions)
+    val = float(nums[0].replace(",", ""))
+    return val
+
+
+def extract_sold(page, query):
+    """Scrape sold listings. eBay updated to li.s-card markup (no more s-item).
+    Caller must warm the session via warmup_session() before first call to
+    avoid Akamai's bot challenge.
+    """
+    url = (
+        f"https://www.ebay.com/sch/i.html?_nkw={query.replace(' ', '+')}"
+        f"&LH_Sold=1&LH_Complete=1&_sop=13"
+    )
+    try:
+        page.goto(url, wait_until="domcontentloaded", timeout=30000)
+    except Exception:
+        return None
+    page.wait_for_timeout(2000)
+    if "Access Denied" in (page.title() or ""):
+        return None
+    items = page.evaluate("""() => {
+        const out = [];
+        for (const li of document.querySelectorAll('li.s-card, li.s-item')) {
+            const t = (li.querySelector('[class*="title"]')?.innerText || '').trim();
+            const p = (li.querySelector('[class*="price"]')?.innerText || '').trim();
+            const d = (li.querySelector('[class*="caption"]')?.innerText || '').trim();
+            const cond = (li.querySelector('[class*="subtitle"], .SECONDARY_INFO')?.innerText || '').trim();
+            if (!t || !p) continue;
+            if (/shop on ebay/i.test(t)) continue;
+            // Strip "NEW LISTING" badge prefix that eBay injects
+            const title = t.replace(/^NEW LISTING/, '').replace(/Opens in a new.*$/s, '').trim();
+            out.push({title, price: p, sold: d, cond: cond});
+        }
+        return out;
+    }""")
+    return items
+
+
+def warmup_session(page):
+    """Visit eBay homepage to establish cookies before first search.
+    Without this Akamai serves an Access Denied for the search URL."""
+    try:
+        page.goto("https://www.ebay.com/", wait_until="domcontentloaded", timeout=30000)
+        page.wait_for_timeout(1500)
+    except Exception:
+        pass
+
+
+def aggregate(items, family, our_price=0):
+    """Aggregate eBay listings into median/min/max/count.
+
+    Filters: must contain `family` (e.g. "iphone 17 pro max") as substring.
+    Rejects accessory-only listings, sibling-tier matches via DISAMBIG.
+    Rejects prices < 30% of our_price (likely parts) and > 5x (likely lot).
+    """
+    if not items:
+        return {"count": 0}
+    family_l = family.lower()
+    rejects = DISAMBIG.get(family_l, [])
+    min_price = max(20, our_price * 0.30 if our_price else 0)
+    max_price = (our_price * 5) if our_price else 10000
+    matched = []
+    for it in items:
+        t = it.get("title", "")
+        t_lower = t.lower()
+        if family_l not in t_lower:
+            continue
+        # Reject sibling variants
+        if any(sib in t_lower for sib in rejects):
+            continue
+        # Reject accessories/parts
+        if any(w in t_lower for w in ACCESSORY_WORDS):
+            continue
+        p = parse_price(it.get("price"))
+        if p is None: continue
+        if p < min_price or p > max_price: continue
+        matched.append({"price": p, "title": t[:120], "cond": it.get("cond", "")[:60]})
+    if not matched:
+        return {"count": 0}
+    prices = sorted(m["price"] for m in matched)
+    return {
+        "count": len(matched),
+        "min": prices[0],
+        "max": prices[-1],
+        "median": statistics.median(prices),
+        "mean": round(statistics.mean(prices), 2),
+        "samples": matched[:6],
+    }
+
+
+def read_price_table_models():
+    """Parse PRICE_TABLE from app/data/prices.ts → list of model ids."""
+    src = PRICES_TS.read_text()
+    m = re.search(r"^export const PRICE_TABLE[^=]*=\s*\{", src, re.MULTILINE)
+    if not m: return []
+    i = m.end() - 1
+    depth = 0; j = i
+    while j < len(src):
+        if src[j] == "{": depth += 1
+        elif src[j] == "}":
+            depth -= 1
+            if depth == 0: break
+        j += 1
+    body = src[i:j+1]
+    body = re.sub(r"//[^\n]*", "", body)
+    return re.findall(r"^  ([a-zA-Z0-9_]+):\s*\{", body, re.MULTILINE)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--only", help="Single model id (skip rest)")
+    parser.add_argument("--category", help="Filter to family prefix (e.g. 'ip', 'gs', 'mba')")
+    parser.add_argument("--limit", type=int, help="First N models only")
+    parser.add_argument("--out", default=str(OUT))
+    args = parser.parse_args()
+
+    targets = []
+    if args.only:
+        if args.only not in LABEL_MAP:
+            print(f"Unknown model {args.only}. Add to LABEL_MAP.", file=sys.stderr); sys.exit(1)
+        targets = [args.only]
+    else:
+        model_ids = read_price_table_models()
+        targets = [m for m in model_ids if m in LABEL_MAP]
+        if args.category:
+            targets = [m for m in targets if m.startswith(args.category)]
+        if args.limit:
+            targets = targets[:args.limit]
+
+    print(f"Scraping eBay sold-listings for {len(targets)} models", flush=True)
+    results = {}
+    out_path = Path(args.out)
+    # Preserve previous results so partial runs don't lose data
+    if out_path.exists():
+        try:
+            results = json.loads(out_path.read_text()).get("models", {})
+        except Exception:
+            results = {}
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True, args=["--disable-blink-features=AutomationControlled"])
+        ctx = browser.new_context(
+            user_agent=UA,
+            viewport={"width": 1366, "height": 768},
+            locale="en-US",
+            timezone_id="America/Chicago",
+        )
+        ctx.add_init_script("Object.defineProperty(navigator, 'webdriver', { get: () => undefined });")
+        page = ctx.new_page()
+        warmup_session(page)
+        for i, mid in enumerate(targets, 1):
+            label, family = LABEL_MAP[mid]
+            print(f"[{i}/{len(targets)}] {mid:18s}  {label}", flush=True)
+            items = extract_sold(page, label)
+            agg = aggregate(items or [], family)
+            agg["label"] = label
+            agg["family"] = family
+            agg["scraped_at"] = datetime.now(timezone.utc).isoformat()
+            if agg.get("count", 0) > 0:
+                print(f"    {agg['count']} sold  median=${agg['median']:.0f}  range=${agg['min']:.0f}–${agg['max']:.0f}", flush=True)
+            else:
+                print(f"    no matched listings", flush=True)
+            results[mid] = agg
+            time.sleep(2.0)
+        browser.close()
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out = {
+        "scraped_at": datetime.now(timezone.utc).isoformat(),
+        "source": "eBay sold-listings (LH_Sold=1, LH_Complete=1)",
+        "note": "Median/mean of completed-listing prices. Accessory + sibling-tier filtered. Use as resale reference vs Atlas wholesale.",
+        "models": results,
+    }
+    out_path.write_text(json.dumps(out, indent=2))
+    found = sum(1 for r in results.values() if r.get("count", 0) > 0)
+    print(f"\nDone. {found}/{len(results)} have sold data. → {out_path}", flush=True)
+
+
+if __name__ == "__main__":
+    main()
