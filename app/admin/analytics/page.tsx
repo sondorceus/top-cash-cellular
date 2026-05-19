@@ -182,7 +182,7 @@ export default function AnalyticsPage() {
             This page only counts leads that hit the database. For raw visitor counts, page paths,
             traffic sources, and which funnel step customers leave at — open these:
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[12px]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[12px]">
             <a
               href="https://vercel.com/sondorceus-projects/top-cash-cellular/analytics"
               target="_blank" rel="noreferrer"
@@ -190,8 +190,8 @@ export default function AnalyticsPage() {
             >
               <span className="font-bold text-white">📈 Vercel Analytics</span>
               <span className="text-[#aaa]">
-                Built-in dashboard. Daily / hourly visitors, top pages, top referrers,
-                browsers, geos. Zero config.
+                Daily / hourly visitors, top pages, top referrers, browsers, geos.
+                Zero config — auto-collecting now.
               </span>
             </a>
             <a
@@ -201,9 +201,19 @@ export default function AnalyticsPage() {
             >
               <span className="font-bold text-white">📊 Google Analytics 4</span>
               <span className="text-[#aaa]">
-                Property G-8H5VGFLJ71. Realtime users, funnel explorer (set up an
-                exploration → Funnel template → use `funnel_step` events), conversion
-                tracking, retention.
+                Property G-8H5VGFLJ71. Realtime users, funnel explorer (Explore →
+                Funnel exploration → `funnel_step`), conversion tracking.
+              </span>
+            </a>
+            <a
+              href="https://clarity.microsoft.com/projects/view/wtgnj60bjp"
+              target="_blank" rel="noreferrer"
+              className="flex flex-col gap-1 bg-[#00c853]/[0.04] hover:bg-[#00c853]/[0.08] border border-[#00c853]/30 rounded-lg p-3 transition"
+            >
+              <span className="font-bold text-white">🎥 Microsoft Clarity</span>
+              <span className="text-[#aaa]">
+                Session recordings + heatmaps. Watch what customers actually do.
+                Project wtgnj60bjp. Data shows up ~1 hour after first traffic.
               </span>
             </a>
           </div>

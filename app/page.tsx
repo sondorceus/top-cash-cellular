@@ -4938,8 +4938,13 @@ export default function Home() {
     // script in layout.tsx) so we can join multi-visit funnels for the
     // same person.
     try {
-      const w = window as unknown as { gtag?: (...args: unknown[]) => void; __tccVid?: string; __tccFunnelRefs?: { device?: string | null; modelId?: string | null } };
+      const w = window as unknown as { gtag?: (...args: unknown[]) => void; __tccVid?: string; __tccFunnelRefs?: { device?: string | null; modelId?: string | null }; __tccLatestStep?: string; __tccSubmitted?: boolean };
       const refs = w.__tccFunnelRefs;
+      // Track the latest step the user reached — beforeunload handler
+      // below reads this to fire a funnel_abandon event when they
+      // leave without submitting. Skipping the "success" step so we
+      // don't flag successful submitters as abandoners.
+      if (s !== "success") w.__tccLatestStep = s;
       if (w.gtag) {
         w.gtag("event", "funnel_step", {
           step: s,
@@ -4949,6 +4954,34 @@ export default function Home() {
         });
       }
     } catch {}
+  }, []);
+
+  // Funnel abandonment beacon — fires on tab close / nav away if the
+  // user reached the funnel but never hit funnel_submit. transport:
+  // 'beacon' makes GA4 use sendBeacon so the event survives the page
+  // unload race. Skywalker 2026-05-19 — pairs with Clarity recordings
+  // for "they got to the contact step then bailed" diagnostics.
+  useEffect(() => {
+    const onUnload = () => {
+      try {
+        const w = window as unknown as { gtag?: (...args: unknown[]) => void; __tccVid?: string; __tccLatestStep?: string; __tccSubmitted?: boolean };
+        if (!w.gtag) return;
+        if (w.__tccSubmitted) return; // they finished — no abandon
+        const last = w.__tccLatestStep;
+        if (!last || last === "device") return; // never engaged past landing
+        w.gtag("event", "funnel_abandon", {
+          last_step: last,
+          visitor_id: w.__tccVid,
+          transport_type: "beacon",
+        });
+      } catch {}
+    };
+    window.addEventListener("beforeunload", onUnload);
+    window.addEventListener("pagehide", onUnload);
+    return () => {
+      window.removeEventListener("beforeunload", onUnload);
+      window.removeEventListener("pagehide", onUnload);
+    };
   }, []);
 
   // popstate handler — Chrome / iOS Safari back button fires this when the
@@ -10339,7 +10372,10 @@ export default function Home() {
                 // param so downstream analytics can still see what
                 // we paid the customer.
                 try {
-                  const w = window as unknown as { gtag?: (...args: unknown[]) => void; __tccVid?: string };
+                  const w = window as unknown as { gtag?: (...args: unknown[]) => void; __tccVid?: string; __tccSubmitted?: boolean };
+                  // Flag so the beforeunload abandonment beacon
+                  // doesn't fire for this session.
+                  w.__tccSubmitted = true;
                   const g = w.gtag;
                   if (g) {
                     const grossQuote = isMultiCart
