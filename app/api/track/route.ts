@@ -50,13 +50,33 @@ function parseField(body: string, key: string): string | undefined {
 }
 
 export async function POST(req: NextRequest) {
-  const { phone, email } = await req.json();
+  let payload: { phone?: unknown; email?: unknown };
+  try {
+    payload = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  const phone = typeof payload.phone === "string" ? payload.phone : "";
+  const email = typeof payload.email === "string" ? payload.email : "";
   if (!phone && !email) {
     return NextResponse.json({ error: "Phone or email required" }, { status: 400 });
   }
 
   const normPhone = phone ? normalizePhone(phone) : "";
   const normEmail = email ? email.toLowerCase().trim() : "";
+  // Privacy guard: a too-short normalized phone or email lets the
+  // substring match in pass 2 leak OTHER customers' leads (e.g. a phone
+  // of "5" matches every lead body containing a 5). Require at least a
+  // 10-digit phone (US format the funnel collects) and an email with a
+  // local-part + domain so the substring check is meaningfully unique.
+  const phoneOk = !normPhone || normPhone.length >= 10;
+  const emailOk = !normEmail || (normEmail.length >= 5 && normEmail.includes("@") && normEmail.indexOf("@") > 0);
+  if (!phoneOk || !emailOk) {
+    return NextResponse.json({ error: "Enter a full phone number or email address." }, { status: 400 });
+  }
+  if (!normPhone && !normEmail) {
+    return NextResponse.json({ error: "Phone or email required" }, { status: 400 });
+  }
 
   const r = await fetch(`${MC_API}/api/comms?limit=500`, {
     headers: { "x-api-key": MC_KEY },
