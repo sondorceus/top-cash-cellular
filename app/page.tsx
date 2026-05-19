@@ -4170,6 +4170,7 @@ export default function Home() {
   const [imeiInput, setImeiInput] = useState("");
   const [imeiState, setImeiState] = useState<"idle" | "checking" | "ok" | "warn" | "error">("idle");
   const [imeiResult, setImeiResult] = useState<{ model?: string; warnings?: string[]; error?: string } | null>(null);
+  const [imeiHelpOpen, setImeiHelpOpen] = useState(false);
   const checkImei = async () => {
     const clean = imeiInput.replace(/\D/g, "");
     if (clean.length !== 15) {
@@ -10472,9 +10473,189 @@ export default function Home() {
                 </p>
               )}
               <div>
-                <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
-                  IMEI / Serial <span className="normal-case text-[12px]">(optional — speeds up verification, dial *#06#)</span>
+                <label className="flex items-center gap-1.5 text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
+                  <span>IMEI / Serial <span className="normal-case text-[12px]">(optional — speeds up verification)</span></span>
+                  <button
+                    type="button"
+                    onClick={() => setImeiHelpOpen((v) => !v)}
+                    aria-label="How to find your IMEI / serial number"
+                    aria-expanded={imeiHelpOpen}
+                    title="How to find your IMEI / serial"
+                    className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-[#00c853] text-[#00c853] text-[10px] font-bold leading-none hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
+                  >i</button>
                 </label>
+                {imeiHelpOpen && (() => {
+                  // Per-device help — match the customer's deviceType to
+                  // the right instructions. Falls back to a generic phone
+                  // guide if we can't classify.
+                  type Step = string;
+                  type Guide = { label: string; steps: Step[] };
+                  let guides: Guide[];
+                  if (isPhoneFlow) {
+                    guides = [{
+                      label: "Any phone — universal shortcut",
+                      steps: [
+                        "Open the Phone app and dial *#06#",
+                        "The IMEI shows on screen instantly — copy and paste here",
+                      ],
+                    }, {
+                      label: "iPhone (alternative)",
+                      steps: [
+                        "Settings → General → About",
+                        "Scroll to IMEI and tap to copy",
+                      ],
+                    }, {
+                      label: "Samsung Galaxy (alternative)",
+                      steps: [
+                        "Settings → About phone → Status information → IMEI",
+                        "If foldable: same path, both displays share one IMEI",
+                      ],
+                    }, {
+                      label: "Google Pixel (alternative)",
+                      steps: [
+                        "Settings → About phone → IMEI",
+                        "Long-press to copy",
+                      ],
+                    }];
+                  } else if (deviceType === "macbook") {
+                    guides = [{
+                      label: "MacBook serial — fastest",
+                      steps: [
+                        "Click the Apple menu (top-left) → About This Mac",
+                        "Click \"More Info...\" then scroll to Serial Number",
+                      ],
+                    }, {
+                      label: "Alternative (booted)",
+                      steps: [
+                        "Open Terminal → type: system_profiler SPHardwareDataType | grep Serial",
+                        "Or look at the bottom of the laptop next to the regulatory text",
+                      ],
+                    }];
+                  } else if (deviceType === "apple_desktop") {
+                    guides = [{
+                      label: "iMac / Mac mini / Mac Studio / Mac Pro",
+                      steps: [
+                        "Apple menu → About This Mac → click Serial Number to copy",
+                        "Or on the bottom of the machine (Mac mini), back panel (iMac), or sticker on the base (Studio/Pro)",
+                      ],
+                    }];
+                  } else if (deviceType === "ipad") {
+                    guides = [{
+                      label: "iPad",
+                      steps: [
+                        "Settings → General → About",
+                        "Scroll to Serial Number (and IMEI if cellular model)",
+                        "Or dial *#06# on cellular models",
+                      ],
+                    }];
+                  } else if (deviceType === "applewatch") {
+                    guides = [{
+                      label: "Apple Watch",
+                      steps: [
+                        "On the watch: Settings → General → About → Serial Number",
+                        "Or on iPhone: Watch app → My Watch → General → About",
+                      ],
+                    }];
+                  } else if (deviceType === "pixelwatch" || deviceType === "samsungwatch") {
+                    guides = [{
+                      label: "Smartwatch",
+                      steps: [
+                        "On the watch: Settings → About → Status",
+                        "Serial / IMEI is listed there",
+                      ],
+                    }];
+                  } else if (deviceType === "samsung_pc" || deviceType === "lenovo" || deviceType === "hp" || deviceType === "dell" || deviceType === "acer" || deviceType === "asus_pc" || deviceType === "alienware" || deviceType === "lg_pc") {
+                    guides = [{
+                      label: "Windows laptop — easiest",
+                      steps: [
+                        "Press Win + R → type: cmd → Enter",
+                        "In the black window type: wmic bios get serialnumber",
+                        "Copy the serial that appears",
+                      ],
+                    }, {
+                      label: "Find it on the device",
+                      steps: [
+                        "Flip the laptop over — serial is printed on a sticker on the bottom panel",
+                        "On Samsung Galaxy Book + ThinkPad, also under the keyboard (lift kickstand or remove battery)",
+                      ],
+                    }];
+                  } else if (deviceType?.endsWith("_desktop")) {
+                    guides = [{
+                      label: "Desktop PC",
+                      steps: [
+                        "Press Win + R → cmd → type: wmic bios get serialnumber",
+                        "Or look at the sticker on the back / side of the tower",
+                      ],
+                    }];
+                  } else if (deviceType === "console" || deviceType === "sony" || deviceType === "microsoft" || deviceType === "nintendo") {
+                    guides = [{
+                      label: "PS5 / PS4",
+                      steps: [
+                        "Settings → System → System Information → Serial Number",
+                        "Or on the back/bottom of the console (printed near regulatory text)",
+                      ],
+                    }, {
+                      label: "Xbox",
+                      steps: [
+                        "Settings → System → Console info → Serial Number",
+                        "Or on the back of the console",
+                      ],
+                    }, {
+                      label: "Nintendo Switch",
+                      steps: [
+                        "System Settings → System → Console Information → Serial Number",
+                        "Or on the bottom (Switch) / back (Switch Lite / OLED kickstand)",
+                      ],
+                    }];
+                  } else if (deviceType === "dji") {
+                    guides = [{
+                      label: "DJI Drone",
+                      steps: [
+                        "DJI Fly app → Profile → Device → Serial Number",
+                        "Or printed on a sticker on the drone body (near the battery compartment)",
+                      ],
+                    }];
+                  } else if (deviceType === "apple_vr" || deviceType === "meta_vr" || deviceType === "valve_vr" || deviceType === "psvr") {
+                    guides = [{
+                      label: "VR headset",
+                      steps: [
+                        "In headset: Settings → About / System → Serial",
+                        "Or on the foam-side label near the strap mount",
+                      ],
+                    }];
+                  } else {
+                    guides = [{
+                      label: "General",
+                      steps: [
+                        "Phones: dial *#06# to display IMEI",
+                        "Most other devices: Settings → About / System → look for Serial",
+                        "Or check the original box / receipt — serial is printed there",
+                      ],
+                    }];
+                  }
+                  return (
+                    <div className="mb-2 bg-[rgba(15,15,15,0.7)] border border-[#00c853]/30 rounded-xl p-3 space-y-3 animate-[fadeIn_0.15s_ease-out]">
+                      {guides.map((g, gi) => (
+                        <div key={gi}>
+                          <p className="text-[11px] font-bold text-[#00c853] uppercase tracking-wider mb-1">{g.label}</p>
+                          <ol className="text-[12px] text-[#dcdcdc] leading-relaxed list-decimal list-inside space-y-0.5">
+                            {g.steps.map((s, si) => <li key={si}>{s}</li>)}
+                          </ol>
+                        </div>
+                      ))}
+                      <div className="pt-2 border-t border-white/10">
+                        <p className="text-[11px] text-[#bdbdbd] mb-1.5">Still can&apos;t find it?</p>
+                        <button
+                          type="button"
+                          onClick={() => { setImeiHelpOpen(false); setChatOpen(true); }}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#00c853]/15 hover:bg-[#00c853]/25 border border-[#00c853]/40 text-[12px] font-semibold text-[#00c853] cursor-pointer transition"
+                        >
+                          💬 Ask us in live chat
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })()}
                 <div className="flex gap-2">
                   <input
                     type="text"
