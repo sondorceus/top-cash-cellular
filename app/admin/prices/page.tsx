@@ -52,6 +52,12 @@ type PriceTable = Record<string, Record<string, Record<string, number>>>;
 type CarrierTable = Record<string, Record<string, number>>;
 type BasePricedModel = { category: string; label: string; base: number; inquiryOnly?: boolean; image?: string };
 type AdditiveSpec = { source: "macbook" | "pc"; label: string; condition_adj: Record<string, number> };
+type AtlasReference = {
+  scraped_at?: string;
+  sources?: Record<string, string>;
+  categories?: Record<string, Record<string, Record<string, number | null>>>;
+  counts?: Record<string, number>;
+};
 type Payload = {
   baseline: {
     priceTable: PriceTable;
@@ -68,6 +74,22 @@ type Payload = {
   };
   effective: { priceTable: PriceTable; carrierDeductions: CarrierTable };
   history?: Array<{ url: string; pathname: string; uploadedAt: string }>;
+  atlasReference?: AtlasReference;
+};
+
+// Display labels for Atlas categories
+const ATLAS_CATEGORY_LABELS: Record<string, string> = {
+  iphones_used: "Used iPhones (Grade A/B/C/D/DOA)",
+  iphones_nib: "NIB iPhones (Sealed/Open)",
+  ipads_used: "Used iPads (Grade A/B/C/D/DOA)",
+  ipads_nib: "NIB iPads (Sealed/Open/Sealed-Activated)",
+  pixel: "Google Pixel",
+  apple_watches: "Apple Watch",
+  macbooks: "MacBooks (by SKU)",
+  samsung: "Samsung phones",
+  mdm_locked_iphones: "MDM-Locked iPhones",
+  icloud_locked_iphones: "iCloud-Locked iPhones",
+  airpods: "AirPods",
 };
 
 export default function PricesAdminPage() {
@@ -729,6 +751,86 @@ export default function PricesAdminPage() {
             </section>
           );
         })}
+
+        {/* ATLAS REFERENCE — read-only "what Atlas pays us" data, scraped
+            via scripts/scrape-atlas-full.py from Atlas Mobile's two
+            wholesale buy sheets. 714 entries across 11 categories. Use
+            this as your sold-price baseline: TCC quotes should sit
+            comfortably below these numbers. Refresh by re-running the
+            scraper. */}
+        {data.atlasReference && data.atlasReference.categories && (() => {
+          const ref = data.atlasReference!;
+          const cats = Object.entries(ref.categories || {});
+          if (cats.length === 0) return null;
+          const totalCount = Object.values(ref.counts || {}).reduce((s, n) => s + n, 0);
+          const scrapedDate = ref.scraped_at ? new Date(ref.scraped_at).toLocaleString() : "unknown";
+          return (
+            <section className="bg-amber-500/[0.03] border border-amber-500/20 rounded-2xl overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setExpanded((p) => ({ ...p, __atlas: !p.__atlas }))}
+                className="w-full px-5 py-3 flex items-center justify-between text-left hover:bg-amber-500/[0.05] transition cursor-pointer"
+              >
+                <span className="font-bold text-[15px] text-amber-200">
+                  📊 Atlas Reference <span className="text-[#888] font-normal">· {totalCount} entries · read-only · {scrapedDate}</span>
+                </span>
+                <span className="text-[#888] text-xs">{(expanded.__atlas ?? !!filterLower) ? "▾" : "▸"}</span>
+              </button>
+              {(expanded.__atlas ?? !!filterLower) && (
+                <div className="border-t border-amber-500/20 px-5 py-3 space-y-3">
+                  <p className="text-[11px] text-[#bdbdbd]">
+                    These are the prices Atlas Mobile pays you when you sell devices to them. Use them as a ceiling for what TCC quotes customers. To refresh, run <code className="text-[#00c853]">python scripts/scrape-atlas-full.py</code>.
+                  </p>
+                  {cats.map(([cat, entries]) => {
+                    const filteredEntries = filterLower
+                      ? Object.entries(entries).filter(([k]) => k.toLowerCase().includes(filterLower))
+                      : Object.entries(entries);
+                    if (filteredEntries.length === 0) return null;
+                    const catKey = `atlas:${cat}`;
+                    const open = expanded[catKey] ?? !!filterLower;
+                    const label = ATLAS_CATEGORY_LABELS[cat] || cat;
+                    return (
+                      <div key={cat} className="bg-black/30 border border-white/5 rounded-xl overflow-hidden">
+                        <button
+                          type="button"
+                          onClick={() => setExpanded((p) => ({ ...p, [catKey]: !open }))}
+                          className="w-full px-3 py-2 flex items-center justify-between text-left hover:bg-white/[0.04] transition cursor-pointer"
+                        >
+                          <span className="text-[12px] uppercase tracking-wider font-bold text-amber-300">
+                            {label} <span className="text-[#888] font-normal normal-case">· {filteredEntries.length} entr{filteredEntries.length === 1 ? "y" : "ies"}</span>
+                          </span>
+                          <span className="text-[#888] text-xs">{open ? "▾" : "▸"}</span>
+                        </button>
+                        {open && (
+                          <div className="overflow-x-auto -mx-3 px-3 border-t border-white/5">
+                            <table className="w-full min-w-[420px] text-[11px]">
+                              <tbody>
+                                {filteredEntries.map(([name, prices]) => (
+                                  <tr key={name} className="border-t border-white/[0.04] first:border-t-0">
+                                    <td className="py-1 pr-3 text-[#dcdcdc] truncate max-w-[300px]" title={name}>{name}</td>
+                                    <td className="py-1 text-right">
+                                      <span className="font-mono text-[#cfcfcf]">
+                                        {Object.entries(prices as Record<string, number | null | number[]>).map(([col, v]) => {
+                                          if (v == null) return null;
+                                          if (Array.isArray(v)) return v.length ? <span key={col} className="mr-2"><span className="text-[#888]">{col}:</span> [{v.join(", ")}]</span> : null;
+                                          return <span key={col} className="mr-2"><span className="text-[#888]">{col}:</span> ${v}</span>;
+                                        })}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+          );
+        })()}
       </div>
     </main>
   );

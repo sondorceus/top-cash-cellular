@@ -19,6 +19,28 @@ async function loadPcSpecs(): Promise<Record<string, MacSpec>> {
   }
 }
 
+// Atlas Mobile reference — scraped by scripts/scrape-atlas-full.py.
+// Read-only data shown in the admin editor for cross-reference while
+// pricing TCC's grid. Cached per-process.
+type AtlasReference = {
+  scraped_at?: string;
+  sources?: Record<string, string>;
+  categories?: Record<string, Record<string, Record<string, number | null>>>;
+  counts?: Record<string, number>;
+};
+let atlasCache: AtlasReference | null = null;
+async function loadAtlasReference(): Promise<AtlasReference> {
+  if (atlasCache) return atlasCache;
+  try {
+    const p = path.join(process.cwd(), "public", "comps", "atlas-reference.json");
+    const raw = await fs.readFile(p, "utf-8");
+    atlasCache = JSON.parse(raw);
+    return atlasCache as AtlasReference;
+  } catch {
+    return {};
+  }
+}
+
 // Price-editor backend. Stores admin overrides as a single JSON document
 // on Vercel Blob (we already use Blob for FedEx labels, so no new infra).
 //
@@ -146,6 +168,7 @@ export async function GET() {
   const overrides = await readOverrides();
   const history = await readHistory();
   const pcSpecs = await loadPcSpecs();
+  const atlasReference = await loadAtlasReference();
   // Build a lightweight summary of additive-spec models so the editor can
   // render their condition_adj grids without us shipping ~1MB of full
   // spec tables across the wire. Each entry: { label, condition_adj }.
@@ -169,6 +192,7 @@ export async function GET() {
       carrierDeductions: deepMerge(CARRIER_DEDUCTIONS, overrides.carrierDeductions),
     },
     history,
+    atlasReference,
   });
 }
 
