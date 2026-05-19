@@ -97,6 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <meta name="google-site-verification" content="BZt20XeVKiVl8Pb0tnXR0LwGJnweRfDtDUdInz1O2tU" />
         <meta name="trustpilot-one-time-domain-verification-id" content="bb9ae689-f93e-4f7a-b089-a9ca8f8c4bd5" />
+        <meta name="twilio-domain-verification" content="b135ecca36c4a3585b1b75b5cab927a6" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
