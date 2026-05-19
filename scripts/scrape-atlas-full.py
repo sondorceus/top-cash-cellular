@@ -232,25 +232,49 @@ def parse_macbooks(rows):
 
 
 def parse_samsung(rows):
-    """USED gid=536270645 — Samsung phones."""
+    """USED gid=536270645 — Samsung phones.
+
+    Column layout:
+      col 0: (empty, leading padding)
+      col 1: model name (e.g. "Galaxy S26 Ultra") — only on first row per device
+      col 2: lock state ("Unlocked" or "Carrier Locked (...)")
+      cols 3-8: NEW / Grade A / B / C / D / DOA
+
+    Each model spans two rows: Unlocked + Carrier Locked. Names only
+    appear on row N; row N+1 has empty col 1. Carrier Locked entries
+    are emitted as separate keys so downstream can pick lock state.
+
+    "ASK" / "NOT BUYING" / empty cells parse as None.
+    """
+    COND_COLS = {3: "swap_hso", 4: "grade_a", 5: "grade_b", 6: "grade_c", 7: "grade_d", 8: "doa"}
     out = {}
+    current_model = None
     for row in rows:
-        if not row or len(row) < 2:
+        if not row or len(row) < 3:
             continue
-        name = trim(row[0]) or trim(row[1])
-        if not name:
+        col1 = trim(row[1])
+        col2 = trim(row[2])
+        # New model header — col 1 starts with Galaxy / Samsung / Note
+        if col1:
+            nl = col1.lower()
+            if any(k in nl for k in ["galaxy", "samsung", "note "]):
+                current_model = col1
+        if not current_model:
             continue
-        # Match samsung/galaxy/note device names
-        nl = name.lower()
-        if not any(k in nl for k in ["galaxy", "samsung", "note ", "s2", "s1", "z fold", "z flip"]):
+        if len(row) < 9:
             continue
-        prices = []
-        for c in row:
-            v = parse_money(c)
-            if v is not None:
-                prices.append(v)
-        if prices:
-            out[name] = {"prices": prices}
+        prices = {c: parse_money(row[i]) for i, c in COND_COLS.items()}
+        if not any(v is not None for v in prices.values()):
+            continue
+        # Suffix the model name with lock state to disambiguate
+        lock = col2.lower()
+        if "unlock" in lock:
+            key = current_model
+        elif "carrier locked" in lock or "locked" in lock:
+            key = f"{current_model} (Carrier Locked)"
+        else:
+            key = current_model
+        out[key] = prices
     return out
 
 

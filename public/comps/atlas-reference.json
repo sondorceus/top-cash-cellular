@@ -1,5 +1,5 @@
 {
-  "scraped_at": "2026-05-19T02:42:29.386009+00:00",
+  "scraped_at": "2026-05-19T03:54:57.910420+00:00",
   "sources": {
     "used_sheet": "https://docs.google.com/spreadsheets/d/1pu4Adxq4MGB6Qour0k__4gBdgnggWRoSVYnJUKgxzEw",
     "nib_sheet": "https://docs.google.com/spreadsheets/d/1f3b0rW1d5xTonDtkoPmLIAOjKc-CUF6clMBalPWyS80"
@@ -3072,335 +3072,397 @@
       }
     },
     "samsung": {
+      "Galaxy S26 Ultra (Carrier Locked)": {
+        "swap_hso": 570,
+        "grade_a": 540,
+        "grade_b": 510,
+        "grade_c": 420,
+        "grade_d": 305,
+        "doa": 150
+      },
+      "Galaxy S26 Plus (Carrier Locked)": {
+        "swap_hso": 355,
+        "grade_a": 320,
+        "grade_b": 305,
+        "grade_c": 240,
+        "grade_d": 155,
+        "doa": 75
+      },
+      "Galaxy S26 (Carrier Locked)": {
+        "swap_hso": 265,
+        "grade_a": 235,
+        "grade_b": 220,
+        "grade_c": 170,
+        "grade_d": 110,
+        "doa": 55
+      },
       "Galaxy Z Fold 7": {
-        "prices": [
-          405,
-          335,
-          114
-        ]
+        "swap_hso": null,
+        "grade_a": null,
+        "grade_b": null,
+        "grade_c": 405,
+        "grade_d": 335,
+        "doa": 114
+      },
+      "Galaxy Z Fold 7 (Carrier Locked)": {
+        "swap_hso": 740,
+        "grade_a": 660,
+        "grade_b": 600,
+        "grade_c": 480,
+        "grade_d": 310,
+        "doa": 114
       },
       "Galaxy Z Flip 7": {
-        "prices": [
-          55,
-          40
-        ]
+        "swap_hso": null,
+        "grade_a": null,
+        "grade_b": null,
+        "grade_c": 55,
+        "grade_d": 40,
+        "doa": null
+      },
+      "Galaxy Z Flip 7 (Carrier Locked)": {
+        "swap_hso": 240,
+        "grade_a": 175,
+        "grade_b": 140,
+        "grade_c": 75,
+        "grade_d": 10,
+        "doa": 8
       },
       "Galaxy S25 Ultra": {
-        "prices": [
-          280,
-          195
-        ]
+        "swap_hso": null,
+        "grade_a": null,
+        "grade_b": null,
+        "grade_c": 280,
+        "grade_d": 195,
+        "doa": null
+      },
+      "Galaxy S25 Ultra (Carrier Locked)": {
+        "swap_hso": 435,
+        "grade_a": 400,
+        "grade_b": 380,
+        "grade_c": 290,
+        "grade_d": 200,
+        "doa": 99
       },
       "Galaxy S25 EDGE": {
-        "prices": [
-          100,
-          35,
-          115
-        ]
+        "swap_hso": null,
+        "grade_a": null,
+        "grade_b": null,
+        "grade_c": 100,
+        "grade_d": 35,
+        "doa": 115
+      },
+      "Galaxy S25 EDGE (Carrier Locked)": {
+        "swap_hso": 200,
+        "grade_a": 150,
+        "grade_b": 120,
+        "grade_c": 75,
+        "grade_d": 40,
+        "doa": 9
       },
       "Galaxy S25 Plus": {
-        "prices": [
-          145,
-          100,
-          8
-        ]
+        "swap_hso": null,
+        "grade_a": null,
+        "grade_b": null,
+        "grade_c": 145,
+        "grade_d": 100,
+        "doa": 8
+      },
+      "Galaxy S25 Plus (Carrier Locked)": {
+        "swap_hso": 290,
+        "grade_a": 260,
+        "grade_b": 240,
+        "grade_c": 170,
+        "grade_d": 120,
+        "doa": 44
       },
       "Galaxy S25": {
-        "prices": [
-          110,
-          75,
-          99
-        ]
+        "swap_hso": null,
+        "grade_a": null,
+        "grade_b": null,
+        "grade_c": 110,
+        "grade_d": 75,
+        "doa": 99
+      },
+      "Galaxy S25 (Carrier Locked)": {
+        "swap_hso": 185,
+        "grade_a": 175,
+        "grade_b": 160,
+        "grade_c": 110,
+        "grade_d": 80,
+        "doa": 44
       },
       "Galaxy S25 FE": {
-        "prices": [
-          40,
-          25,
-          5
-        ]
+        "swap_hso": null,
+        "grade_a": null,
+        "grade_b": null,
+        "grade_c": 40,
+        "grade_d": 25,
+        "doa": 5
+      },
+      "Galaxy S25 FE (Carrier Locked)": {
+        "swap_hso": 155,
+        "grade_a": 100,
+        "grade_b": 80,
+        "grade_c": 40,
+        "grade_d": 25,
+        "doa": 5
       },
       "Galaxy Z Fold 6": {
-        "prices": [
-          160,
-          40,
-          19
-        ]
+        "swap_hso": null,
+        "grade_a": null,
+        "grade_b": null,
+        "grade_c": 160,
+        "grade_d": 40,
+        "doa": 19
+      },
+      "Galaxy Z Fold 6 (Carrier Locked)": {
+        "swap_hso": 425,
+        "grade_a": 325,
+        "grade_b": 285,
+        "grade_c": 175,
+        "grade_d": 5,
+        "doa": 19
       },
       "Galaxy Z Flip 6": {
-        "prices": [
-          400,
-          320,
-          310,
-          40,
-          30,
-          9
-        ]
+        "swap_hso": 400,
+        "grade_a": 320,
+        "grade_b": 310,
+        "grade_c": 40,
+        "grade_d": 30,
+        "doa": 9
+      },
+      "Galaxy Z Flip 6 (Carrier Locked)": {
+        "swap_hso": 145,
+        "grade_a": 95,
+        "grade_b": 90,
+        "grade_c": 50,
+        "grade_d": 25,
+        "doa": 9
       },
       "Galaxy S24 Ultra": {
-        "prices": [
-          520,
-          430,
-          420,
-          215,
-          140,
-          68
-        ]
+        "swap_hso": 520,
+        "grade_a": 430,
+        "grade_b": 420,
+        "grade_c": 215,
+        "grade_d": 140,
+        "doa": 68
+      },
+      "Galaxy S24 Ultra (Carrier Locked)": {
+        "swap_hso": 330,
+        "grade_a": 305,
+        "grade_b": 285,
+        "grade_c": 220,
+        "grade_d": 135,
+        "doa": 68
       },
       "Galaxy S24 Plus": {
-        "prices": [
-          320,
-          245,
-          235,
-          140,
-          75,
-          20
-        ]
+        "swap_hso": 320,
+        "grade_a": 245,
+        "grade_b": 235,
+        "grade_c": 140,
+        "grade_d": 75,
+        "doa": 20
+      },
+      "Galaxy S24 Plus (Carrier Locked)": {
+        "swap_hso": 205,
+        "grade_a": 170,
+        "grade_b": 150,
+        "grade_c": 80,
+        "grade_d": 70,
+        "doa": 20
       },
       "Galaxy S24": {
-        "prices": [
-          250,
-          190,
-          180,
-          75,
-          45,
-          15
-        ]
+        "swap_hso": 250,
+        "grade_a": 190,
+        "grade_b": 180,
+        "grade_c": 75,
+        "grade_d": 45,
+        "doa": 15
+      },
+      "Galaxy S24 (Carrier Locked)": {
+        "swap_hso": 140,
+        "grade_a": 110,
+        "grade_b": 90,
+        "grade_c": 45,
+        "grade_d": 30,
+        "doa": 15
       },
       "Galaxy Z Fold 5": {
-        "prices": [
-          400,
-          290,
-          280,
-          90,
-          30,
-          10
-        ]
+        "swap_hso": 400,
+        "grade_a": 290,
+        "grade_b": 280,
+        "grade_c": 90,
+        "grade_d": 30,
+        "doa": 10
+      },
+      "Galaxy Z Fold 5 (Carrier Locked)": {
+        "swap_hso": 250,
+        "grade_a": 190,
+        "grade_b": 170,
+        "grade_c": 90,
+        "grade_d": 25,
+        "doa": 10
       },
       "Galaxy Z Flip 5": {
-        "prices": [
-          280,
-          195,
-          180,
-          35,
-          10,
-          4
-        ]
+        "swap_hso": 280,
+        "grade_a": 195,
+        "grade_b": 180,
+        "grade_c": 35,
+        "grade_d": 10,
+        "doa": 4
+      },
+      "Galaxy Z Flip 5 (Carrier Locked)": {
+        "swap_hso": 100,
+        "grade_a": 70,
+        "grade_b": 50,
+        "grade_c": 30,
+        "grade_d": 10,
+        "doa": 4
       },
       "Galaxy S23 Ultra": {
-        "prices": [
-          370,
-          285,
-          275,
-          145,
-          70,
-          24
-        ]
+        "swap_hso": 370,
+        "grade_a": 285,
+        "grade_b": 275,
+        "grade_c": 145,
+        "grade_d": 70,
+        "doa": 24
+      },
+      "Galaxy S23 Ultra (Carrier Locked)": {
+        "swap_hso": null,
+        "grade_a": 230,
+        "grade_b": 185,
+        "grade_c": 135,
+        "grade_d": 60,
+        "doa": 24
       },
       "Galaxy S23 Plus": {
-        "prices": [
-          225,
-          165,
-          155,
-          75,
-          50,
-          17
-        ]
+        "swap_hso": 225,
+        "grade_a": 165,
+        "grade_b": 155,
+        "grade_c": 75,
+        "grade_d": 50,
+        "doa": 17
+      },
+      "Galaxy S23 Plus (Carrier Locked)": {
+        "swap_hso": null,
+        "grade_a": 135,
+        "grade_b": 115,
+        "grade_c": 65,
+        "grade_d": 35,
+        "doa": 17
       },
       "Galaxy S23": {
-        "prices": [
-          185,
-          115,
-          110,
-          65,
-          40,
-          12
-        ]
+        "swap_hso": 185,
+        "grade_a": 115,
+        "grade_b": 110,
+        "grade_c": 65,
+        "grade_d": 40,
+        "doa": 12
+      },
+      "Galaxy S23 (Carrier Locked)": {
+        "swap_hso": null,
+        "grade_a": 95,
+        "grade_b": 85,
+        "grade_c": 40,
+        "grade_d": 25,
+        "doa": 12
       },
       "Galaxy Z Fold 4": {
-        "prices": [
-          265,
-          210,
-          200,
-          70,
-          30,
-          12
-        ]
+        "swap_hso": 265,
+        "grade_a": 210,
+        "grade_b": 200,
+        "grade_c": 70,
+        "grade_d": 30,
+        "doa": 12
+      },
+      "Galaxy Z Fold 4 (Carrier Locked)": {
+        "swap_hso": null,
+        "grade_a": 180,
+        "grade_b": 150,
+        "grade_c": 85,
+        "grade_d": 25,
+        "doa": 12
       },
       "Galaxy Z Flip 4": {
-        "prices": [
-          200,
-          150,
-          145,
-          30,
-          10,
-          3
-        ]
+        "swap_hso": 105,
+        "grade_a": 65,
+        "grade_b": 60,
+        "grade_c": 30,
+        "grade_d": 20,
+        "doa": 5
       },
-      "S22 Ultra": {
-        "prices": [
-          250,
-          210,
-          190,
-          100,
-          40,
-          12
-        ]
-      },
-      "S22+": {
-        "prices": [
-          160,
-          110,
-          105,
-          40,
-          35,
-          7
-        ]
-      },
-      "S22": {
-        "prices": [
-          120,
-          80,
-          75,
-          45,
-          20,
-          4
-        ]
-      },
-      "S21 Ultra": {
-        "prices": [
-          190,
-          150,
-          145,
-          75,
-          40,
-          12
-        ]
-      },
-      "S21+": {
-        "prices": [
-          120,
-          90,
-          80,
-          35,
-          20,
-          7
-        ]
-      },
-      "S21": {
-        "prices": [
-          105,
-          65,
-          60,
-          30,
-          20,
-          5
-        ]
+      "Galaxy Z Flip 4 (Carrier Locked)": {
+        "swap_hso": null,
+        "grade_a": 40,
+        "grade_b": 30,
+        "grade_c": 20,
+        "grade_d": 10,
+        "doa": 5
       },
       "Note 20 Ultra": {
-        "prices": [
-          220,
-          180,
-          170,
-          55,
-          35,
-          6
-        ]
+        "swap_hso": 220,
+        "grade_a": 180,
+        "grade_b": 170,
+        "grade_c": 55,
+        "grade_d": 35,
+        "doa": 6
+      },
+      "Note 20 Ultra (Carrier Locked)": {
+        "swap_hso": null,
+        "grade_a": 100,
+        "grade_b": 80,
+        "grade_c": 45,
+        "grade_d": 15,
+        "doa": 6
       },
       "Note 20": {
-        "prices": [
-          145,
-          105,
-          95,
-          30,
-          15,
-          4
-        ]
+        "swap_hso": 240,
+        "grade_a": 200,
+        "grade_b": 175,
+        "grade_c": null,
+        "grade_d": null,
+        "doa": 13
       },
-      "S20 Ultra": {
-        "prices": [
-          160,
-          120,
-          110,
-          50,
-          15,
-          7
-        ]
-      },
-      "S20+": {
-        "prices": [
-          140,
-          105,
-          95,
-          35,
-          20,
-          4
-        ]
-      },
-      "S20": {
-        "prices": [
-          100,
-          70,
-          65,
-          20,
-          5,
-          3
-        ]
-      },
-      "Z Flip3": {
-        "prices": [
-          145,
-          95,
-          90,
-          2
-        ]
-      },
-      "Z Fold3": {
-        "prices": [
-          240,
-          200,
-          175,
-          13
-        ]
+      "Note 20 (Carrier Locked)": {
+        "swap_hso": null,
+        "grade_a": 130,
+        "grade_b": 120,
+        "grade_c": 65,
+        "grade_d": 25,
+        "doa": 13
       },
       "Note 10+": {
-        "prices": [
-          160,
-          120,
-          110,
-          35,
-          15,
-          3
-        ]
+        "swap_hso": 160,
+        "grade_a": 120,
+        "grade_b": 110,
+        "grade_c": 35,
+        "grade_d": 15,
+        "doa": 3
+      },
+      "Note 10+ (Carrier Locked)": {
+        "swap_hso": null,
+        "grade_a": 65,
+        "grade_b": 55,
+        "grade_c": 30,
+        "grade_d": 5,
+        "doa": 3
       },
       "Note 10": {
-        "prices": [
-          120,
-          100,
-          80,
-          20,
-          15,
-          2
-        ]
+        "swap_hso": 100,
+        "grade_a": 80,
+        "grade_b": 70,
+        "grade_c": 20,
+        "grade_d": 15,
+        "doa": 3
       },
-      "S10+": {
-        "prices": [
-          120,
-          95,
-          80,
-          30,
-          15,
-          5
-        ]
-      },
-      "S10": {
-        "prices": [
-          100,
-          80,
-          70,
-          20,
-          15,
-          3
-        ]
+      "Note 10 (Carrier Locked)": {
+        "swap_hso": null,
+        "grade_a": 50,
+        "grade_b": 50,
+        "grade_c": 20,
+        "grade_d": 5,
+        "doa": 3
       }
     },
     "icloud_locked_iphones": {
@@ -4709,7 +4771,7 @@
     "ipads_used": 90,
     "mdm_locked_iphones": 18,
     "macbooks": 40,
-    "samsung": 36,
+    "samsung": 49,
     "icloud_locked_iphones": 39,
     "iphones_nib": 97,
     "ipads_nib": 111,

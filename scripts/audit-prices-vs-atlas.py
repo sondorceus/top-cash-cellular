@@ -111,10 +111,9 @@ def find_atlas_for(mid, storage, atlas):
         if not label: return None
         entry = atlas["categories"].get("samsung", {}).get(label)
         if not entry: return None
-        prices = entry.get("prices", [])
-        # Standard Atlas Samsung price-list mapping when 6 cells present
-        cols = ["swap_hso", "grade_a", "grade_b", "grade_c", "grade_d", "doa"]
-        return {cols[i]: prices[i] for i in range(min(len(prices), len(cols)))}
+        # New format: entry is already a {grade: dollars} dict (parse_samsung
+        # rewritten 2026-05-19). Filter Nones so callers see only real prices.
+        return {k: v for k, v in entry.items() if v is not None}
     return None
 
 
