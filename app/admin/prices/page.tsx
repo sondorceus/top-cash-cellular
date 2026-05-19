@@ -414,13 +414,25 @@ export default function PricesAdminPage() {
                 <span className="font-bold text-[15px]">Simple base-price devices</span>
                 <span className="text-[#888] text-xs ml-2">VR / drones / Garmin — single price per variant</span>
               </div>
-              <div className="px-5 py-3 space-y-5">
+              <div className="px-5 py-3 space-y-2">
                 {cats.map((cat) => {
                   const items = groups.get(cat)!;
+                  const catKey = `bp:${cat}`;
+                  const open = expanded[catKey] ?? !!filterLower;
                   return (
-                    <div key={cat}>
-                      <p className="text-[11px] uppercase tracking-wider font-bold text-[#00c853] mb-2">{cat} <span className="text-[#888] font-normal">({items.length})</span></p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                    <div key={cat} className="bg-black/20 border border-white/5 rounded-xl overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => setExpanded((p) => ({ ...p, [catKey]: !open }))}
+                        className="w-full px-3 py-2 flex items-center justify-between text-left hover:bg-white/[0.04] transition cursor-pointer"
+                      >
+                        <span className="text-[12px] uppercase tracking-wider font-bold text-[#00c853]">
+                          {cat} <span className="text-[#888] font-normal normal-case">· {items.length} model{items.length === 1 ? "" : "s"}</span>
+                        </span>
+                        <span className="text-[#888] text-xs">{open ? "▾" : "▸"}</span>
+                      </button>
+                      {open && (
+                      <div className="border-t border-white/5 px-3 py-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                         {items.map(([id, m]) => {
                           const v = effectiveBase(id, m.base);
                           const ov = isBaseOverridden(id);
@@ -455,6 +467,7 @@ export default function PricesAdminPage() {
                           );
                         })}
                       </div>
+                      )}
                     </div>
                   );
                 })}
