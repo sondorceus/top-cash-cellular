@@ -1355,7 +1355,10 @@ export default function AdminPage() {
         {leads.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
             {(() => {
-              const isCompleted = (s: string) => s === "paid" || s === "rejected";
+              // Bug fix 2026-05-19: previous version omitted "met" so
+              // local-meetup customers vanished from both the Active
+              // and Completed counts after their status flipped.
+              const isCompleted = (s: string) => s === "paid" || s === "met" || s === "rejected";
               const counts: Record<string, number> = {
                 all: filteredLeads.length,
                 active: filteredLeads.filter((l) => !isCompleted(l.status)).length,
@@ -1366,7 +1369,13 @@ export default function AdminPage() {
               const chip = (value: string, label: string, color?: string) => {
                 const active = statusFilter === value;
                 const count = counts[value] || 0;
-                if (value !== "all" && value !== "active" && count === 0) return null;
+                // Always keep the navigation pillars visible so staff
+                // can find paid/shipped/completed leads even when the
+                // count is currently 0. Skywalker 2026-05-19: after
+                // marking a lead paid he couldn't find it because the
+                // chips for those filters disappear when empty.
+                const ALWAYS_SHOW = new Set(["all", "active", "completed", "paid", "shipped"]);
+                if (!ALWAYS_SHOW.has(value) && count === 0) return null;
                 return (
                   <button
                     key={value}
@@ -2328,6 +2337,17 @@ export default function AdminPage() {
                       {savedFlash[lead.id] && (
                         <p className="text-[10px] text-[#00c853] mt-1">
                           ✓ Saved{savedFlash[lead.id]!.sms ? " · SMS sent" : ""}{savedFlash[lead.id]!.email ? " · email sent" : ""}
+                          {isPaid(lead.status) && statusFilter === "active" && (
+                            <>
+                              {" — "}
+                              <button
+                                onClick={() => { setStatusFilter("completed"); }}
+                                className="underline hover:text-white cursor-pointer"
+                              >
+                                View in Completed →
+                              </button>
+                            </>
+                          )}
                         </p>
                       )}
                       {rejectingId === lead.id && (
