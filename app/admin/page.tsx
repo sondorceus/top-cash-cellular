@@ -1084,6 +1084,20 @@ export default function AdminPage() {
               💲<span className="hidden sm:inline ml-1">Prices</span>
             </a>
             <a
+              href="/admin/analytics"
+              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
+              title="Live leads + funnel analytics"
+            >
+              📊<span className="hidden sm:inline ml-1">Analytics</span>
+            </a>
+            <a
+              href="/admin/customers"
+              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
+              title="Aggregated customer roster"
+            >
+              👥<span className="hidden sm:inline ml-1">Customers</span>
+            </a>
+            <a
               href="/admin/slots"
               className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
               title="Open meetup slots for local pickups"

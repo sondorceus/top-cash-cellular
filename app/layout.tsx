@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 // Cabinet Grotesk Variable — single brand font for the entire site.
@@ -107,6 +108,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-full flex flex-col font-[-apple-system,BlinkMacSystemFont,'SF_Pro_Display','Helvetica_Neue',Helvetica,Arial,sans-serif]">
         {children}
+        {/* Vercel Analytics — Skywalker 2026-05-19 "ready to go live"
+            visitor dashboard. Auto-enables in the Vercel project's
+            Analytics tab; pageviews + path metrics for free, no config. */}
+        <Analytics />
       </body>
     </html>
   );

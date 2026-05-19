@@ -1,0 +1,162 @@
+import { NextRequest, NextResponse } from "next/server";
+
+const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
+const MC_KEY = process.env.MC_API_KEY || "";
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
+
+// Customer-aggregation backend. Scans recent MC comms for [NEW BUYBACK
+// LEAD] entries, dedupes them by normalized phone OR lowercased email,
+// and rolls up per-customer stats (total leads, total $ quoted, last
+// device, last submission, statuses they've passed through).
+//
+// Same data source as /api/admin/leads — we just collapse the lead view
+// into a customer view. No customer DB; everything is computed live from
+// the MC feed at request time. Fine until we're north of ~5k leads.
+
+interface CustomerRow {
+  contactKey: string;          // canonical identity used for dedup
+  name?: string;               // most recent name on file
+  phone?: string;
+  email?: string;
+  leadCount: number;           // total leads from this customer
+  totalQuoted: number;         // sum of all quote dollars
+  lastDevice?: string;         // most-recent device label
+  lastSubmissionAt: string;    // ISO timestamp of most-recent lead
+  firstSubmissionAt: string;   // ISO timestamp of earliest lead
+  statuses: Record<string, number>; // count by status (paid / met / quote_requested / ...)
+  latestStatus?: string;       // status of most-recent lead
+  smsOptIn?: boolean;          // most-recent opt-in disposition
+  hasReview?: boolean;         // whether at least one lead earned a review
+}
+
+function checkAuth(req: NextRequest): boolean {
+  const headerToken = req.headers.get("x-admin-token");
+  const queryToken = req.nextUrl.searchParams.get("token");
+  return headerToken === ADMIN_TOKEN || queryToken === ADMIN_TOKEN;
+}
+
+function parseField(body: string, key: string): string | undefined {
+  // Anchored to line start, inline whitespace only — same pattern as
+  // /api/admin/leads to avoid the regex-bleed bug Skywalker caught on
+  // 2026-05-18 where empty fields swallowed the next line's content.
+  const re = new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i");
+  const m = body.match(re);
+  if (!m) return undefined;
+  const v = m[1]?.trim();
+  return v || undefined;
+}
+
+function normalizePhone(p: string | undefined): string {
+  if (!p) return "";
+  return p.replace(/\D/g, "").replace(/^1/, "");
+}
+
+function parseQuoteAmount(raw: string | undefined): number {
+  if (!raw) return 0;
+  const m = raw.match(/\d+/);
+  return m ? parseInt(m[0], 10) : 0;
+}
+
+export async function GET(req: NextRequest) {
+  if (!checkAuth(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
+    headers: { "x-api-key": MC_KEY },
+    cache: "no-store",
+  });
+  if (!r.ok) {
+    return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
+  }
+  const data = await r.json();
+  const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
+
+  // Pass 1: index status updates by lead id (so we can attribute each
+  // lead's terminal status to its customer roll-up). Status messages have
+  // bodies like "[STATUS: paid] [LEAD: leadId]".
+  const statusByLead = new Map<string, { status: string; timestamp: string }>();
+  const reviewLeads = new Set<string>();
+  const deletedLeads = new Set<string>();
+  for (const m of messages) {
+    if (!m.body) continue;
+    const sm = m.body.match(/\[STATUS:\s*([\w_]+)\]\s*\[LEAD:\s*([\w-]+)\]/i);
+    if (sm) {
+      const prev = statusByLead.get(sm[2]);
+      if (!prev || m.timestamp > prev.timestamp) {
+        statusByLead.set(sm[2], { status: sm[1].toLowerCase(), timestamp: m.timestamp });
+      }
+    }
+    const rm = m.body.match(/\[REVIEW-LEFT:\s*([\w-]+)\]/i);
+    if (rm) reviewLeads.add(rm[1]);
+    const dm = m.body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
+    if (dm) deletedLeads.add(dm[1]);
+  }
+
+  // Pass 2: walk lead messages, dedup into per-customer rows.
+  const customers = new Map<string, CustomerRow>();
+  for (const m of messages) {
+    if (!m.body || !m.body.includes("[NEW BUYBACK LEAD")) continue;
+    if (deletedLeads.has(m.id)) continue;
+    const phoneRaw = parseField(m.body, "Phone");
+    const emailRaw = parseField(m.body, "Email")?.toLowerCase();
+    const phoneN = normalizePhone(phoneRaw);
+    // Identity preference: phone first, then email. A customer who
+    // submits once with phone and once with email-only stays separate
+    // (no way to link without an account). That's accepted noise.
+    const contactKey = phoneN ? `p:${phoneN}` : (emailRaw ? `e:${emailRaw}` : "");
+    if (!contactKey) continue;
+    const name = parseField(m.body, "Name");
+    const device = parseField(m.body, "Device");
+    const quote = parseQuoteAmount(parseField(m.body, "Quote") || parseField(m.body, "Offer"));
+    const smsRaw = parseField(m.body, "SMS opt-in")?.toLowerCase();
+    const smsOptIn = smsRaw === "yes" ? true : smsRaw === "no" ? false : undefined;
+    const status = statusByLead.get(m.id)?.status || "quote_requested";
+
+    let row = customers.get(contactKey);
+    if (!row) {
+      row = {
+        contactKey,
+        name,
+        phone: phoneRaw,
+        email: emailRaw,
+        leadCount: 0,
+        totalQuoted: 0,
+        firstSubmissionAt: m.timestamp,
+        lastSubmissionAt: m.timestamp,
+        statuses: {},
+        smsOptIn,
+        hasReview: false,
+      };
+      customers.set(contactKey, row);
+    }
+    row.leadCount += 1;
+    row.totalQuoted += quote;
+    // Most-recent fields win on timestamp order
+    if (m.timestamp >= row.lastSubmissionAt) {
+      row.lastSubmissionAt = m.timestamp;
+      row.lastDevice = device;
+      row.latestStatus = status;
+      if (name) row.name = name;
+      if (phoneRaw) row.phone = phoneRaw;
+      if (emailRaw) row.email = emailRaw;
+      if (smsOptIn !== undefined) row.smsOptIn = smsOptIn;
+    }
+    if (m.timestamp < row.firstSubmissionAt) {
+      row.firstSubmissionAt = m.timestamp;
+    }
+    row.statuses[status] = (row.statuses[status] || 0) + 1;
+    if (reviewLeads.has(m.id)) row.hasReview = true;
+  }
+
+  const out = Array.from(customers.values()).sort(
+    (a, b) => b.lastSubmissionAt.localeCompare(a.lastSubmissionAt),
+  );
+  return NextResponse.json({
+    customers: out,
+    counts: {
+      totalCustomers: out.length,
+      totalLeads: out.reduce((s, c) => s + c.leadCount, 0),
+      totalQuoted: out.reduce((s, c) => s + c.totalQuoted, 0),
+    },
+  });
+}

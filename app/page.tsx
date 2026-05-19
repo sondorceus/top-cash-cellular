@@ -4928,6 +4928,23 @@ export default function Home() {
 
   const pushHistory = useCallback((s: string) => {
     window.history.pushState({ step: s }, "", `#${s}`);
+    // GA4 funnel-step event — fires once per step transition. Lets
+    // analytics.google.com's Funnel Explorer show drop-off by step (which
+    // step do customers bail at?). Skywalker 2026-05-19 — needs live
+    // funnel visibility before the marketing push. The current device +
+    // model are pulled from window refs set by the funnel; both safe to
+    // be undefined on the early steps (gtag tolerates missing params).
+    try {
+      const g = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+      const refs = (window as unknown as { __tccFunnelRefs?: { device?: string | null; modelId?: string | null } }).__tccFunnelRefs;
+      if (g) {
+        g("event", "funnel_step", {
+          step: s,
+          device: refs?.device ?? undefined,
+          model: refs?.modelId ?? undefined,
+        });
+      }
+    } catch {}
   }, []);
 
   // popstate handler — Chrome / iOS Safari back button fires this when the
@@ -4941,6 +4958,15 @@ export default function Home() {
   // which fires popstate → ref-based dispatch into handleBack. Single
   // source of truth; URL and React state stay in lockstep.
   const handleBackRef = useRef<() => void>(() => {});
+  // Mirror device + model into a window ref so the pushHistory GA4 event
+  // can attach them as event params without needing them as useCallback
+  // deps (deps would re-create the callback on every keystroke).
+  useEffect(() => {
+    (window as unknown as { __tccFunnelRefs?: Record<string, string | null> }).__tccFunnelRefs = {
+      device: deviceType ?? null,
+      modelId: model?.id ?? null,
+    };
+  }, [deviceType, model]);
   useEffect(() => {
     const onPop = () => { handleBackRef.current?.(); };
     window.addEventListener("popstate", onPop);
@@ -10289,6 +10315,23 @@ export default function Home() {
                   if (d?.fedexError) setSubmittedLabelError(d.fedexError);
                 }
                 setSubmittedLabel(leadLabel);
+                // GA4 conversion event — fires once per successful
+                // submission. Skywalker 2026-05-19: needs funnel
+                // completion tracked separately from raw page views so
+                // analytics.google.com's Conversions report shows the
+                // submit rate.
+                try {
+                  const g = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+                  if (g) {
+                    g("event", "funnel_submit", {
+                      device: deviceType,
+                      model: model?.label,
+                      quote: quote * quantity,
+                      multi: isMultiCart,
+                    });
+                    g("event", "conversion", { send_to: "AW-18099653912/lead_submit" });
+                  }
+                } catch {}
                 if (email || phone) {
                   const confirmBody = isMultiCart
                     ? { name, phone, email, carrier: carrier?.label, payout: payout?.label, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity })), handoffMethod, fedexLabel: leadLabel }
