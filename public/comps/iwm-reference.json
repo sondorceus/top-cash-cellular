@@ -1,0 +1,1871 @@
+{
+  "scraped_at": "2026-05-18T22:07:00Z",
+  "source": "itsworthmore.com (head-scrape, see scripts/audit-prices-vs-iwm.py)",
+  "note": "Competitor quote prices \u2014 what IWM tells customers they'll get. Use as competitive reference, NOT margin floor (Atlas is the wholesale truth).",
+  "models": {
+    "ip11": {
+      "64": {
+        "sealed": 130,
+        "mint": 80,
+        "good": 65,
+        "fair": 45,
+        "broken": 25
+      },
+      "128": {
+        "sealed": 145,
+        "mint": 115,
+        "good": 100,
+        "fair": 80,
+        "broken": 26
+      },
+      "256": {
+        "sealed": 160,
+        "mint": 130,
+        "good": 115,
+        "fair": 95,
+        "broken": 27
+      }
+    },
+    "ip11p": {
+      "64": {
+        "sealed": 150,
+        "mint": 110,
+        "good": 95,
+        "fair": 65,
+        "broken": 25
+      },
+      "256": {
+        "sealed": 180,
+        "mint": 140,
+        "good": 125,
+        "fair": 95,
+        "broken": 27
+      },
+      "512": {
+        "sealed": 200,
+        "mint": 165,
+        "good": 150,
+        "fair": 120,
+        "broken": 30
+      }
+    },
+    "ip11pm": {
+      "64": {
+        "sealed": 235,
+        "mint": 185,
+        "good": 165,
+        "fair": 135,
+        "broken": 45
+      },
+      "256": {
+        "sealed": 245,
+        "mint": 190,
+        "good": 170,
+        "fair": 140,
+        "broken": 47
+      },
+      "512": {
+        "sealed": 250,
+        "mint": 210,
+        "good": 190,
+        "fair": 160,
+        "broken": 50
+      }
+    },
+    "ip12": {
+      "64": {
+        "sealed": 160,
+        "mint": 115,
+        "good": 95,
+        "fair": 65,
+        "broken": 50
+      },
+      "128": {
+        "sealed": 170,
+        "mint": 145,
+        "good": 125,
+        "fair": 95,
+        "broken": 52
+      },
+      "256": {
+        "sealed": 175,
+        "mint": 160,
+        "good": 140,
+        "fair": 110,
+        "broken": 53
+      }
+    },
+    "ip12mini": {
+      "64": {
+        "sealed": 120,
+        "mint": 80,
+        "good": 65,
+        "fair": 40,
+        "broken": 20
+      },
+      "128": {
+        "sealed": 125,
+        "mint": 110,
+        "good": 95,
+        "fair": 70,
+        "broken": 23
+      },
+      "256": {
+        "sealed": 130,
+        "mint": 115,
+        "good": 100,
+        "fair": 75,
+        "broken": 25
+      }
+    },
+    "ip12p": {
+      "128": {
+        "sealed": 230,
+        "mint": 170,
+        "good": 150,
+        "fair": 100,
+        "broken": 50
+      },
+      "256": {
+        "sealed": 245,
+        "mint": 210,
+        "good": 190,
+        "fair": 140,
+        "broken": 55
+      },
+      "512": {
+        "sealed": 255,
+        "mint": 210,
+        "good": 190,
+        "fair": 140,
+        "broken": 57
+      }
+    },
+    "ip12pm": {
+      "128": {
+        "sealed": 280,
+        "mint": 220,
+        "good": 205,
+        "fair": 145,
+        "broken": 70
+      },
+      "256": {
+        "sealed": 320,
+        "mint": 240,
+        "good": 225,
+        "fair": 165,
+        "broken": 72
+      },
+      "512": {
+        "sealed": 350,
+        "mint": 255,
+        "good": 240,
+        "fair": 180,
+        "broken": 75
+      }
+    },
+    "ip13": {
+      "128": {
+        "sealed": 255,
+        "mint": 170,
+        "good": 150,
+        "fair": 110,
+        "broken": 50
+      },
+      "256": {
+        "sealed": 285,
+        "mint": 205,
+        "good": 185,
+        "fair": 145,
+        "broken": 55
+      },
+      "512": {
+        "sealed": 305,
+        "mint": 215,
+        "good": 195,
+        "fair": 155,
+        "broken": 60
+      }
+    },
+    "ip13mini": {
+      "128": {
+        "sealed": 220,
+        "mint": 160,
+        "good": 130,
+        "fair": 80,
+        "broken": 50
+      },
+      "256": {
+        "sealed": 230,
+        "mint": 190,
+        "good": 160,
+        "fair": 110,
+        "broken": 55
+      },
+      "512": {
+        "sealed": 235,
+        "mint": 210,
+        "good": 180,
+        "fair": 130,
+        "broken": 57
+      }
+    },
+    "ip13p": {
+      "128": {
+        "sealed": 275,
+        "mint": 245,
+        "good": 215,
+        "fair": 155,
+        "broken": 65
+      },
+      "256": {
+        "sealed": 350,
+        "mint": 280,
+        "good": 250,
+        "fair": 190,
+        "broken": 70
+      },
+      "512": {
+        "sealed": 425,
+        "mint": 305,
+        "good": 275,
+        "fair": 215,
+        "broken": 72
+      },
+      "1tb": {
+        "sealed": 475,
+        "mint": 315,
+        "good": 285,
+        "fair": 225,
+        "broken": 75
+      }
+    },
+    "ip13pm": {
+      "128": {
+        "sealed": 405,
+        "mint": 295,
+        "good": 265,
+        "fair": 205,
+        "broken": 85
+      },
+      "256": {
+        "sealed": 430,
+        "mint": 340,
+        "good": 310,
+        "fair": 250,
+        "broken": 90
+      },
+      "512": {
+        "sealed": 455,
+        "mint": 350,
+        "good": 320,
+        "fair": 260,
+        "broken": 95
+      },
+      "1tb": {
+        "sealed": 480,
+        "mint": 365,
+        "good": 335,
+        "fair": 275,
+        "broken": 100
+      }
+    },
+    "ip14": {
+      "128": {
+        "sealed": 235,
+        "mint": 185,
+        "good": 160,
+        "fair": 115,
+        "broken": 60
+      },
+      "256": {
+        "sealed": 260,
+        "mint": 220,
+        "good": 195,
+        "fair": 150,
+        "broken": 65
+      },
+      "512": {
+        "sealed": 285,
+        "mint": 295,
+        "good": 270,
+        "fair": 225,
+        "broken": 67
+      }
+    },
+    "ip14p": {
+      "128": {
+        "sealed": 330,
+        "mint": 300,
+        "good": 250,
+        "fair": 190,
+        "broken": 125
+      },
+      "256": {
+        "sealed": 355,
+        "mint": 330,
+        "good": 280,
+        "fair": 220,
+        "broken": 135
+      },
+      "512": {
+        "sealed": 370,
+        "mint": 360,
+        "good": 310,
+        "fair": 250,
+        "broken": 140
+      },
+      "1tb": {
+        "sealed": 390,
+        "mint": 380,
+        "good": 330,
+        "fair": 270,
+        "broken": 145
+      }
+    },
+    "ip14plus": {
+      "128": {
+        "sealed": 260,
+        "mint": 220,
+        "good": 190,
+        "fair": 150,
+        "broken": 95
+      },
+      "256": {
+        "sealed": 310,
+        "mint": 260,
+        "good": 230,
+        "fair": 190,
+        "broken": 100
+      },
+      "512": {
+        "sealed": 335,
+        "mint": 280,
+        "good": 250,
+        "fair": 210,
+        "broken": 105
+      }
+    },
+    "ip14pm": {
+      "128": {
+        "sealed": 410,
+        "mint": 380,
+        "good": 330,
+        "fair": 270,
+        "broken": 160
+      },
+      "256": {
+        "sealed": 440,
+        "mint": 400,
+        "good": 350,
+        "fair": 290,
+        "broken": 180
+      },
+      "512": {
+        "sealed": 450,
+        "mint": 430,
+        "good": 380,
+        "fair": 320,
+        "broken": 200
+      },
+      "1tb": {
+        "sealed": 470,
+        "mint": 460,
+        "good": 410,
+        "fair": 350,
+        "broken": 220
+      }
+    },
+    "ip15": {
+      "128": {
+        "sealed": 345,
+        "good": 255,
+        "fair": 215,
+        "broken": 100
+      },
+      "256": {
+        "sealed": 395,
+        "good": 295,
+        "fair": 255,
+        "broken": 110
+      },
+      "512": {
+        "sealed": 445,
+        "good": 325,
+        "fair": 285,
+        "broken": 115
+      }
+    },
+    "ip15p": {
+      "128": {
+        "sealed": 415,
+        "good": 325,
+        "fair": 275,
+        "broken": 190
+      },
+      "256": {
+        "sealed": 465,
+        "good": 375,
+        "fair": 325,
+        "broken": 210
+      },
+      "512": {
+        "sealed": 490,
+        "good": 405,
+        "fair": 355,
+        "broken": 220
+      },
+      "1tb": {
+        "sealed": 540,
+        "good": 445,
+        "fair": 395,
+        "broken": 240
+      }
+    },
+    "ip15plus": {
+      "128": {
+        "sealed": 420,
+        "good": 280,
+        "fair": 240,
+        "broken": 145
+      },
+      "256": {
+        "sealed": 470,
+        "good": 305,
+        "fair": 265,
+        "broken": 155
+      },
+      "512": {
+        "sealed": 495,
+        "good": 360,
+        "fair": 320,
+        "broken": 165
+      }
+    },
+    "ip15pm": {
+      "256": {
+        "sealed": 535,
+        "good": 425,
+        "fair": 380,
+        "broken": 180
+      },
+      "512": {
+        "sealed": 560,
+        "good": 460,
+        "fair": 415,
+        "broken": 190
+      },
+      "1tb": {
+        "sealed": 585,
+        "good": 505,
+        "fair": 460,
+        "broken": 200
+      }
+    },
+    "ip16": {
+      "128": {
+        "sealed": 515,
+        "good": 385,
+        "fair": 325,
+        "broken": 180
+      },
+      "256": {
+        "sealed": 570,
+        "good": 425,
+        "fair": 365,
+        "broken": 220
+      },
+      "512": {
+        "sealed": 625,
+        "good": 455,
+        "fair": 395,
+        "broken": 260
+      }
+    },
+    "ip16e": {
+      "128": {
+        "sealed": 340,
+        "good": 225,
+        "fair": 160,
+        "broken": 70
+      },
+      "256": {
+        "sealed": 395,
+        "good": 295,
+        "fair": 230,
+        "broken": 90
+      },
+      "512": {
+        "sealed": 450,
+        "good": 345,
+        "fair": 280,
+        "broken": 110
+      }
+    },
+    "ip16p": {
+      "128": {
+        "sealed": 530,
+        "good": 460,
+        "fair": 375,
+        "broken": 275
+      },
+      "256": {
+        "sealed": 580,
+        "good": 510,
+        "fair": 425,
+        "broken": 285
+      },
+      "512": {
+        "sealed": 630,
+        "good": 550,
+        "fair": 465,
+        "broken": 325
+      },
+      "1tb": {
+        "sealed": 680,
+        "good": 610,
+        "fair": 525,
+        "broken": 350
+      }
+    },
+    "ip16plus": {
+      "128": {
+        "sealed": 495,
+        "good": 425,
+        "fair": 375,
+        "broken": 215
+      },
+      "256": {
+        "sealed": 545,
+        "good": 465,
+        "fair": 415,
+        "broken": 255
+      },
+      "512": {
+        "sealed": 595,
+        "good": 500,
+        "fair": 450,
+        "broken": 295
+      }
+    },
+    "ip16pm": {
+      "256": {
+        "sealed": 720,
+        "good": 610,
+        "fair": 545,
+        "broken": 280
+      },
+      "512": {
+        "sealed": 820,
+        "good": 665,
+        "fair": 600,
+        "broken": 310
+      },
+      "1tb": {
+        "sealed": 920,
+        "good": 750,
+        "fair": 685,
+        "broken": 350
+      }
+    },
+    "ip17": {
+      "256": {
+        "sealed": 620,
+        "good": 520,
+        "fair": 440,
+        "broken": 260
+      },
+      "512": {
+        "sealed": 730,
+        "good": 620,
+        "fair": 540,
+        "broken": 340
+      }
+    },
+    "ip17air": {
+      "256": {
+        "sealed": 695,
+        "good": 535,
+        "fair": 470,
+        "broken": 230
+      },
+      "512": {
+        "sealed": 805,
+        "good": 595,
+        "fair": 530,
+        "broken": 310
+      },
+      "1tb": {
+        "sealed": 875,
+        "good": 670,
+        "fair": 605,
+        "broken": 350
+      }
+    },
+    "ip17e": {
+      "256": {
+        "sealed": 415,
+        "good": 315,
+        "fair": 250,
+        "broken": 100
+      },
+      "512": {
+        "sealed": 470,
+        "good": 365,
+        "fair": 300,
+        "broken": 120
+      }
+    },
+    "ip17p": {
+      "256": {
+        "sealed": 845,
+        "good": 715,
+        "fair": 575,
+        "broken": 300
+      },
+      "512": {
+        "sealed": 995,
+        "good": 815,
+        "fair": 675,
+        "broken": 420
+      },
+      "1tb": {
+        "sealed": 1045,
+        "good": 865,
+        "fair": 725,
+        "broken": 460
+      }
+    },
+    "ip17pm": {
+      "256": {
+        "sealed": 935,
+        "good": 855,
+        "fair": 755,
+        "broken": 350
+      },
+      "512": {
+        "sealed": 1035,
+        "good": 955,
+        "fair": 855,
+        "broken": 380
+      },
+      "1tb": {
+        "sealed": 1135,
+        "good": 1020,
+        "fair": 920,
+        "broken": 420
+      },
+      "2tb": {
+        "sealed": 1335,
+        "good": 1055,
+        "fair": 955,
+        "broken": 500
+      }
+    },
+    "gs24": {
+      "128": {
+        "sealed": 240,
+        "mint": 210,
+        "good": 180,
+        "fair": 130,
+        "broken": 55
+      },
+      "256": {
+        "sealed": 275,
+        "mint": 240,
+        "good": 210,
+        "fair": 160,
+        "broken": 60
+      },
+      "512": {
+        "sealed": 240,
+        "mint": 210,
+        "good": 180,
+        "fair": 130
+      }
+    },
+    "gs24u": {
+      "256": {
+        "sealed": 480,
+        "mint": 440,
+        "good": 390,
+        "fair": 300,
+        "broken": 150
+      },
+      "512": {
+        "sealed": 555,
+        "mint": 460,
+        "good": 410,
+        "fair": 320,
+        "broken": 160
+      },
+      "1tb": {
+        "sealed": 655,
+        "mint": 520,
+        "good": 470,
+        "fair": 380,
+        "broken": 170
+      }
+    },
+    "gs25": {
+      "128": {
+        "sealed": 330,
+        "mint": 290,
+        "good": 265,
+        "fair": 210,
+        "broken": 60
+      },
+      "256": {
+        "sealed": 365,
+        "mint": 330,
+        "good": 305,
+        "fair": 250,
+        "broken": 65
+      },
+      "512": {
+        "sealed": 330,
+        "mint": 290,
+        "good": 265,
+        "fair": 210,
+        "broken": 60
+      }
+    },
+    "gs25p": {
+      "256": {
+        "sealed": 440,
+        "mint": 400,
+        "good": 340,
+        "fair": 290,
+        "broken": 80
+      },
+      "512": {
+        "sealed": 490,
+        "mint": 460,
+        "good": 400,
+        "fair": 350,
+        "broken": 90
+      }
+    },
+    "gs25u": {
+      "256": {
+        "sealed": 620,
+        "mint": 570,
+        "good": 525,
+        "fair": 465,
+        "broken": 150
+      },
+      "512": {
+        "sealed": 645,
+        "mint": 595,
+        "good": 550,
+        "fair": 490,
+        "broken": 160
+      },
+      "1tb": {
+        "sealed": 670,
+        "mint": 645,
+        "good": 600,
+        "fair": 540,
+        "broken": 170
+      }
+    },
+    "gs26": {
+      "256": {
+        "sealed": 500,
+        "mint": 450,
+        "good": 395,
+        "fair": 315,
+        "broken": 100
+      },
+      "512": {
+        "sealed": 530,
+        "mint": 475,
+        "good": 420,
+        "fair": 340,
+        "broken": 110
+      }
+    },
+    "gs26p": {
+      "256": {
+        "sealed": 550,
+        "mint": 500,
+        "good": 430,
+        "fair": 340,
+        "broken": 120
+      },
+      "512": {
+        "sealed": 600,
+        "mint": 540,
+        "good": 470,
+        "fair": 380,
+        "broken": 130
+      }
+    },
+    "gs26u": {
+      "256": {
+        "sealed": 700,
+        "mint": 650,
+        "good": 560,
+        "fair": 440,
+        "broken": 140
+      },
+      "512": {
+        "sealed": 750,
+        "mint": 690,
+        "good": 600,
+        "fair": 480,
+        "broken": 150
+      },
+      "1tb": {
+        "sealed": 800,
+        "mint": 730,
+        "good": 640,
+        "fair": 520,
+        "broken": 160
+      }
+    },
+    "gzflip5": {
+      "256": {
+        "sealed": 225,
+        "mint": 205,
+        "good": 175,
+        "fair": 115,
+        "broken": 75
+      },
+      "512": {
+        "sealed": 275,
+        "mint": 225,
+        "good": 195,
+        "fair": 135,
+        "broken": 80
+      }
+    },
+    "gzflip6": {
+      "256": {
+        "sealed": 340,
+        "mint": 290,
+        "good": 240,
+        "fair": 175,
+        "broken": 60
+      },
+      "512": {
+        "sealed": 390,
+        "mint": 310,
+        "good": 260,
+        "fair": 195,
+        "broken": 70
+      }
+    },
+    "gzflip7": {
+      "256": {
+        "sealed": 470,
+        "mint": 430,
+        "good": 390,
+        "fair": 325,
+        "broken": 70
+      },
+      "512": {
+        "sealed": 520,
+        "mint": 445,
+        "good": 405,
+        "fair": 340,
+        "broken": 85
+      }
+    },
+    "gzfold5": {
+      "256": {
+        "sealed": 345,
+        "mint": 315,
+        "good": 285,
+        "fair": 235,
+        "broken": 50
+      },
+      "512": {
+        "sealed": 375,
+        "mint": 335,
+        "good": 305,
+        "fair": 255,
+        "broken": 53
+      },
+      "1tb": {
+        "sealed": 405,
+        "mint": 355,
+        "good": 325,
+        "fair": 275,
+        "broken": 55
+      }
+    },
+    "gzfold6": {
+      "256": {
+        "sealed": 500,
+        "mint": 450,
+        "good": 390,
+        "fair": 340,
+        "broken": 100
+      },
+      "512": {
+        "sealed": 530,
+        "mint": 490,
+        "good": 430,
+        "fair": 380,
+        "broken": 105
+      },
+      "1tb": {
+        "sealed": 560,
+        "mint": 520,
+        "good": 460,
+        "fair": 410,
+        "broken": 110
+      }
+    },
+    "gzfold7": {
+      "256": {
+        "sealed": 720,
+        "mint": 670,
+        "good": 640,
+        "fair": 550,
+        "broken": 150
+      },
+      "512": {
+        "sealed": 750,
+        "mint": 710,
+        "good": 680,
+        "fair": 590,
+        "broken": 155
+      },
+      "1tb": {
+        "sealed": 780,
+        "mint": 740,
+        "good": 710,
+        "fair": 620,
+        "broken": 160
+      }
+    },
+    "gztrifold": {
+      "512": {
+        "sealed": 2300,
+        "mint": 2000,
+        "good": 1500,
+        "fair": 1000,
+        "broken": 200
+      },
+      "1tb": {
+        "sealed": 2375,
+        "mint": 2050,
+        "good": 1550,
+        "fair": 1050,
+        "broken": 210
+      }
+    },
+    "px10pxl": {
+      "256": {
+        "sealed": 480,
+        "mint": 450,
+        "good": 430,
+        "fair": 370,
+        "broken": 115
+      },
+      "512": {
+        "sealed": 515,
+        "mint": 485,
+        "good": 465,
+        "fair": 405,
+        "broken": 125
+      },
+      "1tb": {
+        "sealed": 530,
+        "mint": 500,
+        "good": 480,
+        "fair": 420,
+        "broken": 140
+      }
+    },
+    "px10p": {
+      "128": {
+        "sealed": 430,
+        "mint": 400,
+        "good": 350,
+        "fair": 280,
+        "broken": 75
+      },
+      "256": {
+        "sealed": 470,
+        "mint": 465,
+        "good": 415,
+        "fair": 345,
+        "broken": 80
+      },
+      "512": {
+        "sealed": 505,
+        "mint": 485,
+        "good": 435,
+        "fair": 365,
+        "broken": 85
+      },
+      "1tb": {
+        "sealed": 520,
+        "mint": 500,
+        "good": 450,
+        "fair": 380,
+        "broken": 90
+      }
+    },
+    "px10": {
+      "128": {
+        "sealed": 370,
+        "mint": 330,
+        "good": 305,
+        "fair": 240,
+        "broken": 75
+      },
+      "256": {
+        "sealed": 395,
+        "mint": 350,
+        "good": 325,
+        "fair": 260,
+        "broken": 85
+      }
+    },
+    "px9pxl": {
+      "128": {
+        "sealed": 350,
+        "mint": 320,
+        "good": 270,
+        "fair": 210,
+        "broken": 75
+      },
+      "256": {
+        "sealed": 390,
+        "mint": 340,
+        "good": 290,
+        "fair": 230,
+        "broken": 80
+      },
+      "512": {
+        "sealed": 425,
+        "mint": 360,
+        "good": 310,
+        "fair": 250,
+        "broken": 80
+      },
+      "1tb": {
+        "sealed": 440,
+        "mint": 380,
+        "good": 330,
+        "fair": 270,
+        "broken": 82
+      }
+    },
+    "px9p": {
+      "128": {
+        "sealed": 290,
+        "mint": 240,
+        "good": 200,
+        "fair": 140,
+        "broken": 50
+      },
+      "256": {
+        "sealed": 330,
+        "mint": 270,
+        "good": 230,
+        "fair": 170,
+        "broken": 52
+      },
+      "512": {
+        "sealed": 365,
+        "mint": 290,
+        "good": 250,
+        "fair": 190,
+        "broken": 54
+      },
+      "1tb": {
+        "sealed": 380,
+        "mint": 315,
+        "good": 275,
+        "fair": 215,
+        "broken": 56
+      }
+    },
+    "px9": {
+      "128": {
+        "sealed": 250,
+        "mint": 220,
+        "good": 170,
+        "fair": 125,
+        "broken": 45
+      },
+      "256": {
+        "sealed": 275,
+        "mint": 240,
+        "good": 190,
+        "fair": 145,
+        "broken": 50
+      }
+    },
+    "px8p": {
+      "128": {
+        "sealed": 230,
+        "mint": 205,
+        "good": 160,
+        "fair": 125,
+        "broken": 35
+      },
+      "256": {
+        "sealed": 270,
+        "mint": 215,
+        "good": 170,
+        "fair": 135,
+        "broken": 37
+      },
+      "512": {
+        "sealed": 290,
+        "mint": 235,
+        "good": 190,
+        "fair": 155,
+        "broken": 38
+      },
+      "1tb": {
+        "sealed": 305,
+        "mint": 245,
+        "good": 200,
+        "fair": 165,
+        "broken": 40
+      }
+    },
+    "nsw2": {
+      "base": {
+        "sealed": 310,
+        "broken": 60
+      }
+    },
+    "gs23u": {
+      "256": {
+        "sealed": 295,
+        "mint": 265,
+        "good": 230,
+        "fair": 175,
+        "broken": 35
+      },
+      "512": {
+        "sealed": 320,
+        "mint": 285,
+        "good": 250,
+        "fair": 195,
+        "broken": 36
+      },
+      "1tb": {
+        "sealed": 345,
+        "mint": 325,
+        "good": 290,
+        "fair": 235,
+        "broken": 37
+      }
+    },
+    "gs22": {
+      "128": {
+        "sealed": 130,
+        "mint": 80,
+        "good": 65,
+        "fair": 40,
+        "broken": 20
+      },
+      "256": {
+        "sealed": 150,
+        "mint": 90,
+        "good": 75,
+        "fair": 50,
+        "broken": 25
+      }
+    },
+    "gzflip4": {
+      "128": {
+        "sealed": 120,
+        "mint": 100,
+        "good": 90,
+        "fair": 50,
+        "broken": 20
+      },
+      "256": {
+        "sealed": 140,
+        "mint": 110,
+        "good": 100,
+        "fair": 60,
+        "broken": 21
+      },
+      "512": {
+        "sealed": 150,
+        "mint": 115,
+        "good": 105,
+        "fair": 65,
+        "broken": 22
+      }
+    },
+    "px8": {
+      "128": {
+        "sealed": 185,
+        "mint": 140,
+        "good": 120,
+        "fair": 75,
+        "broken": 25
+      },
+      "256": {
+        "sealed": 210,
+        "mint": 165,
+        "good": 145,
+        "fair": 100,
+        "broken": 30
+      }
+    },
+    "gs24p": {
+      "256": {
+        "sealed": 295,
+        "mint": 255,
+        "good": 220,
+        "fair": 160,
+        "broken": 80
+      },
+      "512": {
+        "sealed": 345,
+        "mint": 295,
+        "good": 260,
+        "fair": 200,
+        "broken": 90
+      }
+    },
+    "gs21": {
+      "128": {
+        "sealed": 105,
+        "mint": 55,
+        "good": 40,
+        "fair": 30,
+        "broken": 10
+      },
+      "256": {
+        "sealed": 125,
+        "mint": 65,
+        "good": 50,
+        "fair": 40,
+        "broken": 10
+      }
+    },
+    "px7p": {
+      "128": {
+        "sealed": 170,
+        "mint": 120,
+        "good": 80,
+        "fair": 50,
+        "broken": 25
+      },
+      "256": {
+        "sealed": 180,
+        "mint": 135,
+        "good": 95,
+        "fair": 65,
+        "broken": 30
+      },
+      "512": {
+        "sealed": 185,
+        "mint": 140,
+        "good": 100,
+        "fair": 70,
+        "broken": 32
+      }
+    },
+    "gs20": {
+      "base": {
+        "sealed": 110,
+        "mint": 85,
+        "good": 75,
+        "fair": 60,
+        "broken": 15
+      }
+    },
+    "gnote10": {
+      "base": {
+        "sealed": 125,
+        "mint": 90,
+        "good": 80,
+        "fair": 55,
+        "broken": 10
+      }
+    },
+    "gnote10p": {
+      "256": {
+        "sealed": 165,
+        "mint": 130,
+        "good": 110,
+        "fair": 50,
+        "broken": 42
+      },
+      "512": {
+        "sealed": 191,
+        "mint": 140,
+        "good": 120,
+        "fair": 60,
+        "broken": 63
+      }
+    },
+    "gnote10p5g": {
+      "256": {
+        "sealed": 170,
+        "mint": 130,
+        "good": 110,
+        "fair": 50,
+        "broken": 50
+      },
+      "512": {
+        "sealed": 196,
+        "mint": 145,
+        "good": 125,
+        "fair": 65,
+        "broken": 60
+      }
+    },
+    "gnote20": {
+      "128": {
+        "sealed": 130,
+        "mint": 100,
+        "good": 90,
+        "fair": 75,
+        "broken": 25
+      },
+      "256": {
+        "sealed": 145,
+        "mint": 110,
+        "good": 100,
+        "fair": 85,
+        "broken": 30
+      }
+    },
+    "gnote9": {
+      "128": {
+        "sealed": 126,
+        "mint": 75,
+        "good": 60,
+        "fair": 30,
+        "broken": 15
+      },
+      "512": {
+        "sealed": 147,
+        "mint": 85,
+        "good": 70,
+        "fair": 40,
+        "broken": 25
+      }
+    },
+    "gs20fe": {
+      "128": {
+        "sealed": 100,
+        "mint": 50,
+        "good": 40,
+        "fair": 25,
+        "broken": 15
+      },
+      "256": {
+        "sealed": 120,
+        "mint": 60,
+        "good": 50,
+        "fair": 35,
+        "broken": 17
+      }
+    },
+    "gs20p": {
+      "128": {
+        "sealed": 125,
+        "mint": 95,
+        "good": 85,
+        "fair": 40,
+        "broken": 20
+      },
+      "512": {
+        "sealed": 155,
+        "mint": 120,
+        "good": 110,
+        "fair": 65,
+        "broken": 22
+      }
+    },
+    "gs20u": {
+      "128": {
+        "sealed": 205,
+        "mint": 135,
+        "good": 115,
+        "fair": 75,
+        "broken": 20
+      },
+      "256": {
+        "sealed": 215,
+        "mint": 145,
+        "good": 125,
+        "fair": 85,
+        "broken": 25
+      },
+      "512": {
+        "sealed": 225,
+        "mint": 155,
+        "good": 135,
+        "fair": 95,
+        "broken": 30
+      }
+    },
+    "gs21fe": {
+      "128": {
+        "sealed": 60,
+        "mint": 40,
+        "good": 30,
+        "fair": 25,
+        "broken": 10
+      },
+      "256": {
+        "sealed": 80,
+        "mint": 50,
+        "good": 40,
+        "fair": 35,
+        "broken": 15
+      }
+    },
+    "gs21p": {
+      "128": {
+        "sealed": 130,
+        "mint": 70,
+        "good": 60,
+        "fair": 40,
+        "broken": 20
+      },
+      "256": {
+        "sealed": 161,
+        "mint": 80,
+        "good": 70,
+        "fair": 50,
+        "broken": 21
+      }
+    },
+    "gs21u": {
+      "128": {
+        "sealed": 140,
+        "mint": 90,
+        "good": 80,
+        "fair": 60,
+        "broken": 25
+      },
+      "256": {
+        "sealed": 150,
+        "mint": 100,
+        "good": 90,
+        "fair": 70,
+        "broken": 27
+      },
+      "512": {
+        "sealed": 155,
+        "mint": 105,
+        "good": 95,
+        "fair": 75,
+        "broken": 28
+      }
+    },
+    "gs22p": {
+      "128": {
+        "sealed": 190,
+        "mint": 110,
+        "good": 95,
+        "fair": 70,
+        "broken": 30
+      },
+      "256": {
+        "sealed": 215,
+        "mint": 120,
+        "good": 105,
+        "fair": 80,
+        "broken": 35
+      }
+    },
+    "gs22u": {
+      "128": {
+        "sealed": 180,
+        "mint": 140,
+        "good": 120,
+        "fair": 85,
+        "broken": 30
+      },
+      "256": {
+        "sealed": 227,
+        "mint": 155,
+        "good": 135,
+        "fair": 100,
+        "broken": 30
+      },
+      "512": {
+        "sealed": 269,
+        "mint": 160,
+        "good": 140,
+        "fair": 105,
+        "broken": 30
+      },
+      "1tb": {
+        "sealed": 311,
+        "mint": 165,
+        "good": 145,
+        "fair": 110,
+        "broken": 30
+      }
+    },
+    "gs23": {
+      "128": {
+        "sealed": 200,
+        "mint": 130,
+        "good": 105,
+        "fair": 80,
+        "broken": 25
+      },
+      "256": {
+        "sealed": 235,
+        "mint": 150,
+        "good": 125,
+        "fair": 100,
+        "broken": 26
+      },
+      "512": {
+        "sealed": 250,
+        "mint": 155,
+        "good": 130,
+        "fair": 105,
+        "broken": 26
+      }
+    },
+    "gs23fe": {
+      "128": {
+        "sealed": 120,
+        "mint": 90,
+        "good": 70,
+        "fair": 35,
+        "broken": 20
+      },
+      "256": {
+        "sealed": 140,
+        "mint": 100,
+        "good": 80,
+        "fair": 45,
+        "broken": 22
+      }
+    },
+    "gs23p": {
+      "128": {
+        "sealed": 260,
+        "broken": 100
+      },
+      "256": {
+        "sealed": 290,
+        "mint": 200,
+        "good": 180,
+        "fair": 125,
+        "broken": 105
+      },
+      "512": {
+        "sealed": 310,
+        "mint": 210,
+        "good": 190,
+        "fair": 135,
+        "broken": 107
+      }
+    },
+    "gs24fe": {
+      "128": {
+        "sealed": 210,
+        "mint": 150,
+        "good": 130,
+        "fair": 80,
+        "broken": 30
+      },
+      "256": {
+        "sealed": 230,
+        "mint": 170,
+        "good": 150,
+        "fair": 100,
+        "broken": 40
+      }
+    },
+    "gs25edge": {
+      "256": {
+        "sealed": 390,
+        "mint": 350,
+        "good": 310,
+        "fair": 260,
+        "broken": 100
+      },
+      "512": {
+        "sealed": 425,
+        "mint": 375,
+        "good": 335,
+        "fair": 285,
+        "broken": 110
+      }
+    },
+    "gs25fe": {
+      "128": {
+        "sealed": 305,
+        "mint": 245,
+        "good": 215,
+        "fair": 80,
+        "broken": 40
+      },
+      "256": {
+        "sealed": 325,
+        "mint": 265,
+        "good": 235,
+        "fair": 100,
+        "broken": 50
+      },
+      "512": {
+        "sealed": 305,
+        "broken": 40
+      }
+    },
+    "gzflip3": {
+      "128": {
+        "sealed": 115,
+        "mint": 90,
+        "good": 75,
+        "fair": 40,
+        "broken": 15
+      },
+      "256": {
+        "sealed": 130,
+        "mint": 100,
+        "good": 85,
+        "fair": 50,
+        "broken": 20
+      }
+    },
+    "gzfold3": {
+      "256": {
+        "sealed": 170,
+        "mint": 140,
+        "good": 120,
+        "fair": 80,
+        "broken": 25
+      },
+      "512": {
+        "sealed": 200,
+        "mint": 155,
+        "good": 135,
+        "fair": 95,
+        "broken": 30
+      }
+    },
+    "gzfold4": {
+      "256": {
+        "sealed": 310,
+        "mint": 270,
+        "good": 240,
+        "fair": 180,
+        "broken": 70
+      },
+      "512": {
+        "sealed": 340,
+        "mint": 290,
+        "good": 260,
+        "fair": 200,
+        "broken": 75
+      },
+      "1tb": {
+        "sealed": 370,
+        "mint": 305,
+        "good": 275,
+        "fair": 215,
+        "broken": 80
+      }
+    },
+    "px10a": {
+      "128": {
+        "sealed": 265,
+        "mint": 220,
+        "good": 170,
+        "fair": 110,
+        "broken": 50
+      },
+      "256": {
+        "sealed": 290,
+        "mint": 240,
+        "good": 190,
+        "fair": 130,
+        "broken": 60
+      }
+    },
+    "px5": {
+      "base": {
+        "sealed": 85,
+        "mint": 65,
+        "good": 55,
+        "fair": 25,
+        "broken": 5
+      }
+    },
+    "px5a": {
+      "base": {
+        "sealed": 80,
+        "mint": 60,
+        "good": 50,
+        "fair": 25,
+        "broken": 30
+      }
+    },
+    "px6": {
+      "128": {
+        "sealed": 110,
+        "mint": 75,
+        "good": 55,
+        "fair": 40,
+        "broken": 10
+      },
+      "256": {
+        "sealed": 125,
+        "mint": 85,
+        "good": 65,
+        "fair": 50,
+        "broken": 12
+      }
+    },
+    "px6p": {
+      "128": {
+        "sealed": 120,
+        "mint": 90,
+        "good": 75,
+        "fair": 45,
+        "broken": 15
+      },
+      "256": {
+        "sealed": 125,
+        "mint": 100,
+        "good": 85,
+        "fair": 55,
+        "broken": 15
+      },
+      "512": {
+        "sealed": 130,
+        "mint": 105,
+        "good": 90,
+        "fair": 60,
+        "broken": 15
+      }
+    },
+    "px7": {
+      "128": {
+        "sealed": 125,
+        "mint": 70,
+        "good": 57,
+        "fair": 40,
+        "broken": 15
+      },
+      "256": {
+        "sealed": 135,
+        "mint": 90,
+        "good": 77,
+        "fair": 60,
+        "broken": 25
+      }
+    },
+    "px7a": {
+      "base": {
+        "sealed": 160,
+        "mint": 115,
+        "good": 95,
+        "fair": 60,
+        "broken": 15
+      }
+    },
+    "px8a": {
+      "128": {
+        "sealed": 205,
+        "mint": 150,
+        "good": 130,
+        "fair": 100,
+        "broken": 40
+      },
+      "256": {
+        "sealed": 230,
+        "mint": 170,
+        "good": 150,
+        "fair": 120,
+        "broken": 50
+      }
+    },
+    "px9a": {
+      "128": {
+        "sealed": 225,
+        "mint": 175,
+        "good": 145,
+        "fair": 100,
+        "broken": 50
+      },
+      "256": {
+        "sealed": 250,
+        "mint": 195,
+        "good": 165,
+        "fair": 120,
+        "broken": 55
+      }
+    },
+    "px9pfold": {
+      "256": {
+        "sealed": 500,
+        "mint": 450,
+        "good": 400,
+        "fair": 325,
+        "broken": 110
+      },
+      "512": {
+        "sealed": 600,
+        "mint": 480,
+        "good": 430,
+        "fair": 355,
+        "broken": 120
+      }
+    },
+    "pxfold": {
+      "256": {
+        "sealed": 330,
+        "mint": 310,
+        "good": 270,
+        "fair": 200,
+        "broken": 75
+      },
+      "512": {
+        "sealed": 380,
+        "mint": 350,
+        "good": 310,
+        "fair": 240,
+        "broken": 80
+      }
+    },
+    "awu3": {
+      "base": {
+        "sealed": 375
+      }
+    },
+    "sgw7": {
+      "base": {
+        "sealed": 15
+      }
+    },
+    "sgw8": {
+      "base": {
+        "sealed": 25
+      }
+    },
+    "sgw8c": {
+      "base": {
+        "sealed": 25
+      }
+    },
+    "sgwu": {
+      "base": {
+        "sealed": 125
+      }
+    },
+    "sgwu25": {
+      "base": {
+        "sealed": 195
+      }
+    }
+  }
+}
