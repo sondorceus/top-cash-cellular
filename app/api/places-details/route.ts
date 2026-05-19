@@ -23,6 +23,10 @@ export async function POST(req: NextRequest) {
   }
   const placeId = (body.placeId || "").trim();
   if (!placeId) return NextResponse.json({ error: "placeId required" }, { status: 400 });
+  // Bound placeId length. Real Google place IDs are < 100 chars; an
+  // unbounded value lets someone push a megabyte string at us, which
+  // we'd then URL-encode and forward — that's billed.
+  if (placeId.length > 200) return NextResponse.json({ error: "Invalid placeId" }, { status: 400 });
   if (!GOOGLE_API_KEY) return NextResponse.json({ error: "Server missing GOOGLE key" }, { status: 500 });
 
   const url = new URL(`https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}`);
@@ -38,7 +42,8 @@ export async function POST(req: NextRequest) {
     });
     if (!r.ok) {
       const errText = await r.text().catch(() => "");
-      return NextResponse.json({ error: `Google ${r.status}`, detail: errText.slice(0, 300) }, { status: 200 });
+      console.warn(`[places-details] Google ${r.status}:`, errText.slice(0, 300));
+      return NextResponse.json({ error: "Address lookup unavailable" }, { status: 200 });
     }
     const data: { addressComponents?: AddressComponent[]; formattedAddress?: string } = await r.json();
     const parts: AddressComponent[] = data.addressComponents || [];
@@ -60,6 +65,7 @@ export async function POST(req: NextRequest) {
       formattedAddress: data.formattedAddress || "",
     });
   } catch (e) {
-    return NextResponse.json({ error: (e as Error).message }, { status: 200 });
+    console.warn(`[places-details] network:`, e instanceof Error ? e.message : e);
+    return NextResponse.json({ error: "Address lookup unavailable" }, { status: 200 });
   }
 }

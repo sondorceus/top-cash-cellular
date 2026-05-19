@@ -26,6 +26,11 @@ export async function POST(req: NextRequest) {
   }
   const input = (body.input || "").trim();
   if (input.length < 2) return NextResponse.json({ suggestions: [] });
+  // Bound input length — Google ignores anything past ~200 chars but
+  // we still pay for the request, and an unbounded string lets a
+  // script burn budget by sending megabytes of garbage. 200 covers
+  // the longest real US address (street+unit+city+state+zip).
+  if (input.length > 200) return NextResponse.json({ suggestions: [] });
   if (!GOOGLE_API_KEY) return NextResponse.json({ error: "Server missing GOOGLE key" }, { status: 500 });
 
   const payload: Record<string, unknown> = {
@@ -46,8 +51,12 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(payload),
     });
     if (!r.ok) {
+      // Don't echo Google's response body. It can contain rate-limit
+      // reasons, API key state, billing notices — information the
+      // public caller has no business seeing. Log server-side only.
       const errText = await r.text().catch(() => "");
-      return NextResponse.json({ suggestions: [], error: `Google ${r.status}`, detail: errText.slice(0, 300) }, { status: 200 });
+      console.warn(`[places-autocomplete] Google ${r.status}:`, errText.slice(0, 300));
+      return NextResponse.json({ suggestions: [], error: "Address lookup unavailable" }, { status: 200 });
     }
     type GoogleSuggestion = { placePrediction?: { placeId?: string; text?: { text?: string } } };
     const data: { suggestions?: GoogleSuggestion[] } = await r.json();
@@ -59,6 +68,7 @@ export async function POST(req: NextRequest) {
       .filter((s) => s.placeId && s.text);
     return NextResponse.json({ suggestions });
   } catch (e) {
-    return NextResponse.json({ suggestions: [], error: (e as Error).message }, { status: 200 });
+    console.warn(`[places-autocomplete] network:`, e instanceof Error ? e.message : e);
+    return NextResponse.json({ suggestions: [], error: "Address lookup unavailable" }, { status: 200 });
   }
 }
