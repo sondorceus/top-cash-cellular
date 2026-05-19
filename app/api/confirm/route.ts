@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { reportError } from "../../lib/error-report";
 
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
@@ -467,7 +468,22 @@ ${phone ? `<tr><td style="padding:4px 0;color:#888;font-size:12px">Phone</td><td
         text: textFallback,
       });
       emailSent = !!(result?.data?.id);
-    } catch {}
+      // Resend can 200-OK without an id when the API key is invalid
+      // or the domain is unverified. Treat no-id as a soft failure.
+      if (!emailSent) {
+        reportError("confirm.email.no-id", new Error("Resend returned no message id"), {
+          customerEmail: email,
+          critical: true,
+          extra: { quote: String(quote), model: model || "" },
+        });
+      }
+    } catch (err) {
+      reportError("confirm.email.send", err, {
+        customerEmail: email,
+        critical: true,
+        extra: { quote: String(quote), model: model || "" },
+      });
+    }
   }
 
   if (phone) {

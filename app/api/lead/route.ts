@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { createReturnLabel, deviceKindFromString, aggregateWeight, shouldBlockAutoShip } from "../../lib/fedex";
+import { reportError } from "../../lib/error-report";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -609,6 +610,15 @@ export async function POST(req: NextRequest) {
         fedexError = addressy
           ? { kind: "ADDRESS_INVALID", hint: "FedEx couldn't validate your shipping address. Please double-check the street, city, state, and ZIP — then email CustomerService@topcashcells.com with the correction and we'll resend your label." }
           : { kind: "SERVICE_UNAVAILABLE", hint: "We couldn't print your FedEx label right now. Your trade-in is saved — we'll email your label as soon as the issue clears (usually within an hour)." };
+        // Address-invalid is a customer-data issue — staff doesn't need
+        // a 3am SMS. Service-unavailable means our FedEx integration is
+        // broken (key expired, API down, account suspended); SMS owner
+        // immediately so we can fix before more leads pile up.
+        reportError("fedex.label.mint", err, {
+          leadId,
+          critical: !addressy,
+          extra: { kind: fedexError.kind, weight: totalWeight, deviceCount: deviceList.length || 1 },
+        });
         // Post a marker so admin can see which leads need a manual
         // label generation. Sanitized message — no FedEx key leakage.
         try {

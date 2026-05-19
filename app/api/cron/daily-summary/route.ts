@@ -89,6 +89,12 @@ export async function GET(req: NextRequest) {
   const leadQuote: Map<string, number> = new Map();
   const leadDevice: Map<string, string> = new Map();
 
+  // Error-monitor counters — see app/lib/error-report.ts. Posts an
+  // [ERROR: <context>] marker per failure, with [CRITICAL] for
+  // customer-blocking incidents.
+  const dayErrors: Array<{ context: string; critical: boolean; message: string }> = [];
+  const weekErrors: Array<{ context: string; critical: boolean }> = [];
+
   for (const m of messages) {
     if (!m.body || !m.timestamp || !m.id) continue;
     const ts = new Date(m.timestamp).getTime();
@@ -114,6 +120,15 @@ export async function GET(req: NextRequest) {
           week.deviceTally[model] = (week.deviceTally[model] || 0) + 1;
         }
       }
+    } else if (m.body.startsWith("[ERROR:")) {
+      // Error-monitor event. Surface in the digest.
+      const ctxMatch = m.body.match(/^\[ERROR:\s*([^\]]+)\]/);
+      const critical = /\[CRITICAL\]/.test(m.body);
+      const msgMatch = m.body.match(/^Message:\s*(.+)$/m);
+      const context = ctxMatch ? ctxMatch[1].trim() : "unknown";
+      const message = msgMatch ? msgMatch[1].trim().slice(0, 200) : "";
+      if (ts >= yesterdayStart) dayErrors.push({ context, critical, message });
+      if (ts >= weekStart) weekErrors.push({ context, critical });
     } else if (statusMatch) {
       const status = statusMatch[1].toLowerCase();
       const leadId = statusMatch[2].trim();
@@ -144,8 +159,9 @@ export async function GET(req: NextRequest) {
     .join(" · ") || "—";
 
   // HTML email — quick scannable digest, mobile-friendly width.
-  const html = buildDigestHtml({ day, week, topDevices, allTimeRevenue, allTimePaid });
-  const subject = `📊 Top Cash daily — ${day.newLeads} new · ${day.paid} paid · $${day.revenue.toLocaleString()} (24h)`;
+  const html = buildDigestHtml({ day, week, topDevices, allTimeRevenue, allTimePaid, dayErrors, weekErrors });
+  const errorTag = dayErrors.some((e) => e.critical) ? " 🚨" : dayErrors.length ? " ⚠️" : "";
+  const subject = `📊 Top Cash daily${errorTag} — ${day.newLeads} new · ${day.paid} paid · $${day.revenue.toLocaleString()} (24h)`;
 
   // Send via Resend if configured. If not, return the payload so the
   // operator can preview/debug.
@@ -153,7 +169,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       sent: false,
       reason: "RESEND_API_KEY not configured",
-      preview: { subject, day, week, topDevices, allTimeRevenue, allTimePaid },
+      preview: { subject, day, week, topDevices, allTimeRevenue, allTimePaid, dayErrors, weekErrors },
     });
   }
   try {
@@ -186,8 +202,26 @@ function buildDigestHtml(args: {
   topDevices: string;
   allTimeRevenue: number;
   allTimePaid: number;
+  dayErrors: Array<{ context: string; critical: boolean; message: string }>;
+  weekErrors: Array<{ context: string; critical: boolean }>;
 }): string {
-  const { day, week, topDevices, allTimeRevenue, allTimePaid } = args;
+  const { day, week, topDevices, allTimeRevenue, allTimePaid, dayErrors, weekErrors } = args;
+  // Error section — only render when there's something to flag.
+  const dayCritical = dayErrors.filter((e) => e.critical).length;
+  const weekCritical = weekErrors.filter((e) => e.critical).length;
+  const errorPanel = dayErrors.length === 0 ? "" : `
+<tr><td style="padding:24px 24px 8px 24px">
+<div style="font-size:11px;color:${dayCritical > 0 ? "#ff5566" : "#ffb400"};font-weight:800;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:10px">
+  ${dayCritical > 0 ? "🚨" : "⚠️"} Errors in the last 24h
+</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(${dayCritical > 0 ? "255,85,102" : "255,180,0"},0.06);border:1px solid rgba(${dayCritical > 0 ? "255,85,102" : "255,180,0"},0.30);border-left:3px solid ${dayCritical > 0 ? "#ff5566" : "#ffb400"};border-radius:10px;padding:12px 16px">
+  <tr><td>
+    <div style="font-size:13px;color:#fff;font-weight:700;margin-bottom:6px">${dayErrors.length} event${dayErrors.length === 1 ? "" : "s"} · ${dayCritical} critical · 7-day total ${weekErrors.length} (${weekCritical} critical)</div>
+    ${dayErrors.slice(0, 5).map((e) => `<div style="font-size:11px;color:#dcdcdc;line-height:1.5;font-family:ui-monospace,SFMono-Regular,monospace;margin-bottom:4px">${e.critical ? "🚨" : "·"} <span style="color:${e.critical ? "#ff8088" : "#ffd54f"}">${e.context}</span>${e.message ? `<br>&nbsp;&nbsp;<span style="color:#888">${e.message.replace(/[<>]/g, "")}</span>` : ""}</div>`).join("")}
+    ${dayErrors.length > 5 ? `<div style="font-size:11px;color:#888;margin-top:6px">+${dayErrors.length - 5} more in MC comms (search for [ERROR:)</div>` : ""}
+  </td></tr>
+</table>
+</td></tr>`;
   const stat = (label: string, value: string, color = "#fff") => `
     <td style="padding:14px 8px;text-align:center;border-right:1px solid rgba(255,255,255,0.06)">
       <div style="font-size:22px;font-weight:800;color:${color};line-height:1.1">${value}</div>
@@ -215,7 +249,7 @@ ${stat("Revenue", `$${day.revenue.toLocaleString()}`, "#00c853")}
 </table>
 ${topDevices !== "—" ? `<p style="margin:12px 4px 0;font-size:12px;color:#a0a0a0">Top devices: <span style="color:#dcdcdc">${topDevices}</span></p>` : ""}
 </td></tr>
-
+${errorPanel}
 <tr><td style="padding:24px 24px 8px 24px">
 <div style="font-size:11px;color:#00c853;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:10px">Last 7 days</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px">

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { logComm } from "../../../../lib/comms-log";
+import { reportError } from "../../../../lib/error-report";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -313,8 +314,21 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
       html,
       text: body,
     });
-    return !!(r?.data?.id);
-  } catch {
+    if (!r?.data?.id) {
+      reportError("status.email.no-id", new Error("Resend returned no message id"), {
+        customerEmail: to,
+        critical: true,
+        extra: { status, name: ctx.name || "" },
+      });
+      return false;
+    }
+    return true;
+  } catch (err) {
+    reportError("status.email.send", err, {
+      customerEmail: to,
+      critical: true,
+      extra: { status, name: ctx.name || "" },
+    });
     return false;
   }
 }
