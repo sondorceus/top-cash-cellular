@@ -139,24 +139,24 @@ export const MANUAL_REVIEW_DEVICES = new Set([
 
 export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   ip11: {
-    "128": { broken: 20, fair: 76, good: 95, mint: 109, sealed: 138 },
-    "256": { broken: 21, fair: 90, good: 109, mint: 124, sealed: 152 },
-    "64": { broken: 19, fair: 43, good: 62, mint: 76, sealed: 124 },
+    "128": { broken: 3, fair: 32, good: 89, mint: 99, sealed: 108 },
+    "256": { broken: 13, fair: 41, good: 99, mint: 108, sealed: 117 },
+    "64": { broken: 0, fair: 18, good: 62, mint: 76, sealed: 94 },
   },
   ip11p: {
-    "256": { broken: 26, fair: 90, good: 119, mint: 133, sealed: 152 },
-    "512": { broken: 28, fair: 114, good: 142, mint: 157, sealed: 171 },
-    "64": { broken: 24, fair: 62, good: 90, mint: 104, sealed: 124 },
+    "256": { broken: 0, fair: 56, good: 108, mint: 122, sealed: 127 },
+    "512": { broken: 18, fair: 75, good: 117, mint: 132, sealed: 137 },
+    "64": { broken: 0, fair: 37, good: 90, mint: 104, sealed: 113 },
   },
   ip11pm: {
-    "256": { fair: 133, good: 162, mint: 180, sealed: 204 },
-    "512": { fair: 152, good: 180, mint: 200, sealed: 209 },
-    "64": { fair: 128, good: 157, mint: 176, sealed: 195 },
+    "256": { fair: 79, good: 137, mint: 151, sealed: 155 },
+    "512": { fair: 99, good: 151, mint: 165, sealed: 170 },
+    "64": { fair: 61, good: 122, mint: 137, sealed: 141 },
   },
   ip12: {
-    "128": { fair: 90, good: 119, mint: 138, sealed: 142 },
-    "256": { fair: 104, good: 133, mint: 152, sealed: 147 },
-    "64": { fair: 62, good: 90, mint: 109, sealed: 133 },
+    "128": { fair: 23, good: 103, mint: 113, sealed: 122 },
+    "256": { fair: 41, good: 113, mint: 122, sealed: 132 },
+    "64": { fair: 18, good: 89, mint: 99, sealed: 108 },
   },
   ip12mini: {
     "128": { fair: 48, good: 71, mint: 86, sealed: 109 },
@@ -164,14 +164,14 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "64": { fair: 19, good: 43, mint: 57, sealed: 104 },
   },
   ip12p: {
-    "128": { fair: 95, good: 142, mint: 162, sealed: 195 },
-    "256": { fair: 133, good: 180, mint: 200, sealed: 209 },
-    "512": { fair: 133, good: 180, mint: 200, sealed: 218 },
+    "128": { fair: 61, good: 137, mint: 151, sealed: 160 },
+    "256": { fair: 70, good: 151, mint: 165, sealed: 175 },
+    "512": { fair: 70, good: 165, mint: 179, sealed: 189 },
   },
   ip12pm: {
-    "128": { fair: 138, good: 195, mint: 209, sealed: 238 },
-    "256": { fair: 157, good: 214, mint: 228, sealed: 276 },
-    "512": { fair: 171, good: 228, mint: 242, sealed: 304 },
+    "128": { fair: 103, good: 184, mint: 198, sealed: 208 },
+    "256": { fair: 117, good: 203, mint: 217, sealed: 227 },
+    "512": { fair: 117, good: 217, mint: 231, sealed: 241 },
   },
   ip13: {
     "128": { broken: 48, fair: 104, good: 142, mint: 162, sealed: 190, verygood: 152 },
