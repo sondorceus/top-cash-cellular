@@ -64,7 +64,7 @@ type IwmReference = {
   note?: string;
   models?: Record<string, Record<string, Record<string, number>>>;
 };
-type EbayCell = { count: number; average: number; median: number; min: number; max: number; rejected_outliers?: number };
+type EbayCell = { count: number; average: number; median: number; net_average?: number; net_median?: number; min: number; max: number; rejected_outliers?: number };
 type EbayReference = {
   scraped_at?: string;
   source?: string;
@@ -1079,7 +1079,7 @@ export default function PricesAdminPage() {
               {(expanded.__ebay ?? !!filterLower) && (
                 <div className="border-t border-purple-500/20 px-5 py-3 space-y-3">
                   <p className="text-[11px] text-[#bdbdbd]">
-                    Actual final sale prices from <a href="https://www.ebay.com/" target="_blank" rel="noreferrer" className="text-purple-300 hover:underline">eBay</a> completed listings, bucketed by storage + condition. Sealed/used/broken map to eBay&apos;s &quot;Brand New&quot;/&quot;Pre-Owned&quot;/&quot;For parts&quot;. Outliers (fake clickbait + abnormal extremes) rejected via IQR. Use as resale margin reference. Refresh: <code className="text-[#00c853]">python scripts/scrape-ebay-sold.py --atlas-only</code>.
+                    Actual final sale prices from <a href="https://www.ebay.com/" target="_blank" rel="noreferrer" className="text-purple-300 hover:underline">eBay</a> completed listings, bucketed by storage + condition. Sealed/used/broken map to eBay&apos;s &quot;Brand New&quot;/&quot;Pre-Owned&quot;/&quot;For parts&quot;. Two numbers per cell: <span className="text-purple-200 font-bold">gross</span> = what the buyer paid, <span className="text-purple-200 font-bold">net</span> = what the seller pocketed after 13.25% Final Value Fee + $0.40 fixed + ~$10 shipping. Net is the apples-to-apples vs Atlas wholesale. Outliers rejected via IQR + half-median + Atlas-floor. Refresh: <code className="text-[#00c853]">python scripts/scrape-ebay-sold.py --atlas-only</code>.
                   </p>
                   <div className="bg-black/30 border border-white/5 rounded-xl overflow-hidden">
                     <div className="overflow-x-auto px-3 py-2">
@@ -1087,21 +1087,30 @@ export default function PricesAdminPage() {
                         <tbody>
                           {filtered.map(([mid, m]) => {
                             const cells = m.by_cell || {};
-                            const pieces: string[] = [];
+                            type CellRow = { storage: string; cond: string; gross: number; net: number; n: number };
+                            const rows: CellRow[] = [];
                             for (const storage of Object.keys(cells).sort()) {
                               for (const cond of Object.keys(cells[storage]).sort()) {
                                 const c = cells[storage][cond];
-                                pieces.push(`${storage}/${cond}: $${Math.round(c.average)} (n${c.count})`);
+                                rows.push({
+                                  storage, cond,
+                                  gross: Math.round(c.average),
+                                  net: c.net_average != null ? Math.round(c.net_average) : Math.round(c.average * 0.8675 - 10.4),
+                                  n: c.count,
+                                });
                               }
                             }
                             return (
                               <tr key={mid} className="border-t border-white/[0.04] first:border-t-0 align-top">
-                                <td className="py-1 pr-3 text-purple-300 font-mono text-[10px]">{mid}</td>
+                                <td className="py-1 pr-3 text-purple-300 font-mono text-[10px] align-top">{mid}</td>
                                 <td className="py-1">
-                                  <span className="font-mono text-[#cfcfcf]">
-                                    {pieces.map((s, i) => (
-                                      <span key={i} className="mr-2 whitespace-nowrap">
-                                        <span className="text-[#888]">{s.split(":")[0]}:</span>{s.split(":")[1]}
+                                  <span className="font-mono text-[10px]">
+                                    {rows.map((r, i) => (
+                                      <span key={i} className="mr-3 whitespace-nowrap inline-block">
+                                        <span className="text-[#888]">{r.storage}/{r.cond}:</span>{" "}
+                                        <span className="text-[#cfcfcf]">${r.gross}</span>
+                                        <span className="text-purple-300/70"> →${r.net}</span>
+                                        <span className="text-[#666]"> n{r.n}</span>
                                       </span>
                                     ))}
                                   </span>

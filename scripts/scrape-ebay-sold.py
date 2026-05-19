@@ -252,38 +252,121 @@ def parse_price(s):
     return val
 
 
-def extract_sold(page, query):
-    """Scrape sold listings. eBay updated to li.s-card markup (no more s-item).
-    Caller must warm the session via warmup_session() before first call to
-    avoid Akamai's bot challenge.
+def extract_sold(page, query, pages=2):
+    """Scrape sold listings across N pages (default 3 ≈ ~180 results).
+    eBay paginates via `_pgn=N` in the search URL. Caller must warm the
+    session via warmup_session() before first call to dodge Akamai.
     """
-    url = (
-        f"https://www.ebay.com/sch/i.html?_nkw={query.replace(' ', '+')}"
-        f"&LH_Sold=1&LH_Complete=1&_sop=13"
-    )
-    try:
-        page.goto(url, wait_until="domcontentloaded", timeout=30000)
-    except Exception:
-        return None
-    page.wait_for_timeout(2000)
-    if "Access Denied" in (page.title() or ""):
-        return None
-    items = page.evaluate("""() => {
-        const out = [];
-        for (const li of document.querySelectorAll('li.s-card, li.s-item')) {
-            const t = (li.querySelector('[class*="title"]')?.innerText || '').trim();
-            const p = (li.querySelector('[class*="price"]')?.innerText || '').trim();
-            const d = (li.querySelector('[class*="caption"]')?.innerText || '').trim();
-            const cond = (li.querySelector('[class*="subtitle"], .SECONDARY_INFO')?.innerText || '').trim();
-            if (!t || !p) continue;
-            if (/shop on ebay/i.test(t)) continue;
-            // Strip "NEW LISTING" badge prefix that eBay injects
-            const title = t.replace(/^NEW LISTING/, '').replace(/Opens in a new.*$/s, '').trim();
-            out.push({title, price: p, sold: d, cond: cond});
-        }
-        return out;
-    }""")
-    return items
+    all_items = []
+    for pgn in range(1, pages + 1):
+        url = (
+            f"https://www.ebay.com/sch/i.html?_nkw={query.replace(' ', '+')}"
+            f"&LH_Sold=1&LH_Complete=1&_sop=13&_pgn={pgn}"
+        )
+        try:
+            page.goto(url, wait_until="domcontentloaded", timeout=30000)
+        except Exception:
+            break
+        page.wait_for_timeout(1800)
+        if "Access Denied" in (page.title() or ""):
+            break
+        items = page.evaluate("""() => {
+            const out = [];
+            for (const li of document.querySelectorAll('li.s-card, li.s-item')) {
+                const t = (li.querySelector('[class*="title"]')?.innerText || '').trim();
+                const p = (li.querySelector('[class*="price"]')?.innerText || '').trim();
+                const d = (li.querySelector('[class*="caption"]')?.innerText || '').trim();
+                const cond = (li.querySelector('[class*="subtitle"], .SECONDARY_INFO')?.innerText || '').trim();
+                if (!t || !p) continue;
+                if (/shop on ebay/i.test(t)) continue;
+                const title = t.replace(/^NEW LISTING/, '').replace(/Opens in a new.*$/s, '').trim();
+                out.push({title, price: p, sold: d, cond: cond});
+            }
+            return out;
+        }""")
+        if not items:
+            break
+        # eBay sometimes repeats results when there's no next page — dedupe by title+price
+        seen = {f"{i['title']}__{i['price']}" for i in all_items}
+        new_items = [i for i in items if f"{i['title']}__{i['price']}" not in seen]
+        if not new_items:
+            break  # we've reached the end (eBay served the same page)
+        all_items.extend(new_items)
+        if pgn < pages:
+            page.wait_for_timeout(1200)  # polite delay between pages
+    return all_items
+
+
+# eBay seller economics — what the seller actually pockets per sale.
+#
+# Final Value Fee for "Cell Phones & Smartphones" category in 2026 is
+# 12% standard. Top Rated Plus sellers get a 10% discount → 10.8%.
+# Store-subscription sellers can hit as low as ~3% on certain promo
+# categories. Skywalker's actual rate may be lower — override via
+# env var TCC_EBAY_FVF (e.g. TCC_EBAY_FVF=0.035 if his account is at 3.5%).
+#
+# Plus a $0.40 fixed per-order fee ($0.30 if order ≤ $10).
+#
+# Per-category shipping is the seller's USPS/UPS cost. Phones are easy
+# (small flat-rate box), laptops and consoles are heavy + insured. Set
+# via TCC_EBAY_SHIP_PHONE etc. env vars if you ship differently.
+import os
+# Per-category FVF rates. Range 12-15% per eBay's 2026 schedule.
+# Skywalker directive: pick the higher end where we have margin room
+# (safer profit estimate). Override any with TCC_EBAY_FVF_{FAMILY} env vars.
+EBAY_FVF_BY_FAMILY = {
+    "phone":   float(os.environ.get("TCC_EBAY_FVF_PHONE",   "0.12")),    # Cell Phones
+    "tablet":  float(os.environ.get("TCC_EBAY_FVF_TABLET",  "0.12")),    # same as phones
+    "laptop":  float(os.environ.get("TCC_EBAY_FVF_LAPTOP",  "0.1325")),  # Computers
+    "console": float(os.environ.get("TCC_EBAY_FVF_CONSOLE", "0.1325")),  # Video Games
+    "watch":   float(os.environ.get("TCC_EBAY_FVF_WATCH",   "0.15")),    # Watches (premium)
+    "drone":   float(os.environ.get("TCC_EBAY_FVF_DRONE",   "0.1325")),
+    "vr":      float(os.environ.get("TCC_EBAY_FVF_VR",      "0.1325")),
+}
+EBAY_FIXED_FEE = 0.40
+SHIP_BY_FAMILY = {
+    "phone":   float(os.environ.get("TCC_EBAY_SHIP_PHONE",   "10.0")),
+    "tablet":  float(os.environ.get("TCC_EBAY_SHIP_TABLET",  "12.0")),
+    "laptop":  float(os.environ.get("TCC_EBAY_SHIP_LAPTOP",  "20.0")),
+    "console": float(os.environ.get("TCC_EBAY_SHIP_CONSOLE", "25.0")),
+    "watch":   float(os.environ.get("TCC_EBAY_SHIP_WATCH",    "7.0")),
+    "drone":   float(os.environ.get("TCC_EBAY_SHIP_DRONE",   "25.0")),
+    "vr":      float(os.environ.get("TCC_EBAY_SHIP_VR",      "20.0")),
+}
+
+
+def family_for(mid):
+    """Map model_id prefix → shipping family for cost lookup."""
+    if mid.startswith(("ip", "gs", "gz", "gnote", "px")) and not mid.startswith("ipad"):
+        return "phone"
+    if mid.startswith("ipad") or mid.startswith("stab") or mid.startswith("ln_tab") or mid.startswith("op_tab"):
+        return "tablet"
+    if mid.startswith(("mba", "mbp", "imac", "macmini", "macstud", "macpro")):
+        return "laptop"
+    if mid.startswith(("ps", "xs", "switch", "nsw")):
+        return "console"
+    if mid.startswith(("aw", "pw", "sgw", "garmin")):
+        return "watch"
+    if mid.startswith("dji"):
+        return "drone"
+    if mid.startswith(("apple_vr", "meta_vr", "valve_vr", "psvr")):
+        return "vr"
+    return "phone"  # fallback
+
+
+def gross_to_net(gross, mid=None):
+    """Convert eBay gross sold price → seller's net cash in pocket.
+
+    net = gross × (1 − fvf%_for_family) − $0.40 fixed − shipping_for_family
+
+    Both FVF and shipping vary by device family — phones use the lowest
+    FVF (12%) while watches use 15% per eBay's category schedule.
+    """
+    fam = family_for(mid) if mid else "phone"
+    fvf = EBAY_FVF_BY_FAMILY.get(fam, 0.12)
+    ship = SHIP_BY_FAMILY.get(fam, 10.0)
+    net = gross * (1 - fvf) - EBAY_FIXED_FEE - ship
+    return max(0, round(net, 2))
 
 
 def warmup_session(page):
@@ -356,7 +439,7 @@ def reject_outliers_iqr(prices, k=1.5):
     return kept, rejected
 
 
-def aggregate(items, family, atlas_floor=None):
+def aggregate(items, family, atlas_floor=None, mid=None):
     """Bucket eBay listings by (storage, condition) and aggregate per cell.
 
     Filters:
@@ -431,10 +514,14 @@ def aggregate(items, family, atlas_floor=None):
             if not kept:
                 continue
             kept_sorted = sorted(kept)
+            gross_avg = round(statistics.mean(kept), 2)
+            gross_median = statistics.median(kept)
             by_cell[storage][cond] = {
                 "count": len(kept),
-                "average": round(statistics.mean(kept), 2),
-                "median": statistics.median(kept),
+                "average": gross_avg,                       # eBay gross (what buyer paid)
+                "median": gross_median,
+                "net_average": gross_to_net(gross_avg, mid),  # what seller pocketed after FVF + shipping
+                "net_median": gross_to_net(gross_median, mid),
                 "min": kept_sorted[0],
                 "max": kept_sorted[-1],
                 "rejected_outliers": len(rejected),
@@ -547,7 +634,7 @@ def main():
             label, family = LABEL_MAP[mid]
             print(f"[{i}/{len(targets)}] {mid:18s}  {label}", flush=True)
             items = extract_sold(page, label)
-            agg = aggregate(items or [], family, atlas_floor=atlas_floors.get(mid))
+            agg = aggregate(items or [], family, atlas_floor=atlas_floors.get(mid), mid=mid)
             agg["label"] = label
             agg["family"] = family
             agg["scraped_at"] = datetime.now(timezone.utc).isoformat()
@@ -564,7 +651,11 @@ def main():
             else:
                 print(f"    no bucketed listings (unmatched={unmatched})", flush=True)
             results[mid] = agg
-            time.sleep(2.0)
+            # If we got 0 listings, eBay is probably rate-limiting — back off
+            # longer before the next model so we don't burn the session.
+            cells = agg.get("by_cell", {})
+            had_data = any(cells.get(s, {}) for s in cells)
+            time.sleep(5.0 if not had_data else 3.0)
         browser.close()
 
     out_path.parent.mkdir(parents=True, exist_ok=True)

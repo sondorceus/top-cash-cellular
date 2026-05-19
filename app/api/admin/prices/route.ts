@@ -38,7 +38,7 @@ type IwmReference = {
   note?: string;
   models?: Record<string, Record<string, Record<string, number>>>;
 };
-type EbayCell = { count: number; average: number; median: number; min: number; max: number; rejected_outliers?: number };
+type EbayCell = { count: number; average: number; median: number; net_average?: number; net_median?: number; min: number; max: number; rejected_outliers?: number };
 type EbayReference = {
   scraped_at?: string;
   source?: string;
