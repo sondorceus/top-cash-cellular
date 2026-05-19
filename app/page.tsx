@@ -10073,9 +10073,9 @@ export default function Home() {
               <div className="mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
                 <span className="text-lg leading-none mt-0.5">📍</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-[#00c853] leading-tight">Step 1 of 3 — Austin local meetup</p>
+                  <p className="text-sm font-bold text-[#00c853] leading-tight">Austin local meetup — paid on the spot</p>
                   <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
-                    <span className="text-white font-semibold">1. Account</span> (you&apos;re here) → <span className="text-[#888]">2. Payment</span> → <span className="text-[#888]">3. Pick your meetup slot & submit</span>. No label, no shipping — we&apos;ll coordinate a meetup spot in Austin the moment you submit.
+                    <span className="text-white font-semibold">1. Your info</span> (you&apos;re here) → <span className="text-[#888]">2. Payout method</span> → <span className="text-[#888]">3. Pick a meetup window</span>. Typical handoff wraps in under 15 minutes — cash, Zelle, Cash App, or Venmo when you walk away.
                   </p>
                 </div>
               </div>
@@ -10106,7 +10106,7 @@ export default function Home() {
               }} className="space-y-3 mb-4">
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 tcc-input text-sm" />
                 <button type="submit" className="tcc-button-primary w-full py-4 text-base font-extrabold">Continue As Guest →</button>
-                <p className="text-[11px] text-[#888] text-center mt-1">{handoffMethod === "local" ? "Next: pick payment method, then book your Austin meetup slot" : <>Next: pick payment method, then enter shipping address for your free <FedExMark /> label</>}</p>
+                <p className="text-[11px] text-[#888] text-center mt-1">{handoffMethod === "local" ? "Next: choose how you'd like to be paid, then book a meetup window" : <>Next: pick payment method, then enter shipping address for your free <FedExMark /> label</>}</p>
               </form>
 
               <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#d4d4d4] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
@@ -10176,7 +10176,7 @@ export default function Home() {
               {handoffMethod === "local" ? (
                 <>
                   <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-2">Meetup</h3>
-                  <p className="text-[#e6e6e6] text-xs">Austin local meetup. Cash on the spot — we&apos;ll text you to coordinate a public spot near you.</p>
+                  <p className="text-[#e6e6e6] text-xs">Pick a window — we&apos;ll confirm a public Austin spot by text. Inspection happens in person, you walk away paid same-day.</p>
                 </>
               ) : (
                 <>
@@ -10218,9 +10218,9 @@ export default function Home() {
               <div className="mt-2 mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
                 <span className="text-lg leading-none mt-0.5">📍</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-[#00c853] leading-tight">Step 2 of 3 — pick your payout, then your meetup slot</p>
+                  <p className="text-sm font-bold text-[#00c853] leading-tight">Austin local meetup — choose how you&apos;d like to be paid</p>
                   <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
-                    <span className="text-[#888]">1. Account ✓</span> → <span className="text-white font-semibold">2. Payment</span> (you&apos;re here) → <span className="text-[#888]">3. Pick meetup slot &amp; submit</span>. No label, no shipping — we coordinate a meetup spot in Austin the moment you submit.
+                    <span className="text-[#888]">1. Your info ✓</span> → <span className="text-white font-semibold">2. Payout method</span> (you&apos;re here) → <span className="text-[#888]">3. Pick a meetup window</span>. Cash, Zelle, Cash App, Venmo, or BTC — same-day, every option lands in minutes.
                   </p>
                 </div>
               </div>
@@ -10330,9 +10330,9 @@ export default function Home() {
               <div className="mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
                 <span className="text-lg leading-none mt-0.5">📍</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-[#00c853] leading-tight">Step 3 of 3 — Austin local meetup</p>
+                  <p className="text-sm font-bold text-[#00c853] leading-tight">Final step — pick your meetup window</p>
                   <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
-                    No label needed — we&apos;ll text you to coordinate a meetup spot in Austin. Same-day cash, Cash App, or Zelle.
+                    <span className="text-[#888]">1. Your info ✓</span> → <span className="text-[#888]">2. Payout method ✓</span> → <span className="text-white font-semibold">3. Pick a meetup window</span>. We&apos;ll text you within minutes to confirm a public spot in Austin — paid on the spot, same day.
                   </p>
                 </div>
               </div>
