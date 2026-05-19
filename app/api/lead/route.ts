@@ -172,9 +172,18 @@ export async function POST(req: NextRequest) {
     payout = "Cash App (coerced — Cash not valid for shipping)";
   }
 
-  // Dedup check — wider window for custom-quote flows (free-text descriptions)
+  // Dedup check — wider window for custom-quote flows (free-text descriptions).
+  // Skywalker 2026-05-19: the funnel's quote-step auto-save fires a partial
+  // lead (payout="TBD", no handoff) when the user enters email. That used to
+  // poison the dedup window — the user's actual ship/local submission ~30s
+  // later got rejected as duplicate, FedEx label never minted, success
+  // screen still shown. Now we skip the dedup CHECK + WRITE for incomplete
+  // previews so they don't block the real submission. Identifier: no
+  // handoff AND payout is "TBD" or empty.
+  const isPreviewSave = (!handoff || (typeof handoff === "object" && !(handoff as { method?: string }).method))
+    && (!payout || payout === "TBD");
   const isCustom = !quote || quote === 0 || quote === "0";
-  if (isDuplicate(email, phone, device, model, isCustom)) {
+  if (!isPreviewSave && isDuplicate(email, phone, device, model, isCustom)) {
     return NextResponse.json({ ok: true, deduped: true });
   }
 
