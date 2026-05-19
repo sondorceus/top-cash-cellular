@@ -289,3 +289,88 @@ export function deviceKindFromString(s?: string): LabelInputs["deviceKind"] {
   if (k.includes("desktop") || k.includes("imac") || k.includes("mac mini") || k.includes("alienware")) return "desktop";
   return "other";
 }
+
+// Track API — Skywalker 2026-05-19. Polls a tracking number's current
+// state so the fedex-poll cron can auto-flip lead statuses without
+// staff babysitting. Reuses the same OAuth token as createReturnLabel.
+//
+// FedEx event type codes we care about (full list in their docs):
+//   OC = Order Created (label minted, not yet picked up)
+//   PU = Picked Up (FedEx physically has it)
+//   IT = In Transit (intermediate sorting)
+//   OD = Out for Delivery (last-mile, will be delivered today)
+//   DL = Delivered (final state)
+//   CA / DE = Cancelled / Delivery Exception (problem state)
+//
+// Returns a normalized state for the cron's decision tree:
+//   - "label_created" → customer hasn't dropped off yet
+//   - "picked_up" → on its way
+//   - "out_for_delivery" → arriving today
+//   - "delivered" → mark received
+//   - "exception" → flag for staff review
+//   - "unknown" → FedEx couldn't find the number (typo?, too new)
+export type TrackingState = "label_created" | "picked_up" | "out_for_delivery" | "delivered" | "exception" | "unknown";
+export type TrackingResult = {
+  trackingNumber: string;
+  state: TrackingState;
+  lastEventCode?: string;
+  lastEventDescription?: string;
+  lastEventDate?: string;
+  deliveredAt?: string;
+};
+
+export async function getTracking(trackingNumber: string): Promise<TrackingResult> {
+  if (!trackingNumber || !/^\d{8,30}$/.test(trackingNumber)) {
+    return { trackingNumber, state: "unknown" };
+  }
+  const token = await getAccessToken();
+  const res = await fetch(`${getBase()}/track/v1/trackingnumbers`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+      "x-locale": "en_US",
+    },
+    body: JSON.stringify({
+      includeDetailedScans: true,
+      trackingInfo: [{ trackingNumberInfo: { trackingNumber } }],
+    }),
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    // 404 = unknown tracking number, 401 = expired token (refresh next call)
+    // Either way return "unknown" so the cron skips this lead.
+    return { trackingNumber, state: "unknown" };
+  }
+  type TrackEvent = { eventType?: string; eventDescription?: string; date?: string };
+  type TrackResult = {
+    trackResults?: Array<{
+      latestStatusDetail?: { code?: string; description?: string };
+      dateAndTimes?: Array<{ type?: string; dateTime?: string }>;
+      scanEvents?: TrackEvent[];
+      error?: { code?: string };
+    }>;
+  };
+  const data = (await res.json().catch(() => ({}))) as { output?: { completeTrackResults?: Array<TrackResult> } };
+  const tr = data.output?.completeTrackResults?.[0]?.trackResults?.[0];
+  if (!tr || tr.error) return { trackingNumber, state: "unknown" };
+  const latest = tr.scanEvents?.[0]; // FedEx returns newest-first
+  const code = (tr.latestStatusDetail?.code || latest?.eventType || "").toUpperCase();
+  const desc = tr.latestStatusDetail?.description || latest?.eventDescription;
+  const deliveredAt = tr.dateAndTimes?.find((d) => (d.type || "").toUpperCase() === "ACTUAL_DELIVERY")?.dateTime;
+  const state: TrackingState =
+    code === "DL" ? "delivered" :
+    code === "OD" ? "out_for_delivery" :
+    code === "PU" || code === "IT" || code === "AR" ? "picked_up" :
+    code === "OC" ? "label_created" :
+    code === "CA" || code === "DE" || code === "SE" ? "exception" :
+    "unknown";
+  return {
+    trackingNumber,
+    state,
+    lastEventCode: code || undefined,
+    lastEventDescription: desc || undefined,
+    lastEventDate: latest?.date || undefined,
+    deliveredAt: deliveredAt || undefined,
+  };
+}

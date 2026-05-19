@@ -2311,6 +2311,64 @@ export default function AdminPage() {
                       {savingId === lead.id && (
                         <p className="text-[10px] text-[#dcdcdc] mt-1">Saving…</p>
                       )}
+                      {/* Quick-action one-click status flips — Skywalker
+                          2026-05-19. Faster than the dropdown when the
+                          handoff state is unambiguous. The fedex-poll
+                          cron auto-flips these in the background, but
+                          staff often hears from the customer first so
+                          we expose a manual override. */}
+                      {savingId !== lead.id && lead.status !== "paid" && lead.status !== "met" && lead.status !== "rejected" && (() => {
+                        const isShip = lead.handoffMethod === "ship";
+                        const isLocal = lead.handoffMethod === "local";
+                        const showDroppedOff = isShip && lead.status === "quote_requested";
+                        const showReceived = isShip && lead.status === "shipped";
+                        const showMet = isLocal && (lead.status === "quote_requested" || lead.status === "shipped");
+                        if (!showDroppedOff && !showReceived && !showMet) return null;
+                        return (
+                          <div className="mt-1.5 flex flex-wrap gap-1.5">
+                            {showDroppedOff && (
+                              <button
+                                type="button"
+                                onClick={() => saveStatus(lead, "shipped")}
+                                className="text-[10px] font-bold text-sky-300 hover:text-sky-100 bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/40 rounded px-2 py-1 cursor-pointer transition"
+                                title="Customer texted they dropped at FedEx (or you saw it on tracking)"
+                              >
+                                📦 Dropped off
+                              </button>
+                            )}
+                            {showReceived && (
+                              <button
+                                type="button"
+                                onClick={() => saveStatus(lead, "received")}
+                                className="text-[10px] font-bold text-purple-300 hover:text-purple-100 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/40 rounded px-2 py-1 cursor-pointer transition"
+                                title="Package arrived — mark Received and inspect"
+                              >
+                                📬 Received
+                              </button>
+                            )}
+                            {showMet && (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => saveStatus(lead, "met")}
+                                  className="text-[10px] font-bold text-amber-300 hover:text-amber-100 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 rounded px-2 py-1 cursor-pointer transition"
+                                  title="Met them at the slot, completed handoff"
+                                >
+                                  🤝 Met them
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => saveStatus(lead, "rejected", "no-show at scheduled meetup")}
+                                  className="text-[10px] font-bold text-red-300 hover:text-red-100 bg-red-500/15 hover:bg-red-500/25 border border-red-500/40 rounded px-2 py-1 cursor-pointer transition"
+                                  title="Customer didn't show — reject lead"
+                                >
+                                  🚫 No-show
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        );
+                      })()}
                       {/* Trash / Restore — in Active view this moves the
                           lead to Trash (recoverable for 24h). In Trash
                           view this restores it. Skywalker 2026-05-17
