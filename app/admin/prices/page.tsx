@@ -523,6 +523,103 @@ export default function PricesAdminPage() {
           overrides into the bundled defaults).
         </p>
 
+        {/* HOW THIS WORKS — comprehensive cheat sheet. Collapsible so it
+            stays out of the way once you know the system. */}
+        <section className="bg-[#00c853]/[0.04] border border-[#00c853]/30 rounded-2xl overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setExpanded((p) => ({ ...p, __howto: !p.__howto }))}
+            className="w-full px-5 py-3 flex items-center justify-between text-left hover:bg-[#00c853]/[0.07] transition cursor-pointer"
+          >
+            <span className="font-bold text-[14px] text-[#00c853]">
+              📖 How to read this panel · click to {expanded.__howto ? "hide" : "show"}
+            </span>
+            <span className="text-[#888] text-xs">{expanded.__howto ? "▾" : "▸"}</span>
+          </button>
+          {expanded.__howto && (
+            <div className="border-t border-[#00c853]/20 px-5 py-4 space-y-4 text-[12px] text-[#dcdcdc] leading-relaxed">
+              <div>
+                <p className="font-bold text-white mb-1.5">Two pricing modes — depends on the device</p>
+                <ul className="space-y-1.5 list-disc pl-5">
+                  <li>
+                    <span className="text-[#00c853] font-bold">Phones, tablets, consoles, watches:</span>{" "}
+                    <span className="text-[#bdbdbd]">direct cell lookup.</span> Each (storage × condition) cell holds the actual dollar
+                    amount we pay. e.g. <code className="text-[#cfcfcf]">ip17pm 256 mint = $880</code> means we pay
+                    a customer $880 (before the $25 popular-device bonus, before carrier deductions).
+                  </li>
+                  <li>
+                    <span className="text-[#00c853] font-bold">MacBooks, PC laptops:</span>{" "}
+                    <span className="text-[#bdbdbd]">additive deltas.</span> The quote is built by summing several
+                    dollar adjustments:
+                    <code className="text-[#cfcfcf] block mt-1 ml-1 text-[11px]">
+                      base + chip_adj + ram_adj + storage_adj + condition_adj + gpu_adj + battery_adj + charger_adj
+                    </code>
+                    <span className="text-[#bdbdbd]">The condition_adj row in the &quot;MacBooks · condition adjustments&quot; section is just one piece of this — it&apos;s a +/− dollar amount that gets added to the running total based on which condition the customer picks.</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <p className="font-bold text-white mb-1.5">Reading a condition_adj row (MacBook / PC)</p>
+                <p className="text-[#bdbdbd]">
+                  Six numbers: sealed / mint / VG / good / fair / broken. <span className="text-[#cfcfcf]">Mint is the &quot;anchor&quot; (usually 0)</span>; the
+                  other tiers add or subtract from there.
+                </p>
+                <p className="text-[#bdbdbd] mt-1">
+                  Example for <code className="text-[#cfcfcf]">mbp14m4</code>:{" "}
+                  <code className="text-[#cfcfcf]">+50 / 0 / −50 / −110 / −220 / −450</code>.
+                </p>
+                <p className="text-[#bdbdbd] mt-1">
+                  A $1500-base MacBook in <span className="text-[#cfcfcf]">good</span> condition →
+                  $1500 + (−$110) = <span className="text-white font-bold">$1390</span> quoted.
+                </p>
+              </div>
+
+              <div>
+                <p className="font-bold text-white mb-1.5">The three reference panels at the bottom</p>
+                <ul className="space-y-1.5 list-disc pl-5">
+                  <li>
+                    <span className="text-amber-300 font-bold">📊 Atlas</span> —{" "}
+                    <span className="text-[#bdbdbd]">wholesale prices Atlas Mobile pays us when we resell devices to them. This is the canonical truth — what we&apos;d actually get if we sold off inventory. Our customer-paid quote should sit ~10-20% under Atlas to keep margin.</span>
+                  </li>
+                  <li>
+                    <span className="text-sky-300 font-bold">🔵 IWM</span> —{" "}
+                    <span className="text-[#bdbdbd]">what the main competitor (itsworthmore.com) quotes customers for the same device. Reference for staying competitive, NOT a margin floor.</span>
+                  </li>
+                  <li>
+                    <span className="text-purple-300 font-bold">🟣 eBay sold</span> —{" "}
+                    <span className="text-[#bdbdbd]">actual completed-sale prices from eBay. Shown as <span className="text-[#cfcfcf]">gross →net</span> per cell: gross is what the buyer paid, net is what the seller actually pocketed after 12-15% Final Value Fee + $0.40 fixed + $7-25 shipping. Net is the apples-to-apples vs Atlas for margin math.</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <p className="font-bold text-white mb-1.5">Editing &amp; overrides</p>
+                <ul className="space-y-1.5 list-disc pl-5">
+                  <li>Type a new value in any cell — it turns <span className="text-[#00c853] font-bold">green</span> to mark it as an override.</li>
+                  <li><span className="font-bold text-white">Save</span> pushes overrides to Vercel Blob; customer funnel picks up the change on the next page load (no deploy needed).</li>
+                  <li>The <span className="text-red-300">↺ revert</span> link on a cell or row removes that override and falls back to the bundled code defaults.</li>
+                  <li>Customer-visible price on phones = <code className="text-[#cfcfcf]">PRICE_TABLE cell + $25 popular bonus − carrier deduction</code>. The +$25 is hard-coded in the funnel; you don&apos;t edit it here.</li>
+                </ul>
+              </div>
+
+              <div>
+                <p className="font-bold text-white mb-1.5">Margin chips</p>
+                <p className="text-[#bdbdbd]">
+                  Each model header has a small percent chip:{" "}
+                  <span className="text-[#00c853] font-mono text-[10px] bg-[#00c853]/10 px-1 rounded">+25%</span>{" "}
+                  green = ≥25% margin vs Atlas grade_a unlocked 256GB,{" "}
+                  <span className="text-yellow-300 font-mono text-[10px] bg-yellow-500/10 px-1 rounded">+12%</span>{" "}
+                  yellow = 10-24%,{" "}
+                  <span className="text-red-300 font-mono text-[10px] bg-red-500/10 px-1 rounded">−5%</span>{" "}
+                  red = under 10% or negative.{" "}
+                  <span className="text-[#cfcfcf]">Hover for the raw payout vs resell math.</span>
+                </p>
+              </div>
+            </div>
+          )}
+        </section>
+
         {/* MARGIN SUMMARY — at-a-glance counts of green / yellow / red /
             no-comp models. Click a tone to filter the editor below to
             just those devices. */}
