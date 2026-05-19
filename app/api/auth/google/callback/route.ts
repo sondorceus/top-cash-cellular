@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { signSession, COOKIE_NAME, COOKIE_MAX_AGE, OAUTH_STATE_COOKIE } from "../../../../lib/auth";
+import { signSession, COOKIE_NAME, COOKIE_MAX_AGE, OAUTH_STATE_COOKIE, isSafeReturnTo } from "../../../../lib/auth";
 
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
@@ -31,7 +31,11 @@ export async function GET(req: NextRequest) {
   try {
     const parsed = JSON.parse(stateCookie) as { state?: string; returnTo?: string };
     storedState = String(parsed.state || "");
-    if (parsed.returnTo && parsed.returnTo.startsWith("/") && !parsed.returnTo.startsWith("//")) {
+    // Defense-in-depth: even though /api/auth/google validated the
+    // returnTo when stashing the cookie, re-validate here against the
+    // request origin. If someone forged or tampered the state cookie
+    // (e.g. via a same-origin XSS) we still refuse off-domain hops.
+    if (parsed.returnTo && isSafeReturnTo(parsed.returnTo, origin)) {
       returnTo = parsed.returnTo;
     }
   } catch {

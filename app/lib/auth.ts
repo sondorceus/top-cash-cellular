@@ -94,3 +94,22 @@ export function isAdminEmail(email: string | undefined | null): boolean {
   if (!email) return false;
   return getAdminEmails().includes(email.toLowerCase());
 }
+
+// Validate a returnTo path captured from a URL query string before
+// using it as a redirect target. Defends against open-redirect attacks
+// where an attacker dangles a phish via `?returnTo=//evil.com` or
+// `?returnTo=/\evil.com` (some user agents normalize the backslash).
+// Parsing the value against our own origin and re-checking the
+// resulting URL.origin is the bulletproof form — it handles every
+// browser-normalization edge case (\ vs /, %2f, https:evil.com, etc.)
+// rather than us racing the spec.
+export function isSafeReturnTo(returnTo: string | undefined | null, origin: string): boolean {
+  if (!returnTo || typeof returnTo !== "string") return false;
+  if (!returnTo.startsWith("/")) return false;
+  try {
+    const url = new URL(returnTo, origin);
+    return url.origin === origin;
+  } catch {
+    return false;
+  }
+}

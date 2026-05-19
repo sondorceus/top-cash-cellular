@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import crypto from "crypto";
-import { OAUTH_STATE_COOKIE } from "../../../lib/auth";
+import { OAUTH_STATE_COOKIE, isSafeReturnTo } from "../../../lib/auth";
 
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
 
@@ -19,9 +19,13 @@ export async function GET(req: NextRequest) {
     );
   }
   // Sanity-bound the returnTo so an attacker can't bounce a victim to
-  // an off-domain URL via the OAuth callback. Path-only, no schemes.
+  // an off-domain URL via the OAuth callback. isSafeReturnTo parses
+  // the value as a URL against our origin and rejects anything that
+  // resolves to a different origin — catches `//evil.com`, `/\evil.com`,
+  // `/%5Cevil.com`, and other normalization edge cases the old prefix
+  // check missed.
   const raw = req.nextUrl.searchParams.get("returnTo") || "/";
-  const returnTo = raw.startsWith("/") && !raw.startsWith("//") ? raw : "/";
+  const returnTo = isSafeReturnTo(raw, req.nextUrl.origin) ? raw : "/";
   const state = crypto.randomBytes(16).toString("hex");
 
   const cookieStore = await cookies();
