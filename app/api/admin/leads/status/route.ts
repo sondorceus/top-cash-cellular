@@ -275,7 +275,7 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
       ${(status === "paid" || status === "met") ? `<tr>
         <td style="padding:8px 28px 24px 28px">
           <div style="font-size:14px;color:#e6e6e6;line-height:1.6">
-            — Skywalker &amp; the Top Cash team<br>
+            — The Top Cash Cellular team<br>
             <span style="color:#888;font-size:12px">Austin, TX · a small business · real humans</span>
           </div>
         </td>

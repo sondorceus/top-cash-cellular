@@ -10279,7 +10279,7 @@ export default function Home() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-[#00c853] leading-tight">Step 3 of 3 — Austin local meetup</p>
                   <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
-                    No label needed — Skywalker will text you to coordinate a meetup spot in Austin. Same-day cash, Cash App, or Zelle.
+                    No label needed — we&apos;ll text you to coordinate a meetup spot in Austin. Same-day cash, Cash App, or Zelle.
                   </p>
                 </div>
               </div>
@@ -10722,7 +10722,7 @@ export default function Home() {
                       </p>
                     ) : (
                       <p>
-                        We text you to confirm the meetup time + share the exact spot when you&apos;re close. No automated messages — just Skywalker on the other end.
+                        We text you to confirm the meetup time + share the exact spot when you&apos;re close. No automated messages — a real person on the other end.
                       </p>
                     )}
                   </div>
@@ -11946,6 +11946,19 @@ export default function Home() {
               <div className="bg-gradient-to-br from-[#00c853]/10 to-transparent border border-[#00c853]/20 rounded-2xl p-6 mb-8">
                 <p className="text-white text-lg font-medium leading-relaxed mb-3">We started Top Cash Cellular with a simple idea: selling your phone shouldn&apos;t be a hassle.</p>
                 <p className="text-[#e6e6e6] text-sm leading-relaxed">No lowball carrier trade-ins. No mailing your device and waiting weeks for a check. No haggling with strangers on marketplace apps. Just a fair price, paid fast, from a team you can trust.</p>
+              </div>
+
+              {/* Founder backstory — replaces the email sign-offs that
+                  used to read "Skywalker & the Top Cash team". Personal
+                  voice lives here so the customer touchpoints stay
+                  professional. Skywalker 2026-05-19. */}
+              <h2 className="text-xl font-bold mb-4">Our story</h2>
+              <div className="space-y-4 mb-8 text-[#e6e6e6] text-sm leading-relaxed">
+                <p>I&apos;m Skywalker — I&apos;ve spent the last ten years buying electronics here in Austin. iPhones, MacBooks, game consoles, drones, you name it. Mostly cash-in-hand local meetups at coffee shops and parking lots, the way the resale scene actually works when you cut out the middlemen.</p>
+                <p>What kept bugging me: the difference between what I could pay sellers and what the big trade-in programs offered them was huge. Carrier trade-ins, mail-in sites with hidden &quot;condition adjustments&quot;, marketplaces full of scams — none of it was friendly to the person actually trying to sell a device they owned and took care of.</p>
+                <p>So I built Top Cash Cellular to put that decade of pricing experience into a tool anyone can use. An instant quote that&apos;s actually fair, transparent grading you can sanity-check yourself, prepaid FedEx labels for sellers outside Austin, and same-day payment when the device shows up. No mystery deductions, no &quot;your quote was lowered to $X&quot; emails three days after you mailed it.</p>
+                <p>The site you&apos;re reading went live in May 2026 after a few months of nights-and-weekends building. It&apos;s small — me + a tiny team handling intake, inspection, and payout — but that&apos;s the point. You&apos;re dealing with a real person who&apos;s been in this market long enough to know what your device is actually worth.</p>
+                <p>Got a question or a weird device you&apos;re not sure we&apos;ll buy? Email me directly: <a href={EMAIL_HREF} className="text-[#00c853] hover:underline font-semibold">{EMAIL}</a>. I read every message.</p>
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-8">

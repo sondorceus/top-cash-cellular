@@ -95,7 +95,7 @@ ${preheaderBlock}
 </td></tr>
 <tr><td style="padding:28px 28px 8px 28px"><div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:14px">Hi ${htmlEsc(opts.first)},</div>${opts.bodyHtml}</td></tr>
 <tr><td style="padding:8px 28px 24px 28px">
-<div style="font-size:14px;color:#e6e6e6;line-height:1.6">— Skywalker &amp; the Top Cash team<br><span style="color:#888;font-size:12px">Austin, TX · a small business · real humans</span></div>
+<div style="font-size:14px;color:#e6e6e6;line-height:1.6">— The Top Cash Cellular team<br><span style="color:#888;font-size:12px">Austin, TX · a small business · real humans</span></div>
 </td></tr>
 <tr><td style="padding:18px 28px 28px;border-top:1px solid rgba(255,255,255,0.06)">
 <div style="font-size:12px;color:#888;line-height:1.6;text-align:center">
@@ -256,7 +256,7 @@ export async function POST(req: NextRequest) {
       bodyHtml: bodyToHtml(personalizedBody),
       unsubUrl,
     });
-    const text = `Hi ${first},\n\n${personalizedBody}\n\n— Skywalker & the Top Cash team\nAustin, TX\n\nUnsubscribe: ${unsubUrl}`;
+    const text = `Hi ${first},\n\n${personalizedBody}\n\n— The Top Cash Cellular team\nAustin, TX\n\nUnsubscribe: ${unsubUrl}`;
     try {
       // Set List-Unsubscribe + List-Unsubscribe-Post per RFC-8058
       // so Gmail/Outlook show the inbox 1-click unsubscribe button.

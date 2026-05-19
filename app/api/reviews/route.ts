@@ -114,11 +114,11 @@ async function mailCoupon(opts: { to: string; firstName: string; code: string; v
     </div>
     <p style="margin:0 0 14px;font-size:14px;line-height:1.65;color:#dcdcdc">Just paste this code when you're checking out your next trade — we'll add $${opts.value} to whatever your offer is. The code only works with the email above, so it can't be passed around (we'd rather give YOU a fresh one next time than reward a stranger).</p>
     <div style="text-align:center;margin:24px 0 8px"><a href="https://topcashcellular.com" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px">Get a quote →</a></div>
-    <p style="margin:18px 0 0;font-size:14px;color:#e6e6e6;line-height:1.6">— Skywalker &amp; the Top Cash team<br><span style="color:#888;font-size:12px">Austin, TX · a small business · real humans</span></p>
+    <p style="margin:18px 0 0;font-size:14px;color:#e6e6e6;line-height:1.6">— The Top Cash Cellular team<br><span style="color:#888;font-size:12px">Austin, TX · a small business · real humans</span></p>
     <div style="margin:24px 0 0;padding-top:18px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;color:#888;line-height:1.6;text-align:center">Lost this email? Reply or write to <a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-weight:600">CustomerService@topcashcells.com</a> and we'll resend.</div>
   </div>
 </div></body></html>`;
-    const text = `Hi ${opts.firstName},\n\nThanks for the review — here's $${opts.value} added to your next trade.\n\nYour code: ${opts.code}\nExpires: ${expDate}\nOne use · Bound to ${opts.to}\n\nPaste it at checkout next time you sell to us and we'll add $${opts.value} to whatever your offer is.\n\nGet a quote: https://topcashcellular.com\n\n— Skywalker & the Top Cash team\nAustin, TX`;
+    const text = `Hi ${opts.firstName},\n\nThanks for the review — here's $${opts.value} added to your next trade.\n\nYour code: ${opts.code}\nExpires: ${expDate}\nOne use · Bound to ${opts.to}\n\nPaste it at checkout next time you sell to us and we'll add $${opts.value} to whatever your offer is.\n\nGet a quote: https://topcashcellular.com\n\n— The Top Cash Cellular team\nAustin, TX`;
     const r = await resend.emails.send({
       from: "Top Cash Cellular <noreply@topcashcellular.com>",
       replyTo: "CustomerService@topcashcells.com",
