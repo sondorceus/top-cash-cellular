@@ -350,6 +350,12 @@ interface AdminLead {
     respondedAt?: string;
     customerNote?: string;
   };
+  // Most-recent AI verdict on this lead, parsed from [AI-FLAG: leadId]
+  // / [AI-NOTE: leadId] / [AI-SUMMARY: leadId] markers. Posted by the
+  // photo-check auto-fire on /api/lead (vision QA) plus on-demand by
+  // the admin fraud-check button. Surfaces inline on the lead row so
+  // staff sees the AI's read without leaving the admin. 2026-05-19.
+  ai?: { kind: "AI-FLAG" | "AI-NOTE" | "AI-SUMMARY"; body: string; at: string };
 }
 
 // Includes "met" (in-person handoff terminal) alongside "paid" (digital
@@ -457,6 +463,11 @@ export async function GET(req: NextRequest) {
   // response (if any). Re-minting an offer overrides the prior one.
   const counterOfferByLead = new Map<string, { originalQuote: number; offer: number; reason: string; timestamp: string }>();
   const counterResponseByLead = new Map<string, { response: "accept" | "decline"; timestamp: string; note?: string }>();
+  // Most-recent AI verdict per lead. Keyed by lead id. AI-FLAG outranks
+  // AI-NOTE when both exist for the same lead — a flag is the actionable
+  // signal and we'd rather show "model mismatch" than "all clear" if both
+  // were posted. AI-SUMMARY is informational, lowest priority.
+  const aiByLead = new Map<string, { kind: "AI-FLAG" | "AI-NOTE" | "AI-SUMMARY"; body: string; timestamp: string }>();
   const deletedAtByLead = new Map<string, string>();  // most-recent deletion timestamp
   const restoredAtByLead = new Map<string, string>(); // most-recent restore timestamp
   for (const m of messages) {
@@ -536,6 +547,27 @@ export async function GET(req: NextRequest) {
       else if (channel === "email") slot.email += 1;
       if (!slot.lastAt || m.timestamp > slot.lastAt) slot.lastAt = m.timestamp;
       commsByLead.set(lid, slot);
+    }
+    // AI verdict marker — posted by the photo-check auto-fire on
+    // /api/lead and the admin fraud-check button. Format:
+    //   "[AI-FLAG: <leadId>] <body>"
+    //   "[AI-NOTE: <leadId>] <body>"
+    //   "[AI-SUMMARY: <leadId>] <body>"
+    // Self-contained (no [LEAD:] tag). Most-recent wins per lead, with
+    // FLAG > NOTE > SUMMARY tiebreaking when timestamps tie (rare).
+    const aiMarker = m.body.match(/\[(AI-FLAG|AI-NOTE|AI-SUMMARY):\s*([\w-]+)\]\s*([\s\S]*)/i);
+    if (aiMarker) {
+      const kind = aiMarker[1].toUpperCase() as "AI-FLAG" | "AI-NOTE" | "AI-SUMMARY";
+      const lid = aiMarker[2];
+      const aiBody = aiMarker[3].trim().slice(0, 1500);
+      const prev = aiByLead.get(lid);
+      const tier = (k: string) => (k === "AI-FLAG" ? 3 : k === "AI-NOTE" ? 2 : 1);
+      const shouldReplace = !prev
+        || m.timestamp > prev.timestamp
+        || (m.timestamp === prev.timestamp && tier(kind) > tier(prev.kind));
+      if (shouldReplace) {
+        aiByLead.set(lid, { kind, body: aiBody, timestamp: m.timestamp });
+      }
     }
     // Counter-offer mint marker — admin posts this when staff sends a
     // revised offer to a customer. Format:
@@ -905,6 +937,11 @@ export async function GET(req: NextRequest) {
         return { kind: err.kind, reason: err.reason, at: err.timestamp };
       })(),
       commsSent: commsByLead.get(m.id),
+      ai: (() => {
+        const a = aiByLead.get(m.id);
+        if (!a) return undefined;
+        return { kind: a.kind, body: a.body, at: a.timestamp };
+      })(),
       payoutConfirmation: (() => {
         const pc = payoutConfirmByLead.get(m.id);
         if (!pc) return undefined;

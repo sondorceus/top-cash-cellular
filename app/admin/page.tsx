@@ -115,6 +115,10 @@ interface Lead {
     respondedAt?: string;
     customerNote?: string;
   };
+  // Most-recent AI verdict on this lead, sourced from [AI-FLAG] /
+  // [AI-NOTE] / [AI-SUMMARY] markers in MC. Photo-check auto-fire +
+  // admin fraud-check button both post these.
+  ai?: { kind: "AI-FLAG" | "AI-NOTE" | "AI-SUMMARY"; body: string; at: string };
 }
 
 const STATUS_OPTIONS = [
@@ -284,7 +288,15 @@ export default function AdminPage() {
         return;
       }
       const d = await r.json();
-      setFraudVerdictById((p) => ({ ...p, [lead.id]: (d.verdict || {}) as FraudVerdict }));
+      const v = (d.verdict || {}) as FraudVerdict;
+      // Bail on empty / malformed AI responses — without this guard, an
+      // invalid-JSON parse renders "🤖 undefined · score ? · undefined"
+      // which looks broken. Surface a real error instead.
+      if (!v.verdict && v.score === undefined && !(v.red_flags?.length) && !(v.green_flags?.length)) {
+        setFraudVerdictById((p) => ({ ...p, [lead.id]: { verdict: "error", recommendation: "AI returned no verdict" } }));
+        return;
+      }
+      setFraudVerdictById((p) => ({ ...p, [lead.id]: v }));
     } catch {
       setFraudVerdictById((p) => ({ ...p, [lead.id]: { verdict: "error", recommendation: "Network failure" } }));
     } finally {
@@ -1759,8 +1771,24 @@ export default function AdminPage() {
                           best contact". Badge sits above the spec block so
                           staff sees how to reach the seller before the
                           deep-dive specs. */}
-                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source || lead.priorLeads || lead.commsSent || lead.payoutConfirmation || lead.couponApplied) && (
+                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source || lead.priorLeads || lead.commsSent || lead.payoutConfirmation || lead.couponApplied || lead.ai) && (
                         <div className="mt-1.5 flex flex-wrap items-start gap-1.5">
+                          {/* AI verdict pill — photo-check + fraud-check auto-fires
+                              post [AI-FLAG] / [AI-NOTE] markers; we surface the most
+                              recent one here. Red for flags, neutral blue for notes
+                              + summaries. Hover for the full verdict body. */}
+                          {lead.ai && (
+                            <span
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                                lead.ai.kind === "AI-FLAG"
+                                  ? "bg-red-500/15 text-red-200 border border-red-500/45"
+                                  : "bg-indigo-500/15 text-indigo-200 border border-indigo-500/40"
+                              }`}
+                              title={`${lead.ai.body}\n\n${new Date(lead.ai.at).toLocaleString()}`}
+                            >
+                              🤖 {lead.ai.kind === "AI-FLAG" ? "AI Flag" : lead.ai.kind === "AI-NOTE" ? "AI Note" : "AI Summary"} · {lead.ai.body.slice(0, 60)}{lead.ai.body.length > 60 ? "…" : ""}
+                            </span>
+                          )}
                           {/* Returning-customer pill — Skywalker 2026-05-18.
                               Surfaces priorLeads + lifetime $ so staff knows
                               they're talking to a repeat seller. */}
@@ -2435,14 +2463,18 @@ export default function AdminPage() {
                       </div>
                       {fraudVerdictById[lead.id] && (
                         <div className={`mt-2 p-2 rounded-md text-[11px] leading-relaxed border ${
-                          fraudVerdictById[lead.id].verdict === "suspect_fraud" || fraudVerdictById[lead.id].verdict === "high_risk"
+                          fraudVerdictById[lead.id].verdict === "error"
+                            ? "bg-white/[0.04] border-white/15 text-[#bdbdbd]"
+                            : fraudVerdictById[lead.id].verdict === "suspect_fraud" || fraudVerdictById[lead.id].verdict === "high_risk"
                             ? "bg-red-500/10 border-red-500/30 text-red-200"
                             : fraudVerdictById[lead.id].verdict === "medium_risk"
                             ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-200"
                             : "bg-emerald-500/10 border-emerald-500/30 text-emerald-200"
                         }`}>
                           <p className="font-bold uppercase tracking-wider text-[10px] mb-1">
-                            🤖 {fraudVerdictById[lead.id].verdict?.replace(/_/g, " ")} · score {fraudVerdictById[lead.id].score ?? "?"} · {fraudVerdictById[lead.id].recommendation}
+                            🤖 {fraudVerdictById[lead.id].verdict?.replace(/_/g, " ") || "verdict"}
+                            {fraudVerdictById[lead.id].score !== undefined ? ` · score ${fraudVerdictById[lead.id].score}` : ""}
+                            {fraudVerdictById[lead.id].recommendation ? ` · ${fraudVerdictById[lead.id].recommendation}` : ""}
                           </p>
                           {(fraudVerdictById[lead.id].red_flags || []).length > 0 && (
                             <p className="mt-1"><span className="font-bold">🚩 Red:</span> {(fraudVerdictById[lead.id].red_flags || []).join("; ")}</p>
