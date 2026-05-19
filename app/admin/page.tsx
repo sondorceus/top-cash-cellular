@@ -250,6 +250,47 @@ export default function AdminPage() {
   // visible at a glance. Built client-side off the leads array.
   const [historyKey, setHistoryKey] = useState<{ kind: "email" | "phone"; value: string } | null>(null);
   const [adjustingId, setAdjustingId] = useState<string | null>(null);
+  // AI fraud check — Skywalker 2026-05-19. Per-lead in-flight flag and
+  // the cached verdict for each lead. Verdict stays visible until the
+  // page reloads or staff hits the button again.
+  type FraudVerdict = { verdict?: string; score?: number; red_flags?: string[]; green_flags?: string[]; recommendation?: string };
+  const [fraudCheckingId, setFraudCheckingId] = useState<string | null>(null);
+  const [fraudVerdictById, setFraudVerdictById] = useState<Record<string, FraudVerdict>>({});
+  const runFraudCheck = async (lead: Lead) => {
+    if (!token) return;
+    setFraudCheckingId(lead.id);
+    try {
+      const r = await fetch(`/api/admin/ai-fraud-check?token=${encodeURIComponent(token)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          leadId: lead.id,
+          name: lead.name,
+          email: lead.email,
+          phone: lead.phone,
+          device: lead.device || lead.model,
+          condition: lead.condition,
+          quote: lead.quote,
+          priorLeads: lead.priorLeads,
+          lifetimeSpend: lead.lifetimeSpend,
+          // Source-IP / UA / Visitor-ID get parsed from lead.body in the
+          // admin GET, but they're not exposed as fields yet — pass
+          // what we have. AI fraud route is fingerprint-tolerant.
+        }),
+      });
+      if (!r.ok) {
+        const d = await r.json().catch(() => ({}));
+        setFraudVerdictById((p) => ({ ...p, [lead.id]: { verdict: "error", recommendation: d.error || "AI failed" } }));
+        return;
+      }
+      const d = await r.json();
+      setFraudVerdictById((p) => ({ ...p, [lead.id]: (d.verdict || {}) as FraudVerdict }));
+    } catch {
+      setFraudVerdictById((p) => ({ ...p, [lead.id]: { verdict: "error", recommendation: "Network failure" } }));
+    } finally {
+      setFraudCheckingId(null);
+    }
+  };
   const [adjustQuote, setAdjustQuote] = useState<string>("");
   const [adjustReason, setAdjustReason] = useState<string>("");
   const [adjustSavingId, setAdjustSavingId] = useState<string | null>(null);
@@ -2378,8 +2419,38 @@ export default function AdminPage() {
                         </div>
                       )}
                       <p className="text-[#c5c5c5] text-xs">{lead.payout}</p>
-                      {adjustingId !== lead.id && (
-                        <button type="button" onClick={() => { setAdjustingId(lead.id); setAdjustQuote(""); setAdjustReason(""); }} className="text-[10px] text-[#c5c5c5] hover:text-[#d4d4d4] mt-1 cursor-pointer">✏️ Adjust quote</button>
+                      <div className="flex items-center gap-3 mt-1 flex-wrap">
+                        {adjustingId !== lead.id && (
+                          <button type="button" onClick={() => { setAdjustingId(lead.id); setAdjustQuote(""); setAdjustReason(""); }} className="text-[10px] text-[#c5c5c5] hover:text-[#d4d4d4] cursor-pointer">✏️ Adjust quote</button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => runFraudCheck(lead)}
+                          disabled={fraudCheckingId === lead.id}
+                          className="text-[10px] text-[#8a8aff] hover:text-[#a8a8ff] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                          title="Ask Claude to assess this lead's fraud risk based on IP, UA, contact, prior leads, and device claim"
+                        >
+                          {fraudCheckingId === lead.id ? "🤖 Analyzing…" : "🤖 AI fraud check"}
+                        </button>
+                      </div>
+                      {fraudVerdictById[lead.id] && (
+                        <div className={`mt-2 p-2 rounded-md text-[11px] leading-relaxed border ${
+                          fraudVerdictById[lead.id].verdict === "suspect_fraud" || fraudVerdictById[lead.id].verdict === "high_risk"
+                            ? "bg-red-500/10 border-red-500/30 text-red-200"
+                            : fraudVerdictById[lead.id].verdict === "medium_risk"
+                            ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-200"
+                            : "bg-emerald-500/10 border-emerald-500/30 text-emerald-200"
+                        }`}>
+                          <p className="font-bold uppercase tracking-wider text-[10px] mb-1">
+                            🤖 {fraudVerdictById[lead.id].verdict?.replace(/_/g, " ")} · score {fraudVerdictById[lead.id].score ?? "?"} · {fraudVerdictById[lead.id].recommendation}
+                          </p>
+                          {(fraudVerdictById[lead.id].red_flags || []).length > 0 && (
+                            <p className="mt-1"><span className="font-bold">🚩 Red:</span> {(fraudVerdictById[lead.id].red_flags || []).join("; ")}</p>
+                          )}
+                          {(fraudVerdictById[lead.id].green_flags || []).length > 0 && (
+                            <p className="mt-1 opacity-80"><span className="font-bold">✓ Green:</span> {(fraudVerdictById[lead.id].green_flags || []).join("; ")}</p>
+                          )}
+                        </div>
                       )}
                       {adjustingId === lead.id && (
                         <div className="mt-2 p-2.5 bg-yellow-500/10 border border-yellow-500/30 rounded-lg space-y-2 max-w-[240px]">

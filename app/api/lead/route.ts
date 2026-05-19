@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import { put } from "@vercel/blob";
 import { createReturnLabel, deviceKindFromString, aggregateWeight, shouldBlockAutoShip } from "../../lib/fedex";
 import { reportError } from "../../lib/error-report";
@@ -577,6 +578,51 @@ export async function POST(req: NextRequest) {
       leadId = data?.message?.id || null;
     }
   } catch {}
+
+  // AI photo QA — fire-and-forget via Next.js after(). The customer's
+  // funnel already returned by the time Claude Sonnet finishes the
+  // vision call (~5-15s), and the [AI-FLAG] / [AI-NOTE] marker shows
+  // up on the admin lead row a few seconds after the lead does.
+  // Skywalker 2026-05-19. Only runs when photos are present + we
+  // have a leadId to tie the marker to. Auto-skips for multi-device
+  // leads since per-device photos are nested differently.
+  if (leadId && Array.isArray(photos) && photos.length > 0 && !isMulti && model) {
+    after(async () => {
+      try {
+        const { callAI, postAIMarker } = await import("../../lib/ai-gateway");
+        const imageItems = (photos as string[]).slice(0, 4).map((url) => ({
+          type: "image_url" as const,
+          image_url: { url },
+        }));
+        const sysPrompt = `You are a device-inspection assistant for Top Cash Cellular, a phone-buyback service. The customer claimed a specific device + condition. Inspect the attached photos and return STRICT JSON: {"match": true|false, "observed_model": "<best guess or 'unclear'>", "observed_condition": "Excellent|Good|Fair|Broken|unclear", "issues": [<short strings>], "confidence": "high|medium|low", "recommendation": "approve|manual-review|reject"}. Flag two-tier condition discrepancies (Excellent vs Broken). Flag screenshots (visible OS UI). Skip minor cosmetic noise.`;
+        const userPrompt = `Customer claim:\n- Model: ${model}\n- Condition: ${condition || "(n/a)"}\n\nInspect the ${(photos as string[]).length} photo(s).`;
+        const result = await callAI({
+          model: "anthropic/claude-sonnet-4-6",
+          messages: [
+            { role: "system", content: sysPrompt },
+            { role: "user", content: [{ type: "text", text: userPrompt }, ...imageItems] },
+          ],
+          json: true,
+          maxTokens: 600,
+        });
+        type Verdict = { match?: boolean; observed_model?: string; observed_condition?: string; issues?: string[]; confidence?: string; recommendation?: string };
+        const v = (result.parsed || {}) as Verdict;
+        const issueCount = v.issues?.length || 0;
+        const flagged = v.match === false || issueCount > 0 || v.recommendation === "reject";
+        const summary = flagged
+          ? `${v.recommendation || "review"} · ${v.observed_model ? `observed=${v.observed_model} vs claimed=${model}` : ""} · ${(v.issues || []).join("; ")}`
+          : `clean · matches ${model}${v.confidence ? ` (${v.confidence} confidence)` : ""}`;
+        await postAIMarker({
+          kind: flagged ? "AI-FLAG" : "AI-NOTE",
+          leadId: leadId as string,
+          body: `photo-check · ${summary}`,
+          tags: ["ai", "photo-check", flagged ? "flagged" : "clean"],
+        });
+      } catch {
+        // Best-effort — never break the lead flow on AI failures.
+      }
+    });
+  }
 
   // FedEx prepaid label — only for SHIP handoffs with a complete address
   // AND a customer phone (FedEx requires it). We mint at submission time

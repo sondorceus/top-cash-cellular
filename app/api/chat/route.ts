@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -63,8 +64,9 @@ export async function POST(req: NextRequest) {
     .map((m) => ({ from: m.from, text: m.text.slice(0, MAX_MESSAGE_LEN) }));
 
   // Forward lead to Mission Control
+  let chatLeadId: string | null = null;
   try {
-    await fetch(`${MC_API}/api/comms`, {
+    const r = await fetch(`${MC_API}/api/comms`, {
       method: "POST",
       headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -76,7 +78,44 @@ export async function POST(req: NextRequest) {
         priority: "high",
       }),
     });
+    if (r.ok) {
+      const d = await r.json().catch(() => ({}));
+      chatLeadId = d?.message?.id || null;
+    }
   } catch { /* silent */ }
+
+  // AI triage — classify the visitor's intent + urgency + sentiment
+  // and post an [AI-TRIAGE] marker to MC tied to the chat comm. Runs
+  // in the background via after() so the visitor's chat reply isn't
+  // delayed. Uses Haiku — cheap classifier, ~$0.001 per call.
+  // Skywalker 2026-05-19.
+  if (chatLeadId) {
+    after(async () => {
+      try {
+        const { callAI, postAIMarker } = await import("../../lib/ai-gateway");
+        const sys = `Classify a customer-support message for Top Cash Cellular. Return STRICT JSON: {"intent": "price_question|status_check|address_change|payout_change|dispute|new_lead|general_question|spam|thank_you|other", "urgency": "low|medium|high", "sentiment": "positive|neutral|negative|frustrated", "summary": "<one line, <120 chars>", "suggested_action": "<staff guidance, <120 chars>"}.`;
+        const result = await callAI({
+          model: "anthropic/claude-haiku-4-5",
+          messages: [
+            { role: "system", content: sys },
+            { role: "user", content: `Channel: chat\nMessage: """${message.slice(0, 3500)}"""` },
+          ],
+          json: true,
+          maxTokens: 300,
+        });
+        type Triage = { intent?: string; urgency?: string; sentiment?: string; summary?: string; suggested_action?: string };
+        const t = (result.parsed || {}) as Triage;
+        if (t.intent) {
+          await postAIMarker({
+            kind: "AI-NOTE",
+            leadId: chatLeadId as string,
+            body: `triage · intent=${t.intent} · urgency=${t.urgency} · sentiment=${t.sentiment} · ${t.summary || ""} · action: ${t.suggested_action || ""}`,
+            tags: ["ai", "triage", `intent-${t.intent}`, `urgency-${t.urgency}`],
+          });
+        }
+      } catch {}
+    });
+  }
 
   // Try Anthropic first, fall back to smart replies
   try {

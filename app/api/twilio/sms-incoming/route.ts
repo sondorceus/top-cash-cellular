@@ -15,6 +15,7 @@
 //   4. Returns empty TwiML so Twilio doesn't auto-reply.
 
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import crypto from "crypto";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -107,9 +108,10 @@ export async function POST(req: NextRequest) {
   // Post to MC. Lead feed parser surfaces this as an inbound message
   // on the customer's row (matched by phone). Tagged so MC search
   // can find replies fast.
+  let replyMsgId: string | null = null;
   if (MC_KEY) {
     try {
-      await fetch(`${MC_API}/api/comms`, {
+      const r = await fetch(`${MC_API}/api/comms`, {
         method: "POST",
         headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -121,9 +123,45 @@ export async function POST(req: NextRequest) {
           priority: "high",
         }),
       });
+      if (r.ok) {
+        const d = await r.json().catch(() => ({}));
+        replyMsgId = d?.message?.id || null;
+      }
     } catch {
       // Non-fatal — owner SMS still fires.
     }
+  }
+
+  // AI triage on the inbound SMS — Haiku-class classifier, runs in
+  // the background via after(). Attaches an [AI-NOTE] marker so the
+  // admin can filter inbound SMS by intent / urgency. Skywalker
+  // 2026-05-19.
+  if (replyMsgId && body.length >= 2) {
+    after(async () => {
+      try {
+        const { callAI, postAIMarker } = await import("../../../lib/ai-gateway");
+        const sys = `Classify a customer-support SMS for Top Cash Cellular. Return STRICT JSON: {"intent": "price_question|status_check|address_change|payout_change|dispute|new_lead|general_question|spam|thank_you|other", "urgency": "low|medium|high", "sentiment": "positive|neutral|negative|frustrated", "summary": "<one line, <120 chars>", "suggested_action": "<staff guidance, <120 chars>"}.`;
+        const result = await callAI({
+          model: "anthropic/claude-haiku-4-5",
+          messages: [
+            { role: "system", content: sys },
+            { role: "user", content: `Channel: sms\nFrom: ${from}\nMessage: """${body.slice(0, 1500)}"""` },
+          ],
+          json: true,
+          maxTokens: 300,
+        });
+        type Triage = { intent?: string; urgency?: string; sentiment?: string; summary?: string; suggested_action?: string };
+        const t = (result.parsed || {}) as Triage;
+        if (t.intent) {
+          await postAIMarker({
+            kind: "AI-NOTE",
+            leadId: replyMsgId as string,
+            body: `sms-triage · intent=${t.intent} · urgency=${t.urgency} · sentiment=${t.sentiment} · ${t.summary || ""} · action: ${t.suggested_action || ""}`,
+            tags: ["ai", "triage", "sms", `intent-${t.intent}`, `urgency-${t.urgency}`],
+          });
+        }
+      } catch {}
+    });
   }
 
   // Forward the reply to Skywalker's phone so it lands in his
