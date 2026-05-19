@@ -10316,20 +10316,26 @@ export default function Home() {
                 }
                 setSubmittedLabel(leadLabel);
                 // GA4 conversion event — fires once per successful
-                // submission. Skywalker 2026-05-19: needs funnel
-                // completion tracked separately from raw page views so
-                // analytics.google.com's Conversions report shows the
-                // submit rate.
+                // submission. Passes `value` + `currency` (GA4 standard
+                // params) so the event ships revenue. Skywalker just
+                // needs to mark `funnel_submit` as a conversion in
+                // GA4's Events admin and link GA4 → Google Ads; the
+                // existing AW-18099653912 tag will auto-import.
+                // (Removed the standalone gtag("event","conversion",
+                // {send_to: ".../lead_submit"}) — that was a placeholder
+                // pointing at a label that doesn't exist in the Ads
+                // account, which would have shown up as Unverified in
+                // Google Ads diagnostics.)
                 try {
                   const g = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
                   if (g) {
                     g("event", "funnel_submit", {
                       device: deviceType,
                       model: model?.label,
-                      quote: quote * quantity,
                       multi: isMultiCart,
+                      value: quote * quantity,
+                      currency: "USD",
                     });
-                    g("event", "conversion", { send_to: "AW-18099653912/lead_submit" });
                   }
                 } catch {}
                 if (email || phone) {

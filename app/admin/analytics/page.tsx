@@ -210,8 +210,68 @@ export default function AnalyticsPage() {
           <p className="text-[11px] text-[#888] mt-3">
             GA4 funnel events emitted: <code className="text-[#00c853]">funnel_step</code> (every
             step transition with <code>step</code>, <code>device</code>, <code>model</code> params),
-            <code className="text-[#00c853]"> funnel_submit</code> (successful lead, with quote
-            $ and multi-cart flag), plus <code className="text-[#00c853]">conversion</code> (Google Ads).
+            <code className="text-[#00c853]"> funnel_submit</code> (successful lead, with <code>value</code> + <code>currency</code> for revenue tracking).
+          </p>
+        </section>
+
+        {/* GOOGLE ADS CONVERSION SETUP — Skywalker 2026-05-19: he asked
+            me to do this but I can't log into his Ads account. So the
+            checklist lives here, in /admin/analytics, where he'll see
+            it the next time he opens this page. Three clicks total
+            once GA4 + Ads are linked. */}
+        <section className="bg-yellow-500/[0.05] border border-yellow-500/30 rounded-2xl p-5">
+          <h2 className="font-bold text-[15px] mb-2">⚙️ One-time: count submissions as Google Ads conversions</h2>
+          <p className="text-[13px] text-[#bdbdbd] mb-3 leading-relaxed">
+            The code is already emitting the right GA4 event on every successful submit
+            (<code className="text-[#00c853]">funnel_submit</code> with <code>value</code> +
+            <code>currency</code>). To make Google Ads actually count those as conversions
+            for campaign optimization, do these 3 clicks once — I can&apos;t log into your
+            account but each step is under 60 seconds.
+          </p>
+          <ol className="space-y-3 text-[13px] text-[#dcdcdc]">
+            <li className="flex gap-3">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 text-[11px] font-bold flex items-center justify-center">1</span>
+              <div className="flex-1">
+                <a href="https://analytics.google.com" target="_blank" rel="noreferrer" className="font-bold text-[#00c853] hover:underline">
+                  Open GA4 → Admin → Events
+                </a>
+                <p className="text-[12px] text-[#888] mt-0.5">
+                  Find <code className="text-[#00c853]">funnel_submit</code> in the list (it
+                  appears after the first real submission fires). Toggle the right-side
+                  switch to <b>Mark as conversion</b>.
+                </p>
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 text-[11px] font-bold flex items-center justify-center">2</span>
+              <div className="flex-1">
+                <a href="https://ads.google.com" target="_blank" rel="noreferrer" className="font-bold text-[#00c853] hover:underline">
+                  Open Google Ads → Tools → Linked accounts → Google Analytics (GA4)
+                </a>
+                <p className="text-[12px] text-[#888] mt-0.5">
+                  Click <b>Link</b> on your G-8H5VGFLJ71 property. Auto-import all events
+                  and conversions.
+                </p>
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 text-[11px] font-bold flex items-center justify-center">3</span>
+              <div className="flex-1">
+                <a href="https://ads.google.com" target="_blank" rel="noreferrer" className="font-bold text-[#00c853] hover:underline">
+                  Google Ads → Tools → Conversions → + New → Import → GA4
+                </a>
+                <p className="text-[12px] text-[#888] mt-0.5">
+                  Tick <code className="text-[#00c853]">funnel_submit</code> and finish.
+                  Done — every submitted lead now counts as a conversion in Ads with the
+                  customer&apos;s quote $ as the value.
+                </p>
+              </div>
+            </li>
+          </ol>
+          <p className="text-[11px] text-[#888] mt-3">
+            Verify it&apos;s working: submit a test lead at <code>topcashcellular.com</code>, wait
+            up to 24h, then check Ads → Conversions → recent activity. The submission should
+            show up with its $ value attached.
           </p>
         </section>
 
