@@ -4855,14 +4855,15 @@ export default function Home() {
   const marginCap = estResellNow != null ? Math.round(estResellNow * MARGIN_FLOOR_MULT) : null;
   // Apply cap silently if base quote exceeds it.
   const quoteAfterCap = (marginCap != null && rawQuote > marginCap) ? marginCap : rawQuote;
-  // Force manual review when:
-  //   (a) the model has no resell comp at all (we can't sanity-check), OR
-  //   (b) the cap would push us below the existing MIN_OFFER threshold
-  // The customer sees "Manual review" instead of a number; staff sets
-  // the real offer over text after seeing photos / handling the unit.
-  const needsMarginReview =
-    (model?.base != null && model.base > 0 && workingResell == null) ||
-    (marginCap != null && marginCap < MIN_OFFER);
+  // Force manual review ONLY when we have a resell comp AND that comp's
+  // 75% cap would push the quote below MIN_OFFER. The cap-only path
+  // (resell known, baseQuote stays above MIN_OFFER) lets the cap apply
+  // silently. Models without a resell entry just use rawQuote — the
+  // PRICE_TABLE values were already vetted from IWM so we trust them
+  // when we can't sanity-check via Swappa mid. Skywalker 2026-05-19
+  // after the prior `workingResell == null` trigger was flagging
+  // basically every non-iPhone device for manual review.
+  const needsMarginReview = marginCap != null && marginCap < MIN_OFFER;
   const quote = quoteAfterCap;
   // Minimum offer threshold — below this we lose money on shipping +
   // processing. Show "Manual quote" instead of a dollar amount.
