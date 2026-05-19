@@ -10702,6 +10702,15 @@ export default function Home() {
                 </label>
                 <input type="tel" value={phone} onChange={(e) => {
                   const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                  if (!digits) { setPhone(""); return; }
+                  // Detect deletion — if the raw value got shorter, set
+                  // the unformatted digits so the user can backspace past
+                  // formatting characters (the `)`, space, or `-`).
+                  // Without this branch the format string re-adds the
+                  // trailing `-` immediately on every keystroke and the
+                  // user gets stuck at "(NNN) NNN-".
+                  const isDeleting = e.target.value.length < phone.length;
+                  if (isDeleting) { setPhone(digits); return; }
                   if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
                   else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                   else setPhone(digits);
