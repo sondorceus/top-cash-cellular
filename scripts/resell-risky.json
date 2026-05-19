@@ -1,0 +1,224 @@
+{
+  "Apple Watch Series 10": {
+    "resell": 140,
+    "cap": 105,
+    "tcc_max": 117,
+    "sku": "aws10"
+  },
+  "Apple Watch Ultra 2": {
+    "resell": 265,
+    "cap": 198,
+    "tcc_max": 216,
+    "sku": "awu2"
+  },
+  "Apple Watch Ultra 3": {
+    "resell": 385,
+    "cap": 288,
+    "tcc_max": 338,
+    "sku": "awu3"
+  },
+  "Pixel 10 Pro Fold": {
+    "resell": 765,
+    "cap": 573,
+    "tcc_max": 800,
+    "sku": "px10pfold"
+  },
+  "Pixel 5": {
+    "resell": 60,
+    "cap": 45,
+    "tcc_max": 152,
+    "sku": "px5"
+  },
+  "Pixel 6": {
+    "resell": 50,
+    "cap": 37,
+    "tcc_max": 152,
+    "sku": "px6"
+  },
+  "Pixel 6 Pro": {
+    "resell": 70,
+    "cap": 52,
+    "tcc_max": 152,
+    "sku": "px6p"
+  },
+  "Pixel 7": {
+    "resell": 65,
+    "cap": 48,
+    "tcc_max": 152,
+    "sku": "px7"
+  },
+  "Pixel 7 Pro": {
+    "resell": 110,
+    "cap": 82,
+    "tcc_max": 152,
+    "sku": "px7p"
+  },
+  "Pixel 7a": {
+    "resell": 15,
+    "cap": 11,
+    "tcc_max": 152,
+    "sku": "px7a"
+  },
+  "Pixel 8": {
+    "resell": 150,
+    "cap": 112,
+    "tcc_max": 152,
+    "sku": "px8"
+  },
+  "Pixel 8a": {
+    "resell": 100,
+    "cap": 75,
+    "tcc_max": 152,
+    "sku": "px8a"
+  },
+  "Pixel 9a": {
+    "resell": 160,
+    "cap": 120,
+    "tcc_max": 152,
+    "sku": "px9a"
+  },
+  "iPad 10": {
+    "resell": 205,
+    "cap": 153,
+    "tcc_max": 198,
+    "sku": "ipad10"
+  },
+  "iPad 9": {
+    "resell": 115,
+    "cap": 86,
+    "tcc_max": 100,
+    "sku": "ipad9"
+  },
+  "iPad Air 11\" (M2)": {
+    "resell": 365,
+    "cap": 273,
+    "tcc_max": 446,
+    "sku": "ipadair11m2"
+  },
+  "iPad Air 11\" (M3)": {
+    "resell": 420,
+    "cap": 315,
+    "tcc_max": 432,
+    "sku": "ipadair11m3"
+  },
+  "iPad Air 13\" (M2)": {
+    "resell": 335,
+    "cap": 251,
+    "tcc_max": 480,
+    "sku": "ipadair13m2"
+  },
+  "iPad Air 2024 13\" (M2)": {
+    "resell": 415,
+    "cap": 311,
+    "tcc_max": 480,
+    "sku": "ipadair13m2"
+  },
+  "iPad Pro 11\" (4th Gen)": {
+    "resell": 610,
+    "cap": 457,
+    "tcc_max": 765,
+    "sku": "ipadpro11g4"
+  },
+  "iPad Pro 11\" (M4)": {
+    "resell": 800,
+    "cap": 600,
+    "tcc_max": 689,
+    "sku": "ipadpro11m4"
+  },
+  "iPad Pro 11\" (M5)": {
+    "resell": 965,
+    "cap": 723,
+    "tcc_max": 902,
+    "sku": "ipadpro11m5"
+  },
+  "iPad Pro 12.9\" (6th Gen)": {
+    "resell": 605,
+    "cap": 453,
+    "tcc_max": 646,
+    "sku": "ipadpro129g6"
+  },
+  "iPad Pro 13\" (M4)": {
+    "resell": 925,
+    "cap": 693,
+    "tcc_max": 978,
+    "sku": "ipadpro13m4"
+  },
+  "iPad Pro 13\" (M5)": {
+    "resell": 990,
+    "cap": 742,
+    "tcc_max": 1035,
+    "sku": "ipadpro13m5"
+  },
+  "iPhone 11": {
+    "resell": 115,
+    "cap": 86,
+    "tcc_max": 400,
+    "sku": "ip11"
+  },
+  "iPhone 11 Pro": {
+    "resell": 140,
+    "cap": 105,
+    "tcc_max": 400,
+    "sku": "ip11p"
+  },
+  "iPhone 11 Pro Max": {
+    "resell": 170,
+    "cap": 127,
+    "tcc_max": 400,
+    "sku": "ip11pm"
+  },
+  "iPhone 12": {
+    "resell": 130,
+    "cap": 97,
+    "tcc_max": 400,
+    "sku": "ip12"
+  },
+  "iPhone 12 Mini": {
+    "resell": 110,
+    "cap": 82,
+    "tcc_max": 152,
+    "sku": "ip12mini"
+  },
+  "iPhone 12 Pro": {
+    "resell": 185,
+    "cap": 138,
+    "tcc_max": 400,
+    "sku": "ip12p"
+  },
+  "iPhone 12 Pro Max": {
+    "resell": 235,
+    "cap": 176,
+    "tcc_max": 400,
+    "sku": "ip12pm"
+  },
+  "iPhone 14 Plus": {
+    "resell": 250,
+    "cap": 187,
+    "tcc_max": 400,
+    "sku": "ip14plus"
+  },
+  "iPhone 15 Plus": {
+    "resell": 320,
+    "cap": 240,
+    "tcc_max": 400,
+    "sku": "ip15plus"
+  },
+  "iPhone 16E": {
+    "resell": 270,
+    "cap": 202,
+    "tcc_max": 400,
+    "sku": "ip16e"
+  },
+  "iPhone 17 Air": {
+    "resell": 640,
+    "cap": 480,
+    "tcc_max": 500,
+    "sku": "ip17air"
+  },
+  "iPhone 17E": {
+    "resell": 360,
+    "cap": 270,
+    "tcc_max": 500,
+    "sku": "ip17e"
+  }
+}

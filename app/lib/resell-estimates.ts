@@ -17,8 +17,24 @@ export const RESELL_ESTIMATES: Record<string, number> = {
   // Samsung
   "Galaxy S26 Ultra": 927, "Galaxy S25 Ultra": 714, "Galaxy S24 Ultra": 544,
   "Galaxy S26": 741, "Galaxy S25": 372,
-  // Pixel
-  "Pixel 10 Pro XL": 657, "Pixel 10 Pro": 567, "Pixel 9 Pro XL": 392, "Pixel 9 Pro": 375,
+  // Pixel — Atlas grade_a unlocked (working condition wholesale exit) where it
+  // beats TCC max payout × 1.33 ($-margin headroom). Pixel 10a is the lead
+  // catalyst (Rose's live lead at 21:01 on 2026-05-18 was tripping the old
+  // unknown-resell trigger). Older Pixels (5-9a) are skipped because TCC's
+  // PRICE_TABLE pays above Atlas's wholesale floor — adding them would
+  // silently cap legit quotes downward; flagged for pricing review instead.
+  "Pixel 10 Pro XL": 657, "Pixel 10 Pro": 567, "Pixel 10": 315, "Pixel 10a": 265,
+  "Pixel 9 Pro Fold": 585, "Pixel 9 Pro XL": 392, "Pixel 9 Pro": 375, "Pixel 9": 210,
+  "Pixel 8 Pro": 225,
+  "Pixel 6a": 45,
+  // Apple Watches — Atlas grade_a_hso. Skipped: Series 10/11, Ultra 2/3 (TCC
+  // pays above Atlas wholesale; would silently cap).
+  "Apple Watch SE (2nd Gen)": 70,
+  "Apple Watch Series 7": 80, "Apple Watch Series 8": 100, "Apple Watch Series 9": 115,
+  "Apple Watch Ultra": 200,
+  // iPads — Skipped most (TCC pays above Atlas wholesale). Only the M3 13"
+  // Air has enough margin headroom for a safe cap.
+  "iPad Air 13\" (M3)": 515,
   // Consoles
   "PlayStation 5 Pro": 680, "PlayStation 5 Slim": 310, "PlayStation 5": 347,
   "Xbox Series X": 220, "Xbox Series S": 130,
