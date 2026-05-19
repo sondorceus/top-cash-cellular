@@ -11,15 +11,34 @@ const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 // chosen delivery method (ship vs local meetup) and the supporting details
 // (mailing address or Austin sub-area). Posts a [DELIVERY] follow-up to MC
 // comms so the operator can act, and pings the owner via SMS.
+
+// Strip square brackets + bound length on every customer-supplied
+// field before interpolating into the MC comm body. The admin lead
+// parser keys on `[NEW BUYBACK LEAD]` and `[STATUS:]` markers anywhere
+// in any comm body — without this sanitization an attacker hitting
+// /api/delivery with `name: "[NEW BUYBACK LEAD]\nName: Fake..."` would
+// spoof a lead into the admin panel. Same defuse pattern as /api/chat.
+function clean(s: unknown, max = 200): string {
+  if (typeof s !== "string") return "";
+  return s.replace(/[\[\]]/g, "").slice(0, max);
+}
+
 export async function POST(req: NextRequest) {
-  const data = await req.json();
-  const {
-    method, // "shipping" | "local"
-    name, phone, email,
-    model, quote, payout,
-    address, // { street, unit, city, state, zip }
-    area,    // string label e.g. "South Austin", "Round Rock"
-  } = data;
+  let data: Record<string, unknown>;
+  try {
+    data = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  const method = typeof data.method === "string" ? data.method : "";
+  const name = clean(data.name, 100);
+  const phone = clean(data.phone, 30);
+  const email = clean(data.email, 200);
+  const model = clean(data.model, 100);
+  const quote = clean(data.quote, 20);
+  const payout = clean(data.payout, 80);
+  const address = (typeof data.address === "object" && data.address) ? data.address as Record<string, unknown> : null;
+  const area = clean(data.area, 80);
 
   if (method !== "shipping" && method !== "local") {
     return NextResponse.json({ error: "method must be shipping or local" }, { status: 400 });
@@ -39,7 +58,11 @@ export async function POST(req: NextRequest) {
   ].filter(Boolean) as string[];
 
   if (method === "shipping" && address) {
-    const { street, unit, city, state, zip } = address as Record<string, string>;
+    const street = clean(address.street, 120);
+    const unit = clean(address.unit, 40);
+    const city = clean(address.city, 80);
+    const state = clean(address.state, 2);
+    const zip = clean(address.zip, 10);
     lines.push("--- Shipping Address ---");
     lines.push(`${street}${unit ? `, ${unit}` : ""}`);
     lines.push(`${city}, ${state} ${zip}`);
@@ -67,7 +90,7 @@ export async function POST(req: NextRequest) {
 
   if (TWILIO_SID && TWILIO_AUTH) {
     const summary = method === "shipping"
-      ? `${name} chose SHIP ${model || "device"} from ${address?.city || "?"}, ${address?.state || "?"} ${address?.zip || ""}. Send label.`
+      ? `${name} chose SHIP ${model || "device"} from ${clean(address?.city, 80) || "?"}, ${clean(address?.state, 2) || "?"} ${clean(address?.zip, 10) || ""}. Send label.`
       : `${name} chose LOCAL meetup in ${area || "Austin area"} for ${model || "device"}. Reach out to schedule.`;
     try {
       await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
