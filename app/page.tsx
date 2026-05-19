@@ -4888,6 +4888,30 @@ export default function Home() {
   const isBrokenNonFunctional = condition?.id === "broken" && brokenFunctional === false;
   const isManualQuote = isBelowMinimum || isBrokenNonFunctional || needsMarginReview;
   const needsReview = MANUAL_REVIEW_DEVICES.has(model?.id ?? "");
+  // Personalize the "why we need to review" message per trigger so the
+  // customer understands what's specifically blocking the instant quote.
+  // Skywalker 2026-05-19 — generic "below threshold" was confusing for
+  // broken-non-functional devices and Pixel/Galaxy models we just haven't
+  // priced yet.
+  const manualReviewReason: { title: string; body: string } = isBrokenNonFunctional
+    ? {
+        title: "Non-working device — we still want it",
+        body: "We pay for broken / non-functional / iCloud-locked devices, but they need a quick photo + IMEI inspection so we can quote parts value accurately. Add it to your box (or tell us more in chat) and we'll text you a fair custom offer within the hour — usually $20-200 depending on the model and what's still salvageable.",
+      }
+    : needsMarginReview
+    ? {
+        title: "We're double-checking the resale value",
+        body: "Our system flagged this combination because we don't have a recent market reference for it yet. Staff will pull a real-time comp and text you a custom quote within the hour — you'll get a fair number before we ask you to ship.",
+      }
+    : isBelowMinimum
+    ? {
+        title: "Below our standard offer threshold",
+        body: "This config quotes under our $25 minimum payout. We can still take the device — staff will quote it manually so we don't waste your shipping. Tell us about any extras (box, accessories, recent repair) when we reach out — sometimes that pushes it over the line.",
+      }
+    : {
+        title: "Manual review needed",
+        body: "Add it to your box and we'll text you a fair custom quote within the hour.",
+      };
 
   const maxQuoteFor = (v: { id: string; base: number }) => {
     const sids = STORAGE_MAP[v.id];
@@ -5333,8 +5357,8 @@ export default function Home() {
             {isPendingQuote || isManualQuote ? (
               <>
                 <p className="text-[#b8b8b8] text-sm">{isManualQuote ? "This device needs a" : "Your device will be"}</p>
-                <p className="text-white font-extrabold text-xl mt-1 leading-tight">{isManualQuote ? "Manual review & custom quote" : "Quoted via email or text"}</p>
-                <p className="text-[#888] text-xs mt-1">{isManualQuote ? "Add to your box — we\u2019ll text you a fair offer within the hour" : ""}</p>
+                <p className="text-white font-extrabold text-xl mt-1 leading-tight">{isManualQuote ? "Custom quote — no instant value" : "Quoted via email or text"}</p>
+                <p className="text-[#888] text-xs mt-1">{isManualQuote ? "Staff texts you a fair offer within the hour" : ""}</p>
               </>
             ) : (
               <>
@@ -9536,8 +9560,17 @@ export default function Home() {
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Your offer</p>
               {isPendingQuote || isManualQuote ? (
                 <>
-                  <p className="text-3xl lg:text-4xl font-extrabold text-white mt-1 leading-tight">{isManualQuote ? "Manual review needed" : "Quoted via email or text"}</p>
-                  <p className="text-[#c8c8c8] text-sm mt-2 leading-snug max-w-md">{isManualQuote ? "This device\u2019s value is below our standard offer threshold. Add it to your box and we\u2019ll text you a fair custom quote within the hour." : "This device isn\u2019t on our standard price list. Add it to your box and we\u2019ll email or text you a quote within the hour \u2014 no need to wait until pickup."}</p>
+                  <p className="text-3xl lg:text-4xl font-extrabold text-white mt-1 leading-tight">{isManualQuote ? manualReviewReason.title : "Quoted via email or text"}</p>
+                  <p className="text-[#c8c8c8] text-sm mt-2 leading-snug max-w-md">{isManualQuote ? manualReviewReason.body : "This device isn\u2019t on our standard price list. Add it to your box and we\u2019ll email or text you a quote within the hour \u2014 no need to wait until pickup."}</p>
+                  {isBrokenNonFunctional && (
+                    <button
+                      type="button"
+                      onClick={() => setChatOpen(true)}
+                      className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-[12px] font-semibold text-amber-200 cursor-pointer transition"
+                    >
+                      \ud83d\udcac Tell us what&apos;s wrong with it
+                    </button>
+                  )}
                 </>
               ) : (
                 <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853] mt-1" style={{ textShadow: "0 0 8px rgba(0, 200, 83, 0.22)" }}>${quote * quantity}</p>
@@ -9713,7 +9746,11 @@ export default function Home() {
                       modelId: model.id,
                       storage: storage?.label || "N/A",
                       condition: condition.label,
-                      price: quote,
+                      // Manual-review items carry no price so the cart and
+                      // checkout don't lie about value. The backend lead
+                      // body still includes condition + specs so staff
+                      // can quote it manually post-arrival.
+                      price: isManualQuote ? 0 : quote,
                       quantity: 1,
                       image: model.image,
                       carrier: carrier?.label,
@@ -9741,7 +9778,7 @@ export default function Home() {
                       return [...prev, itemSnapshot];
                     });
                     setCartBump(b => b + 1);
-                    setCartToast({ model: model.label, price: quote });
+                    setCartToast({ model: model.label, price: isManualQuote ? 0 : quote });
                     setTimeout(() => setCartToast(null), 2400);
                   }
                   // Open the cart drawer first — IWM-style. The user can
