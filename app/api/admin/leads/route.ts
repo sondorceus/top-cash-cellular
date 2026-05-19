@@ -598,9 +598,10 @@ export async function GET(req: NextRequest) {
     if (!m.body || !/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
     // Status drives the auto-purge policy (active leads stay forever in
     // trash, finished leads purge after 24h) so look it up before
-    // bucketing. Skywalker 2026-05-19.
+    // bucketing. Skywalker 2026-05-19. (Fixed 2026-05-19: pass the
+    // status string, not the {status, timestamp} record.)
     const status = statusByLead.get(m.id);
-    const bucket = bucketFor(m.id, status);
+    const bucket = bucketFor(m.id, status?.status);
     if (bucket.kind === "purged") continue;
     if (view === "active" && bucket.kind !== "active") continue;
     if (view === "trash"  && bucket.kind !== "trashed") continue;
