@@ -4896,7 +4896,13 @@ export default function Home() {
   const manualReviewReason: { title: string; body: string } = isBrokenNonFunctional
     ? {
         title: "Non-working device — we still want it",
-        body: "We pay for broken / non-functional / iCloud-locked devices, but they need a quick photo + IMEI inspection so we can quote parts value accurately. Add it to your box (or tell us more in chat) and we'll text you a fair custom offer within the hour — usually $20-200 depending on the model and what's still salvageable.",
+        // Soft-advertise parts iPhones without saying "iCloud locked"
+        // outright — staff still needs to verify the device isn't
+        // reported stolen before we commit to a price. Listed symptoms
+        // (won't boot / won't activate) are the giveaway for activation-
+        // locked or activation-failed devices; customers who know their
+        // phone's locked recognize the language. Skywalker 2026-05-19.
+        body: "We still buy phones for parts — cracked screen, dead display, water damage, won't boot, won't activate. Each one needs a quick photo + IMEI check so we can quote parts value accurately. Send it through chat (or add it to your box) and we'll text you a fair custom offer within the hour — typically $20–200 depending on the model and what's salvageable.",
       }
     : needsMarginReview
     ? {
@@ -9568,7 +9574,7 @@ export default function Home() {
                       onClick={() => setChatOpen(true)}
                       className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-[12px] font-semibold text-amber-200 cursor-pointer transition"
                     >
-                      💬 Chat with us for a custom quote
+                      💬 Get a parts-value quote in chat
                     </button>
                   )}
                 </>
