@@ -6538,7 +6538,7 @@ export default function Home() {
                     try {
                       const issueLabel: Record<string, string> = {
                         locked_mdm: "MDM Locked",
-                        locked_icloud: "Activation Locked",
+                        locked_icloud: "Locked",
                         locked_carrier: "Carrier Locked",
                         wont_turn_on: "Won't Turn On",
                         physical: "Physically Damaged Beyond Repair",
@@ -6583,7 +6583,7 @@ export default function Home() {
                     <div className="grid grid-cols-2 gap-1.5">
                       {[
                         { id: "locked_mdm" as const, label: "MDM locked" },
-                        { id: "locked_icloud" as const, label: "Activation locked" },
+                        { id: "locked_icloud" as const, label: "Locked" },
                         { id: "locked_carrier" as const, label: "Carrier locked" },
                         { id: "wont_turn_on" as const, label: "Won't turn on" },
                         { id: "physical" as const, label: "Beyond repair" },
@@ -9299,7 +9299,7 @@ export default function Home() {
                   🔒 Phone is locked or won&apos;t turn on?
                 </p>
                 <p className="text-[12px] text-[#d4d4d4] mt-0.5 leading-snug">
-                  Activation locked · carrier locked · MDM locked · won&apos;t power on · cracked beyond repair — get a custom quote within the hour
+                  Locked · carrier locked · MDM locked · won&apos;t power on · cracked beyond repair — get a custom quote within the hour
                 </p>
               </button>
             )}
@@ -10238,7 +10238,22 @@ export default function Home() {
               <div className="mb-4 px-4 py-3 rounded-xl bg-amber-500/[0.10] border border-amber-500/40 flex items-start gap-3">
                 <span className="text-lg leading-none mt-0.5">📦</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-amber-200 leading-tight">Step 3 of 3 — submit below to get your FedEx label</p>
+                  <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                    <p className="text-sm font-bold text-amber-200 leading-tight">Step 3 of 3 — submit below to get your</p>
+                    {/* FedEx wordmark — official purple "Fed" + orange "Ex"
+                        styling so customers instantly recognize the
+                        prepaid label is real FedEx. Pure text styled with
+                        brand colors, no remote asset, no licensing risk. */}
+                    <span
+                      aria-label="FedEx"
+                      className="inline-flex items-baseline font-extrabold tracking-tight text-base"
+                      style={{ fontFamily: "Univers, 'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+                    >
+                      <span style={{ color: "#4D148C" }}>Fed</span>
+                      <span style={{ color: "#FF6600" }}>Ex</span>
+                    </span>
+                    <p className="text-sm font-bold text-amber-200 leading-tight">label</p>
+                  </div>
                   <p className="text-[11px] text-[#d4d4d4] mt-1 leading-snug">
                     <span className="text-[#888]">1. Account ✓</span> → <span className="text-[#888]">2. Payment ✓</span> → <span className="text-white font-semibold">3. Shipping address & submit</span>. The moment you hit submit, FedEx mints your prepaid label and we email it to you instantly — typically under 30 seconds.
                   </p>
@@ -10897,11 +10912,28 @@ export default function Home() {
                     type="button"
                     onClick={checkImei}
                     disabled={imeiState === "checking" || imeiInput.replace(/\D/g, "").length < 15}
-                    className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-semibold hover:bg-white/10 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-semibold hover:bg-white/10 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer min-w-[88px] flex items-center justify-center gap-1.5"
                   >
-                    {imeiState === "checking" ? "…" : "Verify"}
+                    {imeiState === "checking" ? (
+                      <>
+                        {/* Spinning ring — Sickw lookups take ~15s, the
+                            previous static "…" looked frozen. Skywalker
+                            2026-05-19. */}
+                        <svg className="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+                          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3" />
+                          <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                        </svg>
+                        <span className="text-[11px] text-[#cfcfcf]">Checking</span>
+                      </>
+                    ) : "Verify"}
                   </button>
                 </div>
+                {imeiState === "checking" && (
+                  <p className="text-[11px] text-[#888] mt-1.5 flex items-center gap-1.5">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#00c853] animate-pulse" />
+                    Checking carrier &amp; lock status — typically takes ~15 seconds.
+                  </p>
+                )}
                 {imeiState === "ok" && imeiResult && (
                   <p className="text-xs text-[#00c853] mt-1.5">✓ Verified{imeiResult.model ? ` — ${imeiResult.model}` : ""}</p>
                 )}
