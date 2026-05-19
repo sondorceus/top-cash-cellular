@@ -113,6 +113,25 @@ function CategoryIcon({ id, className = "" }: { id: CatIconId; className?: strin
   }
 }
 
+// FedEx wordmark — purple "Fed" + orange "Ex" in the Univers-stack font.
+// Used everywhere we write "FedEx" in JSX so customers consistently see
+// the brand mark, not a plain word. Plain inline spans (no flex on the
+// wordmark itself) with whitespace-nowrap so "Fed" and "Ex" can never
+// split across two lines. Defaults to inheriting parent text size; pass
+// a Tailwind size class via className only when you need to override.
+// Skywalker 2026-05-19.
+function FedExMark({ className = "" }: { className?: string }) {
+  return (
+    <span
+      aria-label="FedEx"
+      className={`whitespace-nowrap font-extrabold tracking-tight ${className}`}
+      style={{ fontFamily: "Univers, 'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+    >
+      <span style={{ color: "#4D148C" }}>Fed</span><span style={{ color: "#E65900" }}>Ex</span>
+    </span>
+  );
+}
+
 // Carrier icons — real brand logos that Skywalker provided live under
 // /public/carriers/. Each carrier card just renders the supplied PNG.
 // 'other' has no logo so it still falls back to a neutral padlock SVG.
@@ -10028,7 +10047,7 @@ export default function Home() {
             <div className="mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
               <span className="text-lg leading-none mt-0.5">📦</span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-[#00c853] leading-tight">Step 1 of 3 — your FedEx label generates on the final step</p>
+                <p className="text-sm font-bold text-[#00c853] leading-tight">Step 1 of 3 — your <FedExMark /> label generates on the final step</p>
                 <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
                   <span className="text-white font-semibold">1. Account</span> (you&apos;re here) → <span className="text-[#888]">2. Payment</span> → <span className="text-[#888]">3. Shipping address & submit</span>. Your prepaid label hits your inbox the moment you submit the last step — usually under 30 seconds.
                 </p>
@@ -10050,7 +10069,7 @@ export default function Home() {
               }} className="space-y-3 mb-4">
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 tcc-input text-sm" />
                 <button type="submit" className="tcc-button-primary w-full py-4 text-base font-extrabold">Continue As Guest →</button>
-                <p className="text-[11px] text-[#888] text-center mt-1">Next: pick payment method, then enter shipping address for your free FedEx label</p>
+                <p className="text-[11px] text-[#888] text-center mt-1">Next: pick payment method, then enter shipping address for your free <FedExMark /> label</p>
               </form>
 
               <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#d4d4d4] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
@@ -10151,7 +10170,7 @@ export default function Home() {
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-[#00c853] leading-tight">Step 2 of 3 — one more step after this for your label</p>
                 <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
-                  <span className="text-[#888]">1. Account ✓</span> → <span className="text-white font-semibold">2. Payment</span> (you&apos;re here) → <span className="text-[#888]">3. Shipping address & submit</span>. Your prepaid FedEx label generates the second you submit the next page.
+                  <span className="text-[#888]">1. Account ✓</span> → <span className="text-white font-semibold">2. Payment</span> (you&apos;re here) → <span className="text-[#888]">3. Shipping address & submit</span>. Your prepaid <FedExMark /> label generates the second you submit the next page.
                 </p>
               </div>
             </div>
@@ -10238,24 +10257,11 @@ export default function Home() {
               <div className="mb-4 px-4 py-3 rounded-xl bg-amber-500/[0.10] border border-amber-500/40 flex items-start gap-3">
                 <span className="text-lg leading-none mt-0.5">📦</span>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                    <p className="text-sm font-bold text-amber-200 leading-tight">Step 3 of 3 — submit below to get your</p>
-                    {/* FedEx wordmark — official purple "Fed" + orange "Ex"
-                        styling so customers instantly recognize the
-                        prepaid label is real FedEx. Pure text styled with
-                        brand colors, no remote asset, no licensing risk. */}
-                    <span
-                      aria-label="FedEx"
-                      className="inline-flex items-baseline font-extrabold tracking-tight text-base"
-                      style={{ fontFamily: "Univers, 'Helvetica Neue', Helvetica, Arial, sans-serif" }}
-                    >
-                      <span style={{ color: "#4D148C" }}>Fed</span>
-                      <span style={{ color: "#E65900" }}>Ex</span>
-                    </span>
-                    <p className="text-sm font-bold text-amber-200 leading-tight">label</p>
-                  </div>
+                  <p className="text-sm font-bold text-amber-200 leading-tight mb-0.5">
+                    Step 3 of 3 — submit below to get your <FedExMark /> label
+                  </p>
                   <p className="text-[11px] text-[#d4d4d4] mt-1 leading-snug">
-                    <span className="text-[#888]">1. Account ✓</span> → <span className="text-[#888]">2. Payment ✓</span> → <span className="text-white font-semibold">3. Shipping address & submit</span>. The moment you hit submit, FedEx mints your prepaid label and we email it to you instantly — typically under 30 seconds.
+                    <span className="text-[#888]">1. Account ✓</span> → <span className="text-[#888]">2. Payment ✓</span> → <span className="text-white font-semibold">3. Shipping address & submit</span>. The moment you hit submit, <FedExMark /> mints your prepaid label and we email it to you instantly — typically under 30 seconds.
                   </p>
                 </div>
               </div>
@@ -11386,7 +11392,7 @@ export default function Home() {
                   <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Shipping</p>
                   {submittedLabel ? (
                     <>
-                      <p className="text-white text-base font-bold mb-1">📦 Your prepaid FedEx label is ready</p>
+                      <p className="text-white text-base font-bold mb-1">📦 Your prepaid <FedExMark /> label is ready</p>
                       <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">
                         Print it, tape it to a padded box, and drop at any FedEx location — no appointment needed.
                         {" "}We&apos;ll text you the moment it arrives.
