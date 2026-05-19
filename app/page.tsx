@@ -3824,6 +3824,11 @@ export default function Home() {
     step === "processor" ? 1 :
     step === "memory" ? 2 :
     step === "storage" ? 3 :
+    // graphics + displayresolution are PC-laptop sub-questions that
+    // happen between storage and condition. Stay at 3 so the bar
+    // doesn't drop while the user works through them.
+    step === "graphics" ? 3 :
+    step === "displayresolution" ? 3 :
     step === "displayglass" ? 4 :
     step === "condition" ? (macHasGlassStep ? 5 : 4) :
     step === "batteryhealth" ? (macHasGlassStep ? 6 : 5) :
@@ -3837,6 +3842,14 @@ export default function Home() {
     step === "quote" ? funnelTotal : 0
   ) : (
     step === "condition" ? 1 :
+    // broken-functional + broken-glass are sub-questions of the
+    // condition step (only reached when condition === "broken"). They
+    // were missing from this mapping which made funnelStepNum drop
+    // to 0 → the green progress bar disappeared mid-flow instead of
+    // staying at "step 1 of N". Skywalker 2026-05-19: "tiny green
+    // bar pulls back when I get to the conditions about the device".
+    step === "broken-functional" ? 1 :
+    step === "broken-glass" ? 1 :
     step === "connectivity" ? 2 :
     step === "storage" ? (isIpadFlow ? 3 : 2) :
     step === "carrier" ? (isIpadFlow ? 4 : 3) :
