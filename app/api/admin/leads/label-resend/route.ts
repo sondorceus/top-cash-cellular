@@ -37,6 +37,22 @@ export async function POST(req: NextRequest) {
   if (!to || !labelUrl || !tracking) {
     return NextResponse.json({ error: "to, tracking, and labelUrl are required" }, { status: 400 });
   }
+  // SECURITY: even though this endpoint is admin-gated, validate
+  // labelUrl is OUR Vercel blob domain before emailing it to the
+  // customer. If TCC_ADMIN_TOKEN ever leaks (it's in source as
+  // fallback "topcash-admin-2026" + lives in env), an attacker
+  // could otherwise call resend with arbitrary labelUrl and Resend
+  // would phish from our verified DKIM-signed domain. Same defense
+  // as /api/confirm a8e6fc1.
+  const isVercelBlobUrl =
+    /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/fedex-labels\/[\w.\-/]+\.pdf$/i.test(labelUrl);
+  const isValidTracking = /^[A-Z0-9]{8,30}$/i.test(tracking);
+  if (!isVercelBlobUrl || !isValidTracking) {
+    return NextResponse.json({ error: "labelUrl must be our hosted PDF and tracking must match FedEx format" }, { status: 400 });
+  }
+  if (!/^[A-Z_]{3,40}$/i.test(String(serviceType))) {
+    return NextResponse.json({ error: "Invalid serviceType" }, { status: 400 });
+  }
   if (!process.env.RESEND_API_KEY) {
     return NextResponse.json({ error: "Email service not configured (RESEND_API_KEY missing)" }, { status: 503 });
   }
