@@ -6475,7 +6475,7 @@ export default function Home() {
                     try {
                       const issueLabel: Record<string, string> = {
                         locked_mdm: "MDM Locked",
-                        locked_icloud: "iCloud Locked",
+                        locked_icloud: "Activation Locked",
                         locked_carrier: "Carrier Locked",
                         wont_turn_on: "Won't Turn On",
                         physical: "Physically Damaged Beyond Repair",
@@ -6520,7 +6520,7 @@ export default function Home() {
                     <div className="grid grid-cols-2 gap-1.5">
                       {[
                         { id: "locked_mdm" as const, label: "MDM locked" },
-                        { id: "locked_icloud" as const, label: "iCloud locked" },
+                        { id: "locked_icloud" as const, label: "Activation locked" },
                         { id: "locked_carrier" as const, label: "Carrier locked" },
                         { id: "wont_turn_on" as const, label: "Won't turn on" },
                         { id: "physical" as const, label: "Beyond repair" },
@@ -9236,7 +9236,7 @@ export default function Home() {
                   🔒 Phone is locked or won&apos;t turn on?
                 </p>
                 <p className="text-[12px] text-[#d4d4d4] mt-0.5 leading-snug">
-                  iCloud locked · carrier locked · MDM locked · won&apos;t power on · cracked beyond repair — get a custom quote within the hour
+                  Activation locked · carrier locked · MDM locked · won&apos;t power on · cracked beyond repair — get a custom quote within the hour
                 </p>
               </button>
             )}
