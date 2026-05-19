@@ -1,8 +1,142 @@
 import { NextRequest, NextResponse } from "next/server";
+import { promises as fs } from "fs";
+import path from "path";
+import { lookupAtlasResell, type AtlasReference } from "../../../lib/atlas-lookup";
+import skuLabelsJson from "../../../data/sku-labels.json";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
+
+const SKU_LABELS: Record<string, string> = skuLabelsJson as Record<string, string>;
+// Reverse-lookup: human-readable label → SKU. The lead body carries the
+// label string ("iPhone 17 Pro Max"); we need the slug for Atlas + eBay
+// lookups. Built once per cold start.
+const LABEL_TO_SKU: Record<string, string> = (() => {
+  const out: Record<string, string> = {};
+  for (const [sku, label] of Object.entries(SKU_LABELS)) {
+    out[label.toLowerCase().trim()] = sku;
+  }
+  return out;
+})();
+
+// Cached compute-side comps. Loaded lazily on first GET; survives across
+// hot requests in the same lambda instance.
+type EbayCell = { count: number; average: number; median: number; net_average?: number; net_median?: number; min: number; max: number };
+type EbayReference = {
+  models?: Record<string, {
+    by_cell?: Record<string, Record<string, EbayCell>>;
+  }>;
+};
+let atlasRefCache: AtlasReference | null = null;
+let ebayRefCache: EbayReference | null = null;
+async function loadCompRefs(): Promise<{ atlas: AtlasReference; ebay: EbayReference }> {
+  if (atlasRefCache && ebayRefCache) return { atlas: atlasRefCache, ebay: ebayRefCache };
+  try {
+    const [a, e] = await Promise.all([
+      fs.readFile(path.join(process.cwd(), "public", "comps", "atlas-reference.json"), "utf-8").then(JSON.parse).catch(() => ({})),
+      fs.readFile(path.join(process.cwd(), "public", "comps", "ebay-sold.json"), "utf-8").then(JSON.parse).catch(() => ({})),
+    ]);
+    atlasRefCache = a;
+    ebayRefCache = e;
+  } catch {
+    atlasRefCache = atlasRefCache || {};
+    ebayRefCache = ebayRefCache || {};
+  }
+  return { atlas: atlasRefCache!, ebay: ebayRefCache! };
+}
+
+// Normalize a label-form storage ("256 GB", "1 TB") to a price-table slug
+// ("256", "1tb"). Returns null when the value doesn't look like a size.
+function normalizeStorage(raw: string | undefined | null): string | null {
+  if (!raw) return null;
+  const s = raw.toLowerCase().replace(/\s+/g, "");
+  if (/^(\d+)tb$/.test(s)) return s; // 1tb / 2tb
+  const m = /^(\d+)gb?$/.exec(s);
+  if (m) return m[1];
+  if (/^\d+$/.test(s)) return s;
+  return null;
+}
+
+// Normalize a condition label ("Very Good", "Fair / Beat Up", "Sealed")
+// to a slug used by both Atlas and eBay lookups.
+function normalizeCondition(raw: string | undefined | null): string | null {
+  if (!raw) return null;
+  const k = raw.toLowerCase().replace(/[^a-z]/g, "");
+  if (k.includes("seal") || k.includes("newseal")) return "sealed";
+  if (k.includes("mint")) return "mint";
+  if (k.includes("verygood")) return "verygood";
+  if (k.includes("good")) return "good";
+  if (k.includes("fair") || k.includes("beatup")) return "fair";
+  if (k.includes("broken") || k.includes("cracked") || k.includes("damag")) return "broken";
+  return null;
+}
+
+// Carrier label → slug. Returns null for unlocked (the funnel writes
+// "Unlocked" or omits the field entirely).
+function normalizeCarrier(raw: string | undefined | null): "att" | "tmobile" | "other" | null {
+  if (!raw) return null;
+  const k = raw.toLowerCase().replace(/[^a-z]/g, "");
+  if (k.includes("unlock") || k === "none" || k === "n/a") return null;
+  if (k.includes("att") || k.includes("at&t") || k.includes("cricket")) return "att";
+  if (k.includes("tmobile") || k.includes("metro") || k.includes("mint")) return "tmobile";
+  // Anything else (Verizon, US Cellular, Boost, Straight Talk, etc.)
+  return "other";
+}
+
+// eBay condition mapping. Atlas has its own scheme; eBay buckets are
+// just "sealed" / "used" / "broken".
+function ebayBucketForCondition(cond: string | null): "sealed" | "used" | "broken" | null {
+  if (!cond) return null;
+  if (cond === "sealed") return "sealed";
+  if (cond === "broken") return "broken";
+  return "used";
+}
+
+// Look up a lead's eBay net-median resale value for its exact cell.
+function lookupEbayNet(
+  ebay: EbayReference,
+  sku: string,
+  storage: string | null,
+  condition: string | null,
+): { netMedian: number; sampleCount: number } | null {
+  const model = ebay.models?.[sku];
+  if (!model?.by_cell) return null;
+  const bucket = ebayBucketForCondition(condition);
+  if (!bucket) return null;
+  // Storage-keyed: by_cell[storage][bucket]
+  if (storage && model.by_cell[storage]) {
+    const cell = model.by_cell[storage][bucket];
+    if (cell?.net_median) return { netMedian: cell.net_median, sampleCount: cell.count };
+  }
+  // Fallback: try ANY storage if the lead's storage isn't represented.
+  // Take the storage bucket with the most samples.
+  let best: { netMedian: number; sampleCount: number } | null = null;
+  for (const stor of Object.values(model.by_cell)) {
+    const cell = stor[bucket];
+    if (!cell?.net_median) continue;
+    if (!best || cell.count > best.sampleCount) best = { netMedian: cell.net_median, sampleCount: cell.count };
+  }
+  return best;
+}
+
+// Resolve a lead's SKU from its model label. Falls back to a case-
+// insensitive partial match if exact lookup fails (handles minor
+// punctuation drift like "iPhone 13 mini" vs "iPhone 13 Mini").
+function resolveSku(modelLabel: string | undefined | null): string | null {
+  if (!modelLabel) return null;
+  const key = modelLabel.toLowerCase().trim();
+  if (LABEL_TO_SKU[key]) return LABEL_TO_SKU[key];
+  // Partial: pick the SKU whose label is a substring of (or contains)
+  // the lead label. Prefer the longest matching label.
+  let best: { sku: string; len: number } | null = null;
+  for (const [lab, sku] of Object.entries(LABEL_TO_SKU)) {
+    if (key.includes(lab) || lab.includes(key)) {
+      if (!best || lab.length > best.len) best = { sku, len: lab.length };
+    }
+  }
+  return best?.sku || null;
+}
 
 // Admin leads dashboard backend.
 // Pulls last ~300 MC comms, extracts [NEW BUYBACK LEAD] messages, joins
@@ -160,6 +294,19 @@ interface AdminLead {
   // failed identity check — those write a "Coupon attempt:" line
   // which we'd surface separately if needed).
   couponApplied?: { code: string; value: number };
+  // Live competitor margin — computed at GET time using the current
+  // Atlas wholesale + eBay sold-listing data for the lead's exact
+  // (sku, storage, condition, carrier) cell. Both can be missing when
+  // the corresponding comp dataset doesn't carry the variant.
+  //  - atlas: what we'd net selling to Atlas (wholesale exit)
+  //  - ebay:  what we'd net selling on eBay after fees (net_median)
+  // Skywalker 2026-05-19 — staff sees accurate margin per lead.
+  compMargin?: {
+    sku?: string;
+    quote?: number;
+    atlas?: { resell: number; margin: number; marginPct: number; carrierKey: string };
+    ebay?: { netMedian: number; sampleCount: number; margin: number; marginPct: number };
+  };
 }
 
 // Includes "met" (in-person handoff terminal) alongside "paid" (digital
@@ -704,6 +851,58 @@ export async function GET(req: NextRequest) {
   }
 
   leads.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+
+  // Live competitor margin enrichment. Per lead: look up Atlas wholesale
+  // value for the exact (sku, storage, condition, carrier) variant and
+  // eBay net-median for the same cell. Margin = comp − customer quote.
+  // Lets staff see at a glance whether the offer leaves room or not.
+  // Skywalker 2026-05-19.
+  try {
+    const { atlas, ebay } = await loadCompRefs();
+    for (const lead of leads) {
+      // Pick the right device data — single-device uses lead.model directly,
+      // multi-device leads use the first sub-device (good-enough heuristic).
+      const primaryModel = lead.model || lead.devices?.[0]?.model;
+      if (!primaryModel) continue;
+      const sku = resolveSku(primaryModel);
+      if (!sku) continue;
+      const storage = normalizeStorage(lead.storage || lead.devices?.[0]?.storage);
+      const condition = normalizeCondition(lead.condition || lead.devices?.[0]?.condition);
+      const carrier = normalizeCarrier(lead.carrier || lead.devices?.[0]?.carrier);
+      const quoteRaw = lead.quote || (lead.totalPayout != null ? `$${lead.totalPayout}` : undefined);
+      const quote = (() => {
+        if (!quoteRaw) return undefined;
+        const m2 = String(quoteRaw).match(/\d+/);
+        return m2 ? parseInt(m2[0], 10) : undefined;
+      })();
+      const comp: AdminLead["compMargin"] = { sku, quote };
+      // Atlas — try the requested carrier variant first, fall back to
+      // unlocked when no carrier match (e.g. when the funnel didn't
+      // record carrier).
+      const atlasResell = lookupAtlasResell(atlas, sku, primaryModel, storage, condition || "mint", carrier);
+      if (atlasResell != null && quote != null) {
+        comp.atlas = {
+          resell: atlasResell,
+          margin: atlasResell - quote,
+          marginPct: atlasResell > 0 ? Math.round(((atlasResell - quote) / atlasResell) * 100) : 0,
+          carrierKey: carrier || "unlocked",
+        };
+      }
+      // eBay net median for this cell
+      const ebayMatch = lookupEbayNet(ebay, sku, storage, condition);
+      if (ebayMatch && quote != null) {
+        comp.ebay = {
+          netMedian: Math.round(ebayMatch.netMedian),
+          sampleCount: ebayMatch.sampleCount,
+          margin: Math.round(ebayMatch.netMedian) - quote,
+          marginPct: ebayMatch.netMedian > 0 ? Math.round(((ebayMatch.netMedian - quote) / ebayMatch.netMedian) * 100) : 0,
+        };
+      }
+      if (comp.atlas || comp.ebay) lead.compMargin = comp;
+    }
+  } catch {
+    // Comp enrichment is best-effort; never fail the leads response over it.
+  }
 
   // Customer history pass — Skywalker 2026-05-18 "customers history on
   // returning leads". Index every lead by normalized phone digits AND

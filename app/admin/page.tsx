@@ -68,6 +68,14 @@ interface Lead {
   grossMargin?: number;
   marginPercent?: number;
   marginFlag?: string;
+  // Live Atlas + eBay margin per lead — computed at GET time using the
+  // current comp datasets. Skywalker 2026-05-19.
+  compMargin?: {
+    sku?: string;
+    quote?: number;
+    atlas?: { resell: number; margin: number; marginPct: number; carrierKey: string };
+    ebay?: { netMedian: number; sampleCount: number; margin: number; marginPct: number };
+  };
   // Handoff metadata so staff knows shipping vs local + the address /
   // slot the seller picked. Skywalker 2026-05-17.
   handoffMethod?: "ship" | "local";
@@ -2130,6 +2138,38 @@ export default function AdminPage() {
                         <div className="mt-1 px-2 py-1 rounded-md text-[11px] font-bold bg-orange-500/15 border border-orange-500/30">
                           <span className="text-orange-400">📋 Manual quote needed</span>
                           <span className="text-[#888] ml-1">— check Swappa/eBay before offering</span>
+                        </div>
+                      )}
+                      {/* Live Atlas + eBay margin — shows the lead's exact
+                          variant against the current comp datasets so staff
+                          can see "if we sell to Atlas we net $X" /
+                          "if we sell on eBay we net $Y" without leaving
+                          the lead row. Skywalker 2026-05-19. */}
+                      {lead.compMargin && (lead.compMargin.atlas || lead.compMargin.ebay) && (
+                        <div className="mt-1.5 space-y-0.5 text-[11px] font-mono">
+                          {lead.compMargin.atlas && (() => {
+                            const a = lead.compMargin!.atlas!;
+                            const tone = a.marginPct >= 25 ? "text-emerald-400" : a.marginPct >= 10 ? "text-yellow-400" : "text-red-400";
+                            const carrierTag = a.carrierKey === "unlocked" ? "" : ` · ${a.carrierKey.toUpperCase()}`;
+                            return (
+                              <div className="px-2 py-1 rounded-md bg-white/[0.03] border border-white/10" title={`Atlas wholesale buy ($${a.resell}) − customer quote ($${lead.compMargin!.quote ?? "?"}) = $${a.margin} margin (${a.marginPct}%)${carrierTag}`}>
+                                <span className="text-[#888]">Atlas{carrierTag}: </span>
+                                <span className="text-white">${a.resell}</span>
+                                <span className={`ml-1 ${tone}`}>{a.margin >= 0 ? "+" : ""}${a.margin} ({a.marginPct}%)</span>
+                              </div>
+                            );
+                          })()}
+                          {lead.compMargin.ebay && (() => {
+                            const e = lead.compMargin!.ebay!;
+                            const tone = e.marginPct >= 25 ? "text-emerald-400" : e.marginPct >= 10 ? "text-yellow-400" : "text-red-400";
+                            return (
+                              <div className="px-2 py-1 rounded-md bg-white/[0.03] border border-white/10" title={`eBay net-of-fees median ($${e.netMedian}, n=${e.sampleCount}) − customer quote ($${lead.compMargin!.quote ?? "?"}) = $${e.margin} margin (${e.marginPct}%)`}>
+                                <span className="text-[#888]">eBay net ({e.sampleCount}): </span>
+                                <span className="text-white">${e.netMedian}</span>
+                                <span className={`ml-1 ${tone}`}>{e.margin >= 0 ? "+" : ""}${e.margin} ({e.marginPct}%)</span>
+                              </div>
+                            );
+                          })()}
                         </div>
                       )}
                       <p className="text-[#c5c5c5] text-xs">{lead.payout}</p>
