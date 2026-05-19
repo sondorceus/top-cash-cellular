@@ -115,10 +115,15 @@ interface Lead {
     respondedAt?: string;
     customerNote?: string;
   };
-  // Most-recent AI verdict on this lead, sourced from [AI-FLAG] /
-  // [AI-NOTE] / [AI-SUMMARY] markers in MC. Photo-check auto-fire +
-  // admin fraud-check button both post these.
-  ai?: { kind: "AI-FLAG" | "AI-NOTE" | "AI-SUMMARY"; body: string; at: string };
+  // AI verdicts on this lead, sourced from MC markers. Tracked per
+  // kind so a photo-check FLAG and Theot's channel-rec SUMMARY can
+  // both render side-by-side. AI-NOTE only present when no other
+  // kind exists (else it's redundant "all clear" noise).
+  ai?: {
+    flag?: { body: string; at: string; fromName?: string };
+    note?: { body: string; at: string; fromName?: string };
+    summary?: { body: string; at: string; fromName?: string };
+  };
 }
 
 const STATUS_OPTIONS = [
@@ -1773,20 +1778,35 @@ export default function AdminPage() {
                           deep-dive specs. */}
                       {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source || lead.priorLeads || lead.commsSent || lead.payoutConfirmation || lead.couponApplied || lead.ai) && (
                         <div className="mt-1.5 flex flex-wrap items-start gap-1.5">
-                          {/* AI verdict pill — photo-check + fraud-check auto-fires
-                              post [AI-FLAG] / [AI-NOTE] markers; we surface the most
-                              recent one here. Red for flags, neutral blue for notes
-                              + summaries. Hover for the full verdict body. */}
-                          {lead.ai && (
+                          {/* AI verdict pills — photo-check (FLAG) and
+                              Theot's channel-rec (SUMMARY) now render
+                              side-by-side instead of one hiding the
+                              other. Red for FLAG (alert), indigo for
+                              SUMMARY (actionable rec), gray for NOTE
+                              (only when nothing better surfaced).
+                              Skywalker 2026-05-19. */}
+                          {lead.ai?.flag && (
                             <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                                lead.ai.kind === "AI-FLAG"
-                                  ? "bg-red-500/15 text-red-200 border border-red-500/45"
-                                  : "bg-indigo-500/15 text-indigo-200 border border-indigo-500/40"
-                              }`}
-                              title={`${lead.ai.body}\n\n${new Date(lead.ai.at).toLocaleString()}`}
+                              className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-500/15 text-red-200 border border-red-500/45"
+                              title={`${lead.ai.flag.body}\n\n${new Date(lead.ai.flag.at).toLocaleString()}${lead.ai.flag.fromName ? `\n— ${lead.ai.flag.fromName}` : ""}`}
                             >
-                              🤖 {lead.ai.kind === "AI-FLAG" ? "AI Flag" : lead.ai.kind === "AI-NOTE" ? "AI Note" : "AI Summary"} · {lead.ai.body.slice(0, 60)}{lead.ai.body.length > 60 ? "…" : ""}
+                              🚩 AI Flag · {lead.ai.flag.body.slice(0, 50)}{lead.ai.flag.body.length > 50 ? "…" : ""}
+                            </span>
+                          )}
+                          {lead.ai?.summary && (
+                            <span
+                              className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-indigo-500/15 text-indigo-200 border border-indigo-500/40"
+                              title={`${lead.ai.summary.body}\n\n${new Date(lead.ai.summary.at).toLocaleString()}${lead.ai.summary.fromName ? `\n— ${lead.ai.summary.fromName}` : ""}`}
+                            >
+                              🤖 {lead.ai.summary.fromName === "Theot" ? "Theot" : "AI"} · {lead.ai.summary.body.slice(0, 60)}{lead.ai.summary.body.length > 60 ? "…" : ""}
+                            </span>
+                          )}
+                          {lead.ai?.note && (
+                            <span
+                              className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-white/[0.06] text-[#dcdcdc] border border-white/15"
+                              title={`${lead.ai.note.body}\n\n${new Date(lead.ai.note.at).toLocaleString()}${lead.ai.note.fromName ? `\n— ${lead.ai.note.fromName}` : ""}`}
+                            >
+                              🤖 AI · {lead.ai.note.body.slice(0, 50)}{lead.ai.note.body.length > 50 ? "…" : ""}
                             </span>
                           )}
                           {/* Returning-customer pill — Skywalker 2026-05-18.

@@ -356,12 +356,22 @@ interface AdminLead {
     respondedAt?: string;
     customerNote?: string;
   };
-  // Most-recent AI verdict on this lead, parsed from [AI-FLAG: leadId]
-  // / [AI-NOTE: leadId] / [AI-SUMMARY: leadId] markers. Posted by the
-  // photo-check auto-fire on /api/lead (vision QA) plus on-demand by
-  // the admin fraud-check button. Surfaces inline on the lead row so
-  // staff sees the AI's read without leaving the admin. 2026-05-19.
-  ai?: { kind: "AI-FLAG" | "AI-NOTE" | "AI-SUMMARY"; body: string; at: string };
+  // AI verdicts on this lead, parsed from [AI-FLAG: leadId] /
+  // [AI-NOTE: leadId] / [AI-SUMMARY: leadId] markers. Most-recent of
+  // each KIND wins (not just one across all kinds), so the photo-check
+  // FLAG and Theot's channel-rec SUMMARY can render side-by-side
+  // instead of the latter hiding the former. Skywalker 2026-05-19.
+  //
+  // Conventions per kind:
+  //   - flag:    photo-check vision QA caught a mismatch / fraud-check.
+  //   - summary: Theot's channel-rec ("sell on Atlas +$120 …").
+  //   - note:    photo-check "all clear" verdict — only surfaces when
+  //              no flag or summary exists (otherwise it's noise).
+  ai?: {
+    flag?: { body: string; at: string; fromName?: string };
+    note?: { body: string; at: string; fromName?: string };
+    summary?: { body: string; at: string; fromName?: string };
+  };
 }
 
 // Includes "met" (in-person handoff terminal) alongside "paid" (digital
@@ -414,7 +424,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
   }
   const data = await r.json();
-  const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
+  const messages: { id: string; body?: string; timestamp: string; fromName?: string; from?: string }[] = data.messages || [];
 
   // Index reviews by leadId. Reviews without a leadId (pre-token,
   // unbackfilled) stay un-attached — they still show on /reviews
@@ -469,11 +479,13 @@ export async function GET(req: NextRequest) {
   // response (if any). Re-minting an offer overrides the prior one.
   const counterOfferByLead = new Map<string, { originalQuote: number; offer: number; reason: string; timestamp: string }>();
   const counterResponseByLead = new Map<string, { response: "accept" | "decline"; timestamp: string; note?: string }>();
-  // Most-recent AI verdict per lead. Keyed by lead id. AI-FLAG outranks
-  // AI-NOTE when both exist for the same lead — a flag is the actionable
-  // signal and we'd rather show "model mismatch" than "all clear" if both
-  // were posted. AI-SUMMARY is informational, lowest priority.
-  const aiByLead = new Map<string, { kind: "AI-FLAG" | "AI-NOTE" | "AI-SUMMARY"; body: string; timestamp: string }>();
+  // AI markers per lead, tracked PER KIND so a photo-check FLAG and
+  // Theot's channel-rec SUMMARY can both surface on the lead row
+  // instead of the latter hiding the former. Most-recent wins per kind.
+  // Skywalker 2026-05-19.
+  type AIKind = "AI-FLAG" | "AI-NOTE" | "AI-SUMMARY";
+  type AIEntry = { body: string; timestamp: string; fromName?: string };
+  const aiByLead = new Map<string, Partial<Record<AIKind, AIEntry>>>();
   const deletedAtByLead = new Map<string, string>();  // most-recent deletion timestamp
   const restoredAtByLead = new Map<string, string>(); // most-recent restore timestamp
   for (const m of messages) {
@@ -555,24 +567,24 @@ export async function GET(req: NextRequest) {
       commsByLead.set(lid, slot);
     }
     // AI verdict marker — posted by the photo-check auto-fire on
-    // /api/lead and the admin fraud-check button. Format:
+    // /api/lead, the admin fraud-check button, and Theot's channel-rec.
+    // Format:
     //   "[AI-FLAG: <leadId>] <body>"
     //   "[AI-NOTE: <leadId>] <body>"
     //   "[AI-SUMMARY: <leadId>] <body>"
-    // Self-contained (no [LEAD:] tag). Most-recent wins per lead, with
-    // FLAG > NOTE > SUMMARY tiebreaking when timestamps tie (rare).
+    // Self-contained (no [LEAD:] tag). Tracked PER KIND — most-recent
+    // wins within a kind, but different kinds (e.g. a photo-check FLAG
+    // and Theot's channel-rec SUMMARY) coexist on the same lead.
     const aiMarker = m.body.match(/\[(AI-FLAG|AI-NOTE|AI-SUMMARY):\s*([\w-]+)\]\s*([\s\S]*)/i);
     if (aiMarker) {
-      const kind = aiMarker[1].toUpperCase() as "AI-FLAG" | "AI-NOTE" | "AI-SUMMARY";
+      const kind = aiMarker[1].toUpperCase() as AIKind;
       const lid = aiMarker[2];
       const aiBody = aiMarker[3].trim().slice(0, 1500);
-      const prev = aiByLead.get(lid);
-      const tier = (k: string) => (k === "AI-FLAG" ? 3 : k === "AI-NOTE" ? 2 : 1);
-      const shouldReplace = !prev
-        || m.timestamp > prev.timestamp
-        || (m.timestamp === prev.timestamp && tier(kind) > tier(prev.kind));
-      if (shouldReplace) {
-        aiByLead.set(lid, { kind, body: aiBody, timestamp: m.timestamp });
+      const bucket = aiByLead.get(lid) || {};
+      const prev = bucket[kind];
+      if (!prev || m.timestamp > prev.timestamp) {
+        bucket[kind] = { body: aiBody, timestamp: m.timestamp, fromName: m.fromName };
+        aiByLead.set(lid, bucket);
       }
     }
     // Counter-offer mint marker — admin posts this when staff sends a
@@ -944,9 +956,18 @@ export async function GET(req: NextRequest) {
       })(),
       commsSent: commsByLead.get(m.id),
       ai: (() => {
-        const a = aiByLead.get(m.id);
-        if (!a) return undefined;
-        return { kind: a.kind, body: a.body, at: a.timestamp };
+        const bucket = aiByLead.get(m.id);
+        if (!bucket) return undefined;
+        const out: { flag?: { body: string; at: string; fromName?: string }; note?: { body: string; at: string; fromName?: string }; summary?: { body: string; at: string; fromName?: string } } = {};
+        if (bucket["AI-FLAG"])    out.flag    = { body: bucket["AI-FLAG"]!.body,    at: bucket["AI-FLAG"]!.timestamp,    fromName: bucket["AI-FLAG"]!.fromName };
+        if (bucket["AI-SUMMARY"]) out.summary = { body: bucket["AI-SUMMARY"]!.body, at: bucket["AI-SUMMARY"]!.timestamp, fromName: bucket["AI-SUMMARY"]!.fromName };
+        // AI-NOTE is the "all clear" verdict — only worth surfacing
+        // when neither a flag nor a summary already conveys signal.
+        if (bucket["AI-NOTE"] && !out.flag && !out.summary) {
+          out.note = { body: bucket["AI-NOTE"]!.body, at: bucket["AI-NOTE"]!.timestamp, fromName: bucket["AI-NOTE"]!.fromName };
+        }
+        if (!out.flag && !out.note && !out.summary) return undefined;
+        return out;
       })(),
       payoutConfirmation: (() => {
         const pc = payoutConfirmByLead.get(m.id);
