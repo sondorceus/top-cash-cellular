@@ -4376,7 +4376,7 @@ export default function Home() {
     const t2 = setTimeout(snap, 150);
     const t3 = setTimeout(snap, 350);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-  }, [step, page]);
+  }, [step, page, selectedSeries, selectedSubSeries]);
 
   // Returning-customer detection at contact step — debounced lookup as user types phone/email
   useEffect(() => {
