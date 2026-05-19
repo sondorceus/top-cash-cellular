@@ -10356,6 +10356,17 @@ export default function Home() {
                       value: estMargin,
                       currency: "USD",
                     });
+                    // Google Ads "Tcc Lead" conversion action — Skywalker
+                    // created the action in his Top Cash Ads account on
+                    // 2026-05-19 and pasted the snippet back. The label
+                    // 2v1-CLGHv68cEJiay7ZD is the unique identifier; sent
+                    // as Submit-lead-form conversion with our profit-margin
+                    // value (not gross quote — same logic as funnel_submit).
+                    g("event", "conversion", {
+                      send_to: "AW-18099653912/2v1-CLGHv68cEJiay7ZD",
+                      value: estMargin,
+                      currency: "USD",
+                    });
                   }
                 } catch {}
                 if (email || phone) {
