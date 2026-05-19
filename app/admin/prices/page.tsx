@@ -496,7 +496,8 @@ export default function PricesAdminPage() {
                     </button>
                   )}
                 </div>
-                <table className="w-full text-[11px]">
+                <div className="overflow-x-auto -mx-3 px-3">
+                <table className="w-full min-w-[420px] text-[11px]">
                   <thead>
                     <tr className="text-[#888]">
                       {CONDITION_ORDER.map((c) => (
@@ -529,6 +530,7 @@ export default function PricesAdminPage() {
                     </tr>
                   </tbody>
                 </table>
+                </div>
               </div>
             );
           };
@@ -651,7 +653,8 @@ export default function PricesAdminPage() {
                             </button>
                           )}
                         </div>
-                        <table className="w-full text-[12px]">
+                        <div className="overflow-x-auto -mx-3 px-3">
+                        <table className="w-full min-w-[520px] text-[12px]">
                           <thead>
                             <tr className="text-[#888]">
                               <th className="text-left font-semibold pb-1.5 pr-2">Storage</th>
@@ -704,6 +707,7 @@ export default function PricesAdminPage() {
                             ))}
                           </tbody>
                         </table>
+                        </div>
                       </div>
                     );
                   })}
