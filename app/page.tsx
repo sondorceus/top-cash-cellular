@@ -4685,6 +4685,7 @@ function GoogleSignInButton({ onCredential }: { onCredential: (p: GoogleCredenti
 type PriceOverrides = {
   priceTable: Record<string, Record<string, Record<string, number>>>;
   carrierDeductions: Record<string, Record<string, number>>;
+  baseOverrides?: Record<string, number>;
 };
 
 export default function Home() {
@@ -5820,9 +5821,16 @@ export default function Home() {
       })()
     : useDirectPricing
       ? Math.max(0, Math.round((lookupPrice - totalCarrierDeduction) * nonCarrierMultiplier + extrasAdjSum)) + promoFlatBonus
-      : model && condition && model.base
-        ? Math.max(0, Math.round(model.base * storageMultiplier * condition.multiplier * carrierMultiplier * nonCarrierMultiplier + extrasAdjSum)) + promoFlatBonus
-        : 0;
+      : (() => {
+          // model.base via admin override (baseOverrides[id]) if present —
+          // covers VR, drones, Garmin, any other simple-base device. Falls
+          // back to the bundled model.base. Skywalker 2026-05-18 self-serve
+          // price editor.
+          const effBase = (model && (priceOverrides?.baseOverrides?.[model.id] ?? model.base)) || 0;
+          return model && condition && effBase
+            ? Math.max(0, Math.round(effBase * storageMultiplier * condition.multiplier * carrierMultiplier * nonCarrierMultiplier + extrasAdjSum)) + promoFlatBonus
+            : 0;
+        })();
   // Popular-device bonus: phones + cellular iPads get +$25 over IWM
   // so we beat IWM on the categories with the most inbound volume.
   // Skywalker directive 2026-05-16.

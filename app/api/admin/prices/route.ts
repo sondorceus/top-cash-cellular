@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PRICE_TABLE, CARRIER_DEDUCTIONS } from "../../../data/prices";
+import { PRICE_TABLE, CARRIER_DEDUCTIONS, BASE_PRICED_MODELS } from "../../../data/prices";
 import { put, list, del } from "@vercel/blob";
 
 // Price-editor backend. Stores admin overrides as a single JSON document
@@ -35,11 +35,12 @@ function checkAuth(req: NextRequest): boolean {
 type OverridesShape = {
   priceTable: Record<string, Record<string, Record<string, number>>>;
   carrierDeductions: Record<string, Record<string, number>>;
+  baseOverrides: Record<string, number>;
   updatedAt?: string;
 };
 
 async function readOverrides(): Promise<OverridesShape> {
-  const empty: OverridesShape = { priceTable: {}, carrierDeductions: {} };
+  const empty: OverridesShape = { priceTable: {}, carrierDeductions: {}, baseOverrides: {} };
   try {
     const { blobs } = await list({ prefix: BLOB_KEY, limit: 5 });
     const found = blobs.find((b) => b.pathname === BLOB_KEY);
@@ -50,6 +51,7 @@ async function readOverrides(): Promise<OverridesShape> {
     return {
       priceTable: d.priceTable || {},
       carrierDeductions: d.carrierDeductions || {},
+      baseOverrides: d.baseOverrides || {},
       updatedAt: d.updatedAt,
     };
   } catch {
@@ -92,7 +94,11 @@ async function readHistory(): Promise<Array<{ url: string; pathname: string; upl
 // Snapshot the current overrides into history before overwriting. Ring-
 // buffer behavior: prune anything beyond HISTORY_LIMIT.
 async function snapshotToHistory(current: OverridesShape) {
-  if (Object.keys(current.priceTable).length === 0 && Object.keys(current.carrierDeductions).length === 0) {
+  if (
+    Object.keys(current.priceTable).length === 0 &&
+    Object.keys(current.carrierDeductions).length === 0 &&
+    Object.keys(current.baseOverrides || {}).length === 0
+  ) {
     return;
   }
   const ts = new Date().toISOString().replace(/[:.]/g, "-");
@@ -119,6 +125,7 @@ export async function GET() {
     baseline: {
       priceTable: PRICE_TABLE,
       carrierDeductions: CARRIER_DEDUCTIONS,
+      basePricedModels: BASE_PRICED_MODELS,
     },
     overrides,
     effective: {
@@ -133,21 +140,24 @@ export async function POST(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  let body: { priceTable?: OverridesShape["priceTable"]; carrierDeductions?: OverridesShape["carrierDeductions"] };
+  let body: {
+    priceTable?: OverridesShape["priceTable"];
+    carrierDeductions?: OverridesShape["carrierDeductions"];
+    baseOverrides?: OverridesShape["baseOverrides"];
+  };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Bad JSON" }, { status: 400 });
   }
 
-  // Read current overrides + snapshot before mutating (so an admin can roll
-  // back if they regret a save)
   const current = await readOverrides();
   await snapshotToHistory(current);
 
   const merged: OverridesShape = {
     priceTable: deepMerge(current.priceTable, body.priceTable || {}),
     carrierDeductions: deepMerge(current.carrierDeductions, body.carrierDeductions || {}),
+    baseOverrides: { ...current.baseOverrides, ...(body.baseOverrides || {}) },
     updatedAt: new Date().toISOString(),
   };
 
@@ -180,13 +190,13 @@ export async function DELETE(req: NextRequest) {
   const model = req.nextUrl.searchParams.get("model");
   const cell = req.nextUrl.searchParams.get("cell");
   const carrier = req.nextUrl.searchParams.get("carrier");
+  const baseId = req.nextUrl.searchParams.get("base");
   const current = await readOverrides();
   await snapshotToHistory(current);
 
   let next: OverridesShape = current;
   let action = "clear-all";
   if (cell) {
-    // Expect "modelId/storage/condition"
     const [m, s, c] = cell.split("/");
     if (m && s && c && next.priceTable[m]?.[s]?.[c] !== undefined) {
       delete next.priceTable[m][s][c];
@@ -197,17 +207,23 @@ export async function DELETE(req: NextRequest) {
   } else if (carrier) {
     delete next.carrierDeductions[carrier];
     action = `clear-carrier:${carrier}`;
+  } else if (baseId) {
+    delete next.baseOverrides[baseId];
+    action = `clear-base:${baseId}`;
   } else if (model) {
     delete next.priceTable[model];
     delete next.carrierDeductions[model];
+    delete next.baseOverrides[model];
     action = `clear-model:${model}`;
   } else {
-    next = { priceTable: {}, carrierDeductions: {} };
+    next = { priceTable: {}, carrierDeductions: {}, baseOverrides: {} };
   }
   next.updatedAt = new Date().toISOString();
 
-  // If nothing left, wipe the blob entirely; otherwise rewrite
-  const empty = Object.keys(next.priceTable).length === 0 && Object.keys(next.carrierDeductions).length === 0;
+  const empty =
+    Object.keys(next.priceTable).length === 0 &&
+    Object.keys(next.carrierDeductions).length === 0 &&
+    Object.keys(next.baseOverrides).length === 0;
   if (empty) {
     try {
       const { blobs } = await list({ prefix: BLOB_KEY, limit: 5 });

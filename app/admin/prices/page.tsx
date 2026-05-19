@@ -50,9 +50,10 @@ function groupForModel(id: string): string {
 
 type PriceTable = Record<string, Record<string, Record<string, number>>>;
 type CarrierTable = Record<string, Record<string, number>>;
+type BasePricedModel = { category: string; label: string; base: number; inquiryOnly?: boolean; image?: string };
 type Payload = {
-  baseline: { priceTable: PriceTable; carrierDeductions: CarrierTable };
-  overrides: { priceTable: PriceTable; carrierDeductions: CarrierTable & { updatedAt?: string } };
+  baseline: { priceTable: PriceTable; carrierDeductions: CarrierTable; basePricedModels?: Record<string, BasePricedModel> };
+  overrides: { priceTable: PriceTable; carrierDeductions: CarrierTable; baseOverrides?: Record<string, number>; updatedAt?: string };
   effective: { priceTable: PriceTable; carrierDeductions: CarrierTable };
   history?: Array<{ url: string; pathname: string; uploadedAt: string }>;
 };
@@ -60,7 +61,7 @@ type Payload = {
 export default function PricesAdminPage() {
   const [data, setData] = useState<Payload | null>(null);
   const [token, setToken] = useState<string>("");
-  const [edits, setEdits] = useState<{ price: PriceTable; carrier: CarrierTable }>({ price: {}, carrier: {} });
+  const [edits, setEdits] = useState<{ price: PriceTable; carrier: CarrierTable; base: Record<string, number> }>({ price: {}, carrier: {}, base: {} });
   const [saving, setSaving] = useState(false);
   const [lastSaveMsg, setLastSaveMsg] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("");
@@ -99,6 +100,7 @@ export default function PricesAdminPage() {
       for (const s of Object.values(m)) n += Object.keys(s).length;
     }
     for (const m of Object.values(edits.carrier)) n += Object.keys(m).length;
+    n += Object.keys(edits.base).length;
     return n;
   }, [edits]);
 
@@ -111,21 +113,34 @@ export default function PricesAdminPage() {
   }
 
   const setPriceCell = (model: string, storage: string, cond: string, val: number) => {
-    setEdits((prev) => {
-      const next = { price: { ...prev.price }, carrier: { ...prev.carrier } };
-      next.price[model] = { ...(next.price[model] || {}) };
-      next.price[model][storage] = { ...(next.price[model][storage] || {}) };
-      next.price[model][storage][cond] = val;
-      return next;
-    });
+    setEdits((prev) => ({
+      ...prev,
+      price: {
+        ...prev.price,
+        [model]: {
+          ...(prev.price[model] || {}),
+          [storage]: { ...(prev.price[model]?.[storage] || {}), [cond]: val },
+        },
+      },
+    }));
   };
 
   const setCarrierCell = (model: string, carrier: string, val: number) => {
-    setEdits((prev) => {
-      const next = { price: { ...prev.price }, carrier: { ...prev.carrier } };
-      next.carrier[model] = { ...(next.carrier[model] || {}), [carrier]: val };
-      return next;
-    });
+    setEdits((prev) => ({
+      ...prev,
+      carrier: { ...prev.carrier, [model]: { ...(prev.carrier[model] || {}), [carrier]: val } },
+    }));
+  };
+
+  const setBaseCell = (model: string, val: number) => {
+    setEdits((prev) => ({ ...prev, base: { ...prev.base, [model]: val } }));
+  };
+
+  const effectiveBase = (modelId: string, defaultBase: number): number => {
+    return edits.base[modelId] ?? data?.overrides.baseOverrides?.[modelId] ?? defaultBase;
+  };
+  const isBaseOverridden = (modelId: string): boolean => {
+    return data?.overrides.baseOverrides?.[modelId] !== undefined || edits.base[modelId] !== undefined;
   };
 
   const effectivePrice = (model: string, storage: string, cond: string): number | undefined => {
@@ -161,7 +176,11 @@ export default function PricesAdminPage() {
       const r = await fetch(`/api/admin/prices?token=${encodeURIComponent(t)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceTable: edits.price, carrierDeductions: edits.carrier }),
+        body: JSON.stringify({
+          priceTable: edits.price,
+          carrierDeductions: edits.carrier,
+          baseOverrides: edits.base,
+        }),
       });
       if (!r.ok) {
         const j = await r.json().catch(() => ({}));
@@ -170,7 +189,7 @@ export default function PricesAdminPage() {
       }
       const j = await r.json();
       setLastSaveMsg(`✓ Saved at ${new Date(j.updatedAt).toLocaleTimeString()} — ${j.overrideModels} model override(s) live`);
-      setEdits({ price: {}, carrier: {} });
+      setEdits({ price: {}, carrier: {}, base: {} });
       const refresh = await fetch("/api/admin/prices");
       setData(await refresh.json());
     } finally {
@@ -179,11 +198,25 @@ export default function PricesAdminPage() {
   };
 
   const undoAll = () => {
-    if (Object.keys(edits.price).length === 0 && Object.keys(edits.carrier).length === 0) return;
+    if (editCount === 0) return;
     if (!window.confirm(`Discard ${editCount} unsaved edit${editCount === 1 ? "" : "s"}?`)) return;
-    setEdits({ price: {}, carrier: {} });
-    // Bump the data ref so inputs reset to their saved/baseline values
+    setEdits({ price: {}, carrier: {}, base: {} });
     setData((d) => (d ? { ...d } : d));
+  };
+
+  const resetBase = async (modelId: string) => {
+    if (!window.confirm(`Revert ${modelId} base price back to the bundled default?`)) return;
+    const t = getToken();
+    if (!t) return;
+    const r = await fetch(`/api/admin/prices?base=${encodeURIComponent(modelId)}&token=${encodeURIComponent(t)}`, { method: "DELETE" });
+    if (!r.ok) {
+      const j = await r.json().catch(() => ({}));
+      setLastSaveMsg(`Reset failed: ${r.status} ${j.error || ""}`);
+      return;
+    }
+    setLastSaveMsg(`✓ Reverted ${modelId} base price to baseline`);
+    const refresh = await fetch("/api/admin/prices");
+    setData(await refresh.json());
   };
 
   const resetCell = async (model: string, storage: string, cond: string) => {
@@ -235,7 +268,7 @@ export default function PricesAdminPage() {
       return;
     }
     setLastSaveMsg(`✓ All overrides cleared`);
-    setEdits({ price: {}, carrier: {} });
+    setEdits({ price: {}, carrier: {}, base: {} });
     const refresh = await fetch("/api/admin/prices");
     setData(await refresh.json());
   };
@@ -301,6 +334,74 @@ export default function PricesAdminPage() {
           <code className="text-[#00c853]">/api/admin/prices</code> on each visit and merges
           overrides into the bundled defaults).
         </p>
+
+        {/* SIMPLE BASE-PRICE DEVICES — VR, drones, Garmin. These models
+            have a single `base` field (no storage × condition grid),
+            grouped by category for the editor. */}
+        {data.baseline.basePricedModels && Object.keys(data.baseline.basePricedModels).length > 0 && (() => {
+          const all = data.baseline.basePricedModels!;
+          const groups = new Map<string, Array<[string, BasePricedModel]>>();
+          for (const [id, m] of Object.entries(all)) {
+            if (filterLower && !id.toLowerCase().includes(filterLower) && !m.label.toLowerCase().includes(filterLower)) continue;
+            if (!groups.has(m.category)) groups.set(m.category, []);
+            groups.get(m.category)!.push([id, m]);
+          }
+          const cats = Array.from(groups.keys()).sort();
+          if (cats.length === 0) return null;
+          return (
+            <section className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
+              <div className="px-5 py-3 border-b border-white/10 bg-[#00c853]/[0.04]">
+                <span className="font-bold text-[15px]">Simple base-price devices</span>
+                <span className="text-[#888] text-xs ml-2">VR / drones / Garmin — single price per variant</span>
+              </div>
+              <div className="px-5 py-3 space-y-5">
+                {cats.map((cat) => {
+                  const items = groups.get(cat)!;
+                  return (
+                    <div key={cat}>
+                      <p className="text-[11px] uppercase tracking-wider font-bold text-[#00c853] mb-2">{cat} <span className="text-[#888] font-normal">({items.length})</span></p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {items.map(([id, m]) => {
+                          const v = effectiveBase(id, m.base);
+                          const ov = isBaseOverridden(id);
+                          const savedOverride = data.overrides.baseOverrides?.[id] !== undefined;
+                          return (
+                            <div key={id} className="flex items-center gap-2 bg-black/30 border border-white/10 rounded-lg px-2 py-1.5">
+                              <div className="min-w-0 flex-1">
+                                <p className="text-[12px] text-white font-semibold truncate" title={m.label}>{m.label}</p>
+                                <code className="text-[10px] text-[#666]">{id}</code>
+                              </div>
+                              <span className="text-[10px] text-[#888]">$</span>
+                              <input
+                                key={`${id}-${v}`}
+                                type="number"
+                                defaultValue={v}
+                                onChange={(e) => setBaseCell(id, parseInt(e.target.value) || 0)}
+                                className={`w-20 px-1.5 py-0.5 text-right bg-black/60 rounded border ${
+                                  ov ? "border-[#00c853]/50 text-[#00c853]" : "border-white/15"
+                                }`}
+                              />
+                              {savedOverride && (
+                                <button
+                                  type="button"
+                                  onClick={() => resetBase(id)}
+                                  className="text-[10px] text-[#888] hover:text-[#00c853] cursor-pointer"
+                                  title="Revert this device to bundled base price"
+                                >
+                                  ↺
+                                </button>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })()}
 
         {groupNames.map((gname) => {
           const ids = grouped.get(gname)!.filter((id) => !filterLower || id.toLowerCase().includes(filterLower));
