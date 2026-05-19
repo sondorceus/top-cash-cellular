@@ -625,142 +625,126 @@ export async function POST(req: NextRequest) {
   }
 
   // Theot's channel recommendation — looks up Atlas wholesale + eBay
-  // sold-listing comps for the lead's exact cell, runs the math through
-  // 13% FVF + family shipping (comp-economics), and asks the AI Gateway
-  // to recommend the best sell channel. Posts an [AI-SUMMARY: leadId]
-  // marker signed as Theot so the lead row reads "Theot says: sell on
-  // Atlas, +$X vs eBay +$Y because …". Skywalker 2026-05-19.
-  //
-  // Skipped for multi-device leads (per-device economics differ) and
-  // when neither Atlas nor eBay carries the cell.
-  if (leadId && !isMulti && model) {
+  // sold-listing comps for each device in the lead, runs the math
+  // through 13% FVF + family shipping (comp-economics), and asks the
+  // AI Gateway to recommend the best sell channel. Posts an
+  // [AI-SUMMARY: leadId] marker signed as Theot so the lead row reads
+  // "Theot says: sell on Atlas, +$X vs eBay +$Y because …".
+  // Skywalker 2026-05-19. Multi-device support added same day — bundles
+  // get one consolidated recommendation covering per-device channels
+  // and total expected profit.
+  if (leadId && (model || deviceList.length > 0)) {
     after(async () => {
       try {
-        const fsMod = await import("fs/promises");
-        const pathMod = await import("path");
-        const { lookupAtlasResell } = await import("../../lib/atlas-lookup");
-        const { ebayGrossToNet, atlasResellToNet, shippingFor, familyForSku } = await import("../../lib/comp-economics");
+        const { loadCompFiles, lookupCellEconomics } = await import("../../lib/comp-lookup");
         const { callAI, postAIMarker } = await import("../../lib/ai-gateway");
-        const skuLabels = (await import("../../data/sku-labels.json")).default as Record<string, string>;
+        const { atlas, ebay } = await loadCompFiles();
 
-        // Resolve SKU from model label. Exact match first, then a
-        // case-insensitive substring search — same heuristic the admin
-        // route uses.
-        const labelToSku: Record<string, string> = {};
-        for (const [sku, lab] of Object.entries(skuLabels)) labelToSku[lab.toLowerCase().trim()] = sku;
-        const key = model.toLowerCase().trim();
-        let sku = labelToSku[key];
-        if (!sku) {
-          for (const [lab, s] of Object.entries(labelToSku)) {
-            if (key.includes(lab) || lab.includes(key)) { sku = s; break; }
-          }
-        }
-        if (!sku) return;
-
-        // Normalize storage + condition + carrier to the slugs comp
-        // lookups expect. Storage: "256GB" → "256", "1 TB" → "1tb".
-        const storageSlug = (() => {
-          const s = String(storage || "").toLowerCase().replace(/\s+/g, "");
-          if (/^\d+tb$/.test(s)) return s;
-          const m = /^(\d+)gb?$/.exec(s);
-          if (m) return m[1];
-          if (/^\d+$/.test(s)) return s;
-          return null;
-        })();
-        const conditionSlug = (() => {
-          const k = String(condition || "").toLowerCase().replace(/[^a-z]/g, "");
-          if (k.includes("seal")) return "sealed";
-          if (k.includes("excellent") || k.includes("mint")) return "mint";
-          if (k.includes("verygood")) return "verygood";
-          if (k.includes("good")) return "good";
-          if (k.includes("fair")) return "fair";
-          if (k.includes("broken") || k.includes("damage")) return "broken";
-          return null;
-        })();
-        const carrierSlug = (() => {
-          const k = String(carrier || "").toLowerCase().replace(/[^a-z]/g, "");
-          if (k.includes("att")) return "att";
-          if (k.includes("tmobile") || k.includes("t-mobile")) return "tmobile";
-          if (k.includes("verizon")) return "other";
-          if (k.includes("unlocked") || !k) return null;
-          return "other";
-        })();
-        if (!storageSlug || !conditionSlug) return;
-
-        // Load comp datasets. Each is ~250KB JSON, cached at the OS
-        // level after first read. Atlas may be missing entirely on
-        // first deploy — both lookups are null-tolerant downstream.
-        const cwd = process.cwd();
-        const [atlasRaw, ebayRaw] = await Promise.all([
-          fsMod.readFile(pathMod.join(cwd, "public", "comps", "atlas-reference.json"), "utf-8").catch(() => "{}"),
-          fsMod.readFile(pathMod.join(cwd, "public", "comps", "ebay-sold.json"), "utf-8").catch(() => "{}"),
-        ]);
-        let atlas, ebay;
-        try { atlas = JSON.parse(atlasRaw); } catch { atlas = {}; }
-        try { ebay = JSON.parse(ebayRaw); } catch { ebay = {}; }
-
-        const atlasResell = lookupAtlasResell(atlas, sku, model, storageSlug, conditionSlug, carrierSlug);
-
-        // eBay buckets are coarser than our funnel: sealed/used/broken.
-        // Map our slug there before the cell lookup. Storage-keyed: by
-        // storage → bucket → cell. Fall back to any storage when the
-        // exact one isn't represented.
-        const ebayBucket = conditionSlug === "sealed" ? "sealed" : conditionSlug === "broken" ? "broken" : "used";
-        const ebayModel = ebay.models?.[sku];
-        let ebayGross: number | null = null;
-        let ebaySamples = 0;
-        if (ebayModel?.by_cell) {
-          const exact = ebayModel.by_cell[storageSlug]?.[ebayBucket];
-          if (exact?.median) { ebayGross = exact.median; ebaySamples = exact.count || 0; }
-          else {
-            for (const stor of Object.values(ebayModel.by_cell as Record<string, Record<string, { median?: number; count?: number }>>)) {
-              const cell = stor[ebayBucket];
-              if (cell?.median && (cell.count || 0) > ebaySamples) {
-                ebayGross = cell.median; ebaySamples = cell.count || 0;
-              }
-            }
-          }
-        }
-        if (atlasResell == null && ebayGross == null) return;
-
-        const atlasNet = atlasResell != null ? atlasResellToNet(atlasResell, sku) : null;
-        const ebayNet = ebayGross != null ? ebayGrossToNet(ebayGross, sku) : null;
-
-        // Customer payout — strip non-digits from the quote string. May
-        // include a "$" and commas. If parseable, AI gets profit math.
-        const payoutInt = (() => {
-          const m = /\d+/.exec(String(quote || ""));
+        const parseQuote = (q: unknown): number | null => {
+          const m = /\d+/.exec(String(q || ""));
           return m ? parseInt(m[0], 10) : null;
-        })();
-        const atlasMargin = atlasNet != null && payoutInt != null ? Math.round(atlasNet - payoutInt) : null;
-        const ebayMargin = ebayNet != null && payoutInt != null ? Math.round(ebayNet - payoutInt) : null;
-        const fam = familyForSku(sku);
-        const ship = shippingFor(sku);
+        };
 
-        const sysPrompt = `You are Theot, the resale-channel strategist for Top Cash Cellular. For each incoming lead you pick the best exit channel — Atlas (wholesale, no FVF, $${ship} ship), eBay (13% FVF + $0.40 + $${ship} ship), or pass on a bad-margin lead. Return STRICT JSON:
+        // Build the per-device economics array. Single-device leads get
+        // one row built from the top-level fields; multi-device leads
+        // get one row per cart item.
+        type Row = {
+          index: number;
+          label: string;
+          storage: string;
+          condition: string;
+          carrier: string;
+          payout: number | null;
+          quantity: number;
+          ship: number;
+          atlasResell: number | null;
+          atlasNet: number | null;
+          atlasMargin: number | null;
+          ebayGross: number | null;
+          ebayNet: number | null;
+          ebayMargin: number | null;
+          ebaySamples: number;
+        };
+        const sources = isMulti
+          ? deviceList.map((d, i) => ({
+              index: i + 1,
+              label: d.model || "",
+              storage: d.storage,
+              condition: d.condition,
+              carrier: d.carrier,
+              quote: d.quote,
+              quantity: Number(d.quantity) || 1,
+            }))
+          : [{
+              index: 1,
+              label: model || "",
+              storage,
+              condition,
+              carrier,
+              quote,
+              quantity: Number(quantity) || 1,
+            }];
+
+        const rows: Row[] = [];
+        for (const s of sources) {
+          if (!s.label) continue;
+          const econ = lookupCellEconomics({
+            modelLabel: s.label,
+            storage: s.storage as string | null | undefined,
+            condition: s.condition as string | null | undefined,
+            carrier: s.carrier as string | null | undefined,
+            atlas, ebay,
+          });
+          if (!econ) continue;
+          const payout = parseQuote(s.quote);
+          rows.push({
+            index: s.index,
+            label: s.label,
+            storage: econ.storageSlug,
+            condition: econ.conditionSlug,
+            carrier: econ.carrierSlug || "unlocked",
+            payout,
+            quantity: s.quantity,
+            ship: econ.shipCost,
+            atlasResell: econ.atlasResell,
+            atlasNet: econ.atlasNet,
+            atlasMargin: econ.atlasNet != null && payout != null ? Math.round(econ.atlasNet - payout) : null,
+            ebayGross: econ.ebayGross,
+            ebayNet: econ.ebayNet,
+            ebayMargin: econ.ebayNet != null && payout != null ? Math.round(econ.ebayNet - payout) : null,
+            ebaySamples: econ.ebaySamples,
+          });
+        }
+        if (rows.length === 0) return;
+
+        const sysPrompt = `You are Theot, the resale-channel strategist for Top Cash Cellular. For each device in a lead, pick the best exit channel — Atlas (wholesale, no FVF, family shipping only), eBay (13% FVF + $0.40 + family shipping), Swappa (private sale, ~no fee), or pass on a bad-margin device. Return STRICT JSON:
 {
-  "channel": "atlas" | "ebay" | "swappa" | "pass",
-  "atlas_margin": <integer or null>,
-  "ebay_margin": <integer or null>,
-  "confidence": "high" | "medium" | "low",
-  "rationale": "<one-line, <140 chars, concrete numbers, no fluff>"
+  "devices": [
+    { "index": <int>, "channel": "atlas" | "ebay" | "swappa" | "pass", "expected_margin": <integer or null>, "rationale": "<one-line, <100 chars>" }
+  ],
+  "total_profit": <sum of expected_margin × quantity across all devices, integer>,
+  "summary": "<one-line, <140 chars, action-oriented bundle summary>"
 }
 
 Rules:
-- Prefer Atlas when atlas_margin within 15% of ebay_margin — faster, no FVF, no return risk, no listing labor.
+- Prefer Atlas when atlas_margin within 15% of ebay_margin — faster, no FVF, no return risk.
 - Prefer eBay only when its margin is meaningfully better AND sample count is solid (n≥5).
-- "swappa" if both Atlas and eBay are thin AND device is a premium current-gen (better private-sale price).
-- "pass" when neither channel beats $10 profit per unit AND the lead isn't a relationship play (returning customer).
-- Don't recommend a channel that has no data. Use null for unknown margins.
-- Rationale should read like an experienced flipper's gut call — "Atlas +$X is cleaner than eBay +$Y after fees" or "eBay used market is hot for this cell — n=N".`;
+- "swappa" if both Atlas and eBay are thin AND device is premium current-gen.
+- "pass" when neither channel beats $10 profit AND no relationship play.
+- expected_margin is the SINGLE-UNIT margin (don't multiply by quantity — total_profit does that).
+- Concrete numbers in rationale, no fluff.`;
 
-        const userPrompt = `Lead:
-- Device: ${model} ${storageSlug}GB ${conditionSlug}${carrierSlug ? ` ${carrierSlug.toUpperCase()}` : " unlocked"} (family=${fam})
-- TCC paid customer: $${payoutInt ?? "?"}
-- Atlas wholesale: ${atlasResell != null ? `$${atlasResell}` : "no data"} → net after $${ship} ship: ${atlasNet != null ? `$${Math.round(atlasNet)}` : "—"} → margin: ${atlasMargin != null ? `${atlasMargin >= 0 ? "+" : ""}$${atlasMargin}` : "—"}
-- eBay sold median: ${ebayGross != null ? `$${Math.round(ebayGross)} (n=${ebaySamples})` : "no data"} → net after 13% FVF + $0.40 + $${ship} ship: ${ebayNet != null ? `$${Math.round(ebayNet)}` : "—"} → margin: ${ebayMargin != null ? `${ebayMargin >= 0 ? "+" : ""}$${ebayMargin}` : "—"}
+        const isBundle = rows.length > 1;
+        const deviceLines = rows.map(r => `[${r.index}] ${r.label} ${r.storage}${/^\d+tb$/.test(r.storage) ? "" : "GB"} ${r.condition}${r.carrier !== "unlocked" ? ` ${r.carrier.toUpperCase()}` : ""}${r.quantity > 1 ? ` ×${r.quantity}` : ""}
+    paid customer: $${r.payout ?? "?"}
+    Atlas: ${r.atlasResell != null ? `wholesale $${r.atlasResell} − $${r.ship} ship = net $${Math.round(r.atlasNet!)}` : "no data"}${r.atlasMargin != null ? ` → margin ${r.atlasMargin >= 0 ? "+" : ""}$${r.atlasMargin}` : ""}
+    eBay: ${r.ebayGross != null ? `gross median $${Math.round(r.ebayGross)} (n=${r.ebaySamples}) − 13% FVF − $0.40 − $${r.ship} ship = net $${Math.round(r.ebayNet!)}` : "no data"}${r.ebayMargin != null ? ` → margin ${r.ebayMargin >= 0 ? "+" : ""}$${r.ebayMargin}` : ""}`).join("\n\n");
 
-Pick the channel. Be concise.`;
+        const userPrompt = `${isBundle ? `Bundle of ${rows.length} devices:` : "Single-device lead:"}
+
+${deviceLines}
+
+Pick the best channel per device. Be concise.`;
 
         const result = await callAI({
           model: "anthropic/claude-haiku-4-5",
@@ -769,18 +753,38 @@ Pick the channel. Be concise.`;
             { role: "user", content: userPrompt },
           ],
           json: true,
-          maxTokens: 350,
+          maxTokens: 600,
         });
-        type Rec = { channel?: string; atlas_margin?: number | null; ebay_margin?: number | null; confidence?: string; rationale?: string };
+        type DeviceRec = { index?: number; channel?: string; expected_margin?: number | null; rationale?: string };
+        type Rec = { devices?: DeviceRec[]; total_profit?: number; summary?: string };
         const rec = (result.parsed || {}) as Rec;
-        if (!rec.channel || !rec.rationale) return;
+        if (!Array.isArray(rec.devices) || rec.devices.length === 0 || !rec.summary) return;
 
-        const channelLabel = rec.channel === "atlas" ? "Atlas" : rec.channel === "ebay" ? "eBay" : rec.channel === "swappa" ? "Swappa" : "Pass";
+        // Build the marker body. For single devices we keep the
+        // legacy "sell on X · rationale" shape so the admin pill reads
+        // the same. For bundles we lead with the summary line and
+        // append per-device picks below.
+        const channelLabel = (ch?: string) => ch === "atlas" ? "Atlas" : ch === "ebay" ? "eBay" : ch === "swappa" ? "Swappa" : "Pass";
+        let body: string;
+        const tagBits: string[] = ["ai", "channel-rec", "theot"];
+        if (isBundle) {
+          const lines = rec.devices.map(d => {
+            const r = rows.find(x => x.index === d.index);
+            return `[${d.index}] ${r?.label || "?"} → ${channelLabel(d.channel)}${d.expected_margin != null ? ` ${d.expected_margin >= 0 ? "+" : ""}$${d.expected_margin}` : ""}${d.rationale ? ` · ${d.rationale}` : ""}`;
+          });
+          body = `channel-rec · ${rec.summary}${rec.total_profit != null ? ` · total ${rec.total_profit >= 0 ? "+" : ""}$${rec.total_profit}` : ""}\n${lines.join("\n")}`;
+          tagBits.push("bundle");
+          for (const d of rec.devices) if (d.channel) tagBits.push(`channel-${d.channel}`);
+        } else {
+          const d = rec.devices[0] || {};
+          body = `channel-rec · sell on ${channelLabel(d.channel)} · ${d.rationale || rec.summary}`;
+          if (d.channel) tagBits.push(`channel-${d.channel}`);
+        }
         await postAIMarker({
           kind: "AI-SUMMARY",
           leadId: leadId as string,
-          body: `channel-rec · sell on ${channelLabel} · ${rec.rationale}`,
-          tags: ["ai", "channel-rec", "theot", `channel-${rec.channel}`, `confidence-${rec.confidence || "?"}`],
+          body,
+          tags: tagBits,
           signAs: { from: "theot", fromName: "Theot" },
         });
       } catch {
