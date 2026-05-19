@@ -75,7 +75,41 @@ type Payload = {
   effective: { priceTable: PriceTable; carrierDeductions: CarrierTable };
   history?: Array<{ url: string; pathname: string; uploadedAt: string }>;
   atlasReference?: AtlasReference;
+  marginByModel?: Record<string, MarginRow>;
+  skuLabels?: Record<string, string>;
 };
+type MarginRow = { label: string; payout: number; resell: number | null; margin: number | null; marginPct: number | null };
+
+// Margin chip — green ≥25%, yellow 10–24%, red <10%, gray when unknown.
+// Click target is small but visually scannable so Skywalker can spot
+// loss-makers in a long list. Tooltip shows the raw payout vs resell math.
+function MarginChip({ row }: { row?: MarginRow }) {
+  if (!row) return null;
+  if (row.resell == null || row.marginPct == null) {
+    return (
+      <span
+        className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.03] text-[#666] border border-white/5"
+        title="No resell comp in RESELL_ESTIMATES — margin can't be computed. Add an Atlas/Swappa value to app/lib/resell-estimates.ts to track this device."
+      >
+        no comp
+      </span>
+    );
+  }
+  const pct = row.marginPct;
+  const tone =
+    pct >= 25 ? "text-[#00c853] bg-[#00c853]/10 border-[#00c853]/30" :
+    pct >= 10 ? "text-yellow-300 bg-yellow-500/10 border-yellow-500/30" :
+    "text-red-300 bg-red-500/10 border-red-500/40";
+  const sign = pct >= 0 ? "+" : "";
+  return (
+    <span
+      className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${tone}`}
+      title={`Max payout $${row.payout} · resell est $${row.resell} · margin ${row.margin && row.margin >= 0 ? "+" : ""}$${row.margin}`}
+    >
+      {sign}{pct}%
+    </span>
+  );
+}
 
 // Display labels for Atlas categories
 const ATLAS_CATEGORY_LABELS: Record<string, string> = {
@@ -104,7 +138,21 @@ export default function PricesAdminPage() {
   const [saving, setSaving] = useState(false);
   const [lastSaveMsg, setLastSaveMsg] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("");
+  const [marginFilter, setMarginFilter] = useState<"all" | "green" | "yellow" | "red" | "nocomp">("all");
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  // Predicate: does this SKU pass the active margin filter? Used alongside
+  // the text filter in every device section.
+  const passesMarginFilter = (id: string): boolean => {
+    if (marginFilter === "all") return true;
+    const r = data?.marginByModel?.[id];
+    if (marginFilter === "nocomp") return !r || r.marginPct == null;
+    if (!r || r.marginPct == null) return false;
+    if (marginFilter === "green") return r.marginPct >= 25;
+    if (marginFilter === "yellow") return r.marginPct >= 10 && r.marginPct < 25;
+    if (marginFilter === "red") return r.marginPct < 10;
+    return true;
+  };
 
   // Restore the admin token from localStorage so the user doesn't have to
   // type it on every reload. NEVER persisted server-side; we just stash it
@@ -417,6 +465,67 @@ export default function PricesAdminPage() {
           overrides into the bundled defaults).
         </p>
 
+        {/* MARGIN SUMMARY — at-a-glance counts of green / yellow / red /
+            no-comp models. Click a tone to filter the editor below to
+            just those devices. */}
+        {data.marginByModel && (() => {
+          const rows = Object.entries(data.marginByModel);
+          const buckets = { green: 0, yellow: 0, red: 0, nocomp: 0 };
+          let totalMargin = 0; let counted = 0;
+          for (const [, r] of rows) {
+            if (r.marginPct == null) { buckets.nocomp++; continue; }
+            if (r.marginPct >= 25) buckets.green++;
+            else if (r.marginPct >= 10) buckets.yellow++;
+            else buckets.red++;
+            if (r.margin != null) { totalMargin += r.margin; counted++; }
+          }
+          const avg = counted > 0 ? Math.round(totalMargin / counted) : 0;
+          return (
+            <div className="flex items-center gap-2 flex-wrap text-[12px]">
+              <span className="text-[#888]">Margin overview:</span>
+              <button
+                onClick={() => setMarginFilter(marginFilter === "green" ? "all" : "green")}
+                className={`px-2 py-0.5 rounded border transition cursor-pointer ${marginFilter === "green" ? "border-[#00c853] bg-[#00c853]/25 text-[#00c853]" : "border-[#00c853]/40 bg-[#00c853]/10 text-[#00c853] hover:bg-[#00c853]/20"}`}
+                title="Show only devices with ≥25% margin"
+              >
+                ● {buckets.green} green
+              </button>
+              <button
+                onClick={() => setMarginFilter(marginFilter === "yellow" ? "all" : "yellow")}
+                className={`px-2 py-0.5 rounded border transition cursor-pointer ${marginFilter === "yellow" ? "border-yellow-400 bg-yellow-500/25 text-yellow-300" : "border-yellow-500/30 bg-yellow-500/10 text-yellow-300 hover:bg-yellow-500/20"}`}
+                title="10–24% margin — thin"
+              >
+                ● {buckets.yellow} thin
+              </button>
+              <button
+                onClick={() => setMarginFilter(marginFilter === "red" ? "all" : "red")}
+                className={`px-2 py-0.5 rounded border transition cursor-pointer ${marginFilter === "red" ? "border-red-400 bg-red-500/25 text-red-300" : "border-red-500/40 bg-red-500/10 text-red-300 hover:bg-red-500/20"}`}
+                title="<10% margin or loss"
+              >
+                ● {buckets.red} loss-risk
+              </button>
+              <button
+                onClick={() => setMarginFilter(marginFilter === "nocomp" ? "all" : "nocomp")}
+                className={`px-2 py-0.5 rounded border transition cursor-pointer ${marginFilter === "nocomp" ? "border-white/30 bg-white/15 text-white" : "border-white/15 bg-white/[0.03] text-[#888] hover:bg-white/10"}`}
+                title="No resell estimate — add one to track margin"
+              >
+                ● {buckets.nocomp} no comp
+              </button>
+              {marginFilter !== "all" && (
+                <button
+                  onClick={() => setMarginFilter("all")}
+                  className="text-[11px] text-[#888] hover:text-white underline cursor-pointer"
+                >
+                  clear
+                </button>
+              )}
+              <span className="ml-auto text-[#888]">
+                Avg margin: <span className={`font-bold ${avg >= 0 ? "text-[#00c853]" : "text-red-300"}`}>${avg}</span>
+              </span>
+            </div>
+          );
+        })()}
+
         {/* SIMPLE BASE-PRICE DEVICES — VR, drones, Garmin. These models
             have a single `base` field (no storage × condition grid),
             grouped by category for the editor. */}
@@ -425,6 +534,7 @@ export default function PricesAdminPage() {
           const groups = new Map<string, Array<[string, BasePricedModel]>>();
           for (const [id, m] of Object.entries(all)) {
             if (filterLower && !id.toLowerCase().includes(filterLower) && !m.label.toLowerCase().includes(filterLower)) continue;
+            if (!passesMarginFilter(id)) continue;
             if (!groups.has(m.category)) groups.set(m.category, []);
             groups.get(m.category)!.push([id, m]);
           }
@@ -463,7 +573,10 @@ export default function PricesAdminPage() {
                             <div key={id} className="flex items-center gap-2 bg-black/30 border border-white/10 rounded-lg px-2 py-1.5">
                               <div className="min-w-0 flex-1">
                                 <p className="text-[12px] text-white font-semibold truncate" title={m.label}>{m.label}</p>
-                                <code className="text-[10px] text-[#666]">{id}</code>
+                                <div className="flex items-center gap-1.5">
+                                  <code className="text-[10px] text-[#666]">{id}</code>
+                                  <MarginChip row={data.marginByModel?.[id]} />
+                                </div>
                               </div>
                               <span className="text-[10px] text-[#888]">$</span>
                               <input
@@ -508,6 +621,7 @@ export default function PricesAdminPage() {
           const grouped: { macbook: string[]; pc: string[] } = { macbook: [], pc: [] };
           for (const [id, m] of Object.entries(all)) {
             if (filterLower && !id.toLowerCase().includes(filterLower) && !m.label.toLowerCase().includes(filterLower)) continue;
+            if (!passesMarginFilter(id)) continue;
             grouped[m.source].push(id);
           }
           grouped.macbook.sort();
@@ -617,7 +731,7 @@ export default function PricesAdminPage() {
         })()}
 
         {groupNames.map((gname) => {
-          const ids = grouped.get(gname)!.filter((id) => !filterLower || id.toLowerCase().includes(filterLower));
+          const ids = grouped.get(gname)!.filter((id) => (!filterLower || id.toLowerCase().includes(filterLower)) && passesMarginFilter(id));
           if (ids.length === 0) return null;
           const exp = expanded[gname] ?? (!!filterLower);
           return (
@@ -645,6 +759,10 @@ export default function PricesAdminPage() {
                       <div key={modelId} className="bg-black/30 border border-white/10 rounded-xl p-3">
                         <div className="flex items-center gap-3 mb-2 flex-wrap">
                           <code className="text-[13px] font-bold text-white">{modelId}</code>
+                          {data.skuLabels?.[modelId] && (
+                            <span className="text-[12px] text-[#aaa]">{data.skuLabels[modelId]}</span>
+                          )}
+                          <MarginChip row={data.marginByModel?.[modelId]} />
                           {carrier && (
                             <span className="flex items-center gap-1 text-[11px] text-[#888]">
                               <span>Carrier:</span>

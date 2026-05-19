@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PRICE_TABLE, CARRIER_DEDUCTIONS, BASE_PRICED_MODELS, MACBOOK_SPECS, type MacSpec } from "../../../data/prices";
+import { getResellEstimate } from "../../../lib/resell-estimates";
+import skuLabelsJson from "../../../data/sku-labels.json";
 import { put, list, del } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
+
+const SKU_LABELS: Record<string, string> = skuLabelsJson as Record<string, string>;
 
 // Load PC laptop additive specs from the bundled JSON file. Cached
 // per-process since it's static data alongside our code.
@@ -179,6 +183,12 @@ export async function GET() {
   for (const [id, spec] of Object.entries(pcSpecs)) {
     additive[id] = { source: "pc", label: id, condition_adj: (spec as MacSpec).condition_adj || {} };
   }
+  // Per-model margin summary: pairs each device with our highest current
+  // payout, the Atlas grade_a wholesale resell estimate, and the resulting
+  // margin (resell − payout). Lets the editor show a margin chip next to
+  // each device so Skywalker can spot loss-makers at a glance.
+  const effectivePriceTable = deepMerge(PRICE_TABLE, overrides.priceTable);
+  const marginByModel = buildMarginMap(effectivePriceTable, overrides.baseOverrides);
   return NextResponse.json({
     baseline: {
       priceTable: PRICE_TABLE,
@@ -188,12 +198,52 @@ export async function GET() {
     },
     overrides,
     effective: {
-      priceTable: deepMerge(PRICE_TABLE, overrides.priceTable),
+      priceTable: effectivePriceTable,
       carrierDeductions: deepMerge(CARRIER_DEDUCTIONS, overrides.carrierDeductions),
     },
     history,
     atlasReference,
+    marginByModel,
+    skuLabels: SKU_LABELS,
   });
+}
+
+type MarginRow = { label: string; payout: number; resell: number | null; margin: number | null; marginPct: number | null };
+function buildMarginMap(
+  effectivePriceTable: Record<string, Record<string, Record<string, number>>>,
+  baseOverrides: Record<string, number>,
+): Record<string, MarginRow> {
+  const out: Record<string, MarginRow> = {};
+  // PRICE_TABLE entries — max payout across storage × condition matrix
+  for (const [sku, storages] of Object.entries(effectivePriceTable)) {
+    const label = SKU_LABELS[sku];
+    if (!label) continue;
+    let maxPayout = 0;
+    for (const cond of Object.values(storages)) {
+      for (const v of Object.values(cond)) {
+        if (typeof v === "number" && v > maxPayout) maxPayout = v;
+      }
+    }
+    if (maxPayout === 0) continue;
+    const resell = getResellEstimate(label);
+    out[sku] = makeRow(label, maxPayout, resell);
+  }
+  // BASE_PRICED entries — base is the max payout; override if set
+  for (const [sku, m] of Object.entries(BASE_PRICED_MODELS)) {
+    if (out[sku]) continue;
+    if (m.inquiryOnly) continue;
+    const payout = baseOverrides[sku] ?? m.base;
+    if (!payout || payout <= 0) continue;
+    const resell = getResellEstimate(m.label);
+    out[sku] = makeRow(m.label, payout, resell);
+  }
+  return out;
+}
+function makeRow(label: string, payout: number, resell: number | null): MarginRow {
+  if (resell == null) return { label, payout, resell: null, margin: null, marginPct: null };
+  const margin = resell - payout;
+  const marginPct = resell > 0 ? Math.round((margin / resell) * 100) : null;
+  return { label, payout, resell, margin, marginPct };
 }
 
 export async function POST(req: NextRequest) {
