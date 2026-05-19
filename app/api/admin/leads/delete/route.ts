@@ -30,12 +30,23 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     leadId = String(body?.leadId || "").trim();
-    reason = String(body?.reason || "").trim();
+    // Strip `[` and `]` from reason — it's interpolated into the
+    // [DELETED-LEAD: ...] [REASON: ...] marker, and the admin parser
+    // scans for [STATUS:] / [LEAD:] anywhere in any body. A reason
+    // like "] [STATUS: paid] [LEAD: victimId]" would close the
+    // REASON marker and inject a status flip on a target lead.
+    reason = String(body?.reason || "").replace(/[\[\]]/g, "").trim().slice(0, 300);
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
   if (!leadId) {
     return NextResponse.json({ error: "leadId required" }, { status: 400 });
+  }
+  // leadId is consumed by both the marker AND by the response — only
+  // accept the MC-generated shape (alphanumeric + dashes) so an
+  // attacker can't smuggle markers via leadId either.
+  if (!/^[\w-]{1,64}$/.test(leadId)) {
+    return NextResponse.json({ error: "Invalid leadId" }, { status: 400 });
   }
 
   // Fast-fail if MC_API_KEY isn't configured — surface a specific

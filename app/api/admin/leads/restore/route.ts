@@ -31,6 +31,11 @@ export async function POST(req: NextRequest) {
   if (!leadId) {
     return NextResponse.json({ error: "leadId required" }, { status: 400 });
   }
+  // Only accept MC-generated leadId shape — keeps the [RESTORED-LEAD: ...]
+  // marker free of injected `[STATUS:] [LEAD:]` payloads.
+  if (!/^[\w-]{1,64}$/.test(leadId)) {
+    return NextResponse.json({ error: "Invalid leadId" }, { status: 400 });
+  }
   if (!MC_KEY) {
     return NextResponse.json(
       { error: "MC API key not configured on Vercel — set MC_API_KEY (server) or NEXT_PUBLIC_MC_API_KEY (public)." },
