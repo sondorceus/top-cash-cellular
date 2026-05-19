@@ -86,9 +86,21 @@ export async function POST(req: NextRequest) {
   if (!leadId || !newQuote || !reason || typeof newQuote !== "number") {
     return NextResponse.json({ error: "leadId, newQuote (number), and reason required" }, { status: 400 });
   }
+  if (!/^[\w-]{1,64}$/.test(String(leadId))) {
+    return NextResponse.json({ error: "Invalid leadId" }, { status: 400 });
+  }
+
+  // Sanitize each field that lands in the MC marker body — strip
+  // brackets and collapse newlines so an admin (or anyone with a
+  // leaked admin token) can't inject `\nPayout-confirmation:` or
+  // `[STATUS: paid] [LEAD: victimId]` via reason/name/device. The
+  // numeric newQuote is type-checked above.
+  const safeReason = String(reason).replace(/[\[\]\r\n]+/g, " ").trim().slice(0, 300);
+  const safeDevice = (device == null ? "" : String(device)).replace(/[\[\]\r\n]+/g, " ").trim().slice(0, 120);
+  const safeName = (name == null ? "" : String(name)).replace(/[\[\]\r\n]+/g, " ").trim().slice(0, 120);
 
   // Persist to MC comms.
-  const adjustBody = `[QUOTE ADJUSTED: $${newQuote}] [LEAD: ${leadId}]\nReason: ${reason}\nDevice: ${device || "—"}\nCustomer: ${name || "—"}`;
+  const adjustBody = `[QUOTE ADJUSTED: $${newQuote}] [LEAD: ${leadId}]\nReason: ${safeReason}\nDevice: ${safeDevice || "—"}\nCustomer: ${safeName || "—"}`;
   let mcOk = false;
   try {
     const r = await fetch(`${MC_API}/api/comms`, {
