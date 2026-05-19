@@ -11140,9 +11140,21 @@ export default function Home() {
                       <p className="text-white text-base font-bold mb-1">📦 Your prepaid FedEx label is ready</p>
                       <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">
                         Print it, tape it to a padded box, and drop at any FedEx location — no appointment needed.
-                        {submittedDevices && submittedDevices.length > 1 ? " One box can hold all your devices — saves us both the hassle." : ""}
                         {" "}We&apos;ll text you the moment it arrives.
                       </p>
+                      {submittedDevices && submittedDevices.length > 1 && (
+                        <div className="bg-amber-500/10 border border-amber-500/40 rounded-xl p-3 mb-3 flex items-start gap-2.5">
+                          <span className="text-lg leading-none mt-0.5">📦</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-amber-100 text-sm font-bold mb-1">
+                              Pack ALL {submittedDevices.length} devices in ONE box
+                            </p>
+                            <p className="text-amber-200/90 text-[11px] leading-relaxed">
+                              One label covers the entire package — you don&apos;t need {submittedDevices.length} separate boxes or labels. Wrap each device in bubble wrap or clothing, drop them all in a single padded box, tape this label on top. Up to ~15 phones, ~5 tablets, or ~2 laptops fit comfortably in a medium FedEx box.
+                            </p>
+                          </div>
+                        </div>
+                      )}
                       <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-3 mb-3">
                         <p className="text-[10px] uppercase tracking-wider text-[#00c853] font-bold mb-1">Tracking</p>
                         <p className="text-white font-mono font-bold text-sm break-all">{submittedLabel.tracking}</p>

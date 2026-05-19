@@ -178,6 +178,20 @@ ${hasLabel ? `
 </div>
 </td></tr>
 </table>
+${deviceArr.length > 1 ? `
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,180,40,0.08);border:1px solid rgba(255,180,40,0.40);border-radius:12px;margin-top:14px">
+<tr>
+<td valign="top" style="padding:14px 0 14px 16px;width:36px;font-size:22px;line-height:1">📦</td>
+<td style="padding:14px 16px 14px 8px">
+<div style="font-size:14px;color:#fff;font-weight:800;margin-bottom:4px;line-height:1.3">Pack ALL ${deviceArr.length} devices in ONE box</div>
+<div style="font-size:12px;color:#e6c89a;line-height:1.55">
+One label covers the entire package — you don&#39;t need ${deviceArr.length} separate boxes or labels. Wrap each device in bubble wrap or clothing, put them all in a single padded box, tape this label on top.
+<br/><br/>
+<strong style="color:#fff">Box capacity (one FedEx box):</strong> up to ~15 phones, ~5 tablets, or ~2 laptops. We&#39;ll text you the moment your single package arrives.
+</div>
+</td>
+</tr>
+</table>` : ``}
 </td></tr>
 
 <!-- HOW TO SHIP — 3 visual steps with icons, ship customers only -->
