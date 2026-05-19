@@ -296,45 +296,158 @@ def warmup_session(page):
         pass
 
 
-def aggregate(items, family, our_price=0):
-    """Aggregate eBay listings into median/min/max/count.
+def normalize_condition(cond_str):
+    """Map eBay's condition strings → our condition tiers.
 
-    Filters: must contain `family` (e.g. "iphone 17 pro max") as substring.
-    Rejects accessory-only listings, sibling-tier matches via DISAMBIG.
-    Rejects prices < 30% of our_price (likely parts) and > 5x (likely lot).
+    eBay's secondary_info looks like:
+      "Brand New · Apple iPhone 17 Pro Max · 256 GB · Unlocked"
+      "Pre-Owned · Apple iPhone 17 Pro Max · 512 GB · Unlocked"
+      "For parts or not working · Apple iPhone 17 Pro Max"
+      "Open Box · ..."
+      "Very Good - Refurbished · ..."
+
+    Returns one of: sealed | used | broken | None (unknown).
+    We don't try to split "used" further (mint vs good vs fair) because
+    eBay only marks "Pre-Owned" without a sub-grade — a per-listing
+    title keyword parse is unreliable enough that one bucket is safer.
+    """
+    if not cond_str: return None
+    c = cond_str.lower()
+    if "brand new" in c or "new (open box)" in c or c.startswith("new ·"): return "sealed"
+    if "open box" in c: return "sealed"
+    if "for parts" in c or "not working" in c: return "broken"
+    if "refurbish" in c or "pre-owned" in c or "preowned" in c or "used" in c: return "used"
+    return None
+
+
+def normalize_storage(cond_str, title):
+    """Extract storage tier from cond_str (preferred) or title.
+    Returns: 64 / 128 / 256 / 512 / 1tb / 2tb / None.
+    """
+    blob = (cond_str + " " + title).lower()
+    # Order matters — match larger tiers first so "1tb" doesn't get
+    # swallowed by "1".
+    if re.search(r"\b2\s*tb\b", blob): return "2tb"
+    if re.search(r"\b1\s*tb\b", blob): return "1tb"
+    if re.search(r"\b512\s*gb\b", blob): return "512"
+    if re.search(r"\b256\s*gb\b", blob): return "256"
+    if re.search(r"\b128\s*gb\b", blob): return "128"
+    if re.search(r"\b64\s*gb\b", blob): return "64"
+    if re.search(r"\b32\s*gb\b", blob): return "32"
+    return None
+
+
+def reject_outliers_iqr(prices, k=1.5):
+    """Drop prices outside [Q1 - k*IQR, Q3 + k*IQR]. Returns (kept, rejected).
+    Standard Tukey fence — kills fake clickbait listings ($1 starting bid
+    that closed at $50 because nobody bid, scam "iPhone 17 Pro Max $200"
+    that's actually a phone case in disguise, and inflated $5K outliers).
+    """
+    if len(prices) < 4:
+        return prices, []
+    s = sorted(prices)
+    n = len(s)
+    q1 = s[n // 4]
+    q3 = s[(3 * n) // 4]
+    iqr = q3 - q1
+    lo, hi = q1 - k * iqr, q3 + k * iqr
+    kept = [p for p in prices if lo <= p <= hi]
+    rejected = [p for p in prices if p < lo or p > hi]
+    return kept, rejected
+
+
+def aggregate(items, family, atlas_floor=None):
+    """Bucket eBay listings by (storage, condition) and aggregate per cell.
+
+    Filters:
+      - Title must contain `family` substring
+      - Sibling-tier rejects via DISAMBIG (so "iPhone 17" doesn't catch "Pro Max")
+      - Accessory/parts title rejects via ACCESSORY_WORDS
+      - Per-cell IQR outlier rejection (Tukey fence) — kills fake listings
+        and abnormal $1 / $5K extremes
+      - Optional `atlas_floor`: prices below atlas_floor × 0.4 are likely
+        fake (clickbait) and get rejected at parse time
+
+    Returns:
+        {
+            "by_cell": { storage: { condition: {count, average, median, ...} } },
+            "samples": [...],
+            "unmatched": int,
+            "outliers_rejected": int,
+        }
     """
     if not items:
-        return {"count": 0}
+        return {"by_cell": {}, "samples": [], "unmatched": 0, "outliers_rejected": 0}
     family_l = family.lower()
     rejects = DISAMBIG.get(family_l, [])
-    min_price = max(20, our_price * 0.30 if our_price else 0)
-    max_price = (our_price * 5) if our_price else 10000
-    matched = []
+    # Atlas floor — anything below 40% of the cheapest Atlas grade is almost
+    # certainly a fake listing (most flagrant scam: $1 iPhone). Use Atlas's
+    # smallest non-null grade as the reference.
+    hard_floor = (atlas_floor * 0.4) if atlas_floor else 20
+
+    bucketed: dict = {}  # {storage: {cond: [listings]}}
+    samples_out = []
+    unmatched = 0
+    outliers_rejected_total = 0
     for it in items:
         t = it.get("title", "")
         t_lower = t.lower()
         if family_l not in t_lower:
             continue
-        # Reject sibling variants
         if any(sib in t_lower for sib in rejects):
             continue
-        # Reject accessories/parts
         if any(w in t_lower for w in ACCESSORY_WORDS):
             continue
         p = parse_price(it.get("price"))
-        if p is None: continue
-        if p < min_price or p > max_price: continue
-        matched.append({"price": p, "title": t[:120], "cond": it.get("cond", "")[:60]})
-    if not matched:
-        return {"count": 0}
-    prices = sorted(m["price"] for m in matched)
+        if p is None or p < hard_floor or p > 10000:
+            continue
+        cond_str = it.get("cond", "")
+        condition = normalize_condition(cond_str)
+        storage = normalize_storage(cond_str, t)
+        if condition is None or storage is None:
+            unmatched += 1
+            continue
+        bucketed.setdefault(storage, {}).setdefault(condition, []).append({
+            "price": p, "title": t[:100], "cond": cond_str[:80],
+        })
+
+    by_cell: dict = {}
+    for storage, conds in bucketed.items():
+        by_cell[storage] = {}
+        for cond, listings in conds.items():
+            raw_prices = [l["price"] for l in listings]
+            # Primary outlier rejection: IQR (Tukey fence). Strong with n≥4.
+            kept, rejected = reject_outliers_iqr(raw_prices)
+            # Secondary: half-median rule. Catches obvious fakes in
+            # small-sample buckets where IQR can't fire — e.g. a $500
+            # iPhone 17 Pro Max 1TB listing when the rest cluster at $1400.
+            if kept:
+                med0 = statistics.median(kept)
+                half = med0 * 0.5
+                kept2 = [p for p in kept if p >= half]
+                rejected.extend([p for p in kept if p < half])
+                kept = kept2
+            outliers_rejected_total += len(rejected)
+            if not kept:
+                continue
+            kept_sorted = sorted(kept)
+            by_cell[storage][cond] = {
+                "count": len(kept),
+                "average": round(statistics.mean(kept), 2),
+                "median": statistics.median(kept),
+                "min": kept_sorted[0],
+                "max": kept_sorted[-1],
+                "rejected_outliers": len(rejected),
+            }
+            # Keep 2 sample listings from the kept set (cheapest + most-typical)
+            kept_set = set(kept)
+            kept_listings = [l for l in listings if l["price"] in kept_set]
+            samples_out.extend(kept_listings[:2])
     return {
-        "count": len(matched),
-        "min": prices[0],
-        "max": prices[-1],
-        "median": statistics.median(prices),
-        "mean": round(statistics.mean(prices), 2),
-        "samples": matched[:6],
+        "by_cell": by_cell,
+        "samples": samples_out[:12],
+        "unmatched": unmatched,
+        "outliers_rejected": outliers_rejected_total,
     }
 
 
@@ -356,14 +469,44 @@ def read_price_table_models():
     return re.findall(r"^  ([a-zA-Z0-9_]+):\s*\{", body, re.MULTILINE)
 
 
+def load_atlas_floors():
+    """Return {model_id: atlas_min_price} for every model with Atlas data.
+    Used as a fake-listing floor (listings below 40% of this are dropped
+    at parse time, before bucketing).
+
+    Only the 44 phones that scripts/audit-prices-vs-atlas.py covers will
+    have an entry — that's the trustable subset Skywalker wants to start
+    with. Other models in LABEL_MAP get None (less-aggressive floor of $20).
+    """
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("audit", str(ROOT / "scripts" / "audit-prices-vs-atlas.py"))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    atlas = mod.load_atlas()
+    pt = mod.read_price_table()
+    out = {}
+    for mid in pt:
+        for storage in pt[mid]:
+            grades = mod.find_atlas_for(mid, storage, atlas)
+            if not grades: continue
+            values = [v for v in grades.values() if v is not None and v > 0]
+            if not values: continue
+            out[mid] = min(values)  # use lowest grade as floor reference
+            break
+    return out
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--only", help="Single model id (skip rest)")
     parser.add_argument("--category", help="Filter to family prefix (e.g. 'ip', 'gs', 'mba')")
     parser.add_argument("--limit", type=int, help="First N models only")
     parser.add_argument("--out", default=str(OUT))
+    parser.add_argument("--atlas-only", action="store_true",
+                        help="Restrict to models with Atlas reference data (the 44 trustable phones)")
     args = parser.parse_args()
 
+    atlas_floors = load_atlas_floors()
     targets = []
     if args.only:
         if args.only not in LABEL_MAP:
@@ -372,6 +515,8 @@ def main():
     else:
         model_ids = read_price_table_models()
         targets = [m for m in model_ids if m in LABEL_MAP]
+        if args.atlas_only:
+            targets = [m for m in targets if m in atlas_floors]
         if args.category:
             targets = [m for m in targets if m.startswith(args.category)]
         if args.limit:
@@ -402,14 +547,22 @@ def main():
             label, family = LABEL_MAP[mid]
             print(f"[{i}/{len(targets)}] {mid:18s}  {label}", flush=True)
             items = extract_sold(page, label)
-            agg = aggregate(items or [], family)
+            agg = aggregate(items or [], family, atlas_floor=atlas_floors.get(mid))
             agg["label"] = label
             agg["family"] = family
             agg["scraped_at"] = datetime.now(timezone.utc).isoformat()
-            if agg.get("count", 0) > 0:
-                print(f"    {agg['count']} sold  median=${agg['median']:.0f}  range=${agg['min']:.0f}–${agg['max']:.0f}", flush=True)
+            cells = agg.get("by_cell", {})
+            total_n = sum(c.get("count", 0) for s in cells.values() for c in s.values())
+            unmatched = agg.get("unmatched", 0)
+            if total_n > 0:
+                # Compact summary: 256 sealed=1100/n12, 256 used=950/n8, ...
+                pieces = []
+                for storage in sorted(cells.keys()):
+                    for cond, stats in sorted(cells[storage].items()):
+                        pieces.append(f"{storage}/{cond}=${stats['median']:.0f}/n{stats['count']}")
+                print(f"    {total_n} bucketed  {'  '.join(pieces[:6])}{' ...' if len(pieces) > 6 else ''}  unmatched={unmatched}", flush=True)
             else:
-                print(f"    no matched listings", flush=True)
+                print(f"    no bucketed listings (unmatched={unmatched})", flush=True)
             results[mid] = agg
             time.sleep(2.0)
         browser.close()
@@ -422,8 +575,11 @@ def main():
         "models": results,
     }
     out_path.write_text(json.dumps(out, indent=2))
-    found = sum(1 for r in results.values() if r.get("count", 0) > 0)
-    print(f"\nDone. {found}/{len(results)} have sold data. → {out_path}", flush=True)
+    # Count models with at least one bucketed (storage, condition) cell
+    found = sum(1 for r in results.values()
+                if any(r.get("by_cell", {}).get(s, {}) for s in r.get("by_cell", {})))
+    total_cells = sum(len(c) for r in results.values() for c in r.get("by_cell", {}).values())
+    print(f"\nDone. {found}/{len(results)} models have bucketed data ({total_cells} cells total). → {out_path}", flush=True)
 
 
 if __name__ == "__main__":

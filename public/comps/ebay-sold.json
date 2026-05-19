@@ -1,0 +1,3200 @@
+{
+  "scraped_at": "2026-05-19T04:43:41.878634+00:00",
+  "source": "eBay sold-listings (LH_Sold=1, LH_Complete=1)",
+  "note": "Median/mean of completed-listing prices. Accessory + sibling-tier filtered. Use as resale reference vs Atlas wholesale.",
+  "models": {
+    "ip11": {
+      "by_cell": {
+        "64": {
+          "used": {
+            "count": 7,
+            "average": 124.69,
+            "median": 119.5,
+            "min": 108.5,
+            "max": 140.0,
+            "rejected_outliers": 0
+          }
+        },
+        "128": {
+          "used": {
+            "count": 2,
+            "average": 112.5,
+            "median": 112.5,
+            "min": 100.0,
+            "max": 125.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 110.95,
+          "title": "Apple iPhone 11 64GB Black Unlocked iOS 6.1in 12MP A2111 Used",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 11 \u00b7 64 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 119.0,
+          "title": "Apple iPhone 11 - 64GB Black Fully Unlocked Original Box",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 11 \u00b7 64 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 125.0,
+          "title": "Apple iPhone 11 - 64GB 128GB (Unlocked) Black Red Green - Average Condition",
+          "cond": "Pre-Owned"
+        },
+        {
+          "price": 100.0,
+          "title": "Apple iPhone 11 64GB/128GB - Unlocked - Verizon, T-Mobile - Free Shipping",
+          "cond": "Pre-Owned"
+        }
+      ],
+      "unmatched": 7,
+      "outliers_rejected": 0,
+      "label": "iPhone 11",
+      "family": "iphone 11",
+      "scraped_at": "2026-05-19T04:39:33.176066+00:00"
+    },
+    "ip11p": {
+      "by_cell": {
+        "256": {
+          "used": {
+            "count": 5,
+            "average": 196.3,
+            "median": 200.0,
+            "min": 177.5,
+            "max": 219.0,
+            "rejected_outliers": 0
+          }
+        },
+        "64": {
+          "used": {
+            "count": 1,
+            "average": 94.96,
+            "median": 94.96,
+            "min": 94.96,
+            "max": 94.96,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 180.0,
+          "title": "Apple iPhone 11 Pro - 256 GB - Midnight Green (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 11 Pro \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 205.0,
+          "title": "Apple iPhone 11 Pro Unlocked, 256GB, Silver",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 11 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 94.96,
+          "title": "iphone 11 pro 64gb unlocked *** Read Decription",
+          "cond": "Pre-Owned \u00b7 64 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 6,
+      "outliers_rejected": 0,
+      "label": "iPhone 11 Pro",
+      "family": "iphone 11 pro",
+      "scraped_at": "2026-05-19T04:39:38.109136+00:00"
+    },
+    "ip11pm": {
+      "by_cell": {
+        "256": {
+          "used": {
+            "count": 6,
+            "average": 196.43,
+            "median": 200.55,
+            "min": 137.5,
+            "max": 229.99,
+            "rejected_outliers": 0
+          }
+        },
+        "64": {
+          "used": {
+            "count": 2,
+            "average": 189.25,
+            "median": 189.25,
+            "min": 188.5,
+            "max": 190.0,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 4,
+            "average": 235.24,
+            "median": 242.49,
+            "min": 180.0,
+            "max": 275.99,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 1,
+            "average": 234.99,
+            "median": 234.99,
+            "min": 234.99,
+            "max": 234.99,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 216.15,
+          "title": "Apple iPhone 11 Pro Max A2161 256GB Unlocked 6.5\" Space Gray IOS 26.1",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 11 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 137.5,
+          "title": "Apple iPhone 11 Pro Max Rose Gold - 256GB AT&T",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 11 Pro Max \u00b7 256 GB"
+        },
+        {
+          "price": 190.0,
+          "title": "Apple iPhone 11 Pro Max 64GB - Space Gray - AT&T Locked - Grade D",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 11 Pro Max \u00b7 64 GB \u00b7 AT&T"
+        },
+        {
+          "price": 188.5,
+          "title": "iPhone 11 Pro Max *Carrier Unlocked* Perfect Condition",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 11 Pro Max \u00b7 64 GB \u00b7 AT&T"
+        },
+        {
+          "price": 180.0,
+          "title": "Apple iPhone 11 Pro Max - 64GB 256GB 512GB (Unlocked) Choose Color - Good",
+          "cond": "Pre-Owned"
+        },
+        {
+          "price": 264.99,
+          "title": "Unlocked Apple iPhone 11 Pro Max 512GB 18.7.1 Space Gray MWGP2LL/A",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 11 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 234.99,
+          "title": "Apple iPhone 11 Pro Max Fully Unlocked (Any Carrier) SmartPhone 64GB 256GB 512GB",
+          "cond": "Open Box"
+        }
+      ],
+      "unmatched": 9,
+      "outliers_rejected": 0,
+      "label": "iPhone 11 Pro Max",
+      "family": "iphone 11 pro max",
+      "scraped_at": "2026-05-19T04:39:43.089708+00:00"
+    },
+    "ip12": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 4,
+            "average": 158.75,
+            "median": 159.995,
+            "min": 135.0,
+            "max": 179.99,
+            "rejected_outliers": 1
+          },
+          "sealed": {
+            "count": 1,
+            "average": 224.88,
+            "median": 224.88,
+            "min": 224.88,
+            "max": 224.88,
+            "rejected_outliers": 0
+          }
+        },
+        "64": {
+          "used": {
+            "count": 9,
+            "average": 137.83,
+            "median": 145.0,
+            "min": 76.0,
+            "max": 169.5,
+            "rejected_outliers": 1
+          }
+        },
+        "256": {
+          "used": {
+            "count": 2,
+            "average": 203.99,
+            "median": 203.99,
+            "min": 167.99,
+            "max": 239.99,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 159.99,
+          "title": "Apple iPhone 12 128GB White Unlocked Worldwide Good (92% Battery) 4551",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 160.0,
+          "title": "Apple iphone 12 A2402 128GB Black Factory Unlocked Very Good",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 224.88,
+          "title": "Apple iPhone 12 128GB 5G Black(Factory Unlocked) 100% Battery OPEN BOX NEW OTHER",
+          "cond": "Open Box \u00b7 Apple iPhone 12 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 149.58,
+          "title": "Apple iPhone 12 64GB Black A2172 (Unlocked) 80% to 89% Battery Health DG4559",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 \u00b7 64 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 136.0,
+          "title": "Apple iPhone 12 - Spectrum - Black - 64GB - Good",
+          "cond": "Good - Refurbished \u00b7 Apple iPhone 12 \u00b7 64 GB \u00b7 Spectrum"
+        },
+        {
+          "price": 167.99,
+          "title": "Apple iPhone 12 64GB 128GB 256GB Unlocked Smartphone - Good",
+          "cond": "Good - Refurbished"
+        },
+        {
+          "price": 239.99,
+          "title": "Unlocked Apple iPhone 12 - 256GB Red - Great Used Cond - 85% Batt - Read",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 \u00b7 256 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 4,
+      "outliers_rejected": 2,
+      "label": "iPhone 12",
+      "family": "iphone 12",
+      "scraped_at": "2026-05-19T04:39:47.981994+00:00"
+    },
+    "ip12p": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 4,
+            "average": 196.25,
+            "median": 195.0,
+            "min": 170.0,
+            "max": 225.0,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 3,
+            "average": 209.17,
+            "median": 207.5,
+            "min": 150.0,
+            "max": 270.0,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 1,
+            "average": 200.5,
+            "median": 200.5,
+            "min": 200.5,
+            "max": 200.5,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 170.0,
+          "title": "Apple iPhone 12 Pro Gold Color 128GB Unlocked Very Good Condition",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 Pro \u00b7 128 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 225.0,
+          "title": "Apple iPhone 12 Pro - 128GB - Gold (Unlocked Excellent Condition",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 Pro \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 270.0,
+          "title": "Apple iPhone 12 Pro 256GB Gold Unlocked",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 150.0,
+          "title": "Apple iPhone 12 Pro 256GB, Pacific Blue, Unlocked",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 Pro \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 200.5,
+          "title": "Apple iPhone 12 Pro 512GB Unlocked Silver",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 Pro \u00b7 512 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 6,
+      "outliers_rejected": 0,
+      "label": "iPhone 12 Pro",
+      "family": "iphone 12 pro",
+      "scraped_at": "2026-05-19T04:39:52.938906+00:00"
+    },
+    "ip12pm": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 12,
+            "average": 236.74,
+            "median": 243.75,
+            "min": 155.0,
+            "max": 339.95,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 5,
+            "average": 303.36,
+            "median": 279.0,
+            "min": 250.0,
+            "max": 367.79,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 5,
+            "average": 320.71,
+            "median": 299.99,
+            "min": 229.0,
+            "max": 400.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 227.5,
+          "title": "Apple iPhone 12 Pro Max - 128GB - Unlocked (Read Description)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 Pro Max \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 182.5,
+          "title": "iPhone 12 Pro Max- A T&T- Very Nice",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 Pro Max \u00b7 128 GB \u00b7 AT&T"
+        },
+        {
+          "price": 250.0,
+          "title": "Apple iPhone 12 Pro Max - 256GB - Unlocked (Read Description)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 270.0,
+          "title": "Apple iPhone 12 Pro Max 256GB Pacific Blue Unlocked Great Condition Clean IMEI",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 299.99,
+          "title": "Unlocked Apple iPhone 12 Pro Max 512GB Gold MG9M3LL/A",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 400.0,
+          "title": "iPhone 12 Pro Max 512 GB Unlocked Pacific Blue",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 12 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 17,
+      "outliers_rejected": 0,
+      "label": "iPhone 12 Pro Max",
+      "family": "iphone 12 pro max",
+      "scraped_at": "2026-05-19T04:39:58.010019+00:00"
+    },
+    "ip13": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 13,
+            "average": 191.1,
+            "median": 200.0,
+            "min": 119.99,
+            "max": 234.36,
+            "rejected_outliers": 1
+          }
+        },
+        "256": {
+          "used": {
+            "count": 2,
+            "average": 214.0,
+            "median": 214.0,
+            "min": 200.5,
+            "max": 227.5,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 209.95,
+          "title": "Apple iPhone 13 128GB Black A2482 (Unlocked) Discounted zW2068",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 13 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 200.0,
+          "title": "Apple iPhone 13 - 128 GB - Midnight Unlocked Condition: Fair Battery Health 80%",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 13 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 200.5,
+          "title": "Apple iPhone 13 - 256GB - Unlocked (Read Description)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 13 \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 227.5,
+          "title": "Apple iPhone 13 - 256GB - Unlocked (Read Description)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 13 \u00b7 256 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 5,
+      "outliers_rejected": 1,
+      "label": "iPhone 13",
+      "family": "iphone 13",
+      "scraped_at": "2026-05-19T04:40:02.940235+00:00"
+    },
+    "ip13p": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 5,
+            "average": 264.9,
+            "median": 290.0,
+            "min": 199.99,
+            "max": 300.0,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 4,
+            "average": 333.24,
+            "median": 329.0,
+            "min": 299.95,
+            "max": 375.0,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 1,
+            "average": 359.89,
+            "median": 359.89,
+            "min": 359.89,
+            "max": 359.89,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 300.0,
+          "title": "Apple iPhone 13 Pro 128GB Unlocked Gray iOS Smartphone Triple Rear Cameras",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 13 Pro \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 242.5,
+          "title": "Apple iPhone 13 Pro - 128GB - Unlocked (Read Description)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 13 Pro \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 358.0,
+          "title": "Apple iPhone 13 Pro - 256 GB - Sierra Blue (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 13 Pro \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 375.0,
+          "title": "Apple iPhone 13 Pro - 256 GB - Graphite (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 13 Pro \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 359.89,
+          "title": "Apple iPhone 13 Pro 256 GB Graphite 5G LTE Verizon Unlocked Smartphone",
+          "cond": "Open Box \u00b7 Apple iPhone 13 Pro \u00b7 256 GB"
+        }
+      ],
+      "unmatched": 5,
+      "outliers_rejected": 0,
+      "label": "iPhone 13 Pro",
+      "family": "iphone 13 pro",
+      "scraped_at": "2026-05-19T04:40:07.913737+00:00"
+    },
+    "ip13pm": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 18,
+            "average": 310.21,
+            "median": 349.99,
+            "min": 179.0,
+            "max": 444.24,
+            "rejected_outliers": 1
+          }
+        },
+        "1tb": {
+          "used": {
+            "count": 1,
+            "average": 529.99,
+            "median": 529.99,
+            "min": 529.99,
+            "max": 529.99,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 1,
+            "average": 347.0,
+            "median": 347.0,
+            "min": 347.0,
+            "max": 347.0,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 1,
+            "average": 330.0,
+            "median": 330.0,
+            "min": 330.0,
+            "max": 330.0,
+            "rejected_outliers": 0
+          }
+        },
+        "64": {
+          "broken": {
+            "count": 1,
+            "average": 50.0,
+            "median": 50.0,
+            "min": 50.0,
+            "max": 50.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 349.99,
+          "title": "APPLE IPHONE 13 PRO MAX 128GB SIERRA BLUE Unlocked BEAUTIFUL SHAPE WITH EXTRAS",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 13 Pro Max \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 254.55,
+          "title": "Apple iPhone 13 Pro Max 128gb 85% battery health unlocked.",
+          "cond": "Pre-Owned"
+        },
+        {
+          "price": 529.99,
+          "title": "Apple iPhone 13 Pro Max - 1 TB - Sierra Blue (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 13 Pro Max \u00b7 1 TB \u00b7 Unlocked"
+        },
+        {
+          "price": 347.0,
+          "title": "Apple iPhone 13 Pro Max - 512GB - Unlocked (Read Description)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 13 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 330.0,
+          "title": "Apple iPhone 13 Pro Max Unlocked, 256GB",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 13 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 50.0,
+          "title": "iphone xs max 64gb unlocked Cracked+ FREE IPhone 13 Pro Max Charge Port Broken.",
+          "cond": "For Parts"
+        }
+      ],
+      "unmatched": 16,
+      "outliers_rejected": 1,
+      "label": "iPhone 13 Pro Max",
+      "family": "iphone 13 pro max",
+      "scraped_at": "2026-05-19T04:40:12.992152+00:00"
+    },
+    "ip14": {
+      "by_cell": {
+        "256": {
+          "used": {
+            "count": 1,
+            "average": 169.99,
+            "median": 169.99,
+            "min": 169.99,
+            "max": 169.99,
+            "rejected_outliers": 0
+          }
+        },
+        "128": {
+          "used": {
+            "count": 2,
+            "average": 201.25,
+            "median": 201.25,
+            "min": 177.5,
+            "max": 225.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 169.99,
+          "title": "APPLE A2649 iPhone 14 256GB Wi-Fi + Cellular Unlocked Midnight",
+          "cond": "Pre-Owned \u00b7 256 GB"
+        },
+        {
+          "price": 177.5,
+          "title": "Apple iPhone 14 - 128 GB - Blue (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 225.0,
+          "title": "Apple iPhone 14 - 128 GB - Starlight (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 \u00b7 128 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 2,
+      "outliers_rejected": 0,
+      "label": "iPhone 14",
+      "family": "iphone 14",
+      "scraped_at": "2026-05-19T04:40:18.464750+00:00"
+    },
+    "ip14p": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 5,
+            "average": 299.8,
+            "median": 317.0,
+            "min": 250.0,
+            "max": 345.0,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "sealed": {
+            "count": 1,
+            "average": 440.0,
+            "median": 440.0,
+            "min": 440.0,
+            "max": 440.0,
+            "rejected_outliers": 0
+          },
+          "used": {
+            "count": 2,
+            "average": 451.0,
+            "median": 451.0,
+            "min": 420.0,
+            "max": 482.0,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 1,
+            "average": 373.0,
+            "median": 373.0,
+            "min": 373.0,
+            "max": 373.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 260.0,
+          "title": "Apple iPhone 14 Pro 128GB Silver Unlocked 48MP 6.1\" Smartphone MQ003LL/A",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 250.0,
+          "title": "Apple iPhone 14 Pro 128GB AT&T Good Condition 85% Battery Replaced Screen",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 440.0,
+          "title": "Apple iPhone 14 Pro Unlocked, 256GB, Space Black",
+          "cond": "Open Box \u00b7 Apple iPhone 14 Pro \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 420.0,
+          "title": "Apple iPhone 14 Pro - 256 GB - Space Black (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 482.0,
+          "title": "Apple iPhone 14 Pro - 256GB - Unlocked (Read Description)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 373.0,
+          "title": "Apple iPhone 14 Pro - 512GB - Unlocked (Read Description)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 512 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 1,
+      "outliers_rejected": 0,
+      "label": "iPhone 14 Pro",
+      "family": "iphone 14 pro",
+      "scraped_at": "2026-05-19T04:40:35.095898+00:00"
+    },
+    "ip14plus": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 16,
+            "average": 277.71,
+            "median": 279.615,
+            "min": 219.95,
+            "max": 339.99,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 3,
+            "average": 411.66,
+            "median": 399.99,
+            "min": 335.0,
+            "max": 499.99,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 10,
+            "average": 269.09,
+            "median": 261.5,
+            "min": 229.0,
+            "max": 340.94,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 3,
+            "average": 331.82,
+            "median": 329.99,
+            "min": 327.0,
+            "max": 338.48,
+            "rejected_outliers": 2
+          },
+          "sealed": {
+            "count": 1,
+            "average": 376.0,
+            "median": 376.0,
+            "min": 376.0,
+            "max": 376.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 250.0,
+          "title": "Apple iPhone 14 Plus Yellow 128GB Fully Unlocked - GOOD Condition Screen Protect",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Plus \u00b7 128 GB \u00b7 AT&T"
+        },
+        {
+          "price": 284.35,
+          "title": "Apple iPhone 14 Plus 6.7\" Unlocked 128GB - (Midnight) A2632 w/1 Year Warranty",
+          "cond": "Good - Refurbished \u00b7 Apple iPhone 14 Plus \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 335.0,
+          "title": "Apple iPhone 14 Plus for Cricket Wireless black color",
+          "cond": "Open Box \u00b7 Apple iPhone 14 Plus \u00b7 128 GB \u00b7 Cricket Wireless"
+        },
+        {
+          "price": 499.99,
+          "title": "New Apple iPhone 14 Plus Purple A2632 128GB Factory Unlocked All Mobile Carriers",
+          "cond": "Brand New \u00b7 Apple iPhone 14 Plus \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 265.0,
+          "title": "Apple iPhone 14 Plus 128GB/256GB - Mint Condition - Midnight, Starlight, Blue",
+          "cond": "Pre-Owned"
+        },
+        {
+          "price": 229.0,
+          "title": "Apple iPhone 14 Plus 128GB 256GB Unlocked Verizon AT&T Mint Condition",
+          "cond": "Pre-Owned"
+        },
+        {
+          "price": 327.0,
+          "title": "Apple iPhone 14 Plus 512GB Black - Unlocked AT&T T-Mobile Verizon GSM 7630590",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Plus \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 329.99,
+          "title": "Apple iPhone 14 Plus, 128- 256-512GB - Unlocked All Colors -Used Very Good",
+          "cond": "Pre-Owned"
+        },
+        {
+          "price": 376.0,
+          "title": "New Apple iPhone 14 Plus A2632 128GB/256GB/512GB Factory Unlocked GSM CDMA US",
+          "cond": "Brand New"
+        }
+      ],
+      "unmatched": 22,
+      "outliers_rejected": 2,
+      "label": "iPhone 14 Plus",
+      "family": "iphone 14 plus",
+      "scraped_at": "2026-05-19T04:40:40.074386+00:00"
+    },
+    "ip14pm": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 24,
+            "average": 405.2,
+            "median": 399.995,
+            "min": 340.0,
+            "max": 489.99,
+            "rejected_outliers": 1
+          },
+          "sealed": {
+            "count": 2,
+            "average": 474.5,
+            "median": 474.5,
+            "min": 400.0,
+            "max": 549.0,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 10,
+            "average": 416.5,
+            "median": 418.0,
+            "min": 299.0,
+            "max": 494.99,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 2,
+            "average": 520.0,
+            "median": 520.0,
+            "min": 490.0,
+            "max": 550.0,
+            "rejected_outliers": 0
+          }
+        },
+        "1tb": {
+          "used": {
+            "count": 3,
+            "average": 530.13,
+            "median": 529.99,
+            "min": 520.0,
+            "max": 540.41,
+            "rejected_outliers": 1
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 475.0,
+          "title": "Apple iPhone 14 Pro Max - 128 GB - Silver (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 385.0,
+          "title": "Apple iPhone 14 Pro Max 128GB Black",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 400.0,
+          "title": "Apple iPhone 14 Pro Max 128GB Black Smartphone iOS Wi-Fi Bluetooth Open Box",
+          "cond": "Open Box \u00b7 Apple iPhone 14 Pro Max \u00b7 128 GB"
+        },
+        {
+          "price": 549.0,
+          "title": "Apple iPhone 14 Pro Max - 128 GB - Gold (Unlocked)",
+          "cond": "Open Box \u00b7 Apple iPhone 14 Pro Max \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 494.99,
+          "title": "Apple iPhone 14 Pro Max 256GB Deep Purple Unlocked \u2013 90%+ Battery \u2013 Very Good",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 400.0,
+          "title": "Apple iPhone 14 Pro Max Smartphone 256GB Space Black Unlocked 87% Battery Health",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 490.0,
+          "title": "Apple iPhone 14 Pro Max 512GB Unlocked Gold & Box -Fully Functional",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 550.0,
+          "title": "iphone 14 pro max 512gb (AT&T)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 512 GB \u00b7 AT&T"
+        },
+        {
+          "price": 520.0,
+          "title": "Apple iPhone 14 Pro Max, 1TB, Deep Purple, Carrier Unlocked, Excellent!!",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 1 TB \u00b7 Unlocked"
+        },
+        {
+          "price": 540.41,
+          "title": "Apple iPhone 14 Pro Max 1TB Gold (Unlocked) Battery Used Message",
+          "cond": "Pre-Owned"
+        }
+      ],
+      "unmatched": 13,
+      "outliers_rejected": 2,
+      "label": "iPhone 14 Pro Max",
+      "family": "iphone 14 pro max",
+      "scraped_at": "2026-05-19T04:40:44.968961+00:00"
+    },
+    "ip15": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 9,
+            "average": 330.44,
+            "median": 345.0,
+            "min": 275.0,
+            "max": 399.99,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 3,
+            "average": 478.32,
+            "median": 470.0,
+            "min": 429.95,
+            "max": 535.0,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 1,
+            "average": 519.99,
+            "median": 519.99,
+            "min": 519.99,
+            "max": 519.99,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 275.0,
+          "title": "Apple iPhone 15 128GB Black Unlocked \u2014 84% Battery | Tested & Working",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 360.0,
+          "title": "Apple iPhone 15 A2846 128GB Unlocked - EXCELLENT CONDITION A+",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 \u00b7 128 GB \u00b7 AT&T, Verizon, T-Mobile, Sprint"
+        },
+        {
+          "price": 470.0,
+          "title": "Apple iPhone 15 128GB Black Factory Unlocked Brand New Sealed In Box!!",
+          "cond": "Brand New \u00b7 Apple iPhone 15 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 535.0,
+          "title": "NEW Unlocked Sealed Apple iPhone 15 128GB Black",
+          "cond": "Brand New \u00b7 Apple iPhone 15 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 519.99,
+          "title": "Apple iPhone 15 256gb Pink color (Factory Unlocked) 98% battery",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 \u00b7 256 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 3,
+      "outliers_rejected": 0,
+      "label": "iPhone 15",
+      "family": "iphone 15",
+      "scraped_at": "2026-05-19T04:40:49.976014+00:00"
+    },
+    "ip15p": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 7,
+            "average": 412.43,
+            "median": 440.0,
+            "min": 339.99,
+            "max": 500.0,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 1,
+            "average": 710.0,
+            "median": 710.0,
+            "min": 710.0,
+            "max": 710.0,
+            "rejected_outliers": 0
+          }
+        },
+        "1tb": {
+          "used": {
+            "count": 1,
+            "average": 750.0,
+            "median": 750.0,
+            "min": 750.0,
+            "max": 750.0,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 3,
+            "average": 431.66,
+            "median": 400.0,
+            "min": 385.0,
+            "max": 509.99,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 500.0,
+          "title": "iPhone 15 Pro 128GB Unlocked, Silver",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 339.99,
+          "title": "Apple iPhone 15 pro 128GB 26.4.2 Black Titanium model MTQQ3LL/A T-mobile",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 710.0,
+          "title": "Apple iPhone 15 Pro 512 GB White Titanium - Physical Sim",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 512 GB"
+        },
+        {
+          "price": 750.0,
+          "title": "Apple iPhone 15 Pro 1TB -Blue Titanium 100% Battery Unlocked Excellent Condition",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 1 TB \u00b7 Unlocked"
+        },
+        {
+          "price": 400.0,
+          "title": "Apple iPhone 15 Pro - 256 GB - Blue Titanium (AT&T)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 256 GB \u00b7 AT&T"
+        },
+        {
+          "price": 509.99,
+          "title": "Apple iPhone 15 Pro 256GB Factory Unlocked (87% Batt) Titanium Blue #24453",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 256 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 5,
+      "outliers_rejected": 0,
+      "label": "iPhone 15 Pro",
+      "family": "iphone 15 pro",
+      "scraped_at": "2026-05-19T04:40:54.993147+00:00"
+    },
+    "ip15plus": {
+      "by_cell": {
+        "128": {
+          "sealed": {
+            "count": 2,
+            "average": 499.5,
+            "median": 499.5,
+            "min": 409.0,
+            "max": 590.0,
+            "rejected_outliers": 0
+          },
+          "used": {
+            "count": 23,
+            "average": 382.09,
+            "median": 399.0,
+            "min": 275.0,
+            "max": 454.99,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 6,
+            "average": 455.74,
+            "median": 449.98,
+            "min": 409.99,
+            "max": 518.82,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 8,
+            "average": 430.87,
+            "median": 424.5,
+            "min": 401.96,
+            "max": 499.99,
+            "rejected_outliers": 1
+          },
+          "sealed": {
+            "count": 1,
+            "average": 499.95,
+            "median": 499.95,
+            "min": 499.95,
+            "max": 499.95,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 590.0,
+          "title": "Apple iPhone 15 Plus 128GB Unlocked",
+          "cond": "Open Box \u00b7 Apple iPhone 15 Plus \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 409.0,
+          "title": "Apple iPhone 15 Plus - 128 GB - Black (Verizon)",
+          "cond": "Open Box \u00b7 Apple iPhone 15 Plus \u00b7 128 GB \u00b7 Verizon"
+        },
+        {
+          "price": 400.0,
+          "title": "iphone 15 plus",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Plus \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 345.0,
+          "title": "Apple iPhone 15 Plus - 128GB - Unlocked- Great Camera and Battery Health",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Plus \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 490.69,
+          "title": "Apple iPhone 15 Plus A2847 512GB Pink 98% battery health Unlocked",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Plus \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 518.82,
+          "title": "Apple iPhone 15 Plus A2847 512GB Green 99% battery health Unlocked device",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Plus \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 420.0,
+          "title": "Apple iPhone 15 Plus Pink 256GB, iOS Smartphone 48MP Camera Slate Style",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Plus \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 499.99,
+          "title": "Apple iPhone 15 Plus - 256 GB - Blue (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Plus \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 499.95,
+          "title": "Apple iPhone 15 Plus 128GB 256GB Factory Unlocked Open Box Mint Smartphone A2847",
+          "cond": "Open Box"
+        }
+      ],
+      "unmatched": 14,
+      "outliers_rejected": 1,
+      "label": "iPhone 15 Plus",
+      "family": "iphone 15 plus",
+      "scraped_at": "2026-05-19T04:41:00.303191+00:00"
+    },
+    "ip15pm": {
+      "by_cell": {
+        "256": {
+          "used": {
+            "count": 28,
+            "average": 549.06,
+            "median": 549.99,
+            "min": 429.99,
+            "max": 660.0,
+            "rejected_outliers": 4
+          },
+          "sealed": {
+            "count": 3,
+            "average": 699.63,
+            "median": 699.89,
+            "min": 650.0,
+            "max": 749.0,
+            "rejected_outliers": 1
+          }
+        },
+        "512": {
+          "used": {
+            "count": 2,
+            "average": 598.39,
+            "median": 598.39,
+            "min": 581.78,
+            "max": 615.0,
+            "rejected_outliers": 0
+          }
+        },
+        "1tb": {
+          "used": {
+            "count": 2,
+            "average": 559.0,
+            "median": 559.0,
+            "min": 455.0,
+            "max": 663.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 550.0,
+          "title": "Apple iPhone 15 Pro Max - 256 GB - Black Titanium (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 579.99,
+          "title": "Factory Unlocked Apple iPhone 15 Pro Max 256GB Black MU663LL/A",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro Max \u00b7 256 GB \u00b7 Factory Unlocked"
+        },
+        {
+          "price": 749.0,
+          "title": "Apple iPhone 15 Pro Max 256GB Natural Titanium Unlocked A2849",
+          "cond": "Open Box \u00b7 Apple iPhone 15 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 650.0,
+          "title": "iPhone 15 Pro Max - Natural Titanium - 256GB (UNLOCKED)",
+          "cond": "Open Box \u00b7 Apple iPhone 15 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 581.78,
+          "title": "Apple iPhone 15 Pro Max 512GB- Good Condition- 88% \ud83d\udd0b- Physical SIM- Unlocked",
+          "cond": "Pre-Owned"
+        },
+        {
+          "price": 615.0,
+          "title": "Apple iPhone 15 Pro Max 512GB Blue - Unlocked AT&T T-Mobile Verizon 7635948",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 455.0,
+          "title": "iPhone 15 Pro Max",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro Max \u00b7 1 TB \u00b7 AT&T"
+        },
+        {
+          "price": 663.0,
+          "title": "Apple iPhone 15 Pro Max 1TB White - Unlocked AT&T T-Mobile Verizon 7636195",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro Max \u00b7 1 TB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 11,
+      "outliers_rejected": 5,
+      "label": "iPhone 15 Pro Max",
+      "family": "iphone 15 pro max",
+      "scraped_at": "2026-05-19T04:41:05.891508+00:00"
+    },
+    "ip16": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 2,
+            "average": 307.5,
+            "median": 307.5,
+            "min": 200.0,
+            "max": 415.0,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 2,
+            "average": 589.5,
+            "median": 589.5,
+            "min": 589.0,
+            "max": 590.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 415.0,
+          "title": "Apple iPhone 16 Black 128GB MYAP3LL/A (AT&T Locked) 100% Battery Health",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 \u00b7 128 GB \u00b7 AT&T"
+        },
+        {
+          "price": 200.0,
+          "title": "Apple iPhone 16 Pink 128GB T-Mobile iOS 6.1in Smartphone Used",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 \u00b7 128 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 590.0,
+          "title": "Apple iPhone 16 128gb Unlocked Brand New Sealed In Box",
+          "cond": "Brand New \u00b7 Apple iPhone 16 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 589.0,
+          "title": "\u2728 Brand New iPhone 16 \u2013 128GB Teal \u2728 Unlocked \u2022 Never Used",
+          "cond": "Brand New \u00b7 Apple iPhone 16 \u00b7 128 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 0,
+      "outliers_rejected": 0,
+      "label": "iPhone 16",
+      "family": "iphone 16",
+      "scraped_at": "2026-05-19T04:41:10.803266+00:00"
+    },
+    "ip16e": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 3,
+            "average": 409.75,
+            "median": 398.99,
+            "min": 386.99,
+            "max": 443.27,
+            "rejected_outliers": 1
+          },
+          "sealed": {
+            "count": 1,
+            "average": 289.0,
+            "median": 289.0,
+            "min": 289.0,
+            "max": 289.0,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 1,
+            "average": 572.5,
+            "median": 572.5,
+            "min": 572.5,
+            "max": 572.5,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 1,
+            "average": 317.0,
+            "median": 317.0,
+            "min": 317.0,
+            "max": 317.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 386.99,
+          "title": "Apple iPhone 16E 128GB - Fully Unlocked - VERY GOOD Condition",
+          "cond": "Very Good - Refurbished"
+        },
+        {
+          "price": 443.27,
+          "title": "Apple iPhone 16e - 128GB Black Unlocked - eSIM | Excellent",
+          "cond": "Excellent - Refurbished"
+        },
+        {
+          "price": 289.0,
+          "title": "New Apple iPhone 16E - 128GB -Cricket Service Only Brand New",
+          "cond": "Brand New \u00b7 Apple iPhone 16e \u00b7 128 GB \u00b7 Cricket Wireless"
+        },
+        {
+          "price": 572.5,
+          "title": "Apple iPhone 16e 512GB Unlocked 6.1\" (Black) 4D0J4LL/A w/1 Year Warranty",
+          "cond": "Excellent - Refurbished \u00b7 Apple iPhone 16e \u00b7 512 GB"
+        },
+        {
+          "price": 317.0,
+          "title": "Apple iPhone 16e",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16e \u00b7 256 GB \u00b7 T-Mobile"
+        }
+      ],
+      "unmatched": 2,
+      "outliers_rejected": 1,
+      "label": "iPhone 16e",
+      "family": "iphone 16e",
+      "scraped_at": "2026-05-19T04:41:16.584864+00:00"
+    },
+    "ip16p": {
+      "by_cell": {
+        "256": {
+          "used": {
+            "count": 3,
+            "average": 626.63,
+            "median": 679.99,
+            "min": 500.0,
+            "max": 699.89,
+            "rejected_outliers": 0
+          }
+        },
+        "128": {
+          "used": {
+            "count": 3,
+            "average": 615.0,
+            "median": 619.99,
+            "min": 575.0,
+            "max": 650.0,
+            "rejected_outliers": 1
+          },
+          "sealed": {
+            "count": 1,
+            "average": 749.99,
+            "median": 749.99,
+            "min": 749.99,
+            "max": 749.99,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 699.89,
+          "title": "Apple iPhone 16 Pro 256GB Unlocked Excellent Condition 100% Battery",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 679.99,
+          "title": "Apple iPhone 16 Pro 256GB Natural Titanium Unlocked \u2013 90%+ Battery \u2013 Very Good",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 619.99,
+          "title": "Factory Unlocked Apple iPhone 16 Pro 128GB Black MYM93LL/A",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro \u00b7 128 GB \u00b7 Factory Unlocked"
+        },
+        {
+          "price": 650.0,
+          "title": "iphone 16 pro 128gb unlocked",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 749.99,
+          "title": "Apple iPhone 16 PRO 128GB A3083 Factory Unlocked Open Box",
+          "cond": "Open Box"
+        }
+      ],
+      "unmatched": 0,
+      "outliers_rejected": 1,
+      "label": "iPhone 16 Pro",
+      "family": "iphone 16 pro",
+      "scraped_at": "2026-05-19T04:41:21.990493+00:00"
+    },
+    "ip16plus": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 26,
+            "average": 501.42,
+            "median": 487.495,
+            "min": 380.0,
+            "max": 634.99,
+            "rejected_outliers": 2
+          },
+          "sealed": {
+            "count": 1,
+            "average": 640.0,
+            "median": 640.0,
+            "min": 640.0,
+            "max": 640.0,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 2,
+            "average": 527.5,
+            "median": 527.495,
+            "min": 500.0,
+            "max": 554.99,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "sealed": {
+            "count": 1,
+            "average": 853.45,
+            "median": 853.45,
+            "min": 853.45,
+            "max": 853.45,
+            "rejected_outliers": 0
+          },
+          "used": {
+            "count": 1,
+            "average": 677.49,
+            "median": 677.49,
+            "min": 677.49,
+            "max": 677.49,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 578.99,
+          "title": "Apple iPhone 16 Plus 128GB Teal Unlocked Excellent (91% Battery) Never Repaired",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Plus \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 559.0,
+          "title": "iphone 16 plus unlocked 128gb",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Plus \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 640.0,
+          "title": "Apple iPhone 16 Plus 128gb Unlocked Brand New Sealed In Box",
+          "cond": "Brand New \u00b7 Apple iPhone 16 Plus \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 554.99,
+          "title": "Apple iPhone 16 Plus 128GB 256GB Unlocked Smartphone - Good",
+          "cond": "Good - Refurbished"
+        },
+        {
+          "price": 500.0,
+          "title": "Apple iPhone 16 Plus - T-Mobile - White - 256GB - Battery 100% capacity",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Plus \u00b7 256 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 853.45,
+          "title": "Apple iPhone 16 Plus - 512 GB - White (Unlocked)",
+          "cond": "Brand New \u00b7 Apple iPhone 16 Plus \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 677.49,
+          "title": "iPhone 16 Plus 128GB 256GB 512GB Verizon AT&T T-Mobile Unlocked (Good)",
+          "cond": "Good - Refurbished"
+        }
+      ],
+      "unmatched": 15,
+      "outliers_rejected": 2,
+      "label": "iPhone 16 Plus",
+      "family": "iphone 16 plus",
+      "scraped_at": "2026-05-19T04:41:26.915547+00:00"
+    },
+    "ip16pm": {
+      "by_cell": {
+        "256": {
+          "used": {
+            "count": 10,
+            "average": 733.09,
+            "median": 762.0,
+            "min": 579.99,
+            "max": 889.99,
+            "rejected_outliers": 0
+          }
+        },
+        "1tb": {
+          "used": {
+            "count": 1,
+            "average": 929.99,
+            "median": 929.99,
+            "min": 929.99,
+            "max": 929.99,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "sealed": {
+            "count": 1,
+            "average": 650.0,
+            "median": 650.0,
+            "min": 650.0,
+            "max": 650.0,
+            "rejected_outliers": 0
+          },
+          "used": {
+            "count": 3,
+            "average": 819.67,
+            "median": 825.0,
+            "min": 799.0,
+            "max": 835.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 760.0,
+          "title": "iphone 16 pro max 256gb unlocked excellent",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 780.0,
+          "title": "Apple iPhone 16 Pro Max 256GB Desert Titanium AT&T Unlockable",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro Max \u00b7 256 GB \u00b7 AT&T"
+        },
+        {
+          "price": 929.99,
+          "title": "Apple iPhone 16 Pro Max 1TB Natural Unlocked Worldwide Excellent (95% Battery)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro Max \u00b7 1 TB \u00b7 Unlocked"
+        },
+        {
+          "price": 650.0,
+          "title": "Apple iPhone 16 Pro Max Unlocked 512GB Silver",
+          "cond": "Open Box \u00b7 Apple iPhone 16 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 799.0,
+          "title": "iPhone 16 Pro Max - Unlocked - 512GB - Natural Titanium - Excellent Condition",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 835.0,
+          "title": "Apple iPhone 16 Pro Max - 512 GB - Natural Titanium (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 5,
+      "outliers_rejected": 0,
+      "label": "iPhone 16 Pro Max",
+      "family": "iphone 16 pro max",
+      "scraped_at": "2026-05-19T04:41:31.891427+00:00"
+    },
+    "ip17": {
+      "by_cell": {
+        "256": {
+          "used": {
+            "count": 4,
+            "average": 662.25,
+            "median": 662.495,
+            "min": 649.0,
+            "max": 675.0,
+            "rejected_outliers": 1
+          },
+          "sealed": {
+            "count": 3,
+            "average": 716.66,
+            "median": 700.0,
+            "min": 660.0,
+            "max": 789.99,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 674.99,
+          "title": "Apple iPhone 17 - 256 GB - Mist Blue (Unlocked) 100% BH",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 17 \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 650.0,
+          "title": "Apple iPhone 17 - 256 GB - Sage (T-Mobile)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 17 \u00b7 256 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 660.0,
+          "title": "Apple iPhone 17 Black 256GB A3258 T-Mobile",
+          "cond": "Brand New \u00b7 Apple iPhone 17 \u00b7 256 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 700.0,
+          "title": "Apple iPhone 17 256GB Unlocked White/Blue/Black 48MP 6.3\" iOS New Smartphone",
+          "cond": "Brand New \u00b7 Apple iPhone 17 \u00b7 256 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 1,
+      "outliers_rejected": 1,
+      "label": "iPhone 17",
+      "family": "iphone 17",
+      "scraped_at": "2026-05-19T04:41:37.468996+00:00"
+    },
+    "ip17p": {
+      "by_cell": {
+        "256": {
+          "sealed": {
+            "count": 6,
+            "average": 984.83,
+            "median": 915.0,
+            "min": 750.0,
+            "max": 1279.99,
+            "rejected_outliers": 0
+          },
+          "used": {
+            "count": 2,
+            "average": 866.98,
+            "median": 866.98,
+            "min": 650.0,
+            "max": 1083.96,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 4,
+            "average": 1141.13,
+            "median": 1139.73,
+            "min": 1132.33,
+            "max": 1152.75,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 889.0,
+          "title": "iPhone 17 Pro 256GB Locked T-Mobile",
+          "cond": "Open Box \u00b7 Apple iPhone 17 Pro Max \u00b7 256 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 750.0,
+          "title": "Apple iPhone 17 Pro 256gb (Straight Talk Only) Silver New Open Box Clean IMEI",
+          "cond": "Open Box \u00b7 Apple iPhone 17 Pro \u00b7 256 GB \u00b7 Straight Talk"
+        },
+        {
+          "price": 1083.96,
+          "title": "Apple iPhone 17 Pro 256GB Unlocked Excellent All Colors",
+          "cond": "Excellent - Refurbished"
+        },
+        {
+          "price": 650.0,
+          "title": "Apple iPhone 17 Pro 256 GB Deep Blue (T-Mobile Locked) Good Condition",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 17 Pro \u00b7 256 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 1146.66,
+          "title": "Apple iPhone 17 Pro A3256 512GB Unlocked Excellent Condition",
+          "cond": "Excellent - Refurbished"
+        },
+        {
+          "price": 1152.75,
+          "title": "Apple iPhone 17 Pro 512GB Unlocked Excellent All Colors",
+          "cond": "Excellent - Refurbished"
+        }
+      ],
+      "unmatched": 2,
+      "outliers_rejected": 0,
+      "label": "iPhone 17 Pro",
+      "family": "iphone 17 pro",
+      "scraped_at": "2026-05-19T04:41:42.560488+00:00"
+    },
+    "ip17pm": {
+      "by_cell": {
+        "2tb": {
+          "sealed": {
+            "count": 5,
+            "average": 1483.0,
+            "median": 1100.0,
+            "min": 850.0,
+            "max": 2540.0,
+            "rejected_outliers": 1
+          },
+          "used": {
+            "count": 2,
+            "average": 1599.99,
+            "median": 1599.995,
+            "min": 1400.0,
+            "max": 1799.99,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 3,
+            "average": 1223.33,
+            "median": 1299.99,
+            "min": 1050.0,
+            "max": 1320.0,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 3,
+            "average": 1275.0,
+            "median": 1250.0,
+            "min": 1125.0,
+            "max": 1449.99,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 17,
+            "average": 1009.88,
+            "median": 1049.99,
+            "min": 550.5,
+            "max": 1214.99,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 11,
+            "average": 1118.35,
+            "median": 1099.95,
+            "min": 750.0,
+            "max": 1320.0,
+            "rejected_outliers": 2
+          }
+        },
+        "1tb": {
+          "used": {
+            "count": 2,
+            "average": 1387.5,
+            "median": 1387.5,
+            "min": 1380.0,
+            "max": 1395.0,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 3,
+            "average": 1166.66,
+            "median": 1100.0,
+            "min": 900.0,
+            "max": 1499.99,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 1000.0,
+          "title": "Apple iPhone 17 Pro Max Orange 2TB eSIM USB-C 48MP 6.9\" iOS",
+          "cond": "Brand New \u00b7 Apple iPhone 17 Pro Max \u00b7 256 GB"
+        },
+        {
+          "price": 2540.0,
+          "title": "NEW Sealed Apple iPhone 17 Pro Max 2TB A3526 w Dual Physical SIM+ESIM -Intl GSM",
+          "cond": "Brand New \u00b7 Apple iPhone 17 Pro Max \u00b7 Unlocked"
+        },
+        {
+          "price": 1400.0,
+          "title": "Apple iPhone 17 Pro Max 2TB Blue For Verizon eSIM \u2705 Mint Condition \ud83d\udd25",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 17 Pro Max \u00b7 Unlocked"
+        },
+        {
+          "price": 1799.99,
+          "title": "Apple iPhone 17 Pro Max -2TB US Version -Unlocked - E Sim - Version - Excellent",
+          "cond": "Excellent - Refurbished"
+        },
+        {
+          "price": 1050.0,
+          "title": "iPhone 17 Pro Max - Orange - 512GB",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 17 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 1299.99,
+          "title": "Apple iPhone 17 Pro Max A3257 - 512GB - Silver (Unlocked) Excellent Condition",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 17 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 1125.0,
+          "title": "iphone 17 pro max 512gb tmobile",
+          "cond": "Brand New \u00b7 Apple iPhone 17 Pro Max \u00b7 512 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 1449.99,
+          "title": "Apple iPhone 17 Pro Max - 512GB - Deep Blue (Unlocked) - Open Box",
+          "cond": "Open Box \u00b7 Apple iPhone 17 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 1030.0,
+          "title": "Apple iPhone 17 Pro Max - 256 GB - Silver (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 17 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 1030.0,
+          "title": "Apple iPhone 17 Pro Max - 256 GB - Silver (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 17 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 1320.0,
+          "title": "Apple iPhone 17 Pro Max - 256 GB - Cosmic Orange (Unlocked)",
+          "cond": "Brand New \u00b7 Apple iPhone 17 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 1275.0,
+          "title": "Apple iPhone 17 Pro Max 256GB Silver A3257 eSIM Unlocked Brand New Sealed",
+          "cond": "Brand New \u00b7 Apple iPhone 17 Pro Max \u00b7 256 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 4,
+      "outliers_rejected": 3,
+      "label": "iPhone 17 Pro Max",
+      "family": "iphone 17 pro max",
+      "scraped_at": "2026-05-19T04:41:58.964557+00:00"
+    },
+    "gs24": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 6,
+            "average": 263.15,
+            "median": 264.5,
+            "min": 230.95,
+            "max": 288.0,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 4,
+            "average": 349.0,
+            "median": 345.5,
+            "min": 336.0,
+            "max": 369.0,
+            "rejected_outliers": 1
+          },
+          "sealed": {
+            "count": 4,
+            "average": 441.25,
+            "median": 442.5,
+            "min": 425.0,
+            "max": 455.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 230.95,
+          "title": "Samsung Galaxy S24 128GB Gray SM-S921U (Unlocked) Discounted zW2096",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S24 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 250.99,
+          "title": "Samsung Galaxy S24",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S24 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 350.0,
+          "title": "Samsung Galaxy S24+ - 256 GB - Sapphire Blue (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S24+ \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 369.0,
+          "title": "Samsung Galaxy S24 256GB Black - Unlocked AT&T T-Mobile Verizon GSM 7634930",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S24+ \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 455.0,
+          "title": "Samsung Galaxy S24+ 256GB Unlocked AT&T T-Mobile Verizon GSM 100% batt! 7636527",
+          "cond": "Open Box \u00b7 Samsung Galaxy S24+ \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 425.0,
+          "title": "Samsung Galaxy S24 256GB Gray Factory Unlocked AT&T T-Mobile Verizon GSM 7635662",
+          "cond": "Open Box \u00b7 Samsung Galaxy S24 \u00b7 256 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 2,
+      "outliers_rejected": 1,
+      "label": "Galaxy S24",
+      "family": "galaxy s24",
+      "scraped_at": "2026-05-19T04:42:03.976929+00:00"
+    },
+    "gs24u": {
+      "by_cell": {
+        "256": {
+          "sealed": {
+            "count": 3,
+            "average": 661.48,
+            "median": 661.42,
+            "min": 659.6,
+            "max": 663.42,
+            "rejected_outliers": 2
+          },
+          "used": {
+            "count": 7,
+            "average": 515.59,
+            "median": 509.0,
+            "min": 430.0,
+            "max": 644.16,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "sealed": {
+            "count": 9,
+            "average": 661.69,
+            "median": 662.55,
+            "min": 647.99,
+            "max": 678.42,
+            "rejected_outliers": 1
+          },
+          "used": {
+            "count": 6,
+            "average": 577.34,
+            "median": 574.0,
+            "min": 559.99,
+            "max": 599.99,
+            "rejected_outliers": 1
+          }
+        },
+        "1tb": {
+          "sealed": {
+            "count": 2,
+            "average": 754.0,
+            "median": 753.995,
+            "min": 647.99,
+            "max": 860.0,
+            "rejected_outliers": 0
+          },
+          "used": {
+            "count": 2,
+            "average": 475.11,
+            "median": 475.105,
+            "min": 453.04,
+            "max": 497.17,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 659.6,
+          "title": "\u3010New Sealed\u3011Samsung Galaxy S24 Ultra S928U 12+256GB GSM CDMA Factory Unlocked,US",
+          "cond": "Brand New"
+        },
+        {
+          "price": 661.42,
+          "title": "New Samsung Galaxy S24 Ultra (5G) S928U 256GB+12GB Factory Unlocked Smartphone",
+          "cond": "Brand New"
+        },
+        {
+          "price": 644.16,
+          "title": "Samsung Galaxy S24 Ultra SM-S928U 256GB Unlocked Excellent Condition",
+          "cond": "Excellent - Refurbished"
+        },
+        {
+          "price": 430.0,
+          "title": "Samsung Galaxy S24 Ultra 256GB Purple - Verizon Smartphone 7633738",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S24 Ultra \u00b7 256 GB \u00b7 Verizon"
+        },
+        {
+          "price": 662.55,
+          "title": "New Samsung Galaxy S24 Ultra (5G) S928U 256GB/512GB Factory Unlocked Smartphone",
+          "cond": "Brand New"
+        },
+        {
+          "price": 647.99,
+          "title": "NEW SAMSUNG GALAXY S24 ULTRA 5G 256GB 512GB S928U1 FACTORY UNLOCKED GSM CDMA US",
+          "cond": "Brand New"
+        },
+        {
+          "price": 574.0,
+          "title": "Samsung Galaxy S24 Ultra 512GB SM-S928U1 Violet (Unlocked) #A623",
+          "cond": "Very Good - Refurbished \u00b7 Samsung Galaxy S24 Ultra \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 590.0,
+          "title": "Samsung Galaxy S24 Ultra 512GB Purple Unlocked AT&T T-Mobile Verizon GSM 7635892",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S24 Ultra \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 647.99,
+          "title": "SAMSUNG GALAXY S24 ULTRA 256GB 512GB 1TB SM-S928U1 FACTORY UNLOCKED - New in Box",
+          "cond": "Brand New"
+        },
+        {
+          "price": 860.0,
+          "title": "Samsung Galaxy S24 Ultra 1TB Factory Unlocked AT&T T-Mobile Verizon GSM 7635156",
+          "cond": "Open Box \u00b7 Samsung Galaxy S24 Ultra \u00b7 1 TB \u00b7 Unlocked"
+        },
+        {
+          "price": 497.17,
+          "title": "Samsung Galaxy S24 Ultra 5G 256/512/1TB Unlocked",
+          "cond": "Pre-Owned"
+        },
+        {
+          "price": 453.04,
+          "title": "Samsung Galaxy S24 Ultra 5G 256/512/1TB Unlocked Good",
+          "cond": "Good - Refurbished"
+        }
+      ],
+      "unmatched": 17,
+      "outliers_rejected": 4,
+      "label": "Galaxy S24 Ultra",
+      "family": "galaxy s24 ultra",
+      "scraped_at": "2026-05-19T04:42:09.022744+00:00"
+    },
+    "gs25": {
+      "by_cell": {
+        "128": {
+          "used": {
+            "count": 3,
+            "average": 358.3,
+            "median": 359.97,
+            "min": 279.99,
+            "max": 434.95,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 1,
+            "average": 449.0,
+            "median": 449.0,
+            "min": 449.0,
+            "max": 449.0,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 2,
+            "average": 562.0,
+            "median": 562.0,
+            "min": 519.0,
+            "max": 605.0,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 2,
+            "average": 657.5,
+            "median": 657.5,
+            "min": 655.0,
+            "max": 660.0,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 3,
+            "average": 472.0,
+            "median": 439.0,
+            "min": 434.0,
+            "max": 542.99,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 359.97,
+          "title": "Samsung Galaxy S25 128GB Icy Blue (Network Unlocked) SM-931U - Used Condition",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S25 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 434.95,
+          "title": "Samsung Galaxy S25 - 128 GB - SM-S931U1 Navy (Unlocked) Excellent",
+          "cond": "Excellent - Refurbished \u00b7 Samsung Galaxy S25 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 449.0,
+          "title": "Samsung Galaxy S25 128GB Navy SM-S931U - AT&T",
+          "cond": "Brand New \u00b7 Samsung Galaxy S25 \u00b7 128 GB \u00b7 AT&T"
+        },
+        {
+          "price": 519.0,
+          "title": "Samsung Galaxy S25+ 512GB [SM-S936U1] BlueBlack (Unlocked) #Q160",
+          "cond": "Good - Refurbished \u00b7 Samsung Galaxy S25+ \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 605.0,
+          "title": "Samsung Galaxy S25+ Gray - Unlocked AT&T T-Mobile Verizon 7636691",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S25+ \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 655.0,
+          "title": "Samsung Galaxy S25+ Gray - Unlocked AT&T T-Mobile Verizon 7635855",
+          "cond": "Open Box \u00b7 Samsung Galaxy S25+ \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 660.0,
+          "title": "Samsung Galaxy S25+ Pink - Unlocked AT&T T-Mobile Verizon 7633824",
+          "cond": "Open Box \u00b7 Samsung Galaxy S25+ \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 434.0,
+          "title": "Samsung Galaxy S25 256GB SM-S931U1 Navy Unlocked #A474",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S25 \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 542.99,
+          "title": "Samsung Galaxy S25 5G S931U (Fully Unlocked) 256GB Navy (Excellent)",
+          "cond": "Excellent - Refurbished \u00b7 Samsung Galaxy S25 \u00b7 256 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 4,
+      "outliers_rejected": 0,
+      "label": "Galaxy S25",
+      "family": "galaxy s25",
+      "scraped_at": "2026-05-19T04:42:14.226232+00:00"
+    },
+    "gs25p": {
+      "by_cell": {
+        "256": {
+          "used": {
+            "count": 2,
+            "average": 494.0,
+            "median": 494.0,
+            "min": 489.0,
+            "max": 499.0,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 2,
+            "average": 562.0,
+            "median": 562.0,
+            "min": 519.0,
+            "max": 605.0,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 2,
+            "average": 657.5,
+            "median": 657.5,
+            "min": 655.0,
+            "max": 660.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 489.0,
+          "title": "Samsung Galaxy S25+ Plus SM-S936U1 256GB Navy (Unlocked) #A535",
+          "cond": "Good - Refurbished \u00b7 Samsung Galaxy S25+ \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 499.0,
+          "title": "Samsung Galaxy S25+ Plus SM-S936U1 256GB Mint Green (Unlocked) #A143",
+          "cond": "Very Good - Refurbished \u00b7 Samsung Galaxy S25+ \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 519.0,
+          "title": "Samsung Galaxy S25+ 512GB [SM-S936U1] BlueBlack (Unlocked) #Q160",
+          "cond": "Good - Refurbished \u00b7 Samsung Galaxy S25+ \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 605.0,
+          "title": "Samsung Galaxy S25+ Gray - Unlocked AT&T T-Mobile Verizon 7636691",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S25+ \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 655.0,
+          "title": "Samsung Galaxy S25+ Gray - Unlocked AT&T T-Mobile Verizon 7635855",
+          "cond": "Open Box \u00b7 Samsung Galaxy S25+ \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 660.0,
+          "title": "Samsung Galaxy S25+ Pink - Unlocked AT&T T-Mobile Verizon 7633824",
+          "cond": "Open Box \u00b7 Samsung Galaxy S25+ \u00b7 512 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 1,
+      "outliers_rejected": 0,
+      "label": "Galaxy S25+",
+      "family": "galaxy s25+",
+      "scraped_at": "2026-05-19T04:42:19.174641+00:00"
+    },
+    "gs25u": {
+      "by_cell": {
+        "512": {
+          "used": {
+            "count": 7,
+            "average": 762.42,
+            "median": 759.0,
+            "min": 600.0,
+            "max": 949.0,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 4,
+            "average": 828.25,
+            "median": 827.0,
+            "min": 825.0,
+            "max": 834.0,
+            "rejected_outliers": 1
+          }
+        },
+        "256": {
+          "sealed": {
+            "count": 2,
+            "average": 689.0,
+            "median": 689.0,
+            "min": 580.0,
+            "max": 798.0,
+            "rejected_outliers": 0
+          },
+          "used": {
+            "count": 6,
+            "average": 724.41,
+            "median": 709.5,
+            "min": 693.49,
+            "max": 779.0,
+            "rejected_outliers": 2
+          }
+        },
+        "1tb": {
+          "sealed": {
+            "count": 1,
+            "average": 1030.0,
+            "median": 1030.0,
+            "min": 1030.0,
+            "max": 1030.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 759.0,
+          "title": "Samsung Galaxy S25 Ultra 512GB [SM-S938U1] Titanium White (Unlocked) #A266",
+          "cond": "Very Good - Refurbished \u00b7 Samsung Galaxy S25 Ultra \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 689.0,
+          "title": "Samsung Galaxy S25 Ultra 512GB [SM-S938U1] Titanium Pinkgold (Unlocked) #Q106",
+          "cond": "Good - Refurbished \u00b7 Samsung Galaxy S25 Ultra \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 829.0,
+          "title": "Samsung Galaxy S25 Ultra White - Unlocked AT&T T-Mobile Verizon 7635735",
+          "cond": "Open Box \u00b7 Samsung Galaxy S25 Ultra \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 825.0,
+          "title": "Samsung Galaxy S25 Ultra Black Unlocked AT&T T-Mobile Verizon 100% batt! 7635571",
+          "cond": "Open Box \u00b7 Samsung Galaxy S25 Ultra \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 580.0,
+          "title": "Samsung Galaxy S25 Ultra 256 GB Claro PR Locked Bundle",
+          "cond": "Open Box \u00b7 Samsung Galaxy S25 Ultra \u00b7 256 GB"
+        },
+        {
+          "price": 798.0,
+          "title": "Samsung Galaxy S25 Ultra 256GB white silver Unlocked",
+          "cond": "Open Box \u00b7 Samsung Galaxy S25 Ultra \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 779.0,
+          "title": "Samsung Galaxy S25 Ultra - 256 GB - Titanium Black (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S25 Ultra \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 719.0,
+          "title": "Samsung Galaxy S25 Ultra 256GB Titanium Black (T-Mobile Only) Excellent",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S25 Ultra \u00b7 256 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 1030.0,
+          "title": "Samsung Galaxy S25 Ultra Jet Unlocked AT&T T-Mobile Verizon 100% batt! 7635160",
+          "cond": "Open Box \u00b7 Samsung Galaxy S25 Ultra \u00b7 1 TB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 4,
+      "outliers_rejected": 3,
+      "label": "Galaxy S25 Ultra",
+      "family": "galaxy s25 ultra",
+      "scraped_at": "2026-05-19T04:42:24.393714+00:00"
+    },
+    "gzflip5": {
+      "by_cell": {
+        "256": {
+          "used": {
+            "count": 2,
+            "average": 244.18,
+            "median": 244.175,
+            "min": 239.35,
+            "max": 249.0,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "sealed": {
+            "count": 1,
+            "average": 381.5,
+            "median": 381.5,
+            "min": 381.5,
+            "max": 381.5,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 239.35,
+          "title": "Samsung Galaxy Z Flip 5 256GB Green SM-F731U (Unlocked) Fully Functional DG7603",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Flip5 \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 249.0,
+          "title": "Samsung Galaxy Z Flip 5 - 256 GB -Lavender + Extras - Unlocked Excellent Conditi",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Flip5 \u00b7 256 GB \u00b7 AT&T"
+        },
+        {
+          "price": 381.5,
+          "title": "\ud83d\udcf1New Samsung Galaxy Z Flip 5 5G 512GB SM-F731U Factory Unlocked All colors",
+          "cond": "Brand New"
+        }
+      ],
+      "unmatched": 4,
+      "outliers_rejected": 0,
+      "label": "Galaxy Z Flip 5",
+      "family": "galaxy z flip 5",
+      "scraped_at": "2026-05-19T04:42:30.746768+00:00"
+    },
+    "gzflip6": {
+      "by_cell": {
+        "256": {
+          "used": {
+            "count": 4,
+            "average": 298.56,
+            "median": 307.115,
+            "min": 200.0,
+            "max": 379.99,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 2,
+            "average": 364.5,
+            "median": 364.5,
+            "min": 329.0,
+            "max": 400.0,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 3,
+            "average": 301.44,
+            "median": 290.0,
+            "min": 239.33,
+            "max": 374.99,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 200.0,
+          "title": "Samsung Galaxy Z Flip 6 256GB Mint Green Unlocked Smartphone",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Flip6 \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 364.24,
+          "title": "Samsung Galaxy Z Flip 6 SM-F741U 256GB Unlocked Excellent Condition",
+          "cond": "Excellent - Refurbished"
+        },
+        {
+          "price": 400.0,
+          "title": "Samsung Galaxy Z Flip 6 256GB Silver unlocked",
+          "cond": "Open Box \u00b7 Samsung Galaxy Z Flip6 \u00b7 256 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 329.0,
+          "title": "Samsung Galaxy Z Flip 6 256GB Silver (VERIZON / UNLOCKED) T-mobile new other",
+          "cond": "Open Box \u00b7 Samsung Galaxy Z Flip6 \u00b7 256 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 239.33,
+          "title": "Samsung Galaxy Z Flip 6 512GB Blue SM-F741U (Spectrum) Fully Functional DV4792",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Flip6 \u00b7 512 GB \u00b7 Spectrum"
+        },
+        {
+          "price": 374.99,
+          "title": "Samsung Galaxy Z Flip 6 512GB Unlocked",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Flip6 \u00b7 512 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 4,
+      "outliers_rejected": 0,
+      "label": "Galaxy Z Flip 6",
+      "family": "galaxy z flip 6",
+      "scraped_at": "2026-05-19T04:42:36.711272+00:00"
+    },
+    "gzflip7": {
+      "by_cell": {
+        "512": {
+          "sealed": {
+            "count": 1,
+            "average": 639.0,
+            "median": 639.0,
+            "min": 639.0,
+            "max": 639.0,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 3,
+            "average": 468.66,
+            "median": 429.0,
+            "min": 355.0,
+            "max": 621.99,
+            "rejected_outliers": 0
+          }
+        },
+        "128": {
+          "used": {
+            "count": 1,
+            "average": 310.0,
+            "median": 310.0,
+            "min": 310.0,
+            "max": 310.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 639.0,
+          "title": "Samsung Galaxy Z Flip 7 - 512 GB - Jetblack (T-Mobile)",
+          "cond": "Open Box \u00b7 Samsung Galaxy Z Flip 7 \u00b7 512 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 355.0,
+          "title": "Samsung Galaxy Z Flip 7 256GB (VERIZON UNLOCKED) T-mobile good used *DEAD PIXELS",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Flip \u00b7 256 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 429.0,
+          "title": "EXCELLENT-Samsung Galaxy Z Flip 7 SM-F741U 256GB Black Smartphone - Locked",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Flip \u00b7 256 GB"
+        },
+        {
+          "price": 310.0,
+          "title": "Samsung Galaxy Z Flip 7 FE 128GB Unlocked Black",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Flip 7 FE \u00b7 128 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 2,
+      "outliers_rejected": 0,
+      "label": "Galaxy Z Flip 7",
+      "family": "galaxy z flip 7",
+      "scraped_at": "2026-05-19T04:42:42.202366+00:00"
+    },
+    "gzfold5": {
+      "by_cell": {
+        "256": {
+          "sealed": {
+            "count": 1,
+            "average": 489.99,
+            "median": 489.99,
+            "min": 489.99,
+            "max": 489.99,
+            "rejected_outliers": 0
+          },
+          "used": {
+            "count": 3,
+            "average": 334.66,
+            "median": 350.0,
+            "min": 290.0,
+            "max": 363.98,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "sealed": {
+            "count": 1,
+            "average": 449.99,
+            "median": 449.99,
+            "min": 449.99,
+            "max": 449.99,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 489.99,
+          "title": "Fully Carrier Unlocked \u2728 Samsung Galaxy Z Fold 5 256GB Phantom Black - FLAWLESS",
+          "cond": "Open Box \u00b7 Samsung Galaxy Z Fold5 \u00b7 256 GB \u00b7 Unlocked / T-Mobile / AT&T / Verizo"
+        },
+        {
+          "price": 350.0,
+          "title": "GALAXY Z FOLD 5 ** UNLOCKED & READY TO USE",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Fold5 \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 363.98,
+          "title": "Samsung Galaxy Z Fold 5 256GB Black SM-F946U (AT&T) Fully Functional DV8350",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Fold5 \u00b7 256 GB \u00b7 AT&T"
+        },
+        {
+          "price": 449.99,
+          "title": "Samsung Galaxy Z Fold 5 5G F946U Unlocked (Any Carrier) SmartPhone 256GB 512GB",
+          "cond": "Open Box"
+        }
+      ],
+      "unmatched": 1,
+      "outliers_rejected": 0,
+      "label": "Galaxy Z Fold 5",
+      "family": "galaxy z fold 5",
+      "scraped_at": "2026-05-19T04:42:47.231387+00:00"
+    },
+    "gzfold6": {
+      "by_cell": {
+        "512": {
+          "used": {
+            "count": 5,
+            "average": 642.0,
+            "median": 649.99,
+            "min": 545.0,
+            "max": 750.0,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 3,
+            "average": 687.0,
+            "median": 589.99,
+            "min": 521.0,
+            "max": 950.0,
+            "rejected_outliers": 1
+          },
+          "sealed": {
+            "count": 1,
+            "average": 795.97,
+            "median": 795.97,
+            "min": 795.97,
+            "max": 795.97,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 750.0,
+          "title": "Samsung Galaxy Z Fold 6 512GB Silver SM-F956U (T-Mobile | MetroPCS)",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Fold6 \u00b7 512 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 545.0,
+          "title": "Samsung Galaxy Z Fold 6 Navy Blue 512GB Unlocked Smartphone-Great Condition",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Fold6 \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 521.0,
+          "title": "Samsung Galaxy Z Fold 6 - 256 GB - Navy (AT&T only)",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Fold6 \u00b7 256 GB \u00b7 AT&T"
+        },
+        {
+          "price": 950.0,
+          "title": "Samsung Galaxy Z Fold 6 256GB",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Fold6 \u00b7 256 GB \u00b7 Xfinity"
+        },
+        {
+          "price": 795.97,
+          "title": "New- Samsung Galaxy Z Fold 6 - 256 GB - Silver Shadow (AT&T/Cricket). Open Box",
+          "cond": "Open Box \u00b7 Samsung Galaxy Z Fold6 \u00b7 256 GB \u00b7 AT&T"
+        }
+      ],
+      "unmatched": 1,
+      "outliers_rejected": 1,
+      "label": "Galaxy Z Fold 6",
+      "family": "galaxy z fold 6",
+      "scraped_at": "2026-05-19T04:42:52.629071+00:00"
+    },
+    "gzfold7": {
+      "by_cell": {
+        "256": {
+          "used": {
+            "count": 1,
+            "average": 910.0,
+            "median": 910.0,
+            "min": 910.0,
+            "max": 910.0,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 1,
+            "average": 1045.0,
+            "median": 1045.0,
+            "min": 1045.0,
+            "max": 1045.0,
+            "rejected_outliers": 0
+          }
+        },
+        "1tb": {
+          "used": {
+            "count": 1,
+            "average": 1199.99,
+            "median": 1199.99,
+            "min": 1199.99,
+            "max": 1199.99,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 910.0,
+          "title": "Samsung Galaxy Z Fold 7 - 256 GB - Silver Shadow (Unlocked) Model SM-F966U",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Fold 7 \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 1045.0,
+          "title": "Samsung Galaxy Z Fold 7 - Unlocked",
+          "cond": "Open Box \u00b7 Samsung Galaxy Fold \u00b7 256 GB"
+        },
+        {
+          "price": 1199.99,
+          "title": "Samsung Galaxy Z Fold 7-SM-F966U1-1TB - Jetblack (Factory Unlocked)",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Fold \u00b7 1 TB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 0,
+      "outliers_rejected": 0,
+      "label": "Galaxy Z Fold 7",
+      "family": "galaxy z fold 7",
+      "scraped_at": "2026-05-19T04:42:57.873982+00:00"
+    },
+    "gs23u": {
+      "by_cell": {
+        "512": {
+          "sealed": {
+            "count": 10,
+            "average": 394.59,
+            "median": 395.685,
+            "min": 346.0,
+            "max": 439.0,
+            "rejected_outliers": 2
+          },
+          "used": {
+            "count": 6,
+            "average": 398.99,
+            "median": 399.0,
+            "min": 359.0,
+            "max": 449.95,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "sealed": {
+            "count": 2,
+            "average": 428.27,
+            "median": 428.275,
+            "min": 389.55,
+            "max": 467.0,
+            "rejected_outliers": 0
+          },
+          "used": {
+            "count": 6,
+            "average": 344.53,
+            "median": 330.09000000000003,
+            "min": 269.0,
+            "max": 420.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 399.25,
+          "title": "NEW SEALED Samsung Galaxy S23 Ultra 5G SM-S918U 256GB/512GB Factory Unlocked",
+          "cond": "Brand New"
+        },
+        {
+          "price": 346.0,
+          "title": "Samsung Galaxy S23 Ultra 512GB Black Unlocked AT&T T-Mobile Verizon GSM 7635525",
+          "cond": "Open Box \u00b7 Samsung Galaxy S23 Ultra \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 362.0,
+          "title": "Samsung Galaxy S23 Ultra SM-S918U AT&T 512gb",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S23 Ultra \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 359.0,
+          "title": "Samsung Galaxy S23 Ultra 512GB Factory Unlocked AT&T T-Mobile Verizon 7629885",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S23 Ultra \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 389.55,
+          "title": "NEW & SEALED Samsung Galaxy S23 Ultra (5G) SM-S918U 256GB+8GB Factory Unlocked",
+          "cond": "Brand New"
+        },
+        {
+          "price": 467.0,
+          "title": "Samsung Galaxy S23 Ultra 256GB Factory Unlocked AT&T T-Mobile Verizon 7634479",
+          "cond": "Open Box \u00b7 Samsung Galaxy S23 Ultra \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 359.0,
+          "title": "Samsung Galaxy S23 Ultra - 256GB - Pink (Unlocked) Smartphone",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S23 Ultra \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 420.0,
+          "title": "Samsung Galaxy S23 Ultra 256GB Factory Unlocked AT&T T-Mobile Verizon 7635991",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S23 Ultra \u00b7 256 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 21,
+      "outliers_rejected": 2,
+      "label": "Galaxy S23 Ultra",
+      "family": "galaxy s23 ultra",
+      "scraped_at": "2026-05-19T04:43:03.129574+00:00"
+    },
+    "gzflip4": {
+      "by_cell": {
+        "256": {
+          "sealed": {
+            "count": 13,
+            "average": 289.73,
+            "median": 285.0,
+            "min": 285.0,
+            "max": 303.0,
+            "rejected_outliers": 1
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 285.0,
+          "title": "New Samsung Galaxy Z Flip 4 128GB / 256GB F7210 Factory Unlocked Smartphone",
+          "cond": "Brand New"
+        },
+        {
+          "price": 285.0,
+          "title": "Brand New Sealed Samsung Galaxy Z Flip 4 256GB F7210 Factory Unlocked Smartphone",
+          "cond": "Brand New"
+        }
+      ],
+      "unmatched": 5,
+      "outliers_rejected": 1,
+      "label": "Galaxy Z Flip 4",
+      "family": "galaxy z flip 4",
+      "scraped_at": "2026-05-19T04:43:08.437133+00:00"
+    },
+    "gs24p": {
+      "by_cell": {
+        "256": {
+          "sealed": {
+            "count": 3,
+            "average": 465.52,
+            "median": 455.0,
+            "min": 455.0,
+            "max": 486.55,
+            "rejected_outliers": 0
+          },
+          "used": {
+            "count": 3,
+            "average": 362.67,
+            "median": 350.0,
+            "min": 339.0,
+            "max": 399.0,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "sealed": {
+            "count": 1,
+            "average": 488.85,
+            "median": 488.85,
+            "min": 488.85,
+            "max": 488.85,
+            "rejected_outliers": 0
+          },
+          "used": {
+            "count": 1,
+            "average": 429.0,
+            "median": 429.0,
+            "min": 429.0,
+            "max": 429.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 486.55,
+          "title": "New Sealed Samsung Galaxy S24+ Plus S926U 256GB+12GB Factory Unlocked Smartphone",
+          "cond": "Brand New"
+        },
+        {
+          "price": 455.0,
+          "title": "Samsung Galaxy S24+ 256GB Unlocked AT&T T-Mobile Verizon GSM 100% batt! 7636527",
+          "cond": "Open Box \u00b7 Samsung Galaxy S24+ \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 399.0,
+          "title": "Samsung Galaxy S24+ Plus 256GB [SM-S926U1] Gray Unlocked #A508",
+          "cond": "Very Good - Refurbished \u00b7 Samsung Galaxy S24+ \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 350.0,
+          "title": "Samsung Galaxy S24+ - 256 GB - Sapphire Blue (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S24+ \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 488.85,
+          "title": "Sealed New Samsung Galaxy S24+ Plus 256GB 512GB T-Mobile Verizon AT&T Unlocked",
+          "cond": "Brand New"
+        },
+        {
+          "price": 429.0,
+          "title": "Samsung Galaxy S24+ Plus 512GB SM-S926U1 Black Unlocked #A082",
+          "cond": "Very Good - Refurbished \u00b7 Samsung Galaxy S24+ \u00b7 512 GB"
+        }
+      ],
+      "unmatched": 2,
+      "outliers_rejected": 0,
+      "label": "Galaxy S24+",
+      "family": "galaxy s24+",
+      "scraped_at": "2026-05-19T04:43:13.634704+00:00"
+    },
+    "gs23": {
+      "by_cell": {
+        "256": {
+          "used": {
+            "count": 4,
+            "average": 223.25,
+            "median": 229.0,
+            "min": 165.0,
+            "max": 270.0,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 2,
+            "average": 242.97,
+            "median": 242.97,
+            "min": 187.94,
+            "max": 298.0,
+            "rejected_outliers": 0
+          }
+        },
+        "128": {
+          "used": {
+            "count": 4,
+            "average": 168.72,
+            "median": 150.0,
+            "min": 150.0,
+            "max": 224.89,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 219.0,
+          "title": "Samsung Galaxy S23 - 256 GB - Black (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S23 \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 165.0,
+          "title": "Samsung Galaxy S23+ 256GB Factory Unlocked AT&T T-Mobile Verizon GSM 7632621",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S23+ \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 187.94,
+          "title": "Samsung Galaxy S23+ 256GB Black - Claro (PCT) Smartphone w/Warranty 7632620",
+          "cond": "Open Box \u00b7 Samsung Galaxy S23+ \u00b7 256 GB \u00b7 U.S. Cellular"
+        },
+        {
+          "price": 298.0,
+          "title": "Samsung Galaxy S23 256GB Purple - Unlocked AT&T T-Mobile Verizon GSM 7633452",
+          "cond": "Open Box \u00b7 Samsung Galaxy S23 \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 224.89,
+          "title": "Samsung Galaxy S23 SM-S911U - 128GB - Lavender (Unlocked) - Very Good Condition",
+          "cond": "Very Good - Refurbished \u00b7 Samsung Galaxy S23 \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 150.0,
+          "title": "samsung galaxy s23",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S23 \u00b7 128 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 7,
+      "outliers_rejected": 0,
+      "label": "Galaxy S23",
+      "family": "galaxy s23",
+      "scraped_at": "2026-05-19T04:43:18.667859+00:00"
+    },
+    "gs23p": {
+      "by_cell": {
+        "256": {
+          "sealed": {
+            "count": 2,
+            "average": 275.19,
+            "median": 275.19,
+            "min": 187.94,
+            "max": 362.44,
+            "rejected_outliers": 0
+          },
+          "used": {
+            "count": 2,
+            "average": 257.5,
+            "median": 257.5,
+            "min": 165.0,
+            "max": 350.0,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 1,
+            "average": 279.0,
+            "median": 279.0,
+            "min": 279.0,
+            "max": 279.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 362.44,
+          "title": "New Samsung Galaxy S23+ Plus 256GB 5G SM-S916U Factory Unlocked Phantom Black",
+          "cond": "Brand New \u00b7 Samsung Galaxy S23+ \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 187.94,
+          "title": "Samsung Galaxy S23+ 256GB Black - Claro (PCT) Smartphone w/Warranty 7632620",
+          "cond": "Open Box \u00b7 Samsung Galaxy S23+ \u00b7 256 GB \u00b7 U.S. Cellular"
+        },
+        {
+          "price": 350.0,
+          "title": "Samsung Galaxy S23+ Plus 5G, 256gb, Black, Carrier Unlocked, Excellent!!",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S23+ \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 165.0,
+          "title": "Samsung Galaxy S23+ 256GB Factory Unlocked AT&T T-Mobile Verizon GSM 7632621",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S23+ \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 279.0,
+          "title": "Samsung Galaxy S23+ Plus 512GB SM-S916U1 Black Unlocked #A317",
+          "cond": "Good - Refurbished \u00b7 Samsung Galaxy S23+ \u00b7 512 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 2,
+      "outliers_rejected": 0,
+      "label": "Galaxy S23+",
+      "family": "galaxy s23+",
+      "scraped_at": "2026-05-19T04:43:23.912307+00:00"
+    },
+    "gs25edge": {
+      "by_cell": {
+        "512": {
+          "used": {
+            "count": 2,
+            "average": 515.35,
+            "median": 515.345,
+            "min": 483.7,
+            "max": 546.99,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 3,
+            "average": 474.66,
+            "median": 476.99,
+            "min": 459.0,
+            "max": 488.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 483.7,
+          "title": "Samsung Galaxy S25 Edge 512GB Blue SM-S937U1 (Unlocked) Fully Functional DV8499",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S25 Edge \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 546.99,
+          "title": "U.S Carrier Unlocked Samsung Galaxy S25 Edge 512GB - All Colors - Grade A",
+          "cond": "Pre-Owned"
+        },
+        {
+          "price": 459.0,
+          "title": "Samsung Galaxy S25 Edge 256GB [SM-S937U1] Titanium Jetblack (Unlocked) #A041",
+          "cond": "Very Good - Refurbished \u00b7 Samsung Galaxy S25 Edge \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 488.0,
+          "title": "Samsung Galaxy S25 EDGE 5G 256GB (2025) Black S937U1 6.7\" 200MP \ud83d\udd13 Unlocked RBG",
+          "cond": "Good - Refurbished \u00b7 Samsung Galaxy S25 Edge \u00b7 256 GB \u00b7 AT&T"
+        }
+      ],
+      "unmatched": 1,
+      "outliers_rejected": 0,
+      "label": "Galaxy S25 Edge",
+      "family": "galaxy s25 edge",
+      "scraped_at": "2026-05-19T04:43:29.164982+00:00"
+    },
+    "gs25fe": {
+      "by_cell": {
+        "256": {
+          "sealed": {
+            "count": 2,
+            "average": 484.5,
+            "median": 484.495,
+            "min": 469.0,
+            "max": 499.99,
+            "rejected_outliers": 0
+          }
+        },
+        "128": {
+          "used": {
+            "count": 3,
+            "average": 311.66,
+            "median": 320.99,
+            "min": 284.0,
+            "max": 329.99,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 1,
+            "average": 399.96,
+            "median": 399.96,
+            "min": 399.96,
+            "max": 399.96,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 499.99,
+          "title": "Samsung Galaxy S25 FE SM-S731U1 (256GB) FACTORY UNLOCKED & NAVY FACTORY SEALED!",
+          "cond": "Brand New \u00b7 Samsung Galaxy S25+ \u00b7 256 GB \u00b7 Factory Unlocked"
+        },
+        {
+          "price": 469.0,
+          "title": "Samsung Galaxy S25 FE Navy SM-S731U1 (256GB) FACTORY UNLOCKED & Factory SEALED!",
+          "cond": "Brand New \u00b7 Samsung Galaxy S25+ \u00b7 256 GB \u00b7 Factory Unlocked"
+        },
+        {
+          "price": 329.99,
+          "title": "Samsung Galaxy S25 FE 128GB Black - Cricket Wireless - Mint Condition",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S25+ \u00b7 128 GB \u00b7 Cricket Wireless"
+        },
+        {
+          "price": 284.0,
+          "title": "Samsung Galaxy S25 FE 128GB [SM-S731U] Black (T-Mobile ONLY) #A413",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S25 \u00b7 128 GB \u00b7 T-Mobile"
+        },
+        {
+          "price": 399.96,
+          "title": "*BRAND NEW IN BOX* Samsung Galaxy S25 FE 128GB Jet Black *UNLOCKED FOR ALL SIM*",
+          "cond": "Brand New \u00b7 Samsung Galaxy S25 \u00b7 128 GB \u00b7 Unlocked"
+        }
+      ],
+      "unmatched": 4,
+      "outliers_rejected": 0,
+      "label": "Galaxy S25 FE",
+      "family": "galaxy s25 fe",
+      "scraped_at": "2026-05-19T04:43:34.402308+00:00"
+    },
+    "gzfold4": {
+      "by_cell": {
+        "256": {
+          "used": {
+            "count": 2,
+            "average": 235.0,
+            "median": 234.995,
+            "min": 199.99,
+            "max": 270.0,
+            "rejected_outliers": 0
+          }
+        }
+      },
+      "samples": [
+        {
+          "price": 199.99,
+          "title": "Samsung Galaxy Z Fold 4 Dual 256 GB Gray Green, UNLOCKED, Inside screen lines",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Fold4 \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 270.0,
+          "title": "UNLOCKED - Samsung Galaxy Z Fold 4 5G SM-F936U 256GB Grey Green - Clean IMEI",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy Z Fold4 \u00b7 256 GB \u00b7 Unlocked / T-Mobile / AT&T / Veriz"
+        }
+      ],
+      "unmatched": 2,
+      "outliers_rejected": 0,
+      "label": "Galaxy Z Fold 4",
+      "family": "galaxy z fold 4",
+      "scraped_at": "2026-05-19T04:43:39.818130+00:00"
+    }
+  }
+}
