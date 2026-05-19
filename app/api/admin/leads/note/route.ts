@@ -16,11 +16,21 @@ export async function POST(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const { leadId, note } = await req.json();
+  let payload;
+  try {
+    payload = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  const { leadId, note } = payload;
   if (!leadId || !note || typeof note !== "string" || !note.trim()) {
     return NextResponse.json({ error: "leadId and note required" }, { status: 400 });
   }
-  const trimmed = note.trim().slice(0, 500);
+  // Strip brackets from the note before wrapping it in [NOTE: …]. A
+  // staff-supplied note ending with ']' would otherwise close the
+  // marker and could inject a fake [STATUS:] or [LEAD:] downstream
+  // (admin-gated, but defense-in-depth in case the admin token leaks).
+  const trimmed = note.trim().replace(/[\[\]]/g, "").slice(0, 500);
   const body = `[NOTE: ${trimmed}] [LEAD: ${leadId}]`;
   try {
     const r = await fetch(`${MC_API}/api/comms`, {

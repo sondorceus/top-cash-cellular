@@ -76,7 +76,12 @@ Questions? Just reply to this email or write to <a href="mailto:CustomerService@
 
 export async function POST(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const body = await req.json();
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
   const { leadId, newQuote, reason, name, phone, email, device } = body;
   if (!leadId || !newQuote || !reason || typeof newQuote !== "number") {
     return NextResponse.json({ error: "leadId, newQuote (number), and reason required" }, { status: 400 });

@@ -338,7 +338,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await req.json();
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
   const { leadId, status, name, phone, email, device, quote, payout, rejectionReason, shipAddress, payoutConfirmation } = body;
 
   if (!leadId || !status || !STATUSES.includes(status)) {
