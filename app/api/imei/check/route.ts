@@ -10,6 +10,36 @@ import { NextRequest, NextResponse } from "next/server";
 
 const SICKW_KEY = process.env.SICKW_API_KEY || "";
 
+// In-process cache keyed on `imei|category`. Sickw bills per lookup
+// (~$0.05) and this endpoint is unauthenticated, so a script firing
+// the same Luhn-valid IMEI N times costs N × $0.05. The funnel's UX
+// also re-checks when the customer scrubs back and re-confirms, which
+// adds incidental dup cost. Cache results for 1h. Bounded to 500
+// entries — at ~200 bytes each that's ~100KB, fine for a serverless
+// instance; oldest entries get evicted FIFO when the cap is hit.
+type CachedResult = { body: Record<string, unknown>; at: number };
+const TTL_MS = 60 * 60 * 1000;
+const MAX_ENTRIES = 500;
+const sickwCache = new Map<string, CachedResult>();
+
+function cacheGet(key: string): Record<string, unknown> | null {
+  const hit = sickwCache.get(key);
+  if (!hit) return null;
+  if (Date.now() - hit.at > TTL_MS) {
+    sickwCache.delete(key);
+    return null;
+  }
+  return hit.body;
+}
+
+function cacheSet(key: string, body: Record<string, unknown>): void {
+  if (sickwCache.size >= MAX_ENTRIES) {
+    const oldest = sickwCache.keys().next().value;
+    if (oldest) sickwCache.delete(oldest);
+  }
+  sickwCache.set(key, { body, at: Date.now() });
+}
+
 function luhnValid(num: string): boolean {
   const digits = num.replace(/\D/g, "");
   if (digits.length !== 15) return false;
@@ -26,8 +56,15 @@ function luhnValid(num: string): boolean {
 }
 
 export async function POST(req: NextRequest) {
-  const { imei, deviceCategory } = await req.json();
-  if (!imei || typeof imei !== "string") {
+  let payload: { imei?: unknown; deviceCategory?: unknown };
+  try {
+    payload = await req.json();
+  } catch {
+    return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
+  }
+  const imei = typeof payload.imei === "string" ? payload.imei : "";
+  const deviceCategory = typeof payload.deviceCategory === "string" ? payload.deviceCategory : "";
+  if (!imei) {
     return NextResponse.json({ ok: false, error: "IMEI required" }, { status: 400 });
   }
   const clean = imei.replace(/\D/g, "");
@@ -51,6 +88,14 @@ export async function POST(req: NextRequest) {
   // Stage 2: Sickw lookup (paid). Skip silently if no key configured.
   if (!SICKW_KEY) {
     return NextResponse.json({ ok: true, stage: "format-only", imei: clean });
+  }
+
+  // Same (imei, category) within the last hour returns the cached
+  // result without paying Sickw again.
+  const cacheKey = `${clean}|${deviceCategory.toLowerCase()}`;
+  const cached = cacheGet(cacheKey);
+  if (cached) {
+    return NextResponse.json({ ...cached, cached: true });
   }
 
   try {
@@ -91,16 +136,25 @@ export async function POST(req: NextRequest) {
       if (cat === "iphone" && !/iphone/.test(lc)) warnings.push(`IMEI returns "${model}" but you selected iPhone.`);
     }
 
-    return NextResponse.json({
+    const result = {
       ok: warnings.length === 0,
-      stage: "full",
+      stage: "full" as const,
       imei: clean,
       model,
       fmiOn,
       blacklisted,
       warnings,
-      raw: text.slice(0, 500),
-    });
+    };
+    // Cache successful Sickw responses only — transient failures
+    // should be re-tried (not pinned to a stale "format-only" hit).
+    // Also dropped the `raw` field: it leaked Sickw's response text
+    // (warranty info, activation date, original carrier) to the
+    // unauthenticated client, which both wastes Skywalker's per-
+    // lookup spend and exposes Sickw's response surface to anyone
+    // probing the endpoint. The UI uses model/fmiOn/blacklisted/
+    // warnings, not raw.
+    cacheSet(cacheKey, result);
+    return NextResponse.json(result);
   } catch (e) {
     return NextResponse.json({ ok: true, stage: "format-only", imei: clean, sickwError: e instanceof Error ? e.message : "unknown" });
   }
