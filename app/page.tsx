@@ -11948,22 +11948,84 @@ export default function Home() {
                 <p className="text-[#e6e6e6] text-sm leading-relaxed">No lowball carrier trade-ins. No mailing your device and waiting weeks for a check. No haggling with strangers on marketplace apps. Just a fair price, paid fast, from a team you can trust.</p>
               </div>
 
-              {/* Founder backstory — replaces the email sign-offs that
-                  used to read "Skywalker & the Top Cash team". Personal
-                  voice lives here so the customer touchpoints stay
-                  professional. Skywalker 2026-05-19. */}
-              {/* Founder backstory — safety-and-convenience angle.
-                  IWM positions on sustainability ("give good tech a
-                  second chance"); we sit next to them on the customer-
-                  safety / no-sketchy-meetup angle. Skywalker 2026-05-19. */}
+              {/* Our story — customer-safety / no-sketchy-meetup angle
+                  next to IWM's sustainability positioning. Visual layout:
+                  experience-stamp banner → pull-quote → "sketchy vs us"
+                  comparison grid → close with the pitch. Founder voice
+                  is anonymous-first-person (no name) per Skywalker
+                  2026-05-19. */}
               <h2 className="text-xl font-bold mb-4">Our story</h2>
+
+              {/* Experience stamp — visual badge sets credibility before
+                  the narrative starts */}
+              <div className="flex flex-col sm:flex-row items-stretch gap-3 mb-6">
+                <div className="flex-1 bg-gradient-to-br from-[#00c853]/15 to-[#00c853]/5 border border-[#00c853]/30 rounded-2xl p-5 flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-full bg-[#00c853]/20 border border-[#00c853]/40 flex items-center justify-center shrink-0">
+                    <span className="text-2xl">📅</span>
+                  </div>
+                  <div>
+                    <p className="text-3xl font-extrabold text-[#00c853] leading-none">10 years</p>
+                    <p className="text-[#e6e6e6] text-xs mt-1">Buying electronics in Austin</p>
+                  </div>
+                </div>
+                <div className="flex-1 bg-gradient-to-br from-[#00c853]/15 to-[#00c853]/5 border border-[#00c853]/30 rounded-2xl p-5 flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-full bg-[#00c853]/20 border border-[#00c853]/40 flex items-center justify-center shrink-0">
+                    <span className="text-2xl">🛡️</span>
+                  </div>
+                  <div>
+                    <p className="text-3xl font-extrabold text-[#00c853] leading-none">Zero</p>
+                    <p className="text-[#e6e6e6] text-xs mt-1">Sketchy meetups, ever</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Pull quote — sets the emotional frame in one line */}
+              <div className="border-l-4 border-[#00c853] bg-[#00c853]/[0.04] pl-5 pr-4 py-4 mb-6 rounded-r-xl">
+                <p className="text-white text-lg font-medium leading-snug italic">&ldquo;No driving across town with a thousand dollars of electronics in your front seat.&rdquo;</p>
+              </div>
+
+              <div className="space-y-4 mb-6 text-[#e6e6e6] text-sm leading-relaxed">
+                <p>This site was built by someone who&apos;s spent the last ten years buying electronics here in Austin — iPhones, MacBooks, game consoles, drones, you name it. Cash-in-hand at coffee shops, gas stations, mall parking lots. The way the resale scene actually works.</p>
+                <p>Doing it that long, you see the dark side of it. Stories every month: someone meeting a stranger from OfferUp to sell a MacBook gets robbed at gunpoint. A college kid hands over a Switch to a buyer who jumps in a car and peels off. People walking into apartment complexes alone because that&apos;s where the &quot;buyer&quot; said to meet. The convenience of marketplace apps quietly costs people their phones, their money, and sometimes their safety.</p>
+              </div>
+
+              {/* Sketchy vs us comparison — visual side-by-side */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+                <div className="bg-red-500/[0.05] border border-red-500/25 rounded-2xl p-5">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-red-300 font-bold mb-3 flex items-center gap-2">
+                    <span className="text-base">⚠️</span> The OfferUp way
+                  </p>
+                  <ul className="space-y-2 text-sm text-[#dcdcdc]">
+                    <li className="flex gap-2"><span className="text-red-400 shrink-0">✗</span><span>Drive across town with the device in your seat</span></li>
+                    <li className="flex gap-2"><span className="text-red-400 shrink-0">✗</span><span>Meet a stranger whose profile was made last week</span></li>
+                    <li className="flex gap-2"><span className="text-red-400 shrink-0">✗</span><span>Counterfeit cash, last-minute haggling, no-shows</span></li>
+                    <li className="flex gap-2"><span className="text-red-400 shrink-0">✗</span><span>If something goes wrong — no one to call</span></li>
+                  </ul>
+                </div>
+                <div className="bg-[#00c853]/[0.06] border border-[#00c853]/35 rounded-2xl p-5">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3 flex items-center gap-2">
+                    <span className="text-base">🛡️</span> The Top Cash way
+                  </p>
+                  <ul className="space-y-2 text-sm text-[#dcdcdc]">
+                    <li className="flex gap-2"><span className="text-[#00c853] shrink-0">✓</span><span>Ship from home with a free FedEx label — never leave the house</span></li>
+                    <li className="flex gap-2"><span className="text-[#00c853] shrink-0">✓</span><span>Or meet at a known, public Austin spot — face you can recognize</span></li>
+                    <li className="flex gap-2"><span className="text-[#00c853] shrink-0">✓</span><span>Quote locked for 7 days — no surprise deductions on arrival</span></li>
+                    <li className="flex gap-2"><span className="text-[#00c853] shrink-0">✓</span><span>One real business in Austin that&apos;ll still be here next month</span></li>
+                  </ul>
+                </div>
+              </div>
+
               <div className="space-y-4 mb-8 text-[#e6e6e6] text-sm leading-relaxed">
-                <p>I&apos;m Skywalker — I&apos;ve spent the last ten years buying electronics here in Austin. iPhones, MacBooks, game consoles, drones, you name it. Cash-in-hand at coffee shops, gas stations, mall parking lots — the way the resale scene actually works.</p>
-                <p>Doing it that long, you see the dark side of it. Stories every month: someone meeting a stranger from OfferUp to sell a MacBook gets robbed at gunpoint. A college kid driving across town with a Switch hands it to a buyer who jumps in a car and peels off. People walking into apartment complexes alone because that&apos;s where the &quot;buyer&quot; said to meet. The convenience of marketplace apps quietly costs people their phones, their money, and sometimes their safety.</p>
-                <p>Top Cash Cellular is the opposite of that. <strong className="text-white">One business, one face, one location.</strong> You get an honest quote in 30 seconds, you ship your device with a free FedEx label (or meet me at a known public spot if you&apos;re in Austin), and you get paid the day we receive it. No driving across town with a thousand dollars of electronics in your front seat. No texting back-and-forth with a stranger whose Facebook profile was made last week. No &quot;is this person real or about to scam me&quot; gut check.</p>
-                <p>That&apos;s the whole pitch: <strong className="text-white">safe, convenient, fair.</strong> Ten years of pricing experience baked into an instant-quote tool, transparent grading you can sanity-check yourself, and same-day payment from a business that&apos;ll still be here next month. You save the time. You save the hassle. You don&apos;t put yourself in a situation that ends up on the local news.</p>
-                <p>The site went live in May 2026. It&apos;s small — me + a tiny team handling intake, inspection, and payout — but that&apos;s the point. You&apos;re dealing with a real person who&apos;s been in this market long enough to know what your device is actually worth, and you never have to wonder who&apos;s on the other end of the trade.</p>
-                <p>Got a question or a weird device you&apos;re not sure we&apos;ll buy? Email me directly: <a href={EMAIL_HREF} className="text-[#00c853] hover:underline font-semibold">{EMAIL}</a>. I read every message.</p>
+                <p>That&apos;s the whole pitch: <strong className="text-white">safe, convenient, fair.</strong> Ten years of pricing experience baked into an instant-quote tool, transparent grading you can sanity-check yourself, and same-day payment from a real business in Austin. You save the time. You save the hassle. You don&apos;t put yourself in a situation that ends up on the local news.</p>
+                <p>The site went live in May 2026. Small team handling intake, inspection, and payout — but that&apos;s the point. You&apos;re dealing with someone who&apos;s been in this market long enough to know what your device is actually worth, and you never have to wonder who&apos;s on the other end of the trade.</p>
+              </div>
+
+              {/* Contact card with visual treatment */}
+              <div className="bg-white/[0.04] border border-white/15 rounded-2xl p-5 mb-8 text-center">
+                <p className="text-2xl mb-2">✉️</p>
+                <p className="text-white font-semibold text-sm mb-1">Got a weird device or a question?</p>
+                <p className="text-[#bdbdbd] text-xs mb-3">Email us directly — every message gets a real reply.</p>
+                <a href={EMAIL_HREF} className="text-[#00c853] hover:underline font-bold text-sm">{EMAIL}</a>
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-8">
