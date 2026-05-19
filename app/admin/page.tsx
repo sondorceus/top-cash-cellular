@@ -240,7 +240,7 @@ export default function AdminPage() {
   const [autoRefresh, setAutoRefresh] = useState(true);
   // Active vs Trash view. Trashed leads stay recoverable for 24h then
   // auto-purge. Skywalker 2026-05-17 "save my quotes for 24hr".
-  const [view, setView] = useState<"active" | "trash">("active");
+  const [view, setView] = useState<"active" | "trash" | "needs-review">("active");
   // Hide internal/test leads (Skywalker's own submissions matching
   // INTERNAL_IPS / INTERNAL_EMAILS server-side). Defaults to hidden;
   // toggle persisted in localStorage. 2026-05-19.
@@ -792,7 +792,10 @@ export default function AdminPage() {
     setLoading(true);
     setError(null);
     try {
-      const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}&view=${view}&internal=${showInternal ? "show" : "hide"}`, { cache: "no-store" });
+      // needs-review is a client-side filter on top of the active list,
+      // so coerce to "active" for the backend fetch.
+      const wireView = view === "needs-review" ? "active" : view;
+      const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}&view=${wireView}&internal=${showInternal ? "show" : "hide"}`, { cache: "no-store" });
       if (r.status === 401) {
         setError("Invalid token");
         setToken("");
@@ -894,7 +897,8 @@ export default function AdminPage() {
     const tick = async () => {
       if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
       try {
-        const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}&view=${view}`, { cache: "no-store" });
+        const wireView = view === "needs-review" ? "active" : view;
+        const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}&view=${wireView}`, { cache: "no-store" });
         if (!r.ok) return;
         const d = await r.json();
         const next: Lead[] = d.leads || [];
@@ -1013,6 +1017,25 @@ export default function AdminPage() {
 
   const dedupedLeads = dedupeLeads(leads);
   const filteredLeads = dedupedLeads.filter((l) => matchesSearch(l, searchQuery));
+
+  // "Needs review" filter — leads that staff should look at right now.
+  // Three triggers:
+  //   1. AI flagged it (photo mismatch, fraud risk, channel-rec "pass").
+  //   2. Stuck for >24h without a status change AND not already finished.
+  //   3. Missing or sparse photos on a single-device lead — can't QA without them.
+  // Lives entirely client-side over the already-fetched active list,
+  // so toggling the tab is instant. Skywalker 2026-05-19.
+  const FINISHED = new Set(["paid", "met", "rejected"]);
+  function leadNeedsReview(l: Lead): boolean {
+    if (l.ai?.flag) return true;
+    if (l.ai?.summary && /\bpass\b/i.test(l.ai.summary.body)) return true;
+    if (l.staleHours && l.staleHours >= 24 && !FINISHED.has(l.status)) return true;
+    const isMulti = !!(l.deviceCount && l.deviceCount > 1);
+    if (!isMulti && (!l.photos || l.photos.length < 2)) return true;
+    return false;
+  }
+  const needsReviewLeads = filteredLeads.filter(leadNeedsReview);
+  const displayedLeads = view === "needs-review" ? needsReviewLeads : filteredLeads;
 
   const computeStats = (list: Lead[]) => {
     const now = Date.now();
@@ -1331,14 +1354,26 @@ export default function AdminPage() {
                 >Sign out</button>
               </div>
             )}
-            {/* Active / Trash toggle. Trashed leads stay recoverable for
-                24h before auto-purge. Skywalker 2026-05-17. */}
+            {/* Active / Needs review / Trash toggle. Needs review is a
+                client-side filter on the active list — surfaces leads
+                with AI flags, "pass" recommendations, stale status,
+                or missing photos. Skywalker 2026-05-17 / 2026-05-19. */}
             <div className="flex items-center bg-white/5 border border-white/10 rounded-lg overflow-hidden text-xs font-semibold">
               <button
                 onClick={() => setView("active")}
                 className={`px-3 py-2 transition cursor-pointer ${view === "active" ? "bg-[#00c853]/15 text-[#00c853]" : "text-[#dcdcdc] hover:bg-white/10"}`}
                 title="Show active leads"
               >Active</button>
+              <button
+                onClick={() => setView("needs-review")}
+                className={`px-3 py-2 transition cursor-pointer border-l border-white/10 flex items-center gap-1.5 ${view === "needs-review" ? "bg-red-500/15 text-red-300" : "text-[#dcdcdc] hover:bg-white/10"}`}
+                title="Leads needing staff review — AI flagged, stale, missing photos, or Theot recommended pass"
+              >
+                🚨 Needs review
+                {view !== "needs-review" && needsReviewLeads.length > 0 && (
+                  <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500/30 text-red-100 text-[10px] font-bold">{needsReviewLeads.length}</span>
+                )}
+              </button>
               <button
                 onClick={() => setView("trash")}
                 className={`px-3 py-2 transition cursor-pointer border-l border-white/10 ${view === "trash" ? "bg-amber-500/15 text-amber-300" : "text-[#dcdcdc] hover:bg-white/10"}`}
@@ -1358,16 +1393,16 @@ export default function AdminPage() {
             {/* CSV export — emoji-only on mobile to save space. */}
             <button
               onClick={() => {
-                const view = filteredLeads.filter((l) => {
+                const exportView = displayedLeads.filter((l) => {
                   if (statusFilter === "all") return true;
                   if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
                   if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
                   if (statusFilter === "stale") return isStale(l);
                   return l.status === statusFilter;
                 });
-                exportFilteredCsv(view);
+                exportFilteredCsv(exportView);
               }}
-              disabled={filteredLeads.length === 0}
+              disabled={displayedLeads.length === 0}
               title="Download the current filtered view as CSV (Sheets/Excel/QuickBooks)"
               className="px-2.5 sm:px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-xs sm:text-sm hover:bg-white/10 transition disabled:opacity-40 cursor-pointer"
             >
@@ -1587,8 +1622,15 @@ export default function AdminPage() {
             <p className="text-[#dcdcdc]">No leads yet.</p>
           </div>
         )}
+        {leads.length > 0 && view === "needs-review" && needsReviewLeads.length === 0 && (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-10 text-center">
+            <p className="text-2xl mb-2">✨</p>
+            <p className="text-[#00c853] font-bold mb-1">All caught up</p>
+            <p className="text-[#bdbdbd] text-sm">No leads currently need staff review — every active lead has photos, fresh status, and a clean AI verdict.</p>
+          </div>
+        )}
 
-        {leads.length > 0 && (
+        {leads.length > 0 && !(view === "needs-review" && needsReviewLeads.length === 0) && (
           <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
             <div className="hidden md:grid grid-cols-[auto_1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 px-5 py-3 bg-white/5 text-xs font-semibold text-[#dcdcdc] uppercase tracking-wider border-b border-white/10 items-center">
               <div className="w-4">
@@ -1596,7 +1638,7 @@ export default function AdminPage() {
                   type="checkbox"
                   aria-label="Select all visible"
                   checked={(() => {
-                    const visible = filteredLeads.filter((l) => {
+                    const visible = displayedLeads.filter((l) => {
                       if (statusFilter === "all") return true;
                       if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
                       if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
@@ -1606,7 +1648,7 @@ export default function AdminPage() {
                     return visible.length > 0 && visible.every((l) => selectedIds.has(l.id));
                   })()}
                   onChange={(e) => {
-                    const visible = filteredLeads.filter((l) => {
+                    const visible = displayedLeads.filter((l) => {
                       if (statusFilter === "all") return true;
                       if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
                       if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
@@ -1626,7 +1668,7 @@ export default function AdminPage() {
               <div>Status</div>
             </div>
             <ul className="divide-y divide-white/5">
-              {filteredLeads.filter((l) => {
+              {displayedLeads.filter((l) => {
                 if (statusFilter === "all") return true;
                 if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
                 if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
