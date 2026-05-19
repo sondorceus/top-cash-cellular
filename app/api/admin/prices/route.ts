@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PRICE_TABLE, CARRIER_DEDUCTIONS, BASE_PRICED_MODELS, MACBOOK_SPECS, type MacSpec } from "../../../data/prices";
 import { getResellEstimate } from "../../../lib/resell-estimates";
+import { lookupAtlasResell } from "../../../lib/atlas-lookup";
 import skuLabelsJson from "../../../data/sku-labels.json";
 import { put, list, del } from "@vercel/blob";
 import { promises as fs } from "fs";
@@ -247,7 +248,17 @@ export async function GET() {
   // margin (resell − payout). Lets the editor show a margin chip next to
   // each device so Skywalker can spot loss-makers at a glance.
   const effectivePriceTable = deepMerge(PRICE_TABLE, overrides.priceTable);
+  const effectiveCarrierDeductions = deepMerge(CARRIER_DEDUCTIONS, overrides.carrierDeductions);
   const marginByModel = buildMarginMap(effectivePriceTable, overrides.baseOverrides);
+  // Per-cell margin matrix — every (sku, storage, condition) cell against
+  // its matching Atlas variant. Includes carrier-locked-per-carrier-tier
+  // when Atlas has a locked row. Used by /admin/prices to render a chip
+  // under each input.
+  const perCellMargin = buildPerCellMarginMap(
+    effectivePriceTable,
+    effectiveCarrierDeductions,
+    atlasReference,
+  );
   return NextResponse.json({
     baseline: {
       priceTable: PRICE_TABLE,
@@ -258,15 +269,71 @@ export async function GET() {
     overrides,
     effective: {
       priceTable: effectivePriceTable,
-      carrierDeductions: deepMerge(CARRIER_DEDUCTIONS, overrides.carrierDeductions),
+      carrierDeductions: effectiveCarrierDeductions,
     },
     history,
     atlasReference,
     iwmReference,
     ebayReference,
     marginByModel,
+    perCellMargin,
     skuLabels: SKU_LABELS,
   });
+}
+
+// Per-cell margin: for every PRICE_TABLE cell, compute unlocked + each
+// carrier-locked variant where Atlas has a comp. Returned shape:
+//   perCellMargin[sku][storage][condition][carrierKey] = MarginRow
+//     carrierKey is "unlocked" | "att" | "tmobile" | "other"
+// Cells with no Atlas comp are simply omitted (client treats absence as
+// "no comp").
+type CellMarginRow = { payout: number; resell: number; margin: number; marginPct: number };
+function buildPerCellMarginMap(
+  effectivePriceTable: Record<string, Record<string, Record<string, number>>>,
+  effectiveCarrierDeductions: Record<string, Record<string, number>>,
+  atlas: Awaited<ReturnType<typeof loadAtlasReference>>,
+): Record<string, Record<string, Record<string, Record<string, CellMarginRow>>>> {
+  const out: Record<string, Record<string, Record<string, Record<string, CellMarginRow>>>> = {};
+  for (const [sku, storages] of Object.entries(effectivePriceTable)) {
+    const label = SKU_LABELS[sku];
+    if (!label) continue;
+    const carrierDeds = effectiveCarrierDeductions[sku] || {};
+    for (const [stor, conds] of Object.entries(storages)) {
+      for (const [cond, payout] of Object.entries(conds)) {
+        if (typeof payout !== "number" || payout <= 0) continue;
+        // Unlocked
+        const unlockedResell = lookupAtlasResell(atlas, sku, label, stor, cond, null);
+        if (unlockedResell != null && unlockedResell > 0) {
+          setCell(out, sku, stor, cond, "unlocked", payout, unlockedResell);
+        }
+        // Per-carrier-locked. Customer-side payout = base − carrier_deduction.
+        // Compare that net payout against the Atlas locked grade.
+        for (const carrier of ["att", "tmobile", "other"] as const) {
+          const ded = carrierDeds[carrier];
+          if (typeof ded !== "number" || ded <= 0) continue;
+          const lockedPayout = Math.max(0, payout - ded);
+          if (lockedPayout <= 0) continue;
+          const lockedResell = lookupAtlasResell(atlas, sku, label, stor, cond, carrier);
+          if (lockedResell != null && lockedResell > 0) {
+            setCell(out, sku, stor, cond, carrier, lockedPayout, lockedResell);
+          }
+        }
+      }
+    }
+  }
+  return out;
+}
+function setCell(
+  out: Record<string, Record<string, Record<string, Record<string, CellMarginRow>>>>,
+  sku: string, stor: string, cond: string, carrierKey: string,
+  payout: number, resell: number,
+) {
+  const margin = resell - payout;
+  const marginPct = resell > 0 ? Math.round((margin / resell) * 100) : 0;
+  if (!out[sku]) out[sku] = {};
+  if (!out[sku][stor]) out[sku][stor] = {};
+  if (!out[sku][stor][cond]) out[sku][stor][cond] = {};
+  out[sku][stor][cond][carrierKey] = { payout, resell, margin, marginPct };
 }
 
 type MarginRow = { label: string; payout: number; resell: number | null; margin: number | null; marginPct: number | null };

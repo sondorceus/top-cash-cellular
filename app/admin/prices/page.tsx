@@ -98,9 +98,40 @@ type Payload = {
   iwmReference?: IwmReference;
   ebayReference?: EbayReference;
   marginByModel?: Record<string, MarginRow>;
+  // perCellMargin[sku][storage][condition][carrierKey] — carrierKey is
+  // "unlocked" / "att" / "tmobile" / "other". Only populated cells with
+  // Atlas comp data are present.
+  perCellMargin?: Record<string, Record<string, Record<string, Record<string, CellMarginRow>>>>;
   skuLabels?: Record<string, string>;
 };
 type MarginRow = { label: string; payout: number; resell: number | null; margin: number | null; marginPct: number | null };
+type CellMarginRow = { payout: number; resell: number; margin: number; marginPct: number };
+
+// Tiny per-cell margin chip — rendered under each PRICE_TABLE input. Show
+// the unlocked margin %, with locked variants summarized in the tooltip.
+function CellMarginChip({ cell }: { cell?: Record<string, CellMarginRow> }) {
+  if (!cell) return <span className="text-[9px] text-[#333]">·</span>;
+  const unl = cell.unlocked;
+  const primary = unl ?? cell.att ?? cell.tmobile ?? cell.other;
+  if (!primary) return <span className="text-[9px] text-[#333]">·</span>;
+  const pct = primary.marginPct;
+  const tone =
+    pct >= 25 ? "text-[#00c853]" :
+    pct >= 10 ? "text-yellow-300" :
+    "text-red-300";
+  // Build a multi-line tooltip with every variant we have data for.
+  const lines: string[] = [];
+  for (const [k, v] of Object.entries(cell)) {
+    const label = k === "unlocked" ? "Unlocked" : k.toUpperCase();
+    const sign = v.margin >= 0 ? "+" : "";
+    lines.push(`${label}: pay $${v.payout} · resell $${v.resell} · margin ${sign}$${v.margin} (${sign}${v.marginPct}%)`);
+  }
+  return (
+    <span className={`text-[9px] font-mono tabular-nums ${tone}`} title={lines.join("\n")}>
+      {pct >= 0 ? "+" : ""}{pct}%
+    </span>
+  );
+}
 
 // Margin chip — green ≥25%, yellow 10–24%, red <10%, gray when unknown.
 // Click target is small but visually scannable so Skywalker can spot
@@ -859,30 +890,33 @@ export default function PricesAdminPage() {
                                   const overridden = isOverridden(modelId, stor, cond);
                                   const savedOverride = data.overrides.priceTable[modelId]?.[stor]?.[cond] !== undefined;
                                   return (
-                                    <td key={cond} className="px-0.5 py-1">
+                                    <td key={cond} className="px-0.5 py-1 align-top">
                                       {v === undefined ? (
                                         <span className="block text-[10px] text-[#444] text-right">—</span>
                                       ) : (
-                                        <div className="flex items-center justify-end gap-0.5">
-                                          <input
-                                            key={`${modelId}-${stor}-${cond}-${v}`}
-                                            type="number"
-                                            defaultValue={v}
-                                            onChange={(e) => setPriceCell(modelId, stor, cond, parseInt(e.target.value) || 0)}
-                                            className={`w-16 px-1.5 py-0.5 text-right bg-black/60 rounded border ${
-                                              overridden ? "border-[#00c853]/50 text-[#00c853]" : "border-white/15"
-                                            }`}
-                                          />
-                                          {savedOverride && (
-                                            <button
-                                              type="button"
-                                              onClick={() => resetCell(modelId, stor, cond)}
-                                              className="text-[10px] text-[#888] hover:text-[#00c853] cursor-pointer w-4"
-                                              title="Revert this cell to baseline"
-                                            >
-                                              ↺
-                                            </button>
-                                          )}
+                                        <div className="flex flex-col items-end gap-0">
+                                          <div className="flex items-center justify-end gap-0.5">
+                                            <input
+                                              key={`${modelId}-${stor}-${cond}-${v}`}
+                                              type="number"
+                                              defaultValue={v}
+                                              onChange={(e) => setPriceCell(modelId, stor, cond, parseInt(e.target.value) || 0)}
+                                              className={`w-16 px-1.5 py-0.5 text-right bg-black/60 rounded border ${
+                                                overridden ? "border-[#00c853]/50 text-[#00c853]" : "border-white/15"
+                                              }`}
+                                            />
+                                            {savedOverride && (
+                                              <button
+                                                type="button"
+                                                onClick={() => resetCell(modelId, stor, cond)}
+                                                className="text-[10px] text-[#888] hover:text-[#00c853] cursor-pointer w-4"
+                                                title="Revert this cell to baseline"
+                                              >
+                                                ↺
+                                              </button>
+                                            )}
+                                          </div>
+                                          <CellMarginChip cell={data.perCellMargin?.[modelId]?.[stor]?.[cond]} />
                                         </div>
                                       )}
                                     </td>

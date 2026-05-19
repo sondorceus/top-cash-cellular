@@ -8,9 +8,13 @@ m = re.search(r'export const PRICE_TABLE[^=]*=\s*\{(.*?)^\};', src, re.S | re.M)
 pt_skus = re.findall(r'^  ([a-z][a-z0-9]*): \{', m.group(1), re.M)
 
 labels_raw = {}
-for sku, label in re.findall(r'\{\s*id:\s*[\"\']([^\"\']+)[\"\'],\s*label:\s*[\"\']([^\"\']+)[\"\']', page):
-    if sku not in labels_raw:
-        labels_raw[sku] = label
+# Use a regex that handles escaped quotes inside the label (e.g. `iPad Air 11\" (M3)`).
+for m in re.finditer(r'\{\s*id:\s*"([^"]+)",\s*label:\s*"((?:[^"\\]|\\.)*)"', page):
+    sku, label = m.group(1), m.group(2)
+    if sku in labels_raw: continue
+    # Resolve TS string escapes: \" → "
+    label = label.replace('\\"', '"').replace("\\'", "'")
+    labels_raw[sku] = label
 
 out = {}
 missing = []
