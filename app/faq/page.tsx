@@ -11,6 +11,10 @@ export const metadata: Metadata = {
 
 const FAQ = [
   {
+    q: "What devices do you accept?",
+    a: "Phones (iPhone, Samsung Galaxy, Google Pixel), tablets (iPad, Galaxy Tab), MacBooks + PC laptops (HP, Lenovo, Dell, ASUS, Acer, Alienware), game consoles (PS5, Xbox, Nintendo Switch), smartwatches (Apple Watch, Galaxy Watch, Pixel Watch, Garmin), drones (DJI), VR headsets (Meta Quest, Valve Index, Apple Vision Pro), and Mac desktops (iMac, Mac mini, Mac Studio). If you have something unusual and don't see it on the picker, hit \"Other\" — we'll give you a manual quote within an hour.",
+  },
+  {
     q: "How fast do I get paid?",
     a: "Most payouts go out the same business day we receive and verify your device. Cash App and Zelle land within minutes. Bitcoin (BTC) sends on-chain within ~30 minutes. Local Austin pickups get cash on the spot.",
   },
@@ -24,11 +28,23 @@ const FAQ = [
   },
   {
     q: "Do you cover shipping?",
-    a: "Yes. We email a pre-paid FedEx or UPS label as soon as you accept the offer. You drop the box off at any FedEx/UPS location.",
+    a: "Yes. We email a pre-paid FedEx label as soon as you submit. You drop the box off at any FedEx location.",
+  },
+  {
+    q: "Step-by-step — how does shipping actually work?",
+    a: "1. Submit your trade-in on our site and pick \"Ship It.\" 2. Within seconds we email you a prepaid FedEx label (PDF) along with packing instructions. 3. Pack your device in any plain box or padded mailer — no special supplies needed. Wrap in bubble wrap, balled paper, or even a t-shirt so it doesn't rattle. 4. Tape the label flat on top, barcode visible. 5. Drop at any FedEx location or self-service drop box — no appointment, no waiting. 6. FedEx scans it, we get a tracking ping, and you can watch it on our /track page or in FedEx's app.",
+  },
+  {
+    q: "How do I track my package?",
+    a: <>Two ways. (1) Use the FedEx tracking number we email you at fedex.com/track. (2) Visit our <Link href="/track" className="text-[#00c853] hover:underline">/track page</Link>, enter your phone or email, and see the live status of every device you've sent us — from \"label minted\" to \"received\" to \"paid.\" No password, identity is the contact info itself.</>,
+  },
+  {
+    q: "What if I don't have a printer?",
+    a: "Two options. (1) FedEx Office: forward the label email to your phone, show the QR code at any FedEx Office counter, and they'll print + ship it free. (2) Reply to the label email asking for a paper label — we'll USPS one to you within a day. Most customers use FedEx Office because it's faster.",
   },
   {
     q: "What about insurance during shipping?",
-    a: "Standard carrier insurance is included up to $100 — that comes with the prepaid label automatically. For devices worth more than $100, we strongly recommend adding extra coverage at the counter when you drop the box off (a few dollars and the counter clerk will handle it). We don't insure beyond $100 ourselves, so the extra protection on higher-value devices is on the shipper.",
+    a: "Standard FedEx insurance is included up to $100 — that comes with the prepaid label automatically. For devices worth more than $100, we strongly recommend adding extra coverage at the counter when you drop the box off (a few dollars and the counter clerk will handle it). We don't insure beyond $100 ourselves, so the extra protection on higher-value devices is on the shipper.",
   },
   {
     q: "Can I change my mind after shipping?",
@@ -53,6 +69,38 @@ const FAQ = [
   {
     q: "What if my device still has a balance on it?",
     a: "We can still buy devices that aren't fully paid off — but the offer may be lower. Carriers can blacklist a device for unpaid balance, which makes it unsellable on the secondary market. We adjust the offer to account for that risk. Stolen or fraud-reported devices are different — those we do not buy.",
+  },
+  {
+    q: "What about my SIM card?",
+    a: "Pull it before you ship. We discard SIMs at the wipe stage regardless, so leaving yours in just means you're losing a piece of plastic that's still tied to your number. Same goes for SD cards on Androids.",
+  },
+  {
+    q: "Do I need to include the charger, cable, or original box?",
+    a: "Only if you picked Sealed condition — that requires the original box + all unopened accessories. For Excellent / Good / Fair / Broken, just send the device. Power cable is optional but appreciated for laptops + consoles (we'll knock the offer down a little if missing on those specifically).",
+  },
+  {
+    q: "How do I find my exact model?",
+    a: "iPhone: Settings → General → About → look for \"Model Name\" (e.g. \"iPhone 16 Pro Max\"). Android: Settings → About phone → Model number. MacBook: Apple menu → About This Mac. Most laptops have a sticker on the bottom. Game consoles: model is printed on the back near the serial. If you're not sure, pick the closest match in our picker and our intake team will adjust the offer if it turns out to be a different SKU.",
+  },
+  {
+    q: "What does \"unlocked\" mean and why does it matter?",
+    a: "An unlocked phone works on any carrier (AT&T, T-Mobile, Verizon, prepaid). A carrier-locked phone only works with the carrier that originally sold it. Unlocked phones resell at a premium — we pay $50-300 more for unlocked depending on model. Most phones bought outright (paid in full) are unlocked. Phones bought on carrier installment plans are usually locked until paid off. Check by inserting a different carrier's SIM — if it works, you're unlocked.",
+  },
+  {
+    q: "How long is my quote locked in?",
+    a: "Seven days from submission. If FedEx delivers your device within that window, you're guaranteed the quoted price (subject to condition matching). If something slips past 7 days, we re-quote based on current market — sometimes higher, sometimes lower.",
+  },
+  {
+    q: "I didn't get my confirmation email — what now?",
+    a: <>Check spam / promotions first (Gmail loves to filter us). If still missing, email <a href="mailto:CustomerService@topcashcells.com" className="text-[#00c853] hover:underline">CustomerService@topcashcells.com</a> with the name + device you submitted and we'll resend within an hour. You can also use our <Link href="/track" className="text-[#00c853] hover:underline">/track page</Link> to confirm the lead landed — it shows every submission tied to your phone or email.</>,
+  },
+  {
+    q: "I picked the wrong payout method — can I change it?",
+    a: "Yes — as long as we haven't sent payment yet. Text us at (877) 549-2056 or reply to your confirmation email with your offer number + the new method. Once Cash App / Zelle / BTC has fired, it's irreversible from our end, but we'll work with you on next steps if you catch it after.",
+  },
+  {
+    q: "I disagree with your inspection — what now?",
+    a: "We'll send you photos + the specific issue we found. You have three options: (1) Accept the revised offer. (2) Submit a counter-offer — tell us what you think it's worth and we'll either agree or explain why we can't. (3) Request a free return — we ship the device back at our cost. No hard feelings, no restocking fee.",
   },
   {
     q: "How do coupon codes work?",
