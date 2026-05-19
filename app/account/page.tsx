@@ -111,6 +111,27 @@ export default function AccountPage() {
     window.location.href = "/";
   };
 
+  // Google sign-in via the OAuth redirect — bounces to Google, comes
+  // back with a verified tcc_session cookie set, lands on /account.
+  // The JS GSI button only decodes the JWT client-side without
+  // persisting the cookie, which is why we use the server flow here.
+  const signInWithGoogle = () => {
+    window.location.href = "/api/auth/google?returnTo=/account";
+  };
+
+  // "Sell another like this" — drops the customer back onto the
+  // homepage with the device label pre-filled in the search box,
+  // which surfaces their exact model in the dropdown (one tap to
+  // pick). The funnel still asks for fresh condition + storage so
+  // the new quote reflects the device's current shape. Skywalker
+  // 2026-05-19: two-tap repeat sale.
+  const sellAnotherLikeThis = (t: Trade) => {
+    if (!t.model) return;
+    const params = new URLSearchParams();
+    params.set("q", t.model);
+    window.location.href = `/?${params.toString()}#search`;
+  };
+
   if (loading) {
     return (
       <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center">
@@ -143,9 +164,27 @@ export default function AccountPage() {
               disabled={loginLoading}
               className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-extrabold hover:bg-[#00e676] disabled:opacity-50 transition cursor-pointer"
             >
-              {loginLoading ? "Looking up…" : "Sign in"}
+              {loginLoading ? "Looking up…" : "Sign in with email"}
             </button>
           </form>
+
+          {/* Divider + Google sign-in. Uses the OAuth redirect so the
+              cookie is actually persisted — the JS GSI button only
+              decodes the JWT client-side and doesn't survive a refresh. */}
+          <div className="flex items-center gap-3 my-4">
+            <div className="flex-1 h-px bg-white/10" />
+            <span className="text-[#888] text-xs">or</span>
+            <div className="flex-1 h-px bg-white/10" />
+          </div>
+          <button
+            type="button"
+            onClick={signInWithGoogle}
+            className="w-full bg-white text-[#0a0a0a] py-3.5 rounded-2xl text-base font-bold hover:bg-white/90 transition cursor-pointer flex items-center justify-center gap-2.5"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
+            Continue with Google
+          </button>
+
           <p className="text-[11px] text-[#888] text-center mt-4">
             New customer? <a href="/" className="text-[#00c853] hover:underline">Get a quote</a> to start your first trade.
           </p>
@@ -241,17 +280,32 @@ export default function AccountPage() {
               {past.map(t => {
                 const meta = STATUS_DISPLAY[t.status] || STATUS_DISPLAY.quote_requested;
                 return (
-                  <div key={t.id} className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center justify-between gap-3">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-bold truncate">{t.model || t.device || "Device"}</p>
-                      <p className="text-[11px] text-[#888]">{[t.storage, t.condition].filter(Boolean).join(" · ")} · {timeAgo(t.timestamp)}</p>
+                  <div key={t.id} className="bg-white/5 border border-white/10 rounded-xl p-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold truncate">{t.model || t.device || "Device"}</p>
+                        <p className="text-[11px] text-[#888]">{[t.storage, t.condition].filter(Boolean).join(" · ")} · {timeAgo(t.timestamp)}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        {t.quote && <p className="text-sm font-bold">{t.quote}</p>}
+                        <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${meta.tone} mt-0.5`}>
+                          {meta.emoji} {meta.label}
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-right shrink-0">
-                      {t.quote && <p className="text-sm font-bold">{t.quote}</p>}
-                      <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${meta.tone} mt-0.5`}>
-                        {meta.emoji} {meta.label}
-                      </span>
-                    </div>
+                    {/* Two-tap repeat sale — prefills the funnel with the
+                        same device/storage/condition and drops the customer
+                        at the quote step. Only shown on finished trades
+                        (re-quoting an in-flight one doesn't make sense). */}
+                    {t.model && (
+                      <button
+                        type="button"
+                        onClick={() => sellAnotherLikeThis(t)}
+                        className="mt-2 text-[11px] text-[#00c853] hover:underline font-semibold cursor-pointer"
+                      >
+                        + Sell another like this →
+                      </button>
+                    )}
                   </div>
                 );
               })}
