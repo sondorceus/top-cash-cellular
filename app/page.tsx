@@ -4980,14 +4980,20 @@ export default function Home() {
   // 'beacon' makes GA4 use sendBeacon so the event survives the page
   // unload race. Skywalker 2026-05-19 — pairs with Clarity recordings
   // for "they got to the contact step then bailed" diagnostics.
+  // Once-per-session guard prevents double-fire when both beforeunload
+  // AND pagehide trigger on the same navigation (mobile Safari emits
+  // both events on tab close).
   useEffect(() => {
+    let fired = false;
     const onUnload = () => {
+      if (fired) return;
       try {
         const w = window as unknown as { gtag?: (...args: unknown[]) => void; __tccVid?: string; __tccLatestStep?: string; __tccSubmitted?: boolean };
         if (!w.gtag) return;
         if (w.__tccSubmitted) return; // they finished — no abandon
         const last = w.__tccLatestStep;
         if (!last || last === "device") return; // never engaged past landing
+        fired = true;
         w.gtag("event", "funnel_abandon", {
           last_step: last,
           visitor_id: w.__tccVid,

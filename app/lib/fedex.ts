@@ -320,7 +320,10 @@ export type TrackingResult = {
 };
 
 export async function getTracking(trackingNumber: string): Promise<TrackingResult> {
-  if (!trackingNumber || !/^\d{8,30}$/.test(trackingNumber)) {
+  // Accept anything that looks like a FedEx tracking number. Ground +
+  // SmartPost are 12-22 digits; FedEx Express is 12 digits but some
+  // legacy formats include letters. Keep the validator permissive.
+  if (!trackingNumber || trackingNumber.length < 8 || trackingNumber.length > 40 || !/^[A-Za-z0-9-]+$/.test(trackingNumber)) {
     return { trackingNumber, state: "unknown" };
   }
   const token = await getAccessToken();

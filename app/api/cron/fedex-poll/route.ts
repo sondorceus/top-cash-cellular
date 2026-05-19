@@ -119,11 +119,19 @@ export async function GET(req: NextRequest) {
   // number per call (single-tracking endpoint). 25 × ~500ms ≈ 12s well
   // under Vercel's 60s function ceiling.
   const MAX_PER_RUN = 25;
-  const processed: Array<{ leadId: string; tracking: string; before: string; nowState: string; flippedTo?: string; mcPosted: boolean }> = [];
+  const processed: Array<{ leadId: string; tracking: string; before: string; nowState: string; flippedTo?: string; mcPosted: boolean; error?: string }> = [];
+  let errorCount = 0;
   for (const c of candidates.slice(0, MAX_PER_RUN)) {
     let result;
     try { result = await getTracking(c.tracking); }
-    catch { processed.push({ leadId: c.id, tracking: c.tracking, before: c.status, nowState: "error", mcPosted: false }); continue; }
+    catch (e) {
+      errorCount++;
+      processed.push({ leadId: c.id, tracking: c.tracking, before: c.status, nowState: "error", mcPosted: false, error: e instanceof Error ? e.message.slice(0, 200) : "unknown" });
+      continue;
+    }
+    // Small spacing between FedEx API calls — they don't publish a hard
+    // per-second cap but politeness beats getting throttled.
+    await new Promise((r) => setTimeout(r, 150));
     const newState = result.state;
     if (c.lastState === newState && newState !== "exception") {
       // Already reacted to this state. Skip silently.
@@ -160,10 +168,17 @@ export async function GET(req: NextRequest) {
     processed.push({ leadId: c.id, tracking: c.tracking, before: c.status, nowState: newState, flippedTo: nextStatus, mcPosted });
   }
 
+  // Alert MC if the error rate spiked — likely FedEx credentials
+  // rotated or their API went down. One ping per run, idempotency
+  // not needed (cron is hourly so worst-case 24 alerts/day).
+  if (errorCount >= 3 && errorCount === processed.length) {
+    await postToMc(`⚠️ FedEx Track API failing — ${errorCount}/${processed.length} calls errored. Check FEDEX_CLIENT_ID / FEDEX_CLIENT_SECRET on Vercel.`);
+  }
   return NextResponse.json({
     ok: true,
     candidates: candidates.length,
     processed: processed.length,
+    errors: errorCount,
     flippedToShipped: processed.filter((p) => p.flippedTo === "shipped").length,
     flippedToReceived: processed.filter((p) => p.flippedTo === "received").length,
     exceptions: processed.filter((p) => p.nowState === "exception").length,
