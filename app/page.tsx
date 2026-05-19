@@ -4343,6 +4343,7 @@ export default function Home() {
   const [inquiryDesc, setInquiryDesc] = useState("");
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
   const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [newsletterName, setNewsletterName] = useState("");
   const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
   const [statsVisible, setStatsVisible] = useState(false);
   const [animatedStats, setAnimatedStats] = useState({ devices: 0, payout: 0, time: 0 });
@@ -11777,11 +11778,34 @@ export default function Home() {
                     e.preventDefault();
                     if (!newsletterEmail.trim()) return;
                     try {
-                      await fetch("/api/newsletter", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: newsletterEmail }) });
+                      await fetch("/api/newsletter", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: newsletterEmail, name: newsletterName.trim() || undefined }),
+                      });
                     } catch {}
                     setNewsletterSubmitted(true);
-                  }} className="flex gap-2">
-                    <input type="email" value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)} placeholder="your@email.com" required aria-label="Email for newsletter" className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition" />
+                  }} className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={newsletterName}
+                        onChange={(e) => setNewsletterName(e.target.value)}
+                        placeholder="First name (optional)"
+                        maxLength={60}
+                        aria-label="First name (optional)"
+                        className="w-1/2 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition"
+                      />
+                      <input
+                        type="email"
+                        value={newsletterEmail}
+                        onChange={(e) => setNewsletterEmail(e.target.value)}
+                        placeholder="your@email.com"
+                        required
+                        aria-label="Email for newsletter"
+                        className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition"
+                      />
+                    </div>
                     <button type="submit" className="bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition tap-press whitespace-nowrap">
                       Sign Up
                     </button>
@@ -12181,23 +12205,40 @@ export default function Home() {
               onSubmit={(e) => {
                 e.preventDefault();
                 const form = e.currentTarget;
-                const input = form.querySelector("input[type=email]") as HTMLInputElement | null;
-                const email = input?.value.trim();
+                const nameInput = form.querySelector("input[name=footerNlName]") as HTMLInputElement | null;
+                const emailInput = form.querySelector("input[type=email]") as HTMLInputElement | null;
+                const email = emailInput?.value.trim();
+                const name = nameInput?.value.trim();
                 if (!email) return;
-                fetch("/api/newsletter", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email }) }).catch(() => {});
-                if (input) input.value = "";
+                fetch("/api/newsletter", {
+                  method: "POST",
+                  headers: { "content-type": "application/json" },
+                  body: JSON.stringify({ email, name: name || undefined }),
+                }).catch(() => {});
+                if (emailInput) emailInput.value = "";
+                if (nameInput) nameInput.value = "";
                 form.classList.add("hidden");
                 form.parentElement?.querySelector(".nl-ok")?.classList.remove("hidden");
               }}
-              className="flex items-center gap-2 max-w-sm mx-auto"
+              className="flex flex-col items-stretch gap-2 max-w-sm mx-auto"
             >
               <input
-                type="email"
-                required
-                placeholder="Email address"
-                className="flex-1 px-3 py-2 rounded-full bg-white/5 border border-white/10 text-white text-xs placeholder:text-[#888] focus:outline-none focus:border-[#00c853]/50"
+                type="text"
+                name="footerNlName"
+                placeholder="First name (optional)"
+                maxLength={60}
+                aria-label="First name (optional)"
+                className="px-3 py-2 rounded-full bg-white/5 border border-white/10 text-white text-xs placeholder:text-[#888] focus:outline-none focus:border-[#00c853]/50"
               />
-              <button type="submit" className="px-4 py-2 rounded-full bg-[#00c853] text-[#0a0a0a] text-xs font-extrabold hover:bg-[#00e676] transition">Sign up</button>
+              <div className="flex items-center gap-2">
+                <input
+                  type="email"
+                  required
+                  placeholder="Email address"
+                  className="flex-1 px-3 py-2 rounded-full bg-white/5 border border-white/10 text-white text-xs placeholder:text-[#888] focus:outline-none focus:border-[#00c853]/50"
+                />
+                <button type="submit" className="px-4 py-2 rounded-full bg-[#00c853] text-[#0a0a0a] text-xs font-extrabold hover:bg-[#00e676] transition">Sign up</button>
+              </div>
             </form>
             <div className="nl-ok hidden bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl px-4 py-3 max-w-sm mx-auto">
               <p className="text-[#00c853] text-sm font-bold">You're on the list. Check your inbox.</p>
