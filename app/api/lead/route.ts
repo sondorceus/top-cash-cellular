@@ -152,12 +152,29 @@ export async function POST(req: NextRequest) {
   // TCPA defense in depth — client checkbox is `required`, but a
   // bypass (DevTools, malformed client) could submit phone without
   // consent. Reject any phone-bearing lead that didn't get explicit
-  // smsOptIn=true. Ship handoffs without a phone don't need consent
-  // (we'll only email).
-  if (phone && typeof phone === "string" && phone.replace(/\D/g, "").length >= 10 && smsOptIn !== true) {
+  // smsOptIn=true. EXCEPTION: ship handoffs collect the phone for
+  // FedEx label routing (FedEx prints + uses it for delivery issues)
+  // not for our SMS marketing. Skipping TCPA consent there is correct
+  // — admin status SMS still gates on the smsOptIn flag saved on the
+  // lead, so we won't accidentally text a ship customer who only
+  // wanted us to print it on the label.
+  const isShipHandoff =
+    handoff && typeof handoff === "object" &&
+    (handoff as { method?: string }).method === "ship";
+  if (
+    phone && typeof phone === "string" && phone.replace(/\D/g, "").length >= 10 &&
+    smsOptIn !== true && !isShipHandoff
+  ) {
     return NextResponse.json({ error: "SMS consent required when providing a phone number." }, { status: 400 });
   }
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
+  // FedEx requires a recipient phone on every label. Reject ship
+  // handoffs that arrive without one so the auto-label-mint downstream
+  // doesn't silently fail. UI already requires the field, this is the
+  // defense-in-depth guard for malformed / scripted submissions.
+  if (isShipHandoff && (!phone || (phone as string).replace(/\D/g, "").length < 10)) {
+    return NextResponse.json({ error: "A 10-digit phone number is required for shipping — FedEx prints it on the label." }, { status: 400 });
+  }
 
   // Server-side guard: Cash is local-only. If a ship handoff slips
   // through with payout=Cash (client filter bypass, stale state, bad

@@ -4196,6 +4196,7 @@ export default function Home() {
   const [imeiState, setImeiState] = useState<"idle" | "checking" | "ok" | "warn" | "error">("idle");
   const [imeiResult, setImeiResult] = useState<{ model?: string; warnings?: string[]; error?: string } | null>(null);
   const [imeiHelpOpen, setImeiHelpOpen] = useState(false);
+  const [phoneInfoOpen, setPhoneInfoOpen] = useState(false);
   const checkImei = async () => {
     const clean = imeiInput.replace(/\D/g, "");
     if (clean.length !== 15) {
@@ -10697,9 +10698,35 @@ export default function Home() {
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={50} placeholder="Your name" className="w-full px-4 py-3.5 tcc-input text-sm" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
-                  Phone {handoffMethod === "ship" ? <span className="normal-case text-[11px] text-[#888]">(optional — we'll email everything)</span> : <span className="normal-case text-[11px] text-[#888]">(needed — we'll text to coordinate)</span>}
+                <label className="flex items-center gap-1.5 text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
+                  <span>
+                    Phone {handoffMethod === "ship"
+                      ? <span className="normal-case text-[11px] text-[#888]">(required — FedEx prints it on your label)</span>
+                      : <span className="normal-case text-[11px] text-[#888]">(needed — we&apos;ll text to coordinate)</span>}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPhoneInfoOpen((v) => !v)}
+                    aria-label="Why we need a phone number"
+                    aria-expanded={phoneInfoOpen}
+                    title="Why we need a phone number"
+                    className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-[#00c853] text-[#00c853] text-[10px] font-bold leading-none hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
+                  >i</button>
                 </label>
+                {phoneInfoOpen && (
+                  <div className="mb-2 rounded-lg border border-[#00c853]/30 bg-[#00c853]/[0.06] p-3 text-[11px] text-[#dcdcdc] leading-relaxed">
+                    <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em] mb-1.5">Why we need it</p>
+                    {handoffMethod === "ship" ? (
+                      <p>
+                        FedEx prints your phone number on every shipping label and uses it if the carrier can&apos;t deliver or has a question while your package is in transit. We won&apos;t text you unless you also check the SMS box below — your number is just for FedEx&apos;s routing.
+                      </p>
+                    ) : (
+                      <p>
+                        We text you to confirm the meetup time + share the exact spot when you&apos;re close. No automated messages — just Skywalker on the other end.
+                      </p>
+                    )}
+                  </div>
+                )}
                 <input type="tel" value={phone} onChange={(e) => {
                   const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
                   if (!digits) { setPhone(""); return; }
@@ -10714,7 +10741,7 @@ export default function Home() {
                   if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
                   else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                   else setPhone(digits);
-                }} required={handoffMethod !== "ship"} pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                }} required pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 tcc-input text-sm" />
                 {phone && (
                   <label className="mt-2 flex items-start gap-2.5 cursor-pointer select-none">
                     <input
