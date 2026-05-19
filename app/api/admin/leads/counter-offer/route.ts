@@ -75,6 +75,11 @@ export async function POST(req: NextRequest) {
   const offerUrl = `https://topcashcellular.com/counter/${token}`;
 
   // Post a marker so the admin lead row knows there's a pending offer.
+  // Security: do NOT include the signed token in this marker. MC comms
+  // are visible to every agent in the multi-agent system — leaking the
+  // token would let any reader replay accept/decline on the customer's
+  // behalf. The customer already has the token in their SMS + email;
+  // staff can look up the lead status via the marker alone.
   try {
     await fetch(`${MC_API}/api/comms`, {
       method: "POST",
@@ -83,7 +88,7 @@ export async function POST(req: NextRequest) {
         from: "topcash-web",
         fromName: "Top Cash Cellular",
         role: "system",
-        body: `[COUNTER-OFFER: ${leadId}] original=$${originalQuote} offer=$${offer} reason=${reason.replace(/[\n\r]/g, " ").slice(0, 300)} token=${token}`,
+        body: `[COUNTER-OFFER: ${leadId}] original=$${originalQuote} offer=$${offer} reason=${reason.replace(/[\n\r]/g, " ").slice(0, 300)}`,
         tags: ["counter-offer", "pending"],
         priority: "normal",
       }),
