@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Script from "next/script";
+import { track as vercelTrack } from "@vercel/analytics";
 import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT } from "./lib/resell-estimates";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
 import { SlideOnScrollNav } from "./components/SlideOnScrollNav";
@@ -4974,6 +4975,14 @@ export default function Home() {
           visitor_id: w.__tccVid,
         });
       }
+      // Mirror to Vercel Analytics custom events — shows up in
+      // vercel.com → project → Analytics → Events. Same payload so
+      // GA4 + Vercel stay in sync. Skywalker 2026-05-19 follow-up.
+      vercelTrack("funnel_step", {
+        step: s,
+        device: refs?.device ?? null,
+        model: refs?.modelId ?? null,
+      });
     } catch {}
   }, []);
 
@@ -5001,6 +5010,9 @@ export default function Home() {
           visitor_id: w.__tccVid,
           transport_type: "beacon",
         });
+        // Mirror to Vercel Analytics. Vercel's track() uses sendBeacon
+        // under the hood already so this survives the unload race.
+        try { vercelTrack("funnel_abandon", { last_step: last }); } catch {}
       } catch {}
     };
     window.addEventListener("beforeunload", onUnload);
@@ -10490,6 +10502,18 @@ export default function Home() {
                       value: estMargin,
                       currency: "USD",
                     });
+                    // Mirror to Vercel Analytics custom events. Same payload
+                    // as the GA4 funnel_submit so both dashboards stay in
+                    // sync. Skywalker 2026-05-19.
+                    try {
+                      vercelTrack("funnel_submit", {
+                        device: deviceType ?? null,
+                        model: model?.label ?? null,
+                        multi: isMultiCart,
+                        quote: grossQuote,
+                        margin: estMargin,
+                      });
+                    } catch {}
                   }
                 } catch {}
                 if (email || phone) {

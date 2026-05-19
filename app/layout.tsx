@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 // Cabinet Grotesk Variable — single brand font for the entire site.
@@ -130,8 +131,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         {/* Vercel Analytics — Skywalker 2026-05-19 "ready to go live"
             visitor dashboard. Auto-enables in the Vercel project's
-            Analytics tab; pageviews + path metrics for free, no config. */}
+            Analytics tab; pageviews + path metrics for free, no config.
+            Custom events fire via track() inside the funnel — see
+            app/page.tsx funnel_step / funnel_submit / funnel_abandon.  */}
         <Analytics />
+        {/* Vercel Speed Insights — Core Web Vitals (LCP / CLS / INP /
+            TTFB) reported to vercel.com → project → Speed Insights.
+            Lets us catch perf regressions on the funnel without
+            running lighthouse manually. */}
+        <SpeedInsights />
       </body>
     </html>
   );
