@@ -98,19 +98,26 @@ export async function postAIMarker(opts: {
   leadId?: string;
   body: string;
   tags?: string[];
+  // Optional sender override. Default sender is Powerhouse (the TCC
+  // coder agent). Theot signs channel-recommendation markers via
+  // `signAs: { from: "theot", fromName: "Theot" }` so the lead row
+  // reads as her advisory call. Never use from:openclaw.
+  signAs?: { from: string; fromName: string };
 }): Promise<boolean> {
   if (!MC_KEY) return false;
   // Strip [ ] from the body — same defense the lead route uses to
   // stop markers inside markers.
   const cleanBody = opts.body.replace(/[\[\]]/g, "").slice(0, 2000);
   const prefix = opts.leadId ? `[${opts.kind}: ${opts.leadId}] ` : `[${opts.kind}] `;
+  const from = opts.signAs?.from || "powerhouse";
+  const fromName = opts.signAs?.fromName || "Powerhouse";
   try {
     const r = await fetch(`${MC_API}/api/comms`, {
       method: "POST",
       headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
       body: JSON.stringify({
-        from: "powerhouse",
-        fromName: "Powerhouse",
+        from,
+        fromName,
         role: "system",
         body: prefix + cleanBody,
         tags: opts.tags || ["ai", opts.kind.toLowerCase()],
