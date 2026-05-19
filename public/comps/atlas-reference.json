@@ -1,0 +1,4718 @@
+{
+  "scraped_at": "2026-05-19T01:57:54.060870+00:00",
+  "sources": {
+    "used_sheet": "https://docs.google.com/spreadsheets/d/1pu4Adxq4MGB6Qour0k__4gBdgnggWRoSVYnJUKgxzEw",
+    "nib_sheet": "https://docs.google.com/spreadsheets/d/1f3b0rW1d5xTonDtkoPmLIAOjKc-CUF6clMBalPWyS80"
+  },
+  "categories": {
+    "iphones_used": {
+      "iPhone 17 Pro Max 256GB Unlocked": {
+        "swap_hso": 980,
+        "grade_a": 970,
+        "grade_b": 950,
+        "grade_c": 745,
+        "grade_d": 540,
+        "doa": 180
+      },
+      "iPhone 17 Pro Max 512GB Unlocked": {
+        "swap_hso": 1075,
+        "grade_a": 1065,
+        "grade_b": 1045,
+        "grade_c": 790,
+        "grade_d": 585,
+        "doa": 180
+      },
+      "iPhone 17 Pro Max 1TB Unlocked": {
+        "swap_hso": 1170,
+        "grade_a": 1160,
+        "grade_b": 1140,
+        "grade_c": 855,
+        "grade_d": 650,
+        "doa": 180
+      },
+      "iPhone 17 Pro Max 2TB Unlocked": {
+        "swap_hso": 1270,
+        "grade_a": 1260,
+        "grade_b": 1240,
+        "grade_c": 920,
+        "grade_d": 695,
+        "doa": 180
+      },
+      "iPhone 17 Pro Max 256GB Carrier Locked": {
+        "swap_hso": 770,
+        "grade_a": 760,
+        "grade_b": 740,
+        "grade_c": 655,
+        "grade_d": 420,
+        "doa": 180
+      },
+      "iPhone 17 Pro Max 512GB Carrier Locked": {
+        "swap_hso": 835,
+        "grade_a": 825,
+        "grade_b": 785,
+        "grade_c": 710,
+        "grade_d": 460,
+        "doa": 180
+      },
+      "iPhone 17 Pro Max 1TB Carrier Locked": {
+        "swap_hso": 900,
+        "grade_a": 890,
+        "grade_b": 860,
+        "grade_c": 750,
+        "grade_d": 490,
+        "doa": 180
+      },
+      "iPhone 17 Pro Max 2TB Carrier Locked": {
+        "swap_hso": 990,
+        "grade_a": 980,
+        "grade_b": 930,
+        "grade_c": 800,
+        "grade_d": 530,
+        "doa": 180
+      },
+      "iPhone 17 Pro 256GB Unlocked": {
+        "swap_hso": 880,
+        "grade_a": 870,
+        "grade_b": 850,
+        "grade_c": 650,
+        "grade_d": 450,
+        "doa": 120
+      },
+      "iPhone 17 Pro 512GB Unlocked": {
+        "swap_hso": 980,
+        "grade_a": 970,
+        "grade_b": 950,
+        "grade_c": 695,
+        "grade_d": 485,
+        "doa": 120
+      },
+      "iPhone 17 Pro 1TB Unlocked": {
+        "swap_hso": 1110,
+        "grade_a": 1100,
+        "grade_b": 1080,
+        "grade_c": 785,
+        "grade_d": 520,
+        "doa": 120
+      },
+      "iPhone 17 Pro 256GB Carrier Locked": {
+        "swap_hso": 650,
+        "grade_a": 640,
+        "grade_b": 630,
+        "grade_c": 565,
+        "grade_d": 350,
+        "doa": 120
+      },
+      "iPhone 17 Pro 512GB Carrier Locked": {
+        "swap_hso": 760,
+        "grade_a": 750,
+        "grade_b": 720,
+        "grade_c": 595,
+        "grade_d": 385,
+        "doa": 120
+      },
+      "iPhone 17 Pro 1TB Carrier Locked": {
+        "swap_hso": 870,
+        "grade_a": 860,
+        "grade_b": 790,
+        "grade_c": 675,
+        "grade_d": 425,
+        "doa": 120
+      },
+      "iPhone 17 Air 256GB Unlocked": {
+        "swap_hso": 650,
+        "grade_a": 640,
+        "grade_b": 620,
+        "grade_c": 360,
+        "grade_d": 245,
+        "doa": 85
+      },
+      "iPhone 17 Air 512GB Unlocked": {
+        "swap_hso": 750,
+        "grade_a": 740,
+        "grade_b": 720,
+        "grade_c": 405,
+        "grade_d": 270,
+        "doa": 85
+      },
+      "iPhone 17 Air 1TB Unlocked": {
+        "swap_hso": 850,
+        "grade_a": 840,
+        "grade_b": 820,
+        "grade_c": 475,
+        "grade_d": 315,
+        "doa": 85
+      },
+      "iPhone 17 Air 256GB Carrier Locked": {
+        "swap_hso": 380,
+        "grade_a": 370,
+        "grade_b": 345,
+        "grade_c": 255,
+        "grade_d": 155,
+        "doa": 85
+      },
+      "iPhone 17 Air 512GB Carrier Locked": {
+        "swap_hso": 455,
+        "grade_a": 445,
+        "grade_b": 415,
+        "grade_c": 310,
+        "grade_d": 180,
+        "doa": 85
+      },
+      "iPhone 17 Air 1TB Carrier Locked": {
+        "swap_hso": 535,
+        "grade_a": 525,
+        "grade_b": 475,
+        "grade_c": 430,
+        "grade_d": 260,
+        "doa": 85
+      },
+      "iPhone 17 256GB Unlocked": {
+        "swap_hso": 590,
+        "grade_a": 580,
+        "grade_b": 560,
+        "grade_c": 405,
+        "grade_d": 245,
+        "doa": 70
+      },
+      "iPhone 17 512GB Unlocked": {
+        "swap_hso": 670,
+        "grade_a": 660,
+        "grade_b": 640,
+        "grade_c": 470,
+        "grade_d": 295,
+        "doa": 70
+      },
+      "iPhone 17 256GB Carrier Locked": {
+        "swap_hso": 405,
+        "grade_a": 395,
+        "grade_b": 380,
+        "grade_c": 335,
+        "grade_d": 190,
+        "doa": 70
+      },
+      "iPhone 17 512GB Carrier Locked": {
+        "swap_hso": 505,
+        "grade_a": 495,
+        "grade_b": 460,
+        "grade_c": 390,
+        "grade_d": 220,
+        "doa": 70
+      },
+      "iPhone 17E 256GB Unlocked": {
+        "swap_hso": 370,
+        "grade_a": 360,
+        "grade_b": 340,
+        "grade_c": 260,
+        "grade_d": 200,
+        "doa": 60
+      },
+      "iPhone 17E 512GB Unlocked": {
+        "swap_hso": 410,
+        "grade_a": 400,
+        "grade_b": 380,
+        "grade_c": 290,
+        "grade_d": 240,
+        "doa": 60
+      },
+      "iPhone 17E 256GB Carrier Locked": {
+        "swap_hso": 255,
+        "grade_a": 245,
+        "grade_b": 225,
+        "grade_c": 155,
+        "grade_d": 120,
+        "doa": 60
+      },
+      "iPhone 17E 512GB Carrier Locked": {
+        "swap_hso": 285,
+        "grade_a": 275,
+        "grade_b": 255,
+        "grade_c": 175,
+        "grade_d": 140,
+        "doa": 60
+      },
+      "iPhone 16 Pro Max 256GB Unlocked": {
+        "swap_hso": 670,
+        "grade_a": 660,
+        "grade_b": 640,
+        "grade_c": 520,
+        "grade_d": 355,
+        "doa": 170
+      },
+      "iPhone 16 Pro Max 512GB Unlocked": {
+        "swap_hso": 695,
+        "grade_a": 685,
+        "grade_b": 665,
+        "grade_c": 545,
+        "grade_d": 370,
+        "doa": 170
+      },
+      "iPhone 16 Pro Max 1TB Unlocked": {
+        "swap_hso": 725,
+        "grade_a": 715,
+        "grade_b": 695,
+        "grade_c": 580,
+        "grade_d": 380,
+        "doa": 170
+      },
+      "iPhone 16 Pro Max 256GB Carrier Locked": {
+        "swap_hso": 540,
+        "grade_a": 530,
+        "grade_b": 505,
+        "grade_c": 420,
+        "grade_d": 245,
+        "doa": 170
+      },
+      "iPhone 16 Pro Max 512GB Carrier Locked": {
+        "swap_hso": 580,
+        "grade_a": 570,
+        "grade_b": 535,
+        "grade_c": 445,
+        "grade_d": 270,
+        "doa": 170
+      },
+      "iPhone 16 Pro Max 1TB Carrier Locked": {
+        "swap_hso": 610,
+        "grade_a": 600,
+        "grade_b": 570,
+        "grade_c": 470,
+        "grade_d": 320,
+        "doa": 170
+      },
+      "iPhone 16 Pro 128GB Unlocked": {
+        "swap_hso": 550,
+        "grade_a": 540,
+        "grade_b": 520,
+        "grade_c": 400,
+        "grade_d": 285,
+        "doa": 100
+      },
+      "iPhone 16 Pro 256GB Unlocked": {
+        "swap_hso": 575,
+        "grade_a": 565,
+        "grade_b": 545,
+        "grade_c": 430,
+        "grade_d": 310,
+        "doa": 100
+      },
+      "iPhone 16 Pro 512GB Unlocked": {
+        "swap_hso": 595,
+        "grade_a": 585,
+        "grade_b": 565,
+        "grade_c": 445,
+        "grade_d": 310,
+        "doa": 100
+      },
+      "iPhone 16 Pro 1TB Unlocked": {
+        "swap_hso": 610,
+        "grade_a": 600,
+        "grade_b": 580,
+        "grade_c": 535,
+        "grade_d": 285,
+        "doa": 100
+      },
+      "iPhone 16 Pro 128GB Carrier Locked": {
+        "swap_hso": 405,
+        "grade_a": 395,
+        "grade_b": 375,
+        "grade_c": 305,
+        "grade_d": 190,
+        "doa": 100
+      },
+      "iPhone 16 Pro 256GB Carrier Locked": {
+        "swap_hso": 445,
+        "grade_a": 435,
+        "grade_b": 405,
+        "grade_c": 335,
+        "grade_d": 220,
+        "doa": 100
+      },
+      "iPhone 16 Pro 512GB Carrier Locked": {
+        "swap_hso": 475,
+        "grade_a": 465,
+        "grade_b": 445,
+        "grade_c": 365,
+        "grade_d": 240,
+        "doa": 100
+      },
+      "iPhone 16 Pro 1TB Carrier Locked": {
+        "swap_hso": 515,
+        "grade_a": 505,
+        "grade_b": 475,
+        "grade_c": 400,
+        "grade_d": 270,
+        "doa": 100
+      },
+      "iPhone 16 Plus 128GB Unlocked": {
+        "swap_hso": 475,
+        "grade_a": 465,
+        "grade_b": 445,
+        "grade_c": 340,
+        "grade_d": 240,
+        "doa": 60
+      },
+      "iPhone 16 Plus 256GB Unlocked": {
+        "swap_hso": 505,
+        "grade_a": 495,
+        "grade_b": 475,
+        "grade_c": 365,
+        "grade_d": 265,
+        "doa": 60
+      },
+      "iPhone 16 Plus 512GB Unlocked": {
+        "swap_hso": 535,
+        "grade_a": 525,
+        "grade_b": 505,
+        "grade_c": 395,
+        "grade_d": 285,
+        "doa": 60
+      },
+      "iPhone 16 Plus 128GB Carrier Locked": {
+        "swap_hso": 335,
+        "grade_a": 325,
+        "grade_b": 305,
+        "grade_c": 235,
+        "grade_d": 150,
+        "doa": 60
+      },
+      "iPhone 16 Plus 256GB Carrier Locked": {
+        "swap_hso": 370,
+        "grade_a": 360,
+        "grade_b": 350,
+        "grade_c": 265,
+        "grade_d": 180,
+        "doa": 60
+      },
+      "iPhone 16 Plus 512GB Carrier Locked": {
+        "swap_hso": 405,
+        "grade_a": 395,
+        "grade_b": 385,
+        "grade_c": 300,
+        "grade_d": 190,
+        "doa": 60
+      },
+      "iPhone 16 128GB Unlocked": {
+        "swap_hso": 430,
+        "grade_a": 420,
+        "grade_b": 400,
+        "grade_c": 325,
+        "grade_d": 220,
+        "doa": 43
+      },
+      "iPhone 16 256GB Unlocked": {
+        "swap_hso": 455,
+        "grade_a": 445,
+        "grade_b": 425,
+        "grade_c": 355,
+        "grade_d": 250,
+        "doa": 43
+      },
+      "iPhone 16 512GB Unlocked": {
+        "swap_hso": 475,
+        "grade_a": 465,
+        "grade_b": 445,
+        "grade_c": 370,
+        "grade_d": 260,
+        "doa": 43
+      },
+      "iPhone 16 128GB Carrier Locked": {
+        "swap_hso": 315,
+        "grade_a": 305,
+        "grade_b": 285,
+        "grade_c": 250,
+        "grade_d": 150,
+        "doa": 43
+      },
+      "iPhone 16 256GB Carrier Locked": {
+        "swap_hso": 345,
+        "grade_a": 335,
+        "grade_b": 315,
+        "grade_c": 280,
+        "grade_d": 160,
+        "doa": 43
+      },
+      "iPhone 16 512GB Carrier Locked": {
+        "swap_hso": 375,
+        "grade_a": 365,
+        "grade_b": 345,
+        "grade_c": 300,
+        "grade_d": 180,
+        "doa": 43
+      },
+      "iPhone 16E 128GB Unlocked": {
+        "swap_hso": 295,
+        "grade_a": 270,
+        "grade_b": 250,
+        "grade_c": 185,
+        "grade_d": 140,
+        "doa": 26
+      },
+      "iPhone 16E 256GB Unlocked": {
+        "swap_hso": 325,
+        "grade_a": 300,
+        "grade_b": 280,
+        "grade_c": 210,
+        "grade_d": 165,
+        "doa": 26
+      },
+      "iPhone 16E 512GB Unlocked": {
+        "swap_hso": 345,
+        "grade_a": 320,
+        "grade_b": 300,
+        "grade_c": 230,
+        "grade_d": 180,
+        "doa": 26
+      },
+      "iPhone 16E 128GB Carrier Locked": {
+        "swap_hso": 170,
+        "grade_a": 160,
+        "grade_b": 145,
+        "grade_c": 95,
+        "grade_d": 60,
+        "doa": 26
+      },
+      "iPhone 16E 256GB Carrier Locked": {
+        "swap_hso": 190,
+        "grade_a": 180,
+        "grade_b": 160,
+        "grade_c": 120,
+        "grade_d": 85,
+        "doa": 26
+      },
+      "iPhone 16E 512GB Carrier Locked": {
+        "swap_hso": 210,
+        "grade_a": 200,
+        "grade_b": 180,
+        "grade_c": 145,
+        "grade_d": 90,
+        "doa": 26
+      },
+      "iPhone 15 Pro Max 256GB Unlocked": {
+        "swap_hso": 480,
+        "grade_a": 470,
+        "grade_b": 450,
+        "grade_c": 370,
+        "grade_d": 280,
+        "doa": 105
+      },
+      "iPhone 15 Pro Max 512GB Unlocked": {
+        "swap_hso": 500,
+        "grade_a": 490,
+        "grade_b": 470,
+        "grade_c": 385,
+        "grade_d": 295,
+        "doa": 105
+      },
+      "iPhone 15 Pro Max 1TB Unlocked": {
+        "swap_hso": 520,
+        "grade_a": 510,
+        "grade_b": 490,
+        "grade_c": 405,
+        "grade_d": 310,
+        "doa": 105
+      },
+      "iPhone 15 Pro Max 256GB Carrier Locked": {
+        "swap_hso": 375,
+        "grade_a": 365,
+        "grade_b": 355,
+        "grade_c": 285,
+        "grade_d": 185,
+        "doa": 105
+      },
+      "iPhone 15 Pro Max 512GB Carrier Locked": {
+        "swap_hso": 405,
+        "grade_a": 395,
+        "grade_b": 385,
+        "grade_c": 305,
+        "grade_d": 205,
+        "doa": 105
+      },
+      "iPhone 15 Pro Max 1TB Carrier Locked": {
+        "swap_hso": 525,
+        "grade_a": 515,
+        "grade_b": 395,
+        "grade_c": 325,
+        "grade_d": 220,
+        "doa": 105
+      },
+      "iPhone 15 Pro 128GB Unlocked": {
+        "swap_hso": 390,
+        "grade_a": 380,
+        "grade_b": 360,
+        "grade_c": 295,
+        "grade_d": 215,
+        "doa": 65
+      },
+      "iPhone 15 Pro 256GB Unlocked": {
+        "swap_hso": 410,
+        "grade_a": 400,
+        "grade_b": 380,
+        "grade_c": 320,
+        "grade_d": 240,
+        "doa": 65
+      },
+      "iPhone 15 Pro 512GB Unlocked": {
+        "swap_hso": 430,
+        "grade_a": 420,
+        "grade_b": 400,
+        "grade_c": 330,
+        "grade_d": 250,
+        "doa": 65
+      },
+      "iPhone 15 Pro 1TB Unlocked": {
+        "swap_hso": 525,
+        "grade_a": 440,
+        "grade_b": 420,
+        "grade_c": 305,
+        "grade_d": 235,
+        "doa": 65
+      },
+      "iPhone 15 Pro 128GB Carrier Locked": {
+        "swap_hso": 325,
+        "grade_a": 315,
+        "grade_b": 295,
+        "grade_c": 235,
+        "grade_d": 155,
+        "doa": 65
+      },
+      "iPhone 15 Pro 256GB Carrier Locked": {
+        "swap_hso": 335,
+        "grade_a": 325,
+        "grade_b": 310,
+        "grade_c": 260,
+        "grade_d": 170,
+        "doa": 65
+      },
+      "iPhone 15 Pro 512GB Carrier Locked": {
+        "swap_hso": 355,
+        "grade_a": 345,
+        "grade_b": 330,
+        "grade_c": 270,
+        "grade_d": 180,
+        "doa": 65
+      },
+      "iPhone 15 Pro 1TB Carrier Locked": {
+        "swap_hso": 410,
+        "grade_a": 400,
+        "grade_b": 345,
+        "grade_c": 280,
+        "grade_d": 190,
+        "doa": 65
+      },
+      "iPhone 15 Plus 128GB Unlocked": {
+        "swap_hso": 330,
+        "grade_a": 320,
+        "grade_b": 300,
+        "grade_c": 215,
+        "grade_d": 155,
+        "doa": 60
+      },
+      "iPhone 15 Plus 256GB Unlocked": {
+        "swap_hso": 350,
+        "grade_a": 340,
+        "grade_b": 320,
+        "grade_c": 240,
+        "grade_d": 170,
+        "doa": 60
+      },
+      "iPhone 15 Plus 512GB Unlocked": {
+        "swap_hso": 370,
+        "grade_a": 360,
+        "grade_b": 340,
+        "grade_c": 250,
+        "grade_d": 180,
+        "doa": 60
+      },
+      "iPhone 15 Plus 128GB Carrier Locked": {
+        "swap_hso": 245,
+        "grade_a": 235,
+        "grade_b": 220,
+        "grade_c": 170,
+        "grade_d": 120,
+        "doa": 60
+      },
+      "iPhone 15 Plus 256GB Carrier Locked": {
+        "swap_hso": 275,
+        "grade_a": 265,
+        "grade_b": 240,
+        "grade_c": 200,
+        "grade_d": 140,
+        "doa": 60
+      },
+      "iPhone 15 Plus 512GB Carrier Locked": {
+        "swap_hso": 280,
+        "grade_a": 270,
+        "grade_b": 260,
+        "grade_c": 215,
+        "grade_d": 150,
+        "doa": 60
+      },
+      "iPhone 15 128GB Unlocked": {
+        "swap_hso": 310,
+        "grade_a": 300,
+        "grade_b": 280,
+        "grade_c": 215,
+        "grade_d": 155,
+        "doa": 50
+      },
+      "iPhone 15 256GB Unlocked": {
+        "swap_hso": 330,
+        "grade_a": 320,
+        "grade_b": 300,
+        "grade_c": 240,
+        "grade_d": 175,
+        "doa": 50
+      },
+      "iPhone 15 512GB Unlocked": {
+        "swap_hso": 350,
+        "grade_a": 340,
+        "grade_b": 320,
+        "grade_c": 250,
+        "grade_d": 185,
+        "doa": 50
+      },
+      "iPhone 15 128GB Carrier Locked": {
+        "swap_hso": 215,
+        "grade_a": 205,
+        "grade_b": 195,
+        "grade_c": 130,
+        "grade_d": 110,
+        "doa": 50
+      },
+      "iPhone 15 256GB Carrier Locked": {
+        "swap_hso": 235,
+        "grade_a": 225,
+        "grade_b": 215,
+        "grade_c": 160,
+        "grade_d": 140,
+        "doa": 50
+      },
+      "iPhone 15 512GB Carrier Locked": {
+        "swap_hso": 255,
+        "grade_a": 245,
+        "grade_b": 235,
+        "grade_c": 175,
+        "grade_d": 140,
+        "doa": 50
+      },
+      "iPhone 14 Pro Max 128GB Unlocked": {
+        "swap_hso": 380,
+        "grade_a": 370,
+        "grade_b": 350,
+        "grade_c": 275,
+        "grade_d": 210,
+        "doa": 80
+      },
+      "iPhone 14 Pro Max 256GB Unlocked": {
+        "swap_hso": 400,
+        "grade_a": 390,
+        "grade_b": 370,
+        "grade_c": 305,
+        "grade_d": 220,
+        "doa": 80
+      },
+      "iPhone 14 Pro Max 512GB Unlocked": {
+        "swap_hso": 420,
+        "grade_a": 410,
+        "grade_b": 390,
+        "grade_c": 310,
+        "grade_d": 230,
+        "doa": 80
+      },
+      "iPhone 14 Pro Max 1TB Unlocked": {
+        "swap_hso": 255,
+        "grade_a": 425,
+        "grade_b": 405,
+        "grade_c": 275,
+        "grade_d": 240,
+        "doa": 80
+      },
+      "iPhone 14 Pro Max 128GB Carrier Locked": {
+        "swap_hso": 280,
+        "grade_a": 270,
+        "grade_b": 250,
+        "grade_c": 200,
+        "grade_d": 130,
+        "doa": 80
+      },
+      "iPhone 14 Pro Max 256GB Carrier Locked": {
+        "swap_hso": 300,
+        "grade_a": 290,
+        "grade_b": 275,
+        "grade_c": 225,
+        "grade_d": 145,
+        "doa": 80
+      },
+      "iPhone 14 Pro Max 512GB Carrier Locked": {
+        "swap_hso": 320,
+        "grade_a": 310,
+        "grade_b": 295,
+        "grade_c": 240,
+        "grade_d": 150,
+        "doa": 80
+      },
+      "iPhone 14 Pro Max 1TB Carrier Locked": {
+        "swap_hso": 345,
+        "grade_a": 335,
+        "grade_b": 325,
+        "grade_c": 265,
+        "grade_d": 175,
+        "doa": 80
+      },
+      "iPhone 14 Pro 128GB Unlocked": {
+        "swap_hso": 335,
+        "grade_a": 325,
+        "grade_b": 310,
+        "grade_c": 230,
+        "grade_d": 160,
+        "doa": 40
+      },
+      "iPhone 14 Pro 256GB Unlocked": {
+        "swap_hso": 355,
+        "grade_a": 345,
+        "grade_b": 330,
+        "grade_c": 250,
+        "grade_d": 175,
+        "doa": 40
+      },
+      "iPhone 14 Pro 512GB Unlocked": {
+        "swap_hso": 375,
+        "grade_a": 365,
+        "grade_b": 350,
+        "grade_c": 260,
+        "grade_d": 185,
+        "doa": 40
+      },
+      "iPhone 14 Pro 1TB Unlocked": {
+        "swap_hso": 345,
+        "grade_a": 385,
+        "grade_b": 370,
+        "grade_c": 270,
+        "grade_d": 195,
+        "doa": 40
+      },
+      "iPhone 14 Pro 128GB Carrier Locked": {
+        "swap_hso": 240,
+        "grade_a": 230,
+        "grade_b": 215,
+        "grade_c": 175,
+        "grade_d": 110,
+        "doa": 40
+      },
+      "iPhone 14 Pro 256GB Carrier Locked": {
+        "swap_hso": 270,
+        "grade_a": 260,
+        "grade_b": 230,
+        "grade_c": 180,
+        "grade_d": 115,
+        "doa": 40
+      },
+      "iPhone 14 Pro 512GB Carrier Locked": {
+        "swap_hso": 285,
+        "grade_a": 275,
+        "grade_b": 255,
+        "grade_c": 190,
+        "grade_d": 135,
+        "doa": 40
+      },
+      "iPhone 14 Pro 1TB Carrier Locked": {
+        "swap_hso": 295,
+        "grade_a": 285,
+        "grade_b": 285,
+        "grade_c": 210,
+        "grade_d": 155,
+        "doa": 40
+      },
+      "iPhone 14 Plus 128GB Unlocked": {
+        "swap_hso": 260,
+        "grade_a": 250,
+        "grade_b": 235,
+        "grade_c": 155,
+        "grade_d": 100,
+        "doa": 45
+      },
+      "iPhone 14 Plus 256GB Unlocked": {
+        "swap_hso": 275,
+        "grade_a": 265,
+        "grade_b": 250,
+        "grade_c": 175,
+        "grade_d": 115,
+        "doa": 45
+      },
+      "iPhone 14 Plus 512GB Unlocked": {
+        "swap_hso": 285,
+        "grade_a": 275,
+        "grade_b": 260,
+        "grade_c": 175,
+        "grade_d": 115,
+        "doa": 45
+      },
+      "iPhone 14 Plus 128GB Carrier Locked": {
+        "swap_hso": 165,
+        "grade_a": 155,
+        "grade_b": 140,
+        "grade_c": 105,
+        "grade_d": 65,
+        "doa": 45
+      },
+      "iPhone 14 Plus 256GB Carrier Locked": {
+        "swap_hso": 170,
+        "grade_a": 160,
+        "grade_b": 145,
+        "grade_c": 105,
+        "grade_d": 75,
+        "doa": 45
+      },
+      "iPhone 14 Plus 512GB Carrier Locked": {
+        "swap_hso": 210,
+        "grade_a": 200,
+        "grade_b": 165,
+        "grade_c": 110,
+        "grade_d": 75,
+        "doa": 45
+      },
+      "iPhone 14 128GB Unlocked": {
+        "swap_hso": 215,
+        "grade_a": 205,
+        "grade_b": 190,
+        "grade_c": 155,
+        "grade_d": 115,
+        "doa": 45
+      },
+      "iPhone 14 256GB Unlocked": {
+        "swap_hso": 235,
+        "grade_a": 225,
+        "grade_b": 210,
+        "grade_c": 175,
+        "grade_d": 125,
+        "doa": 45
+      },
+      "iPhone 14 512GB Unlocked": {
+        "swap_hso": 250,
+        "grade_a": 240,
+        "grade_b": 225,
+        "grade_c": 175,
+        "grade_d": 125,
+        "doa": 45
+      },
+      "iPhone 14 128GB Carrier Locked": {
+        "swap_hso": 145,
+        "grade_a": 135,
+        "grade_b": 130,
+        "grade_c": 95,
+        "grade_d": 70,
+        "doa": 30
+      },
+      "iPhone 14 256GB Carrier Locked": {
+        "swap_hso": 155,
+        "grade_a": 145,
+        "grade_b": 130,
+        "grade_c": 105,
+        "grade_d": 80,
+        "doa": 30
+      },
+      "iPhone 14 512GB Carrier Locked": {
+        "swap_hso": 165,
+        "grade_a": 155,
+        "grade_b": 145,
+        "grade_c": 110,
+        "grade_d": 85,
+        "doa": 30
+      },
+      "iPhone 13 Pro Max 128GB Unlocked": {
+        "swap_hso": 330,
+        "grade_a": 320,
+        "grade_b": 300,
+        "grade_c": 220,
+        "grade_d": 175,
+        "doa": 45
+      },
+      "iPhone 13 Pro Max 256GB Unlocked": {
+        "swap_hso": 350,
+        "grade_a": 340,
+        "grade_b": 320,
+        "grade_c": 235,
+        "grade_d": 195,
+        "doa": 45
+      },
+      "iPhone 13 Pro Max 512GB Unlocked": {
+        "swap_hso": 370,
+        "grade_a": 360,
+        "grade_b": 340,
+        "grade_c": 255,
+        "grade_d": 205,
+        "doa": 45
+      },
+      "iPhone 13 Pro Max 1TB Unlocked": {
+        "swap_hso": 165,
+        "grade_a": 375,
+        "grade_b": 355,
+        "grade_c": 300,
+        "grade_d": 215,
+        "doa": 45
+      },
+      "iPhone 13 Pro Max 128GB Carrier Locked": {
+        "swap_hso": 225,
+        "grade_a": 215,
+        "grade_b": 190,
+        "grade_c": 160,
+        "grade_d": 110,
+        "doa": 45
+      },
+      "iPhone 13 Pro Max 256GB Carrier Locked": {
+        "swap_hso": 240,
+        "grade_a": 230,
+        "grade_b": 210,
+        "grade_c": 180,
+        "grade_d": 125,
+        "doa": 45
+      },
+      "iPhone 13 Pro Max 512GB Carrier Locked": {
+        "swap_hso": 260,
+        "grade_a": 250,
+        "grade_b": 225,
+        "grade_c": 195,
+        "grade_d": 145,
+        "doa": 45
+      },
+      "iPhone 13 Pro Max 1TB Carrier Locked": {
+        "swap_hso": 260,
+        "grade_a": 250,
+        "grade_b": 225,
+        "grade_c": 195,
+        "grade_d": 145,
+        "doa": 45
+      },
+      "iPhone 13 Pro 128GB Unlocked": {
+        "swap_hso": 285,
+        "grade_a": 275,
+        "grade_b": 255,
+        "grade_c": 180,
+        "grade_d": 145,
+        "doa": 45
+      },
+      "iPhone 13 Pro 256GB Unlocked": {
+        "swap_hso": 305,
+        "grade_a": 295,
+        "grade_b": 275,
+        "grade_c": 195,
+        "grade_d": 160,
+        "doa": 45
+      },
+      "iPhone 13 Pro 512GB Unlocked": {
+        "swap_hso": 320,
+        "grade_a": 310,
+        "grade_b": 290,
+        "grade_c": 215,
+        "grade_d": 160,
+        "doa": 45
+      },
+      "iPhone 13 Pro 1TB Unlocked": {
+        "swap_hso": 330,
+        "grade_a": 320,
+        "grade_b": 300,
+        "grade_c": 215,
+        "grade_d": 160,
+        "doa": 45
+      },
+      "iPhone 13 Pro 128GB Carrier Locked": {
+        "swap_hso": 190,
+        "grade_a": 180,
+        "grade_b": 170,
+        "grade_c": 140,
+        "grade_d": 85,
+        "doa": 45
+      },
+      "iPhone 13 Pro 256GB Carrier Locked": {
+        "swap_hso": 205,
+        "grade_a": 195,
+        "grade_b": 180,
+        "grade_c": 155,
+        "grade_d": 100,
+        "doa": 45
+      },
+      "iPhone 13 Pro 512GB Carrier Locked": {
+        "swap_hso": 215,
+        "grade_a": 205,
+        "grade_b": 190,
+        "grade_c": 165,
+        "grade_d": 110,
+        "doa": 45
+      },
+      "iPhone 13 Pro 1TB Carrier Locked": {
+        "swap_hso": 215,
+        "grade_a": 205,
+        "grade_b": 190,
+        "grade_c": 165,
+        "grade_d": 110,
+        "doa": 45
+      },
+      "iPhone 13 128GB Unlocked": {
+        "swap_hso": 210,
+        "grade_a": 200,
+        "grade_b": 185,
+        "grade_c": 140,
+        "grade_d": 95,
+        "doa": 20
+      },
+      "iPhone 13 256GB Unlocked": {
+        "swap_hso": 230,
+        "grade_a": 220,
+        "grade_b": 205,
+        "grade_c": 150,
+        "grade_d": 110,
+        "doa": 20
+      },
+      "iPhone 13 512GB Unlocked": {
+        "swap_hso": 240,
+        "grade_a": 230,
+        "grade_b": 215,
+        "grade_c": 155,
+        "grade_d": 110,
+        "doa": 20
+      },
+      "iPhone 13 128GB Carrier Locked": {
+        "swap_hso": 140,
+        "grade_a": 130,
+        "grade_b": 120,
+        "grade_c": 75,
+        "grade_d": 65,
+        "doa": 20
+      },
+      "iPhone 13 256GB Carrier Locked": {
+        "swap_hso": 150,
+        "grade_a": 140,
+        "grade_b": 130,
+        "grade_c": 85,
+        "grade_d": 70,
+        "doa": 20
+      },
+      "iPhone 13 512GB Carrier Locked": {
+        "swap_hso": 160,
+        "grade_a": 150,
+        "grade_b": 140,
+        "grade_c": 90,
+        "grade_d": 80,
+        "doa": 20
+      },
+      "iPhone 13 Mini 128GB Unlocked": {
+        "swap_hso": 160,
+        "grade_a": 150,
+        "grade_b": 135,
+        "grade_c": 90,
+        "grade_d": 50,
+        "doa": 17
+      },
+      "iPhone 13 Mini 256GB Unlocked": {
+        "swap_hso": 175,
+        "grade_a": 165,
+        "grade_b": 150,
+        "grade_c": 100,
+        "grade_d": 65,
+        "doa": 17
+      },
+      "iPhone 13 Mini 512GB Unlocked": {
+        "swap_hso": 185,
+        "grade_a": 175,
+        "grade_b": 160,
+        "grade_c": 100,
+        "grade_d": 65,
+        "doa": 17
+      },
+      "iPhone 13 Mini 128GB Carrier Locked": {
+        "swap_hso": 85,
+        "grade_a": 80,
+        "grade_b": 75,
+        "grade_c": 40,
+        "grade_d": 30,
+        "doa": 17
+      },
+      "iPhone 13 Mini 256GB Carrier Locked": {
+        "swap_hso": 95,
+        "grade_a": 90,
+        "grade_b": 85,
+        "grade_c": 50,
+        "grade_d": 40,
+        "doa": 17
+      },
+      "iPhone 13 Mini 512GB Carrier Locked": {
+        "swap_hso": 95,
+        "grade_a": 90,
+        "grade_b": 85,
+        "grade_c": 50,
+        "grade_d": 45,
+        "doa": 17
+      },
+      "iPhone SE (3rd Gen) 64GB Unlocked": {
+        "swap_hso": 65,
+        "grade_a": 60,
+        "grade_b": 50,
+        "grade_c": 25,
+        "grade_d": 15,
+        "doa": 3
+      },
+      "iPhone SE (3rd Gen) 128GB Unlocked": {
+        "swap_hso": 75,
+        "grade_a": 70,
+        "grade_b": 60,
+        "grade_c": 35,
+        "grade_d": 25,
+        "doa": 3
+      },
+      "iPhone SE (3rd Gen) 256GB Unlocked": {
+        "swap_hso": 85,
+        "grade_a": 80,
+        "grade_b": 70,
+        "grade_c": 45,
+        "grade_d": 35,
+        "doa": 3
+      },
+      "iPhone SE (3rd Gen) 64GB Carrier Locked": {
+        "swap_hso": 40,
+        "grade_a": 35,
+        "grade_b": 30,
+        "grade_c": 20,
+        "grade_d": 10,
+        "doa": 3
+      },
+      "iPhone SE (3rd Gen) 128GB Carrier Locked": {
+        "swap_hso": 45,
+        "grade_a": 40,
+        "grade_b": 35,
+        "grade_c": 25,
+        "grade_d": 15,
+        "doa": 3
+      },
+      "iPhone SE (3rd Gen) 256GB Carrier Locked": {
+        "swap_hso": 50,
+        "grade_a": 45,
+        "grade_b": 40,
+        "grade_c": 30,
+        "grade_d": 20,
+        "doa": 3
+      },
+      "iPhone 12 Pro Max 128GB Unlocked": {
+        "swap_hso": 245,
+        "grade_a": 235,
+        "grade_b": 220,
+        "grade_c": 135,
+        "grade_d": 90,
+        "doa": 38
+      },
+      "iPhone 12 Pro Max 256GB Unlocked": {
+        "swap_hso": 265,
+        "grade_a": 255,
+        "grade_b": 240,
+        "grade_c": 150,
+        "grade_d": 105,
+        "doa": 38
+      },
+      "iPhone 12 Pro Max 512GB Unlocked": {
+        "swap_hso": 280,
+        "grade_a": 270,
+        "grade_b": 255,
+        "grade_c": 150,
+        "grade_d": 105,
+        "doa": 38
+      },
+      "iPhone 12 Pro Max 128GB Carrier Locked": {
+        "swap_hso": 130,
+        "grade_a": 120,
+        "grade_b": 100,
+        "grade_c": 65,
+        "grade_d": 40,
+        "doa": 38
+      },
+      "iPhone 12 Pro Max 256GB Carrier Locked": {
+        "swap_hso": 135,
+        "grade_a": 125,
+        "grade_b": 105,
+        "grade_c": 75,
+        "grade_d": 55,
+        "doa": 38
+      },
+      "iPhone 12 Pro Max 512GB Carrier Locked": {
+        "swap_hso": 145,
+        "grade_a": 135,
+        "grade_b": 115,
+        "grade_c": 75,
+        "grade_d": 60,
+        "doa": 38
+      },
+      "iPhone 12 Pro 128GB Unlocked": {
+        "swap_hso": 195,
+        "grade_a": 185,
+        "grade_b": 170,
+        "grade_c": 90,
+        "grade_d": 70,
+        "doa": 17
+      },
+      "iPhone 12 Pro 256GB Unlocked": {
+        "swap_hso": 210,
+        "grade_a": 200,
+        "grade_b": 185,
+        "grade_c": 100,
+        "grade_d": 90,
+        "doa": 17
+      },
+      "iPhone 12 Pro 512GB Unlocked": {
+        "swap_hso": 225,
+        "grade_a": 215,
+        "grade_b": 200,
+        "grade_c": 100,
+        "grade_d": 90,
+        "doa": 17
+      },
+      "iPhone 12 Pro 128GB Carrier Locked": {
+        "swap_hso": 110,
+        "grade_a": 100,
+        "grade_b": 80,
+        "grade_c": 45,
+        "grade_d": 35,
+        "doa": 17
+      },
+      "iPhone 12 Pro 256GB Carrier Locked": {
+        "swap_hso": 120,
+        "grade_a": 110,
+        "grade_b": 90,
+        "grade_c": 55,
+        "grade_d": 40,
+        "doa": 17
+      },
+      "iPhone 12 Pro 512GB Carrier Locked": {
+        "swap_hso": 130,
+        "grade_a": 120,
+        "grade_b": 100,
+        "grade_c": 60,
+        "grade_d": 45,
+        "doa": 17
+      },
+      "iPhone 12 64GB Unlocked": {
+        "swap_hso": 140,
+        "grade_a": 130,
+        "grade_b": 120,
+        "grade_c": 45,
+        "grade_d": 30,
+        "doa": 14
+      },
+      "iPhone 12 128GB Unlocked": {
+        "swap_hso": 155,
+        "grade_a": 145,
+        "grade_b": 135,
+        "grade_c": 50,
+        "grade_d": 40,
+        "doa": 14
+      },
+      "iPhone 12 256GB Unlocked": {
+        "swap_hso": 165,
+        "grade_a": 155,
+        "grade_b": 145,
+        "grade_c": 70,
+        "grade_d": 50,
+        "doa": 14
+      },
+      "iPhone 12 64GB Carrier Locked": {
+        "swap_hso": 90,
+        "grade_a": 80,
+        "grade_b": 75,
+        "grade_c": 45,
+        "grade_d": 30,
+        "doa": 14
+      },
+      "iPhone 12 128GB Carrier Locked": {
+        "swap_hso": 100,
+        "grade_a": 90,
+        "grade_b": 85,
+        "grade_c": 55,
+        "grade_d": 40,
+        "doa": 14
+      },
+      "iPhone 12 256GB Carrier Locked": {
+        "swap_hso": 110,
+        "grade_a": 100,
+        "grade_b": 95,
+        "grade_c": 60,
+        "grade_d": 40,
+        "doa": 14
+      },
+      "iPhone 12 Mini 64GB Unlocked": {
+        "swap_hso": 120,
+        "grade_a": 110,
+        "grade_b": 100,
+        "grade_c": 30,
+        "grade_d": 20,
+        "doa": 9
+      },
+      "iPhone 12 Mini 128GB Unlocked": {
+        "swap_hso": 135,
+        "grade_a": 125,
+        "grade_b": 115,
+        "grade_c": 40,
+        "grade_d": 30,
+        "doa": 9
+      },
+      "iPhone 12 Mini 256GB Unlocked": {
+        "swap_hso": 145,
+        "grade_a": 135,
+        "grade_b": 125,
+        "grade_c": 40,
+        "grade_d": 30,
+        "doa": 9
+      },
+      "iPhone 12 Mini 64GB Carrier Locked": {
+        "swap_hso": 70,
+        "grade_a": 60,
+        "grade_b": 60,
+        "grade_c": 35,
+        "grade_d": 20,
+        "doa": 9
+      },
+      "iPhone 12 Mini 128GB Carrier Locked": {
+        "swap_hso": 80,
+        "grade_a": 70,
+        "grade_b": 70,
+        "grade_c": 45,
+        "grade_d": 30,
+        "doa": 9
+      },
+      "iPhone 12 Mini 256GB Carrier Locked": {
+        "swap_hso": 90,
+        "grade_a": 80,
+        "grade_b": 80,
+        "grade_c": 45,
+        "grade_d": 35,
+        "doa": 9
+      },
+      "iPhone 11 Pro Max 64GB Unlocked": {
+        "swap_hso": 175,
+        "grade_a": 170,
+        "grade_b": 155,
+        "grade_c": 90,
+        "grade_d": 55,
+        "doa": 14
+      },
+      "iPhone 11 Pro Max 256GB Unlocked": {
+        "swap_hso": 190,
+        "grade_a": 185,
+        "grade_b": 170,
+        "grade_c": 110,
+        "grade_d": 60,
+        "doa": 14
+      },
+      "iPhone 11 Pro Max 512GB Unlocked": {
+        "swap_hso": 205,
+        "grade_a": 200,
+        "grade_b": 185,
+        "grade_c": 130,
+        "grade_d": 65,
+        "doa": 14
+      },
+      "iPhone 11 Pro Max 64GB Carrier Locked": {
+        "swap_hso": 95,
+        "grade_a": 90,
+        "grade_b": 90,
+        "grade_c": 30,
+        "grade_d": 10,
+        "doa": 14
+      },
+      "iPhone 11 Pro Max 256GB Carrier Locked": {
+        "swap_hso": 105,
+        "grade_a": 100,
+        "grade_b": 100,
+        "grade_c": 40,
+        "grade_d": 15,
+        "doa": 14
+      },
+      "iPhone 11 Pro Max 512GB Carrier Locked": {
+        "swap_hso": 115,
+        "grade_a": 110,
+        "grade_b": 110,
+        "grade_c": 50,
+        "grade_d": 20,
+        "doa": 14
+      },
+      "iPhone 11 Pro 64GB Unlocked": {
+        "swap_hso": 145,
+        "grade_a": 140,
+        "grade_b": 125,
+        "grade_c": 65,
+        "grade_d": 5,
+        "doa": 14
+      },
+      "iPhone 11 Pro 256GB Unlocked": {
+        "swap_hso": 160,
+        "grade_a": 155,
+        "grade_b": 140,
+        "grade_c": 85,
+        "grade_d": 25,
+        "doa": 14
+      },
+      "iPhone 11 Pro 512GB Unlocked": {
+        "swap_hso": 170,
+        "grade_a": 165,
+        "grade_b": 150,
+        "grade_c": 105,
+        "grade_d": 45,
+        "doa": 14
+      },
+      "iPhone 11 Pro 64GB Carrier Locked": {
+        "swap_hso": 75,
+        "grade_a": 70,
+        "grade_b": 70,
+        "grade_c": 30,
+        "grade_d": 10,
+        "doa": 14
+      },
+      "iPhone 11 Pro 256GB Carrier Locked": {
+        "swap_hso": 85,
+        "grade_a": 80,
+        "grade_b": 80,
+        "grade_c": 40,
+        "grade_d": 20,
+        "doa": 14
+      },
+      "iPhone 11 Pro 512GB Carrier Locked": {
+        "swap_hso": 95,
+        "grade_a": 90,
+        "grade_b": 90,
+        "grade_c": 50,
+        "grade_d": 30,
+        "doa": 14
+      },
+      "iPhone 11 64GB Unlocked": {
+        "swap_hso": 125,
+        "grade_a": 115,
+        "grade_b": 105,
+        "grade_c": 45,
+        "grade_d": 15,
+        "doa": 17
+      },
+      "iPhone 11 128GB Unlocked": {
+        "swap_hso": 140,
+        "grade_a": 130,
+        "grade_b": 120,
+        "grade_c": 60,
+        "grade_d": 30,
+        "doa": 17
+      },
+      "iPhone 11 256GB Unlocked": {
+        "swap_hso": 150,
+        "grade_a": 140,
+        "grade_b": 130,
+        "grade_c": 70,
+        "grade_d": 40,
+        "doa": 17
+      },
+      "iPhone 11 64GB Carrier Locked": {
+        "swap_hso": 80,
+        "grade_a": 75,
+        "grade_b": 75,
+        "grade_c": 35,
+        "grade_d": 15,
+        "doa": 17
+      },
+      "iPhone 11 128GB Carrier Locked": {
+        "swap_hso": 85,
+        "grade_a": 80,
+        "grade_b": 80,
+        "grade_c": 40,
+        "grade_d": 20,
+        "doa": 17
+      },
+      "iPhone 11 256GB Carrier Locked": {
+        "swap_hso": 90,
+        "grade_a": 85,
+        "grade_b": 85,
+        "grade_c": 45,
+        "grade_d": 25,
+        "doa": 17
+      },
+      "iPhone XS Max 64GB Unlocked": {
+        "swap_hso": 125,
+        "grade_a": 120,
+        "grade_b": 110,
+        "grade_c": 70,
+        "grade_d": 50,
+        "doa": -1
+      },
+      "iPhone XS Max 256GB Unlocked": {
+        "swap_hso": 135,
+        "grade_a": 130,
+        "grade_b": 120,
+        "grade_c": 80,
+        "grade_d": 60,
+        "doa": -1
+      },
+      "iPhone XS Max 512GB Unlocked": {
+        "swap_hso": 145,
+        "grade_a": 140,
+        "grade_b": 130,
+        "grade_c": 85,
+        "grade_d": 65,
+        "doa": -1
+      },
+      "iPhone XS Max 64GB Carrier Locked": {
+        "swap_hso": 55,
+        "grade_a": 50,
+        "grade_b": 50,
+        "grade_c": 30,
+        "grade_d": 20,
+        "doa": -1
+      },
+      "iPhone XS Max 256GB Carrier Locked": {
+        "swap_hso": 65,
+        "grade_a": 60,
+        "grade_b": 60,
+        "grade_c": 40,
+        "grade_d": 30,
+        "doa": -1
+      },
+      "iPhone XS Max 512GB Carrier Locked": {
+        "swap_hso": 75,
+        "grade_a": 70,
+        "grade_b": 70,
+        "grade_c": 50,
+        "grade_d": 35,
+        "doa": -1
+      },
+      "iPhone XS 64GB Unlocked": {
+        "swap_hso": 100,
+        "grade_a": 95,
+        "grade_b": 90,
+        "grade_c": 40,
+        "grade_d": 30,
+        "doa": 1
+      },
+      "iPhone XS 256GB Unlocked": {
+        "swap_hso": 110,
+        "grade_a": 100,
+        "grade_b": 90,
+        "grade_c": 40,
+        "grade_d": 30,
+        "doa": 1
+      },
+      "iPhone XS 512GB Unlocked": {
+        "swap_hso": 115,
+        "grade_a": 105,
+        "grade_b": 95,
+        "grade_c": 45,
+        "grade_d": 35,
+        "doa": 1
+      },
+      "iPhone XS 64GB Carrier Locked": {
+        "swap_hso": 55,
+        "grade_a": 50,
+        "grade_b": 50,
+        "grade_c": 25,
+        "grade_d": 20,
+        "doa": 1
+      },
+      "iPhone XS 256GB Carrier Locked": {
+        "swap_hso": 65,
+        "grade_a": 60,
+        "grade_b": 60,
+        "grade_c": 35,
+        "grade_d": 25,
+        "doa": 1
+      },
+      "iPhone XS 512GB Carrier Locked": {
+        "swap_hso": 75,
+        "grade_a": 70,
+        "grade_b": 70,
+        "grade_c": 45,
+        "grade_d": 26,
+        "doa": 1
+      },
+      "iPhone XR 64GB Unlocked": {
+        "swap_hso": 90,
+        "grade_a": 85,
+        "grade_b": 80,
+        "grade_c": 30,
+        "grade_d": 15,
+        "doa": 2
+      },
+      "iPhone XR 128GB Unlocked": {
+        "swap_hso": 95,
+        "grade_a": 90,
+        "grade_b": 85,
+        "grade_c": 35,
+        "grade_d": 20,
+        "doa": 2
+      },
+      "iPhone XR 256GB Unlocked": {
+        "swap_hso": 105,
+        "grade_a": 95,
+        "grade_b": 90,
+        "grade_c": 40,
+        "grade_d": 25,
+        "doa": 2
+      },
+      "iPhone XR 64GB Carrier Locked": {
+        "swap_hso": 55,
+        "grade_a": 50,
+        "grade_b": 50,
+        "grade_c": 20,
+        "grade_d": 10,
+        "doa": 2
+      },
+      "iPhone XR 128GB Carrier Locked": {
+        "swap_hso": 60,
+        "grade_a": 55,
+        "grade_b": 55,
+        "grade_c": 25,
+        "grade_d": 15,
+        "doa": 2
+      },
+      "iPhone XR 256GB Carrier Locked": {
+        "swap_hso": 65,
+        "grade_a": 60,
+        "grade_b": 60,
+        "grade_c": 30,
+        "grade_d": 20,
+        "doa": 2
+      },
+      "iPhone X 64GB Unlocked": {
+        "swap_hso": 80,
+        "grade_a": 75,
+        "grade_b": 70,
+        "grade_c": 30,
+        "grade_d": 20,
+        "doa": 1
+      },
+      "iPhone X 256GB Unlocked": {
+        "swap_hso": 85,
+        "grade_a": 80,
+        "grade_b": 75,
+        "grade_c": 35,
+        "grade_d": 25,
+        "doa": 1
+      },
+      "iPhone X 64GB Carrier Locked": {
+        "swap_hso": 45,
+        "grade_a": 40,
+        "grade_b": 40,
+        "grade_c": 30,
+        "grade_d": 20,
+        "doa": 1
+      },
+      "iPhone X 256GB Carrier Locked": {
+        "swap_hso": 55,
+        "grade_a": 50,
+        "grade_b": 50,
+        "grade_c": 40,
+        "grade_d": 25,
+        "doa": 1
+      },
+      "iPhone 8 Plus 64GB Unlocked": {
+        "swap_hso": 60,
+        "grade_a": 55,
+        "grade_b": 50,
+        "grade_c": 20,
+        "grade_d": 5,
+        "doa": 1
+      },
+      "iPhone 8 Plus 128GB Unlocked": {
+        "swap_hso": 65,
+        "grade_a": 60,
+        "grade_b": 55,
+        "grade_c": 25,
+        "grade_d": 10,
+        "doa": 1
+      },
+      "iPhone 8 Plus 256GB Unlocked": {
+        "swap_hso": 70,
+        "grade_a": 65,
+        "grade_b": 60,
+        "grade_c": 30,
+        "grade_d": 15,
+        "doa": 1
+      },
+      "iPhone 8 Plus 64GB Carrier Locked": {
+        "swap_hso": 30,
+        "grade_a": 25,
+        "grade_b": 25,
+        "grade_c": 10,
+        "grade_d": 4,
+        "doa": 1
+      },
+      "iPhone 8 Plus 128GB Carrier Locked": {
+        "swap_hso": 35,
+        "grade_a": 30,
+        "grade_b": 30,
+        "grade_c": 15,
+        "grade_d": 9,
+        "doa": 1
+      },
+      "iPhone 8 Plus 256GB Carrier Locked": {
+        "swap_hso": 40,
+        "grade_a": 35,
+        "grade_b": 35,
+        "grade_c": 15,
+        "grade_d": 9,
+        "doa": 1
+      },
+      "iPhone 8 64GB Unlocked": {
+        "swap_hso": 50,
+        "grade_a": 45,
+        "grade_b": 40,
+        "grade_c": 25,
+        "grade_d": 20,
+        "doa": 1
+      },
+      "iPhone 8 128GB Unlocked": {
+        "swap_hso": 55,
+        "grade_a": 50,
+        "grade_b": 45,
+        "grade_c": 25,
+        "grade_d": 20,
+        "doa": 1
+      },
+      "iPhone 8 256GB Unlocked": {
+        "swap_hso": 60,
+        "grade_a": 55,
+        "grade_b": 50,
+        "grade_c": 25,
+        "grade_d": 20,
+        "doa": 1
+      },
+      "iPhone 8 64GB Carrier Locked": {
+        "swap_hso": 30,
+        "grade_a": 25,
+        "grade_b": 25,
+        "grade_c": 10,
+        "grade_d": 4,
+        "doa": 1
+      },
+      "iPhone 8 128GB Carrier Locked": {
+        "swap_hso": 35,
+        "grade_a": 30,
+        "grade_b": 30,
+        "grade_c": 15,
+        "grade_d": 9,
+        "doa": 1
+      },
+      "iPhone 8 256GB Carrier Locked": {
+        "swap_hso": 40,
+        "grade_a": 35,
+        "grade_b": 35,
+        "grade_c": 15,
+        "grade_d": 9,
+        "doa": 1
+      },
+      "iPhone 7 Plus 32GB Unlocked": {
+        "swap_hso": 45,
+        "grade_a": 40,
+        "grade_b": 35,
+        "grade_c": 10,
+        "grade_d": 10,
+        "doa": 3
+      },
+      "iPhone 7 Plus 128GB Unlocked": {
+        "swap_hso": 50,
+        "grade_a": 45,
+        "grade_b": 40,
+        "grade_c": 10,
+        "grade_d": 10,
+        "doa": 3
+      },
+      "iPhone 7 Plus 256GB Unlocked": {
+        "swap_hso": 55,
+        "grade_a": 50,
+        "grade_b": 45,
+        "grade_c": 10,
+        "grade_d": 10,
+        "doa": 3
+      },
+      "iPhone 7 Plus 32GB Carrier Locked": {
+        "swap_hso": 15,
+        "grade_a": 15,
+        "grade_b": 15,
+        "grade_c": 10,
+        "grade_d": 10,
+        "doa": 3
+      },
+      "iPhone 7 Plus 128GB Carrier Locked": {
+        "swap_hso": 15,
+        "grade_a": 15,
+        "grade_b": 15,
+        "grade_c": 10,
+        "grade_d": 10,
+        "doa": 3
+      },
+      "iPhone 7 Plus 256GB Carrier Locked": {
+        "swap_hso": 15,
+        "grade_a": 15,
+        "grade_b": 15,
+        "grade_c": 10,
+        "grade_d": 10,
+        "doa": 3
+      },
+      "iPhone 7 32GB Unlocked": {
+        "swap_hso": 40,
+        "grade_a": 35,
+        "grade_b": 30,
+        "grade_c": 5,
+        "grade_d": 3,
+        "doa": 2
+      },
+      "iPhone 7 128GB Unlocked": {
+        "swap_hso": 45,
+        "grade_a": 40,
+        "grade_b": 35,
+        "grade_c": 5,
+        "grade_d": 3,
+        "doa": 2
+      },
+      "iPhone 7 256GB Unlocked": {
+        "swap_hso": 50,
+        "grade_a": 45,
+        "grade_b": 40,
+        "grade_c": 5,
+        "grade_d": 3,
+        "doa": 2
+      },
+      "iPhone 7 32GB Carrier Locked": {
+        "swap_hso": 10,
+        "grade_a": 10,
+        "grade_b": 10,
+        "grade_c": 5,
+        "grade_d": 3,
+        "doa": 2
+      },
+      "iPhone 7 128GB Carrier Locked": {
+        "swap_hso": 10,
+        "grade_a": 10,
+        "grade_b": 10,
+        "grade_c": 5,
+        "grade_d": 3,
+        "doa": 2
+      },
+      "iPhone 7 256GB Carrier Locked": {
+        "swap_hso": 10,
+        "grade_a": 10,
+        "grade_b": 10,
+        "grade_c": 5,
+        "grade_d": 3,
+        "doa": 2
+      }
+    },
+    "pixel": {
+      "PIXEL 10  PRO FOLD 2025 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 855,
+        "open": 855,
+        "grade_a": 765,
+        "grade_b_plus": 745
+      },
+      "PIXEL 10 PRO XL 6.8 ' 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 585,
+        "open": 585,
+        "grade_a": 495,
+        "grade_b_plus": 485
+      },
+      "PIXEL 10 PRO 6.3' 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 495,
+        "open": 495,
+        "grade_a": 405,
+        "grade_b_plus": 395
+      },
+      "PIXEL 10 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 405,
+        "open": 405,
+        "grade_a": 315,
+        "grade_b_plus": 295
+      },
+      "PIXEL PRO FOLD 2024 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 675,
+        "open": 675,
+        "grade_a": 585,
+        "grade_b_plus": 565
+      },
+      "PIXEL 9 PRO XL 6.8 ' 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 430,
+        "open": 430,
+        "grade_a": 360,
+        "grade_b_plus": 340
+      },
+      "PIXEL 9 PRO 6.5' 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 385,
+        "open": 385,
+        "grade_a": 315,
+        "grade_b_plus": 305
+      },
+      "PIXEL 9 5G FACTORY ORIGINAL UNLOCKED 9A -50": {
+        "sealed": 265,
+        "open": 265,
+        "grade_a": 210,
+        "grade_b_plus": 200
+      },
+      "PIXEL 8 PRO 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 280,
+        "open": 280,
+        "grade_a": 225,
+        "grade_b_plus": 215
+      },
+      "PIXEL 8 5G FACTORY ORIGINAL UNLOCKED PIXEL 8A -$50": {
+        "sealed": 190,
+        "open": 190,
+        "grade_a": 150,
+        "grade_b_plus": 145
+      },
+      "PIXEL 7 PRO 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 145,
+        "open": 145,
+        "grade_a": 110,
+        "grade_b_plus": 105
+      },
+      "PIXEL 7 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 105,
+        "open": 105,
+        "grade_a": 65,
+        "grade_b_plus": 60
+      },
+      "PIXEL 6 PRO 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 110,
+        "open": 110,
+        "grade_a": 70,
+        "grade_b_plus": 65
+      },
+      "PIXEL 6 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 90,
+        "open": 90,
+        "grade_a": 50,
+        "grade_b_plus": 50
+      },
+      "PIXEL 6A 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 80,
+        "open": 80,
+        "grade_a": 45,
+        "grade_b_plus": 40
+      },
+      "PIXEL 5A 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 80,
+        "open": 80,
+        "grade_a": 50,
+        "grade_b_plus": 50
+      },
+      "PIXEL 5 5G FACTORY ORIGINAL UNLOCKED": {
+        "sealed": 100,
+        "open": 100,
+        "grade_a": 60,
+        "grade_b_plus": 60
+      }
+    },
+    "apple_watches": {
+      "2025 Series Ultra 3 49mm": {
+        "sealed": 580,
+        "open": 540,
+        "grade_a_hso": 385,
+        "grade_b": 365
+      },
+      "Series 11 46mm": {
+        "sealed": 270,
+        "open": 240,
+        "grade_a_hso": 190,
+        "grade_b": 170
+      },
+      "Series 11 42mm": {
+        "sealed": 250,
+        "open": 220,
+        "grade_a_hso": 170,
+        "grade_b": 150
+      },
+      "SE (3rd Gen) 44mm": {
+        "sealed": 170,
+        "open": 150,
+        "grade_a_hso": 135,
+        "grade_b": 125
+      },
+      "SE (3rd Gen) 40mm": {
+        "sealed": 150,
+        "open": 130,
+        "grade_a_hso": 120,
+        "grade_b": 110
+      },
+      "2024 Series Ultra 2 49mm": {
+        "grade_a_hso": 265,
+        "grade_b": 245
+      },
+      "2023 Series Ultra 2 49mm": {
+        "grade_a_hso": 250,
+        "grade_b": 225
+      },
+      "Series 10 46mm": {
+        "grade_a_hso": 140,
+        "grade_b": 130
+      },
+      "Series 10 42mm": {
+        "grade_a_hso": 130,
+        "grade_b": 120
+      },
+      "Series 9 45mm": {
+        "grade_a_hso": 115,
+        "grade_b": 105
+      },
+      "Series 9 41mm": {
+        "grade_a_hso": 100,
+        "grade_b": 90
+      },
+      "Series Ultra 49mm": {
+        "grade_a_hso": 200,
+        "grade_b": 185
+      },
+      "Series 8 45mm": {
+        "grade_a_hso": 100,
+        "grade_b": 90
+      },
+      "Series 8 41mm": {
+        "grade_a_hso": 90,
+        "grade_b": 80
+      },
+      "SE (2nd Gen) 40mm": {
+        "grade_a_hso": 60,
+        "grade_b": 50
+      },
+      "SE (2nd Gen)  44mm": {
+        "grade_a_hso": 70,
+        "grade_b": 60
+      },
+      "Series 7 41mm": {
+        "grade_a_hso": 70,
+        "grade_b": 60
+      },
+      "Series 7 45mm": {
+        "grade_a_hso": 80,
+        "grade_b": 70
+      },
+      "Series 6 40mm": {
+        "grade_a_hso": 60,
+        "grade_b": 50
+      },
+      "Series 6 44mm": {
+        "grade_a_hso": 70,
+        "grade_b": 60
+      }
+    },
+    "ipads_used": {
+      "iPad Pro 13\" (M5) 256GB": {
+        "grade_a": 780,
+        "grade_b": 750,
+        "grade_c": 620,
+        "grade_d": 255,
+        "doa": null
+      },
+      "iPad Pro 13\" (M5) 512GB": {
+        "grade_a": 860,
+        "grade_b": 830,
+        "grade_c": 660,
+        "grade_d": 275,
+        "doa": null
+      },
+      "iPad Pro 13\" (M5) 1TB": {
+        "grade_a": 930,
+        "grade_b": 890,
+        "grade_c": 690,
+        "grade_d": 295,
+        "doa": null
+      },
+      "iPad Pro 13\" (M5) 2TB": {
+        "grade_a": 990,
+        "grade_b": 940,
+        "grade_c": 690,
+        "grade_d": 315,
+        "doa": null
+      },
+      "iPad Pro 13\" (M4) 256GB": {
+        "grade_a": 675,
+        "grade_b": 635,
+        "grade_c": 455,
+        "grade_d": 125,
+        "doa": null
+      },
+      "iPad Pro 13\" (M4) 512GB": {
+        "grade_a": 725,
+        "grade_b": 675,
+        "grade_c": 485,
+        "grade_d": 125,
+        "doa": null
+      },
+      "iPad Pro 13\" (M4) 1TB": {
+        "grade_a": 825,
+        "grade_b": 735,
+        "grade_c": 525,
+        "grade_d": 155,
+        "doa": null
+      },
+      "iPad Pro 13\" (M4) 2TB": {
+        "grade_a": 925,
+        "grade_b": 795,
+        "grade_c": 555,
+        "grade_d": 165,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (6th Gen) 128GB": {
+        "grade_a": 455,
+        "grade_b": 425,
+        "grade_c": 305,
+        "grade_d": 165,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (6th Gen) 256GB": {
+        "grade_a": 505,
+        "grade_b": 475,
+        "grade_c": 325,
+        "grade_d": 185,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (6th Gen) 512GB": {
+        "grade_a": 540,
+        "grade_b": 510,
+        "grade_c": 350,
+        "grade_d": 190,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (6th Gen) 1TB": {
+        "grade_a": 565,
+        "grade_b": 535,
+        "grade_c": 365,
+        "grade_d": 195,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (6th Gen) 2TB": {
+        "grade_a": 605,
+        "grade_b": 575,
+        "grade_c": 395,
+        "grade_d": 205,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (5th Gen) 128GB": {
+        "grade_a": 355,
+        "grade_b": 325,
+        "grade_c": 225,
+        "grade_d": 105,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (5th Gen) 256GB": {
+        "grade_a": 385,
+        "grade_b": 355,
+        "grade_c": 255,
+        "grade_d": 115,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (5th Gen) 512GB": {
+        "grade_a": 415,
+        "grade_b": 385,
+        "grade_c": 285,
+        "grade_d": 125,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (5th Gen) 1TB": {
+        "grade_a": 435,
+        "grade_b": 405,
+        "grade_c": 305,
+        "grade_d": 125,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (5th Gen) 2TB": {
+        "grade_a": 465,
+        "grade_b": 435,
+        "grade_c": 335,
+        "grade_d": 135,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (4th Gen) 128GB": {
+        "grade_a": 270,
+        "grade_b": 240,
+        "grade_c": 150,
+        "grade_d": 65,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (4th Gen) 256GB": {
+        "grade_a": 300,
+        "grade_b": 270,
+        "grade_c": 180,
+        "grade_d": 75,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (4th Gen) 512GB/1TB": {
+        "grade_a": 330,
+        "grade_b": 300,
+        "grade_c": 210,
+        "grade_d": 85,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (3rd Gen) 64GB": {
+        "grade_a": 150,
+        "grade_b": 130,
+        "grade_c": 60,
+        "grade_d": 15,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (3rd Gen) 256GB": {
+        "grade_a": 180,
+        "grade_b": 160,
+        "grade_c": 80,
+        "grade_d": 25,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (3rd Gen) 512GB/1TB": {
+        "grade_a": 210,
+        "grade_b": 190,
+        "grade_c": 100,
+        "grade_d": 35,
+        "doa": null
+      },
+      "iPad Pro 12.9\" (2nd Gen) 64GB": {
+        "grade_a": null,
+        "grade_b": null,
+        "grade_c": 0,
+        "grade_d": 0,
+        "doa": 0
+      },
+      "iPad Pro 12.9\" (2nd Gen) 256GB": {
+        "grade_a": null,
+        "grade_b": null,
+        "grade_c": 0,
+        "grade_d": 0,
+        "doa": 0
+      },
+      "iPad Pro 12.9\" (2nd Gen) 512GB": {
+        "grade_a": null,
+        "grade_b": null,
+        "grade_c": 0,
+        "grade_d": 0,
+        "doa": 0
+      },
+      "iPad Pro 11\" (M5) 256GB": {
+        "grade_a": 685,
+        "grade_b": 655,
+        "grade_c": 495,
+        "grade_d": 180,
+        "doa": null
+      },
+      "iPad Pro 11\" (M5) 512GB": {
+        "grade_a": 770,
+        "grade_b": 730,
+        "grade_c": 540,
+        "grade_d": 195,
+        "doa": null
+      },
+      "iPad Pro 11\" (M5) 1TB": {
+        "grade_a": 875,
+        "grade_b": 825,
+        "grade_c": 595,
+        "grade_d": 210,
+        "doa": null
+      },
+      "iPad Pro 11\" (M5) 2TB": {
+        "grade_a": 965,
+        "grade_b": 895,
+        "grade_c": 635,
+        "grade_d": 220,
+        "doa": null
+      },
+      "iPad Pro 11\" (M4) 256GB": {
+        "grade_a": 575,
+        "grade_b": 555,
+        "grade_c": 455,
+        "grade_d": 80,
+        "doa": null
+      },
+      "iPad Pro 11\" (M4) 512GB": {
+        "grade_a": 645,
+        "grade_b": 615,
+        "grade_c": 495,
+        "grade_d": 100,
+        "doa": null
+      },
+      "iPad Pro 11\" (M4) 1TB": {
+        "grade_a": 735,
+        "grade_b": 705,
+        "grade_c": 525,
+        "grade_d": 110,
+        "doa": null
+      },
+      "iPad Pro 11\" (M4) 2TB": {
+        "grade_a": 800,
+        "grade_b": 765,
+        "grade_c": 555,
+        "grade_d": 120,
+        "doa": null
+      },
+      "iPad Pro 11\" (4th Gen) 128GB": {
+        "grade_a": 440,
+        "grade_b": 410,
+        "grade_c": 320,
+        "grade_d": 230,
+        "doa": null
+      },
+      "iPad Pro 11\" (4th Gen) 256GB": {
+        "grade_a": 480,
+        "grade_b": 450,
+        "grade_c": 350,
+        "grade_d": 250,
+        "doa": null
+      },
+      "iPad Pro 11\" (4th Gen) 512GB": {
+        "grade_a": 520,
+        "grade_b": 490,
+        "grade_c": 380,
+        "grade_d": 270,
+        "doa": null
+      },
+      "iPad Pro 11\" (4th Gen) 1TB": {
+        "grade_a": 560,
+        "grade_b": 530,
+        "grade_c": 410,
+        "grade_d": 300,
+        "doa": null
+      },
+      "iPad Pro 11\" (4th Gen) 2TB": {
+        "grade_a": 610,
+        "grade_b": 580,
+        "grade_c": 440,
+        "grade_d": 330,
+        "doa": null
+      },
+      "iPad Pro 11\" (3rd Gen) 128GB": {
+        "grade_a": 360,
+        "grade_b": 330,
+        "grade_c": 260,
+        "grade_d": 170,
+        "doa": null
+      },
+      "iPad Pro 11\" (3rd Gen) 256GB": {
+        "grade_a": 385,
+        "grade_b": 360,
+        "grade_c": 290,
+        "grade_d": 190,
+        "doa": null
+      },
+      "iPad Pro 11\" (3rd Gen) 512GB": {
+        "grade_a": 410,
+        "grade_b": 380,
+        "grade_c": 310,
+        "grade_d": 200,
+        "doa": null
+      },
+      "iPad Pro 11\" (3rd Gen) 1TB": {
+        "grade_a": 445,
+        "grade_b": 415,
+        "grade_c": 325,
+        "grade_d": 205,
+        "doa": null
+      },
+      "iPad Pro 11\" (3rd Gen) 2TB": {
+        "grade_a": 490,
+        "grade_b": 460,
+        "grade_c": 340,
+        "grade_d": 210,
+        "doa": null
+      },
+      "iPad Pro 11\" (2nd Gen) 128GB": {
+        "grade_a": 230,
+        "grade_b": 220,
+        "grade_c": 160,
+        "grade_d": 80,
+        "doa": null
+      },
+      "iPad Pro 11\" (2nd Gen) 256GB": {
+        "grade_a": 260,
+        "grade_b": 250,
+        "grade_c": 180,
+        "grade_d": 90,
+        "doa": null
+      },
+      "iPad Pro 11\" (2nd Gen) 512GB": {
+        "grade_a": 280,
+        "grade_b": 270,
+        "grade_c": 200,
+        "grade_d": 90,
+        "doa": null
+      },
+      "iPad Pro 11\" (2nd Gen) 1TB": {
+        "grade_a": 310,
+        "grade_b": 300,
+        "grade_c": 230,
+        "grade_d": 110,
+        "doa": null
+      },
+      "iPad Pro 11\" (1st Gen) 64GB": {
+        "grade_a": 150,
+        "grade_b": 130,
+        "grade_c": 65,
+        "grade_d": 10,
+        "doa": 0
+      },
+      "iPad Pro 11\" (1st Gen) 256GB": {
+        "grade_a": 180,
+        "grade_b": 160,
+        "grade_c": 85,
+        "grade_d": 30,
+        "doa": 0
+      },
+      "iPad Pro 11\" (1st Gen) 512GB": {
+        "grade_a": 200,
+        "grade_b": 180,
+        "grade_c": 105,
+        "grade_d": 40,
+        "doa": 0
+      },
+      "iPad Pro 11\" (1st Gen) 1TB": {
+        "grade_a": 230,
+        "grade_b": 210,
+        "grade_c": 125,
+        "grade_d": 60,
+        "doa": 0
+      },
+      "iPad Air 13\" (M3) 128GB": {
+        "grade_a": 395,
+        "grade_b": 365,
+        "grade_c": 255,
+        "grade_d": 110,
+        "doa": null
+      },
+      "iPad Air 13\" (M3) 256GB": {
+        "grade_a": 435,
+        "grade_b": 405,
+        "grade_c": 285,
+        "grade_d": 120,
+        "doa": null
+      },
+      "iPad Air 13\" (M3) 512GB": {
+        "grade_a": 465,
+        "grade_b": 435,
+        "grade_c": 305,
+        "grade_d": 120,
+        "doa": null
+      },
+      "iPad Air 13\" (M3) 1TB": {
+        "grade_a": 515,
+        "grade_b": 485,
+        "grade_c": 335,
+        "grade_d": 130,
+        "doa": null
+      },
+      "iPad Air 13\" (M2) 128GB": {
+        "grade_a": 335,
+        "grade_b": 305,
+        "grade_c": 185,
+        "grade_d": 90,
+        "doa": null
+      },
+      "iPad Air 2024 13\" (M2) 256GB": {
+        "grade_a": 365,
+        "grade_b": 335,
+        "grade_c": 215,
+        "grade_d": 110,
+        "doa": null
+      },
+      "iPad Air 2024 13\" (M2) 512GB": {
+        "grade_a": 385,
+        "grade_b": 355,
+        "grade_c": 235,
+        "grade_d": 110,
+        "doa": null
+      },
+      "iPad Air 2024 13\" (M2) 1TB": {
+        "grade_a": 415,
+        "grade_b": 395,
+        "grade_c": 265,
+        "grade_d": 120,
+        "doa": null
+      },
+      "iPad Air 11\" (M3) 128GB": {
+        "grade_a": 340,
+        "grade_b": 310,
+        "grade_c": 170,
+        "grade_d": 90,
+        "doa": null
+      },
+      "iPad Air 11\" (M3) 256GB": {
+        "grade_a": 370,
+        "grade_b": 330,
+        "grade_c": 200,
+        "grade_d": 110,
+        "doa": null
+      },
+      "iPad Air 11\" (M3) 512GB": {
+        "grade_a": 390,
+        "grade_b": 350,
+        "grade_c": 210,
+        "grade_d": 110,
+        "doa": null
+      },
+      "iPad Air 11\" (M3) 1TB": {
+        "grade_a": 420,
+        "grade_b": 380,
+        "grade_c": 230,
+        "grade_d": 130,
+        "doa": null
+      },
+      "iPad Air 11\" (M2) 128GB": {
+        "grade_a": 275,
+        "grade_b": 255,
+        "grade_c": 155,
+        "grade_d": 80,
+        "doa": null
+      },
+      "iPad Air 11\" (M2) 256GB": {
+        "grade_a": 305,
+        "grade_b": 285,
+        "grade_c": 185,
+        "grade_d": 100,
+        "doa": null
+      },
+      "iPad Air 11\" (M2) 512GB": {
+        "grade_a": 330,
+        "grade_b": 310,
+        "grade_c": 210,
+        "grade_d": 105,
+        "doa": null
+      },
+      "iPad Air 11\" (M2) 1TB": {
+        "grade_a": 365,
+        "grade_b": 345,
+        "grade_c": 225,
+        "grade_d": 110,
+        "doa": null
+      },
+      "iPad Air 5 64GB": {
+        "grade_a": 170,
+        "grade_b": 160,
+        "grade_c": 90,
+        "grade_d": 50,
+        "doa": null
+      },
+      "iPad Air 5 256GB": {
+        "grade_a": 220,
+        "grade_b": 210,
+        "grade_c": 110,
+        "grade_d": 60,
+        "doa": null
+      },
+      "iPad Air 4 64GB": {
+        "grade_a": 125,
+        "grade_b": 115,
+        "grade_c": 75,
+        "grade_d": 25,
+        "doa": 0
+      },
+      "iPad Air 4 256GB": {
+        "grade_a": 155,
+        "grade_b": 145,
+        "grade_c": 85,
+        "grade_d": 45,
+        "doa": 0
+      },
+      "iPad Air 3 64GB": {
+        "grade_a": 30,
+        "grade_b": 20,
+        "grade_c": 5,
+        "grade_d": 0,
+        "doa": 0
+      },
+      "iPad Air 3 256GB": {
+        "grade_a": 50,
+        "grade_b": 40,
+        "grade_c": 15,
+        "grade_d": 0,
+        "doa": 0
+      },
+      "iPad 11 (A16) 128GB": {
+        "grade_a": 205,
+        "grade_b": 195,
+        "grade_c": 135,
+        "grade_d": 75,
+        "doa": null
+      },
+      "iPad 11 (A16) 256GB": {
+        "grade_a": 245,
+        "grade_b": 225,
+        "grade_c": 165,
+        "grade_d": 90,
+        "doa": null
+      },
+      "iPad 11 (A16) 512GB": {
+        "grade_a": 285,
+        "grade_b": 265,
+        "grade_c": 185,
+        "grade_d": 100,
+        "doa": null
+      },
+      "iPad 10 64GB": {
+        "grade_a": 165,
+        "grade_b": 145,
+        "grade_c": 85,
+        "grade_d": 50,
+        "doa": null
+      },
+      "iPad 10 256GB": {
+        "grade_a": 205,
+        "grade_b": 185,
+        "grade_c": 125,
+        "grade_d": 60,
+        "doa": null
+      },
+      "iPad 9 64GB": {
+        "grade_a": 85,
+        "grade_b": 65,
+        "grade_c": 35,
+        "grade_d": 10,
+        "doa": null
+      },
+      "iPad 9 256GB": {
+        "grade_a": 115,
+        "grade_b": 95,
+        "grade_c": 70,
+        "grade_d": 40,
+        "doa": null
+      },
+      "iPad 8 32GB": {
+        "grade_a": 45,
+        "grade_b": 35,
+        "grade_c": 15,
+        "grade_d": 0,
+        "doa": 0
+      },
+      "iPad 8 128GB": {
+        "grade_a": 65,
+        "grade_b": 55,
+        "grade_c": 25,
+        "grade_d": 0,
+        "doa": 0
+      },
+      "iPad 7 32GB": {
+        "grade_a": 30,
+        "grade_b": 20,
+        "grade_c": 5,
+        "grade_d": 0,
+        "doa": 0
+      },
+      "iPad 7 128GB": {
+        "grade_a": 45,
+        "grade_b": 35,
+        "grade_c": 10,
+        "grade_d": 0,
+        "doa": 0
+      },
+      "iPad 6 32GB": {
+        "grade_a": 25,
+        "grade_b": 20,
+        "grade_c": 5,
+        "grade_d": 0,
+        "doa": 0
+      },
+      "iPad 6 128GB": {
+        "grade_a": 35,
+        "grade_b": 30,
+        "grade_c": 10,
+        "grade_d": 0,
+        "doa": 0
+      },
+      "iPad 5 32GB": {
+        "grade_a": 15,
+        "grade_b": 10,
+        "grade_c": 0,
+        "grade_d": 0,
+        "doa": 0
+      },
+      "iPad 5 128GB": {
+        "grade_a": 25,
+        "grade_b": 20,
+        "grade_c": 0,
+        "grade_d": 0,
+        "doa": 0
+      }
+    },
+    "mdm_locked_iphones": {
+      "iPhone 17 Pro Max": {
+        "mdm_ul_sealed": 800,
+        "mdm_ul_open_nonact": 800,
+        "mdm_ul_opened_act": 780,
+        "mdm_cr_sealed": 580,
+        "mdm_cr_open_nonact": 550,
+        "mdm_cr_opened_act": 620
+      },
+      "iPhone 17 Pro": {
+        "mdm_ul_sealed": 690,
+        "mdm_ul_open_nonact": 690,
+        "mdm_ul_opened_act": 670,
+        "mdm_cr_sealed": 500,
+        "mdm_cr_open_nonact": 470,
+        "mdm_cr_opened_act": 550
+      },
+      "iPhone 17 AIR": {
+        "mdm_ul_sealed": 450,
+        "mdm_ul_open_nonact": 450,
+        "mdm_ul_opened_act": 430,
+        "mdm_cr_sealed": 320,
+        "mdm_cr_open_nonact": 300,
+        "mdm_cr_opened_act": 320
+      },
+      "iPhone 17": {
+        "mdm_ul_sealed": 480,
+        "mdm_ul_open_nonact": 480,
+        "mdm_ul_opened_act": 460,
+        "mdm_cr_sealed": 300,
+        "mdm_cr_open_nonact": 280,
+        "mdm_cr_opened_act": 360
+      },
+      "iPhone 16E": {
+        "mdm_ul_sealed": 190,
+        "mdm_ul_open_nonact": 190,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 80,
+        "mdm_cr_open_nonact": 60,
+        "mdm_cr_opened_act": null
+      },
+      "iPhone 16 Pro Max": {
+        "mdm_ul_sealed": 625,
+        "mdm_ul_open_nonact": 625,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 440,
+        "mdm_cr_open_nonact": 420,
+        "mdm_cr_opened_act": null
+      },
+      "iPhone 16 Pro": {
+        "mdm_ul_sealed": 405,
+        "mdm_ul_open_nonact": 405,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 270,
+        "mdm_cr_open_nonact": 250,
+        "mdm_cr_opened_act": null
+      },
+      "iPhone 16 PLUS": {
+        "mdm_ul_sealed": 325,
+        "mdm_ul_open_nonact": 325,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 200,
+        "mdm_cr_open_nonact": 180,
+        "mdm_cr_opened_act": null
+      },
+      "iPhone 16": {
+        "mdm_ul_sealed": 305,
+        "mdm_ul_open_nonact": 305,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 190,
+        "mdm_cr_open_nonact": 170,
+        "mdm_cr_opened_act": null
+      },
+      "iPhone 15 Pro Max": {
+        "mdm_ul_sealed": 415,
+        "mdm_ul_open_nonact": 415,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 325,
+        "mdm_cr_open_nonact": 305,
+        "mdm_cr_opened_act": null
+      },
+      "iPhone 15 Pro": {
+        "mdm_ul_sealed": 295,
+        "mdm_ul_open_nonact": 295,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 205,
+        "mdm_cr_open_nonact": 185,
+        "mdm_cr_opened_act": null
+      },
+      "iPhone 15 PLUS": {
+        "mdm_ul_sealed": 245,
+        "mdm_ul_open_nonact": 245,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 155,
+        "mdm_cr_open_nonact": 135,
+        "mdm_cr_opened_act": null
+      },
+      "iPhone 15": {
+        "mdm_ul_sealed": 235,
+        "mdm_ul_open_nonact": 235,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 135,
+        "mdm_cr_open_nonact": 125,
+        "mdm_cr_opened_act": null
+      },
+      "iPhone 14 Pro Max": {
+        "mdm_ul_sealed": 355,
+        "mdm_ul_open_nonact": 355,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 255,
+        "mdm_cr_open_nonact": 235,
+        "mdm_cr_opened_act": null
+      },
+      "iPhone 14 Pro": {
+        "mdm_ul_sealed": 255,
+        "mdm_ul_open_nonact": 255,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 155,
+        "mdm_cr_open_nonact": 135,
+        "mdm_cr_opened_act": null
+      },
+      "iPhone 14 PLUS": {
+        "mdm_ul_sealed": 135,
+        "mdm_ul_open_nonact": 135,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 95,
+        "mdm_cr_open_nonact": 25,
+        "mdm_cr_opened_act": null
+      },
+      "iPhone 14": {
+        "mdm_ul_sealed": 145,
+        "mdm_ul_open_nonact": 145,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 95,
+        "mdm_cr_open_nonact": 85,
+        "mdm_cr_opened_act": null
+      },
+      "iPhone SE3 (2022)": {
+        "mdm_ul_sealed": 50,
+        "mdm_ul_open_nonact": 50,
+        "mdm_ul_opened_act": null,
+        "mdm_cr_sealed": 20,
+        "mdm_cr_open_nonact": 20,
+        "mdm_cr_opened_act": null
+      }
+    },
+    "macbooks": {
+      "MACBOOK PRO - 2026 (M5 PRO 16-inch) \u00b7 M5 PRO / 18C-20C / 24GB / 1TB / 16\" \u00b7 SKU MGEA4 MGE44": {
+        "sealed_na": 1980,
+        "open": 1890,
+        "sealed_activated": 1890
+      },
+      "MACBOOK PRO - 2026 (M5 PRO 16-inch) \u00b7 M5 PRO / 18C-20C / 24GB / 1TB / 16\" \u00b7 SKU MGEC4 MGE64": {
+        "sealed_na": 2230,
+        "open": 2160,
+        "sealed_activated": 2160
+      },
+      "APPLE MACBOOK PRO - 2026 (M5 MAX 16-inch) \u00b7 M5 MAX / 18C-32C / 36GB / 2TB / 16\" \u00b7 SKU MGED4 MGE74": {
+        "sealed_na": 2790,
+        "open": 2700,
+        "sealed_activated": 2700
+      },
+      "APPLE MACBOOK PRO - 2026 (M5 MAX 16-inch) \u00b7 M5 MAX / 18C-40C / 48GB / 2TB / 16\" \u00b7 SKU MGEE4 MGE94": {
+        "sealed_na": 3150,
+        "open": 3060,
+        "sealed_activated": 3060
+      },
+      "MACBOOK PRO(M5 PRO 14-inch) 2026 \u00b7 M5 PRO / 15C-16C / 24GB / 1TB / 14\" \u00b7 SKU MGDR4 MGDN4": {
+        "sealed_na": 1600,
+        "open": 1510,
+        "sealed_activated": 1510
+      },
+      "MACBOOK PRO(M5 PRO 14-inch) 2026 \u00b7 M5 PRO / 15C-16C / 24GB / 2TB / 14\" \u00b7 SKU MJLW4  MJLV4": {
+        "sealed_na": 1845,
+        "open": 1755,
+        "sealed_activated": 1755
+      },
+      "MACBOOK PRO(M5 PRO 14-inch) 2026 \u00b7 M5 PRO / 18C-20C / 24GB / 2TB / 14\" \u00b7 SKU MGDT4  MGDP4": {
+        "sealed_na": 1980,
+        "open": 1890,
+        "sealed_activated": 1890
+      },
+      "MACBOOK PRO (M5 MAX 14-inch) 2026 \u00b7 M5 MAX / 18C-32C / 36GB / 2TB / 14\" \u00b7 SKU MGDU4 MGDQ4": {
+        "sealed_na": 2565,
+        "open": 2475,
+        "sealed_activated": 2475
+      },
+      "MACBOOK AIR (M5 15-inch) 2026 \u00b7 M5 / 10C-10C / 16GB / 512GB / 15\" \u00b7 SKU MDV94 MDVD4 MDVH4 MDVQ4": {
+        "sealed_na": 1010,
+        "open": 965,
+        "sealed_activated": 965
+      },
+      "MACBOOK AIR (M5 15-inch) 2026 \u00b7 M5 / 10C-10C / 16GB / 1TB / 15\" \u00b7 SKU MDVA4 MDVE4 MDVK4 MDVT4": {
+        "sealed_na": 1125,
+        "open": 1080,
+        "sealed_activated": 1080
+      },
+      "MACBOOK AIR (M5 15-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 15\" \u00b7 SKU MDVC4 MDVF4 MDVN4 MDVU4": {
+        "sealed_na": 1240,
+        "open": 1170,
+        "sealed_activated": 1170
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-8C / 16GB / 512GB / 13\" \u00b7 SKU MDH74 MDHA4 MDHE4 MDHH4": {
+        "sealed_na": 830,
+        "open": 785,
+        "sealed_activated": 785
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 16GB / 1TB / 13\" \u00b7 SKU MDH84 MDHC4 MDHF4 MDHJ4": {
+        "sealed_na": 990,
+        "open": 945,
+        "sealed_activated": 945
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MDH94 MDHD4 MDHG4 MDHK4": {
+        "sealed_na": 1125,
+        "open": 1080,
+        "sealed_activated": 1080
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU 13\" A18 Pro Chip 8GB Ram 256GB": {
+        "sealed_na": 470,
+        "open": 425,
+        "sealed_activated": 425
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU 13\" A18 Pro Chip 8GB Ram 512GB": {
+        "sealed_na": 565,
+        "open": 520,
+        "sealed_activated": 520
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU M5 Pro MDE04 MDE44 512GB": {
+        "sealed_na": 1285,
+        "open": 1235,
+        "sealed_activated": 1235
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU M5 Pro MDE14 1TB": {
+        "sealed_na": 1350,
+        "open": 1300,
+        "sealed_activated": 1300
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU M5 MAX MDE34 MDE64 1TB": {
+        "sealed_na": 1525,
+        "open": 1450,
+        "sealed_activated": 1450
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MC7A4 MW1G3 MW1L3 MW1J3": {
+        "sealed_na": 845,
+        "open": 795,
+        "sealed_activated": 795
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MC7C4 MW1H3 MW1M3 MW1K3": {
+        "sealed_na": 970,
+        "open": 920,
+        "sealed_activated": 920
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MC7D4 MC6J4 MC6L4 MC6K4": {
+        "sealed_na": 1075,
+        "open": 1025,
+        "sealed_activated": 1025
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MC6T4 MW0W3 MW123 MW0Y3": {
+        "sealed_na": 725,
+        "open": 675,
+        "sealed_activated": 675
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MC6U4 MW0X3 MW133 MW103": {
+        "sealed_na": 855,
+        "open": 805,
+        "sealed_activated": 805
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MC6V4 MC654 MC6C4 MC6A4": {
+        "sealed_na": 960,
+        "open": 910,
+        "sealed_activated": 910
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU M4 Pro MX2X3 MX2T3 512GB": {
+        "sealed_na": 1675,
+        "open": 1625,
+        "sealed_activated": 1625
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU M4 Pro MX2Y3 MX2U3 512GB": {
+        "sealed_na": 2000,
+        "open": 1900,
+        "sealed_activated": 1900
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU M4 MAX MX303 MX2V3 1TB": {
+        "sealed_na": 2350,
+        "open": 2200,
+        "sealed_activated": 2200
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU M4 MAX MX313 MX2W3 1TB": {
+        "sealed_na": 2475,
+        "open": 2325,
+        "sealed_activated": 2325
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MW2U3 MW2W3 512GB": {
+        "sealed_na": 1075,
+        "open": 975,
+        "sealed_activated": 975
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MW2V3 MW2X3 1TB": {
+        "sealed_na": 1150,
+        "open": 1070,
+        "sealed_activated": 1070
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MCX04 MCX14 1TB": {
+        "sealed_na": 1225,
+        "open": 1125,
+        "sealed_activated": 1125
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU M4 Pro MX2H3 MX2E3 512GB": {
+        "sealed_na": 1420,
+        "open": 1370,
+        "sealed_activated": 1370
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU M4 Pro MX2J3 MX2F3 1TB": {
+        "sealed_na": 1580,
+        "open": 1480,
+        "sealed_activated": 1480
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU M4 MAX MX2K3 MX2G3 1TB": {
+        "sealed_na": 1950,
+        "open": 1850,
+        "sealed_activated": 1850
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MLY13 MLXW3 MLXY3 MLY33": {
+        "sealed_na": 580,
+        "open": 530,
+        "sealed_activated": 530
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MC7U4 MC7V4 MC7W4 MC7X4": {
+        "sealed_na": 580,
+        "open": 530,
+        "sealed_activated": 530
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MGN63LL/A  MGND3LL/A  MGN93LLA": {
+        "sealed_na": 500,
+        "open": 450,
+        "sealed_activated": 450
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MU9D3": {
+        "sealed_na": 400,
+        "open": 350,
+        "sealed_activated": 350
+      },
+      "MACBOOK AIR (M5 13-inch) 2026 \u00b7 M5 / 10C-10C / 24GB / 1TB / 13\" \u00b7 SKU MU9E3": {
+        "sealed_na": 500,
+        "open": 450,
+        "sealed_activated": 450
+      }
+    },
+    "samsung": {
+      "Galaxy Z Fold 7": {
+        "prices": [
+          405,
+          335,
+          114
+        ]
+      },
+      "Galaxy Z Flip 7": {
+        "prices": [
+          55,
+          40
+        ]
+      },
+      "Galaxy S25 Ultra": {
+        "prices": [
+          280,
+          195
+        ]
+      },
+      "Galaxy S25 EDGE": {
+        "prices": [
+          100,
+          35,
+          115
+        ]
+      },
+      "Galaxy S25 Plus": {
+        "prices": [
+          145,
+          100,
+          8
+        ]
+      },
+      "Galaxy S25": {
+        "prices": [
+          110,
+          75,
+          99
+        ]
+      },
+      "Galaxy S25 FE": {
+        "prices": [
+          40,
+          25,
+          5
+        ]
+      },
+      "Galaxy Z Fold 6": {
+        "prices": [
+          160,
+          40,
+          19
+        ]
+      },
+      "Galaxy Z Flip 6": {
+        "prices": [
+          400,
+          320,
+          310,
+          40,
+          30,
+          9
+        ]
+      },
+      "Galaxy S24 Ultra": {
+        "prices": [
+          520,
+          430,
+          420,
+          215,
+          140,
+          68
+        ]
+      },
+      "Galaxy S24 Plus": {
+        "prices": [
+          320,
+          245,
+          235,
+          140,
+          75,
+          20
+        ]
+      },
+      "Galaxy S24": {
+        "prices": [
+          250,
+          190,
+          180,
+          75,
+          45,
+          15
+        ]
+      },
+      "Galaxy Z Fold 5": {
+        "prices": [
+          400,
+          290,
+          280,
+          90,
+          30,
+          10
+        ]
+      },
+      "Galaxy Z Flip 5": {
+        "prices": [
+          280,
+          195,
+          180,
+          35,
+          10,
+          4
+        ]
+      },
+      "Galaxy S23 Ultra": {
+        "prices": [
+          370,
+          285,
+          275,
+          145,
+          70,
+          24
+        ]
+      },
+      "Galaxy S23 Plus": {
+        "prices": [
+          225,
+          165,
+          155,
+          75,
+          50,
+          17
+        ]
+      },
+      "Galaxy S23": {
+        "prices": [
+          185,
+          115,
+          110,
+          65,
+          40,
+          12
+        ]
+      },
+      "Galaxy Z Fold 4": {
+        "prices": [
+          265,
+          210,
+          200,
+          70,
+          30,
+          12
+        ]
+      },
+      "Galaxy Z Flip 4": {
+        "prices": [
+          200,
+          150,
+          145,
+          30,
+          10,
+          3
+        ]
+      },
+      "S22 Ultra": {
+        "prices": [
+          250,
+          210,
+          190,
+          100,
+          40,
+          12
+        ]
+      },
+      "S22+": {
+        "prices": [
+          160,
+          110,
+          105,
+          40,
+          35,
+          7
+        ]
+      },
+      "S22": {
+        "prices": [
+          120,
+          80,
+          75,
+          45,
+          20,
+          4
+        ]
+      },
+      "S21 Ultra": {
+        "prices": [
+          190,
+          150,
+          145,
+          75,
+          40,
+          12
+        ]
+      },
+      "S21+": {
+        "prices": [
+          120,
+          90,
+          80,
+          35,
+          20,
+          7
+        ]
+      },
+      "S21": {
+        "prices": [
+          105,
+          65,
+          60,
+          30,
+          20,
+          5
+        ]
+      },
+      "Note 20 Ultra": {
+        "prices": [
+          220,
+          180,
+          170,
+          55,
+          35,
+          6
+        ]
+      },
+      "Note 20": {
+        "prices": [
+          145,
+          105,
+          95,
+          30,
+          15,
+          4
+        ]
+      },
+      "S20 Ultra": {
+        "prices": [
+          160,
+          120,
+          110,
+          50,
+          15,
+          7
+        ]
+      },
+      "S20+": {
+        "prices": [
+          140,
+          105,
+          95,
+          35,
+          20,
+          4
+        ]
+      },
+      "S20": {
+        "prices": [
+          100,
+          70,
+          65,
+          20,
+          5,
+          3
+        ]
+      },
+      "Z Flip3": {
+        "prices": [
+          145,
+          95,
+          90,
+          2
+        ]
+      },
+      "Z Fold3": {
+        "prices": [
+          240,
+          200,
+          175,
+          13
+        ]
+      },
+      "Note 10+": {
+        "prices": [
+          160,
+          120,
+          110,
+          35,
+          15,
+          3
+        ]
+      },
+      "Note 10": {
+        "prices": [
+          120,
+          100,
+          80,
+          20,
+          15,
+          2
+        ]
+      },
+      "S10+": {
+        "prices": [
+          120,
+          95,
+          80,
+          30,
+          15,
+          5
+        ]
+      },
+      "S10": {
+        "prices": [
+          100,
+          80,
+          70,
+          20,
+          15,
+          3
+        ]
+      }
+    },
+    "icloud_locked_iphones": {
+      "iPhone 17 Pro Max (Cracked Back -$80 off)": {
+        "prices": [
+          355,
+          305,
+          275,
+          70,
+          -60
+        ]
+      },
+      "iPhone 17 Pro (Cracked Back -$60 off)": {
+        "prices": [
+          270,
+          230,
+          125,
+          60,
+          -60
+        ]
+      },
+      "iPhone 17 AIR (Cracked Back -$60 off)": {
+        "prices": [
+          250,
+          210,
+          75,
+          35,
+          -40
+        ]
+      },
+      "iPhone 17 (Cracked Back -$40 off)": {
+        "prices": [
+          230,
+          190,
+          80,
+          35,
+          -40
+        ]
+      },
+      "iPhone 17e (Cracked Back -$40 off)": {
+        "prices": [
+          90,
+          60,
+          30,
+          -40
+        ]
+      },
+      "iPhone 16 Pro Max (Cracked Back -$70 off)": {
+        "prices": [
+          300,
+          240,
+          90,
+          45,
+          -50
+        ]
+      },
+      "iPhone 16 Pro (Cracked Back -$50 off)": {
+        "prices": [
+          220,
+          160,
+          60,
+          35,
+          -40
+        ]
+      },
+      "iPhone 16 Plus (Cracked Back -$40 off)": {
+        "prices": [
+          150,
+          100,
+          50,
+          30,
+          -30
+        ]
+      },
+      "iPhone 16 (Cracked Back -$30 off)": {
+        "prices": [
+          155,
+          110,
+          60,
+          10
+        ]
+      },
+      "iPhone 16e (Cracked Back -$20 off)": {
+        "prices": [
+          60,
+          55,
+          15,
+          7,
+          -20
+        ]
+      },
+      "iPhone 15 Pro Max (Cracked Back -40 off)": {
+        "prices": [
+          205,
+          170,
+          80,
+          35
+        ]
+      },
+      "iPhone 15 Pro (Cracked Back -$30 off)": {
+        "prices": [
+          190,
+          150,
+          70,
+          30
+        ]
+      },
+      "iPhone 15 Plus (Cracked Back -$20 off)": {
+        "prices": [
+          85,
+          60,
+          20,
+          22
+        ]
+      },
+      "iPhone 15 (Cracked Back -$20 off)": {
+        "prices": [
+          95,
+          70,
+          35,
+          13
+        ]
+      },
+      "iPhone 14 Pro Max (Cracked Back -$30 off)": {
+        "prices": [
+          165,
+          110,
+          55,
+          5
+        ]
+      },
+      "iPhone 14 Pro (Cracked Back -20 off)": {
+        "prices": [
+          155,
+          100,
+          45,
+          5
+        ]
+      },
+      "iPhone 14 Plus (Cracked Back -$20 off)": {
+        "prices": [
+          95,
+          45,
+          25,
+          5
+        ]
+      },
+      "iPhone 14 (Cracked Back -$10 off)": {
+        "prices": [
+          75,
+          45,
+          24,
+          2
+        ]
+      },
+      "iPhone 13 Pro Max (Cracked Back -$30 off)": {
+        "prices": [
+          115,
+          70,
+          31,
+          3
+        ]
+      },
+      "iPhone 13 Pro (Cracked Back -$20 off)": {
+        "prices": [
+          90,
+          45,
+          32
+        ]
+      },
+      "iPhone 13 (Cracked Back -$10 off)": {
+        "prices": [
+          60,
+          25,
+          19,
+          2
+        ]
+      },
+      "iPhone 13 Mini (Cracked Back -$10 off)": {
+        "prices": [
+          60,
+          21,
+          10,
+          2
+        ]
+      },
+      "iPhone 12 Pro Max (Cracked Back -$20 off)": {
+        "prices": [
+          95,
+          55,
+          30,
+          2
+        ]
+      },
+      "iPhone 12 Pro (Cracked Back - $15 off)": {
+        "prices": [
+          60,
+          24,
+          13,
+          2
+        ]
+      },
+      "iPhone 12 (Cracked Back - $10 off)": {
+        "prices": [
+          40,
+          15,
+          5
+        ]
+      },
+      "iPhone 12 Mini (Cracked Back - $10 off)": {
+        "prices": [
+          35,
+          13,
+          8,
+          1
+        ]
+      },
+      "iPhone 11 (Cracked Back - $5 off)": {
+        "prices": [
+          18,
+          7,
+          2,
+          0
+        ]
+      },
+      "iPhone SE (3rd Gen) (Cracked Back - $10 off)": {
+        "prices": [
+          7,
+          1,
+          2,
+          2
+        ]
+      },
+      "iPhone SE (2020) (Cracked Back - $5 off)": {
+        "prices": [
+          5,
+          1,
+          2,
+          2
+        ]
+      },
+      "iPhone XR (Cracked Back -$5 off)": {
+        "prices": [
+          15,
+          5,
+          3,
+          1
+        ]
+      },
+      "iPhone X (Cracked Back -$10 off)": {
+        "prices": [
+          17,
+          7,
+          1,
+          1
+        ]
+      },
+      "iPhone 8+ (Cracked Back -$8 off)": {
+        "prices": [
+          16,
+          3,
+          1,
+          1
+        ]
+      },
+      "iPhone 8 (Cracked Back -$5 off)": {
+        "prices": [
+          7,
+          1,
+          1,
+          1
+        ]
+      },
+      "iPhone 7+": {
+        "prices": [
+          3,
+          0,
+          1,
+          0
+        ]
+      },
+      "iPhone 7": {
+        "prices": [
+          0,
+          1,
+          0
+        ]
+      },
+      "iPhone 6S+": {
+        "prices": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "iPhone 6S": {
+        "prices": [
+          2,
+          0,
+          0,
+          1
+        ]
+      },
+      "iPhone 6+": {
+        "prices": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "iPhone 6": {
+        "prices": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "iphones_nib": {
+      "iPhone 17 Pro Max 256GB Unlocked": {
+        "sealed": 1120,
+        "open": 1070
+      },
+      "iPhone 17 Pro Max 512GB Unlocked": {
+        "sealed": 1250,
+        "open": 1185
+      },
+      "iPhone 17 Pro Max 1TB Unlocked": {
+        "sealed": 1445,
+        "open": 1350
+      },
+      "iPhone 17 Pro Max 2TB Unlocked": {
+        "sealed": 1700,
+        "open": 1615
+      },
+      "iPhone 17 Pro Max 256GB Locked": {
+        "sealed": 810,
+        "open": 790
+      },
+      "iPhone 17 Pro Max 512GB Locked": {
+        "sealed": 915,
+        "open": 900
+      },
+      "iPhone 17 Pro Max 1TB Locked": {
+        "sealed": 980,
+        "open": 960
+      },
+      "iPhone 17 Pro Max 2TB Locked": {
+        "sealed": 1090,
+        "open": 1060
+      },
+      "iPhone 17 Pro 256GB Unlocked": {
+        "sealed": 1000,
+        "open": 950
+      },
+      "iPhone 17 Pro 512GB Unlocked": {
+        "sealed": 1110,
+        "open": 1040
+      },
+      "iPhone 17 Pro 1TB Unlocked": {
+        "sealed": 1290,
+        "open": 1165
+      },
+      "iPhone 17 Pro 256GB Locked": {
+        "sealed": 700,
+        "open": 680
+      },
+      "iPhone 17 Pro 512GB Locked": {
+        "sealed": 830,
+        "open": 810
+      },
+      "iPhone 17 Pro 1TB Locked": {
+        "sealed": 920,
+        "open": 900
+      },
+      "iPhone 17 Air 256GB Unlocked": {
+        "sealed": 760,
+        "open": 710
+      },
+      "iPhone 17 Air 512GB Unlocked": {
+        "sealed": 850,
+        "open": 790
+      },
+      "iPhone 17 Air 1TB Unlocked": {
+        "sealed": 910,
+        "open": 860
+      },
+      "iPhone 17 Air 256GB Locked": {
+        "sealed": 435,
+        "open": 415
+      },
+      "iPhone 17 Air 512GB Locked": {
+        "sealed": 495,
+        "open": 475
+      },
+      "iPhone 17 Air 1TB Locked": {
+        "sealed": 590,
+        "open": 570
+      },
+      "iPhone 17 256GB Unlocked": {
+        "sealed": 620,
+        "open": 570
+      },
+      "iPhone 17 512GB Unlocked": {
+        "sealed": 760,
+        "open": 710
+      },
+      "iPhone 17 256GB Locked": {
+        "sealed": 430,
+        "open": 410
+      },
+      "iPhone 17 512GB Locked": {
+        "sealed": 565,
+        "open": 545
+      },
+      "iPhone 17E 256GB Unlocked": {
+        "sealed": 420,
+        "open": 380
+      },
+      "iPhone 17E 512GB Unlocked": {
+        "sealed": 480,
+        "open": 440
+      },
+      "iPhone 17e 256GB Locked": {
+        "sealed": 260,
+        "open": 245
+      },
+      "iPhone 17e 512GB Locked": {
+        "sealed": 290,
+        "open": 275
+      },
+      "iPhone 16 Pro Max 256GB Unlocked": {
+        "sealed": 900,
+        "open": 830
+      },
+      "iPhone 16 Pro Max 512GB Unlocked": {
+        "sealed": 1020,
+        "open": 950
+      },
+      "iPhone 16 Pro Max 1TB Unlocked": {
+        "sealed": 1125,
+        "open": 1055
+      },
+      "iPhone 16 Pro Max 256GB Locked": {
+        "sealed": 650,
+        "open": 630
+      },
+      "iPhone 16 Pro Max 512GB Locked": {
+        "sealed": 705,
+        "open": 685
+      },
+      "iPhone 16 Pro Max 1TB Locked": {
+        "sealed": 745,
+        "open": 725
+      },
+      "iPhone 16 Pro 128GB Unlocked": {
+        "sealed": 710,
+        "open": 705
+      },
+      "iPhone 16 Pro 256GB Unlocked": {
+        "sealed": 795,
+        "open": 750
+      },
+      "iPhone 16 Pro 512GB Unlocked": {
+        "sealed": 875,
+        "open": 830
+      },
+      "iPhone 16 Pro 1TB Unlocked": {
+        "sealed": 955,
+        "open": 910
+      },
+      "iPhone 16 Pro 128GB Locked": {
+        "sealed": 455,
+        "open": 435
+      },
+      "iPhone 16 Pro 256GB Locked": {
+        "sealed": 555,
+        "open": 535
+      },
+      "iPhone 16 Pro 512GB Locked": {
+        "sealed": 605,
+        "open": 585
+      },
+      "iPhone 16 Pro 1TB Locked": {
+        "sealed": 645,
+        "open": 625
+      },
+      "iPhone 16 Plus 128GB Unlocked": {
+        "sealed": 510,
+        "open": 470
+      },
+      "iPhone 16 Plus 256GB Unlocked": {
+        "sealed": 570,
+        "open": 530
+      },
+      "iPhone 16 Plus 512GB Unlocked": {
+        "sealed": 620,
+        "open": 580
+      },
+      "iPhone 16 Plus 128GB Locked": {
+        "sealed": 370,
+        "open": 360
+      },
+      "iPhone 16 Plus 256GB Locked": {
+        "sealed": 430,
+        "open": 420
+      },
+      "iPhone 16 Plus 512GB Locked": {
+        "sealed": 500,
+        "open": 490
+      },
+      "iPhone 16 128GB Unlocked": {
+        "sealed": 445,
+        "open": 425
+      },
+      "iPhone 16 256GB Unlocked": {
+        "sealed": 480,
+        "open": 460
+      },
+      "iPhone 16 512GB Unlocked": {
+        "sealed": 540,
+        "open": 520
+      },
+      "iPhone 16 128GB Locked": {
+        "sealed": 330,
+        "open": 320
+      },
+      "iPhone 16 256GB Locked": {
+        "sealed": 390,
+        "open": 380
+      },
+      "iPhone 16 512GB Locked": {
+        "sealed": 440,
+        "open": 430
+      },
+      "iPhone 16e 128GB Unlocked": {
+        "sealed": 360,
+        "open": 330
+      },
+      "iPhone 16e 256GB Unlocked": {
+        "sealed": 410,
+        "open": 380
+      },
+      "iPhone 16e 512GB Unlocked": {
+        "sealed": 450,
+        "open": 430
+      },
+      "iPhone 16e 128GB Locked": {
+        "sealed": 180,
+        "open": 170
+      },
+      "iPhone 16e 256GB Locked": {
+        "sealed": 210,
+        "open": 200
+      },
+      "iPhone 16e 512GB Locked": {
+        "sealed": 235,
+        "open": 225
+      },
+      "iPhone 15 Pro Max 256GB Locked": {
+        "sealed": 450,
+        "open": 430
+      },
+      "iPhone 15 Pro Max 512GB Locked": {
+        "sealed": 500,
+        "open": 480
+      },
+      "iPhone 15 Pro Max 1TB Locked": {
+        "sealed": 550,
+        "open": 530
+      },
+      "iPhone 15 Pro 128GB Locked": {
+        "sealed": 345,
+        "open": 335
+      },
+      "iPhone 15 Pro 256GB Locked": {
+        "sealed": 390,
+        "open": 380
+      },
+      "iPhone 15 Pro 512GB Locked": {
+        "sealed": 430,
+        "open": 420
+      },
+      "iPhone 15 Pro 1TB Locked": {
+        "sealed": 475,
+        "open": 465
+      },
+      "iPhone 15 Plus 128GB Locked": {
+        "sealed": 275,
+        "open": 265
+      },
+      "iPhone 15 Plus 256GB Locked": {
+        "sealed": 330,
+        "open": 320
+      },
+      "iPhone 15 Plus 512GB Locked": {
+        "sealed": 375,
+        "open": 365
+      },
+      "iPhone 15 128GB Unlocked": {
+        "sealed": 360,
+        "open": 340
+      },
+      "iPhone 15 256GB Unlocked": {
+        "sealed": 410,
+        "open": 390
+      },
+      "iPhone 15 512GB Unlocked": {
+        "sealed": 450,
+        "open": 430
+      },
+      "iPhone 15 128GB Locked": {
+        "sealed": 250,
+        "open": 240
+      },
+      "iPhone 15 256GB Locked": {
+        "sealed": 295,
+        "open": 285
+      },
+      "iPhone 15 512GB Locked": {
+        "sealed": 345,
+        "open": 335
+      },
+      "iPhone 14 Plus 128GB Locked": {
+        "sealed": 230,
+        "open": 220
+      },
+      "iPhone 14 Plus 256GB Locked": {
+        "sealed": 270,
+        "open": 260
+      },
+      "iPhone 14 Plus 512GB Locked": {
+        "sealed": 300,
+        "open": 290
+      },
+      "iPhone 14 128GB Unlocked": {
+        "sealed": 340,
+        "open": 310
+      },
+      "iPhone 14 256GB Unlocked": {
+        "sealed": 380,
+        "open": 340
+      },
+      "iPhone 14 512GB Unlocked": {
+        "sealed": 420,
+        "open": 380
+      },
+      "iPhone 14 128GB Locked": {
+        "sealed": 200,
+        "open": 190
+      },
+      "iPhone 14 256GB Locked": {
+        "sealed": 220,
+        "open": 210
+      },
+      "iPhone 14 512GB Locked": {
+        "sealed": 240,
+        "open": 230
+      },
+      "iPhone 13 128GB Unlocked": {
+        "sealed": 330,
+        "open": 300
+      },
+      "iPhone 13 256GB Unlocked": {
+        "sealed": 370,
+        "open": 340
+      },
+      "iPhone 13 512GB Unlocked": {
+        "sealed": 410,
+        "open": 380
+      },
+      "iPhone 13 128GB Locked": {
+        "sealed": 170,
+        "open": 160
+      },
+      "iPhone 13 256GB Locked": {
+        "sealed": 190,
+        "open": 180
+      },
+      "iPhone 13 512GB Locked": {
+        "sealed": 210,
+        "open": 200
+      },
+      "iPhone 12 64GB Locked": {
+        "sealed": 120,
+        "open": 120
+      },
+      "iPhone 12 128GB Locked": {
+        "sealed": 140,
+        "open": 140
+      },
+      "iPhone 12 256GB Locked": {
+        "sealed": 160,
+        "open": 160
+      },
+      "iPhone 11 64GB Locked": {
+        "sealed": 100,
+        "open": 100
+      },
+      "iPhone 11 128GB Locked": {
+        "sealed": 110,
+        "open": 110
+      },
+      "iPhone 11 256GB Locked": {
+        "sealed": 120,
+        "open": 120
+      }
+    },
+    "ipads_nib": {
+      "iPad Pro 13\" (M5) 256GB WiFi": {
+        "sealed": 905,
+        "open": 830,
+        "sealed_activated": 830
+      },
+      "iPad Pro 13\" (M5) 512GB WiFi": {
+        "sealed": 1100,
+        "open": 1050,
+        "sealed_activated": 1050
+      },
+      "iPad Pro 13\" (M5) 1TB WiFi": {
+        "sealed": 1310,
+        "open": 1210,
+        "sealed_activated": 1210
+      },
+      "iPad Pro 13\" (M5) 2TB WiFi": {
+        "sealed": 1405,
+        "open": 1305,
+        "sealed_activated": 1305
+      },
+      "iPad Pro 13\" (M5) 256GB Cellular (Verizon)": {
+        "sealed": 845,
+        "open": 795,
+        "sealed_activated": 795
+      },
+      "iPad Pro 13\" (M5) 512GB Cellular (Verizon)": {
+        "sealed": 1030,
+        "open": 980,
+        "sealed_activated": 980
+      },
+      "iPad Pro 13\" (M5) 1TB Cellular (Verizon)": {
+        "sealed": 1210,
+        "open": 1110,
+        "sealed_activated": 1110
+      },
+      "iPad Pro 13\" (M5) 2TB Cellular (Verizon)": {
+        "sealed": 1230,
+        "open": 1130,
+        "sealed_activated": 1130
+      },
+      "iPad Pro 13\" (M5) 256GB Cellular (Unlocked)": {
+        "sealed": 925,
+        "open": 850,
+        "sealed_activated": 850
+      },
+      "iPad Pro 13\" (M5) 512GB Cellular (Unlocked)": {
+        "sealed": 1195,
+        "open": 1095,
+        "sealed_activated": 1095
+      },
+      "iPad Pro 13\" (M5) 1TB Cellular (Unlocked)": {
+        "sealed": 1380,
+        "open": 1280,
+        "sealed_activated": 1280
+      },
+      "iPad Pro 13\" (M5) 2TB Cellular (Unlocked)": {
+        "sealed": 1400,
+        "open": 1300,
+        "sealed_activated": 1300
+      },
+      "iPad Pro 11\" (M5) 256GB WiFi": {
+        "sealed": 750,
+        "open": 700,
+        "sealed_activated": 700
+      },
+      "iPad Pro 11\" (M5) 512GB WiFi": {
+        "sealed": 870,
+        "open": 800,
+        "sealed_activated": 800
+      },
+      "iPad Pro 11\" (M5) 1TB WiFi": {
+        "sealed": 1025,
+        "open": 955,
+        "sealed_activated": 955
+      },
+      "iPad Pro 11\" (M5) 2TB WiFi": {
+        "sealed": 1275,
+        "open": 1225,
+        "sealed_activated": 1225
+      },
+      "iPad Pro 11\" (M5) 256GB Cellular (Verizon)": {
+        "sealed": 680,
+        "open": 630,
+        "sealed_activated": 675
+      },
+      "iPad Pro 11\" (M5) 512GB Cellular (Verizon)": {
+        "sealed": 770,
+        "open": 700,
+        "sealed_activated": 775
+      },
+      "iPad Pro 11\" (M5) 1TB Cellular (Verizon)": {
+        "sealed": 900,
+        "open": 830,
+        "sealed_activated": 930
+      },
+      "iPad Pro 11\" (M5) 2TB Cellular (Verizon)": {
+        "sealed": 1125,
+        "open": 1075,
+        "sealed_activated": 1200
+      },
+      "iPad Pro 11\" (M5) 256GB Cellular (Unlocked)": {
+        "sealed": 820,
+        "open": 770,
+        "sealed_activated": 770
+      },
+      "iPad Pro 11\" (M5) 512GB Cellular (Unlocked)": {
+        "sealed": 1005,
+        "open": 935,
+        "sealed_activated": 935
+      },
+      "iPad Pro 11\" (M5) 1TB Cellular (Unlocked)": {
+        "sealed": 1155,
+        "open": 1095,
+        "sealed_activated": 1095
+      },
+      "iPad Pro 11\" (M5) 2TB Cellular (Unlocked)": {
+        "sealed": 1320,
+        "open": 1250,
+        "sealed_activated": 1250
+      },
+      "iPad Pro 13\" (M4) 256GB WiFi": {
+        "sealed": 755,
+        "open": 705,
+        "sealed_activated": 705
+      },
+      "iPad Pro 13\" (M4) 512GB WiFi": {
+        "sealed": 835,
+        "open": 785,
+        "sealed_activated": 785
+      },
+      "iPad Pro 13\" (M4) 1TB WiFi": {
+        "sealed": 915,
+        "open": 865,
+        "sealed_activated": 865
+      },
+      "iPad Pro 13\" (M4) 2TB WiFi": {
+        "sealed": 1015,
+        "open": 965,
+        "sealed_activated": 965
+      },
+      "iPad Pro 13\" (M4) 256GB Cellular (Verizon)": {
+        "sealed": 730,
+        "open": 680,
+        "sealed_activated": 680
+      },
+      "iPad Pro 13\" (M4) 512GB Cellular (Verizon)": {
+        "sealed": 810,
+        "open": 760,
+        "sealed_activated": 760
+      },
+      "iPad Pro 13\" (M4) 1TB Cellular (Verizon)": {
+        "sealed": 890,
+        "open": 840,
+        "sealed_activated": 840
+      },
+      "iPad Pro 13\" (M4) 2TB Cellular (Verizon)": {
+        "sealed": 990,
+        "open": 940,
+        "sealed_activated": 940
+      },
+      "iPad Pro 13\" (M4) 256GB Cellular (Unlocked)": {
+        "sealed": 805,
+        "open": 755,
+        "sealed_activated": 755
+      },
+      "iPad Pro 13\" (M4) 512GB Cellular (Unlocked)": {
+        "sealed": 885,
+        "open": 835,
+        "sealed_activated": 835
+      },
+      "iPad Pro 13\" (M4) 1TB Cellular (Unlocked)": {
+        "sealed": 965,
+        "open": 915,
+        "sealed_activated": 915
+      },
+      "iPad Pro 13\" (M4) 2TB Cellular (Unlocked)": {
+        "sealed": 1065,
+        "open": 1015,
+        "sealed_activated": 1015
+      },
+      "iPad Pro 11\" (M4) 256GB WiFi": {
+        "sealed": 655,
+        "open": 615,
+        "sealed_activated": 615
+      },
+      "iPad Pro 11\" (M4) 512GB WiFi": {
+        "sealed": 705,
+        "open": 665,
+        "sealed_activated": 665
+      },
+      "iPad Pro 11\" (M4) 1TB WiFi": {
+        "sealed": 795,
+        "open": 755,
+        "sealed_activated": 755
+      },
+      "iPad Pro 11\" (M4) 2TB WiFi": {
+        "sealed": 870,
+        "open": 830,
+        "sealed_activated": 830
+      },
+      "iPad Pro 11\" (M4) 256GB Cellular (Verizon)": {
+        "sealed": 630,
+        "open": 590,
+        "sealed_activated": 590
+      },
+      "iPad Pro 11\" (M4) 512GB Cellular (Verizon)": {
+        "sealed": 680,
+        "open": 640,
+        "sealed_activated": 640
+      },
+      "iPad Pro 11\" (M4) 1TB Cellular (Verizon)": {
+        "sealed": 770,
+        "open": 730,
+        "sealed_activated": 730
+      },
+      "iPad Pro 11\" (M4) 2TB Cellular (Verizon)": {
+        "sealed": 845,
+        "open": 805,
+        "sealed_activated": 805
+      },
+      "iPad Pro 11\" (M4) 256GB Cellular (Unlocked)": {
+        "sealed": 705,
+        "open": 665,
+        "sealed_activated": 665
+      },
+      "iPad Pro 11\" (M4) 512GB Cellular (Unlocked)": {
+        "sealed": 755,
+        "open": 715,
+        "sealed_activated": 715
+      },
+      "iPad Pro 11\" (M4) 1TB Cellular (Unlocked)": {
+        "sealed": 845,
+        "open": 805,
+        "sealed_activated": 805
+      },
+      "iPad Pro 11\" (M4) 2TB Cellular (Unlocked)": {
+        "sealed": 920,
+        "open": 880,
+        "sealed_activated": 880
+      },
+      "iPad Air 13\" (M4) 128GB WiFi": {
+        "sealed": 620,
+        "open": 575,
+        "sealed_activated": 575
+      },
+      "iPad Air 13\" (M4) 256GB WiFi": {
+        "sealed": 675,
+        "open": 630,
+        "sealed_activated": 630
+      },
+      "iPad Air 13\" (M4) 512GB WiFi": {
+        "sealed": 725,
+        "open": 680,
+        "sealed_activated": 680
+      },
+      "iPad Air 13\" (M4) 1TB WiFi": {
+        "sealed": 775,
+        "open": 730,
+        "sealed_activated": 730
+      },
+      "iPad Air 13\" (M4) 128GB Cellular (Verizon)": {
+        "sealed": 570,
+        "open": 525,
+        "sealed_activated": 550
+      },
+      "iPad Air 13\" (M4) 256GB Cellular (Verizon)": {
+        "sealed": 625,
+        "open": 580,
+        "sealed_activated": 605
+      },
+      "iPad Air 13\" (M4) 512GB Cellular (Verizon)": {
+        "sealed": 650,
+        "open": 605,
+        "sealed_activated": 655
+      },
+      "iPad Air 13\" (M4) 1TB Cellular (Verizon)": {
+        "sealed": 700,
+        "open": 655,
+        "sealed_activated": 705
+      },
+      "iPad Air 13\" (M4) 128GB Cellular (Unlocked)": {
+        "sealed": 670,
+        "open": 625,
+        "sealed_activated": 625
+      },
+      "iPad Air 13\" (M4) 256GB Cellular (Unlocked)": {
+        "sealed": 725,
+        "open": 680,
+        "sealed_activated": 680
+      },
+      "iPad Air 13\" (M4) 512GB Cellular (Unlocked)": {
+        "sealed": 775,
+        "open": 730,
+        "sealed_activated": 730
+      },
+      "iPad Air 13\" (M4) 1TB Cellular (Unlocked)": {
+        "sealed": 825,
+        "open": 780,
+        "sealed_activated": 780
+      },
+      "iPad Air 11\" (M4) 128GB WiFi": {
+        "sealed": 435,
+        "open": 390,
+        "sealed_activated": 390
+      },
+      "iPad Air 11\" (M4) 256GB WiFi": {
+        "sealed": 520,
+        "open": 475,
+        "sealed_activated": 475
+      },
+      "iPad Air 11\" (M4) 512GB WiFi": {
+        "sealed": 570,
+        "open": 525,
+        "sealed_activated": 525
+      },
+      "iPad Air 11\" (M4) 1TB WiFi": {
+        "sealed": 620,
+        "open": 575,
+        "sealed_activated": 575
+      },
+      "iPad Air 11\" (M4) 128GB Cellular (Verizon)": {
+        "sealed": 385,
+        "open": 340,
+        "sealed_activated": 365
+      },
+      "iPad Air 11\" (M4) 256GB Cellular (Verizon)": {
+        "sealed": 470,
+        "open": 425,
+        "sealed_activated": 450
+      },
+      "iPad Air 11\" (M4) 512GB Cellular (Verizon)": {
+        "sealed": 520,
+        "open": 475,
+        "sealed_activated": 500
+      },
+      "iPad Air 11\" (M4) 1TB Cellular (Verizon)": {
+        "sealed": 570,
+        "open": 525,
+        "sealed_activated": 550
+      },
+      "iPad Air 11\" (M4) 128GB Cellular (Unlocked)": {
+        "sealed": 525,
+        "open": 480,
+        "sealed_activated": 480
+      },
+      "iPad Air 11\" (M4) 256GB Cellular (Unlocked)": {
+        "sealed": 610,
+        "open": 565,
+        "sealed_activated": 565
+      },
+      "iPad Air 11\" (M4) 512GB Cellular (Unlocked)": {
+        "sealed": 660,
+        "open": 615,
+        "sealed_activated": 615
+      },
+      "iPad Air 11\" (M4) 1TB Cellular (Unlocked)": {
+        "sealed": 710,
+        "open": 665,
+        "sealed_activated": 665
+      },
+      "iPad Air 2025 13\" 128GB WiFi": {
+        "sealed": 550,
+        "open": 500,
+        "sealed_activated": 500
+      },
+      "iPad Air 2025 13\" 256GB WiFi": {
+        "sealed": 620,
+        "open": 570,
+        "sealed_activated": 570
+      },
+      "iPad Air 2025 13\" 512GB WiFi": {
+        "sealed": 670,
+        "open": 620,
+        "sealed_activated": 620
+      },
+      "iPad Air 2025 13\" 1TB WiFi": {
+        "sealed": 720,
+        "open": 670,
+        "sealed_activated": 670
+      },
+      "iPad Air 2025 13\" 128GB Cellular (Verizon)": {
+        "sealed": 525,
+        "open": 475,
+        "sealed_activated": 475
+      },
+      "iPad Air 2025 13\" 256GB Cellular (Verizon)": {
+        "sealed": 595,
+        "open": 545,
+        "sealed_activated": 545
+      },
+      "iPad Air 2025 13\" 512GB Cellular (Verizon)": {
+        "sealed": 645,
+        "open": 595,
+        "sealed_activated": 595
+      },
+      "iPad Air 2025 13\" 1TB Cellular (Verizon)": {
+        "sealed": 695,
+        "open": 645,
+        "sealed_activated": 645
+      },
+      "iPad Air 2025 13\" 128GB Cellular (Unlocked)": {
+        "sealed": 600,
+        "open": 550,
+        "sealed_activated": 550
+      },
+      "iPad Air 2025 13\" 256GB Cellular (Unlocked)": {
+        "sealed": 670,
+        "open": 620,
+        "sealed_activated": 620
+      },
+      "iPad Air 2025 13\" 512GB Cellular (Unlocked)": {
+        "sealed": 720,
+        "open": 670,
+        "sealed_activated": 670
+      },
+      "iPad Air 2025 13\" 1TB Cellular (Unlocked)": {
+        "sealed": 770,
+        "open": 720,
+        "sealed_activated": 720
+      },
+      "iPad Air 2025 11\" 128GB WiFi": {
+        "sealed": 385,
+        "open": 335,
+        "sealed_activated": 335
+      },
+      "iPad Air 2025 11\" 256GB WiFi": {
+        "sealed": 420,
+        "open": 370,
+        "sealed_activated": 370
+      },
+      "iPad Air 2025 11\" 512GB WiFi": {
+        "sealed": 470,
+        "open": 420,
+        "sealed_activated": 420
+      },
+      "iPad Air 2025 11\" 1TB WiFi": {
+        "sealed": 520,
+        "open": 470,
+        "sealed_activated": 470
+      },
+      "iPad Air 2025 11\" 128GB Cellular (Verizon)": {
+        "sealed": 360,
+        "open": 310,
+        "sealed_activated": 310
+      },
+      "iPad Air 2025 11\" 256GB Cellular (Verizon)": {
+        "sealed": 395,
+        "open": 345,
+        "sealed_activated": 345
+      },
+      "iPad Air 2025 11\" 512GB Cellular (Verizon)": {
+        "sealed": 445,
+        "open": 395,
+        "sealed_activated": 395
+      },
+      "iPad Air 2025 11\" 1TB Cellular (Verizon)": {
+        "sealed": 495,
+        "open": 445,
+        "sealed_activated": 445
+      },
+      "iPad Air 2025 11\" 128GB Cellular (Unlocked)": {
+        "sealed": 430,
+        "open": 380,
+        "sealed_activated": 380
+      },
+      "iPad Air 2025 11\" 256GB Cellular (Unlocked)": {
+        "sealed": 500,
+        "open": 450,
+        "sealed_activated": 450
+      },
+      "iPad Air 2025 11\" 512GB Cellular (Unlocked)": {
+        "sealed": 530,
+        "open": 480,
+        "sealed_activated": 480
+      },
+      "iPad Air 2025 11\" 1TB Cellular (Unlocked)": {
+        "sealed": 580,
+        "open": 530,
+        "sealed_activated": 530
+      },
+      "iPad 11 2025 (A16) 128GB WiFi": {
+        "sealed": 245,
+        "open": 210,
+        "sealed_activated": 210
+      },
+      "iPad 11 2025 (A16) 256GB WiFi": {
+        "sealed": 335,
+        "open": 310,
+        "sealed_activated": 310
+      },
+      "iPad 11 2025 (A16) 512GB WiFi": {
+        "sealed": 385,
+        "open": 360,
+        "sealed_activated": 360
+      },
+      "iPad 11 2025 (A16) 128GB Cellular": {
+        "sealed": 310,
+        "open": 260,
+        "sealed_activated": 260
+      },
+      "iPad 11 2025 (A16) 256GB Cellular": {
+        "sealed": 430,
+        "open": 380,
+        "sealed_activated": 380
+      },
+      "iPad 11 2025 (A16) 512GB Cellular": {
+        "sealed": 490,
+        "open": 440,
+        "sealed_activated": 440
+      },
+      "iPad 10 64GB WiFi": {
+        "sealed": 225,
+        "open": 200,
+        "sealed_activated": 200
+      },
+      "iPad 10 256GB WiFi": {
+        "sealed": 275,
+        "open": 250,
+        "sealed_activated": 250
+      },
+      "iPad 10 64GB Cellular": {
+        "sealed": 260,
+        "open": 230,
+        "sealed_activated": 230
+      },
+      "iPad 10 256GB Cellular": {
+        "sealed": 360,
+        "open": 330,
+        "sealed_activated": 330
+      },
+      "iPad 9 64GB WiFi": {
+        "sealed": 170,
+        "open": 150,
+        "sealed_activated": 150
+      },
+      "iPad Mini 7 128GB WiFi": {
+        "sealed": 300,
+        "open": 270,
+        "sealed_activated": 270
+      },
+      "iPad Mini 7 256GB WiFi": {
+        "sealed": 360,
+        "open": 330,
+        "sealed_activated": 330
+      },
+      "iPad Mini 7 128GB Unlocked": {
+        "sealed": 350,
+        "open": 320,
+        "sealed_activated": 320
+      },
+      "iPad Mini 7 256GB Unlocked": {
+        "sealed": 410,
+        "open": 380,
+        "sealed_activated": 380
+      }
+    },
+    "airpods": {
+      "AirPods Pro 3 (MFHP4)": {
+        "sealed": 180
+      },
+      "AirPods Pro 2nd Gen (MTJV3)": {
+        "sealed": 130
+      },
+      "AirPods Pro 2nd Gen (MQD83)": {
+        "sealed": 90
+      },
+      "Airpods 4 - Noise Canceling (MXP93)": {
+        "sealed": 110
+      },
+      "Airpods 4 (MXP63)": {
+        "sealed": 75
+      },
+      "AirPods 3 (MME73 / MPNY3)": {
+        "sealed": 60
+      },
+      "AirPods 2nd Gen Wireless (MRXJ2)": {
+        "sealed": 70
+      },
+      "AirPods 2nd Gen (MV7N2)": {
+        "sealed": 60
+      },
+      "Airpod Pro Max": {
+        "sealed": 320
+      },
+      "NEW Airpod Pro Max USBC": {
+        "sealed": 350
+      }
+    }
+  },
+  "counts": {
+    "iphones_used": 236,
+    "pixel": 17,
+    "apple_watches": 20,
+    "ipads_used": 90,
+    "mdm_locked_iphones": 18,
+    "macbooks": 40,
+    "samsung": 36,
+    "icloud_locked_iphones": 39,
+    "iphones_nib": 97,
+    "ipads_nib": 111,
+    "airpods": 10
+  }
+}
