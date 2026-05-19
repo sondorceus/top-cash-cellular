@@ -19,24 +19,34 @@ export type AtlasReference = {
 // TCC condition slugs → Atlas grade column, per category. We pick the
 // "most analogous" column for each TCC bucket. Unmapped slots return
 // null (e.g. iPad has no "sealed" data; Pixel has no grade_c/d).
+//
+// Skywalker 2026-05-19: VG removed from the live funnel. We keep a
+// `verygood` entry in each map (aliased to the same grade as `good`)
+// so legacy MC leads with "Condition: Very Good" still resolve
+// without falling off the table.
 const CONDITION_MAP: Record<string, Record<string, string>> = {
   iphones_used: {
-    sealed: "swap_hso", mint: "grade_a", verygood: "grade_b",
+    sealed: "swap_hso", mint: "grade_a",
     good: "grade_c", fair: "grade_d", broken: "doa",
+    verygood: "grade_c",
   },
   ipads_used: {
-    mint: "grade_a", verygood: "grade_b",
+    mint: "grade_a",
     good: "grade_c", fair: "grade_d", broken: "doa",
+    verygood: "grade_c",
   },
   pixel: {
-    sealed: "sealed", mint: "grade_a", verygood: "grade_b_plus",
+    sealed: "sealed", mint: "grade_a",
+    verygood: "grade_b_plus",
   },
   samsung: {
-    sealed: "swap_hso", mint: "grade_a", verygood: "grade_b",
+    sealed: "swap_hso", mint: "grade_a",
     good: "grade_c", fair: "grade_d", broken: "doa",
+    verygood: "grade_c",
   },
   apple_watches: {
-    sealed: "sealed", mint: "grade_a_hso", verygood: "grade_b",
+    sealed: "sealed", mint: "grade_a_hso",
+    verygood: "grade_b",
   },
 };
 

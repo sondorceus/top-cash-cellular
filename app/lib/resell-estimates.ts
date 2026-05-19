@@ -82,8 +82,13 @@ export function resellMultiplierForCondition(condition: string | undefined, brok
     return 0.30; // front-only or unspecified
   }
   if (c.includes("fair") || c.includes("heavy")) return 0.65;
-  if (c.includes("good") && !c.includes("very")) return 0.80;
-  if (c.includes("very good") || c.includes("excellent") || c.includes("light")) return 0.92;
+  // Skywalker 2026-05-19: the funnel no longer emits "Very Good" — legacy
+  // MC leads still carry the string though, so we treat "very good" as
+  // Good-tier rather than the old between-mint-and-good multiplier. Same
+  // semantics as the inline MCOND fallback in app/page.tsx.
+  if (c.includes("very good")) return 0.80;
+  if (c.includes("good")) return 0.80;
+  if (c.includes("excellent") || c.includes("light")) return 0.92;
   // mint, sealed, flawless, like-new, pristine — full resell
   return 1.0;
 }

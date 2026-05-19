@@ -1927,10 +1927,16 @@ const getDeviceGroups = <T extends { id: string }>(deviceType: string | null | u
 };
 
 
+// Skywalker 2026-05-19: Collapsed Mint+Very Good into a single "Excellent"
+// tier. The old `verygood` slug paid the same multiplier as `good` (0.969)
+// but $15-20 more on most cells, so customers gamed it. With VG gone,
+// truly-pristine devices pick Excellent (= old Mint pricing), everything
+// with visible wear self-grades to Good. Legacy MC leads that carry
+// "Very Good" still parse — see resellMultiplierForCondition in
+// app/lib/resell-estimates.ts and the lead-side back-compat below.
 const CONDITIONS = [
   { id: "sealed", label: "Sealed", desc: "Factory sealed, never opened", multiplier: 1.03, icon: "📦", details: ["Still in factory original sealed packaging", "Plastic wrap or seal is intact and has not been tampered with", "Device has never been activated or powered on", "Must include original box with matching serial number", "Contains all original accessories unopened"] },
-  { id: "mint", label: "Mint", desc: "Like new, zero signs of use", multiplier: 1.0, icon: "✨", details: ["Zero scratches, scuffs, or other marks — looks brand new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 90% capacity", "Powers on and functions 100% as intended"] },
-  { id: "verygood", label: "Very Good", desc: "Minimal use, barely noticeable wear", multiplier: 0.969, icon: "💎", details: ["Very light scratches or scuffs barely visible — no dents or dings", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended"] },
+  { id: "mint", label: "Excellent", desc: "Looks brand new, zero signs of use", multiplier: 1.0, icon: "✨", details: ["Zero scratches, scuffs, or other marks — looks brand new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 90% capacity", "Powers on and functions 100% as intended"] },
   { id: "good", label: "Good", desc: "Normal wear, fully functional", multiplier: 0.969, icon: "👍", details: ["Light to moderate signs of wear — visible scratches and/or minor dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended"] },
   { id: "fair", label: "Fair", desc: "Heavy wear, still functional", multiplier: 0.852, icon: "👌", details: ["Heavy signs of wear — deep scratches, dents, or scuffs", "Display is free of cracks but may have minor blemishes", "Battery may be below 80% capacity", "Powers on and functions as intended"] },
   { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: "⚠️", details: ["Cracked screen, broken buttons, or damaged housing", "Display defects such as dead pixels, white spots, or burn-in", "May have functional issues — touchscreen, speakers, cameras", "Device still powers on", "No signs of liquid intrusion or water damage"] },
@@ -2325,21 +2331,21 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   // Consoles — different vocabulary; the customer thinks about working/broken not flawless/fair
   sony: {
     sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
-    verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
+    mint:     { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
     fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
     broken:   { label: "Disc drive broken / won't power on", desc: "Major hardware fault" },
   },
   microsoft: {
     sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
-    verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
+    mint:     { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
     fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
     broken:   { label: "Disc drive broken / won't power on", desc: "Major hardware fault" },
   },
   nintendo: {
     sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
-    verygood: { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
+    mint:     { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
     fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
     broken:   { label: "Joy-Con drift / won't power on", desc: "Major hardware fault" },
@@ -2350,7 +2356,7 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   },
   // Drones
   dji: {
-    verygood: { label: "Lightly Flown", desc: "Under 10 hours, no crashes" },
+    mint:     { label: "Lightly Flown", desc: "Under 10 hours, no crashes" },
     good:     { label: "Well-Maintained", desc: "Flown but maintained, no incidents" },
     fair:     { label: "Heavily Used", desc: "200+ hours, cosmetic wear, no crashes" },
     broken:   { label: "Crashed / Motors Broken", desc: "Repair history, motor or shell damage" },
@@ -4792,7 +4798,11 @@ export default function Home() {
         // Prefer per-model condition adjustments from the IWM scrape;
         // fall back to MacBook-calibrated MCOND for MacBook variants and
         // any spec entry without scraped condition_adj data.
-        const MCOND: Record<string, number> = { sealed: 50, mint: 0, verygood: -50, good: -110, fair: -220 };
+        // verygood retained as a fallback only for legacy admin overrides
+        // saved before the 2026-05-19 Mint/VG collapse. Live funnel can't
+        // produce verygood any more — the picker only emits sealed/mint/
+        // good/fair/broken.
+        const MCOND: Record<string, number> = { sealed: 50, mint: 0, verygood: -110, good: -110, fair: -220 };
         const specCondAdj = model ? getMacSpec(model.id)?.condition_adj : undefined;
         const condId = condition?.id ?? "mint";
         // Admin override layer: /admin/prices conditionAdj edits override

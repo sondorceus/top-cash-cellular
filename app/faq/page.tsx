@@ -20,7 +20,7 @@ const FAQ = [
   },
   {
     q: "Is the price you quote on the website actually what I'll get?",
-    a: "Yes — provided your device matches the condition tier you selected (Flawless, Very Good, etc.) and isn't carrier-locked, KG-locked, or financially encumbered. Read the condition tier descriptions on the quote page carefully.",
+    a: "Yes — provided your device matches the condition tier you selected (Sealed, Excellent, Good, Fair, Broken) and isn't carrier-locked, KG-locked, or financially encumbered. Read the condition tier descriptions on the quote page carefully.",
   },
   {
     q: "Do you cover shipping?",

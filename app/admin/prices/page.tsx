@@ -10,8 +10,15 @@ import { useEffect, useMemo, useState } from "react";
 // are derived from the model-ID prefix so we don't have to maintain a
 // hand-curated taxonomy alongside the data.
 
-const CONDITION_ORDER = ["sealed", "mint", "verygood", "good", "fair", "broken"] as const;
+// 2026-05-19: VG removed from the live funnel — see CONDITIONS in
+// app/page.tsx. We keep the slug `mint` (relabeled "Excellent" in UI)
+// to avoid a data migration on existing leads + admin overrides.
+const CONDITION_ORDER = ["sealed", "mint", "good", "fair", "broken"] as const;
 const CARRIER_KEYS = ["att", "tmobile", "other"] as const;
+// Pretty labels for each condition column header.
+const CONDITION_LABELS: Record<string, string> = {
+  sealed: "Sealed", mint: "Excellent", good: "Good", fair: "Fair", broken: "Broken",
+};
 
 // Map a model ID prefix → display group label. First match wins, so order
 // most-specific → most-generic.
@@ -810,8 +817,8 @@ export default function PricesAdminPage() {
                   <thead>
                     <tr className="text-[#888]">
                       {CONDITION_ORDER.map((c) => (
-                        <th key={c} className="text-center font-semibold pb-1 px-0.5 capitalize">
-                          {c === "verygood" ? "VG" : c}
+                        <th key={c} className="text-center font-semibold pb-1 px-0.5">
+                          {CONDITION_LABELS[c] ?? c}
                         </th>
                       ))}
                     </tr>
@@ -972,8 +979,8 @@ export default function PricesAdminPage() {
                             <tr className="text-[#888]">
                               <th className="text-left font-semibold pb-1.5 pr-2">Storage</th>
                               {CONDITION_ORDER.map((c) => (
-                                <th key={c} className="text-right font-semibold pb-1.5 px-1 capitalize">
-                                  {c === "verygood" ? "Very Good" : c}
+                                <th key={c} className="text-right font-semibold pb-1.5 px-1">
+                                  {CONDITION_LABELS[c] ?? c}
                                 </th>
                               ))}
                             </tr>
