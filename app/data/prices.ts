@@ -1074,3 +1074,1037 @@ export const BASE_PRICED_MODELS: Record<string, BasePricedModel> = {
   glily2active: { category: "Garmin watches", label: "Lily 2 Active", base: 22, image: "/devices/pixel-watch.png" },
   glily2classic: { category: "Garmin watches", label: "Lily 2 Classic", base: 22, image: "/devices/pixel-watch.png" },
 };
+
+
+// =========================================================================
+// MACBOOK SPECS (additive: chip × RAM × storage × display × condition adj)
+// =========================================================================
+// Extracted from app/page.tsx 2026-05-18. Customer funnel imports these
+// types + the MACBOOK_SPECS map. Admin /admin/prices reads them to power
+// the per-MacBook spec editor.
+
+export type MacSpecOption = { id: string; label: string; multiplier: number; adj?: number; sub?: string };
+export type MacSpec = {
+  processors: MacSpecOption[];
+  memory: MacSpecOption[];
+  storage: MacSpecOption[];
+  // Optional graphics step (gaming laptops, workstations). PC laptops
+  // surface this between storage and condition when populated; MacBooks
+  // never have it.
+  graphics?: MacSpecOption[];
+  // Optional display-resolution step (FHD / QHD / OLED on flagships).
+  // Sits between graphics and displayglass.
+  display?: MacSpecOption[];
+  hasNanoGlass?: boolean;
+  // Per-model IWM condition adjustments. Keys: sealed / mint / verygood
+  // / good / fair / broken. When present, the additive math uses these
+  // instead of the MacBook-calibrated MCOND constants.
+  condition_adj?: Record<string, number>;
+  battery_adj?: Record<string, number>;
+  charger_adj?: Record<string, number>;
+};
+export const MACBOOK_SPECS: Record<string, MacSpec> = {
+  // 2026 16-inch MacBook Pro M5 Pro/Max (Skywalker's example reference).
+  mbp16_m5pmax_2026: {
+    processors: [
+      { id: "m5pro_18_20", label: "M5 Pro", sub: "18-Core CPU / 20-Core GPU", multiplier: 1.00, adj: 2075 },
+      { id: "m5max_18_32", label: "M5 Max", sub: "18-Core CPU / 32-Core GPU", multiplier: 1.35, adj: 2800 },
+      { id: "m5max_18_40", label: "M5 Max", sub: "18-Core CPU / 40-Core GPU", multiplier: 1.50, adj: 3150 },
+    ],
+    memory: [
+      { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.00, adj: 0 },
+      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.08, adj: 200 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.15, adj: 400 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.25, adj: 600 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.45, adj: 1000 },
+    ],
+    storage: [
+      { id: "1tb", label: "1 TB",  sub: "SSD", multiplier: 1.00, adj: 0 },
+      { id: "2tb", label: "2 TB",  sub: "SSD", multiplier: 1.15, adj: 125 },
+      { id: "4tb", label: "4 TB",  sub: "SSD", multiplier: 1.40, adj: 400 },
+      { id: "8tb", label: "8 TB",  sub: "SSD", multiplier: 1.75, adj: 800 },
+    ],
+    hasNanoGlass: true,
+  },
+  // 2026 14-inch MacBook Pro M5 Pro/Max — same chip tiers as the 16,
+  // with the 15-16C base Pro chip configurable too. 8TB SSD available
+  // on M5 Max only (not M5 Pro).
+  mbp14_m5pmax_2026: {
+    processors: [
+      { id: "m5pro_15_16", label: "M5 Pro", sub: "15-Core CPU / 16-Core GPU", multiplier: 1.00, adj: 1350 },
+      { id: "m5pro_18_20", label: "M5 Pro", sub: "18-Core CPU / 20-Core GPU", multiplier: 1.20, adj: 1625 },
+      { id: "m5max_18_32", label: "M5 Max", sub: "18-Core CPU / 32-Core GPU", multiplier: 1.50, adj: 2025 },
+      { id: "m5max_18_40", label: "M5 Max", sub: "18-Core CPU / 40-Core GPU", multiplier: 1.70, adj: 3150 },
+    ],
+    memory: [
+      { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.00, adj: 0 },
+      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.10, adj: 200 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.18, adj: 350 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.30, adj: 600 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.50, adj: 1000 },
+    ],
+    storage: [
+      { id: "1tb", label: "1 TB", sub: "SSD", multiplier: 1.00, adj: 0 },
+      { id: "2tb", label: "2 TB", sub: "SSD", multiplier: 1.15, adj: 200 },
+      { id: "4tb", label: "4 TB", sub: "SSD", multiplier: 1.40, adj: 600 },
+      { id: "8tb", label: "8 TB", sub: "SSD", multiplier: 1.75, adj: 1200 },
+    ],
+    hasNanoGlass: true,
+  },
+  // 2024 16-inch MacBook Pro M4 Pro/Max
+  mbp16m4: {
+    processors: [
+      { id: "m4pro_14_20", label: "M4 Pro", sub: "14-Core CPU / 20-Core GPU", multiplier: 1.00, adj: 1475 },
+      { id: "m4max_14_32", label: "M4 Max", sub: "14-Core CPU / 32-Core GPU", multiplier: 1.46, adj: 2150 },
+      { id: "m4max_16_40", label: "M4 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 1.69, adj: 2500 },
+    ],
+    memory: [
+      { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.00, adj: 0 },
+      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.06, adj: 200 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.12, adj: 400 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.22, adj: 600 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.42, adj: 1000 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 150 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18, adj: 300 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40, adj: 600 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70, adj: 1000 },
+    ],
+    hasNanoGlass: true,
+  },
+  // 2024 14-inch MacBook Pro M4
+  mbp14m4: {
+    processors: [
+      { id: "m4_10_10",    label: "M4",     sub: "10-Core CPU / 10-Core GPU", multiplier: 1.00, adj: 950 },
+      { id: "m4pro_12_16", label: "M4 Pro", sub: "12-Core CPU / 16-Core GPU", multiplier: 1.37, adj: 1300 },
+      { id: "m4pro_14_20", label: "M4 Pro", sub: "14-Core CPU / 20-Core GPU", multiplier: 1.42, adj: 1350 },
+      { id: "m4max_14_32", label: "M4 Max", sub: "14-Core CPU / 32-Core GPU", multiplier: 2.26, adj: 2150 },
+      { id: "m4max_16_40", label: "M4 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 2.47, adj: 2350 },
+    ],
+    memory: [
+      { id: "16",  label: "16 GB",  sub: "Unified Memory", multiplier: 1.00, adj: 0 },
+      { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.06, adj: 125 },
+      { id: "32",  label: "32 GB",  sub: "Unified Memory", multiplier: 1.12, adj: 250 },
+      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.14, adj: 250 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.20, adj: 400 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.30, adj: 600 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.50, adj: 1000 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 125 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18, adj: 250 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40, adj: 600 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70, adj: 1000 },
+    ],
+    hasNanoGlass: true,
+  },
+  // 2023 16-inch MacBook Pro M3 Pro/Max
+  mbp16m3: {
+    processors: [
+      { id: "m3pro_12_18", label: "M3 Pro", sub: "12-Core CPU / 18-Core GPU", multiplier: 1.00, adj: 1150 },
+      { id: "m3max_14_30", label: "M3 Max", sub: "14-Core CPU / 30-Core GPU", multiplier: 1.41, adj: 1625 },
+      { id: "m3max_16_40", label: "M3 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 1.54, adj: 1775 },
+    ],
+    memory: [
+      { id: "18",  label: "18 GB",  sub: "Unified Memory", multiplier: 1.00, adj: 0 },
+      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.10, adj: 200 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.18, adj: 350 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.28, adj: 500 },
+      { id: "96",  label: "96 GB",  sub: "Unified Memory", multiplier: 1.38, adj: 700 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.50, adj: 1000 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 125 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18, adj: 250 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40, adj: 500 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70, adj: 850 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2023 14-inch MacBook Pro M3 / Pro / Max
+  mbp14m3: {
+    processors: [
+      { id: "m3_8_10",     label: "M3",     sub: "8-Core CPU / 10-Core GPU",  multiplier: 1.00, adj: 630 },
+      { id: "m3pro_11_14", label: "M3 Pro", sub: "11-Core CPU / 14-Core GPU", multiplier: 1.43, adj: 900 },
+      { id: "m3pro_12_18", label: "M3 Pro", sub: "12-Core CPU / 18-Core GPU", multiplier: 1.51, adj: 950 },
+      { id: "m3max_14_30", label: "M3 Max", sub: "14-Core CPU / 30-Core GPU", multiplier: 2.30, adj: 1450 },
+      { id: "m3max_16_40", label: "M3 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 2.70, adj: 1700 },
+    ],
+    memory: [
+      { id: "8",   label: "8 GB",   sub: "Unified Memory", multiplier: 0.92, adj: 0 },
+      { id: "16",  label: "16 GB",  sub: "Unified Memory", multiplier: 1.00, adj: 150 },
+      { id: "18",  label: "18 GB",  sub: "Unified Memory", multiplier: 1.04, adj: 175 },
+      { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.08, adj: 225 },
+      { id: "36",  label: "36 GB",  sub: "Unified Memory", multiplier: 1.16, adj: 350 },
+      { id: "48",  label: "48 GB",  sub: "Unified Memory", multiplier: 1.22, adj: 450 },
+      { id: "64",  label: "64 GB",  sub: "Unified Memory", multiplier: 1.30, adj: 600 },
+      { id: "96",  label: "96 GB",  sub: "Unified Memory", multiplier: 1.42, adj: 800 },
+      { id: "128", label: "128 GB", sub: "Unified Memory", multiplier: 1.55, adj: 1000 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 100 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18, adj: 250 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40, adj: 500 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70, adj: 850 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2023 16-inch MacBook Pro M2 Pro/Max (no nano-texture this gen)
+  mbp16m2: {
+    processors: [
+      { id: "m2pro_12_19", label: "M2 Pro", sub: "12-Core CPU / 19-Core GPU", multiplier: 1.00, adj: 900 },
+      { id: "m2max_12_30", label: "M2 Max", sub: "12-Core CPU / 30-Core GPU", multiplier: 1.25, adj: 1125 },
+      { id: "m2max_12_38", label: "M2 Max", sub: "12-Core CPU / 38-Core GPU", multiplier: 1.40, adj: 1260 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 0 },
+      { id: "32", label: "32 GB", sub: "Unified Memory", multiplier: 1.12, adj: 200 },
+      { id: "64", label: "64 GB", sub: "Unified Memory", multiplier: 1.28, adj: 500 },
+      { id: "96", label: "96 GB", sub: "Unified Memory", multiplier: 1.40, adj: 700 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 150 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18, adj: 300 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40, adj: 500 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70, adj: 850 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2023 14-inch MacBook Pro M2 Pro/Max
+  mbp14m2: {
+    processors: [
+      { id: "m2pro_10_16", label: "M2 Pro", sub: "10-Core CPU / 16-Core GPU", multiplier: 1.00, adj: 750 },
+      { id: "m2pro_12_19", label: "M2 Pro", sub: "12-Core CPU / 19-Core GPU", multiplier: 1.11, adj: 832 },
+      { id: "m2max_12_30", label: "M2 Max", sub: "12-Core CPU / 30-Core GPU", multiplier: 1.44, adj: 1080 },
+      { id: "m2max_12_38", label: "M2 Max", sub: "12-Core CPU / 38-Core GPU", multiplier: 1.50, adj: 1125 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 0 },
+      { id: "32", label: "32 GB", sub: "Unified Memory", multiplier: 1.12, adj: 175 },
+      { id: "64", label: "64 GB", sub: "Unified Memory", multiplier: 1.28, adj: 450 },
+      { id: "96", label: "96 GB", sub: "Unified Memory", multiplier: 1.40, adj: 650 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 125 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18, adj: 250 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40, adj: 425 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70, adj: 700 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2025 14-inch MacBook Pro M5 (base chip line) — Atlas only lists M5
+  // Pro/Max variants for this gen but the base M5 is configurable too.
+  // No nano glass on the base M5 model.
+  mbp14_m5_2025: {
+    processors: [
+      { id: "m5_10_10", label: "M5", sub: "10-Core CPU / 10-Core GPU", multiplier: 1.00, adj: 950 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 0 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.08, adj: 125 },
+      { id: "32", label: "32 GB", sub: "Unified Memory", multiplier: 1.18, adj: 300 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 100 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.20, adj: 200 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.45, adj: 500 },
+    ],
+    hasNanoGlass: true,
+  },
+  // 2026 MacBook Air M5 — Skywalker has 13 + 15 combined as one catalog
+  // entry, so screen size lives on the processor step (M5 chip is the
+  // same across sizes; the 15-inch just commands a price premium).
+  mba_m5_2026: {
+    processors: [
+      { id: "m5_13",       label: "M5 (13-inch)", sub: "10-Core CPU / 10-Core GPU", multiplier: 0.85, adj: 625 },
+      { id: "m5_15",       label: "M5 (15-inch)", sub: "10-Core CPU / 10-Core GPU", multiplier: 1.12, adj: 700 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 0 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10, adj: 75 },
+      { id: "32", label: "32 GB", sub: "Unified Memory", multiplier: 1.22, adj: 175 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00, adj: 0 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15, adj: 75 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35, adj: 175 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.60, adj: 400 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2025 MacBook Air M4 — 13" and 15" combined. M4 chip, 16/24/32 GB RAM,
+  // 256/512/1TB/2TB storage. Same approach as M5 Air: screen size on processor step.
+  mba_m4_2025: {
+    processors: [
+      { id: "m4_13", label: "M4 (13-inch)", sub: "10-Core CPU / 8-Core GPU",  multiplier: 0.85, adj: 565 },
+      { id: "m4_15", label: "M4 (15-inch)", sub: "10-Core CPU / 10-Core GPU", multiplier: 1.06, adj: 600 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 0 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10, adj: 75 },
+      { id: "32", label: "32 GB", sub: "Unified Memory", multiplier: 1.22, adj: 150 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00, adj: 50 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15, adj: 125 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35, adj: 250 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2024 MacBook Air 15" M3
+  mba15m3: {
+    processors: [
+      { id: "m3_8_10", label: "M3", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.00, adj: 540 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92, adj: 0 },
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 50 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10, adj: 150 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00, adj: 50 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15, adj: 125 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35, adj: 250 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2024 MacBook Air 13" M3
+  mba13m3: {
+    processors: [
+      { id: "m3_8_8",  label: "M3", sub: "8-Core CPU / 8-Core GPU",  multiplier: 1.00, adj: 470 },
+      { id: "m3_8_10", label: "M3", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.14, adj: 535 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92, adj: 0 },
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 50 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10, adj: 150 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00, adj: 50 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15, adj: 125 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35, adj: 250 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2023 MacBook Air 15" M2
+  mba15m2: {
+    processors: [
+      { id: "m2_8_10", label: "M2", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.00, adj: 440 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92, adj: 0 },
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 85 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10, adj: 170 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00, adj: 50 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15, adj: 100 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35, adj: 200 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2022 MacBook Air 13" M2
+  mba13m2: {
+    processors: [
+      { id: "m2_8_8",  label: "M2", sub: "8-Core CPU / 8-Core GPU",  multiplier: 1.00, adj: 370 },
+      { id: "m2_8_10", label: "M2", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.08, adj: 400 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92, adj: 0 },
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 50 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10, adj: 125 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00, adj: 50 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15, adj: 125 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35, adj: 175 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2020 MacBook Air 13" M1 — first Apple Silicon Mac, simpler config
+  mba13m1: {
+    processors: [
+      { id: "m1_8_7", label: "M1", sub: "8-Core CPU / 7-Core GPU", multiplier: 1.00, adj: 370 },
+      { id: "m1_8_8", label: "M1", sub: "8-Core CPU / 8-Core GPU", multiplier: 1.08, adj: 400 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92, adj: 0 },
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00, adj: 50 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15, adj: 125 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35, adj: 175 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2020 MacBook Pro 13" M1 — same chip as Air M1 but with active cooling
+  mbp13m1: {
+    processors: [
+      { id: "m1_8_8", label: "M1", sub: "8-Core CPU / 8-Core GPU", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92, adj: 0 },
+      { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00, adj: 50 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15, adj: 125 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35, adj: 175 },
+    ],
+    hasNanoGlass: false,
+  },
+  // 2026 MacBook Neo 13" — entry-level A18 Pro chip
+  mbneo13: {
+    processors: [
+      { id: "a18pro", label: "A18 Pro", sub: "iPhone-class chip", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8", label: "8 GB", sub: "Unified Memory", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.05 },
+    ],
+    hasNanoGlass: false,
+  },
+  // Dell XPS 15 (2024) — IWM additive pricing
+  dxps15: {
+    processors: [
+      { id: "i7_14", label: "Intel Core i7 (14th Gen)", multiplier: 1.00, adj: 620 },
+      { id: "i9_14", label: "Intel Core i9 (14th Gen)", multiplier: 1.13, adj: 700 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 0 },
+      { id: "32", label: "32 GB", multiplier: 1.06, adj: 40 },
+      { id: "64", label: "64 GB", multiplier: 1.16, adj: 100 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "1tb", label: "1 TB SSD", multiplier: 1.06, adj: 40 },
+      { id: "2tb", label: "2 TB SSD", multiplier: 1.13, adj: 80 },
+    ],
+    hasNanoGlass: false,
+  },
+  // Dell XPS 13 (2024) — IWM additive pricing
+  dxps13: {
+    processors: [
+      { id: "ultra5", label: "Intel Core Ultra 5", multiplier: 1.00, adj: 420 },
+      { id: "ultra7", label: "Intel Core Ultra 7", multiplier: 1.19, adj: 500 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 0 },
+      { id: "32", label: "32 GB", multiplier: 1.07, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.05, adj: 20 },
+      { id: "1tb", label: "1 TB SSD", multiplier: 1.10, adj: 40 },
+    ],
+    hasNanoGlass: false,
+  },
+  // Alienware Aurora R16 — gaming desktop, additive pricing
+  awaurorar16: {
+    processors: [
+      { id: "i7_13", label: "Intel Core i7 (13th Gen)", multiplier: 1.00, adj: 340 },
+      { id: "i7_14", label: "Intel Core i7 (14th Gen)", multiplier: 1.00, adj: 390 },
+      { id: "i9_13", label: "Intel Core i9 (13th Gen)", multiplier: 1.00, adj: 380 },
+      { id: "i9_14", label: "Intel Core i9 (14th Gen)", multiplier: 1.00, adj: 490 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 25 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 50 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 100 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 25 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 50 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 100 },
+      { id: "4tb", label: "4 TB SSD",   multiplier: 1.00, adj: 175 },
+    ],
+    hasNanoGlass: false,
+  },
+  // Lenovo ThinkPad X1 Carbon Gen 13 (2025) — IWM additive pricing
+  ln_tp_x1_carbon: {
+    processors: [
+      { id: "ultra5", label: "Intel Core Ultra 5", sub: "Gen 13 (2025)", multiplier: 1.00, adj: 380 },
+      { id: "ultra7", label: "Intel Core Ultra 7", sub: "Gen 13 (2025)", multiplier: 1.43, adj: 545 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 20 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 35 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 20 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 40 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 80 },
+    ],
+    hasNanoGlass: false,
+  },
+  // HP OMEN 45L Desktop — gaming desktop, additive pricing
+  // ─── HP LAPTOPS — additive pricing from IWM (scraped 2026-05-11) ───
+  // EliteBook Standard — business ultrabooks
+  hp_eb_g11: {
+    processors: [
+      { id: "r5_7535u",      label: "AMD Ryzen 5 7535U",       multiplier: 1.00, adj: 230 },
+      { id: "r5p_7535u",     label: "AMD Ryzen 5 Pro 7535U",   multiplier: 1.00, adj: 250 },
+      { id: "r7_7735u",      label: "AMD Ryzen 7 7735U",       multiplier: 1.00, adj: 290 },
+      { id: "r7p_7735u",     label: "AMD Ryzen 7 Pro 7735U",   multiplier: 1.00, adj: 325 },
+      { id: "ultra5",        label: "Intel Core Ultra 5",       multiplier: 1.00, adj: 300 },
+      { id: "ultra7",        label: "Intel Core Ultra 7",       multiplier: 1.00, adj: 375 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g10: {
+    processors: [
+      { id: "i5_13",     label: "Intel Core i5 (13th Gen)",   multiplier: 1.00, adj: 230 },
+      { id: "i7_13",     label: "Intel Core i7 (13th Gen)",   multiplier: 1.00, adj: 265 },
+      { id: "r5_7530u",  label: "AMD Ryzen 5 7530U",          multiplier: 1.00, adj: 160 },
+      { id: "r5p_7530u", label: "AMD Ryzen 5 Pro 7530U",      multiplier: 1.00, adj: 185 },
+      { id: "r7_7730u",  label: "AMD Ryzen 7 7730U",          multiplier: 1.00, adj: 210 },
+      { id: "r7p_7730u", label: "AMD Ryzen 7 Pro 7730U",      multiplier: 1.00, adj: 245 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g9: {
+    processors: [
+      { id: "i5_12",     label: "Intel Core i5 (12th Gen)",   multiplier: 1.00, adj: 150 },
+      { id: "i7_12",     label: "Intel Core i7 (12th Gen)",   multiplier: 1.00, adj: 190 },
+      { id: "r5p_5675u", label: "AMD Ryzen 5 Pro 5675U",      multiplier: 1.00, adj: 120 },
+      { id: "r7p_5875u", label: "AMD Ryzen 7 Pro 5875U",      multiplier: 1.00, adj: 165 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g8: {
+    processors: [
+      { id: "i5_11",     label: "Intel Core i5 (11th Gen)",   multiplier: 1.00, adj: 100 },
+      { id: "i7_11",     label: "Intel Core i7 (11th Gen)",   multiplier: 1.00, adj: 150 },
+      { id: "r5_5600u",  label: "AMD Ryzen 5 5600U",          multiplier: 1.00, adj: 70 },
+      { id: "r5p_5650u", label: "AMD Ryzen 5 Pro 5650U",      multiplier: 1.00, adj: 100 },
+      { id: "r7_5800u",  label: "AMD Ryzen 7 5800U",          multiplier: 1.00, adj: 95 },
+      { id: "r7p_5850u", label: "AMD Ryzen 7 Pro 5850U",      multiplier: 1.00, adj: 120 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g7: {
+    processors: [
+      { id: "i5_10",     label: "Intel Core i5 (10th Gen)",   multiplier: 1.00, adj: 65 },
+      { id: "i7_10",     label: "Intel Core i7 (10th Gen)",   multiplier: 1.00, adj: 110 },
+      { id: "r3p_4450u", label: "AMD Ryzen 3 Pro 4450U",      multiplier: 1.00, adj: 25 },
+      { id: "r5p_4650u", label: "AMD Ryzen 5 Pro 4650U",      multiplier: 1.00, adj: 90 },
+      { id: "r7p_4750u", label: "AMD Ryzen 7 Pro 4750U",      multiplier: 1.00, adj: 125 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g6: {
+    processors: [
+      { id: "i5_8",      label: "Intel Core i5 (8th Gen)",    multiplier: 1.00, adj: 75 },
+      { id: "i7_8",      label: "Intel Core i7 (8th Gen)",    multiplier: 1.00, adj: 100 },
+      { id: "r3p_3300u", label: "AMD Ryzen 3 Pro 3300U",      multiplier: 1.00, adj: 50 },
+      { id: "r5p_3500u", label: "AMD Ryzen 5 Pro 3500U",      multiplier: 1.00, adj: 90 },
+      { id: "r7p_3700u", label: "AMD Ryzen 7 Pro 3700U",      multiplier: 1.00, adj: 120 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g5: {
+    processors: [
+      { id: "r3p_2300u", label: "AMD Ryzen 3 Pro 2300U",      multiplier: 1.00, adj: 15 },
+      { id: "r5p_2500u", label: "AMD Ryzen 5 Pro 2500U",      multiplier: 1.00, adj: 30 },
+      { id: "r7p_2700u", label: "AMD Ryzen 7 Pro 2700U",      multiplier: 1.00, adj: 45 },
+      { id: "i5_8",      label: "Intel Core i5 (8th Gen)",    multiplier: 1.00, adj: 45 },
+      { id: "i7_8",      label: "Intel Core i7 (8th Gen)",    multiplier: 1.00, adj: 70 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_eb_g4: {
+    processors: [
+      { id: "i5_7",  label: "Intel Core i5 (7th Gen)",  multiplier: 1.00, adj: 30 },
+      { id: "i7_7",  label: "Intel Core i7 (7th Gen)",  multiplier: 1.00, adj: 55 },
+      { id: "i5_8",  label: "Intel Core i5 (8th Gen)",  multiplier: 1.00, adj: 50 },
+      { id: "i7_8",  label: "Intel Core i7 (8th Gen)",  multiplier: 1.00, adj: 80 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 20 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+    ],
+    hasNanoGlass: false,
+  },
+  // Spectre x360 — premium consumer convertible
+  hp_spec_14: {
+    processors: [
+      { id: "i5_11", label: "Intel Core i5 (11th Gen)",  multiplier: 1.00, adj: 200 },
+      { id: "i5_12", label: "Intel Core i5 (12th Gen)",  multiplier: 1.00, adj: 250 },
+      { id: "i7_11", label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 275 },
+      { id: "i7_12", label: "Intel Core i7 (12th Gen)",  multiplier: 1.00, adj: 350 },
+      { id: "i7_13", label: "Intel Core i7 (13th Gen)",  multiplier: 1.00, adj: 470 },
+      { id: "ultra7", label: "Intel Core Ultra 7",        multiplier: 1.00, adj: 500 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_spec_16: {
+    processors: [
+      { id: "i7_11", label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 225 },
+      { id: "i7_12", label: "Intel Core i7 (12th Gen)",  multiplier: 1.00, adj: 300 },
+      { id: "i7_13", label: "Intel Core i7 (13th Gen)",  multiplier: 1.00, adj: 375 },
+      { id: "ultra7", label: "Intel Core Ultra 7",        multiplier: 1.00, adj: 450 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 0 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 50 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 100 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_spec_13: {
+    processors: [
+      { id: "i5_10", label: "Intel Core i5 (10th Gen)",  multiplier: 1.00, adj: 210 },
+      { id: "i5_11", label: "Intel Core i5 (11th Gen)",  multiplier: 1.00, adj: 275 },
+      { id: "i5_12", label: "Intel Core i5 (12th Gen)",  multiplier: 1.00, adj: 295 },
+      { id: "i5_13", label: "Intel Core i5 (13th Gen)",  multiplier: 1.00, adj: 320 },
+      { id: "i7_10", label: "Intel Core i7 (10th Gen)",  multiplier: 1.00, adj: 260 },
+      { id: "i7_11", label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 290 },
+      { id: "i7_12", label: "Intel Core i7 (12th Gen)",  multiplier: 1.00, adj: 330 },
+      { id: "i7_13", label: "Intel Core i7 (13th Gen)",  multiplier: 1.00, adj: 365 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_spec_15: {
+    processors: [
+      { id: "i7_7",  label: "Intel Core i7 (7th Gen)",   multiplier: 1.00, adj: 180 },
+      { id: "i7_8",  label: "Intel Core i7 (8th Gen)",   multiplier: 1.00, adj: 240 },
+      { id: "i7_9",  label: "Intel Core i7 (9th Gen)",   multiplier: 1.00, adj: 280 },
+      { id: "i7_10", label: "Intel Core i7 (10th Gen)",  multiplier: 1.00, adj: 325 },
+      { id: "i7_11", label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 340 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  // ProBook — SMB business laptops
+  hp_pb_g11: {
+    processors: [
+      { id: "ultra5",    label: "Intel Core Ultra 5",      multiplier: 1.00, adj: 280 },
+      { id: "ultra7",    label: "Intel Core Ultra 7",      multiplier: 1.00, adj: 350 },
+      { id: "r5_7535u",  label: "AMD Ryzen 5 7535U",       multiplier: 1.00, adj: 240 },
+      { id: "r7_7735u",  label: "AMD Ryzen 7 7735U",       multiplier: 1.00, adj: 300 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_pb_g10: {
+    processors: [
+      { id: "i5_13",     label: "Intel Core i5 (13th Gen)", multiplier: 1.00, adj: 150 },
+      { id: "i7_13",     label: "Intel Core i7 (13th Gen)", multiplier: 1.00, adj: 175 },
+      { id: "r3_7330u",  label: "AMD Ryzen 3 7330U",        multiplier: 1.00, adj: 145 },
+      { id: "r5_7530u",  label: "AMD Ryzen 5 7530U",        multiplier: 1.00, adj: 190 },
+      { id: "r7_7730u",  label: "AMD Ryzen 7 7730U",        multiplier: 1.00, adj: 230 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 25 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 20 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 40 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_pb_g9: {
+    processors: [
+      { id: "i5_12",     label: "Intel Core i5 (12th Gen)", multiplier: 1.00, adj: 150 },
+      { id: "i7_12",     label: "Intel Core i7 (12th Gen)", multiplier: 1.00, adj: 190 },
+      { id: "r3_5425u",  label: "AMD Ryzen 3 5425U",        multiplier: 1.00, adj: 60 },
+      { id: "r5_5625u",  label: "AMD Ryzen 5 5625U",        multiplier: 1.00, adj: 100 },
+      { id: "r7_5825u",  label: "AMD Ryzen 7 5825U",        multiplier: 1.00, adj: 140 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_pb_g8: {
+    processors: [
+      { id: "i5_11", label: "Intel Core i5 (11th Gen)",  multiplier: 1.00, adj: 55 },
+      { id: "i7_11", label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 90 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_pb_g7: {
+    processors: [
+      { id: "i5_10",    label: "Intel Core i5 (10th Gen)", multiplier: 1.00, adj: 40 },
+      { id: "i7_10",    label: "Intel Core i7 (10th Gen)", multiplier: 1.00, adj: 60 },
+      { id: "r3_4300u", label: "AMD Ryzen 3 4300U",        multiplier: 1.00, adj: 20 },
+      { id: "r5_4500u", label: "AMD Ryzen 5 4500U",        multiplier: 1.00, adj: 40 },
+      { id: "r7_4700u", label: "AMD Ryzen 7 4700U",        multiplier: 1.00, adj: 60 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 10 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 20 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 20 },
+    ],
+    hasNanoGlass: false,
+  },
+  // OMEN gaming laptops
+  hp_omen_17: {
+    processors: [
+      { id: "i5_10",    label: "Intel Core i5 (10th Gen)",  multiplier: 1.00, adj: 230 },
+      { id: "i5_11",    label: "Intel Core i5 (11th Gen)",  multiplier: 1.00, adj: 300 },
+      { id: "i5_12",    label: "Intel Core i5 (12th Gen)",  multiplier: 1.00, adj: 360 },
+      { id: "i7_10",    label: "Intel Core i7 (10th Gen)",  multiplier: 1.00, adj: 290 },
+      { id: "i7_11",    label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 350 },
+      { id: "i7_12",    label: "Intel Core i7 (12th Gen)",  multiplier: 1.00, adj: 400 },
+      { id: "i7_13",    label: "Intel Core i7 (13th Gen)",  multiplier: 1.00, adj: 455 },
+      { id: "i7_14",    label: "Intel Core i7 (14th Gen)",  multiplier: 1.00, adj: 515 },
+      { id: "i9_12",    label: "Intel Core i9 (12th Gen)",  multiplier: 1.00, adj: 450 },
+      { id: "i9_13",    label: "Intel Core i9 (13th Gen)",  multiplier: 1.00, adj: 520 },
+      { id: "r_ai5",    label: "AMD Ryzen AI 5 340",        multiplier: 1.00, adj: 450 },
+      { id: "r7_8845",  label: "AMD Ryzen 7 8845HS",        multiplier: 1.00, adj: 500 },
+      { id: "r_ai7",    label: "AMD Ryzen AI 7 350",        multiplier: 1.00, adj: 525 },
+      { id: "r_ai9",    label: "AMD Ryzen AI 9 365",        multiplier: 1.00, adj: 675 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 55 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_omen_16: {
+    processors: [
+      { id: "r5_4600h", label: "AMD Ryzen 5 4600H",   multiplier: 1.00, adj: 130 },
+      { id: "r5_5600h", label: "AMD Ryzen 5 5600H",   multiplier: 1.00, adj: 170 },
+      { id: "r5_7640",  label: "AMD Ryzen 5 7640HS",  multiplier: 1.00, adj: 240 },
+      { id: "r_ai5",    label: "AMD Ryzen AI 5 340",  multiplier: 1.00, adj: 425 },
+      { id: "r7_4800h", label: "AMD Ryzen 7 4800H",   multiplier: 1.00, adj: 190 },
+      { id: "r7_5800h", label: "AMD Ryzen 7 5800H",   multiplier: 1.00, adj: 220 },
+      { id: "r7_6800h", label: "AMD Ryzen 7 6800H",   multiplier: 1.00, adj: 280 },
+      { id: "r7_7840",  label: "AMD Ryzen 7 7840HS",  multiplier: 1.00, adj: 350 },
+      { id: "r_ai7",    label: "AMD Ryzen AI 7 350",  multiplier: 1.00, adj: 475 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_omen_15: {
+    processors: [
+      { id: "r5_4600h", label: "AMD Ryzen 5 4600H",   multiplier: 1.00, adj: 270 },
+      { id: "r5_5600h", label: "AMD Ryzen 5 5600H",   multiplier: 1.00, adj: 330 },
+      { id: "r7_4800h", label: "AMD Ryzen 7 4800H",   multiplier: 1.00, adj: 300 },
+      { id: "r7_5800h", label: "AMD Ryzen 7 5800H",   multiplier: 1.00, adj: 350 },
+      { id: "r7_6800h", label: "AMD Ryzen 7 6800H",   multiplier: 1.00, adj: 390 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 50 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  // Envy — mainstream consumer
+  hp_envy_x360: {
+    processors: [
+      { id: "i5_10",    label: "Intel Core i5 (10th Gen)",  multiplier: 1.00, adj: 135 },
+      { id: "i5_11",    label: "Intel Core i5 (11th Gen)",  multiplier: 1.00, adj: 160 },
+      { id: "i5_12",    label: "Intel Core i5 (12th Gen)",  multiplier: 1.00, adj: 185 },
+      { id: "i5_13",    label: "Intel Core i5 (13th Gen)",  multiplier: 1.00, adj: 180 },
+      { id: "r5_4500u", label: "AMD Ryzen 5 4500U",         multiplier: 1.00, adj: 150 },
+      { id: "r5_5500u", label: "AMD Ryzen 5 5500U",         multiplier: 1.00, adj: 180 },
+      { id: "r5_7530u", label: "AMD Ryzen 5 7530U",         multiplier: 1.00, adj: 200 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 50 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_envy_15: {
+    processors: [
+      { id: "i5_8",  label: "Intel Core i5 (8th Gen)",   multiplier: 1.00, adj: 50 },
+      { id: "i5_9",  label: "Intel Core i5 (9th Gen)",   multiplier: 1.00, adj: 80 },
+      { id: "i5_10", label: "Intel Core i5 (10th Gen)",  multiplier: 1.00, adj: 120 },
+      { id: "i5_11", label: "Intel Core i5 (11th Gen)",  multiplier: 1.00, adj: 145 },
+      { id: "i7_8",  label: "Intel Core i7 (8th Gen)",   multiplier: 1.00, adj: 70 },
+      { id: "i7_9",  label: "Intel Core i7 (9th Gen)",   multiplier: 1.00, adj: 115 },
+      { id: "i7_10", label: "Intel Core i7 (10th Gen)",  multiplier: 1.00, adj: 140 },
+      { id: "i7_11", label: "Intel Core i7 (11th Gen)",  multiplier: 1.00, adj: 165 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 15 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 30 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 15 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 30 },
+    ],
+    hasNanoGlass: false,
+  },
+  // ZBook — mobile workstation
+  hp_zb_g11: {
+    processors: [
+      { id: "ultra5",  label: "Intel Core Ultra 5",         multiplier: 1.00, adj: 285 },
+      { id: "ultra7",  label: "Intel Core Ultra 7",         multiplier: 1.00, adj: 340 },
+      { id: "i7_13",   label: "Intel Core i7 (13th Gen)",   multiplier: 1.00, adj: 875 },
+      { id: "i7_14",   label: "Intel Core i7 (14th Gen)",   multiplier: 1.00, adj: 1200 },
+      { id: "i9_13",   label: "Intel Core i9 (13th Gen)",   multiplier: 1.00, adj: 1250 },
+      { id: "i9_14",   label: "Intel Core i9 (14th Gen)",   multiplier: 1.00, adj: 1315 },
+    ],
+    memory: [
+      { id: "8",   label: "8 GB",   multiplier: 1.00, adj: 0 },
+      { id: "16",  label: "16 GB",  multiplier: 1.00, adj: 25 },
+      { id: "32",  label: "32 GB",  multiplier: 1.00, adj: 50 },
+      { id: "64",  label: "64 GB",  multiplier: 1.00, adj: 100 },
+      { id: "128", label: "128 GB", multiplier: 1.00, adj: 150 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 25 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 50 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 100 },
+      { id: "4tb", label: "4 TB SSD",   multiplier: 1.00, adj: 200 },
+    ],
+    hasNanoGlass: false,
+  },
+  hp_zb_g10: {
+    processors: [
+      { id: "r5p_7640",  label: "AMD Ryzen 5 Pro 7640HS",  multiplier: 1.00, adj: 150 },
+      { id: "r7p_7840",  label: "AMD Ryzen 7 Pro 7840HS",  multiplier: 1.00, adj: 220 },
+      { id: "r9p_7940",  label: "AMD Ryzen 9 Pro 7940HS",  multiplier: 1.00, adj: 265 },
+      { id: "i5_13",     label: "Intel Core i5 (13th Gen)", multiplier: 1.00, adj: 190 },
+      { id: "i7_13",     label: "Intel Core i7 (13th Gen)", multiplier: 1.00, adj: 235 },
+    ],
+    memory: [
+      { id: "8",  label: "8 GB",  multiplier: 1.00, adj: 0 },
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 25 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 50 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 75 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 25 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 50 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 75 },
+    ],
+    hasNanoGlass: false,
+  },
+  // HP OMEN Desktop (already existed)
+  hpomendsk: {
+    processors: [
+      { id: "i9_13",     label: "Intel Core i9 (13th Gen)",     multiplier: 1.00, adj: 800 },
+      { id: "ultra7_s2", label: "Intel Core Ultra 7 Series 2",  multiplier: 1.00, adj: 825 },
+      { id: "ultra9_s2", label: "Intel Core Ultra 9 Series 2",  multiplier: 1.00, adj: 900 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", multiplier: 1.00, adj: 0 },
+      { id: "32", label: "32 GB", multiplier: 1.00, adj: 20 },
+      { id: "64", label: "64 GB", multiplier: 1.00, adj: 40 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB SSD", multiplier: 1.00, adj: 0 },
+      { id: "1tb", label: "1 TB SSD",   multiplier: 1.00, adj: 20 },
+      { id: "2tb", label: "2 TB SSD",   multiplier: 1.00, adj: 40 },
+    ],
+    hasNanoGlass: false,
+  },
+};

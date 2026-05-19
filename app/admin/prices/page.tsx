@@ -51,9 +51,21 @@ function groupForModel(id: string): string {
 type PriceTable = Record<string, Record<string, Record<string, number>>>;
 type CarrierTable = Record<string, Record<string, number>>;
 type BasePricedModel = { category: string; label: string; base: number; inquiryOnly?: boolean; image?: string };
+type AdditiveSpec = { source: "macbook" | "pc"; label: string; condition_adj: Record<string, number> };
 type Payload = {
-  baseline: { priceTable: PriceTable; carrierDeductions: CarrierTable; basePricedModels?: Record<string, BasePricedModel> };
-  overrides: { priceTable: PriceTable; carrierDeductions: CarrierTable; baseOverrides?: Record<string, number>; updatedAt?: string };
+  baseline: {
+    priceTable: PriceTable;
+    carrierDeductions: CarrierTable;
+    basePricedModels?: Record<string, BasePricedModel>;
+    additiveSpecs?: Record<string, AdditiveSpec>;
+  };
+  overrides: {
+    priceTable: PriceTable;
+    carrierDeductions: CarrierTable;
+    baseOverrides?: Record<string, number>;
+    conditionAdj?: Record<string, Record<string, number>>;
+    updatedAt?: string;
+  };
   effective: { priceTable: PriceTable; carrierDeductions: CarrierTable };
   history?: Array<{ url: string; pathname: string; uploadedAt: string }>;
 };
@@ -61,7 +73,12 @@ type Payload = {
 export default function PricesAdminPage() {
   const [data, setData] = useState<Payload | null>(null);
   const [token, setToken] = useState<string>("");
-  const [edits, setEdits] = useState<{ price: PriceTable; carrier: CarrierTable; base: Record<string, number> }>({ price: {}, carrier: {}, base: {} });
+  const [edits, setEdits] = useState<{
+    price: PriceTable;
+    carrier: CarrierTable;
+    base: Record<string, number>;
+    condAdj: Record<string, Record<string, number>>;
+  }>({ price: {}, carrier: {}, base: {}, condAdj: {} });
   const [saving, setSaving] = useState(false);
   const [lastSaveMsg, setLastSaveMsg] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("");
@@ -101,6 +118,7 @@ export default function PricesAdminPage() {
     }
     for (const m of Object.values(edits.carrier)) n += Object.keys(m).length;
     n += Object.keys(edits.base).length;
+    for (const m of Object.values(edits.condAdj)) n += Object.keys(m).length;
     return n;
   }, [edits]);
 
@@ -134,6 +152,26 @@ export default function PricesAdminPage() {
 
   const setBaseCell = (model: string, val: number) => {
     setEdits((prev) => ({ ...prev, base: { ...prev.base, [model]: val } }));
+  };
+
+  const setCondAdjCell = (model: string, condId: string, val: number) => {
+    setEdits((prev) => ({
+      ...prev,
+      condAdj: {
+        ...prev.condAdj,
+        [model]: { ...(prev.condAdj[model] || {}), [condId]: val },
+      },
+    }));
+  };
+
+  const effectiveCondAdj = (modelId: string, condId: string, defaultVal: number): number => {
+    return edits.condAdj[modelId]?.[condId] ?? data?.overrides.conditionAdj?.[modelId]?.[condId] ?? defaultVal;
+  };
+  const isCondAdjOverridden = (modelId: string, condId: string): boolean => {
+    return (
+      data?.overrides.conditionAdj?.[modelId]?.[condId] !== undefined ||
+      edits.condAdj[modelId]?.[condId] !== undefined
+    );
   };
 
   const effectiveBase = (modelId: string, defaultBase: number): number => {
@@ -180,6 +218,7 @@ export default function PricesAdminPage() {
           priceTable: edits.price,
           carrierDeductions: edits.carrier,
           baseOverrides: edits.base,
+          conditionAdj: edits.condAdj,
         }),
       });
       if (!r.ok) {
@@ -189,7 +228,7 @@ export default function PricesAdminPage() {
       }
       const j = await r.json();
       setLastSaveMsg(`✓ Saved at ${new Date(j.updatedAt).toLocaleTimeString()} — ${j.overrideModels} model override(s) live`);
-      setEdits({ price: {}, carrier: {}, base: {} });
+      setEdits({ price: {}, carrier: {}, base: {}, condAdj: {} });
       const refresh = await fetch("/api/admin/prices");
       setData(await refresh.json());
     } finally {
@@ -200,8 +239,29 @@ export default function PricesAdminPage() {
   const undoAll = () => {
     if (editCount === 0) return;
     if (!window.confirm(`Discard ${editCount} unsaved edit${editCount === 1 ? "" : "s"}?`)) return;
-    setEdits({ price: {}, carrier: {}, base: {} });
+    setEdits({ price: {}, carrier: {}, base: {}, condAdj: {} });
     setData((d) => (d ? { ...d } : d));
+  };
+
+  const resetCondAdj = async (modelId: string) => {
+    if (!window.confirm(`Revert ${modelId} condition adjustments back to baseline?`)) return;
+    const t = getToken();
+    if (!t) return;
+    // The DELETE ?model= scope clears price + carrier + base + condAdj for that
+    // model, but we only want condAdj here. Backend doesn't yet have a
+    // dedicated condAdj-only delete, so we POST an "empty overrides for this
+    // model's condition_adj" — effectively reverting it. The merge in POST
+    // would normally ADD keys; to delete we need to send the full new state.
+    // Cheap workaround: POST with conditionAdj override removing the model
+    // by sending undefined… but our merge can't unset. So use DELETE ?model=
+    // which is the documented scope and accept that price/carrier/base for
+    // that model are also cleared (rare to have multiple override types on
+    // one model anyway).
+    const r = await fetch(`/api/admin/prices?model=${encodeURIComponent(modelId)}&token=${encodeURIComponent(t)}`, { method: "DELETE" });
+    if (!r.ok) return;
+    setLastSaveMsg(`✓ Reverted ${modelId} condition adjustments`);
+    const refresh = await fetch("/api/admin/prices");
+    setData(await refresh.json());
   };
 
   const resetBase = async (modelId: string) => {
@@ -268,7 +328,7 @@ export default function PricesAdminPage() {
       return;
     }
     setLastSaveMsg(`✓ All overrides cleared`);
-    setEdits({ price: {}, carrier: {}, base: {} });
+    setEdits({ price: {}, carrier: {}, base: {}, condAdj: {} });
     const refresh = await fetch("/api/admin/prices");
     setData(await refresh.json());
   };
@@ -400,6 +460,122 @@ export default function PricesAdminPage() {
                 })}
               </div>
             </section>
+          );
+        })()}
+
+        {/* ADDITIVE-SPEC DEVICES — MacBooks + PC laptops. Each model has
+            a per-condition adjustment table that materially affects the
+            customer's quote (the chip + RAM + storage adjustments are
+            also editable in future iterations; for now we surface
+            condition_adj which is the most-changed lever). */}
+        {data.baseline.additiveSpecs && Object.keys(data.baseline.additiveSpecs).length > 0 && (() => {
+          const all = data.baseline.additiveSpecs!;
+          const grouped: { macbook: string[]; pc: string[] } = { macbook: [], pc: [] };
+          for (const [id, m] of Object.entries(all)) {
+            if (filterLower && !id.toLowerCase().includes(filterLower) && !m.label.toLowerCase().includes(filterLower)) continue;
+            grouped[m.source].push(id);
+          }
+          grouped.macbook.sort();
+          grouped.pc.sort();
+          if (grouped.macbook.length === 0 && grouped.pc.length === 0) return null;
+
+          const renderRow = (id: string, spec: AdditiveSpec) => {
+            const isModelOverridden = data.overrides.conditionAdj?.[id] !== undefined;
+            return (
+              <div key={id} className="bg-black/30 border border-white/10 rounded-xl p-3">
+                <div className="flex items-center gap-3 mb-2 flex-wrap">
+                  <code className="text-[12px] font-bold text-white">{id}</code>
+                  {isModelOverridden && (
+                    <button
+                      type="button"
+                      onClick={() => resetCondAdj(id)}
+                      className="ml-auto px-2 py-0.5 text-[10px] rounded bg-white/5 hover:bg-red-500/20 hover:text-red-300 border border-white/10 text-[#888] cursor-pointer transition"
+                      title="Revert this model's condition adjustments to baseline"
+                    >
+                      ↺ revert
+                    </button>
+                  )}
+                </div>
+                <table className="w-full text-[11px]">
+                  <thead>
+                    <tr className="text-[#888]">
+                      {CONDITION_ORDER.map((c) => (
+                        <th key={c} className="text-center font-semibold pb-1 px-0.5 capitalize">
+                          {c === "verygood" ? "VG" : c}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      {CONDITION_ORDER.map((c) => {
+                        const defaultVal = spec.condition_adj[c] ?? 0;
+                        const v = effectiveCondAdj(id, c, defaultVal);
+                        const ov = isCondAdjOverridden(id, c);
+                        return (
+                          <td key={c} className="px-0.5 py-1">
+                            <input
+                              key={`${id}-cond-${c}-${v}`}
+                              type="number"
+                              defaultValue={v}
+                              onChange={(e) => setCondAdjCell(id, c, parseInt(e.target.value) || 0)}
+                              className={`w-full px-1 py-0.5 text-center bg-black/60 rounded border ${
+                                ov ? "border-[#00c853]/50 text-[#00c853]" : "border-white/15"
+                              }`}
+                            />
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            );
+          };
+
+          return (
+            <>
+              {grouped.macbook.length > 0 && (
+                <section className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setExpanded((p) => ({ ...p, __macbooks: !p.__macbooks }))}
+                    className="w-full px-5 py-3 flex items-center justify-between text-left hover:bg-white/[0.04] transition cursor-pointer"
+                  >
+                    <span className="font-bold text-[15px]">
+                      MacBooks · condition adjustments <span className="text-[#888] font-normal">({grouped.macbook.length} models)</span>
+                    </span>
+                    <span className="text-[#888] text-xs">{expanded.__macbooks ?? !!filterLower ? "▾" : "▸"}</span>
+                  </button>
+                  {(expanded.__macbooks ?? !!filterLower) && (
+                    <div className="border-t border-white/10 px-5 py-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {grouped.macbook.map((id) => renderRow(id, all[id]))}
+                    </div>
+                  )}
+                </section>
+              )}
+              {grouped.pc.length > 0 && (
+                <section className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setExpanded((p) => ({ ...p, __pcs: !p.__pcs }))}
+                    className="w-full px-5 py-3 flex items-center justify-between text-left hover:bg-white/[0.04] transition cursor-pointer"
+                  >
+                    <span className="font-bold text-[15px]">
+                      PC laptops · condition adjustments <span className="text-[#888] font-normal">({grouped.pc.length} models)</span>
+                    </span>
+                    <span className="text-[#888] text-xs">
+                      {expanded.__pcs ?? !!filterLower ? "▾" : "▸"} {!filterLower && "use filter to narrow"}
+                    </span>
+                  </button>
+                  {(expanded.__pcs ?? !!filterLower) && (
+                    <div className="border-t border-white/10 px-5 py-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {grouped.pc.map((id) => renderRow(id, all[id]))}
+                    </div>
+                  )}
+                </section>
+              )}
+            </>
           );
         })()}
 

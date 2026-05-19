@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PRICE_TABLE, CARRIER_DEDUCTIONS, BASE_PRICED_MODELS } from "../../../data/prices";
+import { PRICE_TABLE, CARRIER_DEDUCTIONS, BASE_PRICED_MODELS, MACBOOK_SPECS, type MacSpec } from "../../../data/prices";
 import { put, list, del } from "@vercel/blob";
+import { promises as fs } from "fs";
+import path from "path";
+
+// Load PC laptop additive specs from the bundled JSON file. Cached
+// per-process since it's static data alongside our code.
+let pcSpecsCache: Record<string, MacSpec> | null = null;
+async function loadPcSpecs(): Promise<Record<string, MacSpec>> {
+  if (pcSpecsCache) return pcSpecsCache;
+  try {
+    const p = path.join(process.cwd(), "public", "comps", "pc-laptop-specs.json");
+    const raw = await fs.readFile(p, "utf-8");
+    pcSpecsCache = JSON.parse(raw);
+    return pcSpecsCache as Record<string, MacSpec>;
+  } catch {
+    return {};
+  }
+}
 
 // Price-editor backend. Stores admin overrides as a single JSON document
 // on Vercel Blob (we already use Blob for FedEx labels, so no new infra).
@@ -36,11 +53,16 @@ type OverridesShape = {
   priceTable: Record<string, Record<string, Record<string, number>>>;
   carrierDeductions: Record<string, Record<string, number>>;
   baseOverrides: Record<string, number>;
+  // Per-model condition_adj overrides (sealed / mint / verygood / good /
+  // fair / broken). Applied at customer-funnel lookup time, overriding
+  // the bundled MACBOOK_SPECS[modelId].condition_adj or
+  // pc-laptop-specs[modelId].condition_adj.
+  conditionAdj: Record<string, Record<string, number>>;
   updatedAt?: string;
 };
 
 async function readOverrides(): Promise<OverridesShape> {
-  const empty: OverridesShape = { priceTable: {}, carrierDeductions: {}, baseOverrides: {} };
+  const empty: OverridesShape = { priceTable: {}, carrierDeductions: {}, baseOverrides: {}, conditionAdj: {} };
   try {
     const { blobs } = await list({ prefix: BLOB_KEY, limit: 5 });
     const found = blobs.find((b) => b.pathname === BLOB_KEY);
@@ -52,6 +74,7 @@ async function readOverrides(): Promise<OverridesShape> {
       priceTable: d.priceTable || {},
       carrierDeductions: d.carrierDeductions || {},
       baseOverrides: d.baseOverrides || {},
+      conditionAdj: d.conditionAdj || {},
       updatedAt: d.updatedAt,
     };
   } catch {
@@ -97,7 +120,8 @@ async function snapshotToHistory(current: OverridesShape) {
   if (
     Object.keys(current.priceTable).length === 0 &&
     Object.keys(current.carrierDeductions).length === 0 &&
-    Object.keys(current.baseOverrides || {}).length === 0
+    Object.keys(current.baseOverrides || {}).length === 0 &&
+    Object.keys(current.conditionAdj || {}).length === 0
   ) {
     return;
   }
@@ -121,11 +145,23 @@ async function snapshotToHistory(current: OverridesShape) {
 export async function GET() {
   const overrides = await readOverrides();
   const history = await readHistory();
+  const pcSpecs = await loadPcSpecs();
+  // Build a lightweight summary of additive-spec models so the editor can
+  // render their condition_adj grids without us shipping ~1MB of full
+  // spec tables across the wire. Each entry: { label, condition_adj }.
+  const additive: Record<string, { source: "macbook" | "pc"; label: string; condition_adj: Record<string, number> }> = {};
+  for (const [id, spec] of Object.entries(MACBOOK_SPECS)) {
+    additive[id] = { source: "macbook", label: id, condition_adj: spec.condition_adj || {} };
+  }
+  for (const [id, spec] of Object.entries(pcSpecs)) {
+    additive[id] = { source: "pc", label: id, condition_adj: (spec as MacSpec).condition_adj || {} };
+  }
   return NextResponse.json({
     baseline: {
       priceTable: PRICE_TABLE,
       carrierDeductions: CARRIER_DEDUCTIONS,
       basePricedModels: BASE_PRICED_MODELS,
+      additiveSpecs: additive,
     },
     overrides,
     effective: {
@@ -144,6 +180,7 @@ export async function POST(req: NextRequest) {
     priceTable?: OverridesShape["priceTable"];
     carrierDeductions?: OverridesShape["carrierDeductions"];
     baseOverrides?: OverridesShape["baseOverrides"];
+    conditionAdj?: OverridesShape["conditionAdj"];
   };
   try {
     body = await req.json();
@@ -158,6 +195,7 @@ export async function POST(req: NextRequest) {
     priceTable: deepMerge(current.priceTable, body.priceTable || {}),
     carrierDeductions: deepMerge(current.carrierDeductions, body.carrierDeductions || {}),
     baseOverrides: { ...current.baseOverrides, ...(body.baseOverrides || {}) },
+    conditionAdj: deepMerge(current.conditionAdj, body.conditionAdj || {}),
     updatedAt: new Date().toISOString(),
   };
 
@@ -214,16 +252,18 @@ export async function DELETE(req: NextRequest) {
     delete next.priceTable[model];
     delete next.carrierDeductions[model];
     delete next.baseOverrides[model];
+    delete next.conditionAdj[model];
     action = `clear-model:${model}`;
   } else {
-    next = { priceTable: {}, carrierDeductions: {}, baseOverrides: {} };
+    next = { priceTable: {}, carrierDeductions: {}, baseOverrides: {}, conditionAdj: {} };
   }
   next.updatedAt = new Date().toISOString();
 
   const empty =
     Object.keys(next.priceTable).length === 0 &&
     Object.keys(next.carrierDeductions).length === 0 &&
-    Object.keys(next.baseOverrides).length === 0;
+    Object.keys(next.baseOverrides).length === 0 &&
+    Object.keys(next.conditionAdj).length === 0;
   if (empty) {
     try {
       const { blobs } = await list({ prefix: BLOB_KEY, limit: 5 });
