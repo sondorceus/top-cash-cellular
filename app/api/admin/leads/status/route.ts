@@ -27,7 +27,11 @@ function mintReviewToken(): string {
 
 async function postReviewTokenMarker(leadId: string, token: string, name?: string, device?: string) {
   const expiresAt = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(); // 60-day TTL
-  const marker = `[REVIEW-TOKEN: ${leadId}] token=${token} expires=${expiresAt}${name ? ` name=${name.replace(/[\s·]+/g, "_").slice(0, 60)}` : ""}${device ? ` device=${device.replace(/[\s·]+/g, "_").slice(0, 60)}` : ""}`;
+  // Strip `[`, `]`, whitespace, and `·` from name/device — the parallel
+  // cron path got this fix in c93ec85. Without it, legacy or admin-
+  // supplied name/device with brackets could embed marker fragments
+  // into the REVIEW-TOKEN body that the global admin parser then scans.
+  const marker = `[REVIEW-TOKEN: ${leadId}] token=${token} expires=${expiresAt}${name ? ` name=${name.replace(/[\[\]\s·]+/g, "_").slice(0, 60)}` : ""}${device ? ` device=${device.replace(/[\[\]\s·]+/g, "_").slice(0, 60)}` : ""}`;
   try {
     await fetch(`${MC_API}/api/comms`, {
       method: "POST",
@@ -417,7 +421,19 @@ export async function POST(req: NextRequest) {
         return `\nPayout-confirmation: ${bits.join(" · ")}`;
       })()
     : "";
-  const statusBody = `[STATUS: ${status}] [LEAD: ${leadId}]\nDevice: ${device || "—"}\nCustomer: ${name || "—"}\nQuote: ${quote || "—"}\nPayout: ${payout || "—"}${reasonLine}${payoutConfLine}`;
+  // Strip brackets + collapse newlines from each interpolated field so
+  // an admin (or attacker with admin token) can't inject a fake
+  // `\nPayout-confirmation: method=spoofed` line into the marker, which
+  // the admin parser reads back when surfacing payout history.
+  const sanitizeMarker = (s: unknown, max: number): string =>
+    s === undefined || s === null
+      ? ""
+      : String(s).replace(/[\[\]\r\n]+/g, " ").trim().slice(0, max);
+  const safeStatusDevice = sanitizeMarker(device, 120);
+  const safeStatusName = sanitizeMarker(name, 120);
+  const safeStatusQuote = sanitizeMarker(quote, 30);
+  const safeStatusPayout = sanitizeMarker(payout, 80);
+  const statusBody = `[STATUS: ${status}] [LEAD: ${leadId}]\nDevice: ${safeStatusDevice || "—"}\nCustomer: ${safeStatusName || "—"}\nQuote: ${safeStatusQuote || "—"}\nPayout: ${safeStatusPayout || "—"}${reasonLine}${payoutConfLine}`;
   let mcOk = false;
   try {
     const r = await fetch(`${MC_API}/api/comms`, {
