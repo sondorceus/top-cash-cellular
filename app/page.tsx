@@ -5950,18 +5950,6 @@ export default function Home() {
 
           {/* RIGHT: cart + login/name (desktop) | cart + hamburger (mobile) — wrapped in matching pill */}
           <div className="flex items-center gap-1 shrink-0 bg-white/[0.07] border border-white/10 rounded-full px-1.5 py-1">
-            {/* TEXT US — mobile-only quick SMS button. Was a floating bottom-right
-                FAB; moved here so the bottom of the screen stays clean. */}
-            <a
-              href="sms:+18775492056?body=Hi%2C%20I%20want%20a%20quote%20for%20my%20"
-              aria-label="Text us for a quote"
-              className="lg:hidden w-9 h-9 rounded-full hover:bg-white/10 hover:text-[#00c853] flex items-center justify-center cursor-pointer tap-press transition"
-            >
-              <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-            </a>
-
             {/* SEARCH — sits to the LEFT of the cart on every screen
                 size. On <sm (mobile) and ≥lg (desktop) this is the only
                 search entry point. On sm-lg the tablet shows a wider
