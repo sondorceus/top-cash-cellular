@@ -18,6 +18,23 @@ const recentLeads = new Map<string, number>();
 const DEDUP_REGULAR_MS = 60 * 1000; // 60s for instant-quote flows
 const DEDUP_CUSTOM_MS = 5 * 60 * 1000; // 5min for custom-quote flows
 
+// Defense against MC marker injection. The admin lead parser scans
+// comm bodies for `[STATUS:]` + `[LEAD:]` markers anywhere. Without
+// this scrub a customer could submit a lead with:
+//   name: "[STATUS:paid] [LEAD: <theirPriorLeadId>]"
+// and flip their own earlier lead's status to paid (free device, free
+// payout). /api/lead returns the leadId in its response so the
+// attacker can self-fetch it after a first submission. Strip `[` and
+// `]` from every customer-supplied string before interpolating into
+// the lead body. The legitimate `[NEW BUYBACK LEAD]` / `[IMEI
+// WARNINGS]` markers are added by us in plain template strings, so
+// they're unaffected by this strip.
+function cleanField(s: unknown, max = 300): string {
+  if (s === undefined || s === null) return "";
+  const str = typeof s === "string" ? s : String(s);
+  return str.replace(/[\[\]]/g, "").slice(0, max).trim();
+}
+
 function isDuplicate(email: string, contact: string, device: string, model: string, isCustom: boolean): boolean {
   const e = (email || "").toLowerCase().trim();
   const c = (contact || "").replace(/\D/g, "");
@@ -235,24 +252,26 @@ export async function POST(req: NextRequest) {
   if (isMulti) {
     multiLines.push(`Devices: ${deviceList.length}`);
     deviceList.forEach((d, i) => {
-      multiLines.push(`  ${i + 1}. ${d.model || "—"}${d.storage ? ` · ${d.storage}` : ""}${d.condition ? ` · ${d.condition}` : ""}${d.quote ? ` · $${d.quote}` : ""}${d.quantity && d.quantity > 1 ? ` (×${d.quantity})` : ""}`);
+      multiLines.push(`  ${i + 1}. ${cleanField(d.model, 120) || "—"}${d.storage ? ` · ${cleanField(d.storage, 30)}` : ""}${d.condition ? ` · ${cleanField(d.condition, 60)}` : ""}${d.quote ? ` · $${Number(d.quote) || 0}` : ""}${d.quantity && d.quantity > 1 ? ` (×${Number(d.quantity)})` : ""}`);
       // Per-device specs — indented under the device line so the admin
       // parser can pick them up via the "[Spec]: <value>" prefix. Each
       // line is the same key the single-device flow uses (Chip / RAM /
       // GPU / Display / Battery health / etc.) so one parser handles
       // both. Skywalker 2026-05-17: "all the important meat are missing".
+      // All per-device fields are customer-controlled — sanitized
+      // through cleanField() so they can't inject MC markers.
       const specBits: string[] = [];
-      if (d.processor)         specBits.push(`Chip: ${d.processor}`);
-      if (d.memory)            specBits.push(`RAM: ${d.memory}`);
-      if (d.graphics)          specBits.push(`GPU: ${d.graphics}`);
-      if (d.displayResolution) specBits.push(`Display: ${d.displayResolution}`);
-      if (d.displayGlass)      specBits.push(`Display glass: ${d.displayGlass}`);
-      if (d.batteryHealth)     specBits.push(`Battery health: ${d.batteryHealth}`);
-      if (d.charger)           specBits.push(`Charger: ${d.charger}`);
-      if (d.carrier)           specBits.push(`Carrier: ${d.carrier}`);
-      if (d.connectivity)      specBits.push(`Connectivity: ${d.connectivity}`);
-      if (d.imei)              specBits.push(`IMEI: ${d.imei}`);
-      if (Array.isArray(d.extras) && d.extras.length > 0) specBits.push(`Extras: ${d.extras.join(", ")}`);
+      if (d.processor)         specBits.push(`Chip: ${cleanField(d.processor, 60)}`);
+      if (d.memory)            specBits.push(`RAM: ${cleanField(d.memory, 30)}`);
+      if (d.graphics)          specBits.push(`GPU: ${cleanField(d.graphics, 60)}`);
+      if (d.displayResolution) specBits.push(`Display: ${cleanField(d.displayResolution, 60)}`);
+      if (d.displayGlass)      specBits.push(`Display glass: ${cleanField(d.displayGlass, 40)}`);
+      if (d.batteryHealth)     specBits.push(`Battery health: ${cleanField(d.batteryHealth, 30)}`);
+      if (d.charger)           specBits.push(`Charger: ${cleanField(d.charger, 40)}`);
+      if (d.carrier)           specBits.push(`Carrier: ${cleanField(d.carrier, 40)}`);
+      if (d.connectivity)      specBits.push(`Connectivity: ${cleanField(d.connectivity, 40)}`);
+      if (d.imei)              specBits.push(`IMEI: ${cleanField(d.imei, 20).replace(/[^0-9]/g, "")}`);
+      if (Array.isArray(d.extras) && d.extras.length > 0) specBits.push(`Extras: ${(d.extras as unknown[]).map((x) => cleanField(x, 40)).filter(Boolean).join(", ")}`);
       if (d.paidOff === false) specBits.push("Balance: ⚠️ NOT PAID OFF");
       else if (d.paidOff === true) specBits.push("Balance: Fully paid off");
       if (d.brokenFunctional === false) specBits.push("Broken: NOT FUNCTIONAL");
@@ -282,17 +301,21 @@ export async function POST(req: NextRequest) {
   // for phones the battery health and OEM-charger flag matter; for
   // tablets the connectivity (WiFi vs cellular). Without these surfaced
   // staff can't price the device — they're guessing.
+  // All these fields are customer-controlled and end up in the MC
+  // lead body — sanitize through cleanField() so an attacker can't
+  // inject [STATUS:] / [LEAD:] markers via the funnel form. See the
+  // cleanField() comment near the top of this file.
   const specLines: string[] = [];
-  if (processor)         specLines.push(`Chip: ${processor}`);
-  if (memory)            specLines.push(`RAM: ${memory}`);
-  if (graphics)          specLines.push(`GPU: ${graphics}`);
-  if (displayResolution) specLines.push(`Display: ${displayResolution}`);
-  if (displayGlass)      specLines.push(`Display glass: ${displayGlass}`);
-  if (batteryHealth)     specLines.push(`Battery health: ${batteryHealth}`);
-  if (charger)           specLines.push(`Charger: ${charger}`);
-  if (connectivity)      specLines.push(`Connectivity: ${connectivity}`);
+  if (processor)         specLines.push(`Chip: ${cleanField(processor, 60)}`);
+  if (memory)            specLines.push(`RAM: ${cleanField(memory, 30)}`);
+  if (graphics)          specLines.push(`GPU: ${cleanField(graphics, 60)}`);
+  if (displayResolution) specLines.push(`Display: ${cleanField(displayResolution, 60)}`);
+  if (displayGlass)      specLines.push(`Display glass: ${cleanField(displayGlass, 40)}`);
+  if (batteryHealth)     specLines.push(`Battery health: ${cleanField(batteryHealth, 30)}`);
+  if (charger)           specLines.push(`Charger: ${cleanField(charger, 40)}`);
+  if (connectivity)      specLines.push(`Connectivity: ${cleanField(connectivity, 40)}`);
   if (Array.isArray(extras) && extras.length > 0) {
-    specLines.push(`Extras: ${(extras as string[]).join(", ")}`);
+    specLines.push(`Extras: ${(extras as unknown[]).map((x) => cleanField(x, 40)).filter(Boolean).join(", ")}`);
   }
   // Carrier balance status — Skywalker 2026-05-17. We DO buy devices
   // with a balance, but the offer is adjusted for blacklist risk.
@@ -300,9 +323,9 @@ export async function POST(req: NextRequest) {
   else if (paidOff === true) specLines.push("Balance: Fully paid off");
 
   const imeiLines: string[] = [];
-  if (imei) imeiLines.push(`IMEI: ${imei}`);
+  if (imei) imeiLines.push(`IMEI: ${cleanField(imei, 20).replace(/[^0-9]/g, "")}`);
   if (Array.isArray(imeiWarnings) && imeiWarnings.length > 0) {
-    imeiLines.push(`[IMEI WARNINGS] ${(imeiWarnings as string[]).join(" | ")}`);
+    imeiLines.push(`[IMEI WARNINGS] ${(imeiWarnings as unknown[]).map((x) => cleanField(x, 100)).filter(Boolean).join(" | ")}`);
   }
 
   // Coupon outcome — shown to admin in the lead body. Successful
@@ -332,7 +355,9 @@ export async function POST(req: NextRequest) {
     customerMetaLines.push(`Best contact: ${bestContact.toUpperCase()}`);
   }
   if (typeof notes === "string" && notes.trim()) {
-    const clean = notes.replace(/[\r\n]+/g, " · ").trim().slice(0, 500);
+    // Strip [ and ] too — collapse-to-bullet handled newlines, but the
+    // marker-injection threat requires removing brackets as well.
+    const clean = notes.replace(/[\r\n]+/g, " · ").replace(/[\[\]]/g, "").trim().slice(0, 500);
     customerMetaLines.push(`Note from customer: ${clean}`);
   }
   // Record SMS-consent disposition (TCPA audit trail). When phone is
@@ -346,14 +371,17 @@ export async function POST(req: NextRequest) {
   // organic vs referral) is actually producing customers.
   if (attribution && typeof attribution === "object") {
     const a = attribution as { source?: string; medium?: string; campaign?: string; term?: string; content?: string; referrer?: string; landed?: string };
+    // Attribution fields are URL params captured by the funnel — fully
+    // user-controlled (UTM, referrer). Sanitize each before joining
+    // into the MC line so a crafted referrer can't inject [STATUS:].
     const bits: string[] = [];
-    if (a.source) bits.push(`source=${a.source}`);
-    if (a.medium) bits.push(`medium=${a.medium}`);
-    if (a.campaign) bits.push(`campaign=${a.campaign}`);
-    if (a.term) bits.push(`term=${a.term}`);
-    if (a.content) bits.push(`content=${a.content}`);
-    if (a.referrer) bits.push(`ref=${a.referrer.slice(0, 120)}`);
-    if (a.landed) bits.push(`landed=${a.landed}`);
+    if (a.source) bits.push(`source=${cleanField(a.source, 80)}`);
+    if (a.medium) bits.push(`medium=${cleanField(a.medium, 80)}`);
+    if (a.campaign) bits.push(`campaign=${cleanField(a.campaign, 120)}`);
+    if (a.term) bits.push(`term=${cleanField(a.term, 80)}`);
+    if (a.content) bits.push(`content=${cleanField(a.content, 80)}`);
+    if (a.referrer) bits.push(`ref=${cleanField(a.referrer, 120)}`);
+    if (a.landed) bits.push(`landed=${cleanField(a.landed, 200)}`);
     if (bits.length > 0) {
       customerMetaLines.push(`Source: ${bits.join(" · ").slice(0, 480)}`);
     }
@@ -381,19 +409,29 @@ export async function POST(req: NextRequest) {
   if (handoff && typeof handoff === "object") {
     const h = handoff as { method?: string; address?: Record<string, string>; area?: string; slot?: { id: string; date: string; time: string; label?: string } };
     if (h.method === "ship" && h.address) {
-      const { street, unit, city, state, zip } = h.address;
+      // Address parts are customer-controlled — sanitize through
+      // cleanField() to defuse MC marker injection (same threat as
+      // name/model/etc).
+      const street = cleanField(h.address.street, 120);
+      const unit   = cleanField(h.address.unit, 40);
+      const city   = cleanField(h.address.city, 80);
+      const state  = cleanField(h.address.state, 2);
+      const zip    = cleanField(h.address.zip, 10);
       handoffLines.push("--- Handoff: SHIPPING ---");
       handoffLines.push(`Address: ${street}${unit ? `, ${unit}` : ""}, ${city}, ${state} ${zip}`);
       handoffLines.push("Packaging: Seller sources own box (we don't ship kits).");
       handoffLines.push("Action: FedEx label auto-mints at submit (sandbox until prod cert lands). Confirm receipt + inspect on arrival.");
     } else if (h.method === "local") {
       handoffLines.push("--- Handoff: LOCAL MEETUP ---");
-      if (h.area) handoffLines.push(`Area: ${h.area}`);
+      if (h.area) handoffLines.push(`Area: ${cleanField(h.area, 80)}`);
       if (h.slot) {
-        const [hh, mm] = h.slot.time.split(":").map(Number);
+        const [hh, mm] = String(h.slot.time || "").split(":").map(Number);
         const ampm = hh >= 12 ? "PM" : "AM";
         const h12 = hh % 12 || 12;
-        handoffLines.push(`Slot: ${h.slot.date} ${h12}:${String(mm).padStart(2, "0")} ${ampm}${h.slot.label ? ` · ${h.slot.label}` : ""} (id=${h.slot.id})`);
+        const slotDate = cleanField(h.slot.date, 30);
+        const slotLabel = cleanField(h.slot.label, 80);
+        const slotId = cleanField(h.slot.id, 60);
+        handoffLines.push(`Slot: ${slotDate} ${h12}:${String(mm).padStart(2, "0")} ${ampm}${slotLabel ? ` · ${slotLabel}` : ""} (id=${slotId})`);
         handoffLines.push("Action: Confirm meetup spot with seller for the booked window.");
       } else {
         handoffLines.push("Action: Reach out to schedule meetup time and location.");
@@ -436,19 +474,34 @@ export async function POST(req: NextRequest) {
     reviewLines.push("Verify: condition matches description, check IMEI, confirm config (chip/RAM/storage)");
   }
 
+  // Scrub user-controlled fields right before they hit the MC body.
+  // See cleanField() comment for the marker-injection threat model.
+  // We keep the originals untouched so downstream FedEx label + email
+  // template code still sees the raw values; only the MC marker sees
+  // the sanitized form.
+  const safeName = cleanField(name, 120);
+  const safePhone = cleanField(phone, 30);
+  const safeEmail = cleanField(email, 200);
+  const safeDevice = cleanField(device, 80);
+  const safeModel = cleanField(model, 120);
+  const safeStorage = cleanField(storage, 30);
+  const safeCarrier = cleanField(carrier, 40);
+  const safeCondition = cleanField(condition, 60);
+  const safePayout = cleanField(payout, 80);
+
   const leadBody = isMulti
     ? [
         `[NEW BUYBACK LEAD — ${deviceList.length} DEVICES]`,
-        `Name: ${name}`,
-        `Phone: ${phone}`,
-        email ? `Email: ${email}` : null,
+        `Name: ${safeName}`,
+        `Phone: ${safePhone}`,
+        safeEmail ? `Email: ${safeEmail}` : null,
         // Headline summary so the staff feed's model column reads
         // sensibly without parsing the indented device list.
-        `Device: ${device || "multi"} — ${model || `${deviceList.length} devices`}`,
+        `Device: ${safeDevice || "multi"} — ${safeModel || `${deviceList.length} devices`}`,
         `Condition: Multi-device (${deviceList.length})`,
-        carrier ? `Carrier: ${carrier}` : null,
+        safeCarrier ? `Carrier: ${safeCarrier}` : null,
         `Quote: $${deviceList.reduce((s, d) => s + (Number(d.quote) || 0) * (Number(d.quantity) || 1), 0)}`,
-        `Payout: ${payout}`,
+        `Payout: ${safePayout}`,
         ...couponLines,
         ...customerMetaLines,
         ...multiLines,
@@ -456,15 +509,15 @@ export async function POST(req: NextRequest) {
       ].filter(Boolean).join("\n")
     : [
         `[NEW BUYBACK LEAD]${reviewRequired ? " ⚠️ NEEDS REVIEW" : ""}`,
-        `Name: ${name}`,
-        `Phone: ${phone}`,
-        email ? `Email: ${email}` : null,
-        `Device: ${device} — ${model}`,
-        storage ? `Storage: ${storage}` : null,
-        carrier ? `Carrier: ${carrier}` : null,
-        `Condition: ${condition}`,
+        `Name: ${safeName}`,
+        `Phone: ${safePhone}`,
+        safeEmail ? `Email: ${safeEmail}` : null,
+        `Device: ${safeDevice} — ${safeModel}`,
+        safeStorage ? `Storage: ${safeStorage}` : null,
+        safeCarrier ? `Carrier: ${safeCarrier}` : null,
+        `Condition: ${safeCondition}`,
         quote ? `Quote: $${quote}` : `Quote: TBD (custom)`,
-        `Payout: ${payout}`,
+        `Payout: ${safePayout}`,
         ...couponLines,
         ...customerMetaLines,
         ...specLines,
