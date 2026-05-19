@@ -585,6 +585,35 @@ export async function POST(req: NextRequest) {
       typeof a.state === "string" && a.state.trim().length === 2 &&
       typeof a.zip === "string" && /^\d{5}/.test(a.zip);
     const phoneDigits = String(phone || "").replace(/\D/g, "");
+    // Silent-skip diagnostic — when a ship handoff arrives but FedEx
+    // can't be called (missing phone, incomplete address), write a
+    // [LABEL-WITHHELD: leadId] marker so admin sees WHY no label exists
+    // instead of staring at a ship lead with nothing attached. Skywalker
+    // 2026-05-19 caught the silent skip when his mobile test came
+    // through with an empty phone field. Don't gate the lead save —
+    // we still want the customer's submission in the system; staff can
+    // text them to collect the missing data + regenerate the label.
+    if (h.method === "ship" && leadId) {
+      const missing: string[] = [];
+      if (!hasFullAddress) missing.push("address");
+      if (phoneDigits.length < 10) missing.push("phone");
+      if (missing.length > 0) {
+        try {
+          await fetch(`${MC_API}/api/comms`, {
+            method: "POST",
+            headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              from: "topcash-web",
+              fromName: "Top Cash Cellular",
+              role: "system",
+              body: `[LABEL-WITHHELD: ${leadId}] reason=missing_${missing.join("_and_")}`,
+              tags: ["fedex-label", "withheld"],
+              priority: "normal",
+            }),
+          });
+        } catch {}
+      }
+    }
     if (h.method === "ship" && hasFullAddress && phoneDigits.length >= 10 && leadId) {
       // Multi-device shipments fit in ONE box. Total weight = sum of
       // per-device defaults + 2 lb packaging. Skywalker 2026-05-18:
