@@ -3692,6 +3692,20 @@ export default function Home() {
   // Skywalker 2026-05-19: desktop wanted a tiny search icon at the top
   // instead of the always-visible search bar. Click expands inline.
   const [searchOpen, setSearchOpen] = useState(false);
+
+  // Parts / locked / broken-for-parts custom-quote flow. Triggered from
+  // the condition step via a small link below the working-condition
+  // options. Opens a modal that captures contact + a free-text "what's
+  // wrong" description, then POSTs to /api/lead with parts:true so the
+  // backend tags it as a manual-review lead. Skywalker 2026-05-19.
+  const [partsModalOpen, setPartsModalOpen] = useState(false);
+  const [partsName, setPartsName] = useState("");
+  const [partsEmail, setPartsEmail] = useState("");
+  const [partsPhone, setPartsPhone] = useState("");
+  const [partsIssue, setPartsIssue] = useState<"locked_mdm" | "locked_icloud" | "locked_carrier" | "wont_turn_on" | "physical" | "other" | null>(null);
+  const [partsDescription, setPartsDescription] = useState("");
+  const [partsSubmitting, setPartsSubmitting] = useState(false);
+  const [partsSubmitted, setPartsSubmitted] = useState(false);
   const [loginError, setLoginError] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
   // Declared up here (instead of next to the other funnel-selection states)
@@ -6329,6 +6343,183 @@ export default function Home() {
         </div>
       )}
 
+      {/* PARTS / LOCKED / DEAD CUSTOM-QUOTE MODAL — opens from the
+          condition step when the seller's phone is locked or won't
+          power on (the regular Mint→Broken tiers don't fit). Captures
+          minimal contact + a "what's wrong" description and posts as
+          a manual-review lead. Skywalker 2026-05-19. */}
+      {partsModalOpen && (
+        <div
+          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-[fadeIn_0.15s_ease-out]"
+          onClick={() => !partsSubmitting && setPartsModalOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full sm:max-w-md bg-[#0f0f0f] sm:rounded-2xl rounded-t-2xl border border-white/10 p-5 max-h-[92vh] overflow-y-auto"
+          >
+            {partsSubmitted ? (
+              <div className="text-center py-3">
+                <p className="text-4xl mb-2">✓</p>
+                <p className="text-lg font-extrabold text-white">Got it — we&apos;ll quote you within the hour.</p>
+                <p className="text-sm text-[#c5c5c5] mt-1">Check your email{partsPhone ? " and texts" : ""}.</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPartsModalOpen(false);
+                    setPartsSubmitted(false);
+                  }}
+                  className="mt-5 w-full px-4 py-3 bg-[#00c853] text-[#0a0a0a] rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition"
+                >
+                  Done
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <h3 className="text-lg font-extrabold text-white leading-tight">Locked / won&apos;t turn on?</h3>
+                    <p className="text-xs text-[#bdbdbd] mt-0.5">We still buy these — just need a quick custom quote.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setPartsModalOpen(false)}
+                    aria-label="Close"
+                    className="text-[#888] hover:text-white text-xl leading-none -mt-1 cursor-pointer"
+                  >×</button>
+                </div>
+
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (partsSubmitting) return;
+                    if (!partsEmail && !partsPhone) {
+                      alert("Add an email or phone so we can send the quote.");
+                      return;
+                    }
+                    setPartsSubmitting(true);
+                    try {
+                      const issueLabel: Record<string, string> = {
+                        locked_mdm: "MDM Locked",
+                        locked_icloud: "iCloud Locked",
+                        locked_carrier: "Carrier Locked",
+                        wont_turn_on: "Won't Turn On",
+                        physical: "Physically Damaged Beyond Repair",
+                        other: "Other",
+                      };
+                      const issueText = partsIssue ? issueLabel[partsIssue] : "Unspecified";
+                      const notes = `[PARTS / CUSTOM QUOTE] Issue: ${issueText}${model?.label ? ` · Device picked: ${model.label}` : ""}\n${partsDescription || "(no further details)"}`;
+                      const r = await fetch("/api/lead", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          name: partsName || "Custom Quote Request",
+                          phone: partsPhone || undefined,
+                          email: partsEmail || undefined,
+                          device: deviceType || "phone",
+                          model: model?.label || "Parts / Locked / DOA",
+                          condition: "Parts — manual review",
+                          quote: 0,
+                          notes,
+                          smsOptIn: !!partsPhone,
+                          attribution: typeof window !== "undefined" ? (window as unknown as { __tccAttribution?: Record<string, string> }).__tccAttribution : undefined,
+                        }),
+                      });
+                      if (!r.ok) {
+                        alert("Couldn't submit — try again or text us at " + EMAIL);
+                        return;
+                      }
+                      setPartsSubmitted(true);
+                      // Reset form for next time
+                      setPartsDescription("");
+                      setPartsIssue(null);
+                    } catch {
+                      alert("Couldn't reach the server. Try again or email " + EMAIL);
+                    } finally {
+                      setPartsSubmitting(false);
+                    }
+                  }}
+                  className="space-y-3"
+                >
+                  <div>
+                    <label className="block text-xs font-semibold text-[#dcdcdc] uppercase tracking-wider mb-1.5">What&apos;s the issue?</label>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {[
+                        { id: "locked_mdm" as const, label: "MDM locked" },
+                        { id: "locked_icloud" as const, label: "iCloud locked" },
+                        { id: "locked_carrier" as const, label: "Carrier locked" },
+                        { id: "wont_turn_on" as const, label: "Won't turn on" },
+                        { id: "physical" as const, label: "Beyond repair" },
+                        { id: "other" as const, label: "Other" },
+                      ].map((opt) => (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => setPartsIssue(opt.id)}
+                          className={`px-3 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+                            partsIssue === opt.id
+                              ? "bg-amber-500/20 border-amber-500/50 text-amber-200"
+                              : "bg-white/5 border-white/15 text-[#dcdcdc] hover:bg-white/10"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <input
+                    value={partsName}
+                    onChange={(e) => setPartsName(e.target.value)}
+                    placeholder="Your name (optional)"
+                    className="w-full px-3 py-2.5 tcc-input text-sm"
+                  />
+                  <input
+                    type="email"
+                    value={partsEmail}
+                    onChange={(e) => setPartsEmail(e.target.value)}
+                    placeholder="Email (so we can send the quote)"
+                    className="w-full px-3 py-2.5 tcc-input text-sm"
+                    required={!partsPhone}
+                  />
+                  <input
+                    type="tel"
+                    value={partsPhone}
+                    onChange={(e) => {
+                      // Inline format → "(123) 456-7890" — matches the
+                      // main funnel's phone input UX without depending on
+                      // an external helper.
+                      const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                      let formatted = digits;
+                      if (digits.length > 6) formatted = `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+                      else if (digits.length > 3) formatted = `(${digits.slice(0,3)}) ${digits.slice(3)}`;
+                      else if (digits.length > 0) formatted = `(${digits}`;
+                      setPartsPhone(formatted);
+                    }}
+                    placeholder="Phone (optional)"
+                    className="w-full px-3 py-2.5 tcc-input text-sm"
+                  />
+                  <textarea
+                    value={partsDescription}
+                    onChange={(e) => setPartsDescription(e.target.value)}
+                    placeholder="Tell us about the phone — model, storage, what happened, etc."
+                    rows={3}
+                    className="w-full px-3 py-2.5 tcc-input text-sm resize-none"
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={partsSubmitting || (!partsEmail && !partsPhone)}
+                    className="w-full px-4 py-3 bg-[#00c853] text-[#0a0a0a] rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    {partsSubmitting ? "Sending…" : "Send for custom quote"}
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* CONDITION HELP MODAL — 'What qualifies?' details for a condition
           tier, triggered by the tiny "i" on each condition tile. */}
       {conditionHelpId && (() => {
@@ -8946,6 +9137,34 @@ export default function Home() {
               ))}
             </div>
             </div>
+
+            {/* Parts / locked / dead-on-arrival custom-quote escape hatch.
+                Lives below the regular working-condition tiles so it
+                doesn't compete for attention with mainstream sellers,
+                but the sellers whose phone is locked or won't power on
+                have a clearly-labeled door instead of bouncing. Posts a
+                manual-review lead to MC. Skywalker 2026-05-19. */}
+            {isPhoneFlow && (
+              <button
+                type="button"
+                onClick={() => {
+                  setPartsModalOpen(true);
+                  setPartsSubmitted(false);
+                  // Prefill in case they've entered any of these already
+                  setPartsName(name);
+                  setPartsEmail(email);
+                  setPartsPhone(phone);
+                }}
+                className="mt-3 w-full text-left px-4 py-3 rounded-xl bg-amber-500/[0.06] border border-amber-500/25 hover:bg-amber-500/[0.1] hover:border-amber-500/40 transition cursor-pointer group"
+              >
+                <p className="text-sm font-extrabold text-amber-200 leading-tight">
+                  🔒 Phone is locked or won&apos;t turn on?
+                </p>
+                <p className="text-[12px] text-[#d4d4d4] mt-0.5 leading-snug">
+                  iCloud locked · carrier locked · MDM locked · won&apos;t power on · cracked beyond repair — get a custom quote within the hour
+                </p>
+              </button>
+            )}
 
             <div className="mt-6 bg-[rgba(20,28,40,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
               <h3 className="text-sm font-extrabold text-[#00c853] uppercase tracking-wider mb-1">Our Promise</h3>
