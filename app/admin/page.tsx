@@ -1041,10 +1041,10 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-screen bg-black text-white">
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold">TCC Staff Ops</h1>
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 sm:mb-6">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold">TCC Staff Ops</h1>
             <p className="text-[#dcdcdc] text-sm">
               {(() => {
                 const statusFiltered = filteredLeads.filter((l) => {
@@ -1063,22 +1063,23 @@ export default function AdminPage() {
               })()}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
             {/* Quick-nav links to sibling admin pages so staff don't have to
-                remember URLs. Add new ones here as they ship. */}
+                remember URLs. Mobile: emoji-only chips (the label text is
+                hidden < sm:) — saves precious header real estate. */}
             <a
               href="/admin/prices"
-              className="px-3 py-1.5 rounded-lg bg-[#00c853]/10 hover:bg-[#00c853]/20 border border-[#00c853]/40 text-[#00c853] text-xs font-bold cursor-pointer transition"
+              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#00c853]/10 hover:bg-[#00c853]/20 border border-[#00c853]/40 text-[#00c853] text-xs font-bold cursor-pointer transition"
               title="Edit phone / MacBook / iPad prices"
             >
-              💲 Prices
+              💲<span className="hidden sm:inline ml-1">Prices</span>
             </a>
             <a
               href="/admin/slots"
-              className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
+              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
               title="Open meetup slots for local pickups"
             >
-              🗓️ Slots
+              🗓️<span className="hidden sm:inline ml-1">Slots</span>
             </a>
             {/* Google user chip — only renders when /api/auth/me returned
                 an authenticated admin. Click signs out + redirects to
@@ -1119,16 +1120,14 @@ export default function AdminPage() {
             <button
               onClick={() => setAutoRefresh((v) => !v)}
               title={autoRefresh ? "Auto-refresh ON (every 5s)" : "Auto-refresh OFF"}
-              className={`px-3 py-2 border rounded-lg text-xs font-semibold transition cursor-pointer ${autoRefresh ? "bg-[#00c853]/15 border-[#00c853]/40 text-[#00c853]" : "bg-white/5 border-white/10 text-[#dcdcdc] hover:bg-white/10"}`}
+              className={`px-2.5 sm:px-3 py-2 border rounded-lg text-xs font-semibold transition cursor-pointer ${autoRefresh ? "bg-[#00c853]/15 border-[#00c853]/40 text-[#00c853]" : "bg-white/5 border-white/10 text-[#dcdcdc] hover:bg-white/10"}`}
             >
-              {autoRefresh ? "🟢 Live" : "⏸ Paused"}
+              {autoRefresh ? "🟢" : "⏸"}<span className="hidden sm:inline ml-1">{autoRefresh ? "Live" : "Paused"}</span>
             </button>
-            <button onClick={fetchLeads} disabled={loading} className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm hover:bg-white/10 transition disabled:opacity-50 cursor-pointer">
-              {loading ? "Loading…" : "Refresh"}
+            <button onClick={fetchLeads} disabled={loading} className="px-2.5 sm:px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-xs sm:text-sm hover:bg-white/10 transition disabled:opacity-50 cursor-pointer">
+              {loading ? "…" : <>↻<span className="hidden sm:inline ml-1">Refresh</span></>}
             </button>
-            {/* CSV export — dumps the current filtered view (after
-                search + status filter) as a CSV file. Includes status,
-                payout, margin, contact, spec fields, photo count. */}
+            {/* CSV export — emoji-only on mobile to save space. */}
             <button
               onClick={() => {
                 const view = filteredLeads.filter((l) => {
@@ -1141,21 +1140,21 @@ export default function AdminPage() {
               }}
               disabled={filteredLeads.length === 0}
               title="Download the current filtered view as CSV (Sheets/Excel/QuickBooks)"
-              className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm hover:bg-white/10 transition disabled:opacity-40 cursor-pointer"
+              className="px-2.5 sm:px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-xs sm:text-sm hover:bg-white/10 transition disabled:opacity-40 cursor-pointer"
             >
-              📥 Export CSV
+              📥<span className="hidden sm:inline ml-1">Export CSV</span>
             </button>
-            <button onClick={handleLogout} className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm hover:bg-white/10 transition cursor-pointer">
+            <button onClick={handleLogout} className="hidden sm:inline-block px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm hover:bg-white/10 transition cursor-pointer">
               Sign out
             </button>
           </div>
         </div>
 
         {leads.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-7 gap-3 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 sm:gap-3 mb-4">
             <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-3 col-span-2 md:col-span-2">
               <p className="text-[10px] uppercase tracking-wider text-[#00c853] font-bold">💵 Revenue (this month)</p>
-              <p className="text-2xl font-extrabold text-[#00c853] mt-0.5">${stats.revenueMonth.toLocaleString()}</p>
+              <p className="text-xl sm:text-2xl font-extrabold text-[#00c853] mt-0.5">${stats.revenueMonth.toLocaleString()}</p>
               <p className="text-[10px] text-[#dcdcdc] mt-0.5">${stats.revenue.toLocaleString()} all-time · {stats.paidCount} paid</p>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-xl p-3">
