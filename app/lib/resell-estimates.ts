@@ -81,14 +81,18 @@ export function resellMultiplierForCondition(condition: string | undefined, brok
     if (brokenGlass === "back") return 0.40;
     return 0.30; // front-only or unspecified
   }
-  if (c.includes("fair") || c.includes("heavy")) return 0.65;
-  // Skywalker 2026-05-19: the funnel no longer emits "Very Good" — legacy
-  // MC leads still carry the string though, so we treat "very good" as
-  // Good-tier rather than the old between-mint-and-good multiplier. Same
-  // semantics as the inline MCOND fallback in app/page.tsx.
+  // "heav" catches both "heavy" and DJI's "Heavily Used" (heavily ≠ heavy
+  // as a substring — easy to miss; checked it).
+  if (c.includes("fair") || c.includes("heav")) return 0.65;
+  // Skywalker 2026-05-19 collapsed Mint+VG into a single "Excellent" tier
+  // (= old Mint multiplier 1.0). Legacy MC leads with "Very Good" in the
+  // body drop to Good (0.80) per the new pricing intent. Order matters —
+  // verygood must be checked before plain "good" since "good" is a
+  // substring of "verygood".
   if (c.includes("very good")) return 0.80;
-  if (c.includes("good")) return 0.80;
-  if (c.includes("excellent") || c.includes("light")) return 0.92;
+  if (c.includes("good") || c.includes("well-maintained") || c.includes("wellmaintained")) return 0.80;
+  // "Excellent" / "Lightly Flown" — new top working-condition tier.
+  if (c.includes("excellent") || c.includes("lightly")) return 1.0;
   // mint, sealed, flawless, like-new, pristine — full resell
   return 1.0;
 }

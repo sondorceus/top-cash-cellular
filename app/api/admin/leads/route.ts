@@ -58,16 +58,31 @@ function normalizeStorage(raw: string | undefined | null): string | null {
   return null;
 }
 
-// Normalize a condition label ("Very Good", "Fair / Beat Up", "Sealed")
-// to a slug used by both Atlas and eBay lookups.
+// Normalize a condition label ("Excellent", "Very Good", "Fair / Beat Up",
+// "Sealed", …) to the canonical slug used by Atlas + eBay lookups.
+//
+// Skywalker 2026-05-19 collapsed Mint+Very Good into a single "Excellent"
+// tier. New funnel leads carry "Condition: Excellent" — that maps to the
+// `mint` slug (same as the slug the funnel still emits internally). Old
+// MC leads with "Mint" or "Very Good" in the body keep parsing:
+//   - "Mint"      → mint        (no change)
+//   - "Very Good" → verygood    (atlas-lookup aliases this to grade_c,
+//                                resell-estimates to 0.80x — both
+//                                resolve to Good-tier numbers under the
+//                                new pricing intent)
+//   - "Excellent" → mint        (new label → existing slug)
+// "Lightly Flown" is DJI's Excellent override and folds into mint too.
 function normalizeCondition(raw: string | undefined | null): string | null {
   if (!raw) return null;
   const k = raw.toLowerCase().replace(/[^a-z]/g, "");
   if (k.includes("seal") || k.includes("newseal")) return "sealed";
-  if (k.includes("mint")) return "mint";
+  // verygood check MUST come before plain "good" since "verygood" contains
+  // "good" as a substring. Same with "excellent" before "good".
   if (k.includes("verygood")) return "verygood";
-  if (k.includes("good")) return "good";
-  if (k.includes("fair") || k.includes("beatup")) return "fair";
+  if (k.includes("excellent") || k.includes("lightlyflown")) return "mint";
+  if (k.includes("mint") || k.includes("pristine") || k.includes("flawless")) return "mint";
+  if (k.includes("good") || k.includes("wellmaintained")) return "good";
+  if (k.includes("fair") || k.includes("beatup") || k.includes("heavilyused")) return "fair";
   if (k.includes("broken") || k.includes("cracked") || k.includes("damag")) return "broken";
   return null;
 }

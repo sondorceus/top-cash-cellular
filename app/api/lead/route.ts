@@ -86,14 +86,27 @@ function getResellEstimate(modelName: string): number | null {
 // of working price. Cap the resell estimate accordingly so the margin
 // math doesn't claim a $595 win on a $721 reference price when the device
 // is broken. Multipliers calibrated against actual eBay "for parts" sold
-// listings 2026-05-16. condition strings come from the funnel ("Broken",
-// "Fair", "Good", "Very Good", "Mint", "Sealed", "Flawless").
+// listings 2026-05-16. Condition strings come from the funnel — after
+// Skywalker's 2026-05-19 collapse the live values are:
+//   "Sealed" → 1.0   "Excellent" → 1.0 (= old Mint)
+//   "Good"   → 0.80  "Fair"      → 0.65   "Broken" → 0.30
+// Plus DJI/console label overrides ("Lightly Flown", "Well-Maintained",
+// "Heavily Used") that fold into the same buckets. Legacy MC leads with
+// "Mint" or "Very Good" still in the body parse correctly — VG drops to
+// Good-tier per the new pricing intent.
 function resellMultiplierForCondition(condition: string | undefined): number {
   const c = (condition || "").toLowerCase();
   if (c.includes("broken") || c.includes("crack") || c.includes("dead") || c.includes("won't")) return 0.30;
-  if (c.includes("fair") || c.includes("heavy")) return 0.65;
-  if (c.includes("good") && !c.includes("very")) return 0.80;
-  if (c.includes("very good") || c.includes("excellent") || c.includes("light")) return 0.92;
+  // "heav" catches both "heavy" and DJI's "Heavily Used" (heavily ≠ heavy
+  // as a substring — easy to miss; checked it).
+  if (c.includes("fair") || c.includes("heav")) return 0.65;
+  // very good check before plain good (substring) — legacy VG leads fall
+  // to Good-tier under the new pricing intent.
+  if (c.includes("very good")) return 0.80;
+  if (c.includes("good") || c.includes("well-maintained") || c.includes("wellmaintained")) return 0.80;
+  // "Excellent" is the new top working-condition tier (= old Mint, 1.0x).
+  // "Lightly Flown" is DJI's Excellent override.
+  if (c.includes("excellent") || c.includes("lightly")) return 1.0;
   // mint, sealed, flawless, like-new, pristine — full resell
   return 1.0;
 }
