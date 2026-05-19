@@ -10792,7 +10792,7 @@ export default function Home() {
                   <span>
                     Phone {handoffMethod === "ship"
                       ? <span className="normal-case text-[11px] text-[#888]">(required — FedEx prints it on your label)</span>
-                      : <span className="normal-case text-[11px] text-[#888]">(needed — we&apos;ll text to coordinate)</span>}
+                      : <span className="normal-case text-[11px] text-[#888]">(optional — we&apos;ll text you if needed)</span>}
                   </span>
                   <button
                     type="button"
@@ -10831,7 +10831,7 @@ export default function Home() {
                   if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
                   else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                   else setPhone(digits);
-                }} required pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                }} required={handoffMethod === "ship"} pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 tcc-input text-sm" />
                 {phone && (
                   <label className="mt-2 flex items-start gap-2.5 cursor-pointer select-none">
                     <input

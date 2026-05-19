@@ -679,6 +679,38 @@ export default function AdminPage() {
     }
     await callGenerateLabel(lead, addr);
   };
+
+  // One-click retry — calls the shared FedEx retry route, which
+  // re-pulls the lead body from MC and re-mints without any address
+  // re-entry. Useful when the original mint failed transiently
+  // (SERVICE_UNAVAILABLE) and the customer's address is fine. The
+  // cron will also try this every 30 min; this is the manual-now path.
+  // Skywalker 2026-05-19.
+  const autoRetryLabel = async (lead: Lead) => {
+    if (!token) return;
+    setLabelGeneratingId(lead.id);
+    setLabelErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
+    try {
+      const r = await fetch(`/api/admin/fedex/regenerate?token=${encodeURIComponent(token)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId: lead.id }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) {
+        setLabelErrorById((s) => ({ ...s, [lead.id]: d.error || `Retry failed (${d.kind || r.status})` }));
+        return;
+      }
+      // Success path — clear the error pill, set new tracking.
+      if (d.label) {
+        setLeads((cur) => cur.map((l) => l.id === lead.id ? { ...l, fedexTracking: d.label.tracking, fedexLabelUrl: d.label.url, fedexService: d.label.service, fedexLabelError: undefined } : l));
+      }
+    } catch (e) {
+      setLabelErrorById((s) => ({ ...s, [lead.id]: e instanceof Error ? e.message : "Network error" }));
+    } finally {
+      setLabelGeneratingId(null);
+    }
+  };
   const retryWithEditedAddress = async (lead: Lead) => {
     if (!addressDraft.street.trim() || !addressDraft.city.trim() || !addressDraft.state.trim() || !addressDraft.zip.trim()) {
       setLabelErrorById((s) => ({ ...s, [lead.id]: "Street, city, state, ZIP required" }));
@@ -2101,9 +2133,21 @@ export default function AdminPage() {
                                       {lead.fedexLabelError.reason && (
                                         <p className="text-[10px] text-red-200/80 mt-0.5 break-words" title={lead.fedexLabelError.reason}>{lead.fedexLabelError.reason.length > 140 ? lead.fedexLabelError.reason.slice(0, 140) + "…" : lead.fedexLabelError.reason}</p>
                                       )}
+                                      <p className="text-[9px] text-red-200/60 mt-1 italic">Auto-retry runs every 30 min for transient FedEx outages.</p>
                                     </div>
                                   )}
                                   <div className="flex flex-wrap gap-1.5">
+                                    {lead.fedexLabelError && lead.fedexLabelError.kind === "SERVICE_UNAVAILABLE" && (
+                                      <button
+                                        type="button"
+                                        onClick={() => autoRetryLabel(lead)}
+                                        disabled={labelGeneratingId === lead.id}
+                                        className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded bg-emerald-500/15 border border-emerald-500/40 text-emerald-200 hover:bg-emerald-500/25 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                                        title="Re-mint the label now — uses the address already on file, no re-entry needed"
+                                      >
+                                        {labelGeneratingId === lead.id ? "Retrying…" : "🔄 Retry now"}
+                                      </button>
+                                    )}
                                     <button
                                       type="button"
                                       onClick={() => generateLabel(lead)}
