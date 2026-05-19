@@ -92,10 +92,15 @@ export async function POST(req: NextRequest) {
     const htmlEmail = `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#e8e8eb;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;color:#e6e6e6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#e8e8eb">
-<tr><td align="center" style="padding:32px 16px">
-<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;margin:0 auto;border-collapse:separate;background:#1a1a1d;border:1px solid rgba(255,255,255,0.06);border-radius:18px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.18)">
+<body style="margin:0;padding:0;background:#1a1a1d;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;color:#e6e6e6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
+<!-- Outer wrapper — matches the email card background so on desktop
+     (Gmail/Outlook web, Resend preview) the email doesn't sit on a
+     gray void with empty side margins. Subtle radial highlight at top
+     gives depth on wide viewports. Skywalker 2026-05-19 — "looks good
+     on mobile but not on desktop". -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#1a1a1d;background-image:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,200,83,0.12) 0%, transparent 60%)">
+<tr><td align="center" style="padding:40px 16px">
+<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;width:100%;margin:0 auto;border-collapse:separate;background:#1a1a1d;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45),0 0 0 1px rgba(0,200,83,0.05)">
 
 <!-- Hero header — green gradient with inset rim light -->
 <tr><td style="background:linear-gradient(135deg,#00e676 0%,#00a039 100%);padding:28px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
@@ -196,7 +201,23 @@ ${isMulti ? deviceArr.map((d) => `<tr><td style="padding:10px 0;border-bottom:1p
 <!-- LABEL SECTION (ship only, when a label was minted at submission) -->
 ${hasLabel ? `
 <tr><td style="padding:24px 28px 8px 28px">
-<div style="font-size:11px;color:#00c853;letter-spacing:0.18em;text-transform:uppercase;font-weight:800;margin-bottom:10px">📦 Your FedEx label — ready to go</div>
+<!-- FedEx wordmark — HTML/CSS recreation of the official mark so it
+     renders in every email client without external images getting
+     blocked. Purple "Fed" + Ground-orange "Ex" matches the FEDEX_GROUND
+     service this lead is shipping under. Skywalker 2026-05-19 asked
+     for the FedEx logo to appear on the email so customers see the
+     real-shipper relationship at a glance. -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px"><tr>
+  <td style="vertical-align:middle;padding-right:10px">
+    <span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:900;font-size:26px;letter-spacing:-1.5px;line-height:1">
+      <span style="color:#4D148C">Fed</span><span style="color:#FF6600">Ex</span>
+    </span>
+  </td>
+  <td style="vertical-align:middle;border-left:1px solid rgba(255,255,255,0.18);padding-left:12px">
+    <div style="font-size:10px;color:#00c853;letter-spacing:0.18em;text-transform:uppercase;font-weight:800">Prepaid return label</div>
+    <div style="font-size:11px;color:#a8a8a8;margin-top:2px">Generated at submit · billed to TCC</div>
+  </td>
+</tr></table>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(0,200,83,0.06);border:1px solid rgba(0,200,83,0.30);border-left:3px solid #00c853;border-radius:14px">
 <tr><td style="padding:18px 20px">
 <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#00c853;font-weight:800;margin-bottom:6px">Tracking</div>
