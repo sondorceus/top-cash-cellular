@@ -77,8 +77,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Email service not configured (RESEND_API_KEY missing)" }, { status: 503 });
   }
 
-  const first = (customerFirstName || "there").split(" ")[0].trim() || "there";
-  const cleanSubject = subject.replace(/[\r\n]+/g, " ").trim().slice(0, 200);
+  // HTML-escape values that flow into the wrapper template — wrap()
+  // inserts `first` and `eyebrow` via raw template literal interpolation,
+  // and bodyToHtml() only escapes the body itself. Without this an admin
+  // typing `<img onerror>` in the subject or pasting a customer name
+  // with HTML chars would render unescaped in the email layout.
+  const htmlEsc = (s: string) => s
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  const first = htmlEsc(((customerFirstName || "there").split(" ")[0].trim() || "there").slice(0, 60));
+  const cleanSubject = htmlEsc(subject.replace(/[\r\n]+/g, " ").trim().slice(0, 200));
   const html = wrap("", { eyebrow: cleanSubject, first, bodyHtml: bodyToHtml(body.trim()) });
 
   try {
