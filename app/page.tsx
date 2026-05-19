@@ -3977,6 +3977,7 @@ export default function Home() {
 
   const sendChat = async () => {
     if (!chatMsg.trim()) return;
+    if (chatLoading) return; // Enter-key can fire while a send is in flight.
     const msg = chatMsg;
     setChatMsg("");
     setChatMessages(prev => [...prev, { from: "user", text: msg }]);
