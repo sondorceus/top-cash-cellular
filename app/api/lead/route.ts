@@ -353,6 +353,24 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Server-side IP + UA + visitor ID logging — Skywalker 2026-05-19
+  // Tier-1 data-driven push. Each lead now carries the upstream IP,
+  // truncated user-agent string, and the first-party visitor cookie
+  // that layout.tsx sets on first page-view. Used for:
+  //   - fraud detection (same IP submitting many leads)
+  //   - geo sanity check (claims-to-be-Austin-but-IP-in-Florida)
+  //   - cross-session attribution (came back N times before converting)
+  const ip = (
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    "unknown"
+  ).slice(0, 64);
+  const ua = (req.headers.get("user-agent") || "unknown").slice(0, 240);
+  const visitorId = (req.cookies.get("tcc_visitor_id")?.value || "").slice(0, 64);
+  customerMetaLines.push(`Source-IP: ${ip}`);
+  customerMetaLines.push(`Source-UA: ${ua}`);
+  if (visitorId) customerMetaLines.push(`Visitor-ID: ${visitorId}`);
+
   const handoffLines: string[] = [];
   if (handoff && typeof handoff === "object") {
     const h = handoff as { method?: string; address?: Record<string, string>; area?: string; slot?: { id: string; date: string; time: string; label?: string } };

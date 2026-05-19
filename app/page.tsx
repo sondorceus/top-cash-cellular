@@ -4934,14 +4934,18 @@ export default function Home() {
     // funnel visibility before the marketing push. The current device +
     // model are pulled from window refs set by the funnel; both safe to
     // be undefined on the early steps (gtag tolerates missing params).
+    // visitor_id pulled from window.__tccVid (set by the cookie-init
+    // script in layout.tsx) so we can join multi-visit funnels for the
+    // same person.
     try {
-      const g = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
-      const refs = (window as unknown as { __tccFunnelRefs?: { device?: string | null; modelId?: string | null } }).__tccFunnelRefs;
-      if (g) {
-        g("event", "funnel_step", {
+      const w = window as unknown as { gtag?: (...args: unknown[]) => void; __tccVid?: string; __tccFunnelRefs?: { device?: string | null; modelId?: string | null } };
+      const refs = w.__tccFunnelRefs;
+      if (w.gtag) {
+        w.gtag("event", "funnel_step", {
           step: s,
           device: refs?.device ?? undefined,
           model: refs?.modelId ?? undefined,
+          visitor_id: w.__tccVid,
         });
       }
     } catch {}
@@ -10335,7 +10339,8 @@ export default function Home() {
                 // param so downstream analytics can still see what
                 // we paid the customer.
                 try {
-                  const g = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+                  const w = window as unknown as { gtag?: (...args: unknown[]) => void; __tccVid?: string };
+                  const g = w.gtag;
                   if (g) {
                     const grossQuote = isMultiCart
                       ? cartItems.reduce((s, it) => s + (it.price || 0) * (it.quantity || 1), 0)
@@ -10355,6 +10360,7 @@ export default function Home() {
                       quote: grossQuote,
                       value: estMargin,
                       currency: "USD",
+                      visitor_id: w.__tccVid,
                     });
                     // Google Ads "Tcc Lead" conversion action — Skywalker
                     // created the action in his Top Cash Ads account on

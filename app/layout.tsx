@@ -76,6 +76,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-8H5VGFLJ71" />
         <script src="https://accounts.google.com/gsi/client" async defer />
         <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8H5VGFLJ71');gtag('config','AW-18099653912');` }} />
+        {/* Microsoft Clarity — heatmaps + session recordings. Activates
+            only when NEXT_PUBLIC_CLARITY_ID is set in Vercel env (free
+            account at clarity.microsoft.com). No data collected until
+            then. Skywalker 2026-05-19 Tier-1 data-driven push. */}
+        {process.env.NEXT_PUBLIC_CLARITY_ID && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","${process.env.NEXT_PUBLIC_CLARITY_ID}");`,
+            }}
+          />
+        )}
+        {/* First-party visitor ID — generates on first visit, persists in
+            cookie + localStorage across sessions. Attached to every GA4
+            event via dataLayer + sent to /api/lead so we can correlate
+            multi-visit funnels for the same person. Skywalker 2026-05-19. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var c=document.cookie.split('; ').find(function(r){return r.indexOf('tcc_visitor_id=')===0});var v=c?c.substring(15):null;if(!v){try{v=localStorage.getItem('tcc_visitor_id')||null}catch(e){}}if(!v){v='v'+Date.now().toString(36)+Math.random().toString(36).slice(2,10);}document.cookie='tcc_visitor_id='+v+'; path=/; max-age=63072000; samesite=lax';try{localStorage.setItem('tcc_visitor_id',v)}catch(e){}window.__tccVid=v;window.dataLayer=window.dataLayer||[];window.dataLayer.push({visitor_id:v});}catch(e){}})();`,
+          }}
+        />
         <meta name="google-site-verification" content="BZt20XeVKiVl8Pb0tnXR0LwGJnweRfDtDUdInz1O2tU" />
         <meta name="trustpilot-one-time-domain-verification-id" content="bb9ae689-f93e-4f7a-b089-a9ca8f8c4bd5" />
         <script
