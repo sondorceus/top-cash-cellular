@@ -66,9 +66,14 @@ export async function POST(req: NextRequest) {
   }
 
   // Try to infer device kind for weight default if caller didn't set it.
+  // Also stamp the label with a customer reference (deviceLabel or
+  // count) + lead ID so dock intake can match the box to its lead
+  // without scanning the tracking number first.
   const labelInput: LabelInputs = {
     ...customer,
     deviceKind: customer.deviceKind || deviceKindFromString(deviceLabel),
+    customerReference: customer.customerReference || (deviceLabel ? String(deviceLabel).slice(0, 30) : "1 device"),
+    poNumber: customer.poNumber || `TCC-${leadId}`,
   };
 
   let label;

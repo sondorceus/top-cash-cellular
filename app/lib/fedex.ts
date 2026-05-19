@@ -98,6 +98,12 @@ export type LabelInputs = {
   // operator can override weightLbs per-call if needed.
   deviceKind?: "phone" | "tablet" | "laptop" | "console" | "desktop" | "other";
   weightLbs?: number;
+  // Optional customer-reference text that prints on the label stub.
+  // Useful for "3 devices · TCC-leadId" so the recipient (us) can match
+  // a package to its lead without scanning the tracking number first.
+  customerReference?: string;
+  // Second customer-reference slot (PO number). FedEx allows up to 2.
+  poNumber?: string;
 };
 
 export type LabelResult = {
@@ -212,6 +218,21 @@ export async function createReturnLabel(input: LabelInputs): Promise<LabelResult
       requestedPackageLineItems: [
         {
           weight: { units: "LB", value: weight },
+          // customerReferences prints on the label stub. CUSTOMER_REFERENCE
+          // gets the most prominent slot; P_O_NUMBER is the secondary.
+          // We use CUSTOMER_REFERENCE for the device count so the recipient
+          // immediately sees "3 devices" without scanning, and P_O_NUMBER
+          // for the lead ID so the lead lookup is trivial.
+          customerReferences: [
+            ...(input.customerReference ? [{
+              customerReferenceType: "CUSTOMER_REFERENCE",
+              value: input.customerReference.slice(0, 30),
+            }] : []),
+            ...(input.poNumber ? [{
+              customerReferenceType: "P_O_NUMBER",
+              value: input.poNumber.slice(0, 30),
+            }] : []),
+          ],
         },
       ],
     },

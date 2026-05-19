@@ -523,6 +523,14 @@ export async function POST(req: NextRequest) {
         fedexError = { kind: "SERVICE_UNAVAILABLE", hint: blockedReason };
         // Don't try {} below — go straight to the catch path equivalent.
       } else { try {
+        // Build a customerReference that prints on the label stub.
+        // Single-device: "iPhone 17 Pro Max" (or whatever model the
+        // customer selected). Multi-device: "3 devices" so the dock
+        // intake person immediately sees how many to expect.
+        const deviceCount = deviceList.length || 1;
+        const refText = deviceCount > 1
+          ? `${deviceCount} devices`
+          : (model ? String(model).slice(0, 30) : "1 device");
         const label = await createReturnLabel({
           customerName: String(name),
           customerPhone: phoneDigits,
@@ -533,6 +541,8 @@ export async function POST(req: NextRequest) {
           customerZip: a!.zip!,
           deviceKind: deviceKindFromString(model as string),
           weightLbs: totalWeight,
+          customerReference: refText,
+          poNumber: `TCC-${leadId}`,
         });
         // Upload to Vercel Blob — random suffix so the tracking number
         // alone can't be pivoted to a leaked label.
