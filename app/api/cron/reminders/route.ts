@@ -340,7 +340,12 @@ export async function GET(req: NextRequest) {
             from: "tcc-admin",
             fromName: "TCC Admin",
             role: "system",
-            body: `[REVIEW-TOKEN: ${lead.id}] token=${token} expires=${expiresAt}${lead.name ? ` name=${lead.name.replace(/[\s·]+/g, "_").slice(0, 60)}` : ""}${lead.device ? ` device=${lead.device.replace(/[\s·]+/g, "_").slice(0, 60)}` : ""}`,
+            // Strip `[` and `]` from lead.name / lead.device too. Pre-
+            // /api/lead-fix legacy leads in MC could still have those
+            // brackets in their parsed fields; without scrubbing here,
+            // the REVIEW-TOKEN marker would carry them forward and the
+            // global admin parser would scan them as injectable.
+            body: `[REVIEW-TOKEN: ${lead.id}] token=${token} expires=${expiresAt}${lead.name ? ` name=${lead.name.replace(/[\[\]\s·]+/g, "_").slice(0, 60)}` : ""}${lead.device ? ` device=${lead.device.replace(/[\[\]\s·]+/g, "_").slice(0, 60)}` : ""}`,
             tags: ["review-token", "minted", "from-reminder"],
             priority: "low",
           }),

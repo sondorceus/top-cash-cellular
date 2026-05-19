@@ -134,7 +134,12 @@ async function mailCoupon(opts: { to: string; firstName: string; code: string; v
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
   const token = String(body.token || "").trim();
 
   // STRICT GATE — Skywalker 2026-05-18 "BE STRICT. Random people can't
