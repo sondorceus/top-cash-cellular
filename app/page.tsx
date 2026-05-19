@@ -11309,6 +11309,33 @@ export default function Home() {
                   : "Submit & Get Paid"}
               </button>
             </form>
+            {/* Customer-service contact block — Skywalker 2026-05-19:
+                customers on the contact step who hit a snag (address
+                won't validate, payout question, lost label) should have
+                a clear phone + email here instead of bouncing. The toll-
+                free number is the same Twilio line that handles inbound
+                SMS + voice (see /api/twilio/sms-incoming + voice-incoming). */}
+            <div className="mt-6 pt-6 border-t border-white/8 text-center">
+              <p className="text-[#888] text-[11px] uppercase tracking-[0.14em] font-semibold mb-2">Need help?</p>
+              <a
+                href="tel:+18775492056"
+                className="inline-flex items-center gap-2 text-[#00c853] hover:text-[#00e676] transition text-base font-bold"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.95.69l1.5 4.5a1 1 0 01-.5 1.21l-2.26 1.13a11 11 0 005.52 5.52l1.13-2.26a1 1 0 011.21-.5l4.5 1.5a1 1 0 01.69.95V19a2 2 0 01-2 2h-1C9.72 21 3 14.28 3 6V5z" />
+                </svg>
+                (877) 549-2056
+              </a>
+              <p className="text-[#888] text-xs mt-1">
+                or email{" "}
+                <a href="mailto:CustomerService@topcashcells.com" className="text-[#00c853] hover:underline">
+                  CustomerService@topcashcells.com
+                </a>
+              </p>
+              <p className="text-[#666] text-[10px] mt-2">
+                Mon–Sat · 9 AM – 7 PM CT · Austin, TX
+              </p>
+            </div>
             </div>
           </div>
         </section>
