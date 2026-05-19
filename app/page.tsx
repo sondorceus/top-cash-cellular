@@ -10020,6 +10020,21 @@ export default function Home() {
 
             <h2 className="text-2xl font-bold mb-1">Checkout</h2>
 
+            {/* LABEL PROGRESS BANNER — Skywalker 2026-05-19: customers
+                were stopping at "Continue As Guest" expecting their
+                FedEx label, but the label only mints at the final
+                submit on the contact step. Make the 3-step progress
+                obvious on every step so nobody quits halfway. */}
+            <div className="mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
+              <span className="text-lg leading-none mt-0.5">📦</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-[#00c853] leading-tight">Step 1 of 3 — your FedEx label generates on the final step</p>
+                <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
+                  <span className="text-white font-semibold">1. Account</span> (you&apos;re here) → <span className="text-[#888]">2. Payment</span> → <span className="text-[#888]">3. Shipping address & submit</span>. Your prepaid label hits your inbox the moment you submit the last step — usually under 30 seconds.
+                </p>
+              </div>
+            </div>
+
             {/* SECTION 1: ACCOUNT */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-4">
               <h3 className="text-sm font-bold text-[#00c853] uppercase tracking-wider mb-1">Account</h3>
@@ -10034,7 +10049,8 @@ export default function Home() {
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-4">
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 tcc-input text-sm" />
-                <button type="submit" className="tcc-button-primary w-full py-4 text-base font-extrabold">Continue As Guest</button>
+                <button type="submit" className="tcc-button-primary w-full py-4 text-base font-extrabold">Continue As Guest →</button>
+                <p className="text-[11px] text-[#888] text-center mt-1">Next: pick payment method, then enter shipping address for your free FedEx label</p>
               </form>
 
               <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#d4d4d4] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
@@ -10128,6 +10144,17 @@ export default function Home() {
             </button>
             {cartItems.length > 0 ? checkoutSummaryMobile : selectionPanelMobile}
             <h2 className="text-2xl font-bold mb-1">How would you like to get paid?</h2>
+
+            {/* LABEL PROGRESS BANNER — see checkout step for context */}
+            <div className="mt-2 mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
+              <span className="text-lg leading-none mt-0.5">📦</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-[#00c853] leading-tight">Step 2 of 3 — one more step after this for your label</p>
+                <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
+                  <span className="text-[#888]">1. Account ✓</span> → <span className="text-white font-semibold">2. Payment</span> (you&apos;re here) → <span className="text-[#888]">3. Shipping address & submit</span>. Your prepaid FedEx label generates the second you submit the next page.
+                </p>
+              </div>
+            </div>
             <p className="text-[#e6e6e6] text-sm mb-3">Select your preferred payout method</p>
             {/* Payout speed heads-up — only shown when the user hasn't
                 picked a handoff yet. Deliberately does NOT mention "Cash"
@@ -10203,6 +10230,31 @@ export default function Home() {
 
             <h2 className="text-xl font-bold mb-1">Almost done</h2>
             <p className="text-[#e6e6e6] text-sm mb-4">We&apos;ll contact you to arrange pickup &amp; payment</p>
+
+            {/* LABEL PROGRESS BANNER — final step. Shows different copy
+                depending on whether the customer picked Ship (label
+                gets minted) or Local (no label, just meetup). */}
+            {handoffMethod === "ship" ? (
+              <div className="mb-4 px-4 py-3 rounded-xl bg-amber-500/[0.10] border border-amber-500/40 flex items-start gap-3">
+                <span className="text-lg leading-none mt-0.5">📦</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-amber-200 leading-tight">Step 3 of 3 — submit below to get your FedEx label</p>
+                  <p className="text-[11px] text-[#d4d4d4] mt-1 leading-snug">
+                    <span className="text-[#888]">1. Account ✓</span> → <span className="text-[#888]">2. Payment ✓</span> → <span className="text-white font-semibold">3. Shipping address & submit</span>. The moment you hit submit, FedEx mints your prepaid label and we email it to you instantly — typically under 30 seconds.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
+                <span className="text-lg leading-none mt-0.5">📍</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-[#00c853] leading-tight">Step 3 of 3 — Austin local meetup</p>
+                  <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
+                    No label needed — Skywalker will text you to coordinate a meetup spot in Austin. Same-day cash, Cash App, or Zelle.
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Contact-step Google sign-in removed 2026-05-17 per
                 Skywalker — already offered on the checkout step (and
