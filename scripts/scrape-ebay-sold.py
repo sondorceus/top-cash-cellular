@@ -668,7 +668,10 @@ def main():
     found = sum(1 for r in results.values()
                 if any(r.get("by_cell", {}).get(s, {}) for s in r.get("by_cell", {})))
     total_cells = sum(len(c) for r in results.values() for c in r.get("by_cell", {}).values())
-    print(f"\nDone. {found}/{len(results)} models have bucketed data ({total_cells} cells total). → {out_path}", flush=True)
+    # Plain ASCII arrow — the unicode → blows up on Windows cp1252 consoles
+    # AFTER all the scraping is done (which is the worst possible timing —
+    # the JSON has already been written, but the script exits with code 1).
+    print(f"\nDone. {found}/{len(results)} models have bucketed data ({total_cells} cells total). -> {out_path}", flush=True)
 
 
 if __name__ == "__main__":
