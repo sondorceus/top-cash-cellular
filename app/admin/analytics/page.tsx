@@ -19,6 +19,7 @@ interface Payload {
   topDevices: { device: string; count: number }[];
   statusCounts: Record<string, number>;
   generatedAt: string;
+  internalHidden?: number;
 }
 
 function HourBar({ label, value, max, tone }: { label: string; value: number; max: number; tone: string }) {
@@ -52,17 +53,27 @@ export default function AnalyticsPage() {
   const [data, setData] = useState<Payload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [refreshTick, setRefreshTick] = useState(0);
+  const [showInternal, setShowInternal] = useState<boolean>(false);
+
+  // Restore the same showInternal preference set on /admin so the
+  // toggle state follows the user between admin pages.
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("tcc-show-internal");
+      if (stored === "1") setShowInternal(true);
+    } catch {}
+  }, []);
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("tcc-admin-token") : null;
-    fetch("/api/admin/analytics", { headers: token ? { "x-admin-token": token } : {} })
+    fetch(`/api/admin/analytics?internal=${showInternal ? "show" : "hide"}`, { headers: token ? { "x-admin-token": token } : {} })
       .then((r) => {
         if (!r.ok) throw new Error(r.status === 401 ? "Unauthorized — open /admin first to set token." : `HTTP ${r.status}`);
         return r.json();
       })
       .then(setData)
       .catch((e) => setError(e.message));
-  }, [refreshTick]);
+  }, [refreshTick, showInternal]);
 
   // Live auto-refresh every 60s so the dashboard stays fresh during a
   // marketing push without manual reloads.
@@ -88,8 +99,25 @@ export default function AnalyticsPage() {
           <a href="/admin/prices" className="text-[#888] hover:text-[#00c853] text-xs font-semibold transition">💲 Prices</a>
           <h1 className="text-lg font-extrabold tracking-tight">TCC · Analytics</h1>
           <button
+            onClick={() => {
+              const next = !showInternal;
+              setShowInternal(next);
+              try { localStorage.setItem("tcc-show-internal", next ? "1" : "0"); } catch {}
+            }}
+            className={`ml-auto px-3 py-1.5 rounded-lg border text-xs font-semibold cursor-pointer transition ${
+              showInternal
+                ? "bg-yellow-500/15 border-yellow-500/40 text-yellow-300 hover:bg-yellow-500/25"
+                : "bg-white/5 border-white/15 text-[#888] hover:bg-white/10 hover:text-white"
+            }`}
+            title="Toggle internal/test lead visibility"
+          >
+            {showInternal
+              ? "🔓 Internal: ON"
+              : `🔒 Internal hidden${data?.internalHidden ? ` (${data.internalHidden})` : ""}`}
+          </button>
+          <button
             onClick={() => setRefreshTick((t) => t + 1)}
-            className="ml-auto px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-semibold cursor-pointer"
+            className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-semibold cursor-pointer"
             title="Refresh now (also auto-refreshes every 60s)"
           >
             ↻ Refresh

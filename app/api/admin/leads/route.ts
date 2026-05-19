@@ -158,6 +158,14 @@ function resolveSku(modelLabel: string | undefined | null): string | null {
 // each with its most recent [STATUS: <status>] reply (matched by lead id),
 // and returns the 50 most recent leads with current status.
 
+// Internal identifiers — leads matching ANY of these are tagged
+// isInternal=true so the admin can hide them with one toggle. Skywalker
+// 2026-05-19: stop polluting analytics with his own test submissions.
+// Env vars override the bakedinto-code defaults so he can add more
+// identifiers without a redeploy.
+const INTERNAL_IPS = (process.env.TCC_INTERNAL_IPS || "136.49.4.25").split(",").map((s) => s.trim()).filter(Boolean);
+const INTERNAL_EMAILS = (process.env.TCC_INTERNAL_EMAILS || "sondorceus@gmail.com,sellurcell@topcashcells.com").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+
 interface AdminLead {
   id: string;
   timestamp: string;
@@ -309,6 +317,11 @@ interface AdminLead {
   // failed identity check — those write a "Coupon attempt:" line
   // which we'd surface separately if needed).
   couponApplied?: { code: string; value: number };
+  // True when the lead matches TCC_INTERNAL_IPS / TCC_INTERNAL_EMAILS
+  // (Skywalker's own testing). Admin defaults to hiding these to
+  // keep customer-facing metrics clean. Toggle in the UI shows them
+  // back. 2026-05-19.
+  isInternal?: boolean;
   // Live competitor margin — computed at GET time using the current
   // Atlas wholesale + eBay sold-listing data for the lead's exact
   // (sku, storage, condition, carrier) cell. Both can be missing when
@@ -862,10 +875,28 @@ export async function GET(req: NextRequest) {
         if (!Number.isFinite(value)) return undefined;
         return { code: m2[1], value };
       })(),
+      isInternal: (() => {
+        const body = m.body || "";
+        const ipLine = body.match(/(?:^|\n)Source-IP:[ \t]*([^\n]*)/i);
+        const ip = ipLine?.[1]?.trim() || "";
+        if (ip && INTERNAL_IPS.includes(ip)) return true;
+        const emailLine = body.match(/(?:^|\n)Email:[ \t]*([^\n]*)/i);
+        const em = emailLine?.[1]?.trim().toLowerCase() || "";
+        if (em && INTERNAL_EMAILS.includes(em)) return true;
+        return false;
+      })(),
     });
   }
 
   leads.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+
+  // Internal-lead visibility filter. `?internal=show` reveals leads
+  // tagged isInternal=true (Skywalker's own testing). Default hides
+  // them so customer-facing metrics stay clean.
+  const internalView = req.nextUrl.searchParams.get("internal") || "hide";
+  const visibleLeads = internalView === "show"
+    ? leads
+    : leads.filter((l) => !l.isInternal);
 
   // Live competitor margin enrichment. Per lead: look up Atlas wholesale
   // value for the exact (sku, storage, condition, carrier) variant and
@@ -976,6 +1007,11 @@ export async function GET(req: NextRequest) {
   // Cap raised from 50 → 200 so Skywalker can see the full backlog from
   // the admin without paging. MC returns 300 messages per fetch and most
   // are non-lead chatter, so 200 leaves headroom without breaking the
-  // page render.
-  return NextResponse.json({ leads: leads.slice(0, 200), count: leads.length });
+  // page render. internal-hidden filter applied above already.
+  const internalCount = leads.length - visibleLeads.length;
+  return NextResponse.json({
+    leads: visibleLeads.slice(0, 200),
+    count: visibleLeads.length,
+    internalHidden: internalCount,
+  });
 }

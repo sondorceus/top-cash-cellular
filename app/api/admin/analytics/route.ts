@@ -29,6 +29,19 @@ function parseQuote(raw: string | undefined): number {
   return m ? parseInt(m[0], 10) : 0;
 }
 
+// Internal-lead identifiers — same source-of-truth as /api/admin/leads.
+// Leads matching these are excluded from analytics counts by default so
+// Skywalker's testing doesn't skew daily/hourly/avg-quote numbers.
+const INTERNAL_IPS = (process.env.TCC_INTERNAL_IPS || "136.49.4.25").split(",").map((s) => s.trim()).filter(Boolean);
+const INTERNAL_EMAILS = (process.env.TCC_INTERNAL_EMAILS || "sondorceus@gmail.com,sellurcell@topcashcells.com").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+function isInternalLead(body: string): boolean {
+  const ip = parseField(body, "Source-IP");
+  if (ip && INTERNAL_IPS.includes(ip)) return true;
+  const em = parseField(body, "Email")?.toLowerCase();
+  if (em && INTERNAL_EMAILS.includes(em)) return true;
+  return false;
+}
+
 export async function GET(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -74,9 +87,15 @@ export async function GET(req: NextRequest) {
   const today = new Date(now).toISOString().slice(0, 10);
   const yesterday = new Date(now - 86400000).toISOString().slice(0, 10);
 
+  const internalView = req.nextUrl.searchParams.get("internal") || "hide";
+  let internalSkipped = 0;
   for (const m of messages) {
     if (!m.body || !m.body.includes("[NEW BUYBACK LEAD")) continue;
     if (deletedLeads.has(m.id)) continue;
+    if (internalView !== "show" && isInternalLead(m.body)) {
+      internalSkipped++;
+      continue;
+    }
     totalLeads++;
     const t = new Date(m.timestamp);
     const ageH = (now - t.getTime()) / 3600000;
@@ -129,5 +148,6 @@ export async function GET(req: NextRequest) {
     topDevices,
     statusCounts,
     generatedAt: new Date().toISOString(),
+    internalHidden: internalSkipped,
   });
 }

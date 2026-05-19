@@ -219,6 +219,17 @@ export default function AdminPage() {
   // Active vs Trash view. Trashed leads stay recoverable for 24h then
   // auto-purge. Skywalker 2026-05-17 "save my quotes for 24hr".
   const [view, setView] = useState<"active" | "trash">("active");
+  // Hide internal/test leads (Skywalker's own submissions matching
+  // INTERNAL_IPS / INTERNAL_EMAILS server-side). Defaults to hidden;
+  // toggle persisted in localStorage. 2026-05-19.
+  const [showInternal, setShowInternal] = useState<boolean>(false);
+  const [internalHidden, setInternalHidden] = useState<number>(0);
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("tcc-show-internal");
+      if (stored === "1") setShowInternal(true);
+    } catch {}
+  }, []);
   const [restoringId, setRestoringId] = useState<string | null>(null);
   // Customer history modal — opens when staff clicks a lead's email or
   // phone. Shows every lead (paid + pending + rejected) from the same
@@ -622,7 +633,7 @@ export default function AdminPage() {
     setLoading(true);
     setError(null);
     try {
-      const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}&view=${view}`, { cache: "no-store" });
+      const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}&view=${view}&internal=${showInternal ? "show" : "hide"}`, { cache: "no-store" });
       if (r.status === 401) {
         setError("Invalid token");
         setToken("");
@@ -632,12 +643,13 @@ export default function AdminPage() {
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const d = await r.json();
       setLeads(d.leads || []);
+      setInternalHidden(d.internalHidden || 0);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load leads");
     } finally {
       setLoading(false);
     }
-  }, [token, view]);
+  }, [token, view, showInternal]);
 
   // Soft-trash a lead. Posts a [DELETED-LEAD: <id>] marker comm to MC.
   // The lead disappears from the Active view but stays recoverable in
@@ -1097,6 +1109,26 @@ export default function AdminPage() {
             >
               👥<span className="hidden sm:inline ml-1">Customers</span>
             </a>
+            <button
+              type="button"
+              onClick={() => {
+                const next = !showInternal;
+                setShowInternal(next);
+                try { localStorage.setItem("tcc-show-internal", next ? "1" : "0"); } catch {}
+              }}
+              className={`px-2.5 sm:px-3 py-1.5 rounded-lg border text-xs font-bold cursor-pointer transition ${
+                showInternal
+                  ? "bg-yellow-500/15 border-yellow-500/40 text-yellow-300 hover:bg-yellow-500/25"
+                  : "bg-white/5 border-white/15 text-[#888] hover:bg-white/10 hover:text-white"
+              }`}
+              title={showInternal
+                ? "Internal/test leads ARE showing — click to hide"
+                : `Internal/test leads are hidden${internalHidden ? ` (${internalHidden})` : ""} — click to show`}
+            >
+              {showInternal
+                ? <span>🔓<span className="hidden sm:inline ml-1">Internal: ON</span></span>
+                : <span>🔒<span className="hidden sm:inline ml-1">Internal hidden{internalHidden ? ` (${internalHidden})` : ""}</span></span>}
+            </button>
             <a
               href="/admin/slots"
               className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"

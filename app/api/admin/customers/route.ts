@@ -57,6 +57,19 @@ function parseQuoteAmount(raw: string | undefined): number {
   return m ? parseInt(m[0], 10) : 0;
 }
 
+// Internal identifiers — exclude Skywalker's own testing from the
+// customer roster by default. Same source-of-truth as
+// /api/admin/leads + /api/admin/analytics.
+const INTERNAL_IPS = (process.env.TCC_INTERNAL_IPS || "136.49.4.25").split(",").map((s) => s.trim()).filter(Boolean);
+const INTERNAL_EMAILS = (process.env.TCC_INTERNAL_EMAILS || "sondorceus@gmail.com,sellurcell@topcashcells.com").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+function isInternalLead(body: string): boolean {
+  const ip = parseField(body, "Source-IP");
+  if (ip && INTERNAL_IPS.includes(ip)) return true;
+  const em = parseField(body, "Email")?.toLowerCase();
+  if (em && INTERNAL_EMAILS.includes(em)) return true;
+  return false;
+}
+
 export async function GET(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -93,10 +106,16 @@ export async function GET(req: NextRequest) {
   }
 
   // Pass 2: walk lead messages, dedup into per-customer rows.
+  const internalView = req.nextUrl.searchParams.get("internal") || "hide";
+  let internalSkipped = 0;
   const customers = new Map<string, CustomerRow>();
   for (const m of messages) {
     if (!m.body || !m.body.includes("[NEW BUYBACK LEAD")) continue;
     if (deletedLeads.has(m.id)) continue;
+    if (internalView !== "show" && isInternalLead(m.body)) {
+      internalSkipped++;
+      continue;
+    }
     const phoneRaw = parseField(m.body, "Phone");
     const emailRaw = parseField(m.body, "Email")?.toLowerCase();
     const phoneN = normalizePhone(phoneRaw);
@@ -158,5 +177,6 @@ export async function GET(req: NextRequest) {
       totalLeads: out.reduce((s, c) => s + c.leadCount, 0),
       totalQuoted: out.reduce((s, c) => s + c.totalQuoted, 0),
     },
+    internalHidden: internalSkipped,
   });
 }

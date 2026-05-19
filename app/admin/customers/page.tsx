@@ -24,6 +24,7 @@ interface Customer {
 interface Payload {
   customers: Customer[];
   counts: { totalCustomers: number; totalLeads: number; totalQuoted: number };
+  internalHidden?: number;
 }
 
 type SortKey = "recent" | "spend" | "leads" | "name" | "first";
@@ -40,17 +41,25 @@ export default function CustomersPage() {
   const [filter, setFilter] = useState("");
   const [sort, setSort] = useState<SortKey>("recent");
   const [error, setError] = useState<string | null>(null);
+  const [showInternal, setShowInternal] = useState<boolean>(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("tcc-show-internal");
+      if (stored === "1") setShowInternal(true);
+    } catch {}
+  }, []);
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("tcc-admin-token") : null;
-    fetch("/api/admin/customers", { headers: token ? { "x-admin-token": token } : {} })
+    fetch(`/api/admin/customers?internal=${showInternal ? "show" : "hide"}`, { headers: token ? { "x-admin-token": token } : {} })
       .then((r) => {
         if (!r.ok) throw new Error(r.status === 401 ? "Unauthorized — open /admin first to set token." : `HTTP ${r.status}`);
         return r.json();
       })
       .then(setData)
       .catch((e) => setError(e.message));
-  }, []);
+  }, [showInternal]);
 
   const filtered = useMemo(() => {
     if (!data) return [];
@@ -105,6 +114,23 @@ export default function CustomersPage() {
             <option value="leads">Most leads</option>
             <option value="name">Name A-Z</option>
           </select>
+          <button
+            onClick={() => {
+              const next = !showInternal;
+              setShowInternal(next);
+              try { localStorage.setItem("tcc-show-internal", next ? "1" : "0"); } catch {}
+            }}
+            className={`px-3 py-1.5 rounded-lg border text-xs font-semibold cursor-pointer transition ${
+              showInternal
+                ? "bg-yellow-500/15 border-yellow-500/40 text-yellow-300 hover:bg-yellow-500/25"
+                : "bg-white/5 border-white/15 text-[#888] hover:bg-white/10 hover:text-white"
+            }`}
+            title="Toggle internal/test customer visibility"
+          >
+            {showInternal
+              ? "🔓 Internal: ON"
+              : `🔒 Internal hidden${data?.internalHidden ? ` (${data.internalHidden})` : ""}`}
+          </button>
         </div>
         <div className="max-w-7xl mx-auto px-4 pb-2 flex items-center gap-4 text-xs text-[#aaa] flex-wrap">
           <span><b className="text-white">{data.counts.totalCustomers}</b> unique customers</span>
