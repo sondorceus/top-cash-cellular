@@ -74,6 +74,28 @@ button, a, [role="button"] {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Expands a small control's touch target to ~44px without changing
+   its visual size — an invisible padded ::after overlay. Apply to
+   tiny icon buttons (the "i" info toggles) that are visually 16px.
+   The host must not sit inside an overflow:hidden ancestor that
+   would clip the overlay. Skywalker 2026-05-19 iOS tap-target pass. */
+.tap-expand { position: relative; }
+.tap-expand::after {
+  content: "";
+  position: absolute;
+  inset: -14px;
+}
+
+/* iOS home-indicator clearance for fixed bottom bars. The layout uses
+   viewportFit:cover (page runs edge-to-edge behind the notch + home
+   indicator), so a `fixed bottom-0` bar's buttons would otherwise sit
+   under the home-indicator gesture strip. env(safe-area-inset-bottom)
+   resolves to 0 on non-notched devices + desktop, so these are inert
+   everywhere except notched iPhones. Skywalker 2026-05-19 iOS pass. */
+.cta-bar-ios { padding-bottom: calc(1rem + env(safe-area-inset-bottom)); }
+@media (min-width: 1024px) { .cta-bar-ios { padding-bottom: 0; } }
+.consent-bar-ios { padding-bottom: calc(0.5rem + env(safe-area-inset-bottom)); }
+
 @keyframes spinRing {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -385,6 +407,24 @@ button:hover > .tcc-brand-tile {
 .tcc-input::placeholder { color: #8a8a8a; }
 .tcc-input:focus::placeholder { color: #a8a8a8; }
 
+/* iOS Safari auto-zooms the viewport on focus for ANY input/textarea/
+   select whose computed font-size is below 16px — and it never zooms
+   back out, leaving the customer stranded mid-funnel. .tcc-input
+   handles its own fields, but search bars, the account-edit form,
+   review forms, etc. set their own text-[13px]/text-xs classes and
+   slip through. Force every form control to 16px on mobile so none
+   of them trigger the zoom. Desktop (lg+) keeps each element's own
+   smaller class — this rule simply doesn't apply there. !important
+   is required to beat Tailwind's text-* utility classes. Skywalker
+   2026-05-19 iOS pass. */
+@media (max-width: 1023px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
 /* Primary CTA — beveled gradient green button with a thin white rim at
    top and a soft outer green glow. Reads tactile / pressable instead
    of flat. Hover deepens the gradient slightly and brightens the glow. */
@@ -478,9 +518,19 @@ button:hover > .tcc-brand-tile {
 }
 
 /* Hide the horizontal scrollbar on rails (e.g. the mobile category
-   strip under the nav). Content still scrolls — just no chrome. */
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-.no-scrollbar::-webkit-scrollbar { display: none; }
+   strip under the nav). Content still scrolls — just no chrome.
+   overscroll-behavior-x: contain stops an over-swipe at the end of a
+   horizontal rail from bubbling up to iOS Safari's edge back/forward
+   navigation gesture — Skywalker 2026-05-19 iOS pass. */
+.no-scrollbar,
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar { display: none; }
 
 /* Smooth image loading — fade in once decoded (prevents flash of broken/empty images during page load) */
 @keyframes imgFadeIn {

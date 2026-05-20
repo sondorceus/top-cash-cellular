@@ -9864,7 +9864,7 @@ export default function Home() {
                 always visible while the user scrolls the rest of the
                 quote details. The Add to Cart button uses tcc-button-primary
                 for the brand-green gradient + glow. */}
-            <div className="lg:static fixed bottom-0 left-0 right-0 z-30 lg:z-auto lg:bg-transparent bg-[rgba(10,10,10,0.95)] lg:backdrop-blur-0 backdrop-blur-md lg:border-t-0 border-t border-white/10 lg:p-0 p-4 lg:rounded-none flex gap-3">
+            <div className="lg:static fixed bottom-0 left-0 right-0 z-30 lg:z-auto lg:bg-transparent bg-[rgba(10,10,10,0.95)] lg:backdrop-blur-0 backdrop-blur-md lg:border-t-0 border-t border-white/10 lg:p-0 px-4 pt-4 cta-bar-ios lg:rounded-none flex gap-3">
               <button onClick={goBack} className="flex-1 bg-white/10 text-white py-5 rounded-2xl text-base lg:text-lg font-extrabold cursor-pointer hover:bg-white/15 transition tap-press">
                 Back
               </button>
@@ -10817,7 +10817,7 @@ export default function Home() {
                     aria-label="Why we need a phone number"
                     aria-expanded={phoneInfoOpen}
                     title="Why we need a phone number"
-                    className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-[#00c853] text-[#00c853] text-[10px] font-bold leading-none hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
+                    className="tap-expand inline-flex items-center justify-center w-4 h-4 rounded-full border border-[#00c853] text-[#00c853] text-[10px] font-bold leading-none hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
                   >i</button>
                 </label>
                 {phoneInfoOpen && (
@@ -10879,7 +10879,7 @@ export default function Home() {
                     aria-label="How to find your IMEI / serial number"
                     aria-expanded={imeiHelpOpen}
                     title="How to find your IMEI / serial"
-                    className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-[#00c853] text-[#00c853] text-[10px] font-bold leading-none hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
+                    className="tap-expand inline-flex items-center justify-center w-4 h-4 rounded-full border border-[#00c853] text-[#00c853] text-[10px] font-bold leading-none hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
                   >i</button>
                 </label>
                 {imeiHelpOpen && (() => {
@@ -12511,7 +12511,9 @@ export default function Home() {
         }
         const fabContainerStyle: React.CSSProperties = fabPos
           ? { left: `${fabPos.x}px`, top: `${fabPos.y}px`, bottom: "auto" }
-          : { left: "24px", bottom: "24px" };
+          // Default rest position lifts above the iOS home indicator —
+          // env() is 0 on non-notched devices. Skywalker 2026-05-19.
+          : { left: "24px", bottom: "calc(24px + env(safe-area-inset-bottom))" };
         return (
           <>
             {/* Chat panel — its own fixed element so we can flip it
@@ -12692,7 +12694,11 @@ export default function Home() {
                       const titleSz = tier === "lg" ? "text-[15px]" : tier === "md" ? "text-[14px]" : "text-[13px]";
                       const subSz   = tier === "lg" ? "text-[12px]" : "text-[11px]";
                       const priceSz = tier === "lg" ? "text-xl"  : tier === "md" ? "text-lg" : "text-base";
-                      const qtyBtn  = tier === "sm" ? "w-6 h-6 text-xs" : "w-7 h-7 text-sm";
+                      // qty steppers — 36px on mobile (was 24-28px, well
+                      // under the 44px tap-target floor), compact 28px on
+                      // desktop where a mouse makes precision easy.
+                      // Skywalker 2026-05-19 iOS pass.
+                      const qtyBtn  = "w-9 h-9 text-base lg:w-7 lg:h-7 lg:text-sm";
                       // Fallback: look up the device image by modelId in case
                       // a cart item was stored before we started saving image.
                       const lookupImage = (modelId: string): string | undefined => {
@@ -12718,7 +12724,7 @@ export default function Home() {
                                 <p className={`text-white font-extrabold ${titleSz} leading-tight`}>{item.model}</p>
                                 <p className={`text-[#c8c8c8] ${subSz} mt-1`}>{item.storage} · {item.condition}</p>
                               </div>
-                              <button onClick={() => { setCartItems(prev => prev.filter((_, idx) => idx !== i)); setCartToast({ model: item.model, price: item.price * item.quantity, kind: "remove" }); setTimeout(() => setCartToast(null), 2400); }} aria-label="Remove from cart" className="text-[#b8b8b8] hover:text-red-400 text-xs font-bold underline-offset-2 hover:underline transition cursor-pointer shrink-0">Remove</button>
+                              <button onClick={() => { setCartItems(prev => prev.filter((_, idx) => idx !== i)); setCartToast({ model: item.model, price: item.price * item.quantity, kind: "remove" }); setTimeout(() => setCartToast(null), 2400); }} aria-label="Remove from cart" className="text-[#b8b8b8] hover:text-red-400 text-xs font-bold underline-offset-2 hover:underline transition cursor-pointer shrink-0 px-2 py-1.5 -mr-1 -mt-1">Remove</button>
                             </div>
                             <div className="flex items-center justify-between gap-3 mt-2 pt-2 border-t border-white/10">
                               <div className="inline-flex items-center gap-2 bg-white/5 rounded-full px-1 py-1">
@@ -12800,7 +12806,7 @@ export default function Home() {
           hardcoded top-[52px] that broke when the search row was added. */}
 
       {cookieConsent === null && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111]/95 backdrop-blur-sm border-t border-white/10 px-3 py-2 animate-[fadeIn_0.3s_ease-out]">
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111]/95 backdrop-blur-sm border-t border-white/10 px-3 pt-2 consent-bar-ios animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto flex items-center gap-3">
             <p className="text-white/80 text-[11px] flex-1">We use cookies to improve your experience.</p>
             <button onClick={() => { localStorage.setItem("cookie-consent", "essential"); setCookieConsent("essential"); }} className="text-white/60 text-[11px] font-medium cursor-pointer hover:text-white transition whitespace-nowrap">Essential</button>
