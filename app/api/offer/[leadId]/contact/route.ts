@@ -3,10 +3,10 @@
 // Customer-side contact-info edit. Currently scoped to the phone number
 // only — name and email are fixed (email is the account identity).
 //
-// Same two auth gates as the cancel route:
-//   1. Customer must be signed in (tcc_session / tcc_customer cookie).
-//   2. The session email must match the email on the lead body — stops
-//      "I have someone's offer link" from editing their contact info.
+// Access model: the leadId is the secret — same as the public offer
+// GET route and the device-edit route, since the customer reaches this
+// from their own private offer link. No sign-in required; the owner
+// gets an SMS on every change.
 //
 // On success: posts a [CONTACT-UPDATE: leadId] marker to MC carrying
 // the new phone. The offer GET route parses the latest such marker and
@@ -15,7 +15,6 @@
 // Skywalker 2026-05-20.
 
 import { NextRequest, NextResponse } from "next/server";
-import { getCustomerSessionFromCookies } from "../../../../lib/auth";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -33,10 +32,6 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   const { leadId } = await ctx.params;
   if (!leadId || !/^[\w-]+$/.test(leadId)) {
     return NextResponse.json({ error: "Invalid offer id" }, { status: 400 });
-  }
-  const session = await getCustomerSessionFromCookies();
-  if (!session) {
-    return NextResponse.json({ error: "Sign in to update your contact info." }, { status: 401 });
   }
   if (!MC_KEY) {
     return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
@@ -56,7 +51,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // Strip characters that would break the MC marker / lead parser.
   const phoneClean = phone.replace(/[\[\]\n\r]/g, " ").trim().slice(0, 40);
 
-  // Pull the lead body to verify ownership.
+  // Pull the lead body to confirm it's a real buyback lead.
   const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
     headers: { "x-api-key": MC_KEY },
     cache: "no-store",
@@ -65,14 +60,8 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   const data = await r.json();
   const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
   const leadMsg = messages.find((m) => m.id === leadId);
-  if (!leadMsg?.body) {
+  if (!leadMsg?.body || !/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(leadMsg.body)) {
     return NextResponse.json({ error: "Offer not found" }, { status: 404 });
-  }
-
-  // Verify the signed-in customer owns this offer.
-  const leadEmail = field(leadMsg.body, "Email")?.toLowerCase();
-  if (!leadEmail || leadEmail !== session.email.toLowerCase()) {
-    return NextResponse.json({ error: "This offer belongs to a different account." }, { status: 403 });
   }
 
   // Already cancelled? No point editing.

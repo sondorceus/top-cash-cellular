@@ -70,7 +70,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (devices.some((d) => !d.model)) {
     return NextResponse.json({ error: "Every device needs a model." }, { status: 400 });
   }
-  const total = devices.reduce((s, d) => s + d.quote * d.quantity, 0);
+  // Each device's `quote` is already the line total (price × qty),
+  // matching the funnel/lead convention — don't multiply by qty again.
+  const total = devices.reduce((s, d) => s + d.quote, 0);
 
   // Pull the lead to verify ownership + check it's still editable.
   const r = await fetch(`${MC_API}/api/comms?limit=1000`, {

@@ -412,6 +412,18 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             at a glance, not the pipeline above it. */}
         <StatusBanner status={offer.status} cancelled={isCancelled} isShip={isShip} hasLabel={!!offer.fedexLabelUrl} />
 
+        {/* Manage callout — spells out that the offer is editable, so
+            customers know they can fix a mistake. Only while the offer
+            is still in the editable window (before it ships). */}
+        {canEditItems && (
+          <div className="bg-[#00c853]/[0.06] border border-[#00c853]/30 rounded-2xl p-4 mb-5">
+            <p className="text-sm font-bold text-white mb-1">✏️ You can still manage this offer</p>
+            <p className="text-[#bdbdbd] text-xs leading-relaxed">
+              Made a mistake? Right here you can <span className="text-white font-semibold">edit a device</span> — change its condition or storage and the quote updates instantly — <span className="text-white font-semibold">update your phone number</span>, or <span className="text-white font-semibold">cancel the offer</span>. You can do this anytime before your trade ships. All your trades live in <Link href="/account" className="text-[#00c853] font-semibold hover:underline">your account</Link>.
+            </p>
+          </div>
+        )}
+
         {/* Print Label + tracking — ship leads only */}
         {isShip && offer.fedexLabelUrl && (
           <div className="bg-[#00c853]/8 border border-[#00c853]/40 rounded-2xl p-5 mb-5">
@@ -531,7 +543,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                       <p className="text-[11px] text-[#bdbdbd]">{[it.storage, it.condition].filter(Boolean).join(" · ") || "—"}</p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-[#00c853] font-bold">${(it.quote * it.quantity).toLocaleString()}</p>
+                      <p className="text-[#00c853] font-bold">${it.quote.toLocaleString()}</p>
                       {canEditItems && !isEditing && (
                         <button
                           type="button"
@@ -581,7 +593,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                       <div className="flex items-center justify-between bg-white/[0.04] rounded-lg px-3 py-2 mb-3">
                         <span className="text-[11px] text-[#bdbdbd]">Updated estimate{it.quantity > 1 ? ` (×${it.quantity})` : ""}</span>
                         <span className={`font-extrabold ${liveQuote === it.quote ? "text-white" : "text-[#00c853]"}`}>
-                          ${(liveQuote * it.quantity).toLocaleString()}
+                          ${liveQuote.toLocaleString()}
                         </span>
                       </div>
                       {itemsError && <p className="text-red-300 text-[11px] font-semibold mb-2">{itemsError}</p>}
@@ -617,7 +629,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
 
           <div className="mt-3 pt-3 border-t border-white/15 flex items-baseline justify-between">
             <span className="text-[11px] uppercase tracking-wider text-[#e6e6e6] font-bold">Total</span>
-            <span className="text-[#00c853] font-extrabold text-lg">${items.reduce((s, it) => s + it.quote * it.quantity, 0).toLocaleString()}</span>
+            <span className="text-[#00c853] font-extrabold text-lg">${items.reduce((s, it) => s + it.quote, 0).toLocaleString()}</span>
           </div>
 
           {canEditItems && (
@@ -675,8 +687,8 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
               <div className="flex items-center gap-2 flex-wrap">
                 {offer.phone
                   ? <p className="text-[#bdbdbd] text-xs">📱 {offer.phone}</p>
-                  : isOwner && !isCancelled && <p className="text-[#888] text-xs">📱 No phone on file</p>}
-                {isOwner && !isCancelled && (
+                  : !isCancelled && <p className="text-[#888] text-xs">📱 No phone on file</p>}
+                {!isCancelled && (
                   <button
                     type="button"
                     onClick={() => { setPhoneDraft(offer.phone || ""); setEditingPhone(true); setPhoneError(""); }}

@@ -147,7 +147,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     deviceCount = devices.length;
     totalPayout = Number.isFinite(Number(itemUpdate.total))
       ? Number(itemUpdate.total)
-      : devices.reduce((s, d) => s + (d.quote || 0) * (d.quantity || 1), 0);
+      : devices.reduce((s, d) => s + (d.quote || 0), 0);
   }
 
   return NextResponse.json({

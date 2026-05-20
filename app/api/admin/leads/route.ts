@@ -870,7 +870,7 @@ export async function GET(req: NextRequest) {
       }));
       const editedTotal = Number.isFinite(Number(itemUpd.total))
         ? Number(itemUpd.total)
-        : editedDevices.reduce((s, d) => s + (d.quote || 0) * (d.quantity || 1), 0);
+        : editedDevices.reduce((s, d) => s + (d.quote || 0), 0);
       if (devicesHeaderMatch || editedDevices.length > 1) {
         devices = editedDevices;
         deviceCount = editedDevices.length;
