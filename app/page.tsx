@@ -4305,6 +4305,10 @@ export default function Home() {
   };
   // Returning-customer hint at the contact step (Option A chunk 3 — server-side detection)
   const [returningHint, setReturningHint] = useState<{ name?: string; leadCount: number } | null>(null);
+  // Returning-visitor greeting — a prior completed submission leaves a
+  // "tcc-returning" localStorage marker; read on mount to welcome them
+  // back on the landing step.
+  const [welcomeBack, setWelcomeBack] = useState<{ name: string } | null>(null);
   // Cart items snapshot the full funnel state at add-to-cart time so every
   // device in a multi-item submission carries its own chip/RAM/GPU/battery/
   // etc. answers through to the staff backend. Without these per-device
@@ -4421,6 +4425,18 @@ export default function Home() {
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [step, page, selectedSeries, selectedSubSeries]);
 
+  // Returning-visitor greeting — read the localStorage marker a prior
+  // completed submission left, so we welcome the customer back on the
+  // landing step (instant, no contact info needed).
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("tcc-returning");
+      if (raw) {
+        const d = JSON.parse(raw);
+        if (d?.name) setWelcomeBack({ name: String(d.name).slice(0, 40) });
+      }
+    } catch {}
+  }, []);
   // Returning-customer detection at contact step — debounced lookup as user types phone/email
   useEffect(() => {
     if (step !== "contact") { setReturningHint(null); return; }
@@ -7047,6 +7063,18 @@ export default function Home() {
               Reverted to clean dark hero. */}
           {/* Promo banner moved into the top nav (between logo and menu). */}
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
+            {/* Returning-visitor greeting — shows on landing when a prior
+                submission left the tcc-returning marker. */}
+            {welcomeBack && (
+              <div className="mb-5 bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
+                <span className="text-2xl">👋</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-white font-bold text-sm">Welcome back, {welcomeBack.name}!</p>
+                  <p className="text-[#d4d4d4] text-xs">Great to see you again — let&apos;s get your next device quoted.</p>
+                </div>
+                <button type="button" onClick={() => setWelcomeBack(null)} aria-label="Dismiss" className="text-[#888] hover:text-white text-xl leading-none shrink-0 cursor-pointer">×</button>
+              </div>
+            )}
             <h1 className="text-4xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up" style={{ letterSpacing: "-0.03em" }}>
               Get top dollar<br />for your device.
             </h1>
@@ -10630,6 +10658,12 @@ export default function Home() {
                   if (d?.leadId) setSubmittedLeadId(d.leadId);
                 }
                 setSubmittedLabel(leadLabel);
+                // Leave a returning-visitor marker so a future visit
+                // gets a "welcome back" greeting on the landing step.
+                try {
+                  const fn = name.trim().split(/\s+/)[0];
+                  if (fn) localStorage.setItem("tcc-returning", JSON.stringify({ name: fn, at: Date.now() }));
+                } catch {}
                 // GA4 conversion event — fires once per successful
                 // submission. Critical: we ship ESTIMATED PROFIT MARGIN
                 // as the `value`, not the customer's quote (which is
@@ -11212,19 +11246,24 @@ export default function Home() {
               {/* Best contact method — collapsed to a tiny link by
                   default; expands on tap, stays open once a choice is
                   made. Skywalker 2026-05-20. */}
-              {!reachOpen && !bestContact ? (
+              {!reachOpen ? (
                 <button
                   type="button"
                   onClick={() => setReachOpen(true)}
-                  className="text-[12px] font-semibold text-[#00c853] hover:text-[#00e676] cursor-pointer"
+                  className="text-[12px] font-semibold text-[#00c853] hover:text-[#00e676] cursor-pointer text-left"
                 >
-                  📞 Best way to reach you?
+                  📞 {bestContact
+                    ? `Best contact: ${bestContact === "text" ? "Text" : bestContact === "call" ? "Call" : "Email"} — tap to change`
+                    : "Best way to reach you?"}
                 </button>
               ) : (
                 <div>
-                  <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
-                    Best way to reach you <span className="normal-case text-[11px] text-[#888]">(optional)</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">
+                      Best way to reach you <span className="normal-case text-[11px] text-[#888]">(optional)</span>
+                    </label>
+                    <button type="button" onClick={() => setReachOpen(false)} className="text-[11px] text-[#888] hover:text-white cursor-pointer shrink-0">▲ Hide</button>
+                  </div>
                   <div className="grid grid-cols-3 gap-2">
                     {([
                       { id: "text" as const, label: "Text", emoji: "💬", hint: "SMS" },
@@ -11254,25 +11293,28 @@ export default function Home() {
                   it general; trimmed + 500-char capped server-side. */}
               {/* "Anything else" note — collapsed to a tiny link by
                   default; expands on tap, stays expanded once typed. */}
-              {!noteOpen && !customerNote ? (
+              {!noteOpen ? (
                 <button
                   type="button"
                   onClick={() => setNoteOpen(true)}
-                  className="text-[12px] font-semibold text-[#00c853] hover:text-[#00e676] cursor-pointer"
+                  className="text-[12px] font-semibold text-[#00c853] hover:text-[#00e676] cursor-pointer text-left"
                 >
-                  📝 Anything else we should know?
+                  📝 {customerNote ? "Note added — tap to edit" : "Anything else we should know?"}
                 </button>
               ) : (
                 <div>
-                  <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
-                    Anything else we should know? <span className="normal-case text-[11px] text-[#888]">(optional)</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">
+                      Anything else we should know? <span className="normal-case text-[11px] text-[#888]">(optional)</span>
+                    </label>
+                    <button type="button" onClick={() => setNoteOpen(false)} className="text-[11px] text-[#888] hover:text-white cursor-pointer shrink-0">▲ Hide</button>
+                  </div>
                   <textarea
                     value={customerNote}
                     onChange={(e) => setCustomerNote(e.target.value.slice(0, 500))}
                     rows={2}
                     maxLength={500}
-                    autoFocus={noteOpen}
+                    autoFocus
                     placeholder="Building buzzer, accessory details, device quirks, best time to reach you…"
                     className="w-full px-4 py-3 tcc-input text-sm resize-none"
                   />
@@ -11307,9 +11349,12 @@ export default function Home() {
                 </button>
               ) : (
                 <div>
-                  <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
-                    Thank-you code <span className="normal-case text-[11px] text-[#888]">(optional)</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">
+                      Thank-you code <span className="normal-case text-[11px] text-[#888]">(optional)</span>
+                    </label>
+                    <button type="button" onClick={() => setCouponOpen(false)} className="text-[11px] text-[#888] hover:text-white cursor-pointer shrink-0">▲ Hide</button>
+                  </div>
                   <div className="flex gap-2">
                     <input
                       type="text"
