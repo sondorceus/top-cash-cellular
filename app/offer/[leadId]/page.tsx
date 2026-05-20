@@ -93,6 +93,14 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [shareNotice, setShareNotice] = useState("");
+  // Customer ownership — populated from /api/auth/me. Drives the real
+  // Cancel button (only the signed-in owner sees it; everyone else gets
+  // the email-staff fallback).
+  const [me, setMe] = useState<{ email: string; isAdmin?: boolean } | null>(null);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState("");
+  const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
+  const [cancelNote, setCancelNote] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -101,6 +109,9 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
       .then(async (r) => {
         if (cancelled) return;
         if (r.status === 404) { setError("We couldn't find this offer. Double-check the link."); setOffer(null); return; }
+        // 502 means MC is briefly unavailable — soften the message so
+        // the customer doesn't think their offer is lost.
+        if (r.status === 502 || r.status === 503) { setError("Our offer service is briefly unavailable — refresh in a moment. Your offer is safe."); setOffer(null); return; }
         if (!r.ok) { setError("Couldn't load this offer. Try refreshing."); setOffer(null); return; }
         const data: Offer = await r.json();
         setOffer(data);
@@ -109,6 +120,43 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [leadId]);
+
+  // Fetch the signed-in user to check ownership for the real cancel
+  // button. Runs in parallel with the offer fetch — falls back to the
+  // email-staff CTA if not signed in or email doesn't match.
+  useEffect(() => {
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then(async (r) => {
+        if (!r.ok) return;
+        const d = await r.json();
+        if (d?.authenticated) setMe({ email: d.email, isAdmin: !!d.isAdmin });
+      })
+      .catch(() => {});
+  }, []);
+
+  const doCancel = async () => {
+    setCancelling(true);
+    setCancelError("");
+    try {
+      const r = await fetch(`/api/offer/${encodeURIComponent(leadId)}/cancel`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ note: cancelNote.trim() || undefined }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setCancelError(d.error || "Couldn't cancel — try again or email us.");
+        return;
+      }
+      // Optimistic update so the page reflects cancellation immediately.
+      setOffer((prev) => prev ? { ...prev, status: "rejected", cancelled: true } : prev);
+      setCancelConfirmOpen(false);
+    } catch {
+      setCancelError("Network error — try again.");
+    } finally {
+      setCancelling(false);
+    }
+  };
 
   // Checklist (only meaningful for ship leads). Hooks must run unconditionally,
   // so we always compute them — just hide the section when not shipping.
@@ -195,8 +243,16 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           </div>
         )}
 
-        {/* Hero — offer number, date, status badge, total */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-5">
+        {/* "A copy has been sent" confirmation line — mirrors IWM's
+            post-submit reassurance. Only shows when we have the email. */}
+        {offer.email && !isCancelled && (
+          <p className="text-center text-[#bdbdbd] text-xs mb-4">
+            A copy of this information has been sent to <span className="text-white font-semibold">{offer.email}</span>
+          </p>
+        )}
+
+        {/* Hero — offer number, date, payout total */}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-3">
           <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
             <div>
               <p className="text-[10px] text-[#888] uppercase tracking-[0.18em] font-bold mb-1">Offer</p>
@@ -206,20 +262,17 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             <div className="text-right">
               <p className="text-[10px] text-[#888] uppercase tracking-[0.18em] font-bold mb-1">Total payout</p>
               <p className="text-3xl font-extrabold text-[#00c853]">{total}</p>
-              {offer.payout && <p className="text-[#bdbdbd] text-xs mt-1">{offer.payout}</p>}
+              {offer.payout && <p className="text-[#bdbdbd] text-xs mt-1">Payout via {offer.payout}</p>}
             </div>
           </div>
 
-          {/* Status badge */}
-          {isCancelled ? (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3">
-              <p className="text-red-300 font-bold text-sm">↩️ Offer cancelled</p>
-              <p className="text-red-200/80 text-xs mt-0.5">Reach out to <a href="mailto:CustomerService@topcashcells.com" className="underline">CustomerService@topcashcells.com</a> with any questions.</p>
-            </div>
-          ) : (
-            <StatusPipeline status={offer.status} />
-          )}
+          {!isCancelled && <StatusPipeline status={offer.status} />}
         </div>
+
+        {/* Big prominent status banner — mirrors IWM's "Awaiting Shipment"
+            block. Visual hierarchy: this is what the customer should see
+            at a glance, not the pipeline above it. */}
+        <StatusBanner status={offer.status} cancelled={isCancelled} isShip={isShip} hasLabel={!!offer.fedexLabelUrl} />
 
         {/* Print Label + tracking — ship leads only */}
         {isShip && offer.fedexLabelUrl && (
@@ -352,27 +405,109 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           </div>
         </div>
 
-        {/* Modify / cancel — placeholder (real workflows route through staff) */}
+        {/* Modify your trade-in — header section. Item-edit + add-item
+            modals will come later; for now the modify path routes
+            through email-staff. The cancel path is real (auth-gated)
+            for signed-in owners. */}
         {!isPaid && !isCancelled && (
           <div className="bg-white/[0.02] border border-white/8 rounded-2xl p-5 mb-5">
-            <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-2">Need to make a change?</p>
-            <p className="text-[#bdbdbd] text-xs mb-3 leading-relaxed">
-              You can modify or cancel this offer up until we&apos;ve received it. Email us with your offer number above and we&apos;ll handle it.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Modify your trade-in offer</p>
+                <p className="text-[#bdbdbd] text-xs leading-relaxed">
+                  You may make changes to this offer up until we&apos;ve received it at our warehouse.
+                </p>
+              </div>
+            </div>
+
+            {/* Add a device (placeholder — real flow needs a search +
+                quote-recompute backend that doesn't exist yet). */}
+            <div className="bg-white/[0.03] border border-white/8 rounded-xl p-3 mb-2 flex items-center gap-3">
+              <span className="text-lg shrink-0">➕</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-white">Add another device to this offer</p>
+                <p className="text-[11px] text-[#bdbdbd]">Email us — we&apos;ll re-quote and combine into one label.</p>
+              </div>
               <a
-                href={`mailto:CustomerService@topcashcells.com?subject=${encodeURIComponent("Modify offer " + offer.id)}`}
-                className="flex-1 px-4 py-2.5 bg-white/5 border border-white/15 rounded-xl text-sm font-semibold text-center hover:bg-white/10 transition"
+                href={`mailto:CustomerService@topcashcells.com?subject=${encodeURIComponent("Add device to offer " + offer.id)}`}
+                className="px-3 py-1.5 bg-white/5 border border-white/15 hover:bg-white/10 rounded-lg text-xs font-bold transition shrink-0"
               >
-                ✏️ Modify offer
-              </a>
-              <a
-                href={`mailto:CustomerService@topcashcells.com?subject=${encodeURIComponent("Cancel offer " + offer.id)}`}
-                className="flex-1 px-4 py-2.5 bg-white/5 border border-red-500/20 text-[#ff8088] rounded-xl text-sm font-semibold text-center hover:bg-red-500/10 transition"
-              >
-                ✕ Cancel offer
+                Email us
               </a>
             </div>
+
+            {/* Modify existing items (placeholder). */}
+            <div className="bg-white/[0.03] border border-white/8 rounded-xl p-3 mb-3 flex items-center gap-3">
+              <span className="text-lg shrink-0">✏️</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-white">Change condition, storage, or carrier</p>
+                <p className="text-[11px] text-[#bdbdbd]">Email us with the corrected details and we&apos;ll update your quote.</p>
+              </div>
+              <a
+                href={`mailto:CustomerService@topcashcells.com?subject=${encodeURIComponent("Modify offer " + offer.id)}`}
+                className="px-3 py-1.5 bg-white/5 border border-white/15 hover:bg-white/10 rounded-lg text-xs font-bold transition shrink-0"
+              >
+                Email us
+              </a>
+            </div>
+
+            {/* Real cancel — auth-gated to the owner. Email fallback for
+                anyone else with the link (they shouldn't be able to
+                cancel someone else's offer). */}
+            {me && offer.email && me.email.toLowerCase() === offer.email.toLowerCase() ? (
+              <>
+                {!cancelConfirmOpen ? (
+                  <button
+                    type="button"
+                    onClick={() => setCancelConfirmOpen(true)}
+                    className="w-full px-4 py-2.5 bg-red-500/10 border border-red-500/30 text-[#ff8088] rounded-xl text-sm font-bold hover:bg-red-500/15 transition cursor-pointer"
+                  >
+                    ✕ Cancel this offer
+                  </button>
+                ) : (
+                  <div className="bg-red-500/10 border border-red-500/40 rounded-xl p-4">
+                    <p className="text-red-200 font-bold text-sm mb-2">Cancel offer #{offer.id.slice(0, 10).toUpperCase()}?</p>
+                    <p className="text-red-200/80 text-[11px] mb-3">{isShip ? "Your shipping label will stop working. You can always start a new offer from the home page." : "Your meetup slot will be released. You can always start a new offer."}</p>
+                    <textarea
+                      value={cancelNote}
+                      onChange={(e) => setCancelNote(e.target.value.slice(0, 200))}
+                      placeholder="Reason (optional) — helps us improve"
+                      rows={2}
+                      className="w-full px-3 py-2 mb-3 bg-black/40 border border-white/10 rounded-lg text-xs text-white placeholder:text-[#888] focus:outline-none focus:border-red-400 resize-none"
+                    />
+                    {cancelError && (
+                      <p className="text-red-300 text-[11px] font-semibold mb-2">{cancelError}</p>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={doCancel}
+                        disabled={cancelling}
+                        className="flex-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-extrabold cursor-pointer disabled:opacity-50 transition"
+                      >
+                        {cancelling ? "Cancelling…" : "Yes, cancel my offer"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setCancelConfirmOpen(false); setCancelError(""); }}
+                        disabled={cancelling}
+                        className="px-3 py-2 bg-white/5 border border-white/15 rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50 transition"
+                      >
+                        Keep offer
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <a
+                href={`mailto:CustomerService@topcashcells.com?subject=${encodeURIComponent("Cancel offer " + offer.id)}`}
+                className="block w-full px-4 py-2.5 bg-white/5 border border-red-500/20 text-[#ff8088] rounded-xl text-sm font-semibold text-center hover:bg-red-500/10 transition"
+                title={me ? "Sign in with the account that submitted this offer to cancel directly" : "Sign in to cancel directly, or email us"}
+              >
+                ✕ Cancel offer (email us)
+              </a>
+            )}
           </div>
         )}
 
@@ -383,6 +518,52 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         </div>
       </div>
     </main>
+  );
+}
+
+// Big prominent status banner under the pipeline. Mirrors the IWM
+// "Awaiting Shipment" callout — one strong sentence telling the
+// customer exactly where their offer stands right now.
+function StatusBanner({ status, cancelled, isShip, hasLabel }: { status: string; cancelled: boolean; isShip: boolean; hasLabel: boolean }) {
+  let title = "";
+  let detail = "";
+  let tone = "bg-white/5 border-white/10 text-white";
+  if (cancelled) {
+    title = "↩️ Offer Cancelled";
+    detail = "This trade was cancelled. Reach out if you'd like to start a new offer.";
+    tone = "bg-red-500/10 border-red-500/40 text-red-200";
+  } else if (status === "paid" || status === "met") {
+    title = "💵 Paid";
+    detail = "Payout sent — thanks for selling with us.";
+    tone = "bg-emerald-500/10 border-emerald-500/40 text-emerald-200";
+  } else if (status === "tested") {
+    title = "🔍 In Inspection";
+    detail = "We're verifying your device matches the quote. Payout fires the moment it clears.";
+    tone = "bg-amber-500/10 border-amber-500/40 text-amber-200";
+  } else if (status === "received") {
+    title = "📬 Received";
+    detail = "Your package landed in Austin. Inspection happens within 24 hrs of arrival.";
+    tone = "bg-violet-500/10 border-violet-500/40 text-violet-200";
+  } else if (status === "shipped") {
+    title = "📦 Shipped";
+    detail = "Your package is on its way. Most arrive within 3-5 business days via FedEx Ground.";
+    tone = "bg-sky-500/10 border-sky-500/40 text-sky-200";
+  } else if (isShip) {
+    title = "⏳ Awaiting Shipment";
+    detail = hasLabel
+      ? "We're waiting for your offer to be shipped to our warehouse. Print your label below and drop off when you're ready — 21 days from offer creation."
+      : "We're waiting on your prepaid label. Check your email — it usually lands within the hour.";
+    tone = "bg-[#00c853]/10 border-[#00c853]/40 text-[#00c853]";
+  } else {
+    title = "🤝 Awaiting Meetup";
+    detail = "Watch your texts — we'll confirm a public Austin spot shortly.";
+    tone = "bg-[#00c853]/10 border-[#00c853]/40 text-[#00c853]";
+  }
+  return (
+    <div className={`rounded-2xl px-5 py-4 mb-5 border ${tone}`}>
+      <p className="font-extrabold text-base mb-1">{title}</p>
+      <p className="text-xs leading-relaxed opacity-90">{detail}</p>
+    </div>
   );
 }
 
