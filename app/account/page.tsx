@@ -241,7 +241,7 @@ export default function AccountPage() {
               {open.map(t => {
                 const meta = STATUS_DISPLAY[t.status] || STATUS_DISPLAY.quote_requested;
                 return (
-                  <div key={t.id} className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                  <a key={t.id} href={`/offer/${encodeURIComponent(t.id)}`} className="block bg-white/5 border border-white/10 rounded-2xl p-4 hover:border-[#00c853]/40 hover:bg-white/[0.07] transition">
                     <div className="flex items-start justify-between gap-3 flex-wrap">
                       <div className="min-w-0 flex-1">
                         <p className="text-base font-bold">{t.model || t.device || "Device"}</p>
@@ -258,14 +258,11 @@ export default function AccountPage() {
                       </div>
                     </div>
                     {t.fedexTracking && (
-                      <a
-                        href={`/track?lead=${encodeURIComponent(t.id)}`}
-                        className="mt-3 inline-flex items-center gap-1.5 text-xs text-[#00c853] hover:underline font-semibold"
-                      >
-                        📦 Track FedEx ({t.fedexTracking}) →
-                      </a>
+                      <span className="mt-3 inline-flex items-center gap-1.5 text-xs text-[#00c853] font-semibold">
+                        📦 FedEx label ready — open offer to print →
+                      </span>
                     )}
-                  </div>
+                  </a>
                 );
               })}
             </div>
@@ -281,7 +278,7 @@ export default function AccountPage() {
                 const meta = STATUS_DISPLAY[t.status] || STATUS_DISPLAY.quote_requested;
                 return (
                   <div key={t.id} className="bg-white/5 border border-white/10 rounded-xl p-3">
-                    <div className="flex items-center justify-between gap-3">
+                    <a href={`/offer/${encodeURIComponent(t.id)}`} className="flex items-center justify-between gap-3 hover:opacity-80 transition">
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-bold truncate">{t.model || t.device || "Device"}</p>
                         <p className="text-[11px] text-[#888]">{[t.storage, t.condition].filter(Boolean).join(" · ")} · {timeAgo(t.timestamp)}</p>
@@ -292,7 +289,7 @@ export default function AccountPage() {
                           {meta.emoji} {meta.label}
                         </span>
                       </div>
-                    </div>
+                    </a>
                     {/* Two-tap repeat sale — prefills the funnel with the
                         same device/storage/condition and drops the customer
                         at the quote step. Only shown on finished trades

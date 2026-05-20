@@ -1,0 +1,148 @@
+// GET /api/offer/[leadId] — single-offer detail for the customer-facing
+// /offer/[leadId] page. Returns parsed lead body + status pipeline +
+// FedEx label + tracking. Public — the leadId itself (a UUID-shaped MC
+// message id) is the secret. Follows the same trust model as FedEx /
+// UPS tracking-number links. Skywalker 2026-05-19.
+
+import { NextRequest, NextResponse } from "next/server";
+
+const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
+const MC_KEY = process.env.MC_API_KEY || "";
+
+const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "met", "rejected"];
+
+function field(body: string, key: string): string | undefined {
+  const m = body.match(new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i"));
+  return m?.[1]?.trim() || undefined;
+}
+
+export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: string }> }) {
+  const { leadId } = await ctx.params;
+  if (!leadId || !/^[\w-]+$/.test(leadId)) {
+    return NextResponse.json({ error: "Invalid offer id" }, { status: 400 });
+  }
+  if (!MC_KEY) {
+    return NextResponse.json({ error: "Offer service unavailable" }, { status: 503 });
+  }
+  const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
+    headers: { "x-api-key": MC_KEY },
+    cache: "no-store",
+  });
+  if (!r.ok) return NextResponse.json({ error: "Offer service unavailable" }, { status: 502 });
+  const data = await r.json();
+  const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
+  const leadMsg = messages.find((m) => m.id === leadId);
+  if (!leadMsg?.body) {
+    return NextResponse.json({ found: false }, { status: 404 });
+  }
+  const body = leadMsg.body;
+  if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(body)) {
+    return NextResponse.json({ found: false }, { status: 404 });
+  }
+
+  // Parse the status + label markers tied to this lead.
+  let status = "quote_requested";
+  let statusAt = "";
+  let fedexTracking = "";
+  let fedexLabelUrl = "";
+  let fedexService = "";
+  let fedexErrorKind = "";
+  let fedexErrorReason = "";
+  for (const m of messages) {
+    if (!m.body) continue;
+    const sm = m.body.match(new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
+    if (sm && STATUSES.includes(sm[1].toLowerCase())) {
+      if (!statusAt || m.timestamp > statusAt) {
+        status = sm[1].toLowerCase();
+        statusAt = m.timestamp;
+      }
+    }
+    if (m.body.includes(`[LABEL: ${leadId}]`)) {
+      const t = m.body.match(/tracking=([^\s]+)/i)?.[1];
+      const u = m.body.match(/url=([^\s]+)/i)?.[1];
+      const sv = m.body.match(/service=([^\s]+)/i)?.[1];
+      if (t && u) { fedexTracking = t; fedexLabelUrl = u; if (sv) fedexService = sv; }
+    }
+    if (m.body.includes(`[LABEL-FAILED: ${leadId}]`)) {
+      const k = m.body.match(/kind=([^\s]+)/i)?.[1];
+      const reason = m.body.match(/reason=(.+)$/im)?.[1]?.trim();
+      if (!fedexTracking) {
+        fedexErrorKind = k || "";
+        fedexErrorReason = reason || "";
+      }
+    }
+  }
+
+  // Parse handoff method + address + slot from the lead body.
+  const handoffLine = field(body, "Handoff")?.toLowerCase() || "";
+  const handoffMethod: "ship" | "local" | undefined =
+    handoffLine.includes("ship") ? "ship" :
+    handoffLine.includes("local") ? "local" : undefined;
+  const shipAddress = handoffMethod === "ship" ? {
+    street: field(body, "Street"),
+    unit: field(body, "Unit"),
+    city: field(body, "City"),
+    state: field(body, "State"),
+    zip: field(body, "Zip") || field(body, "ZIP"),
+  } : undefined;
+  const localSlot = handoffMethod === "local" ? field(body, "Slot") : undefined;
+
+  // Multi-device parsing — same shape /api/admin/leads emits, simplified.
+  let devices: Array<{ model: string; storage?: string; condition?: string; quote?: number; quantity?: number }> | undefined;
+  let deviceCount: number | undefined;
+  let totalPayout: number | undefined;
+  const headerMatch = body.match(/^Devices:\s*(\d+)\s*$/m);
+  if (headerMatch) {
+    deviceCount = parseInt(headerMatch[1], 10) || undefined;
+    const lines = body.split("\n");
+    const re = /^\s{2,4}(\d+)\.\s+([^·\n]+?)(?:\s·\s+([^·\n]+?))?(?:\s·\s+([^·\n]+?))?(?:\s·\s+\$([0-9,]+))?(?:\s+\(×(\d+)\))?\s*$/;
+    devices = [];
+    for (const line of lines) {
+      const dm = line.match(re);
+      if (!dm) continue;
+      const [, , dLabel, dStorage, dCondition, dQuote, dQty] = dm;
+      devices.push({
+        model: dLabel.trim(),
+        storage: dStorage?.trim(),
+        condition: dCondition?.trim(),
+        quote: dQuote ? parseInt(dQuote.replace(/,/g, ""), 10) : undefined,
+        quantity: dQty ? parseInt(dQty, 10) : undefined,
+      });
+    }
+    const totalMatch = body.match(/^Total payout:\s*\$([0-9,]+)/m);
+    if (totalMatch) totalPayout = parseInt(totalMatch[1].replace(/,/g, ""), 10);
+  }
+
+  // Cancellation / deletion check — staff can soft-delete leads.
+  const cancelled = messages.some((m) => m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
+
+  return NextResponse.json({
+    found: true,
+    id: leadId,
+    timestamp: leadMsg.timestamp,
+    name: field(body, "Name"),
+    phone: field(body, "Phone"),
+    email: field(body, "Email"),
+    device: field(body, "Device"),
+    model: field(body, "Model"),
+    storage: field(body, "Storage"),
+    condition: field(body, "Condition"),
+    carrier: field(body, "Carrier"),
+    quote: field(body, "Quote"),
+    payout: field(body, "Payout"),
+    handoffMethod,
+    shipAddress,
+    localSlot,
+    devices,
+    deviceCount,
+    totalPayout,
+    status: cancelled ? "rejected" : status,
+    statusAt,
+    fedexTracking: fedexTracking || undefined,
+    fedexLabelUrl: fedexLabelUrl || undefined,
+    fedexService: fedexService || undefined,
+    fedexErrorKind: fedexErrorKind || undefined,
+    fedexErrorReason: fedexErrorReason || undefined,
+    cancelled,
+  }, { headers: { "Cache-Control": "no-store" } });
+}

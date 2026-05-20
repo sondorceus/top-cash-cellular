@@ -4340,6 +4340,11 @@ export default function Home() {
   // 2026-05-17 — "when I submit it only shows 1 device on both the
   // page confirmation and on email it should reflect multiple".
   const [submittedDevices, setSubmittedDevices] = useState<Array<{ model: string; storage: string; condition: string; price: number; quantity: number; image?: string }> | null>(null);
+  // Captured from the /api/lead response so the done step + thank-you
+  // section can link to /offer/[leadId] for the full offer-management
+  // page (status, print label, shipping checklist, modify/cancel).
+  // Skywalker 2026-05-19.
+  const [submittedLeadId, setSubmittedLeadId] = useState<string | null>(null);
   // FedEx label info returned from /api/lead when a ship lead was submitted.
   // Used by the done page to render a Print-your-label CTA for shipping
   // customers. Skywalker 2026-05-17.
@@ -10507,6 +10512,7 @@ export default function Home() {
                   const d = await r.json().catch(() => ({}));
                   if (d?.fedexLabel) leadLabel = d.fedexLabel;
                   if (d?.fedexError) setSubmittedLabelError(d.fedexError);
+                  if (d?.leadId) setSubmittedLeadId(d.leadId);
                 } else {
                   const singleKey = model && condition ? `${model.id}-${storage?.label || 'N/A'}-${condition.label}` : "";
                   const singlePhotos = (singleKey && liveMap[singleKey]) || photoUrls;
@@ -10519,6 +10525,7 @@ export default function Home() {
                   const d = await res.json().catch(() => ({}));
                   if (d?.fedexLabel) leadLabel = d.fedexLabel;
                   if (d?.fedexError) setSubmittedLabelError(d.fedexError);
+                  if (d?.leadId) setSubmittedLeadId(d.leadId);
                 }
                 setSubmittedLabel(leadLabel);
                 // GA4 conversion event — fires once per successful
@@ -11641,15 +11648,38 @@ export default function Home() {
               )}
             </div>
 
-            {/* TRACK YOUR TRADE — self-serve status page. Always visible
-                on done step so customers know they can check status
-                without texting us. Skywalker 2026-05-19. */}
+            {/* MANAGE YOUR OFFER — single-offer permalink (richer than
+                /track, which is a multi-lead lookup). Shows status,
+                print label, shipping checklist, contact info, modify/
+                cancel. Skywalker 2026-05-19. */}
+            {submittedLeadId && (
+              <div className="tcc-card rounded-2xl p-5 mb-4">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Your offer</p>
+                <p className="text-white text-base font-bold mb-1">🧾 Offer #{submittedLeadId.slice(0, 10).toUpperCase()}</p>
+                <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">
+                  Print your label, see live status, walk through the shipping checklist, or modify the offer — anytime, from this link.
+                </p>
+                <a
+                  href={`/offer/${encodeURIComponent(submittedLeadId)}`}
+                  className="inline-flex items-center justify-center gap-2 w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-sm px-4 py-3 rounded-full transition cursor-pointer"
+                >
+                  Manage my offer →
+                </a>
+                <p className="text-[10px] text-[#888] mt-2 text-center">
+                  Bookmark this link or check your email — we just sent it.
+                </p>
+              </div>
+            )}
+
+            {/* TRACK YOUR TRADE — multi-lead lookup (phone/email). Stays
+                as the fallback for customers who lose the direct offer
+                link. Skywalker 2026-05-19. */}
             {(phone || email) && (
               <div className="tcc-card rounded-2xl p-5 mb-6">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Track your trade</p>
-                <p className="text-white text-base font-bold mb-1">📍 Bookmark this link</p>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">All your trades</p>
+                <p className="text-white text-base font-bold mb-1">📍 Track every trade you've sent us</p>
                 <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">
-                  See live status, FedEx scans, and your payout method anytime — no password, just your phone or email.
+                  No password — just your phone or email. Past trades, live status, FedEx scans.
                 </p>
                 <a
                   href={`/track?${phone ? `phone=${encodeURIComponent(phone.replace(/\D/g, ""))}` : `email=${encodeURIComponent(email || "")}`}`}
@@ -11657,9 +11687,6 @@ export default function Home() {
                 >
                   Open my tracking page →
                 </a>
-                <p className="text-[10px] text-[#888] mt-2 text-center">
-                  Also linked in the confirmation email we just sent.
-                </p>
               </div>
             )}
 
