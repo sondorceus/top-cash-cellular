@@ -12,7 +12,7 @@ const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
 // has no predictable slug so it only renders once YELP_URL is set.
 // Skywalker 2026-05-19.
 const TRUSTPILOT_URL = process.env.TRUSTPILOT_URL || "https://www.trustpilot.com/review/topcashcellular.com";
-const YELP_URL = process.env.YELP_URL || "";
+const YELP_URL = process.env.YELP_URL || "https://www.yelp.com/biz/top-cash-cellular-austin";
 
 async function sendSms(to: string, body: string): Promise<boolean> {
   if (!TWILIO_SID || !TWILIO_AUTH) return false;
