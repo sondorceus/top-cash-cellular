@@ -579,6 +579,17 @@ export async function POST(req: NextRequest) {
     }
   } catch {}
 
+  // FedEx label minting must NOT depend on MC being reachable — the
+  // customer paid us their time, they need their prepaid label even
+  // if Mission Control is down. When MC didn't hand back a message id
+  // (outage, auth failure), fall back to a timestamp-based id so the
+  // label still gets a PO number + a unique blob path. The [LABEL:]
+  // marker post stays gated on the REAL leadId since it needs MC
+  // anyway — staff reconcile from the FedEx PO number on the label.
+  // Skywalker 2026-05-19: caught when MC was down and submits stopped
+  // producing labels entirely.
+  const effectiveLeadId = leadId || `offline-${Date.now().toString(36)}`;
+
   // AI photo QA — fire-and-forget via Next.js after(). The customer's
   // funnel already returned by the time Claude Sonnet finishes the
   // vision call (~5-15s), and the [AI-FLAG] / [AI-NOTE] marker shows
@@ -846,7 +857,7 @@ Pick the best channel per device. Be concise.`;
         } catch {}
       }
     }
-    if (h.method === "ship" && hasFullAddress && phoneDigits.length >= 10 && leadId) {
+    if (h.method === "ship" && hasFullAddress && phoneDigits.length >= 10) {
       // Multi-device shipments fit in ONE box. Total weight = sum of
       // per-device defaults + 2 lb packaging. Skywalker 2026-05-18:
       // FedEx bills the actual scanned weight regardless of what we
@@ -902,32 +913,36 @@ Pick the best channel per device. Be concise.`;
           deviceKind: deviceKindFromString(model as string),
           weightLbs: totalWeight,
           customerReference: refText,
-          poNumber: `TCC-${leadId}`,
+          poNumber: `TCC-${effectiveLeadId}`,
         });
         // Upload to Vercel Blob — random suffix so the tracking number
         // alone can't be pivoted to a leaked label.
         const pdfBytes = Buffer.from(label.labelPdfBase64, "base64");
-        const blob = await put(`fedex-labels/${leadId}-${Date.now()}.pdf`, pdfBytes, {
+        const blob = await put(`fedex-labels/${effectiveLeadId}-${Date.now()}.pdf`, pdfBytes, {
           access: "public",
           contentType: "application/pdf",
         });
         fedexLabel = { tracking: label.trackingNumber, url: blob.url, service: label.serviceType };
         // Post the [LABEL: <leadId>] marker so the admin GET parser
-        // attaches tracking + URL to the lead row.
-        try {
-          await fetch(`${MC_API}/api/comms`, {
-            method: "POST",
-            headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-            body: JSON.stringify({
-              from: "topcash-web",
-              fromName: "Top Cash Cellular",
-              role: "system",
-              body: `[LABEL: ${leadId}] tracking=${label.trackingNumber} url=${blob.url} service=${label.serviceType}`,
-              tags: ["fedex-label", "auto-generated"],
-              priority: "low",
-            }),
-          });
-        } catch {}
+        // attaches tracking + URL to the lead row. Gated on a REAL
+        // leadId — when MC is down there's nothing to attach it to;
+        // the label is still returned to the customer regardless.
+        if (leadId) {
+          try {
+            await fetch(`${MC_API}/api/comms`, {
+              method: "POST",
+              headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                from: "topcash-web",
+                fromName: "Top Cash Cellular",
+                role: "system",
+                body: `[LABEL: ${leadId}] tracking=${label.trackingNumber} url=${blob.url} service=${label.serviceType}`,
+                tags: ["fedex-label", "auto-generated"],
+                priority: "low",
+              }),
+            });
+          } catch {}
+        }
       } catch (err) {
         // Classify so the done page can show actionable feedback.
         // FedEx error bodies contain JSON like:
@@ -943,26 +958,29 @@ Pick the best channel per device. Be concise.`;
         // broken (key expired, API down, account suspended); SMS owner
         // immediately so we can fix before more leads pile up.
         reportError("fedex.label.mint", err, {
-          leadId,
+          leadId: leadId || effectiveLeadId,
           critical: !addressy,
           extra: { kind: fedexError.kind, weight: totalWeight, deviceCount: deviceList.length || 1 },
         });
         // Post a marker so admin can see which leads need a manual
         // label generation. Sanitized message — no FedEx key leakage.
-        try {
-          await fetch(`${MC_API}/api/comms`, {
-            method: "POST",
-            headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-            body: JSON.stringify({
-              from: "topcash-web",
-              fromName: "Top Cash Cellular",
-              role: "system",
-              body: `[LABEL-FAILED: ${leadId}] kind=${fedexError.kind} reason=${raw.replace(/[\n\r]/g, " ").slice(0, 300)}`,
-              tags: ["fedex-label", "failed"],
-              priority: "high",
-            }),
-          });
-        } catch {}
+        // Gated on a real leadId — without MC there's no row to flag.
+        if (leadId) {
+          try {
+            await fetch(`${MC_API}/api/comms`, {
+              method: "POST",
+              headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                from: "topcash-web",
+                fromName: "Top Cash Cellular",
+                role: "system",
+                body: `[LABEL-FAILED: ${leadId}] kind=${fedexError.kind} reason=${raw.replace(/[\n\r]/g, " ").slice(0, 300)}`,
+                tags: ["fedex-label", "failed"],
+                priority: "high",
+              }),
+            });
+          } catch {}
+        }
       }
       }
     }
