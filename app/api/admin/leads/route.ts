@@ -983,10 +983,14 @@ export async function GET(req: NextRequest) {
       latestNote: latestNote?.text,
       latestNoteAt: latestNote?.timestamp,
       noteCount: notes.length,
-      resellEstimate,
-      grossMargin,
-      marginPercent,
-      marginFlag,
+      // Submit-time margin fields go stale once a customer edits the
+      // device — drop them on edited leads so staff rely on the live
+      // compMargin (recomputed below on the edited specs) instead of a
+      // stale flag. Skywalker 2026-05-20.
+      resellEstimate: itemsEditedAt ? undefined : resellEstimate,
+      grossMargin:    itemsEditedAt ? undefined : grossMargin,
+      marginPercent:  itemsEditedAt ? undefined : marginPercent,
+      marginFlag:     itemsEditedAt ? undefined : marginFlag,
       handoffMethod,
       shipAddress,
       shipPackaging,

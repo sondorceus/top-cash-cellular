@@ -28,6 +28,7 @@ type Offer = {
   storage?: string;
   condition?: string;
   carrier?: string;
+  quantity?: number;
   quote?: string;
   payout?: string;
   handoffMethod?: "ship" | "local";
@@ -89,7 +90,7 @@ function buildItems(o: Offer): EditItem[] {
     storage: o.storage || "",
     condition: o.condition || "",
     quote: o.totalPayout != null ? o.totalPayout : q,
-    quantity: 1,
+    quantity: o.quantity && o.quantity > 0 ? o.quantity : 1,
   }];
 }
 
@@ -147,10 +148,6 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [shareNotice, setShareNotice] = useState("");
-  // Customer ownership — populated from /api/auth/me. Drives the real
-  // Cancel button (only the signed-in owner sees it; everyone else gets
-  // the email-staff fallback).
-  const [me, setMe] = useState<{ email: string; isAdmin?: boolean } | null>(null);
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState("");
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
@@ -168,6 +165,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   const [editIdx, setEditIdx] = useState<number | null>(null);
   const [draftCondition, setDraftCondition] = useState("");
   const [draftStorage, setDraftStorage] = useState("");
+  const [draftQuantity, setDraftQuantity] = useState(1);
   const [savingItems, setSavingItems] = useState(false);
   const [itemsError, setItemsError] = useState("");
   const [itemsSaved, setItemsSaved] = useState(false);
@@ -191,19 +189,6 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [leadId]);
-
-  // Fetch the signed-in user to check ownership for the real cancel
-  // button. Runs in parallel with the offer fetch — falls back to the
-  // email-staff CTA if not signed in or email doesn't match.
-  useEffect(() => {
-    fetch("/api/auth/me", { cache: "no-store" })
-      .then(async (r) => {
-        if (!r.ok) return;
-        const d = await r.json();
-        if (d?.authenticated) setMe({ email: d.email, isAdmin: !!d.isAdmin });
-      })
-      .catch(() => {});
-  }, []);
 
   const doCancel = async () => {
     setCancelling(true);
@@ -324,9 +309,6 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
     : (offer.quote && /\$/.test(offer.quote) ? offer.quote : (offer.quote ? `$${offer.quote}` : "—"));
   const isPaid = offer.status === "paid" || offer.status === "met";
   const isCancelled = offer.cancelled || offer.status === "rejected";
-  // Owner = signed-in customer whose email matches the offer's email.
-  // Gates the real Cancel action and the phone-edit affordance.
-  const isOwner = !!(me && offer.email && me.email.toLowerCase() === offer.email.toLowerCase());
   // Devices are editable by anyone on this offer's private link, up
   // until the trade ships. Editing only changes a customer-facing
   // estimate (final price is set at inspection), so no sign-in gate.
@@ -521,11 +503,13 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           <div className="space-y-2">
             {items.map((it, i) => {
               const isEditing = editIdx === i;
-              const liveQuote = isEditing ? requote({
-                originalQuote: it.quote,
-                fromCondition: it.condition, toCondition: draftCondition,
-                fromStorage: it.storage, toStorage: draftStorage,
-              }) : it.quote;
+              const liveQuote = isEditing
+                ? Math.round(requote({
+                    originalQuote: it.quote,
+                    fromCondition: it.condition, toCondition: draftCondition,
+                    fromStorage: it.storage, toStorage: draftStorage,
+                  }) * (it.quantity > 0 ? draftQuantity / it.quantity : 1))
+                : it.quote;
               const condOpts = (() => {
                 const labels = REQUOTE_CONDITIONS.map((t) => t.label);
                 return draftCondition && !labels.includes(draftCondition) ? [draftCondition, ...labels] : labels;
@@ -551,6 +535,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                             setEditIdx(i);
                             setDraftCondition(matchTier(REQUOTE_CONDITIONS, it.condition)?.label || it.condition || REQUOTE_CONDITIONS[1].label);
                             setDraftStorage(matchTier(REQUOTE_STORAGE, it.storage)?.label || it.storage || "");
+                            setDraftQuantity(it.quantity > 0 ? it.quantity : 1);
                             setItemsError("");
                           }}
                           className="text-[10px] text-[#00c853] hover:underline font-bold cursor-pointer"
@@ -590,8 +575,16 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                           </select>
                         </>
                       )}
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Quantity</label>
+                      <select
+                        value={draftQuantity}
+                        onChange={(e) => setDraftQuantity(parseInt(e.target.value, 10) || 1)}
+                        className="w-full px-3 py-2 mb-3 bg-black/40 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#00c853]"
+                      >
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => <option key={n} value={n}>{n}</option>)}
+                      </select>
                       <div className="flex items-center justify-between bg-white/[0.04] rounded-lg px-3 py-2 mb-3">
-                        <span className="text-[11px] text-[#bdbdbd]">Updated estimate{it.quantity > 1 ? ` (×${it.quantity})` : ""}</span>
+                        <span className="text-[11px] text-[#bdbdbd]">Updated estimate{draftQuantity > 1 ? ` (×${draftQuantity})` : ""}</span>
                         <span className={`font-extrabold ${liveQuote === it.quote ? "text-white" : "text-[#00c853]"}`}>
                           ${liveQuote.toLocaleString()}
                         </span>
@@ -603,7 +596,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                           disabled={savingItems}
                           onClick={() => {
                             const next = items.map((row, idx) => idx === i
-                              ? { ...row, condition: draftCondition, storage: draftStorage, quote: liveQuote }
+                              ? { ...row, condition: draftCondition, storage: draftStorage, quantity: draftQuantity, quote: liveQuote }
                               : row);
                             doSaveItems(next);
                           }}
@@ -735,61 +728,34 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
               <div className="bg-red-500/10 border border-red-500/40 rounded-xl p-4">
                 <p className="text-red-200 font-bold text-sm mb-2">Cancel offer #{offer.id.slice(0, 10).toUpperCase()}?</p>
                 <p className="text-red-200/80 text-[11px] mb-3">{isShip ? "Your shipping label will stop working. You can always start a new offer from the home page." : "Your meetup slot will be released. You can always start a new offer."}</p>
-                {isOwner ? (
-                  <>
-                    <textarea
-                      value={cancelNote}
-                      onChange={(e) => setCancelNote(e.target.value.slice(0, 200))}
-                      placeholder="Reason (optional) — helps us improve"
-                      rows={2}
-                      className="w-full px-3 py-2 mb-3 bg-black/40 border border-white/10 rounded-lg text-xs text-white placeholder:text-[#888] focus:outline-none focus:border-red-400 resize-none"
-                    />
-                    {cancelError && (
-                      <p className="text-red-300 text-[11px] font-semibold mb-2">{cancelError}</p>
-                    )}
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={doCancel}
-                        disabled={cancelling}
-                        className="flex-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-extrabold cursor-pointer disabled:opacity-50 transition"
-                      >
-                        {cancelling ? "Cancelling…" : "Yes, cancel my offer"}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => { setCancelConfirmOpen(false); setCancelError(""); }}
-                        disabled={cancelling}
-                        className="px-3 py-2 bg-white/5 border border-white/15 rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50 transition"
-                      >
-                        Keep offer
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-red-200/80 text-[11px] mb-3">
-                      {me
-                        ? <>This offer was submitted under <span className="font-semibold">{offer.email}</span>. Sign in with that account to cancel it.</>
-                        : "Sign in with the account you used to submit this offer, then cancel it right here."}
-                    </p>
-                    <div className="flex gap-2">
-                      <Link
-                        href="/account"
-                        className="flex-1 px-3 py-2 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] rounded-lg text-xs font-extrabold text-center transition"
-                      >
-                        Sign in to cancel
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => { setCancelConfirmOpen(false); setCancelError(""); }}
-                        className="px-3 py-2 bg-white/5 border border-white/15 rounded-lg text-xs font-semibold cursor-pointer transition"
-                      >
-                        Keep offer
-                      </button>
-                    </div>
-                  </>
+                <textarea
+                  value={cancelNote}
+                  onChange={(e) => setCancelNote(e.target.value.slice(0, 200))}
+                  placeholder="Reason (optional) — helps us improve"
+                  rows={2}
+                  className="w-full px-3 py-2 mb-3 bg-black/40 border border-white/10 rounded-lg text-xs text-white placeholder:text-[#888] focus:outline-none focus:border-red-400 resize-none"
+                />
+                {cancelError && (
+                  <p className="text-red-300 text-[11px] font-semibold mb-2">{cancelError}</p>
                 )}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={doCancel}
+                    disabled={cancelling}
+                    className="flex-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-extrabold cursor-pointer disabled:opacity-50 transition"
+                  >
+                    {cancelling ? "Cancelling…" : "Yes, cancel my offer"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setCancelConfirmOpen(false); setCancelError(""); }}
+                    disabled={cancelling}
+                    className="px-3 py-2 bg-white/5 border border-white/15 rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50 transition"
+                  >
+                    Keep offer
+                  </button>
+                </div>
               </div>
             )}
           </div>

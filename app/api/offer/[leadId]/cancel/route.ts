@@ -1,13 +1,12 @@
 // POST /api/offer/[leadId]/cancel
 //
 // Customer-side cancel for an offer that hasn't been received yet.
-// Two auth gates stacked:
 //
-//   1. Customer must be signed in via tcc_session OR tcc_customer
-//      cookie. The shared getCustomerSessionFromCookies() handles that.
-//   2. The email on the session must match the email on the lead body.
-//      Stops "I have someone's offer link" from cancelling on their
-//      behalf — the link alone is no longer enough.
+// Access model: the leadId is the secret — same as the public offer
+// GET route and the edit routes, since the customer reaches this from
+// their own private offer link. No sign-in required; the owner gets an
+// SMS on cancel, and the status gate below blocks cancelling a trade
+// that's already in inspection / paid.
 //
 // On success: posts [DELETED-LEAD: leadId] reason=customer-cancel
 // (same marker the admin trash button uses, so the admin lead parser
@@ -16,7 +15,6 @@
 // via the existing parser path. Skywalker 2026-05-19.
 
 import { NextRequest, NextResponse } from "next/server";
-import { getCustomerSessionFromCookies } from "../../../../lib/auth";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -34,10 +32,6 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   const { leadId } = await ctx.params;
   if (!leadId || !/^[\w-]+$/.test(leadId)) {
     return NextResponse.json({ error: "Invalid offer id" }, { status: 400 });
-  }
-  const session = await getCustomerSessionFromCookies();
-  if (!session) {
-    return NextResponse.json({ error: "Sign in to cancel this offer." }, { status: 401 });
   }
   if (!MC_KEY) {
     return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
@@ -65,10 +59,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     return NextResponse.json({ error: "Offer not found" }, { status: 404 });
   }
 
-  // Verify the signed-in customer owns this offer.
-  const leadEmail = field(leadMsg.body, "Email")?.toLowerCase();
-  if (!leadEmail || leadEmail !== session.email.toLowerCase()) {
-    return NextResponse.json({ error: "This offer belongs to a different account." }, { status: 403 });
+  // Confirm it's a real buyback lead (the leadId is the access secret).
+  if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(leadMsg.body)) {
+    return NextResponse.json({ error: "Offer not found" }, { status: 404 });
   }
 
   // Check status — block cancel after received/paid/met. The customer

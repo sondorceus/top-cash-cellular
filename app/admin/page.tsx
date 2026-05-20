@@ -68,6 +68,9 @@ interface Lead {
   grossMargin?: number;
   marginPercent?: number;
   marginFlag?: string;
+  // Set when a customer edited their device(s) post-submission via the
+  // offer page — the device/spec/quote fields reflect the edit.
+  itemsEditedAt?: string;
   // Live Atlas + eBay margin per lead — computed at GET time using the
   // current comp datasets. Skywalker 2026-05-19.
   compMargin?: {
@@ -1850,7 +1853,7 @@ export default function AdminPage() {
                           best contact". Badge sits above the spec block so
                           staff sees how to reach the seller before the
                           deep-dive specs. */}
-                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source || lead.priorLeads || lead.commsSent || lead.payoutConfirmation || lead.couponApplied || lead.ai) && (
+                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source || lead.priorLeads || lead.commsSent || lead.payoutConfirmation || lead.couponApplied || lead.ai || lead.itemsEditedAt) && (
                         <div className="mt-1.5 flex flex-wrap items-start gap-1.5">
                           {/* AI verdict pills — photo-check (FLAG) and
                               Theot's channel-rec (SUMMARY) now render
@@ -1953,6 +1956,17 @@ export default function AdminPage() {
                           {lead.staleHours && (
                             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-amber-100 border border-amber-500/45 uppercase tracking-wider" title={`No status update in ${lead.staleHours} hours`}>
                               ⏰ Stale · {lead.staleHours >= 24 ? `${Math.floor(lead.staleHours / 24)}d` : `${lead.staleHours}h`}
+                            </span>
+                          )}
+                          {/* Customer edited their device(s) post-submission
+                              via the offer page. Specs/quote/total shown
+                              reflect the edit. Skywalker 2026-05-20. */}
+                          {lead.itemsEditedAt && (
+                            <span
+                              className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#00c853]/15 text-[#7be8a8] border border-[#00c853]/40 uppercase tracking-wider"
+                              title={`Customer edited their device(s) on ${new Date(lead.itemsEditedAt).toLocaleString()} — the specs, quote, and total shown reflect the edit. Verify at inspection.`}
+                            >
+                              ✏️ Customer edited
                             </span>
                           )}
                           {/* Source attribution — show the top channel

@@ -166,6 +166,14 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     storage: field(body, "Storage"),
     condition: field(body, "Condition"),
     carrier: field(body, "Carrier"),
+    // Single-device unit count (the "Quantity:" line). Multi-device
+    // leads carry per-device counts instead, so this stays undefined
+    // for them.
+    quantity: (() => {
+      const q = field(body, "Quantity");
+      const n = q ? parseInt(q, 10) : NaN;
+      return Number.isFinite(n) && n > 0 ? n : undefined;
+    })(),
     quote: field(body, "Quote"),
     payout: field(body, "Payout"),
     handoffMethod,
