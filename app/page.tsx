@@ -4179,6 +4179,8 @@ export default function Home() {
   type BestContact = "text" | "call" | "email";
   const [bestContact, setBestContact] = useState<BestContact | null>(null);
   const [customerNote, setCustomerNote] = useState("");
+  // "Anything else" note collapsed by default — keeps the step tidy.
+  const [noteOpen, setNoteOpen] = useState(false);
   // Explicit SMS opt-in checkbox — TCPA Class-A compliance. Today an
   // implied-consent paragraph runs under the phone field; that's
   // defensible for transactional messages but borderline for anything
@@ -11240,22 +11242,35 @@ export default function Home() {
                   hours, device quirks (e.g. "back glass has a sticker
                   that won't come off"), accessories etc. Free-form keeps
                   it general; trimmed + 500-char capped server-side. */}
-              <div>
-                <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
-                  Anything else we should know? <span className="normal-case text-[11px] text-[#888]">(optional)</span>
-                </label>
-                <textarea
-                  value={customerNote}
-                  onChange={(e) => setCustomerNote(e.target.value.slice(0, 500))}
-                  rows={2}
-                  maxLength={500}
-                  placeholder="Building buzzer, accessory details, device quirks, best time to reach you…"
-                  className="w-full px-4 py-3 tcc-input text-sm resize-none"
-                />
-                {customerNote.length > 0 && (
-                  <p className="text-[10px] text-[#888] mt-1 text-right">{customerNote.length}/500</p>
-                )}
-              </div>
+              {/* "Anything else" note — collapsed to a tiny link by
+                  default; expands on tap, stays expanded once typed. */}
+              {!noteOpen && !customerNote ? (
+                <button
+                  type="button"
+                  onClick={() => setNoteOpen(true)}
+                  className="text-[12px] font-semibold text-[#00c853] hover:text-[#00e676] cursor-pointer"
+                >
+                  📝 Anything else we should know?
+                </button>
+              ) : (
+                <div>
+                  <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
+                    Anything else we should know? <span className="normal-case text-[11px] text-[#888]">(optional)</span>
+                  </label>
+                  <textarea
+                    value={customerNote}
+                    onChange={(e) => setCustomerNote(e.target.value.slice(0, 500))}
+                    rows={2}
+                    maxLength={500}
+                    autoFocus={noteOpen}
+                    placeholder="Building buzzer, accessory details, device quirks, best time to reach you…"
+                    className="w-full px-4 py-3 tcc-input text-sm resize-none"
+                  />
+                  {customerNote.length > 0 && (
+                    <p className="text-[10px] text-[#888] mt-1 text-right">{customerNote.length}/500</p>
+                  )}
+                </div>
+              )}
 
               {/* Thank-you code — collapsed to a tiny link by default so
                   it doesn't crowd the contact step. Expands on tap; once
@@ -11315,9 +11330,12 @@ export default function Home() {
                 </div>
               )}
 
-              {/* Carrier-balance Yes / No — Skywalker 2026-05-17. Captures
-                  whether the device is fully paid off so staff can adjust
-                  the offer for blacklist risk on financed devices. */}
+              {/* Carrier-balance Yes / No — only for carrier-connected
+                  devices: phones + cellular iPads/tablets. Computers,
+                  consoles, and Wi-Fi-only tablets can't be carrier-
+                  financed or blacklisted, so the question is hidden for
+                  them. Skywalker 2026-05-20. */}
+              {(isPhoneFlow || isIpadCellular || cartItems.some((it) => !!it.carrier)) && (
               <div>
                 <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
                   Carrier balance status
@@ -11350,6 +11368,7 @@ export default function Home() {
                   </div>
                 )}
               </div>
+              )}
 
               {/* Photos — collapsed into a neat menu by default so the
                   contact step isn't crowded (Skywalker 2026-05-20). */}
