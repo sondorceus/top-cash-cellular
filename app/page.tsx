@@ -10951,7 +10951,8 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setPhoneOpen((o) => !o)}
-                  className="w-full flex items-center justify-between gap-2 px-3 py-3 bg-white/5 hover:bg-white/[0.07] transition cursor-pointer"
+                  disabled={handoffMethod === "ship"}
+                  className={`w-full flex items-center justify-between gap-2 px-3 py-3 bg-white/5 transition ${handoffMethod === "ship" ? "cursor-default" : "hover:bg-white/[0.07] cursor-pointer"}`}
                 >
                   <span className="text-xs font-semibold uppercase tracking-wider text-[#e6e6e6]">
                     📱 Phone number
@@ -10961,9 +10962,9 @@ export default function Home() {
                         ? <span className="text-amber-300 normal-case"> · required for shipping</span>
                         : <span className="text-[#888] normal-case"> · optional</span>}
                   </span>
-                  <span className="text-[#888] text-sm">{phoneOpen ? "▲" : "▼"}</span>
+                  {handoffMethod !== "ship" && <span className="text-[#888] text-sm">{phoneOpen ? "▲" : "▼"}</span>}
                 </button>
-                {phoneOpen && (
+                {(phoneOpen || handoffMethod === "ship") && (
                   <div className="px-3 pt-3 pb-3">
               <div>
                 <label className="flex items-center gap-1.5 text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
