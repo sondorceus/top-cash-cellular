@@ -1,20 +1,23 @@
 // POST /api/offer/[leadId]/items
 //
-// Customer-side device edit. Lets the offer owner correct a device's
-// condition / storage before the trade ships, with the re-quoted
-// (estimate) total. Same two auth gates as cancel/contact:
-//   1. Signed in (tcc_session / tcc_customer cookie).
-//   2. Session email must match the lead's email.
+// Customer-side device edit — lets a customer correct a device's
+// condition / storage on their offer page before the trade ships,
+// with the re-quoted (estimate) total.
+//
+// Access model: the leadId is the secret — same trust model as the
+// public offer GET route, since the customer reaches this from their
+// own private offer link. No sign-in required: an edit only changes a
+// customer-facing ESTIMATE (the real price is verified at inspection)
+// and the owner gets an SMS on every edit. Cancelling still requires
+// sign-in — that one is destructive — but a spec edit does not.
 //
 // Editing is allowed only BEFORE shipping — once the lead is marked
 // shipped/received/tested/paid/met it's locked (409). On success it
 // posts an [ITEM-UPDATE: leadId] marker carrying the new device list
-// as JSON; the offer GET route applies the latest one as an override.
-// The quote is an estimate — final price is set at inspection.
+// as JSON; the offer GET + admin leads routes apply the latest one.
 // Skywalker 2026-05-20.
 
 import { NextRequest, NextResponse } from "next/server";
-import { getCustomerSessionFromCookies } from "../../../../lib/auth";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -39,10 +42,6 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   const { leadId } = await ctx.params;
   if (!leadId || !/^[\w-]+$/.test(leadId)) {
     return NextResponse.json({ error: "Invalid offer id" }, { status: 400 });
-  }
-  const session = await getCustomerSessionFromCookies();
-  if (!session) {
-    return NextResponse.json({ error: "Sign in to edit this offer." }, { status: 401 });
   }
   if (!MC_KEY) {
     return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
@@ -86,9 +85,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     return NextResponse.json({ error: "Offer not found" }, { status: 404 });
   }
 
-  const leadEmail = field(leadMsg.body, "Email")?.toLowerCase();
-  if (!leadEmail || leadEmail !== session.email.toLowerCase()) {
-    return NextResponse.json({ error: "This offer belongs to a different account." }, { status: 403 });
+  // Confirm it's a real buyback lead (the leadId is the access secret).
+  if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(leadMsg.body)) {
+    return NextResponse.json({ error: "Offer not found" }, { status: 404 });
   }
 
   const cancelled = messages.some((m) => m.body?.includes(`[DELETED-LEAD: ${leadId}]`));

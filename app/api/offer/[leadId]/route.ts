@@ -158,7 +158,11 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     phone: phoneOverride || field(body, "Phone"),
     email: field(body, "Email"),
     device: field(body, "Device"),
-    model: field(body, "Model"),
+    // The lead body has no standalone "Model:" line — the model is the
+    // second half of the "Device: <type> — <model>" line. Parse it out
+    // so the offer page gets a clean model name (needed for the device
+    // photo lookup and a tidy display).
+    model: field(body, "Model") || field(body, "Device")?.split(" — ")[1]?.trim(),
     storage: field(body, "Storage"),
     condition: field(body, "Condition"),
     carrier: field(body, "Carrier"),

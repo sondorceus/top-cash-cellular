@@ -327,8 +327,10 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   // Owner = signed-in customer whose email matches the offer's email.
   // Gates the real Cancel action and the phone-edit affordance.
   const isOwner = !!(me && offer.email && me.email.toLowerCase() === offer.email.toLowerCase());
-  // Devices are editable only by the owner, and only before shipping.
-  const canEditItems = isOwner && offer.status === "quote_requested" && !isCancelled;
+  // Devices are editable by anyone on this offer's private link, up
+  // until the trade ships. Editing only changes a customer-facing
+  // estimate (final price is set at inspection), so no sign-in gate.
+  const canEditItems = offer.status === "quote_requested" && !isCancelled;
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
