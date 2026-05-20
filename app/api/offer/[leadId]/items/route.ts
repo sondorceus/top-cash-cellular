@@ -36,7 +36,7 @@ function clean(s: unknown, max: number): string {
   return String(s ?? "").replace(/[\[\]\n\r\t]/g, " ").trim().slice(0, max);
 }
 
-type InDevice = { model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown };
+type InDevice = { model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown };
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: string }> }) {
   const { leadId } = await ctx.params;
@@ -65,6 +65,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
       condition: clean(d.condition, 30),
       quote: Number.isFinite(quote) && quote >= 0 && quote <= 100000 ? quote : 0,
       quantity: quantity >= 1 && quantity <= 50 ? quantity : 1,
+      // Set by the editor for a broken + non-functional device — it
+      // can't be auto-quoted and goes to a manual staff re-quote.
+      needsReview: !!d.needsReview,
     };
   });
   if (devices.some((d) => !d.model)) {
@@ -114,15 +117,15 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     }, { status: 409 });
   }
 
-  // A broken device can't be auto-quoted — its functional state and
-  // glass damage have to be assessed by hand. Flag the edit for a
-  // manual staff re-quote. Skywalker 2026-05-20.
-  const hasBroken = devices.some((d) => /brok|crack|damag/i.test(d.condition));
+  // A broken + non-functional device can't be auto-quoted — flag the
+  // edit for a manual staff re-quote. (Functional broken devices keep
+  // their auto estimate.) Skywalker 2026-05-20.
+  const anyReview = devices.some((d) => d.needsReview);
 
   // Post the item-update marker. Human-readable lead-in for staff
   // scanning MC; the trailing JSON is what the offer GET route parses.
   const json = JSON.stringify({ v: 1, devices, total });
-  const reviewNote = hasBroken ? " ⚠️ MANUAL REVIEW NEEDED — customer marked a device broken; re-quote by hand." : "";
+  const reviewNote = anyReview ? " ⚠️ MANUAL REVIEW NEEDED — customer marked a device broken; re-quote by hand." : "";
   const updateBody = `[ITEM-UPDATE: ${leadId}] Customer edited device specs — new estimated total $${total}.${reviewNote} ${json}`;
   const postRes = await fetch(`${MC_API}/api/comms`, {
     method: "POST",
@@ -132,7 +135,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
       fromName: "Customer Device Edit",
       role: "system",
       body: updateBody,
-      tags: hasBroken ? ["item-update", "needs-review"] : ["item-update"],
+      tags: anyReview ? ["item-update", "needs-review"] : ["item-update"],
       priority: "high",
     }),
   });
@@ -146,7 +149,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
       const e164 = OWNER_PHONE.startsWith("+") ? OWNER_PHONE : `+1${OWNER_PHONE.replace(/\D/g, "")}`;
       const customerName = field(leadMsg.body, "Name") || "Customer";
       const summary = devices.map((d) => `${d.model} (${d.condition || "?"}${d.storage ? ", " + d.storage : ""})`).join("; ");
-      const text = `${hasBroken ? "⚠️ NEEDS MANUAL REVIEW — " : ""}EDIT: ${customerName} changed offer ${leadId.slice(0, 10).toUpperCase()} → est. $${total}. ${summary}`;
+      const text = `${anyReview ? "⚠️ NEEDS MANUAL REVIEW — " : ""}EDIT: ${customerName} changed offer ${leadId.slice(0, 10).toUpperCase()} → est. $${total}. ${summary}`;
       await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
         method: "POST",
         headers: {

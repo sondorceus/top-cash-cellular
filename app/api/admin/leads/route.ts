@@ -478,7 +478,7 @@ export async function GET(req: NextRequest) {
   const labelErrorByLead = new Map<string, { kind: string; reason: string; timestamp: string }>();
   // Customer device edits — the latest [ITEM-UPDATE: leadId] marker per
   // lead (posted by the offer-page editor). Most recent wins.
-  const itemUpdateByLead = new Map<string, { devices: Array<{ model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown }>; total?: unknown; timestamp: string }>();
+  const itemUpdateByLead = new Map<string, { devices: Array<{ model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown }>; total?: unknown; timestamp: string }>();
   const commsByLead = new Map<string, { sms: number; email: number; lastAt?: string }>();
   const idCapturedByLead = new Map<string, { type: string; last4: string; dobYear: string; photoUrl: string; timestamp: string }>();
   // Review token bookkeeping. minted = "[REVIEW-TOKEN: leadId] token=X
@@ -871,8 +871,9 @@ export async function GET(req: NextRequest) {
         condition: d.condition ? String(d.condition) : undefined,
         quote: Number.isFinite(Number(d.quote)) ? Number(d.quote) : undefined,
         quantity: Number.isFinite(Number(d.quantity)) ? Number(d.quantity) : undefined,
+        needsReview: !!d.needsReview,
       }));
-      itemsNeedReview = editedDevices.some((d) => /brok|crack|damag/i.test(d.condition || ""));
+      itemsNeedReview = editedDevices.some((d) => d.needsReview);
       const editedTotal = Number.isFinite(Number(itemUpd.total))
         ? Number(itemUpd.total)
         : editedDevices.reduce((s, d) => s + (d.quote || 0), 0);

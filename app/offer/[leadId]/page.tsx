@@ -34,7 +34,7 @@ type Offer = {
   handoffMethod?: "ship" | "local";
   shipAddress?: string;
   localSlot?: string;
-  devices?: Array<{ model: string; storage?: string; condition?: string; quote?: number; quantity?: number }>;
+  devices?: Array<{ model: string; storage?: string; condition?: string; quote?: number; quantity?: number; needsReview?: boolean }>;
   deviceCount?: number;
   totalPayout?: number;
   status: string;
@@ -52,7 +52,7 @@ type Offer = {
 
 // A device row in the editable Offer-items list (normalized from the
 // offer's multi-device array or its single-device fields).
-type EditItem = { model: string; storage: string; condition: string; quote: number; quantity: number };
+type EditItem = { model: string; storage: string; condition: string; quote: number; quantity: number; needsReview: boolean };
 
 const PIPELINE = [
   { value: "quote_requested", label: "Submitted", icon: "📥" },
@@ -85,6 +85,7 @@ function buildItems(o: Offer): EditItem[] {
       condition: d.condition || "",
       quote: typeof d.quote === "number" ? d.quote : 0,
       quantity: d.quantity && d.quantity > 0 ? d.quantity : 1,
+      needsReview: !!d.needsReview,
     }));
   }
   const q = o.quote ? parseInt(o.quote.replace(/[^0-9]/g, ""), 10) || 0 : 0;
@@ -94,6 +95,7 @@ function buildItems(o: Offer): EditItem[] {
     condition: o.condition || "",
     quote: o.totalPayout != null ? o.totalPayout : q,
     quantity: o.quantity && o.quantity > 0 ? o.quantity : 1,
+    needsReview: false,
   }];
 }
 
@@ -169,6 +171,10 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   const [draftCondition, setDraftCondition] = useState("");
   const [draftStorage, setDraftStorage] = useState("");
   const [draftQuantity, setDraftQuantity] = useState(1);
+  // Functional state when a device is edited to "Broken": true =
+  // still works (auto-priced), false = won't power on (manual review),
+  // null = not yet answered.
+  const [draftFunctional, setDraftFunctional] = useState<boolean | null>(null);
   const [savingItems, setSavingItems] = useState(false);
   const [itemsError, setItemsError] = useState("");
   const [itemsSaved, setItemsSaved] = useState(false);
@@ -307,9 +313,11 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
 
   const idx = statusIndex(offer.status);
   const isShip = offer.handoffMethod === "ship";
-  const total = offer.totalPayout != null
-    ? `$${offer.totalPayout.toLocaleString()}`
-    : (offer.quote && /\$/.test(offer.quote) ? offer.quote : (offer.quote ? `$${offer.quote}` : "—"));
+  const total = offer.needsReview
+    ? "Pending review"
+    : (offer.totalPayout != null
+        ? `$${offer.totalPayout.toLocaleString()}`
+        : (offer.quote && /\$/.test(offer.quote) ? offer.quote : (offer.quote ? `$${offer.quote}` : "—")));
   const isPaid = offer.status === "paid" || offer.status === "met";
   const isCancelled = offer.cancelled || offer.status === "rejected";
   // Devices are editable by anyone on this offer's private link, up
@@ -522,8 +530,9 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                     fromStorage: it.storage, toStorage: draftStorage,
                   }) * (it.quantity > 0 ? draftQuantity / it.quantity : 1))
                 : it.quote;
-              const itemBroken = matchTier(REQUOTE_CONDITIONS, it.condition)?.id === "broken";
               const draftBroken = isEditing && matchTier(REQUOTE_CONDITIONS, draftCondition)?.id === "broken";
+              // Broken + not functional → no auto price, goes to manual review.
+              const draftNeedsReview = draftBroken && draftFunctional === false;
               const condOpts = (() => {
                 const labels = REQUOTE_CONDITIONS.map((t) => t.label);
                 return draftCondition && !labels.includes(draftCondition) ? [draftCondition, ...labels] : labels;
@@ -541,7 +550,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                       <p className="text-[11px] text-[#bdbdbd]">{[it.storage, it.condition].filter(Boolean).join(" · ") || "—"}</p>
                     </div>
                     <div className="text-right shrink-0">
-                      {offer.needsReview && itemBroken
+                      {it.needsReview
                         ? <p className="text-amber-300 font-bold text-xs">⚠️ Pending review</p>
                         : <p className="text-[#00c853] font-bold">${it.quote.toLocaleString()}</p>}
                       {canEditItems && !isEditing && (
@@ -552,6 +561,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                             setDraftCondition(matchTier(REQUOTE_CONDITIONS, it.condition)?.label || it.condition || REQUOTE_CONDITIONS[1].label);
                             setDraftStorage(matchTier(REQUOTE_STORAGE, it.storage)?.label || it.storage || "");
                             setDraftQuantity(it.quantity > 0 ? it.quantity : 1);
+                            setDraftFunctional(null);
                             setItemsError("");
                           }}
                           className="text-[10px] text-[#00c853] hover:underline font-bold cursor-pointer"
@@ -579,6 +589,29 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                       >
                         {condOpts.map((c) => <option key={c} value={c}>{c}</option>)}
                       </select>
+                      {/* Broken devices: ask if it still works. Functional →
+                          auto-priced; not functional → manual review. */}
+                      {draftBroken && (
+                        <div className="mb-3">
+                          <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Does the device still power on &amp; work?</label>
+                          <div className="grid grid-cols-2 gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setDraftFunctional(true)}
+                              className={`px-2.5 py-2 rounded-lg border text-xs font-bold transition cursor-pointer ${draftFunctional === true ? "bg-[#00c853]/15 border-[#00c853]/50 text-white" : "bg-black/40 border-white/15 text-[#bdbdbd] hover:bg-white/5"}`}
+                            >
+                              Yes — it works
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setDraftFunctional(false)}
+                              className={`px-2.5 py-2 rounded-lg border text-xs font-bold transition cursor-pointer ${draftFunctional === false ? "bg-amber-500/20 border-amber-500/60 text-white" : "bg-black/40 border-white/15 text-[#bdbdbd] hover:bg-white/5"}`}
+                            >
+                              No — won&apos;t power on
+                            </button>
+                          </div>
+                        </div>
+                      )}
                       {!!it.storage && (
                         <>
                           <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Storage</label>
@@ -599,10 +632,14 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                       >
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => <option key={n} value={n}>{n}</option>)}
                       </select>
-                      {draftBroken ? (
+                      {draftBroken && draftFunctional === null ? (
+                        <div className="bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2.5 mb-3">
+                          <p className="text-[11px] text-[#bdbdbd]">Tell us whether the device still works above to see your estimate.</p>
+                        </div>
+                      ) : draftNeedsReview ? (
                         <div className="bg-amber-500/10 border border-amber-500/40 rounded-lg px-3 py-2.5 mb-3">
                           <p className="text-amber-200 text-[11px] leading-relaxed">
-                            <span className="font-bold">Broken devices can&apos;t be auto-quoted.</span> We inspect them by hand — saving this flags your offer for a manual re-quote by our team, and your final price is confirmed after we check the device.
+                            <span className="font-bold">A device that won&apos;t power on can&apos;t be auto-quoted.</span> We inspect these by hand — saving flags your offer for a manual re-quote, and your price is confirmed after we check the device.
                           </p>
                         </div>
                       ) : (
@@ -617,16 +654,16 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          disabled={savingItems}
+                          disabled={savingItems || (draftBroken && draftFunctional === null)}
                           onClick={() => {
                             const next = items.map((row, idx) => idx === i
-                              ? { ...row, condition: draftCondition, storage: draftStorage, quantity: draftQuantity, quote: liveQuote }
+                              ? { ...row, condition: draftCondition, storage: draftStorage, quantity: draftQuantity, quote: draftNeedsReview ? 0 : liveQuote, needsReview: draftNeedsReview }
                               : row);
                             doSaveItems(next);
                           }}
                           className="flex-1 px-3 py-2 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] rounded-lg text-xs font-extrabold cursor-pointer disabled:opacity-50 transition"
                         >
-                          {savingItems ? "Saving…" : draftBroken ? "Request manual review" : "Save changes"}
+                          {savingItems ? "Saving…" : draftNeedsReview ? "Request manual review" : "Save changes"}
                         </button>
                         <button
                           type="button"
@@ -646,7 +683,9 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
 
           <div className="mt-3 pt-3 border-t border-white/15 flex items-baseline justify-between">
             <span className="text-[11px] uppercase tracking-wider text-[#e6e6e6] font-bold">Total</span>
-            <span className="text-[#00c853] font-extrabold text-lg">${items.reduce((s, it) => s + it.quote, 0).toLocaleString()}</span>
+            {items.some((it) => it.needsReview)
+              ? <span className="text-amber-300 font-extrabold text-sm">⚠️ Pending review</span>
+              : <span className="text-[#00c853] font-extrabold text-lg">${items.reduce((s, it) => s + it.quote, 0).toLocaleString()}</span>}
           </div>
 
           {canEditItems && (

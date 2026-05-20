@@ -52,7 +52,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   let phoneOverride = "";
   let phoneOverrideAt = "";
   // Customer-edited devices — the latest [ITEM-UPDATE] marker wins.
-  let itemUpdate: { devices: Array<{ model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown }>; total?: unknown } | null = null;
+  let itemUpdate: { devices: Array<{ model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown }>; total?: unknown } | null = null;
   let itemUpdateAt = "";
   for (const m of messages) {
     if (!m.body) continue;
@@ -143,6 +143,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
       condition: d.condition ? String(d.condition) : undefined,
       quote: Number.isFinite(Number(d.quote)) ? Number(d.quote) : undefined,
       quantity: Number.isFinite(Number(d.quantity)) ? Number(d.quantity) : undefined,
+      needsReview: !!d.needsReview,
     }));
     deviceCount = devices.length;
     totalPayout = Number.isFinite(Number(itemUpdate.total))
@@ -190,8 +191,8 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     fedexErrorKind: fedexErrorKind || undefined,
     fedexErrorReason: fedexErrorReason || undefined,
     cancelled,
-    // True when a customer edit set a device to a broken condition —
-    // those can't be auto-quoted and are flagged for a manual re-quote.
-    needsReview: !!itemUpdate && (itemUpdate.devices || []).some((d) => /brok|crack|damag/i.test(String(d.condition ?? ""))),
+    // True when a customer edit flagged a device for manual review
+    // (broken + won't power on) — it can't be auto-quoted.
+    needsReview: !!itemUpdate && (itemUpdate.devices || []).some((d) => !!d.needsReview),
   }, { headers: { "Cache-Control": "no-store" } });
 }
