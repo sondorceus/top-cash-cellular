@@ -4180,6 +4180,8 @@ export default function Home() {
   const [bestContact, setBestContact] = useState<BestContact | null>(null);
   // "Best way to reach you" collapsed by default — keeps the step tidy.
   const [reachOpen, setReachOpen] = useState(false);
+  // Phone section collapsed by default — tap-to-open like the photos.
+  const [phoneOpen, setPhoneOpen] = useState(false);
   const [customerNote, setCustomerNote] = useState("");
   // "Anything else" note collapsed by default — keeps the step tidy.
   const [noteOpen, setNoteOpen] = useState(false);
@@ -10520,6 +10522,7 @@ export default function Home() {
               if (handoffMethod === "ship") {
                 const phoneDigits = phone.replace(/\D/g, "");
                 if (phoneDigits.length < 10) {
+                  setPhoneOpen(true);
                   alert("Please enter a 10-digit phone number — FedEx prints it on your shipping label.");
                   return;
                 }
@@ -10940,6 +10943,28 @@ export default function Home() {
                 <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">Name</label>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={50} placeholder="Your name" className="w-full px-4 py-3.5 tcc-input text-sm" />
               </div>
+              {/* Phone — collapsed into a tap-to-open menu, same style as
+                  Device photos. Collapsed for every handoff type; the
+                  submit guard auto-opens it if a ship lead is missing the
+                  number. Skywalker 2026-05-20. */}
+              <div className="border border-white/10 rounded-xl overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setPhoneOpen((o) => !o)}
+                  className="w-full flex items-center justify-between gap-2 px-3 py-3 bg-white/5 hover:bg-white/[0.07] transition cursor-pointer"
+                >
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#e6e6e6]">
+                    📱 Phone number
+                    {phone
+                      ? <span className="text-[#00c853] normal-case"> · {phone}</span>
+                      : handoffMethod === "ship"
+                        ? <span className="text-amber-300 normal-case"> · required for shipping</span>
+                        : <span className="text-[#888] normal-case"> · optional</span>}
+                  </span>
+                  <span className="text-[#888] text-sm">{phoneOpen ? "▲" : "▼"}</span>
+                </button>
+                {phoneOpen && (
+                  <div className="px-3 pt-3 pb-3">
               <div>
                 <label className="flex items-center gap-1.5 text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
                   <span>
@@ -10998,6 +11023,9 @@ export default function Home() {
                       I agree to receive SMS updates about my trade-in from Top Cash Cellular at the number above. Msg &amp; data rates may apply, msg frequency varies, reply STOP to opt out, HELP for help. See our <a href="/privacy" className="underline hover:text-[#00c853]">privacy policy</a>.
                     </span>
                   </label>
+                )}
+              </div>
+                  </div>
                 )}
               </div>
               {email && (
