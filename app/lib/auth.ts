@@ -162,6 +162,47 @@ export async function getCustomerSessionFromCookies(): Promise<{ email: string; 
   return null;
 }
 
+// Customer profile cookie — editable display prefs (name, phone) the
+// customer manages from /account → Account Info. Deliberately SEPARATE
+// from the auth cookies: works for both email-login and Google
+// customers, survives a re-login, and carries zero auth weight (it
+// can't grant anything — it's just remembered contact info that
+// pre-fills the funnel + shows on the account page). Skywalker
+// 2026-05-19 — the "account edit button".
+export const PROFILE_COOKIE_NAME = "tcc_profile";
+
+export type CustomerProfile = {
+  name?: string;
+  phone?: string;
+  updatedAt: number;
+};
+
+export function signProfile(profile: Omit<CustomerProfile, "updatedAt">): string {
+  const full: CustomerProfile = { ...profile, updatedAt: Date.now() };
+  const body = base64url(JSON.stringify(full));
+  const sig = base64url(crypto.createHmac("sha256", getSecret()).update(body).digest());
+  return `${body}.${sig}`;
+}
+
+export function verifyProfile(token: string | undefined | null): CustomerProfile | null {
+  if (!token || !token.includes(".")) return null;
+  const [body, sig] = token.split(".");
+  const expected = base64url(crypto.createHmac("sha256", getSecret()).update(body).digest());
+  const a = Buffer.from(sig);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
+  try {
+    return JSON.parse(base64urlDecode(body).toString("utf8")) as CustomerProfile;
+  } catch {
+    return null;
+  }
+}
+
+export async function getProfileFromCookies(): Promise<CustomerProfile | null> {
+  const cookieStore = await cookies();
+  return verifyProfile(cookieStore.get(PROFILE_COOKIE_NAME)?.value);
+}
+
 export function isSafeReturnTo(returnTo: string | undefined | null, origin: string): boolean {
   if (!returnTo || typeof returnTo !== "string") return false;
   if (!returnTo.startsWith("/")) return false;

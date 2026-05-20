@@ -9,7 +9,7 @@
 // Skywalker 2026-05-19.
 
 import { NextResponse } from "next/server";
-import { getCustomerSessionFromCookies } from "../../../lib/auth";
+import { getCustomerSessionFromCookies, getProfileFromCookies } from "../../../lib/auth";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -48,13 +48,19 @@ export async function GET() {
     });
   }
   const email = session.email.toLowerCase();
+  // Editable profile overlay — when the customer has saved a name /
+  // phone from the account-edit form, those win over the auth-cookie
+  // name. MC-independent so it always resolves.
+  const profile = await getProfileFromCookies();
+  const displayName = profile?.name || session.name;
   if (!MC_KEY) {
     // Customer is recognized but we can't pull their trades without
     // MC. Return identity + empty list so the dashboard still renders.
     return NextResponse.json({
       authenticated: true,
       email: session.email,
-      name: session.name,
+      name: displayName,
+      phone: profile?.phone,
       via: session.via,
       trades: [],
       summary: { total: 0, paid: 0, openCount: 0 },
@@ -137,7 +143,8 @@ export async function GET() {
   return NextResponse.json({
     authenticated: true,
     email: session.email,
-    name: session.name,
+    name: displayName,
+    phone: profile?.phone,
     via: session.via,
     trades,
     summary: {

@@ -35,6 +35,7 @@ type AccountData = {
   authenticated: boolean;
   email?: string;
   name?: string;
+  phone?: string;
   via?: "email" | "google";
   trades?: Trade[];
   summary?: { total: number; paid: number; openCount: number };
@@ -74,6 +75,45 @@ export default function AccountPage() {
   // "I want to manage my settings" path, Addresses is read-only
   // recall of past shipping addresses.
   const [section, setSection] = useState<Section>("trades");
+  // Account-info edit state.
+  const [editing, setEditing] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [profileError, setProfileError] = useState("");
+  const [profileSaved, setProfileSaved] = useState(false);
+
+  const startEdit = () => {
+    setEditName(data?.name || "");
+    setEditPhone(data?.phone || "");
+    setProfileError("");
+    setProfileSaved(false);
+    setEditing(true);
+  };
+  const saveProfile = async () => {
+    setSavingProfile(true);
+    setProfileError("");
+    try {
+      const r = await fetch("/api/account/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: editName.trim(), phone: editPhone.trim() }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) {
+        setProfileError(d.error || "Couldn't save — try again.");
+        return;
+      }
+      setData((prev) => prev ? { ...prev, name: d.name, phone: d.phone || undefined } : prev);
+      setEditing(false);
+      setProfileSaved(true);
+      setTimeout(() => setProfileSaved(false), 2500);
+    } catch {
+      setProfileError("Network error — try again.");
+    } finally {
+      setSavingProfile(false);
+    }
+  };
 
   const refresh = async () => {
     setLoading(true);
@@ -290,33 +330,111 @@ export default function AccountPage() {
             <p className="text-[#bdbdbd] text-sm mb-2">{data.email}</p>
 
             <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-              <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Account info</p>
-              <div className="space-y-3 text-sm">
-                <div>
-                  <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-0.5">Email</p>
-                  <p className="text-white">{data.email}</p>
-                </div>
-                {data.name && (
-                  <div>
-                    <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-0.5">Name</p>
-                    <p className="text-white">{data.name}</p>
-                  </div>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold">Account info</p>
+                {!editing && (
+                  <button
+                    type="button"
+                    onClick={startEdit}
+                    className="text-[11px] font-semibold text-[#00c853] hover:text-[#00e676] px-2.5 py-1 rounded-lg bg-[#00c853]/10 border border-[#00c853]/30 transition cursor-pointer"
+                  >
+                    ✏️ Edit
+                  </button>
                 )}
-                <div>
-                  <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-0.5">Sign-in method</p>
-                  {data.via === "google" ? (
-                    <p className="text-white flex items-center gap-2">
-                      <svg className="w-4 h-4" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
-                      Linked to your Google account
-                    </p>
-                  ) : (
-                    <p className="text-white">Email-only (no password required)</p>
-                  )}
-                </div>
               </div>
-              <p className="text-[11px] text-[#888] mt-4 leading-relaxed">
-                Need to update your name, phone, or email? Email <a href="mailto:CustomerService@topcashcells.com" className="text-[#00c853] hover:underline">CustomerService@topcashcells.com</a> with your offer number and we&apos;ll handle it.
-              </p>
+              {profileSaved && (
+                <div className="mb-3 px-3 py-2 rounded-lg bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-xs font-semibold">
+                  ✓ Account details saved
+                </div>
+              )}
+              {editing ? (
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-1 block">Name</label>
+                    <input
+                      type="text"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      placeholder="First and last name"
+                      className="w-full px-3 py-2.5 bg-black/40 border border-white/15 rounded-lg text-sm text-white placeholder:text-[#888] focus:outline-none focus:border-[#00c853]"
+                      autoFocus
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-1 block">Phone</label>
+                    <input
+                      type="tel"
+                      value={editPhone}
+                      onChange={(e) => {
+                        const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                        if (digits.length > 6) setEditPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
+                        else if (digits.length > 3) setEditPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
+                        else setEditPhone(digits);
+                      }}
+                      placeholder="(512) 555-0000"
+                      className="w-full px-3 py-2.5 bg-black/40 border border-white/15 rounded-lg text-sm text-white placeholder:text-[#888] focus:outline-none focus:border-[#00c853]"
+                    />
+                    <p className="text-[10px] text-[#888] mt-1">Pre-fills your next trade so you don&apos;t re-type it.</p>
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-1 block">Email</label>
+                    <input
+                      type="email"
+                      value={data.email || ""}
+                      disabled
+                      className="w-full px-3 py-2.5 bg-white/[0.03] border border-white/10 rounded-lg text-sm text-[#888] cursor-not-allowed"
+                    />
+                    <p className="text-[10px] text-[#888] mt-1">Email is your account ID — to change it, email support.</p>
+                  </div>
+                  {profileError && <p className="text-[#ff5566] text-xs font-semibold">{profileError}</p>}
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={saveProfile}
+                      disabled={savingProfile}
+                      className="flex-1 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] py-2.5 rounded-lg text-sm font-extrabold cursor-pointer disabled:opacity-50 transition"
+                    >
+                      {savingProfile ? "Saving…" : "Save account details"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setEditing(false); setProfileError(""); }}
+                      disabled={savingProfile}
+                      className="px-4 py-2.5 bg-white/5 border border-white/15 rounded-lg text-sm font-semibold cursor-pointer disabled:opacity-50 transition"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-3 text-sm">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-0.5">Name</p>
+                      <p className="text-white">{data.name || <span className="text-[#888] italic">Not set — tap Edit to add</span>}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-0.5">Phone</p>
+                      <p className="text-white">{data.phone || <span className="text-[#888] italic">Not set — tap Edit to add</span>}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-0.5">Email</p>
+                      <p className="text-white">{data.email}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-0.5">Sign-in method</p>
+                      {data.via === "google" ? (
+                        <p className="text-white flex items-center gap-2">
+                          <svg className="w-4 h-4" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
+                          Linked to your Google account
+                        </p>
+                      ) : (
+                        <p className="text-white">Email-only (no password required)</p>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="grid grid-cols-3 gap-3">
