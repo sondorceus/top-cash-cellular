@@ -2,6 +2,8 @@
 
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
+import { REQUOTE_CONDITIONS, REQUOTE_STORAGE, matchTier, requote } from "../../lib/requote";
+import { imageForModel } from "../../lib/device-images";
 
 // /offer/[leadId] — the customer's offer-management page. Shown right
 // after submit (replaces the bare "done" screen), linked from the
@@ -44,6 +46,10 @@ type Offer = {
   cancelled?: boolean;
 };
 
+// A device row in the editable Offer-items list (normalized from the
+// offer's multi-device array or its single-device fields).
+type EditItem = { model: string; storage: string; condition: string; quote: number; quantity: number };
+
 const PIPELINE = [
   { value: "quote_requested", label: "Submitted", icon: "📥" },
   { value: "shipped", label: "Shipped", icon: "📦" },
@@ -63,6 +69,54 @@ function fmtDate(iso?: string): string {
   const d = new Date(iso);
   return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) + ", " +
          d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+}
+
+// Normalize an offer into the editable device list — multi-device
+// offers map straight across; single-device offers become one row.
+function buildItems(o: Offer): EditItem[] {
+  if (o.devices && o.devices.length > 0) {
+    return o.devices.map((d) => ({
+      model: d.model || "Device",
+      storage: d.storage || "",
+      condition: d.condition || "",
+      quote: typeof d.quote === "number" ? d.quote : 0,
+      quantity: d.quantity && d.quantity > 0 ? d.quantity : 1,
+    }));
+  }
+  const q = o.quote ? parseInt(o.quote.replace(/[^0-9]/g, ""), 10) || 0 : 0;
+  return [{
+    model: o.model || o.device || "Device",
+    storage: o.storage || "",
+    condition: o.condition || "",
+    quote: o.totalPayout != null ? o.totalPayout : q,
+    quantity: 1,
+  }];
+}
+
+// A category glyph — fallback for the device thumbnail when there's
+// no catalog photo (or the photo fails to load).
+function deviceIcon(model: string): string {
+  const m = model.toLowerCase();
+  if (/macbook|laptop|imac|notebook/.test(m)) return "💻";
+  if (/ipad|tablet|galaxy tab|surface/.test(m)) return "📲";
+  if (/watch/.test(m)) return "⌚";
+  if (/playstation|\bps5\b|\bps4\b|xbox|nintendo|switch/.test(m)) return "🎮";
+  if (/airpod|earbud|buds|headphone/.test(m)) return "🎧";
+  return "📱";
+}
+
+// Device thumbnail — real product photo from the catalog when we have
+// one, gracefully falling back to the category glyph.
+function DeviceThumb({ model }: { model: string }) {
+  const [broken, setBroken] = useState(false);
+  const img = imageForModel(model);
+  return (
+    <div className="w-12 h-12 rounded-lg bg-[rgba(15,15,15,0.6)] border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+      {img && !broken
+        ? <img src={img} alt={model} className="w-full h-full object-contain p-1" onError={() => setBroken(true)} />
+        : <span className="text-xl">{deviceIcon(model)}</span>}
+    </div>
+  );
 }
 
 // Local-storage backed checklist state — per-lead so multiple offers
@@ -108,6 +162,15 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   const [phoneSaving, setPhoneSaving] = useState(false);
   const [phoneError, setPhoneError] = useState("");
   const [phoneSaved, setPhoneSaved] = useState(false);
+  // Editable device list (Offer items). Initialized from the offer once
+  // it loads; edits re-quote by delta and persist via /api/offer/.../items.
+  const [items, setItems] = useState<EditItem[]>([]);
+  const [editIdx, setEditIdx] = useState<number | null>(null);
+  const [draftCondition, setDraftCondition] = useState("");
+  const [draftStorage, setDraftStorage] = useState("");
+  const [savingItems, setSavingItems] = useState(false);
+  const [itemsError, setItemsError] = useState("");
+  const [itemsSaved, setItemsSaved] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -122,6 +185,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         if (!r.ok) { setError("Couldn't load this offer. Try refreshing."); setOffer(null); return; }
         const data: Offer = await r.json();
         setOffer(data);
+        setItems(buildItems(data));
       })
       .catch(() => { if (!cancelled) setError("Network error. Try refreshing."); })
       .finally(() => { if (!cancelled) setLoading(false); });
@@ -193,6 +257,38 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
     }
   };
 
+  // Persist an edited device list. Owner-gated + before-shipping-gated
+  // server-side; on success the offer total reflects the new estimate.
+  const doSaveItems = async (next: EditItem[]) => {
+    setSavingItems(true);
+    setItemsError("");
+    try {
+      const r = await fetch(`/api/offer/${encodeURIComponent(leadId)}/items`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ devices: next }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setItemsError(d.error || "Couldn't save your changes — try again or email us.");
+        return;
+      }
+      const saved: EditItem[] = Array.isArray(d.devices) ? d.devices : next;
+      const total = typeof d.total === "number"
+        ? d.total
+        : saved.reduce((s, it) => s + it.quote * it.quantity, 0);
+      setItems(saved);
+      setOffer((prev) => prev ? { ...prev, devices: saved, totalPayout: total } : prev);
+      setEditIdx(null);
+      setItemsSaved(true);
+      setTimeout(() => setItemsSaved(false), 2500);
+    } catch {
+      setItemsError("Network error — try again.");
+    } finally {
+      setSavingItems(false);
+    }
+  };
+
   // Checklist (only meaningful for ship leads). Hooks must run unconditionally,
   // so we always compute them — just hide the section when not shipping.
   const prepKeys = ["reset", "sim", "responsibility"];
@@ -231,6 +327,8 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   // Owner = signed-in customer whose email matches the offer's email.
   // Gates the real Cancel action and the phone-edit affordance.
   const isOwner = !!(me && offer.email && me.email.toLowerCase() === offer.email.toLowerCase());
+  // Devices are editable only by the owner, and only before shipping.
+  const canEditItems = isOwner && offer.status === "quote_requested" && !isCancelled;
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -398,29 +496,133 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           </div>
         )}
 
-        {/* Offer items */}
+        {/* Offer items — editable before shipping. Editing re-quotes by
+            delta (app/lib/requote); the figure is an estimate, the final
+            price is confirmed at inspection. */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-5">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Offer items</p>
-          {offer.devices && offer.devices.length > 0 ? (
-            <div className="space-y-2">
-              {offer.devices.map((d, i) => (
-                <div key={i} className="bg-white/[0.03] border border-white/10 rounded-xl p-3 flex items-center justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold">{d.model}{d.quantity && d.quantity > 1 ? ` ×${d.quantity}` : ""}</p>
-                    <p className="text-[11px] text-[#bdbdbd]">{[d.storage, d.condition].filter(Boolean).join(" · ")}</p>
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold">Offer items</p>
+            {itemsSaved && <span className="text-[10px] text-[#00c853] font-semibold">✓ Saved</span>}
+          </div>
+          <div className="space-y-2">
+            {items.map((it, i) => {
+              const isEditing = editIdx === i;
+              const liveQuote = isEditing ? requote({
+                originalQuote: it.quote,
+                fromCondition: it.condition, toCondition: draftCondition,
+                fromStorage: it.storage, toStorage: draftStorage,
+              }) : it.quote;
+              const condOpts = (() => {
+                const labels = REQUOTE_CONDITIONS.map((t) => t.label);
+                return draftCondition && !labels.includes(draftCondition) ? [draftCondition, ...labels] : labels;
+              })();
+              const storeOpts = (() => {
+                const labels = REQUOTE_STORAGE.map((t) => t.label);
+                return draftStorage && !labels.includes(draftStorage) ? [draftStorage, ...labels] : labels;
+              })();
+              return (
+                <div key={i} className="bg-white/[0.03] border border-white/10 rounded-xl p-3">
+                  <div className="flex items-center gap-3">
+                    <DeviceThumb model={it.model} />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-bold">{it.model}{it.quantity > 1 ? ` ×${it.quantity}` : ""}</p>
+                      <p className="text-[11px] text-[#bdbdbd]">{[it.storage, it.condition].filter(Boolean).join(" · ") || "—"}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-[#00c853] font-bold">${(it.quote * it.quantity).toLocaleString()}</p>
+                      {canEditItems && !isEditing && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditIdx(i);
+                            setDraftCondition(matchTier(REQUOTE_CONDITIONS, it.condition)?.label || it.condition || REQUOTE_CONDITIONS[1].label);
+                            setDraftStorage(matchTier(REQUOTE_STORAGE, it.storage)?.label || it.storage || "");
+                            setItemsError("");
+                          }}
+                          className="text-[10px] text-[#00c853] hover:underline font-bold cursor-pointer"
+                        >
+                          ✏️ Edit
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  {d.quote != null && <p className="text-[#00c853] font-bold">${d.quote.toLocaleString()}</p>}
+
+                  {isEditing && (
+                    <div className="mt-3 pt-3 border-t border-white/10">
+                      {/* Warning — pops the moment the editor opens. */}
+                      <div className="bg-amber-500/10 border border-amber-500/40 rounded-lg p-2.5 mb-3 flex items-start gap-2">
+                        <span className="text-sm leading-none mt-0.5">⚠️</span>
+                        <p className="text-amber-200/90 text-[11px] leading-relaxed">
+                          This updates your <span className="font-bold">estimate</span> only. Your final price is confirmed when we inspect the device — change this just to match its real condition.
+                        </p>
+                      </div>
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Condition</label>
+                      <select
+                        value={draftCondition}
+                        onChange={(e) => setDraftCondition(e.target.value)}
+                        className="w-full px-3 py-2 mb-3 bg-black/40 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#00c853]"
+                      >
+                        {condOpts.map((c) => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                      {!!it.storage && (
+                        <>
+                          <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Storage</label>
+                          <select
+                            value={draftStorage}
+                            onChange={(e) => setDraftStorage(e.target.value)}
+                            className="w-full px-3 py-2 mb-3 bg-black/40 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#00c853]"
+                          >
+                            {storeOpts.map((s) => <option key={s} value={s}>{s}</option>)}
+                          </select>
+                        </>
+                      )}
+                      <div className="flex items-center justify-between bg-white/[0.04] rounded-lg px-3 py-2 mb-3">
+                        <span className="text-[11px] text-[#bdbdbd]">Updated estimate{it.quantity > 1 ? ` (×${it.quantity})` : ""}</span>
+                        <span className={`font-extrabold ${liveQuote === it.quote ? "text-white" : "text-[#00c853]"}`}>
+                          ${(liveQuote * it.quantity).toLocaleString()}
+                        </span>
+                      </div>
+                      {itemsError && <p className="text-red-300 text-[11px] font-semibold mb-2">{itemsError}</p>}
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          disabled={savingItems}
+                          onClick={() => {
+                            const next = items.map((row, idx) => idx === i
+                              ? { ...row, condition: draftCondition, storage: draftStorage, quote: liveQuote }
+                              : row);
+                            doSaveItems(next);
+                          }}
+                          className="flex-1 px-3 py-2 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] rounded-lg text-xs font-extrabold cursor-pointer disabled:opacity-50 transition"
+                        >
+                          {savingItems ? "Saving…" : "Save changes"}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={savingItems}
+                          onClick={() => { setEditIdx(null); setItemsError(""); }}
+                          className="px-3 py-2 bg-white/5 border border-white/15 rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50 transition"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="bg-white/[0.03] border border-white/10 rounded-xl p-3 flex items-center justify-between gap-3">
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-bold">{offer.model || offer.device || "Device"}</p>
-                <p className="text-[11px] text-[#bdbdbd]">{[offer.storage, offer.condition, offer.carrier].filter(Boolean).join(" · ")}</p>
-              </div>
-              {offer.quote && <p className="text-[#00c853] font-bold">{offer.quote.startsWith("$") ? offer.quote : `$${offer.quote}`}</p>}
-            </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-3 pt-3 border-t border-white/15 flex items-baseline justify-between">
+            <span className="text-[11px] uppercase tracking-wider text-[#e6e6e6] font-bold">Total</span>
+            <span className="text-[#00c853] font-extrabold text-lg">${items.reduce((s, it) => s + it.quote * it.quantity, 0).toLocaleString()}</span>
+          </div>
+
+          {canEditItems && (
+            <p className="text-[#888] text-[11px] mt-2">Spotted a mistake? Edit a device above — your estimate updates instantly.</p>
+          )}
+          {!isCancelled && offer.status !== "quote_requested" && (
+            <p className="text-[#888] text-[11px] mt-2">🔒 Device details lock once your trade is on its way. Need a change? <a href={`mailto:CustomerService@topcashcells.com?subject=${encodeURIComponent("Offer " + offer.id)}`} className="text-[#00c853] hover:underline">Email us</a>.</p>
           )}
         </div>
 
@@ -496,9 +698,9 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           <div className="bg-white/[0.02] border border-white/8 rounded-2xl p-5 mb-5">
             <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
               <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Modify your trade-in offer</p>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Cancel this offer</p>
                 <p className="text-[#bdbdbd] text-xs leading-relaxed">
-                  You may make changes to this offer up until we&apos;ve received it at our warehouse.
+                  Changed your mind? You can cancel anytime before we receive your device. To edit a device, use the Offer items above.
                 </p>
               </div>
             </div>

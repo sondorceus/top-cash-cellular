@@ -51,12 +51,22 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   // Customer-edited phone — the latest [CONTACT-UPDATE] marker wins.
   let phoneOverride = "";
   let phoneOverrideAt = "";
+  // Customer-edited devices — the latest [ITEM-UPDATE] marker wins.
+  let itemUpdate: { devices: Array<{ model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown }>; total?: unknown } | null = null;
+  let itemUpdateAt = "";
   for (const m of messages) {
     if (!m.body) continue;
     const cu = m.body.match(new RegExp(`\\[CONTACT-UPDATE:\\s*${leadId}\\][^\\n]*phone=([^\\n]+)`, "i"));
     if (cu && (!phoneOverrideAt || m.timestamp > phoneOverrideAt)) {
       phoneOverride = cu[1].trim();
       phoneOverrideAt = m.timestamp;
+    }
+    const iu = m.body.match(new RegExp(`\\[ITEM-UPDATE:\\s*${leadId}\\][^\\n]*?(\\{.*\\})`, "i"));
+    if (iu && (!itemUpdateAt || m.timestamp > itemUpdateAt)) {
+      try {
+        const parsed = JSON.parse(iu[1]);
+        if (parsed && Array.isArray(parsed.devices)) { itemUpdate = parsed; itemUpdateAt = m.timestamp; }
+      } catch { /* ignore malformed marker */ }
     }
     const sm = m.body.match(new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
     if (sm && STATUSES.includes(sm[1].toLowerCase())) {
@@ -123,6 +133,22 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
 
   // Cancellation / deletion check — staff can soft-delete leads.
   const cancelled = messages.some((m) => m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
+
+  // Apply a customer device edit (latest [ITEM-UPDATE]) as an override
+  // of the parsed device list + total.
+  if (itemUpdate) {
+    devices = itemUpdate.devices.map((d) => ({
+      model: String(d.model ?? "Device"),
+      storage: d.storage ? String(d.storage) : undefined,
+      condition: d.condition ? String(d.condition) : undefined,
+      quote: Number.isFinite(Number(d.quote)) ? Number(d.quote) : undefined,
+      quantity: Number.isFinite(Number(d.quantity)) ? Number(d.quantity) : undefined,
+    }));
+    deviceCount = devices.length;
+    totalPayout = Number.isFinite(Number(itemUpdate.total))
+      ? Number(itemUpdate.total)
+      : devices.reduce((s, d) => s + (d.quote || 0) * (d.quantity || 1), 0);
+  }
 
   return NextResponse.json({
     found: true,
