@@ -11648,130 +11648,64 @@ export default function Home() {
               )}
             </div>
 
-            {/* MANAGE YOUR OFFER — single-offer permalink (richer than
-                /track, which is a multi-lead lookup). Shows status,
-                print label, shipping checklist, contact info, modify/
-                cancel. Skywalker 2026-05-19. */}
-            {submittedLeadId && (
-              <div className="tcc-card rounded-2xl p-5 mb-4">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Your offer</p>
-                <p className="text-white text-base font-bold mb-1">🧾 Offer #{submittedLeadId.slice(0, 10).toUpperCase()}</p>
-                <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">
-                  Print your label, see live status, walk through the shipping checklist, or modify the offer — anytime, from this link.
+            {/* MANAGE YOUR OFFER — the hero CTA on the done page when
+                we got a leadId back. Skywalker 2026-05-19 restructure:
+                this used to be a thin card below the receipt with a
+                long 4-step shipping ol below; the customer never
+                clicked through to /offer because the page kept
+                reading like the old basic done step. Now it's a real
+                visual hero, the long-form steps are gone (they live as
+                an interactive checklist on /offer with checkboxes that
+                persist), and the secondary links are demoted to small
+                inline text below. */}
+            {submittedLeadId ? (
+              <div className="rounded-2xl p-6 mb-6 text-center" style={{
+                background: "linear-gradient(180deg, rgba(0,200,83,0.18) 0%, rgba(0,200,83,0.06) 100%)",
+                border: "1px solid rgba(0,200,83,0.45)",
+                boxShadow: "0 0 32px rgba(0,200,83,0.15), inset 0 1px 0 rgba(255,255,255,0.08)",
+              }}>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Your offer page</p>
+                <p className="text-white text-lg font-extrabold mb-1">🧾 Offer #{submittedLeadId.slice(0, 10).toUpperCase()}</p>
+                <p className="text-[#dcdcdc] text-xs leading-relaxed mb-4 max-w-md mx-auto">
+                  {handoffMethod === "ship"
+                    ? "Print your FedEx label, walk through the shipping checklist, see live status, or modify the offer — everything's on your offer page."
+                    : "See your meetup slot, live status, contact info, or modify the offer — everything's on your offer page."}
                 </p>
                 <a
                   href={`/offer/${encodeURIComponent(submittedLeadId)}`}
-                  className="inline-flex items-center justify-center gap-2 w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-sm px-4 py-3 rounded-full transition cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 w-full max-w-md mx-auto bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-base px-6 py-4 rounded-full transition cursor-pointer shadow-[0_8px_24px_rgba(0,200,83,0.35)]"
                 >
-                  Manage my offer →
+                  {handoffMethod === "ship" ? "🖨️ Open offer + print label →" : "📍 Open my offer page →"}
                 </a>
-                <p className="text-[10px] text-[#888] mt-2 text-center">
-                  Bookmark this link or check your email — we just sent it.
+                <p className="text-[10px] text-[#888] mt-3">
+                  Bookmark this — same link is in the email we just sent.
                 </p>
-              </div>
-            )}
-
-            {/* TRACK YOUR TRADE — multi-lead lookup (phone/email). Stays
-                as the fallback for customers who lose the direct offer
-                link. Skywalker 2026-05-19. */}
-            {(phone || email) && (
-              <div className="tcc-card rounded-2xl p-5 mb-6">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">All your trades</p>
-                <p className="text-white text-base font-bold mb-1">📍 Track every trade you've sent us</p>
-                <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">
-                  No password — just your phone or email. Past trades, live status, FedEx scans.
-                </p>
-                <a
-                  href={`/track?${phone ? `phone=${encodeURIComponent(phone.replace(/\D/g, ""))}` : `email=${encodeURIComponent(email || "")}`}`}
-                  className="inline-flex items-center justify-center gap-2 w-full bg-white/5 hover:bg-white/10 border border-white/15 text-white font-extrabold text-sm px-4 py-3 rounded-full transition cursor-pointer"
-                >
-                  Open my tracking page →
-                </a>
-              </div>
-            )}
-
-            {/* HOW SHIPPING WORKS — 4-step expanded guide, ship handoffs
-                only. Skywalker 2026-05-18 IMG_5736 mockup → "We need to
-                add more info to this page: how it works, shipping steps,
-                boxes, faq link". Mirrors IWM's pattern but tuned to our
-                dark theme. Same content lands in the confirmation email
-                next pass. */}
-            {handoffMethod === "ship" && (
-              <div className="tcc-card rounded-2xl p-5 mb-6">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Okay, I sold!</p>
-                <h3 className="text-white text-base font-bold mb-3">Shipping your device — fast, free, easy</h3>
-                <ol className="space-y-3.5">
-                  {[
-                    {
-                      n: 1,
-                      title: "Prep your device",
-                      bullets: [
-                        { required: true, text: "Sign out + reset (Find My / Activation Lock OFF on iPhone, factory reset for Android)" },
-                        { required: false, text: "Remove SIM + SD cards (we don't need them)" },
-                      ],
-                      note: "If a device arrives still activation-locked or account-locked we can't pay out — heads up.",
-                    },
-                    {
-                      n: 2,
-                      title: "Pack the box",
-                      bullets: [
-                        { required: false, text: "Any plain box or padded mailer — Amazon boxes work great" },
-                        { required: false, text: "Wrap the device in cloth, bubble wrap, or a t-shirt" },
-                        { required: false, text: "Pack tight so nothing rattles" },
-                        { required: false, text: "Tape it shut on all seams" },
-                      ],
-                      note: submittedDevices && submittedDevices.length > 1 ? "One box for all your devices is totally fine — pad between them." : undefined,
-                    },
-                    {
-                      n: 3,
-                      title: "Attach the label",
-                      bullets: [
-                        { required: true, text: "Print the FedEx label PDF (above) — full size, no scaling" },
-                        { required: true, text: "Tape it FLAT to the largest side, barcode visible + uncreased" },
-                      ],
-                      note: "Don't cover the barcode with shiny tape — matte packing tape works best.",
-                    },
-                    {
-                      n: 4,
-                      title: "Drop it off",
-                      bullets: [
-                        { required: false, text: "Any FedEx location, no appointment needed" },
-                        { required: false, text: "Within 21 days of this quote (after that prices may shift)" },
-                      ],
-                      note: "We'll text you the moment it lands in Austin. Inspection + payout usually within 24 hrs of arrival.",
-                    },
-                  ].map((step) => (
-                    <li key={step.n} className="flex gap-3">
-                      <div className="shrink-0 w-7 h-7 rounded-full bg-[#00c853]/15 border border-[#00c853]/40 flex items-center justify-center text-[#00c853] text-xs font-extrabold">{step.n}</div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-white text-sm font-bold mb-1">{step.title}</p>
-                        <ul className="space-y-1">
-                          {step.bullets.map((b, i) => (
-                            <li key={i} className="flex items-start gap-2 text-[12px] leading-snug">
-                              <span className={`mt-0.5 text-[10px] font-extrabold uppercase tracking-wider shrink-0 ${b.required ? "text-amber-300" : "text-[#888]"}`}>{b.required ? "Required" : "Optional"}</span>
-                              <span className="text-[#dcdcdc]">{b.text}</span>
-                            </li>
-                          ))}
-                        </ul>
-                        {step.note && (
-                          <p className="text-[11px] text-[#888] italic leading-snug mt-1.5">{step.note}</p>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-                <div className="mt-4 pt-4 border-t border-white/8 flex flex-wrap items-center gap-3 text-[12px]">
-                  <a href="/faq" target="_blank" className="text-[#00c853] hover:text-[#00e676] font-semibold cursor-pointer">📖 FAQ — full shipping + payout details</a>
+                <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[11px]">
+                  <a href="/account" className="text-[#dcdcdc] hover:text-white">All my trades</a>
                   <span className="text-[#666]">·</span>
-                  <a href="mailto:CustomerService@topcashcells.com" className="text-[#dcdcdc] hover:text-white cursor-pointer">✉️ Questions? Email us</a>
-                  {phone && (
-                    <>
-                      <span className="text-[#666]">·</span>
-                      <a href="/track" className="text-[#dcdcdc] hover:text-white cursor-pointer">🔍 Track your trade</a>
-                    </>
-                  )}
+                  <a href="/faq" target="_blank" className="text-[#dcdcdc] hover:text-white">📖 FAQ</a>
+                  <span className="text-[#666]">·</span>
+                  <a href="mailto:CustomerService@topcashcells.com" className="text-[#dcdcdc] hover:text-white">✉️ Email us</a>
                 </div>
               </div>
+            ) : (
+              // Fallback when /api/lead didn't return a leadId — keep the
+              // basic /track lookup so the customer still has a recovery
+              // path. Should only fire when MC was down at submit time.
+              (phone || email) && (
+                <div className="tcc-card rounded-2xl p-5 mb-6">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Find my trade</p>
+                  <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">
+                    Look up your trade by phone or email anytime.
+                  </p>
+                  <a
+                    href={`/track?${phone ? `phone=${encodeURIComponent(phone.replace(/\D/g, ""))}` : `email=${encodeURIComponent(email || "")}`}`}
+                    className="inline-flex items-center justify-center gap-2 w-full bg-white/5 hover:bg-white/10 border border-white/15 text-white font-extrabold text-sm px-4 py-3 rounded-full transition cursor-pointer"
+                  >
+                    Open my tracking page →
+                  </a>
+                </div>
+              )
             )}
 
             {/* No review CTA here — the customer hasn't actually completed
