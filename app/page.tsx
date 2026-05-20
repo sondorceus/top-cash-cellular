@@ -10385,6 +10385,16 @@ export default function Home() {
               if (handoffMethod === "ship" && (!shipStreet || !shipCity || !shipState || !shipZip)) {
                 alert("Please fill in your full shipping address."); return;
               }
+              // Shipping requires a 10-digit phone — FedEx prints it on
+              // the label. JS guard so we never hit the server's 400 with
+              // a generic browser error. Skywalker 2026-05-19.
+              if (handoffMethod === "ship") {
+                const phoneDigits = phone.replace(/\D/g, "");
+                if (phoneDigits.length < 10) {
+                  alert("Please enter a 10-digit phone number — FedEx prints it on your shipping label.");
+                  return;
+                }
+              }
               setSubmittingLead(true);
               try {
                 // Book the chosen local slot before creating the lead.
