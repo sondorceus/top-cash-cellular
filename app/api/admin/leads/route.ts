@@ -248,6 +248,11 @@ interface AdminLead {
   }>;
   deviceCount?: number;
   totalPayout?: number;
+  // Set when the customer edited their device(s) post-submission via
+  // the offer page — timestamp of the latest [ITEM-UPDATE] marker. The
+  // device/spec/quote fields above already reflect the edit; this just
+  // flags that an edit happened so the UI can badge it.
+  itemsEditedAt?: string;
   // Soft-trash metadata. Populated for leads in the Trash view. The
   // hoursToAutoPurge field counts down from 24h since deletedAt.
   // Skywalker 2026-05-17: "next time save my quotes for 24hr".
@@ -468,6 +473,9 @@ export async function GET(req: NextRequest) {
   // regenerating overrides the prior label on the UI.
   const labelByLead = new Map<string, { tracking: string; url: string; service?: string; timestamp: string }>();
   const labelErrorByLead = new Map<string, { kind: string; reason: string; timestamp: string }>();
+  // Customer device edits — the latest [ITEM-UPDATE: leadId] marker per
+  // lead (posted by the offer-page editor). Most recent wins.
+  const itemUpdateByLead = new Map<string, { devices: Array<{ model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown }>; total?: unknown; timestamp: string }>();
   const commsByLead = new Map<string, { sms: number; email: number; lastAt?: string }>();
   const idCapturedByLead = new Map<string, { type: string; last4: string; dobYear: string; photoUrl: string; timestamp: string }>();
   // Review token bookkeeping. minted = "[REVIEW-TOKEN: leadId] token=X
@@ -631,6 +639,22 @@ export async function GET(req: NextRequest) {
       if (!prev || m.timestamp > prev.timestamp) {
         labelErrorByLead.set(lid, { kind, reason, timestamp: m.timestamp });
       }
+    }
+    // Customer device-edit marker — self-contained, posted by the
+    // offer-page editor. "[ITEM-UPDATE: leadId] …text… {json}". Latest
+    // wins per lead.
+    const iuMarker = m.body.match(/\[ITEM-UPDATE:\s*([\w-]+)\][^\n]*?(\{.*\})/i);
+    if (iuMarker) {
+      const lid = iuMarker[1];
+      try {
+        const parsed = JSON.parse(iuMarker[2]);
+        if (parsed && Array.isArray(parsed.devices)) {
+          const prev = itemUpdateByLead.get(lid);
+          if (!prev || m.timestamp > prev.timestamp) {
+            itemUpdateByLead.set(lid, { devices: parsed.devices, total: parsed.total, timestamp: m.timestamp });
+          }
+        }
+      } catch { /* ignore malformed marker */ }
     }
     const lm = m.body.match(/\[LEAD:\s*([\w-]+)\]/i);
     if (!lm) continue;
@@ -824,6 +848,41 @@ export async function GET(req: NextRequest) {
       const totalMatch = m.body.match(/Total payout:\s*\$([0-9,]+)/);
       if (totalMatch) totalPayout = parseInt(totalMatch[1].replace(/,/g, ""), 10);
     }
+    // Apply a customer device edit (latest [ITEM-UPDATE] marker) so the
+    // admin card shows the edited specs + total, not the original
+    // submission. Multi-device leads keep their list; single-device
+    // leads keep rendering as single (top-level fields overridden).
+    // Skywalker 2026-05-20.
+    let modelOverride: string | undefined;
+    let storageOverride: string | undefined;
+    let conditionOverride: string | undefined;
+    let quoteOverride: string | undefined;
+    let itemsEditedAt: string | undefined;
+    const itemUpd = itemUpdateByLead.get(m.id);
+    if (itemUpd) {
+      itemsEditedAt = itemUpd.timestamp;
+      const editedDevices = itemUpd.devices.map((d) => ({
+        model: String(d.model ?? "Device"),
+        storage: d.storage ? String(d.storage) : undefined,
+        condition: d.condition ? String(d.condition) : undefined,
+        quote: Number.isFinite(Number(d.quote)) ? Number(d.quote) : undefined,
+        quantity: Number.isFinite(Number(d.quantity)) ? Number(d.quantity) : undefined,
+      }));
+      const editedTotal = Number.isFinite(Number(itemUpd.total))
+        ? Number(itemUpd.total)
+        : editedDevices.reduce((s, d) => s + (d.quote || 0) * (d.quantity || 1), 0);
+      if (devicesHeaderMatch || editedDevices.length > 1) {
+        devices = editedDevices;
+        deviceCount = editedDevices.length;
+        totalPayout = editedTotal;
+      } else if (editedDevices.length === 1) {
+        const d0 = editedDevices[0];
+        modelOverride = d0.model;
+        storageOverride = d0.storage;
+        conditionOverride = d0.condition;
+        quoteOverride = d0.quote != null ? `$${d0.quote}` : undefined;
+      }
+    }
     // Handoff method + details. /api/lead writes a header line like
     //   "--- Handoff: SHIPPING ---" or "--- Handoff: LOCAL MEETUP ---"
     // followed by Address/Packaging/Area/Slot/Action lines. Surface the
@@ -859,11 +918,11 @@ export async function GET(req: NextRequest) {
       phone: parseField(m.body, "Phone"),
       email: parseField(m.body, "Email"),
       device: deviceLine?.split(" — ")[0],
-      model: deviceLine?.split(" — ")[1],
-      storage: parseField(m.body, "Storage"),
-      condition: parseField(m.body, "Condition"),
+      model: modelOverride ?? deviceLine?.split(" — ")[1],
+      storage: storageOverride ?? parseField(m.body, "Storage"),
+      condition: conditionOverride ?? parseField(m.body, "Condition"),
       carrier: parseField(m.body, "Carrier"),
-      quote: parseField(m.body, "Quote") || parseField(m.body, "Offer"),
+      quote: quoteOverride ?? (parseField(m.body, "Quote") || parseField(m.body, "Offer")),
       payout: parseField(m.body, "Payout"),
       imei: parseField(m.body, "IMEI"),
       imeiWarnings,
@@ -913,6 +972,7 @@ export async function GET(req: NextRequest) {
       devices,
       deviceCount,
       totalPayout,
+      itemsEditedAt,
       deletedAt:        bucket.kind === "trashed" ? bucket.deletedAt : undefined,
       // null hoursLeft means "no auto-purge" (active in-flight lead) —
       // pass through as null so the UI can display "kept indefinitely"
