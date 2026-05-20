@@ -26,7 +26,10 @@ type Trade = {
   statusAt?: string;
   handoffMethod?: "ship" | "local";
   fedexTracking?: string;
+  address?: { street?: string; unit?: string; city?: string; state?: string; zip?: string };
 };
+
+type Section = "account" | "trades" | "addresses";
 
 type AccountData = {
   authenticated: boolean;
@@ -66,6 +69,11 @@ export default function AccountPage() {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
+  // Side-nav section — starts on Trade-Ins since that's what most
+  // returning customers come here for. Account Info is the
+  // "I want to manage my settings" path, Addresses is read-only
+  // recall of past shipping addresses.
+  const [section, setSection] = useState<Section>("trades");
 
   const refresh = async () => {
     setLoading(true);
@@ -200,38 +208,172 @@ export default function AccountPage() {
   const past = trades.filter(t => FINISHED.has(t.status));
   const displayName = data.name?.split(" ")[0] || data.email?.split("@")[0] || "there";
 
+  // Dedup addresses across trades — same street+zip wins one entry.
+  // Kept in chronological order so the most-recent unique address ranks
+  // at the top (good default for "ship from").
+  const addresses = (() => {
+    const seen = new Set<string>();
+    const out: Array<{ street: string; unit?: string; city: string; state: string; zip: string; lastUsed: string; tradeCount: number }> = [];
+    for (const t of trades) {
+      const a = t.address;
+      if (!a || !a.street || !a.city || !a.state || !a.zip) continue;
+      const key = `${a.street.toLowerCase()}|${a.zip}`;
+      if (seen.has(key)) {
+        const existing = out.find(x => `${x.street.toLowerCase()}|${x.zip}` === key);
+        if (existing) existing.tradeCount += 1;
+        continue;
+      }
+      seen.add(key);
+      out.push({ street: a.street, unit: a.unit, city: a.city, state: a.state, zip: a.zip, lastUsed: t.timestamp, tradeCount: 1 });
+    }
+    return out;
+  })();
+
+  const sectionTabs: Array<{ id: Section; label: string; icon: string; count?: number }> = [
+    { id: "account", label: "Account Info", icon: "👤" },
+    { id: "trades", label: "Trade-Ins", icon: "🧾", count: summary.total },
+    { id: "addresses", label: "Addresses", icon: "📍", count: addresses.length },
+  ];
+
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
-      <div className="max-w-3xl mx-auto px-4 py-8 lg:py-12">
+      <div className="max-w-5xl mx-auto px-4 py-8 lg:py-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <a href="/" className="text-[#00c853] text-sm font-semibold">← Top Cash</a>
-          <button onClick={logout} className="text-[#888] text-xs hover:text-white transition cursor-pointer">Sign out</button>
+          <p className="text-[#888] text-xs">{data.email}</p>
         </div>
 
-        {/* Welcome + summary */}
-        <h1 className="text-2xl md:text-3xl font-bold mb-1">Welcome back, {displayName}</h1>
-        <p className="text-[#bdbdbd] text-sm mb-6">{data.email}</p>
+        <h1 className="text-2xl md:text-3xl font-bold mb-6">My Account</h1>
 
-        <div className="grid grid-cols-3 gap-3 mb-8">
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-            <p className="text-[10px] text-[#888] uppercase tracking-wider font-bold mb-1">Trades</p>
-            <p className="text-2xl font-extrabold">{summary.total}</p>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-            <p className="text-[10px] text-[#888] uppercase tracking-wider font-bold mb-1">Paid out</p>
-            <p className="text-2xl font-extrabold text-[#00c853]">${summary.paid.toLocaleString()}</p>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-            <p className="text-[10px] text-[#888] uppercase tracking-wider font-bold mb-1">Open</p>
-            <p className="text-2xl font-extrabold">{summary.openCount}</p>
-          </div>
-        </div>
+        <div className="lg:flex lg:gap-6">
+          {/* Side nav (vertical on lg, horizontal scroll on mobile) */}
+          <aside className="lg:w-56 shrink-0 mb-4 lg:mb-0">
+            <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0 lg:sticky lg:top-6">
+              {sectionTabs.map((t) => {
+                const active = section === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setSection(t.id)}
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition cursor-pointer ${
+                      active
+                        ? "bg-[#00c853]/15 text-[#00c853] border border-[#00c853]/40"
+                        : "text-[#dcdcdc] hover:bg-white/5 border border-transparent"
+                    }`}
+                  >
+                    <span>{t.icon}</span>
+                    <span className="flex-1 text-left">{t.label}</span>
+                    {t.count !== undefined && t.count > 0 && (
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${active ? "bg-[#00c853]/20 text-[#00c853]" : "bg-white/[0.08] text-[#888]"}`}>{t.count}</span>
+                    )}
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                onClick={logout}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-[#ff8088] hover:bg-red-500/10 transition cursor-pointer lg:mt-4"
+              >
+                <span>↩</span><span className="flex-1 text-left">Sign out</span>
+              </button>
+            </nav>
+          </aside>
 
-        {/* Sell another CTA */}
-        <a href="/" className="block w-full text-center bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] py-4 rounded-2xl font-extrabold mb-8 transition">
-          + Sell another device
-        </a>
+          {/* Main content area */}
+          <div className="flex-1 min-w-0">
+
+        {section === "account" && (
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold mb-1">Welcome back, {displayName}</h2>
+            <p className="text-[#bdbdbd] text-sm mb-2">{data.email}</p>
+
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Account info</p>
+              <div className="space-y-3 text-sm">
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-0.5">Email</p>
+                  <p className="text-white">{data.email}</p>
+                </div>
+                {data.name && (
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-0.5">Name</p>
+                    <p className="text-white">{data.name}</p>
+                  </div>
+                )}
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-0.5">Sign-in method</p>
+                  {data.via === "google" ? (
+                    <p className="text-white flex items-center gap-2">
+                      <svg className="w-4 h-4" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
+                      Linked to your Google account
+                    </p>
+                  ) : (
+                    <p className="text-white">Email-only (no password required)</p>
+                  )}
+                </div>
+              </div>
+              <p className="text-[11px] text-[#888] mt-4 leading-relaxed">
+                Need to update your name, phone, or email? Email <a href="mailto:CustomerService@topcashcells.com" className="text-[#00c853] hover:underline">CustomerService@topcashcells.com</a> with your offer number and we&apos;ll handle it.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                <p className="text-[10px] text-[#888] uppercase tracking-wider font-bold mb-1">Trades</p>
+                <p className="text-2xl font-extrabold">{summary.total}</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                <p className="text-[10px] text-[#888] uppercase tracking-wider font-bold mb-1">Paid out</p>
+                <p className="text-2xl font-extrabold text-[#00c853]">${summary.paid.toLocaleString()}</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                <p className="text-[10px] text-[#888] uppercase tracking-wider font-bold mb-1">Open</p>
+                <p className="text-2xl font-extrabold">{summary.openCount}</p>
+              </div>
+            </div>
+
+            <a href="/" className="block w-full text-center bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] py-4 rounded-2xl font-extrabold transition">
+              + Sell another device
+            </a>
+          </div>
+        )}
+
+        {section === "addresses" && (
+          <div>
+            <h2 className="text-lg font-bold mb-1">Saved addresses</h2>
+            <p className="text-[#bdbdbd] text-sm mb-4">Used on past shipping trades. We&apos;ll pre-fill the address you pick when you submit a new offer.</p>
+            {addresses.length === 0 ? (
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
+                <p className="text-[#bdbdbd] text-sm mb-3">No saved addresses yet — they show up after your first shipping trade.</p>
+                <a href="/" className="inline-block bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] px-5 py-2.5 rounded-xl font-bold transition">
+                  Start a trade
+                </a>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {addresses.map((a, i) => (
+                  <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold">{a.street}{a.unit ? `, ${a.unit}` : ""}</p>
+                        <p className="text-[12px] text-[#bdbdbd] mt-0.5">{a.city}, {a.state} {a.zip}</p>
+                        <p className="text-[10px] text-[#888] mt-1.5">Last used {timeAgo(a.lastUsed)} · {a.tradeCount} {a.tradeCount === 1 ? "trade" : "trades"}</p>
+                      </div>
+                      {i === 0 && (
+                        <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-[#00c853]/15 text-[#00c853] border border-[#00c853]/40 shrink-0">Most recent</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {section === "trades" && (
+        <div>
 
         {/* Open trades */}
         {open.length > 0 && (
@@ -318,6 +460,11 @@ export default function AccountPage() {
             </a>
           </div>
         )}
+        </div>
+        )}
+
+          </div>
+        </div>
       </div>
     </main>
   );

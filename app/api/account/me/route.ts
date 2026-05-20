@@ -27,6 +27,9 @@ type Trade = {
   statusAt?: string;
   handoffMethod?: "ship" | "local";
   fedexTracking?: string;
+  // Address used on this trade — surfaced so /account can show a
+  // dedup'd "Addresses" section (one entry per unique street+zip).
+  address?: { street?: string; unit?: string; city?: string; state?: string; zip?: string };
 };
 
 const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "met", "rejected"];
@@ -101,6 +104,10 @@ export async function GET() {
       handoffLine?.includes("ship") ? "ship" :
       handoffLine?.includes("local") ? "local" : undefined;
     const status = statusByLead.get(m.id);
+    const street = parseField(m.body, "Street");
+    const city = parseField(m.body, "City");
+    const state = parseField(m.body, "State");
+    const zip = parseField(m.body, "Zip") || parseField(m.body, "ZIP");
     trades.push({
       id: m.id,
       timestamp: m.timestamp,
@@ -114,6 +121,9 @@ export async function GET() {
       statusAt: status?.at,
       handoffMethod,
       fedexTracking: labelByLead.get(m.id),
+      address: (street && city && state && zip)
+        ? { street, unit: parseField(m.body, "Unit"), city, state, zip }
+        : undefined,
     });
   }
   // Sort newest first

@@ -92,6 +92,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   const [offer, setOffer] = useState<Offer | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [shareNotice, setShareNotice] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -148,9 +149,51 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
       <div className="max-w-3xl mx-auto px-4 py-8 lg:py-10">
-        <Link href="/account" className="inline-flex items-center gap-1 text-[#00c853] text-sm font-semibold mb-4">
-          ← Back to my account
-        </Link>
+        <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
+          <Link href="/account" className="inline-flex items-center gap-1 text-[#00c853] text-sm font-semibold">
+            ← Back to my account
+          </Link>
+          {/* Quick actions row — Share copies the offer link (or uses
+              Web Share if available); Download opens print dialog so the
+              customer can save the page as PDF for their records.
+              Skywalker 2026-05-19. */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const url = typeof window !== "undefined" ? window.location.href : "";
+                const title = `Top Cash Cellular Offer #${offer.id.slice(0, 10).toUpperCase()}`;
+                if (typeof navigator !== "undefined" && navigator.share) {
+                  navigator.share({ title, url }).catch(() => {});
+                  return;
+                }
+                if (typeof navigator !== "undefined" && navigator.clipboard) {
+                  navigator.clipboard.writeText(url).then(() => {
+                    setShareNotice("Link copied to clipboard");
+                    setTimeout(() => setShareNotice(""), 2000);
+                  }).catch(() => {});
+                }
+              }}
+              className="text-xs font-semibold text-[#dcdcdc] hover:text-white px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer"
+              title="Share this offer link"
+            >
+              🔗 Share
+            </button>
+            <button
+              type="button"
+              onClick={() => { if (typeof window !== "undefined") window.print(); }}
+              className="text-xs font-semibold text-[#dcdcdc] hover:text-white px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer"
+              title="Save offer details as PDF via your browser's print dialog"
+            >
+              ⬇️ Download
+            </button>
+          </div>
+        </div>
+        {shareNotice && (
+          <div className="mb-3 px-3 py-2 rounded-lg bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-xs font-semibold text-center">
+            ✓ {shareNotice}
+          </div>
+        )}
 
         {/* Hero — offer number, date, status badge, total */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-5">
