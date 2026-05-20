@@ -10601,8 +10601,8 @@ export default function Home() {
                 } catch {}
                 if (email || phone) {
                   const confirmBody = isMultiCart
-                    ? { name, phone, email, carrier: carrier?.label, payout: payout?.label, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity })), handoffMethod, fedexLabel: leadLabel }
-                    : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, handoffMethod, fedexLabel: leadLabel };
+                    ? { name, phone, email, carrier: carrier?.label, payout: payout?.label, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity })), handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value }
+                    : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value };
                   fetch("/api/confirm", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

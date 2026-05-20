@@ -5,6 +5,15 @@ const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
 
+// Review-platform links shown in the email footer. TCC has no social
+// media, but does have Trustpilot + Yelp. Both env-overridable so the
+// exact profile URLs can be set in Vercel without a redeploy — the
+// Trustpilot default uses the standard /review/<domain> format, Yelp
+// has no predictable slug so it only renders once YELP_URL is set.
+// Skywalker 2026-05-19.
+const TRUSTPILOT_URL = process.env.TRUSTPILOT_URL || "https://www.trustpilot.com/review/topcashcellular.com";
+const YELP_URL = process.env.YELP_URL || "";
+
 async function sendSms(to: string, body: string): Promise<boolean> {
   if (!TWILIO_SID || !TWILIO_AUTH) return false;
   const digits = to.replace(/\D/g, "");
@@ -32,6 +41,10 @@ export async function POST(req: NextRequest) {
   }
   const { name, email, phone, devices, handoffMethod, fedexLabel } = body;
   let { payout } = body;
+  // Coupon bonus ($) applied at submission — surfaced as its own line
+  // in the receipt breakdown ("Coupon Bonus +$5"). Optional; 0/absent
+  // means no coupon and the line is hidden. Skywalker 2026-05-19.
+  const couponBonus = Number(body?.couponBonus) > 0 ? Math.round(Number(body.couponBonus)) : 0;
   // Phone normalized to digits-only for the /track URL — parallel commit
   // 3707f6e referenced phoneDigits before declaring it. Restoring the
   // intended derivation here so the type-check passes.
@@ -77,6 +90,11 @@ export async function POST(req: NextRequest) {
     storage = "Multiple";
     condition = "See list below";
   }
+  // Device offer + coupon bonus = offer total. The big headline number
+  // shows the TOTAL the customer walks away with; the breakdown rows
+  // itemize device subtotal / coupon / free shipping below it.
+  const deviceSubtotal = Number(quote) || 0;
+  const offerTotal = deviceSubtotal + couponBonus;
 
   if (!email && !phone) return NextResponse.json({ ok: false, error: "No contact info" });
 
@@ -131,7 +149,7 @@ export async function POST(req: NextRequest) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.10);border-left:3px solid #00c853;border-radius:14px">
 <tr><td style="padding:22px 24px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.08)">
 <div style="font-size:10px;color:#00c853;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:6px;font-weight:800">Locked-In Offer</div>
-<div style="font-size:48px;font-weight:800;color:#00c853;line-height:1;text-shadow:0 0 18px rgba(0,200,83,0.4)">$${quote}</div>
+<div style="font-size:48px;font-weight:800;color:#00c853;line-height:1;text-shadow:0 0 18px rgba(0,200,83,0.4)">$${offerTotal}</div>
 <div style="font-size:11px;color:#888;margin-top:10px;letter-spacing:0.08em;text-transform:uppercase">Valid for 7 days</div>
 </td></tr>
 <tr><td style="padding:16px 24px">
@@ -140,7 +158,10 @@ ${isMulti ? deviceArr.map((d) => `<tr><td style="padding:10px 0;border-bottom:1p
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Device</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06);font-weight:600">${model}</td></tr>
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Storage</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${storage || "N/A"}</td></tr>
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Condition</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${condition}</td></tr>`}
-<tr><td style="padding:8px 0;color:#888;font-size:13px">Payout</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:700">${payout}</td></tr>
+<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Payout method</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06)">${payout}</td></tr>
+${couponBonus > 0 ? `<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">🎁 Coupon bonus</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06)">+$${couponBonus}.00</td></tr>` : ""}
+${isShipping ? `<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">🚚 Prepaid shipping label</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:800;border-bottom:1px solid rgba(255,255,255,0.06)">FREE</td></tr>` : ""}
+<tr><td style="padding:12px 0 4px 0;color:#fff;font-size:14px;font-weight:800">Offer total</td><td style="padding:12px 0 4px 0;color:#00c853;font-size:18px;text-align:right;font-weight:800">$${offerTotal}.00</td></tr>
 </table>
 </td></tr>
 </table>
@@ -489,9 +510,19 @@ ${phone ? `<tr><td style="padding:4px 0;color:#888;font-size:12px">Phone</td><td
 <tr><td style="padding:24px 28px 28px 28px">
 <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:18px"></div>
 <div style="text-align:center">
-<div style="margin-bottom:6px"><a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-size:14px;font-weight:700">CustomerService@topcashcells.com</a></div>
-<div style="font-size:12px;color:#666;line-height:1.5">Top Cash Cellular · Austin, TX · <a href="https://topcashcellular.com" style="color:#666;text-decoration:none">topcashcellular.com</a></div>
-<div style="font-size:11px;color:#555;margin-top:6px">Questions? Just reply to this email.</div>
+<!-- Referral nudge — the greatest compliment line -->
+<div style="font-size:12px;color:#bdbdbd;font-weight:700;margin-bottom:14px">The greatest compliment you can give us is a referral. 💚</div>
+<!-- Review platforms — TCC has no socials, just Trustpilot + Yelp -->
+<div style="font-size:10px;color:#777;text-transform:uppercase;letter-spacing:0.14em;font-weight:800;margin-bottom:8px">Reviewed us? Tell the world</div>
+<div style="margin-bottom:16px">
+<a href="${TRUSTPILOT_URL}" style="display:inline-block;margin:0 4px;padding:8px 16px;background:rgba(0,182,122,0.12);border:1px solid rgba(0,182,122,0.4);border-radius:999px;color:#00b67a;text-decoration:none;font-size:12px;font-weight:800">★ Trustpilot</a>
+${YELP_URL ? `<a href="${YELP_URL}" style="display:inline-block;margin:0 4px;padding:8px 16px;background:rgba(211,47,47,0.12);border:1px solid rgba(211,47,47,0.4);border-radius:999px;color:#ff6b6b;text-decoration:none;font-size:12px;font-weight:800">★ Yelp</a>` : ""}
+</div>
+<div style="margin-bottom:8px"><a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-size:14px;font-weight:700">CustomerService@topcashcells.com</a></div>
+<div style="font-size:12px;color:#888;line-height:1.6">Top Cash Cellular · Austin, TX</div>
+<div style="font-size:12px;color:#888;line-height:1.6"><a href="https://topcashcellular.com" style="color:#00c853;text-decoration:none">topcashcellular.com</a> · Mon–Sat 8 AM–8 PM CT</div>
+<div style="font-size:11px;color:#555;margin-top:10px">© ${new Date().getFullYear()} Top Cash Cellular. All rights reserved.</div>
+<div style="font-size:11px;color:#555;margin-top:4px">Questions? Just reply to this email.</div>
 </div>
 </td></tr>
 
