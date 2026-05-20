@@ -4178,6 +4178,8 @@ export default function Home() {
   // know" field — building buzzers, work hours, accessories, etc.
   type BestContact = "text" | "call" | "email";
   const [bestContact, setBestContact] = useState<BestContact | null>(null);
+  // "Best way to reach you" collapsed by default — keeps the step tidy.
+  const [reachOpen, setReachOpen] = useState(false);
   const [customerNote, setCustomerNote] = useState("");
   // "Anything else" note collapsed by default — keeps the step tidy.
   const [noteOpen, setNoteOpen] = useState(false);
@@ -11207,35 +11209,43 @@ export default function Home() {
                 )}
               </div>
 
-              {/* Best contact method — Skywalker 2026-05-18 "make sure
-                  im getting every detail … best contact". Three-way
-                  pick. Choices the customer skipped show as null and
-                  staff falls back to the contact most relevant to the
-                  handoff (text for local, email for ship). */}
-              <div>
-                <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
-                  Best way to reach you <span className="normal-case text-[11px] text-[#888]">(optional)</span>
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {([
-                    { id: "text" as const, label: "Text", emoji: "💬", hint: "SMS" },
-                    { id: "call" as const, label: "Call", emoji: "📞", hint: "Phone" },
-                    { id: "email" as const, label: "Email", emoji: "✉️", hint: "Inbox" },
-                  ]).map((opt) => (
-                    <button
-                      key={opt.id}
-                      type="button"
-                      onClick={() => setBestContact(bestContact === opt.id ? null : opt.id)}
-                      className={`px-3 py-3 rounded-xl border text-center transition cursor-pointer tap-press
-                        ${bestContact === opt.id ? "bg-[#00c853]/15 border-[#00c853]/45 text-white" : "bg-white/5 border-white/10 text-[#c5c5c5] hover:bg-white/10"}`}
-                    >
-                      <p className="text-base leading-none mb-1">{opt.emoji}</p>
-                      <p className="text-[13px] font-bold leading-tight">{opt.label}</p>
-                      <p className="text-[10px] opacity-60 mt-0.5">{opt.hint}</p>
-                    </button>
-                  ))}
+              {/* Best contact method — collapsed to a tiny link by
+                  default; expands on tap, stays open once a choice is
+                  made. Skywalker 2026-05-20. */}
+              {!reachOpen && !bestContact ? (
+                <button
+                  type="button"
+                  onClick={() => setReachOpen(true)}
+                  className="text-[12px] font-semibold text-[#00c853] hover:text-[#00e676] cursor-pointer"
+                >
+                  📞 Best way to reach you?
+                </button>
+              ) : (
+                <div>
+                  <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
+                    Best way to reach you <span className="normal-case text-[11px] text-[#888]">(optional)</span>
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {([
+                      { id: "text" as const, label: "Text", emoji: "💬", hint: "SMS" },
+                      { id: "call" as const, label: "Call", emoji: "📞", hint: "Phone" },
+                      { id: "email" as const, label: "Email", emoji: "✉️", hint: "Inbox" },
+                    ]).map((opt) => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => setBestContact(bestContact === opt.id ? null : opt.id)}
+                        className={`px-3 py-3 rounded-xl border text-center transition cursor-pointer tap-press
+                          ${bestContact === opt.id ? "bg-[#00c853]/15 border-[#00c853]/45 text-white" : "bg-white/5 border-white/10 text-[#c5c5c5] hover:bg-white/10"}`}
+                      >
+                        <p className="text-base leading-none mb-1">{opt.emoji}</p>
+                        <p className="text-[13px] font-bold leading-tight">{opt.label}</p>
+                        <p className="text-[10px] opacity-60 mt-0.5">{opt.hint}</p>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Free-form "anything else?" note — Skywalker 2026-05-18.
                   Customers often need to tell us building buzzers, work
