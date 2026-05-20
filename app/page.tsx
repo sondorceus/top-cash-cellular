@@ -5927,31 +5927,9 @@ export default function Home() {
           )}
         </button>
         <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between relative">
-          {/* LEFT: logo */}
-          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer group tap-press rounded-full shrink-0 bg-white/[0.12] border border-white/10 hover:bg-white/[0.12] pl-1.5 pr-3 py-1 transition">
-            <span className="flex items-center gap-2">
-              <span className="relative w-9 h-9 rounded-xl tcc-logo-card flex items-center justify-center">
-                <span className="absolute inset-0 rounded-xl pointer-events-none" style={{ background: "radial-gradient(circle at 28% 25%, rgba(0,230,118,0.18), transparent 65%)" }}></span>
-                <span className="relative w-6 h-6 rounded-lg tcc-logo-tile flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" className="w-3.5 h-5" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 1px 0 rgba(0,0,0,0.35))" }}>
-                    <rect x="6" y="1.5" width="12" height="21" rx="3" />
-                    <rect x="10" y="3" width="4" height="1.4" rx="0.7" fill="#fff" stroke="none" />
-                    <line x1="10.8" y1="3.7" x2="13.2" y2="3.7" strokeWidth="0.6" stroke="#00a039" />
-                    <rect x="7.5" y="5.5" width="9" height="13.5" rx="1" stroke="rgba(255,255,255,0.4)" strokeWidth="0.7" />
-                    <line x1="10" y1="20.3" x2="14" y2="20.3" strokeWidth="1.6" />
-                    <line x1="5.6" y1="9" x2="5.6" y2="12" strokeWidth="1" />
-                  </svg>
-                </span>
-                <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-extrabold text-[#1a1100] tcc-logo-coin" style={{ background: "radial-gradient(circle at 30% 30%, #ffe066, #ffb400 70%, #c08a00)", boxShadow: "0 1px 2px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.7)" }}>$</span>
-              </span>
-              <div className="flex flex-col leading-none">
-                <span className="text-[15px] font-black tracking-[-0.02em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-[#bdbdbd] group-hover:from-[#00e676] group-hover:via-[#00e676] group-hover:to-[#00a039] transition" style={{ fontFeatureSettings: '"ss01", "cv11"' }}>TOP CASH</span>
-                <span className="flex items-center gap-1.5 text-[9px] font-bold tracking-[0.32em] uppercase">
-                  <span className="block w-1 h-1 rounded-full bg-[#00c853] shadow-[0_0_4px_#00c853]"></span>
-                  <span className="text-[#00c853]">Cellular</span>
-                </span>
-              </div>
-            </span>
+          {/* LEFT: logo — Top Cash Cellular wordmark (Skywalker 2026-05-20) */}
+          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer shrink-0 tap-press">
+            <img src="/logo-wordmark.png" alt="Top Cash Cellular" className="h-10 lg:h-12 w-auto" />
           </button>
 
           {/* CENTER (lg+ only, absolutely centered relative to the nav row): Sell / Bulk / Support */}
