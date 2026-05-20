@@ -713,9 +713,9 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             </div>
 
 
-            {/* Cancel — a real self-serve action. The signed-in owner
-                cancels directly; anyone else is prompted to sign in with
-                the offer's own email (no more email-us dead end). */}
+            {/* Cancel — a real self-serve action, open to anyone on the
+                offer's private link (leadId is the secret; staff get an
+                SMS on cancel). No sign-in required. */}
             {!cancelConfirmOpen ? (
               <button
                 type="button"

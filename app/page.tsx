@@ -4194,6 +4194,8 @@ export default function Home() {
   const [couponState, setCouponState] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
   const [couponValid, setCouponValid] = useState<{ code: string; value: number } | null>(null);
   const [couponMessage, setCouponMessage] = useState<string>("");
+  // Coupon entry collapsed by default — keeps the contact step tidy.
+  const [couponOpen, setCouponOpen] = useState(false);
   const checkCoupon = async () => {
     const raw = couponInput.trim().toUpperCase();
     if (!raw) {
@@ -4337,6 +4339,8 @@ export default function Home() {
   const [inquiryCategory, setInquiryCategory] = useState("");
   const [inquirySent, setInquirySent] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  // Photo section collapsed by default — keeps the contact step tidy.
+  const [photosOpen, setPhotosOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   // Surface upload errors to the user. Skywalker 2026-05-17 — without
   // this, failed uploads silently swallow and the photo flow appears
@@ -11253,47 +11257,63 @@ export default function Home() {
                 )}
               </div>
 
-              {/* Coupon / thank-you code — Skywalker 2026-05-18 review-
-                  reward feature. Customer enters their TCC-XXXX code,
-                  hits Apply, sees a "$25 will be added" confirmation.
-                  Server does the authoritative redeem at submit so
-                  client-side tampering can't fake a discount. */}
-              <div>
-                <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
-                  Have a thank-you code? <span className="normal-case text-[11px] text-[#888]">(optional)</span>
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={couponInput}
-                    onChange={(e) => {
-                      setCouponInput(e.target.value.toUpperCase());
-                      if (couponState !== "idle") { setCouponState("idle"); setCouponValid(null); setCouponMessage(""); }
-                    }}
-                    placeholder="TCC-XXXXXXXX"
-                    maxLength={20}
-                    className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-base lg:text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition tracking-wider font-mono uppercase"
-                  />
+              {/* Thank-you code — collapsed to a tiny link by default so
+                  it doesn't crowd the contact step. Expands on tap; once
+                  a valid code is applied it shows a compact confirmation.
+                  Server does the authoritative redeem at submit. */}
+              {couponState === "valid" && couponValid ? (
+                <div className="flex items-center justify-between gap-2 px-3 py-2 bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl">
+                  <p className="text-xs text-[#7be8a8] font-semibold min-w-0">{couponMessage}</p>
                   <button
                     type="button"
-                    onClick={checkCoupon}
-                    disabled={couponState === "checking" || couponInput.trim().length < 6}
-                    className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-semibold hover:bg-white/10 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    onClick={() => { setCouponInput(""); setCouponState("idle"); setCouponValid(null); setCouponMessage(""); setCouponOpen(false); }}
+                    className="text-[11px] text-[#888] hover:text-white underline shrink-0 cursor-pointer"
                   >
-                    {couponState === "checking" ? "…" : "Apply"}
+                    Remove
                   </button>
                 </div>
-                {couponState === "valid" && couponValid && (
-                  <div className="mt-1.5 px-3 py-2 bg-[#00c853]/10 border border-[#00c853]/30 rounded-lg">
-                    <p className="text-xs text-[#7be8a8] font-semibold">{couponMessage}</p>
+              ) : !couponOpen ? (
+                <button
+                  type="button"
+                  onClick={() => setCouponOpen(true)}
+                  className="text-[12px] font-semibold text-[#00c853] hover:text-[#00e676] cursor-pointer"
+                >
+                  🎟️ Got a thank-you code?
+                </button>
+              ) : (
+                <div>
+                  <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
+                    Thank-you code <span className="normal-case text-[11px] text-[#888]">(optional)</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponInput}
+                      onChange={(e) => {
+                        setCouponInput(e.target.value.toUpperCase());
+                        if (couponState !== "idle") { setCouponState("idle"); setCouponValid(null); setCouponMessage(""); }
+                      }}
+                      placeholder="TCC-XXXXXXXX"
+                      maxLength={20}
+                      autoFocus
+                      className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-base lg:text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition tracking-wider font-mono uppercase"
+                    />
+                    <button
+                      type="button"
+                      onClick={checkCoupon}
+                      disabled={couponState === "checking" || couponInput.trim().length < 6}
+                      className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-semibold hover:bg-white/10 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    >
+                      {couponState === "checking" ? "…" : "Apply"}
+                    </button>
                   </div>
-                )}
-                {couponState === "invalid" && (
-                  <div className="mt-1.5 px-3 py-2 bg-red-500/10 border border-red-500/30 rounded-lg">
-                    <p className="text-xs text-red-300">{couponMessage}</p>
-                  </div>
-                )}
-              </div>
+                  {couponState === "invalid" && (
+                    <div className="mt-1.5 px-3 py-2 bg-red-500/10 border border-red-500/30 rounded-lg">
+                      <p className="text-xs text-red-300">{couponMessage}</p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Carrier-balance Yes / No — Skywalker 2026-05-17. Captures
                   whether the device is fully paid off so staff can adjust
@@ -11331,12 +11351,27 @@ export default function Home() {
                 )}
               </div>
 
-              {/* Multi-device PHOTO TABS — only when cart has 2+ items.
-                  Each tab lets the customer upload a distinct photo set
-                  per device (Skywalker 2026-05-17 "give them the option
-                  to add pictures for each having a tab"). Sealed-tier
-                  items don't need photos — their tab shows a "no photos
-                  needed" note instead of the grid. */}
+              {/* Photos — collapsed into a neat menu by default so the
+                  contact step isn't crowded (Skywalker 2026-05-20). */}
+              <div className="border border-white/10 rounded-xl overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setPhotosOpen((o) => !o)}
+                  className="w-full flex items-center justify-between gap-2 px-3 py-3 bg-white/5 hover:bg-white/[0.07] transition cursor-pointer"
+                >
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#e6e6e6]">
+                    📸 Device photos
+                    {photoUrls.length > 0
+                      ? <span className="text-[#00c853]"> · {photoUrls.length} added</span>
+                      : (condition?.id === "broken" || condition?.id === "fair")
+                        ? <span className="text-[#00c853]"> · recommended</span>
+                        : <span className="text-[#888] normal-case"> (optional)</span>}
+                  </span>
+                  <span className="text-[#888] text-sm">{photosOpen ? "▲" : "▼"}</span>
+                </button>
+                {photosOpen && (
+                  <div className="px-3 pt-3 pb-3">
+              {/* Multi-device PHOTO TABS — one tab per cart device. */}
               {cartItems.length > 1 && (() => {
                 const items = cartItems.map((it, idx) => ({
                   ...it,
@@ -11497,6 +11532,9 @@ export default function Home() {
                 )}
                 {photoError && (
                   <p className="mt-2 text-xs text-red-300 bg-red-900/20 border border-red-700/40 rounded-lg px-3 py-2">{photoError}</p>
+                )}
+              </div>
+                  </div>
                 )}
               </div>
               <p className="text-[#c5c5c5] text-[11px] text-center leading-relaxed">By submitting, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
