@@ -29,7 +29,7 @@ type Offer = {
   quote?: string;
   payout?: string;
   handoffMethod?: "ship" | "local";
-  shipAddress?: { street?: string; unit?: string; city?: string; state?: string; zip?: string };
+  shipAddress?: string;
   localSlot?: string;
   devices?: Array<{ model: string; storage?: string; condition?: string; quote?: number; quantity?: number }>;
   deviceCount?: number;
@@ -101,6 +101,13 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   const [cancelError, setCancelError] = useState("");
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
   const [cancelNote, setCancelNote] = useState("");
+  // Phone-number editing — the only contact field the customer can
+  // change themselves (name stays fixed; email is the account identity).
+  const [editingPhone, setEditingPhone] = useState(false);
+  const [phoneDraft, setPhoneDraft] = useState("");
+  const [phoneSaving, setPhoneSaving] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
+  const [phoneSaved, setPhoneSaved] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -158,6 +165,34 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
     }
   };
 
+  // Save an edited phone number. Owner-gated server-side, same as cancel.
+  const doSaveContact = async () => {
+    const digits = phoneDraft.replace(/\D/g, "");
+    if (digits.length < 10) { setPhoneError("Enter a 10-digit phone number."); return; }
+    setPhoneSaving(true);
+    setPhoneError("");
+    try {
+      const r = await fetch(`/api/offer/${encodeURIComponent(leadId)}/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: phoneDraft.trim() }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setPhoneError(d.error || "Couldn't save — try again or email us.");
+        return;
+      }
+      setOffer((prev) => prev ? { ...prev, phone: phoneDraft.trim() } : prev);
+      setEditingPhone(false);
+      setPhoneSaved(true);
+      setTimeout(() => setPhoneSaved(false), 2500);
+    } catch {
+      setPhoneError("Network error — try again.");
+    } finally {
+      setPhoneSaving(false);
+    }
+  };
+
   // Checklist (only meaningful for ship leads). Hooks must run unconditionally,
   // so we always compute them — just hide the section when not shipping.
   const prepKeys = ["reset", "sim", "responsibility"];
@@ -193,6 +228,9 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
     : (offer.quote && /\$/.test(offer.quote) ? offer.quote : (offer.quote ? `$${offer.quote}` : "—"));
   const isPaid = offer.status === "paid" || offer.status === "met";
   const isCancelled = offer.cancelled || offer.status === "rejected";
+  // Owner = signed-in customer whose email matches the offer's email.
+  // Gates the real Cancel action and the phone-edit affordance.
+  const isOwner = !!(me && offer.email && me.email.toLowerCase() === offer.email.toLowerCase());
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -391,16 +429,61 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Contact info</p>
           {offer.name && <p className="text-sm font-semibold mb-1">{offer.name}</p>}
           {offer.shipAddress && (
-            <p className="text-[#bdbdbd] text-xs leading-relaxed">
-              {offer.shipAddress.street}{offer.shipAddress.unit ? `, ${offer.shipAddress.unit}` : ""}<br />
-              {offer.shipAddress.city}, {offer.shipAddress.state} {offer.shipAddress.zip}
-            </p>
+            <p className="text-[#bdbdbd] text-xs leading-relaxed">📦 Ships from: {offer.shipAddress}</p>
           )}
           {offer.localSlot && (
             <p className="text-[#bdbdbd] text-xs">🤝 Local meetup · {offer.localSlot}</p>
           )}
-          <div className="mt-2 flex flex-col gap-1">
-            {offer.phone && <p className="text-[#bdbdbd] text-xs">📱 {offer.phone}</p>}
+          <div className="mt-2 flex flex-col gap-1.5">
+            {/* Phone — editable by the signed-in owner. Name and email
+                stay fixed (email is the account identity). */}
+            {editingPhone ? (
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    value={phoneDraft}
+                    onChange={(e) => setPhoneDraft(e.target.value.slice(0, 20))}
+                    placeholder="Phone number"
+                    className="flex-1 px-3 py-1.5 bg-black/40 border border-white/15 rounded-lg text-xs text-white placeholder:text-[#888] focus:outline-none focus:border-[#00c853]"
+                  />
+                  <button
+                    type="button"
+                    onClick={doSaveContact}
+                    disabled={phoneSaving}
+                    className="px-3 py-1.5 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] rounded-lg text-xs font-bold cursor-pointer disabled:opacity-50 transition"
+                  >
+                    {phoneSaving ? "Saving…" : "Save"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setEditingPhone(false); setPhoneError(""); }}
+                    disabled={phoneSaving}
+                    className="px-2.5 py-1.5 bg-white/5 border border-white/10 rounded-lg text-xs text-[#d4d4d4] hover:bg-white/10 cursor-pointer disabled:opacity-50 transition"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                {phoneError && <p className="text-red-300 text-[11px] font-semibold">{phoneError}</p>}
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 flex-wrap">
+                {offer.phone
+                  ? <p className="text-[#bdbdbd] text-xs">📱 {offer.phone}</p>
+                  : isOwner && !isCancelled && <p className="text-[#888] text-xs">📱 No phone on file</p>}
+                {isOwner && !isCancelled && (
+                  <button
+                    type="button"
+                    onClick={() => { setPhoneDraft(offer.phone || ""); setEditingPhone(true); setPhoneError(""); }}
+                    className="text-[10px] text-[#00c853] hover:underline font-bold cursor-pointer"
+                  >
+                    {offer.phone ? "Edit" : "+ Add phone number"}
+                  </button>
+                )}
+                {phoneSaved && <span className="text-[10px] text-[#00c853] font-semibold">✓ Saved</span>}
+              </div>
+            )}
             {offer.email && <p className="text-[#bdbdbd] text-xs">✉️ {offer.email}</p>}
           </div>
         </div>
@@ -420,54 +503,24 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
               </div>
             </div>
 
-            {/* Add a device (placeholder — real flow needs a search +
-                quote-recompute backend that doesn't exist yet). */}
-            <div className="bg-white/[0.03] border border-white/8 rounded-xl p-3 mb-2 flex items-center gap-3">
-              <span className="text-lg shrink-0">➕</span>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-white">Add another device to this offer</p>
-                <p className="text-[11px] text-[#bdbdbd]">Email us — we&apos;ll re-quote and combine into one label.</p>
-              </div>
-              <a
-                href={`mailto:CustomerService@topcashcells.com?subject=${encodeURIComponent("Add device to offer " + offer.id)}`}
-                className="px-3 py-1.5 bg-white/5 border border-white/15 hover:bg-white/10 rounded-lg text-xs font-bold transition shrink-0"
-              >
-                Email us
-              </a>
-            </div>
 
-            {/* Modify existing items (placeholder). */}
-            <div className="bg-white/[0.03] border border-white/8 rounded-xl p-3 mb-3 flex items-center gap-3">
-              <span className="text-lg shrink-0">✏️</span>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-white">Change condition, storage, or carrier</p>
-                <p className="text-[11px] text-[#bdbdbd]">Email us with the corrected details and we&apos;ll update your quote.</p>
-              </div>
-              <a
-                href={`mailto:CustomerService@topcashcells.com?subject=${encodeURIComponent("Modify offer " + offer.id)}`}
-                className="px-3 py-1.5 bg-white/5 border border-white/15 hover:bg-white/10 rounded-lg text-xs font-bold transition shrink-0"
+            {/* Cancel — a real self-serve action. The signed-in owner
+                cancels directly; anyone else is prompted to sign in with
+                the offer's own email (no more email-us dead end). */}
+            {!cancelConfirmOpen ? (
+              <button
+                type="button"
+                onClick={() => setCancelConfirmOpen(true)}
+                className="w-full px-4 py-2.5 bg-red-500/10 border border-red-500/30 text-[#ff8088] rounded-xl text-sm font-bold hover:bg-red-500/15 transition cursor-pointer"
               >
-                Email us
-              </a>
-            </div>
-
-            {/* Real cancel — auth-gated to the owner. Email fallback for
-                anyone else with the link (they shouldn't be able to
-                cancel someone else's offer). */}
-            {me && offer.email && me.email.toLowerCase() === offer.email.toLowerCase() ? (
-              <>
-                {!cancelConfirmOpen ? (
-                  <button
-                    type="button"
-                    onClick={() => setCancelConfirmOpen(true)}
-                    className="w-full px-4 py-2.5 bg-red-500/10 border border-red-500/30 text-[#ff8088] rounded-xl text-sm font-bold hover:bg-red-500/15 transition cursor-pointer"
-                  >
-                    ✕ Cancel this offer
-                  </button>
-                ) : (
-                  <div className="bg-red-500/10 border border-red-500/40 rounded-xl p-4">
-                    <p className="text-red-200 font-bold text-sm mb-2">Cancel offer #{offer.id.slice(0, 10).toUpperCase()}?</p>
-                    <p className="text-red-200/80 text-[11px] mb-3">{isShip ? "Your shipping label will stop working. You can always start a new offer from the home page." : "Your meetup slot will be released. You can always start a new offer."}</p>
+                ✕ Cancel this offer
+              </button>
+            ) : (
+              <div className="bg-red-500/10 border border-red-500/40 rounded-xl p-4">
+                <p className="text-red-200 font-bold text-sm mb-2">Cancel offer #{offer.id.slice(0, 10).toUpperCase()}?</p>
+                <p className="text-red-200/80 text-[11px] mb-3">{isShip ? "Your shipping label will stop working. You can always start a new offer from the home page." : "Your meetup slot will be released. You can always start a new offer."}</p>
+                {isOwner ? (
+                  <>
                     <textarea
                       value={cancelNote}
                       onChange={(e) => setCancelNote(e.target.value.slice(0, 200))}
@@ -496,17 +549,32 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                         Keep offer
                       </button>
                     </div>
-                  </div>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-red-200/80 text-[11px] mb-3">
+                      {me
+                        ? <>This offer was submitted under <span className="font-semibold">{offer.email}</span>. Sign in with that account to cancel it.</>
+                        : "Sign in with the account you used to submit this offer, then cancel it right here."}
+                    </p>
+                    <div className="flex gap-2">
+                      <Link
+                        href="/account"
+                        className="flex-1 px-3 py-2 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] rounded-lg text-xs font-extrabold text-center transition"
+                      >
+                        Sign in to cancel
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => { setCancelConfirmOpen(false); setCancelError(""); }}
+                        className="px-3 py-2 bg-white/5 border border-white/15 rounded-lg text-xs font-semibold cursor-pointer transition"
+                      >
+                        Keep offer
+                      </button>
+                    </div>
+                  </>
                 )}
-              </>
-            ) : (
-              <a
-                href={`mailto:CustomerService@topcashcells.com?subject=${encodeURIComponent("Cancel offer " + offer.id)}`}
-                className="block w-full px-4 py-2.5 bg-white/5 border border-red-500/20 text-[#ff8088] rounded-xl text-sm font-semibold text-center hover:bg-red-500/10 transition"
-                title={me ? "Sign in with the account that submitted this offer to cancel directly" : "Sign in to cancel directly, or email us"}
-              >
-                ✕ Cancel offer (email us)
-              </a>
+              </div>
             )}
           </div>
         )}

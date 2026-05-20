@@ -48,8 +48,16 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   let fedexService = "";
   let fedexErrorKind = "";
   let fedexErrorReason = "";
+  // Customer-edited phone — the latest [CONTACT-UPDATE] marker wins.
+  let phoneOverride = "";
+  let phoneOverrideAt = "";
   for (const m of messages) {
     if (!m.body) continue;
+    const cu = m.body.match(new RegExp(`\\[CONTACT-UPDATE:\\s*${leadId}\\][^\\n]*phone=([^\\n]+)`, "i"));
+    if (cu && (!phoneOverrideAt || m.timestamp > phoneOverrideAt)) {
+      phoneOverride = cu[1].trim();
+      phoneOverrideAt = m.timestamp;
+    }
     const sm = m.body.match(new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
     if (sm && STATUSES.includes(sm[1].toLowerCase())) {
       if (!statusAt || m.timestamp > statusAt) {
@@ -73,18 +81,18 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     }
   }
 
-  // Parse handoff method + address + slot from the lead body.
-  const handoffLine = field(body, "Handoff")?.toLowerCase() || "";
+  // Parse handoff method + address + slot from the lead body. The lead
+  // body writes a header marker — "--- Handoff: SHIPPING ---" or
+  // "--- Handoff: LOCAL MEETUP ---" — NOT a plain "Handoff:" field. The
+  // old field(body,"Handoff") match never hit, so handoffMethod was
+  // always undefined and every offer fell through to the local-meetup
+  // banner. Match the real marker (same as the admin leads parser).
+  // Skywalker 2026-05-20.
   const handoffMethod: "ship" | "local" | undefined =
-    handoffLine.includes("ship") ? "ship" :
-    handoffLine.includes("local") ? "local" : undefined;
-  const shipAddress = handoffMethod === "ship" ? {
-    street: field(body, "Street"),
-    unit: field(body, "Unit"),
-    city: field(body, "City"),
-    state: field(body, "State"),
-    zip: field(body, "Zip") || field(body, "ZIP"),
-  } : undefined;
+    /---\s*Handoff:\s*SHIPPING/i.test(body) ? "ship" :
+    /---\s*Handoff:\s*LOCAL MEETUP/i.test(body) ? "local" : undefined;
+  // Ship leads store the address as one "Address: ..." line.
+  const shipAddress = handoffMethod === "ship" ? field(body, "Address") : undefined;
   const localSlot = handoffMethod === "local" ? field(body, "Slot") : undefined;
 
   // Multi-device parsing — same shape /api/admin/leads emits, simplified.
@@ -121,7 +129,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     id: leadId,
     timestamp: leadMsg.timestamp,
     name: field(body, "Name"),
-    phone: field(body, "Phone"),
+    phone: phoneOverride || field(body, "Phone"),
     email: field(body, "Email"),
     device: field(body, "Device"),
     model: field(body, "Model"),

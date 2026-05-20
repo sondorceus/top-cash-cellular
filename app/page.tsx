@@ -2533,6 +2533,16 @@ const PAYOUTS = [
   { id: "btc", label: "Bitcoin" },
 ];
 
+// Per-method payout-handle metadata. Cash needs no handle (paid in
+// person). The rest require the customer to type their handle twice so
+// we catch typos before payout — see the payout step. Format
+// validators come later; for now it's a double-entry match check.
+const PAYOUT_HANDLE_META: Record<string, { field: string; placeholder: string; hint: string }> = {
+  cashapp: { field: "$Cashtag", placeholder: "$YourCashtag", hint: "Find it in Cash App under your profile — it starts with a $." },
+  zelle:   { field: "Zelle email or phone", placeholder: "email or phone number", hint: "Use the exact email or phone number enrolled with Zelle at your bank." },
+  btc:     { field: "Bitcoin wallet address", placeholder: "your BTC wallet address", hint: "Paste your receiving address. Double-check it — crypto transfers can't be reversed." },
+};
+
 const FAQS = [
   { q: "How does the process work?", a: "Select your device, choose its condition, and get an instant quote. Accept the offer, pick your payout method, and we'll arrange a local pickup in Austin." },
   { q: "How fast will I get paid?", a: "Same day for local Austin pickups. We pay on the spot via your preferred method — Cash (local only), Cash App, Zelle, or BTC." },
@@ -3913,6 +3923,10 @@ export default function Home() {
   // ship with Gorilla Glass / equivalent on the back).
   const PHONES_WITHOUT_BACK_GLASS = new Set<string>(["px5", "px5a"]);
   const [payout, setPayout] = useState<typeof PAYOUTS[0] | null>(null);
+  // Payout handle entered twice — the customer's Cashtag / Zelle / BTC
+  // address. Both must match before they can advance. Cash skips this.
+  const [payoutHandle, setPayoutHandle] = useState("");
+  const [payoutHandleConfirm, setPayoutHandleConfirm] = useState("");
   // MacBook-specific picks (Wave 1). Only used when the picked model
   // has a MACBOOK_SPECS entry; otherwise these stay null and the legacy
   // flow runs unchanged.
@@ -4139,6 +4153,8 @@ export default function Home() {
   useEffect(() => {
     if (handoffMethod === "ship" && payout?.id === "cash") {
       setPayout(null);
+      setPayoutHandle("");
+      setPayoutHandleConfirm("");
       setStep("payout");
     }
   }, [handoffMethod, payout]);
@@ -5212,6 +5228,8 @@ export default function Home() {
     setCarrierLock(null);
     setConnectivity(null);
     setPayout(null);
+    setPayoutHandle("");
+    setPayoutHandleConfirm("");
     setQuantity(1);
     setExpandedFaq(null);
     setPage("home");
@@ -10299,16 +10317,86 @@ export default function Home() {
                     { id: "zelle",   label: "Zelle" },
                     { id: "btc",     label: "Bitcoin" },
                   ]
-              ).map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => { setPayout(p); setStep("contact"); pushHistory("contact"); }}
-                  className="flex items-center justify-center p-7 rounded-2xl tcc-card cursor-pointer min-h-[88px]"
-                >
-                  <p className="font-extrabold text-[17px] text-white">{p.label}</p>
-                </button>
-              ))}
+              ).map((p) => {
+                const selected = payout?.id === p.id;
+                return (
+                  <button
+                    key={p.id}
+                    onClick={() => {
+                      // Switching methods clears any handle already typed.
+                      if (payout?.id !== p.id) { setPayoutHandle(""); setPayoutHandleConfirm(""); }
+                      setPayout(p);
+                    }}
+                    className={`flex items-center justify-center p-7 rounded-2xl cursor-pointer min-h-[88px] transition ${selected ? "border-2 border-[#00c853] bg-[#00c853]/10" : "tcc-card"}`}
+                  >
+                    <p className="font-extrabold text-[17px] text-white">{p.label}{selected ? " ✓" : ""}</p>
+                  </button>
+                );
+              })}
             </div>
+
+            {/* Payout-handle capture — once a digital method is picked,
+                the customer enters their handle TWICE so a typo can't
+                send a payout into the void. Cash is paid in person and
+                skips straight to Continue. Format validators come later;
+                for now it's a double-entry match check. Skywalker 2026-05-20. */}
+            {payout && (() => {
+              const meta = PAYOUT_HANDLE_META[payout.id];
+              const needsHandle = !!meta;
+              const h = payoutHandle.trim();
+              const hc = payoutHandleConfirm.trim();
+              const matched = h.length > 0 && h === hc;
+              const ready = !needsHandle || matched;
+              return (
+                <div className="mt-5 bg-white/[0.03] border border-white/10 rounded-2xl p-4">
+                  {meta ? (
+                    <>
+                      <p className="text-sm font-bold text-white mb-1">Where should we send your {payout.label} payout?</p>
+                      <p className="text-[11px] text-[#bdbdbd] mb-3">{meta.hint} Enter it twice — we confirm it matches before paying you.</p>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-[#888] mb-1">{meta.field}</label>
+                      <input
+                        type="text"
+                        value={payoutHandle}
+                        onChange={(e) => setPayoutHandle(e.target.value.slice(0, 120))}
+                        placeholder={meta.placeholder}
+                        autoComplete="off"
+                        spellCheck={false}
+                        className="w-full px-3 py-2.5 mb-3 bg-black/40 border border-white/15 rounded-lg text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]"
+                      />
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-[#888] mb-1">Confirm {meta.field}</label>
+                      <input
+                        type="text"
+                        value={payoutHandleConfirm}
+                        onChange={(e) => setPayoutHandleConfirm(e.target.value.slice(0, 120))}
+                        placeholder="Re-enter to confirm"
+                        autoComplete="off"
+                        spellCheck={false}
+                        className={`w-full px-3 py-2.5 bg-black/40 border rounded-lg text-sm text-white placeholder:text-[#777] focus:outline-none ${
+                          !hc ? "border-white/15 focus:border-[#00c853]" : matched ? "border-[#00c853]" : "border-red-500/60"
+                        }`}
+                      />
+                      <div className="mt-2 min-h-[18px]">
+                        {hc.length > 0 && (matched
+                          ? <p className="text-[11px] font-semibold text-[#00c853]">✓ Matches — you&apos;re good to go</p>
+                          : <p className="text-[11px] font-semibold text-red-300">✕ The two entries don&apos;t match yet</p>)}
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-sm text-[#e6e6e6]"><span className="font-bold text-white">Cash</span> — paid in person at your Austin meetup. Nothing to enter here.</p>
+                  )}
+                  <button
+                    type="button"
+                    disabled={!ready}
+                    onClick={() => { setStep("contact"); pushHistory("contact"); }}
+                    className={`w-full mt-3 px-4 py-3 rounded-xl text-sm font-extrabold transition ${
+                      ready ? "bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] cursor-pointer" : "bg-white/5 border border-white/10 text-[#777] cursor-not-allowed"
+                    }`}
+                  >
+                    Continue →
+                  </button>
+                </div>
+              );
+            })()}
             </div>
           </div>
         </section>
@@ -10401,6 +10489,12 @@ export default function Home() {
                 }
               }
               setSubmittingLead(true);
+              // Payout value carries the confirmed handle (Cashtag /
+              // Zelle / BTC address) so admin, the offer page, and the
+              // confirmation email all show exactly where money goes.
+              const payoutValue = payout
+                ? (payoutHandle.trim() ? `${payout.label}: ${payoutHandle.trim()}` : payout.label)
+                : undefined;
               try {
                 // Book the chosen local slot before creating the lead.
                 // If the slot was taken between page-load and submit
@@ -10497,7 +10591,7 @@ export default function Home() {
                       condition: "Multi-device",
                       carrier: carrier?.label,
                       quote: totalQuote,
-                      payout: payout?.label,
+                      payout: payoutValue,
                       handoff: handoffPayload,
                       paidOff,
                       devices: devicesPayload,
@@ -10519,7 +10613,7 @@ export default function Home() {
                   const res = await fetch("/api/lead", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined) }),
+                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined) }),
                   });
                   if (!res.ok) throw new Error('Failed');
                   const d = await res.json().catch(() => ({}));
@@ -10601,8 +10695,8 @@ export default function Home() {
                 } catch {}
                 if (email || phone) {
                   const confirmBody = isMultiCart
-                    ? { name, phone, email, carrier: carrier?.label, payout: payout?.label, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity })), handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value }
-                    : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payout?.label, quantity, handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value };
+                    ? { name, phone, email, carrier: carrier?.label, payout: payoutValue, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity })), handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value }
+                    : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payoutValue, quantity, handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value };
                   fetch("/api/confirm", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
