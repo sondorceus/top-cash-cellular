@@ -190,5 +190,8 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     fedexErrorKind: fedexErrorKind || undefined,
     fedexErrorReason: fedexErrorReason || undefined,
     cancelled,
+    // True when a customer edit set a device to a broken condition —
+    // those can't be auto-quoted and are flagged for a manual re-quote.
+    needsReview: !!itemUpdate && (itemUpdate.devices || []).some((d) => /brok|crack|damag/i.test(String(d.condition ?? ""))),
   }, { headers: { "Cache-Control": "no-store" } });
 }

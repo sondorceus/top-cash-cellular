@@ -253,6 +253,9 @@ interface AdminLead {
   // device/spec/quote fields above already reflect the edit; this just
   // flags that an edit happened so the UI can badge it.
   itemsEditedAt?: string;
+  // True when a customer edit set a device to a broken condition —
+  // it can't be auto-quoted and needs a hands-on staff re-quote.
+  itemsNeedReview?: boolean;
   // Soft-trash metadata. Populated for leads in the Trash view. The
   // hoursToAutoPurge field counts down from 24h since deletedAt.
   // Skywalker 2026-05-17: "next time save my quotes for 24hr".
@@ -858,6 +861,7 @@ export async function GET(req: NextRequest) {
     let conditionOverride: string | undefined;
     let quoteOverride: string | undefined;
     let itemsEditedAt: string | undefined;
+    let itemsNeedReview = false;
     const itemUpd = itemUpdateByLead.get(m.id);
     if (itemUpd) {
       itemsEditedAt = itemUpd.timestamp;
@@ -868,6 +872,7 @@ export async function GET(req: NextRequest) {
         quote: Number.isFinite(Number(d.quote)) ? Number(d.quote) : undefined,
         quantity: Number.isFinite(Number(d.quantity)) ? Number(d.quantity) : undefined,
       }));
+      itemsNeedReview = editedDevices.some((d) => /brok|crack|damag/i.test(d.condition || ""));
       const editedTotal = Number.isFinite(Number(itemUpd.total))
         ? Number(itemUpd.total)
         : editedDevices.reduce((s, d) => s + (d.quote || 0), 0);
@@ -973,6 +978,7 @@ export async function GET(req: NextRequest) {
       deviceCount,
       totalPayout,
       itemsEditedAt,
+      itemsNeedReview,
       deletedAt:        bucket.kind === "trashed" ? bucket.deletedAt : undefined,
       // null hoursLeft means "no auto-purge" (active in-flight lead) —
       // pass through as null so the UI can display "kept indefinitely"

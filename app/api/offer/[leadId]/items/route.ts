@@ -114,10 +114,16 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     }, { status: 409 });
   }
 
+  // A broken device can't be auto-quoted — its functional state and
+  // glass damage have to be assessed by hand. Flag the edit for a
+  // manual staff re-quote. Skywalker 2026-05-20.
+  const hasBroken = devices.some((d) => /brok|crack|damag/i.test(d.condition));
+
   // Post the item-update marker. Human-readable lead-in for staff
   // scanning MC; the trailing JSON is what the offer GET route parses.
   const json = JSON.stringify({ v: 1, devices, total });
-  const updateBody = `[ITEM-UPDATE: ${leadId}] Customer edited device specs — new estimated total $${total}. ${json}`;
+  const reviewNote = hasBroken ? " ⚠️ MANUAL REVIEW NEEDED — customer marked a device broken; re-quote by hand." : "";
+  const updateBody = `[ITEM-UPDATE: ${leadId}] Customer edited device specs — new estimated total $${total}.${reviewNote} ${json}`;
   const postRes = await fetch(`${MC_API}/api/comms`, {
     method: "POST",
     headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
@@ -126,7 +132,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
       fromName: "Customer Device Edit",
       role: "system",
       body: updateBody,
-      tags: ["item-update"],
+      tags: hasBroken ? ["item-update", "needs-review"] : ["item-update"],
       priority: "high",
     }),
   });
@@ -140,7 +146,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
       const e164 = OWNER_PHONE.startsWith("+") ? OWNER_PHONE : `+1${OWNER_PHONE.replace(/\D/g, "")}`;
       const customerName = field(leadMsg.body, "Name") || "Customer";
       const summary = devices.map((d) => `${d.model} (${d.condition || "?"}${d.storage ? ", " + d.storage : ""})`).join("; ");
-      const text = `✏️ EDIT: ${customerName} changed offer ${leadId.slice(0, 10).toUpperCase()} → est. $${total}. ${summary}`;
+      const text = `${hasBroken ? "⚠️ NEEDS MANUAL REVIEW — " : ""}EDIT: ${customerName} changed offer ${leadId.slice(0, 10).toUpperCase()} → est. $${total}. ${summary}`;
       await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
         method: "POST",
         headers: {

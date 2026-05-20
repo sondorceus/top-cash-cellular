@@ -71,6 +71,8 @@ interface Lead {
   // Set when a customer edited their device(s) post-submission via the
   // offer page — the device/spec/quote fields reflect the edit.
   itemsEditedAt?: string;
+  // True when a customer edit set a device broken — needs a hands-on re-quote.
+  itemsNeedReview?: boolean;
   // Live Atlas + eBay margin per lead — computed at GET time using the
   // current comp datasets. Skywalker 2026-05-19.
   compMargin?: {
@@ -1963,10 +1965,16 @@ export default function AdminPage() {
                               reflect the edit. Skywalker 2026-05-20. */}
                           {lead.itemsEditedAt && (
                             <span
-                              className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#00c853]/15 text-[#7be8a8] border border-[#00c853]/40 uppercase tracking-wider"
-                              title={`Customer edited their device(s) on ${new Date(lead.itemsEditedAt).toLocaleString()} — the specs, quote, and total shown reflect the edit. Verify at inspection.`}
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                                lead.itemsNeedReview
+                                  ? "bg-amber-500/15 text-amber-100 border border-amber-500/45"
+                                  : "bg-[#00c853]/15 text-[#7be8a8] border border-[#00c853]/40"
+                              }`}
+                              title={lead.itemsNeedReview
+                                ? `Customer edited a device to BROKEN on ${new Date(lead.itemsEditedAt).toLocaleString()} — broken devices can't be auto-quoted. Re-quote this lead by hand.`
+                                : `Customer edited their device(s) on ${new Date(lead.itemsEditedAt).toLocaleString()} — the specs, quote, and total shown reflect the edit. Verify at inspection.`}
                             >
-                              ✏️ Customer edited
+                              {lead.itemsNeedReview ? "⚠️ Edited — needs re-quote" : "Customer edited"}
                             </span>
                           )}
                           {/* Source attribution — show the top channel

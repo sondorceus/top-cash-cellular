@@ -45,6 +45,9 @@ type Offer = {
   fedexErrorKind?: string;
   fedexErrorReason?: string;
   cancelled?: boolean;
+  // Set when a customer edit marked a device broken — flagged for a
+  // manual staff re-quote; the shown amounts are estimates only.
+  needsReview?: boolean;
 };
 
 // A device row in the editable Offer-items list (normalized from the
@@ -394,12 +397,21 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             at a glance, not the pipeline above it. */}
         <StatusBanner status={offer.status} cancelled={isCancelled} isShip={isShip} hasLabel={!!offer.fedexLabelUrl} />
 
+        {/* Manual-review banner — a customer edit set a device to a
+            broken condition; the price is re-quoted by hand. */}
+        {offer.needsReview && (
+          <div className="bg-amber-500/10 border border-amber-500/40 rounded-2xl p-4 mb-5">
+            <p className="text-amber-200 font-bold text-sm mb-1">⚠️ Your edit needs a manual review</p>
+            <p className="text-amber-200/80 text-xs leading-relaxed">You marked a device as broken. Broken devices are re-quoted by hand — our team confirms the price after inspecting it, so the amounts below are estimates only.</p>
+          </div>
+        )}
+
         {/* Manage callout — spells out that the offer is editable, so
             customers know they can fix a mistake. Only while the offer
             is still in the editable window (before it ships). */}
         {canEditItems && (
           <div className="bg-[#00c853]/[0.06] border border-[#00c853]/30 rounded-2xl p-4 mb-5">
-            <p className="text-sm font-bold text-white mb-1">✏️ You can still manage this offer</p>
+            <p className="text-sm font-bold text-white mb-1">You can still manage this offer</p>
             <p className="text-[#bdbdbd] text-xs leading-relaxed">
               Made a mistake? Right here you can <span className="text-white font-semibold">edit a device</span> — change its condition or storage and the quote updates instantly — <span className="text-white font-semibold">update your phone number</span>, or <span className="text-white font-semibold">cancel the offer</span>. You can do this anytime before your trade ships. All your trades live in <Link href="/account" className="text-[#00c853] font-semibold hover:underline">your account</Link>.
             </p>
@@ -510,6 +522,8 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                     fromStorage: it.storage, toStorage: draftStorage,
                   }) * (it.quantity > 0 ? draftQuantity / it.quantity : 1))
                 : it.quote;
+              const itemBroken = matchTier(REQUOTE_CONDITIONS, it.condition)?.id === "broken";
+              const draftBroken = isEditing && matchTier(REQUOTE_CONDITIONS, draftCondition)?.id === "broken";
               const condOpts = (() => {
                 const labels = REQUOTE_CONDITIONS.map((t) => t.label);
                 return draftCondition && !labels.includes(draftCondition) ? [draftCondition, ...labels] : labels;
@@ -527,7 +541,9 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                       <p className="text-[11px] text-[#bdbdbd]">{[it.storage, it.condition].filter(Boolean).join(" · ") || "—"}</p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-[#00c853] font-bold">${it.quote.toLocaleString()}</p>
+                      {offer.needsReview && itemBroken
+                        ? <p className="text-amber-300 font-bold text-xs">⚠️ Pending review</p>
+                        : <p className="text-[#00c853] font-bold">${it.quote.toLocaleString()}</p>}
                       {canEditItems && !isEditing && (
                         <button
                           type="button"
@@ -540,7 +556,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                           }}
                           className="text-[10px] text-[#00c853] hover:underline font-bold cursor-pointer"
                         >
-                          ✏️ Edit
+                          Edit
                         </button>
                       )}
                     </div>
@@ -583,12 +599,20 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                       >
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => <option key={n} value={n}>{n}</option>)}
                       </select>
-                      <div className="flex items-center justify-between bg-white/[0.04] rounded-lg px-3 py-2 mb-3">
-                        <span className="text-[11px] text-[#bdbdbd]">Updated estimate{draftQuantity > 1 ? ` (×${draftQuantity})` : ""}</span>
-                        <span className={`font-extrabold ${liveQuote === it.quote ? "text-white" : "text-[#00c853]"}`}>
-                          ${liveQuote.toLocaleString()}
-                        </span>
-                      </div>
+                      {draftBroken ? (
+                        <div className="bg-amber-500/10 border border-amber-500/40 rounded-lg px-3 py-2.5 mb-3">
+                          <p className="text-amber-200 text-[11px] leading-relaxed">
+                            <span className="font-bold">Broken devices can&apos;t be auto-quoted.</span> We inspect them by hand — saving this flags your offer for a manual re-quote by our team, and your final price is confirmed after we check the device.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between bg-white/[0.04] rounded-lg px-3 py-2 mb-3">
+                          <span className="text-[11px] text-[#bdbdbd]">Updated estimate{draftQuantity > 1 ? ` (×${draftQuantity})` : ""}</span>
+                          <span className={`font-extrabold ${liveQuote === it.quote ? "text-white" : "text-[#00c853]"}`}>
+                            ${liveQuote.toLocaleString()}
+                          </span>
+                        </div>
+                      )}
                       {itemsError && <p className="text-red-300 text-[11px] font-semibold mb-2">{itemsError}</p>}
                       <div className="flex gap-2">
                         <button
@@ -602,7 +626,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                           }}
                           className="flex-1 px-3 py-2 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] rounded-lg text-xs font-extrabold cursor-pointer disabled:opacity-50 transition"
                         >
-                          {savingItems ? "Saving…" : "Save changes"}
+                          {savingItems ? "Saving…" : draftBroken ? "Request manual review" : "Save changes"}
                         </button>
                         <button
                           type="button"
