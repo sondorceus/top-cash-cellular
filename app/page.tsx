@@ -4326,6 +4326,9 @@ export default function Home() {
   };
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  // Tapping any device row in the cart un-shrinks the whole drawer —
+  // every row jumps from the auto-compact size to full size.
+  const [cartExpanded, setCartExpanded] = useState(false);
   // Bump counter — increments every time an item is added so the cart
   // icon + badge can re-animate (key change forces remount + keyframe).
   const [cartBump, setCartBump] = useState(0);
@@ -7426,12 +7429,19 @@ export default function Home() {
               { n: 2, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, title: "Ship free or drop off", body: "Print our prepaid label, or drop off in Austin. We pay shipping — and the label is insured for your full quoted value automatically." },
               { n: 3, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Get paid same-day", body: "Cash App, Zelle, or BTC for shipped trades. Local meetup adds Cash and pays on the spot (under 5 min). Shipped payouts hit within 24 hours of device arriving." },
             ].map((s, i) => (
-              <div key={s.n} className="relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
+              <button
+                key={s.n}
+                type="button"
+                onClick={() => { window.scrollTo(0, 0); setStep("category"); pushHistory("category"); }}
+                className="group relative text-left w-full bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] hover:border-[#00c853]/30 transition reveal cursor-pointer tap-press"
+                data-stagger={Math.min(i + 2, 8)}
+              >
                 <div className="absolute -top-3 -left-2 w-9 h-9 rounded-full bg-[#00c853] text-[#0a0a0a] text-sm font-bold flex items-center justify-center shadow-lg shadow-[#00c853]/30">{s.n}</div>
                 <svg className="w-9 h-9 text-[#00c853] mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{s.svg}</svg>
-                <h3 className="font-bold text-lg mb-1.5">{s.title}</h3>
+                <p className="font-bold text-lg mb-1.5">{s.title}</p>
                 <p className="text-[#e6e6e6] text-sm leading-relaxed">{s.body}</p>
-              </div>
+                <span className="mt-3 inline-flex items-center gap-1 text-[#00c853] text-sm font-extrabold opacity-0 group-hover:opacity-100 transition">Get my quote →</span>
+              </button>
             ))}
           </div>
         </section>
@@ -12056,13 +12066,19 @@ export default function Home() {
                   { num: "2", svg: <path strokeLinecap="round" strokeLinejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0zM13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1" />, title: "Ship", desc: "Drop it off at any FedEx location" },
                   { num: "3", svg: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Get Paid", desc: "Payment sent same day we receive it" },
                 ].map((s) => (
-                  <div key={s.num} className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+                  <button
+                    key={s.num}
+                    type="button"
+                    onClick={() => { window.scrollTo(0, 0); setStep("category"); pushHistory("category"); }}
+                    className="group w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-center hover:bg-white/[0.07] hover:border-[#00c853]/30 transition cursor-pointer tap-press"
+                  >
                     <div className="w-10 h-10 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
                       <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{s.svg}</svg>
                     </div>
                     <p className="text-white text-sm font-bold mb-1">{s.title}</p>
                     <p className="text-[#e6e6e6] text-[11px] leading-relaxed">{s.desc}</p>
-                  </div>
+                    <span className="mt-2 inline-flex items-center gap-1 text-[#00c853] text-[11px] font-extrabold opacity-0 group-hover:opacity-100 transition">Get my quote →</span>
+                  </button>
                 ))}
               </div>
             </div>
@@ -12890,7 +12906,7 @@ export default function Home() {
                       // each row gets a bit tighter so we don't run out of
                       // viewport. Three tiers: 1 = lg, 2-3 = md, 4+ = sm.
                       const lineCount = cartItems.length;
-                      const tier = lineCount <= 1 ? "lg" : lineCount <= 3 ? "md" : "sm";
+                      const tier = cartExpanded ? "lg" : lineCount <= 1 ? "lg" : lineCount <= 3 ? "md" : "sm";
                       const pad   = tier === "lg" ? "p-4"   : tier === "md" ? "p-3"   : "p-2.5";
                       const imgW  = tier === "lg" ? "w-14 h-14" : tier === "md" ? "w-12 h-12" : "w-10 h-10";
                       const titleSz = tier === "lg" ? "text-[15px]" : tier === "md" ? "text-[14px]" : "text-[13px]";
@@ -12913,7 +12929,7 @@ export default function Home() {
                       return cartItems.map((item, i) => {
                         const imgSrc = item.image || lookupImage(item.modelId);
                         return (
-                          <div key={i} className={`tcc-card rounded-2xl ${pad}`}>
+                          <div key={i} onClick={() => setCartExpanded(v => !v)} className={`tcc-card rounded-2xl ${pad} cursor-pointer`}>
                             <div className="flex items-start gap-3 mb-2">
                               <div className={`${imgW} rounded-xl bg-[rgba(15,15,15,0.55)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden p-1.5`}>
                                 {imgSrc ? (
@@ -12926,13 +12942,13 @@ export default function Home() {
                                 <p className={`text-white font-extrabold ${titleSz} leading-tight`}>{item.model}</p>
                                 <p className={`text-[#c8c8c8] ${subSz} mt-1`}>{item.storage} · {item.condition}</p>
                               </div>
-                              <button onClick={() => { setCartItems(prev => prev.filter((_, idx) => idx !== i)); setCartToast({ model: item.model, price: item.price * item.quantity, kind: "remove" }); setTimeout(() => setCartToast(null), 2400); }} aria-label="Remove from cart" className="text-[#b8b8b8] hover:text-red-400 text-xs font-bold underline-offset-2 hover:underline transition cursor-pointer shrink-0 px-2 py-1.5 -mr-1 -mt-1">Remove</button>
+                              <button onClick={(e) => { e.stopPropagation(); setCartItems(prev => prev.filter((_, idx) => idx !== i)); setCartToast({ model: item.model, price: item.price * item.quantity, kind: "remove" }); setTimeout(() => setCartToast(null), 2400); }} aria-label="Remove from cart" className="text-[#b8b8b8] hover:text-red-400 text-xs font-bold underline-offset-2 hover:underline transition cursor-pointer shrink-0 px-2 py-1.5 -mr-1 -mt-1">Remove</button>
                             </div>
                             <div className="flex items-center justify-between gap-3 mt-2 pt-2 border-t border-white/10">
                               <div className="inline-flex items-center gap-2 bg-white/5 rounded-full px-1 py-1">
-                                <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it))} aria-label="Decrease quantity" className={`${qtyBtn} rounded-full bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center cursor-pointer transition`}>−</button>
+                                <button onClick={(e) => { e.stopPropagation(); setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it)); }} aria-label="Decrease quantity" className={`${qtyBtn} rounded-full bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center cursor-pointer transition`}>−</button>
                                 <span className="text-white text-sm font-extrabold min-w-[20px] text-center">{item.quantity}</span>
-                                <button onClick={() => setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it))} aria-label="Increase quantity" className={`${qtyBtn} rounded-full bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center cursor-pointer transition`}>+</button>
+                                <button onClick={(e) => { e.stopPropagation(); setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it)); }} aria-label="Increase quantity" className={`${qtyBtn} rounded-full bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center cursor-pointer transition`}>+</button>
                               </div>
                               {item.price > 0 ? (
                                 <p className={`text-[#00c853] font-extrabold ${priceSz}`} style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price * item.quantity}</p>
