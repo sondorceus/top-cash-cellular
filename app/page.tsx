@@ -7606,8 +7606,7 @@ export default function Home() {
                     if (dt) { setDeviceType(dt as DeviceType); setStep("model"); pushHistory("model"); return; }
                     setCategory(cat.id); setStep("brand"); pushHistory("brand");
                   })}
-                  onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}
-                  className={`tcc-card flex flex-col items-center justify-center p-4 rounded-2xl cursor-pointer reveal ${funnelPop === `cat-${cat.id}` ? "phone-pop-3d" : ""}`}
+                  className={`tcc-card flex flex-col items-center justify-center p-4 rounded-2xl cursor-pointer reveal ${funnelPop === `cat-${cat.id}` ? "tap-confirm" : ""}`}
                   data-stagger={Math.min(idx + 1, 8)}
                 >
                   <CategoryIcon id={cat.id} className="w-9 h-9 mb-1.5 text-white" />
