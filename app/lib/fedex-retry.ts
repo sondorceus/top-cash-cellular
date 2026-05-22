@@ -102,6 +102,11 @@ export async function retryFedexLabel(leadId: string): Promise<RetryResult> {
   const deviceCount = deviceCountMatch ? parseInt(deviceCountMatch[1], 10) || 1 : 1;
   const refText = deviceCount > 1 ? `${deviceCount} devices` : String(model).slice(0, 30);
 
+  // Declared value — parse the quoted payout from the lead body so a
+  // retried label carries the same FedEx liability cap as the original.
+  const quoteRaw = field(body, "Total payout") || field(body, "Quote") || "";
+  const declaredValueUsd = parseInt(quoteRaw.replace(/[^0-9]/g, ""), 10) || undefined;
+
   const inputs: LabelInputs = {
     customerName: name,
     customerPhone: phoneDigits,
@@ -113,6 +118,7 @@ export async function retryFedexLabel(leadId: string): Promise<RetryResult> {
     deviceKind: deviceKindFromString(String(model)),
     customerReference: refText,
     poNumber: `TCC-${leadId}`,
+    declaredValueUsd,
   };
 
   try {

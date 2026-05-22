@@ -2552,7 +2552,7 @@ const FAQS = [
   { q: "Are the quotes guaranteed?", a: "Quotes are based on the condition you select. Final price is confirmed during inspection at pickup — if the device matches your description, you get the quoted price." },
   { q: "What devices do you buy?", a: "Phones (iPhone 11+, Samsung Galaxy S21+, Google Pixel 5+, OnePlus, Z Fold / Z Flip), iPads + Samsung / Lenovo / OnePlus / Google tablets, MacBooks + Windows laptops (Lenovo, Dell, HP, Acer, ASUS, Alienware, LG, Samsung, Microsoft Surface), Apple / Samsung / Pixel / Garmin watches, PlayStation / Xbox / Nintendo consoles, DJI drones, and VR headsets (Vision Pro, Meta Quest, Valve Index, PSVR). If you don't see your category, pick \"Other\" and we'll send a manual quote." },
   { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
-  { q: "How much is the shipment insured for?", a: "Standard carrier insurance is included up to $100 with the prepaid label we email you. For devices worth more, we recommend adding extra coverage at the FedEx counter when you drop the box off — it's a few dollars and the clerk handles it. We don't insure beyond $100 ourselves." },
+  { q: "How much is the shipment insured for?", a: "Your full quoted value. Every prepaid label we email is automatically declared with FedEx for the exact amount we quoted you — and we cover that cost, not you. If the device is lost or damaged in transit, you're protected for the full quote. Nothing to add at the counter." },
   { q: "What if the package weighs more than the label says?", a: "Don't worry about it. The prepaid label is on our shipping account, so if your box comes in heavier than the label estimated, FedEx bills us for the difference — never you. The only thing you need to do is make sure the box actually contains the device you quoted." },
 ];
 
@@ -6174,7 +6174,7 @@ export default function Home() {
                       <div className="space-y-3">
                         {[
                           { q: "How fast do I get paid?", a: "Same business day after we verify. Cash App / Zelle in minutes." },
-                          { q: "Is shipping free?", a: "Yes — we email a prepaid FedEx label. $100 carrier insurance included." },
+                          { q: "Is shipping free?", a: "Yes — we email a prepaid FedEx label, insured for your full quoted value." },
                           { q: "What if condition mismatches?", a: "Revised offer with photos. Reject = free return ship." },
                           { q: "Is my data safe?", a: "NIST 800-88 wipe on every device. Recommend you reset first." },
                         ].map(f => (
@@ -7423,7 +7423,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
               { n: 1, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />, title: "Get an instant quote", body: "Pick your device, condition, and storage. We show you the offer in seconds — no signup needed." },
-              { n: 2, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, title: "Ship free or drop off", body: "Print our prepaid label, or drop off in Austin. We pay shipping. Carrier insurance included up to $100 — for higher-value devices we recommend adding extra coverage at the counter." },
+              { n: 2, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, title: "Ship free or drop off", body: "Print our prepaid label, or drop off in Austin. We pay shipping — and the label is insured for your full quoted value automatically." },
               { n: 3, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Get paid same-day", body: "Cash App, Zelle, or BTC for shipped trades. Local meetup adds Cash and pays on the spot (under 5 min). Shipped payouts hit within 24 hours of device arriving." },
             ].map((s, i) => (
               <div key={s.n} className="relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
@@ -10036,7 +10036,7 @@ export default function Home() {
               const shipBullets = [
                 { icon: ICON_MONEY, text: "No selling fees" },
                 { icon: ICON_BOX, text: "Free prepaid FedEx label" },
-                { icon: ICON_SHIELD, text: "$100 carrier insurance included" },
+                { icon: ICON_SHIELD, text: "Full-value shipping insurance included" },
                 { icon: ICON_BOLT, text: "Same-day payout after we verify" },
               ];
               const neutralBullets = [
@@ -10088,7 +10088,7 @@ export default function Home() {
                 { icon: G_BOLT, title: "Cash in 15 Minutes", body: "Quote → meet → inspect → cash. Average local handoff wraps in under 15 minutes. Cash on the spot, or Zelle / Cash App / Venmo / BTC instantly." },
               ] : handoffMethod === "ship" ? [
                 { icon: G_TARGET, title: "Transparent Pricing", body: "Your quote is what we pay if the device matches your description. If anything differs we email photos + a written explanation before adjusting — never a silent change." },
-                { icon: G_SHIELD, title: "Insured Shipping", body: "Prepaid FedEx label includes $100 carrier insurance. For higher-value devices, add extra coverage at the counter (a few dollars, the clerk handles it)." },
+                { icon: G_SHIELD, title: "Insured Shipping", body: "Every prepaid FedEx label is declared for your full quoted value — so a lost or damaged device is covered for the full amount we quoted. No extra step, no counter fee." },
                 { icon: G_REFRESH, title: "Free Return Ship", body: "If you reject our revised offer for any reason, we ship the device back to you at our cost — no questions asked." },
                 { icon: G_BOLT, title: "Same-Day Payout", body: "Most payouts go out the same business day we receive and verify. Cash App + Zelle land in minutes; Bitcoin sends on-chain in ~30 minutes." },
               ] : [
@@ -12456,7 +12456,7 @@ export default function Home() {
                 <p className="text-[#b8b8b8] text-sm mb-6">Local Austin? We meet you. Out of town? Ship free.</p>
                 <div className="space-y-4 mb-10">
                   {[
-                    { step: "1", title: "Get your quote", body: "Accept the price on our site. We email you a confirmation with a prepaid FedEx shipping label. Carrier insurance is included up to $100 — for devices worth more we recommend adding extra coverage at the counter when you drop off." },
+                    { step: "1", title: "Get your quote", body: "Accept the price on our site. We email you a confirmation with a prepaid FedEx shipping label — automatically insured for your full quoted value, at no cost to you." },
                     { step: "2", title: "Pack &amp; drop off", body: "Use any padded box you have at home. Wrap the device, drop it at any FedEx location, and keep your receipt. Tracking number arrives in our system automatically." },
                     { step: "3", title: "We inspect within 1 business day", body: "Once the device arrives we test it against the tier you selected. You get an email with the result the same day." },
                     { step: "4", title: "Same-day payout", body: "If the inspection matches your quote, we pay you that same business day — Cash App or Zelle in minutes, Bitcoin on-chain in ~30 min, or check via mail." },

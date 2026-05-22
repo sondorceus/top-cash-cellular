@@ -49,7 +49,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "What about insurance during shipping?",
-    a: "Standard FedEx insurance is included up to $100 — that comes with the prepaid label automatically. For devices worth more than $100, we strongly recommend adding extra coverage at the counter when you drop the box off (a few dollars and the counter clerk will handle it). We don't insure beyond $100 ourselves, so the extra protection on higher-value devices is on the shipper.",
+    a: "Your shipment is automatically insured for the full value we quoted you. We declare that amount with FedEx on every prepaid label and cover the cost ourselves — so if your device is lost or damaged in transit, you're protected for the full quote. There's nothing for you to add at the counter.",
   },
   {
     q: "Can I change my mind after shipping?",

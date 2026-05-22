@@ -902,6 +902,12 @@ Pick the best channel per device. Be concise.`;
         const refText = deviceCount > 1
           ? `${deviceCount} devices`
           : (model ? String(model).slice(0, 30) : "1 device");
+        // Declared value = the full quoted payout for everything in the
+        // box. FedEx caps its liability at this amount if the package is
+        // lost or damaged; we absorb the small declared-value fee.
+        const shipDeclaredValue = isMulti
+          ? deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0)
+          : quoteNum;
         const label = await createReturnLabel({
           customerName: String(name),
           customerPhone: phoneDigits,
@@ -914,6 +920,7 @@ Pick the best channel per device. Be concise.`;
           weightLbs: totalWeight,
           customerReference: refText,
           poNumber: `TCC-${effectiveLeadId}`,
+          declaredValueUsd: shipDeclaredValue,
         });
         // Upload to Vercel Blob — random suffix so the tracking number
         // alone can't be pivoted to a leaked label.

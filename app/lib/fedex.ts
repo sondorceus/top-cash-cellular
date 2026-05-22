@@ -104,6 +104,11 @@ export type LabelInputs = {
   customerReference?: string;
   // Second customer-reference slot (PO number). FedEx allows up to 2.
   poNumber?: string;
+  // Declared value (USD) — FedEx's liability cap if the package is lost
+  // or damaged. We declare the device's full quoted value so a lost
+  // device is covered for what we'd have paid, not FedEx's $100 default.
+  // Capped at FEDEX_MAX_DECLARED_VALUE (FedEx Ground max is $2,000).
+  declaredValueUsd?: number;
 };
 
 export type LabelResult = {
@@ -171,6 +176,13 @@ export async function createReturnLabel(input: LabelInputs): Promise<LabelResult
   const token = await getAccessToken();
   const shipDate = new Date().toISOString().slice(0, 10);
   const weight = input.weightLbs ?? defaultWeight(input.deviceKind);
+  // Declared value caps FedEx's liability if the box is lost or damaged.
+  // We declare the quoted payout (FedEx bills TCC ~$4.50-$15 for it) so a
+  // lost device is covered for its real value, not the $100 default.
+  const declaredCap = Number(process.env.FEDEX_MAX_DECLARED_VALUE) || 2000;
+  const declaredAmount = input.declaredValueUsd && input.declaredValueUsd > 0
+    ? Math.min(Math.round(input.declaredValueUsd), declaredCap)
+    : 0;
   const phone = digitsOnly(input.customerPhone);
   if (phone.length < 10) {
     throw new Error("Customer phone required (10 digits min) — FedEx rejects shipments without one.");
@@ -218,6 +230,9 @@ export async function createReturnLabel(input: LabelInputs): Promise<LabelResult
       requestedPackageLineItems: [
         {
           weight: { units: "LB", value: weight },
+          ...(declaredAmount > 0
+            ? { declaredValue: { amount: declaredAmount, currency: "USD" } }
+            : {}),
           // customerReferences prints on the label stub. CUSTOMER_REFERENCE
           // gets the most prominent slot; P_O_NUMBER is the secondary.
           // We use CUSTOMER_REFERENCE for the device count so the recipient
