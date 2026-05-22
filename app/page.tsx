@@ -7151,7 +7151,7 @@ export default function Home() {
               Get <span className="text-[#00c853]">top dollar</span><br />for your device.
             </h1>
             <p className="text-[#e6e6e6] text-lg lg:text-xl mb-2 font-medium hero-fade-up hero-d-1">
-              Get an instant online quote, then your choice: meet us in Austin for <span className="font-bold text-white lg:font-medium lg:text-[#00c853]">cash in 15 minutes</span>, or <span className="font-bold text-white lg:font-medium lg:text-[#00c853]">ship free from anywhere in the US</span> and get paid the day it arrives.
+              Get an instant online quote, then your choice: meet us in Austin and get <span className="font-bold text-white lg:font-medium lg:text-[#00c853]">paid on the spot</span> after a quick ~15-minute inspection, or <span className="font-bold text-white lg:font-medium lg:text-[#00c853]">ship free from anywhere in the US</span> and get paid within 24 hours of your device arriving.
             </p>
             <p className="text-[#e6e6e6] text-sm mb-6 font-medium hero-fade-up hero-d-2 flex items-center gap-2">
               <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
@@ -7176,7 +7176,7 @@ export default function Home() {
                 className={`w-full bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] hover:bg-[rgba(15,15,15,0.85)] hover:border-[#00c853] border border-white/15 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-300 ease-out shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex flex-col items-center gap-0.5 ${dualPathPop === "ship" ? "phone-pop-3d" : ""}`}
               >
                 <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>I&apos;m Shipping: Get a Label</span>
-                <span className="text-[11px] font-medium text-[#b8b8b8]">Free prepaid label · Same-day payout on arrival</span>
+                <span className="text-[11px] font-medium text-[#b8b8b8]">Free prepaid label · Paid within 24 hrs of arrival</span>
               </button>
             </div>
 
@@ -7230,7 +7230,7 @@ export default function Home() {
                 Best Price Guarantee
               </span>
               <span className="inline-flex items-center gap-1.5 bg-white/5 text-[#e6e6e6] text-xs font-medium px-3 py-1.5 rounded-full border border-white/10">
-                Same-Day Payout
+                Paid On the Spot Locally
               </span>
               <span className="inline-flex items-center gap-1.5 bg-white/5 text-[#e6e6e6] text-xs font-medium px-3 py-1.5 rounded-full border border-white/10">
                 Austin Local + Shipping
@@ -7383,7 +7383,7 @@ export default function Home() {
                     {
                       icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />, t: "Bigger issues", note: "Honest quote",
                       headline: "Cracked, dead, or 'just take it'.",
-                      body: "Cracked display, won&apos;t turn on, water damage, missing parts — we still buy. The quote drops accordingly, but you walk out with cash same day. No salvage runaround.",
+                      body: "Cracked display, won&apos;t turn on, water damage, missing parts — we still buy. The quote drops accordingly, but you still walk out paid on the spot. No salvage runaround.",
                       bullets: ["Cracked screens fine", "Dead batteries fine", "Water-damaged fine", "Quote reflects the condition — no surprise deductions"],
                     },
                   ];
@@ -7458,7 +7458,7 @@ export default function Home() {
               { num: "1", title: "Back up your data", body: "iCloud, Google One, or your computer — whatever works. Takes minutes." },
               { num: "2", title: "Turn off Find My iPhone", body: "Settings → [your name] → Find My → Find My iPhone → off. Required before we can pay." },
               { num: "3", title: "Meet up or ship it", body: "Meet locally in Austin — we inspect together in about 15 minutes — or ship free with our prepaid label from anywhere in the US." },
-              { num: "4", title: "Get paid on the spot", body: "Cash, Cash App, Zelle, or BTC — your choice, same day, before you leave." },
+              { num: "4", title: "Get paid", body: "Meet locally and you're paid on the spot; ship in and you're paid within 24 hours of arrival. Cash, Cash App, Zelle, or BTC — your choice." },
             ].map((item, i) => {
               const open = openStep === i;
               return (
@@ -7496,7 +7496,7 @@ export default function Home() {
             {[
               { n: 1, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />, title: "Get an instant quote", body: "Pick your device, condition, and storage. We show you the offer in seconds — no signup needed." },
               { n: 2, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, title: "Ship free or drop off", body: "Print our prepaid label, or drop off in Austin. We pay shipping — and the label is insured for your full quoted value automatically." },
-              { n: 3, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Get paid same-day", body: "Cash App, Zelle, or BTC for shipped trades. Local meetup adds Cash and pays on the spot (under 5 min). Shipped payouts hit within 24 hours of device arriving." },
+              { n: 3, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Get paid", body: "Cash App, Zelle, or BTC for shipped trades; local meetups add Cash. Meet us in Austin and you're paid on the spot after a ~15-minute inspection. Shipped payouts hit within 24 hours of your device arriving." },
             ].map((s, i) => (
               <button
                 key={s.n}
@@ -7527,7 +7527,7 @@ export default function Home() {
             {[
               { stat: <CountUp end={5000} suffix="+" />, label: "Devices bought" },
               { stat: "4.9★", label: "Average review rating" },
-              { stat: "Same-Day", label: "Payouts available" },
+              { stat: "On the Spot", label: "Paid at local meetups" },
               { stat: "Free", label: "Shipping nationwide" },
               { stat: "Higher", label: "Offer than Apple trade-in" },
               { stat: "Local", label: "Austin-based, real humans" },
@@ -7598,10 +7598,10 @@ export default function Home() {
           </div>
           <div className="space-y-2">
             {[
-              { q: "How do I get paid?", a: "Local Austin meetup: cash on the spot in under 5 minutes. Shipping: paid within 24 hours of your device arriving. Methods — Cash, Cash App, Zelle, or BTC." },
+              { q: "How do I get paid?", a: "Local Austin meetup: we inspect together (about 15 minutes) and you're paid on the spot. Shipping: paid within 24 hours of your device arriving. Methods — Cash, Cash App, Zelle, or BTC." },
               { q: "Do you ship for free?", a: "Yes — any offer over $50 gets a free prepaid FedEx label, emailed at checkout. Local to Austin? Free pickup instead." },
               { q: "What if my device is worth less than the quote?", a: "We send a revised offer with photos. Don't like it? We ship the device back free — no pressure, no surprises." },
-              { q: "Are you really in Austin?", a: "Yes — Austin-based, real humans. Drop off locally for same-day cash, or ship free from anywhere in the US." },
+              { q: "Are you really in Austin?", a: "Yes — Austin-based, real humans. Meet us locally and get paid cash on the spot, or ship free from anywhere in the US." },
               { q: "Is my data safe?", a: "We run a certified factory wipe on every device. We still recommend signing out of iCloud/Google and removing screen locks first." },
             ].map((f, i) => (
               <details key={i} className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-white/20 transition reveal" data-stagger={Math.min(i + 1, 8)}>
@@ -7629,7 +7629,7 @@ export default function Home() {
             <div className="absolute inset-0 opacity-30 pointer-events-none" style={{ background: "radial-gradient(circle at 30% 20%, rgba(0, 200, 83, 0.4), transparent 60%), radial-gradient(circle at 70% 80%, rgba(0, 230, 118, 0.3), transparent 50%)" }} />
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">Swap your old tech for cash today.</h2>
-              <p className="text-[#e6e6e6] text-base md:text-lg mb-6">Instant quote · Same-day payout · No signup needed</p>
+              <p className="text-[#e6e6e6] text-base md:text-lg mb-6">Instant quote · Paid on the spot in Austin · No signup needed</p>
               <button onClick={() => { setStep("category"); pushHistory("category"); }} className="bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold text-lg px-10 py-4 rounded-full shadow-lg shadow-[#00c853]/40 transition tap-press cursor-pointer">
                 Sell Your Device
               </button>
@@ -12133,7 +12133,7 @@ export default function Home() {
                   <p className="text-[#00c853] text-2xl font-bold mb-2">Instant Cash</p>
                   <ul className="text-white text-sm space-y-1 list-disc list-inside">
                     <li>Competitive, fair pricing</li>
-                    <li><strong>{handoffMethod === "local" ? "Cash, Zelle, or Venmo" : "Cash App, Zelle, or Venmo"}</strong> — same day</li>
+                    <li><strong>{handoffMethod === "local" ? "Cash, Zelle, or Venmo" : "Cash App, Zelle, or Venmo"}</strong> — {handoffMethod === "local" ? "paid on the spot" : "paid within 24 hrs of arrival"}</li>
                     <li>No strings, no carrier lock-in</li>
                   </ul>
                 </div>
@@ -12142,34 +12142,10 @@ export default function Home() {
             </div>
           </section>
 
-          {/* SHIP TO US */}
-          <section className="py-12 bg-[#0a0a0a]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
-              <h2 className="text-xl font-bold text-center mb-2">Not in Austin? Ship to us</h2>
-              <p className="text-[#e6e6e6] text-sm text-center mb-8">Mail your device from anywhere in the US. We pay shipping.</p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {[
-                  { num: "1", svg: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, title: "Pack", desc: "We email you a free prepaid FedEx Ground label" },
-                  { num: "2", svg: <path strokeLinecap="round" strokeLinejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0zM13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1" />, title: "Ship", desc: "Drop it off at any FedEx location" },
-                  { num: "3", svg: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Get Paid", desc: "Payment sent same day we receive it" },
-                ].map((s) => (
-                  <button
-                    key={s.num}
-                    type="button"
-                    onClick={() => { window.scrollTo(0, 0); setStep("category"); pushHistory("category"); }}
-                    className="group w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-center hover:bg-white/[0.07] hover:border-[#00c853]/30 transition cursor-pointer tap-press"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
-                      <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{s.svg}</svg>
-                    </div>
-                    <p className="text-white text-sm font-bold mb-1">{s.title}</p>
-                    <p className="text-[#e6e6e6] text-[11px] leading-relaxed">{s.desc}</p>
-                    <span className="mt-2 inline-flex items-center gap-1 text-[#00c853] text-[11px] font-extrabold opacity-0 group-hover:opacity-100 transition">Get my quote →</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </section>
+          {/* Full "Not in Austin? Ship to us" 3-card section removed
+              2026-05-22 — collapsed into a single compact reassurance
+              strip near the bottom of the homepage (see below) to cut
+              mobile crowding. */}
 
           {/* BOLD STATS COUNTER */}
           <section className="py-14 bg-[#111]" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
@@ -12203,12 +12179,12 @@ export default function Home() {
               <div className="overflow-hidden tcc-marquee-mask">
                 <div className="flex gap-3 w-max animate-[marquee_32s_linear_infinite] hover:[animation-play-state:paused]">
                   {[...Array(2)].flatMap((_, dup) => ([
-                    { method: "Local Pickup", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />, timeline: "Same day", desc: "We meet in Austin. Inspect device. Pay on the spot.", highlight: false },
-                    { method: "Cash", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, timeline: "Instant", desc: "Handed to you at pickup. Immediate.", highlight: false },
-                    { method: "Cash App", logos: ["/pay/cashapp.svg"], timeline: "Under 5 min", desc: "Sent while you watch. Hits your account instantly.", highlight: false },
-                    { method: "Zelle", logos: ["/pay/zelle.svg"], timeline: "Under 5 min", desc: "Sent while you watch. Hits your account instantly.", highlight: false },
-                    { method: "Bitcoin (BTC)", logos: ["/pay/bitcoin.svg"], timeline: "Under 30 min", desc: "Sent on-chain to your wallet. Confirmation in minutes.", highlight: false },
-                    { method: "Ship To Us", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, timeline: "Same day received", desc: "We inspect and pay within hours of receiving your device.", highlight: false },
+                    { method: "Local Pickup", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />, timeline: "On the spot", desc: "We meet in Austin, inspect together in about 15 minutes, and pay you on the spot.", highlight: false },
+                    { method: "Cash", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, timeline: "On the spot", desc: "Handed to you in person at the local meetup.", highlight: false },
+                    { method: "Cash App", logos: ["/pay/cashapp.svg"], timeline: "Minutes", desc: "Sent while you watch — lands in your account in minutes.", highlight: false },
+                    { method: "Zelle", logos: ["/pay/zelle.svg"], timeline: "Minutes", desc: "Sent while you watch — lands in your account in minutes.", highlight: false },
+                    { method: "Bitcoin (BTC)", logos: ["/pay/bitcoin.svg"], timeline: "~30 min", desc: "Sent on-chain to your wallet — confirms in about 30 minutes.", highlight: false },
+                    { method: "Ship To Us", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, timeline: "Within 24 hrs", desc: "We inspect and pay you within 24 hours of your device arriving.", highlight: false },
                   ] as Array<{ method: string; icon?: React.ReactNode; logos?: string[]; timeline: string; desc: string; highlight: boolean }>).filter(p => p.method !== "Cash" || handoffMethod === "local").map((p, i) => (
                     <div key={`${dup}-${i}`} className={`flex-shrink-0 w-[280px] flex items-start gap-3 rounded-2xl p-4 border ${p.highlight ? "bg-[#00c853]/10 border-[#00c853]/30" : "bg-white/5 border-white/10"}`}>
                       {p.logos
@@ -12228,21 +12204,9 @@ export default function Home() {
             </div>
           </section>
 
-          {/* CTA SECTION */}
-          <section className="py-16 bg-[#0a0a0a] text-center">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
-              <div className="bg-gradient-to-br from-[#00c853]/10 to-transparent border border-[#00c853]/20 rounded-3xl p-8">
-                <svg className="w-10 h-10 mx-auto mb-3 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <h2 className="text-3xl font-bold mb-2">Still sitting on old tech?</h2>
-                <p className="text-[#e6e6e6] text-base mb-2">That phone in your drawer is losing value every day.</p>
-                <p className="text-white/70 text-sm mb-6">Get your instant quote — it takes 30 seconds.</p>
-                <button onClick={() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; setStep("category"); pushHistory("category"); requestAnimationFrame(() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }); }} className="bg-[#00c853] text-[#0a0a0a] px-10 py-4 rounded-2xl text-lg font-bold cursor-pointer hover:bg-[#00e676] transition tap-press shadow-lg shadow-[#00c853]/20">
-                  Get Your Quote Now
-                </button>
-                <p className="text-[#d4d4d4] text-xs mt-4">No account required · Free instant quote · No obligation</p>
-              </div>
-            </div>
-          </section>
+          {/* Second "Still sitting on old tech?" CTA section removed
+              2026-05-22 — duplicate of the closing CTA banner and the
+              hero CTA; cut to declutter the mobile CTA stack. */}
 
           {/* FAQ */}
           <section className="py-12 bg-[#111]">
@@ -12291,12 +12255,32 @@ export default function Home() {
                 </div>
                 <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
                   <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                  <span className="text-white text-xs font-semibold">Same-Day Payout</span>
+                  <span className="text-white text-xs font-semibold">Paid On the Spot Locally</span>
                 </div>
                 <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
                   <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                   <span className="text-white text-xs font-semibold">Secure Transactions</span>
                 </div>
+              </div>
+            </div>
+          </section>
+
+          {/* NOT IN AUSTIN? — compact reassurance strip. Replaces the
+              old full 3-card "Ship to us" section; kept deliberately
+              small so it reads as a calm aside, not another big CTA. */}
+          <section className="pt-4 pb-2 bg-[#0a0a0a]">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
+              <div className="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-center">
+                <p className="text-[#e6e6e6] text-xs sm:text-sm leading-snug">
+                  <strong className="text-white">Not in Austin?</strong> We ship free, nationwide — get paid within 24 hours of your device arriving.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => { window.scrollTo(0, 0); setStep("category"); pushHistory("category"); }}
+                  className="shrink-0 inline-flex items-center gap-1 text-[#00c853] hover:text-[#00e676] text-xs sm:text-sm font-bold cursor-pointer transition tap-press"
+                >
+                  Get a quote →
+                </button>
               </div>
             </div>
           </section>
