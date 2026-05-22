@@ -4380,6 +4380,13 @@ export default function Home() {
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
   const [heroPhonePop, setHeroPhonePop] = useState(false);
   const [dualPathPop, setDualPathPop] = useState<"local" | "ship" | null>(null);
+  // Funnel-advance buttons unmount the moment they're clicked, so the pop
+  // animation needs a brief beat to play before the step changes.
+  const [funnelPop, setFunnelPop] = useState<string | null>(null);
+  const popThenRun = (id: string, run: () => void) => {
+    setFunnelPop(id);
+    setTimeout(() => { setFunnelPop(null); run(); }, 280);
+  };
   const [statsVisible, setStatsVisible] = useState(false);
   const [animatedStats, setAnimatedStats] = useState({ devices: 0, payout: 0, time: 0 });
 
@@ -5876,8 +5883,32 @@ export default function Home() {
   );
   const models = deviceType === "iphone" ? iphoneVariants : deviceType === "android" ? samsungSelectedVariants : deviceType === "pixel" ? pixelVariants : deviceType === "macbook" ? macbookSelectedVariants : deviceType === "samsung_pc" ? samsungBookVariants : deviceType === "lenovo" ? lenovoPcVariants : deviceType === "dell" ? dellPcVariants : deviceType === "alienware" ? alienwareVariants : deviceType === "hp" ? hpPcVariants : deviceType === "acer" ? acerPcVariants : deviceType === "lg_pc" ? lgPcVariants : deviceType === "apple_desktop" ? appleDesktopVariants : deviceType === "dell_desktop" ? DELL_DESKTOP_MODELS : deviceType === "lenovo_desktop" ? LENOVO_DESKTOP_MODELS : deviceType === "hp_desktop" ? HP_DESKTOP_MODELS : deviceType === "asus_pc" ? asusPcVariants : deviceType === "asus_desktop" ? ASUS_DESKTOP_MODELS : deviceType === "alienware_desktop" ? ALIENWARE_DESKTOP_MODELS : deviceType === "msi_desktop" ? MSI_DESKTOP_MODELS : deviceType === "console" ? CONSOLE_MODELS : deviceType === "sony" ? sonyVariants : deviceType === "microsoft" ? MICROSOFT_MODELS : deviceType === "nintendo" ? NINTENDO_MODELS : deviceType === "applewatch" ? APPLEWATCH_MODELS : deviceType === "pixelwatch" ? PIXELWATCH_MODELS : deviceType === "garmin" ? GARMIN_MODELS : deviceType === "samsungwatch" ? SAMSUNGWATCH_MODELS :  deviceType === "ipad" ? ipadVariants : [];
 
+  // Warm next/image's cache for the whole device catalog the moment a
+  // brand is picked. The model / quote / cart screens reuse these exact
+  // optimized-URL requests straight from cache, so photos show instantly
+  // instead of flashing blank after a snappy step transition. Hidden +
+  // eager => the browser fires (and de-dupes) the real requests now.
+  // Capped so large laptop catalogs don't swamp the connection.
+  const catalogWarmer = (() => {
+    if (!deviceType) return null;
+    const srcs = Array.from(new Set([
+      "/condition-examples/broken-front.png",
+      "/condition-examples/broken-back.png",
+      ...models
+        .map((m) => (m as { image?: string }).image)
+        .filter((s): s is string => !!s),
+    ])).slice(0, 48);
+    if (srcs.length === 0) return null;
+    return (
+      <div aria-hidden="true" style={{ position: "absolute", width: 0, height: 0, overflow: "hidden", opacity: 0, pointerEvents: "none" }}>
+        {srcs.map((src) => <Pic key={src} src={src} alt="" loading="eager" />)}
+      </div>
+    );
+  })();
+
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
+      {catalogWarmer}
       {/* Google Maps JS script removed 2026-05-18. We no longer load any
           client-side Google library — the shipping address autocomplete
           calls our own /api/places-autocomplete + /api/places-details
@@ -7561,7 +7592,7 @@ export default function Home() {
               ].map((cat, idx) => (
                 <button
                   key={idx}
-                  onClick={() => {
+                  onClick={() => popThenRun(`cat-${cat.id}`, () => {
                     if ((cat as { direct?: boolean }).direct) {
                       const subs = (cat as { subcats?: string[] }).subcats;
                       setInquiryCategory(subs ? cat.label.replace('Sell ', '') : cat.label.replace('Sell ', ''));
@@ -7574,8 +7605,9 @@ export default function Home() {
                     const dt = (cat as { deviceType?: string }).deviceType;
                     if (dt) { setDeviceType(dt as DeviceType); setStep("model"); pushHistory("model"); return; }
                     setCategory(cat.id); setStep("brand"); pushHistory("brand");
-                  }}
-                  className="tcc-card flex flex-col items-center justify-center p-4 rounded-2xl cursor-pointer reveal"
+                  })}
+                  onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}
+                  className={`tcc-card flex flex-col items-center justify-center p-4 rounded-2xl cursor-pointer reveal ${funnelPop === `cat-${cat.id}` ? "phone-pop-3d" : ""}`}
                   data-stagger={Math.min(idx + 1, 8)}
                 >
                   <CategoryIcon id={cat.id} className="w-9 h-9 mb-1.5 text-white" />
@@ -7816,7 +7848,7 @@ export default function Home() {
                 { id: "android" as const, label: "Samsung Galaxy", sub: "Galaxy S21 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg> },
                 { id: "pixel" as const, label: "Google Pixel", sub: "Pixel 5 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#4285F4" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="0"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#EA4335" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-15"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#FBBC05" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-30"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#34A853" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-45"/><text x="20" y="24" textAnchor="middle" fill="#4285F4" fontSize="11" fontWeight="bold" fontFamily="Arial">G</text></svg> },
               ].map((b, i) => (
-                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press reveal" data-stagger={Math.min(i + 1, 8)}>
+                <button key={b.id} onClick={() => { setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); }); }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press reveal ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} data-stagger={Math.min(i + 1, 8)} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7833,8 +7865,8 @@ export default function Home() {
               ].map((b) => (
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_tab") { setInquiryCategory("Tablet"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
-                  setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press">
+                  setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); });
+                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7854,8 +7886,8 @@ export default function Home() {
               ].map((b) => (
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_pc") { setInquiryCategory("Computer"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
-                  setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press">
+                  setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); });
+                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7873,8 +7905,8 @@ export default function Home() {
               ].map((b) => (
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_desktop") { setInquiryCategory("Desktop"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
-                  setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press">
+                  setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); });
+                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7889,8 +7921,8 @@ export default function Home() {
               ].map((b) => (
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_vr") { setInquiryCategory("VR Headset"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
-                  setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press">
+                  setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); });
+                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7900,8 +7932,8 @@ export default function Home() {
                 { id: "dji" as const, label: "DJI", sub: "Mavic, Inspire, Avata, Mini, Air", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="bold" fontFamily="Arial">DJI</text></svg> },
               ].map((b) => (
                 <button key={b.id} onClick={() => {
-                  setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press">
+                  setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); });
+                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7916,8 +7948,8 @@ export default function Home() {
               ].map((b) => (
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_watch") { setInquiryCategory("Smartwatch"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
-                  setDeviceType(b.id); setStep("model"); pushHistory("model");
-                }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press">
+                  setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); });
+                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7928,7 +7960,7 @@ export default function Home() {
                 { id: "microsoft" as const, label: "Microsoft", sub: "Xbox One, Series S, Series X", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#107c10"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold" fontFamily="Arial">XBOX</text></svg> },
                 { id: "nintendo" as const, label: "Nintendo", sub: "Switch OLED, Switch V2, Switch Lite", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#e60012"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">Nintendo</text></svg> },
               ].map((b) => (
-                <button key={b.id} onClick={() => { setDeviceType(b.id); setStep("model"); pushHistory("model"); }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press">
+                <button key={b.id} onClick={() => { setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); }); }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
