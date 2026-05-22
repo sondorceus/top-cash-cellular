@@ -1,8 +1,8 @@
 // GET /api/offer/[leadId] — single-offer detail for the customer-facing
 // /offer/[leadId] page. Returns parsed lead body + status pipeline +
 // FedEx label + tracking. Public — the leadId itself (a UUID-shaped MC
-// message id) is the secret. Follows the same trust model as FedEx /
-// UPS tracking-number links. Skywalker 2026-05-19.
+// message id) is the secret. Follows the same trust model as FedEx
+// tracking-number links. Skywalker 2026-05-19.
 
 import { NextRequest, NextResponse } from "next/server";
 

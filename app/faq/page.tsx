@@ -61,7 +61,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "What if my package weighs more than the prepaid label says?",
-    a: "The prepaid label runs on our shipping account, so if your box comes in heavier than the label estimated, FedEx / UPS bills us — never you. Just make sure the package contains the device you quoted.",
+    a: "The prepaid label runs on our shipping account, so if your box comes in heavier than the label estimated, FedEx bills us — never you. Just make sure the package contains the device you quoted.",
   },
   {
     q: "What happens to my data?",
