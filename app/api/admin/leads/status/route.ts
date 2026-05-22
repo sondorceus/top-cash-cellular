@@ -103,9 +103,56 @@ async function creditReferralIfAny(leadId: string): Promise<void> {
         priority: "normal",
       }),
     });
+
+    // Tell the referrer they just earned — best-effort, same fail-soft
+    // contract as the marker post above.
+    await sendReferralEarnedEmail(referrerEmail);
   } catch {
     // Best-effort — never let a referral-payout hiccup block the
     // status update the admin actually clicked.
+  }
+}
+
+// Email the referrer the moment their referral pays out. Best-effort:
+// a missing RESEND_API_KEY or a send failure returns silently and
+// never blocks the status update. Skywalker 2026-05-22.
+async function sendReferralEarnedEmail(to: string): Promise<void> {
+  if (!process.env.RESEND_API_KEY) return;
+  try {
+    const { Resend } = await import("resend");
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const reward = `$${REFERRAL_REFERRER_REWARD}`;
+    const html = `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
+  <div style="background:#0a0a0a;padding:32px 16px">
+    <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden">
+      <tr><td style="background:linear-gradient(135deg,#00e676 0%,#00a039 100%);padding:24px 28px">
+        <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#0a0a0a;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div>
+        <div style="font-size:22px;font-weight:800;color:#0a0a0a;line-height:1.1">You earned a referral reward</div>
+      </td></tr>
+      <tr><td style="padding:28px 28px 8px 28px">
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">Good news — a friend you referred just completed their trade with us, so your <strong style="color:#fff">${reward} referral reward</strong> is yours.</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">Reply to this email to set up your payout, or just mention it on your next trade and we&apos;ll add it on. Thanks for spreading the word — it genuinely helps a small Austin business.</p>
+        <div style="font-size:14px;color:#e6e6e6;margin-top:4px">— The Top Cash Cellular team<br><span style="color:#888;font-size:12px">Austin, TX</span></div>
+      </td></tr>
+      <tr><td style="padding:18px 28px 28px 28px">
+        <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:16px"></div>
+        <div style="font-size:12px;color:#888;line-height:1.6;text-align:center">Questions? <a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-weight:600">CustomerService@topcashcells.com</a></div>
+      </td></tr>
+    </table>
+  </div>
+</body></html>`;
+    await resend.emails.send({
+      from: "Top Cash Cellular <noreply@topcashcellular.com>",
+      replyTo: "CustomerService@topcashcells.com",
+      to,
+      subject: `You earned a ${reward} referral reward — Top Cash Cellular`,
+      html,
+      text: `Good news — a friend you referred just completed their trade with Top Cash Cellular, so your ${reward} referral reward is yours. Reply to this email to set up your payout, or mention it on your next trade and we'll add it on. Thanks for spreading the word!`,
+    });
+  } catch {
+    // Best-effort — a failed referral email never blocks anything.
   }
 }
 
