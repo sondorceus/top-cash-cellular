@@ -4,6 +4,7 @@ import Script from "next/script";
 import { track as vercelTrack } from "@vercel/analytics";
 import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT } from "./lib/resell-estimates";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
+import { validateBtcAddress, cashtagFormatValid, normalizeCashtag } from "./lib/payout-verify";
 import { SlideOnScrollNav } from "./components/SlideOnScrollNav";
 import { HeaderSearch } from "./components/HeaderSearch";
 import Pic from "./components/Pic";
@@ -3886,6 +3887,17 @@ export default function Home() {
   // address. Both must match before they can advance. Cash skips this.
   const [payoutHandle, setPayoutHandle] = useState("");
   const [payoutHandleConfirm, setPayoutHandleConfirm] = useState("");
+  // Live cashtag existence check — best-effort scrape of cash.app.
+  // "idle" → nothing entered or below format threshold.
+  // "checking" → debounced fetch in flight.
+  // "found" → cash.app returned a real profile page (green ✓).
+  // "warn" → not_found OR unknown from the scrape (amber, never blocks).
+  // The hard format check (cashtagFormatValid) lives inline in the
+  // render — only bad FORMAT blocks Continue for Cash App, never the
+  // existence check (the scrape is fragile and we never want to lock a
+  // real customer out over a flaky third-party page).
+  // Skywalker 2026-05-22.
+  const [cashtagCheckState, setCashtagCheckState] = useState<"idle" | "checking" | "found" | "warn">("idle");
   // MacBook-specific picks (Wave 1). Only used when the picked model
   // has a MACBOOK_SPECS entry; otherwise these stay null and the legacy
   // flow runs unchanged.
@@ -4167,6 +4179,48 @@ export default function Home() {
       setStep("payout");
     }
   }, [handoffMethod, payout]);
+
+  // Live $cashtag existence check — fires while the customer types
+  // their handle on the payout step. Debounced 500ms after the last
+  // keystroke. Only runs when the picked method is Cash App AND the
+  // handle passes the cheap format check; otherwise resets to idle so
+  // a stale "found" doesn't carry over after the customer edits the
+  // tag. The endpoint guarantees status:"unknown" on any error path so
+  // a network blip can never falsely block a real customer. See
+  // /api/payout/verify-cashapp for the scrape detection logic.
+  // Skywalker 2026-05-22.
+  useEffect(() => {
+    if (payout?.id !== "cashapp") {
+      setCashtagCheckState("idle");
+      return;
+    }
+    const candidate = normalizeCashtag(payoutHandle);
+    if (!candidate || !cashtagFormatValid(candidate)) {
+      setCashtagCheckState("idle");
+      return;
+    }
+    let cancelled = false;
+    setCashtagCheckState("checking");
+    const timer = setTimeout(async () => {
+      try {
+        const r = await fetch(`/api/payout/verify-cashapp?tag=${encodeURIComponent(candidate)}`, {
+          cache: "no-store",
+        });
+        const d = await r.json().catch(() => ({}));
+        if (cancelled) return;
+        // "found" → green ✓. "not_found" / "unknown" / "invalid" /
+        // anything-else → amber WARN. Never blocks Continue (the scrape
+        // is fragile by design — see /api/payout/verify-cashapp header).
+        if (d && d.status === "found") setCashtagCheckState("found");
+        else setCashtagCheckState("warn");
+      } catch {
+        // Network/parse failure — fall back to warn (advisory, not
+        // blocking). Same shape as the API's own error path.
+        if (!cancelled) setCashtagCheckState("warn");
+      }
+    }, 500);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [payout, payoutHandle]);
 
   const [localArea, setLocalArea] = useState<string | null>(null);
   const AUSTIN_AREAS = [
@@ -10514,7 +10568,29 @@ export default function Home() {
               const h = payoutHandle.trim();
               const hc = payoutHandleConfirm.trim();
               const matched = h.length > 0 && h === hc;
-              const ready = !needsHandle || matched;
+              // Per-method validation. BTC checksum is definitive — a
+              // bad address would bounce, so we hard-block. Cash App
+              // FORMAT is also definitive (a malformed handle can't
+              // exist on Cash App), so we hard-block bad format too;
+              // the live existence scrape is advisory only (see
+              // cashtagCheckState below).
+              const isBtc = payout.id === "btc";
+              const isCashApp = payout.id === "cashapp";
+              const btcValid = isBtc && h.length > 0 ? validateBtcAddress(h) : false;
+              const btcInvalid = isBtc && h.length > 0 && !btcValid;
+              const cashtagNormalized = isCashApp ? normalizeCashtag(h) : "";
+              const cashtagFormatOk = isCashApp && cashtagNormalized.length > 0
+                ? cashtagFormatValid(cashtagNormalized)
+                : false;
+              const cashtagFormatBad = isCashApp && h.length > 0 && !cashtagFormatOk;
+              // Continue gate: handles must match, AND for BTC the
+              // checksum must pass, AND for Cash App the format must
+              // pass. Existence scrape never blocks (cashtagCheckState
+              // only colors the inline status text).
+              const formatBlock =
+                (isBtc && btcInvalid) ||
+                (isCashApp && cashtagFormatBad);
+              const ready = !needsHandle || (matched && !formatBlock);
               return (
                 <div className="mt-5 bg-white/[0.03] border border-white/10 rounded-2xl p-4">
                   {meta ? (
@@ -10529,8 +10605,39 @@ export default function Home() {
                         placeholder={meta.placeholder}
                         autoComplete="off"
                         spellCheck={false}
-                        className="w-full px-3 py-2.5 mb-3 bg-black/40 border border-white/15 rounded-lg text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]"
+                        className={`w-full px-3 py-2.5 bg-black/40 border rounded-lg text-sm text-white placeholder:text-[#777] focus:outline-none ${
+                          btcInvalid || cashtagFormatBad
+                            ? "border-red-500/60"
+                            : (isBtc && btcValid) || (isCashApp && cashtagFormatOk)
+                              ? "border-[#00c853]"
+                              : "border-white/15 focus:border-[#00c853]"
+                        }`}
                       />
+                      {/* Inline per-method validation status — mirrors
+                          the IMEI live-check pattern (✓ / ✗ / warn). */}
+                      <div className="min-h-[18px] mt-1 mb-2">
+                        {isBtc && h.length > 0 && (btcValid
+                          ? <p className="text-[11px] font-semibold text-[#00c853]">✓ Valid Bitcoin address</p>
+                          : <p className="text-[11px] font-semibold text-red-300">✕ That&apos;s not a valid Bitcoin address — double-check it</p>)}
+                        {isCashApp && h.length > 0 && cashtagFormatBad && (
+                          <p className="text-[11px] font-semibold text-red-300">✕ A Cash App handle looks like $yourname</p>
+                        )}
+                        {isCashApp && cashtagFormatOk && cashtagCheckState === "checking" && (
+                          <p className="text-[11px] font-semibold text-[#888] flex items-center gap-1.5">
+                            <svg className="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none">
+                              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3" />
+                              <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                            </svg>
+                            Looking up {cashtagNormalized}…
+                          </p>
+                        )}
+                        {isCashApp && cashtagFormatOk && cashtagCheckState === "found" && (
+                          <p className="text-[11px] font-semibold text-[#00c853]">✓ Found this {cashtagNormalized}</p>
+                        )}
+                        {isCashApp && cashtagFormatOk && cashtagCheckState === "warn" && (
+                          <p className="text-[11px] font-semibold text-yellow-300">⚠ We couldn&apos;t find that {cashtagNormalized} — make sure it&apos;s exactly right</p>
+                        )}
+                      </div>
                       <label className="block text-[11px] font-bold uppercase tracking-wider text-[#888] mb-1">Confirm {meta.field}</label>
                       <input
                         type="text"

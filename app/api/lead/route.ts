@@ -4,6 +4,7 @@ import { put } from "@vercel/blob";
 import { createReturnLabel, deviceKindFromString, aggregateWeight, shouldBlockAutoShip } from "../../lib/fedex";
 import { reportError } from "../../lib/error-report";
 import { REFERRAL_REFEREE_BONUS, REFERRAL_CODE_RE } from "../../lib/referral";
+import { validateBtcAddress, cashtagFormatValid, normalizeCashtag } from "../../lib/payout-verify";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -189,6 +190,42 @@ export async function POST(req: NextRequest) {
     typeof payout === "string" && payout.toLowerCase() === "cash"
   ) {
     payout = "Cash App (coerced — Cash not valid for shipping)";
+  }
+
+  // Payout-handle guard — Skywalker 2026-05-22. The funnel sends payout
+  // as "<Method Label>: <handle>" (see app/page.tsx where payoutValue is
+  // built). When the method is Bitcoin we reject any submission whose
+  // handle fails the BTC checksum — a bad checksum guarantees the
+  // payout would bounce, and crypto transfers can't be reversed. When
+  // the method is Cash App we reject bad FORMAT only (the funnel runs
+  // a separate /api/payout/verify-cashapp existence check, but that's
+  // a fragile scrape — too slow and too prone to false negatives for
+  // the submit path). Zelle / Cash skip this guard.
+  if (typeof payout === "string" && payout.includes(":")) {
+    const colonIdx = payout.indexOf(":");
+    const methodPart = payout.slice(0, colonIdx).trim().toLowerCase();
+    const handlePart = payout.slice(colonIdx + 1).trim();
+    if (handlePart) {
+      if (methodPart === "bitcoin" || methodPart === "btc") {
+        if (!validateBtcAddress(handlePart)) {
+          return NextResponse.json(
+            { error: "That doesn't look like a valid Bitcoin address — please double-check the receiving address you entered." },
+            { status: 400 }
+          );
+        }
+      } else if (methodPart === "cash app" || methodPart === "cashapp") {
+        // Normalize so a customer who omitted the leading $ still passes
+        // when their handle is otherwise valid. The format check is the
+        // hard gate; the live existence scrape lives in the funnel.
+        const normalized = normalizeCashtag(handlePart);
+        if (!cashtagFormatValid(normalized)) {
+          return NextResponse.json(
+            { error: "A Cash App handle should look like $yourname (letters and numbers only). Please re-enter it on the payout step." },
+            { status: 400 }
+          );
+        }
+      }
+    }
   }
 
   // Dedup check — wider window for custom-quote flows (free-text descriptions).
