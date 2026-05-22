@@ -8887,8 +8887,8 @@ export default function Home() {
                   {CONNECTIVITY.map((c) => (
                     <button
                       key={c.id}
-                      onClick={() => { setConnectivity(c); setStep("storage"); pushHistory("storage"); }}
-                      className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                      onClick={() => { setConnectivity(c); popThenRun(`conn-${c.id}`, () => { setStep("storage"); pushHistory("storage"); }); }}
+                      className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `conn-${c.id}` ? "tap-confirm" : ""}`}
                     >
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{c.label}</p>
@@ -8928,16 +8928,18 @@ export default function Home() {
                   {(getMacSpec(model.id)?.processors || []).map((p) => (
                     <button key={p.id} onClick={() => {
                       setProcessor(p);
-                      // Skip the memory step when the spec has no RAM options
-                      // (typical for laptops where RAM doesn't vary much by
-                      // SKU). Without this skip the user lands on an empty
-                      // memory picker. Skywalker 2026-05-18.
-                      const spec = getMacSpec(model?.id);
-                      const next: Step = (spec?.memory && spec.memory.length > 0)
-                        ? "memory"
-                        : "storage";
-                      setStep(next); pushHistory(next);
-                    }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                      popThenRun(`proc-${p.id}`, () => {
+                        // Skip the memory step when the spec has no RAM options
+                        // (typical for laptops where RAM doesn't vary much by
+                        // SKU). Without this skip the user lands on an empty
+                        // memory picker. Skywalker 2026-05-18.
+                        const spec = getMacSpec(model?.id);
+                        const next: Step = (spec?.memory && spec.memory.length > 0)
+                          ? "memory"
+                          : "storage";
+                        setStep(next); pushHistory(next);
+                      });
+                    }} className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `proc-${p.id}` ? "tap-confirm" : ""}`}>
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{p.label}</p>
                         {p.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{p.sub}</p>}
@@ -8968,7 +8970,7 @@ export default function Home() {
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
                   {(getMacSpec(model.id)?.memory || []).map((m) => (
-                    <button key={m.id} onClick={() => { setMemory(m); setStep("storage"); pushHistory("storage"); }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                    <button key={m.id} onClick={() => { setMemory(m); popThenRun(`mem-${m.id}`, () => { setStep("storage"); pushHistory("storage"); }); }} className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `mem-${m.id}` ? "tap-confirm" : ""}`}>
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{m.label}</p>
                         {m.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{m.sub}</p>}
@@ -9002,12 +9004,14 @@ export default function Home() {
                   {(getMacSpec(model.id)?.graphics || []).map((g) => (
                     <button key={g.id} onClick={() => {
                       setGraphics(g);
-                      const spec = getMacSpec(model.id);
-                      const next: Step =
-                        (spec?.display && spec.display.length > 0) ? "displayresolution" :
-                        (spec?.hasNanoGlass ? "displayglass" : "condition");
-                      setStep(next); pushHistory(next);
-                    }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                      popThenRun(`gfx-${g.id}`, () => {
+                        const spec = getMacSpec(model.id);
+                        const next: Step =
+                          (spec?.display && spec.display.length > 0) ? "displayresolution" :
+                          (spec?.hasNanoGlass ? "displayglass" : "condition");
+                        setStep(next); pushHistory(next);
+                      });
+                    }} className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `gfx-${g.id}` ? "tap-confirm" : ""}`}>
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{g.label}</p>
                         {g.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{g.sub}</p>}
@@ -9041,9 +9045,11 @@ export default function Home() {
                   {(getMacSpec(model.id)?.display || []).map((d) => (
                     <button key={d.id} onClick={() => {
                       setDisplayResolution(d);
-                      const next: Step = (getMacSpec(model.id)?.hasNanoGlass ?? false) ? "displayglass" : "condition";
-                      setStep(next); pushHistory(next);
-                    }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                      popThenRun(`dres-${d.id}`, () => {
+                        const next: Step = (getMacSpec(model.id)?.hasNanoGlass ?? false) ? "displayglass" : "condition";
+                        setStep(next); pushHistory(next);
+                      });
+                    }} className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `dres-${d.id}` ? "tap-confirm" : ""}`}>
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{d.label}</p>
                         {d.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{d.sub}</p>}
@@ -9074,7 +9080,7 @@ export default function Home() {
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
                   {DISPLAY_GLASS_OPTIONS.map((g) => (
-                    <button key={g.id} onClick={() => { setDisplayGlass(g); setStep("condition"); pushHistory("condition"); }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                    <button key={g.id} onClick={() => { setDisplayGlass(g); popThenRun(`dglass-${g.id}`, () => { setStep("condition"); pushHistory("condition"); }); }} className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `dglass-${g.id}` ? "tap-confirm" : ""}`}>
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{g.label}</p>
                         {g.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{g.sub}</p>}
@@ -9105,7 +9111,7 @@ export default function Home() {
               <div className="tcc-selection-frame">
                 <div className="space-y-2">
                   {BATTERY_HEALTH_OPTIONS.map((b) => (
-                    <button key={b.id} onClick={() => { setBatteryHealth(b); setStep("charger"); pushHistory("charger"); }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                    <button key={b.id} onClick={() => { setBatteryHealth(b); popThenRun(`batt-${b.id}`, () => { setStep("charger"); pushHistory("charger"); }); }} className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `batt-${b.id}` ? "tap-confirm" : ""}`}>
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{b.label}</p>
                         {b.sub && <p className="text-[#b8b8b8] text-[12px] mt-0.5">{b.sub}</p>}
@@ -9138,16 +9144,18 @@ export default function Home() {
                   {CHARGER_OPTIONS.map((c) => (
                     <button key={c.id} onClick={() => {
                       setCharger(c);
-                      // If this additive model's device type has brand extras (e.g. Dell GPU),
-                      // route through extras before quote.
-                      const ex = getBrandExtras(deviceType, model?.id);
-                      if (ex.length > 0) {
-                        setExtras({}); setExtrasIndex(0);
-                        setStep("extras"); pushHistory("extras");
-                        return;
-                      }
-                      setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote");
-                    }} className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left">
+                      popThenRun(`chg-${c.id}`, () => {
+                        // If this additive model's device type has brand extras (e.g. Dell GPU),
+                        // route through extras before quote.
+                        const ex = getBrandExtras(deviceType, model?.id);
+                        if (ex.length > 0) {
+                          setExtras({}); setExtrasIndex(0);
+                          setStep("extras"); pushHistory("extras");
+                          return;
+                        }
+                        setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); setStep("quote"); pushHistory("quote");
+                      });
+                    }} className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `chg-${c.id}` ? "tap-confirm" : ""}`}>
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{c.label}</p>
                       </div>
@@ -9224,35 +9232,37 @@ export default function Home() {
                         onClick={() => {
                           const nextExtras = { ...extras, [q.id]: opt };
                           setExtras(nextExtras);
-                          // Walk past any subsequent questions that don't
-                          // apply given the new answers (e.g. "which band?"
-                          // when user just said no band).
-                          let nextIdx = extrasIndex + 1;
-                          while (nextIdx < list.length) {
-                            const peek = list[nextIdx];
-                            if (peek.showIf && !peek.showIf(nextExtras, condition)) nextIdx++;
-                            else break;
-                          }
-                          if (nextIdx < list.length) {
-                            setExtrasIndex(nextIdx);
-                          } else {
-                            // All extras answered — route to next funnel step.
-                            // Additive-spec models (MacBook, Dell XPS) already
-                            // went through storage before extras, so go to quote.
-                            // iPad has its connectivity step before storage;
-                            // everything else with storage goes to storage.
-                            const ns: Step = (model && hasAdditiveSpecs(model.id))
-                              ? "quote"
-                              : isNoStorageDevice
+                          popThenRun(`extra-${q.id}-${opt.id}`, () => {
+                            // Walk past any subsequent questions that don't
+                            // apply given the new answers (e.g. "which band?"
+                            // when user just said no band).
+                            let nextIdx = extrasIndex + 1;
+                            while (nextIdx < list.length) {
+                              const peek = list[nextIdx];
+                              if (peek.showIf && !peek.showIf(nextExtras, condition)) nextIdx++;
+                              else break;
+                            }
+                            if (nextIdx < list.length) {
+                              setExtrasIndex(nextIdx);
+                            } else {
+                              // All extras answered — route to next funnel step.
+                              // Additive-spec models (MacBook, Dell XPS) already
+                              // went through storage before extras, so go to quote.
+                              // iPad has its connectivity step before storage;
+                              // everything else with storage goes to storage.
+                              const ns: Step = (model && hasAdditiveSpecs(model.id))
                                 ? "quote"
-                                : deviceType === "ipad"
-                                  ? "connectivity"
-                                  : "storage";
-                            if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
-                            setStep(ns); pushHistory(ns);
-                          }
+                                : isNoStorageDevice
+                                  ? "quote"
+                                  : deviceType === "ipad"
+                                    ? "connectivity"
+                                    : "storage";
+                              if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
+                              setStep(ns); pushHistory(ns);
+                            }
+                          });
                         }}
-                        className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                        className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `extra-${q.id}-${opt.id}` ? "tap-confirm" : ""}`}
                       >
                         <div className="flex-1 min-w-0">
                           <p className="font-extrabold text-[15px] text-white leading-tight">{opt.label}</p>
@@ -9296,28 +9306,30 @@ export default function Home() {
                         // (cast via unknown so the field shape lines up
                         // enough for selectionPanel rendering).
                         setStorage(s as unknown as typeof ALL_STORAGES[0]);
-                        if (hasAdditiveSpecs(model.id)) {
-                          const spec = getMacSpec(model.id);
-                          // Order: storage → [graphics] → [display resolution]
-                          // → [displayglass on MacBook] → condition
-                          const next: Step =
-                            (spec?.graphics && spec.graphics.length > 0) ? "graphics" :
-                            (spec?.display && spec.display.length > 0) ? "displayresolution" :
-                            (spec?.hasNanoGlass ? "displayglass" : "condition");
-                          setStep(next); pushHistory(next);
-                          return;
-                        }
-                        const isPhone = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
-                        // Check if price would be below minimum — if so skip carrier
-                        const storMult = (s as { multiplier?: number }).multiplier ?? 1;
-                        const estPrice = PRICE_TABLE[model.id]?.[s.id]?.[condition?.id ?? ""] ??
-                          Math.round((model.base ?? 0) * storMult * (condition?.multiplier ?? 1));
-                        const skipCarrier = estPrice < MIN_OFFER;
-                        const ns: Step = skipCarrier ? "quote" : (isPhone || isIpadCellular) ? "carrier" : "quote";
-                        if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
-                        setStep(ns); pushHistory(ns);
+                        popThenRun(`stor-${s.id}`, () => {
+                          if (hasAdditiveSpecs(model.id)) {
+                            const spec = getMacSpec(model.id);
+                            // Order: storage → [graphics] → [display resolution]
+                            // → [displayglass on MacBook] → condition
+                            const next: Step =
+                              (spec?.graphics && spec.graphics.length > 0) ? "graphics" :
+                              (spec?.display && spec.display.length > 0) ? "displayresolution" :
+                              (spec?.hasNanoGlass ? "displayglass" : "condition");
+                            setStep(next); pushHistory(next);
+                            return;
+                          }
+                          const isPhone = deviceType === "iphone" || deviceType === "android" || deviceType === "pixel";
+                          // Check if price would be below minimum — if so skip carrier
+                          const storMult = (s as { multiplier?: number }).multiplier ?? 1;
+                          const estPrice = PRICE_TABLE[model.id]?.[s.id]?.[condition?.id ?? ""] ??
+                            Math.round((model.base ?? 0) * storMult * (condition?.multiplier ?? 1));
+                          const skipCarrier = estPrice < MIN_OFFER;
+                          const ns: Step = skipCarrier ? "quote" : (isPhone || isIpadCellular) ? "carrier" : "quote";
+                          if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
+                          setStep(ns); pushHistory(ns);
+                        });
                       }}
-                      className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                      className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `stor-${s.id}` ? "tap-confirm" : ""}`}
                     >
                       <div className="flex-1 min-w-0 flex items-center gap-2">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{s.label}</p>
@@ -9365,53 +9377,53 @@ export default function Home() {
                   key={c.id}
                   onClick={() => {
                     setCondition(c);
-                    // Broken: ask functional question before continuing
-                    if (c.id === "broken") {
-                      setBrokenFunctional(null); // reset
-                      setBrokenGlass(null);
-                      setStep("broken-functional" as Step); pushHistory("broken-functional" as Step);
-                      return;
-                    }
-                    setBrokenFunctional(null); // clear for non-broken
+                    setBrokenFunctional(null); // reset for both broken + non-broken paths
                     setBrokenGlass(null);
-                    // Spec'd flow: condition comes AFTER storage. Laptops go
-                    // to battery health; desktops skip battery/charger and
-                    // route to extras (GPU, accessories) or quote.
-                    if (model && hasAdditiveSpecs(model.id)) {
-                      const isDskType = deviceType?.endsWith("_desktop") ?? false;
-                      if (isDskType) {
-                        if (getBrandExtras(deviceType, model?.id).length > 0) {
-                          setExtras({}); setExtrasIndex(0);
-                          setStep("extras"); pushHistory("extras");
-                        } else {
-                          setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000);
-                          setStep("quote"); pushHistory("quote");
-                        }
-                      } else {
-                        setStep("batteryhealth"); pushHistory("batteryhealth");
+                    popThenRun(`cond-${c.id}`, () => {
+                      // Broken: ask functional question before continuing
+                      if (c.id === "broken") {
+                        setStep("broken-functional" as Step); pushHistory("broken-functional" as Step);
+                        return;
                       }
-                      return;
-                    }
-                    // PC laptops: skip storage/carrier (base price = IWM
-                    // Flawless × 0.90 at max config), route through battery
-                    // and charger like a MacBook.
-                    if (isPcLaptopFlow) {
-                      setStep("batteryhealth"); pushHistory("batteryhealth");
-                      return;
-                    }
-                    // Brand-specific extras (PS5 disc drive, DJI hours flown,
-                    // smartwatch band etc) fire BEFORE the quote so the
-                    // pricing reflects them.
-                    if (getBrandExtras(deviceType, model?.id).length > 0) {
-                      setExtras({}); setExtrasIndex(0);
-                      setStep("extras"); pushHistory("extras");
-                      return;
-                    }
-                    const ns: Step = isNoStorageDevice ? "quote" : (deviceType === "ipad" ? "connectivity" : "storage");
-                    if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
-                    setStep(ns); pushHistory(ns);
+                      // Spec'd flow: condition comes AFTER storage. Laptops go
+                      // to battery health; desktops skip battery/charger and
+                      // route to extras (GPU, accessories) or quote.
+                      if (model && hasAdditiveSpecs(model.id)) {
+                        const isDskType = deviceType?.endsWith("_desktop") ?? false;
+                        if (isDskType) {
+                          if (getBrandExtras(deviceType, model?.id).length > 0) {
+                            setExtras({}); setExtrasIndex(0);
+                            setStep("extras"); pushHistory("extras");
+                          } else {
+                            setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000);
+                            setStep("quote"); pushHistory("quote");
+                          }
+                        } else {
+                          setStep("batteryhealth"); pushHistory("batteryhealth");
+                        }
+                        return;
+                      }
+                      // PC laptops: skip storage/carrier (base price = IWM
+                      // Flawless × 0.90 at max config), route through battery
+                      // and charger like a MacBook.
+                      if (isPcLaptopFlow) {
+                        setStep("batteryhealth"); pushHistory("batteryhealth");
+                        return;
+                      }
+                      // Brand-specific extras (PS5 disc drive, DJI hours flown,
+                      // smartwatch band etc) fire BEFORE the quote so the
+                      // pricing reflects them.
+                      if (getBrandExtras(deviceType, model?.id).length > 0) {
+                        setExtras({}); setExtrasIndex(0);
+                        setStep("extras"); pushHistory("extras");
+                        return;
+                      }
+                      const ns: Step = isNoStorageDevice ? "quote" : (deviceType === "ipad" ? "connectivity" : "storage");
+                      if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
+                      setStep(ns); pushHistory(ns);
+                    });
                   }}
-                  className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                  className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `cond-${c.id}` ? "tap-confirm" : ""}`}
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
@@ -9526,50 +9538,52 @@ export default function Home() {
                 <button
                   onClick={() => {
                     setBrokenFunctional(true);
-                    // PHONE follow-up: ask which glass is cracked. Front
-                    // (display) hurts resale most, back is mostly cosmetic.
-                    // Skipped for phones without a back glass (Pixel 5 /
-                    // 5a) — auto-set to "front" since that's the only
-                    // glass that can be damaged on those.
-                    if (isPhoneFlow) {
-                      if (model && PHONES_WITHOUT_BACK_GLASS.has(model.id)) {
-                        setBrokenGlass("front");
-                        // Fall through to the normal post-glass routing below
-                      } else {
-                        setBrokenGlass(null);
-                        setStep("broken-glass" as Step); pushHistory("broken-glass" as Step);
+                    popThenRun(`bfunc-yes`, () => {
+                      // PHONE follow-up: ask which glass is cracked. Front
+                      // (display) hurts resale most, back is mostly cosmetic.
+                      // Skipped for phones without a back glass (Pixel 5 /
+                      // 5a) — auto-set to "front" since that's the only
+                      // glass that can be damaged on those.
+                      if (isPhoneFlow) {
+                        if (model && PHONES_WITHOUT_BACK_GLASS.has(model.id)) {
+                          setBrokenGlass("front");
+                          // Fall through to the normal post-glass routing below
+                        } else {
+                          setBrokenGlass(null);
+                          setStep("broken-glass" as Step); pushHistory("broken-glass" as Step);
+                          return;
+                        }
+                      }
+                      // Continue normal flow — functional broken gets a price
+                      if (model && hasAdditiveSpecs(model.id)) {
+                        const isDskType = deviceType?.endsWith("_desktop") ?? false;
+                        if (isDskType) {
+                          if (getBrandExtras(deviceType, model?.id).length > 0) {
+                            setExtras({}); setExtrasIndex(0);
+                            setStep("extras"); pushHistory("extras");
+                          } else {
+                            setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000);
+                            setStep("quote"); pushHistory("quote");
+                          }
+                        } else {
+                          setStep("batteryhealth"); pushHistory("batteryhealth");
+                        }
                         return;
                       }
-                    }
-                    // Continue normal flow — functional broken gets a price
-                    if (model && hasAdditiveSpecs(model.id)) {
-                      const isDskType = deviceType?.endsWith("_desktop") ?? false;
-                      if (isDskType) {
-                        if (getBrandExtras(deviceType, model?.id).length > 0) {
-                          setExtras({}); setExtrasIndex(0);
-                          setStep("extras"); pushHistory("extras");
-                        } else {
-                          setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000);
-                          setStep("quote"); pushHistory("quote");
-                        }
-                      } else {
+                      if (isPcLaptopFlow) {
                         setStep("batteryhealth"); pushHistory("batteryhealth");
+                        return;
                       }
-                      return;
-                    }
-                    if (isPcLaptopFlow) {
-                      setStep("batteryhealth"); pushHistory("batteryhealth");
-                      return;
-                    }
-                    if (getBrandExtras(deviceType, model?.id).length > 0) {
-                      setExtras({}); setExtrasIndex(0);
-                      setStep("extras"); pushHistory("extras"); return;
-                    }
-                    const ns: Step = isNoStorageDevice ? "quote" : (deviceType === "ipad" ? "connectivity" : "storage");
-                    if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
-                    setStep(ns); pushHistory(ns);
+                      if (getBrandExtras(deviceType, model?.id).length > 0) {
+                        setExtras({}); setExtrasIndex(0);
+                        setStep("extras"); pushHistory("extras"); return;
+                      }
+                      const ns: Step = isNoStorageDevice ? "quote" : (deviceType === "ipad" ? "connectivity" : "storage");
+                      if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
+                      setStep(ns); pushHistory(ns);
+                    });
                   }}
-                  className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                  className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `bfunc-yes` ? "tap-confirm" : ""}`}
                 >
                   <svg className="w-8 h-8 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   <div className="flex-1">
@@ -9581,9 +9595,9 @@ export default function Home() {
                   onClick={() => {
                     setBrokenFunctional(false);
                     // Non-functional → go straight to quote (will show manual review)
-                    setStep("quote"); pushHistory("quote");
+                    popThenRun(`bfunc-no`, () => { setStep("quote"); pushHistory("quote"); });
                   }}
-                  className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                  className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `bfunc-no` ? "tap-confirm" : ""}`}
                 >
                   <svg className="w-8 h-8 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   <div className="flex-1">
@@ -9625,18 +9639,20 @@ export default function Home() {
                     key={g.id}
                     onClick={() => {
                       setBrokenGlass(g.id);
-                      // Continue with the same routing the broken-functional
-                      // Yes-branch uses for phones (none of the additive /
-                      // PC / desktop paths apply to phones, so go straight
-                      // to extras-or-storage like the original).
-                      if (getBrandExtras(deviceType, model?.id).length > 0) {
-                        setExtras({}); setExtrasIndex(0);
-                        setStep("extras"); pushHistory("extras"); return;
-                      }
-                      const ns: Step = "storage";
-                      setStep(ns); pushHistory(ns);
+                      popThenRun(`bglass-${g.id}`, () => {
+                        // Continue with the same routing the broken-functional
+                        // Yes-branch uses for phones (none of the additive /
+                        // PC / desktop paths apply to phones, so go straight
+                        // to extras-or-storage like the original).
+                        if (getBrandExtras(deviceType, model?.id).length > 0) {
+                          setExtras({}); setExtrasIndex(0);
+                          setStep("extras"); pushHistory("extras"); return;
+                        }
+                        const ns: Step = "storage";
+                        setStep(ns); pushHistory(ns);
+                      });
                     }}
-                    className="tcc-card group w-full flex items-center px-4 py-3 rounded-xl cursor-pointer text-left"
+                    className={`tcc-card group w-full flex items-center px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `bglass-${g.id}` ? "tap-confirm" : ""}`}
                   >
                     <div className="flex-1">
                       <p className="font-extrabold text-[15px] text-white">{g.title}</p>
@@ -9675,20 +9691,21 @@ export default function Home() {
                     key={c.id}
                     onClick={() => {
                       setCarrier(c);
-                      // Only Verizon has a real 60-day lock policy worth asking
-                      // about; for any other carrier we skip the lock step and
-                      // treat the device as unlocked (multiplier = 1.0).
-                      if (c.id === "verizon") {
-                        setCarrierLock(null);
-                        setStep("carrier-lock"); pushHistory("carrier-lock");
-                      } else {
-                        setCarrierLock(null);
-                        setShowConfetti(true);
-                        setTimeout(() => setShowConfetti(false), 3000);
-                        setStep("quote"); pushHistory("quote");
-                      }
+                      setCarrierLock(null);
+                      popThenRun(`carr-${c.id}`, () => {
+                        // Only Verizon has a real 60-day lock policy worth asking
+                        // about; for any other carrier we skip the lock step and
+                        // treat the device as unlocked (multiplier = 1.0).
+                        if (c.id === "verizon") {
+                          setStep("carrier-lock"); pushHistory("carrier-lock");
+                        } else {
+                          setShowConfetti(true);
+                          setTimeout(() => setShowConfetti(false), 3000);
+                          setStep("quote"); pushHistory("quote");
+                        }
+                      });
                     }}
-                    className="tcc-card group w-full flex items-center gap-3 px-4 py-2.5 lg:py-3 rounded-xl cursor-pointer text-left"
+                    className={`tcc-card group w-full flex items-center gap-3 px-4 py-2.5 lg:py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `carr-${c.id}` ? "tap-confirm" : ""}`}
                   >
                     <p className="font-extrabold text-[14px] lg:text-[15px] text-white flex-1 leading-tight">{c.label}</p>
                     <svg className="w-4 h-4 text-[#e6e6e6] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
@@ -9723,11 +9740,13 @@ export default function Home() {
                       key={lock.id}
                       onClick={() => {
                         setCarrierLock(lock);
-                        setShowConfetti(true);
-                        setTimeout(() => setShowConfetti(false), 3000);
-                        setStep("quote"); pushHistory("quote");
+                        popThenRun(`clock-${lock.id}`, () => {
+                          setShowConfetti(true);
+                          setTimeout(() => setShowConfetti(false), 3000);
+                          setStep("quote"); pushHistory("quote");
+                        });
                       }}
-                      className="tcc-card group w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
+                      className={`tcc-card group w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `clock-${lock.id}` ? "tap-confirm" : ""}`}
                     >
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[15px] text-white leading-tight">{lock.label}</p>
