@@ -63,7 +63,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`h-full antialiased ${cabinet.variable}`}>
       <head>
-        <link rel="preload" as="image" href="/iphone17.png" fetchPriority="high" />
         <script
           dangerouslySetInnerHTML={{
             __html: `(()=>{if(typeof IntersectionObserver==='undefined')return;const o=new IntersectionObserver((es,ob)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');ob.unobserve(e.target);}});},{threshold:0.12,rootMargin:'0px 0px -8% 0px'});let p=false;const arm=()=>{p=false;document.querySelectorAll('.reveal:not(.is-visible)').forEach(el=>o.observe(el));};const sched=()=>{if(p)return;p=true;requestAnimationFrame(arm);};if(document.readyState==='complete')arm();else window.addEventListener('load',arm);try{new MutationObserver(sched).observe(document.documentElement,{childList:true,subtree:true});}catch(e){}})();`
@@ -74,17 +73,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `(()=>{const u=()=>{document.body.classList.toggle('at-top',window.scrollY<8);};u();window.addEventListener('scroll',u,{passive:true});})();`
           }}
         />
+        {/* Google Consent Mode v2 — denied by default so GA4 + Google
+            Ads run in cookieless/modeled mode until the visitor accepts
+            in the cookie banner. The banner's Accept handler then calls
+            gtag('consent','update',{...granted}). A prior 'full' choice
+            is restored here on load so returning visitors aren't gated. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});try{if(localStorage.getItem('cookie-consent')==='full'){gtag('consent','update',{ad_storage:'granted',ad_user_data:'granted',ad_personalization:'granted',analytics_storage:'granted'});}}catch(e){}`,
+          }}
+        />
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-8H5VGFLJ71" />
         <script src="https://accounts.google.com/gsi/client" async defer />
         <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8H5VGFLJ71');gtag('config','AW-18099653912');` }} />
-        {/* Microsoft Clarity — heatmaps + session recordings.
-            Project wtgnj60bjp (clarity.microsoft.com → Top Cash).
-            Skywalker 2026-05-19 Tier-1 data-driven push. Public tag,
-            safe to hardcode. Env var NEXT_PUBLIC_CLARITY_ID still
-            overrides if ever rotated. */}
+        {/* Microsoft Clarity — heatmaps + session recordings. Gated on
+            cookie consent: window.tccLoadClarity() injects the tag and
+            only runs now if the visitor already accepted. The cookie
+            banner's Accept handler calls it on opt-in. Project
+            wtgnj60bjp; NEXT_PUBLIC_CLARITY_ID overrides if rotated. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","${process.env.NEXT_PUBLIC_CLARITY_ID || "wtgnj60bjp"}");`,
+            __html: `window.tccLoadClarity=function(){if(window.__tccClarityLoaded)return;window.__tccClarityLoaded=1;(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","${process.env.NEXT_PUBLIC_CLARITY_ID || "wtgnj60bjp"}");};try{if(localStorage.getItem('cookie-consent')==='full')window.tccLoadClarity();}catch(e){}`,
           }}
         />
         {/* First-party visitor ID — generates on first visit, persists in

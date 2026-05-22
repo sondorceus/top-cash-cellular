@@ -6,6 +6,8 @@ import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT } fr
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
 import { SlideOnScrollNav } from "./components/SlideOnScrollNav";
 import { HeaderSearch } from "./components/HeaderSearch";
+import Pic from "./components/Pic";
+import NextImage from "next/image";
 import { CARRIER_DEDUCTIONS, PRICE_TABLE, MIN_OFFER, MANUAL_REVIEW_DEVICES, MACBOOK_SPECS, type MacSpec, type MacSpecOption } from "./data/prices";
 
 const BRAND = "Top Cash Cellular";
@@ -164,7 +166,7 @@ const IPHONE_SERIES = [
   { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 860, variants: [
     { id: "ip17pm", label: "iPhone 17 Pro Max", base: 767, image: "/devices/iphone-17-pro-max-test.png" },   // IWM 256GB=$905
     { id: "ip17p", label: "iPhone 17 Pro", base: 726, image: "/devices/iphone-17-pro-test.png" },
-    { id: "ip17air", label: "iPhone 17 Air", base: 620, image: "/devices/iphone-17-air-test.png" },
+    { id: "ip17air", label: "iPhone 17 Air", base: 620, image: "/devices/iphone-17-air.webp" },
     { id: "ip17", label: "iPhone 17", base: 581, image: "/devices/iphone-17-test.png" },
     { id: "ip17e", label: "iPhone 17E", base: 352, image: "/iphone17e.png" },
   ]},
@@ -1955,11 +1957,11 @@ const getDeviceGroups = <T extends { id: string }>(deviceType: string | null | u
 // "Very Good" still parse — see resellMultiplierForCondition in
 // app/lib/resell-estimates.ts and the lead-side back-compat below.
 const CONDITIONS = [
-  { id: "sealed", label: "Sealed", desc: "Factory sealed, never opened", multiplier: 1.03, icon: "📦", details: ["Still in factory original sealed packaging", "Plastic wrap or seal is intact and has not been tampered with", "Device has never been activated or powered on", "Must include original box with matching serial number", "Contains all original accessories unopened"] },
-  { id: "mint", label: "Excellent", desc: "Looks brand new, zero signs of use", multiplier: 1.0, icon: "✨", details: ["Zero scratches, scuffs, or other marks — looks brand new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 90% capacity", "Powers on and functions 100% as intended"] },
-  { id: "good", label: "Good", desc: "Normal wear, fully functional", multiplier: 0.969, icon: "👍", details: ["Light to moderate signs of wear — visible scratches and/or minor dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended"] },
-  { id: "fair", label: "Fair", desc: "Heavy wear, still functional", multiplier: 0.852, icon: "👌", details: ["Heavy signs of wear — deep scratches, dents, or scuffs", "Display is free of cracks but may have minor blemishes", "Battery may be below 80% capacity", "Powers on and functions as intended"] },
-  { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: "⚠️", details: ["Cracked screen, broken buttons, or damaged housing", "Display defects such as dead pixels, white spots, or burn-in", "May have functional issues — touchscreen, speakers, cameras", "Device still powers on", "No signs of liquid intrusion or water damage"] },
+  { id: "sealed", label: "Sealed", desc: "Factory sealed, never opened", multiplier: 1.03, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, details: ["Still in factory original sealed packaging", "Plastic wrap or seal is intact and has not been tampered with", "Device has never been activated or powered on", "Must include original box with matching serial number", "Contains all original accessories unopened"] },
+  { id: "mint", label: "Excellent", desc: "Looks brand new, zero signs of use", multiplier: 1.0, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />, details: ["Zero scratches, scuffs, or other marks — looks brand new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 90% capacity", "Powers on and functions 100% as intended"] },
+  { id: "good", label: "Good", desc: "Normal wear, fully functional", multiplier: 0.969, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />, details: ["Light to moderate signs of wear — visible scratches and/or minor dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended"] },
+  { id: "fair", label: "Fair", desc: "Heavy wear, still functional", multiplier: 0.852, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />, details: ["Heavy signs of wear — deep scratches, dents, or scuffs", "Display is free of cracks but may have minor blemishes", "Battery may be below 80% capacity", "Powers on and functions as intended"] },
+  { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />, details: ["Cracked screen, broken buttons, or damaged housing", "Display defects such as dead pixels, white spots, or burn-in", "May have functional issues — touchscreen, speakers, cameras", "Device still powers on", "No signs of liquid intrusion or water damage"] },
 ];
 
 const ALL_STORAGES = [
@@ -2463,10 +2465,10 @@ const isHighMarginType = (dt: string | null | undefined): boolean => !!dt && HIG
 // Fenix can still get a real quote (broken-functional step still fires
 // after they pick broken, same as every other device type).
 const SIMPLE_CONDITIONS = [
-  { id: "sealed", label: "New / Sealed", desc: "Factory sealed, never opened", multiplier: 1.03, icon: "📦", details: ["Still in original sealed packaging", "All accessories included and unopened", "Never been used or powered on"] },
-  { id: "good", label: "Good", desc: "Works perfectly, normal wear", multiplier: 0.969, icon: "👍", details: ["Powers on and functions 100% as intended", "Normal cosmetic wear — scratches, scuffs OK", "All buttons and ports work", "Includes power cable"] },
-  { id: "fair", label: "Fair / Beat Up", desc: "Heavy wear but still works", multiplier: 0.852, icon: "👌", details: ["Powers on and functions as intended", "Heavy cosmetic wear — dents, deep scratches", "May have minor functional issues", "Includes power cable"] },
-  { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: "⚠️", details: ["Won't power on, dead HDMI/display, or major hardware failure", "Cracked housing or broken buttons", "Includes power cable if available", "We'll text you a final quote after inspection"] },
+  { id: "sealed", label: "New / Sealed", desc: "Factory sealed, never opened", multiplier: 1.03, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, details: ["Still in original sealed packaging", "All accessories included and unopened", "Never been used or powered on"] },
+  { id: "good", label: "Good", desc: "Works perfectly, normal wear", multiplier: 0.969, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />, details: ["Powers on and functions 100% as intended", "Normal cosmetic wear — scratches, scuffs OK", "All buttons and ports work", "Includes power cable"] },
+  { id: "fair", label: "Fair / Beat Up", desc: "Heavy wear but still works", multiplier: 0.852, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />, details: ["Powers on and functions as intended", "Heavy cosmetic wear — dents, deep scratches", "May have minor functional issues", "Includes power cable"] },
+  { id: "broken", label: "Broken", desc: "Cracked, defective, or damaged", multiplier: 0.50, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />, details: ["Won't power on, dead HDMI/display, or major hardware failure", "Cracked housing or broken buttons", "Includes power cable if available", "We'll text you a final quote after inspection"] },
 ];
 // Device types that use the SIMPLE 4-tier condition ladder (sealed /
 // good / fair / broken). Everything else uses the full 6-tier CONDITIONS
@@ -3445,15 +3447,15 @@ function FairPromise() {
       <p className="text-[#e8e8e8] text-xs mb-4">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
       <div className="space-y-3">
         <div className="flex gap-3">
-          <span className="text-2xl leading-none" style={{filter:"drop-shadow(0 0 8px rgba(0,200,83,0.55))"}}>🎯</span>
+          <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} style={{filter:"drop-shadow(0 0 8px rgba(0,200,83,0.55))"}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           <div><p className="text-sm font-extrabold text-white">Consistent grading</p><p className="text-xs text-[#e8e8e8] leading-snug mt-0.5">Every device is evaluated using a standardized process based on the condition you select.</p></div>
         </div>
         <div className="flex gap-3">
-          <span className="text-2xl leading-none" style={{filter:"drop-shadow(0 0 8px rgba(255,170,90,0.55))"}}>🤝</span>
+          <svg className="w-7 h-7 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} style={{color:"rgb(255,170,90)",filter:"drop-shadow(0 0 8px rgba(255,170,90,0.55))"}}><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
           <div><p className="text-sm font-extrabold text-white">Clear explanations</p><p className="text-xs text-[#e8e8e8] leading-snug mt-0.5">If your device differs from what was described, we&apos;ll explain what we found before adjusting your offer.</p></div>
         </div>
         <div className="flex gap-3">
-          <span className="text-2xl leading-none" style={{filter:"drop-shadow(0 0 8px rgba(120,200,255,0.55))"}}>🔄</span>
+          <svg className="w-7 h-7 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} style={{color:"rgb(120,200,255)",filter:"drop-shadow(0 0 8px rgba(120,200,255,0.55))"}}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
           <div>
             <p className="text-sm font-extrabold text-white">Your choice</p>
             <p className="text-xs text-white font-bold leading-snug mt-0.5">Don&apos;t like the final offer? <span className="text-[#00c853]">We ship it back for free — no questions asked.</span></p>
@@ -3467,13 +3469,13 @@ function FairPromise() {
 function TrustBadge() {
   return (
     <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[#e6e6e6] text-xs">
-      <span>⭐ Thousands of happy sellers</span>
+      <span className="inline-flex items-center gap-1"><svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>Thousands of happy sellers</span>
       <span>·</span>
-      <span>🔒 7-day price lock</span>
+      <span className="inline-flex items-center gap-1"><svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>7-day price lock</span>
       <span>·</span>
-      <span>⚡ Same-day payout</span>
+      <span className="inline-flex items-center gap-1"><svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Same-day payout</span>
       <span>·</span>
-      <span>🏠 Austin local</span>
+      <span className="inline-flex items-center gap-1"><svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>Austin local</span>
     </div>
   );
 }
@@ -4393,9 +4395,6 @@ export default function Home() {
   const [paidOff, setPaidOff] = useState<boolean | null>(null);
   const [inquiryDesc, setInquiryDesc] = useState("");
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
-  const [newsletterEmail, setNewsletterEmail] = useState("");
-  const [newsletterName, setNewsletterName] = useState("");
-  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
   const [statsVisible, setStatsVisible] = useState(false);
   const [animatedStats, setAnimatedStats] = useState({ devices: 0, payout: 0, time: 0 });
 
@@ -4962,7 +4961,11 @@ export default function Home() {
   // Minimum offer threshold — below this we lose money on shipping +
   // processing. Show "Manual quote" instead of a dollar amount.
   // User can still add to cart; we review manually before paying out.
-  const isBelowMinimum = quote > 0 && quote < MIN_OFFER;
+  // A priced device (has a base price) that quotes under the minimum —
+  // including an exact $0 — goes to manual review instead of showing
+  // "$0" all over the offer screen. Inquiry-only models (no base price)
+  // are handled separately by isPendingQuote below.
+  const isBelowMinimum = !!model?.base && quote < MIN_OFFER;
   // Inquiry-only models have no base price (or 0). We still let the
   // user walk the funnel + add to cart; the quote step shows
   // 'Quote pending' instead of a number, and the cart marks the line
@@ -5406,9 +5409,9 @@ export default function Home() {
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-lg bg-[rgba(15,15,15,0.5)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden shadow-[inset_1px_1px_0_rgba(255,255,255,0.08),0_4px_10px_rgba(0,0,0,0.45)]">
             {model.image ? (
-              <img src={model.image} alt="" className="max-w-full max-h-full object-contain" style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.5))" }} />
+              <Pic src={model.image} alt="" className="max-w-full max-h-full object-contain" style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.5))" }} />
             ) : (
-              <span className="text-xl opacity-50">📱</span>
+              <svg className="w-5 h-5 opacity-50 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
             )}
           </div>
           <div className="flex-1 min-w-0">
@@ -5548,42 +5551,53 @@ export default function Home() {
       <div className="sticky top-24 bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
         <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl mb-4 h-72 flex items-center justify-center overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-3">
           {model.image ? (
-            <img src={model.image} alt={model.label} className="w-full h-full object-contain" style={{ filter: "drop-shadow(0 18px 22px rgba(0,0,0,0.55)) drop-shadow(0 4px 8px rgba(0,0,0,0.35))" }} />
+            <Pic src={model.image} alt={model.label} size={640} className="w-full h-full object-contain" style={{ filter: "drop-shadow(0 18px 22px rgba(0,0,0,0.55)) drop-shadow(0 4px 8px rgba(0,0,0,0.35))" }} />
           ) : (
-            <div className="text-6xl opacity-30">📱</div>
+            <svg className="w-14 h-14 opacity-30 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
           )}
         </div>
         <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Selling</p>
         <p className="text-[22px] font-extrabold text-white leading-tight mb-4">{model.label}</p>
         <div className="space-y-2 border-t border-white/10 pt-4">
           {[
-            { label: "Processor",    value: processor?.label,    active: step === "processor",    helpId: null       as null,    show: macSpecFlow },
-            { label: "Memory",       value: memory?.label,       active: step === "memory",       helpId: null       as null,    show: macSpecFlow },
-            { label: "Storage",      value: storage?.label,      active: step === "storage",      helpId: "storage"  as const,   show: !isNoStorageDevice },
-            { label: "Display",      value: displayGlass?.label, active: step === "displayglass", helpId: null       as null,    show: macSpecFlow && macHasGlassStep },
-            { label: "Condition",    value: condition ? getConditionLabel(condition, deviceType).label : undefined, active: step === "condition", helpId: null as null, show: true },
-            { label: "Battery",      value: batteryHealth?.label, active: step === "batteryhealth", helpId: null     as null,    show: macSpecFlow },
-            { label: "Charger",      value: charger?.label,      active: step === "charger",      helpId: null       as null,    show: macSpecFlow },
+            { label: "Processor",    value: processor?.label,    active: step === "processor",    helpId: null as null,       onJump: editRow("processor"),    show: macSpecFlow },
+            { label: "Memory",       value: memory?.label,       active: step === "memory",       helpId: null as null,       onJump: editRow("memory"),       show: macSpecFlow },
+            // Storage — in the spec'd laptop flow it is asked BEFORE Condition.
+            { label: "Storage",      value: storage?.label,      active: step === "storage",      helpId: "storage" as const, onJump: editRow("storage"),      show: !isNoStorageDevice && macSpecFlow },
+            { label: "Display",      value: displayGlass?.label, active: step === "displayglass", helpId: null as null,       onJump: editRow("displayglass"), show: macSpecFlow && macHasGlassStep },
+            { label: "Condition",    value: condition ? getConditionLabel(condition, deviceType).label : undefined, active: step === "condition", helpId: null as null, onJump: editRow("condition"), show: true },
+            { label: "Battery",      value: batteryHealth?.label, active: step === "batteryhealth", helpId: null as null,      onJump: editRow("batteryhealth"), show: macSpecFlow },
+            { label: "Charger",      value: charger?.label,      active: step === "charger",      helpId: null as null,       onJump: editRow("charger"),      show: macSpecFlow },
             // Brand extras (PS5 disc / drone hours / watch band etc) get
             // one row per answered question, only shown for device types
             // that declare extras in BRAND_EXTRAS.
-            ...getBrandExtras(deviceType, model?.id).map(q => ({
+            ...getBrandExtras(deviceType, model?.id).map((q, qi) => ({
               label: q.question.replace(/\?$/, ""),
               value: extras[q.id]?.label,
               active: step === "extras" && getBrandExtras(deviceType, model?.id)[extrasIndex]?.id === q.id,
               helpId: null as null,
+              onJump: () => { setExtrasIndex(qi); setStep("extras"); pushHistory("extras"); },
               show: true,
             })),
-            { label: "Connectivity", value: connectivity?.label, active: step === "connectivity", helpId: null       as null,    show: deviceType === "ipad" },
-            { label: "Carrier",      value: isManualQuote ? "N/A" : carrier?.label,      active: step === "carrier",      helpId: "carrier"  as const,   show: (isPhoneFlow || isIpadCellular) && !isManualQuote },
-            { label: "Carrier Lock", value: isManualQuote ? "N/A" : carrierLock?.label,  active: step === "carrier-lock", helpId: null       as null,    show: (isPhoneFlow || isIpadCellular) && !isManualQuote },
-          ].filter(row => row.show).map(row => (
-            <div key={row.label} className={`rounded-lg px-3 py-2.5 transition-all duration-[250ms] ease-out ${row.active ? "bg-[#00c853]/12 border border-[#00c853]" : row.value ? "bg-[rgba(15,15,15,0.5)] border border-white/10" : "border border-transparent"}`}>
+            { label: "Connectivity", value: connectivity?.label, active: step === "connectivity", helpId: null as null,       onJump: editRow("connectivity"), show: deviceType === "ipad" },
+            // Storage — standard flow (phones / iPad) asks it AFTER Condition.
+            { label: "Storage",      value: storage?.label,      active: step === "storage",      helpId: "storage" as const, onJump: editRow("storage"),      show: !isNoStorageDevice && !macSpecFlow },
+            { label: "Carrier",      value: isManualQuote ? "N/A" : carrier?.label,      active: step === "carrier",      helpId: "carrier" as const, onJump: editRow("carrier"),      show: (isPhoneFlow || isIpadCellular) && !isManualQuote },
+            { label: "Carrier Lock", value: isManualQuote ? "N/A" : carrierLock?.label,  active: step === "carrier-lock", helpId: null as null,       onJump: editRow("carrier-lock"), show: (isPhoneFlow || isIpadCellular) && !isManualQuote },
+          ].filter(row => row.show && (row.value || row.active)).map(row => {
+            // Only rows that are filled in or currently being selected
+            // show — not-yet-reached steps stay hidden so the panel
+            // doesn't list empty "—" rows. A row with a value is a
+            // completed step and clicking it jumps the funnel back.
+            const canJump = !!row.value && !row.active;
+            return (
+            <div key={row.label} onClick={canJump ? row.onJump : undefined}
+              className={`rounded-lg px-3 py-2.5 transition-all duration-[250ms] ease-out ${row.active ? "bg-[#00c853]/12 border border-[#00c853]" : row.value ? "bg-[rgba(15,15,15,0.5)] border border-white/10" : "border border-transparent"}${canJump ? " cursor-pointer hover:border-[#00c853]/60" : ""}`}>
               <div className="flex items-center justify-between gap-2">
                 <span className={`text-[11px] font-medium uppercase tracking-wider inline-flex items-center gap-1.5 ${row.active ? "text-[#00c853]" : "text-[#b8b8b8]"}`}>
                   {row.label}
                   {row.helpId && (
-                    <button type="button" onClick={() => setHelpTopic(helpTopic === row.helpId ? null : row.helpId)} aria-label={`How to find ${row.label}`} className="w-4 h-4 rounded-full bg-white/10 hover:bg-[#00c853] hover:text-[#0a0a0a] flex items-center justify-center text-[10px] font-bold leading-none cursor-pointer transition">i</button>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); setHelpTopic(helpTopic === row.helpId ? null : row.helpId); }} aria-label={`How to find ${row.label}`} className="w-4 h-4 rounded-full bg-white/10 hover:bg-[#00c853] hover:text-[#0a0a0a] flex items-center justify-center text-[10px] font-bold leading-none cursor-pointer transition">i</button>
                   )}
                 </span>
                 <span className={`text-right text-[15px] font-extrabold ${row.value ? (row.active ? "text-[#00c853]" : "text-white") : "text-[#888]"}`}>
@@ -5591,7 +5605,8 @@ export default function Home() {
                 </span>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
         {/* Accurate-quote guarantee badge */}
         <div className="mt-4 pt-4 border-t border-white/10 flex items-start gap-2.5">
@@ -5637,9 +5652,9 @@ export default function Home() {
     <div key={i} className="flex items-center gap-3 py-2 border-b border-white/10 last:border-0">
       <div className="shrink-0 w-10 h-10 rounded-lg bg-[rgba(15,15,15,0.6)] border border-white/10 flex items-center justify-center overflow-hidden">
         {l.image ? (
-          <img src={l.image} alt="" className="w-full h-full object-contain p-0.5" />
+          <Pic src={l.image} alt="" className="w-full h-full object-contain p-0.5" />
         ) : (
-          <span className="text-lg opacity-40">📱</span>
+          <svg className="w-5 h-5 opacity-40 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
         )}
       </div>
       <div className="flex-1 min-w-0">
@@ -5725,10 +5740,16 @@ export default function Home() {
         const q = searchQuery.toLowerCase().trim();
         type Hit = { label: string; deviceType: DeviceType; seriesId: string; modelId: string; category: typeof category; base: number; image: string };
         const hits: Hit[] = [];
-        const catFallback = (cat: typeof category): string => ({
-          phones: "📱", tablets: "📲", computers: "💻", desktops: "🖥️",
-          watches: "⌚", consoles: "🎮", drones: "🛸", vr: "🥽",
-        } as Record<string, string>)[cat || ""] || "📦";
+        const catFallback = (cat: typeof category): React.ReactNode => ({
+          phones: <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />,
+          tablets: <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 18.75a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3zM8.625.75A3.375 3.375 0 005.25 4.125v15.75a3.375 3.375 0 003.375 3.375h6.75a3.375 3.375 0 003.375-3.375V4.125A3.375 3.375 0 0015.375.75h-6.75z" />,
+          computers: <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />,
+          desktops: <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />,
+          watches: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />,
+          consoles: <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h.008v.008H7.5V8.25zm0 3h.008v.008H7.5v-.008zm-2.25.75h.008v.008H5.25v-.008zm4.5 0h.008v.008H9.75v-.008zM16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm3 3a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.75 6h10.5a4.5 4.5 0 014.5 4.5v3a4.5 4.5 0 01-4.5 4.5c-1.86 0-3.41-1.28-3.86-3h-2.78c-.45 1.72-2 3-3.86 3a4.5 4.5 0 01-4.5-4.5v-3A4.5 4.5 0 016.75 6z" />,
+          drones: <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />,
+          vr: <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 9.75A2.25 2.25 0 014.5 7.5h15a2.25 2.25 0 012.25 2.25v4.5A2.25 2.25 0 0119.5 16.5h-3.31a2.25 2.25 0 01-1.59-.659L13.06 14.3a1.5 1.5 0 00-2.12 0l-1.541 1.541a2.25 2.25 0 01-1.59.659H4.5A2.25 2.25 0 012.25 14.25v-4.5z" />,
+        } as Record<string, React.ReactNode>)[cat || ""] || <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />;
         const collectFromSeries = (list: { id: string; label: string; image?: string; variants: { id: string; label: string; base: number; image?: string }[] }[], deviceType: DeviceType, cat: typeof category) => {
           for (const s of list) {
             for (const v of s.variants) {
@@ -5853,9 +5874,9 @@ export default function Home() {
                     className="w-full text-left px-4 py-2.5 hover:bg-white/5 transition flex items-center gap-3 border-b border-white/10 last:border-0 cursor-pointer"
                   >
                     {h.image ? (
-                      <img src={h.image} alt={h.label} loading="lazy" className="w-10 h-10 object-contain flex-shrink-0 rounded-md bg-white/5" />
+                      <Pic src={h.image} alt={h.label} loading="lazy" className="w-10 h-10 object-contain flex-shrink-0 rounded-md bg-white/5" />
                     ) : (
-                      <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 rounded-md bg-white/5 text-lg">{catFallback(h.category)}</div>
+                      <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 rounded-md bg-white/5"><svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{catFallback(h.category)}</svg></div>
                     )}
                     <span className="text-sm font-semibold text-white flex-1 truncate">{h.label}</span>
                     <svg className="w-4 h-4 text-[#e6e6e6] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
@@ -5921,15 +5942,15 @@ export default function Home() {
             <span className="text-[#00c853] text-xs font-extrabold tracking-wide">✓ Bonus applied — your quote includes +${promo?.flatBonus ?? 20}</span>
           ) : (
             <>
-              <span className="hidden sm:inline text-[#00c853] text-xs font-extrabold tracking-wide">{promo?.active ? `${promo.text} · Click to apply` : "🎁 This week — extra cash on select devices · Click to apply"}</span>
-              <span className="sm:hidden text-[#00c853] text-[11px] font-extrabold tracking-wide">{promo?.active ? `${promo.text} · Click to apply` : "🎁 Extra cash · Click to apply"}</span>
+              <span className="hidden sm:inline-flex items-center gap-1 text-[#00c853] text-xs font-extrabold tracking-wide">{!promo?.active && <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>}{promo?.active ? `${promo.text} · Click to apply` : "This week — extra cash on select devices · Click to apply"}</span>
+              <span className="sm:hidden inline-flex items-center gap-1 text-[#00c853] text-[11px] font-extrabold tracking-wide">{!promo?.active && <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>}{promo?.active ? `${promo.text} · Click to apply` : "Extra cash · Click to apply"}</span>
             </>
           )}
         </button>
         <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between relative">
           {/* LEFT: logo — Top Cash Cellular wordmark (Skywalker 2026-05-20) */}
-          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer shrink-0 tap-press">
-            <img src="/logo-wordmark.png" alt="Top Cash Cellular" className="h-10 lg:h-12 w-auto" />
+          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer shrink-0 tap-press inline-flex items-center bg-white/[0.12] border border-white/10 rounded-full px-3 py-1">
+            <NextImage src="/logo-wordmark.png" alt="Top Cash Cellular" width={1000} height={382} className="h-9 lg:h-11 w-auto" loading="eager" />
           </button>
 
           {/* CENTER (lg+ only, absolutely centered relative to the nav row): Sell / Bulk / Support */}
@@ -5946,7 +5967,7 @@ export default function Home() {
               <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[720px] max-w-[calc(100vw-2rem)] transition-all duration-300 ease-out ${megaMenuOpen === "sell" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
                 <div className="bg-[#111] border border-white/10 rounded-3xl shadow-2xl p-6">
                   <div className="flex items-center justify-between mb-5">
-                    <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em]">Sell your device</p>
+                    <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em] tcc-green-pill">Sell your device</p>
                     <p className="text-[#9a9a9a] text-[11px]">Pick a category — instant quote in 30 sec</p>
                   </div>
                   <div className="grid grid-cols-4 gap-3">
@@ -5972,8 +5993,8 @@ export default function Home() {
                   </div>
                   <div className="mt-5 pt-5 border-t border-white/10">
                     <div className="flex items-center justify-between mb-3">
-                      <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em]">Hot today</p>
-                      <span className="inline-flex items-center gap-1.5 text-[10px] text-[#00c853] font-bold uppercase tracking-wider">
+                      <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em] tcc-green-pill">Hot today</p>
+                      <span className="inline-flex items-center gap-1.5 text-[10px] text-[#00c853] font-bold uppercase tracking-wider bg-white/[0.12] border border-white/10 rounded-full px-2.5 py-1">
                         <span className="relative flex h-1.5 w-1.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00c853] opacity-75"></span><span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00c853]"></span></span>
                         Live prices
                       </span>
@@ -6004,10 +6025,10 @@ export default function Home() {
                           >
                             {isTight ? (
                               <div className="w-12 h-12 mb-1 flex items-center justify-center p-2">
-                                <img src={d.photo} alt={d.title} className="w-full h-full object-contain" loading="lazy" />
+                                <Pic src={d.photo} alt={d.title} className="w-full h-full object-contain" loading="lazy" />
                               </div>
                             ) : (
-                              <img src={d.photo} alt={d.title} className="w-12 h-12 object-contain mb-1" loading="lazy" />
+                              <Pic src={d.photo} alt={d.title} className="w-12 h-12 object-contain mb-1" loading="lazy" />
                             )}
                             <p className="text-[11px] font-semibold text-white leading-tight min-h-[2.2em]">{d.title}</p>
                             <p className="text-[#00c853] text-sm font-extrabold leading-none">up to ${topPrice}</p>
@@ -6032,28 +6053,28 @@ export default function Home() {
               <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[640px] max-w-[calc(100vw-2rem)] transition-all duration-300 ease-out ${megaMenuOpen === "bulk" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
                 <div className="bg-[#111] border border-white/10 rounded-3xl shadow-2xl p-6">
                   <div className="flex items-center justify-between mb-5">
-                    <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em]">Bulk trade-ins</p>
+                    <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em] tcc-green-pill">Bulk trade-ins</p>
                     <p className="text-[#9a9a9a] text-[11px]">10+ devices · enterprise &amp; resellers</p>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     {/* LEFT — action cards */}
                     <div className="space-y-2">
                       <a href="/bulk" className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
-                        <span className="text-2xl shrink-0">📦</span>
+                        <svg className="w-6 h-6 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>
                         <div className="min-w-0">
                           <p className="text-[13px] font-bold text-white group-hover/blk:text-[#00c853] transition">Get a bulk quote</p>
                           <p className="text-[11px] text-[#b8b8b8] mt-0.5 leading-snug">One submission, one payout, volume pricing.</p>
                         </div>
                       </a>
                       <a href={EMAIL_HREF} className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
-                        <span className="text-2xl shrink-0">🤝</span>
+                        <svg className="w-6 h-6 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                         <div className="min-w-0">
                           <p className="text-[13px] font-bold text-white group-hover/blk:text-[#00c853] transition">Talk to bulk team</p>
                           <p className="text-[11px] text-[#b8b8b8] mt-0.5 leading-snug">Custom contracts, NDAs, decommissioning.</p>
                         </div>
                       </a>
                       <a href="tel:+18775492056" className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
-                        <span className="text-2xl shrink-0">📞</span>
+                        <svg className="w-6 h-6 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
                         <div className="min-w-0">
                           <p className="text-[13px] font-bold text-white group-hover/blk:text-[#00c853] transition">Call bulk line</p>
                           <p className="text-[11px] text-[#b8b8b8] mt-0.5 leading-snug">(877) 549-2056 · same-day callback</p>
@@ -6086,7 +6107,7 @@ export default function Home() {
                       { tier: "50+", note: "Dedicated rep · custom contract" },
                     ].map(t => (
                       <div key={t.tier} className="text-center">
-                        <p className="text-[#00c853] text-base font-extrabold leading-none">{t.tier}</p>
+                        <p className="text-[#00c853] text-base font-extrabold leading-none tcc-green-pill">{t.tier}</p>
                         <p className="text-[10px] text-[#9a9a9a] mt-1">{t.note}</p>
                       </div>
                     ))}
@@ -6106,8 +6127,8 @@ export default function Home() {
               <div className={`absolute top-full right-0 pt-3 z-50 w-[680px] max-w-[calc(100vw-2rem)] transition-all duration-300 ease-out ${megaMenuOpen === "support" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
                 <div className="bg-[#111] border border-white/10 rounded-3xl shadow-2xl p-6">
                   <div className="flex items-center justify-between mb-5">
-                    <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em]">Help &amp; info</p>
-                    <span className="inline-flex items-center gap-1.5 text-[10px] text-[#00c853] font-bold uppercase tracking-wider">
+                    <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em] tcc-green-pill">Help &amp; info</p>
+                    <span className="inline-flex items-center gap-1.5 text-[10px] text-[#00c853] font-bold uppercase tracking-wider bg-white/[0.12] border border-white/10 rounded-full px-2.5 py-1">
                       <span className="relative flex h-1.5 w-1.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00c853] opacity-75"></span><span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00c853]"></span></span>
                       Reply in ~1 hr
                     </span>
@@ -6116,14 +6137,14 @@ export default function Home() {
                     {/* LEFT — action cards */}
                     <div className="space-y-2">
                       {([
-                        { href: "/how-it-works", icon: "🧭", title: "How it works", sub: "Drawer to dollars in 3 steps" },
-                        { href: "/faq", icon: "❓", title: "Full FAQ", sub: "Plain answers, common questions" },
-                        { href: "/reviews", icon: "★", title: "Reviews", sub: "★ 4.9 from real sellers", iconColor: "text-[#ffb400]" },
-                        { href: "/track", icon: "📍", title: "Track your trade", sub: "Status, payout, tracking #" },
-                        { href: EMAIL_HREF, icon: "✉️", title: "Email customer service", sub: "CustomerService@topcashcells.com · same business day" },
+                        { href: "/how-it-works", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "How it works", sub: "Drawer to dollars in 3 steps" },
+                        { href: "/faq", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Full FAQ", sub: "Plain answers, common questions" },
+                        { href: "/reviews", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />, title: "Reviews", sub: "★ 4.9 from real sellers", iconColor: "text-[#ffb400]" },
+                        { href: "/track", icon: <><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></>, title: "Track your trade", sub: "Status, payout, tracking #" },
+                        { href: EMAIL_HREF, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />, title: "Email customer service", sub: "CustomerService@topcashcells.com · same business day" },
                       ]).map(item => (
                         <a key={item.title} href={item.href} className="group/sup flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
-                          <span className={`text-2xl shrink-0 ${item.iconColor ?? ""}`}>{item.icon}</span>
+                          <svg className={`w-6 h-6 shrink-0 ${item.iconColor ?? "text-[#00c853]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{item.icon}</svg>
                           <div className="min-w-0">
                             <p className="text-[13px] font-bold text-white group-hover/sup:text-[#00c853] transition leading-tight">{item.title}</p>
                             <p className="text-[11px] text-[#b8b8b8] mt-1 leading-snug">{item.sub}</p>
@@ -6154,7 +6175,7 @@ export default function Home() {
                   </div>
                   {/* FOOTER — call CTA */}
                   <a href="tel:+18775492056" className="mt-5 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#00c853]/15 border border-[#00c853]/40 hover:bg-[#00c853]/25 transition-all duration-200">
-                    <span className="text-lg">📞</span>
+                    <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
                     <span className="text-[13px] font-bold text-[#00c853]">Call (877) 549-2056 — Mon-Sat 9a-7p CT</span>
                   </a>
                 </div>
@@ -6255,13 +6276,11 @@ export default function Home() {
                 )}
               </div>
             ) : (
-              // Login button now shows on mobile too per Skywalker
-              // 2026-05-17 "we can ask for login on top right of the
-              // home page for returning customers". Compact on small
-              // screens (icon + Login), full label expands at lg+.
+              // Desktop-only — on mobile/tablet, login lives inside the
+              // hamburger menu instead of the header cluster.
               <button
                 onClick={() => setLookupOpen(true)}
-                className="flex items-center gap-1.5 lg:gap-2 px-2.5 lg:px-3 py-1.5 text-xs lg:text-sm font-semibold text-[#00c853] hover:text-[#00e676] hover:bg-white/5 transition cursor-pointer tap-press rounded-full"
+                className="hidden lg:flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-[#00c853] hover:text-[#00e676] hover:bg-white/5 transition cursor-pointer tap-press rounded-full"
                 aria-label="Log in"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
@@ -6455,14 +6474,14 @@ export default function Home() {
               {mobileMenuExpanded === "bulk" && (
                 <div className="px-3 pb-3 space-y-1">
                   <a href="/bulk" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl">📦</span>
+                    <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>
                     <div>
                       <p className="text-sm font-semibold text-white">Get a bulk quote</p>
                       <p className="text-[11px] text-[#e6e6e6]">10+ devices? Volume pricing.</p>
                     </div>
                   </a>
                   <a href={EMAIL_HREF} onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl">✉️</span>
+                    <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                     <div>
                       <p className="text-sm font-semibold text-white">Talk to bulk team</p>
                       <p className="text-[11px] text-[#e6e6e6]">Custom contracts welcome.</p>
@@ -6484,35 +6503,35 @@ export default function Home() {
               {mobileMenuExpanded === "support" && (
                 <div className="px-3 pb-3 space-y-1">
                   <a href="/how-it-works" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl">🧭</span>
+                    <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <div>
                       <p className="text-sm font-semibold text-white">How it works</p>
                       <p className="text-[11px] text-[#e6e6e6]">From drawer to dollars in 3 steps.</p>
                     </div>
                   </a>
                   <a href="/faq" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl">❓</span>
+                    <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <div>
                       <p className="text-sm font-semibold text-white">FAQ</p>
                       <p className="text-[11px] text-[#e6e6e6]">Common questions, plain answers.</p>
                     </div>
                   </a>
                   <a href="/reviews" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl text-[#ffb400]">★</span>
+                    <svg className="w-5 h-5 shrink-0 text-[#ffb400]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
                     <div>
                       <p className="text-sm font-semibold text-white">Reviews</p>
                       <p className="text-[11px] text-[#e6e6e6]">4.9 — read what customers say.</p>
                     </div>
                   </a>
                   <a href={EMAIL_HREF} onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl">✉️</span>
+                    <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-white">Customer service</p>
                       <p className="text-[11px] text-[#e6e6e6] truncate">CustomerService@topcashcells.com</p>
                     </div>
                   </a>
                   <a href="tel:+18775492056" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
-                    <span className="text-xl">📞</span>
+                    <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
                     <div>
                       <p className="text-sm font-semibold text-white">Call us</p>
                       <p className="text-[11px] text-[#e6e6e6]">(877) 549-2056</p>
@@ -6784,7 +6803,7 @@ export default function Home() {
                   <div className="grid grid-cols-2 gap-2.5">
                     <figure className="bg-black/40 border border-white/10 rounded-xl overflow-hidden">
                       <div className="aspect-square w-full bg-black flex items-center justify-center">
-                        <img src="/condition-examples/broken-front.png" alt="Cracked front screen / display" className="w-full h-full object-cover" loading="lazy" />
+                        <NextImage src="/condition-examples/broken-front.png" alt="Cracked front screen / display" width={896} height={598} className="w-full h-full object-cover" loading="lazy" />
                       </div>
                       <figcaption className="px-2.5 py-1.5 text-center">
                         <span className="text-[10px] uppercase tracking-wider text-[#00c853] font-extrabold">Front</span>
@@ -6793,7 +6812,7 @@ export default function Home() {
                     </figure>
                     <figure className="bg-black/40 border border-white/10 rounded-xl overflow-hidden">
                       <div className="aspect-square w-full bg-black flex items-center justify-center">
-                        <img src="/condition-examples/broken-back.png" alt="Cracked back glass" className="w-full h-full object-cover" loading="lazy" />
+                        <NextImage src="/condition-examples/broken-back.png" alt="Cracked back glass" width={896} height={597} className="w-full h-full object-cover" loading="lazy" />
                       </div>
                       <figcaption className="px-2.5 py-1.5 text-center">
                         <span className="text-[10px] uppercase tracking-wider text-[#00c853] font-extrabold">Back</span>
@@ -6919,7 +6938,7 @@ export default function Home() {
                     <p className="text-[#c8c8c8] leading-relaxed">Settings → Network &amp; Internet → SIMs → tap your SIM → look at the carrier name. If you bought from Google Store directly, it&apos;s unlocked.</p>
                   </div>
                   <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-lg p-3">
-                    <p className="text-[#00c853] font-bold text-xs mb-1">💡 Quick way</p>
+                    <p className="text-[#00c853] font-bold text-xs mb-1 flex items-center gap-1"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>Quick way</p>
                     <p className="text-[#e6e6e6] text-xs leading-relaxed">Pop in a SIM from a different carrier. If it works, it&apos;s unlocked. If it shows &ldquo;SIM not supported&rdquo;, it&apos;s locked.</p>
                   </div>
                 </>
@@ -7036,7 +7055,7 @@ export default function Home() {
 
       {/* STEP: DEVICE TYPE */}
       {step === "device" && page === "home" && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.3s_ease-out]" style={{ background: "radial-gradient(120% 65% at 50% 0%, rgba(0,200,83,0.16), transparent 72%)" }}>
           {/* Hero backdrop removed 2026-05-17 per Skywalker — looked
               bad in production. The faded multi-device decoration was
               competing with the actual hero copy instead of receding.
@@ -7047,7 +7066,7 @@ export default function Home() {
                 submission left the tcc-returning marker. */}
             {welcomeBack && (
               <div className="mb-5 bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
-                <span className="text-2xl">👋</span>
+                <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" /></svg>
                 <div className="flex-1 min-w-0">
                   <p className="text-white font-bold text-sm">Welcome back, {welcomeBack.name}!</p>
                   <p className="text-[#d4d4d4] text-xs">Great to see you again — let&apos;s get your next device quoted.</p>
@@ -7056,14 +7075,14 @@ export default function Home() {
               </div>
             )}
             <h1 className="text-4xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up" style={{ letterSpacing: "-0.03em" }}>
-              Get top dollar<br />for your device.
+              Get <span className="text-[#00c853]">top dollar</span><br />for your device.
             </h1>
             <p className="text-[#e6e6e6] text-lg lg:text-xl mb-2 font-medium hero-fade-up hero-d-1">
-              Skip the 5-day mail-in wait. Quote online, meet us in <strong className="text-white">Austin or Dripping Springs</strong>, get paid in <strong className="text-white">cash in 15 minutes</strong>.
+              Get an instant online quote, then your choice: meet us in Austin for <span className="font-bold text-white lg:font-medium lg:text-[#00c853]">cash in 15 minutes</span>, or <span className="font-bold text-white lg:font-medium lg:text-[#00c853]">ship free from anywhere in the US</span> and get paid the day it arrives.
             </p>
             <p className="text-[#e6e6e6] text-sm mb-6 font-medium hero-fade-up hero-d-2 flex items-center gap-2">
-              <span className="text-[#00c853]">🔒</span>
-              <span><strong className="text-white">On-site data wipe in your presence</strong> before we pay you.</span>
+              <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              <span>Every device gets a <span className="font-bold text-white lg:font-medium lg:text-[#00c853]">certified data wipe</span> — at local meetups, you watch it happen.</span>
             </p>
 
             {/* DUAL-PATH ENTRY — local vs. shipping. Each button locks in the
@@ -7074,14 +7093,14 @@ export default function Home() {
                 onClick={() => { setHandoffMethod("local"); setStep("category"); pushHistory("category"); }}
                 className="tcc-button-primary w-full py-4 text-base font-extrabold flex flex-col items-center gap-0.5"
               >
-                <span className="flex items-center gap-2"><span>📍</span>Sell Local Today</span>
+                <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>Sell Local Today</span>
                 <span className="text-[11px] font-medium opacity-80">Local pickup · Cash on the spot</span>
               </button>
               <button
                 onClick={() => { setHandoffMethod("ship"); setStep("category"); pushHistory("category"); }}
                 className="w-full bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] hover:bg-[rgba(15,15,15,0.85)] hover:border-[#00c853] border border-white/15 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-300 ease-out shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex flex-col items-center gap-0.5"
               >
-                <span className="flex items-center gap-2"><span>📦</span>I&apos;m Shipping: Get a Label</span>
+                <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>I&apos;m Shipping: Get a Label</span>
                 <span className="text-[11px] font-medium text-[#b8b8b8]">Free prepaid label · Same-day payout on arrival</span>
               </button>
             </div>
@@ -7097,7 +7116,7 @@ export default function Home() {
 
             {/* MOBILE TECH MEETUP — small detail, not a full section */}
             <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 flex items-start gap-3">
-              <span className="text-xl shrink-0 leading-tight">🚗</span>
+              <svg className="w-5 h-5 shrink-0 text-[#00c853] leading-tight" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0zM13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1" /></svg>
               <p className="text-[#e6e6e6] text-xs leading-relaxed">
                 <strong className="text-white">Or have us come to you.</strong> We meet you at a public spot of your choice — live tracking, paid on the spot.
               </p>
@@ -7105,21 +7124,22 @@ export default function Home() {
 
             {/* NEIGHBORHOODS — Austin SEO + local trust */}
             <div className="mt-4 text-center text-[11px] text-[#bdbdbd] font-medium">
-              <span className="text-[#00c853]">📍</span> Mobile techs in <span className="text-[#e6e6e6]">Downtown Austin · South Congress · Westlake · Bee Cave · Lakeway · Buda · Dripping Springs</span>
+              <svg className="w-4 h-4 inline-block align-text-bottom text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg> Mobile techs in <span className="text-[#e6e6e6]">Downtown Austin · South Congress · Westlake · Bee Cave · Lakeway · Buda · Dripping Springs</span>
             </div>
 
             {/* PAYMENT METHODS — small chip strip */}
             <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5">
               <span className="text-[10px] text-[#bdbdbd] uppercase tracking-[0.18em] font-bold mr-1">Paid via</span>
-              {[
-                { label: "Cash", icon: "💵" },
-                { label: "Zelle", icon: "⚡" },
-                { label: "Cash App", icon: "💚" },
-                { label: "Venmo", icon: "🟦" },
-                { label: "BTC", icon: "₿" },
-              ].filter(p => p.label !== "Cash" || handoffMethod === "local").map(p => (
+              {([
+                { label: "Cash", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /> },
+                { label: "Zelle", svg: "/pay/zelle.svg" },
+                { label: "Cash App", svg: "/pay/cashapp.svg" },
+                { label: "BTC", svg: "/pay/bitcoin.svg" },
+              ] as Array<{ label: string; icon?: React.ReactNode; svg?: string }>).filter(p => p.label !== "Cash" || handoffMethod === "local").map(p => (
                 <span key={p.label} className="inline-flex items-center gap-1 bg-white/5 border border-white/10 text-[#e6e6e6] text-[11px] font-semibold px-2 py-1 rounded-full">
-                  <span className="text-[12px] leading-none">{p.icon}</span>
+                  {p.svg
+                    ? <img src={p.svg} alt="" className="w-4 h-4 object-contain" />
+                    : <svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{p.icon}</svg>}
                   {p.label}
                 </span>
               ))}
@@ -7179,7 +7199,7 @@ export default function Home() {
                   // like iPhone / MacBook / iPad. Slot size stays
                   // constant so the row's vertical rhythm is preserved.
                   const isTight = (d as { tight?: boolean }).tight;
-                  const imgCls = "w-16 h-16 md:w-20 md:h-20 object-contain mb-2";
+                  const imgCls = "w-16 h-16 md:w-20 md:h-20 object-contain mb-2 transition-transform duration-300 group-hover:scale-110";
                   const tightWrapCls = "w-16 h-16 md:w-20 md:h-20 mb-2 flex items-center justify-center p-3 md:p-4";
                   return (
                     <button
@@ -7191,17 +7211,17 @@ export default function Home() {
                         setStep("condition");
                         pushHistory("condition");
                       }}
-                      className="group bg-white/[0.07] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press"
+                      className="group bg-white/[0.07] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press tcc-anim-border"
                     >
                       {isTight ? (
                         <div className={tightWrapCls}>
-                          <img src={d.photo} alt={d.title} className="w-full h-full object-contain" loading="lazy" />
+                          <Pic src={d.photo} alt={d.title} className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110" loading="lazy" />
                         </div>
                       ) : (
-                        <img src={d.photo} alt={d.title} className={imgCls} loading="lazy" />
+                        <Pic src={d.photo} alt={d.title} className={imgCls} loading="lazy" />
                       )}
                       <p className="text-white text-[11px] md:text-xs font-semibold leading-tight mb-1 min-h-[2.2em]">{d.title}</p>
-                      <p className="text-[#00c853] text-lg md:text-xl font-extrabold leading-none">up to ${topPrice}</p>
+                      <p className="text-[#00c853] text-lg md:text-xl font-extrabold leading-none tcc-green-pill">up to ${topPrice}</p>
                       <p className="text-[#e6e6e6] text-[10px] mt-1.5 group-hover:text-[#00c853] transition font-semibold">Get my quote →</p>
                     </button>
                   );
@@ -7237,7 +7257,7 @@ export default function Home() {
                     return [...devices, ...devices].map((d, i) => (
                       <button key={i} onClick={() => { setDeviceType(d.brand); setStep("model"); pushHistory("model"); }} className="flex-shrink-0 w-[280px] flex items-center justify-between gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left tap-press">
                         <span className="text-white text-xs font-semibold truncate flex-1">{d.name}</span>
-                        <span className="text-[#00c853] text-xs font-bold whitespace-nowrap">up to ${d.price}</span>
+                        <span className="text-[#00c853] text-xs font-bold whitespace-nowrap tcc-green-pill">up to ${d.price}</span>
                       </button>
                     ));
                   })()}
@@ -7253,7 +7273,7 @@ export default function Home() {
         <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-10">
           <div className="bg-gradient-to-br from-[#00c853]/15 via-[#00c853]/5 to-[#00c853]/15 border border-[#00c853]/30 rounded-3xl p-6 md:p-8">
             <div className="flex items-start gap-4">
-              <span className="text-5xl shrink-0">📱</span>
+              <Pic src="/iphone17.png" alt="" className="h-24 w-auto shrink-0 object-contain" style={{ filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.45))" }} />
               <div className="flex-1">
                 <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-1">Used, gently worn, like-new</p>
                 <h2 className="text-2xl md:text-3xl font-bold mb-2 leading-tight">Working devices get top dollar.</h2>
@@ -7261,25 +7281,25 @@ export default function Home() {
                 {(() => {
                   const tiers = [
                     {
-                      icon: "✨", t: "Like new", note: "Best payout",
+                      icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />, t: "Like new", note: "Best payout",
                       headline: "Sealed or flawless — the top tier.",
                       body: "Box-fresh or opened-but-unused condition. No scratches, no scuffs, no display marks. Battery still above 80%. This is where the headline price lives.",
                       bullets: ["Zero cosmetic wear", "Battery health ≥80%", "Powers on, no functional issues", "Quote pays at 100% of our top rate"],
                     },
                     {
-                      icon: "👍", t: "Light wear", note: "Top tier",
+                      icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />, t: "Light wear", note: "Top tier",
                       headline: "Lived-in but still beautiful.",
                       body: "Minor scratches visible only up close. Display is still clean — no cracks, no discolouration. Most phones older than 6 months land here, and we still pay close to the headline.",
                       bullets: ["A few fine micro-scratches", "No cracks or dents", "Display lights up cleanly", "Pays ~85–95% of top rate"],
                     },
                     {
-                      icon: "🪙", t: "Visible wear", note: "Still fair",
+                      icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, t: "Visible wear", note: "Still fair",
                       headline: "Honest wear, honest quote.",
                       body: "You can see the marks from across the room — scuffs on the frame, deeper scratches on the back. Screen is still intact and the phone works. We&apos;ll buy it, just at a lower rate.",
                       bullets: ["Scuffs / dents on the frame OK", "Back glass scratched but not cracked", "Screen still clean & functional", "Pays ~60–75% of top rate"],
                     },
                     {
-                      icon: "🔧", t: "Bigger issues", note: "Honest quote",
+                      icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />, t: "Bigger issues", note: "Honest quote",
                       headline: "Cracked, dead, or 'just take it'.",
                       body: "Cracked display, won&apos;t turn on, water damage, missing parts — we still buy. The quote drops accordingly, but you walk out with cash same day. No salvage runaround.",
                       bullets: ["Cracked screens fine", "Dead batteries fine", "Water-damaged fine", "Quote reflects the condition — no surprise deductions"],
@@ -7300,7 +7320,7 @@ export default function Home() {
                                 ? "bg-[#00c853]/15 border-[#00c853]/50 shadow-[0_0_14px_rgba(0,200,83,0.18)]"
                                 : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"}`}
                             >
-                              <p className="text-xl mb-1">{item.icon}</p>
+                              <svg className="w-6 h-6 mx-auto mb-1 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{item.icon}</svg>
                               <p className="text-[11px] font-semibold text-white leading-tight">{item.t}</p>
                               <p className={`text-[10px] mt-0.5 ${open ? "text-[#00e676]" : "text-[#00c853]"}`}>{item.note}</p>
                             </button>
@@ -7312,7 +7332,7 @@ export default function Home() {
                         return (
                           <div className="mb-4 bg-[rgba(15,15,15,0.55)] backdrop-blur-[10px] border border-[#00c853]/30 rounded-2xl p-4 animate-[fadeIn_0.25s_ease-out]">
                             <div className="flex items-start gap-3 mb-2">
-                              <span className="text-3xl shrink-0">{t.icon}</span>
+                              <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{t.icon}</svg>
                               <div className="min-w-0">
                                 <p className="text-white text-sm font-extrabold leading-tight">{t.headline}</p>
                                 <p className="text-[#e6e6e6] text-xs mt-1 leading-snug">{t.body}</p>
@@ -7345,14 +7365,15 @@ export default function Home() {
       {step === "device" && page === "home" && (
         <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-10">
           <div className="text-center mb-6">
-            <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">Before you meet us</p>
-            <h2 className="text-2xl md:text-3xl font-bold leading-tight reveal" data-stagger="1">5-minute prep checklist</h2>
+            <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">How it works</p>
+            <h2 className="text-2xl md:text-3xl font-bold leading-tight reveal" data-stagger="1">4 steps to get paid</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-3xl mx-auto">
             {[
               { num: "1", title: "Back up your data", body: "iCloud, Google One, or your computer — whatever works. Takes minutes." },
               { num: "2", title: "Turn off Find My iPhone", body: "Settings → [your name] → Find My → Find My iPhone → off. Required before we can pay." },
-              { num: "3", title: "Charge to at least 20%", body: "We need to power-on test the device. 20% is plenty." },
+              { num: "3", title: "Meet up or ship it", body: "Meet locally in Austin — we inspect together in about 15 minutes — or ship free with our prepaid label from anywhere in the US." },
+              { num: "4", title: "Get paid on the spot", body: "Cash, Cash App, Zelle, or BTC — your choice, same day, before you leave." },
             ].map((item, i) => (
               <div key={item.num} className="flex items-start gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 reveal" data-stagger={Math.min(i + 2, 8)}>
                 <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-sm font-bold shrink-0">{item.num}</div>
@@ -7375,13 +7396,13 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { n: 1, icon: "💸", title: "Get an instant quote", body: "Pick your device, condition, and storage. We show you the offer in seconds — no signup needed." },
-              { n: 2, icon: "📦", title: "Ship free or drop off", body: "Print our prepaid label, or drop off in Austin. We pay shipping. Carrier insurance included up to $100 — for higher-value devices we recommend adding extra coverage at the counter." },
-              { n: 3, icon: "💵", title: "Get paid same-day", body: "Cash App, Zelle, or BTC for shipped trades. Local meetup adds Cash and pays on the spot (under 5 min). Shipped payouts hit within 24 hours of device arriving." },
+              { n: 1, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />, title: "Get an instant quote", body: "Pick your device, condition, and storage. We show you the offer in seconds — no signup needed." },
+              { n: 2, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, title: "Ship free or drop off", body: "Print our prepaid label, or drop off in Austin. We pay shipping. Carrier insurance included up to $100 — for higher-value devices we recommend adding extra coverage at the counter." },
+              { n: 3, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Get paid same-day", body: "Cash App, Zelle, or BTC for shipped trades. Local meetup adds Cash and pays on the spot (under 5 min). Shipped payouts hit within 24 hours of device arriving." },
             ].map((s, i) => (
               <div key={s.n} className="relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
                 <div className="absolute -top-3 -left-2 w-9 h-9 rounded-full bg-[#00c853] text-[#0a0a0a] text-sm font-bold flex items-center justify-center shadow-lg shadow-[#00c853]/30">{s.n}</div>
-                <div className="text-4xl mb-3">{s.icon}</div>
+                <svg className="w-9 h-9 text-[#00c853] mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{s.svg}</svg>
                 <h3 className="font-bold text-lg mb-1.5">{s.title}</h3>
                 <p className="text-[#e6e6e6] text-sm leading-relaxed">{s.body}</p>
               </div>
@@ -7399,15 +7420,14 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {[
-              { stat: <CountUp end={5000} suffix="+" />, label: "Devices bought", icon: "📲" },
-              { stat: "4.9★", label: "Average review rating", icon: "⭐" },
-              { stat: "Same-Day", label: "Payouts available", icon: "⚡" },
-              { stat: "Free", label: "Shipping nationwide", icon: "📦" },
-              { stat: "Higher", label: "Offer than Apple trade-in", icon: "💰" },
-              { stat: "Local", label: "Austin-based, real humans", icon: "🤠" },
+              { stat: <CountUp end={5000} suffix="+" />, label: "Devices bought" },
+              { stat: "4.9★", label: "Average review rating" },
+              { stat: "Same-Day", label: "Payouts available" },
+              { stat: "Free", label: "Shipping nationwide" },
+              { stat: "Higher", label: "Offer than Apple trade-in" },
+              { stat: "Local", label: "Austin-based, real humans" },
             ].map((t, i) => (
               <div key={i} className="bg-gradient-to-br from-white/[0.08] to-white/[0.03] border border-white/10 rounded-2xl p-5 text-center hover:border-[#00c853]/30 hover:from-white/[0.12] transition reveal" data-stagger={Math.min(i + 2, 8)}>
-                <div className="text-3xl mb-2">{t.icon}</div>
                 <div className="text-2xl font-extrabold text-[#00c853] mb-1 leading-none">{t.stat}</div>
                 <div className="text-[#e6e6e6] text-xs font-medium leading-tight">{t.label}</div>
               </div>
@@ -7482,13 +7502,11 @@ export default function Home() {
           </div>
           <div className="space-y-2">
             {[
-              { q: "How do I get paid?", a: "Local Austin meetup — paid on the spot, under 5 minutes once we've inspected. Shipping — most payouts hit your account within 24 hours of the device arriving at our facility. Methods: Cash (local only), Cash App, Zelle, or BTC." },
-              { q: "Do you ship for free?", a: "Yes — every offer over $50 gets a free prepaid FedEx Ground label, emailed instantly when you complete checkout. Have multiple devices? Pack them all in ONE box and use the same label — saves you a trip and keeps everything together. We also offer free Austin pickup for local sellers." },
-              { q: "What if I'm shipping a desktop or something heavy?", a: "For desktops, gaming PCs, or anything 25+ lbs, we hold off on auto-generating the label so we can quote shipping correctly first. We'll email you a custom label within an hour — usually FedEx Ground, sometimes with a few dollars in carrier insurance for the higher-value item. You'll never pay anything yourself." },
-              { q: "What if my device shows up worth less than the quote?", a: "We send you a revised offer. If you don't like it, we ship the device back to you free of charge. No pressure, no surprises." },
-              { q: "Are you really in Austin?", a: "Yes — Austin-based and real humans. You can drop off locally for same-day cash, or ship from anywhere in the US." },
-              { q: "How fast is the quote?", a: "Instant. Pick your device, condition, and storage and we show you the offer right then. No signup, no email required." },
-              { q: "Is my data safe?", a: "We do a certified factory wipe on every device. We also recommend you sign out of iCloud/Google and remove screen locks before shipping." },
+              { q: "How do I get paid?", a: "Local Austin meetup: cash on the spot in under 5 minutes. Shipping: paid within 24 hours of your device arriving. Methods — Cash, Cash App, Zelle, or BTC." },
+              { q: "Do you ship for free?", a: "Yes — any offer over $50 gets a free prepaid FedEx label, emailed at checkout. Local to Austin? Free pickup instead." },
+              { q: "What if my device is worth less than the quote?", a: "We send a revised offer with photos. Don't like it? We ship the device back free — no pressure, no surprises." },
+              { q: "Are you really in Austin?", a: "Yes — Austin-based, real humans. Drop off locally for same-day cash, or ship free from anywhere in the US." },
+              { q: "Is my data safe?", a: "We run a certified factory wipe on every device. We still recommend signing out of iCloud/Google and removing screen locks first." },
             ].map((f, i) => (
               <details key={i} className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-white/20 transition reveal" data-stagger={Math.min(i + 1, 8)}>
                 <summary className="cursor-pointer px-5 py-4 flex items-center justify-between font-semibold list-none [&::-webkit-details-marker]:hidden">
@@ -7498,6 +7516,12 @@ export default function Home() {
                 <div className="px-5 pb-4 text-[#d4d4d4] text-sm leading-relaxed">{f.a}</div>
               </details>
             ))}
+          </div>
+          <div className="text-center mt-6">
+            <a href="/faq" className="inline-flex items-center gap-1.5 text-[#00c853] text-sm font-semibold hover:text-[#00e676] transition reveal">
+              See all FAQs
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+            </a>
           </div>
         </section>
       )}
@@ -7641,7 +7665,7 @@ export default function Home() {
                       onClick={() => setCondition(c)}
                       className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/30 cursor-pointer transition text-left tap-press"
                     >
-                      <span className="text-2xl">{c.icon}</span>
+                      <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{c.icon}</svg>
                       <div className="flex-1">
                         <p className="font-semibold text-sm">{c.label}</p>
                         <p className="text-[#e6e6e6] text-xs">{c.desc}</p>
@@ -7697,7 +7721,7 @@ export default function Home() {
                         className="mt-0.5 w-4 h-4 shrink-0 rounded border-white/25 bg-white/5 accent-[#00c853] cursor-pointer"
                       />
                       <span className="text-[#e6e6e6] text-[11px] leading-relaxed">
-                        I agree to receive SMS updates about my trade-in. Msg &amp; data rates apply, reply STOP to opt out.
+                        I agree to receive SMS updates about my trade-in from Top Cash Cellular at the number above. Msg &amp; data rates may apply, msg frequency varies, reply STOP to opt out, HELP for help. See our <a href="/privacy" className="underline hover:text-[#00c853]">privacy policy</a>.
                       </span>
                     </label>
                   </div>
@@ -7763,7 +7787,7 @@ export default function Home() {
             {inquirySent && (
               <div className="text-center py-8">
                 <div className="w-16 h-16 rounded-full bg-[#00c853]/10 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">✅</span>
+                  <svg className="w-8 h-8 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 </div>
                 <h3 className="text-xl font-bold mb-2">Submitted!</h3>
                 <p className="text-[#e6e6e6] text-sm mb-2">We&apos;re reviewing your {inquiryCategory === "Other" ? "item" : inquiryCategory.toLowerCase()} and will send you a personalized quote shortly.</p>
@@ -7825,7 +7849,7 @@ export default function Home() {
                 { id: "macbook" as const, label: "Apple MacBook", sub: "MacBook Air & Pro, M1+", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg> },
                 { id: "samsung_pc" as const, label: "Samsung", sub: "Galaxy Book / Book 2 / 3 / 4 / 5", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="bold" fontFamily="Arial">S</text></svg> },
                 { id: "dell" as const, label: "Dell", sub: "XPS, Latitude, Inspiron, Vostro, Precision, G, Rugged", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#007db8"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">DELL</text></svg> },
-                { id: "alienware" as const, label: "Alienware", sub: "m16, m18, x14, x16", brandIcon: <span className="text-[40px] leading-none">👽</span> },
+                { id: "alienware" as const, label: "Alienware", sub: "m16, m18, x14, x16", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><path d="M20 9c-5.2 0-9 3.6-9 9 0 4.4 3.4 8 7 11 .8.7 1.5 1 2 1s1.2-.3 2-1c3.6-3 7-6.6 7-11 0-5.4-3.8-9-9-9z" fill="none" stroke="#00c853" strokeWidth="1.6"/><path d="M16 19c-1.6 0-2.8 1.4-2.8 3 0 1.4 1.2 2.4 2.6 2 1.2-.4 2-1.8 1.6-3-.2-1.2-.6-2-1.4-2zm8 0c1.6 0 2.8 1.4 2.8 3 0 1.4-1.2 2.4-2.6 2-1.2-.4-2-1.8-1.6-3 .2-1.2.6-2 1.4-2z" fill="#00c853"/></svg> },
                 { id: "hp" as const, label: "HP", sub: "EliteBook, Envy, OMEN, OmniBook, Pavilion, ProBook, Spectre, Victus, ZBook, Notebook", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#0096d6"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">hp</text></svg> },
                 { id: "lenovo" as const, label: "Lenovo", sub: "ThinkPad, ThinkBook, IdeaPad, Legion, LOQ, Slim, Yoga", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg> },
                 { id: "acer" as const, label: "Acer", sub: "Nitro, Predator", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#83b81a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold" fontFamily="Arial">acer</text></svg> },
@@ -7848,7 +7872,7 @@ export default function Home() {
                 { id: "lenovo_desktop" as const, label: "Lenovo", sub: "ThinkCentre, Legion Tower, IdeaCentre", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg> },
                 { id: "hp_desktop" as const, label: "HP", sub: "EliteDesk, OMEN, Envy, Pavilion", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#0096d6"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">hp</text></svg> },
                 { id: "asus_desktop" as const, label: "Asus", sub: "ROG, TUF Gaming, ExpertCenter, NUC", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">ASUS</text></svg> },
-                { id: "alienware_desktop" as const, label: "Alienware", sub: "Aurora R13, R15, R16", brandIcon: <span className="text-[40px] leading-none">👽</span> },
+                { id: "alienware_desktop" as const, label: "Alienware", sub: "Aurora R13, R15, R16", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><path d="M20 9c-5.2 0-9 3.6-9 9 0 4.4 3.4 8 7 11 .8.7 1.5 1 2 1s1.2-.3 2-1c3.6-3 7-6.6 7-11 0-5.4-3.8-9-9-9z" fill="none" stroke="#00c853" strokeWidth="1.6"/><path d="M16 19c-1.6 0-2.8 1.4-2.8 3 0 1.4 1.2 2.4 2.6 2 1.2-.4 2-1.8 1.6-3-.2-1.2-.6-2-1.4-2zm8 0c1.6 0 2.8 1.4 2.8 3 0 1.4-1.2 2.4-2.6 2-1.2-.4-2-1.8-1.6-3 .2-1.2.6-2 1.4-2z" fill="#00c853"/></svg> },
                 { id: "msi_desktop" as const, label: "MSI", sub: "MEG, MAG Trident, Codex, PRO", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#eb1c24"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold" fontFamily="Arial">MSI</text></svg> },
                 { id: "other_desktop" as const, label: "Other Brand", sub: "Any other desktop", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#444"/><rect x="10" y="8" width="20" height="16" rx="2" fill="none" stroke="#fff" strokeWidth="1.5"/><line x1="14" y1="28" x2="26" y2="28" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/><line x1="20" y1="24" x2="20" y2="28" stroke="#fff" strokeWidth="1.5"/></svg> },
               ].map((b) => (
@@ -7866,7 +7890,7 @@ export default function Home() {
                 { id: "meta_vr" as const, label: "Meta", sub: "Quest 2, Quest 3, Quest Pro", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#0668E1"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">META</text></svg> },
                 { id: "valve_vr" as const, label: "Valve Index", sub: "Full Kit, Headset Only", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#171a21"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial">VALVE</text></svg> },
                 { id: "psvr" as const, label: "PlayStation VR", sub: "PSVR2, PSVR Original", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#003087"/><text x="20" y="24" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">PSVR</text></svg> },
-                { id: "other_vr" as const, label: "Other Brand", sub: "HTC Vive, Pico, etc.", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#444"/><text x="20" y="24" textAnchor="middle" fill="#fff" fontSize="14">🥽</text></svg> },
+                { id: "other_vr" as const, label: "Other Brand", sub: "HTC Vive, Pico, etc.", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#444"/><path d="M11 16.5h18a1.5 1.5 0 011.5 1.5v3a1.5 1.5 0 01-1.5 1.5h-3.4a1.5 1.5 0 01-1.06-.44l-1.48-1.47a1.5 1.5 0 00-2.12 0l-1.48 1.47a1.5 1.5 0 01-1.06.44H11A1.5 1.5 0 019.5 21v-3a1.5 1.5 0 011.5-1.5z" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round"/></svg> },
               ].map((b) => (
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_vr") { setInquiryCategory("VR Headset"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
@@ -7955,7 +7979,7 @@ export default function Home() {
                           const imgSrc = (m as { image?: string }).image || fallbackImgs[m.id] || null;
                           return (
                             <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
-                              {imgSrc && <img src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
+                              {imgSrc && <Pic src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
                               <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                               <div className="flex items-center gap-2">
                                 <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m, deviceType)}</span>
@@ -7980,7 +8004,7 @@ export default function Home() {
                   {SAMSUNG_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[150px]">
                       {s.image ? (
-                        <img src={s.image} alt={s.label} loading="eager" className="w-20 h-16 object-contain mb-1" />
+                        <Pic src={s.image} alt={s.label} loading="eager" className="w-20 h-16 object-contain mb-1" />
                       ) : (
                         <div className="w-16 h-12 mb-1" />
                       )}
@@ -8048,7 +8072,7 @@ export default function Home() {
                             return (
                               <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                                 {mImage ? (
-                                  <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
+                                  <Pic src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                                 ) : (
                                   <div className="w-10 h-10 shrink-0" />
                                 )}
@@ -8101,7 +8125,7 @@ export default function Home() {
                           return (
                             <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                               {mImage ? (
-                                <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
+                                <Pic src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                               ) : (
                                 <div className="w-10 h-10 shrink-0" />
                               )}
@@ -8131,7 +8155,7 @@ export default function Home() {
                     return (
                       <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                         {s.image ? (
-                          <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                          <Pic src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                         ) : (
                           <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#333"/><g transform="translate(0,-3)"><path d="M20 8c-1.2 2.4-1.8 4-1.8 5.6 0 2.8 2 4.4 4.2 4.4 0.2 0 0.4 0 0.6-0.1-0.4-1.2-0.6-2-0.6-2.7 0-2.6 1.6-4.4 2.6-5.6-1-1.2-3-1.6-5-1.6zm-2.4 11c-2.8 0-5.6 2.4-5.6 6.8 0 4.8 3.2 10.2 5.8 10.2 1 0 2-0.8 3.2-0.8 1.2 0 1.8 0.8 3.2 0.8 3 0 5.8-6 5.8-6-3.6-1.4-4-5.4-4-6.8 0-2.4 1.2-4 1.2-4-1.8-2-4-2.2-5-2.2-1.6 0-3 1-4.6 2z" fill="#fff"/></g></svg>
                         )}
@@ -8202,7 +8226,7 @@ export default function Home() {
                                 setStep(next); pushHistory(next);
                               }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                                 {mImg ? (
-                                  <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
+                                  <Pic src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
                                 ) : (
                                   <div className="w-12 h-9 shrink-0" />
                                 )}
@@ -8252,7 +8276,7 @@ export default function Home() {
                           return (
                             <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                               {mImg ? (
-                                <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-12 object-contain shrink-0" />
+                                <Pic src={mImg} alt={m.label} loading="lazy" className="w-12 h-12 object-contain shrink-0" />
                               ) : (
                                 <div className="w-12 h-12 shrink-0" />
                               )}
@@ -8293,7 +8317,7 @@ export default function Home() {
                           return (
                             <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                               {mImg ? (
-                                <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-12 object-contain shrink-0" />
+                                <Pic src={mImg} alt={m.label} loading="lazy" className="w-12 h-12 object-contain shrink-0" />
                               ) : (
                                 <div className="w-12 h-12 shrink-0" />
                               )}
@@ -8323,7 +8347,7 @@ export default function Home() {
                   {LG_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                       {s.image ? (
-                        <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                        <Pic src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       ) : (
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#a50034"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">LG</text></svg>
                       )}
@@ -8349,7 +8373,7 @@ export default function Home() {
                     {subs.map((s) => (
                       <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[160px]">
                         {s.image ? (
-                          <img src={s.image} alt={s.label} loading="eager" className="w-20 h-14 object-contain mb-1" />
+                          <Pic src={s.image} alt={s.label} loading="eager" className="w-20 h-14 object-contain mb-1" />
                         ) : (
                           <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#a50034"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">LG</text></svg>
                         )}
@@ -8371,7 +8395,7 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-3">
                   {ACER_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
-                      <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                      <Pic src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[10px] text-center">{s.year}</p>
                       {s.topPrice ? <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p> : null}
@@ -8389,7 +8413,7 @@ export default function Home() {
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {SAMSUNG_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
-                      <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                      <Pic src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[10px] text-center">{s.year}</p>
                       {s.topPrice ? <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p> : null}
@@ -8408,7 +8432,7 @@ export default function Home() {
                   {HP_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                       {s.image ? (
-                        <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                        <Pic src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       ) : (
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#0096d6"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">hp</text></svg>
                       )}
@@ -8434,7 +8458,7 @@ export default function Home() {
                     {subs.map((s) => (
                       <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[160px]">
                         {s.image ? (
-                          <img src={s.image} alt={s.label} loading="eager" className="w-20 h-14 object-contain mb-1" />
+                          <Pic src={s.image} alt={s.label} loading="eager" className="w-20 h-14 object-contain mb-1" />
                         ) : (
                           <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#0096d6"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="bold" fontFamily="Arial">hp</text></svg>
                         )}
@@ -8457,7 +8481,7 @@ export default function Home() {
                   {LENOVO_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                       {s.image ? (
-                        <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                        <Pic src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       ) : (
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#e2231a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold" fontFamily="Arial">Lenovo</text></svg>
                       )}
@@ -8479,7 +8503,7 @@ export default function Home() {
                   {DELL_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                       {s.image ? (
-                        <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                        <Pic src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       ) : (
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#007db8"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">DELL</text></svg>
                       )}
@@ -8505,7 +8529,7 @@ export default function Home() {
                     {subs.map((s) => (
                       <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                         {s.image ? (
-                          <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                          <Pic src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                         ) : (
                           <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#007db8"/><text x="20" y="26" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">DELL</text></svg>
                         )}
@@ -8528,7 +8552,7 @@ export default function Home() {
                   {ASUS_PC_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                       {s.image ? (
-                        <img src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
+                        <Pic src={s.image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1" />
                       ) : (
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">ASUS</text></svg>
                       )}
@@ -8550,7 +8574,7 @@ export default function Home() {
                   {ASUS_ROG_SUB_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSubSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[160px]">
                       {s.image ? (
-                        <img src={s.image} alt={s.label} loading="eager" className="w-20 h-14 object-contain mb-1" />
+                        <Pic src={s.image} alt={s.label} loading="eager" className="w-20 h-14 object-contain mb-1" />
                       ) : (
                         <svg viewBox="0 0 40 40" className="w-12 h-12 mb-1.5"><circle cx="20" cy="20" r="18" fill="#1a1a1a"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">ASUS</text></svg>
                       )}
@@ -8665,7 +8689,7 @@ export default function Home() {
                   {ALIENWARE_SERIES.map((s) => (
                     <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[140px]">
                       {(s as { image?: string }).image ? (
-                        <img src={(s as { image?: string }).image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1.5" />
+                        <Pic src={(s as { image?: string }).image} alt={s.label} loading="eager" className="w-16 h-12 object-contain mb-1.5" />
                       ) : (
                         <svg className="w-12 h-9 mb-2 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
                       )}
@@ -8690,7 +8714,7 @@ export default function Home() {
                         setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns);
                       }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer tap-press">
                         {mImg ? (
-                          <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain mb-1.5" />
+                          <Pic src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain mb-1.5" />
                         ) : (
                           <svg className="w-10 h-7 mb-1.5 text-white" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="28" height="18" rx="3" /><line x1="10" y1="22" x2="22" y2="22" strokeLinecap="round" /></svg>
                         )}
@@ -8710,7 +8734,7 @@ export default function Home() {
                         setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns);
                       }} className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                         {mImg ? (
-                          <img src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
+                          <Pic src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
                         ) : (
                           <div className="w-12 h-9 shrink-0" />
                         )}
@@ -8751,7 +8775,7 @@ export default function Home() {
                             return (
                               <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
                                 {mImage ? (
-                                  <img src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
+                                  <Pic src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                                 ) : (
                                   <div className="w-10 h-10 shrink-0" />
                                 )}
@@ -9395,8 +9419,8 @@ export default function Home() {
                 }}
                 className="mt-3 w-full text-left px-4 py-3 rounded-xl bg-amber-500/[0.06] border border-amber-500/25 hover:bg-amber-500/[0.1] hover:border-amber-500/40 transition cursor-pointer group"
               >
-                <p className="text-sm font-extrabold text-amber-200 leading-tight">
-                  🔒 Phone is locked or won&apos;t turn on?
+                <p className="text-sm font-extrabold text-amber-200 leading-tight flex items-center gap-1.5">
+                  <svg className="w-4 h-4 shrink-0 text-amber-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>Phone is locked or won&apos;t turn on?
                 </p>
                 <p className="text-[12px] text-[#d4d4d4] mt-0.5 leading-snug">
                   Locked · carrier locked · MDM locked · won&apos;t power on · cracked beyond repair — get a custom quote within the hour
@@ -9410,15 +9434,15 @@ export default function Home() {
               <p className="text-[#e6e6e6] text-xs mb-4">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
               <div className="space-y-3">
                 <div className="flex gap-3">
-                  <span className="text-lg" style={{filter:"drop-shadow(0 0 8px rgba(0,200,83,0.55))"}}>🎯</span>
+                  <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} style={{filter:"drop-shadow(0 0 8px rgba(0,200,83,0.55))"}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   <div><p className="text-sm font-bold text-white">Transparent Pricing</p><p className="text-xs text-[#e6e6e6]">What you see is what you get. Your quote is based on the condition you select — no surprise deductions.</p></div>
                 </div>
                 <div className="flex gap-3">
-                  <span className="text-lg" style={{filter:"drop-shadow(0 0 8px rgba(255,140,140,0.55))"}}>🤝</span>
+                  <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} style={{color:"rgb(255,140,140)",filter:"drop-shadow(0 0 8px rgba(255,140,140,0.55))"}}><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                   <div><p className="text-sm font-bold text-white">Honest Inspections</p><p className="text-xs text-[#e6e6e6]">If anything differs from your description, we&apos;ll walk you through our findings before adjusting.</p></div>
                 </div>
                 <div className="flex gap-3">
-                  <span className="text-lg" style={{filter:"drop-shadow(0 0 8px rgba(120,200,255,0.55))"}}>🔄</span>
+                  <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} style={{color:"rgb(120,200,255)",filter:"drop-shadow(0 0 8px rgba(120,200,255,0.55))"}}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                   <div><p className="text-sm font-bold text-white">No Pressure, No Strings</p><p className="text-xs text-[#e6e6e6]">Not happy with the final offer? We&apos;ll return your device — no questions asked.</p></div>
                 </div>
               </div>
@@ -9428,19 +9452,19 @@ export default function Home() {
               <h3 className="text-base font-bold text-white mb-3">Why Sellers Choose Top Cash</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-xl font-bold text-[#00c853]">⭐</p>
+                  <svg className="w-6 h-6 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
                   <p className="text-xs text-[#e6e6e6] mt-1">Thousands of happy sellers</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-xl font-bold text-[#00c853]">⚡</p>
+                  <svg className="w-6 h-6 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                   <p className="text-xs text-[#e6e6e6] mt-1">Get paid the same day</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-xl font-bold text-[#00c853]">🔒</p>
+                  <svg className="w-6 h-6 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                   <p className="text-xs text-[#e6e6e6] mt-1">Your price is locked 7 days</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-xl font-bold text-[#00c853]">🏠</p>
+                  <svg className="w-6 h-6 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                   <p className="text-xs text-[#e6e6e6] mt-1">We meet locally in Austin</p>
                 </div>
               </div>
@@ -9514,7 +9538,7 @@ export default function Home() {
                   }}
                   className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
                 >
-                  <div className="text-3xl">✅</div>
+                  <svg className="w-8 h-8 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   <div className="flex-1">
                     <p className="font-extrabold text-[15px] text-white">Yes — still works</p>
                     <p className="text-[#b8b8b8] text-xs mt-0.5">Screen cracked, dents, or cosmetic damage — but touchscreen, cameras, speakers, and buttons all work</p>
@@ -9528,7 +9552,7 @@ export default function Home() {
                   }}
                   className="tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left"
                 >
-                  <div className="text-3xl">❌</div>
+                  <svg className="w-8 h-8 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   <div className="flex-1">
                     <p className="font-extrabold text-[15px] text-white">No — not functional</p>
                     <p className="text-[#b8b8b8] text-xs mt-0.5">Won&apos;t power on, dead screen, non-responsive touch, water damage, or major hardware failure</p>
@@ -9737,7 +9761,7 @@ export default function Home() {
                       onClick={() => setChatOpen(true)}
                       className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-[12px] font-semibold text-amber-200 cursor-pointer transition"
                     >
-                      💬 Get a parts-value quote in chat
+                      <svg className="w-4 h-4 shrink-0 text-amber-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>Get a parts-value quote in chat
                     </button>
                   )}
                 </>
@@ -9747,10 +9771,10 @@ export default function Home() {
             </div>
             <div className="flex items-center justify-center lg:justify-start flex-wrap gap-1 mb-2">
               {promoApplies && promo && (
-                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎉 {promo.flatBonus ? `+$${promo.flatBonus} bonus applied` : `+${promo.percent}% promo applied`}</p>
+                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>{promo.flatBonus ? `+$${promo.flatBonus} bonus applied` : `+${promo.percent}% promo applied`}</p>
               )}
               {couponPercent > 0 && (
-                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold">🎟️ {couponLabel} +{couponPercent}%</p>
+                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>{couponLabel} +{couponPercent}%</p>
               )}
             </div>
             {!isManualQuote && !isPendingQuote && quantity > 1 && <p className="text-[#e6e6e6] text-sm mb-2">${quote} each × {quantity}</p>}
@@ -9785,8 +9809,8 @@ export default function Home() {
                 surprises at handoff. Skywalker directive 2026-05-17. */}
             {!isManualQuote && !isPendingQuote && (condition?.id === "broken" || condition?.id === "fair") && (
               <div className="max-w-md mx-auto lg:mx-0 mb-3 px-3 py-2.5 rounded-xl bg-[#00c853]/[0.07] border border-[#00c853]/25 text-left">
-                <p className="text-[12px] text-white font-semibold leading-snug">
-                  📸 Add photos to lock in this quote
+                <p className="text-[12px] text-white font-semibold leading-snug flex items-center gap-1.5">
+                  <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>Add photos to lock in this quote
                 </p>
                 <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
                   We&apos;ll ask for photos at the next step. Photos help us confirm the condition and stick to this price. Without photos, the final offer may shift after our inspection.
@@ -9862,9 +9886,10 @@ export default function Home() {
                   (isDecluttr && model && decluttrComps ? decluttrComps[model.id] : undefined);
                 const compPer = typeof real === "number" ? real : Math.round(quote * getCompSource(deviceType).percent);
                 const savings = (quote - compPer) * quantity;
-                return <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${savings > 0 ? savings : 0} more with us</p>;
+                if (savings <= 0) return null;
+                return <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${savings} more with us</p>;
               })()}
-              <a href={`mailto:offers@topcashcellular.com?subject=Price%20Match%20Request&body=Model%3A%20${encodeURIComponent(model?.label || '')}%0AStorage%3A%20${encodeURIComponent(storage?.label || '')}%0AStorage%3A%20${encodeURIComponent(condition?.label || '')}%0ACompetitor%20URL%3A%20%0ACompetitor%20offer%3A%20%24`} className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#00c853]/10 border border-[#00c853]/30 hover:bg-[#00c853]/15 text-[#00c853] text-xs font-bold transition">⚡ Got a higher offer? We&apos;ll beat it by $25</a>
+              <a href={`mailto:offers@topcashcellular.com?subject=Price%20Match%20Request&body=Model%3A%20${encodeURIComponent(model?.label || '')}%0AStorage%3A%20${encodeURIComponent(storage?.label || '')}%0AStorage%3A%20${encodeURIComponent(condition?.label || '')}%0ACompetitor%20URL%3A%20%0ACompetitor%20offer%3A%20%24`} className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#00c853]/10 border border-[#00c853]/30 hover:bg-[#00c853]/15 text-[#00c853] text-xs font-bold transition"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Got a higher offer? We&apos;ll beat it by $25</a>
             </div>}
 
             {/* Coupon code */}
@@ -9872,7 +9897,7 @@ export default function Home() {
               <p className="text-xs font-semibold text-[#e6e6e6] uppercase tracking-wider mb-2">Have a coupon code?</p>
               {couponLabel ? (
                 <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00c853]/15 border border-[#00c853]/30 text-[#00c853] text-xs font-bold">🎟️ {couponLabel} · +{couponPercent}% applied</span>
+                  <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00c853]/15 border border-[#00c853]/30 text-[#00c853] text-xs font-bold"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>{couponLabel} · +{couponPercent}% applied</span>
                   <button onClick={() => { setCouponPercent(0); setCouponLabel(""); setCouponCode(""); }} className="text-[#e6e6e6] hover:text-white text-xs underline cursor-pointer">Remove</button>
                 </div>
               ) : (
@@ -9969,40 +9994,46 @@ export default function Home() {
                 for local meetup vs prepaid shipping; falls back to a
                 hybrid set when the user hasn't chosen yet. */}
             {(() => {
+              const ICON_MONEY = <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />;
+              const ICON_PIN = <><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></>;
+              const ICON_CAR = <path strokeLinecap="round" strokeLinejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0zM13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1" />;
+              const ICON_BOLT = <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />;
+              const ICON_BOX = <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />;
+              const ICON_SHIELD = <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />;
               const localBullets = [
-                { icon: "💵", text: "Cash on the spot at handoff" },
-                { icon: "📍", text: "Meet at any safe public location you choose" },
-                { icon: "🚗", text: "Mobile pickup — we come to you" },
-                { icon: "⚡", text: "Inspection + payout in under 15 minutes" },
+                { icon: ICON_MONEY, text: "Cash on the spot at handoff" },
+                { icon: ICON_PIN, text: "Meet at any safe public location you choose" },
+                { icon: ICON_CAR, text: "Mobile pickup — we come to you" },
+                { icon: ICON_BOLT, text: "Inspection + payout in under 15 minutes" },
               ];
               const shipBullets = [
-                { icon: "💰", text: "No selling fees" },
-                { icon: "📦", text: "Free prepaid FedEx or UPS label" },
-                { icon: "🛡️", text: "$100 carrier insurance included" },
-                { icon: "⚡", text: "Same-day payout after we verify" },
+                { icon: ICON_MONEY, text: "No selling fees" },
+                { icon: ICON_BOX, text: "Free prepaid FedEx or UPS label" },
+                { icon: ICON_SHIELD, text: "$100 carrier insurance included" },
+                { icon: ICON_BOLT, text: "Same-day payout after we verify" },
               ];
               const neutralBullets = [
-                { icon: "💰", text: "No selling fees" },
-                { icon: "🛡️", text: "Zero fraud risk" },
-                { icon: "📦", text: "Free FedEx/UPS shipping OR local meetup" },
-                { icon: "⚡", text: "15-min cash local · 24-hr payout shipped" },
+                { icon: ICON_MONEY, text: "No selling fees" },
+                { icon: ICON_SHIELD, text: "Zero fraud risk" },
+                { icon: ICON_BOX, text: "Free FedEx/UPS shipping OR local meetup" },
+                { icon: ICON_BOLT, text: "15-min cash local · 24-hr payout shipped" },
               ];
               const bullets = handoffMethod === "local" ? localBullets : handoffMethod === "ship" ? shipBullets : neutralBullets;
               return (
                 <div className="mt-6 space-y-3 text-left">
                   {bullets.map(b => (
                     <div key={b.text} className="flex items-center gap-3">
-                      <span className="text-lg">{b.icon}</span>
+                      <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{b.icon}</svg>
                       <span className="text-sm text-[#e5e5e5]">{b.text}</span>
                     </div>
                   ))}
                   <div className="flex items-start gap-3">
-                    <span className="text-lg leading-none">💳</span>
+                    <svg className="w-5 h-5 shrink-0 text-[#00c853] leading-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
                     <div className="flex-1">
                       <p className="text-sm text-[#e5e5e5] mb-2">Get paid your way</p>
                       <div className="flex flex-wrap gap-1.5">
                         {handoffMethod === "local" && (
-                          <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-bold">💵 Cash</span>
+                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-white/10 text-white text-[10px] font-bold"><svg className="w-3.5 h-3.5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Cash</span>
                         )}
                         <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#00d54b] text-white text-[10px] font-bold">Cash App</span>
                         <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#6D1ED4] text-white text-[10px] font-bold">Zelle</span>
@@ -10018,21 +10049,26 @@ export default function Home() {
                 walk-away messaging; shipping gets photo-report and
                 free-return-ship messaging. */}
             {(() => {
+              const G_TARGET = <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />;
+              const G_PEOPLE = <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />;
+              const G_REFRESH = <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />;
+              const G_BOLT = <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />;
+              const G_SHIELD = <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />;
               const guarantees = handoffMethod === "local" ? [
-                { icon: "🎯", title: "Transparent Pricing", body: "What you see is what you get. We walk through the device with you in person before paying — no surprise deductions, no haggling." },
-                { icon: "🤝", title: "Inspection in Front of You", body: "Test the device together at handoff. We tell you exactly what we checked and how it matched your description before any cash changes hands." },
-                { icon: "🔄", title: "Walk Away Anytime", body: "Not happy with our final offer? Just don't hand over the device — no obligation, no pressure, no hard feelings." },
-                { icon: "⚡", title: "Cash in 15 Minutes", body: "Quote → meet → inspect → cash. Average local handoff wraps in under 15 minutes. Cash on the spot, or Zelle / Cash App / Venmo / BTC instantly." },
+                { icon: G_TARGET, title: "Transparent Pricing", body: "What you see is what you get. We walk through the device with you in person before paying — no surprise deductions, no haggling." },
+                { icon: G_PEOPLE, title: "Inspection in Front of You", body: "Test the device together at handoff. We tell you exactly what we checked and how it matched your description before any cash changes hands." },
+                { icon: G_REFRESH, title: "Walk Away Anytime", body: "Not happy with our final offer? Just don't hand over the device — no obligation, no pressure, no hard feelings." },
+                { icon: G_BOLT, title: "Cash in 15 Minutes", body: "Quote → meet → inspect → cash. Average local handoff wraps in under 15 minutes. Cash on the spot, or Zelle / Cash App / Venmo / BTC instantly." },
               ] : handoffMethod === "ship" ? [
-                { icon: "🎯", title: "Transparent Pricing", body: "Your quote is what we pay if the device matches your description. If anything differs we email photos + a written explanation before adjusting — never a silent change." },
-                { icon: "🛡️", title: "Insured Shipping", body: "Prepaid FedEx / UPS label includes $100 carrier insurance. For higher-value devices, add extra coverage at the counter (a few dollars, the clerk handles it)." },
-                { icon: "🔄", title: "Free Return Ship", body: "If you reject our revised offer for any reason, we ship the device back to you at our cost — no questions asked." },
-                { icon: "⚡", title: "Same-Day Payout", body: "Most payouts go out the same business day we receive and verify. Cash App + Zelle land in minutes; Bitcoin sends on-chain in ~30 minutes." },
+                { icon: G_TARGET, title: "Transparent Pricing", body: "Your quote is what we pay if the device matches your description. If anything differs we email photos + a written explanation before adjusting — never a silent change." },
+                { icon: G_SHIELD, title: "Insured Shipping", body: "Prepaid FedEx / UPS label includes $100 carrier insurance. For higher-value devices, add extra coverage at the counter (a few dollars, the clerk handles it)." },
+                { icon: G_REFRESH, title: "Free Return Ship", body: "If you reject our revised offer for any reason, we ship the device back to you at our cost — no questions asked." },
+                { icon: G_BOLT, title: "Same-Day Payout", body: "Most payouts go out the same business day we receive and verify. Cash App + Zelle land in minutes; Bitcoin sends on-chain in ~30 minutes." },
               ] : [
-                { icon: "🎯", title: "Transparent Pricing", body: "What you see is what you get. No surprise deductions, no bait-and-switch. Your quote is based on the condition you select." },
-                { icon: "🤝", title: "Honest Inspections", body: "If anything differs from your description, we'll walk you through our findings before adjusting — no silent changes." },
-                { icon: "🔄", title: "No Pressure, No Strings", body: "Changed your mind? Not happy with the final offer? We'll return your device — no questions asked." },
-                { icon: "⚡", title: "Same-Day Payout", body: "Austin local? Get paid on the spot. Shipping in? Most payouts hit within 24 hours of device arrival." },
+                { icon: G_TARGET, title: "Transparent Pricing", body: "What you see is what you get. No surprise deductions, no bait-and-switch. Your quote is based on the condition you select." },
+                { icon: G_PEOPLE, title: "Honest Inspections", body: "If anything differs from your description, we'll walk you through our findings before adjusting — no silent changes." },
+                { icon: G_REFRESH, title: "No Pressure, No Strings", body: "Changed your mind? Not happy with the final offer? We'll return your device — no questions asked." },
+                { icon: G_BOLT, title: "Same-Day Payout", body: "Austin local? Get paid on the spot. Shipping in? Most payouts hit within 24 hours of device arrival." },
               ];
               const subtitle = handoffMethod === "local"
                 ? "Local meetup. Cash on the spot. Here's what we stand behind."
@@ -10046,7 +10082,7 @@ export default function Home() {
                   <div className="space-y-4">
                     {guarantees.map(g => (
                       <div key={g.title}>
-                        <p className="text-sm font-semibold text-[#e5e5e5]">{g.icon} {g.title}</p>
+                        <p className="text-sm font-semibold text-[#e5e5e5] flex items-center gap-2"><svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{g.icon}</svg>{g.title}</p>
                         <p className="text-xs text-[#e6e6e6] mt-1">{g.body}</p>
                       </div>
                     ))}
@@ -10059,19 +10095,19 @@ export default function Home() {
               <h3 className="text-base font-bold text-white mb-4">Why Sellers Choose Top Cash</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-2xl">⭐</p>
+                  <svg className="w-7 h-7 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
                   <p className="text-xs text-[#e6e6e6] mt-1">Thousands of happy sellers</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-2xl">⚡</p>
+                  <svg className="w-7 h-7 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                   <p className="text-xs text-[#e6e6e6] mt-1">Get paid the same day</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-2xl">🔒</p>
+                  <svg className="w-7 h-7 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                   <p className="text-xs text-[#e6e6e6] mt-1">Your price is locked 7 days</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
-                  <p className="text-2xl">🏠</p>
+                  <svg className="w-7 h-7 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                   <p className="text-xs text-[#e6e6e6] mt-1">We meet locally in Austin</p>
                 </div>
               </div>
@@ -10131,7 +10167,7 @@ export default function Home() {
                 shows on the local path. */}
             {handoffMethod === "local" ? (
               <div className="mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
-                <span className="text-lg leading-none mt-0.5">📍</span>
+                <svg className="w-5 h-5 shrink-0 text-[#00c853] leading-none mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-[#00c853] leading-tight">Austin local meetup — paid on the spot</p>
                   <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
@@ -10141,7 +10177,7 @@ export default function Home() {
               </div>
             ) : (
               <div className="mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
-                <span className="text-lg leading-none mt-0.5">📦</span>
+                <svg className="w-5 h-5 shrink-0 text-[#00c853] leading-none mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-[#00c853] leading-tight">Step 1 of 3 — your <FedExMark /> label generates on the final step</p>
                   <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
@@ -10280,7 +10316,7 @@ export default function Home() {
                 customers don't see FedEx / label copy. Skywalker 2026-05-19. */}
             {handoffMethod === "local" ? (
               <div className="mt-2 mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
-                <span className="text-lg leading-none mt-0.5">📍</span>
+                <svg className="w-5 h-5 shrink-0 text-[#00c853] leading-none mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-[#00c853] leading-tight">Austin local meetup — choose how you&apos;d like to be paid</p>
                   <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
@@ -10290,7 +10326,7 @@ export default function Home() {
               </div>
             ) : (
               <div className="mt-2 mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
-                <span className="text-lg leading-none mt-0.5">📦</span>
+                <svg className="w-5 h-5 shrink-0 text-[#00c853] leading-none mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-[#00c853] leading-tight">Step 2 of 3 — one more step after this for your label</p>
                   <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
@@ -10434,7 +10470,7 @@ export default function Home() {
 
             {returningHint && returningHint.leadCount > 0 && (
               <div className="bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 mb-5 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
-                <span className="text-2xl">👋</span>
+                <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" /></svg>
                 <div className="flex-1 text-sm">
                   <p className="text-white font-semibold">Welcome back{returningHint.name ? `, ${returningHint.name.split(" ")[0]}` : ""}!</p>
                   <p className="text-[#d4d4d4] text-xs">You&apos;ve sold to us {returningHint.leadCount} time{returningHint.leadCount === 1 ? "" : "s"} before — thanks for coming back.</p>
@@ -10450,7 +10486,7 @@ export default function Home() {
                 gets minted) or Local (no label, just meetup). */}
             {handoffMethod === "ship" ? (
               <div className="mb-4 px-4 py-3 rounded-xl bg-amber-500/[0.10] border border-amber-500/40 flex items-start gap-3">
-                <span className="text-lg leading-none mt-0.5">📦</span>
+                <svg className="w-5 h-5 shrink-0 text-[#00c853] leading-none mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-amber-200 leading-tight mb-0.5">
                     Step 3 of 3 — submit below to get your <FedExMark /> label
@@ -10462,7 +10498,7 @@ export default function Home() {
               </div>
             ) : (
               <div className="mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
-                <span className="text-lg leading-none mt-0.5">📍</span>
+                <svg className="w-5 h-5 shrink-0 text-[#00c853] leading-none mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-[#00c853] leading-tight">Final step — pick your meetup window</p>
                   <p className="text-[11px] text-[#bdbdbd] mt-1 leading-snug">
@@ -10838,7 +10874,7 @@ export default function Home() {
                         confirmation email's packaging checklist explains
                         what works (padded mailer, any plain box). */}
                     <div className="mt-2 bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2.5 text-[11px] text-[#bdbdbd] leading-snug">
-                      <span className="text-[#00c853] font-bold">📦 You provide the box.</span> Any plain padded mailer or small box works for phones; bigger trades use any unmarked box. We&apos;ll email packing tips with your label.
+                      <span className="text-[#00c853] font-bold inline-flex items-center gap-1 align-text-bottom"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>You provide the box.</span> Any plain padded mailer or small box works for phones; bigger trades use any unmarked box. We&apos;ll email packing tips with your label.
                     </div>
                     <p className="text-[#888] text-[11px] leading-relaxed">Prepaid label hits {email || "your email"} within the hour. Drop the box at any FedEx location — we cover return shipping.</p>
                   </div>
@@ -10932,8 +10968,8 @@ export default function Home() {
                   disabled={handoffMethod === "ship"}
                   className={`w-full flex items-center justify-between gap-2 px-3 py-3 bg-white/5 transition ${handoffMethod === "ship" ? "cursor-default" : "hover:bg-white/[0.07] cursor-pointer"}`}
                 >
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#e6e6e6]">
-                    📱 Phone number
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#e6e6e6] inline-flex items-center gap-1.5">
+                    <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>Phone number
                     {phone
                       ? <span className="text-[#00c853] normal-case"> · {phone}</span>
                       : handoffMethod === "ship"
@@ -11191,7 +11227,7 @@ export default function Home() {
                           onClick={() => { setImeiHelpOpen(false); setChatOpen(true); }}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#00c853]/15 hover:bg-[#00c853]/25 border border-[#00c853]/40 text-[12px] font-semibold text-[#00c853] cursor-pointer transition"
                         >
-                          💬 Ask us in live chat
+                          <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>Ask us in live chat
                         </button>
                       </div>
                     </div>
@@ -11238,7 +11274,7 @@ export default function Home() {
                 )}
                 {imeiState === "warn" && imeiResult?.warnings && (
                   <div className="mt-1.5 px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-                    <p className="text-xs text-yellow-300 font-semibold mb-1">⚠️ Heads up{imeiResult.model ? ` — ${imeiResult.model}` : ""}</p>
+                    <p className="text-xs text-yellow-300 font-semibold mb-1 flex items-center gap-1.5"><svg className="w-4 h-4 shrink-0 text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>Heads up{imeiResult.model ? ` — ${imeiResult.model}` : ""}</p>
                     {imeiResult.warnings.map((w, i) => (
                       <p key={i} className="text-[11px] text-yellow-200">• {w}</p>
                     ))}
@@ -11257,9 +11293,9 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setReachOpen(true)}
-                  className="text-[12px] font-semibold text-[#00c853] hover:text-[#00e676] cursor-pointer text-left"
+                  className="text-[12px] font-semibold text-[#00c853] hover:text-[#00e676] cursor-pointer text-left inline-flex items-center gap-1.5"
                 >
-                  📞 {bestContact
+                  <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>{bestContact
                     ? `Best contact: ${bestContact === "text" ? "Text" : bestContact === "call" ? "Call" : "Email"} — tap to change`
                     : "Best way to reach you?"}
                 </button>
@@ -11273,9 +11309,9 @@ export default function Home() {
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     {([
-                      { id: "text" as const, label: "Text", emoji: "💬", hint: "SMS" },
-                      { id: "call" as const, label: "Call", emoji: "📞", hint: "Phone" },
-                      { id: "email" as const, label: "Email", emoji: "✉️", hint: "Inbox" },
+                      { id: "text" as const, label: "Text", emoji: <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />, hint: "SMS" },
+                      { id: "call" as const, label: "Call", emoji: <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />, hint: "Phone" },
+                      { id: "email" as const, label: "Email", emoji: <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />, hint: "Inbox" },
                     ]).map((opt) => (
                       <button
                         key={opt.id}
@@ -11284,7 +11320,7 @@ export default function Home() {
                         className={`px-3 py-3 rounded-xl border text-center transition cursor-pointer tap-press
                           ${bestContact === opt.id ? "bg-[#00c853]/15 border-[#00c853]/45 text-white" : "bg-white/5 border-white/10 text-[#c5c5c5] hover:bg-white/10"}`}
                       >
-                        <p className="text-base leading-none mb-1">{opt.emoji}</p>
+                        <svg className="w-5 h-5 mx-auto leading-none mb-1 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{opt.emoji}</svg>
                         <p className="text-[13px] font-bold leading-tight">{opt.label}</p>
                         <p className="text-[10px] opacity-60 mt-0.5">{opt.hint}</p>
                       </button>
@@ -11304,9 +11340,9 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setNoteOpen(true)}
-                  className="text-[12px] font-semibold text-[#00c853] hover:text-[#00e676] cursor-pointer text-left"
+                  className="text-[12px] font-semibold text-[#00c853] hover:text-[#00e676] cursor-pointer text-left inline-flex items-center gap-1.5"
                 >
-                  📝 {customerNote ? "Note added — tap to edit" : "Anything else we should know?"}
+                  <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>{customerNote ? "Note added — tap to edit" : "Anything else we should know?"}
                 </button>
               ) : (
                 <div>
@@ -11350,9 +11386,9 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setCouponOpen(true)}
-                  className="text-[12px] font-semibold text-[#00c853] hover:text-[#00e676] cursor-pointer"
+                  className="text-[12px] font-semibold text-[#00c853] hover:text-[#00e676] cursor-pointer inline-flex items-center gap-1.5"
                 >
-                  🎟️ Got a thank-you code?
+                  <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>Got a thank-you code?
                 </button>
               ) : (
                 <div>
@@ -11440,8 +11476,8 @@ export default function Home() {
                   onClick={() => setPhotosOpen((o) => !o)}
                   className="w-full flex items-center justify-between gap-2 px-3 py-3 bg-white/5 hover:bg-white/[0.07] transition cursor-pointer"
                 >
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#e6e6e6]">
-                    📸 Device photos
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#e6e6e6] inline-flex items-center gap-1.5">
+                    <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>Device photos
                     {photoUrls.length > 0
                       ? <span className="text-[#00c853]"> · {photoUrls.length} added</span>
                       : (condition?.id === "broken" || condition?.id === "fair")
@@ -11500,7 +11536,7 @@ export default function Home() {
                     </div>
                     {active.__isSealed && (
                       <div className="mt-3 bg-emerald-500/8 border border-emerald-500/25 rounded-xl px-3 py-2.5">
-                        <p className="text-[12px] text-emerald-200 font-semibold">📦 Brand new in sealed box</p>
+                        <p className="text-[12px] text-emerald-200 font-semibold flex items-center gap-1.5"><svg className="w-4 h-4 shrink-0 text-emerald-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>Brand new in sealed box</p>
                         <p className="text-[11px] text-emerald-100/70 mt-0.5">No photos needed for this device — staff verifies at handoff.</p>
                       </div>
                     )}
@@ -11701,8 +11737,8 @@ export default function Home() {
                       <div key={i} className="py-2.5 flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-[rgba(15,15,15,0.6)] border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
                           {d.image
-                            ? <img src={d.image} alt="" className="w-full h-full object-contain p-0.5" />
-                            : <span className="text-base opacity-40">📱</span>}
+                            ? <Pic src={d.image} alt="" className="w-full h-full object-contain p-0.5" />
+                            : <svg className="w-5 h-5 opacity-40 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-white text-[13px] font-bold leading-tight truncate">{d.model}</p>
@@ -11782,14 +11818,14 @@ export default function Home() {
                   <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Shipping</p>
                   {submittedLabel ? (
                     <>
-                      <p className="text-white text-base font-bold mb-1">📦 Your prepaid <FedExMark /> label is ready</p>
+                      <p className="text-white text-base font-bold mb-1 flex items-center gap-1.5"><svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>Your prepaid <FedExMark /> label is ready</p>
                       <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">
                         Print it, tape it to a padded box, and drop at any FedEx location — no appointment needed.
                         {" "}We&apos;ll text you the moment it arrives.
                       </p>
                       {submittedDevices && submittedDevices.length > 1 && (
                         <div className="bg-amber-500/10 border border-amber-500/40 rounded-xl p-3 mb-3 flex items-start gap-2.5">
-                          <span className="text-lg leading-none mt-0.5">📦</span>
+                          <svg className="w-5 h-5 shrink-0 text-[#00c853] leading-none mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>
                           <div className="flex-1 min-w-0">
                             <p className="text-amber-100 text-sm font-bold mb-1">
                               Pack ALL {submittedDevices.length} devices in ONE box
@@ -11818,7 +11854,7 @@ export default function Home() {
                     </>
                   ) : submittedLabelError?.kind === "ADDRESS_INVALID" ? (
                     <>
-                      <p className="text-white text-base font-bold mb-1">⚠️ We couldn&apos;t print your label yet</p>
+                      <p className="text-white text-base font-bold mb-1 flex items-center gap-1.5"><svg className="w-5 h-5 shrink-0 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>We couldn&apos;t print your label yet</p>
                       <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">{submittedLabelError.hint}</p>
                       <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 mb-3">
                         <p className="text-[10px] uppercase tracking-wider text-amber-300 font-bold mb-1">Address you entered</p>
@@ -11833,7 +11869,7 @@ export default function Home() {
                     </>
                   ) : submittedLabelError?.kind === "SERVICE_UNAVAILABLE" ? (
                     <>
-                      <p className="text-white text-base font-bold mb-1">📦 Your label is on the way</p>
+                      <p className="text-white text-base font-bold mb-1 flex items-center gap-1.5"><svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>Your label is on the way</p>
                       <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">{submittedLabelError.hint}</p>
                     </>
                   ) : (
@@ -11878,7 +11914,7 @@ export default function Home() {
                 boxShadow: "0 0 32px rgba(0,200,83,0.15), inset 0 1px 0 rgba(255,255,255,0.08)",
               }}>
                 <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Your offer page</p>
-                <p className="text-white text-lg font-extrabold mb-1">🧾 Offer #{submittedLeadId.slice(0, 10).toUpperCase()}</p>
+                <p className="text-white text-lg font-extrabold mb-1 flex items-center justify-center gap-1.5"><svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>Offer #{submittedLeadId.slice(0, 10).toUpperCase()}</p>
                 <p className="text-[#dcdcdc] text-xs leading-relaxed mb-4 max-w-md mx-auto">
                   {handoffMethod === "ship"
                     ? "Print your FedEx label, walk through the shipping checklist, see live status, or modify the offer — everything's on your offer page."
@@ -11888,7 +11924,11 @@ export default function Home() {
                   href={`/offer/${encodeURIComponent(submittedLeadId)}`}
                   className="inline-flex items-center justify-center gap-2 w-full max-w-md mx-auto bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-base px-6 py-4 rounded-full transition cursor-pointer shadow-[0_8px_24px_rgba(0,200,83,0.35)]"
                 >
-                  {handoffMethod === "ship" ? "🖨️ Open offer + print label →" : "📍 Open my offer page →"}
+                  {handoffMethod === "ship" ? (
+                    <><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>Open offer + print label →</>
+                  ) : (
+                    <><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>Open my offer page →</>
+                  )}
                 </a>
                 <p className="text-[10px] text-[#888] mt-3">
                   Bookmark this — same link is in the email we just sent.
@@ -11896,9 +11936,9 @@ export default function Home() {
                 <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[11px]">
                   <a href="/account" className="text-[#dcdcdc] hover:text-white">All my trades</a>
                   <span className="text-[#666]">·</span>
-                  <a href="/faq" target="_blank" className="text-[#dcdcdc] hover:text-white">📖 FAQ</a>
+                  <a href="/faq" target="_blank" className="text-[#dcdcdc] hover:text-white inline-flex items-center gap-1"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>FAQ</a>
                   <span className="text-[#666]">·</span>
-                  <a href="mailto:CustomerService@topcashcells.com" className="text-[#dcdcdc] hover:text-white">✉️ Email us</a>
+                  <a href="mailto:CustomerService@topcashcells.com" className="text-[#dcdcdc] hover:text-white inline-flex items-center gap-1"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>Email us</a>
                 </div>
               </div>
             ) : (
@@ -11947,8 +11987,8 @@ export default function Home() {
                 <h2 className="text-2xl md:text-3xl font-bold leading-tight reveal" data-stagger="1">Why cash beats trade-in</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="bg-white/[0.06] border border-white/10 rounded-2xl p-5 reveal" data-stagger="2">
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#bdbdbd] mb-1">Apple Trade-In</p>
+                <div className="bg-gradient-to-br from-[#ff5566]/10 to-transparent border border-[#ff5566]/25 rounded-2xl p-5 reveal" data-stagger="2">
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#ff8088] mb-1">Apple Trade-In</p>
                   <p className="text-white text-2xl font-bold mb-2">Lowball</p>
                   <ul className="text-[#e6e6e6] text-sm space-y-1 list-disc list-inside">
                     <li>Bottom-of-market quotes</li>
@@ -11956,8 +11996,8 @@ export default function Home() {
                     <li>No cash option</li>
                   </ul>
                 </div>
-                <div className="bg-white/[0.06] border border-white/10 rounded-2xl p-5 reveal" data-stagger="3">
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#bdbdbd] mb-1">Carrier Trade-In</p>
+                <div className="bg-gradient-to-br from-[#ff5566]/10 to-transparent border border-[#ff5566]/25 rounded-2xl p-5 reveal" data-stagger="3">
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#ff8088] mb-1">Carrier Trade-In</p>
                   <p className="text-white text-2xl font-bold mb-2">36-Month Drip</p>
                   <ul className="text-[#e6e6e6] text-sm space-y-1 list-disc list-inside">
                     <li>Looks high — paid over 3 years</li>
@@ -11986,13 +12026,13 @@ export default function Home() {
               <p className="text-[#e6e6e6] text-sm text-center mb-8">Mail your device from anywhere in the US. We pay shipping.</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {[
-                  { num: "1", icon: "📦", title: "Pack", desc: "We email you a free prepaid FedEx Ground label" },
-                  { num: "2", icon: "✈️", title: "Ship", desc: "Drop it off at any FedEx location" },
-                  { num: "3", icon: "💸", title: "Get Paid", desc: "Payment sent same day we receive it" },
+                  { num: "1", svg: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, title: "Pack", desc: "We email you a free prepaid FedEx Ground label" },
+                  { num: "2", svg: <path strokeLinecap="round" strokeLinejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0zM13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1" />, title: "Ship", desc: "Drop it off at any FedEx location" },
+                  { num: "3", svg: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Get Paid", desc: "Payment sent same day we receive it" },
                 ].map((s) => (
                   <div key={s.num} className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
                     <div className="w-10 h-10 rounded-full bg-[#00c853]/15 flex items-center justify-center mx-auto mb-2">
-                      <span className="text-lg">{s.icon}</span>
+                      <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{s.svg}</svg>
                     </div>
                     <p className="text-white text-sm font-bold mb-1">{s.title}</p>
                     <p className="text-[#e6e6e6] text-[11px] leading-relaxed">{s.desc}</p>
@@ -12015,7 +12055,7 @@ export default function Home() {
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
                   <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">${animatedStats.payout}K+</p>
                   <p className="text-white text-xs font-semibold mt-1">Paid Out</p>
-                  <p className="text-[#e6e6e6] text-[10px] mt-0.5">to Austin sellers</p>
+                  <p className="text-[#e6e6e6] text-[10px] mt-0.5">to sellers nationwide</p>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
                   <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">&lt;{animatedStats.time}h</p>
@@ -12059,15 +12099,18 @@ export default function Home() {
               <p className="text-[#e6e6e6] text-sm text-center mb-8 px-4">Transparent timelines. No surprises.</p>
               <div className="overflow-hidden tcc-marquee-mask">
                 <div className="flex gap-3 w-max animate-[marquee_32s_linear_infinite] hover:[animation-play-state:paused]">
-                  {[...Array(2)].flatMap((_, dup) => [
-                    { method: "Local Pickup", icon: "🏠", timeline: "Same day", desc: "We meet in Austin. Inspect device. Pay on the spot.", highlight: true },
-                    { method: "Cash", icon: "💵", timeline: "Instant", desc: "Handed to you at pickup. Immediate.", highlight: false },
-                    { method: "Cash App / Zelle", icon: "⚡", timeline: "Under 5 min", desc: "Sent while you watch. Hits your account instantly.", highlight: false },
-                    { method: "Bitcoin (BTC)", icon: "₿", timeline: "Under 30 min", desc: "Sent on-chain to your wallet. Confirmation in minutes.", highlight: false },
-                    { method: "Ship To Us", icon: "📦", timeline: "Same day received", desc: "We inspect and pay within hours of receiving your device.", highlight: false },
-                  ].filter(p => p.method !== "Cash" || handoffMethod === "local").map((p, i) => (
+                  {[...Array(2)].flatMap((_, dup) => ([
+                    { method: "Local Pickup", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />, timeline: "Same day", desc: "We meet in Austin. Inspect device. Pay on the spot.", highlight: true },
+                    { method: "Cash", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, timeline: "Instant", desc: "Handed to you at pickup. Immediate.", highlight: false },
+                    { method: "Cash App", logos: ["/pay/cashapp.svg"], timeline: "Under 5 min", desc: "Sent while you watch. Hits your account instantly.", highlight: false },
+                    { method: "Zelle", logos: ["/pay/zelle.svg"], timeline: "Under 5 min", desc: "Sent while you watch. Hits your account instantly.", highlight: false },
+                    { method: "Bitcoin (BTC)", logos: ["/pay/bitcoin.svg"], timeline: "Under 30 min", desc: "Sent on-chain to your wallet. Confirmation in minutes.", highlight: false },
+                    { method: "Ship To Us", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, timeline: "Same day received", desc: "We inspect and pay within hours of receiving your device.", highlight: false },
+                  ] as Array<{ method: string; icon?: React.ReactNode; logos?: string[]; timeline: string; desc: string; highlight: boolean }>).filter(p => p.method !== "Cash" || handoffMethod === "local").map((p, i) => (
                     <div key={`${dup}-${i}`} className={`flex-shrink-0 w-[280px] flex items-start gap-3 rounded-2xl p-4 border ${p.highlight ? "bg-[#00c853]/10 border-[#00c853]/30" : "bg-white/5 border-white/10"}`}>
-                      <span className="text-2xl shrink-0">{p.icon}</span>
+                      {p.logos
+                        ? <span className="flex items-center gap-1 shrink-0">{p.logos.map((l) => <img key={l} src={l} alt="" className="w-6 h-6 object-contain" />)}</span>
+                        : <svg className="w-6 h-6 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{p.icon}</svg>}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <p className="text-white text-sm font-bold">{p.method}</p>
@@ -12086,7 +12129,7 @@ export default function Home() {
           <section className="py-16 bg-[#0a0a0a] text-center">
             <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <div className="bg-gradient-to-br from-[#00c853]/10 to-transparent border border-[#00c853]/20 rounded-3xl p-8">
-                <p className="text-4xl mb-3">💸</p>
+                <svg className="w-10 h-10 mx-auto mb-3 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 <h2 className="text-3xl font-bold mb-2">Still sitting on old tech?</h2>
                 <p className="text-[#e6e6e6] text-base mb-2">That phone in your drawer is losing value every day.</p>
                 <p className="text-white/70 text-sm mb-6">Get your instant quote — it takes 30 seconds.</p>
@@ -12094,61 +12137,6 @@ export default function Home() {
                   Get Your Quote Now
                 </button>
                 <p className="text-[#d4d4d4] text-xs mt-4">No account required · Free instant quote · No obligation</p>
-              </div>
-            </div>
-          </section>
-
-          {/* NEWSLETTER CAPTURE */}
-          <section className="py-12 bg-[#0d0d0d]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
-                <p className="text-xl mb-2">📬</p>
-                <h3 className="text-lg font-bold mb-1">Get price alerts &amp; deals</h3>
-                <p className="text-[#e6e6e6] text-sm mb-4">We&apos;ll let you know when buyback prices go up or we run a promo. No spam — just money.</p>
-                {newsletterSubmitted ? (
-                  <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-4">
-                    <p className="text-[#00c853] font-bold text-sm">You&apos;re in. Check your inbox for the welcome email.</p>
-                    <p className="text-[#9a9a9a] text-[11px] mt-1">If it isn&apos;t there in a minute, peek in spam — first emails from new senders sometimes land there.</p>
-                  </div>
-                ) : (
-                  <form onSubmit={async (e) => {
-                    e.preventDefault();
-                    if (!newsletterEmail.trim()) return;
-                    try {
-                      await fetch("/api/newsletter", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ email: newsletterEmail, name: newsletterName.trim() || undefined }),
-                      });
-                    } catch {}
-                    setNewsletterSubmitted(true);
-                  }} className="flex flex-col gap-2">
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={newsletterName}
-                        onChange={(e) => setNewsletterName(e.target.value)}
-                        placeholder="First name (optional)"
-                        maxLength={60}
-                        aria-label="First name (optional)"
-                        className="w-1/2 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition"
-                      />
-                      <input
-                        type="email"
-                        value={newsletterEmail}
-                        onChange={(e) => setNewsletterEmail(e.target.value)}
-                        placeholder="your@email.com"
-                        required
-                        aria-label="Email for newsletter"
-                        className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition"
-                      />
-                    </div>
-                    <button type="submit" className="bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition tap-press whitespace-nowrap">
-                      Sign Up
-                    </button>
-                  </form>
-                )}
-                <p className="text-[#d4d4d4] text-[11px] mt-3">Unsubscribe anytime. We respect your inbox.</p>
               </div>
             </div>
           </section>
@@ -12179,7 +12167,7 @@ export default function Home() {
           <section className="py-12 bg-[#0a0a0a]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <div className="bg-[#00c853]/5 border border-[#00c853]/15 rounded-2xl p-6 text-center">
-                <p className="text-2xl mb-2">♻️</p>
+                <svg className="w-7 h-7 mx-auto mb-2 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                 <h3 className="text-lg font-bold mb-1">Good for your wallet. Better for the planet.</h3>
                 <p className="text-[#e6e6e6] text-sm leading-relaxed">Every device we buy gets a second life — refurbished and reused, not dumped in a landfill. Selling your old tech with Top Cash Cellular keeps electronics out of waste streams and puts cash in your pocket.</p>
               </div>
@@ -12191,19 +12179,19 @@ export default function Home() {
             <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <div className="flex flex-wrap items-center justify-center gap-4 text-center">
                 <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
-                  <span className="text-sm">📍</span>
+                  <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                   <span className="text-white text-xs font-semibold">Austin-Based Business</span>
                 </div>
                 <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
-                  <span className="text-sm">🤝</span>
+                  <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                   <span className="text-white text-xs font-semibold">Real People, Local Meetups</span>
                 </div>
                 <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
-                  <span className="text-sm">⚡</span>
+                  <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                   <span className="text-white text-xs font-semibold">Same-Day Payout</span>
                 </div>
                 <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
-                  <span className="text-sm">🔒</span>
+                  <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                   <span className="text-white text-xs font-semibold">Secure Transactions</span>
                 </div>
               </div>
@@ -12215,7 +12203,7 @@ export default function Home() {
             <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
                 <div className="text-center mb-4">
-                  <p className="text-2xl mb-2">🏢</p>
+                  <svg className="w-8 h-8 mx-auto mb-2 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                   <h3 className="text-lg font-bold">Selling in bulk?</h3>
                   <p className="text-[#e6e6e6] text-sm">Upgrading your office, school, or fleet? We buy devices in bulk with custom pricing.</p>
                 </div>
@@ -12266,7 +12254,7 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
                 <div className="bg-red-500/[0.05] border border-red-500/25 rounded-2xl p-5">
                   <p className="text-[10px] uppercase tracking-[0.18em] text-red-300 font-bold mb-3 flex items-center gap-2">
-                    <span className="text-base">⚠️</span> The OfferUp way
+                    <svg className="w-4 h-4 shrink-0 text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg> The OfferUp way
                   </p>
                   <ul className="space-y-2 text-sm text-[#dcdcdc]">
                     <li className="flex gap-2"><span className="text-red-400 shrink-0">✗</span><span>Drive across town with the device in your seat</span></li>
@@ -12277,7 +12265,7 @@ export default function Home() {
                 </div>
                 <div className="bg-[#00c853]/[0.06] border border-[#00c853]/35 rounded-2xl p-5">
                   <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3 flex items-center gap-2">
-                    <span className="text-base">🛡️</span> The Top Cash way
+                    <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg> The Top Cash way
                   </p>
                   <ul className="space-y-2 text-sm text-[#dcdcdc]">
                     <li className="flex gap-2"><span className="text-[#00c853] shrink-0">✓</span><span>Ship from home with a free FedEx label — never leave the house</span></li>
@@ -12290,7 +12278,7 @@ export default function Home() {
 
               {/* Contact card */}
               <div className="bg-white/[0.04] border border-white/15 rounded-2xl p-5 mb-8 text-center">
-                <p className="text-2xl mb-2">✉️</p>
+                <svg className="w-7 h-7 mx-auto mb-2 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                 <p className="text-white font-semibold text-sm mb-1">Got a weird device or a question?</p>
                 <p className="text-[#bdbdbd] text-xs mb-3">Email us directly — every message gets a real reply.</p>
                 <a href={EMAIL_HREF} className="text-[#00c853] hover:underline font-bold text-sm">{EMAIL}</a>
@@ -12318,16 +12306,16 @@ export default function Home() {
               <h2 className="text-xl font-bold mb-4">Why sell to us?</h2>
               <div className="space-y-3 mb-8">
                 {[
-                  { icon: "🛡️", title: "Skip the sketchy meetup", desc: "No driving across town with a thousand dollars of electronics in your front seat. No strangers from OfferUp or Facebook Marketplace. One real business, one face, one trusted public spot — or ship it and never leave home." },
-                  { icon: "💰", title: "Highest payouts in Austin", desc: "We consistently beat Apple, carrier, and marketplace prices by 20-40%. Get a quote and compare." },
-                  { icon: "⚡", title: "Paid on the spot", desc: "Cash, Cash App, Zelle, or BTC — your choice. No waiting for checks or bank transfers." },
-                  { icon: "🤝", title: "Local & personal", desc: "We meet you at a known public Austin spot. Face-to-face, safe, and quick. 5 minutes and you're done." },
-                  { icon: "📦", title: "Nationwide shipping", desc: "Not in Austin? No problem. We send a free prepaid FedEx label. Ship your device, get paid same day we receive it — never leave the house." },
-                  { icon: "📱", title: "We buy everything", desc: "iPhones, Samsung Galaxy, MacBooks, PS5, Xbox, Nintendo Switch. Working, cracked, or water damaged." },
-                  { icon: "🔒", title: "7-day price lock", desc: "Your quote is locked for 7 days. Take your time deciding — the price won't change." },
+                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />, title: "Skip the sketchy meetup", desc: "No driving across town with a thousand dollars of electronics in your front seat. No strangers from OfferUp or Facebook Marketplace. One real business, one face, one trusted public spot — or ship it and never leave home." },
+                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Highest payouts in Austin", desc: "We consistently beat Apple, carrier, and marketplace prices by 20-40%. Get a quote and compare." },
+                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />, title: "Paid on the spot", desc: "Cash, Cash App, Zelle, or BTC — your choice. No waiting for checks or bank transfers." },
+                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />, title: "Local & personal", desc: "We meet you at a known public Austin spot. Face-to-face, safe, and quick. 5 minutes and you're done." },
+                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, title: "Nationwide shipping", desc: "Not in Austin? No problem. We send a free prepaid FedEx label. Ship your device, get paid same day we receive it — never leave the house." },
+                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />, title: "We buy everything", desc: "iPhones, Samsung Galaxy, MacBooks, PS5, Xbox, Nintendo Switch. Working, cracked, or water damaged." },
+                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />, title: "7-day price lock", desc: "Your quote is locked for 7 days. Take your time deciding — the price won't change." },
                 ].map((item) => (
                   <div key={item.title} className="flex items-start gap-4 bg-white/5 rounded-2xl p-4 border border-white/10">
-                    <span className="text-2xl shrink-0">{item.icon}</span>
+                    <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{item.icon}</svg>
                     <div>
                       <p className="font-semibold text-sm mb-0.5">{item.title}</p>
                       <p className="text-[#e6e6e6] text-sm leading-relaxed">{item.desc}</p>
@@ -12430,15 +12418,15 @@ export default function Home() {
                 </div>
                 <div className="space-y-4 mb-10">
                   {[
-                    { tier: "Sealed", icon: "✨", color: "#00c853", desc: "Sealed in the box, never activated. Receipt strongly preferred. We verify the seal and confirm the IMEI is clean. Sealed only applies to computers/laptops/desktops, not phones." },
-                    { tier: "Like New", icon: "🌟", color: "#00c853", desc: "Indistinguishable from new — zero scratches on screen or body under bright light, original accessories present, battery health ≥ 95% on phones. Powers on cleanly, all sensors and buttons work, Face ID / Touch ID enrolled and functioning." },
-                    { tier: "Good", icon: "👍", color: "#88dd66", desc: "Light micro-scratches on the screen or frame visible only at certain angles. No cracks, no dents, no chips. Battery health ≥ 85% on phones. All functions work normally." },
-                    { tier: "Fair", icon: "🛠️", color: "#ffb400", desc: "Visible scratches or scuffs but no cracks in the glass. Frame may have small dings. Screen powers on with full color, no dead pixels, no shadow burn-in. All buttons and ports work." },
-                    { tier: "Damaged", icon: "💥", color: "#ff6b6b", desc: "Cracked glass, chipped corners, dented frame, dead pixels, or non-working components. We still buy damaged devices — the price just reflects the repair cost." },
+                    { tier: "Sealed", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, color: "#00c853", desc: "Sealed in the box, never activated. Receipt strongly preferred. We verify the seal and confirm the IMEI is clean. Sealed only applies to computers/laptops/desktops, not phones." },
+                    { tier: "Like New", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />, color: "#00c853", desc: "Indistinguishable from new — zero scratches on screen or body under bright light, original accessories present, battery health ≥ 95% on phones. Powers on cleanly, all sensors and buttons work, Face ID / Touch ID enrolled and functioning." },
+                    { tier: "Good", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />, color: "#88dd66", desc: "Light micro-scratches on the screen or frame visible only at certain angles. No cracks, no dents, no chips. Battery health ≥ 85% on phones. All functions work normally." },
+                    { tier: "Fair", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />, color: "#ffb400", desc: "Visible scratches or scuffs but no cracks in the glass. Frame may have small dings. Screen powers on with full color, no dead pixels, no shadow burn-in. All buttons and ports work." },
+                    { tier: "Damaged", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />, color: "#ff6b6b", desc: "Cracked glass, chipped corners, dented frame, dead pixels, or non-working components. We still buy damaged devices — the price just reflects the repair cost." },
                   ].map((g) => (
                     <div key={g.tier} className="bg-white/5 border border-white/10 rounded-2xl p-5">
                       <div className="flex items-center gap-3 mb-2">
-                        <span className="text-2xl">{g.icon}</span>
+                        <svg className="w-7 h-7 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} style={{ color: g.color }}>{g.icon}</svg>
                         <p className="font-extrabold text-lg" style={{ color: g.color }}>{g.tier}</p>
                       </div>
                       <p className="text-[#e6e6e6] text-sm leading-relaxed">{g.desc}</p>
@@ -12658,6 +12646,7 @@ export default function Home() {
                 <a href="/privacy" className="block text-xs hover:text-[#00c853] transition">Privacy Policy</a>
                 <button onClick={() => { setPage("terms"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Terms &amp; Conditions</button>
                 <button onClick={() => { setPage("cookies"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Cookie Policy</button>
+                <button onClick={() => { localStorage.removeItem("cookie-consent"); setCookieConsent(null); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Cookie Settings</button>
                 <button onClick={() => { setPage("accessibility"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Accessibility Statement</button>
                 <p className="text-xs text-[#9a9a9a] pt-2">Austin, TX · Mon–Sat 8 AM–8 PM</p>
               </div>
@@ -12671,7 +12660,7 @@ export default function Home() {
           <div className="border-t border-[#00c853]/15 pt-6 mb-6 text-center">
             <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Customer Service</p>
             <a href={EMAIL_HREF} className="inline-flex items-center gap-2 text-sm text-white hover:text-[#00c853] transition font-semibold">
-              <span className="text-base">✉️</span>
+              <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
               CustomerService@topcashcells.com
             </a>
             <p className="text-[11px] text-[#9a9a9a] mt-2">We reply within one business day · Mon–Sat 8 AM–8 PM CT</p>
@@ -12748,11 +12737,11 @@ export default function Home() {
                       <p className="text-white text-sm mb-4">Hey! Got a device to sell? How can we help?</p>
                       <div className="space-y-2">
                         <button onClick={() => setChatMode("chat")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left tap-press">
-                          <span className="text-xl">💬</span>
+                          <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
                           <div><p className="font-semibold text-sm">Live Chat</p><p className="text-[#e6e6e6] text-xs">Send us a message</p></div>
                         </button>
                         <button onClick={() => setChatMode("call")} className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition text-left tap-press">
-                          <span className="text-xl">📞</span>
+                          <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
                           <div><p className="font-semibold text-sm">Talk to a Human</p><p className="text-[#e6e6e6] text-xs">Call or get a callback</p></div>
                         </button>
                       </div>
@@ -12778,7 +12767,7 @@ export default function Home() {
                   {chatMode === "call" && (
                     <div className="text-center py-2">
                       <button onClick={() => setChatMode("choose")} className="text-[#e6e6e6] text-xs mb-3 cursor-pointer hover:text-white block mx-auto">← Back</button>
-                      <a href={EMAIL_HREF} className="block w-full bg-[#00c853] text-[#0a0a0a] py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2">📧 Email Us</a>
+                      <a href={EMAIL_HREF} className="flex items-center justify-center gap-2 w-full bg-[#00c853] text-[#0a0a0a] py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2"><svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>Email Us</a>
                       <p className="text-[#e6e6e6] text-xs">Mon-Sat 8AM-8PM</p>
                     </div>
                   )}
@@ -12928,9 +12917,9 @@ export default function Home() {
                             <div className="flex items-start gap-3 mb-2">
                               <div className={`${imgW} rounded-xl bg-[rgba(15,15,15,0.55)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden p-1.5`}>
                                 {imgSrc ? (
-                                  <img src={imgSrc} alt="" className="max-w-full max-h-full object-contain" style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.45))" }} />
+                                  <Pic src={imgSrc} alt="" className="max-w-full max-h-full object-contain" style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.45))" }} />
                                 ) : (
-                                  <span className="text-2xl opacity-60">📱</span>
+                                  <svg className="w-6 h-6 opacity-60 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
                                 )}
                               </div>
                               <div className="min-w-0 flex-1">
@@ -12998,10 +12987,10 @@ export default function Home() {
                     Proceed to Checkout →
                   </button>
                   <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-                    <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight">⚡<br />Same-day<br />payout</div>
-                    <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight">🔒<br />On-site<br />data wipe</div>
+                    <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight"><svg className="w-5 h-5 block mx-auto mb-1 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Same-day<br />payout</div>
+                    <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight"><svg className="w-5 h-5 block mx-auto mb-1 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>On-site<br />data wipe</div>
                     <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight">
-                      💵<br />
+                      <svg className="w-5 h-5 block mx-auto mb-1 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                       {handoffMethod === "ship"
                         ? <>Cash App · Zelle<br />Venmo · BTC</>
                         : <>Cash · Zelle<br />Cash App · BTC</>}
@@ -13020,10 +13009,36 @@ export default function Home() {
 
       {cookieConsent === null && (
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111]/95 backdrop-blur-sm border-t border-white/10 px-3 pt-2 consent-bar-ios animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto flex items-center gap-3">
-            <p className="text-white/80 text-[11px] flex-1">We use cookies to improve your experience.</p>
-            <button onClick={() => { localStorage.setItem("cookie-consent", "essential"); setCookieConsent("essential"); }} className="text-white/60 text-[11px] font-medium cursor-pointer hover:text-white transition whitespace-nowrap">Essential</button>
-            <button onClick={() => { localStorage.setItem("cookie-consent", "full"); setCookieConsent("full"); }} className="bg-[#00c853] text-[#0a0a0a] px-3 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer hover:bg-[#00e676] transition whitespace-nowrap">Accept All</button>
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto flex flex-wrap items-center gap-x-3 gap-y-2">
+            <p className="text-white/80 text-[11px] flex-1 min-w-[180px]">
+              We use essential cookies to run the site. With your OK we also use analytics cookies to measure traffic and improve it.{" "}
+              <button onClick={() => { setPage("cookies"); window.scrollTo({ top: 0 }); }} className="underline hover:text-white transition cursor-pointer">Cookie Policy</button>
+            </p>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => {
+                  localStorage.setItem("cookie-consent", "essential");
+                  setCookieConsent("essential");
+                  const w = window as unknown as { gtag?: (...a: unknown[]) => void };
+                  w.gtag?.("consent", "update", { ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", analytics_storage: "denied" });
+                }}
+                className="border border-white/25 text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer hover:bg-white/10 transition whitespace-nowrap"
+              >
+                Decline
+              </button>
+              <button
+                onClick={() => {
+                  localStorage.setItem("cookie-consent", "full");
+                  setCookieConsent("full");
+                  const w = window as unknown as { gtag?: (...a: unknown[]) => void; tccLoadClarity?: () => void };
+                  w.gtag?.("consent", "update", { ad_storage: "granted", ad_user_data: "granted", ad_personalization: "granted", analytics_storage: "granted" });
+                  w.tccLoadClarity?.();
+                }}
+                className="bg-[#00c853] text-[#0a0a0a] px-3 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer hover:bg-[#00e676] transition whitespace-nowrap"
+              >
+                Accept
+              </button>
+            </div>
           </div>
         </div>
       )}
