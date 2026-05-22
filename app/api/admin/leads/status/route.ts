@@ -100,7 +100,7 @@ function smsTemplate(status: string, ctx: TemplateCtx): string {
     : "https://topcashcellular.com/track";
   switch (status) {
     case "shipped":
-      return `Top Cash: Hi ${first}, your prepaid FedEx label is in your inbox. Drop ${dev} at any FedEx location. Track status anytime: ${trackLink}`;
+      return `Top Cash: Hi ${first}, your ${dev} is on its way to us 📦 Most trades reach Austin in 3-5 business days — we'll text you the moment it lands. Track: ${trackLink}`;
     case "received":
       return `Top Cash: We got ${dev}, ${first}! Testing now — payout within 24 hrs. Track: ${trackLink}`;
     case "tested":
@@ -178,7 +178,7 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
   // Warmer, more specific subjects on paid/met — the two moments
   // where it matters. Other statuses stay tight + transactional.
   const subjectMap: Record<string, string> = {
-    shipped: `Your shipping label is on the way`,
+    shipped: `Your ${dev} is on its way to us`,
     received: `We received ${dev}`,
     tested: `${dev} passed inspection`,
     paid: `${first}, your ${ctx.quote || "payment"} is out — and a small favor`,
@@ -192,7 +192,7 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const accentLabel = (() => {
       const map: Record<string, string> = {
-        shipped: "Label on the way",
+        shipped: "Package in transit",
         received: "Device received",
         tested: "Inspection passed",
         paid: "Payment sent",

@@ -43,12 +43,36 @@ async function postToMc(body: string): Promise<boolean> {
   } catch { return false; }
 }
 
+// Flip a lead's status through the admin status route. Unlike a raw
+// [STATUS:] marker, this route ALSO fires the customer SMS + email —
+// so a FedEx-detected pickup/delivery actually reaches the customer,
+// not just the admin board. shipAddress is deliberately omitted: the
+// route only auto-generates a FedEx label when shipAddress is present,
+// and every lead we poll already has its label.
+async function flipStatusWithNotify(
+  origin: string,
+  leadId: string,
+  status: string,
+  customer: { name?: string; phone?: string; email?: string; device?: string; quote?: string; payout?: string },
+): Promise<boolean> {
+  const adminToken = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
+  try {
+    const r = await fetch(`${origin}/api/admin/leads/status?token=${encodeURIComponent(adminToken)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-admin-token": adminToken },
+      body: JSON.stringify({ leadId, status, ...customer }),
+    });
+    return r.ok;
+  } catch { return false; }
+}
+
 export async function GET(req: NextRequest) {
   const auth = req.headers.get("authorization") || "";
   const secret = process.env.CRON_SECRET;
   if (!secret || auth !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
+  const origin = new URL(req.url).origin;
 
   // Pull MC comms — need lead bodies, status markers, AND prior fedex-
   // event markers so we don't double-react. 1000 messages covers ~3 days.
@@ -88,7 +112,12 @@ export async function GET(req: NextRequest) {
 
   // Walk lead messages, pick the ship-handoff ones in active states with
   // a tracking number, and skip what we've already processed.
-  type Candidate = { id: string; tracking: string; status: string; lastState?: string };
+  type Candidate = {
+    id: string; tracking: string; status: string; lastState?: string;
+    // Customer fields parsed from the lead body — needed so a status
+    // flip can address the SMS + email to the right person.
+    customer: { name?: string; phone?: string; email?: string; device?: string; quote?: string; payout?: string };
+  };
   const candidates: Candidate[] = [];
   for (const m of messages) {
     if (!m.body || !m.id) continue;
@@ -112,7 +141,17 @@ export async function GET(req: NextRequest) {
       if (lab) { tracking = lab[1]; break; }
     }
     if (!tracking) continue;
-    candidates.push({ id: m.id, tracking, status, lastState });
+    candidates.push({
+      id: m.id, tracking, status, lastState,
+      customer: {
+        name: parseField(m.body, "Name"),
+        phone: parseField(m.body, "Phone"),
+        email: parseField(m.body, "Email"),
+        device: parseField(m.body, "Device"),
+        quote: parseField(m.body, "Quote"),
+        payout: parseField(m.body, "Payout"),
+      },
+    });
   }
 
   // Process up to 25 leads per run — FedEx Track API allows 1 tracking
@@ -162,8 +201,14 @@ export async function GET(req: NextRequest) {
       mcPosted = await postToMc(mcMessage);
     }
     if (nextStatus) {
-      // Status flip. Post the [STATUS: ...] marker the admin parser reads.
-      await postToMc(`[STATUS: ${nextStatus}] [LEAD: ${c.id}] auto-flipped by fedex-poll cron`);
+      // Status flip — route through the admin status endpoint so the
+      // customer gets the SMS + email, not just a silent board update.
+      // The route posts its own [STATUS: ...] marker; if it's somehow
+      // unreachable, fall back to a raw marker so the flip still sticks.
+      const notified = await flipStatusWithNotify(origin, c.id, nextStatus, c.customer);
+      if (!notified) {
+        await postToMc(`[STATUS: ${nextStatus}] [LEAD: ${c.id}] auto-flipped by fedex-poll cron (customer notify failed)`);
+      }
     }
     processed.push({ leadId: c.id, tracking: c.tracking, before: c.status, nowState: newState, flippedTo: nextStatus, mcPosted });
   }

@@ -55,18 +55,53 @@ type Offer = {
 // offer's multi-device array or its single-device fields).
 type EditItem = { model: string; storage: string; condition: string; quote: number; quantity: number; needsReview: boolean };
 
-const PIPELINE = [
-  { value: "quote_requested", label: "Submitted", icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
-  { value: "shipped", label: "Shipped", icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" },
-  { value: "received", label: "Received", icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
-  { value: "tested", label: "Inspected", icon: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" },
-  { value: "paid", label: "Paid", icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+// Shared funnel glyphs (Heroicons outline paths).
+const INBOX_ICON = "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z";
+const TRUCK_ICON = "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4";
+const SEARCH_ICON = "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z";
+const CASH_ICON = "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z";
+const MEETUP_ICON = "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z";
+
+// Two funnels. Shipping has a transit leg the customer watches from
+// afar (Shipped → Received); a local meetup has none — you hand the
+// device over in person, so the funnel collapses to a single Met Up
+// stage between Submitted and Paid. Skywalker 2026-05-22.
+const SHIP_PIPELINE = [
+  { value: "quote_requested", label: "Submitted", icon: INBOX_ICON },
+  { value: "shipped", label: "Shipped", icon: TRUCK_ICON },
+  { value: "received", label: "Received", icon: INBOX_ICON },
+  { value: "tested", label: "Inspected", icon: SEARCH_ICON },
+  { value: "paid", label: "Paid", icon: CASH_ICON },
 ];
 
-function statusIndex(s: string): number {
+// Local meetup funnel — three stages. "Met Up" is the in-person
+// handoff (we inspect + pay cash on the spot); "met" is its terminal
+// status, the local twin of "paid".
+const LOCAL_PIPELINE = [
+  { value: "quote_requested", label: "Submitted", icon: INBOX_ICON },
+  { value: "received", label: "Met Up", icon: MEETUP_ICON },
+  { value: "paid", label: "Paid", icon: CASH_ICON },
+];
+
+function pipelineFor(isShip: boolean) {
+  return isShip ? SHIP_PIPELINE : LOCAL_PIPELINE;
+}
+
+// Map a backend status to its stage index in the relevant funnel.
+// Statuses outside a funnel fold onto the nearest stage: "met"
+// terminates either flow at Paid; for a local lead a "shipped" marker
+// (used for a drop-off handoff) sits at the Met Up stage.
+function statusIndex(s: string, isShip: boolean): number {
   if (s === "rejected") return -1;
-  if (s === "met") return 4; // "met" terminates a local handoff at the paid stage
-  return PIPELINE.findIndex((p) => p.value === s);
+  const pipeline = pipelineFor(isShip);
+  if (s === "met") return pipeline.length - 1;
+  // The local funnel has no transit or inspection stage — fold any
+  // shipping-only status ("shipped", "received", "tested") onto the
+  // in-person "Met Up" stage.
+  if (!isShip && (s === "shipped" || s === "tested")) {
+    return pipeline.findIndex((p) => p.value === "received");
+  }
+  return pipeline.findIndex((p) => p.value === s);
 }
 
 function fmtDate(iso?: string): string {
@@ -317,7 +352,6 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
     );
   }
 
-  const idx = statusIndex(offer.status);
   const isShip = offer.handoffMethod === "ship";
   // A device with no price (quote <= 0) needs a manual quote, same as a
   // flagged review — never show "$0" as though it were a real offer.
@@ -410,7 +444,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             </div>
           </div>
 
-          {!isCancelled && <StatusPipeline status={offer.status} />}
+          {!isCancelled && <StatusPipeline status={offer.status} isShip={isShip} />}
         </div>
 
         {/* Big prominent status banner — mirrors IWM's "Awaiting Shipment"
@@ -438,7 +472,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           <div className="bg-[#00c853]/[0.06] border border-[#00c853]/30 rounded-2xl p-4 mb-5">
             <p className="text-sm font-bold text-white mb-1">You can still manage this offer</p>
             <p className="text-[#bdbdbd] text-xs leading-relaxed">
-              Made a mistake? Right here you can <span className="text-white font-semibold">edit a device</span> — change its condition or storage and the quote updates instantly — <span className="text-white font-semibold">update your phone number</span>, or <span className="text-white font-semibold">cancel the offer</span>. You can do this anytime before your trade ships. All your trades live in <Link href="/account" className="text-[#00c853] font-semibold hover:underline">your account</Link>.
+              Made a mistake? Right here you can <span className="text-white font-semibold">edit a device</span> — change its condition or storage and the quote updates instantly — <span className="text-white font-semibold">update your phone number</span>, or <span className="text-white font-semibold">cancel the offer</span>. You can do this anytime before {isShip ? "your trade ships" : "your meetup"}. All your trades live in <Link href="/account" className="text-[#00c853] font-semibold hover:underline">your account</Link>.
             </p>
           </div>
         )}
@@ -887,14 +921,28 @@ function StatusBanner({ status, cancelled, isShip, hasLabel }: { status: string;
     detail = "We're verifying your device matches the quote. Payout fires the moment it clears.";
     tone = "bg-amber-500/10 border-amber-500/40 text-amber-200";
   } else if (status === "received") {
-    title = "Received";
-    iconPath = "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z";
-    detail = "Your package landed in Austin. Inspection happens within 24 hrs of arrival.";
+    if (isShip) {
+      title = "Received";
+      iconPath = INBOX_ICON;
+      detail = "Your package landed in Austin. Inspection happens within 24 hrs of arrival.";
+    } else {
+      title = "Met Up";
+      iconPath = MEETUP_ICON;
+      detail = "Thanks for meeting us — your device is in hand and headed straight to inspection.";
+    }
     tone = "bg-violet-500/10 border-violet-500/40 text-violet-200";
   } else if (status === "shipped") {
-    title = "Shipped";
-    iconPath = "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4";
-    detail = "Your package is on its way. Most arrive within 3-5 business days via FedEx Ground.";
+    if (isShip) {
+      title = "Shipped";
+      iconPath = TRUCK_ICON;
+      detail = "Your package is on its way. Most arrive within 3-5 business days via FedEx Ground.";
+    } else {
+      // A local lead marked "shipped" — used as a drop-off / arranged-
+      // handoff marker, since a meetup never actually ships.
+      title = "Meetup Confirmed";
+      iconPath = MEETUP_ICON;
+      detail = "Your meetup is set — see you soon. We inspect your device and pay you cash on the spot.";
+    }
     tone = "bg-sky-500/10 border-sky-500/40 text-sky-200";
   } else if (isShip) {
     title = "Awaiting Shipment";
@@ -920,12 +968,13 @@ function StatusBanner({ status, cancelled, isShip, hasLabel }: { status: string;
   );
 }
 
-function StatusPipeline({ status }: { status: string }) {
-  const idx = statusIndex(status);
+function StatusPipeline({ status, isShip }: { status: string; isShip: boolean }) {
+  const pipeline = pipelineFor(isShip);
+  const idx = statusIndex(status, isShip);
   return (
     <div className="pt-2">
       <div className="flex items-center justify-between gap-1">
-        {PIPELINE.map((step, i) => {
+        {pipeline.map((step, i) => {
           const done = i < idx;
           const current = i === idx;
           return (
@@ -945,7 +994,7 @@ function StatusPipeline({ status }: { status: string }) {
         })}
       </div>
       <div className="relative h-1 bg-white/5 rounded-full -mt-[40px] mx-5 mb-8 -z-10">
-        <div className="absolute top-0 left-0 h-full bg-[#00c853] rounded-full transition-all duration-500" style={{ width: `${idx <= 0 ? 0 : (idx / (PIPELINE.length - 1)) * 100}%` }} />
+        <div className="absolute top-0 left-0 h-full bg-[#00c853] rounded-full transition-all duration-500" style={{ width: `${idx <= 0 ? 0 : (idx / (pipeline.length - 1)) * 100}%` }} />
       </div>
     </div>
   );
