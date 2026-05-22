@@ -1345,6 +1345,13 @@ export default function AdminPage() {
             >
               📬<span className="hidden sm:inline ml-1">Newsletter</span>
             </a>
+            <a
+              href="/admin/referrals"
+              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
+              title="Referral program — earnings + payouts"
+            >
+              🎁<span className="hidden sm:inline ml-1">Referrals</span>
+            </a>
             <button
               type="button"
               onClick={() => {
