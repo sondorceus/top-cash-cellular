@@ -8106,7 +8106,7 @@ export default function Home() {
                           {g.variants.map((m) => {
                             const mImage = (m as { image?: string }).image;
                             return (
-                              <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                              <button key={m.id} onClick={() => { setModel(m); popThenRun(`model-${m.id}`, () => { const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                                 {mImage ? (
                                   <Pic src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                                 ) : (
@@ -8159,7 +8159,7 @@ export default function Home() {
                           const mImage = (m as { image?: string }).image;
                           const inq = (m as { inquiryOnly?: boolean }).inquiryOnly;
                           return (
-                            <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                            <button key={m.id} onClick={() => { setModel(m); popThenRun(`model-${m.id}`, () => { const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                               {mImage ? (
                                 <Pic src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                               ) : (
@@ -8260,7 +8260,7 @@ export default function Home() {
                                 // Other models keep the legacy condition-first flow.
                                 const next: Step = hasAdditiveSpecs(m.id) ? "processor" : "condition";
                                 setStep(next); pushHistory(next);
-                              }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                              }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                                 {mImg ? (
                                   <Pic src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
                                 ) : (
@@ -8310,7 +8310,7 @@ export default function Home() {
                         {g.variants.map((m) => {
                           const mImg = (m as { image?: string }).image;
                           return (
-                            <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                            <button key={m.id} onClick={() => { setModel(m); popThenRun(`model-${m.id}`, () => { const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                               {mImg ? (
                                 <Pic src={mImg} alt={m.label} loading="lazy" className="w-12 h-12 object-contain shrink-0" />
                               ) : (
@@ -8351,7 +8351,7 @@ export default function Home() {
                           const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
                           const mImg = (m as { image?: string }).image;
                           return (
-                            <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                            <button key={m.id} onClick={() => { setModel(m); popThenRun(`model-${m.id}`, () => { const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                               {mImg ? (
                                 <Pic src={mImg} alt={m.label} loading="lazy" className="w-12 h-12 object-contain shrink-0" />
                               ) : (
@@ -8630,7 +8630,7 @@ export default function Home() {
                   {lenovoTabVariants.map((m) => {
                     const inq = (m as { inquiryOnly?: boolean }).inquiryOnly;
                     return (
-                      <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                      <button key={m.id} onClick={() => { setModel(m); popThenRun(`model-${m.id}`, () => { const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }); }} className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                         <p className="font-semibold text-[15px]">{m.label}</p>
                         <div className="flex items-center gap-2">
                           <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m, deviceType)}`}</span>
@@ -8696,7 +8696,7 @@ export default function Home() {
                                 {g.variants.map((m) => {
                                   const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
                                   return (
-                                    <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                                    <button key={m.id} onClick={() => { setModel(m); popThenRun(`model-${m.id}`, () => { const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }); }} className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                                       <p className="font-semibold text-[15px]">{m.label}</p>
                                       <div className="flex items-center gap-2">
                                         <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a Quote" : `Up to $${getMaxPrice(m, "surface")}`}</span>
@@ -8747,7 +8747,7 @@ export default function Home() {
                     const mImg = (m as { image?: string }).image;
                     return (
                       <button key={m.id} onClick={() => {
-                        setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns);
+                        setModel(m); popThenRun(`model-${m.id}`, () => { const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); });
                       }} className="flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer tap-press">
                         {mImg ? (
                           <Pic src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain mb-1.5" />
@@ -8767,8 +8767,8 @@ export default function Home() {
                     const mImg = (m as { image?: string }).image;
                     return (
                       <button key={m.id} onClick={() => {
-                        setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns);
-                      }} className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                        setModel(m); popThenRun(`model-${m.id}`, () => { const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); });
+                      }} className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                         {mImg ? (
                           <Pic src={mImg} alt={m.label} loading="lazy" className="w-12 h-9 object-contain shrink-0" />
                         ) : (
@@ -8809,7 +8809,7 @@ export default function Home() {
                             const mImage = (m as { image?: string }).image;
                             const inq = (m as { inquiryOnly?: boolean }).inquiryOnly;
                             return (
-                              <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                              <button key={m.id} onClick={() => { setModel(m); popThenRun(`model-${m.id}`, () => { const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                                 {mImage ? (
                                   <Pic src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
                                 ) : (
@@ -8848,8 +8848,8 @@ export default function Home() {
                         const inq = !!(m as { inquiryOnly?: boolean }).inquiryOnly;
                         return (
                           <button key={m.id} onClick={() => {
-                            setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns);
-                          }} className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                            setModel(m); popThenRun(`model-${m.id}`, () => { const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); });
+                          }} className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                             <p className="font-semibold text-[15px]">{m.label}</p>
                             <div className="flex items-center gap-2">
                               <span className="text-[#00c853] font-bold text-sm">{inq ? "Get a quote" : `Up to $${getMaxPrice(m as { id: string; base?: number }, deviceType)}`}</span>
