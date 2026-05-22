@@ -96,6 +96,11 @@ export async function GET(req: NextRequest) {
       internalSkipped++;
       continue;
     }
+    // Recycle-only leads have a $0 quote by definition — counting them
+    // in buyback analytics would drag avg-quote artificially low and
+    // pollute device counts. They're still visible in /admin/leads via
+    // their ♻ Recycle-only chip. Skywalker 2026-05-22.
+    if ((parseField(m.body, "Recycle-only") || "").toLowerCase() === "yes") continue;
     totalLeads++;
     const t = new Date(m.timestamp);
     const ageH = (now - t.getTime()) / 3600000;

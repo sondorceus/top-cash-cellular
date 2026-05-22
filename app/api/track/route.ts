@@ -36,7 +36,11 @@ interface TrackedLead {
   handoffMethod?: "ship" | "local";
 }
 
-const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "rejected"];
+// "met" terminates a local meetup (the local twin of "paid") — it
+// MUST be in this list or the route silently drops the most recent
+// status update for every completed local lead and /track shows it
+// stuck on "quote_requested". Every sibling route already has it.
+const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "met", "rejected"];
 
 function normalizePhone(p: string): string {
   return p.replace(/\D/g, "").replace(/^1/, "");
