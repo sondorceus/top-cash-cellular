@@ -4326,9 +4326,6 @@ export default function Home() {
   };
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
-  // Tapping any device row in the cart un-shrinks the whole drawer —
-  // every row jumps from the auto-compact size to full size.
-  const [cartExpanded, setCartExpanded] = useState(false);
   // Bump counter — increments every time an item is added so the cart
   // icon + badge can re-animate (key change forces remount + keyframe).
   const [cartBump, setCartBump] = useState(0);
@@ -12904,15 +12901,14 @@ export default function Home() {
                     {(() => {
                       // Dynamic shrinking — as more devices land in the cart,
                       // each row gets a bit tighter so we don't run out of
-                      // viewport. Tiers: 1 = lg, 2-3 = md, 4+ = sm. Tapping any
-                      // row sets cartExpanded → the big "xl" tier for every row.
+                      // viewport. Three tiers: 1 = lg, 2-3 = md, 4+ = sm.
                       const lineCount = cartItems.length;
-                      const tier = cartExpanded ? "xl" : lineCount <= 1 ? "lg" : lineCount <= 3 ? "md" : "sm";
-                      const pad   = tier === "xl" ? "p-5" : tier === "lg" ? "p-4"   : tier === "md" ? "p-3"   : "p-2.5";
-                      const imgW  = tier === "xl" ? "w-20 h-20" : tier === "lg" ? "w-14 h-14" : tier === "md" ? "w-12 h-12" : "w-10 h-10";
-                      const titleSz = tier === "xl" ? "text-[17px]" : tier === "lg" ? "text-[15px]" : tier === "md" ? "text-[14px]" : "text-[13px]";
-                      const subSz   = tier === "xl" ? "text-[13px]" : tier === "lg" ? "text-[12px]" : "text-[11px]";
-                      const priceSz = tier === "xl" ? "text-2xl" : tier === "lg" ? "text-xl"  : tier === "md" ? "text-lg" : "text-base";
+                      const tier = lineCount <= 1 ? "lg" : lineCount <= 3 ? "md" : "sm";
+                      const pad   = tier === "lg" ? "p-4"   : tier === "md" ? "p-3"   : "p-2.5";
+                      const imgW  = tier === "lg" ? "w-14 h-14" : tier === "md" ? "w-12 h-12" : "w-10 h-10";
+                      const titleSz = tier === "lg" ? "text-[15px]" : tier === "md" ? "text-[14px]" : "text-[13px]";
+                      const subSz   = tier === "lg" ? "text-[12px]" : "text-[11px]";
+                      const priceSz = tier === "lg" ? "text-xl"  : tier === "md" ? "text-lg" : "text-base";
                       // qty steppers — 36px on mobile (was 24-28px, well
                       // under the 44px tap-target floor), compact 28px on
                       // desktop where a mouse makes precision easy.
@@ -12930,7 +12926,7 @@ export default function Home() {
                       return cartItems.map((item, i) => {
                         const imgSrc = item.image || lookupImage(item.modelId);
                         return (
-                          <div key={i} onClick={() => setCartExpanded(v => !v)} className={`tcc-card rounded-2xl ${pad} cursor-pointer transition-all duration-200 ${cartExpanded ? "shadow-[0_0_0_2px_rgba(0,200,83,0.55)]" : ""}`}>
+                          <div key={i} onClick={() => { setCartOpen(false); setPage("home"); setStep("checkout"); pushHistory("checkout"); window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }); }} className={`tcc-card rounded-2xl ${pad} cursor-pointer`}>
                             <div className="flex items-start gap-3 mb-2">
                               <div className={`${imgW} rounded-xl bg-[rgba(15,15,15,0.55)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden p-1.5`}>
                                 {imgSrc ? (
