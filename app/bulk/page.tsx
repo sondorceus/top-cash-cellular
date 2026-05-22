@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { SlideOnScrollNav } from "../components/SlideOnScrollNav";
 import { HeaderSearch } from "../components/HeaderSearch";
+import SiteFooter from "../components/SiteFooter";
 
 export default function BulkPage() {
   const [name, setName] = useState("");
@@ -45,7 +46,7 @@ export default function BulkPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white">
+    <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
       <SlideOnScrollNav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
@@ -138,6 +139,8 @@ export default function BulkPage() {
           </div>
         )}
       </div>
+
+      <SiteFooter />
     </main>
   );
 }

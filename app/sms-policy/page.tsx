@@ -4,6 +4,7 @@
 // `opt_in_image_urls` reference. Linked from the privacy policy.
 
 import Link from "next/link";
+import SiteFooter from "../components/SiteFooter";
 
 export const metadata = {
   title: "SMS Policy — Top Cash Cellular",
@@ -17,7 +18,7 @@ const PHONE_DISPLAY = "(877) 549-2056";
 
 export default function SmsPolicyPage() {
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white">
+    <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
       <div className="max-w-3xl mx-auto px-4 py-10">
         <Link href="/" className="text-[#00c853] text-sm font-semibold hover:underline">
           ← Top Cash Cellular home
@@ -107,6 +108,8 @@ export default function SmsPolicyPage() {
           </p>
         </section>
       </div>
+
+      <SiteFooter />
     </main>
   );
 }

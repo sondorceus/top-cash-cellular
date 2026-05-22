@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { SlideOnScrollNav } from "../components/SlideOnScrollNav";
 import { HeaderSearch } from "../components/HeaderSearch";
+import SiteFooter from "../components/SiteFooter";
 
 export const metadata: Metadata = {
   title: "FAQ — Top Cash Cellular | Trade-In Questions Answered",
@@ -9,7 +11,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://topcashcellular.com/faq" },
 };
 
-const FAQ = [
+// `aText` is a plain-text mirror of `a` for entries whose answer is JSX
+// (links can't go into JSON-LD). String answers feed the schema directly.
+const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   {
     q: "What devices do you accept?",
     a: "Phones (iPhone, Samsung Galaxy, Google Pixel), tablets (iPad, Galaxy Tab), MacBooks + PC laptops (HP, Lenovo, Dell, ASUS, Acer, Alienware), game consoles (PS5, Xbox, Nintendo Switch), smartwatches (Apple Watch, Galaxy Watch, Pixel Watch, Garmin), drones (DJI), VR headsets (Meta Quest, Valve Index, Apple Vision Pro), and Mac desktops (iMac, Mac mini, Mac Studio). If you have something unusual and don't see it on the picker, hit \"Other\" — we'll give you a manual quote within an hour.",
@@ -37,6 +41,7 @@ const FAQ = [
   {
     q: "How do I track my package?",
     a: <>Two ways. (1) Use the FedEx tracking number we email you at fedex.com/track. (2) Visit our <Link href="/track" className="text-[#00c853] hover:underline">/track page</Link>, enter your phone or email, and see the live status of every device you've sent us — from \"label minted\" to \"received\" to \"paid.\" No password, identity is the contact info itself.</>,
+    aText: "Two ways. (1) Use the FedEx tracking number we email you at fedex.com/track. (2) Visit our /track page, enter your phone or email, and see the live status of every device you've sent us — from \"label minted\" to \"received\" to \"paid.\" No password, identity is the contact info itself.",
   },
   {
     q: "What if I don't have a printer?",
@@ -93,6 +98,7 @@ const FAQ = [
   {
     q: "I didn't get my confirmation email — what now?",
     a: <>Check spam / promotions first (Gmail loves to filter us). If still missing, email <a href="mailto:CustomerService@topcashcells.com" className="text-[#00c853] hover:underline">CustomerService@topcashcells.com</a> with the name + device you submitted and we'll resend within an hour. You can also use our <Link href="/track" className="text-[#00c853] hover:underline">/track page</Link> to confirm the lead landed — it shows every submission tied to your phone or email.</>,
+    aText: "Check spam / promotions first (Gmail loves to filter us). If still missing, email CustomerService@topcashcells.com with the name + device you submitted and we'll resend within an hour. You can also use our /track page to confirm the lead landed — it shows every submission tied to your phone or email.",
   },
   {
     q: "I picked the wrong payout method — can I change it?",
@@ -113,6 +119,7 @@ const FAQ = [
   {
     q: "I have 5+ devices to trade — is there a faster path?",
     a: <>Yes — visit our <Link href="/bulk" className="text-[#00c853] hover:underline">bulk trade-in page</Link> for a dedicated quote and pickup option.</>,
+    aText: "Yes — visit our bulk trade-in page for a dedicated quote and pickup option.",
   },
 ];
 
@@ -168,9 +175,23 @@ const FAQ_CATEGORIES: { name: string; questions: string[] }[] = [
   },
 ];
 
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: typeof item.a === "string" ? item.a : (item.aText ?? ""),
+    },
+  })),
+};
+
 export default function FAQPage() {
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white">
+    <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <SlideOnScrollNav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
@@ -223,6 +244,8 @@ export default function FAQPage() {
           <Link href="/" className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition">Get a quote →</Link>
         </div>
       </div>
+
+      <SiteFooter />
     </main>
   );
 }

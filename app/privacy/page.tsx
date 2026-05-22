@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SiteFooter from "../components/SiteFooter";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Top Cash Cellular",
@@ -7,7 +8,8 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-black text-white px-6 py-16 max-w-3xl mx-auto">
+    <main className="min-h-screen bg-black text-white flex flex-col">
+      <div className="px-6 py-16 max-w-3xl mx-auto w-full">
       <h1 className="text-3xl font-bold mb-8">Privacy Policy</h1>
       <p className="text-sm text-gray-400 mb-8">Last updated: April 18, 2026</p>
 
@@ -79,6 +81,9 @@ export default function PrivacyPage() {
       <div className="mt-12 pt-6 border-t border-white/10">
         <a href="/" className="text-sm text-[#00c853] hover:underline">← Back to Home</a>
       </div>
+      </div>
+
+      <SiteFooter />
     </main>
   );
 }

@@ -53,6 +53,44 @@
 }
 .toast-in-up { animation: toast-in-up 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 
+/* Phone pop — playful 3D bounce when a customer taps the hero phone in
+   the "Working devices get top dollar" panel. The class is toggled on
+   tap and cleared on animationend so it replays on every tap. */
+@keyframes phonePop3d {
+  0%   { transform: perspective(700px) rotateY(0deg)   rotateX(0deg)  scale(1);    }
+  28%  { transform: perspective(700px) rotateY(-20deg) rotateX(9deg)  scale(1.16); }
+  52%  { transform: perspective(700px) rotateY(14deg)  rotateX(-5deg) scale(1.08); }
+  74%  { transform: perspective(700px) rotateY(-7deg)  rotateX(2deg)  scale(1.03); }
+  100% { transform: perspective(700px) rotateY(0deg)   rotateX(0deg)  scale(1);    }
+}
+.phone-pop-3d { animation: phonePop3d 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .phone-pop-3d { animation: none; }
+}
+
+/* Hover-reveal detail — copy that stays collapsed until its card (.group)
+   is hovered, so a step list reads as just the headlines. Gated on
+   (hover: hover) so touch devices, which can't hover, always show the
+   full text instead of hiding it permanently. */
+.hover-detail { margin-top: 0.25rem; }
+@media (hover: hover) {
+  .hover-detail {
+    max-height: 0;
+    margin-top: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 320ms ease, opacity 320ms ease, margin-top 320ms ease;
+  }
+  .group:hover .hover-detail {
+    max-height: 8rem;
+    margin-top: 0.25rem;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hover-detail { transition: none; }
+}
+
 body {
   color: #0a0a0a;
   background: #ffffff;

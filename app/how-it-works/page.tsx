@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SlideOnScrollNav } from "../components/SlideOnScrollNav";
 import { HeaderSearch } from "../components/HeaderSearch";
+import SiteFooter from "../components/SiteFooter";
 
 export const metadata: Metadata = {
   title: "How It Works — Top Cash Cellular | 3 Steps to Cash",
@@ -39,7 +40,7 @@ const PROMISES = [
 
 export default function HowItWorksPage() {
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white">
+    <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
       <SlideOnScrollNav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
@@ -101,6 +102,8 @@ export default function HowItWorksPage() {
           <Link href="/" className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition">Sell my device →</Link>
         </div>
       </div>
+
+      <SiteFooter />
     </main>
   );
 }

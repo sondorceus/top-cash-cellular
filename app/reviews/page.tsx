@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Review } from "../api/reviews/route";
 import { SlideOnScrollNav } from "../components/SlideOnScrollNav";
 import { HeaderSearch } from "../components/HeaderSearch";
+import SiteFooter from "../components/SiteFooter";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -62,7 +63,7 @@ export default async function ReviewsPage() {
   const avg = count ? reviews.reduce((s, r) => s + r.rating, 0) / count : 4.9;
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white">
+    <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
       <SlideOnScrollNav className="px-4 sm:px-6 py-4 flex items-center justify-between border-b border-white/10 sticky top-0 bg-[#0a0a0a]/95 backdrop-blur z-10">
         <Link href="/" className="text-xl font-bold tracking-tight">
           Top Cash <span className="text-[#00c853]">Cellular</span>
@@ -139,6 +140,8 @@ export default async function ReviewsPage() {
           </Link>
         </div>
       </section>
+
+      <SiteFooter />
     </main>
   );
 }

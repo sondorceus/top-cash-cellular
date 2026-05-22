@@ -3513,74 +3513,38 @@ function CountUp({ end, decimals = 0, prefix = "", suffix = "", duration = 1400 
   return <span ref={ref}>{prefix}{formatted}{suffix}</span>;
 }
 
-// ReviewsCarousel: scroll-snap carousel with prev/next arrows + dot indicators
+// ReviewsCarousel: continuous marquee of customer reviews — auto-scrolls
+// and pauses on hover. (Was a scroll-snap carousel with arrows + dots;
+// switched to a marquee so the wall feels alive even with a short list.)
 function ReviewsCarousel({ reviews }: { reviews: { name: string; loc: string; text: string; stars: number; verified?: boolean }[] }) {
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const [activeIdx, setActiveIdx] = useState(0);
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    const update = () => {
-      const cardWidth = el.querySelector<HTMLDivElement>(":scope > div")?.offsetWidth || 1;
-      const gap = 12;
-      const idx = Math.round(el.scrollLeft / (cardWidth + gap));
-      setActiveIdx(Math.max(0, Math.min(reviews.length - 1, idx)));
-    };
-    el.addEventListener("scroll", update, { passive: true });
-    update();
-    return () => el.removeEventListener("scroll", update);
-  }, [reviews.length]);
-  const scrollBy = (dir: 1 | -1) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const card = el.querySelector<HTMLDivElement>(":scope > div");
-    const cardWidth = (card?.offsetWidth || 280) + 12;
-    el.scrollBy({ left: dir * cardWidth, behavior: "smooth" });
-  };
-  const scrollTo = (idx: number) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const card = el.querySelector<HTMLDivElement>(":scope > div");
-    const cardWidth = (card?.offsetWidth || 280) + 12;
-    el.scrollTo({ left: idx * cardWidth, behavior: "smooth" });
-  };
+  if (reviews.length === 0) return null;
+  // Repeat the list to an even multiple of >=6 cards so one set is wide
+  // enough to span the viewport, then render it twice for the seamless
+  // -50% marquee loop.
+  const setLen = Math.ceil(6 / reviews.length) * reviews.length;
+  const loop = Array.from({ length: setLen }, (_, i) => reviews[i % reviews.length]);
   return (
-    <div className="relative">
-      <div ref={trackRef} className="overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-smooth">
-        <div className="flex gap-3 snap-x snap-mandatory">
-          {reviews.map((r, i) => (
-            <div key={i} className="snap-start flex-shrink-0 w-[280px] md:w-[320px] bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#00c853]/30 transition reveal" data-stagger={Math.min(i + 2, 8)}>
-              <div className="flex items-center justify-between gap-2 mb-3">
-                <div className="flex gap-0.5 text-[#ffb400] text-sm">{"★".repeat(r.stars)}</div>
-                {r.verified && (
-                  <span className="inline-flex items-center gap-1 text-[9px] font-extrabold uppercase tracking-wider text-[#7be8a8] bg-[#00c853]/12 border border-[#00c853]/40 rounded-full px-2 py-0.5" title="Verified seller — review submitted via a one-use link after their trade closed">
-                    ✓ Verified
-                  </span>
-                )}
-              </div>
-              <p className="text-white text-sm leading-relaxed mb-4 min-h-[80px]">&ldquo;{r.text}&rdquo;</p>
-              <div className="flex items-center gap-2 pt-3 border-t border-white/10">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00c853] to-[#00a039] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">{r.name[0]}</div>
-                <div className="min-w-0">
-                  <div className="text-white text-sm font-semibold leading-tight truncate">{r.name}</div>
-                  <div className="text-[#e6e6e6] text-xs truncate">{r.loc}</div>
-                </div>
+    <div className="overflow-hidden tcc-marquee-mask">
+      <div className="flex gap-3 w-max animate-[marquee_40s_linear_infinite] hover:[animation-play-state:paused] py-1">
+        {[...loop, ...loop].map((r, i) => (
+          <div key={i} className="flex-shrink-0 w-[280px] md:w-[320px] bg-white/5 border border-white/10 rounded-2xl p-5">
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="flex gap-0.5 text-[#ffb400] text-sm">{"★".repeat(r.stars)}</div>
+              {r.verified && (
+                <span className="inline-flex items-center gap-1 text-[9px] font-extrabold uppercase tracking-wider text-[#7be8a8] bg-[#00c853]/12 border border-[#00c853]/40 rounded-full px-2 py-0.5" title="Verified seller — review submitted via a one-use link after their trade closed">
+                  ✓ Verified
+                </span>
+              )}
+            </div>
+            <p className="text-white text-sm leading-relaxed mb-4 min-h-[80px]">&ldquo;{r.text}&rdquo;</p>
+            <div className="flex items-center gap-2 pt-3 border-t border-white/10">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00c853] to-[#00a039] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">{r.name[0]}</div>
+              <div className="min-w-0">
+                <div className="text-white text-sm font-semibold leading-tight truncate">{r.name}</div>
+                <div className="text-[#e6e6e6] text-xs truncate">{r.loc}</div>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
-      {/* Prev/Next arrow buttons (hidden on small screens since swipe works) */}
-      <button onClick={() => scrollBy(-1)} aria-label="Previous review" className="hidden md:flex absolute left-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 backdrop-blur border border-white/15 hover:bg-black/80 hover:border-[#00c853]/40 items-center justify-center cursor-pointer tap-press">
-        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
-      </button>
-      <button onClick={() => scrollBy(1)} aria-label="Next review" className="hidden md:flex absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 backdrop-blur border border-white/15 hover:bg-black/80 hover:border-[#00c853]/40 items-center justify-center cursor-pointer tap-press">
-        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
-      </button>
-      {/* Dot indicators */}
-      <div className="flex justify-center gap-2 mt-4">
-        {reviews.map((_, i) => (
-          <button key={i} onClick={() => scrollTo(i)} aria-label={`Go to review ${i + 1}`} className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${i === activeIdx ? "w-6 bg-[#00c853]" : "w-2 bg-white/20 hover:bg-white/40"}`} />
+          </div>
         ))}
       </div>
     </div>
@@ -3975,6 +3939,25 @@ export default function Home() {
       const newSearch = params.toString();
       const newUrl = `${window.location.pathname}${newSearch ? `?${newSearch}` : ""}${window.location.hash}`;
       window.history.replaceState(null, "", newUrl);
+    }
+  }, []);
+
+  // Footer links on the standalone route pages (/faq etc.) deep-link
+  // into the in-app sections below (Terms, Grading, About...) via
+  // ?page=<id>. Honor it once on mount, then scrub the param.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const p = params.get("page");
+    if (
+      p === "about" || p === "terms" || p === "grading" || p === "shipping" ||
+      p === "affiliate" || p === "itad" || p === "blog" || p === "cookies" ||
+      p === "accessibility"
+    ) {
+      setPage(p);
+      params.delete("page");
+      const newSearch = params.toString();
+      window.history.replaceState(null, "", `${window.location.pathname}${newSearch ? `?${newSearch}` : ""}${window.location.hash}`);
     }
   }, []);
 
@@ -4395,6 +4378,8 @@ export default function Home() {
   const [paidOff, setPaidOff] = useState<boolean | null>(null);
   const [inquiryDesc, setInquiryDesc] = useState("");
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
+  const [heroPhonePop, setHeroPhonePop] = useState(false);
+  const [dualPathPop, setDualPathPop] = useState<"local" | "ship" | null>(null);
   const [statsVisible, setStatsVisible] = useState(false);
   const [animatedStats, setAnimatedStats] = useState({ devices: 0, payout: 0, time: 0 });
 
@@ -7090,15 +7075,17 @@ export default function Home() {
                 detail (address OR area), not both. */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 hero-scale-in hero-d-3">
               <button
-                onClick={() => { setHandoffMethod("local"); setStep("category"); pushHistory("category"); }}
-                className="tcc-button-primary w-full py-4 text-base font-extrabold flex flex-col items-center gap-0.5"
+                onClick={() => { setDualPathPop("local"); setTimeout(() => { setDualPathPop(null); setHandoffMethod("local"); setStep("category"); pushHistory("category"); }, 280); }}
+                onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setDualPathPop(null); }}
+                className={`tcc-button-primary w-full py-4 text-base font-extrabold flex flex-col items-center gap-0.5 ${dualPathPop === "local" ? "phone-pop-3d" : ""}`}
               >
                 <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>Sell Local Today</span>
                 <span className="text-[11px] font-medium opacity-80">Local pickup · Cash on the spot</span>
               </button>
               <button
-                onClick={() => { setHandoffMethod("ship"); setStep("category"); pushHistory("category"); }}
-                className="w-full bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] hover:bg-[rgba(15,15,15,0.85)] hover:border-[#00c853] border border-white/15 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-300 ease-out shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex flex-col items-center gap-0.5"
+                onClick={() => { setDualPathPop("ship"); setTimeout(() => { setDualPathPop(null); setHandoffMethod("ship"); setStep("category"); pushHistory("category"); }, 280); }}
+                onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setDualPathPop(null); }}
+                className={`w-full bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] hover:bg-[rgba(15,15,15,0.85)] hover:border-[#00c853] border border-white/15 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-300 ease-out shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex flex-col items-center gap-0.5 ${dualPathPop === "ship" ? "phone-pop-3d" : ""}`}
               >
                 <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>I&apos;m Shipping: Get a Label</span>
                 <span className="text-[11px] font-medium text-[#b8b8b8]">Free prepaid label · Same-day payout on arrival</span>
@@ -7273,7 +7260,15 @@ export default function Home() {
         <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-10">
           <div className="bg-gradient-to-br from-[#00c853]/15 via-[#00c853]/5 to-[#00c853]/15 border border-[#00c853]/30 rounded-3xl p-6 md:p-8">
             <div className="flex items-start gap-4">
-              <Pic src="/iphone17.png" alt="" className="h-24 w-auto shrink-0 object-contain" style={{ filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.45))" }} />
+              <button
+                type="button"
+                aria-label="Top Cash Cellular"
+                onClick={() => setHeroPhonePop(true)}
+                onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setHeroPhonePop(false); }}
+                className={`shrink-0 cursor-pointer border-0 bg-transparent p-0 transition-transform duration-200 hover:scale-105 ${heroPhonePop ? "phone-pop-3d" : ""}`}
+              >
+                <Pic src="/iphone17.png" alt="" className="h-24 w-auto object-contain pointer-events-none" style={{ filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.45))" }} />
+              </button>
               <div className="flex-1">
                 <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-1">Used, gently worn, like-new</p>
                 <h2 className="text-2xl md:text-3xl font-bold mb-2 leading-tight">Working devices get top dollar.</h2>
@@ -7375,11 +7370,11 @@ export default function Home() {
               { num: "3", title: "Meet up or ship it", body: "Meet locally in Austin — we inspect together in about 15 minutes — or ship free with our prepaid label from anywhere in the US." },
               { num: "4", title: "Get paid on the spot", body: "Cash, Cash App, Zelle, or BTC — your choice, same day, before you leave." },
             ].map((item, i) => (
-              <div key={item.num} className="flex items-start gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 reveal" data-stagger={Math.min(i + 2, 8)}>
+              <div key={item.num} className="group flex items-start gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 reveal hover:bg-white/[0.07] hover:border-[#00c853]/30" data-stagger={Math.min(i + 2, 8)}>
                 <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-sm font-bold shrink-0">{item.num}</div>
-                <div>
-                  <p className="font-semibold text-base mb-0.5">{item.title}</p>
-                  <p className="text-[#e6e6e6] text-sm leading-relaxed">{item.body}</p>
+                <div className="min-w-0">
+                  <p className="font-semibold text-base">{item.title}</p>
+                  <p className="hover-detail text-[#e6e6e6] text-sm leading-relaxed">{item.body}</p>
                 </div>
               </div>
             ))}
@@ -12062,32 +12057,6 @@ export default function Home() {
                   <p className="text-white text-xs font-semibold mt-1">Avg Payout</p>
                   <p className="text-[#e6e6e6] text-[10px] mt-0.5">from quote to cash</p>
                 </div>
-              </div>
-            </div>
-          </section>
-
-          {/* TESTIMONIALS */}
-          <section className="py-10 overflow-hidden bg-[#0a0a0a]">
-            <p className="text-white font-semibold text-lg text-center mb-6">What sellers say</p>
-            <div className="relative">
-              <div className="flex animate-[marquee_25s_linear_infinite] gap-4 w-max">
-                {[
-                  { text: "Got $420 for my iPhone 14 Pro. Way more than the Apple trade-in.", name: "Mike R." },
-                  { text: "Zelle payment hit my account same day. Super smooth.", name: "Ashley T." },
-                  { text: "They came to me and paid cash on the spot. Can't beat that.", name: "David L." },
-                  { text: "Sold my old Galaxy S23 in 5 minutes. Easy money.", name: "Sarah K." },
-                  { text: "Best price I found anywhere in Austin. Highly recommend.", name: "Chris M." },
-                  { text: "Got $420 for my iPhone 14 Pro. Way more than the Apple trade-in.", name: "Mike R." },
-                  { text: "Zelle payment hit my account same day. Super smooth.", name: "Ashley T." },
-                  { text: "They came to me and paid cash on the spot. Can't beat that.", name: "David L." },
-                  { text: "Sold my old Galaxy S23 in 5 minutes. Easy money.", name: "Sarah K." },
-                  { text: "Best price I found anywhere in Austin. Highly recommend.", name: "Chris M." },
-                ].map((r, i) => (
-                  <div key={i} className="flex-shrink-0 w-[260px] bg-white/5 rounded-2xl p-4 border border-white/10">
-                    <p className="text-sm text-white/85 font-medium mb-2">&ldquo;{r.text}&rdquo;</p>
-                    <p className="text-xs text-[#e6e6e6]">— {r.name}</p>
-                  </div>
-                ))}
               </div>
             </div>
           </section>
