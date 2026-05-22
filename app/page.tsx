@@ -8004,7 +8004,7 @@ export default function Home() {
                           const m = v as typeof models[number];
                           const imgSrc = (m as { image?: string }).image || fallbackImgs[m.id] || null;
                           return (
-                            <button key={m.id} onClick={() => { setModel(m); const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press">
+                            <button key={m.id} onClick={() => { setModel(m); popThenRun(`model-${m.id}`, () => { const _ns: Step = hasAdditiveSpecs(m.id) ? "processor" : stepAfterModel; setStep(_ns); pushHistory(_ns); }); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                               {imgSrc && <Pic src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
                               <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                               <div className="flex items-center gap-2">
