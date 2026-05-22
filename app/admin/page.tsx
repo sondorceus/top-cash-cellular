@@ -1069,6 +1069,9 @@ export default function AdminPage() {
     if (l.staleHours && l.staleHours >= 24 && !FINISHED.has(l.status)) return true;
     const isMulti = !!(l.deviceCount && l.deviceCount > 1);
     if (!isMulti && (!l.photos || l.photos.length < 2)) return true;
+    // A device with no system price (quote <= 0) needs a manual quote —
+    // surface the lead so staff don't miss it.
+    if ((l.devices ?? []).some(d => (d.quote ?? 0) <= 0)) return true;
     return false;
   }
   const needsReviewLeads = filteredLeads.filter(leadNeedsReview);
@@ -1809,7 +1812,9 @@ export default function AdminPage() {
                                   <span className="font-semibold text-white">{d.model}</span>
                                   {d.storage && <span className="text-[#c5c5c5]">· {d.storage}</span>}
                                   {d.condition && <span className="text-[#c5c5c5]">· {d.condition}</span>}
-                                  {d.quote != null && <span className="text-[#00c853] font-bold">· ${d.quote}</span>}
+                                  {d.quote != null && (d.quote > 0
+                                    ? <span className="text-[#00c853] font-bold">· ${d.quote}</span>
+                                    : <span className="text-amber-300 font-bold">· Manual review</span>)}
                                   {d.quantity && d.quantity > 1 && <span className="text-[#c5c5c5]">×{d.quantity}</span>}
                                   {d.photos && d.photos.length > 0 && (
                                     <span className="ml-1 flex gap-1">

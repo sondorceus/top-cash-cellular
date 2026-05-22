@@ -116,6 +116,58 @@ const FAQ = [
   },
 ];
 
+// Groups the flat FAQ list above into sections for display. Each entry
+// lists the exact `q` strings that belong to the section; the render
+// filters FAQ by these. Keeps answer copy untouched in one place.
+const FAQ_CATEGORIES: { name: string; questions: string[] }[] = [
+  {
+    name: "Payments & pricing",
+    questions: [
+      "How fast do I get paid?",
+      "What if my device arrives in worse condition than I quoted?",
+      "Is the price you quote on the website actually what I'll get?",
+      "How do I know your prices are higher than Apple Trade-In or my carrier?",
+      "How long is my quote locked in?",
+      "I picked the wrong payout method — can I change it?",
+      "How do coupon codes work?",
+    ],
+  },
+  {
+    name: "Shipping & tracking",
+    questions: [
+      "Do you cover shipping?",
+      "Step-by-step — how does shipping actually work?",
+      "How do I track my package?",
+      "What if I don't have a printer?",
+      "What about insurance during shipping?",
+      "Can I change my mind after shipping?",
+      "What if my package weighs more than the prepaid label says?",
+    ],
+  },
+  {
+    name: "Your device",
+    questions: [
+      "What devices do you accept?",
+      "Do you buy broken or cracked devices?",
+      "What if my device still has a balance on it?",
+      "What about my SIM card?",
+      "Do I need to include the charger, cable, or original box?",
+      "How do I find my exact model?",
+      "What does \"unlocked\" mean and why does it matter?",
+    ],
+  },
+  {
+    name: "Trust & support",
+    questions: [
+      "What happens to my data?",
+      "I didn't get my confirmation email — what now?",
+      "I disagree with your inspection — what now?",
+      "Is there a minimum age to trade in?",
+      "I have 5+ devices to trade — is there a faster path?",
+    ],
+  },
+];
+
 export default function FAQPage() {
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -146,15 +198,22 @@ export default function FAQPage() {
         <h1 className="text-4xl font-bold mb-3">Frequently Asked Questions</h1>
         <p className="text-[#dcdcdc] mb-10">Everything you need to know before trading in.</p>
 
-        <div className="space-y-3">
-          {FAQ.map((item, i) => (
-            <details key={i} className="group bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.07] transition open:bg-white/[0.07]">
-              <summary className="flex items-center justify-between cursor-pointer list-none">
-                <span className="font-semibold text-white pr-4">{item.q}</span>
-                <span className="text-[#00c853] text-xl flex-shrink-0 group-open:rotate-45 transition-transform">+</span>
-              </summary>
-              <p className="text-[#e5e5e5] text-sm mt-3 leading-relaxed">{item.a}</p>
-            </details>
+        <div className="space-y-10">
+          {FAQ_CATEGORIES.map((cat) => (
+            <div key={cat.name}>
+              <h2 className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-3">{cat.name}</h2>
+              <div className="space-y-3">
+                {FAQ.filter((item) => cat.questions.includes(item.q)).map((item, i) => (
+                  <details key={i} className="group bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.07] transition open:bg-white/[0.07]">
+                    <summary className="flex items-center justify-between cursor-pointer list-none">
+                      <span className="font-semibold text-white pr-4">{item.q}</span>
+                      <span className="text-[#00c853] text-xl flex-shrink-0 group-open:rotate-45 transition-transform">+</span>
+                    </summary>
+                    <p className="text-[#e5e5e5] text-sm mt-3 leading-relaxed">{item.a}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
 

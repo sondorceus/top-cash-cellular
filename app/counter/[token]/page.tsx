@@ -92,7 +92,7 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
     return (
       <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-4">
         <div className="max-w-md w-full bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
-          <p className="text-3xl mb-3">🔒</p>
+          <svg className="w-9 h-9 text-[#00c853] mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
           <h1 className="text-xl font-bold mb-2">Offer link can&apos;t be opened</h1>
           <p className="text-[#bdbdbd] text-sm mb-5">{errorMsg}</p>
           <p className="text-[11px] text-[#888] mb-4">Tokens expire after 14 days. If you need help, reach out below.</p>
@@ -113,7 +113,7 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
     return (
       <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-4">
         <div className="max-w-md w-full bg-[#00c853]/5 border border-[#00c853]/30 rounded-2xl p-8 text-center">
-          <p className="text-4xl mb-3">✅</p>
+          <svg className="w-10 h-10 text-[#00c853] mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           <h1 className="text-2xl font-bold mb-2">Offer accepted</h1>
           <p className="text-[#dcdcdc] text-sm mb-4 leading-relaxed">
             Got it. We&apos;re moving <strong className="text-white">${decoded.offer}</strong> to payout — you&apos;ll receive payment via your chosen method within 24 hours.
@@ -129,7 +129,7 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
     return (
       <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-4">
         <div className="max-w-md w-full bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
-          <p className="text-4xl mb-3">↩️</p>
+          <svg className="w-10 h-10 text-[#00c853] mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
           <h1 className="text-2xl font-bold mb-2">Offer declined</h1>
           <p className="text-[#dcdcdc] text-sm mb-4 leading-relaxed">
             No problem. We&apos;ll ship your device back to you within 2 business days at no cost. Expect an email with the return tracking number.

@@ -24,11 +24,11 @@ interface Lead {
 }
 
 const PIPELINE = [
-  { value: "quote_requested", label: "Quote requested", icon: "📥" },
-  { value: "shipped", label: "Shipped / drop-off", icon: "📦" },
-  { value: "received", label: "Received", icon: "📬" },
-  { value: "tested", label: "Tested", icon: "🔍" },
-  { value: "paid", label: "Paid", icon: "💵" },
+  { value: "quote_requested", label: "Quote requested", icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" },
+  { value: "shipped", label: "Shipped / drop-off", icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" },
+  { value: "received", label: "Received", icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
+  { value: "tested", label: "Tested", icon: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" },
+  { value: "paid", label: "Paid", icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
 ];
 
 function statusIndex(status: string): number {
@@ -53,7 +53,7 @@ function ProgressBar({ status }: { status: string }) {
     return (
       <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 my-3">
         <p className="text-red-400 text-sm font-semibold flex items-center gap-2">
-          <span>⚠️</span> Issue with this device — please email CustomerService@topcashcells.com
+          <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg> Issue with this device — please email CustomerService@topcashcells.com
         </p>
       </div>
     );
@@ -67,12 +67,14 @@ function ProgressBar({ status }: { status: string }) {
           const current = i === idx;
           return (
             <div key={step.value} className="flex-1 flex flex-col items-center gap-1.5 min-w-0">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-base transition ${
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center transition ${
                 done ? "bg-[#00c853] text-[#0a0a0a]" :
                 current ? "bg-[#00c853] text-[#0a0a0a] ring-4 ring-[#00c853]/30 animate-pulse" :
                 "bg-white/5 border border-white/10 text-[#c5c5c5]"
               }`}>
-                {done ? "✓" : step.icon}
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d={done ? "M5 13l4 4L19 7" : step.icon} />
+                </svg>
               </div>
               <p className={`text-[10px] text-center leading-tight ${
                 done || current ? "text-white font-semibold" : "text-[#c5c5c5]"
@@ -181,7 +183,7 @@ function TrackInner() {
 
         {searched && !loading && leads.length === 0 && !error && (
           <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
-            <p className="text-2xl mb-2">🔍</p>
+            <svg className="w-7 h-7 text-[#00c853] mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             <p className="text-white font-semibold mb-1">No trade-ins found</p>
             <p className="text-[#dcdcdc] text-sm">Double-check the contact info, or <Link href="/" className="text-[#00c853] hover:underline">start a new quote</Link>.</p>
           </div>
@@ -211,9 +213,10 @@ function TrackInner() {
                         href={lead.fedexLabelUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 px-4 py-2.5 bg-[#00c853] text-[#0a0a0a] rounded-lg text-sm font-semibold text-center hover:bg-[#00e676] transition"
+                        className="flex-1 px-4 py-2.5 bg-[#00c853] text-[#0a0a0a] rounded-lg text-sm font-semibold text-center hover:bg-[#00e676] transition inline-flex items-center justify-center gap-2"
                       >
-                        📄 Download label (PDF)
+                        <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        Download label (PDF)
                       </a>
                       <a
                         href={`https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(lead.fedexTracking)}`}
@@ -231,7 +234,7 @@ function TrackInner() {
                 )}
                 {lead.shipExpectingLabel && !lead.fedexTracking && (
                   <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-3">
-                    <p className="text-amber-300 text-sm font-semibold mb-1">📦 Label is on the way</p>
+                    <p className="text-amber-300 text-sm font-semibold mb-1 flex items-center gap-2"><svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg> Label is on the way</p>
                     <p className="text-[#dcdcdc] text-xs leading-relaxed">
                       Your shipping label is being prepared. If you don't see it in your email within an hour, reply to <a href="mailto:CustomerService@topcashcells.com" className="underline">CustomerService@topcashcells.com</a> with this lead ID and we'll resend it.
                     </p>

@@ -75,17 +75,17 @@ export default function BulkPage() {
 
         <div className="grid grid-cols-3 gap-2 mb-8">
           <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-            <div className="text-2xl mb-1">📦</div>
+            <svg className="w-6 h-6 text-[#00c853] mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>
             <p className="text-[10px] font-bold text-[#dcdcdc] uppercase">Free pickup</p>
             <p className="text-xs text-white mt-1">Austin metro area</p>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-            <div className="text-2xl mb-1">⚡</div>
+            <svg className="w-6 h-6 text-[#00c853] mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             <p className="text-[10px] font-bold text-[#dcdcdc] uppercase">24-hr payout</p>
             <p className="text-xs text-white mt-1">After verification</p>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-            <div className="text-2xl mb-1">🔒</div>
+            <svg className="w-6 h-6 text-[#00c853] mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
             <p className="text-[10px] font-bold text-[#dcdcdc] uppercase">Data wipe</p>
             <p className="text-xs text-white mt-1">NIST 800-88</p>
           </div>
@@ -94,7 +94,7 @@ export default function BulkPage() {
         {/* BULK PRICING TIERS */}
         <div className="bg-gradient-to-br from-[#00c853]/8 via-transparent to-[#00c853]/8 border border-[#00c853]/25 rounded-2xl p-5 mb-8">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-lg">📈</span>
+            <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
             <h2 className="text-sm font-bold uppercase tracking-wider text-[#00c853]">Volume bonus pricing</h2>
           </div>
           <div className="grid grid-cols-3 gap-2">
@@ -116,7 +116,7 @@ export default function BulkPage() {
 
         {submitted ? (
           <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-2xl p-8 text-center">
-            <div className="text-5xl mb-3">✅</div>
+            <svg className="w-14 h-14 text-[#00c853] mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             <h2 className="text-2xl font-bold mb-2">Got it!</h2>
             <p className="text-[#e5e5e5] text-sm">A team member will reach out within 1 business hour with a custom quote and pickup options.</p>
             <Link href="/" className="inline-block mt-6 text-[#00c853] hover:underline text-sm">← Back to home</Link>

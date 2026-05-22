@@ -35,7 +35,7 @@ export default function SmsPolicyPage() {
             Directly below the phone-number input on the checkout step, customers see this exact disclosure with a required checkbox:
           </p>
           <div className="bg-black/40 border-l-4 border-[#00c853] rounded-r-lg p-4 text-[13px] text-[#dcdcdc] leading-relaxed">
-            <p className="mb-2"><strong className="text-white">☐ Required checkbox:</strong></p>
+            <p className="mb-2 flex items-center gap-1.5"><svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg><strong className="text-white">Required checkbox:</strong></p>
             <p>
               &ldquo;I agree to receive SMS updates about my trade-in from {BRAND} at the number above. Msg &amp; data rates may apply, msg frequency varies, reply STOP to opt out, HELP for help. See our <Link href="/privacy" className="text-[#00c853] underline">privacy policy</Link>.&rdquo;
             </p>

@@ -121,7 +121,7 @@ function NewReviewInner() {
       {gate.kind === "invalid" && (
         <section className="px-4 sm:px-6 py-12 max-w-xl mx-auto">
           <div className="bg-white/5 border border-white/10 rounded-3xl p-8 text-center">
-            <p className="text-5xl mb-3">🔒</p>
+            <svg className="w-12 h-12 text-[#00c853] mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
             <h1 className="text-2xl sm:text-3xl font-bold mb-2">Reviews are for verified customers</h1>
             <p className="text-[#dcdcdc] mb-6 leading-relaxed">
               {gate.reason} We only accept reviews from customers we&apos;ve completed a trade with — it keeps the reviews real for the people coming after you.
@@ -130,7 +130,7 @@ function NewReviewInner() {
               <p className="text-white font-semibold mb-2">If you&apos;ve sold a device to us:</p>
               <ul className="list-disc list-inside space-y-1">
                 <li>Check the confirmation email we sent when your payout went out</li>
-                <li>Tap the <span className="text-[#ffb400] font-semibold">★ Leave a review</span> button in that email</li>
+                <li>Tap the <span className="text-[#ffb400] font-semibold inline-flex items-center gap-1"><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>Leave a review</span> button in that email</li>
                 <li>The link includes your one-use review code</li>
               </ul>
             </div>
@@ -138,8 +138,8 @@ function NewReviewInner() {
               <Link href="/reviews" className="bg-white/[0.06] border border-white/10 text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-white/[0.1] transition">
                 Read existing reviews →
               </Link>
-              <a href="mailto:CustomerService@topcashcells.com?subject=Need%20my%20review%20link" className="bg-[#00c853] text-black px-6 py-3 rounded-full text-sm font-bold hover:bg-[#00e676] transition">
-                ✉️ Email us — we&apos;ll send your link
+              <a href="mailto:CustomerService@topcashcells.com?subject=Need%20my%20review%20link" className="bg-[#00c853] text-black px-6 py-3 rounded-full text-sm font-bold hover:bg-[#00e676] transition inline-flex items-center justify-center gap-1.5">
+                <svg className="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg> Email us — we&apos;ll send your link
               </a>
             </div>
           </div>
@@ -149,7 +149,7 @@ function NewReviewInner() {
       {gate.kind === "valid" && (
         <section className="px-4 sm:px-6 py-8 sm:py-12 max-w-xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-[#00c853]/15 border border-[#00c853]/40 text-[#7be8a8] rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider mb-3">
-            ✓ Verified seller link
+            <svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Verified seller link
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold mb-2">Leave a review</h1>
           <p className="text-[#dcdcdc] mb-8">

@@ -41,14 +41,17 @@ type AccountData = {
   summary?: { total: number; paid: number; openCount: number };
 };
 
+// `emoji` holds an SVG path `d` string (Heroicons-style outline),
+// wrapped in <svg> at the render site. Renamed from literal emoji
+// glyphs as part of the emoji-free pass.
 const STATUS_DISPLAY: Record<string, { label: string; tone: string; emoji: string }> = {
-  quote_requested: { label: "Quote requested", tone: "text-[#bdbdbd] bg-white/[0.06] border-white/15", emoji: "📥" },
-  shipped:         { label: "Shipped",         tone: "text-sky-200 bg-sky-500/15 border-sky-500/40", emoji: "📦" },
-  received:        { label: "Received by TCC", tone: "text-violet-200 bg-violet-500/15 border-violet-500/40", emoji: "📬" },
-  tested:          { label: "In inspection",   tone: "text-amber-200 bg-amber-500/15 border-amber-500/40", emoji: "🔍" },
-  met:             { label: "Picked up — paid", tone: "text-emerald-200 bg-emerald-500/15 border-emerald-500/40", emoji: "🤝" },
-  paid:            { label: "Paid",            tone: "text-emerald-200 bg-emerald-500/15 border-emerald-500/40", emoji: "💵" },
-  rejected:        { label: "Returned",        tone: "text-red-200 bg-red-500/15 border-red-500/40", emoji: "↩️" },
+  quote_requested: { label: "Quote requested", tone: "text-[#bdbdbd] bg-white/[0.06] border-white/15", emoji: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
+  shipped:         { label: "Shipped",         tone: "text-sky-200 bg-sky-500/15 border-sky-500/40", emoji: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" },
+  received:        { label: "Received by TCC", tone: "text-violet-200 bg-violet-500/15 border-violet-500/40", emoji: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
+  tested:          { label: "In inspection",   tone: "text-amber-200 bg-amber-500/15 border-amber-500/40", emoji: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" },
+  met:             { label: "Picked up — paid", tone: "text-emerald-200 bg-emerald-500/15 border-emerald-500/40", emoji: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" },
+  paid:            { label: "Paid",            tone: "text-emerald-200 bg-emerald-500/15 border-emerald-500/40", emoji: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+  rejected:        { label: "Returned",        tone: "text-red-200 bg-red-500/15 border-red-500/40", emoji: "M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" },
 };
 
 function timeAgo(iso: string): string {
@@ -269,10 +272,12 @@ export default function AccountPage() {
     return out;
   })();
 
+  // `icon` holds an SVG path `d` string, wrapped in <svg> at the
+  // render site — part of the emoji-free pass.
   const sectionTabs: Array<{ id: Section; label: string; icon: string; count?: number }> = [
-    { id: "account", label: "Account Info", icon: "👤" },
-    { id: "trades", label: "Trade-Ins", icon: "🧾", count: summary.total },
-    { id: "addresses", label: "Addresses", icon: "📍", count: addresses.length },
+    { id: "account", label: "Account Info", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
+    { id: "trades", label: "Trade-Ins", icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", count: summary.total },
+    { id: "addresses", label: "Addresses", icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z", count: addresses.length },
   ];
 
   return (
@@ -286,43 +291,42 @@ export default function AccountPage() {
 
         <h1 className="text-2xl md:text-3xl font-bold mb-6">My Account</h1>
 
-        <div className="lg:flex lg:gap-6">
-          {/* Side nav (vertical on lg, horizontal scroll on mobile) */}
-          <aside className="lg:w-56 shrink-0 mb-4 lg:mb-0">
-            <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0 lg:sticky lg:top-6">
-              {sectionTabs.map((t) => {
-                const active = section === t.id;
-                return (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => setSection(t.id)}
-                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition cursor-pointer ${
-                      active
-                        ? "bg-[#00c853]/15 text-[#00c853] border border-[#00c853]/40"
-                        : "text-[#dcdcdc] hover:bg-white/5 border border-transparent"
-                    }`}
-                  >
-                    <span>{t.icon}</span>
-                    <span className="flex-1 text-left">{t.label}</span>
-                    {t.count !== undefined && t.count > 0 && (
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${active ? "bg-[#00c853]/20 text-[#00c853]" : "bg-white/[0.08] text-[#888]"}`}>{t.count}</span>
-                    )}
-                  </button>
-                );
-              })}
-              <button
-                type="button"
-                onClick={logout}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-[#ff8088] hover:bg-red-500/10 transition cursor-pointer lg:mt-4"
-              >
-                <span>↩</span><span className="flex-1 text-left">Sign out</span>
-              </button>
-            </nav>
-          </aside>
+        <div>
+          {/* Section menu — centered horizontal tab bar. Larger text +
+              padding than the old left sidebar so it reads cleanly. */}
+          <nav className="flex flex-wrap justify-center gap-2 mb-7">
+            {sectionTabs.map((t) => {
+              const active = section === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setSection(t.id)}
+                  className={`flex items-center gap-2.5 px-5 py-3 rounded-full text-base font-bold whitespace-nowrap transition cursor-pointer ${
+                    active
+                      ? "bg-[#00c853]/15 text-[#00c853] border border-[#00c853]/40"
+                      : "text-[#dcdcdc] bg-white/[0.12] hover:bg-white/[0.16] border border-white/10"
+                  }`}
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d={t.icon} /></svg>
+                  <span>{t.label}</span>
+                  {t.count !== undefined && t.count > 0 && (
+                    <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded ${active ? "bg-[#00c853]/20 text-[#00c853]" : "bg-white/[0.08] text-[#888]"}`}>{t.count}</span>
+                  )}
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              onClick={logout}
+              className="flex items-center gap-2.5 px-5 py-3 rounded-full text-base font-bold text-[#ff8088] bg-white/[0.12] hover:bg-red-500/10 border border-white/10 transition cursor-pointer"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg><span>Sign out</span>
+            </button>
+          </nav>
 
           {/* Main content area */}
-          <div className="flex-1 min-w-0">
+          <div className="max-w-3xl mx-auto">
 
         {section === "account" && (
           <div className="space-y-4">
@@ -336,15 +340,15 @@ export default function AccountPage() {
                   <button
                     type="button"
                     onClick={startEdit}
-                    className="text-[11px] font-semibold text-[#00c853] hover:text-[#00e676] px-2.5 py-1 rounded-lg bg-[#00c853]/10 border border-[#00c853]/30 transition cursor-pointer"
+                    className="text-[11px] font-semibold text-[#00c853] hover:text-[#00e676] px-2.5 py-1 rounded-lg bg-[#00c853]/10 border border-[#00c853]/30 transition cursor-pointer inline-flex items-center gap-1"
                   >
-                    ✏️ Edit
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg> Edit
                   </button>
                 )}
               </div>
               {profileSaved && (
-                <div className="mb-3 px-3 py-2 rounded-lg bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-xs font-semibold">
-                  ✓ Account details saved
+                <div className="mb-3 px-3 py-2 rounded-lg bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-xs font-semibold flex items-center gap-1.5">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Account details saved
                 </div>
               )}
               {editing ? (
@@ -513,13 +517,13 @@ export default function AccountPage() {
                       <div className="text-right">
                         {t.quote && <p className="text-lg font-extrabold text-[#00c853]">{t.quote}</p>}
                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${meta.tone} mt-1`}>
-                          {meta.emoji} {meta.label}
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d={meta.emoji} /></svg> {meta.label}
                         </span>
                       </div>
                     </div>
                     {t.fedexTracking && (
                       <span className="mt-3 inline-flex items-center gap-1.5 text-xs text-[#00c853] font-semibold">
-                        📦 FedEx label ready — open offer to print →
+                        <svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg> FedEx label ready — open offer to print →
                       </span>
                     )}
                   </a>
@@ -546,7 +550,7 @@ export default function AccountPage() {
                       <div className="text-right shrink-0">
                         {t.quote && <p className="text-sm font-bold">{t.quote}</p>}
                         <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${meta.tone} mt-0.5`}>
-                          {meta.emoji} {meta.label}
+                          <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d={meta.emoji} /></svg> {meta.label}
                         </span>
                       </div>
                     </a>

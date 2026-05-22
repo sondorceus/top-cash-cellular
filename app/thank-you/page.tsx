@@ -11,7 +11,7 @@ export default function ThankYou() {
       <script dangerouslySetInnerHTML={{ __html: `gtag('event','ads_conversion_Request_quote_1',{});` }} />
       <div className="max-w-lg mx-auto px-4 text-center">
         <div className="w-20 h-20 rounded-full bg-[#00c853]/10 flex items-center justify-center mx-auto mb-6">
-          <span className="text-4xl">✅</span>
+          <svg className="w-9 h-9 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         </div>
         <h1 className="text-3xl font-bold mb-3">Quote received!</h1>
         <p className="text-[#dcdcdc] text-lg mb-6">
