@@ -4,7 +4,7 @@ import Script from "next/script";
 import { track as vercelTrack } from "@vercel/analytics";
 import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT } from "./lib/resell-estimates";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
-import { validateBtcAddress, cashtagFormatValid, normalizeCashtag } from "./lib/payout-verify";
+import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "./lib/payout-verify";
 import { SlideOnScrollNav } from "./components/SlideOnScrollNav";
 import { HeaderSearch } from "./components/HeaderSearch";
 import Pic from "./components/Pic";
@@ -115,6 +115,200 @@ function CategoryIcon({ id, className = "" }: { id: CatIconId; className?: strin
         </svg>
       );
   }
+}
+
+// Condition-grade illustrations — outline-style phone with grade-appropriate
+// damage cues. Authored inline, no external assets, ~1.8 stroke. Phone outline
+// uses currentColor (we set text-white on the parent); damage marks use Tailwind
+// red/amber accent classes so they pop against the dark theme. Same viewBox
+// (0 0 64 96, ~phone form factor) across every tier so the row of thumbnails
+// reads consistently. Added 2026-05-22 to fix mis-grading at the condition step.
+// Tier ids match CONDITIONS / SIMPLE_CONDITIONS (sealed | mint | good | fair |
+// broken); a missing id falls back to a clean phone.
+type ConditionIllustrationId = "sealed" | "mint" | "good" | "fair" | "broken";
+function ConditionIllustration({ id, className = "" }: { id: ConditionIllustrationId; className?: string }) {
+  // Shared phone outline — body, screen bezel, speaker, side button. Drawn
+  // every time so each tier is self-contained and recognizable on its own.
+  const phoneOutline = (
+    <g fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="14" y="6" width="36" height="84" rx="6" />
+      <rect x="18" y="14" width="28" height="68" rx="2.5" />
+      <line x1="28" y1="10" x2="36" y2="10" />
+      <circle cx="32" cy="86" r="0.8" />
+      <line x1="10.5" y1="34" x2="10.5" y2="44" />
+    </g>
+  );
+  switch (id) {
+    case "sealed":
+      // Sealed: clean phone + a small NEW badge + sparkle.
+      return (
+        <svg viewBox="0 0 64 96" className={className} aria-hidden="true">
+          {phoneOutline}
+          {/* NEW tag tucked top-right */}
+          <g className="text-emerald-300" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M44 4 l12 0 l4 5 l-4 5 l-12 0 z" />
+          </g>
+          <text x="52" y="11" textAnchor="middle" fontSize="5" fontWeight="800" className="fill-emerald-300" style={{ fontFamily: "system-ui, sans-serif" }}>NEW</text>
+          {/* Sparkle, bottom-left of the screen */}
+          <g className="text-emerald-300" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
+            <line x1="24" y1="70" x2="24" y2="76" />
+            <line x1="21" y1="73" x2="27" y2="73" />
+            <line x1="22" y1="71" x2="26" y2="75" />
+            <line x1="22" y1="75" x2="26" y2="71" />
+          </g>
+        </svg>
+      );
+    case "mint":
+      // Flawless / Mint / Excellent: clean phone, nothing else.
+      return (
+        <svg viewBox="0 0 64 96" className={className} aria-hidden="true">
+          {phoneOutline}
+        </svg>
+      );
+    case "good":
+      // Good: 2-3 short faint scuff strokes scattered on the body.
+      // (We also use this tier for "Very Good" since the live ladder collapsed
+      // those into one; one faint scuff = good shape, fully functional.)
+      return (
+        <svg viewBox="0 0 64 96" className={className} aria-hidden="true">
+          {phoneOutline}
+          <g className="text-amber-300" fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" opacity="0.85">
+            <line x1="22" y1="30" x2="28" y2="32" />
+            <line x1="36" y1="50" x2="42" y2="51" />
+            <line x1="24" y1="64" x2="29" y2="65" />
+          </g>
+        </svg>
+      );
+    case "fair":
+      // Fair: visible scratches + a small chipped corner (bottom-right notch).
+      return (
+        <svg viewBox="0 0 64 96" className={className} aria-hidden="true">
+          {phoneOutline}
+          <g className="text-amber-300" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round">
+            <line x1="20" y1="26" x2="30" y2="29" />
+            <line x1="34" y1="40" x2="44" y2="42" />
+            <line x1="22" y1="54" x2="34" y2="57" />
+            <line x1="28" y1="70" x2="40" y2="72" />
+          </g>
+          {/* Chipped bottom-right corner — small triangular nick drawn in red */}
+          <g className="text-red-400" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M50 84 L46 90 L50 90 Z" />
+          </g>
+        </svg>
+      );
+    case "broken":
+      // Broken: spider-crack pattern radiating from a single impact point on
+      // the screen. Multiple branching strokes; the impact dot is solid.
+      return (
+        <svg viewBox="0 0 64 96" className={className} aria-hidden="true">
+          {phoneOutline}
+          <g className="text-red-400" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+            {/* radial cracks from impact point at (32,46) */}
+            <line x1="32" y1="46" x2="22" y2="22" />
+            <line x1="32" y1="46" x2="44" y2="20" />
+            <line x1="32" y1="46" x2="20" y2="58" />
+            <line x1="32" y1="46" x2="44" y2="68" />
+            <line x1="32" y1="46" x2="30" y2="78" />
+            {/* a couple of branch fractures */}
+            <line x1="28" y1="34" x2="22" y2="36" />
+            <line x1="38" y1="34" x2="44" y2="32" />
+            <line x1="28" y1="58" x2="22" y2="62" />
+            <line x1="36" y1="58" x2="42" y2="60" />
+            {/* concentric fracture ring */}
+            <path d="M26 40 Q32 36 38 40" />
+            <path d="M26 52 Q32 56 38 52" />
+            {/* impact dot */}
+            <circle cx="32" cy="46" r="1.6" fill="currentColor" />
+          </g>
+        </svg>
+      );
+    default:
+      return (
+        <svg viewBox="0 0 64 96" className={className} aria-hidden="true">
+          {phoneOutline}
+        </svg>
+      );
+  }
+}
+
+// Broken-glass illustrations — front / back / both. The funnel asks this AFTER
+// a customer picks the broken tier and confirms the device still works.
+// Same 64x96 viewBox so the row stays visually consistent with the condition
+// tier thumbnails. front = cracks on the screen face; back = cracks behind a
+// hint of a camera bump; both = two phones side-by-side with cracks each.
+type BrokenGlassId = "front" | "back" | "both";
+function BrokenGlassIllustration({ id, className = "" }: { id: BrokenGlassId; className?: string }) {
+  const phoneFront = (
+    <g fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="14" y="6" width="36" height="84" rx="6" />
+      <rect x="18" y="14" width="28" height="68" rx="2.5" />
+      <line x1="28" y1="10" x2="36" y2="10" />
+      <circle cx="32" cy="86" r="0.8" />
+    </g>
+  );
+  const phoneBack = (
+    <g fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="14" y="6" width="36" height="84" rx="6" />
+      {/* camera bump — clearly the back of the device */}
+      <rect x="22" y="14" width="18" height="18" rx="3" />
+      <circle cx="28" cy="22" r="3" />
+      <circle cx="36" cy="22" r="3" />
+      <circle cx="28" cy="22" r="0.8" fill="currentColor" />
+      <circle cx="36" cy="22" r="0.8" fill="currentColor" />
+    </g>
+  );
+  const crackPattern = (cx: number, cy: number) => (
+    <g className="text-red-400" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+      <line x1={cx} y1={cy} x2={cx - 10} y2={cy - 20} />
+      <line x1={cx} y1={cy} x2={cx + 11} y2={cy - 22} />
+      <line x1={cx} y1={cy} x2={cx - 12} y2={cy + 12} />
+      <line x1={cx} y1={cy} x2={cx + 12} y2={cy + 18} />
+      <line x1={cx} y1={cy} x2={cx - 2} y2={cy + 24} />
+      <line x1={cx - 5} y1={cy - 10} x2={cx - 11} y2={cy - 8} />
+      <line x1={cx + 5} y1={cy - 10} x2={cx + 11} y2={cy - 12} />
+      <path d={`M${cx - 7} ${cy + 3} Q${cx} ${cy - 4} ${cx + 7} ${cy + 3}`} />
+      <circle cx={cx} cy={cy} r="1.6" fill="currentColor" />
+    </g>
+  );
+  if (id === "front") {
+    return (
+      <svg viewBox="0 0 64 96" className={className} aria-hidden="true">
+        {phoneFront}
+        {crackPattern(32, 46)}
+      </svg>
+    );
+  }
+  if (id === "back") {
+    return (
+      <svg viewBox="0 0 64 96" className={className} aria-hidden="true">
+        {phoneBack}
+        {/* place cracks lower on the back so they don't collide with the camera */}
+        {crackPattern(32, 58)}
+      </svg>
+    );
+  }
+  // both: two miniature phones side-by-side, each cracked. Wider viewBox.
+  return (
+    <svg viewBox="0 0 128 96" className={className} aria-hidden="true">
+      <g transform="translate(0,0)">
+        <g fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+          <rect x="14" y="6" width="36" height="84" rx="6" />
+          <rect x="18" y="14" width="28" height="68" rx="2.5" />
+          <line x1="28" y1="10" x2="36" y2="10" />
+        </g>
+        {crackPattern(32, 46)}
+      </g>
+      <g transform="translate(64,0)">
+        <g fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+          <rect x="14" y="6" width="36" height="84" rx="6" />
+          <rect x="22" y="14" width="18" height="18" rx="3" />
+          <circle cx="28" cy="22" r="3" />
+          <circle cx="36" cy="22" r="3" />
+        </g>
+        {crackPattern(32, 58)}
+      </g>
+    </svg>
+  );
 }
 
 // FedEx wordmark — purple "Fed" + orange "Ex" in the Univers-stack font.
@@ -4044,6 +4238,17 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [quoteEmail, setQuoteEmail] = useState("");
   const [quoteSaved, setQuoteSaved] = useState(false);
+  // Free-recycling secondary CTA — only renders on the quote step when
+  // the funnel landed at a manual-review / no-instant-price state
+  // (isPendingQuote || isManualQuote). Customer trades the device for a
+  // digital e-waste certificate instead of a payout. Skywalker 2026-05-22:
+  // "competitors capture these customers with a free responsible-recycling
+  // option + a digital e-waste certificate." See /api/lead?recycle=true.
+  const [recycleName, setRecycleName] = useState("");
+  const [recycleEmail, setRecycleEmail] = useState("");
+  const [recycleSubmitting, setRecycleSubmitting] = useState(false);
+  const [recycleSubmitted, setRecycleSubmitted] = useState<{ leadId?: string } | null>(null);
+  const [recycleError, setRecycleError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [showConfetti, setShowConfetti] = useState(false);
   // Handoff method picked on the contact step (NOT after submit) — keeps the
@@ -6903,7 +7108,15 @@ export default function Home() {
                   <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               </div>
-              <ul className="p-5 space-y-2.5">
+              {/* Visual hero — outline phone with the tier's damage cues.
+                  Customers scanning the modal pick by eye first, then read.
+                  Added 2026-05-22 to reduce mis-grading on the picker. */}
+              <div className="px-5 pt-4 pb-2 flex items-center justify-center">
+                <div className="bg-white/5 border border-white/10 rounded-2xl px-6 py-3 text-white">
+                  <ConditionIllustration id={c.id as ConditionIllustrationId} className="w-20 h-28" />
+                </div>
+              </div>
+              <ul className="p-5 pt-3 space-y-2.5">
                 {(c as { details?: string[] }).details?.map((d, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-[#e8e8e8] text-sm leading-snug">
                     <span className="text-[#00c853] mt-0.5 shrink-0" style={{ filter: "drop-shadow(0 0 4px rgba(0,200,83,0.5))" }}>✓</span>
@@ -9536,6 +9749,12 @@ export default function Home() {
                   }}
                   className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `cond-${c.id}` ? "tap-confirm" : ""}`}
                 >
+                  {/* Grade illustration — a small phone outline with the
+                      tier's damage cues so a customer can pick by eye, not
+                      just by reading the description. Added 2026-05-22. */}
+                  <div className="w-9 h-9 shrink-0 rounded-lg bg-white/5 border border-white/10 text-white flex items-center justify-center overflow-hidden">
+                    <ConditionIllustration id={c.id as ConditionIllustrationId} className="w-5 h-7" />
+                  </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="font-extrabold text-[15px] text-white leading-tight">{getConditionLabel(c, deviceType).label}</p>
@@ -9763,8 +9982,15 @@ export default function Home() {
                         setStep(ns); pushHistory(ns);
                       });
                     }}
-                    className={`tcc-card group w-full flex items-center px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `bglass-${g.id}` ? "tap-confirm" : ""}`}
+                    className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `bglass-${g.id}` ? "tap-confirm" : ""}`}
                   >
+                    {/* Glass-damage illustration — phone with cracks placed on
+                        the front, back (camera-bump side), or both. Visual cue
+                        helps avoid a customer picking the wrong option when
+                        only one side is actually cracked. */}
+                    <div className={`${g.id === "both" ? "w-14" : "w-9"} h-9 shrink-0 rounded-lg bg-white/5 border border-white/10 text-white flex items-center justify-center overflow-hidden`}>
+                      <BrokenGlassIllustration id={g.id} className={`${g.id === "both" ? "w-12 h-7" : "w-5 h-7"}`} />
+                    </div>
                     <div className="flex-1">
                       <p className="font-extrabold text-[15px] text-white">{g.title}</p>
                       <p className="text-[#b8b8b8] text-xs mt-0.5">{g.sub}</p>
@@ -9932,6 +10158,179 @@ export default function Home() {
                 <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853] mt-1" style={{ textShadow: "0 0 8px rgba(0, 200, 83, 0.22)" }}>${quote * quantity}</p>
               )}
             </div>
+            {/* FREE-RECYCLING SECONDARY CTA — calm dark card that shows on
+                manual-review / pending-quote landings. Customer can opt
+                into responsible recycling for a digital e-waste certificate
+                instead of bouncing with nothing. Mirrors what ItsWorthMore
+                and Gazelle do for no-value devices. Submits a recycle-only
+                lead to /api/lead (recycle:true) which writes the standard
+                [NEW BUYBACK LEAD] marker AND fires a certificate email
+                via Resend — no payout, no follow-up, no FedEx label.
+                Skywalker 2026-05-22. Visible on both mobile + desktop
+                (the desktop offer column above is hidden on mobile, but
+                this card lives in the main column so it renders for
+                everyone in the no-value state). */}
+            {(isManualQuote || isPendingQuote) && model && (
+              <div className="max-w-md mx-auto lg:mx-0 mb-4 mt-2 bg-white/5 border border-white/10 rounded-2xl p-4 text-left">
+                {recycleSubmitted ? (
+                  <div className="flex items-start gap-3">
+                    <svg className="w-6 h-6 shrink-0 text-[#00c853] mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-white leading-tight">Recycle request received</p>
+                      <p className="text-[12px] text-[#bdbdbd] mt-1 leading-snug">
+                        Your e-waste certificate is on its way to <span className="text-white font-semibold">{recycleEmail || email}</span>. Check your inbox within the hour (peek in spam if it doesn&apos;t arrive).
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex items-start gap-3 mb-2">
+                      <svg className="w-6 h-6 shrink-0 text-[#00c853] mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                        {/* Heroicons-outline-style "arrow-path" / recycle glyph */}
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                      </svg>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-white leading-tight">Don&apos;t want to wait — or it&apos;s worth nothing?</p>
+                        <p className="text-[12px] text-[#bdbdbd] mt-1 leading-snug">
+                          Let us recycle it responsibly, free. We send you a digital e-waste certificate within an hour. No payout, no follow-up.
+                        </p>
+                      </div>
+                    </div>
+                    {/* If the customer already entered name + email earlier
+                        in the funnel (contact step) we reuse those silently
+                        and just show a single Recycle button. Otherwise the
+                        inline mini-form collects them. Phone is intentionally
+                        not required for recycle-only — we only need email
+                        to deliver the certificate. */}
+                    {(name.trim() && email.trim() && /.+@.+\..+/.test(email)) ? (
+                      <button
+                        type="button"
+                        disabled={recycleSubmitting}
+                        onClick={async () => {
+                          if (recycleSubmitting) return;
+                          setRecycleSubmitting(true);
+                          setRecycleError(null);
+                          try {
+                            setRecycleName(name);
+                            setRecycleEmail(email);
+                            const res = await fetch("/api/lead", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({
+                                recycle: true,
+                                name,
+                                email,
+                                device: deviceType,
+                                model: model?.label,
+                                storage: storage?.label,
+                                condition: condition?.label,
+                                carrier: carrier?.label,
+                              }),
+                            });
+                            if (!res.ok) {
+                              const d = await res.json().catch(() => ({}));
+                              throw new Error(d?.error || "Failed");
+                            }
+                            const d = await res.json().catch(() => ({}));
+                            setRecycleSubmitted({ leadId: d?.leadId });
+                          } catch (err) {
+                            setRecycleError(err instanceof Error ? err.message : "Something went wrong");
+                          } finally {
+                            setRecycleSubmitting(false);
+                          }
+                        }}
+                        className="w-full mt-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white text-sm font-extrabold cursor-pointer transition tap-press disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {recycleSubmitting ? "Sending certificate…" : "Recycle this device →"}
+                      </button>
+                    ) : (
+                      <form
+                        onSubmit={async (e) => {
+                          e.preventDefault();
+                          if (recycleSubmitting) return;
+                          const rName = recycleName.trim();
+                          const rEmail = recycleEmail.trim();
+                          if (!rName || !/.+@.+\..+/.test(rEmail)) {
+                            setRecycleError("Please enter your name and a valid email so we can send your certificate.");
+                            return;
+                          }
+                          setRecycleSubmitting(true);
+                          setRecycleError(null);
+                          try {
+                            const res = await fetch("/api/lead", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({
+                                recycle: true,
+                                name: rName,
+                                email: rEmail,
+                                device: deviceType,
+                                model: model?.label,
+                                storage: storage?.label,
+                                condition: condition?.label,
+                                carrier: carrier?.label,
+                              }),
+                            });
+                            if (!res.ok) {
+                              const d = await res.json().catch(() => ({}));
+                              throw new Error(d?.error || "Failed");
+                            }
+                            const d = await res.json().catch(() => ({}));
+                            // Mirror into the main funnel state so a later
+                            // standard submission doesn't ask for these again.
+                            if (!name) setName(rName);
+                            if (!email) setEmail(rEmail);
+                            setRecycleSubmitted({ leadId: d?.leadId });
+                          } catch (err) {
+                            setRecycleError(err instanceof Error ? err.message : "Something went wrong");
+                          } finally {
+                            setRecycleSubmitting(false);
+                          }
+                        }}
+                        className="space-y-2 mt-2"
+                      >
+                        <input
+                          type="text"
+                          value={recycleName}
+                          onChange={(e) => setRecycleName(e.target.value)}
+                          required
+                          minLength={2}
+                          maxLength={80}
+                          placeholder="Your name"
+                          aria-label="Your name for the e-waste certificate"
+                          className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition"
+                        />
+                        <input
+                          type="email"
+                          value={recycleEmail}
+                          onChange={(e) => setRecycleEmail(e.target.value)}
+                          required
+                          maxLength={200}
+                          placeholder="you@email.com"
+                          aria-label="Email for the e-waste certificate"
+                          className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition"
+                        />
+                        <button
+                          type="submit"
+                          disabled={recycleSubmitting}
+                          className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white text-sm font-extrabold cursor-pointer transition tap-press disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {recycleSubmitting ? "Sending certificate…" : "Recycle this device →"}
+                        </button>
+                      </form>
+                    )}
+                    {recycleError && (
+                      <p className="text-xs text-red-400 mt-2">{recycleError}</p>
+                    )}
+                    <p className="text-[10px] text-[#888] mt-2 leading-snug">
+                      Devices are wiped to NIST 800-88 and either refurbished for reuse or broken down for component recovery — never landfilled.
+                    </p>
+                  </>
+                )}
+              </div>
+            )}
             <div className="flex items-center justify-center lg:justify-start flex-wrap gap-1 mb-2">
               {promoApplies && promo && (
                 <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>{promo.flatBonus ? `+$${promo.flatBonus} bonus applied` : `+${promo.percent}% promo applied`}</p>
@@ -10576,6 +10975,7 @@ export default function Home() {
               // cashtagCheckState below).
               const isBtc = payout.id === "btc";
               const isCashApp = payout.id === "cashapp";
+              const isZelle = payout.id === "zelle";
               const btcValid = isBtc && h.length > 0 ? validateBtcAddress(h) : false;
               const btcInvalid = isBtc && h.length > 0 && !btcValid;
               const cashtagNormalized = isCashApp ? normalizeCashtag(h) : "";
@@ -10583,13 +10983,17 @@ export default function Home() {
                 ? cashtagFormatValid(cashtagNormalized)
                 : false;
               const cashtagFormatBad = isCashApp && h.length > 0 && !cashtagFormatOk;
+              const zelleValid = isZelle && h.length > 0 ? validateZelle(h) : false;
+              const zelleInvalid = isZelle && h.length > 0 && !zelleValid;
+              const zelleLooksLikeEmail = isZelle && zelleValid && h.includes("@");
               // Continue gate: handles must match, AND for BTC the
-              // checksum must pass, AND for Cash App the format must
-              // pass. Existence scrape never blocks (cashtagCheckState
-              // only colors the inline status text).
+              // checksum must pass, AND for Cash App / Zelle the format
+              // must pass. The Cash App existence scrape never blocks
+              // (cashtagCheckState only colors the inline status text).
               const formatBlock =
                 (isBtc && btcInvalid) ||
-                (isCashApp && cashtagFormatBad);
+                (isCashApp && cashtagFormatBad) ||
+                (isZelle && zelleInvalid);
               const ready = !needsHandle || (matched && !formatBlock);
               return (
                 <div className="mt-5 bg-white/[0.03] border border-white/10 rounded-2xl p-4">
@@ -10606,9 +11010,9 @@ export default function Home() {
                         autoComplete="off"
                         spellCheck={false}
                         className={`w-full px-3 py-2.5 bg-black/40 border rounded-lg text-sm text-white placeholder:text-[#777] focus:outline-none ${
-                          btcInvalid || cashtagFormatBad
+                          btcInvalid || cashtagFormatBad || zelleInvalid
                             ? "border-red-500/60"
-                            : (isBtc && btcValid) || (isCashApp && cashtagFormatOk)
+                            : (isBtc && btcValid) || (isCashApp && cashtagFormatOk) || (isZelle && zelleValid)
                               ? "border-[#00c853]"
                               : "border-white/15 focus:border-[#00c853]"
                         }`}
@@ -10637,6 +11041,9 @@ export default function Home() {
                         {isCashApp && cashtagFormatOk && cashtagCheckState === "warn" && (
                           <p className="text-[11px] font-semibold text-yellow-300">⚠ We couldn&apos;t find that {cashtagNormalized} — make sure it&apos;s exactly right</p>
                         )}
+                        {isZelle && h.length > 0 && (zelleValid
+                          ? <p className="text-[11px] font-semibold text-[#00c853]">✓ Valid Zelle {zelleLooksLikeEmail ? "email" : "phone number"}</p>
+                          : <p className="text-[11px] font-semibold text-red-300">✕ Zelle needs an email or a 10-digit US phone number</p>)}
                       </div>
                       <label className="block text-[11px] font-bold uppercase tracking-wider text-[#888] mb-1">Confirm {meta.field}</label>
                       <input

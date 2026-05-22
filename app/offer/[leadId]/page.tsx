@@ -196,6 +196,17 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   const [cancelError, setCancelError] = useState("");
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
   const [cancelNote, setCancelNote] = useState("");
+  // Price-match request — "Best Price Guarantee" customer-facing form.
+  // Posts a [PRICE-MATCH-REQUEST:] MC marker for staff review; staff
+  // honors via the existing counter-offer flow. Skywalker 2026-05-22.
+  const [pmOpen, setPmOpen] = useState(false);
+  const [pmCompetitor, setPmCompetitor] = useState("");
+  const [pmAmount, setPmAmount] = useState("");
+  const [pmUrl, setPmUrl] = useState("");
+  const [pmNote, setPmNote] = useState("");
+  const [pmSubmitting, setPmSubmitting] = useState(false);
+  const [pmError, setPmError] = useState("");
+  const [pmSubmitted, setPmSubmitted] = useState(false);
   // Phone-number editing — the only contact field the customer can
   // change themselves (name stays fixed; email is the account identity).
   const [editingPhone, setEditingPhone] = useState(false);
@@ -259,6 +270,40 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
       setCancelError("Network error — try again.");
     } finally {
       setCancelling(false);
+    }
+  };
+
+  // Submit a price-match request. Staff sees the marker land in MC +
+  // gets an owner SMS; the actual price adjustment is human-in-the-loop
+  // via the existing counter-offer flow.
+  const doPriceMatch = async () => {
+    const amount = parseInt(pmAmount.replace(/[^0-9]/g, ""), 10);
+    if (!pmCompetitor.trim()) { setPmError("Where did you find the better quote?"); return; }
+    if (!amount || amount <= 0) { setPmError("Enter the dollar amount they quoted."); return; }
+    if (pmUrl.trim() && !/^https?:\/\//i.test(pmUrl.trim())) {
+      setPmError("If you include a link, it should start with http:// or https://.");
+      return;
+    }
+    setPmSubmitting(true);
+    setPmError("");
+    try {
+      const r = await fetch(`/api/offer/${encodeURIComponent(leadId)}/price-match`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          competitor: pmCompetitor.trim(),
+          amount,
+          url: pmUrl.trim() || undefined,
+          note: pmNote.trim() || undefined,
+        }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) { setPmError(d.error || "Couldn't send your request — try again."); return; }
+      setPmSubmitted(true);
+    } catch {
+      setPmError("Network error — try again.");
+    } finally {
+      setPmSubmitting(false);
     }
   };
 
@@ -837,6 +882,103 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             {offer.email && <p className="text-[#bdbdbd] text-xs flex items-center gap-1.5"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg><span>{offer.email}</span></p>}
           </div>
         </div>
+
+        {/* Best Price Guarantee — customer-facing price-match form.
+            Submitting posts a [PRICE-MATCH-REQUEST:] marker to MC and
+            owner-SMSes staff; the honoring itself runs through the
+            existing counter-offer flow. Skywalker 2026-05-22. */}
+        {!isPaid && !isCancelled && (
+          <div className="bg-white/[0.02] border border-white/8 rounded-2xl p-5 mb-5">
+            {pmSubmitted ? (
+              <div className="text-center">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Best Price Guarantee</p>
+                <p className="text-sm font-bold text-white mb-1">Got it — we&apos;ll review and get back to you.</p>
+                <p className="text-[#bdbdbd] text-xs leading-relaxed">A real person checks every request, usually same business day. We&apos;ll reach out by text or email with our response.</p>
+              </div>
+            ) : !pmOpen ? (
+              <button
+                type="button"
+                onClick={() => setPmOpen(true)}
+                className="w-full flex items-start justify-between gap-3 text-left cursor-pointer group"
+              >
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Best Price Guarantee</p>
+                  <p className="text-sm font-bold text-white mb-1">Found a better quote elsewhere?</p>
+                  <p className="text-[#bdbdbd] text-xs leading-relaxed">Tell us where — we aim to match or beat any honest comparable quote.</p>
+                </div>
+                <svg className="w-5 h-5 shrink-0 text-[#00c853] mt-1 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </button>
+            ) : (
+              <>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Best Price Guarantee</p>
+                <p className="text-sm font-bold text-white mb-3">Submit a competitor quote</p>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Where did you get the quote?</label>
+                    <input
+                      type="text"
+                      value={pmCompetitor}
+                      onChange={(e) => setPmCompetitor(e.target.value.slice(0, 60))}
+                      placeholder="ItsWorthMore, Gazelle, Swappa, Backmarket…"
+                      className="w-full px-3 py-2 bg-black/40 border border-white/15 rounded-lg text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Their quote ($)</label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={pmAmount}
+                      onChange={(e) => setPmAmount(e.target.value.replace(/[^0-9]/g, "").slice(0, 6))}
+                      placeholder="e.g. 425"
+                      className="w-full px-3 py-2 bg-black/40 border border-white/15 rounded-lg text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Link to their quote <span className="text-[#666] normal-case font-normal">(optional)</span></label>
+                    <input
+                      type="url"
+                      value={pmUrl}
+                      onChange={(e) => setPmUrl(e.target.value.slice(0, 240))}
+                      placeholder="https://…"
+                      className="w-full px-3 py-2 bg-black/40 border border-white/15 rounded-lg text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Anything else? <span className="text-[#666] normal-case font-normal">(optional)</span></label>
+                    <textarea
+                      value={pmNote}
+                      onChange={(e) => setPmNote(e.target.value.slice(0, 300))}
+                      placeholder="e.g. condition we matched, screenshot details"
+                      rows={2}
+                      className="w-full px-3 py-2 bg-black/40 border border-white/15 rounded-lg text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] resize-none"
+                    />
+                  </div>
+                  {pmError && <p className="text-red-300 text-[11px] font-semibold">{pmError}</p>}
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={doPriceMatch}
+                      disabled={pmSubmitting}
+                      className="flex-1 px-3 py-2.5 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] rounded-lg text-sm font-extrabold cursor-pointer disabled:opacity-50 transition"
+                    >
+                      {pmSubmitting ? "Sending…" : "Submit for review"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setPmOpen(false); setPmError(""); }}
+                      disabled={pmSubmitting}
+                      className="px-3 py-2.5 bg-white/5 border border-white/15 rounded-lg text-sm font-semibold cursor-pointer disabled:opacity-50 transition"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-[#666] leading-relaxed">A real person reviews every request — no auto-honored numbers. We&apos;ll match or beat any honest comparable quote we can verify.</p>
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
         {/* Modify your trade-in — header section. Item-edit + add-item
             modals will come later; for now the modify path routes

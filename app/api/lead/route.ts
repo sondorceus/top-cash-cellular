@@ -4,7 +4,7 @@ import { put } from "@vercel/blob";
 import { createReturnLabel, deviceKindFromString, aggregateWeight, shouldBlockAutoShip } from "../../lib/fedex";
 import { reportError } from "../../lib/error-report";
 import { REFERRAL_REFEREE_BONUS, REFERRAL_CODE_RE } from "../../lib/referral";
-import { validateBtcAddress, cashtagFormatValid, normalizeCashtag } from "../../lib/payout-verify";
+import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "../../lib/payout-verify";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -150,6 +150,18 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
+  // Free-recycling fork — Skywalker 2026-05-22. When recycle:true the
+  // customer is opting into responsible disposal of a $0 / no-value /
+  // manual-review device instead of bouncing. No payout, no FedEx label,
+  // no payment-method validation. We still write the standard
+  // [NEW BUYBACK LEAD] marker (with Recycle-only: yes flagged) so the
+  // lead appears in the admin feed, and we send an e-waste certificate
+  // email via Resend instead of the normal payout-confirmation email.
+  // Branch handled in a dedicated helper below — falls through to the
+  // standard pricing/payment path otherwise.
+  if (data?.recycle === true) {
+    return handleRecycleLead(req, data);
+  }
   let { payout } = data;
   const { name, phone, email, device, model, storage, condition, carrier, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, referralCode } = data;
   // TCPA defense in depth — client checkbox is `required`, but a
@@ -221,6 +233,15 @@ export async function POST(req: NextRequest) {
         if (!cashtagFormatValid(normalized)) {
           return NextResponse.json(
             { error: "A Cash App handle should look like $yourname (letters and numbers only). Please re-enter it on the payout step." },
+            { status: 400 }
+          );
+        }
+      } else if (methodPart === "zelle") {
+        // Zelle accepts an email or a US phone — anything else won't
+        // route. Same fail-fast rule as the others.
+        if (!validateZelle(handlePart)) {
+          return NextResponse.json(
+            { error: "A Zelle handle should be an email or a 10-digit US phone number. Please re-enter it on the payout step." },
             { status: 400 }
           );
         }
@@ -1118,3 +1139,256 @@ Pick the best channel per device. Be concise.`;
     referralApplied: referralApplied ? { code: referralApplied.code, bonus: REFERRAL_REFEREE_BONUS } : null,
   });
 }
+
+// ---------------------------------------------------------------------------
+// Recycle-only lead handler — Skywalker 2026-05-22.
+//
+// Customers landing at a $0 / manual-review / pending-quote state can opt
+// into free responsible recycling instead of bouncing. We:
+//   1. Skip ALL payout/payment-method validation (no money is moving).
+//   2. Skip the FedEx label auto-mint (the seller can drop in any plain
+//      box at our address or visit Austin local — no insured label
+//      needed for a no-value device).
+//   3. Write the standard [NEW BUYBACK LEAD] marker with a
+//      "Recycle-only: yes" line so the admin parser flags the row.
+//   4. Fire a branded e-waste certificate email via Resend (separate
+//      template — Certificate of Responsible Recycling, dark theme,
+//      green accent, NIST 800-88 wording).
+//
+// Required body fields: name, email, model. device/storage/condition/
+// carrier are optional (whatever the funnel collected before bouncing).
+// Phone is NOT required for recycle-only — we only need email to
+// deliver the certificate.
+async function handleRecycleLead(req: NextRequest, data: Record<string, unknown>) {
+  const name = typeof data.name === "string" ? data.name : "";
+  const email = typeof data.email === "string" ? data.email : "";
+  const device = typeof data.device === "string" ? data.device : "";
+  const model = typeof data.model === "string" ? data.model : "";
+  const storage = typeof data.storage === "string" ? data.storage : "";
+  const condition = typeof data.condition === "string" ? data.condition : "";
+  const carrier = typeof data.carrier === "string" ? data.carrier : "";
+
+  if (!name.trim() || !email.trim() || !/.+@.+\..+/.test(email.trim())) {
+    return NextResponse.json(
+      { error: "Name and a valid email are required to send your e-waste certificate." },
+      { status: 400 }
+    );
+  }
+  if (!model.trim()) {
+    return NextResponse.json(
+      { error: "Device model is required so we know what we're receiving." },
+      { status: 400 }
+    );
+  }
+
+  // Sanitize every customer-supplied field before interpolating into MC
+  // — same marker-injection defense the main path uses.
+  const safeName = cleanField(name, 120);
+  const safeEmail = cleanField(email, 200);
+  const safeDevice = cleanField(device, 80);
+  const safeModel = cleanField(model, 120);
+  const safeStorage = cleanField(storage, 30);
+  const safeCondition = cleanField(condition, 60);
+  const safeCarrier = cleanField(carrier, 40);
+
+  // Server-side IP + UA + visitor cookie — same audit trail the main
+  // path captures, so recycle leads also support fraud + attribution.
+  const ip = (
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    "unknown"
+  ).slice(0, 64);
+  const ua = (req.headers.get("user-agent") || "unknown").slice(0, 240);
+  const visitorId = (req.cookies.get("tcc_visitor_id")?.value || "").slice(0, 64);
+
+  const leadBody = [
+    `[NEW BUYBACK LEAD] ♻ RECYCLE-ONLY`,
+    `Name: ${safeName}`,
+    `Phone: `,
+    `Email: ${safeEmail}`,
+    `Device: ${safeDevice || "—"} — ${safeModel}`,
+    safeStorage ? `Storage: ${safeStorage}` : null,
+    safeCarrier ? `Carrier: ${safeCarrier}` : null,
+    safeCondition ? `Condition: ${safeCondition}` : null,
+    `Quote: $0`,
+    `Payout: Free recycling`,
+    `Recycle-only: yes`,
+    `Source-IP: ${ip}`,
+    `Source-UA: ${ua}`,
+    visitorId ? `Visitor-ID: ${visitorId}` : null,
+    "--- Handoff: RECYCLE ---",
+    "Action: Customer is shipping or dropping off for free responsible recycling. No payout, no FedEx label auto-mint. E-waste certificate emailed at submit.",
+  ].filter(Boolean).join("\n");
+
+  // Post the lead to MC. Best-effort — if MC is down we still send the
+  // certificate email so the customer isn't left in limbo.
+  let leadId: string | null = null;
+  try {
+    const r = await fetch(`${MC_API}/api/comms`, {
+      method: "POST",
+      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "topcash-web",
+        fromName: "Top Cash Cellular",
+        role: "system",
+        body: leadBody,
+        tags: ["lead", "buyback", "recycle"],
+        priority: "normal",
+      }),
+    });
+    if (r.ok) {
+      const d = await r.json().catch(() => ({}));
+      leadId = d?.message?.id || null;
+    }
+  } catch {}
+
+  // E-waste certificate email — branded HTML matching the existing
+  // /api/confirm aesthetic (dark theme, green accent, gradient header).
+  // Customer name + device label + lead id + date go on a "certificate"
+  // panel inside the email body. NIST 800-88 wording is intentional
+  // since that IS our wipe standard — but we don't claim third-party
+  // certification we don't have.
+  let emailSent = false;
+  if (process.env.RESEND_API_KEY) {
+    // Format the leadId as #XXXX-XXXX for display (offer page convention).
+    const idSource = (leadId || `R${Date.now().toString(36).toUpperCase()}`).replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+    const padded = (idSource + "00000000").slice(0, 8);
+    const certNumber = `${padded.slice(0, 4)}-${padded.slice(4, 8)}`;
+    const certDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    const deviceLabel = [safeModel, safeStorage, safeCondition].filter(Boolean).join(" · ") || safeModel || "Device";
+    const html = renderRecycleCertificateEmail({
+      customerName: safeName,
+      deviceLabel,
+      certNumber,
+      certDate,
+    });
+    const text = `Hi ${safeName}, this is your Certificate of Responsible Recycling from Top Cash Cellular. Device: ${deviceLabel}. Certificate #${certNumber}. Issued ${certDate}. Your device will be securely wiped to NIST 800-88 and either refurbished for reuse or broken down for component recovery — never landfilled. Questions? Reply to this email or write to CustomerService@topcashcells.com.`;
+    try {
+      const { Resend } = await import("resend");
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const result = await resend.emails.send({
+        from: "Top Cash Cellular <noreply@topcashcellular.com>",
+        replyTo: "CustomerService@topcashcells.com",
+        to: email.trim(),
+        subject: "Your e-waste certificate — Top Cash Cellular",
+        html,
+        text,
+      });
+      emailSent = !!(result?.data?.id);
+      if (!emailSent) {
+        reportError("recycle.email.no-id", new Error("Resend returned no message id"), {
+          customerEmail: email,
+          critical: false,
+          extra: { model: safeModel },
+        });
+      }
+    } catch (err) {
+      reportError("recycle.email.send", err, {
+        customerEmail: email,
+        critical: false,
+        extra: { model: safeModel },
+      });
+    }
+  }
+
+  return NextResponse.json({ ok: true, recycle: true, leadId, emailSent });
+}
+
+// Branded e-waste certificate email template. Dark theme, green accent,
+// gradient header — matches the look of /api/confirm so the customer
+// recognizes it as the same brand. Honest wording: we describe what we
+// actually do (wipe to NIST 800-88, refurbish or component-recover);
+// we do NOT claim third-party certification ("Certificate of Responsible
+// Recycling" is a transactional acknowledgement, not a legal/audit doc).
+function renderRecycleCertificateEmail(opts: {
+  customerName: string;
+  deviceLabel: string;
+  certNumber: string;
+  certDate: string;
+}): string {
+  const { customerName, deviceLabel, certNumber, certDate } = opts;
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#1a1a1d;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;color:#e6e6e6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#1a1a1d;background-image:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,200,83,0.12) 0%, transparent 60%)">
+<tr><td align="center" style="padding:40px 16px">
+<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;width:100%;margin:0 auto;border-collapse:separate;background:#1a1a1d;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45),0 0 0 1px rgba(0,200,83,0.05)">
+
+<!-- Hero header — same gradient as the payout-confirmation email -->
+<tr><td style="background:linear-gradient(135deg,#00e676 0%,#00a039 100%);padding:28px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td style="vertical-align:middle">
+<div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#0a0a0a;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div>
+<div style="font-size:24px;font-weight:800;color:#0a0a0a;line-height:1.15">Certificate of Responsible Recycling</div>
+</td>
+<td style="vertical-align:middle;text-align:right">
+<div style="display:inline-block;padding:8px 14px;background:rgba(10,10,10,0.18);border:1px solid rgba(10,10,10,0.22);border-radius:999px;font-size:11px;font-weight:800;color:#0a0a0a;letter-spacing:0.1em;text-transform:uppercase">♻ Recycle</div>
+</td>
+</tr>
+</table>
+</td></tr>
+
+<!-- Greeting -->
+<tr><td style="padding:28px 28px 6px 28px">
+<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:8px">Hi ${customerName || "there"},</div>
+<div style="font-size:14px;color:#bdbdbd;line-height:1.6">Thank you for choosing to recycle responsibly. Below is your digital certificate — keep it for your records.</div>
+</td></tr>
+
+<!-- Certificate panel -->
+<tr><td style="padding:18px 28px 6px 28px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.10);border-left:3px solid #00c853;border-radius:14px">
+<tr><td style="padding:22px 24px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.08)">
+<div style="font-size:10px;color:#00c853;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:8px;font-weight:800">Certificate</div>
+<div style="font-size:34px;font-weight:800;color:#fff;line-height:1;letter-spacing:-0.01em;font-family:ui-monospace,SFMono-Regular,'SF Mono',Menlo,monospace">#${certNumber}</div>
+<div style="font-size:11px;color:#888;margin-top:10px;letter-spacing:0.08em;text-transform:uppercase">Issued ${certDate}</div>
+</td></tr>
+<tr><td style="padding:18px 24px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Issued to</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06);font-weight:700">${customerName || "—"}</td></tr>
+<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Device</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${deviceLabel}</td></tr>
+<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Recycler</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">Top Cash Cellular · Austin, TX</td></tr>
+<tr><td style="padding:8px 0;color:#888;font-size:13px">Date issued</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right">${certDate}</td></tr>
+</table>
+</td></tr>
+</table>
+</td></tr>
+
+<!-- What happens to the device -->
+<tr><td style="padding:24px 28px 8px 28px">
+<div style="font-size:13px;color:#fff;font-weight:800;margin-bottom:10px;letter-spacing:-0.01em">What happens to your device</div>
+<div style="font-size:13px;color:#dcdcdc;line-height:1.7">
+Your device will be securely wiped to <strong style="color:#fff">NIST 800-88</strong> media-sanitization standard, then either <strong style="color:#fff">refurbished for reuse</strong> by a new owner or <strong style="color:#fff">broken down for component recovery</strong> (precious metals, plastics, glass). It will never be dumped in a landfill or shipped overseas as e-waste.
+</div>
+</td></tr>
+
+<!-- Next step — short, no follow-up promise -->
+<tr><td style="padding:16px 28px 4px 28px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(0,200,83,0.06);border:1px solid rgba(0,200,83,0.22);border-radius:12px">
+<tr><td style="padding:14px 18px;font-size:13px;color:#e6e6e6;line-height:1.55">
+<strong style="color:#00c853">Heads up:</strong> we&#39;ll be in touch within one business day to arrange the handoff — drop-off in Austin or a prepaid recycle label by mail if you&#39;re out of town. No payout, no follow-up — this is on us.
+</td></tr>
+</table>
+</td></tr>
+
+<!-- Footer — customer service pill (same look as the site footer) -->
+<tr><td style="padding:28px 28px 28px 28px">
+<div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:18px"></div>
+<div style="text-align:center">
+<div style="font-size:10px;color:#00c853;text-transform:uppercase;letter-spacing:0.18em;font-weight:800;margin-bottom:8px">Customer Service</div>
+<div style="margin-bottom:8px"><a href="mailto:CustomerService@topcashcells.com" style="display:inline-block;padding:8px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.10);border-radius:999px;color:#fff;text-decoration:none;font-size:13px;font-weight:700">CustomerService@topcashcells.com</a></div>
+<div style="font-size:12px;color:#888;line-height:1.6">Top Cash Cellular · Austin, TX</div>
+<div style="font-size:12px;color:#888;line-height:1.6"><a href="https://topcashcellular.com" style="color:#00c853;text-decoration:none">topcashcellular.com</a> · Mon–Sat 8 AM–8 PM CT</div>
+<div style="font-size:11px;color:#555;margin-top:10px">© ${new Date().getFullYear()} Top Cash Cellular. All rights reserved.</div>
+<div style="font-size:11px;color:#555;margin-top:4px">This is a transactional acknowledgement of free responsible recycling — not a legal/audit certification.</div>
+</div>
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+}
+

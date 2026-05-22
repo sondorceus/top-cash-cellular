@@ -336,6 +336,11 @@ interface AdminLead {
   // keep customer-facing metrics clean. Toggle in the UI shows them
   // back. 2026-05-19.
   isInternal?: boolean;
+  // True when the customer opted into free responsible recycling
+  // (no payout, no FedEx label) instead of a buyback. Parsed from
+  // the "Recycle-only: yes" line /api/lead writes for recycle leads.
+  // Skywalker 2026-05-22.
+  recycleOnly?: boolean;
   // Live competitor margin — computed at GET time using the current
   // Atlas wholesale + eBay sold-listing data for the lead's exact
   // (sku, storage, condition, carrier) cell. Both can be missing when
@@ -1109,6 +1114,10 @@ export async function GET(req: NextRequest) {
         const em = emailLine?.[1]?.trim().toLowerCase() || "";
         if (em && INTERNAL_EMAILS.includes(em)) return true;
         return false;
+      })(),
+      recycleOnly: (() => {
+        const v = parseField(m.body, "Recycle-only")?.toLowerCase();
+        return v === "yes" || v === "true";
       })(),
     });
   }

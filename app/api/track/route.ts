@@ -31,6 +31,9 @@ interface TrackedLead {
   // marker is missing — surfaces a "label is on the way / contact
   // staff" message so the customer doesn't see silence.
   shipExpectingLabel?: boolean;
+  // Lets the /track UI pick the right funnel — 5-step for ship,
+  // 3-step for local meetups (matches the offer page).
+  handoffMethod?: "ship" | "local";
 }
 
 const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "rejected"];
@@ -139,11 +142,13 @@ export async function POST(req: NextRequest) {
     const deviceLine = parseField(body, "Device");
     const status = statusByLead.get(m.id);
     const label = labelByLead.get(m.id);
-    // Ship-handoff leads include "Handoff: Ship via FedEx" (or
-    // "Shipping" in the multi-device summary). Used to flag the
-    // "label expected but not posted yet" state so customers don't
-    // get silence.
-    const isShipHandoff = /handoff:\s*ship/i.test(body) || /handoff:\s*shipping/i.test(body);
+    // Detect handoff from the lead body's "--- Handoff: SHIPPING ---"
+    // / "--- Handoff: LOCAL MEETUP ---" header marker (same regex the
+    // offer route uses, so /track and /offer agree on the funnel).
+    const handoffMethod: "ship" | "local" | undefined =
+      /---\s*Handoff:\s*SHIPPING/i.test(body) ? "ship" :
+      /---\s*Handoff:\s*LOCAL MEETUP/i.test(body) ? "local" : undefined;
+    const isShipHandoff = handoffMethod === "ship";
     leads.push({
       id: m.id,
       timestamp: m.timestamp,
@@ -159,6 +164,7 @@ export async function POST(req: NextRequest) {
       fedexLabelUrl: label?.url,
       fedexService: label?.service,
       shipExpectingLabel: isShipHandoff && !label,
+      handoffMethod,
     });
   }
 

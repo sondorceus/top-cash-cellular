@@ -129,6 +129,10 @@ interface Lead {
     note?: { body: string; at: string; fromName?: string };
     summary?: { body: string; at: string; fromName?: string };
   };
+  // True when the customer opted into free responsible recycling
+  // (no payout, no FedEx label) — surfaces as a ♻ chip on the row.
+  // Skywalker 2026-05-22.
+  recycleOnly?: boolean;
 }
 
 const STATUS_OPTIONS = [
@@ -166,6 +170,36 @@ function timeAgo(iso?: string): string {
   if (hr < 24) return `${hr}h ago`;
   const d = Math.floor(hr / 24);
   return `${d}d ago`;
+}
+
+// Format-only payout-handle status for the admin chip. The funnel +
+// /api/lead already enforce the strict checks at submit time (including
+// the BTC checksum via the bitcoin-address-validation package), so by
+// the time a lead exists, its BTC + Cash App handle have passed strict
+// validation. Keeping THIS check regex-only avoids pulling the BTC
+// crypto package into the admin client bundle. Skywalker 2026-05-22.
+function payoutChipStatus(payout?: string): "verified" | "invalid" | "no-handle" | "none" {
+  if (!payout || typeof payout !== "string") return "none";
+  const colonIdx = payout.indexOf(":");
+  if (colonIdx < 0) return "none";
+  const method = payout.slice(0, colonIdx).trim().toLowerCase();
+  const handle = payout.slice(colonIdx + 1).trim();
+  if (method === "cash") return "none"; // local cash — no handle needed
+  if (!handle) return "no-handle";
+  if (method === "bitcoin" || method === "btc") {
+    return /^(?:bc1|[13])[A-Za-z0-9]{25,75}$/.test(handle) ? "verified" : "invalid";
+  }
+  if (method === "cash app" || method === "cashapp") {
+    const norm = handle.startsWith("$") ? handle : `$${handle}`;
+    return /^\$[A-Za-z][A-Za-z0-9]{0,19}$/.test(norm) ? "verified" : "invalid";
+  }
+  if (method === "zelle") {
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(handle)) return "verified";
+    const digits = handle.replace(/\D/g, "");
+    if (digits.length === 10 || (digits.length === 11 && digits.startsWith("1"))) return "verified";
+    return "invalid";
+  }
+  return "none";
 }
 
 export default function AdminPage() {
@@ -1867,8 +1901,21 @@ export default function AdminPage() {
                           best contact". Badge sits above the spec block so
                           staff sees how to reach the seller before the
                           deep-dive specs. */}
-                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source || lead.priorLeads || lead.commsSent || lead.payoutConfirmation || lead.couponApplied || lead.ai || lead.itemsEditedAt) && (
+                      {(lead.bestContact || lead.customerNote || (lead.quantity && lead.quantity > 1) || lead.smsOptIn === false || lead.staleHours || lead.source || lead.priorLeads || lead.commsSent || lead.payoutConfirmation || lead.couponApplied || lead.ai || lead.itemsEditedAt || lead.recycleOnly) && (
                         <div className="mt-1.5 flex flex-wrap items-start gap-1.5">
+                          {/* Recycle-only chip — Skywalker 2026-05-22.
+                              Surfaces when the customer opted into free
+                              responsible recycling on the quote step
+                              (no payout, no FedEx label). Green so it
+                              reads as a positive opt-in, not a problem. */}
+                          {lead.recycleOnly && (
+                            <span
+                              className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#00c853]/15 text-[#00c853] border border-[#00c853]/40"
+                              title="Customer opted into free responsible recycling — no payout, e-waste certificate emailed at submit"
+                            >
+                              ♻ Recycle-only
+                            </span>
+                          )}
                           {/* AI verdict pills — photo-check (FLAG) and
                               Theot's channel-rec (SUMMARY) now render
                               side-by-side instead of one hiding the
@@ -2585,7 +2632,17 @@ export default function AdminPage() {
                           })()}
                         </div>
                       )}
-                      <p className="text-[#c5c5c5] text-xs">{lead.payout}</p>
+                      <p className="text-[#c5c5c5] text-xs flex items-center gap-1.5 flex-wrap">
+                        <span>{lead.payout}</span>
+                        {(() => {
+                          const s = payoutChipStatus(lead.payout);
+                          const base = "inline-block px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border";
+                          if (s === "verified") return <span title="Payout handle format checks out — submitted handles pass the same strict validation /api/lead does, so this is a positive signal" className={`${base} bg-[#00c853]/15 border-[#00c853]/40 text-[#00c853]`}>✓ verified</span>;
+                          if (s === "invalid") return <span title="Payout handle failed its format check — confirm with the customer before paying" className={`${base} bg-amber-500/15 border-amber-500/40 text-amber-300`}>⚠ check handle</span>;
+                          if (s === "no-handle") return <span title="No payout handle entered — needs follow-up" className={`${base} bg-amber-500/15 border-amber-500/40 text-amber-300`}>⚠ no handle</span>;
+                          return null;
+                        })()}
+                      </p>
                       <div className="flex items-center gap-3 mt-1 flex-wrap">
                         {adjustingId !== lead.id && (
                           <button type="button" onClick={() => { setAdjustingId(lead.id); setAdjustQuote(""); setAdjustReason(""); }} className="text-[10px] text-[#c5c5c5] hover:text-[#d4d4d4] cursor-pointer">✏️ Adjust quote</button>

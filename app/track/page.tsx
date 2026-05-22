@@ -22,19 +22,49 @@ interface Lead {
   fedexLabelUrl?: string;
   fedexService?: string;
   shipExpectingLabel?: boolean;
+  handoffMethod?: "ship" | "local";
 }
 
-const PIPELINE = [
-  { value: "quote_requested", label: "Quote requested", icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" },
-  { value: "shipped", label: "Shipped / drop-off", icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" },
-  { value: "received", label: "Received", icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
-  { value: "tested", label: "Tested", icon: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" },
-  { value: "paid", label: "Paid", icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+// Shared funnel glyphs (matches the offer page so both surfaces show
+// the same pipeline icons + labels). Skywalker 2026-05-22.
+const INBOX_ICON = "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z";
+const TRUCK_ICON = "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4";
+const SEARCH_ICON = "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z";
+const CASH_ICON = "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z";
+const MEETUP_ICON = "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z";
+
+// Two funnels — same split as the offer page. Shipping has a transit
+// leg the customer watches from afar; local meetups collapse to a
+// single "Met Up" stage in between Submitted and Paid.
+const SHIP_PIPELINE = [
+  { value: "quote_requested", label: "Submitted", icon: INBOX_ICON },
+  { value: "shipped", label: "Shipped", icon: TRUCK_ICON },
+  { value: "received", label: "Received", icon: INBOX_ICON },
+  { value: "tested", label: "Inspected", icon: SEARCH_ICON },
+  { value: "paid", label: "Paid", icon: CASH_ICON },
 ];
 
-function statusIndex(status: string): number {
-  if (status === "rejected") return -1;
-  return PIPELINE.findIndex((s) => s.value === status);
+const LOCAL_PIPELINE = [
+  { value: "quote_requested", label: "Submitted", icon: INBOX_ICON },
+  { value: "received", label: "Met Up", icon: MEETUP_ICON },
+  { value: "paid", label: "Paid", icon: CASH_ICON },
+];
+
+function pipelineFor(isShip: boolean) {
+  return isShip ? SHIP_PIPELINE : LOCAL_PIPELINE;
+}
+
+function statusIndex(s: string, isShip: boolean): number {
+  if (s === "rejected") return -1;
+  const pipeline = pipelineFor(isShip);
+  if (s === "met") return pipeline.length - 1;
+  // Local funnel has no transit / inspection stage — fold any
+  // shipping-only status ("shipped", "received", "tested") onto the
+  // in-person "Met Up" stage.
+  if (!isShip && (s === "shipped" || s === "tested")) {
+    return pipeline.findIndex((p) => p.value === "received");
+  }
+  return pipeline.findIndex((p) => p.value === s);
 }
 
 function timeAgo(iso?: string): string {
@@ -49,7 +79,7 @@ function timeAgo(iso?: string): string {
   return `${d}d ago`;
 }
 
-function ProgressBar({ status }: { status: string }) {
+function ProgressBar({ status, isShip }: { status: string; isShip: boolean }) {
   if (status === "rejected") {
     return (
       <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 my-3">
@@ -59,11 +89,12 @@ function ProgressBar({ status }: { status: string }) {
       </div>
     );
   }
-  const idx = statusIndex(status);
+  const pipeline = pipelineFor(isShip);
+  const idx = statusIndex(status, isShip);
   return (
     <div className="my-4">
       <div className="flex items-center justify-between gap-1">
-        {PIPELINE.map((step, i) => {
+        {pipeline.map((step, i) => {
           const done = i < idx;
           const current = i === idx;
           return (
@@ -86,7 +117,7 @@ function ProgressBar({ status }: { status: string }) {
       </div>
       {/* connector line */}
       <div className="relative h-1 bg-white/5 rounded-full -mt-[58px] mx-5 mb-12 -z-10">
-        <div className="absolute top-0 left-0 h-full bg-[#00c853] rounded-full transition-all duration-500" style={{ width: `${idx <= 0 ? 0 : (idx / (PIPELINE.length - 1)) * 100}%` }} />
+        <div className="absolute top-0 left-0 h-full bg-[#00c853] rounded-full transition-all duration-500" style={{ width: `${idx <= 0 ? 0 : (idx / (pipeline.length - 1)) * 100}%` }} />
       </div>
     </div>
   );
@@ -204,7 +235,7 @@ function TrackInner() {
                     <p className="text-[#c5c5c5] text-[10px]">{timeAgo(lead.timestamp)}</p>
                   </div>
                 </div>
-                <ProgressBar status={lead.status} />
+                <ProgressBar status={lead.status} isShip={lead.handoffMethod === "ship"} />
                 {lead.fedexTracking && lead.fedexLabelUrl && (
                   <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-4 mb-3">
                     <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Your FedEx label</p>

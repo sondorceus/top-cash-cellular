@@ -68,3 +68,21 @@ export function normalizeCashtag(tag: string): string {
   if (!trimmed) return "";
   return trimmed.startsWith("$") ? trimmed : `$${trimmed}`;
 }
+
+/**
+ * Validate a Zelle handle — Zelle itself accepts either an email or a
+ * US phone number. Email rule: minimal `a@b.c` shape (the funnel
+ * validates email more strictly on the contact step for lead delivery).
+ * Phone rule: 10 digits, or 11 digits leading with 1, after stripping
+ * non-digits. Both shapes are common forms a customer pastes.
+ */
+export function validateZelle(handle: string): boolean {
+  if (typeof handle !== "string") return false;
+  const trimmed = handle.trim();
+  if (!trimmed) return false;
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return true;
+  const digits = trimmed.replace(/\D/g, "");
+  if (digits.length === 10) return true;
+  if (digits.length === 11 && digits.startsWith("1")) return true;
+  return false;
+}
