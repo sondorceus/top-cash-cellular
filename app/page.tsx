@@ -5859,11 +5859,13 @@ export default function Home() {
                       setDeviceType(h.deviceType);
                       if (h.seriesId) setSelectedSeries(h.seriesId);
                       setModel({ id: h.modelId, label: h.label, base: h.base, image: h.image });
-                      setSearchQuery("");
-                      setStep("condition");
-                      pushHistory("condition");
+                      popThenRun(`search-${h.modelId}-${i}`, () => {
+                        setSearchQuery("");
+                        setStep("condition");
+                        pushHistory("condition");
+                      });
                     }}
-                    className="w-full text-left px-4 py-2.5 hover:bg-white/5 transition flex items-center gap-3 border-b border-white/10 last:border-0 cursor-pointer"
+                    className={`w-full text-left px-4 py-2.5 hover:bg-white/5 transition flex items-center gap-3 border-b border-white/10 last:border-0 cursor-pointer ${funnelPop === `search-${h.modelId}-${i}` ? "tap-confirm" : ""}`}
                   >
                     {h.image ? (
                       <Pic src={h.image} alt={h.label} loading="lazy" className="w-10 h-10 object-contain flex-shrink-0 rounded-md bg-white/5" />
@@ -6030,14 +6032,18 @@ export default function Home() {
                         return (
                           <button
                             key={d.model}
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setCategory(d.cat);
                               setDeviceType(d.dt);
                               setModel({ id: d.model, label: d.title, base: d.floor, image: d.photo });
-                              setStep("condition");
-                              pushHistory("condition");
+                              popThenRun(`hot-${d.model}`, () => {
+                                setMegaMenuOpen(null);
+                                setStep("condition");
+                                pushHistory("condition");
+                              });
                             }}
-                            className="flex flex-col items-center text-center gap-1 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer tap-press"
+                            className={`flex flex-col items-center text-center gap-1 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer tap-press ${funnelPop === `hot-${d.model}` ? "tap-confirm" : ""}`}
                           >
                             {isTight ? (
                               <div className="w-12 h-12 mb-1 flex items-center justify-center p-2">
@@ -7226,10 +7232,9 @@ export default function Home() {
                         setCategory(d.cat);
                         setDeviceType(d.dt);
                         setModel({ id: d.model, label: d.title, base: d.floor });
-                        setStep("condition");
-                        pushHistory("condition");
+                        popThenRun(`feat-${d.model}`, () => { setStep("condition"); pushHistory("condition"); });
                       }}
-                      className="group bg-white/[0.07] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press tcc-anim-border"
+                      className={`group bg-white/[0.07] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press tcc-anim-border ${funnelPop === `feat-${d.model}` ? "tap-confirm" : ""}`}
                     >
                       {isTight ? (
                         <div className={tightWrapCls}>
