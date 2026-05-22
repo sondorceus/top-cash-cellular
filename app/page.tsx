@@ -7444,7 +7444,7 @@ export default function Home() {
             <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">Why Austin chooses us</p>
             <h2 className="text-3xl md:text-4xl font-bold leading-tight reveal" data-stagger="1">Trusted by thousands of locals</h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 auto-rows-fr">
             {[
               { stat: <CountUp end={5000} suffix="+" />, label: "Devices bought" },
               { stat: "4.9★", label: "Average review rating" },
@@ -7453,7 +7453,7 @@ export default function Home() {
               { stat: "Higher", label: "Offer than Apple trade-in" },
               { stat: "Local", label: "Austin-based, real humans" },
             ].map((t, i) => (
-              <div key={i} className="bg-gradient-to-br from-white/[0.08] to-white/[0.03] border border-white/10 rounded-2xl p-5 text-center hover:border-[#00c853]/30 hover:from-white/[0.12] transition reveal" data-stagger={Math.min(i + 2, 8)}>
+              <div key={i} className="bg-gradient-to-br from-white/[0.08] to-white/[0.03] border border-white/10 rounded-2xl p-5 text-center flex flex-col justify-center hover:border-[#00c853]/30 hover:from-white/[0.12] transition reveal" data-stagger={Math.min(i + 2, 8)}>
                 <div className="text-2xl font-extrabold text-[#00c853] mb-1 leading-none">{t.stat}</div>
                 <div className="text-[#e6e6e6] text-xs font-medium leading-tight">{t.label}</div>
               </div>
