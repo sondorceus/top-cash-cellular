@@ -7848,7 +7848,7 @@ export default function Home() {
                 { id: "android" as const, label: "Samsung Galaxy", sub: "Galaxy S21 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#1428a0"/><text x="20" y="22" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial" letterSpacing="0.5">SAMSUNG</text><rect x="14" y="24" width="12" height="1" rx="0.5" fill="#fff" opacity="0.5"/></svg> },
                 { id: "pixel" as const, label: "Google Pixel", sub: "Pixel 5 and newer", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#fff"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#4285F4" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="0"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#EA4335" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-15"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#FBBC05" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-30"/><path d="M20 10.5a9.5 9.5 0 100 19 9.5 9.5 0 000-19z" fill="none" stroke="#34A853" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-45"/><text x="20" y="24" textAnchor="middle" fill="#4285F4" fontSize="11" fontWeight="bold" fontFamily="Arial">G</text></svg> },
               ].map((b, i) => (
-                <button key={b.id} onClick={() => { setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); }); }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press reveal ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} data-stagger={Math.min(i + 1, 8)} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
+                <button key={b.id} onClick={() => { setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); }); }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press reveal ${funnelPop === `brand-${b.id}` ? "tap-confirm" : ""}`} data-stagger={Math.min(i + 1, 8)}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7866,7 +7866,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_tab") { setInquiryCategory("Tablet"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); });
-                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
+                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "tap-confirm" : ""}`}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7887,7 +7887,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_pc") { setInquiryCategory("Computer"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); });
-                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
+                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "tap-confirm" : ""}`}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7906,7 +7906,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_desktop") { setInquiryCategory("Desktop"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); });
-                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
+                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "tap-confirm" : ""}`}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7922,7 +7922,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_vr") { setInquiryCategory("VR Headset"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); });
-                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
+                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "tap-confirm" : ""}`}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7933,7 +7933,7 @@ export default function Home() {
               ].map((b) => (
                 <button key={b.id} onClick={() => {
                   setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); });
-                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
+                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "tap-confirm" : ""}`}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7949,7 +7949,7 @@ export default function Home() {
                 <button key={b.id} onClick={() => {
                   if (b.id === "other_watch") { setInquiryCategory("Smartwatch"); setInquirySent(false); setInquiryDesc(""); setStep("inquiry"); pushHistory("inquiry"); return; }
                   setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); });
-                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
+                }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "tap-confirm" : ""}`}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>
@@ -7960,7 +7960,7 @@ export default function Home() {
                 { id: "microsoft" as const, label: "Microsoft", sub: "Xbox One, Series S, Series X", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#107c10"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold" fontFamily="Arial">XBOX</text></svg> },
                 { id: "nintendo" as const, label: "Nintendo", sub: "Switch OLED, Switch V2, Switch Lite", brandIcon: <svg viewBox="0 0 40 40" className="w-10 h-10"><circle cx="20" cy="20" r="18" fill="#e60012"/><text x="20" y="25" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="bold" fontFamily="Arial">Nintendo</text></svg> },
               ].map((b) => (
-                <button key={b.id} onClick={() => { setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); }); }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "phone-pop-3d" : ""}`} onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setFunnelPop(null); }}>
+                <button key={b.id} onClick={() => { setDeviceType(b.id); popThenRun(`brand-${b.id}`, () => { setStep("model"); pushHistory("model"); }); }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "tap-confirm" : ""}`}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
                   <p className="font-bold text-sm text-center">{b.label}</p>
                   <p className="text-[#e6e6e6] text-xs text-center mt-0.5">{b.sub}</p>

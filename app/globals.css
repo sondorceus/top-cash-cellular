@@ -68,6 +68,18 @@
   .phone-pop-3d { animation: none; }
 }
 
+/* Tap-confirm — calm, swing-free press for the brand picker. Same
+   pop-then-advance delay as the homepage cards, but no 3D bounce: the
+   chosen card just eases inward and holds until the step advances. */
+@keyframes tapConfirm {
+  0%   { transform: scale(1);    }
+  100% { transform: scale(0.96); }
+}
+.tap-confirm { animation: tapConfirm 260ms ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .tap-confirm { animation: none; }
+}
+
 /* Hover-reveal detail — copy that stays collapsed until its card (.group)
    is hovered, so a step list reads as just the headlines. Gated on
    (hover: hover) so touch devices, which can't hover, always show the
