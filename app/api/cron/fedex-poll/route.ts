@@ -54,7 +54,7 @@ async function flipStatusWithNotify(
   leadId: string,
   status: string,
   customer: { name?: string; phone?: string; email?: string; device?: string; quote?: string; payout?: string },
-): Promise<boolean> {
+): Promise<{ reached: boolean; mcPersisted: boolean }> {
   const adminToken = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
   try {
     const r = await fetch(`${origin}/api/admin/leads/status?token=${encodeURIComponent(adminToken)}`, {
@@ -62,8 +62,12 @@ async function flipStatusWithNotify(
       headers: { "Content-Type": "application/json", "x-admin-token": adminToken },
       body: JSON.stringify({ leadId, status, ...customer }),
     });
-    return r.ok;
-  } catch { return false; }
+    if (!r.ok) return { reached: false, mcPersisted: false };
+    // The route returns HTTP 200 even when its own [STATUS:] marker post
+    // to MC failed — surface mcOk so the caller can back the marker up.
+    const d = await r.json().catch(() => ({} as { mcOk?: boolean }));
+    return { reached: true, mcPersisted: d?.mcOk === true };
+  } catch { return { reached: false, mcPersisted: false }; }
 }
 
 export async function GET(req: NextRequest) {
@@ -203,11 +207,13 @@ export async function GET(req: NextRequest) {
     if (nextStatus) {
       // Status flip — route through the admin status endpoint so the
       // customer gets the SMS + email, not just a silent board update.
-      // The route posts its own [STATUS: ...] marker; if it's somehow
-      // unreachable, fall back to a raw marker so the flip still sticks.
-      const notified = await flipStatusWithNotify(origin, c.id, nextStatus, c.customer);
-      if (!notified) {
-        await postToMc(`[STATUS: ${nextStatus}] [LEAD: ${c.id}] auto-flipped by fedex-poll cron (customer notify failed)`);
+      // The route posts its own [STATUS: ...] marker; if it's unreachable
+      // OR it couldn't persist that marker, post a raw one ourselves so
+      // the flip still lands on the admin board.
+      const flip = await flipStatusWithNotify(origin, c.id, nextStatus, c.customer);
+      if (!flip.reached || !flip.mcPersisted) {
+        const why = flip.reached ? "marker backup" : "customer notify failed";
+        await postToMc(`[STATUS: ${nextStatus}] [LEAD: ${c.id}] auto-flipped by fedex-poll cron (${why})`);
       }
     }
     processed.push({ leadId: c.id, tracking: c.tracking, before: c.status, nowState: newState, flippedTo: nextStatus, mcPosted });
