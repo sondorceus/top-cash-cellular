@@ -4411,6 +4411,9 @@ export default function Home() {
   // hover, so the step detail is a tap-to-expand accordion there;
   // desktop still reveals on hover. Skywalker 2026-05-22.
   const [openStep, setOpenStep] = useState<number | null>(null);
+  // Which local-credibility trust pill has its detail revealed — tap on
+  // mobile; desktop reveals the tooltip on hover instead.
+  const [openPill, setOpenPill] = useState<number | null>(null);
   const popThenRun = (id: string, run: () => void) => {
     setFunnelPop(id);
     setTimeout(() => { setFunnelPop(null); run(); }, 280);
@@ -7619,7 +7622,7 @@ export default function Home() {
           <div className="relative overflow-hidden bg-gradient-to-br from-[#0a3d20] via-[#003d1a] to-[#012812] border border-[#00c853]/30 rounded-3xl p-8 md:p-12 text-center reveal">
             <div className="absolute inset-0 opacity-30 pointer-events-none" style={{ background: "radial-gradient(circle at 30% 20%, rgba(0, 200, 83, 0.4), transparent 60%), radial-gradient(circle at 70% 80%, rgba(0, 230, 118, 0.3), transparent 50%)" }} />
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">Swap your old tech for cash today.</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">Your old device is worth real cash.</h2>
               <p className="text-[#e6e6e6] text-base md:text-lg mb-6">Instant quote · Paid on the spot in Austin · No signup needed</p>
               <button onClick={() => { setStep("category"); pushHistory("category"); }} className="bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold text-lg px-10 py-4 rounded-full shadow-lg shadow-[#00c853]/40 transition tap-press cursor-pointer">
                 Sell Your Device
@@ -12217,23 +12220,33 @@ export default function Home() {
           {/* LOCAL CREDIBILITY */}
           <section className="py-8 bg-[#111]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
-              <div className="flex flex-wrap items-center justify-center gap-4 text-center">
-                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
-                  <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                  <span className="text-white text-xs font-semibold">Austin-Based Business</span>
-                </div>
-                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
-                  <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                  <span className="text-white text-xs font-semibold">Real People, Local Meetups</span>
-                </div>
-                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
-                  <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                  <span className="text-white text-xs font-semibold">Paid On the Spot Locally</span>
-                </div>
-                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2">
-                  <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                  <span className="text-white text-xs font-semibold">Secure Transactions</span>
-                </div>
+              {/* Trust pills — tap (mobile) or hover (desktop) reveals a
+                  one-line detail tooltip above each pill. Skywalker 2026-05-22. */}
+              <div className="flex flex-wrap items-center justify-center gap-3 text-center">
+                {[
+                  { icon: <><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></>, label: "Austin-Based Business", detail: "A real local shop in Austin, Texas — not an anonymous mail-in middleman." },
+                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />, label: "Real People, Local Meetups", detail: "Meet a real person at a safe public spot in Austin — we inspect your device together." },
+                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />, label: "Paid On the Spot Locally", detail: "Local trades are paid the moment we meet, right after a quick ~15-minute inspection." },
+                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />, label: "Secure Transactions", detail: "Every device gets a certified data wipe, and payouts run through methods you already trust." },
+                ].map((pill, i) => {
+                  const open = openPill === i;
+                  return (
+                  <button
+                    key={pill.label}
+                    type="button"
+                    onClick={() => setOpenPill(open ? null : i)}
+                    aria-expanded={open}
+                    className="group relative flex items-center gap-2 bg-white/5 border border-white/10 hover:border-[#00c853]/40 rounded-full px-4 py-2 transition cursor-pointer lg:cursor-default tap-press"
+                  >
+                    <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{pill.icon}</svg>
+                    <span className="text-white text-xs font-semibold">{pill.label}</span>
+                    {/* Mobile tap cue — desktop reveals on hover, no cue needed. */}
+                    <svg className={`w-3 h-3 text-[#00c853] shrink-0 transition-transform duration-200 lg:hidden ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    <span className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 max-w-[70vw] z-20 bg-[#0f0f0f] border border-[#00c853]/30 rounded-xl px-3 py-2 text-[11px] leading-snug font-medium text-[#e6e6e6] shadow-xl pointer-events-none transition-all duration-200 ${open ? "opacity-100 visible translate-y-0" : "opacity-0 invisible translate-y-1"} lg:opacity-0 lg:invisible lg:translate-y-1 lg:group-hover:opacity-100 lg:group-hover:visible lg:group-hover:translate-y-0`}>
+                      {pill.detail}
+                    </span>
+                  </button>
+                );})}
               </div>
             </div>
           </section>
