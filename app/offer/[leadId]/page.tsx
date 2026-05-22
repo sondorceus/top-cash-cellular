@@ -452,6 +452,21 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             at a glance, not the pipeline above it. */}
         <StatusBanner status={offer.status} cancelled={isCancelled} isShip={isShip} hasLabel={!!offer.fedexLabelUrl} />
 
+        {/* Live-tracking reassurance — ship leads get an SMS + email at
+            every FedEx movement (the fedex-poll cron), so tell them up
+            front they don't need to keep checking. Skywalker 2026-05-22. */}
+        {isShip && !isPaid && !isCancelled && (
+          <div className="bg-[#00c853]/[0.06] border border-[#00c853]/30 rounded-2xl p-4 mb-5 flex items-start gap-2.5">
+            <svg className="w-5 h-5 shrink-0 text-[#00c853] mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+            <p className="text-[#bdbdbd] text-xs leading-relaxed">
+              <span className="text-white font-semibold">Live tracking — no need to check back.</span> We&apos;ll text and email you each time your package moves: picked up, in transit, and delivered to our Austin warehouse.
+            </p>
+          </div>
+        )}
+
         {/* Manual-review banner — a customer edit set a device to a
             broken condition; the price is re-quoted by hand. */}
         {offer.needsReview && (
