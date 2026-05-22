@@ -1,0 +1,47 @@
+[
+  {
+    "step": 1,
+    "ok": true,
+    "clicked": "Flawless",
+    "cls": "answers v2-condition-question",
+    "kidTexts": [
+      "Brand New",
+      "Flawless",
+      "Good",
+      "Fair",
+      "Broken"
+    ],
+    "advanced": true
+  },
+  {
+    "step": 2,
+    "ok": true,
+    "clicked": "\n                    \n                  ",
+    "cls": "answers",
+    "kidTexts": [
+      "AT&T",
+      "Sprint",
+      "T-Mobile",
+      "Verizon",
+      "Unlocked",
+      "Other Carrier"
+    ],
+    "advanced": true
+  },
+  {
+    "step": 3,
+    "ok": true,
+    "clicked": "\n                    \n                  ",
+    "cls": "answers",
+    "kidTexts": [
+      "128GB",
+      "256GB",
+      "512GB"
+    ],
+    "advanced": true
+  },
+  {
+    "step": 4,
+    "state": "no .answers visible"
+  }
+]

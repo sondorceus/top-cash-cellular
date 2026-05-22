@@ -1,0 +1,74 @@
+[
+  {
+    "text": "Extra 5% Bonus on Trade-Ins. Up to $25 Per Item, Max of $100!",
+    "parentTag": "SPAN",
+    "parentClass": "banner-coupon-desc",
+    "parentId": "",
+    "visible": true,
+    "hidden": false,
+    "path": "SPAN.banner-coupon-desc < DIV.banner-coupon-inner.banner-coupon-desktop < A.banner-coupon-v2 < SECTION.ng-scope#itsWorthMore < BODY..1column.body-message-banner.design-v2"
+  },
+  {
+    "text": "$0.00",
+    "parentTag": "SPAN",
+    "parentClass": "",
+    "parentId": "",
+    "visible": false,
+    "hidden": false,
+    "path": "SPAN < DIV.nav-cart-dropdown-total < DIV.nav-cart-dropdown-footer < DIV.nav-cart-dropdown-inner < DIV.nav-cart-dropdown"
+  },
+  {
+    "text": "If your phone has a bad ESN/IMEI or is currently under a Finance Plan with T-Mobile or Sprint, please be advised that th",
+    "parentTag": "P",
+    "parentClass": "",
+    "parentId": "",
+    "visible": false,
+    "hidden": false,
+    "path": "P < SPAN < DIV.tip.bad-esn.reveal-modal < DIV.question-tip.bad-esn.ng-hide < DIV.pricing-form.ng-hide"
+  },
+  {
+    "text": "$175.00",
+    "parentTag": "STRONG",
+    "parentClass": "ng-binding",
+    "parentId": "",
+    "visible": true,
+    "hidden": false,
+    "path": "STRONG.ng-binding < H3.your-offer < DIV.offer < DIV.pricing-form-final-offer < SECTION.product-pricing-ctrl.ng-scope.initialized#product-pricing-ctrl"
+  },
+  {
+    "text": "$175.00",
+    "parentTag": "TD",
+    "parentClass": "bold text-right ng-binding",
+    "parentId": "",
+    "visible": false,
+    "hidden": false,
+    "path": "TD.bold.text-right.ng-binding < TR < TBODY < TABLE.table-coupon-bonus < DIV.ng-hide"
+  },
+  {
+    "text": "+$0.00",
+    "parentTag": "SPAN",
+    "parentClass": "primary-color ng-binding",
+    "parentId": "",
+    "visible": false,
+    "hidden": false,
+    "path": "SPAN.primary-color.ng-binding < TD.bold.text-right < TR.ng-hide < TBODY < TABLE.table-coupon-bonus"
+  },
+  {
+    "text": "+$0.00",
+    "parentTag": "SPAN",
+    "parentClass": "bold money ng-binding",
+    "parentId": "",
+    "visible": false,
+    "hidden": false,
+    "path": "SPAN.bold.money.ng-binding < TD.bold.text-right < TR.ng-hide < TBODY < TABLE.table-coupon-bonus"
+  },
+  {
+    "text": "$175.00",
+    "parentTag": "STRONG",
+    "parentClass": "ng-binding",
+    "parentId": "",
+    "visible": false,
+    "hidden": false,
+    "path": "STRONG.ng-binding < TD.td-padding-top.text-right < TR.tr-border-top < TBODY < TABLE.table-coupon-bonus"
+  }
+]
