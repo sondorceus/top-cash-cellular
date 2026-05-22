@@ -4415,6 +4415,10 @@ export default function Home() {
   // Funnel-advance buttons unmount the moment they're clicked, so the pop
   // animation needs a brief beat to play before the step changes.
   const [funnelPop, setFunnelPop] = useState<string | null>(null);
+  // Which "4 steps to get paid" card is tap-expanded. Mobile has no
+  // hover, so the step detail is a tap-to-expand accordion there;
+  // desktop still reveals on hover. Skywalker 2026-05-22.
+  const [openStep, setOpenStep] = useState<number | null>(null);
   const popThenRun = (id: string, run: () => void) => {
     setFunnelPop(id);
     setTimeout(() => { setFunnelPop(null); run(); }, 280);
@@ -7446,21 +7450,37 @@ export default function Home() {
             <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">How it works</p>
             <h2 className="text-2xl md:text-3xl font-bold leading-tight reveal" data-stagger="1">4 steps to get paid</h2>
           </div>
+          {/* Desktop reveals each step's detail on hover; mobile has no
+              hover, so each card is a tap-to-expand accordion — the list
+              reads as clean headlines until tapped. Skywalker 2026-05-22. */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-3xl mx-auto">
             {[
               { num: "1", title: "Back up your data", body: "iCloud, Google One, or your computer — whatever works. Takes minutes." },
               { num: "2", title: "Turn off Find My iPhone", body: "Settings → [your name] → Find My → Find My iPhone → off. Required before we can pay." },
               { num: "3", title: "Meet up or ship it", body: "Meet locally in Austin — we inspect together in about 15 minutes — or ship free with our prepaid label from anywhere in the US." },
               { num: "4", title: "Get paid on the spot", body: "Cash, Cash App, Zelle, or BTC — your choice, same day, before you leave." },
-            ].map((item, i) => (
-              <div key={item.num} className="group flex items-start gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 reveal hover:bg-white/[0.07] hover:border-[#00c853]/30" data-stagger={Math.min(i + 2, 8)}>
+            ].map((item, i) => {
+              const open = openStep === i;
+              return (
+              <button
+                key={item.num}
+                type="button"
+                onClick={() => setOpenStep(open ? null : i)}
+                aria-expanded={open}
+                className="group flex items-start gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 reveal hover:bg-white/[0.07] hover:border-[#00c853]/30 transition text-left w-full cursor-pointer lg:cursor-default tap-press"
+                data-stagger={Math.min(i + 2, 8)}
+              >
                 <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-sm font-bold shrink-0">{item.num}</div>
-                <div className="min-w-0">
-                  <p className="font-semibold text-base">{item.title}</p>
-                  <p className="hover-detail text-[#e6e6e6] text-sm leading-relaxed">{item.body}</p>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-semibold text-base">{item.title}</p>
+                    {/* Chevron — mobile affordance only; desktop uses hover. */}
+                    <svg className={`w-4 h-4 text-[#00c853] shrink-0 transition-transform duration-300 lg:hidden ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                  </div>
+                  <p className={`text-[#e6e6e6] text-sm leading-relaxed overflow-hidden transition-all duration-300 lg:max-h-0 lg:opacity-0 lg:mt-0 lg:group-hover:max-h-32 lg:group-hover:opacity-100 lg:group-hover:mt-1 ${open ? "max-h-32 opacity-100 mt-1" : "max-h-0 opacity-0 mt-0"}`}>{item.body}</p>
                 </div>
-              </div>
-            ))}
+              </button>
+            );})}
           </div>
         </section>
       )}
@@ -7521,18 +7541,9 @@ export default function Home() {
         </section>
       )}
 
-      {/* HOMEPAGE: Mid-page reinforcement CTA */}
-      {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-8">
-          <div className="bg-gradient-to-r from-[#00c853]/[0.18] via-[#00c853]/[0.10] to-[#00c853]/[0.18] border border-[#00c853]/30 rounded-3xl p-7 md:p-9 text-center reveal">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2 leading-tight">Still sitting on that old tech?</h2>
-            <p className="text-[#d4d4d4] text-sm md:text-base mb-5">Turn it into cash today. Quote in 30 seconds.</p>
-            <button onClick={() => { setStep("category"); pushHistory("category"); }} className="bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold px-8 py-3.5 rounded-full shadow-lg shadow-[#00c853]/30 transition tap-press cursor-pointer">
-              Get my quote →
-            </button>
-          </div>
-        </section>
-      )}
+      {/* Mid-page "Still sitting on old tech?" CTA removed 2026-05-22 —
+          redundant with the hero CTA and the clickable how-it-works
+          step cards; cut to declutter the mobile CTA stack. */}
 
       {/* HOMEPAGE: Customer reviews carousel */}
       {step === "device" && page === "home" && (
