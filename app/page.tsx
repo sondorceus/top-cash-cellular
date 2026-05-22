@@ -2545,16 +2545,9 @@ const PAYOUT_HANDLE_META: Record<string, { field: string; placeholder: string; h
   btc:     { field: "Bitcoin wallet address", placeholder: "your BTC wallet address", hint: "Paste your receiving address. Double-check it — crypto transfers can't be reversed." },
 };
 
-const FAQS = [
-  { q: "How does the process work?", a: "Select your device, choose its condition, and get an instant quote. Accept the offer, pick your payout method, and we'll arrange a local pickup in Austin." },
-  { q: "How fast will I get paid?", a: "Same day for local Austin pickups. We pay on the spot via your preferred method — Cash (local only), Cash App, Zelle, or BTC." },
-  { q: "What if my device is cracked or damaged?", a: "We buy devices in any condition. Damaged phones get a lower offer, but you'll still get cash. Select 'Fair' or 'Poor' condition for an accurate quote." },
-  { q: "Are the quotes guaranteed?", a: "Quotes are based on the condition you select. Final price is confirmed during inspection at pickup — if the device matches your description, you get the quoted price." },
-  { q: "What devices do you buy?", a: "Phones (iPhone 11+, Samsung Galaxy S21+, Google Pixel 5+, OnePlus, Z Fold / Z Flip), iPads + Samsung / Lenovo / OnePlus / Google tablets, MacBooks + Windows laptops (Lenovo, Dell, HP, Acer, ASUS, Alienware, LG, Samsung, Microsoft Surface), Apple / Samsung / Pixel / Garmin watches, PlayStation / Xbox / Nintendo consoles, DJI drones, and VR headsets (Vision Pro, Meta Quest, Valve Index, PSVR). If you don't see your category, pick \"Other\" and we'll send a manual quote." },
-  { q: "Do I need to factory reset my phone?", a: "Yes, please back up your data and factory reset before selling. We'll walk you through it if you need help." },
-  { q: "How much is the shipment insured for?", a: "Your full quoted value. Every prepaid label we email is automatically declared with FedEx for the exact amount we quoted you — and we cover that cost, not you. If the device is lost or damaged in transit, you're protected for the full quote. Nothing to add at the counter." },
-  { q: "What if the package weighs more than the label says?", a: "Don't worry about it. The prepaid label is on our shipping account, so if your box comes in heavier than the label estimated, FedEx bills us for the difference — never you. The only thing you need to do is make sure the box actually contains the device you quoted." },
-];
+// The homepage FAQS array + its "Frequently Asked Questions" section
+// were removed 2026-05-22 — the homepage keeps one short "Things people
+// ask us" FAQ that links to the full /faq page. No need for two.
 
 type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "graphics" | "displayresolution" | "condition" | "broken-functional" | "broken-glass" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "extras" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
 
@@ -3908,7 +3901,6 @@ export default function Home() {
   // Keyed by the extra's id; value is the option that was picked.
   const [extras, setExtras] = useState<Record<string, ExtraOption>>({});
   const [extrasIndex, setExtrasIndex] = useState(0);
-  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [expandedConditionTier, setExpandedConditionTier] = useState<number | null>(null);
   // 'What qualifies?' modal — opened by clicking the small "i" on a
   // condition tile. Modal shows the tier's bullet list without expanding
@@ -5288,7 +5280,6 @@ export default function Home() {
     setPayoutHandle("");
     setPayoutHandleConfirm("");
     setQuantity(1);
-    setExpandedFaq(null);
     setPage("home");
     setName("");
     setPhone("");
@@ -12208,27 +12199,9 @@ export default function Home() {
               2026-05-22 — duplicate of the closing CTA banner and the
               hero CTA; cut to declutter the mobile CTA stack. */}
 
-          {/* FAQ */}
-          <section className="py-12 bg-[#111]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
-              <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-              <div className="space-y-2">
-                {FAQS.map((faq, i) => (
-                  <div key={i} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-                    <button onClick={() => setExpandedFaq(expandedFaq === i ? null : i)} className="w-full flex items-center justify-between p-4 cursor-pointer text-left">
-                      <p className="font-semibold text-sm pr-4">{faq.q}</p>
-                      <svg className={`w-4 h-4 text-[#e6e6e6] shrink-0 transition-transform ${expandedFaq === i ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                    </button>
-                    {expandedFaq === i && (
-                      <div className="px-4 pb-4 animate-[fadeIn_0.2s_ease-out]">
-                        <p className="text-[#e6e6e6] text-sm">{faq.a}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          {/* Second homepage FAQ ("Frequently Asked Questions") removed
+              2026-05-22 — duplicated the "Things people ask us" FAQ
+              above; the full list lives on the /faq page. */}
 
           {/* GREEN / SUSTAINABILITY */}
           <section className="py-12 bg-[#0a0a0a]">
