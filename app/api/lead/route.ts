@@ -3,6 +3,7 @@ import { after } from "next/server";
 import { put } from "@vercel/blob";
 import { createReturnLabel, deviceKindFromString, aggregateWeight, shouldBlockAutoShip } from "../../lib/fedex";
 import { reportError } from "../../lib/error-report";
+import { REFERRAL_REFEREE_BONUS, REFERRAL_CODE_RE } from "../../lib/referral";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -149,7 +150,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
   let { payout } = data;
-  const { name, phone, email, device, model, storage, condition, carrier, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, referralCode } = data;
   // TCPA defense in depth — client checkbox is `required`, but a
   // bypass (DevTools, malformed client) could submit phone without
   // consent. Reject any phone-bearing lead that didn't get explicit
@@ -238,10 +239,60 @@ export async function POST(req: NextRequest) {
       couponError = e instanceof Error ? e.message : "Coupon service unavailable";
     }
   }
+  // Referral redemption — Skywalker 2026-05-22 referral program. When
+  // a friend's REF-XXXXXX code rode in on the funnel's ?ref= param, we
+  // resolve it to the referrer's email by scanning MC for the
+  // [REFERRAL-CODE:] marker that /api/referral posted. A valid resolve
+  // adds a flat REFERRAL_REFEREE_BONUS to this lead's payout — applied
+  // the SAME way the coupon dollar value is (folded into quoteNum
+  // below). The referrer's own reward is paid later, when the admin
+  // status route flips this lead to paid/met (it reads the
+  // "Referred-by:" line we write into the body). Fails safe: malformed
+  // codes, unresolvable codes, self-referral, and MC outages all skip
+  // the bonus silently — the lead still saves.
+  let referralApplied: { code: string; referrerEmail: string } | null = null;
+  if (typeof referralCode === "string" && referralCode.trim()) {
+    const cleanRef = referralCode.trim().toUpperCase();
+    // Format guard — only well-formed REF-XXXXXX codes get to query MC.
+    if (REFERRAL_CODE_RE.test(cleanRef)) {
+      try {
+        const rr = await fetch(`${MC_API}/api/comms?limit=1000`, {
+          headers: { "x-api-key": MC_KEY },
+          cache: "no-store",
+        });
+        if (rr.ok) {
+          const rd = await rr.json().catch(() => ({}));
+          const refMsgs: { body?: string }[] = Array.isArray(rd.messages) ? rd.messages : [];
+          let referrerEmail: string | null = null;
+          for (const m of refMsgs) {
+            if (!m.body) continue;
+            const cm = m.body.match(/\[REFERRAL-CODE:\s*code=(REF-[A-Z0-9]{6})\s+email=([^\s\]]+)/i);
+            if (cm && cm[1].toUpperCase() === cleanRef) {
+              referrerEmail = cm[2].toLowerCase().trim();
+              break;
+            }
+          }
+          // Self-referral guard — a customer can't refer themselves for
+          // a free $10. Compared case-insensitively against this lead's
+          // own email. On a match we drop the referral entirely.
+          const ownEmail = (email || "").toLowerCase().trim();
+          if (referrerEmail && referrerEmail !== ownEmail) {
+            referralApplied = { code: cleanRef, referrerEmail };
+          }
+        }
+      } catch {
+        // MC unreachable — skip the bonus, lead still saves.
+      }
+    }
+  }
+  const referralBonus = referralApplied ? REFERRAL_REFEREE_BONUS : 0;
+
   const baseQuoteNum = typeof quote === "number" ? quote : parseInt(quote as string) || 0;
   // Bonus from the coupon is applied AFTER margin reference but
   // BEFORE line construction so couponLines can render the totals.
-  const quoteNum = baseQuoteNum + (couponApplied?.value || 0);
+  // The referral referee bonus stacks on top — both may apply, that's
+  // intentional (a coupon and a referral are independent rewards).
+  const quoteNum = baseQuoteNum + (couponApplied?.value || 0) + referralBonus;
 
   const photoLines = (photos as string[] | undefined)?.length
     ? [`Photos: ${(photos as string[]).join(" | ")}`]
@@ -365,6 +416,18 @@ export async function POST(req: NextRequest) {
     couponLines.push(`Total payout amount: $${quoteNum} (base $${baseQuoteNum} + bonus $${couponApplied.value})`);
   } else if (couponError && typeof couponCode === "string" && couponCode.trim()) {
     couponLines.push(`Coupon attempt: ${couponCode.trim().toUpperCase()} · failed: ${couponError.slice(0, 200)}`);
+  }
+
+  // Referral outcome — written into the lead body so (a) admin sees the
+  // referral on the lead row, and (b) the admin status route can read
+  // the "Referred-by:" line when this lead completes to credit the
+  // referrer. The code is format-validated and the email came straight
+  // from a marker we posted, so neither can carry a marker-injection
+  // payload — but cleanField() is applied anyway for defense in depth.
+  const referralLines: string[] = [];
+  if (referralApplied) {
+    referralLines.push(`Referred-by: ${referralApplied.code} (${cleanField(referralApplied.referrerEmail, 200)})`);
+    referralLines.push(`Referral bonus: +$${REFERRAL_REFEREE_BONUS} off-the-top (referee first-trade bonus)`);
   }
 
   // Customer-level meta lines — best contact preference, free-form
@@ -530,6 +593,7 @@ export async function POST(req: NextRequest) {
         `Quote: $${deviceList.reduce((s, d) => s + (Number(d.quote) || 0) * (Number(d.quantity) || 1), 0)}`,
         `Payout: ${safePayout}`,
         ...couponLines,
+        ...referralLines,
         ...customerMetaLines,
         ...multiLines,
         ...handoffLines,
@@ -546,6 +610,7 @@ export async function POST(req: NextRequest) {
         quote ? `Quote: $${quote}` : `Quote: TBD (custom)`,
         `Payout: ${safePayout}`,
         ...couponLines,
+        ...referralLines,
         ...customerMetaLines,
         ...specLines,
         ...brokenLines,
@@ -1009,5 +1074,10 @@ Pick the best channel per device. Be concise.`;
     } catch {}
   }
 
-  return NextResponse.json({ ok: true, leadId, fedexLabel, fedexError, couponApplied, couponError });
+  return NextResponse.json({
+    ok: true, leadId, fedexLabel, fedexError, couponApplied, couponError,
+    // Surface the referral outcome so the funnel can confirm the bonus
+    // landed. Only the code is echoed — not the referrer's email.
+    referralApplied: referralApplied ? { code: referralApplied.code, bonus: REFERRAL_REFEREE_BONUS } : null,
+  });
 }

@@ -3925,6 +3925,11 @@ export default function Home() {
   ]);
   const [chatLoading, setChatLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  // Referral program — a friend's REF-XXXXXX code arrives via ?ref= in
+  // the URL. When set, the funnel shows a calm "$10 bonus" banner and
+  // passes the code to /api/lead on submit, where the referee bonus is
+  // applied + the referral recorded. Skywalker 2026-05-22.
+  const [referralCode, setReferralCode] = useState<string | null>(null);
   // Lets the global <HeaderSearch> on /faq, /bulk, /reviews, etc. land
   // a user on the funnel with their query already typed in. Reads ?q=
   // from the URL once on mount, then scrubs it so a refresh doesn't
@@ -3940,6 +3945,33 @@ export default function Home() {
       const newUrl = `${window.location.pathname}${newSearch ? `?${newSearch}` : ""}${window.location.hash}`;
       window.history.replaceState(null, "", newUrl);
     }
+  }, []);
+
+  // Referral capture. A friend's link looks like /?ref=REF-XXXXXX.
+  // Read it once on mount, validate the format, store it in state +
+  // localStorage so it survives funnel navigation / a refresh, then
+  // scrub the param from the URL. We also hydrate from localStorage
+  // when ?ref= is absent so a customer who clicked the link earlier
+  // (then browsed away and came back) still gets their bonus.
+  // Skywalker 2026-05-22 referral program.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const ref = (params.get("ref") || "").trim().toUpperCase();
+      if (ref && /^REF-[A-Z0-9]{6}$/.test(ref)) {
+        setReferralCode(ref);
+        localStorage.setItem("tcc-referral", ref);
+        params.delete("ref");
+        const newSearch = params.toString();
+        window.history.replaceState(null, "", `${window.location.pathname}${newSearch ? `?${newSearch}` : ""}${window.location.hash}`);
+      } else {
+        // No (valid) ?ref= on this load — fall back to a code captured
+        // on an earlier visit so it persists across navigation.
+        const stored = (localStorage.getItem("tcc-referral") || "").trim().toUpperCase();
+        if (stored && /^REF-[A-Z0-9]{6}$/.test(stored)) setReferralCode(stored);
+      }
+    } catch {}
   }, []);
 
   // Footer links on the standalone route pages (/faq etc.) deep-link
@@ -6421,6 +6453,21 @@ export default function Home() {
           </div>
         )}
       </SlideOnScrollNav>
+
+      {/* REFERRAL BANNER — shown calmly under the nav whenever a
+          friend's ?ref= code is active for this session. Same restrained
+          pill styling as the rest of the funnel's accent banners; the
+          actual $10 referee bonus is applied server-side in /api/lead. */}
+      {referralCode && page === "home" && (
+        <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-3">
+          <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-[#00c853]/[0.1] border border-[#00c853]/35">
+            <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+            <p className="text-[12px] text-white font-semibold leading-snug">
+              Referral applied — <span className="text-[#00c853] font-bold">$10 bonus</span> added to your offer.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* MEGA-MENU BACKDROP — IWM-style blur. Sits at z-30 so the nav
           (z-40) stays clear on top, but the page content underneath
@@ -9833,6 +9880,13 @@ export default function Home() {
               {couponPercent > 0 && (
                 <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>{couponLabel} +{couponPercent}%</p>
               )}
+              {/* Referral chip — shows when a friend's ?ref= code is
+                  active. Same calm pill style as the promo/coupon chips.
+                  The actual $10 referee bonus is applied server-side in
+                  /api/lead; this just reassures the customer it's on. */}
+              {referralCode && (
+                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>Referral applied — $10 bonus added to your offer</p>
+              )}
             </div>
             {!isManualQuote && !isPendingQuote && quantity > 1 && <p className="text-[#e6e6e6] text-sm mb-2">${quote} each × {quantity}</p>}
             {!isManualQuote && !isPendingQuote && quantity === 1 && <div className="mb-3" />}
@@ -10710,6 +10764,7 @@ export default function Home() {
                       smsOptIn,
                       attribution: readAttribution(),
                       couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined),
+                      referralCode: referralCode || undefined,
                     }),
                   });
                   if (!r.ok) throw new Error("Failed");
@@ -10723,7 +10778,7 @@ export default function Home() {
                   const res = await fetch("/api/lead", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined) }),
+                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined), referralCode: referralCode || undefined }),
                   });
                   if (!res.ok) throw new Error('Failed');
                   const d = await res.json().catch(() => ({}));

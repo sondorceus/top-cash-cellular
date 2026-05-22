@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { logComm } from "../../../../lib/comms-log";
 import { reportError } from "../../../../lib/error-report";
+import { REFERRAL_REFERRER_REWARD } from "../../../../lib/referral";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -46,6 +47,66 @@ async function postReviewTokenMarker(leadId: string, token: string, name?: strin
       }),
     });
   } catch {}
+}
+
+// Referral payout — Skywalker 2026-05-22. When a lead completes (paid
+// or met), credit the friend who referred this customer. Best-effort:
+// every MC call is wrapped, and any failure returns silently so the
+// status update itself never breaks.
+//
+// Flow: scan MC for THIS lead's [NEW BUYBACK LEAD] message body (its
+// MC id === leadId), look for the "Referred-by: <CODE> (<email>)" line
+// /api/lead wrote, then — if no [REFERRAL-EARNED:] marker already
+// names this referee-lead — post one. The scan-before-post is the
+// double-credit guard: re-flipping a lead to paid won't pay twice.
+async function creditReferralIfAny(leadId: string): Promise<void> {
+  if (!MC_KEY) return;
+  try {
+    const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
+      headers: { "x-api-key": MC_KEY },
+      cache: "no-store",
+    });
+    if (!r.ok) return;
+    const data = await r.json().catch(() => ({}));
+    const messages: { id?: string; body?: string }[] = Array.isArray(data.messages) ? data.messages : [];
+
+    // Locate this lead's own message + check if it's already credited.
+    let leadBody: string | undefined;
+    let alreadyCredited = false;
+    for (const m of messages) {
+      if (!m.body) continue;
+      if (m.id === leadId && m.body.includes("[NEW BUYBACK LEAD")) {
+        leadBody = m.body;
+      }
+      // Existing earned marker for this exact referee-lead → stop.
+      const em = m.body.match(/\[REFERRAL-EARNED:[^\]]*referee-lead=([\w-]+)/i);
+      if (em && em[1] === leadId) alreadyCredited = true;
+    }
+    if (!leadBody || alreadyCredited) return;
+
+    // Pull the "Referred-by: REF-XXXXXX (email)" line from the body.
+    const rb = leadBody.match(/(?:^|\n)Referred-by:[ \t]*(REF-[A-Z0-9]{6})[ \t]*\(([^)]+)\)/i);
+    if (!rb) return;
+    const code = rb[1].toUpperCase();
+    const referrerEmail = rb[2].toLowerCase().trim();
+    if (!referrerEmail) return;
+
+    await fetch(`${MC_API}/api/comms`, {
+      method: "POST",
+      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "tcc-admin",
+        fromName: "TCC Admin",
+        role: "system",
+        body: `[REFERRAL-EARNED: referrer=${referrerEmail} amount=${REFERRAL_REFERRER_REWARD} code=${code} referee-lead=${leadId}]`,
+        tags: ["referral", "earned"],
+        priority: "normal",
+      }),
+    });
+  } catch {
+    // Best-effort — never let a referral-payout hiccup block the
+    // status update the admin actually clicked.
+  }
 }
 
 // Build the review link with the single-use token + prefilled name +
@@ -460,6 +521,10 @@ export async function POST(req: NextRequest) {
   if (status === "paid" || status === "met") {
     reviewToken = mintReviewToken();
     await postReviewTokenMarker(leadId, reviewToken, name, device);
+    // Credit the referrer (if this lead carries a "Referred-by:" line).
+    // Best-effort + idempotent — see creditReferralIfAny. A re-flip to
+    // paid/met won't double-pay; an MC outage just skips it silently.
+    await creditReferralIfAny(leadId);
   }
 
   // 2. Fire SMS + email in parallel.

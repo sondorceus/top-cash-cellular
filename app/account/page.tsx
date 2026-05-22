@@ -29,7 +29,16 @@ type Trade = {
   address?: { street?: string; unit?: string; city?: string; state?: string; zip?: string };
 };
 
-type Section = "account" | "trades" | "addresses";
+type Section = "account" | "trades" | "addresses" | "referral";
+
+// Shape of the /api/referral response — the Refer & Earn section.
+type ReferralData = {
+  authenticated: boolean;
+  code?: string;
+  link?: string;
+  earned?: number;
+  referralCount?: number;
+};
 
 type AccountData = {
   authenticated: boolean;
@@ -78,6 +87,13 @@ export default function AccountPage() {
   // "I want to manage my settings" path, Addresses is read-only
   // recall of past shipping addresses.
   const [section, setSection] = useState<Section>("trades");
+  // Refer & Earn section — lazy-loaded the first time the customer
+  // opens the tab so the dashboard's initial paint isn't slowed by a
+  // second MC scan. `referralCopied` drives the brief "Copied!" tick
+  // after the Copy button is pressed.
+  const [referral, setReferral] = useState<ReferralData | null>(null);
+  const [referralLoading, setReferralLoading] = useState(false);
+  const [referralCopied, setReferralCopied] = useState(false);
   // Account-info edit state.
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState("");
@@ -131,6 +147,31 @@ export default function AccountPage() {
     }
   };
   useEffect(() => { refresh(); }, []);
+
+  // Fetch referral data the first time the customer opens the tab.
+  // Re-runs only if a prior fetch left us with no data (e.g. a
+  // transient MC outage) so re-clicking the tab can recover.
+  useEffect(() => {
+    if (section !== "referral" || referral || referralLoading) return;
+    setReferralLoading(true);
+    fetch("/api/referral", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d: ReferralData) => setReferral(d))
+      .catch(() => setReferral({ authenticated: true }))
+      .finally(() => setReferralLoading(false));
+  }, [section, referral, referralLoading]);
+
+  const copyReferralLink = async () => {
+    if (!referral?.link) return;
+    try {
+      await navigator.clipboard.writeText(referral.link);
+      setReferralCopied(true);
+      setTimeout(() => setReferralCopied(false), 1800);
+    } catch {
+      // Clipboard API blocked (insecure context / permission) — the
+      // link is still visible in the read-only field to copy manually.
+    }
+  };
 
   const doLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -278,6 +319,8 @@ export default function AccountPage() {
     { id: "account", label: "Account Info", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
     { id: "trades", label: "Trade-Ins", icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", count: summary.total },
     { id: "addresses", label: "Addresses", icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z", count: addresses.length },
+    // Gift-box outline path — the Refer & Earn tab.
+    { id: "referral", label: "Refer & Earn", icon: "M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" },
   ];
 
   return (
@@ -489,6 +532,75 @@ export default function AccountPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {section === "referral" && (
+          <div>
+            <h2 className="text-lg font-bold mb-1">Refer & Earn</h2>
+            <p className="text-[#bdbdbd] text-sm mb-4">
+              Give a friend $10 off-the-top on their first trade, and you earn $10 when their trade completes.
+            </p>
+
+            {referralLoading && !referral ? (
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
+                <p className="text-[#888] text-sm">Loading your referral link…</p>
+              </div>
+            ) : referral?.code ? (
+              <div className="space-y-4">
+                {/* Share-link card — matches the Account Info card style. */}
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Your referral link</p>
+                  <p className="text-[13px] text-[#bdbdbd] leading-snug mb-3">
+                    Share this link with a friend. They get <span className="text-[#00c853] font-bold">$10 added</span> to
+                    their first offer — and once their trade completes, <span className="text-[#00c853] font-bold">you earn $10</span>.
+                  </p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={referral.link || ""}
+                      readOnly
+                      onFocus={(e) => e.currentTarget.select()}
+                      className="flex-1 min-w-0 px-3 py-2.5 bg-black/40 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#00c853]"
+                    />
+                    <button
+                      type="button"
+                      onClick={copyReferralLink}
+                      className={`px-4 py-2.5 rounded-lg text-sm font-extrabold whitespace-nowrap transition cursor-pointer ${
+                        referralCopied
+                          ? "bg-[#00c853]/15 text-[#00c853] border border-[#00c853]/40"
+                          : "bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a]"
+                      }`}
+                    >
+                      {referralCopied ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-[#888] mt-2">
+                    Referral code: <span className="text-[#bdbdbd] font-mono font-bold">{referral.code}</span>
+                  </p>
+                </div>
+
+                {/* Two stat tiles — dollars earned + friends referred. */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                    <p className="text-[10px] text-[#888] uppercase tracking-wider font-bold mb-1">Earned</p>
+                    <p className="text-2xl font-extrabold text-[#00c853]">${(referral.earned || 0).toLocaleString()}</p>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                    <p className="text-[10px] text-[#888] uppercase tracking-wider font-bold mb-1">Friends referred</p>
+                    <p className="text-2xl font-extrabold">{referral.referralCount || 0}</p>
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-[#888] leading-snug">
+                  Rewards are credited automatically once your friend&apos;s trade is paid or completed in person.
+                </p>
+              </div>
+            ) : (
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
+                <p className="text-[#bdbdbd] text-sm">Couldn&apos;t load your referral link right now — try again in a moment.</p>
               </div>
             )}
           </div>
