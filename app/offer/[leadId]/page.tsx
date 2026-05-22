@@ -569,7 +569,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                   <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   You&apos;re ready — drop it at any FedEx
                 </p>
-                <p className="text-[#bdbdbd] text-[11px] mt-1">Your trade must be received within 21 days of submission.</p>
+                <p className="text-[#bdbdbd] text-[11px] mt-1">Your trade must be received within 14 days of submission.</p>
               </div>
             )}
           </div>
@@ -948,7 +948,7 @@ function StatusBanner({ status, cancelled, isShip, hasLabel }: { status: string;
     title = "Awaiting Shipment";
     iconPath = "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z";
     detail = hasLabel
-      ? "We're waiting for your offer to be shipped to our warehouse. Print your label below and drop off when you're ready — 21 days from offer creation."
+      ? "We're waiting for your offer to be shipped to our warehouse. Print your label below and drop off when you're ready — 14 days from offer creation."
       : "We're waiting on your prepaid label. Check your email — it usually lands within the hour.";
     tone = "bg-[#00c853]/10 border-[#00c853]/40 text-[#00c853]";
   } else {

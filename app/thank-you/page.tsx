@@ -20,7 +20,7 @@ export default function ThankYou() {
           We&apos;ll contact you within the hour to arrange pickup and payment.
         </p>
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
-          <p className="text-sm text-[#dcdcdc]">Your price is locked for 7 days. Same-day payout available.</p>
+          <p className="text-sm text-[#dcdcdc]">Your price is locked for 14 days. Same-day payout available.</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a

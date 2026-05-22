@@ -150,7 +150,7 @@ export async function POST(req: NextRequest) {
 <tr><td style="padding:22px 24px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.08)">
 <div style="font-size:10px;color:#00c853;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:6px;font-weight:800">Locked-In Offer</div>
 <div style="font-size:48px;font-weight:800;color:#00c853;line-height:1;text-shadow:0 0 18px rgba(0,200,83,0.4)">$${offerTotal}</div>
-<div style="font-size:11px;color:#888;margin-top:10px;letter-spacing:0.08em;text-transform:uppercase">Valid for 7 days</div>
+<div style="font-size:11px;color:#888;margin-top:10px;letter-spacing:0.08em;text-transform:uppercase">Valid for 14 days</div>
 </td></tr>
 <tr><td style="padding:16px 24px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -347,7 +347,7 @@ One label covers the entire package — you don&#39;t need ${deviceArr.length} s
   <tr><td style="padding:12px 18px">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
       <td width="26" valign="top" style="padding-right:10px;padding-top:1px"><div style="width:16px;height:16px;border-radius:4px;background:#00c853;color:#0a0a0a;text-align:center;font-weight:800;font-size:11px;line-height:16px">✓</div></td>
-      <td valign="top" style="font-size:12px;color:#e6e6e6;line-height:1.55"><strong style="color:#fff">Drop within 7 days</strong> to lock in your $${quote} offer. Past that we may need to re-quote based on current market rates.</td>
+      <td valign="top" style="font-size:12px;color:#e6e6e6;line-height:1.55"><strong style="color:#fff">Drop within 14 days</strong> to lock in your $${quote} offer. Past that we may need to re-quote based on current market rates.</td>
     </tr></table>
   </td></tr>
 </table>
@@ -534,7 +534,7 @@ ${YELP_URL ? `<a href="${YELP_URL}" style="display:inline-block;margin:0 4px;pad
 
     const textFallback = hasLabel
       ? `Hi ${name || "there"}, your $${quote} quote for ${model} is locked. Your prepaid FedEx label is ready — tracking ${fedexLabel.tracking}, download: ${fedexLabel.url}. Print, tape to a padded box, drop at any FedEx location. Top Cash Cellular, Austin TX.`
-      : `Hi ${name || "there"}, your $${quote} quote for ${model} (${condition}, ${storage || "N/A"}) is locked for 7 days. We'll contact you within the hour. Reply to this email or write to CustomerService@topcashcells.com — Top Cash Cellular, Austin TX`;
+      : `Hi ${name || "there"}, your $${quote} quote for ${model} (${condition}, ${storage || "N/A"}) is locked for 14 days. We'll contact you within the hour. Reply to this email or write to CustomerService@topcashcells.com — Top Cash Cellular, Austin TX`;
 
     try {
       const { Resend } = await import("resend");
@@ -569,7 +569,7 @@ ${YELP_URL ? `<a href="${YELP_URL}" style="display:inline-block;margin:0 4px;pad
   if (phone) {
     const smsBody = hasLabel
       ? `Top Cash Cellular: $${quote} quote locked for ${model}. Your prepaid FedEx label is ready — tracking ${fedexLabel.tracking}. Download: ${fedexLabel.url}`
-      : `Top Cash Cellular: Your $${quote} quote for ${model} is locked for 7 days! We'll contact you within the hour. Questions? Call (877) 549-2056`;
+      : `Top Cash Cellular: Your $${quote} quote for ${model} is locked for 14 days! We'll contact you within the hour. Questions? Call (877) 549-2056`;
     smsSent = await sendSms(phone, smsBody);
   }
 

@@ -3471,7 +3471,7 @@ function TrustBadge() {
     <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[#e6e6e6] text-xs">
       <span className="inline-flex items-center gap-1"><svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>Thousands of happy sellers</span>
       <span>·</span>
-      <span className="inline-flex items-center gap-1"><svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>7-day price lock</span>
+      <span className="inline-flex items-center gap-1"><svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>14-day price lock</span>
       <span>·</span>
       <span className="inline-flex items-center gap-1"><svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Same-day payout</span>
       <span>·</span>
@@ -9511,7 +9511,7 @@ export default function Home() {
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <svg className="w-6 h-6 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                  <p className="text-xs text-[#e6e6e6] mt-1">Your price is locked 7 days</p>
+                  <p className="text-xs text-[#e6e6e6] mt-1">Your price is locked 14 days</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <svg className="w-6 h-6 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
@@ -9971,7 +9971,7 @@ export default function Home() {
             <div className="flex items-center justify-center lg:justify-start gap-2 mb-4">
               <span className="inline-flex items-center gap-1.5 bg-[#ffb400]/12 border border-[#ffb400]/35 text-[#ffb400] text-xs font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(255,180,0,0.25)]">
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.4}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                Price locked · 7 days
+                Price locked · 14 days
               </span>
             </div>
 
@@ -10161,7 +10161,7 @@ export default function Home() {
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <svg className="w-7 h-7 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                  <p className="text-xs text-[#e6e6e6] mt-1">Your price is locked 7 days</p>
+                  <p className="text-xs text-[#e6e6e6] mt-1">Your price is locked 14 days</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <svg className="w-7 h-7 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
@@ -12307,7 +12307,7 @@ export default function Home() {
                   <ul className="space-y-2 text-sm text-[#dcdcdc]">
                     <li className="flex gap-2"><span className="text-[#00c853] shrink-0">✓</span><span>Ship from home with a free FedEx label — never leave the house</span></li>
                     <li className="flex gap-2"><span className="text-[#00c853] shrink-0">✓</span><span>Or meet at a known, public Austin spot — face you can recognize</span></li>
-                    <li className="flex gap-2"><span className="text-[#00c853] shrink-0">✓</span><span>Quote locked for 7 days — no surprise deductions on arrival</span></li>
+                    <li className="flex gap-2"><span className="text-[#00c853] shrink-0">✓</span><span>Quote locked for 14 days — no surprise deductions on arrival</span></li>
                     <li className="flex gap-2"><span className="text-[#00c853] shrink-0">✓</span><span>One real business in Austin that&apos;ll still be here next month</span></li>
                   </ul>
                 </div>
@@ -12349,7 +12349,7 @@ export default function Home() {
                   { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />, title: "Local & personal", desc: "We meet you at a known public Austin spot. Face-to-face, safe, and quick. 5 minutes and you're done." },
                   { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, title: "Nationwide shipping", desc: "Not in Austin? No problem. We send a free prepaid FedEx label. Ship your device, get paid same day we receive it — never leave the house." },
                   { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />, title: "We buy everything", desc: "iPhones, Samsung Galaxy, MacBooks, PS5, Xbox, Nintendo Switch. Working, cracked, or water damaged." },
-                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />, title: "7-day price lock", desc: "Your quote is locked for 7 days. Take your time deciding — the price won't change." },
+                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />, title: "14-day price lock", desc: "Your quote is locked for 14 days. Take your time deciding — the price won't change." },
                 ].map((item) => (
                   <div key={item.title} className="flex items-start gap-4 bg-white/5 rounded-2xl p-4 border border-white/10">
                     <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{item.icon}</svg>
@@ -12411,7 +12411,7 @@ export default function Home() {
                 <div className="text-[#e6e6e6] text-sm space-y-5 leading-relaxed">
                   <div>
                     <p className="text-white font-bold mb-1">1. Quotes & final pricing</p>
-                    <p>Quotes on our site are estimates based on the device model and condition tier you select. The price you see is locked for 7 days from the time of quote. Final pricing is confirmed at inspection — if your device matches the condition you selected, we honor the quoted price.</p>
+                    <p>Quotes on our site are estimates based on the device model and condition tier you select. The price you see is locked for 14 days from the time of quote. Final pricing is confirmed at inspection — if your device matches the condition you selected, we honor the quoted price.</p>
                   </div>
                   <div>
                     <p className="text-white font-bold mb-1">2. Eligibility</p>
@@ -12423,7 +12423,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="text-white font-bold mb-1">4. Return / rejection policy</p>
-                    <p>If you ship a device and don&apos;t like the final offer, we will mail it back to you free of charge via the same carrier we used for the inbound label. No restocking fee. You have 7 days from our revised-offer email to request a return; after that we assume acceptance.</p>
+                    <p>If you ship a device and don&apos;t like the final offer, we will mail it back to you free of charge via the same carrier we used for the inbound label. No restocking fee. You have 14 days from our revised-offer email to request a return; after that we assume acceptance.</p>
                   </div>
                   <div>
                     <p className="text-white font-bold mb-1">5. Payouts</p>
@@ -12509,10 +12509,10 @@ export default function Home() {
 
                 <h2 className="text-xl font-bold mb-3">If we change the offer</h2>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8 space-y-3 text-sm text-[#e6e6e6] leading-relaxed">
-                  <p>If the device&apos;s actual condition is different from the tier you selected, we&apos;ll show you what we found (with photos), explain the adjustment, and email a revised offer. You have 7 days to decide.</p>
+                  <p>If the device&apos;s actual condition is different from the tier you selected, we&apos;ll show you what we found (with photos), explain the adjustment, and email a revised offer. You have 14 days to decide.</p>
                   <p><strong className="text-white">Accept it</strong> — we pay you that same business day.</p>
                   <p><strong className="text-white">Reject it</strong> — we ship the device back to you free of charge via the same carrier. No restocking fee, no questions.</p>
-                  <p>If you don&apos;t respond within 7 days of the revised-offer email, we assume acceptance.</p>
+                  <p>If you don&apos;t respond within 14 days of the revised-offer email, we assume acceptance.</p>
                 </div>
 
                 <h2 className="text-xl font-bold mb-3">Local Austin</h2>

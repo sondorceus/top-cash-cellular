@@ -93,7 +93,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "How long is my quote locked in?",
-    a: "Seven days from submission. If FedEx delivers your device within that window, you're guaranteed the quoted price (subject to condition matching). If something slips past 7 days, we re-quote based on current market — sometimes higher, sometimes lower.",
+    a: "14 days from submission. If FedEx delivers your device within that window, you're guaranteed the quoted price (subject to condition matching). If something slips past 14 days, we re-quote based on current market — sometimes higher, sometimes lower.",
   },
   {
     q: "I didn't get my confirmation email — what now?",

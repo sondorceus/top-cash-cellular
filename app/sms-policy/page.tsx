@@ -51,7 +51,7 @@ export default function SmsPolicyPage() {
           <ul className="space-y-3 text-sm text-[#e6e6e6] leading-relaxed">
             <li>
               <strong className="text-white">Quote confirmation.</strong>{" "}
-              <em className="text-[#9a9a9a]">&ldquo;Top Cash: Hi Maria, your $420 quote for iPhone 14 is locked for 7 days. Track: topcashcellular.com/track. Reply STOP to opt out.&rdquo;</em>
+              <em className="text-[#9a9a9a]">&ldquo;Top Cash: Hi Maria, your $420 quote for iPhone 14 is locked for 14 days. Track: topcashcellular.com/track. Reply STOP to opt out.&rdquo;</em>
             </li>
             <li>
               <strong className="text-white">Shipping label sent.</strong>{" "}
