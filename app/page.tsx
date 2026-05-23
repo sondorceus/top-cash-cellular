@@ -4068,7 +4068,11 @@ export default function Home() {
     if (step === "payout") return 85;
     if (step === "checkout") return 75;
     if (step === "quote") return 65;
-    if (step === "inquiry") return 50;
+    // inquiry is hidden by the visibility check on the bar itself, so
+    // we never actually render this branch — kept as a defensive 0 in
+    // case the visibility check changes later. No half-meaningful 50%
+    // showing for a free-form custom-quote request.
+    if (step === "inquiry") return 0;
     if (step === "model") return 18;
     if (step === "brand") return 10;
     if (step === "category") return 5;
@@ -4675,6 +4679,20 @@ export default function Home() {
   const [cartBump, setCartBump] = useState(0);
   // Toast — short-lived confirmation that shows what was just added / removed.
   const [cartToast, setCartToast] = useState<{ model: string; price: number; kind?: "add" | "remove" } | null>(null);
+  // Generic styled confirm dialog. Replaces the browser confirm() popup
+  // (looks like Windows 95 next to the rest of the dark/green UI) with
+  // a themed modal. Same API shape — caller passes title/body/onConfirm.
+  const [confirmDialog, setConfirmDialog] = useState<{
+    title: string;
+    body: string;
+    confirmLabel: string;
+    cancelLabel: string;
+    onConfirm: () => void;
+  } | null>(null);
+  // Short-lived "did the thing" toast for one-off actions like flow
+  // switches. cartToast is too specific (model+price shape), so this
+  // takes a plain string message and fades after ~2.5s.
+  const [actionToast, setActionToast] = useState<string | null>(null);
   const [inquiryCategory, setInquiryCategory] = useState("");
   const [inquirySent, setInquirySent] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
@@ -4736,7 +4754,12 @@ export default function Home() {
   const [openPill, setOpenPill] = useState<number | null>(null);
   const popThenRun = (id: string, run: () => void) => {
     setFunnelPop(id);
-    setTimeout(() => { setFunnelPop(null); run(); }, 280);
+    // 280ms felt like a glitch — across the full funnel that's nearly
+    // 2s of cumulative "press" delay on a phone flow. Tightened to
+    // 200ms: visual tap-confirm still reads cleanly, response feels
+    // noticeably snappier, and the progress bar (which advances on the
+    // setStep inside `run`) catches up to the click without a gap.
+    setTimeout(() => { setFunnelPop(null); run(); }, 200);
   };
   const [statsVisible, setStatsVisible] = useState(false);
   const [animatedStats, setAnimatedStats] = useState({ devices: 0, payout: 0, time: 0 });
@@ -6272,6 +6295,59 @@ export default function Home() {
           Sidesteps the mobile fullscreen takeover the
           PlaceAutocompleteElement triggers on focus, and keeps the
           Maps key off the client entirely. */}
+      {/* CONFIRM DIALOG — styled replacement for the browser confirm()
+          popup. Used by the cart-flow switch links and reusable for any
+          other "are you sure?" prompt. Click-outside the card cancels;
+          Escape would cancel too if we wired a keydown listener (the
+          two existing switch paths are rare enough to skip that for now). */}
+      {confirmDialog && (
+        <div
+          className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 animate-[fadeIn_0.18s_ease-out]"
+          onClick={() => setConfirmDialog(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[rgba(20,20,24,0.97)] backdrop-blur-[14px] border border-white/15 rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.8)] w-full max-w-sm p-5"
+            style={{ animation: "slideInRight 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both" }}
+          >
+            <h3 className="text-white text-base font-extrabold mb-1">{confirmDialog.title}</h3>
+            <p className="text-[#c8c8c8] text-[13px] leading-snug mb-4">{confirmDialog.body}</p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setConfirmDialog(null)}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-[13px] font-bold hover:bg-white/10 cursor-pointer transition tap-press"
+              >
+                {confirmDialog.cancelLabel}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const fn = confirmDialog.onConfirm;
+                  setConfirmDialog(null);
+                  fn();
+                }}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-[#00c853] text-[#0a0a0a] text-[13px] font-extrabold hover:bg-[#00e676] cursor-pointer transition tap-press"
+              >
+                {confirmDialog.confirmLabel}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ACTION TOAST — generic short-lived status pill for one-off
+          confirmations (flow switches, etc.). Different from cartToast
+          which has the model+price layout; this is just a single line. */}
+      {actionToast && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 lg:left-auto lg:right-6 lg:translate-x-0 z-[65] toast-in-up">
+          <div className="flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-[rgba(15,15,15,0.92)] backdrop-blur-[14px] border border-[#00c853]/40 shadow-[0_18px_45px_rgba(0,0,0,0.6),0_0_18px_rgba(0,200,83,0.18)]">
+            <span className="w-6 h-6 rounded-full flex items-center justify-center text-[#0a0a0a] font-extrabold text-xs shrink-0 bg-[#00c853] shadow-[0_0_10px_rgba(0,200,83,0.55)]">✓</span>
+            <p className="text-white text-[13px] font-extrabold leading-tight">{actionToast}</p>
+          </div>
+        </div>
+      )}
+
       {/* CART TOAST — fixed top-center on mobile, top-right on lg.
           Slides up + fades. Auto-dismisses after 2.4s. Two variants:
           'add' (green check, ✓) and 'remove' (red minus, ×). */}
@@ -6769,8 +6845,11 @@ export default function Home() {
             directly under whatever else is in the sticky header, no
             hardcoded top offsets to maintain. Width is `overallProgressPct`
             (declared above) which respects the actual flow ordering and
-            uses stableBarRatio across the funnel band — no retreats. */}
-        {step !== "device" && step !== "done" && page === "home" && (
+            uses stableBarRatio across the funnel band — no retreats.
+            Hidden on the inquiry step: it's a free-form custom-quote
+            request, not a fixed-step funnel, so a progress percentage
+            would just be a meaningless guess. */}
+        {step !== "device" && step !== "done" && step !== "inquiry" && page === "home" && (
           <div className="h-1 bg-white/10">
             <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${overallProgressPct}%` }} />
           </div>
@@ -11523,24 +11602,29 @@ export default function Home() {
                       <button
                         type="button"
                         onClick={() => {
-                          // Only confirm when the user has actually
-                          // typed shipping address content — otherwise
-                          // an accidental tap on a populated form would
-                          // silently swap modes and the previously-
-                          // shown badges (Same-day after inspect /
-                          // Insured + tracked) would flip to the local
-                          // pair without warning. shipState defaults to
-                          // "TX" so it's not a "user typed something"
-                          // signal — only treat the free-entry fields
-                          // as the trigger.
+                          // Switch ship -> local. Same conditional-
+                          // confirm logic as before, but now using the
+                          // styled in-app modal instead of confirm() so
+                          // the prompt matches the rest of the dark UI.
+                          // On success, a small toast fades in for ~2.5s
+                          // as positive feedback the switch took effect.
+                          const doSwitch = () => {
+                            setHandoffMethod("local");
+                            setLocalArea(null);
+                            setActionToast("Switched to local meetup");
+                            setTimeout(() => setActionToast(null), 2500);
+                          };
                           const hasShipData = !!(
                             shipStreet.trim() || shipCity.trim() || shipZip.trim()
                           );
-                          if (hasShipData && !confirm(
-                            "Switch to a local meetup? Your shipping address stays saved if you switch back."
-                          )) return;
-                          setHandoffMethod("local");
-                          setLocalArea(null);
+                          if (!hasShipData) { doSwitch(); return; }
+                          setConfirmDialog({
+                            title: "Switch to local meetup?",
+                            body: "Your shipping address stays saved if you switch back.",
+                            confirmLabel: "Switch to local",
+                            cancelLabel: "Stay on shipping",
+                            onConfirm: doSwitch,
+                          });
                         }}
                         className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer"
                       >Switch to local meetup instead</button>
@@ -11610,25 +11694,33 @@ export default function Home() {
                           <button
                             type="button"
                             onClick={() => {
-                              // Same conditional confirm as the ship->
-                              // local link above. Only prompt when the
-                              // user has committed to an Austin area or
-                              // booked a meetup slot — empty-state
-                              // switch is silent so first-time triers
-                              // can flip modes freely.
+                              // Switch local -> ship via the styled
+                              // modal. Mirrors the ship->local handler
+                              // above; only prompts when there's actual
+                              // local data to lose, and shows the
+                              // success toast on completion.
+                              const doSwitch = () => {
+                                setHandoffMethod("ship");
+                                setActionToast("Switched to shipping");
+                                setTimeout(() => setActionToast(null), 2500);
+                                // Local's slot picker can render much taller than
+                                // ship's address form. Without an explicit scroll
+                                // the page reflows and dumps the user at the
+                                // footer. Wait a tick for the ship section to
+                                // mount, then scroll its address into view.
+                                setTimeout(() => {
+                                  shipStreetInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                                }, 50);
+                              };
                               const hasLocalData = !!(localArea || selectedSlot);
-                              if (hasLocalData && !confirm(
-                                "Switch to shipping? Your local pickup area stays saved if you switch back."
-                              )) return;
-                              setHandoffMethod("ship");
-                              // Local's slot picker can render much taller than
-                              // ship's address form. Without an explicit scroll
-                              // the page reflows and dumps the user at the
-                              // footer. Wait a tick for the ship section to
-                              // mount, then scroll its address into view.
-                              setTimeout(() => {
-                                shipStreetInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-                              }, 50);
+                              if (!hasLocalData) { doSwitch(); return; }
+                              setConfirmDialog({
+                                title: "Switch to shipping?",
+                                body: "Your local pickup area stays saved if you switch back.",
+                                confirmLabel: "Switch to shipping",
+                                cancelLabel: "Stay local",
+                                onConfirm: doSwitch,
+                              });
                             }}
                             className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer"
                           >
@@ -13541,6 +13633,43 @@ export default function Home() {
                   <svg className="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               </div>
+
+              {/* Inline handoff picker — only when the user has items in
+                  the cart but hasn't committed to ship vs local yet (e.g.
+                  they added stuff via search/category without going
+                  through the hero dual-path buttons). Without this, the
+                  reassurance badges at the bottom of the cart default to
+                  the local copy and don't reflect their actual flow until
+                  they reach the checkout step's handoff picker — which
+                  was previously the first place this was asked. Getting
+                  the commit upfront makes the badges accurate right
+                  away and shaves a click off the checkout flow. */}
+              {cartItems.length > 0 && handoffMethod === null && (
+                <div className="mx-6 mt-4 rounded-2xl bg-white/[0.04] border border-white/12 p-3">
+                  <p className="text-white text-[12px] font-extrabold mb-2 flex items-center gap-1.5">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#00c853] animate-pulse"></span>
+                    How are you handing off?
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setHandoffMethod("ship")}
+                      className="flex flex-col items-start gap-0.5 p-2.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.07] cursor-pointer text-left tap-press transition"
+                    >
+                      <span className="text-white text-[12px] font-extrabold">Ship It</span>
+                      <span className="text-[#bdbdbd] text-[10px]">Free prepaid label</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setHandoffMethod("local")}
+                      className="flex flex-col items-start gap-0.5 p-2.5 rounded-xl border border-[#00c853]/35 bg-[#00c853]/[0.08] hover:bg-[#00c853]/[0.14] cursor-pointer text-left tap-press transition"
+                    >
+                      <span className="text-white text-[12px] font-extrabold">Local Meetup</span>
+                      <span className="text-[#bdbdbd] text-[10px]">We come to you</span>
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Bulk-tier suggestion — once the user has 4+ devices in the
                   cart we surface the bulk-selling path. They might get better

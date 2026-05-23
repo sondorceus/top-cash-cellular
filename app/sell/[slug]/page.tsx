@@ -321,7 +321,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
           <h2 className="text-lg font-bold mb-3">Why Sell to Top Cash Cellular?</h2>
           <ul className="space-y-2 text-sm text-[#e5e5e5]">
             <li className="flex items-start gap-2"><svg className="w-5 h-5 text-[#00c853] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> We pay more than Apple/Samsung trade-in</li>
-            <li className="flex items-start gap-2"><svg className="w-5 h-5 text-[#00c853] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Same-day payout — no waiting</li>
+            <li className="flex items-start gap-2"><svg className="w-5 h-5 text-[#00c853] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Same-day payout local · same-day after inspect shipped</li>
             <li className="flex items-start gap-2"><svg className="w-5 h-5 text-[#00c853] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> We buy any condition — even cracked</li>
             <li className="flex items-start gap-2"><svg className="w-5 h-5 text-[#00c853] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Local Austin meetup or free shipping</li>
             <li className="flex items-start gap-2"><svg className="w-5 h-5 text-[#00c853] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Cash, Cash App, Zelle, or BTC</li>
@@ -358,7 +358,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
             "@context": "https://schema.org",
             "@type": "Offer",
             "name": `Sell ${device.name}`,
-            "description": `Sell your ${device.name} for up to $${device.price} in Austin TX. Same-day payout.`,
+            "description": `Sell your ${device.name} for up to $${device.price} in Austin TX. Same-day payout on local meetups; same-day after inspection on shipped trades.`,
             "price": device.price,
             "priceCurrency": "USD",
             "url": `https://topcashcellular.com/sell/${device.slug}`,
