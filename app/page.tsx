@@ -6848,10 +6848,20 @@ export default function Home() {
             uses stableBarRatio across the funnel band — no retreats.
             Hidden on the inquiry step: it's a free-form custom-quote
             request, not a fixed-step funnel, so a progress percentage
-            would just be a meaningless guess. */}
+            would just be a meaningless guess.
+            Skywalker 2026-05-23 — on desktop the 4-px bar was getting
+            lost at the bottom of the (tall) sticky nav, reading as
+            static even though it was advancing. Bumped to 6 px on lg+,
+            added a soft green glow so the fill is unmistakable, and
+            spelled out `transition-[width]` explicitly so the animation
+            fires regardless of how the browser interprets
+            `transition-all` when the only changing property is width. */}
         {step !== "device" && step !== "done" && step !== "inquiry" && page === "home" && (
-          <div className="h-1 bg-white/10">
-            <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${overallProgressPct}%` }} />
+          <div className="h-1 lg:h-1.5 bg-white/10">
+            <div
+              className="h-full bg-[#00c853] shadow-[0_0_8px_rgba(0,200,83,0.55)] transition-[width] duration-500 ease-out"
+              style={{ width: `${overallProgressPct}%` }}
+            />
           </div>
         )}
       </SlideOnScrollNav>
