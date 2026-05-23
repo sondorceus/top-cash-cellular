@@ -7653,13 +7653,23 @@ export default function Home() {
                 <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>Sell Local Today</span>
                 <span className="text-[11px] font-medium opacity-80">Meet in Austin · Paid in ~15 min</span>
               </button>
+              {/* Ship button — Skywalker 2026-05-23: "the local is bigger
+                  easier to read". Local pops because it's a bright green
+                  primary; ship was reading as a dim "secondary" sibling.
+                  Reweighted to equal-presence dark glass: brighter base
+                  background (was bg/0.5 -> bg/0.75 for more body),
+                  brighter border (white/15 -> white/22 + green accent),
+                  inner shadow + outer glow that matches the primary's
+                  visual heft, and the subtitle's color steps up from
+                  #b8b8b8 to #d8d8d8 so it reads as cleanly as the local
+                  pair's `opacity-80` white. */}
               <button
                 onClick={() => { setDualPathPop("ship"); setTimeout(() => { setDualPathPop(null); setHandoffMethod("ship"); setStep("category"); pushHistory("category"); }, 280); }}
                 onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setDualPathPop(null); }}
-                className={`w-full bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] hover:bg-[rgba(15,15,15,0.85)] hover:border-[#00c853] border border-white/15 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-300 ease-out shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex flex-col items-center gap-0.5 ${dualPathPop === "ship" ? "phone-pop-3d" : ""}`}
+                className={`w-full bg-[rgba(20,22,28,0.85)] backdrop-blur-[12px] hover:bg-[rgba(28,32,40,0.95)] hover:border-[#00c853]/60 border border-white/22 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-300 ease-out shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_10px_30px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.02)] flex flex-col items-center gap-0.5 ${dualPathPop === "ship" ? "phone-pop-3d" : ""}`}
               >
                 <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>I&apos;m Shipping: Get a Label</span>
-                <span className="text-[11px] font-medium text-[#b8b8b8]">Mail in (~3 days) · Paid same day we inspect</span>
+                <span className="text-[11px] font-medium text-[#d8d8d8]">Mail in (~3 days) · Paid same day we inspect</span>
               </button>
             </div>
 
