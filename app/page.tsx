@@ -4020,12 +4020,43 @@ export default function Home() {
     step === "carrier-lock" ? (isIpadFlow ? 5 : 4) :
     step === "quote" ? funnelTotal : 0
   );
+  // Stabilized progress-bar ratio. Two bugs to fix here:
+  //   1. The raw `funnelStepNum / funnelTotal` retreats mid-flow when a
+  //      user pick BUMPS THE TOTAL but the step hasn't advanced yet —
+  //      classic case: phone user at step "carrier" (3/4 = 75%) picks
+  //      Verizon, carrierAsksLock flips true, total jumps 4 → 5, ratio
+  //      drops 75% → 60% for the ~280ms popThenRun delay, then step
+  //      advances to carrier-lock (4/5 = 80%). Visually the bar darts
+  //      backwards then forwards in <half a second. Skywalker called
+  //      this "going backwards and forward at the same time."
+  //   2. The bar mounts directly at its target width with no entrance
+  //      animation — the CSS `transition-all` only fires on width
+  //      *changes*, not on initial mount. So at the funnel start the
+  //      bar pops into existence at e.g. 25% instantly, making the
+  //      280ms tap-confirm delay before the next click feel like a
+  //      glitch ("shows up so fast it looks like a glitch").
+  // Both are fixed by deriving the width from a state value that only
+  // updates when `step` actually changes — total changes alone are
+  // ignored, and the initial 0 lets CSS animate it up to target.
+  const [stableBarRatio, setStableBarRatio] = useState(0);
+  useEffect(() => {
+    if (funnelStepNum === 0) {
+      // Out of funnel — reset so the next entry animates from 0.
+      setStableBarRatio(0);
+      return;
+    }
+    setStableBarRatio(funnelStepNum / funnelTotal);
+    // Intentionally only re-react to step changes, not to total
+    // changes — see (1) above. Disable the deps lint just for this.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [funnelStepNum]);
+
   const stepProgress = funnelStepNum > 0 && (
     <div className="mb-4 hidden lg:block">
       <div className="flex items-center gap-3 mb-1.5">
         <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Step {funnelStepNum} of {funnelTotal}</span>
         <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden max-w-[180px]">
-          <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_6px_rgba(0,200,83,0.5)] transition-all duration-500" style={{ width: `${(funnelStepNum / funnelTotal) * 100}%` }} />
+          <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_6px_rgba(0,200,83,0.5)] transition-all duration-500" style={{ width: `${stableBarRatio * 100}%` }} />
         </div>
       </div>
     </div>
@@ -5677,7 +5708,10 @@ export default function Home() {
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgba(15,15,15,0.78)] backdrop-blur-[8px] border border-white/15 shadow-[0_4px_10px_rgba(0,0,0,0.4)]">
             <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] leading-none">Step {funnelStepNum}/{funnelTotal}</span>
             <div className="w-14 h-1 bg-white/10 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_4px_rgba(0,200,83,0.5)] transition-all duration-500" style={{ width: `${(funnelStepNum / funnelTotal) * 100}%` }} />
+              {/* Same `stableBarRatio` as the desktop bar — see the
+                  comment by its useState declaration above. Fixes the
+                  Verizon-pick retreat AND the entrance-glitch flash. */}
+              <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_4px_rgba(0,200,83,0.5)] transition-all duration-500" style={{ width: `${stableBarRatio * 100}%` }} />
             </div>
           </div>
         </div>
