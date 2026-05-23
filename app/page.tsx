@@ -7964,21 +7964,39 @@ export default function Home() {
           <div className="text-center mb-3">
             <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em] reveal">From drawer to dollars · 3 steps</p>
           </div>
+          {/* Each pill carries a hover-reveal tooltip with the detail
+              that used to live inline on the old big-card version.
+              Desktop: tooltip pops above on hover via group-hover CSS.
+              Mobile: no hover, so it shows on tap (using the same
+              group-hover behavior via focus-within from the button
+              press). The tooltip is absolutely positioned above the
+              pill so it doesn't push layout. */}
           <div className="grid grid-cols-3 gap-2 max-w-3xl mx-auto">
             {[
-              { n: 1, title: "Quote" },
-              { n: 2, title: "Ship or meet" },
-              { n: 3, title: "Get paid" },
+              { n: 1, title: "Quote", tip: "Pick your device, condition, and storage. Offer in seconds — no signup needed." },
+              { n: 2, title: "Ship or meet", tip: "Free prepaid FedEx label OR meet us locally in Austin. Your call at checkout." },
+              { n: 3, title: "Get paid", tip: "Cash on the spot for local handoffs; same-day after we inspect for shipped trades. Cash App · Zelle · BTC." },
             ].map((s, i) => (
               <button
                 key={s.n}
                 type="button"
                 onClick={() => { window.scrollTo(0, 0); setStep("category"); pushHistory("category"); }}
-                className="group relative flex items-center justify-center gap-2 bg-white/5 border border-white/10 rounded-xl px-2 py-2.5 hover:bg-[#00c853]/[0.08] hover:border-[#00c853]/40 transition reveal cursor-pointer tap-press"
+                className="group relative flex items-center justify-center gap-2 bg-white/5 border border-white/10 rounded-xl px-2 py-2.5 hover:bg-[#00c853]/[0.08] hover:border-[#00c853]/40 focus:bg-[#00c853]/[0.08] focus:border-[#00c853]/40 transition reveal cursor-pointer tap-press"
                 data-stagger={Math.min(i + 2, 8)}
               >
                 <span className="w-5 h-5 rounded-full bg-[#00c853] text-[#0a0a0a] text-[11px] font-extrabold flex items-center justify-center shrink-0">{s.n}</span>
                 <span className="font-bold text-[13px] sm:text-sm text-white">{s.title}</span>
+                {/* Tooltip — sits above the pill, hidden by default,
+                    revealed on hover (desktop) or focus (keyboard /
+                    mobile tap). Pointer arrow at the bottom centers
+                    visually on the pill. */}
+                <span
+                  role="tooltip"
+                  className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-[180px] sm:w-[220px] px-3 py-2 rounded-xl bg-[rgba(15,15,15,0.96)] backdrop-blur-[10px] border border-[#00c853]/30 shadow-[0_12px_30px_rgba(0,0,0,0.6),0_0_14px_rgba(0,200,83,0.18)] text-[11px] sm:text-[12px] text-[#e6e6e6] leading-snug text-left opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 group-focus:opacity-100 group-focus:translate-y-0 transition duration-200 z-20"
+                >
+                  {s.tip}
+                  <span aria-hidden className="absolute left-1/2 -translate-x-1/2 top-full w-2.5 h-2.5 bg-[rgba(15,15,15,0.96)] border-r border-b border-[#00c853]/30 -mt-1.5 rotate-45"></span>
+                </span>
               </button>
             ))}
           </div>
