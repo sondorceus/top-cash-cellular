@@ -4051,6 +4051,36 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [funnelStepNum]);
 
+  // Big full-width progress bar in the sticky nav (h-1 across the
+  // page). Used to be driven by a hardcoded {step: pct} map that had
+  // `storage: 32` BEFORE `condition: 42` — so phone users advancing
+  // condition -> storage saw the bar retreat 10% before the next pick
+  // pushed it forward. Plus half the Step values (broken-functional,
+  // carrier-lock, batteryhealth, charger, etc.) were missing, so the
+  // bar dropped to 0% on every macSpec / PC laptop / iPad sub-step.
+  // Now we derive overall progress from a pre-funnel / funnel / post-
+  // funnel split, with the funnel chunk driven by the SAME
+  // stableBarRatio as the small bars — every progress indicator on
+  // the page advances in lockstep, no retreats, no missing-step drops.
+  const overallProgressPct = (() => {
+    if (step === "done") return 100;
+    if (step === "contact") return 92;
+    if (step === "payout") return 85;
+    if (step === "checkout") return 75;
+    if (step === "quote") return 65;
+    if (step === "inquiry") return 50;
+    if (step === "model") return 18;
+    if (step === "brand") return 10;
+    if (step === "category") return 5;
+    if (step === "device") return 0;
+    // Anywhere inside the funnel: condition through pre-quote.
+    // stableBarRatio is 1/N..N/N, which we map onto 18% -> 65%.
+    if (funnelStepNum > 0) {
+      return 18 + stableBarRatio * (65 - 18);
+    }
+    return 0;
+  })();
+
   const stepProgress = funnelStepNum > 0 && (
     <div className="mb-4 hidden lg:block">
       <div className="flex items-center gap-3 mb-1.5">
@@ -6737,10 +6767,12 @@ export default function Home() {
         )}
         {/* FUNNEL PROGRESS BAR — last row of the nav so it always sits
             directly under whatever else is in the sticky header, no
-            hardcoded top offsets to maintain. */}
+            hardcoded top offsets to maintain. Width is `overallProgressPct`
+            (declared above) which respects the actual flow ordering and
+            uses stableBarRatio across the funnel band — no retreats. */}
         {step !== "device" && step !== "done" && page === "home" && (
           <div className="h-1 bg-white/10">
-            <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${({category: 8, brand: 15, model: 22, storage: 32, condition: 42, carrier: 52, quote: 62, checkout: 72, payout: 82, contact: 92} as Record<string,number>)[step] ?? 0}%` }} />
+            <div className="h-full bg-[#00c853] transition-all duration-500" style={{ width: `${overallProgressPct}%` }} />
           </div>
         )}
       </SlideOnScrollNav>
