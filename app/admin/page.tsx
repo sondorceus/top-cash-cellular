@@ -1759,7 +1759,23 @@ export default function AdminPage() {
                 const current = pendingStatus[lead.id] ?? lead.status;
                 const meta = statusMeta(current);
                 return (
-                  <li key={lead.id} data-lead-id={lead.id} className={`px-5 py-4 grid md:grid-cols-[auto_1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 items-center hover:bg-white/[0.02] transition ${selectedIds.has(lead.id) ? "bg-[#00c853]/5" : ""} ${recentlyChanged[lead.id] ? "animate-[pulse_2s_ease-out_2] ring-1 ring-[#00c853]/40" : ""}`}>
+                  <li
+                    key={lead.id}
+                    data-lead-id={lead.id}
+                    /* Color-code the row's left edge by handoff method so
+                       the operator can scan ship-pending vs local-pending
+                       at a glance without reading each row. Sky-blue for
+                       shipping, emerald for local; no border for unknown.
+                       Skywalker 2026-05-23. */
+                    style={
+                      lead.handoffMethod === "ship"
+                        ? { borderLeft: "3px solid rgba(56, 189, 248, 0.7)" }
+                        : lead.handoffMethod === "local"
+                          ? { borderLeft: "3px solid rgba(16, 185, 129, 0.7)" }
+                          : undefined
+                    }
+                    className={`pl-5 pr-5 py-4 grid md:grid-cols-[auto_1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 items-center hover:bg-white/[0.02] transition ${selectedIds.has(lead.id) ? "bg-[#00c853]/5" : ""} ${recentlyChanged[lead.id] ? "animate-[pulse_2s_ease-out_2] ring-1 ring-[#00c853]/40" : ""}`}
+                  >
                     <div className="w-4">
                       <input type="checkbox" aria-label={`Select ${lead.name || lead.id}`} checked={selectedIds.has(lead.id)} onChange={() => toggleSelect(lead.id)} className="cursor-pointer accent-[#00c853]" />
                     </div>

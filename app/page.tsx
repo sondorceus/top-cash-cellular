@@ -4693,6 +4693,35 @@ export default function Home() {
   // switches. cartToast is too specific (model+price shape), so this
   // takes a plain string message and fades after ~2.5s.
   const [actionToast, setActionToast] = useState<string | null>(null);
+  // Cart abandonment nudge — fires once per session after ~90s of
+  // cart-with-items inactivity (no advancement past the funnel into
+  // checkout). The price-lock window is 14 days but new visitors don't
+  // know that, so the nudge surfaces the urgency. Tracked by a flag so
+  // it can't double-fire if cart items churn (add then remove then add).
+  const [abandonNudged, setAbandonNudged] = useState(false);
+  // "Why is our price higher?" tooltip toggle next to the quote total
+  // on the quote step. Tap-to-toggle on mobile; click on desktop.
+  const [priceWhyOpen, setPriceWhyOpen] = useState(false);
+  useEffect(() => {
+    // Only arm the timer when the cart has items AND the user hasn't
+    // already moved past the funnel (the post-funnel steps quote /
+    // checkout / payout / contact mean they're actively trying to
+    // buy, not abandoning). And only once per session.
+    if (abandonNudged) return;
+    if (cartItems.length === 0) return;
+    const postFunnel = ["quote", "checkout", "payout", "contact", "done"];
+    if (postFunnel.includes(step as string)) return;
+    const t = setTimeout(() => {
+      const top = cartItems.reduce((max, it) => it.price > max ? it.price : max, 0);
+      const msg = top > 0
+        ? `Lock in your $${top} quote — price holds 14 days`
+        : "Your quote is locked for 14 days — pick up where you left off";
+      setActionToast(msg);
+      setAbandonNudged(true);
+      setTimeout(() => setActionToast(null), 4000);
+    }, 90_000);
+    return () => clearTimeout(t);
+  }, [cartItems, step, abandonNudged]);
   const [inquiryCategory, setInquiryCategory] = useState("");
   const [inquirySent, setInquirySent] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
@@ -6348,6 +6377,44 @@ export default function Home() {
         </div>
       )}
 
+      {/* STICKY MOBILE BOTTOM CTA — appears during checkout / payout /
+          contact steps where the primary action sits at the BOTTOM of
+          a long-scrolling form, easily lost when the user scrolls up
+          to review their info. Skywalker 2026-05-23: drop-off was
+          happening here. NOT shown on the quote step — that already
+          has its own fixed-bottom Back/Add-to-Cart bar (line ~10714)
+          so we'd be double-stacking. Mobile-only (lg:hidden) since
+          desktop has the sticky checkout summary aside which keeps
+          the action visible without scrolling. Tapping the bar scrolls
+          to the first [data-primary-cta] in the active section and
+          dispatches a click — we don't have to mirror every step's
+          submit logic; the existing buttons do the work themselves. */}
+      {(["checkout", "payout", "contact"] as const).includes(step as never) && page === "home" && (
+        <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-[rgba(10,10,10,0.95)] backdrop-blur-[12px] border-t border-white/10 px-4 py-3 shadow-[0_-12px_30px_rgba(0,0,0,0.5)] safe-bottom">
+          <button
+            type="button"
+            onClick={() => {
+              const target = document.querySelector<HTMLElement>("[data-primary-cta]");
+              if (target) {
+                target.scrollIntoView({ behavior: "smooth", block: "center" });
+                // Brief settle, then click — gives the smooth-scroll a
+                // moment to land so the resulting tap-confirm visual on
+                // the real button isn't jumpy.
+                setTimeout(() => target.click(), 320);
+              }
+            }}
+            className="w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] py-3.5 rounded-xl text-[15px] font-extrabold cursor-pointer transition tap-press flex items-center justify-center gap-2"
+          >
+            <span>
+              {step === "checkout" ? "Continue" :
+               step === "payout" ? "Continue to your info" :
+               "Submit"}
+            </span>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+          </button>
+        </div>
+      )}
+
       {/* CART TOAST — fixed top-center on mobile, top-right on lg.
           Slides up + fades. Auto-dismisses after 2.4s. Two variants:
           'add' (green check, ✓) and 'remove' (red minus, ×). */}
@@ -7584,7 +7651,7 @@ export default function Home() {
                 className={`tcc-button-primary w-full py-4 text-base font-extrabold flex flex-col items-center gap-0.5 ${dualPathPop === "local" ? "phone-pop-3d" : ""}`}
               >
                 <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>Sell Local Today</span>
-                <span className="text-[11px] font-medium opacity-80">Local pickup · Cash on the spot</span>
+                <span className="text-[11px] font-medium opacity-80">Meet in Austin · Paid in ~15 min</span>
               </button>
               <button
                 onClick={() => { setDualPathPop("ship"); setTimeout(() => { setDualPathPop(null); setHandoffMethod("ship"); setStep("category"); pushHistory("category"); }, 280); }}
@@ -7592,7 +7659,7 @@ export default function Home() {
                 className={`w-full bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] hover:bg-[rgba(15,15,15,0.85)] hover:border-[#00c853] border border-white/15 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-300 ease-out shadow-[0_10px_30px_rgba(0,0,0,0.4)] flex flex-col items-center gap-0.5 ${dualPathPop === "ship" ? "phone-pop-3d" : ""}`}
               >
                 <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>I&apos;m Shipping: Get a Label</span>
-                <span className="text-[11px] font-medium text-[#b8b8b8]">Free prepaid label · Paid within 24 hrs of arrival</span>
+                <span className="text-[11px] font-medium text-[#b8b8b8]">Mail in (~3 days) · Paid same day we inspect</span>
               </button>
             </div>
 
@@ -8058,7 +8125,7 @@ export default function Home() {
       {step === "category" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+            <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -8320,7 +8387,7 @@ export default function Home() {
       {step === "brand" && page === "home" && category && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+            <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -8460,7 +8527,7 @@ export default function Home() {
       {step === "model" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
-            <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+            <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Back
             </button>
@@ -10310,9 +10377,30 @@ export default function Home() {
                   )}
                 </>
               ) : (
-                <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853] mt-1" style={{ textShadow: "0 0 8px rgba(0, 200, 83, 0.22)" }}>${quote * quantity}</p>
+                <div className="inline-flex items-center gap-2 mt-1">
+                  <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853]" style={{ textShadow: "0 0 8px rgba(0, 200, 83, 0.22)" }}>${quote * quantity}</p>
+                  {/* "Why our price is higher" affordance — hover (desktop)
+                      or tap (mobile) reveals a small popover with our
+                      pricing rationale vs Apple/Samsung trade-ins. Counters
+                      the "is this real?" hesitation that drops conversions.
+                      Skywalker 2026-05-23. */}
+                  <button
+                    type="button"
+                    onClick={() => setPriceWhyOpen((v) => !v)}
+                    aria-label="Why is our price higher?"
+                    className="w-6 h-6 rounded-full bg-white/10 hover:bg-[#00c853] hover:text-[#0a0a0a] text-[#00c853] text-xs font-bold flex items-center justify-center cursor-pointer transition shrink-0"
+                  >?</button>
+                </div>
               )}
             </div>
+            {priceWhyOpen && !isManualQuote && !isPendingQuote && (
+              <div className="max-w-md mx-auto lg:mx-0 -mt-3 mb-3 px-3.5 py-2.5 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/35 text-left animate-[fadeIn_0.15s_ease-out]">
+                <p className="text-[12px] font-bold text-white leading-snug mb-1">Why our offer is higher</p>
+                <p className="text-[11px] text-[#bdbdbd] leading-snug">
+                  Apple / Samsung trade-in routes you into a new device, not cash. We pay based on the actual resale value of your device after refurb — typically 30–60% more than store credit. No middleman, no "trade upgrade required."
+                </p>
+              </div>
+            )}
             {/* FREE-RECYCLING SECONDARY CTA — calm dark card that shows on
                 manual-review / pending-quote landings. Customer can opt
                 into responsible recycling for a digital e-waste certificate
@@ -10869,7 +10957,9 @@ export default function Home() {
       {/* STEP: CHECKOUT (email capture) */}
       {step === "checkout" && page === "home" && ((model && condition) || cartItems.length > 0) && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+          {/* pb-28 lg:pb-8 — extra bottom padding on mobile so the sticky
+              bottom CTA (rendered above) doesn't overlap the last form row. */}
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-28 lg:pb-8 lg:flex lg:gap-8 lg:items-start">
             {checkoutSummary}
             <div className="flex-1 min-w-0">
             <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
@@ -10925,7 +11015,7 @@ export default function Home() {
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-4">
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 tcc-input text-sm" />
-                <button type="submit" className="tcc-button-primary w-full py-4 text-base font-extrabold">Continue As Guest →</button>
+                <button type="submit" data-primary-cta className="tcc-button-primary w-full py-4 text-base font-extrabold">Continue As Guest →</button>
                 <p className="text-[11px] text-[#888] text-center mt-1">{handoffMethod === "local" ? "Next: choose how you'd like to be paid, then book a meetup window" : <>Next: pick payment method, then enter shipping address for your free <FedExMark /> label</>}</p>
               </form>
 
@@ -11023,7 +11113,8 @@ export default function Home() {
       {/* STEP: PAYOUT METHOD */}
       {step === "payout" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+          {/* pb-28 mobile to clear the sticky CTA bar — see checkout. */}
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-28 lg:pb-8 lg:flex lg:gap-8 lg:items-start">
             {/* Any cart contents → use the multi-line Order Summary
                 (works for 1+ items and survives a funnel-state reset).
                 Funnel state without cart → editable selection panel. */}
@@ -11223,6 +11314,7 @@ export default function Home() {
                   )}
                   <button
                     type="button"
+                    data-primary-cta
                     disabled={!ready}
                     onClick={() => { setStep("contact"); pushHistory("contact"); }}
                     className={`w-full mt-3 px-4 py-3 rounded-xl text-sm font-extrabold transition ${
@@ -11242,7 +11334,8 @@ export default function Home() {
       {/* STEP: CONTACT INFO */}
       {step === "contact" && page === "home" && payout && ((model && condition) || cartItems.length > 0) && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+          {/* pb-28 mobile to clear the sticky CTA bar — see checkout. */}
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-28 lg:pb-8 lg:flex lg:gap-8 lg:items-start">
             {/* Any cart contents → use the multi-line Order Summary
                 (works for 1+ items and survives a funnel-state reset). */}
             {cartItems.length > 0 ? checkoutSummary : selectionPanel}
@@ -11311,9 +11404,35 @@ export default function Home() {
             <form onSubmit={async (e) => {
               e.preventDefault();
               if (submittingLead) return;
-              if (!handoffMethod) { alert("Pick a handoff method (Ship or Local) first."); return; }
+              // Helper: scroll to the first failed-validation field and
+              // focus it, so the user doesn't have to hunt for what's
+              // wrong after dismissing the alert. Skywalker 2026-05-23.
+              const focusByQuery = (selectors: string[]) => {
+                for (const sel of selectors) {
+                  const el = document.querySelector<HTMLElement>(sel);
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth", block: "center" });
+                    setTimeout(() => {
+                      try { (el as HTMLInputElement).focus({ preventScroll: true }); } catch {}
+                    }, 320);
+                    return;
+                  }
+                }
+              };
+              if (!handoffMethod) {
+                alert("Pick a handoff method (Ship or Local) first.");
+                focusByQuery(['[data-validate="handoff"]']);
+                return;
+              }
               if (handoffMethod === "ship" && (!shipStreet || !shipCity || !shipState || !shipZip)) {
-                alert("Please fill in your full shipping address."); return;
+                alert("Please fill in your full shipping address.");
+                focusByQuery([
+                  !shipStreet ? '[data-validate="ship-street"]' : "",
+                  !shipCity ? '[data-validate="ship-city"]' : "",
+                  !shipState ? '[data-validate="ship-state"]' : "",
+                  !shipZip ? '[data-validate="ship-zip"]' : "",
+                ].filter(Boolean));
+                return;
               }
               // Shipping requires a 10-digit phone — FedEx prints it on
               // the label. JS guard so we never hit the server's 400 with
@@ -11323,6 +11442,7 @@ export default function Home() {
                 if (phoneDigits.length < 10) {
                   setPhoneOpen(true);
                   alert("Please enter a 10-digit phone number — FedEx prints it on your shipping label.");
+                  focusByQuery(['[data-validate="phone"]']);
                   return;
                 }
               }
@@ -11581,7 +11701,7 @@ export default function Home() {
               <div>
                 {handoffMethod === null && (
                   <>
-                    <label className="block text-xs font-medium text-[#e6e6e6] mb-2 uppercase tracking-wider">How are you handing off the device?</label>
+                    <label data-validate="handoff" className="block text-xs font-medium text-[#e6e6e6] mb-2 uppercase tracking-wider">How are you handing off the device?</label>
                     <div className="grid grid-cols-2 gap-2 mb-3">
                       <button type="button" onClick={() => setHandoffMethod("ship")} className="flex items-center gap-3 px-3 py-3 rounded-xl border border-white/10 cursor-pointer text-left tap-press transition" style={{ background: "rgba(255,255,255,0.03)" }}>
                         <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
@@ -11652,6 +11772,7 @@ export default function Home() {
                     <div className="relative">
                       <input
                         ref={shipStreetInputRef}
+                        data-validate="ship-street"
                         required
                         value={shipStreet}
                         onChange={(e) => setShipStreet(e.target.value)}
@@ -11679,10 +11800,10 @@ export default function Home() {
                     </div>
                     <input value={shipUnit} onChange={e => setShipUnit(e.target.value)} placeholder="Apt / Suite (optional)" autoComplete="address-line2" className="w-full px-4 py-3 tcc-input" />
                     <div className="grid grid-cols-3 gap-2">
-                      <input required value={shipCity} onChange={e => setShipCity(e.target.value)} placeholder="City" autoComplete="address-level2" className="col-span-2 w-full px-4 py-3 tcc-input" />
-                      <input required maxLength={2} value={shipState} onChange={e => setShipState(e.target.value.toUpperCase().slice(0,2))} placeholder="State" autoComplete="address-level1" className="w-full px-4 py-3 tcc-input uppercase" />
+                      <input data-validate="ship-city" required value={shipCity} onChange={e => setShipCity(e.target.value)} placeholder="City" autoComplete="address-level2" className="col-span-2 w-full px-4 py-3 tcc-input" />
+                      <input data-validate="ship-state" required maxLength={2} value={shipState} onChange={e => setShipState(e.target.value.toUpperCase().slice(0,2))} placeholder="State" autoComplete="address-level1" className="w-full px-4 py-3 tcc-input uppercase" />
                     </div>
-                    <input required inputMode="numeric" pattern="\d{5}" maxLength={5} value={shipZip} onChange={e => setShipZip(e.target.value.replace(/\D/g, "").slice(0,5))} placeholder="ZIP" autoComplete="postal-code" className="w-full px-4 py-3 tcc-input" />
+                    <input data-validate="ship-zip" required inputMode="numeric" pattern="\d{5}" maxLength={5} value={shipZip} onChange={e => setShipZip(e.target.value.replace(/\D/g, "").slice(0,5))} placeholder="ZIP" autoComplete="postal-code" className="w-full px-4 py-3 tcc-input" />
                     {/* Box-question removed 2026-05-18 — customers source
                         their own box. We don't ship packaging kits. The
                         confirmation email's packaging checklist explains
@@ -11856,7 +11977,7 @@ export default function Home() {
                   if (digits.length >= 6) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
                   else if (digits.length >= 3) setPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                   else setPhone(digits);
-                }} required={handoffMethod === "ship"} pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                }} required={handoffMethod === "ship"} pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(512) 555-0000" data-validate="phone" className="w-full px-4 py-3.5 tcc-input text-sm" />
                 {phone && (
                   <label className="mt-2 flex items-start gap-2.5 cursor-pointer select-none">
                     <input
@@ -12489,6 +12610,7 @@ export default function Home() {
               <p className="text-[#c5c5c5] text-[11px] text-center leading-relaxed">By submitting, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
               <button
                 type="submit"
+                data-primary-cta
                 disabled={submittingLead}
                 className="tcc-button-primary w-full py-4 text-base font-extrabold disabled:opacity-70 disabled:cursor-not-allowed"
               >
@@ -12550,6 +12672,26 @@ export default function Home() {
               </div>
               <h2 className="text-2xl lg:text-3xl font-extrabold mb-2 tracking-tight">You&apos;re all set</h2>
               <p className="text-[#d4d4d4] text-sm max-w-md mx-auto px-2">We&apos;ll reach out within the hour. Here&apos;s your receipt:</p>
+              {/* Queue feedback pill — gives the submitter a concrete
+                  "we're moving" signal instead of a generic "we got it"
+                  wait. The time-of-day swing is hardcoded (no live queue
+                  feed yet) but mirrors our actual operator coverage: fast
+                  on weekday business hours, looser overnight / weekends.
+                  Skywalker 2026-05-23. */}
+              {(() => {
+                const now = new Date();
+                const hour = now.getHours();
+                const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+                let avg = "17 min";
+                if (isWeekend || hour < 9 || hour >= 21) avg = "1–2 hrs";
+                else if (hour >= 12 && hour < 14) avg = "25 min";
+                return (
+                  <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#00c853]/[0.1] border border-[#00c853]/30 text-[11px] font-semibold text-[#00c853]">
+                    <span className="relative flex h-1.5 w-1.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00c853] opacity-75"></span><span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00c853]"></span></span>
+                    In our queue · avg response {avg}
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Receipt card — glass + inset rim + green accent line.

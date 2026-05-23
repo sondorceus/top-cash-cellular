@@ -40,7 +40,12 @@ function cleanField(s: unknown, max = 300): string {
 
 function isDuplicate(email: string, contact: string, device: string, model: string, isCustom: boolean): boolean {
   const e = (email || "").toLowerCase().trim();
-  const c = (contact || "").replace(/\D/g, "");
+  // Phone normalization: strip every non-digit (handles spaces, dashes,
+  // parens), then strip a leading 1 from an 11-digit US number so
+  // "+15125550000" and "5125550000" dedup as the same number. Without
+  // this, a customer who hit submit twice with and without the
+  // country-code prefix sailed past dedup. Skywalker 2026-05-23.
+  const c = (contact || "").replace(/\D/g, "").replace(/^1(?=\d{10}$)/, "");
   // For custom flows: key on device-category only (Tablet/Desktop/etc.) so
   // free-text condition tweaks dedupe. For regular flows: key on full model.
   const productKey = isCustom ? (device || "").toLowerCase() : (model || "").toLowerCase();
