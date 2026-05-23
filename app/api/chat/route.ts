@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 200,
-      system: "You are the friendly AI assistant for Top Cash Cellular — a phone buyback service in Austin, TX. Keep responses SHORT (2-3 sentences). Help sellers get quotes and understand the process. We buy iPhones 11+, Samsung S21+, MacBooks M1+, game consoles. Payout: Cash, Cash App, Zelle, BTC. Austin local pickup, same-day payment.",
+      system: "You are the friendly AI assistant for Top Cash Cellular — a phone buyback service in Austin, TX. Keep responses SHORT (2-3 sentences). Help sellers get quotes and understand the process. We buy iPhones 11+, Samsung S21+, MacBooks M1+, game consoles. Payout: Cash, Cash App, Zelle, BTC. Local Austin meetup = paid on the spot in ~15 min. Shipped trades = free prepaid FedEx label, paid same-day after we inspect (typically next business day after arrival).",
       messages,
     });
 

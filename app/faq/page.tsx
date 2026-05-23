@@ -210,7 +210,7 @@ export default function FAQPage() {
           </Link>
           <div className="flex items-center gap-3">
             <HeaderSearch className="flex w-40 sm:w-56 md:w-64" />
-            <Link href="/" className="text-xs text-[#dcdcdc] hover:text-white whitespace-nowrap">← Sell now</Link>
+            <Link href="/?ask=handoff" className="text-xs text-[#dcdcdc] hover:text-white whitespace-nowrap">← Sell now</Link>
           </div>
         </div>
       </SlideOnScrollNav>
@@ -241,7 +241,7 @@ export default function FAQPage() {
         <div className="mt-12 bg-[#00c853]/10 border border-[#00c853]/30 rounded-2xl p-6 text-center">
           <p className="text-white font-semibold mb-2">Didn&apos;t see your question?</p>
           <p className="text-[#e5e5e5] text-sm mb-4">Email us — we usually reply within an hour during business hours.</p>
-          <Link href="/" className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition">Get a quote →</Link>
+          <Link href="/?ask=handoff" className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition">Get a quote →</Link>
         </div>
       </div>
 

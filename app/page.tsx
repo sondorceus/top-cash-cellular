@@ -4724,6 +4724,21 @@ export default function Home() {
     }
     setHandoffPickerOpen(true);
   };
+  // Cross-route entry — separate Next.js route pages (/faq, /how-it-
+  // works, /sell/[slug], /reviews, etc.) can't call startFunnel()
+  // directly, so they navigate to `/?ask=handoff` and this effect
+  // picks up the query, pops the picker, and rewrites the URL clean
+  // so a back-nav doesn't re-trigger it.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("ask") === "handoff") {
+      setHandoffPickerOpen(true);
+      params.delete("ask");
+      const clean = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+      window.history.replaceState({}, "", clean);
+    }
+  }, []);
   useEffect(() => {
     // Only arm the timer when the cart has items AND the user hasn't
     // already moved past the funnel (the post-funnel steps quote /
@@ -13285,7 +13300,7 @@ export default function Home() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => { window.scrollTo(0, 0); setStep("category"); pushHistory("category"); }}
+                  onClick={() => startFunnel()}
                   className="shrink-0 inline-flex items-center gap-1 text-[#00c853] hover:text-[#00e676] text-xs sm:text-sm font-bold cursor-pointer transition tap-press"
                 >
                   Get a quote →
@@ -13430,7 +13445,7 @@ export default function Home() {
               <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-6 text-center">
                 <p className="text-lg font-bold mb-2">Ready to sell?</p>
                 <p className="text-[#e6e6e6] text-sm mb-4">Get your instant quote in 30 seconds.</p>
-                <button onClick={() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; setPage("home"); setStep("category"); pushHistory("category"); requestAnimationFrame(() => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }); }} className="bg-[#00c853] text-[#0a0a0a] px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">
+                <button onClick={() => { setPage("home"); startFunnel(); }} className="bg-[#00c853] text-[#0a0a0a] px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">
                   Get My Quote
                 </button>
               </div>
@@ -13530,7 +13545,7 @@ export default function Home() {
                 <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-6 text-center">
                   <p className="text-lg font-bold mb-2">Ready when you are</p>
                   <p className="text-[#e6e6e6] text-sm mb-4">Get a quote in 30 seconds — no inspection needed up front.</p>
-                  <button onClick={() => { window.scrollTo(0, 0); setPage("home"); setStep("category"); pushHistory("category"); }} className="bg-[#00c853] text-[#0a0a0a] px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">Get My Quote</button>
+                  <button onClick={() => { setPage("home"); startFunnel(); }} className="bg-[#00c853] text-[#0a0a0a] px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">Get My Quote</button>
                 </div>
               </div>
             )}
@@ -13573,7 +13588,7 @@ export default function Home() {
                 <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-6 text-center">
                   <p className="text-lg font-bold mb-2">Ready to ship or meet?</p>
                   <p className="text-[#e6e6e6] text-sm mb-4">Lock in your quote — you pick local or shipping at checkout.</p>
-                  <button onClick={() => { window.scrollTo(0, 0); setPage("home"); setStep("category"); pushHistory("category"); }} className="bg-[#00c853] text-[#0a0a0a] px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">Get My Quote</button>
+                  <button onClick={() => { setPage("home"); startFunnel(); }} className="bg-[#00c853] text-[#0a0a0a] px-8 py-3 rounded-2xl font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press">Get My Quote</button>
                 </div>
               </div>
             )}
@@ -14020,7 +14035,7 @@ export default function Home() {
                     </div>
                     <p className="text-white text-lg font-extrabold mb-1">Your box is empty</p>
                     <p className="text-[#c8c8c8] text-sm leading-snug mb-5">Add a device to lock in your quote — you can stack multiple devices in one box.</p>
-                    <button onClick={() => { setCartOpen(false); setStep("category"); pushHistory("category"); }} className="tcc-button-primary px-6 py-3 text-sm font-extrabold">
+                    <button onClick={() => { setCartOpen(false); startFunnel(); }} className="tcc-button-primary px-6 py-3 text-sm font-extrabold">
                       Sell a device →
                     </button>
                   </div>
@@ -14087,7 +14102,7 @@ export default function Home() {
                     })()}
 
                     {/* Add another device CTA */}
-                    <button onClick={() => { setCartOpen(false); setStep("category"); pushHistory("category"); }} className="w-full mt-2 px-4 py-3 rounded-2xl border border-dashed border-white/20 hover:border-[#00c853]/50 text-[#c8c8c8] hover:text-white text-sm font-bold cursor-pointer transition flex items-center justify-center gap-2">
+                    <button onClick={() => { setCartOpen(false); startFunnel(); }} className="w-full mt-2 px-4 py-3 rounded-2xl border border-dashed border-white/20 hover:border-[#00c853]/50 text-[#c8c8c8] hover:text-white text-sm font-bold cursor-pointer transition flex items-center justify-center gap-2">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
                       Add another device
                     </button>
