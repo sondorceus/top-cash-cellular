@@ -4777,7 +4777,9 @@ export default function Home() {
   // Which "4 steps to get paid" card is tap-expanded. Mobile has no
   // hover, so the step detail is a tap-to-expand accordion there;
   // desktop still reveals on hover. Skywalker 2026-05-22.
-  const [openStep, setOpenStep] = useState<number | null>(null);
+  // openStep state was the accordion expansion for the "3 steps to get
+  // paid" prep checklist — removed 2026-05-23 as a homepage duplicate
+  // (see the deleted section block below for full rationale).
   // Which local-credibility trust pill has its detail revealed — tap on
   // mobile; desktop reveals the tooltip on hover instead.
   const [openPill, setOpenPill] = useState<number | null>(null);
@@ -7936,52 +7938,16 @@ export default function Home() {
         </section>
       )}
 
-      {/* PREP CHECKLIST — Before you meet us */}
-      {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-10">
-          <div className="text-center mb-6">
-            <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">How it works</p>
-            <h2 className="text-2xl md:text-3xl font-bold leading-tight reveal" data-stagger="1">3 steps to get paid</h2>
-          </div>
-          {/* Desktop reveals each step's detail on hover; mobile has no
-              hover, so each card is a tap-to-expand accordion — the list
-              reads as clean headlines until tapped. Skywalker 2026-05-22.
-              2026-05-23: dropped the "Back up your data" step so this
-              count matches the hero "Drawer to dollars in 3 steps" copy.
-              Backup is a customer responsibility but it's not a step in
-              OUR process — we don't gate handoff on it, so it doesn't
-              belong here. Find-My-iPhone disable IS a hard gate (we
-              can't pay until it's off) so that one stays. */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-3xl mx-auto">
-            {[
-              { num: "1", title: "Turn off Find My iPhone", body: "Settings → [your name] → Find My → Find My iPhone → off. Required before we can pay." },
-              { num: "2", title: "Meet up or ship it", body: "Meet locally in Austin — we inspect together in about 15 minutes — or ship free with our prepaid label from anywhere in the US." },
-              { num: "3", title: "Get paid", body: "Meet locally and you're paid on the spot; ship in and you're paid within 24 hours of arrival. Cash, Cash App, Zelle, or BTC — your choice." },
-            ].map((item, i) => {
-              const open = openStep === i;
-              return (
-              <button
-                key={item.num}
-                type="button"
-                onClick={() => setOpenStep(open ? null : i)}
-                aria-expanded={open}
-                className="group flex items-start gap-4 bg-white/5 border border-white/10 rounded-2xl p-4 reveal hover:bg-white/[0.07] hover:border-[#00c853]/30 transition text-left w-full cursor-pointer lg:cursor-default tap-press"
-                data-stagger={Math.min(i + 2, 8)}
-              >
-                <div className="w-8 h-8 rounded-full bg-[#00c853] flex items-center justify-center text-[#0a0a0a] text-sm font-bold shrink-0">{item.num}</div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="font-semibold text-base">{item.title}</p>
-                    {/* Chevron — mobile affordance only; desktop uses hover. */}
-                    <svg className={`w-4 h-4 text-[#00c853] shrink-0 transition-transform duration-300 lg:hidden ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                  </div>
-                  <p className={`text-[#e6e6e6] text-sm leading-relaxed overflow-hidden transition-all duration-300 lg:max-h-0 lg:opacity-0 lg:mt-0 lg:group-hover:max-h-32 lg:group-hover:opacity-100 lg:group-hover:mt-1 ${open ? "max-h-32 opacity-100 mt-1" : "max-h-0 opacity-0 mt-0"}`}>{item.body}</p>
-                </div>
-              </button>
-            );})}
-          </div>
-        </section>
-      )}
+      {/* PREP CHECKLIST removed 2026-05-23 — Skywalker: "FAQ is still on
+          2 spots". Was a "3 steps to get paid" accordion that sat
+          directly above the "From drawer to dollars in 3 steps"
+          clickable-card section below. Both were 3-step how-it-works
+          explanations of the same flow; the clickable cards win because
+          tapping any of them jumps the user straight into the funnel.
+          The one piece of UNIQUE info this section carried — the
+          "turn off Find My iPhone" gate — already lives in the
+          checkout-step instructions where it actually matters; no need
+          to surface it on the homepage too. */}
 
       {/* HOMEPAGE: How it works (3 steps) */}
       {step === "device" && page === "home" && (
@@ -8016,23 +7982,29 @@ export default function Home() {
 
       {/* HOMEPAGE: Why people choose us (6-tile trust grid) */}
       {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-10">
-          <div className="text-center mb-8">
-            <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">Why Austin chooses us</p>
-            <h2 className="text-3xl md:text-4xl font-bold leading-tight reveal" data-stagger="1">Trusted by thousands of locals</h2>
+        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-7">
+          {/* Skywalker 2026-05-23: "condense it into smaller than boxes
+              top 2 so we can keep our theme consistent." Was a 6-card
+              grid (devices bought / rating / on-the-spot / free shipping
+              / higher offer / local) — three rows of two on mobile
+              that ate a full viewport of vertical space and repeated
+              claims the trust strip + how-it-works already make. Kept
+              the two strongest headline stats and shrunk to a compact
+              two-up row: smaller padding, smaller stat text, smaller
+              section heading so the whole block reads as a single
+              quick proof bar instead of a separate section. */}
+          <div className="text-center mb-4">
+            <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em] mb-1 reveal">Why Austin chooses us</p>
+            <h2 className="text-xl md:text-2xl font-bold leading-tight reveal" data-stagger="1">Trusted by thousands of locals</h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 auto-rows-fr">
+          <div className="grid grid-cols-2 gap-2.5 max-w-md mx-auto">
             {[
               { stat: <CountUp end={5000} suffix="+" />, label: "Devices bought" },
               { stat: "4.9★", label: "Average review rating" },
-              { stat: "On the Spot", label: "Paid at local meetups" },
-              { stat: "Free", label: "Shipping nationwide" },
-              { stat: "Higher", label: "Offer than Apple trade-in" },
-              { stat: "Local", label: "Austin-based, real humans" },
             ].map((t, i) => (
-              <div key={i} className="bg-gradient-to-br from-white/[0.08] to-white/[0.03] border border-white/10 rounded-2xl p-5 text-center flex flex-col justify-center hover:border-[#00c853]/30 hover:from-white/[0.12] transition reveal" data-stagger={Math.min(i + 2, 8)}>
-                <div className="text-2xl font-extrabold text-[#00c853] mb-1 leading-none">{t.stat}</div>
-                <div className="text-[#e6e6e6] text-xs font-medium leading-tight">{t.label}</div>
+              <div key={i} className="bg-gradient-to-br from-white/[0.08] to-white/[0.03] border border-white/10 rounded-2xl p-3 text-center flex flex-col justify-center hover:border-[#00c853]/30 hover:from-white/[0.12] transition reveal" data-stagger={Math.min(i + 2, 8)}>
+                <div className="text-xl font-extrabold text-[#00c853] mb-0.5 leading-none">{t.stat}</div>
+                <div className="text-[#e6e6e6] text-[11px] font-medium leading-tight">{t.label}</div>
               </div>
             ))}
           </div>
