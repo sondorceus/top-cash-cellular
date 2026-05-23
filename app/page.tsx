@@ -12990,26 +12990,31 @@ export default function Home() {
               strip near the bottom of the homepage (see below) to cut
               mobile crowding. */}
 
-          {/* BOLD STATS COUNTER */}
-          <section className="py-14 bg-[#111]" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
-            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
-              <p className="text-[#e6e6e6] text-xs font-semibold uppercase tracking-wider text-center mb-8">Top Cash Cellular by the numbers</p>
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
-                  <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">{animatedStats.devices}+</p>
-                  <p className="text-white text-xs font-semibold mt-1">Devices Bought</p>
-                  <p className="text-[#e6e6e6] text-[10px] mt-0.5">and counting</p>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
-                  <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">${animatedStats.payout}K+</p>
-                  <p className="text-white text-xs font-semibold mt-1">Paid Out</p>
-                  <p className="text-[#e6e6e6] text-[10px] mt-0.5">to sellers nationwide</p>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
-                  <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">&lt;{animatedStats.time}h</p>
-                  <p className="text-white text-xs font-semibold mt-1">Avg Payout</p>
-                  <p className="text-[#e6e6e6] text-[10px] mt-0.5">from quote to cash</p>
-                </div>
+          {/* BY THE NUMBERS — Skywalker 2026-05-23: "make this smaller
+              or something else." Was a py-14 section with a header + 3
+              big card stats (Devices Bought / Paid Out / Avg Payout).
+              Devices Bought already appears in the inline Trust pill
+              above (5,000+ devices), so that one was redundant. Dropped
+              it and shrunk the other two into a single inline strip
+              matching the Trust pill's style — same `$K+ paid out` and
+              `<Xh avg payout` numbers, animated on scroll, but ~80 px
+              of footprint instead of ~250 px. Still uses the
+              IntersectionObserver-driven count-up so the numbers tick
+              up when this strip enters view. */}
+          <section className="py-5 bg-[#111]" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
+            <div className="max-w-lg md:max-w-3xl lg:max-w-4xl mx-auto px-4">
+              <div className="flex items-center justify-center gap-3 sm:gap-4 flex-wrap text-center">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] hidden sm:inline">By the numbers</p>
+                <span className="hidden sm:inline text-white/20">·</span>
+                <span className="inline-flex items-baseline gap-1.5">
+                  <span className="text-lg font-extrabold text-[#00c853] tabular-nums leading-none">${animatedStats.payout}K+</span>
+                  <span className="text-[#e6e6e6] text-[11px] font-medium">paid out</span>
+                </span>
+                <span className="text-white/20">·</span>
+                <span className="inline-flex items-baseline gap-1.5">
+                  <span className="text-lg font-extrabold text-[#00c853] tabular-nums leading-none">&lt;{animatedStats.time}h</span>
+                  <span className="text-[#e6e6e6] text-[11px] font-medium">avg payout</span>
+                </span>
               </div>
             </div>
           </section>
