@@ -12991,19 +12991,25 @@ export default function Home() {
               mobile crowding. */}
 
           {/* BY THE NUMBERS — Skywalker 2026-05-23: "make this smaller
-              or something else." Was a py-14 section with a header + 3
-              big card stats (Devices Bought / Paid Out / Avg Payout).
-              Devices Bought already appears in the inline Trust pill
-              above (5,000+ devices), so that one was redundant. Dropped
-              it and shrunk the other two into a single inline strip
-              matching the Trust pill's style — same `$K+ paid out` and
-              `<Xh avg payout` numbers, animated on scroll, but ~80 px
-              of footprint instead of ~250 px. Still uses the
-              IntersectionObserver-driven count-up so the numbers tick
-              up when this strip enters view. */}
-          <section className="py-5 bg-[#111]" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
-            <div className="max-w-lg md:max-w-3xl lg:max-w-4xl mx-auto px-4">
-              <div className="flex items-center justify-center gap-3 sm:gap-4 flex-wrap text-center">
+              or something else" then follow-up "desktop was fine
+              before the changes". Two views now:
+              - lg+: original 3-card grid (Devices / Paid Out / Avg
+                Payout) with the section header — desktop has the
+                horizontal room and the big stats land as a proper
+                hero proof block.
+              - <lg: compact inline strip with just the two unique
+                stats ($K paid + <Xh avg). Devices Bought stays out of
+                the mobile strip because the Trust pill above already
+                covers 5,000+ devices on mobile; on desktop that pill
+                is small enough that re-stating it in the big stats
+                block doesn't feel redundant.
+              Both views share the same statsVisible / animatedStats
+              count-up via the existing IntersectionObserver on the
+              wrapping section. */}
+          <section className="py-5 lg:py-14 bg-[#111]" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
+            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
+              {/* Mobile / tablet: compact inline strip */}
+              <div className="lg:hidden flex items-center justify-center gap-3 sm:gap-4 flex-wrap text-center">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] hidden sm:inline">By the numbers</p>
                 <span className="hidden sm:inline text-white/20">·</span>
                 <span className="inline-flex items-baseline gap-1.5">
@@ -13015,6 +13021,27 @@ export default function Home() {
                   <span className="text-lg font-extrabold text-[#00c853] tabular-nums leading-none">&lt;{animatedStats.time}h</span>
                   <span className="text-[#e6e6e6] text-[11px] font-medium">avg payout</span>
                 </span>
+              </div>
+              {/* Desktop: original full 3-card grid + section header */}
+              <div className="hidden lg:block">
+                <p className="text-[#e6e6e6] text-xs font-semibold uppercase tracking-wider text-center mb-8">Top Cash Cellular by the numbers</p>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
+                    <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">{animatedStats.devices}+</p>
+                    <p className="text-white text-xs font-semibold mt-1">Devices Bought</p>
+                    <p className="text-[#e6e6e6] text-[10px] mt-0.5">and counting</p>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
+                    <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">${animatedStats.payout}K+</p>
+                    <p className="text-white text-xs font-semibold mt-1">Paid Out</p>
+                    <p className="text-[#e6e6e6] text-[10px] mt-0.5">to sellers nationwide</p>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
+                    <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">&lt;{animatedStats.time}h</p>
+                    <p className="text-white text-xs font-semibold mt-1">Avg Payout</p>
+                    <p className="text-[#e6e6e6] text-[10px] mt-0.5">from quote to cash</p>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
