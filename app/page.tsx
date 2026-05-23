@@ -7951,29 +7951,34 @@ export default function Home() {
 
       {/* HOMEPAGE: How it works (3 steps) */}
       {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-10">
-          <div className="text-center mb-8">
-            <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">How it works</p>
-            <h2 className="text-3xl md:text-4xl font-bold leading-tight reveal" data-stagger="1">From drawer to dollars in 3 steps</h2>
+        <section className="max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto px-4 py-6">
+          {/* Skywalker 2026-05-23: "lets all condese from drawyer to
+              dollars." Was 3 large icon cards (p-6, w-9 icons, body
+              text in every card, hover-reveal Get-my-quote line) that
+              stacked vertically on mobile and ate ~600 px of scroll.
+              Condensed to 3 inline compact step pills with just the
+              number + title — bodies dropped (the titles alone tell
+              the story: Quote → Ship/meet → Get paid). Whole block is
+              still tappable; each pill jumps into the funnel. md+
+              shows them in one row, mobile shows them stacked tight. */}
+          <div className="text-center mb-3">
+            <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em] reveal">From drawer to dollars · 3 steps</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-2 max-w-3xl mx-auto">
             {[
-              { n: 1, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />, title: "Get an instant quote", body: "Pick your device, condition, and storage. We show you the offer in seconds — no signup needed." },
-              { n: 2, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, title: "Ship free or drop off", body: "Print our prepaid label, or drop off in Austin. We pay shipping — and the label is insured for your full quoted value automatically." },
-              { n: 3, svg: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Get paid", body: "Cash App, Zelle, or BTC for shipped trades; local meetups add Cash. Meet us in Austin and you're paid on the spot after a ~15-minute inspection. Shipped payouts hit within 24 hours of your device arriving." },
+              { n: 1, title: "Quote" },
+              { n: 2, title: "Ship or meet" },
+              { n: 3, title: "Get paid" },
             ].map((s, i) => (
               <button
                 key={s.n}
                 type="button"
                 onClick={() => { window.scrollTo(0, 0); setStep("category"); pushHistory("category"); }}
-                className="group relative text-left w-full bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/[0.07] hover:border-[#00c853]/30 transition reveal cursor-pointer tap-press"
+                className="group relative flex items-center justify-center gap-2 bg-white/5 border border-white/10 rounded-xl px-2 py-2.5 hover:bg-[#00c853]/[0.08] hover:border-[#00c853]/40 transition reveal cursor-pointer tap-press"
                 data-stagger={Math.min(i + 2, 8)}
               >
-                <div className="absolute -top-3 -left-2 w-9 h-9 rounded-full bg-[#00c853] text-[#0a0a0a] text-sm font-bold flex items-center justify-center shadow-lg shadow-[#00c853]/30">{s.n}</div>
-                <svg className="w-9 h-9 text-[#00c853] mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{s.svg}</svg>
-                <p className="font-bold text-lg mb-1.5">{s.title}</p>
-                <p className="text-[#e6e6e6] text-sm leading-relaxed">{s.body}</p>
-                <span className="mt-3 inline-flex items-center gap-1 text-[#00c853] text-sm font-extrabold opacity-0 group-hover:opacity-100 transition">Get my quote →</span>
+                <span className="w-5 h-5 rounded-full bg-[#00c853] text-[#0a0a0a] text-[11px] font-extrabold flex items-center justify-center shrink-0">{s.n}</span>
+                <span className="font-bold text-[13px] sm:text-sm text-white">{s.title}</span>
               </button>
             ))}
           </div>
@@ -12932,43 +12937,51 @@ export default function Home() {
       {/* TRUST + TESTIMONIALS + FAQ (only on home) */}
       {step === "device" && page === "home" && (
         <>
-          {/* WHY CASH IS BETTER — 3-col comparison */}
-          <section className="py-12 bg-[#0d0d0d]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
-              <div className="text-center mb-8">
-                <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">The math</p>
-                <h2 className="text-2xl md:text-3xl font-bold leading-tight reveal" data-stagger="1">Why cash beats trade-in</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="bg-gradient-to-br from-[#ff5566]/10 to-transparent border border-[#ff5566]/25 rounded-2xl p-5 reveal" data-stagger="2">
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#ff8088] mb-1">Apple Trade-In</p>
-                  <p className="text-white text-2xl font-bold mb-2">Lowball</p>
-                  <ul className="text-[#e6e6e6] text-sm space-y-1 list-disc list-inside">
-                    <li>Bottom-of-market quotes</li>
-                    <li>Store credit only</li>
-                    <li>No cash option</li>
-                  </ul>
+          {/* WHY CASH IS BETTER — Skywalker 2026-05-23: "we can make
+              way smaller to condense into a menu." Was a 3-column grid
+              (Apple Trade-In / Carrier Trade-In / Top Cash) with 3-4
+              bullets each — ~3 viewport heights stacked on mobile.
+              Condensed to a single collapsible <details> menu: the
+              summary row is the one-line headline + chevron, tapping
+              expands the compact comparison rows below. Closed state
+              takes ~60 px, open ~280 px — way less than the 700+ px
+              the open grid used. */}
+          <section className="py-6 bg-[#0d0d0d]">
+            <div className="max-w-lg md:max-w-3xl lg:max-w-3xl mx-auto px-4">
+              <details className="group bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-[#00c853]/30 transition reveal">
+                <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden px-4 py-3 flex items-center gap-3">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] shrink-0">The math</span>
+                  <span className="flex-1 text-white text-[13px] sm:text-sm font-bold leading-tight">Why cash beats Apple + carrier trade-in</span>
+                  <svg className="w-4 h-4 text-[#00c853] flex-shrink-0 group-open:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
+                </summary>
+                <div className="px-4 pb-4 pt-1 border-t border-white/[0.06] grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                  <div className="bg-[#ff5566]/[0.06] border border-[#ff5566]/20 rounded-xl p-3">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#ff8088] mb-0.5">Apple Trade-In</p>
+                    <p className="text-white text-base font-bold mb-1.5">Lowball</p>
+                    <ul className="text-[#e6e6e6] text-[12px] leading-snug space-y-0.5 list-disc list-inside">
+                      <li>Bottom-of-market quotes</li>
+                      <li>Store credit only</li>
+                    </ul>
+                  </div>
+                  <div className="bg-[#ff5566]/[0.06] border border-[#ff5566]/20 rounded-xl p-3">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#ff8088] mb-0.5">Carrier Trade-In</p>
+                    <p className="text-white text-base font-bold mb-1.5">36-Month Drip</p>
+                    <ul className="text-[#e6e6e6] text-[12px] leading-snug space-y-0.5 list-disc list-inside">
+                      <li>High on paper, paid over 3 years</li>
+                      <li>Locked to that carrier</li>
+                    </ul>
+                  </div>
+                  <div className="bg-[#00c853]/[0.10] border border-[#00c853]/35 rounded-xl p-3">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#00c853] mb-0.5">Top Cash</p>
+                    <p className="text-[#00c853] text-base font-bold mb-1.5">Instant Cash</p>
+                    <ul className="text-white text-[12px] leading-snug space-y-0.5 list-disc list-inside">
+                      <li>Fair, competitive pricing</li>
+                      <li>{handoffMethod === "local" ? "Cash on the spot" : "Same-day after inspect"}</li>
+                    </ul>
+                  </div>
                 </div>
-                <div className="bg-gradient-to-br from-[#ff5566]/10 to-transparent border border-[#ff5566]/25 rounded-2xl p-5 reveal" data-stagger="3">
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#ff8088] mb-1">Carrier Trade-In</p>
-                  <p className="text-white text-2xl font-bold mb-2">36-Month Drip</p>
-                  <ul className="text-[#e6e6e6] text-sm space-y-1 list-disc list-inside">
-                    <li>Looks high — paid over 3 years</li>
-                    <li>Stuck on the same carrier</li>
-                    <li>Lose value if you leave</li>
-                  </ul>
-                </div>
-                <div className="bg-gradient-to-br from-[#00c853]/15 to-transparent border border-[#00c853]/40 rounded-2xl p-5 reveal" data-stagger="4">
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#00c853] mb-1">Top Cash Cellular</p>
-                  <p className="text-[#00c853] text-2xl font-bold mb-2">Instant Cash</p>
-                  <ul className="text-white text-sm space-y-1 list-disc list-inside">
-                    <li>Competitive, fair pricing</li>
-                    <li><strong>{handoffMethod === "local" ? "Cash, Zelle, or Venmo" : "Cash App, Zelle, or Venmo"}</strong> — {handoffMethod === "local" ? "paid on the spot" : "paid within 24 hrs of arrival"}</li>
-                    <li>No strings, no carrier lock-in</li>
-                  </ul>
-                </div>
-              </div>
-              <p className="text-[#e6e6e6] text-xs text-center mt-4">Compare anywhere. We&apos;ll match or beat.</p>
+                <p className="text-[#e6e6e6] text-[11px] text-center px-4 pb-3">Compare anywhere · we&apos;ll match or beat.</p>
+              </details>
             </div>
           </section>
 
@@ -13107,25 +13120,15 @@ export default function Home() {
             </div>
           </section>
 
-          {/* BULK / BUSINESS SELLING */}
-          <section className="py-12 bg-[#0a0a0a]">
-            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                <div className="text-center mb-4">
-                  <svg className="w-8 h-8 mx-auto mb-2 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
-                  <h3 className="text-lg font-bold">Selling in bulk?</h3>
-                  <p className="text-[#e6e6e6] text-sm">Upgrading your office, school, or fleet? We buy devices in bulk with custom pricing.</p>
-                </div>
-                <button
-                  onClick={() => { setInquiryCategory("Bulk / Business"); setInquirySent(false); setInquiryDesc(""); setModel(null); setCondition(null); setStep("inquiry"); pushHistory("inquiry"); }}
-                  className="w-full bg-[#00c853] text-[#0a0a0a] py-3 rounded-xl text-sm font-bold cursor-pointer hover:bg-[#00e676] transition tap-press"
-                >
-                  Get a Bulk Quote
-                </button>
-                <p className="text-[#d4d4d4] text-[11px] text-center mt-3">10+ devices? We&apos;ll make you a custom offer.</p>
-              </div>
-            </div>
-          </section>
+          {/* "BULK / BUSINESS SELLING" section removed from main flow
+              2026-05-23 — Skywalker: "put a long smart line for bulk
+              inside the footer instead of the main." Bulk is a B2B
+              channel, not a typical home-visitor path; surfacing it as
+              a full section on every page-scroll ate mobile real estate
+              for a tiny percentage of traffic. The footer line below
+              keeps the entry point discoverable. The /bulk and /itad
+              dedicated pages (plus the nav mega-menu) still serve the
+              actual bulk inquiry flow. */}
         </>
       )}
 
@@ -13566,6 +13569,24 @@ export default function Home() {
               2026-05-18 "add that email for customers wanting to reach
               out". Centered above the © so it's the last thing a customer
               sees while scrolling and easy to spot when they need help. */}
+          {/* BULK SMART LINE — Skywalker 2026-05-23: "put a long smart
+              line for bulk inside the footer instead of the main." One
+              compact info-pill row instead of a full Bulk section on
+              every homepage scroll: surfaces the channel without
+              eating a viewport. Tap routes into the inquiry funnel
+              pre-filled with Bulk / Business category. */}
+          <div className="border-t border-[#00c853]/15 pt-6 mb-6">
+            <button
+              type="button"
+              onClick={() => { setInquiryCategory("Bulk / Business"); setInquirySent(false); setInquiryDesc(""); setModel(null); setCondition(null); setStep("inquiry"); pushHistory("inquiry"); window.scrollTo({ top: 0 }); }}
+              className="w-full flex items-center justify-center gap-2 sm:gap-3 flex-wrap text-center bg-white/[0.04] hover:bg-[#00c853]/[0.08] border border-white/10 hover:border-[#00c853]/35 rounded-full px-4 py-2.5 transition cursor-pointer tap-press"
+            >
+              <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+              <span className="text-[12px] text-[#cfcfcf]">10+ devices? Office, school, or fleet refresh?</span>
+              <span className="text-[12px] text-[#00c853] font-bold whitespace-nowrap">Get a bulk quote →</span>
+            </button>
+          </div>
+
           <div className="border-t border-[#00c853]/15 pt-6 mb-6 text-center">
             <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Customer Service</p>
             <a href={EMAIL_HREF} className="inline-flex items-center gap-2 text-sm text-white hover:text-[#00c853] transition font-semibold bg-white/[0.12] border border-white/10 rounded-full px-4 py-2">
