@@ -13105,13 +13105,35 @@ export default function Home() {
               2026-05-22 — duplicated the "Things people ask us" FAQ
               above; the full list lives on the /faq page. */}
 
-          {/* GREEN / SUSTAINABILITY */}
+          {/* GREEN / SUSTAINABILITY — Skywalker 2026-05-23: "put the
+              bulk trade under a small tab on the bottom of this." The
+              sustainability message is the natural lead-in for B2B/
+              fleet refresh inquiries (companies care about responsible
+              decommissioning), so anchoring the bulk CTA right below
+              that message reads cleanly. Tab is a compact pill inside
+              the same green-tinted card, divided by a thin rule. */}
           <section className="py-12 bg-[#0a0a0a]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
               <div className="bg-[#00c853]/5 border border-[#00c853]/15 rounded-2xl p-6 text-center">
                 <svg className="w-7 h-7 mx-auto mb-2 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                 <h3 className="text-lg font-bold mb-1">Good for your wallet. Better for the planet.</h3>
                 <p className="text-[#e6e6e6] text-sm leading-relaxed">Every device we buy gets a second life — refurbished and reused, not dumped in a landfill. Selling your old tech with Top Cash Cellular keeps electronics out of waste streams and puts cash in your pocket.</p>
+                {/* BULK TAB — compact CTA hanging off the bottom of the
+                    sustainability card. Same inquiry route as the
+                    footer bulk pill; routing through the sustainability
+                    message gives B2B sellers a contextually-appropriate
+                    entry point. */}
+                <div className="mt-4 pt-4 border-t border-[#00c853]/15">
+                  <button
+                    type="button"
+                    onClick={() => { setInquiryCategory("Bulk / Business"); setInquirySent(false); setInquiryDesc(""); setModel(null); setCondition(null); setStep("inquiry"); pushHistory("inquiry"); window.scrollTo({ top: 0 }); }}
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-white/[0.05] hover:bg-[#00c853]/[0.12] border border-white/10 hover:border-[#00c853]/45 transition cursor-pointer tap-press"
+                  >
+                    <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                    <span className="text-[12px] text-white">10+ devices?</span>
+                    <span className="text-[12px] text-[#00c853] font-bold whitespace-nowrap">Bulk trade-in →</span>
+                  </button>
+                </div>
               </div>
             </div>
           </section>
