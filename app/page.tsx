@@ -8016,18 +8016,26 @@ export default function Home() {
               the mobile scroll. The two strongest stats stay (5,000+ +
               4.9), divided by a centered dot like the hero trust strip
               above the dual-path buttons. */}
-          <div className="flex items-center justify-center gap-3 sm:gap-4 flex-wrap text-center reveal">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] hidden sm:inline">Trusted by thousands</p>
-            <span className="hidden sm:inline text-white/20">·</span>
-            <span className="inline-flex items-baseline gap-1.5">
-              <span className="text-lg font-extrabold text-[#00c853] leading-none"><CountUp end={5000} suffix="+" /></span>
-              <span className="text-[#e6e6e6] text-[11px] font-medium">devices bought</span>
-            </span>
-            <span className="text-white/20">·</span>
-            <span className="inline-flex items-baseline gap-1.5">
-              <span className="text-lg font-extrabold text-[#00c853] leading-none">4.9★</span>
-              <span className="text-[#e6e6e6] text-[11px] font-medium">review avg</span>
-            </span>
+          {/* Wrapped in the same `bg-white/[0.12] border border-white/10
+              rounded-full` pill the header logo uses so the trust strip
+              visually matches the brand chip in the nav — Skywalker
+              2026-05-23 "put the little circle around this same one on
+              logo." inline-flex auto-shrinks the pill width to its
+              contents and centers it horizontally via the parent. */}
+          <div className="flex justify-center reveal">
+            <div className="inline-flex items-center gap-3 sm:gap-4 flex-wrap justify-center text-center bg-white/[0.12] border border-white/10 rounded-full px-4 py-2">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] hidden sm:inline">Trusted by thousands</p>
+              <span className="hidden sm:inline text-white/20">·</span>
+              <span className="inline-flex items-baseline gap-1.5">
+                <span className="text-lg font-extrabold text-[#00c853] leading-none"><CountUp end={5000} suffix="+" /></span>
+                <span className="text-[#e6e6e6] text-[11px] font-medium">devices bought</span>
+              </span>
+              <span className="text-white/20">·</span>
+              <span className="inline-flex items-baseline gap-1.5">
+                <span className="text-lg font-extrabold text-[#00c853] leading-none">4.9★</span>
+                <span className="text-[#e6e6e6] text-[11px] font-medium">review avg</span>
+              </span>
+            </div>
           </div>
         </section>
       )}
@@ -13026,19 +13034,24 @@ export default function Home() {
               wrapping section. */}
           <section className="py-5 lg:py-14 bg-[#111]" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
             <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
-              {/* Mobile / tablet: compact inline strip */}
-              <div className="lg:hidden flex items-center justify-center gap-3 sm:gap-4 flex-wrap text-center">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] hidden sm:inline">By the numbers</p>
-                <span className="hidden sm:inline text-white/20">·</span>
-                <span className="inline-flex items-baseline gap-1.5">
-                  <span className="text-lg font-extrabold text-[#00c853] tabular-nums leading-none">${animatedStats.payout}K+</span>
-                  <span className="text-[#e6e6e6] text-[11px] font-medium">paid out</span>
-                </span>
-                <span className="text-white/20">·</span>
-                <span className="inline-flex items-baseline gap-1.5">
-                  <span className="text-lg font-extrabold text-[#00c853] tabular-nums leading-none">&lt;{animatedStats.time}h</span>
-                  <span className="text-[#e6e6e6] text-[11px] font-medium">avg payout</span>
-                </span>
+              {/* Mobile / tablet: compact inline strip — wrapped in the
+                  same logo-style pill (bg-white/0.12 + border + rounded-
+                  full) as the Trust strip above so the two proof pills
+                  visually rhyme. */}
+              <div className="lg:hidden flex justify-center">
+                <div className="inline-flex items-center gap-3 sm:gap-4 flex-wrap justify-center text-center bg-white/[0.12] border border-white/10 rounded-full px-4 py-2">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] hidden sm:inline">By the numbers</p>
+                  <span className="hidden sm:inline text-white/20">·</span>
+                  <span className="inline-flex items-baseline gap-1.5">
+                    <span className="text-lg font-extrabold text-[#00c853] tabular-nums leading-none">${animatedStats.payout}K+</span>
+                    <span className="text-[#e6e6e6] text-[11px] font-medium">paid out</span>
+                  </span>
+                  <span className="text-white/20">·</span>
+                  <span className="inline-flex items-baseline gap-1.5">
+                    <span className="text-lg font-extrabold text-[#00c853] tabular-nums leading-none">&lt;{animatedStats.time}h</span>
+                    <span className="text-[#e6e6e6] text-[11px] font-medium">avg payout</span>
+                  </span>
+                </div>
               </div>
               {/* Desktop: original full 3-card grid + section header */}
               <div className="hidden lg:block">
