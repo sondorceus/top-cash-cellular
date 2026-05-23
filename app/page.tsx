@@ -11520,7 +11520,30 @@ export default function Home() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between mb-1">
                       <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">Shipping address</label>
-                      <button type="button" onClick={() => { setHandoffMethod("local"); setLocalArea(null); }} className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer">Switch to local meetup instead</button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          // Only confirm when the user has actually
+                          // typed shipping address content — otherwise
+                          // an accidental tap on a populated form would
+                          // silently swap modes and the previously-
+                          // shown badges (Same-day after inspect /
+                          // Insured + tracked) would flip to the local
+                          // pair without warning. shipState defaults to
+                          // "TX" so it's not a "user typed something"
+                          // signal — only treat the free-entry fields
+                          // as the trigger.
+                          const hasShipData = !!(
+                            shipStreet.trim() || shipCity.trim() || shipZip.trim()
+                          );
+                          if (hasShipData && !confirm(
+                            "Switch to a local meetup? Your shipping address stays saved if you switch back."
+                          )) return;
+                          setHandoffMethod("local");
+                          setLocalArea(null);
+                        }}
+                        className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer"
+                      >Switch to local meetup instead</button>
                     </div>
                     {/* Address autocomplete — plain input + custom dropdown,
                         backed by /api/places-autocomplete (suggestions) and
@@ -11587,6 +11610,16 @@ export default function Home() {
                           <button
                             type="button"
                             onClick={() => {
+                              // Same conditional confirm as the ship->
+                              // local link above. Only prompt when the
+                              // user has committed to an Austin area or
+                              // booked a meetup slot — empty-state
+                              // switch is silent so first-time triers
+                              // can flip modes freely.
+                              const hasLocalData = !!(localArea || selectedSlot);
+                              if (hasLocalData && !confirm(
+                                "Switch to shipping? Your local pickup area stays saved if you switch back."
+                              )) return;
                               setHandoffMethod("ship");
                               // Local's slot picker can render much taller than
                               // ship's address form. Without an explicit scroll
@@ -13639,9 +13672,28 @@ export default function Home() {
                   >
                     Proceed to Checkout →
                   </button>
+                  {/* Reassurance badges under "Proceed to Checkout".
+                      Two of the three used to be hardcoded for the LOCAL
+                      flow ("Same-day payout", "On-site data wipe") even
+                      when the user was in the shipping flow — neither is
+                      literally true for shipping (payout is same-day
+                      AFTER inspect, and we wipe on arrival, not on-site
+                      with the customer watching). Now all three badges
+                      mirror the chosen handoff method; the null/default
+                      case keeps the local copy since that's what the
+                      hero copy upstream promises by default. */}
                   <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-                    <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight"><svg className="w-5 h-5 block mx-auto mb-1 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Same-day<br />payout</div>
-                    <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight"><svg className="w-5 h-5 block mx-auto mb-1 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>On-site<br />data wipe</div>
+                    {handoffMethod === "ship" ? (
+                      <>
+                        <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight"><svg className="w-5 h-5 block mx-auto mb-1 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Same-day<br />after inspect</div>
+                        <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight"><svg className="w-5 h-5 block mx-auto mb-1 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>Insured<br />+ tracked</div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight"><svg className="w-5 h-5 block mx-auto mb-1 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Same-day<br />payout</div>
+                        <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight"><svg className="w-5 h-5 block mx-auto mb-1 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>On-site<br />data wipe</div>
+                      </>
+                    )}
                     <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight">
                       <svg className="w-5 h-5 block mx-auto mb-1 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                       {handoffMethod === "ship"
