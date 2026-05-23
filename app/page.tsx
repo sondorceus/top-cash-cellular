@@ -4702,6 +4702,28 @@ export default function Home() {
   // "Why is our price higher?" tooltip toggle next to the quote total
   // on the quote step. Tap-to-toggle on mobile; click on desktop.
   const [priceWhyOpen, setPriceWhyOpen] = useState(false);
+  // Handoff picker modal — fires when a CTA tries to enter the funnel
+  // without handoffMethod already set. Skywalker 2026-05-23: "we have
+  // ctas all over the site but when they click on get quote besides
+  // the first one how do we know if they pick local or shipping."
+  // Without this, only the hero dual-path buttons pre-commit; every
+  // other CTA (Sell Now, mobile menu Sell, drawer-to-dollars pills,
+  // closing CTAs) jumped to category with handoffMethod=null, so the
+  // funnel + post-funnel copy / badges / messaging stayed generic
+  // until checkout. The modal makes every CTA committal.
+  const [handoffPickerOpen, setHandoffPickerOpen] = useState(false);
+  // Wrap any CTA that wants to enter the funnel. If handoff is
+  // already committed (hero, prior session), it just routes straight
+  // into category. Otherwise the picker pops first.
+  const startFunnel = () => {
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    if (handoffMethod) {
+      setStep("category");
+      pushHistory("category");
+      return;
+    }
+    setHandoffPickerOpen(true);
+  };
   useEffect(() => {
     // Only arm the timer when the cart has items AND the user hasn't
     // already moved past the funnel (the post-funnel steps quote /
@@ -6367,6 +6389,73 @@ export default function Home() {
         </div>
       )}
 
+      {/* HANDOFF PICKER MODAL — fires when startFunnel() is called and
+          handoffMethod is null. Two big committal buttons mirror the
+          hero dual-path styling but compact. Esc / click-outside / X
+          all close without committing. Skywalker 2026-05-23. */}
+      {handoffPickerOpen && (
+        <div
+          className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 animate-[fadeIn_0.18s_ease-out]"
+          onClick={() => setHandoffPickerOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[rgba(20,20,24,0.97)] backdrop-blur-[14px] border border-white/15 rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.8)] w-full max-w-md p-5"
+            style={{ animation: "slideInRight 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both" }}
+          >
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Before we start</p>
+                <h3 className="text-white text-base font-extrabold leading-tight">How will you hand off the device?</h3>
+                <p className="text-[#bdbdbd] text-[12px] mt-1 leading-snug">Pick one so we can show the right pricing, payment options, and badges through the rest of your quote.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setHandoffPickerOpen(false)}
+                aria-label="Close"
+                className="shrink-0 w-7 h-7 rounded-full bg-white/5 hover:bg-white/10 text-[#bdbdbd] hover:text-white flex items-center justify-center cursor-pointer transition"
+              >×</button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setHandoffMethod("local");
+                  setHandoffPickerOpen(false);
+                  setStep("category"); pushHistory("category");
+                }}
+                className="tcc-button-primary w-full py-3 text-sm font-extrabold flex flex-col items-center gap-0.5"
+              >
+                <span className="flex items-center gap-2"><svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>Local Meetup</span>
+                <span className="text-[10px] font-medium opacity-85">Meet in Austin · ~15 min</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setHandoffMethod("ship");
+                  setHandoffPickerOpen(false);
+                  setStep("category"); pushHistory("category");
+                }}
+                className="w-full bg-[rgba(20,22,28,0.85)] hover:bg-[rgba(28,32,40,0.95)] border border-white/22 hover:border-[#00c853]/60 text-white py-3 rounded-2xl text-sm font-extrabold cursor-pointer transition flex flex-col items-center gap-0.5"
+              >
+                <span className="flex items-center gap-2"><svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>Ship It</span>
+                <span className="text-[10px] font-medium text-[#d8d8d8]">Free FedEx label · ~3 days</span>
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setHandoffPickerOpen(false);
+                setStep("category"); pushHistory("category");
+              }}
+              className="block mx-auto mt-3 text-[11px] text-[#888] hover:text-[#00c853] underline underline-offset-2 cursor-pointer transition"
+            >
+              I&apos;ll decide later
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ACTION TOAST — generic short-lived status pill for one-off
           confirmations (flow switches, etc.). Different from cartToast
           which has the model+price layout; this is just a single line. */}
@@ -6474,7 +6563,7 @@ export default function Home() {
             {/* SELL — mega menu, dropdown centered under the trigger */}
             <div className="group relative" onMouseEnter={() => setMegaMenuOpen("sell")} onMouseLeave={() => setMegaMenuOpen(null)}>
               <button
-                onClick={() => { setStep("category"); pushHistory("category"); }}
+                onClick={() => startFunnel()}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-full text-[15px] font-semibold text-white hover:text-[#00c853] hover:bg-white/5 transition cursor-pointer"
               >
                 Sell
@@ -7127,7 +7216,7 @@ export default function Home() {
             {/* Bottom CTA — Sell Now (Email Us already lives under Support) */}
             <div className="p-5">
               <button
-                onClick={() => { setMobileMenuOpen(false); setStep("category"); pushHistory("category"); }}
+                onClick={() => { setMobileMenuOpen(false); startFunnel(); }}
                 className="block w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] text-center font-bold py-3 rounded-full transition tap-press cursor-pointer"
               >
                 Sell Now
@@ -7585,7 +7674,7 @@ export default function Home() {
                     <p className="text-white font-semibold mb-1">No past trades found</p>
                     <p className="text-[#e6e6e6] text-sm">First time? No worries — start a fresh quote and we&apos;ll save it for next time.</p>
                   </div>
-                  <button onClick={() => { setLookupOpen(false); setStep("category"); pushHistory("category"); }} className="tcc-button-primary w-full py-3 font-bold">Start fresh quote</button>
+                  <button onClick={() => { setLookupOpen(false); startFunnel(); }} className="tcc-button-primary w-full py-3 font-bold">Start fresh quote</button>
                 </>
               )}
             </div>
@@ -7677,7 +7766,7 @@ export default function Home() {
 
             <div className="glow-border mb-6 p-[3px] hero-scale-in hero-d-3 hidden">
               <button
-                onClick={() => { setStep("category"); pushHistory("category"); }}
+                onClick={() => startFunnel()}
                 className="w-full bg-[#00c853] text-[#0a0a0a] py-5 rounded-[14px] text-xl font-bold cursor-pointer hover:bg-[#00e676] transition tap-press cta-pulse relative z-10"
               >
                 Sell Your Device
@@ -7929,7 +8018,7 @@ export default function Home() {
                     </>
                   );
                 })()}
-                <button onClick={() => { setStep("category"); pushHistory("category"); }} className="inline-flex items-center gap-2 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] px-5 py-2.5 rounded-full text-sm font-bold cursor-pointer transition tap-press">
+                <button onClick={() => startFunnel()} className="inline-flex items-center gap-2 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] px-5 py-2.5 rounded-full text-sm font-bold cursor-pointer transition tap-press">
                   See what your device is worth →
                 </button>
               </div>
@@ -7980,7 +8069,7 @@ export default function Home() {
               <button
                 key={s.n}
                 type="button"
-                onClick={() => { window.scrollTo(0, 0); setStep("category"); pushHistory("category"); }}
+                onClick={() => startFunnel()}
                 className="group relative flex items-center justify-center gap-2 bg-white/5 border border-white/10 rounded-xl px-2 py-2.5 hover:bg-[#00c853]/[0.08] hover:border-[#00c853]/40 focus:bg-[#00c853]/[0.08] focus:border-[#00c853]/40 transition reveal cursor-pointer tap-press"
                 data-stagger={Math.min(i + 2, 8)}
               >
