@@ -7941,17 +7941,22 @@ export default function Home() {
         <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-10">
           <div className="text-center mb-6">
             <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-2 reveal">How it works</p>
-            <h2 className="text-2xl md:text-3xl font-bold leading-tight reveal" data-stagger="1">4 steps to get paid</h2>
+            <h2 className="text-2xl md:text-3xl font-bold leading-tight reveal" data-stagger="1">3 steps to get paid</h2>
           </div>
           {/* Desktop reveals each step's detail on hover; mobile has no
               hover, so each card is a tap-to-expand accordion — the list
-              reads as clean headlines until tapped. Skywalker 2026-05-22. */}
+              reads as clean headlines until tapped. Skywalker 2026-05-22.
+              2026-05-23: dropped the "Back up your data" step so this
+              count matches the hero "Drawer to dollars in 3 steps" copy.
+              Backup is a customer responsibility but it's not a step in
+              OUR process — we don't gate handoff on it, so it doesn't
+              belong here. Find-My-iPhone disable IS a hard gate (we
+              can't pay until it's off) so that one stays. */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-3xl mx-auto">
             {[
-              { num: "1", title: "Back up your data", body: "iCloud, Google One, or your computer — whatever works. Takes minutes." },
-              { num: "2", title: "Turn off Find My iPhone", body: "Settings → [your name] → Find My → Find My iPhone → off. Required before we can pay." },
-              { num: "3", title: "Meet up or ship it", body: "Meet locally in Austin — we inspect together in about 15 minutes — or ship free with our prepaid label from anywhere in the US." },
-              { num: "4", title: "Get paid", body: "Meet locally and you're paid on the spot; ship in and you're paid within 24 hours of arrival. Cash, Cash App, Zelle, or BTC — your choice." },
+              { num: "1", title: "Turn off Find My iPhone", body: "Settings → [your name] → Find My → Find My iPhone → off. Required before we can pay." },
+              { num: "2", title: "Meet up or ship it", body: "Meet locally in Austin — we inspect together in about 15 minutes — or ship free with our prepaid label from anywhere in the US." },
+              { num: "3", title: "Get paid", body: "Meet locally and you're paid on the spot; ship in and you're paid within 24 hours of arrival. Cash, Cash App, Zelle, or BTC — your choice." },
             ].map((item, i) => {
               const open = openStep === i;
               return (
