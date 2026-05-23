@@ -7982,31 +7982,29 @@ export default function Home() {
 
       {/* HOMEPAGE: Why people choose us (6-tile trust grid) */}
       {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-7">
-          {/* Skywalker 2026-05-23: "condense it into smaller than boxes
-              top 2 so we can keep our theme consistent." Was a 6-card
-              grid (devices bought / rating / on-the-spot / free shipping
-              / higher offer / local) — three rows of two on mobile
-              that ate a full viewport of vertical space and repeated
-              claims the trust strip + how-it-works already make. Kept
-              the two strongest headline stats and shrunk to a compact
-              two-up row: smaller padding, smaller stat text, smaller
-              section heading so the whole block reads as a single
-              quick proof bar instead of a separate section. */}
-          <div className="text-center mb-4">
-            <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em] mb-1 reveal">Why Austin chooses us</p>
-            <h2 className="text-xl md:text-2xl font-bold leading-tight reveal" data-stagger="1">Trusted by thousands of locals</h2>
-          </div>
-          <div className="grid grid-cols-2 gap-2.5 max-w-md mx-auto">
-            {[
-              { stat: <CountUp end={5000} suffix="+" />, label: "Devices bought" },
-              { stat: "4.9★", label: "Average review rating" },
-            ].map((t, i) => (
-              <div key={i} className="bg-gradient-to-br from-white/[0.08] to-white/[0.03] border border-white/10 rounded-2xl p-3 text-center flex flex-col justify-center hover:border-[#00c853]/30 hover:from-white/[0.12] transition reveal" data-stagger={Math.min(i + 2, 8)}>
-                <div className="text-xl font-extrabold text-[#00c853] mb-0.5 leading-none">{t.stat}</div>
-                <div className="text-[#e6e6e6] text-[11px] font-medium leading-tight">{t.label}</div>
-              </div>
-            ))}
+        <section className="max-w-lg md:max-w-3xl lg:max-w-4xl mx-auto px-4 py-3">
+          {/* Skywalker 2026-05-23 follow-up: "make the trusted by thound
+              smaller under other selection." Second pass on this block
+              — already condensed from 6 cards to 2 in 91fbd51, now
+              flattened further to a single inline proof pill (no
+              standalone heading, no card grid) so it reads as a quick
+              "thousands trust us" sub-line rather than another section
+              fighting for vertical space. Shaves another ~120 px off
+              the mobile scroll. The two strongest stats stay (5,000+ +
+              4.9), divided by a centered dot like the hero trust strip
+              above the dual-path buttons. */}
+          <div className="flex items-center justify-center gap-3 sm:gap-4 flex-wrap text-center reveal">
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] hidden sm:inline">Trusted by thousands</p>
+            <span className="hidden sm:inline text-white/20">·</span>
+            <span className="inline-flex items-baseline gap-1.5">
+              <span className="text-lg font-extrabold text-[#00c853] leading-none"><CountUp end={5000} suffix="+" /></span>
+              <span className="text-[#e6e6e6] text-[11px] font-medium">devices bought</span>
+            </span>
+            <span className="text-white/20">·</span>
+            <span className="inline-flex items-baseline gap-1.5">
+              <span className="text-lg font-extrabold text-[#00c853] leading-none">4.9★</span>
+              <span className="text-[#e6e6e6] text-[11px] font-medium">review avg</span>
+            </span>
           </div>
         </section>
       )}
@@ -8092,21 +8090,15 @@ export default function Home() {
         </section>
       )}
 
-      {/* HOMEPAGE: Closing CTA banner */}
-      {step === "device" && page === "home" && (
-        <section className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 py-10">
-          <div className="relative overflow-hidden bg-gradient-to-br from-[#0a3d20] via-[#003d1a] to-[#012812] border border-[#00c853]/30 rounded-3xl p-8 md:p-12 text-center reveal">
-            <div className="absolute inset-0 opacity-30 pointer-events-none" style={{ background: "radial-gradient(circle at 30% 20%, rgba(0, 200, 83, 0.4), transparent 60%), radial-gradient(circle at 70% 80%, rgba(0, 230, 118, 0.3), transparent 50%)" }} />
-            <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">Your old device is worth real cash.</h2>
-              <p className="text-[#e6e6e6] text-base md:text-lg mb-6">Instant quote · Paid on the spot in Austin · No signup needed</p>
-              <button onClick={() => { setStep("category"); pushHistory("category"); }} className="bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold text-lg px-10 py-4 rounded-full shadow-lg shadow-[#00c853]/40 transition tap-press cursor-pointer">
-                Sell Your Device
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
+      {/* Closing "Your old device is worth real cash" CTA removed
+          2026-05-23 — Skywalker: "maybe remove sell your old tech...
+          mobile is too long to scroll to the bottom?" Redundant with
+          the hero dual-path buttons, the clickable step cards in "From
+          drawer to dollars in 3 steps" (each card is a tappable
+          Continue), and the final closing CTA at the bottom of the
+          second-batch homepage content. Cutting it shaves a full
+          ~250-px section off mobile without losing any CTA — the user
+          has three other paths to start the funnel above the fold. */}
 
       {/* STEP: CATEGORY */}
       {step === "category" && page === "home" && (
