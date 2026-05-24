@@ -517,14 +517,21 @@ export async function POST(req: NextRequest) {
   // trail — no more "did we actually pay them?" bookkeeping holes.
   const payoutConfLine = (status === "paid" || status === "met") && payoutConfirmation && typeof payoutConfirmation === "object"
     ? (() => {
-        const pc = payoutConfirmation as { method?: string; reference?: string; note?: string };
+        const pc = payoutConfirmation as { method?: string; reference?: string; note?: string; amount?: number };
         const m = (pc.method || "").toString().slice(0, 40).replace(/[\r\n]+/g, " ").trim();
         const r = (pc.reference || "").toString().slice(0, 120).replace(/[\r\n]+/g, " ").trim();
         const n = (pc.note || "").toString().slice(0, 200).replace(/[\r\n]+/g, " ").trim();
-        if (!m && !r && !n) return "";
+        // Amount actually paid out — often less than the original
+        // quote when an in-person inspection downgrades the device.
+        // Clamped to 0..100k so a bad client (or bracket-injection
+        // attempt) can't post nonsense. Skywalker 2026-05-24.
+        const rawAmt = Number(pc.amount);
+        const a = Number.isFinite(rawAmt) && rawAmt >= 0 && rawAmt <= 100000 ? Math.round(rawAmt * 100) / 100 : null;
+        if (!m && !r && !n && a === null) return "";
         const bits: string[] = [];
         if (m) bits.push(`method=${m}`);
         if (r) bits.push(`ref=${r}`);
+        if (a !== null) bits.push(`amount=${a}`);
         if (n) bits.push(`note=${n}`);
         return `\nPayout-confirmation: ${bits.join(" · ")}`;
       })()

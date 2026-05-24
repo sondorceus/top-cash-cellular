@@ -475,7 +475,7 @@ export async function GET(req: NextRequest) {
   const statusByLead = new Map<string, { status: string; timestamp: string }>();
   // Payout confirmations keyed by lead — captured on the [STATUS: paid|met]
   // marker's Payout-confirmation line. Most recent wins.
-  const payoutConfirmByLead = new Map<string, { method?: string; reference?: string; note?: string; timestamp: string }>();
+  const payoutConfirmByLead = new Map<string, { method?: string; reference?: string; note?: string; amount?: number; timestamp: string }>();
   const notesByLead = new Map<string, { text: string; timestamp: string }[]>();
   // Latest FedEx label per lead. We keep only the most recent so
   // regenerating overrides the prior label on the UI.
@@ -680,9 +680,17 @@ export async function GET(req: NextRequest) {
         const method = pcLine.match(/method=([^·\n]+)/i)?.[1]?.trim();
         const reference = pcLine.match(/ref=([^·\n]+)/i)?.[1]?.trim();
         const note = pcLine.match(/note=(.+)$/i)?.[1]?.trim();
+        // Actual amount paid — added 2026-05-24 to capture in-person
+        // downgrades (Rudy: quoted Pro Max, paid 80 on actual 14).
+        const amountRaw = pcLine.match(/amount=([\d.]+)/i)?.[1];
+        const amount = amountRaw ? Number(amountRaw) : undefined;
         const prev = payoutConfirmByLead.get(leadId);
         if (!prev || m.timestamp > prev.timestamp) {
-          payoutConfirmByLead.set(leadId, { method, reference, note, timestamp: m.timestamp });
+          payoutConfirmByLead.set(leadId, {
+            method, reference, note,
+            amount: Number.isFinite(amount) ? amount : undefined,
+            timestamp: m.timestamp,
+          });
         }
       }
     }
@@ -1048,7 +1056,7 @@ export async function GET(req: NextRequest) {
       payoutConfirmation: (() => {
         const pc = payoutConfirmByLead.get(m.id);
         if (!pc) return undefined;
-        return { method: pc.method, reference: pc.reference, note: pc.note, at: pc.timestamp };
+        return { method: pc.method, reference: pc.reference, note: pc.note, amount: pc.amount, at: pc.timestamp };
       })(),
       idCaptured: (() => {
         const ic = idCapturedByLead.get(m.id);

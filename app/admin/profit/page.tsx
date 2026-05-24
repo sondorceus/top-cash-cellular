@@ -75,7 +75,7 @@ interface AdEntry {
 interface AdTotals { count: number; total: number }
 interface AdPayload { entries: AdEntry[]; totals: AdTotals }
 
-type Range = "all" | "30d" | "7d" | "today";
+type Range = "all" | "30d" | "7d" | "today" | "custom";
 
 function money(n: number): string {
   // Always show 2dp + thousands separators — this is a finance view,
@@ -96,6 +96,11 @@ export default function ProfitPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [range, setRange] = useState<Range>("all");
+  // Inclusive custom date range (YYYY-MM-DD). Default both to today
+  // so picking "Custom" with no further input narrows to a known
+  // window instead of returning everything by accident.
+  const [customFrom, setCustomFrom] = useState<string>(todayISO());
+  const [customTo, setCustomTo] = useState<string>(todayISO());
 
   // Add-sale form. We pre-fill the date with "today" but leave cost +
   // sold-price blank so the operator types real numbers instead of
@@ -381,11 +386,19 @@ export default function ProfitPage() {
   const filtered = useMemo(() => {
     if (!data) return { sales: [] as Sale[], totals: emptyTotals() };
     if (range === "all") return data;
+    if (range === "custom") {
+      // Inclusive bounds — saleDate strings compare lexicographically
+      // since they're zero-padded YYYY-MM-DD, no Date math required.
+      const lo = customFrom <= customTo ? customFrom : customTo;
+      const hi = customFrom <= customTo ? customTo : customFrom;
+      const sales = data.sales.filter((s) => s.saleDate >= lo && s.saleDate <= hi);
+      return { sales, totals: rollupClient(sales) };
+    }
     const now = Date.now();
     const cutoffMs = range === "today" ? startOfTodayMs() : (range === "7d" ? now - 7 * 86400000 : now - 30 * 86400000);
     const sales = data.sales.filter((s) => new Date(s.saleDate + "T00:00:00").getTime() >= cutoffMs);
     return { sales, totals: rollupClient(sales) };
-  }, [data, range]);
+  }, [data, range, customFrom, customTo]);
 
   // Live profit-preview so the operator sees the number form-side
   // before submitting — handy when fees + shipping shave the margin.
@@ -402,12 +415,19 @@ export default function ProfitPage() {
   const filteredAd = useMemo(() => {
     if (!adData) return { entries: [] as AdEntry[], total: 0 };
     if (range === "all") return { entries: adData.entries, total: adData.totals.total };
-    const now = Date.now();
-    const cutoffMs = range === "today" ? startOfTodayMs() : (range === "7d" ? now - 7 * 86400000 : now - 30 * 86400000);
-    const entries = adData.entries.filter((a) => new Date(a.spendDate + "T00:00:00").getTime() >= cutoffMs);
+    let entries: AdEntry[];
+    if (range === "custom") {
+      const lo = customFrom <= customTo ? customFrom : customTo;
+      const hi = customFrom <= customTo ? customTo : customFrom;
+      entries = adData.entries.filter((a) => a.spendDate >= lo && a.spendDate <= hi);
+    } else {
+      const now = Date.now();
+      const cutoffMs = range === "today" ? startOfTodayMs() : (range === "7d" ? now - 7 * 86400000 : now - 30 * 86400000);
+      entries = adData.entries.filter((a) => new Date(a.spendDate + "T00:00:00").getTime() >= cutoffMs);
+    }
     const total = entries.reduce((acc, a) => acc + a.amount, 0);
     return { entries, total: Math.round(total * 100) / 100 };
-  }, [adData, range]);
+  }, [adData, range, customFrom, customTo]);
 
   const netProfit = useMemo(
     () => Math.round((filtered.totals.profit - filteredAd.total) * 100) / 100,
@@ -441,16 +461,40 @@ export default function ProfitPage() {
           <a href="/admin/customers" className="text-[#888] hover:text-[#00c853] text-xs font-semibold transition">👥 Customers</a>
           <a href="/admin/prices" className="text-[#888] hover:text-[#00c853] text-xs font-semibold transition">💲 Prices</a>
           <h1 className="text-lg font-extrabold tracking-tight">TCC · Profit</h1>
-          <div className="flex items-center bg-white/5 border border-white/10 rounded-lg overflow-hidden text-xs font-semibold ml-auto">
-            {(["today", "7d", "30d", "all"] as Range[]).map((r) => (
-              <button
-                key={r}
-                onClick={() => setRange(r)}
-                className={`px-3 py-1.5 transition cursor-pointer ${range === r ? "bg-[#00c853]/15 text-[#00c853]" : "text-[#dcdcdc] hover:bg-white/10"} ${r !== "today" ? "border-l border-white/10" : ""}`}
-              >
-                {r === "today" ? "Today" : r === "7d" ? "7d" : r === "30d" ? "30d" : "All time"}
-              </button>
-            ))}
+          <div className="flex items-center gap-2 ml-auto flex-wrap">
+            <div className="flex items-center bg-white/5 border border-white/10 rounded-lg overflow-hidden text-xs font-semibold">
+              {(["today", "7d", "30d", "all", "custom"] as Range[]).map((r, i) => (
+                <button
+                  key={r}
+                  onClick={() => setRange(r)}
+                  className={`px-3 py-1.5 transition cursor-pointer ${range === r ? "bg-[#00c853]/15 text-[#00c853]" : "text-[#dcdcdc] hover:bg-white/10"} ${i > 0 ? "border-l border-white/10" : ""}`}
+                >
+                  {r === "today" ? "Today" : r === "7d" ? "7d" : r === "30d" ? "30d" : r === "all" ? "All time" : "Custom"}
+                </button>
+              ))}
+            </div>
+            {/* Date pickers — surfaced only when Custom is active so
+                the header stays uncluttered for the common-case
+                presets. Inclusive YYYY-MM-DD lex compare in filtered. */}
+            {range === "custom" && (
+              <div className="flex items-center gap-1.5 text-xs">
+                <input
+                  type="date"
+                  value={customFrom}
+                  onChange={(e) => setCustomFrom(e.target.value)}
+                  className="bg-black/40 border border-white/15 rounded-lg px-2 py-1.5 text-white cursor-pointer"
+                  aria-label="From date"
+                />
+                <span className="text-[#666]">→</span>
+                <input
+                  type="date"
+                  value={customTo}
+                  onChange={(e) => setCustomTo(e.target.value)}
+                  className="bg-black/40 border border-white/15 rounded-lg px-2 py-1.5 text-white cursor-pointer"
+                  aria-label="To date"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

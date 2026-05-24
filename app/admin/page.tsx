@@ -103,7 +103,7 @@ interface Lead {
   priorLeads?: number;
   lifetimeSpend?: number;
   commsSent?: { sms: number; email: number; lastAt?: string };
-  payoutConfirmation?: { method?: string; reference?: string; note?: string; at: string };
+  payoutConfirmation?: { method?: string; reference?: string; note?: string; amount?: number; at: string };
   idCaptured?: { type: string; last4: string; dobYear: string; photoUrl: string; at: string };
   reviewToken?: string;
   review?: { id: string; rating: number; title?: string; body: string; verified?: boolean; createdAt: string };
@@ -220,6 +220,16 @@ export default function AdminPage() {
   const [payoutMethod, setPayoutMethod] = useState<string>("");
   const [payoutReference, setPayoutReference] = useState<string>("");
   const [payoutNote, setPayoutNote] = useState<string>("");
+  // Actual amount paid out — often differs from the original quote
+  // when the device is downgraded at inspection (Rudy: quoted Pro
+  // Max, paid 80 on actual iPhone 14). Stored in the same Payout-
+  // confirmation MC line so the leads parser can surface it as
+  // lead.payoutConfirmation.amount for the row + the profit ledger.
+  const [payoutAmount, setPayoutAmount] = useState<string>("");
+  // When true, the "Confirm payout" submit ALSO creates a matching
+  // row in the sales ledger (cost=amount, device=lead's corrected
+  // device, leadId=lead.id) — saves an open-another-tab step.
+  const [payoutAlsoLogResale, setPayoutAlsoLogResale] = useState<boolean>(true);
   // ID-capture (Texas Secondhand Dealer Act). When `idCaptureId === lead.id`
   // the lead row renders the inline capture form.
   const [idCaptureId, setIdCaptureId] = useState<string | null>(null);
@@ -1260,7 +1270,7 @@ export default function AdminPage() {
     .filter((l) => isPaid(l.status))
     .reduce((s, l) => s + (parseInt(l.quote?.match(/\d+/)?.[0] || "0", 10) || 0), 0);
 
-  const saveStatus = async (lead: Lead, newStatus: string, reason?: string, payoutConfirmation?: { method: string; reference: string; note: string }) => {
+  const saveStatus = async (lead: Lead, newStatus: string, reason?: string, payoutConfirmation?: { method: string; reference: string; note: string; amount?: number }) => {
     if (!token || newStatus === lead.status) return;
     setSavingId(lead.id);
     // Only pass shipAddress when the lead is a SHIPPING handoff AND
@@ -2019,13 +2029,13 @@ export default function AdminPage() {
                             </span>
                           )}
                           {/* Payout confirmation pill — set when status is
-                              paid/met and staff captured the method+ref. */}
-                          {lead.payoutConfirmation && (lead.payoutConfirmation.method || lead.payoutConfirmation.reference) && (
+                              paid/met and staff captured the method+ref+amount. */}
+                          {lead.payoutConfirmation && (lead.payoutConfirmation.method || lead.payoutConfirmation.reference || typeof lead.payoutConfirmation.amount === "number") && (
                             <span
                               className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-200 border border-emerald-500/40 uppercase tracking-wider"
-                              title={`Paid via ${lead.payoutConfirmation.method || "?"}${lead.payoutConfirmation.reference ? ` · ${lead.payoutConfirmation.reference}` : ""}${lead.payoutConfirmation.note ? ` · ${lead.payoutConfirmation.note}` : ""} · ${new Date(lead.payoutConfirmation.at).toLocaleString()}`}
+                              title={`Paid${typeof lead.payoutConfirmation.amount === "number" ? ` $${lead.payoutConfirmation.amount}` : ""} via ${lead.payoutConfirmation.method || "?"}${lead.payoutConfirmation.reference ? ` · ${lead.payoutConfirmation.reference}` : ""}${lead.payoutConfirmation.note ? ` · ${lead.payoutConfirmation.note}` : ""} · ${new Date(lead.payoutConfirmation.at).toLocaleString()}`}
                             >
-                              ✓ Paid · {lead.payoutConfirmation.method || "?"}{lead.payoutConfirmation.reference ? ` · ${lead.payoutConfirmation.reference.slice(0, 18)}` : ""}
+                              ✓ Paid{typeof lead.payoutConfirmation.amount === "number" ? ` $${lead.payoutConfirmation.amount}` : ""} · {lead.payoutConfirmation.method || "?"}{lead.payoutConfirmation.reference ? ` · ${lead.payoutConfirmation.reference.slice(0, 18)}` : ""}
                             </span>
                           )}
                           {/* Comms-sent count — Skywalker 2026-05-18 audit
@@ -2794,6 +2804,14 @@ export default function AdminPage() {
                             setPayoutMethod(defaultMethod);
                             setPayoutReference("");
                             setPayoutNote("");
+                            // Default amount to the latest agreed quote
+                            // (digits only) — operator overrides if the
+                            // in-person inspection lowered it. Empty
+                            // when no quote on the lead.
+                            setPayoutAmount(((lead.totalPayout && lead.totalPayout > 0)
+                              ? String(lead.totalPayout)
+                              : (lead.quote || "").match(/\d+/)?.[0] || "") + "");
+                            setPayoutAlsoLogResale(true);
                             setPendingStatus((p) => ({ ...p, [lead.id]: v }));
                             return;
                           }
@@ -2966,8 +2984,27 @@ export default function AdminPage() {
                         </div>
                       )}
                       {payingId === lead.id && (
-                        <div className="mt-2 p-2.5 bg-[#00c853]/8 border border-[#00c853]/30 rounded-lg space-y-2 max-w-[300px]">
+                        <div className="mt-2 p-2.5 bg-[#00c853]/8 border border-[#00c853]/30 rounded-lg space-y-2 max-w-[320px]">
                           <p className="text-[10px] text-[#7be8a8] font-bold uppercase tracking-wider">💰 Confirm payout · {payingStatus === "met" ? "in person" : "digital"}</p>
+                          {/* Actual amount paid — defaults to the latest
+                              agreed quote; operator overrides when the
+                              in-person inspection lowered it (Rudy:
+                              quoted Pro Max, paid 80 on actual 14). */}
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[#c5c5c5] text-xs font-bold">$</span>
+                            <input
+                              type="number"
+                              inputMode="decimal"
+                              step="1"
+                              min="0"
+                              value={payoutAmount}
+                              onChange={(e) => setPayoutAmount(e.target.value)}
+                              placeholder="Amount paid"
+                              className="flex-1 bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#00c853]"
+                              autoFocus
+                            />
+                            <span className="text-[9px] text-[#666] uppercase tracking-wider">paid</span>
+                          </div>
                           <select
                             value={payoutMethod}
                             onChange={(e) => setPayoutMethod(e.target.value)}
@@ -3007,17 +3044,59 @@ export default function AdminPage() {
                             placeholder="Note (optional)"
                             className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#00c853]"
                           />
+                          {/* Auto-log to the resale ledger so the
+                              cost side of the profit row is filled in
+                              the moment the buy is recorded — staff
+                              just adds the sold-price later. */}
+                          <label className="flex items-center gap-2 text-[11px] text-[#c5c5c5] cursor-pointer select-none">
+                            <input
+                              type="checkbox"
+                              checked={payoutAlsoLogResale}
+                              onChange={(e) => setPayoutAlsoLogResale(e.target.checked)}
+                              className="accent-[#00c853] cursor-pointer"
+                            />
+                            <span>Also create a profit-ledger row (cost = ${payoutAmount || "0"})</span>
+                          </label>
                           <div className="flex gap-1.5">
                             <button
                               type="button"
-                              disabled={!payoutMethod || (payoutMethod !== "cash" && !payoutReference.trim())}
-                              onClick={() => {
-                                saveStatus(lead, payingStatus, undefined, {
+                              disabled={!payoutMethod || (payoutMethod !== "cash" && !payoutReference.trim()) || !payoutAmount.trim() || Number(payoutAmount) <= 0}
+                              onClick={async () => {
+                                const amt = Number(payoutAmount) || 0;
+                                await saveStatus(lead, payingStatus, undefined, {
                                   method: payoutMethod,
                                   reference: payoutReference.trim(),
                                   note: payoutNote.trim(),
+                                  amount: amt,
                                 });
+                                // Best-effort: also create the profit
+                                // ledger entry. Failure here doesn't
+                                // un-mark the lead as paid — staff can
+                                // still add it manually on /admin/profit.
+                                if (payoutAlsoLogResale && amt > 0) {
+                                  try {
+                                    const dev = lead.model || lead.device || "device";
+                                    const storage = lead.storage ? ` ${lead.storage}` : "";
+                                    const carrier = lead.carrier ? ` ${lead.carrier}` : "";
+                                    await fetch("/api/admin/sales", {
+                                      method: "POST",
+                                      headers: { "Content-Type": "application/json", ...(token ? { "x-admin-token": token } : {}) },
+                                      body: JSON.stringify({
+                                        device: `${dev}${storage}${carrier}`.trim(),
+                                        platform: "eBay",  // most-common channel; editable later
+                                        soldPrice: 0,      // staff fills in once resold
+                                        cost: amt,
+                                        fees: 0,
+                                        shipping: 0,
+                                        saleDate: new Date().toISOString().slice(0, 10),
+                                        leadId: lead.id,
+                                        note: payoutNote.trim() || "auto-created at payout",
+                                      }),
+                                    });
+                                  } catch { /* surfaced if it matters via /admin/profit */ }
+                                }
                                 setPayingId(null);
+                                setPayoutAmount("");
                               }}
                               className="flex-1 px-2 py-1.5 bg-[#00c853] text-[#0a0a0a] rounded text-[11px] font-bold hover:bg-[#00e676] transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                             >
@@ -3025,7 +3104,7 @@ export default function AdminPage() {
                             </button>
                             <button
                               type="button"
-                              onClick={() => { setPayingId(null); setPayoutMethod(""); setPayoutReference(""); setPayoutNote(""); setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; }); }}
+                              onClick={() => { setPayingId(null); setPayoutMethod(""); setPayoutReference(""); setPayoutNote(""); setPayoutAmount(""); setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; }); }}
                               className="px-2 py-1.5 bg-white/5 border border-white/10 rounded text-[11px] text-[#d4d4d4] hover:bg-white/10 transition cursor-pointer"
                             >
                               Cancel
