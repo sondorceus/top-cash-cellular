@@ -7796,11 +7796,6 @@ export default function Home() {
               </p>
             </div>
 
-            {/* NEIGHBORHOODS — Austin SEO + local trust */}
-            <div className="mt-4 text-center text-[11px] text-[#bdbdbd] font-medium">
-              <svg className="w-4 h-4 inline-block align-text-bottom text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg> Mobile techs in <span className="text-[#e6e6e6]">Downtown Austin · South Congress · Westlake · Bee Cave · Lakeway · Buda · Dripping Springs</span>
-            </div>
-
             {/* PAYMENT METHODS — small chip strip */}
             <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5">
               <span className="text-[10px] text-[#bdbdbd] uppercase tracking-[0.18em] font-bold mr-1">Paid via</span>
