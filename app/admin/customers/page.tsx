@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 // Customers dashboard — aggregated view across all leads, deduped by
 // phone-then-email. Skywalker 2026-05-19 "ready to go live" — needs a
@@ -50,16 +50,36 @@ export default function CustomersPage() {
     } catch {}
   }, []);
 
-  useEffect(() => {
+  const [loading, setLoading] = useState(false);
+
+  const refresh = useCallback(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("tcc-admin-token") : null;
-    fetch(`/api/admin/customers?internal=${showInternal ? "show" : "hide"}`, { headers: token ? { "x-admin-token": token } : {} })
+    setLoading(true);
+    fetch(`/api/admin/customers?internal=${showInternal ? "show" : "hide"}`, {
+      headers: token ? { "x-admin-token": token } : {},
+      cache: "no-store",
+    })
       .then((r) => {
         if (!r.ok) throw new Error(r.status === 401 ? "Unauthorized — open /admin first to set token." : `HTTP ${r.status}`);
         return r.json();
       })
-      .then(setData)
-      .catch((e) => setError(e.message));
+      .then((d) => { setData(d); setError(null); })
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
   }, [showInternal]);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  // Re-pull when the tab becomes visible again — staff often work
+  // /admin (leads) in another tab and bounce back. Without this the
+  // totals here go stale silently. Skywalker reported "not updating"
+  // 2026-05-24.
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const onVis = () => { if (document.visibilityState === "visible") refresh(); };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, [refresh]);
 
   const filtered = useMemo(() => {
     if (!data) return [];
@@ -114,6 +134,14 @@ export default function CustomersPage() {
             <option value="leads">Most leads</option>
             <option value="name">Name A-Z</option>
           </select>
+          <button
+            onClick={refresh}
+            disabled={loading}
+            title="Re-pull customers from MC"
+            className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 border border-white/15 text-[#dcdcdc] text-xs font-bold cursor-pointer hover:bg-white/10 transition disabled:opacity-50"
+          >
+            {loading ? "…" : "↻ Refresh"}
+          </button>
           <button
             onClick={() => {
               const next = !showInternal;

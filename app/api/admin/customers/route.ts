@@ -53,8 +53,24 @@ function normalizePhone(p: string | undefined): string {
 
 function parseQuoteAmount(raw: string | undefined): number {
   if (!raw) return 0;
-  const m = raw.match(/\d+/);
-  return m ? parseInt(m[0], 10) : 0;
+  // Match a comma-grouped or plain integer (and optional cents). The
+  // old version did /\d+/ which on "$1,250" returned "1" — every
+  // four-figure quote was being collapsed to a single dollar in the
+  // customer rollup. Skywalker reported 2026-05-24.
+  const m = raw.match(/[\d,]+(?:\.\d+)?/);
+  if (!m) return 0;
+  const n = parseFloat(m[0].replace(/,/g, ""));
+  return Number.isFinite(n) ? Math.round(n) : 0;
+}
+
+// Multi-device leads don't carry a `Quote:` field — their total is
+// in a `Total payout: $1,234` footer at the bottom of the body.
+// Same regex the /api/admin/leads route uses for symmetry.
+function parseTotalPayout(body: string): number {
+  const m = body.match(/Total payout:\s*\$([0-9,]+(?:\.\d+)?)/i);
+  if (!m) return 0;
+  const n = parseFloat(m[1].replace(/,/g, ""));
+  return Number.isFinite(n) ? Math.round(n) : 0;
 }
 
 // Internal identifiers — exclude Skywalker's own testing from the
@@ -126,7 +142,15 @@ export async function GET(req: NextRequest) {
     if (!contactKey) continue;
     const name = parseField(m.body, "Name");
     const device = parseField(m.body, "Device");
-    const quote = parseQuoteAmount(parseField(m.body, "Quote") || parseField(m.body, "Offer"));
+    // Prefer multi-device `Total payout:` when present (since the
+    // Quote field on those bodies is blank or "—"), else fall back
+    // to the single-device Quote/Offer field. Without this the
+    // customer rollup understates the totals every time a customer
+    // submits more than one device. Skywalker 2026-05-24.
+    const totalFromBody = parseTotalPayout(m.body);
+    const quote = totalFromBody > 0
+      ? totalFromBody
+      : parseQuoteAmount(parseField(m.body, "Quote") || parseField(m.body, "Offer"));
     const smsRaw = parseField(m.body, "SMS opt-in")?.toLowerCase();
     const smsOptIn = smsRaw === "yes" ? true : smsRaw === "no" ? false : undefined;
     const status = statusByLead.get(m.id)?.status || "quote_requested";
