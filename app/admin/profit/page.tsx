@@ -434,6 +434,72 @@ export default function ProfitPage() {
     [filtered.totals.profit, filteredAd.total],
   );
 
+  // Current ISO week (Mon 00:00 → Sun 23:59 local). Independent of
+  // the range toggle — the weekly footer is meant as a quick "what
+  // did I net this week, after everything?" pulse that doesn't
+  // change when the user is exploring other ranges.
+  const weekRange = useMemo(() => {
+    const now = new Date();
+    const day = now.getDay();              // 0=Sun, 1=Mon, … 6=Sat
+    const daysFromMon = (day + 6) % 7;     // Mon→0, Sun→6
+    const mon = new Date(now);
+    mon.setHours(0, 0, 0, 0);
+    mon.setDate(mon.getDate() - daysFromMon);
+    const sun = new Date(mon);
+    sun.setDate(sun.getDate() + 6);
+    const iso = (d: Date) => {
+      const off = d.getTimezoneOffset();
+      return new Date(d.getTime() - off * 60000).toISOString().slice(0, 10);
+    };
+    return { fromISO: iso(mon), toISO: iso(sun), label: `${iso(mon)} → ${iso(sun)}` };
+  }, []);
+
+  // Sales + ad spend bucketed into the current week, then rolled up
+  // into "net this week" (sales profit minus ad spend after fees +
+  // shipping already deducted inside sale.profit).
+  const thisWeek = useMemo(() => {
+    const lo = weekRange.fromISO;
+    const hi = weekRange.toISO;
+    const sales = (data?.sales || []).filter((s) => s.saleDate >= lo && s.saleDate <= hi);
+    const ads = (adData?.entries || []).filter((a) => a.spendDate >= lo && a.spendDate <= hi);
+    let revenue = 0, cost = 0, fees = 0, shipping = 0, salesProfit = 0;
+    for (const s of sales) {
+      revenue += s.soldPrice; cost += s.cost; fees += s.fees; shipping += s.shipping; salesProfit += s.profit;
+    }
+    const adSpend = ads.reduce((acc, a) => acc + a.amount, 0);
+    const net = salesProfit - adSpend;
+    const r2 = (n: number) => Math.round(n * 100) / 100;
+    return {
+      salesCount: sales.length,
+      adCount: ads.length,
+      revenue: r2(revenue), cost: r2(cost), fees: r2(fees), shipping: r2(shipping),
+      salesProfit: r2(salesProfit), adSpend: r2(adSpend), net: r2(net),
+    };
+  }, [data, adData, weekRange]);
+
+  // Per-day series for the chart — only built when the active range
+  // actually spans more than one day (today/custom-same-day fall
+  // back to the table). Days with zero activity (no sale + no spend)
+  // are dropped so a 30d window with 4 sales doesn't render 26
+  // empty bars.
+  const dailySeries = useMemo(() => {
+    if (range === "today") return [];
+    const days = new Map<string, { date: string; salesProfit: number; adSpend: number }>();
+    for (const s of filtered.sales) {
+      const row = days.get(s.saleDate) || { date: s.saleDate, salesProfit: 0, adSpend: 0 };
+      row.salesProfit += s.profit;
+      days.set(s.saleDate, row);
+    }
+    for (const a of filteredAd.entries) {
+      const row = days.get(a.spendDate) || { date: a.spendDate, salesProfit: 0, adSpend: 0 };
+      row.adSpend += a.amount;
+      days.set(a.spendDate, row);
+    }
+    return Array.from(days.values())
+      .map((r) => ({ ...r, net: Math.round((r.salesProfit - r.adSpend) * 100) / 100 }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+  }, [filtered.sales, filteredAd.entries, range]);
+
   // Per-platform rollup over the filtered set — count / revenue /
   // profit / margin per platform, sorted by profit descending so the
   // best-performing channel sits left.
@@ -528,6 +594,51 @@ export default function ProfitPage() {
             tone={netProfit >= 0 ? "good" : "bad"}
           />
         </div>
+
+        {/* Per-day bar chart — only when the range spans more than
+            today and there's at least one day with activity. Sales-
+            profit bars stack green, ad-spend bars red, net is the
+            number to the right. Pure inline SVG — no chart library. */}
+        {dailySeries.length > 1 && (() => {
+          const maxAbs = dailySeries.reduce((m, r) => Math.max(m, Math.abs(r.salesProfit), Math.abs(r.adSpend), Math.abs(r.net)), 0) || 1;
+          return (
+            <div className="bg-white/[0.03] border border-white/10 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-[#888]">By day</div>
+                <div className="text-[10px] text-[#666]">
+                  <span className="inline-block w-2 h-2 bg-[#00c853] rounded-sm align-middle mr-1"></span>sales profit
+                  <span className="inline-block w-2 h-2 bg-red-400 rounded-sm align-middle ml-3 mr-1"></span>ad spend
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                {dailySeries.map((r) => (
+                  <div key={r.date} className="grid grid-cols-[70px_1fr_90px] items-center gap-2 text-[11px]">
+                    <div className="text-[#aaa] font-mono">{r.date.slice(5)}</div>
+                    <div className="relative h-5 bg-white/[0.02] rounded-sm overflow-hidden flex items-center">
+                      {r.salesProfit > 0 && (
+                        <div
+                          className="h-full bg-[#00c853]/70"
+                          style={{ width: `${(r.salesProfit / maxAbs) * 100}%` }}
+                          title={`Sales profit: $${money(r.salesProfit)}`}
+                        />
+                      )}
+                      {r.adSpend > 0 && (
+                        <div
+                          className="h-full bg-red-400/70"
+                          style={{ width: `${(r.adSpend / maxAbs) * 100}%` }}
+                          title={`Ad spend: $${money(r.adSpend)}`}
+                        />
+                      )}
+                    </div>
+                    <div className={`text-right font-bold tabular-nums ${r.net >= 0 ? "text-[#00c853]" : "text-red-300"}`}>
+                      ${money(r.net)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Per-platform breakdown — only shown when there are at
             least two platforms with sales, since a single-platform
@@ -908,8 +1019,51 @@ export default function ProfitPage() {
             )}
           </div>
         </div>
+
+        {/* WEEKLY NET PROFIT — always shown, independent of the
+            range toggle. Anchors the page so Skywalker has a
+            constant "what did I net this week, after everything?"
+            number without re-selecting the Custom range each visit.
+            Ad-spend is meant to be entered weekly in this view, but
+            the math works the same whether entries are daily or
+            weekly — they get bucketed into the current Mon→Sun
+            window either way. */}
+        <div className={`rounded-2xl border p-5 ${thisWeek.net >= 0 ? "bg-[#00c853]/8 border-[#00c853]/30" : "bg-red-500/8 border-red-500/30"}`}>
+          <div className="flex items-baseline justify-between gap-3 flex-wrap">
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#888]">This week · net profit</div>
+              <div className="text-[10px] text-[#666] font-mono mt-0.5">{weekRange.label}</div>
+            </div>
+            <div className={`text-3xl font-extrabold tabular-nums ${thisWeek.net >= 0 ? "text-[#00c853]" : "text-red-300"}`}>
+              ${money(thisWeek.net)}
+            </div>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 mt-4 text-[11px]">
+            <WeekStat label="Sales" value={thisWeek.salesCount.toString()} />
+            <WeekStat label="Revenue" value={`$${money(thisWeek.revenue)}`} />
+            <WeekStat label="Cost paid" value={`$${money(thisWeek.cost)}`} />
+            <WeekStat label="Fees" value={`$${money(thisWeek.fees)}`} sub />
+            <WeekStat label="Shipping" value={`$${money(thisWeek.shipping)}`} sub />
+            <WeekStat label="Sales profit" value={`$${money(thisWeek.salesProfit)}`} tone={thisWeek.salesProfit >= 0 ? "good" : "bad"} />
+            <WeekStat label={`Ad spend (${thisWeek.adCount})`} value={`−$${money(thisWeek.adSpend)}`} tone="bad" />
+          </div>
+        </div>
       </div>
     </main>
+  );
+}
+
+function WeekStat({ label, value, sub, tone }: { label: string; value: string; sub?: boolean; tone?: "good" | "bad" }) {
+  const toneClass =
+    tone === "good" ? "text-[#00c853]" :
+    tone === "bad"  ? "text-red-300" :
+    sub             ? "text-[#aaa]"   :
+    "text-white";
+  return (
+    <div className="bg-black/20 border border-white/5 rounded-lg px-2.5 py-1.5">
+      <div className="text-[9px] uppercase tracking-wider text-[#888] font-semibold truncate">{label}</div>
+      <div className={`text-sm font-bold tabular-nums leading-tight mt-0.5 ${toneClass}`}>{value}</div>
+    </div>
   );
 }
 

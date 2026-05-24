@@ -209,6 +209,10 @@ export default function AdminPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Resale sidecar — fetched from /api/admin/sales, indexed by leadId
+  // so each lead row can show "Sold $X · Profit $Y" without forcing a
+  // server-side join. Re-fetched alongside leads (initial + autoRefresh).
+  const [salesByLead, setSalesByLead] = useState<Record<string, { id: string; soldPrice: number; cost: number; profit: number; platform: string; saleDate: string }>>({});
   const [pendingStatus, setPendingStatus] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
   const [savedFlash, setSavedFlash] = useState<Record<string, { sms: boolean; email: boolean } | null>>({});
@@ -900,6 +904,32 @@ export default function AdminPage() {
     }
   }, [token, view, showInternal]);
 
+  // Pull the resale ledger alongside leads so each row can show
+  // "Sold $X · Profit $Y" without forcing a server-side join. Best-
+  // effort: failure here doesn't impact the leads view.
+  const fetchSalesSidecar = useCallback(async () => {
+    if (!token) return;
+    try {
+      const r = await fetch("/api/admin/sales", {
+        headers: { "x-admin-token": token },
+        cache: "no-store",
+      });
+      if (!r.ok) return;
+      const d = await r.json();
+      const byLead: Record<string, { id: string; soldPrice: number; cost: number; profit: number; platform: string; saleDate: string }> = {};
+      for (const s of (d.sales || []) as Array<{ id: string; leadId?: string; soldPrice: number; cost: number; profit: number; platform: string; saleDate: string }>) {
+        if (!s.leadId) continue;
+        // Latest sale per lead wins. The /sales endpoint already
+        // returns newest-first, so the first hit is canonical and we
+        // can skip later entries cheaply.
+        if (!byLead[s.leadId]) {
+          byLead[s.leadId] = { id: s.id, soldPrice: s.soldPrice, cost: s.cost, profit: s.profit, platform: s.platform, saleDate: s.saleDate };
+        }
+      }
+      setSalesByLead(byLead);
+    } catch { /* silent — leads view stays functional without resale info */ }
+  }, [token]);
+
   // Soft-trash a lead. Posts a [DELETED-LEAD: <id>] marker comm to MC.
   // The lead disappears from the Active view but stays recoverable in
   // the Trash view. Auto-purge policy (Skywalker 2026-05-19):
@@ -974,8 +1004,11 @@ export default function AdminPage() {
   }, [token]);
 
   useEffect(() => {
-    if (token) fetchLeads();
-  }, [token, fetchLeads]);
+    if (token) {
+      fetchLeads();
+      fetchSalesSidecar();
+    }
+  }, [token, fetchLeads, fetchSalesSidecar]);
 
   // Auto-refresh every 5s while tab is visible. Diff against the previous
   // snapshot and pulse-highlight any row whose status changed.
@@ -2037,6 +2070,22 @@ export default function AdminPage() {
                             >
                               ✓ Paid{typeof lead.payoutConfirmation.amount === "number" ? ` $${lead.payoutConfirmation.amount}` : ""} · {lead.payoutConfirmation.method || "?"}{lead.payoutConfirmation.reference ? ` · ${lead.payoutConfirmation.reference.slice(0, 18)}` : ""}
                             </span>
+                          )}
+                          {/* Resale pill — pulled from /api/admin/sales,
+                              joined by leadId. Shows the actual sold-price
+                              + profit when a sales-ledger row exists for
+                              this lead. Cyan tone so it's distinct from
+                              the green ✓ Paid (which is the cost side). */}
+                          {salesByLead[lead.id] && (
+                            <a
+                              href="/admin/profit"
+                              className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/15 text-cyan-200 border border-cyan-500/40 uppercase tracking-wider hover:bg-cyan-500/25 cursor-pointer no-underline"
+                              title={`Sold $${salesByLead[lead.id].soldPrice} on ${salesByLead[lead.id].platform} on ${salesByLead[lead.id].saleDate} · cost $${salesByLead[lead.id].cost} · profit $${salesByLead[lead.id].profit}. Click to open the profit ledger.`}
+                            >
+                              {salesByLead[lead.id].soldPrice > 0
+                                ? <>💸 Sold ${salesByLead[lead.id].soldPrice} · {salesByLead[lead.id].profit >= 0 ? "+" : ""}${salesByLead[lead.id].profit}</>
+                                : <>📥 Buy logged · waiting on sale</>}
+                            </a>
                           )}
                           {/* Comms-sent count — Skywalker 2026-05-18 audit
                               trail. Shows how many touches we've already had
