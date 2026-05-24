@@ -1454,11 +1454,12 @@ export default function AdminPage() {
                 or missing photos. Skywalker 2026-05-17 / 2026-05-19. */}
             <div className="flex items-center bg-white/5 border border-white/10 rounded-lg overflow-hidden text-xs font-semibold">
               <button
-                onClick={() => setView("active")}
+                onClick={() => { if (view !== "active") { setLeads([]); setView("active"); } }}
                 className={`px-3 py-2 transition cursor-pointer ${view === "active" ? "bg-[#00c853]/15 text-[#00c853]" : "text-[#dcdcdc] hover:bg-white/10"}`}
                 title="Show active leads"
               >Active</button>
               <button
+<<<<<<< Updated upstream
                 onClick={() => setView("needs-review")}
                 className={`px-3 py-2 transition cursor-pointer border-l border-white/10 flex items-center gap-1.5 ${view === "needs-review" ? "bg-red-500/15 text-red-300" : "text-[#dcdcdc] hover:bg-white/10"}`}
                 title="Leads needing staff review — AI flagged, stale, missing photos, or Theot recommended pass"
@@ -1470,6 +1471,9 @@ export default function AdminPage() {
               </button>
               <button
                 onClick={() => setView("trash")}
+=======
+                onClick={() => { if (view !== "trash") { setLeads([]); setView("trash"); } }}
+>>>>>>> Stashed changes
                 className={`px-3 py-2 transition cursor-pointer border-l border-white/10 ${view === "trash" ? "bg-amber-500/15 text-amber-300" : "text-[#dcdcdc] hover:bg-white/10"}`}
                 title="Show trashed leads — active leads stay indefinitely; finished leads (paid/met/rejected) auto-purge after 24h"
               >🗑 Trash</button>
@@ -1711,9 +1715,16 @@ export default function AdminPage() {
           </div>
         )}
 
+        {leads.length === 0 && loading && !error && (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center">
+            <div className="inline-block w-6 h-6 border-2 border-white/20 border-t-[#00c853]/80 rounded-full animate-spin" aria-hidden></div>
+            <p className="text-[#dcdcdc] mt-3 text-sm">Loading {view} leads…</p>
+          </div>
+        )}
+
         {leads.length === 0 && !loading && !error && (
           <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center">
-            <p className="text-[#dcdcdc]">No leads yet.</p>
+            <p className="text-[#dcdcdc]">{view === "trash" ? "Trash is empty." : "No leads yet."}</p>
           </div>
         )}
         {leads.length > 0 && view === "needs-review" && needsReviewLeads.length === 0 && (
