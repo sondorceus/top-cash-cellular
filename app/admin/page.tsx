@@ -1472,8 +1472,7 @@ export default function AdminPage() {
                 title="Show active leads"
               >Active</button>
               <button
-<<<<<<< Updated upstream
-                onClick={() => setView("needs-review")}
+                onClick={() => { if (view !== "needs-review") { setLeads([]); setView("needs-review"); } }}
                 className={`px-3 py-2 transition cursor-pointer border-l border-white/10 flex items-center gap-1.5 ${view === "needs-review" ? "bg-red-500/15 text-red-300" : "text-[#dcdcdc] hover:bg-white/10"}`}
                 title="Leads needing staff review — AI flagged, stale, missing photos, or Theot recommended pass"
               >
@@ -1483,10 +1482,7 @@ export default function AdminPage() {
                 )}
               </button>
               <button
-                onClick={() => setView("trash")}
-=======
                 onClick={() => { if (view !== "trash") { setLeads([]); setView("trash"); } }}
->>>>>>> Stashed changes
                 className={`px-3 py-2 transition cursor-pointer border-l border-white/10 ${view === "trash" ? "bg-amber-500/15 text-amber-300" : "text-[#dcdcdc] hover:bg-white/10"}`}
                 title="Show trashed leads — active leads stay indefinitely; finished leads (paid/met/rejected) auto-purge after 24h"
               >🗑 Trash</button>
