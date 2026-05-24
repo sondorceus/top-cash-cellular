@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { DeviceCorrection } from "./DeviceCorrection";
 
 interface Lead {
   id: string;
@@ -298,6 +299,11 @@ export default function AdminPage() {
   // visible at a glance. Built client-side off the leads array.
   const [historyKey, setHistoryKey] = useState<{ kind: "email" | "phone"; value: string } | null>(null);
   const [adjustingId, setAdjustingId] = useState<string | null>(null);
+  // Device-correction modal — opens with the full lead so the panel
+  // can seed its fields from devices[0] (multi-device) or the flat
+  // top-level model/storage/etc (single-device). Save posts to
+  // /api/admin/leads/items and we refetchLeads on success.
+  const [correctingLead, setCorrectingLead] = useState<Lead | null>(null);
   // AI fraud check — Skywalker 2026-05-19. Per-lead in-flight flag and
   // the cached verdict for each lead. Verdict stays visible until the
   // page reloads or staff hits the button again.
@@ -2672,6 +2678,14 @@ export default function AdminPage() {
                         )}
                         <button
                           type="button"
+                          onClick={() => setCorrectingLead(lead)}
+                          className="text-[10px] text-[#00c853] hover:text-[#27e672] cursor-pointer"
+                          title="Inspecting the device — enter the IMEI, pull the real model from Sickw, save the corrected specs to this lead"
+                        >
+                          🔧 Correct device (IMEI)
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => runFraudCheck(lead)}
                           disabled={fraudCheckingId === lead.id}
                           className="text-[10px] text-[#8a8aff] hover:text-[#a8a8ff] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
@@ -3222,6 +3236,12 @@ export default function AdminPage() {
           ✓ Counter-offer sent
         </div>
       )}
+      <DeviceCorrection
+        lead={correctingLead}
+        token={token}
+        onClose={() => setCorrectingLead(null)}
+        onSaved={() => { fetchLeads(); }}
+      />
     </main>
   );
 }
