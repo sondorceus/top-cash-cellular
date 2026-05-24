@@ -967,15 +967,26 @@ export default function AdminPage() {
     if (token) fetchLeads();
   }, [token, fetchLeads]);
 
-  // Auto-refresh every 15s while tab is visible. Diff against the previous
+  // Auto-refresh every 5s while tab is visible. Diff against the previous
   // snapshot and pulse-highlight any row whose status changed.
+  //
+  // CRITICAL: this fetch MUST pass the same `internal` param as the
+  // initial fetchLeads. The server defaults missing `internal` to
+  // "hide", so a tick without the param strips internal leads from
+  // the list — which on a screen showing Skywalker's own test
+  // submissions (his IP is in INTERNAL_IPS) makes the active list
+  // appear to "load then disappear" 5 seconds after page open.
+  // Skywalker reported 2026-05-24.
   useEffect(() => {
     if (!token || !autoRefresh) return;
     const tick = async () => {
       if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
       try {
         const wireView = view === "needs-review" ? "active" : view;
-        const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}&view=${wireView}`, { cache: "no-store" });
+        const r = await fetch(
+          `/api/admin/leads?token=${encodeURIComponent(token)}&view=${wireView}&internal=${showInternal ? "show" : "hide"}`,
+          { cache: "no-store" },
+        );
         if (!r.ok) return;
         const d = await r.json();
         const next: Lead[] = d.leads || [];
@@ -1001,7 +1012,9 @@ export default function AdminPage() {
     // Tightened from 15s to 5s 2026-05-17 — Skywalker reported staleness.
     const interval = setInterval(tick, 5000);
     return () => clearInterval(interval);
-  }, [token, autoRefresh, view]);
+    // showInternal in deps so toggling the chip restarts the interval
+    // with the right param, not just the next-fired tick.
+  }, [token, autoRefresh, view, showInternal]);
 
   // Clean up the "recently changed" highlights after 4s.
   useEffect(() => {
