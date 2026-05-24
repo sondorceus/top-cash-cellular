@@ -1366,6 +1366,13 @@ export default function AdminPage() {
               📊<span className="hidden sm:inline ml-1">Analytics</span>
             </a>
             <a
+              href="/admin/profit"
+              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
+              title="Resale profit ledger — cost / sold / fees / margin"
+            >
+              💰<span className="hidden sm:inline ml-1">Profit</span>
+            </a>
+            <a
               href="/admin/customers"
               className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
               title="Aggregated customer roster"
