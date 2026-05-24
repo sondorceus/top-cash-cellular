@@ -56,8 +56,8 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
     a: "Yes. If you reject the final offer for any reason, we ship the device back to you at our cost — no questions asked.",
   },
   {
-    q: "How do I know your prices are higher than Apple Trade-In or my carrier?",
-    a: "Our homepage has a side-by-side comparison with Apple Trade-In and major carriers so you can sanity-check before you sell. If you find a higher legitimate offer elsewhere, click the \"Got a higher offer?\" pill on your quote and we'll beat it by $25.",
+    q: "How does your price compare to Apple Trade-In or my carrier?",
+    a: "The quote page shows a side-by-side with Apple Trade-In and major carriers — pulled from each company's own published values — so you can sanity-check before you sell. On current-generation flagships that Apple/Samsung don't accept yet, we say so directly. And if you find a higher legitimate offer elsewhere, click the \"Got a higher offer?\" pill on your quote and we'll beat it by $25.",
   },
   {
     q: "What if my package weighs more than the prepaid label says?",

@@ -2,6 +2,178 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SlideOnScrollNav } from "../../components/SlideOnScrollNav";
 import { HeaderSearch } from "../../components/HeaderSearch";
+import appleTradeIn from "../../../public/comps/apple-trade-in.json";
+import samsungTradeIn from "../../../public/comps/samsung-trade-in.json";
+import googleTradeIn from "../../../public/comps/google-trade-in.json";
+
+// Slug -> OEM trade-in model id, for the subset of devices that have a
+// brand-direct trade-in program. If a slug isn't in the map (or the OEM
+// JSON doesn't list the model id), the per-slug page WILL NOT make any
+// "we pay more than {OEM}" claim — keeps the marketing honest when the
+// OEM either doesn't accept the device or pays more than us.
+const OEM_SLUG_TO_MODEL: Record<string, { oem: "apple" | "samsung" | "google"; modelId: string }> = {
+  // iPhones — Apple Trade-In
+  "iphone-17-pro-max": { oem: "apple", modelId: "ip17pm" },
+  "iphone-17-pro": { oem: "apple", modelId: "ip17p" },
+  "iphone-17-air": { oem: "apple", modelId: "ip17air" },
+  "iphone-17": { oem: "apple", modelId: "ip17" },
+  "iphone-17e": { oem: "apple", modelId: "ip17e" },
+  "iphone-16-pro-max": { oem: "apple", modelId: "ip16pm" },
+  "iphone-16-pro": { oem: "apple", modelId: "ip16p" },
+  "iphone-16-plus": { oem: "apple", modelId: "ip16plus" },
+  "iphone-16": { oem: "apple", modelId: "ip16" },
+  "iphone-16e": { oem: "apple", modelId: "ip16e" },
+  "iphone-15-pro-max": { oem: "apple", modelId: "ip15pm" },
+  "iphone-15-pro": { oem: "apple", modelId: "ip15p" },
+  "iphone-15-plus": { oem: "apple", modelId: "ip15plus" },
+  "iphone-15": { oem: "apple", modelId: "ip15" },
+  "iphone-14-pro-max": { oem: "apple", modelId: "ip14pm" },
+  "iphone-14-pro": { oem: "apple", modelId: "ip14p" },
+  "iphone-14-plus": { oem: "apple", modelId: "ip14plus" },
+  "iphone-14": { oem: "apple", modelId: "ip14" },
+  "iphone-13-pro-max": { oem: "apple", modelId: "ip13pm" },
+  "iphone-13-pro": { oem: "apple", modelId: "ip13p" },
+  "iphone-13": { oem: "apple", modelId: "ip13" },
+  "iphone-12-pro-max": { oem: "apple", modelId: "ip12pm" },
+  "iphone-12-pro": { oem: "apple", modelId: "ip12p" },
+  "iphone-12": { oem: "apple", modelId: "ip12" },
+  "iphone-12-mini": { oem: "apple", modelId: "ip12mini" },
+  "iphone-11-pro-max": { oem: "apple", modelId: "ip11pm" },
+  "iphone-11-pro": { oem: "apple", modelId: "ip11p" },
+  "iphone-11": { oem: "apple", modelId: "ip11" },
+
+  // Samsung Galaxy S — Samsung Trade-In
+  "galaxy-s26-ultra": { oem: "samsung", modelId: "gs26u" },
+  "galaxy-s25-ultra": { oem: "samsung", modelId: "gs25u" },
+  "galaxy-s24-ultra": { oem: "samsung", modelId: "gs24u" },
+  "galaxy-s23-ultra": { oem: "samsung", modelId: "gs23u" },
+  "galaxy-s22-ultra": { oem: "samsung", modelId: "gs22u" },
+  "galaxy-s21-ultra": { oem: "samsung", modelId: "gs21u" },
+  "galaxy-s20-ultra": { oem: "samsung", modelId: "gs20u" },
+  "galaxy-s25-edge":  { oem: "samsung", modelId: "gs25edge" },
+  "galaxy-s26-plus":  { oem: "samsung", modelId: "gs26p" },
+  "galaxy-s25-plus":  { oem: "samsung", modelId: "gs25p" },
+  "galaxy-s24-plus":  { oem: "samsung", modelId: "gs24p" },
+  "galaxy-s23-plus":  { oem: "samsung", modelId: "gs23p" },
+  "galaxy-s22-plus":  { oem: "samsung", modelId: "gs22p" },
+  "galaxy-s21-plus":  { oem: "samsung", modelId: "gs21p" },
+  "galaxy-s20-plus":  { oem: "samsung", modelId: "gs20p" },
+  "galaxy-s26":       { oem: "samsung", modelId: "gs26" },
+  "galaxy-s25":       { oem: "samsung", modelId: "gs25" },
+  "galaxy-s24":       { oem: "samsung", modelId: "gs24" },
+  "galaxy-s23":       { oem: "samsung", modelId: "gs23" },
+  "galaxy-s22":       { oem: "samsung", modelId: "gs22" },
+  "galaxy-s21":       { oem: "samsung", modelId: "gs21" },
+  "galaxy-s20":       { oem: "samsung", modelId: "gs20" },
+  "galaxy-s25-fe":    { oem: "samsung", modelId: "gs25fe" },
+  "galaxy-s24-fe":    { oem: "samsung", modelId: "gs24fe" },
+  "galaxy-s23-fe":    { oem: "samsung", modelId: "gs23fe" },
+  "galaxy-s21-fe":    { oem: "samsung", modelId: "gs21fe" },
+  "galaxy-s20-fe":    { oem: "samsung", modelId: "gs20fe" },
+  // Samsung Galaxy Z (foldables) — Samsung Trade-In
+  "galaxy-z-trifold": { oem: "samsung", modelId: "gztrifold" },
+  "galaxy-z-fold-7":  { oem: "samsung", modelId: "gzfold7" },
+  "galaxy-z-fold-6":  { oem: "samsung", modelId: "gzfold6" },
+  "galaxy-z-fold-5":  { oem: "samsung", modelId: "gzfold5" },
+  "galaxy-z-fold-4":  { oem: "samsung", modelId: "gzfold4" },
+  "galaxy-z-fold-3":  { oem: "samsung", modelId: "gzfold3" },
+  "galaxy-z-flip-7":  { oem: "samsung", modelId: "gzflip7" },
+  "galaxy-z-flip-6":  { oem: "samsung", modelId: "gzflip6" },
+  "galaxy-z-flip-5":  { oem: "samsung", modelId: "gzflip5" },
+  "galaxy-z-flip-4":  { oem: "samsung", modelId: "gzflip4" },
+  "galaxy-z-flip-3":  { oem: "samsung", modelId: "gzflip3" },
+  // Galaxy Note — Samsung Trade-In
+  "galaxy-note-20-ultra-5g": { oem: "samsung", modelId: "gnote20u" },
+  "galaxy-note-20-5g":       { oem: "samsung", modelId: "gnote20" },
+  "galaxy-note-10-plus-5g":  { oem: "samsung", modelId: "gnote10p5g" },
+  "galaxy-note-10-plus":     { oem: "samsung", modelId: "gnote10p" },
+  "galaxy-note-10":          { oem: "samsung", modelId: "gnote10" },
+  "galaxy-note-9":           { oem: "samsung", modelId: "gnote9" },
+
+  // Google Pixel — Google Store Trade-In
+  "pixel-10-pro-xl":   { oem: "google", modelId: "px10pxl" },
+  "pixel-10-pro":      { oem: "google", modelId: "px10p" },
+  "pixel-10":          { oem: "google", modelId: "px10" },
+  "pixel-10-pro-fold": { oem: "google", modelId: "px10pfold" },
+  "pixel-9-pro-xl":    { oem: "google", modelId: "px9pxl" },
+  "pixel-9-pro":       { oem: "google", modelId: "px9p" },
+  "pixel-9-pro-fold":  { oem: "google", modelId: "px9pfold" },
+  "pixel-9":           { oem: "google", modelId: "px9" },
+  "pixel-9a":          { oem: "google", modelId: "px9a" },
+  "pixel-8-pro":       { oem: "google", modelId: "px8p" },
+  "pixel-8":           { oem: "google", modelId: "px8" },
+  "pixel-8a":          { oem: "google", modelId: "px8a" },
+  "pixel-fold":        { oem: "google", modelId: "pxfold" },
+  "pixel-7-pro":       { oem: "google", modelId: "px7p" },
+  "pixel-7":           { oem: "google", modelId: "px7" },
+  "pixel-7a":          { oem: "google", modelId: "px7a" },
+  "pixel-6-pro":       { oem: "google", modelId: "px6p" },
+  "pixel-6":           { oem: "google", modelId: "px6" },
+  "pixel-5":           { oem: "google", modelId: "px5" },
+  "pixel-5a-5g":       { oem: "google", modelId: "px5a" },
+
+  // MacBook — Apple Trade-In
+  "macbook-pro-16-m5-pro-max-2026": { oem: "apple", modelId: "mbp16_m5pmax_2026" },
+  "macbook-pro-14-m5-pro-max-2026": { oem: "apple", modelId: "mbp14_m5pmax_2026" },
+  "macbook-pro-14-m5-2025":         { oem: "apple", modelId: "mbp14_m5_2025" },
+  "macbook-pro-16-m4-2024":         { oem: "apple", modelId: "mbp16m4" },
+  "macbook-pro-14-m4-2024":         { oem: "apple", modelId: "mbp14m4" },
+  "macbook-pro-16-m3-2023":         { oem: "apple", modelId: "mbp16m3" },
+  "macbook-pro-14-m3-2023":         { oem: "apple", modelId: "mbp14m3" },
+  "macbook-pro-16-m2-2023":         { oem: "apple", modelId: "mbp16m2" },
+  "macbook-pro-14-m2-2023":         { oem: "apple", modelId: "mbp14m2" },
+  "macbook-pro-13-m1-2020":         { oem: "apple", modelId: "mbp13m1" },
+  "macbook-air-m5-2026":            { oem: "apple", modelId: "mba_m5_2026" },
+  "macbook-air-15-m3-2024":         { oem: "apple", modelId: "mba15m3" },
+  "macbook-air-13-m3-2024":         { oem: "apple", modelId: "mba13m3" },
+  "macbook-air-15-m2-2023":         { oem: "apple", modelId: "mba15m2" },
+  "macbook-air-13-m2-2022":         { oem: "apple", modelId: "mba13m2" },
+  "macbook-air-13-m1-2020":         { oem: "apple", modelId: "mba13m1" },
+
+  // iPad — Apple Trade-In
+  "ipad-pro-13-m5":  { oem: "apple", modelId: "ipadpro13m5" },
+  "ipad-pro-11-m5":  { oem: "apple", modelId: "ipadpro11m5" },
+  "ipad-pro-13-m4":  { oem: "apple", modelId: "ipadpro13m4" },
+  "ipad-pro-11-m4":  { oem: "apple", modelId: "ipadpro11m4" },
+  "ipad-air-13-m3":  { oem: "apple", modelId: "ipadair13m3" },
+  "ipad-air-11-m3":  { oem: "apple", modelId: "ipadair11m3" },
+  "ipad-air-13-m2":  { oem: "apple", modelId: "ipadair13m2" },
+  "ipad-air-11-m2":  { oem: "apple", modelId: "ipadair11m2" },
+  "ipad-mini-7th-gen": { oem: "apple", modelId: "ipadmini7" },
+
+  // Apple Watch — Apple Trade-In
+  "apple-watch-ultra-3":  { oem: "apple", modelId: "aw_ultra3" },
+  "apple-watch-ultra-2":  { oem: "apple", modelId: "aw_ultra2" },
+  "apple-watch-ultra":    { oem: "apple", modelId: "aw_ultra" },
+  "apple-watch-series-10": { oem: "apple", modelId: "aw_s10" },
+  "apple-watch-series-9":  { oem: "apple", modelId: "aw_s9" },
+  "apple-watch-series-8":  { oem: "apple", modelId: "aw_s8" },
+  "apple-watch-series-7":  { oem: "apple", modelId: "aw_s7" },
+  "apple-watch-se-2nd-gen": { oem: "apple", modelId: "aw_se2022" },
+};
+
+type OemComparison =
+  | { kind: "we-beat"; oem: "Apple" | "Samsung" | "Google"; diff: number }
+  | { kind: "wont-trade"; oem: "Apple" | "Samsung" | "Google" }
+  | { kind: "none" };
+
+function getOemComparison(slug: string, devicePrice: number): OemComparison {
+  const entry = OEM_SLUG_TO_MODEL[slug];
+  if (!entry) return { kind: "none" };
+  const oemPretty = (entry.oem.charAt(0).toUpperCase() + entry.oem.slice(1)) as "Apple" | "Samsung" | "Google";
+  const values =
+    entry.oem === "apple" ? (appleTradeIn as { values: Record<string, number> }).values :
+    entry.oem === "samsung" ? (samsungTradeIn as { values: Record<string, number> }).values :
+    (googleTradeIn as { values: Record<string, number> }).values;
+  const oemValue = values[entry.modelId];
+  // OEM doesn't list the model -> they don't accept it on trade-in.
+  // Strong marketing angle: "they won't take it, we will".
+  if (typeof oemValue !== "number") return { kind: "wont-trade", oem: oemPretty };
+  // OEM lists it AND we beat them at our headline price -> "we pay more".
+  if (devicePrice > oemValue) return { kind: "we-beat", oem: oemPretty, diff: devicePrice - oemValue };
+  // OEM pays as much or more than our headline. Don't claim anything.
+  return { kind: "none" };
+}
 
 const DEVICES = [
   // ── iPhone (synced from main catalog 2026-05-11) ──
@@ -214,9 +386,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const device = DEVICES.find((d) => d.slug === slug);
   if (!device) return { title: "Sell Your Device | Top Cash Cellular" };
+  // Only make the comparison claim in the meta description when it's
+  // actually true at this device's headline price. iPhone 17 Pro Max
+  // sat at ~$767 with Apple Trade-In showing $700 in the JSON — but
+  // when Apple removed it from their site, our old static text still
+  // promised "more than Apple". Now it's checked per-slug.
+  const cmp = getOemComparison(slug, device.price);
+  const tail =
+    cmp.kind === "we-beat" ? ` Beat ${cmp.oem} Trade-In by $${cmp.diff}+.` :
+    cmp.kind === "wont-trade" ? ` ${cmp.oem} won't take this on trade-in — we will.` :
+    "";
   return {
     title: `Sell ${device.name} for Cash in Austin TX | Up to $${device.price} | Top Cash Cellular`,
-    description: `Sell your ${device.name} for up to $${device.price} in Austin TX. Instant quote, same-day payout. Cash, Cash App, Zelle, or BTC. We pay more than Apple trade-in.`,
+    description: `Sell your ${device.name} for up to $${device.price} in Austin TX. Instant quote, same-day payout. Cash, Cash App, Zelle, or BTC.${tail}`,
     openGraph: {
       title: `Sell ${device.name} — Up to $${device.price}`,
       description: `Get up to $${device.price} for your ${device.name}. Instant quote, same-day cash payout in Austin TX.`,
@@ -241,6 +423,11 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
   }
 
   const related = DEVICES.filter((d) => d.category === device.category && d.slug !== device.slug).slice(0, 4);
+  const cmp = getOemComparison(slug, device.price);
+  const oemBullet =
+    cmp.kind === "we-beat" ? `We pay $${cmp.diff}+ more than ${cmp.oem} Trade-In` :
+    cmp.kind === "wont-trade" ? `${cmp.oem} won't take this on trade-in — we will` :
+    "Same-day cash for any condition";
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -320,7 +507,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8">
           <h2 className="text-lg font-bold mb-3">Why Sell to Top Cash Cellular?</h2>
           <ul className="space-y-2 text-sm text-[#e5e5e5]">
-            <li className="flex items-start gap-2"><svg className="w-5 h-5 text-[#00c853] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> We pay more than Apple/Samsung trade-in</li>
+            <li className="flex items-start gap-2"><svg className="w-5 h-5 text-[#00c853] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> {oemBullet}</li>
             <li className="flex items-start gap-2"><svg className="w-5 h-5 text-[#00c853] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Same-day payout local · same-day after inspect shipped</li>
             <li className="flex items-start gap-2"><svg className="w-5 h-5 text-[#00c853] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> We buy any condition — even cracked</li>
             <li className="flex items-start gap-2"><svg className="w-5 h-5 text-[#00c853] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Local Austin meetup or free shipping</li>

@@ -10762,61 +10762,83 @@ export default function Home() {
               </div>
             )}
 
-            {!isManualQuote && !isPendingQuote && <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/12 rounded-2xl p-5 mb-6 text-left shadow-[inset_1px_1px_0_rgba(255,255,255,0.06),0_10px_30px_rgba(0,0,0,0.5)]">
-              <p className="text-[10px] font-extrabold text-[#00c853] uppercase tracking-[0.18em] mb-3">How we compare</p>
-              <div className="divide-y divide-white/[0.06]">
-                <div className="flex items-center justify-between -mx-2 px-2 py-3 rounded-lg bg-[#00c853]/10 border border-[#00c853]/30 shadow-[0_0_10px_rgba(0,200,83,0.18)]">
-                  <span className="text-[15px] font-extrabold text-white">Top Cash Cellular</span>
-                  <span className="text-xl font-extrabold text-[#00c853]" style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${quote * quantity}</span>
-                </div>
-                {(() => {
-                  const comp = getCompSource(deviceType);
-                  // For each brand family, prefer the real published
-                  // snapshot value over the percentage estimate when we
-                  // have an entry for this model.
-                  const isApple = deviceType === "iphone" || deviceType === "ipad" || deviceType === "macbook" || deviceType === "apple_desktop" || deviceType === "applewatch" || deviceType === "apple_vr";
-                  const isGoogle = deviceType === "pixel" || deviceType === "pixelwatch" || deviceType === "google_tab";
-                  const isSamsung = deviceType === "android" || deviceType === "samsung_tab" || deviceType === "samsung_pc" || deviceType === "samsungwatch";
-                  const isDecluttr = deviceType === "lg_pc";
-                  const real =
-                    (isApple && model && appleComps ? appleComps[model.id] : undefined) ??
-                    (isGoogle && model && googleComps ? googleComps[model.id] : undefined) ??
-                    (isSamsung && model && samsungComps ? samsungComps[model.id] : undefined) ??
-                    (isDecluttr && model && decluttrComps ? decluttrComps[model.id] : undefined);
-                  const compValue = typeof real === "number"
-                    ? real * quantity
-                    : Math.round(quote * comp.percent * quantity);
-                  return (
-                    <div className="flex items-center justify-between py-3 px-2">
-                      <span className="text-sm font-bold text-[#e6e6e6]">{comp.name}</span>
-                      <span className="text-sm font-bold text-[#b8b8b8]">${compValue}</span>
+            {!isManualQuote && !isPendingQuote && (() => {
+              // Single source of truth for the comparison panel. We compute
+              // one decision up front and feed it to every row + the
+              // savings line so they can't disagree (the old code had the
+              // row render unconditionally while the savings line was
+              // guarded — leading to "Apple Trade-In $700 / Top Cash $434"
+              // with no explanation when our condition tier was lower than
+              // Apple's max).
+              const isApple = deviceType === "iphone" || deviceType === "ipad" || deviceType === "macbook" || deviceType === "apple_desktop" || deviceType === "applewatch" || deviceType === "apple_vr";
+              const isGoogle = deviceType === "pixel" || deviceType === "pixelwatch" || deviceType === "google_tab";
+              const isSamsung = deviceType === "android" || deviceType === "samsung_tab" || deviceType === "samsung_pc" || deviceType === "samsungwatch";
+              const isDecluttr = deviceType === "lg_pc";
+              const isOemBrand = isApple || isGoogle || isSamsung;
+              const oemName = isApple ? "Apple" : isGoogle ? "Google" : isSamsung ? "Samsung" : "";
+              const real =
+                (isApple && model && appleComps ? appleComps[model.id] : undefined) ??
+                (isGoogle && model && googleComps ? googleComps[model.id] : undefined) ??
+                (isSamsung && model && samsungComps ? samsungComps[model.id] : undefined) ??
+                (isDecluttr && model && decluttrComps ? decluttrComps[model.id] : undefined);
+              const comp = getCompSource(deviceType);
+              // For OEM-brand devices (Apple/Samsung/Google) we ONLY trust
+              // a real scraped value. No percentage fallback — if the OEM
+              // doesn't list the model on their own trade-in calculator,
+              // it's because they don't accept it (typical for current-gen
+              // flagships at launch). Don't fabricate a number.
+              // Non-OEM brands (LG, Lenovo, etc.) keep the % estimate
+              // because Backflip/Decluttr publish per-model values that
+              // are hard to scrape but reliably track quote percent.
+              const hasComp = isOemBrand ? typeof real === "number" : true;
+              const compPer = typeof real === "number" ? real : Math.round(quote * comp.percent);
+              const compValue = compPer * quantity;
+              const savings = (quote - compPer) * quantity;
+              const weBeatThem = savings > 0;
+              // OEM device with no published value -> show the
+              // "won't trade this" badge instead of the comparison rows.
+              const showOemNoTradeBadge = isOemBrand && !hasComp;
+              // We have a comp but THEY pay more -> hide rows entirely
+              // (don't volunteer info that hurts us; the customer can
+              // still price-match via the pill below).
+              const showRow = hasComp && weBeatThem;
+              return (
+                <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/12 rounded-2xl p-5 mb-6 text-left shadow-[inset_1px_1px_0_rgba(255,255,255,0.06),0_10px_30px_rgba(0,0,0,0.5)]">
+                  <p className="text-[10px] font-extrabold text-[#00c853] uppercase tracking-[0.18em] mb-3">How we compare</p>
+                  <div className="divide-y divide-white/[0.06]">
+                    <div className="flex items-center justify-between -mx-2 px-2 py-3 rounded-lg bg-[#00c853]/10 border border-[#00c853]/30 shadow-[0_0_10px_rgba(0,200,83,0.18)]">
+                      <span className="text-[15px] font-extrabold text-white">Top Cash Cellular</span>
+                      <span className="text-xl font-extrabold text-[#00c853]" style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${quote * quantity}</span>
                     </div>
-                  );
-                })()}
-                {isPhoneFlow && (
-                  <div className="flex items-center justify-between py-3 px-2">
-                    <span className="text-sm font-bold text-[#e6e6e6]">Carrier Trade-In</span>
-                    <span className="text-sm font-bold text-[#b8b8b8]">${Math.round(quote * 0.7 * quantity)}</span>
+                    {showOemNoTradeBadge && (
+                      <div className="flex items-center justify-between py-3 px-2">
+                        <span className="text-sm font-bold text-[#e6e6e6]">{oemName} Trade-In</span>
+                        <span className="text-sm font-bold text-[#ff6b6b]">Won&apos;t accept this model</span>
+                      </div>
+                    )}
+                    {showRow && (
+                      <div className="flex items-center justify-between py-3 px-2">
+                        <span className="text-sm font-bold text-[#e6e6e6]">{comp.name}</span>
+                        <span className="text-sm font-bold text-[#b8b8b8]">${compValue}</span>
+                      </div>
+                    )}
+                    {isPhoneFlow && showRow && (
+                      <div className="flex items-center justify-between py-3 px-2">
+                        <span className="text-sm font-bold text-[#e6e6e6]">Carrier Trade-In</span>
+                        <span className="text-sm font-bold text-[#b8b8b8]">${Math.round(quote * 0.7 * quantity)}</span>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              {(() => {
-                const isApple = deviceType === "iphone" || deviceType === "ipad" || deviceType === "macbook" || deviceType === "apple_desktop" || deviceType === "applewatch" || deviceType === "apple_vr";
-                const isGoogle = deviceType === "pixel" || deviceType === "pixelwatch" || deviceType === "google_tab";
-                const isSamsung = deviceType === "android" || deviceType === "samsung_tab" || deviceType === "samsung_pc" || deviceType === "samsungwatch";
-                const isDecluttr = deviceType === "lg_pc";
-                const real =
-                  (isApple && model && appleComps ? appleComps[model.id] : undefined) ??
-                  (isGoogle && model && googleComps ? googleComps[model.id] : undefined) ??
-                  (isSamsung && model && samsungComps ? samsungComps[model.id] : undefined) ??
-                  (isDecluttr && model && decluttrComps ? decluttrComps[model.id] : undefined);
-                const compPer = typeof real === "number" ? real : Math.round(quote * getCompSource(deviceType).percent);
-                const savings = (quote - compPer) * quantity;
-                if (savings <= 0) return null;
-                return <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${savings} more with us</p>;
-              })()}
-              <a href={`mailto:offers@topcashcellular.com?subject=Price%20Match%20Request&body=Model%3A%20${encodeURIComponent(model?.label || '')}%0AStorage%3A%20${encodeURIComponent(storage?.label || '')}%0AStorage%3A%20${encodeURIComponent(condition?.label || '')}%0ACompetitor%20URL%3A%20%0ACompetitor%20offer%3A%20%24`} className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#00c853]/10 border border-[#00c853]/30 hover:bg-[#00c853]/15 text-[#00c853] text-xs font-bold transition"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Got a higher offer? We&apos;ll beat it by $25</a>
-            </div>}
+                  {showOemNoTradeBadge && (
+                    <p className="text-[#00c853] text-xs font-extrabold mt-3">{oemName} won&apos;t trade this in — we will.</p>
+                  )}
+                  {showRow && weBeatThem && (
+                    <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${savings} more with us</p>
+                  )}
+                  <a href={`mailto:offers@topcashcellular.com?subject=Price%20Match%20Request&body=Model%3A%20${encodeURIComponent(model?.label || '')}%0AStorage%3A%20${encodeURIComponent(storage?.label || '')}%0AStorage%3A%20${encodeURIComponent(condition?.label || '')}%0ACompetitor%20URL%3A%20%0ACompetitor%20offer%3A%20%24`} className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#00c853]/10 border border-[#00c853]/30 hover:bg-[#00c853]/15 text-[#00c853] text-xs font-bold transition"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Got a higher offer? We&apos;ll beat it by $25</a>
+                </div>
+              );
+            })()}
 
             {/* Coupon code */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-left">
@@ -13399,8 +13421,8 @@ export default function Home() {
                   <p className="text-[#e6e6e6] text-xs mt-1">Payment</p>
                 </div>
                 <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
-                  <p className="text-3xl font-bold text-[#00c853]">38%</p>
-                  <p className="text-[#e6e6e6] text-xs mt-1">More Than Trade-In</p>
+                  <p className="text-3xl font-bold text-[#00c853]">Any</p>
+                  <p className="text-[#e6e6e6] text-xs mt-1">Condition Accepted</p>
                 </div>
               </div>
 
@@ -13408,7 +13430,7 @@ export default function Home() {
               <div className="space-y-3 mb-8">
                 {[
                   { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />, title: "Skip the sketchy meetup", desc: "No driving across town with a thousand dollars of electronics in your front seat. No strangers from OfferUp or Facebook Marketplace. One real business, one face, one trusted public spot — or ship it and never leave home." },
-                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Highest payouts in Austin", desc: "We consistently beat Apple, carrier, and marketplace prices by 20-40%. Get a quote and compare." },
+                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Real payouts in Austin", desc: "Get an instant quote and compare against Apple, your carrier, and marketplaces — the quote page shows the side-by-side so you can decide." },
                   { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />, title: "Paid on the spot", desc: "Cash, Cash App, Zelle, or BTC — your choice. No waiting for checks or bank transfers." },
                   { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />, title: "Local & personal", desc: "We meet you at a known public Austin spot. Face-to-face, safe, and quick. 5 minutes and you're done." },
                   { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, title: "Nationwide shipping", desc: "Not in Austin? No problem. We send a free prepaid FedEx label. Ship your device, get paid same day we receive it — never leave the house." },

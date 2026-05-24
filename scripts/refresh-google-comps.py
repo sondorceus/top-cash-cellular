@@ -29,12 +29,17 @@ UA = (
 
 # Internal model id -> the label shown on Google Store's trade-in
 # selector. Google's calculator (https://store.google.com/us/buy/trade-in)
-# uses these exact strings.
+# uses these exact strings. The scraper only refreshes models present
+# here, and main() drops any snapshot entry whose key is NOT here.
+#
+# CONVENTION (added 2026-05-24): only list a model when Google actually
+# accepts it. When Google doesn't accept a current-gen model yet, leave
+# it out — frontend renders a "Google won't trade this — we will" badge
+# instead of fabricating a fallback number.
 GOOGLE_MODEL_LABELS: Dict[str, str] = {
-    "px10pxl":   "Pixel 10 Pro XL",
-    "px10p":     "Pixel 10 Pro",
-    "px10":      "Pixel 10",
-    "px10pfold": "Pixel 10 Pro Fold",
+    # Pixel 10 family intentionally omitted: Google doesn't trade-in
+    # their current-gen Pixel on the Google Store yet (verified
+    # 2026-05-24). Re-add as Google starts accepting them.
     "px9pxl":    "Pixel 9 Pro XL",
     "px9p":      "Pixel 9 Pro",
     "px9pfold":  "Pixel 9 Pro Fold",
@@ -130,10 +135,15 @@ def scrape_one(pg: Page, model_id: str, label: str) -> Optional[int]:
 def main() -> int:
     snap = load_snapshot()
     prev = dict(snap.get("values", {}))
-    new = dict(prev)
+    # Drop any key no longer in GOOGLE_MODEL_LABELS so manual removals
+    # actually stick (the map is the source of truth for tracked models).
+    new = {k: v for k, v in prev.items() if k in GOOGLE_MODEL_LABELS}
+    dropped = [k for k in prev if k not in GOOGLE_MODEL_LABELS]
     warnings: list[str] = []
 
     print(f"Loaded {len(prev)} previous values from {OUT.name}")
+    if dropped:
+        print(f"Dropping {len(dropped)} entries no longer in GOOGLE_MODEL_LABELS: {sorted(dropped)}")
 
     with sync_playwright() as p:
         b = p.chromium.launch(headless=True, args=["--no-sandbox", "--disable-blink-features=AutomationControlled"])

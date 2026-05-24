@@ -27,8 +27,19 @@ UA = (
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 )
 
+# The scraper only refreshes models present here, and main() drops any
+# snapshot entry whose key is NOT in this map.
+#
+# CONVENTION (added 2026-05-24 after iPhone 17 Pro Max bug):
+#   Only list a model when Samsung's actual trade-in calculator at
+#   samsung.com/us/shop/mobile/trade-in surfaces it. Current-generation
+#   flagships (S26 family, Z Fold 7, Z Flip 7, Z TriFold at time of
+#   writing) are NOT accepted by Samsung — leave them OUT of this map.
+#   The frontend renders a "Samsung won't trade this — we will" badge
+#   in their place. Re-add a model after confirming Samsung accepts it.
 SAMSUNG_MODEL_LABELS: Dict[str, str] = {
-    "gs26u": "Galaxy S26 Ultra",
+    # S26 family intentionally omitted: Samsung doesn't trade-in their
+    # newest flagships (verified 2026-05-24). Re-add when they do.
     "gs25u": "Galaxy S25 Ultra",
     "gs24u": "Galaxy S24 Ultra",
     "gs23u": "Galaxy S23 Ultra",
@@ -36,14 +47,12 @@ SAMSUNG_MODEL_LABELS: Dict[str, str] = {
     "gs21u": "Galaxy S21 Ultra",
     "gs20u": "Galaxy S20 Ultra",
     "gs25edge": "Galaxy S25 Edge",
-    "gs26p":  "Galaxy S26+",
     "gs25p":  "Galaxy S25+",
     "gs24p":  "Galaxy S24+",
     "gs23p":  "Galaxy S23+",
     "gs22p":  "Galaxy S22+",
     "gs21p":  "Galaxy S21+",
     "gs20p":  "Galaxy S20+",
-    "gs26":   "Galaxy S26",
     "gs25":   "Galaxy S25",
     "gs24":   "Galaxy S24",
     "gs23":   "Galaxy S23",
@@ -55,13 +64,12 @@ SAMSUNG_MODEL_LABELS: Dict[str, str] = {
     "gs23fe": "Galaxy S23 FE",
     "gs21fe": "Galaxy S21 FE",
     "gs20fe": "Galaxy S20 FE",
-    "gztrifold": "Galaxy Z TriFold",
-    "gzfold7":   "Galaxy Z Fold 7",
+    # Z TriFold + Z Fold 7 + Z Flip 7 intentionally omitted — Samsung
+    # doesn't trade these in yet (verified 2026-05-24).
     "gzfold6":   "Galaxy Z Fold 6",
     "gzfold5":   "Galaxy Z Fold 5",
     "gzfold4":   "Galaxy Z Fold 4",
     "gzfold3":   "Galaxy Z Fold 3",
-    "gzflip7":   "Galaxy Z Flip 7",
     "gzflip6":   "Galaxy Z Flip 6",
     "gzflip5":   "Galaxy Z Flip 5",
     "gzflip4":   "Galaxy Z Flip 4",
@@ -146,10 +154,17 @@ def scrape_one(pg: Page, model_id: str, label: str) -> Optional[int]:
 def main() -> int:
     snap = load_snapshot()
     prev = dict(snap.get("values", {}))
-    new = dict(prev)
+    # Drop any key that's no longer in SAMSUNG_MODEL_LABELS — the labels
+    # map is the single source of truth for "which models we track".
+    # Remove a line there to evict the value from the snapshot on the
+    # next run. (Previously `new = dict(prev)` made removals sticky.)
+    new = {k: v for k, v in prev.items() if k in SAMSUNG_MODEL_LABELS}
+    dropped = [k for k in prev if k not in SAMSUNG_MODEL_LABELS]
     warnings: list[str] = []
 
     print(f"Loaded {len(prev)} previous values from {OUT.name}")
+    if dropped:
+        print(f"Dropping {len(dropped)} entries no longer in SAMSUNG_MODEL_LABELS: {sorted(dropped)}")
 
     with sync_playwright() as p:
         b = p.chromium.launch(headless=True, args=["--no-sandbox", "--disable-blink-features=AutomationControlled"])
