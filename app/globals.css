@@ -89,21 +89,24 @@
   display: inline-block;
 }
 .hero-flip-inner {
-  display: inline-block;
-  position: relative;
+  /* Inline-grid stacks both faces in the same cell, so the box auto-sizes
+     to fit whichever face is wider/taller — back text no longer wraps to
+     fit the front's box, no layout shift on flip. */
+  display: inline-grid;
+  grid-template-areas: "stack";
   transform-style: preserve-3d;
   transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
   transform-origin: center center;
   will-change: transform;
 }
 .hero-flip-face {
-  display: block;
+  grid-area: stack;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 .hero-flip-back {
-  position: absolute;
-  inset: 0;
+  /* Flex-center vertically so a single-line back sits middle of the cell
+     when the front is multi-line. */
   display: flex;
   align-items: center;
   transform: rotateY(180deg);
