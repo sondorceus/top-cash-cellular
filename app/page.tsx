@@ -4685,10 +4685,6 @@ export default function Home() {
     imei?: string;
   };
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  // Floating Order Summary card (lg+ only). Defaults open so the customer
-  // sees the running total the first time they add a 2nd device; collapses
-  // to a thin chevron pill if they want it out of the way.
-  const [floatingCartOpen, setFloatingCartOpen] = useState<boolean>(true);
   const [cartOpen, setCartOpen] = useState(false);
   // Bump counter — increments every time an item is added so the cart
   // icon + badge can re-animate (key change forces remount + keyframe).
@@ -6000,17 +5996,28 @@ export default function Home() {
 
   const selectionPanel = model && (
     <aside className="hidden lg:block lg:w-[330px] shrink-0">
-      <div className="sticky top-24 bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
-        <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl mb-4 h-72 flex items-center justify-center overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-3">
+      {/* Sticky container with bounded height. The earlier inline-cart
+          attempt (8eea89e) put the cart at the bottom of a sticky panel
+          that overflowed viewport — so the TOTAL row was permanently
+          below the fold even though sticky was technically engaged.
+          Now the panel is bounded at calc(100vh - 7rem) and uses flex
+          column: image + label are shrink-0 at top, spec rows take
+          flex-1 with internal scroll, cart is shrink-0 pinned at the
+          bottom — always visible while the rest follows scroll. */}
+      <div className="sticky top-24 max-h-[calc(100vh-7rem)] flex flex-col bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+        <div className="shrink-0 bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl mb-4 h-72 flex items-center justify-center overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-3">
           {model.image ? (
             <Pic src={model.image} alt={model.label} size={640} className="w-full h-full object-contain" style={{ filter: "drop-shadow(0 18px 22px rgba(0,0,0,0.55)) drop-shadow(0 4px 8px rgba(0,0,0,0.35))" }} />
           ) : (
             <svg className="w-14 h-14 opacity-30 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
           )}
         </div>
-        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Selling</p>
-        <p className="text-[22px] font-extrabold text-white leading-tight mb-4">{model.label}</p>
-        <div className="space-y-2 border-t border-white/10 pt-4">
+        <p className="shrink-0 text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Selling</p>
+        <p className="shrink-0 text-[22px] font-extrabold text-white leading-tight mb-4">{model.label}</p>
+        {/* Spec rows + guarantee — middle column, scrolls internally if
+            tall enough to exceed remaining space. min-h-0 is required for
+            the flex-1 child to actually be allowed to shrink. */}
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1 -mr-1 space-y-2 border-t border-white/10 pt-4">
           {[
             { label: "Processor",    value: processor?.label,    active: step === "processor",    helpId: null as null,       onJump: editRow("processor"),    show: macSpecFlow },
             { label: "Memory",       value: memory?.label,       active: step === "memory",       helpId: null as null,       onJump: editRow("memory"),       show: macSpecFlow },
@@ -6063,97 +6070,78 @@ export default function Home() {
           })}
         </div>
         {/* Accurate-quote guarantee badge */}
-        <div className="mt-4 pt-4 border-t border-white/10 flex items-start gap-2.5">
+        <div className="shrink-0 mt-4 pt-4 border-t border-white/10 flex items-start gap-2.5">
           <span className="text-[#00c853] text-lg leading-none mt-0.5" style={{ filter: "drop-shadow(0 0 4px rgba(0,200,83,0.55))" }}>✓</span>
           <div>
             <p className="text-white text-[13px] font-extrabold leading-tight">Honored quote guarantee</p>
             <p className="text-[#e6e6e6] text-[12px] leading-snug mt-1">If your device matches the description above, we pay the quoted price — no surprise deductions.</p>
           </div>
         </div>
+        {/* Multi-device cart summary — pinned to the bottom of the sticky
+            container as a shrink-0 footer. Always visible while cart > 0,
+            no matter how tall the spec rows get above. The small green
+            pulse dot ("live") is the tiny indicator that confirms the
+            summary is tracking with scroll — matches the site's existing
+            green-accent motion language (animate-ping is the same shape
+            as the tcc-card hover glow). */}
+        {cartItems.length > 0 && (() => {
+          const totalItems = cartItems.reduce((s, it) => s + it.quantity, 0);
+          const totalDollars = cartItems.reduce((s, it) => s + it.price * it.quantity, 0);
+          const hasPending = cartItems.some((it) => !it.price);
+          return (
+            <div className="shrink-0 mt-3 pt-3 border-t border-white/10">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Order summary</p>
+                  {/* Tiny live indicator — pulsing green dot. */}
+                  <span className="relative flex h-1.5 w-1.5" aria-label="live cart">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00c853] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00c853]"></span>
+                  </span>
+                </div>
+                <span className="text-[10px] text-[#b8b8b8]">{totalItems} device{totalItems === 1 ? "" : "s"}</span>
+              </div>
+              <div className="max-h-[18vh] overflow-y-auto pr-1 -mr-1">
+                {cartItems.map((it, i) => (
+                  <div key={i} className="flex items-center gap-3 py-1.5 border-b border-white/10 last:border-0">
+                    <div className="shrink-0 w-8 h-8 rounded-md bg-[rgba(15,15,15,0.6)] border border-white/10 flex items-center justify-center overflow-hidden">
+                      {it.image ? (
+                        <Pic src={it.image} alt="" className="w-full h-full object-contain p-0.5" />
+                      ) : (
+                        <svg className="w-3.5 h-3.5 opacity-40 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] font-bold text-white leading-tight truncate">{it.model}</p>
+                      {(it.storage || it.condition) && (
+                        <p className="text-[9px] text-[#b8b8b8] leading-tight truncate">{[it.storage, it.condition].filter(Boolean).join(" · ")}</p>
+                      )}
+                    </div>
+                    <div className="shrink-0 text-right">
+                      {!it.price ? (
+                        <p className="text-[9px] font-semibold text-[#e6e6e6] leading-tight">Quoted</p>
+                      ) : (
+                        <p className="text-[11px] font-extrabold text-[#00c853] leading-tight">${it.price * it.quantity}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2 pt-2 border-t border-white/10 flex items-baseline justify-between gap-2">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#e6e6e6]">Total</span>
+                {totalDollars === 0 && hasPending ? (
+                  <span className="text-[17px] font-extrabold text-[#e6e6e6]">TBD</span>
+                ) : (
+                  <span className="text-[17px] font-extrabold text-[#00c853]">${totalDollars}{hasPending && <span className="text-[9px] text-[#b8b8b8] font-semibold align-middle ml-1">+ quoted</span>}</span>
+                )}
+              </div>
+            </div>
+          );
+        })()}
       </div>
     </aside>
   );
 
-  // FLOATING ORDER SUMMARY — fixed bottom-right card on lg+ screens.
-  // Replaced the previous in-panel cart summary which lived INSIDE
-  // selectionPanel's sticky container — but that container could be
-  // taller than viewport (288px image + 8 spec rows + cart), so the
-  // TOTAL row sat permanently below the fold. Skywalker reported
-  // 2026-05-25 that it never visibly followed scroll.
-  //
-  // Now: it's a real fixed-position element with its own bounded
-  // height, anchored bottom-right, always visible while cart > 0
-  // and dismissable via the collapse chevron. Mobile keeps the
-  // existing inline checkoutSummaryMobile pattern (no floating
-  // element competes with the bottom CTA bar on small screens).
-  const floatingCart = cartItems.length > 0 && (() => {
-    const totalItems = cartItems.reduce((s, it) => s + it.quantity, 0);
-    const totalDollars = cartItems.reduce((s, it) => s + it.price * it.quantity, 0);
-    const hasPending = cartItems.some((it) => !it.price);
-    return (
-      <aside
-        className="hidden lg:block fixed bottom-4 right-4 z-30 w-[320px] bg-[rgba(15,15,15,0.95)] backdrop-blur-[12px] border border-white/15 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden"
-        aria-label="Order summary"
-      >
-        <button
-          type="button"
-          onClick={() => setFloatingCartOpen((v) => !v)}
-          className="w-full px-4 py-3 flex items-center justify-between gap-3 hover:bg-white/[0.04] cursor-pointer tap-press"
-          aria-expanded={floatingCartOpen}
-        >
-          <div className="text-left">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] leading-tight">Order summary</div>
-            <div className="text-[11px] text-[#b8b8b8] leading-tight mt-0.5">{totalItems} device{totalItems === 1 ? "" : "s"}</div>
-          </div>
-          <div className="flex items-center gap-3 shrink-0">
-            {totalDollars === 0 && hasPending ? (
-              <span className="text-[20px] font-extrabold text-[#e6e6e6]">TBD</span>
-            ) : (
-              <span className="text-[20px] font-extrabold text-[#00c853]">${totalDollars}</span>
-            )}
-            <svg
-              className={`w-4 h-4 text-[#b8b8b8] transition-transform ${floatingCartOpen ? "rotate-180" : ""}`}
-              fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-            ><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-          </div>
-        </button>
-        {floatingCartOpen && (
-          <div className="border-t border-white/10 max-h-[50vh] overflow-y-auto px-3 py-2">
-            {cartItems.map((it, i) => (
-              <div key={i} className="flex items-center gap-3 py-2 border-b border-white/10 last:border-0">
-                <div className="shrink-0 w-9 h-9 rounded-lg bg-[rgba(15,15,15,0.6)] border border-white/10 flex items-center justify-center overflow-hidden">
-                  {it.image ? (
-                    <Pic src={it.image} alt="" className="w-full h-full object-contain p-0.5" />
-                  ) : (
-                    <svg className="w-4 h-4 opacity-40 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[12px] font-bold text-white leading-tight truncate">{it.model}</p>
-                  {(it.storage || it.condition) && (
-                    <p className="text-[10px] text-[#b8b8b8] leading-tight truncate">{[it.storage, it.condition].filter(Boolean).join(" · ")}</p>
-                  )}
-                </div>
-                <div className="shrink-0 text-right">
-                  {!it.price ? (
-                    <p className="text-[9px] font-semibold text-[#e6e6e6] leading-tight">Quoted via<br/>email/text</p>
-                  ) : (
-                    <p className="text-[12px] font-extrabold text-[#00c853] leading-tight">${it.price * it.quantity}</p>
-                  )}
-                  {it.quantity > 1 && <p className="text-[9px] text-[#b8b8b8] leading-tight">x{it.quantity}</p>}
-                </div>
-              </div>
-            ))}
-            {hasPending && (
-              <div className="mt-2 pt-2 border-t border-white/10 text-[10px] text-[#b8b8b8] text-center">
-                Items marked &quot;Quoted via email/text&quot; settle when our team replies with the final number.
-              </div>
-            )}
-          </div>
-        )}
-      </aside>
-    );
-  })();
 
   // CHECKOUT SUMMARY — a stripped-down all-items list that replaces the
   // hero device panel on the checkout step. Keeps the eye on finalizing
@@ -6454,13 +6442,6 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
       {catalogWarmer}
-      {/* Floating Order Summary — fixed bottom-right on lg+ screens whenever
-          the cart has items. Self-contained position, doesn't fight any
-          sticky sidebar's overflow, always visible regardless of which
-          funnel step renders. Mobile uses the existing in-flow
-          checkoutSummaryMobile pattern instead (no floating element on
-          phones — would collide with the bottom CTA bar). */}
-      {floatingCart}
       {/* Google Maps JS script removed 2026-05-18. We no longer load any
           client-side Google library — the shipping address autocomplete
           calls our own /api/places-autocomplete + /api/places-details
