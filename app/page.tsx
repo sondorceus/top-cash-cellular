@@ -7779,13 +7779,13 @@ export default function Home() {
                 <button type="button" onClick={() => setWelcomeBack(null)} aria-label="Dismiss" className="text-[#888] hover:text-white text-xl leading-none shrink-0 cursor-pointer">×</button>
               </div>
             )}
-            <h1 className="text-4xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up hero-flip" style={{ letterSpacing: "-0.03em" }} tabIndex={0} aria-label="Get top dollar for your device. Also: Get paid same-day. Cash.">
+            <h1 className="text-4xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up hero-flip" style={{ letterSpacing: "-0.03em" }} tabIndex={0} aria-label="Get top dollar for your device. Also: Get paid same-day.">
               <span className={`hero-flip-inner${heroFlipped ? ' is-flipped' : ''}`}>
                 <span className="hero-flip-face hero-flip-front">
                   Get <span className="text-[#00c853]">top dollar</span><br />for your device.
                 </span>
                 <span className="hero-flip-face hero-flip-back" aria-hidden="true">
-                  Get <span className="text-[#00c853]">paid same-day.</span><br />Cash.
+                  Get <span className="text-[#00c853]">paid same-day.</span>
                 </span>
               </span>
             </h1>

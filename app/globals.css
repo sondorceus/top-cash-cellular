@@ -103,9 +103,9 @@
 }
 .hero-flip-back {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+  inset: 0;
+  display: flex;
+  align-items: center;
   transform: rotateY(180deg);
 }
 @media (hover: hover) and (pointer: fine) {
