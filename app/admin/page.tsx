@@ -1405,7 +1405,11 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-screen bg-black text-white">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+      {/* Extra bottom padding when the fixed bulk-action bar is on screen,
+          otherwise the last lead in the list gets hidden under it and can't
+          be scrolled into view. Bar wraps onto 2 rows on narrow screens,
+          so mobile needs a deeper buffer than desktop. */}
+      <div className={`max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 ${selectedIds.size > 0 ? "pb-40 sm:pb-28" : ""}`}>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 sm:mb-6">
           <div className="min-w-0">
             <h1 className="text-xl sm:text-2xl font-bold">TCC Staff Ops</h1>
