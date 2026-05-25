@@ -114,8 +114,13 @@
     transform: rotateY(180deg);
   }
 }
+/* Mobile auto-flip — driven by React state (setInterval every 4s on touch
+   devices). Class applied to .hero-flip-inner so the same transform
+   pipeline drives both desktop hover + mobile timed flip. */
+.hero-flip-inner.is-flipped { transform: rotateY(180deg); }
 @media (prefers-reduced-motion: reduce) {
   .hero-flip-inner { transition: none; }
+  .hero-flip-inner.is-flipped { transform: none; }
   .hero-flip:hover .hero-flip-inner,
   .hero-flip:focus-within .hero-flip-inner { transform: none; }
 }
