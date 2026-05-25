@@ -7785,7 +7785,7 @@ export default function Home() {
                   Get <span className="text-[#00c853]">top dollar</span><br />for your device.
                 </span>
                 <span className="hero-flip-face hero-flip-back" aria-hidden="true">
-                  Get <span className="text-[#00c853]">paid same-day.</span>
+                  <span>Get <span className="text-[#00c853]">paid same-day.</span></span>
                 </span>
               </span>
             </h1>
