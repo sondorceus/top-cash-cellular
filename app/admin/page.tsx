@@ -1194,10 +1194,29 @@ export default function AdminPage() {
       if (ts >= monthAgo) thisMonth++;
       if (isPaid(l.status)) paidCount++;
       if (l.status !== "rejected") nonRejectedCount++;
-      const dollars = l.quote?.match(/\d+/)?.[0];
-      const dollarValue = dollars ? parseInt(dollars, 10) : 0;
+      // Quote-value parsing — three sources, cascading:
+      //  1) payoutConfirmation.amount  — actual amount paid out at mark-paid
+      //     (most accurate; captures Rudy-style "quoted Pro Max, paid $80
+      //     for actual 14" cases)
+      //  2) totalPayout                — multi-device lead total (these
+      //     leads have NO Quote: field, so the regex below would miss them
+      //     entirely — was the source of the /customers + /admin total
+      //     mismatch Skywalker fixed in a58cc17)
+      //  3) Quote field, comma-aware   — single-device fallback. Old code
+      //     used /\d+/ which collapsed "$1,250" to "$1"; the [\d,]+
+      //     pattern + strip-commas is the same fix /customers uses.
+      const quoteMatch = l.quote?.match(/[\d,]+/)?.[0]?.replace(/,/g, "");
+      const parsedQuote = quoteMatch ? parseInt(quoteMatch, 10) : 0;
+      const dollarValue =
+        (typeof l.payoutConfirmation?.amount === "number" && l.payoutConfirmation.amount > 0 ? l.payoutConfirmation.amount : 0)
+        || (typeof l.totalPayout === "number" && l.totalPayout > 0 ? l.totalPayout : 0)
+        || parsedQuote;
       if (dollarValue > 0) { quoteSum += dollarValue; quoteN++; }
-      // Revenue = sum of paid quotes (all-time and this-month)
+      // "Paid out" rollup = sum of $$$ TCC sent to customers for phones it
+      // bought (all-time + this-month). This is COGS / cash-out, NOT
+      // revenue — the realised-sale revenue lives on /admin/profit and is
+      // what TCC's eBay/Atlas resells brought in. Header label says
+      // "Paid out (this month)" to match.
       if (isPaid(l.status) && dollarValue > 0) {
         revenue += dollarValue;
         if (l.statusUpdatedAt && new Date(l.statusUpdatedAt).getTime() >= monthAgo) revenueMonth += dollarValue;
@@ -1658,9 +1677,9 @@ export default function AdminPage() {
         {leads.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 sm:gap-3 mb-4">
             <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-3 col-span-2 md:col-span-2">
-              <p className="text-[10px] uppercase tracking-wider text-[#00c853] font-bold">💵 Revenue (this month)</p>
+              <p className="text-[10px] uppercase tracking-wider text-[#00c853] font-bold" title="Sum of $ TCC paid out to customers for phones acquired (COGS / cash-out). NOT realised sale revenue — that lives on /admin/profit and reflects what eBay/Atlas resells brought in.">💸 Paid out (this month)</p>
               <p className="text-xl sm:text-2xl font-extrabold text-[#00c853] mt-0.5">${stats.revenueMonth.toLocaleString()}</p>
-              <p className="text-[10px] text-[#dcdcdc] mt-0.5">${stats.revenue.toLocaleString()} all-time · {stats.paidCount} paid</p>
+              <p className="text-[10px] text-[#dcdcdc] mt-0.5">${stats.revenue.toLocaleString()} all-time · {stats.paidCount} paid · <a href="/admin/profit" className="underline hover:text-white">see sales revenue →</a></p>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-xl p-3">
               <p className="text-[10px] uppercase tracking-wider text-[#c5c5c5] font-bold">This week</p>

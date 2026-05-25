@@ -10,7 +10,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { listSlots, addSlot, removeSlot, backendLabel, type Slot } from "../../lib/slots-store";
+import { listSlots, addSlot, removeSlot, backendLabel, slotBookedCount, type Slot } from "../../lib/slots-store";
 
 const STORED_TOKEN_KEY = "tcc-admin-token-v1";
 // Matches TCC_ADMIN_TOKEN default in app/api/admin/leads/route.ts so the
@@ -197,9 +197,14 @@ export default function AdminSlotsPage() {
             <p className="text-[#888] text-sm italic py-6 text-center">No slots yet. Add one above.</p>
           ) : (
             slots.map((s) => {
-              const booked = s.bookings.length;
+              const booked = slotBookedCount(s);
               const isOpen = booked < s.capacity;
               const recently = s.id === justAddedId;
+              // MC list endpoint only returns the seat count, not the
+              // per-booking detail — so `s.bookings[]` is empty for MC slots
+              // even when booked > 0. Only render the "last: NAME (device)"
+              // line when we actually have the booking record.
+              const lastBooking = s.bookings && s.bookings.length > 0 ? s.bookings[s.bookings.length - 1] : null;
               return (
                 <div key={s.id} className={`flex items-center justify-between gap-3 p-4 rounded-xl border transition ${recently ? "bg-[#00c853]/10 border-[#00c853]/50" : "bg-white/[0.04] border-white/10"}`}>
                   <div className="min-w-0 flex-1">
@@ -210,8 +215,8 @@ export default function AdminSlotsPage() {
                     <p className="text-[#888] text-xs mt-1">
                       {booked}/{s.capacity} booked
                       {isOpen ? <span className="text-[#00c853] ml-1">· open</span> : <span className="text-[#ff5566] ml-1">· FULL</span>}
-                      {booked > 0 && (
-                        <span className="ml-2">— last: {s.bookings[s.bookings.length - 1].sellerName} ({s.bookings[s.bookings.length - 1].deviceLabel || "device"})</span>
+                      {lastBooking && (
+                        <span className="ml-2">— last: {lastBooking.sellerName} ({lastBooking.deviceLabel || "device"})</span>
                       )}
                     </p>
                   </div>

@@ -17,8 +17,21 @@ export type Slot = {
   time: string;   // HH:MM (24hr)
   label?: string; // e.g. "South Austin"
   capacity: number;
-  bookings: Booking[];
+  bookings: Booking[];          // local-backend ground truth; MC list returns []
+  bookedCount?: number;         // count-only signal from MC list endpoint
+                                // (use this when bookings.length is empty but
+                                // we know seats are taken). UI helper below
+                                // returns max(bookedCount, bookings.length).
 };
+
+// Single source of truth for "how many seats are taken on this slot".
+// MC's list endpoint returns a `booked` count without per-booking detail;
+// the local backend keeps the full Booking[] inline. UI code should call
+// this instead of reading `.bookings.length` directly so it works against
+// either backend.
+export function slotBookedCount(slot: Slot): number {
+  return Math.max(slot.bookedCount ?? 0, slot.bookings?.length ?? 0);
+}
 
 export type Booking = {
   id: string;
@@ -79,11 +92,24 @@ export async function listSlots(opts?: { openOnly?: boolean; fromDate?: string }
     const r = await fetch(`${MC_BASE}/api/slots?${params}`, { headers: { "x-api-key": mcKey() } });
     if (!r.ok) return [];
     const data = await r.json();
-    return data.slots || [];
+    // MC list returns { id, date, time, label, capacity, booked, owner, isOpen }
+    // — no per-booking detail. Normalize to the Slot shape so UI code that
+    // reads `bookings` (length, .map, etc.) doesn't crash on `undefined`.
+    // The `bookedCount` field carries the MC seat count for slotBookedCount().
+    type McSlot = { id: string; date: string; time: string; label?: string | null; capacity: number; booked?: number };
+    return ((data.slots as McSlot[]) || []).map((s) => ({
+      id: s.id,
+      date: s.date,
+      time: s.time,
+      label: s.label ?? undefined,
+      capacity: s.capacity,
+      bookings: [],
+      bookedCount: s.booked ?? 0,
+    }));
   }
   let slots = readLocal();
   if (opts?.fromDate) slots = slots.filter(s => s.date >= opts.fromDate!);
-  if (opts?.openOnly) slots = slots.filter(s => s.bookings.length < s.capacity);
+  if (opts?.openOnly) slots = slots.filter(s => slotBookedCount(s) < s.capacity);
   return slots.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
 }
 
@@ -95,7 +121,17 @@ export async function addSlot(input: SlotInput): Promise<Slot> {
       body: JSON.stringify(input),
     });
     if (!r.ok) throw new Error("Failed to add slot");
-    return r.json();
+    const s = await r.json();
+    // Normalize to Slot shape — MC returns a flat record without `bookings`.
+    return {
+      id: s.id,
+      date: s.date,
+      time: s.time,
+      label: s.label ?? undefined,
+      capacity: s.capacity,
+      bookings: [],
+      bookedCount: s.booked ?? 0,
+    };
   }
   const slot: Slot = {
     id: genId(),
@@ -137,7 +173,7 @@ export async function bookSlot(id: string, booking: Omit<Booking, "id" | "booked
   const slots = readLocal();
   const slot = slots.find(s => s.id === id);
   if (!slot) return { ok: false, error: "slot not found" };
-  if (slot.bookings.length >= slot.capacity) return { ok: false, error: "already booked" };
+  if (slotBookedCount(slot) >= slot.capacity) return { ok: false, error: "already booked" };
   const newBooking: Booking = {
     ...booking,
     id: genId(),
