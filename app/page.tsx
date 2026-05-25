@@ -6124,9 +6124,24 @@ export default function Home() {
   );
   const checkoutSummary = checkoutLines.length > 0 && (
     <aside className="hidden lg:block lg:w-[330px] shrink-0">
-      <div className="sticky top-24 bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+      {/* top-[136px] clears the SlideOnScrollNav (promo strip + logo row
+          + search row ≈ 130px tall when fully shown on desktop). Previous
+          top-24 was only 96px, so when the nav slid back in on
+          scroll-up it covered the top edge of this panel. Skywalker
+          flagged 2026-05-25. */}
+      <div className="sticky top-[136px] bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
         <div className="flex items-center justify-between mb-3">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Order summary</p>
+          <div className="flex items-center gap-2">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Order summary</p>
+            {/* Tiny live indicator — pulsing green dot. Subtle confirmation
+                that the cart is tracking with scroll. Matches site's
+                existing green-accent motion language (same animate-ping
+                pattern as the Top Payouts ticker live chip). */}
+            <span className="relative flex h-1.5 w-1.5" aria-label="live cart">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00c853] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00c853]"></span>
+            </span>
+          </div>
           <span className="text-[11px] text-[#b8b8b8]">{checkoutItemCount} device{checkoutItemCount === 1 ? "" : "s"}</span>
         </div>
         <div className="max-h-[60vh] overflow-y-auto pr-1 -mr-1">
