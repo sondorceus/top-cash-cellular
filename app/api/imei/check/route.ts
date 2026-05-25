@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { clientIp, rateLimit, rateLimitResponse } from "../../../lib/rate-limit";
 
 // Sickw IMEI/serial check.
 // Free TAC validation runs first (Luhn + length); if that passes, we hit
@@ -56,6 +57,15 @@ function luhnValid(num: string): boolean {
 }
 
 export async function POST(req: NextRequest) {
+  // Rate limit: 10 IMEI lookups per IP per minute. Sickw charges ~$0.05
+  // per lookup and this route is unauthenticated; without the limit a
+  // script could burn $100s per minute. The 1-hour in-process cache
+  // below absorbs same-IMEI re-hits; this limit covers distinct-IMEI
+  // floods. 2026-05-24.
+  const ip = clientIp(req);
+  const rl = rateLimit(`imei:${ip}`, 10, 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs, "Too many IMEI lookups — slow down.");
+
   let payload: { imei?: unknown; deviceCategory?: unknown };
   try {
     payload = await req.json();

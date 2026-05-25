@@ -13,9 +13,10 @@ import Link from "next/link";
 import { listSlots, addSlot, removeSlot, backendLabel, slotBookedCount, type Slot } from "../../lib/slots-store";
 
 const STORED_TOKEN_KEY = "tcc-admin-token-v1";
-// Matches TCC_ADMIN_TOKEN default in app/api/admin/leads/route.ts so the
-// existing admin token works here too.
-const FALLBACK_TOKEN = "topcash-admin-2026";
+// No FALLBACK_TOKEN here — the prior default ("topcash-admin-2026") was
+// shipped in the client bundle and printed in the UI, effectively
+// publishing the admin password. Admin must enter their TCC_ADMIN_TOKEN
+// explicitly on first visit; it's then stored in localStorage. 2026-05-24.
 
 function todayLocalISO(): string {
   const d = new Date();
@@ -145,7 +146,7 @@ export default function AdminSlotsPage() {
           >
             Unlock
           </button>
-          <p className="text-[#666] text-xs text-center">Default token: <span className="font-mono">{FALLBACK_TOKEN}</span> (set TCC_ADMIN_TOKEN env to override)</p>
+          <p className="text-[#666] text-xs text-center">Use the value of <span className="font-mono">TCC_ADMIN_TOKEN</span> from Vercel env.</p>
         </form>
       </main>
     );
@@ -160,9 +161,6 @@ export default function AdminSlotsPage() {
             <h1 className="text-2xl font-bold">Slot manager</h1>
             <p className="text-[#888] text-xs mt-1">
               Backend: <span className="text-[#00c853] font-semibold">{backendLabel()}</span>
-              {backendLabel().includes("localStorage") && (
-                <span className="text-[#ff9100] ml-2">⚠️ slots only visible in THIS browser until MC API endpoints land</span>
-              )}
             </p>
           </div>
           <Link href="/admin" className="text-xs text-[#00c853] hover:text-[#00e676] underline">Leads →</Link>

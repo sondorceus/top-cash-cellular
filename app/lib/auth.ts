@@ -33,10 +33,14 @@ export type SessionPayload = {
 
 function getSecret(): string {
   // NEXTAUTH_SECRET is the conventional name even though we're not using
-  // NextAuth — keeps the env name familiar for future migration. Falls
-  // back to MC_API_KEY in dev so things don't 500 if envs aren't set
-  // locally; production MUST set NEXTAUTH_SECRET.
-  return process.env.NEXTAUTH_SECRET || process.env.MC_API_KEY || "dev-only-fallback";
+  // NextAuth — keeps the env name familiar for future migration. MC_API_KEY
+  // is accepted as a fallback (both are 32+-byte secrets that already exist
+  // in production), but there is intentionally NO hardcoded fallback string
+  // here — a missing secret throws on first use rather than silently letting
+  // an attacker forge sessions with a known-public default. 2026-05-24.
+  const s = process.env.NEXTAUTH_SECRET || process.env.MC_API_KEY;
+  if (!s) throw new Error("NEXTAUTH_SECRET (or MC_API_KEY fallback) env required for session signing");
+  return s;
 }
 
 function base64url(buf: Buffer | string): string {

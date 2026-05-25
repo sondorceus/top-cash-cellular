@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
 
 function checkAuth(req: NextRequest): boolean {
   const headerToken = req.headers.get("x-admin-token");

@@ -11,9 +11,7 @@ import Pic from "./components/Pic";
 import NextImage from "next/image";
 import { CARRIER_DEDUCTIONS, PRICE_TABLE, MIN_OFFER, MANUAL_REVIEW_DEVICES, MACBOOK_SPECS, type MacSpec, type MacSpecOption } from "./data/prices";
 
-const BRAND = "Top Cash Cellular";
-const EMAIL = "CustomerService@topcashcells.com";
-const EMAIL_HREF = "mailto:CustomerService@topcashcells.com";
+import { BRAND, EMAIL, EMAIL_HREF } from "./lib/constants";
 
 // Category icons — bold filled silhouette style inspired by IWM but with our
 // own twist: a chunky body shape in soft white/15 fill, a 2px currentColor

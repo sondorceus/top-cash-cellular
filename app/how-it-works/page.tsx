@@ -27,7 +27,7 @@ const STEPS = [
     n: 3,
     icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
     title: "Get paid your way",
-    body: "Same business day we receive and verify the device. Cash App · Zelle land in minutes. Bitcoin (BTC) sends on-chain within ~30 min. Local Austin? Cash on the spot.",
+    body: "Same business day after we receive and verify (typically within 24 hours of arrival; weekend/after-hours arrivals process on the next business day). Cash App · Zelle land in minutes. Bitcoin (BTC) sends on-chain within ~30 min. Local Austin? Cash on the spot after a ~15-min inspection.",
   },
 ];
 

@@ -1,15 +1,20 @@
 // Slot storage abstraction for local-handoff calendar.
 //
-// Two backends pick automatically:
-//   - 'mc-api' when NEXT_PUBLIC_MC_SLOTS_ENABLED === '1' AND MC slot
-//     endpoints are confirmed live (Theot/Powerhouse implementing).
-//   - 'localStorage' as the default development / pre-MC stub.
+// Live backend: TCC's own /api/slots routes, which proxy server-side to
+// the MC slots API using the non-public MC_API_KEY. Prior version
+// called MC directly from the browser using NEXT_PUBLIC_MC_API_KEY,
+// which baked the MC key into every visitor's JS bundle — anyone with
+// DevTools could extract it and call MC. The proxy fix (2026-05-24)
+// keeps the MC key server-side and gives us a place to rate-limit and
+// validate inputs.
 //
-// localStorage backend = single-browser only. The admin browser sees
-// slots it created; customers on other browsers won't see anything
-// until the MC backend lands. Use ONLY for demo / spec validation.
-// The MC swap is a one-flag flip — the public function signatures
-// stay identical so callers don't change.
+// localStorage backend: single-browser stub used ONLY when the TCC API
+// fails (e.g. running `next dev` offline). The admin browser sees
+// slots it created locally; customers on other browsers won't see
+// anything. Auto-engaged on fetch error so dev still works.
+//
+// Public signatures unchanged — callers in app/page.tsx and
+// app/admin/slots/page.tsx don't change.
 
 export type Slot = {
   id: string;
@@ -53,14 +58,31 @@ export type SlotInput = {
 };
 
 const STORAGE_KEY = "tcc-slots-v1";
-const MC_BASE = "https://missioncontrolsdjg-production.up.railway.app";
+const ADMIN_TOKEN_KEY = "tcc-admin-token-v1";
 
-function useMcBackend(): boolean {
-  return typeof process !== "undefined" && process.env?.NEXT_PUBLIC_MC_SLOTS_ENABLED === "1";
-}
+// MC list/create endpoint returns a flat record (no per-booking detail);
+// shared normalizer keeps the Slot shape consistent for UI code.
+type McSlotRecord = {
+  id: string;
+  date: string;
+  time?: string;
+  allDay?: boolean;
+  label?: string | null;
+  capacity: number;
+  booked?: number;
+};
 
-function mcKey(): string {
-  return process.env.NEXT_PUBLIC_MC_API_KEY || "";
+function normalizeMcSlot(s: McSlotRecord): Slot {
+  return {
+    id: s.id,
+    date: s.date,
+    time: s.time || "",
+    allDay: s.allDay === true,
+    label: s.label ?? undefined,
+    capacity: s.capacity,
+    bookings: [],
+    bookedCount: s.booked ?? 0,
+  };
 }
 
 function readLocal(): Slot[] {
@@ -80,6 +102,22 @@ function writeLocal(slots: Slot[]): void {
   } catch {}
 }
 
+function readAdminToken(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.localStorage.getItem(ADMIN_TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function adminHeaders(): Record<string, string> {
+  const h: Record<string, string> = { "Content-Type": "application/json" };
+  const t = readAdminToken();
+  if (t) h["x-admin-token"] = t;
+  return h;
+}
+
 function genId(): string {
   return Math.random().toString(36).slice(2, 11) + Date.now().toString(36).slice(-4);
 }
@@ -87,109 +125,108 @@ function genId(): string {
 // PUBLIC API ----------------------------------------------------------
 
 export async function listSlots(opts?: { openOnly?: boolean; fromDate?: string }): Promise<Slot[]> {
-  if (useMcBackend()) {
-    const params = new URLSearchParams();
-    if (opts?.openOnly) params.set("open", "true");
-    if (opts?.fromDate) params.set("from", opts.fromDate);
-    const r = await fetch(`${MC_BASE}/api/slots?${params}`, { headers: { "x-api-key": mcKey() } });
-    if (!r.ok) return [];
+  const params = new URLSearchParams();
+  if (opts?.openOnly) params.set("open", "true");
+  if (opts?.fromDate) params.set("from", opts.fromDate);
+  try {
+    const r = await fetch(`/api/slots?${params}`, { cache: "no-store" });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const data = await r.json();
-    // MC list returns { id, date, time, label, capacity, booked, owner, isOpen }
-    // — no per-booking detail. Normalize to the Slot shape so UI code that
-    // reads `bookings` (length, .map, etc.) doesn't crash on `undefined`.
-    // The `bookedCount` field carries the MC seat count for slotBookedCount().
-    type McSlot = { id: string; date: string; time: string; allDay?: boolean; label?: string | null; capacity: number; booked?: number };
-    return ((data.slots as McSlot[]) || []).map((s) => ({
-      id: s.id,
-      date: s.date,
-      time: s.time || "",
-      allDay: s.allDay === true,
-      label: s.label ?? undefined,
-      capacity: s.capacity,
-      bookings: [],
-      bookedCount: s.booked ?? 0,
-    }));
+    const normalized = ((data.slots as McSlotRecord[]) || []).map(normalizeMcSlot);
+    return normalized.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+  } catch {
+    // Offline fallback — let local dev keep working without MC.
+    let slots = readLocal();
+    if (opts?.fromDate) slots = slots.filter(s => s.date >= opts.fromDate!);
+    if (opts?.openOnly) slots = slots.filter(s => slotBookedCount(s) < s.capacity);
+    return slots.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
   }
-  let slots = readLocal();
-  if (opts?.fromDate) slots = slots.filter(s => s.date >= opts.fromDate!);
-  if (opts?.openOnly) slots = slots.filter(s => slotBookedCount(s) < s.capacity);
-  return slots.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
 }
 
 export async function addSlot(input: SlotInput): Promise<Slot> {
-  if (useMcBackend()) {
-    const r = await fetch(`${MC_BASE}/api/slots`, {
+  try {
+    const r = await fetch(`/api/admin/slots`, {
       method: "POST",
-      headers: { "x-api-key": mcKey(), "Content-Type": "application/json" },
+      headers: adminHeaders(),
       body: JSON.stringify(input),
     });
-    if (!r.ok) throw new Error("Failed to add slot");
+    if (r.status === 401) throw new Error("Unauthorized — admin token missing or wrong, or Google session expired.");
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const s = await r.json();
-    // Normalize to Slot shape — MC returns a flat record without `bookings`.
-    return {
-      id: s.id,
-      date: s.date,
-      time: s.time || "",
-      allDay: s.allDay === true,
-      label: s.label ?? undefined,
-      capacity: s.capacity,
+    return normalizeMcSlot(s as McSlotRecord);
+  } catch (e) {
+    // If we got 401, surface it — don't silently fall through to the
+    // local stub, since that would mask the auth problem.
+    if (e instanceof Error && /Unauthorized/i.test(e.message)) throw e;
+    const slot: Slot = {
+      id: genId(),
+      date: input.date,
+      time: input.allDay ? "" : (input.time || ""),
+      allDay: input.allDay === true,
+      label: input.label?.trim() || undefined,
+      capacity: input.capacity ?? 1,
       bookings: [],
-      bookedCount: s.booked ?? 0,
     };
+    const slots = readLocal();
+    slots.push(slot);
+    writeLocal(slots);
+    return slot;
   }
-  const slot: Slot = {
-    id: genId(),
-    date: input.date,
-    time: input.allDay ? "" : (input.time || ""),
-    allDay: input.allDay === true,
-    label: input.label?.trim() || undefined,
-    capacity: input.capacity ?? 1,
-    bookings: [],
-  };
-  const slots = readLocal();
-  slots.push(slot);
-  writeLocal(slots);
-  return slot;
 }
 
 export async function removeSlot(id: string): Promise<void> {
-  if (useMcBackend()) {
-    await fetch(`${MC_BASE}/api/slots/${id}`, {
+  try {
+    const r = await fetch(`/api/admin/slots/${encodeURIComponent(id)}`, {
       method: "DELETE",
-      headers: { "x-api-key": mcKey() },
+      headers: adminHeaders(),
     });
+    if (r.status === 401) throw new Error("Unauthorized — admin token missing or wrong, or Google session expired.");
+    if (!r.ok && r.status !== 404) throw new Error(`HTTP ${r.status}`);
     return;
+  } catch (e) {
+    if (e instanceof Error && /Unauthorized/i.test(e.message)) throw e;
+    writeLocal(readLocal().filter(s => s.id !== id));
   }
-  writeLocal(readLocal().filter(s => s.id !== id));
 }
 
 export async function bookSlot(id: string, booking: Omit<Booking, "id" | "bookedAt">): Promise<{ ok: true; booking: Booking } | { ok: false; error: string }> {
-  if (useMcBackend()) {
-    const r = await fetch(`${MC_BASE}/api/slots/${id}/book`, {
+  try {
+    const r = await fetch(`/api/slots/${encodeURIComponent(id)}/book`, {
       method: "POST",
-      headers: { "x-api-key": mcKey(), "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(booking),
     });
     if (r.status === 409) return { ok: false, error: "already booked" };
+    if (r.status === 429) {
+      const data = await r.json().catch(() => ({ retryAfterSeconds: 60 }));
+      return { ok: false, error: `Slow down — try again in ${data.retryAfterSeconds || 60}s.` };
+    }
     if (!r.ok) return { ok: false, error: `HTTP ${r.status}` };
     const data = await r.json();
+    if (!data.ok) return { ok: false, error: data.error || "Booking failed" };
     return { ok: true, booking: data.booking };
+  } catch {
+    // Offline / fetch-failed fallback — write to local stub so demo
+    // and dev keep working.
+    const slots = readLocal();
+    const slot = slots.find(s => s.id === id);
+    if (!slot) return { ok: false, error: "slot not found" };
+    if (slotBookedCount(slot) >= slot.capacity) return { ok: false, error: "already booked" };
+    const newBooking: Booking = {
+      ...booking,
+      id: genId(),
+      bookedAt: new Date().toISOString(),
+    };
+    slot.bookings.push(newBooking);
+    writeLocal(slots);
+    return { ok: true, booking: newBooking };
   }
-  const slots = readLocal();
-  const slot = slots.find(s => s.id === id);
-  if (!slot) return { ok: false, error: "slot not found" };
-  if (slotBookedCount(slot) >= slot.capacity) return { ok: false, error: "already booked" };
-  const newBooking: Booking = {
-    ...booking,
-    id: genId(),
-    bookedAt: new Date().toISOString(),
-  };
-  slot.bookings.push(newBooking);
-  writeLocal(slots);
-  return { ok: true, booking: newBooking };
 }
 
-// Backend label for the admin UI to surface which mode it's in.
+// Backend label for the admin UI to surface which mode it's in. We
+// can't actually know whether the live API is up until we call it —
+// this is purely informational. The reality on every request is
+// "TCC API first, localStorage if the API errors".
 export function backendLabel(): string {
-  return useMcBackend() ? "MC API (live)" : "localStorage (single-browser stub)";
+  return "TCC API (server-proxied to MC) — localStorage fallback on error";
 }

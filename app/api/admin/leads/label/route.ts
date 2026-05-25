@@ -5,7 +5,7 @@ import { logComm } from "../../../../lib/comms-log";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
 
 // Generates a FedEx prepaid drop-off label for a lead, uploads the PDF
 // to Vercel Blob, and posts a [LABEL: <leadId>] marker to MC so the

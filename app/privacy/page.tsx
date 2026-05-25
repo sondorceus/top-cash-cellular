@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import SiteFooter from "../components/SiteFooter";
+import { BRAND, EMAIL, EMAIL_HREF, LOCATION_DISPLAY } from "../lib/constants";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Top Cash Cellular",
-  description: "Privacy Policy for Top Cash Cellular — how we collect, use, and protect your data.",
+  title: `Privacy Policy | ${BRAND}`,
+  description: `Privacy Policy for ${BRAND} — how we collect, use, and protect your data.`,
 };
 
 export default function PrivacyPage() {
@@ -74,7 +75,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">8. Contact</h2>
           <p>For privacy-related questions or requests, contact us at:</p>
-          <p className="mt-2">Top Cash Cellular<br />Austin, TX<br />Email: info@topcashcellular.com</p>
+          <p className="mt-2">{BRAND}<br />{LOCATION_DISPLAY}<br />Email: <a href={EMAIL_HREF} className="text-[#00c853] hover:underline">{EMAIL}</a></p>
         </section>
       </div>
 

@@ -8,7 +8,7 @@ import skuLabelsJson from "../../../data/sku-labels.json";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
 
 const SKU_LABELS: Record<string, string> = skuLabelsJson as Record<string, string>;
 // Reverse-lookup: human-readable label → SKU. The lead body carries the

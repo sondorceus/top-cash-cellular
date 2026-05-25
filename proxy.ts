@@ -51,7 +51,7 @@ export function proxy(req: NextRequest) {
       // Use the same legacy token the routes already expect. Routes can
       // continue to check this header without knowing anything about
       // Google sessions.
-      headers.set("x-admin-token", process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026");
+      headers.set("x-admin-token", process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })());
       return NextResponse.next({ request: { headers } });
     }
     // No session — let the route's own check handle it (might still

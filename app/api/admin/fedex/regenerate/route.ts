@@ -9,7 +9,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { retryFedexLabel } from "../../../../lib/fedex-retry";
 
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
 
 export async function POST(req: NextRequest) {
   if (

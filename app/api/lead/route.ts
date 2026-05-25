@@ -5,6 +5,7 @@ import { createReturnLabel, deviceKindFromString, aggregateWeight, shouldBlockAu
 import { reportError } from "../../lib/error-report";
 import { REFERRAL_REFEREE_BONUS, REFERRAL_CODE_RE } from "../../lib/referral";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "../../lib/payout-verify";
+import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -17,6 +18,12 @@ const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 // Custom-quote flows (no instant price) get a wider window keyed on
 // device-category + email — this catches the case where a user re-submits
 // the same kind of device with a tweaked free-text description.
+//
+// STORAGE NOTE: this Map lives in the Lambda instance and resets on cold
+// start. That leaves a small duplicate-payout window if a customer
+// resubmits right after a deploy. Audit 2026-05-24 flagged this — promote
+// to Vercel KV once provisioned: `import { kv } from "@vercel/kv"` and
+// swap recentLeads.{get,set} for `await kv.{get,set}(key, …, { ex: 300 })`.
 const recentLeads = new Map<string, number>();
 const DEDUP_REGULAR_MS = 60 * 1000; // 60s for instant-quote flows
 const DEDUP_CUSTOM_MS = 5 * 60 * 1000; // 5min for custom-quote flows
@@ -149,6 +156,15 @@ function needsManualReview(modelName: string, quoteAmt: number): boolean {
 }
 
 export async function POST(req: NextRequest) {
+  // Per-IP rate limit: 5 lead submissions per 5 min. A normal customer
+  // submits 1–2 leads in a session even when comparison-shopping; a
+  // CSRF-driven hijack attempt or scripted spammer hits this immediately.
+  // Sits BEFORE JSON parse so malformed-body floods are throttled too.
+  // 2026-05-24.
+  const rlIp = clientIp(req);
+  const rl = rateLimit(`lead:${rlIp}`, 5, 5 * 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs, "Too many submissions — please wait a few minutes before trying again.");
+
   let data;
   try {
     data = await req.json();
@@ -350,7 +366,31 @@ export async function POST(req: NextRequest) {
   }
   const referralBonus = referralApplied ? REFERRAL_REFEREE_BONUS : 0;
 
-  const baseQuoteNum = typeof quote === "number" ? quote : parseInt(quote as string) || 0;
+  const submittedQuoteNum = typeof quote === "number" ? quote : parseInt(quote as string) || 0;
+  // Server-side anti-tamper guardrail. The funnel calculates the quote
+  // client-side and posts it back here; nothing previously verified the
+  // value, so DevTools could rewrite the hidden input and submit any
+  // amount. Recompute the allowed server-side ceiling from RESELL_ESTIMATES
+  // × condition multiplier × margin floor (0.75). If the submitted quote
+  // exceeds that ceiling by more than $5 (tolerance for accessory/popular-
+  // device bonuses that legitimately stack on top), clamp it down to the
+  // ceiling and flag the lead for manual review. Unknown models (no
+  // resell estimate) bypass — those already route through needsManualReview
+  // by other means. 2026-05-24.
+  const SERVER_MARGIN_FLOOR_MULT = 0.75;
+  const SERVER_QUOTE_TOLERANCE = 5;
+  const serverWorkingResell = getResellEstimate(typeof model === "string" ? model : "");
+  const serverCondMult = resellMultiplierForCondition(typeof condition === "string" ? condition : "");
+  const serverQuoteCap = serverWorkingResell != null
+    ? Math.round(serverWorkingResell * serverCondMult * SERVER_MARGIN_FLOOR_MULT)
+    : null;
+  let quoteTampered = false;
+  let baseQuoteNum = submittedQuoteNum;
+  if (serverQuoteCap != null && submittedQuoteNum > serverQuoteCap + SERVER_QUOTE_TOLERANCE) {
+    quoteTampered = true;
+    baseQuoteNum = serverQuoteCap;
+    console.warn(`[lead] Quote tamper detected: model=${String(model).slice(0,60)} condition=${String(condition).slice(0,30)} submitted=$${submittedQuoteNum} cap=$${serverQuoteCap} — clamped.`);
+  }
   // Bonus from the coupon is applied AFTER margin reference but
   // BEFORE line construction so couponLines can render the totals.
   // The referral referee bonus stacks on top — both may apply, that's
@@ -620,9 +660,14 @@ export async function POST(req: NextRequest) {
     marginLines.push("--- MARGIN: Manual quote needed (no auto-price) ---");
   }
 
-  const reviewRequired = needsManualReview(model as string, quoteNum);
+  const reviewRequired = needsManualReview(model as string, quoteNum) || quoteTampered;
   const reviewLines: string[] = [];
-  if (reviewRequired) {
+  if (quoteTampered) {
+    reviewLines.push("🚨 QUOTE TAMPER DETECTED — client posted a quote above the server-side margin ceiling.");
+    reviewLines.push(`Submitted: $${submittedQuoteNum} · Server cap: $${serverQuoteCap} · Clamped to: $${baseQuoteNum} (before coupon/referral).`);
+    reviewLines.push("Verify funnel integrity / inspect lead source before paying out.");
+  }
+  if (needsManualReview(model as string, quoteNum)) {
     reviewLines.push("⚠️ MANUAL REVIEW REQUIRED — high-value device");
     reviewLines.push("Verify: condition matches description, check IMEI, confirm config (chip/RAM/storage)");
   }
@@ -670,7 +715,7 @@ export async function POST(req: NextRequest) {
         safeStorage ? `Storage: ${safeStorage}` : null,
         safeCarrier ? `Carrier: ${safeCarrier}` : null,
         `Condition: ${safeCondition}`,
-        quote ? `Quote: $${quote}` : `Quote: TBD (custom)`,
+        quote ? `Quote: $${quoteNum}${quoteTampered ? ` (clamped from $${submittedQuoteNum})` : ""}` : `Quote: TBD (custom)`,
         `Payout: ${safePayout}`,
         ...couponLines,
         ...referralLines,

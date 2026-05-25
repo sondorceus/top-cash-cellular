@@ -120,10 +120,10 @@ async function loadEbayReference(): Promise<EbayReference> {
 //                                          from both price+carrier tables.
 //   DELETE /api/admin/prices?cell=ip17p/256/sealed → auth; clear one cell.
 //
-// Auth is the same token used by /api/admin/leads (TCC_ADMIN_TOKEN env, or
-// fallback "topcash-admin-2026"). Pass via ?token= or x-admin-token header.
+// Auth is the same token used by /api/admin/leads (TCC_ADMIN_TOKEN env —
+// required, no fallback). Pass via ?token= or x-admin-token header.
 
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
 const BLOB_KEY = "prices/overrides.json";
 const HISTORY_PREFIX = "prices/history/";
 const HISTORY_LIMIT = 10;

@@ -72,7 +72,7 @@ export default function BulkPage() {
 
       <div className="max-w-2xl mx-auto px-4 pt-10 pb-16">
         <h1 className="text-4xl font-bold mb-3">Bulk Trade-In</h1>
-        <p className="text-[#dcdcdc] mb-8">5+ devices? Get a custom quote, free pickup in Austin, and 24-hour payment.</p>
+        <p className="text-[#dcdcdc] mb-8">5+ devices? Get a custom quote, free pickup in Austin, and same-business-day payment after we inspect (typically within 24 hours of pickup).</p>
 
         <div className="grid grid-cols-3 gap-2 mb-8">
           <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">

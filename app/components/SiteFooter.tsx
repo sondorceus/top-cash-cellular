@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { BRAND, EMAIL, EMAIL_HREF, LOCATION_DISPLAY } from "../lib/constants";
 
 // Site-wide footer for the standalone route pages (/faq, /how-it-works,
 // /track, etc.). The homepage has its own copy wired to in-page state;
 // this one uses real links. In-app sections (Terms, Grading, About...)
 // are reached via /?page=<id>, which page.tsx honors on mount.
-const EMAIL_HREF = "mailto:CustomerService@topcashcells.com";
 
 export default function SiteFooter() {
   const [sent, setSent] = useState(false);
@@ -101,7 +101,7 @@ export default function SiteFooter() {
                 Cookie Settings
               </button>
               <a href="/?page=accessibility" className="block text-xs hover:text-[#00c853] transition">Accessibility Statement</a>
-              <p className="text-xs text-[#9a9a9a] pt-2">Austin, TX · Mon–Sat 8 AM–8 PM</p>
+              <p className="text-xs text-[#9a9a9a] pt-2">{LOCATION_DISPLAY} · Mon–Sat 8 AM–8 PM</p>
             </div>
           </div>
         </div>
@@ -110,13 +110,13 @@ export default function SiteFooter() {
           <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Customer Service</p>
           <a href={EMAIL_HREF} className="inline-flex items-center gap-2 text-sm text-white hover:text-[#00c853] transition font-semibold bg-white/[0.12] border border-white/10 rounded-full px-4 py-2">
             <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-            CustomerService@topcashcells.com
+            {EMAIL}
           </a>
           <p className="text-[11px] text-[#9a9a9a] mt-2">We reply within one business day · Mon–Sat 8 AM–8 PM CT</p>
         </div>
 
         <div className="border-t border-[#00c853]/15 pt-6 text-center">
-          <p className="text-[11px] text-[#cfcfcf]/70 mb-3">© 2026 Top Cash Cellular</p>
+          <p className="text-[11px] text-[#cfcfcf]/70 mb-3">© 2026 {BRAND}</p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <a href="https://atxgadgetfix.com" target="_blank" rel="noopener noreferrer" className="text-[11px] text-[#cfcfcf] hover:text-[#00c853] transition">
               Need a repair? ATX Gadget Fix →

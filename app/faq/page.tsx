@@ -20,7 +20,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "How fast do I get paid?",
-    a: "Most payouts go out the same business day we receive and verify your device. Cash App and Zelle land within minutes. Bitcoin (BTC) sends on-chain within ~30 minutes. Local Austin pickups get cash on the spot.",
+    a: "Most payouts go out the same business day we receive and verify your device (typically within 24 hours of arrival; weekends and after-hours arrivals process on the next business day). Cash App and Zelle land within minutes of being sent. Bitcoin (BTC) sends on-chain within ~30 minutes. Local Austin pickups get cash on the spot after a quick ~15-minute inspection.",
   },
   {
     q: "What if my device arrives in worse condition than I quoted?",

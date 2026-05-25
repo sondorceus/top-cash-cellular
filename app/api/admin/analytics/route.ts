@@ -3,7 +3,7 @@ import { extractLeadValueFromBody } from "../../../lib/lead-money";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
 
 // Live analytics derived from the MC lead feed. Skywalker 2026-05-19
 // "ready to go live" — needs an in-admin view of submissions per day /

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logComm } from "../../../../lib/comms-log";
 
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || "topcash-admin-2026";
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
 
 // Resend an EXISTING FedEx label to a customer — no new label mint,
 // no new FedEx API call, no new tracking number. Staff uses this when
@@ -39,11 +39,10 @@ export async function POST(req: NextRequest) {
   }
   // SECURITY: even though this endpoint is admin-gated, validate
   // labelUrl is OUR Vercel blob domain before emailing it to the
-  // customer. If TCC_ADMIN_TOKEN ever leaks (it's in source as
-  // fallback "topcash-admin-2026" + lives in env), an attacker
-  // could otherwise call resend with arbitrary labelUrl and Resend
-  // would phish from our verified DKIM-signed domain. Same defense
-  // as /api/confirm a8e6fc1.
+  // customer. If TCC_ADMIN_TOKEN ever leaks (env-only as of 2026-05-24),
+  // an attacker could otherwise call resend with arbitrary labelUrl and
+  // Resend would phish from our verified DKIM-signed domain. Same
+  // defense as /api/confirm a8e6fc1.
   const isVercelBlobUrl =
     /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/fedex-labels\/[\w.\-/]+\.pdf$/i.test(labelUrl);
   const isValidTracking = /^[A-Z0-9]{8,30}$/i.test(tracking);
