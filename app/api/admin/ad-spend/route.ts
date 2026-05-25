@@ -32,6 +32,7 @@ function clean(v: unknown, maxLen = 240): string {
 export interface AdSpendRecord {
   id: string;
   channel: string;          // "Google Ads", "Meta", "TikTok", etc.
+  subChannel?: string;      // Google → Search/PMax/Display/YouTube/…; Meta → Feed/Reels/…
   campaign?: string;
   amount: number;
   spendDate: string;        // ISO date YYYY-MM-DD
@@ -51,6 +52,7 @@ function parseSpendBody(body: string): Omit<AdSpendRecord, "id" | "createdAt"> |
   if (!channel) return null;
   return {
     channel,
+    subChannel: get("Sub-Channel") || undefined,
     campaign: get("Campaign") || undefined,
     amount: num(get("Amount")),
     spendDate: get("Spend-Date") || new Date().toISOString().slice(0, 10),
@@ -122,6 +124,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "channel required" }, { status: 400 });
   }
   const id = typeof payload.id === "string" && /^[\w-]{4,64}$/.test(payload.id) ? payload.id : genId();
+  const subChannel = clean(payload.subChannel, 40);
   const campaign = clean(payload.campaign, 80);
   const amount = num(payload.amount);
   const spendDate = (() => {
@@ -136,6 +139,7 @@ export async function POST(req: NextRequest) {
     `Amount: ${amount}`,
     `Spend-Date: ${spendDate}`,
   ];
+  if (subChannel) lines.push(`Sub-Channel: ${subChannel}`);
   if (campaign) lines.push(`Campaign: ${campaign}`);
   if (note) lines.push(`Note: ${note}`);
   const body = lines.join("\n");
@@ -155,7 +159,7 @@ export async function POST(req: NextRequest) {
     if (!r.ok) return NextResponse.json({ error: `MC HTTP ${r.status}` }, { status: 502 });
     return NextResponse.json({
       ok: true,
-      entry: { id, channel, campaign: campaign || undefined, amount, spendDate, note: note || undefined },
+      entry: { id, channel, subChannel: subChannel || undefined, campaign: campaign || undefined, amount, spendDate, note: note || undefined },
     });
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : "MC unavailable" }, { status: 502 });

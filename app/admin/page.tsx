@@ -2691,17 +2691,53 @@ export default function AdminPage() {
                     </div>
                     <div className="text-sm">
                       <p className="font-semibold text-[#00c853]">{lead.quote || "—"}</p>
-                      {lead.marginPercent != null && lead.grossMargin != null && (
-                        <div className={`mt-1 px-2 py-1 rounded-md text-[11px] font-bold ${lead.marginFlag === "low" ? "bg-red-500/15 border border-red-500/30" : lead.marginFlag === "thin" ? "bg-yellow-500/15 border border-yellow-500/30" : "bg-emerald-500/15 border border-emerald-500/30"}`}>
-                          <span className={lead.marginFlag === "low" ? "text-red-400" : lead.marginFlag === "thin" ? "text-yellow-400" : "text-emerald-400"}>
-                            {lead.marginFlag === "low" ? "⚠️ LOW" : lead.marginFlag === "thin" ? "⚡ THIN" : "✅ GOOD"}
-                          </span>
-                          <span className="text-white ml-1">You make ${lead.grossMargin}</span>
-                          <span className="text-[#999] ml-1">({lead.marginPercent}%)</span>
-                          <br />
-                          <span className="text-[#888]">Sells for ~${lead.resellEstimate} on Swappa/eBay</span>
-                        </div>
-                      )}
+                      {(() => {
+                        // Headline margin = NET after fees + shipping, matching what
+                        // /admin/profit records as actual realized profit. Use the
+                        // best of compMargin.atlas / compMargin.ebay (server-computed
+                        // via comp-economics — same FVF + ship math as the sales
+                        // ledger). Falls back to the submit-time gross with a clear
+                        // "(before fees+ship)" caveat only when compMargin is missing
+                        // (older leads, or no SKU match for the resell comps).
+                        const cm = lead.compMargin;
+                        const atlas = cm?.atlas;
+                        const ebay = cm?.ebay;
+                        const best = atlas && ebay
+                          ? (atlas.margin >= ebay.margin ? { src: "Atlas", margin: atlas.margin, pct: atlas.marginPct, exit: atlas.resell }
+                            : { src: "eBay net", margin: ebay.margin, pct: ebay.marginPct, exit: ebay.netMedian })
+                          : atlas ? { src: "Atlas", margin: atlas.margin, pct: atlas.marginPct, exit: atlas.resell }
+                          : ebay  ? { src: "eBay net", margin: ebay.margin, pct: ebay.marginPct, exit: ebay.netMedian }
+                          : null;
+                        if (best) {
+                          const flag = best.pct >= 25 ? "good" : best.pct >= 10 ? "thin" : "low";
+                          return (
+                            <div className={`mt-1 px-2 py-1 rounded-md text-[11px] font-bold ${flag === "low" ? "bg-red-500/15 border border-red-500/30" : flag === "thin" ? "bg-yellow-500/15 border border-yellow-500/30" : "bg-emerald-500/15 border border-emerald-500/30"}`} title="Net after eBay 13% FVF + $0.40 fixed + outbound shipping (or Atlas wholesale − outbound shipping). Matches what /admin/profit records as actual realized profit.">
+                              <span className={flag === "low" ? "text-red-400" : flag === "thin" ? "text-yellow-400" : "text-emerald-400"}>
+                                {flag === "low" ? "⚠️ LOW" : flag === "thin" ? "⚡ THIN" : "✅ GOOD"}
+                              </span>
+                              <span className="text-white ml-1">You net ${best.margin}</span>
+                              <span className="text-[#999] ml-1">({best.pct}%)</span>
+                              <br />
+                              <span className="text-[#888]">via {best.src} @ ${best.exit} (after fees + ship)</span>
+                            </div>
+                          );
+                        }
+                        if (lead.marginPercent != null && lead.grossMargin != null) {
+                          return (
+                            <div className={`mt-1 px-2 py-1 rounded-md text-[11px] font-bold ${lead.marginFlag === "low" ? "bg-red-500/15 border border-red-500/30" : lead.marginFlag === "thin" ? "bg-yellow-500/15 border border-yellow-500/30" : "bg-emerald-500/15 border border-emerald-500/30"}`} title="Gross margin = resell − payout. Does NOT include eBay fees or shipping — actual profit will be lower. No live comp data for this SKU yet.">
+                              <span className={lead.marginFlag === "low" ? "text-red-400" : lead.marginFlag === "thin" ? "text-yellow-400" : "text-emerald-400"}>
+                                {lead.marginFlag === "low" ? "⚠️ LOW" : lead.marginFlag === "thin" ? "⚡ THIN" : "✅ GOOD"}
+                              </span>
+                              <span className="text-white ml-1">Gross ${lead.grossMargin}</span>
+                              <span className="text-[#999] ml-1">({lead.marginPercent}%)</span>
+                              <span className="text-amber-300 ml-1">· before fees+ship</span>
+                              <br />
+                              <span className="text-[#888]">Resell ~${lead.resellEstimate} · no live comp data</span>
+                            </div>
+                          );
+                        }
+                        return null;
+                      })()}
                       {lead.marginFlag === "manual" && (
                         <div className="mt-1 px-2 py-1 rounded-md text-[11px] font-bold bg-orange-500/15 border border-orange-500/30">
                           <span className="text-orange-400">📋 Manual quote needed</span>

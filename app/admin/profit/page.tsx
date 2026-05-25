@@ -62,9 +62,25 @@ const PLATFORMS = ["eBay", "Mercari", "OfferUp", "Facebook Marketplace", "Swappa
 // they're where most TCC ad budget goes.
 const AD_CHANNELS = ["Google Ads", "Meta (Facebook/Instagram)", "TikTok Ads", "X / Twitter", "Reddit", "Local print", "Other"];
 
+// Sub-channel options per channel. We pay weekly per channel, but
+// inside Google/Meta the spend usually splits across product placements
+// — this lets the operator tag each entry so the per-channel rollup
+// can break Google into Search vs PMax vs Display, etc. Free-text
+// "Other" is still acceptable for one-offs the dropdown doesn't cover.
+const AD_SUB_CHANNELS: Record<string, string[]> = {
+  "Google Ads":                ["Search", "Performance Max", "Display", "YouTube", "Shopping", "Local Services", "Demand Gen", "Other"],
+  "Meta (Facebook/Instagram)": ["Facebook Feed", "Instagram Feed", "Reels", "Stories", "Marketplace", "Advantage+", "Other"],
+  "TikTok Ads":                ["In-Feed", "Spark Ads", "Top View", "Other"],
+  "X / Twitter":               ["Promoted Posts", "Trends", "Other"],
+  "Reddit":                    ["Promoted Posts", "Conversation Ads", "Other"],
+  "Local print":               ["Newspaper", "Flyer", "Mailer", "Other"],
+  "Other":                     [],
+};
+
 interface AdEntry {
   id: string;
   channel: string;
+  subChannel?: string;
   campaign?: string;
   amount: number;
   spendDate: string;
@@ -130,6 +146,7 @@ export default function ProfitPage() {
   // schema (one number per row, no per-row margin math).
   const [adData, setAdData] = useState<AdPayload | null>(null);
   const [adChannel, setAdChannel] = useState("Google Ads");
+  const [adSubChannel, setAdSubChannel] = useState("");
   const [adCampaign, setAdCampaign] = useState("");
   const [adAmount, setAdAmount] = useState("");
   const [adDate, setAdDate] = useState(todayISO());
@@ -271,12 +288,13 @@ export default function ProfitPage() {
   };
 
   const resetAdForm = () => {
-    setAdCampaign(""); setAdAmount(""); setAdNote(""); setAdEditingId(null);
+    setAdSubChannel(""); setAdCampaign(""); setAdAmount(""); setAdNote(""); setAdEditingId(null);
   };
 
   const loadAdForEdit = (a: AdEntry) => {
     setAdEditingId(a.id);
     setAdChannel(a.channel);
+    setAdSubChannel(a.subChannel || "");
     setAdCampaign(a.campaign || "");
     setAdAmount(String(a.amount));
     setAdDate(a.spendDate);
@@ -300,6 +318,7 @@ export default function ProfitPage() {
         body: JSON.stringify({
           ...(adEditingId ? { id: adEditingId } : {}),
           channel: adChannel,
+          subChannel: adSubChannel.trim() || undefined,
           campaign: adCampaign.trim() || undefined,
           amount: Number(adAmount),
           spendDate: adDate,
@@ -582,9 +601,9 @@ export default function ProfitPage() {
             tone={filtered.totals.profit >= 0 ? "good" : "bad"}
           />
           <StatCard
-            label="Ad spend"
+            label="Marketing cost"
             value={`$${money(filteredAd.total)}`}
-            sub={filteredAd.entries.length > 0 ? `${filteredAd.entries.length} ${filteredAd.entries.length === 1 ? "entry" : "entries"}` : undefined}
+            sub={filteredAd.entries.length > 0 ? `${filteredAd.entries.length} ${filteredAd.entries.length === 1 ? "entry" : "entries"} · paid weekly, not per-sale` : "paid weekly, not per-sale"}
             tone="muted"
           />
           <StatCard
@@ -891,7 +910,7 @@ export default function ProfitPage() {
           <form id="ad-spend-form" onSubmit={handleAddAdSpend} className="bg-white/[0.03] border border-white/10 rounded-xl p-4 space-y-3 h-fit">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold uppercase tracking-wide text-[#bdbdbd]">
-                {adEditingId ? "Edit ad spend" : "Log ad spend"}
+                {adEditingId ? "Edit marketing cost" : "Log marketing cost"}
               </h2>
               {adEditingId && (
                 <button
@@ -909,12 +928,29 @@ export default function ProfitPage() {
             <Field label="Channel">
               <select
                 value={adChannel}
-                onChange={(e) => setAdChannel(e.target.value)}
+                onChange={(e) => {
+                  setAdChannel(e.target.value);
+                  // Clearing the sub-channel on channel switch avoids
+                  // sending "Performance Max" with a Meta entry, etc.
+                  setAdSubChannel("");
+                }}
                 className="w-full bg-black/40 border border-white/15 rounded-lg px-3 py-2 text-sm cursor-pointer"
               >
                 {AD_CHANNELS.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </Field>
+            {(AD_SUB_CHANNELS[adChannel]?.length ?? 0) > 0 && (
+              <Field label="Sub-channel (optional)">
+                <select
+                  value={adSubChannel}
+                  onChange={(e) => setAdSubChannel(e.target.value)}
+                  className="w-full bg-black/40 border border-white/15 rounded-lg px-3 py-2 text-sm cursor-pointer"
+                >
+                  <option value="">— none —</option>
+                  {AD_SUB_CHANNELS[adChannel].map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </Field>
+            )}
             <Field label="Campaign (optional)">
               <input
                 value={adCampaign}
@@ -956,20 +992,20 @@ export default function ProfitPage() {
               disabled={adBusy}
               className="w-full bg-yellow-500 hover:bg-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed text-black font-bold py-2 rounded-lg text-sm cursor-pointer transition"
             >
-              {adBusy ? "Saving…" : adEditingId ? "Save changes" : "+ Add ad spend"}
+              {adBusy ? "Saving…" : adEditingId ? "Save changes" : "+ Add marketing cost"}
             </button>
           </form>
 
           <div className="bg-white/[0.03] border border-white/10 rounded-xl overflow-hidden">
             <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
               <h2 className="text-sm font-bold uppercase tracking-wide text-[#bdbdbd]">
-                Ad spend <span className="text-[#666] ml-2">({filteredAd.entries.length})</span>
+                Marketing cost <span className="text-[#666] ml-2">({filteredAd.entries.length})</span>
               </h2>
               <button onClick={fetchAdSpend} className="text-xs text-[#888] hover:text-white cursor-pointer">↻ Refresh</button>
             </div>
             {filteredAd.entries.length === 0 ? (
               <div className="px-4 py-10 text-center text-sm text-[#666]">
-                {adData ? "No ad spend yet in this range." : "Loading…"}
+                {adData ? "No marketing cost logged in this range." : "Loading…"}
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -987,7 +1023,10 @@ export default function ProfitPage() {
                     {filteredAd.entries.map((a) => (
                       <tr key={a.id} className="border-b border-white/5 hover:bg-white/[0.03]">
                         <td className="px-3 py-2 text-[#aaa]">{a.spendDate}</td>
-                        <td className="px-3 py-2 font-semibold">{a.channel}</td>
+                        <td className="px-3 py-2 font-semibold">
+                          {a.channel}
+                          {a.subChannel && <span className="text-[10px] text-[#888] font-normal ml-1">· {a.subChannel}</span>}
+                        </td>
                         <td className="px-3 py-2 text-[#aaa]">
                           {a.campaign || <span className="text-[#555]">—</span>}
                           {a.note && <div className="text-[10px] text-[#666] mt-0.5">{a.note}</div>}
