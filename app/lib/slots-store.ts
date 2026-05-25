@@ -14,7 +14,8 @@
 export type Slot = {
   id: string;
   date: string;   // YYYY-MM-DD
-  time: string;   // HH:MM (24hr)
+  time: string;   // HH:MM (24hr); empty string when allDay
+  allDay?: boolean;             // "open day" — any time on this date works
   label?: string; // e.g. "South Austin"
   capacity: number;
   bookings: Booking[];          // local-backend ground truth; MC list returns []
@@ -45,7 +46,8 @@ export type Booking = {
 
 export type SlotInput = {
   date: string;
-  time: string;
+  time?: string;       // omitted/empty when allDay is true
+  allDay?: boolean;    // "open day" — Skywalker sets this when no specific time
   label?: string;
   capacity?: number;
 };
@@ -96,11 +98,12 @@ export async function listSlots(opts?: { openOnly?: boolean; fromDate?: string }
     // — no per-booking detail. Normalize to the Slot shape so UI code that
     // reads `bookings` (length, .map, etc.) doesn't crash on `undefined`.
     // The `bookedCount` field carries the MC seat count for slotBookedCount().
-    type McSlot = { id: string; date: string; time: string; label?: string | null; capacity: number; booked?: number };
+    type McSlot = { id: string; date: string; time: string; allDay?: boolean; label?: string | null; capacity: number; booked?: number };
     return ((data.slots as McSlot[]) || []).map((s) => ({
       id: s.id,
       date: s.date,
-      time: s.time,
+      time: s.time || "",
+      allDay: s.allDay === true,
       label: s.label ?? undefined,
       capacity: s.capacity,
       bookings: [],
@@ -126,7 +129,8 @@ export async function addSlot(input: SlotInput): Promise<Slot> {
     return {
       id: s.id,
       date: s.date,
-      time: s.time,
+      time: s.time || "",
+      allDay: s.allDay === true,
       label: s.label ?? undefined,
       capacity: s.capacity,
       bookings: [],
@@ -136,7 +140,8 @@ export async function addSlot(input: SlotInput): Promise<Slot> {
   const slot: Slot = {
     id: genId(),
     date: input.date,
-    time: input.time,
+    time: input.allDay ? "" : (input.time || ""),
+    allDay: input.allDay === true,
     label: input.label?.trim() || undefined,
     capacity: input.capacity ?? 1,
     bookings: [],

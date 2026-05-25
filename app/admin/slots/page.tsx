@@ -47,6 +47,7 @@ export default function AdminSlotsPage() {
   // Form state
   const [date, setDate] = useState(todayLocalISO());
   const [time, setTime] = useState("14:00");
+  const [allDay, setAllDay] = useState(false);
   const [label, setLabel] = useState("");
   const [capacity, setCapacity] = useState(1);
   const [submitting, setSubmitting] = useState(false);
@@ -85,16 +86,26 @@ export default function AdminSlotsPage() {
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!date || !time) return;
+    if (!date) return;
+    if (!allDay && !time) return;
     setSubmitting(true);
     setError(null);
     try {
-      const slot = await addSlot({ date, time, label: label.trim() || undefined, capacity });
+      const slot = await addSlot({
+        date,
+        time: allDay ? undefined : time,
+        allDay,
+        label: label.trim() || undefined,
+        capacity,
+      });
       setJustAddedId(slot.id);
       setTimeout(() => setJustAddedId(null), 1800);
       // Reset only the time so consecutive adds at different times on
       // the same date are quick; keep the date + label fields sticky.
+      // Also clear the all-day toggle so a habitual time-slot adder
+      // doesn't accidentally repeat an open-day entry.
       setTime("");
+      setAllDay(false);
       await refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -166,8 +177,30 @@ export default function AdminSlotsPage() {
               <input type="date" value={date} min={todayLocalISO()} onChange={(e) => setDate(e.target.value)} required className="w-full px-3 py-2.5 bg-white/[0.07] border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-[#00c853]" />
             </div>
             <div>
-              <label className="block text-xs text-[#a0a0a0] mb-1">Time</label>
-              <input type="time" value={time} onChange={(e) => setTime(e.target.value)} required step={900} className="w-full px-3 py-2.5 bg-white/[0.07] border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-[#00c853]" />
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs text-[#a0a0a0]">Time</label>
+                <label className="text-[10px] text-[#a0a0a0] flex items-center gap-1.5 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={allDay}
+                    onChange={(e) => setAllDay(e.target.checked)}
+                    className="accent-[#00c853] cursor-pointer"
+                  />
+                  All day (any time)
+                </label>
+              </div>
+              <input
+                type="time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                required={!allDay}
+                disabled={allDay}
+                step={900}
+                className="w-full px-3 py-2.5 bg-white/[0.07] border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-[#00c853] disabled:opacity-40 disabled:cursor-not-allowed"
+              />
+              {allDay && (
+                <p className="text-[10px] text-[#888] mt-1">Open day — customer picks any time that works.</p>
+              )}
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -209,7 +242,7 @@ export default function AdminSlotsPage() {
                 <div key={s.id} className={`flex items-center justify-between gap-3 p-4 rounded-xl border transition ${recently ? "bg-[#00c853]/10 border-[#00c853]/50" : "bg-white/[0.04] border-white/10"}`}>
                   <div className="min-w-0 flex-1">
                     <p className="text-white font-bold text-sm">
-                      {formatDate(s.date)} · <span className="text-[#00c853]">{formatTime(s.time)}</span>
+                      {formatDate(s.date)} · <span className="text-[#00c853]">{s.allDay ? "Any time" : formatTime(s.time)}</span>
                       {s.label && <span className="text-[#bdbdbd] font-medium ml-2">· {s.label}</span>}
                     </p>
                     <p className="text-[#888] text-xs mt-1">

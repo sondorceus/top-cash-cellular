@@ -12113,10 +12113,16 @@ export default function Home() {
                             {availableSlots.map((s) => {
                               const isPicked = selectedSlot?.id === s.id;
                               const dateLabel = new Date(s.date + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
-                              const [h, mm] = s.time.split(":").map(Number);
-                              const ampm = h >= 12 ? "PM" : "AM";
-                              const h12 = h % 12 || 12;
-                              const timeLabel = `${h12}:${String(mm).padStart(2, "0")} ${ampm}`;
+                              // All-day "open day" slots have empty s.time — render
+                              // "Any time" so the customer knows they have flexibility
+                              // (Skywalker will text/call to nail down the window).
+                              let timeLabel = "Any time";
+                              if (!s.allDay && s.time && /^\d{2}:\d{2}$/.test(s.time)) {
+                                const [h, mm] = s.time.split(":").map(Number);
+                                const ampm = h >= 12 ? "PM" : "AM";
+                                const h12 = h % 12 || 12;
+                                timeLabel = `${h12}:${String(mm).padStart(2, "0")} ${ampm}`;
+                              }
                               return (
                                 <button
                                   type="button"
