@@ -6368,7 +6368,7 @@ export default function Home() {
   })();
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
+    <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-clip">
       {catalogWarmer}
       {/* Google Maps JS script removed 2026-05-18. We no longer load any
           client-side Google library — the shipping address autocomplete
