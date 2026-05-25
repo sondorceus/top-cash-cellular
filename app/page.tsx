@@ -3603,6 +3603,20 @@ const CHARGER_OPTIONS = [
   { id: "yes", label: "Yes — OEM charger included", multiplier: 1.05 },
   { id: "no",  label: "No charger", multiplier: 1.00 },
 ] as const;
+
+// Sealed devices have everything in the box by definition — so asking
+// "charger included? / box included? / S Pen included?" overpays when
+// the customer clicks "yes" (multiplier 1.05 on charger, etc) on top
+// of the sealed-tier base price that already factors those in. These
+// question ids get auto-skipped on the sealed condition both in the
+// additive-spec flow (charger/battery steps) and the BRAND_EXTRAS
+// iterator. Skywalker bug report 2026-05-25.
+const SKIP_ON_SEALED_EXTRAS_IDS = new Set([
+  "charger", "box", "spen", "stylus", "dock",
+  "controllers", "kit",
+  "bandIncluded", "band",
+  "functional", "hours", "crashes",
+]);
 // Mutable module-level cache for PC laptop additive specs loaded from
 // /comps/pc-laptop-specs.json on mount. We merge into MacSpec lookups so
 // hasAdditiveSpecs() and getMacSpec() pick up both Apple and non-Apple
@@ -6002,8 +6016,10 @@ export default function Home() {
             { label: "Storage",      value: storage?.label,      active: step === "storage",      helpId: "storage" as const, onJump: editRow("storage"),      show: !isNoStorageDevice && macSpecFlow },
             { label: "Display",      value: displayGlass?.label, active: step === "displayglass", helpId: null as null,       onJump: editRow("displayglass"), show: macSpecFlow && macHasGlassStep },
             { label: "Condition",    value: condition ? getConditionLabel(condition, deviceType).label : undefined, active: step === "condition", helpId: null as null, onJump: editRow("condition"), show: true },
-            { label: "Battery",      value: batteryHealth?.label, active: step === "batteryhealth", helpId: null as null,      onJump: editRow("batteryhealth"), show: macSpecFlow },
-            { label: "Charger",      value: charger?.label,      active: step === "charger",      helpId: null as null,       onJump: editRow("charger"),      show: macSpecFlow },
+            // Battery + Charger rows hide on sealed — those steps are
+            // skipped in the funnel so showing them as "—" is just noise.
+            { label: "Battery",      value: batteryHealth?.label, active: step === "batteryhealth", helpId: null as null,      onJump: editRow("batteryhealth"), show: macSpecFlow && condition?.id !== "sealed" },
+            { label: "Charger",      value: charger?.label,      active: step === "charger",      helpId: null as null,       onJump: editRow("charger"),      show: macSpecFlow && condition?.id !== "sealed" },
             // Brand extras (PS5 disc / drone hours / watch band etc) get
             // one row per answered question, only shown for device types
             // that declare extras in BRAND_EXTRAS.
@@ -9906,6 +9922,15 @@ export default function Home() {
           setTimeout(() => setExtrasIndex(i => i + 1), 0);
           return null;
         }
+        // Sealed: skip "yes/no I have it" + obvious physical-wear questions
+        // — the answer is implicit, and asking them lets a confused
+        // customer click "yes I have charger" and trigger a +5% (or +$N)
+        // bonus on top of the already-sealed-tier pricing. Skywalker bug
+        // report 2026-05-25.
+        if (condition?.id === "sealed" && SKIP_ON_SEALED_EXTRAS_IDS.has(q.id)) {
+          setTimeout(() => setExtrasIndex(i => i + 1), 0);
+          return null;
+        }
         return (
           <section className="animate-[fadeIn_0.3s_ease-out]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
@@ -9950,8 +9975,13 @@ export default function Home() {
                             let nextIdx = extrasIndex + 1;
                             while (nextIdx < list.length) {
                               const peek = list[nextIdx];
-                              if (peek.showIf && !peek.showIf(nextExtras, condition)) nextIdx++;
-                              else break;
+                              // Honor the same two skip rules the main render
+                              // uses: showIf-driven skips AND sealed-skips for
+                              // accessory questions, so the forward walk lands
+                              // on the next actually-renderable question.
+                              if (peek.showIf && !peek.showIf(nextExtras, condition)) { nextIdx++; continue; }
+                              if (condition?.id === "sealed" && SKIP_ON_SEALED_EXTRAS_IDS.has(peek.id)) { nextIdx++; continue; }
+                              break;
                             }
                             if (nextIdx < list.length) {
                               setExtrasIndex(nextIdx);
@@ -10099,10 +10129,21 @@ export default function Home() {
                       // Spec'd flow: condition comes AFTER storage. Laptops go
                       // to battery health; desktops skip battery/charger and
                       // route to extras (GPU, accessories) or quote.
+                      // SEALED short-circuit: factory-new = battery is 100%
+                      // and charger is in the box. Asking those steps lets
+                      // the customer click "yes charger" → +5% multiplier
+                      // on top of the sealed-tier price (CHARGER_OPTIONS
+                      // "yes" = multiplier 1.05) which overpays for an
+                      // accessory already factored into the sealed base.
+                      // Skipping leaves the state null → multiplier defaults
+                      // to 1, equivalent to "best-case but no bonus".
+                      // Skywalker bug 2026-05-25.
                       if (model && hasAdditiveSpecs(model.id)) {
                         const isDskType = deviceType?.endsWith("_desktop") ?? false;
-                        if (isDskType) {
-                          if (getBrandExtras(deviceType, model?.id).length > 0) {
+                        const hasExtras = getBrandExtras(deviceType, model?.id).length > 0;
+                        const skipToEndForSealed = c.id === "sealed";
+                        if (isDskType || skipToEndForSealed) {
+                          if (hasExtras) {
                             setExtras({}); setExtrasIndex(0);
                             setStep("extras"); pushHistory("extras");
                           } else {
@@ -10116,9 +10157,15 @@ export default function Home() {
                       }
                       // PC laptops: skip storage/carrier (base price = IWM
                       // Flawless × 0.90 at max config), route through battery
-                      // and charger like a MacBook.
+                      // and charger like a MacBook (unless sealed — same
+                      // short-circuit as the additive Mac flow above).
                       if (isPcLaptopFlow) {
-                        setStep("batteryhealth"); pushHistory("batteryhealth");
+                        if (c.id === "sealed") {
+                          setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000);
+                          setStep("quote"); pushHistory("quote");
+                        } else {
+                          setStep("batteryhealth"); pushHistory("batteryhealth");
+                        }
                         return;
                       }
                       // Brand-specific extras (PS5 disc drive, DJI hours flown,

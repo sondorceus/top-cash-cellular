@@ -610,8 +610,14 @@ export async function GET(req: NextRequest) {
     const coMarker = m.body.match(/\[COUNTER-OFFER:\s*([\w-]+)\]/i);
     if (coMarker) {
       const lid = coMarker[1];
-      const orig = parseInt(m.body.match(/original=\$?(\d+)/i)?.[1] || "", 10);
-      const offer = parseInt(m.body.match(/offer=\$?(\d+)/i)?.[1] || "", 10);
+      // Comma-grouped + decimal-safe. The old /\$?(\d+)/ pattern parsed
+      // "original=$1,250" as 1 — same shape as the broader $1,250→$1
+      // bug killed in 4438ba8. Multi-device counter-offers (>$999)
+      // were being stored as $1.
+      const origRaw = m.body.match(/original=\$?([\d,]+(?:\.\d+)?)/i)?.[1];
+      const offerRaw = m.body.match(/offer=\$?([\d,]+(?:\.\d+)?)/i)?.[1];
+      const orig = origRaw ? Math.round(parseFloat(origRaw.replace(/,/g, ""))) : NaN;
+      const offer = offerRaw ? Math.round(parseFloat(offerRaw.replace(/,/g, ""))) : NaN;
       // Reason runs until the next " token=" or end-of-line. Greedy
       // grab so multi-word reasons survive.
       const reason = m.body.match(/reason=(.+?)(?=\s+token=|\s*$)/im)?.[1]?.trim() || "";
