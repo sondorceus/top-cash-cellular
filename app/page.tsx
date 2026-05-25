@@ -6052,6 +6052,62 @@ export default function Home() {
             <p className="text-[#e6e6e6] text-[12px] leading-snug mt-1">If your device matches the description above, we pay the quoted price — no surprise deductions.</p>
           </div>
         </div>
+        {/* Multi-device cart summary — inline inside the sticky panel so
+            it follows the customer down the page during funnel scroll.
+            Only rendered when cart has items; single-device flow shows
+            nothing extra. Same row shape as the payout-step Order Summary
+            sidebar (defined further down), but inlined here without the
+            renderCheckoutRow helper to avoid declaration-order issues —
+            renderCheckoutRow is declared LATER in source than this panel.
+            Skywalker validated the floating-sidebar pattern 2026-05-25. */}
+        {cartItems.length > 0 && (() => {
+          const totalItems = cartItems.reduce((s, it) => s + it.quantity, 0);
+          const totalDollars = cartItems.reduce((s, it) => s + it.price * it.quantity, 0);
+          const hasPending = cartItems.some((it) => !it.price);
+          return (
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Order summary</p>
+                <span className="text-[10px] text-[#b8b8b8]">{totalItems} device{totalItems === 1 ? "" : "s"}</span>
+              </div>
+              <div className="max-h-[32vh] overflow-y-auto pr-1 -mr-1">
+                {cartItems.map((it, i) => (
+                  <div key={i} className="flex items-center gap-3 py-2 border-b border-white/10 last:border-0">
+                    <div className="shrink-0 w-9 h-9 rounded-lg bg-[rgba(15,15,15,0.6)] border border-white/10 flex items-center justify-center overflow-hidden">
+                      {it.image ? (
+                        <Pic src={it.image} alt="" className="w-full h-full object-contain p-0.5" />
+                      ) : (
+                        <svg className="w-4 h-4 opacity-40 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[12px] font-bold text-white leading-tight truncate">{it.model}</p>
+                      {(it.storage || it.condition) && (
+                        <p className="text-[10px] text-[#b8b8b8] leading-tight truncate">{[it.storage, it.condition].filter(Boolean).join(" · ")}</p>
+                      )}
+                    </div>
+                    <div className="shrink-0 text-right">
+                      {!it.price ? (
+                        <p className="text-[9px] font-semibold text-[#e6e6e6] leading-tight">Quoted via<br/>email/text</p>
+                      ) : (
+                        <p className="text-[12px] font-extrabold text-[#00c853] leading-tight">${it.price * it.quantity}</p>
+                      )}
+                      {it.quantity > 1 && <p className="text-[9px] text-[#b8b8b8] leading-tight">x{it.quantity}</p>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2 pt-2 border-t border-white/10 flex items-baseline justify-between gap-2">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#e6e6e6]">Total</span>
+                {totalDollars === 0 && hasPending ? (
+                  <span className="text-[17px] font-extrabold text-[#e6e6e6]">TBD</span>
+                ) : (
+                  <span className="text-[17px] font-extrabold text-[#00c853]">${totalDollars}{hasPending && <span className="text-[9px] text-[#b8b8b8] font-semibold align-middle ml-1">+ quoted</span>}</span>
+                )}
+              </div>
+            </div>
+          );
+        })()}
       </div>
     </aside>
   );
