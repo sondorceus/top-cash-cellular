@@ -3,6 +3,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { lookupAtlasResell, type AtlasReference } from "../../../lib/atlas-lookup";
 import { ebayGrossToNet, atlasResellToNet } from "../../../lib/comp-economics";
+import { parseDollarAmount } from "../../../lib/lead-money";
 import skuLabelsJson from "../../../data/sku-labels.json";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -1158,11 +1159,13 @@ export async function GET(req: NextRequest) {
       const condition = normalizeCondition(lead.condition || lead.devices?.[0]?.condition);
       const carrier = normalizeCarrier(lead.carrier || lead.devices?.[0]?.carrier);
       const quoteRaw = lead.quote || (lead.totalPayout != null ? `$${lead.totalPayout}` : undefined);
-      const quote = (() => {
-        if (!quoteRaw) return undefined;
-        const m2 = String(quoteRaw).match(/\d+/);
-        return m2 ? parseInt(m2[0], 10) : undefined;
-      })();
+      // parseDollarAmount returns 0 for missing input — normalize to
+      // undefined here so the downstream comp.atlas / comp.ebay blocks
+      // (which check `quote != null`) treat "no quote" the same as
+      // before. The old /\d+/ regex returned $1 for "$1,250" which
+      // made compMargin under-report margin for any 4-figure quote.
+      const parsed = parseDollarAmount(quoteRaw);
+      const quote = parsed > 0 ? parsed : undefined;
       const comp: AdminLead["compMargin"] = { sku, quote };
       // Atlas — try the requested carrier variant first, fall back to
       // unlocked when no carrier match (e.g. when the funnel didn't

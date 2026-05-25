@@ -779,9 +779,15 @@ export async function POST(req: NextRequest) {
         const { callAI, postAIMarker } = await import("../../lib/ai-gateway");
         const { atlas, ebay } = await loadCompFiles();
 
+        // Shared comma-aware money parser — old /\d+/ collapsed
+        // "$1,250" to 1, which made the AI's "Operator pays $1, sells
+        // for $200, profit $199" summary nonsensical. Inline import
+        // (instead of top-level) because this whole block runs inside
+        // the after() callback that already lazy-imports comp-lookup.
+        const { parseDollarAmount } = await import("../../lib/lead-money");
         const parseQuote = (q: unknown): number | null => {
-          const m = /\d+/.exec(String(q || ""));
-          return m ? parseInt(m[0], 10) : null;
+          const n = parseDollarAmount(String(q ?? ""));
+          return n > 0 ? n : null;
         };
 
         // Build the per-device economics array. Single-device leads get

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { extractLeadValueFromBody } from "../../../lib/lead-money";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -23,11 +24,11 @@ function parseField(body: string, key: string): string | undefined {
   return m?.[1]?.trim() || undefined;
 }
 
-function parseQuote(raw: string | undefined): number {
-  if (!raw) return 0;
-  const m = raw.match(/\d+/);
-  return m ? parseInt(m[0], 10) : 0;
-}
+// Money parsing now lives in app/lib/lead-money.ts so analytics +
+// customers + leads + admin UI + AI-summary all share one formula.
+// The old local parseQuote here used /\d+/ which collapsed $1,250 to
+// $1 AND never read the "Total payout:" footer, so multi-device leads
+// contributed $0 to totalQuote / avgQuote / dailyValue / last24hQuote.
 
 // Internal-lead identifiers — same source-of-truth as /api/admin/leads.
 // Leads matching these are excluded from analytics counts by default so
@@ -54,9 +55,17 @@ export async function GET(req: NextRequest) {
   const data = await r.json();
   const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
 
-  // Status index (for terminal-stage counts in the rollup)
+  // Status index (for terminal-stage counts in the rollup).
+  //
+  // Trash semantics: take the MOST RECENT of [DELETED-LEAD:] /
+  // [RESTORED-LEAD:] per lead id. Without honoring the restore marker,
+  // any lead Skywalker ever trashed-then-restored stayed permanently
+  // invisible to analytics even though it's live on /admin/leads —
+  // direct cause of the "94 here / different number on analytics"
+  // mismatch. Same logic as /api/admin/leads + /api/admin/customers.
   const statusByLead = new Map<string, { status: string; timestamp: string }>();
-  const deletedLeads = new Set<string>();
+  type Tomb = { deleted: boolean; timestamp: string };
+  const tombByLead = new Map<string, Tomb>();
   for (const m of messages) {
     if (!m.body) continue;
     const sm = m.body.match(/\[STATUS:\s*([\w_]+)\]\s*\[LEAD:\s*([\w-]+)\]/i);
@@ -67,8 +76,17 @@ export async function GET(req: NextRequest) {
       }
     }
     const dm = m.body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
-    if (dm) deletedLeads.add(dm[1]);
+    if (dm) {
+      const prev = tombByLead.get(dm[1]);
+      if (!prev || m.timestamp > prev.timestamp) tombByLead.set(dm[1], { deleted: true, timestamp: m.timestamp });
+    }
+    const restoreM = m.body.match(/\[RESTORED-LEAD:\s*([\w-]+)\]/i);
+    if (restoreM) {
+      const prev = tombByLead.get(restoreM[1]);
+      if (!prev || m.timestamp > prev.timestamp) tombByLead.set(restoreM[1], { deleted: false, timestamp: m.timestamp });
+    }
   }
+  const deletedLeads = new Set(Array.from(tombByLead.entries()).filter(([, t]) => t.deleted).map(([id]) => id));
 
   // Walk leads, bucket per-hour for the last 7 days
   const now = Date.now();
@@ -104,7 +122,14 @@ export async function GET(req: NextRequest) {
     totalLeads++;
     const t = new Date(m.timestamp);
     const ageH = (now - t.getTime()) / 3600000;
-    const quote = parseQuote(parseField(m.body, "Quote") || parseField(m.body, "Offer"));
+    // Cascade: "Total payout:" footer (multi-device leads) → Quote /
+    // Offer field (single-device). The footer check is the only way
+    // multi-device leads contribute their grand total to avg-quote.
+    const quote = extractLeadValueFromBody(
+      m.body,
+      parseField(m.body, "Quote"),
+      parseField(m.body, "Offer"),
+    );
     totalQuote += quote;
 
     const dayKey = m.timestamp.slice(0, 10);

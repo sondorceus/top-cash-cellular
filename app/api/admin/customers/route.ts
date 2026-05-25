@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { parseDollarAmount, parseTotalPayoutLine } from "../../../lib/lead-money";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -51,27 +52,9 @@ function normalizePhone(p: string | undefined): string {
   return p.replace(/\D/g, "").replace(/^1/, "");
 }
 
-function parseQuoteAmount(raw: string | undefined): number {
-  if (!raw) return 0;
-  // Match a comma-grouped or plain integer (and optional cents). The
-  // old version did /\d+/ which on "$1,250" returned "1" — every
-  // four-figure quote was being collapsed to a single dollar in the
-  // customer rollup. Skywalker reported 2026-05-24.
-  const m = raw.match(/[\d,]+(?:\.\d+)?/);
-  if (!m) return 0;
-  const n = parseFloat(m[0].replace(/,/g, ""));
-  return Number.isFinite(n) ? Math.round(n) : 0;
-}
-
-// Multi-device leads don't carry a `Quote:` field — their total is
-// in a `Total payout: $1,234` footer at the bottom of the body.
-// Same regex the /api/admin/leads route uses for symmetry.
-function parseTotalPayout(body: string): number {
-  const m = body.match(/Total payout:\s*\$([0-9,]+(?:\.\d+)?)/i);
-  if (!m) return 0;
-  const n = parseFloat(m[1].replace(/,/g, ""));
-  return Number.isFinite(n) ? Math.round(n) : 0;
-}
+// Money parsers now live in app/lib/lead-money.ts so all 5 sites stay
+// in sync (analytics, customers, leads, admin UI, AI summary). Re-exporting
+// these locals would be a maintenance trap — call sites use the import.
 
 // Internal identifiers — exclude Skywalker's own testing from the
 // customer roster by default. Same source-of-truth as
@@ -103,9 +86,16 @@ export async function GET(req: NextRequest) {
   // Pass 1: index status updates by lead id (so we can attribute each
   // lead's terminal status to its customer roll-up). Status messages have
   // bodies like "[STATUS: paid] [LEAD: leadId]".
+  //
+  // Trash semantics: a lead is considered "deleted" only if its most
+  // recent delete/restore marker is a [DELETED-LEAD:]. Skywalker's flow
+  // is trash → restore → trash → restore — without honoring the
+  // RESTORED marker the customer rollup permanently loses any lead
+  // that was ever trashed even once. Same logic as /api/admin/leads.
   const statusByLead = new Map<string, { status: string; timestamp: string }>();
   const reviewLeads = new Set<string>();
-  const deletedLeads = new Set<string>();
+  type Tomb = { deleted: boolean; timestamp: string };
+  const tombByLead = new Map<string, Tomb>();
   for (const m of messages) {
     if (!m.body) continue;
     const sm = m.body.match(/\[STATUS:\s*([\w_]+)\]\s*\[LEAD:\s*([\w-]+)\]/i);
@@ -118,8 +108,17 @@ export async function GET(req: NextRequest) {
     const rm = m.body.match(/\[REVIEW-LEFT:\s*([\w-]+)\]/i);
     if (rm) reviewLeads.add(rm[1]);
     const dm = m.body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
-    if (dm) deletedLeads.add(dm[1]);
+    if (dm) {
+      const prev = tombByLead.get(dm[1]);
+      if (!prev || m.timestamp > prev.timestamp) tombByLead.set(dm[1], { deleted: true, timestamp: m.timestamp });
+    }
+    const restoreM = m.body.match(/\[RESTORED-LEAD:\s*([\w-]+)\]/i);
+    if (restoreM) {
+      const prev = tombByLead.get(restoreM[1]);
+      if (!prev || m.timestamp > prev.timestamp) tombByLead.set(restoreM[1], { deleted: false, timestamp: m.timestamp });
+    }
   }
+  const deletedLeads = new Set(Array.from(tombByLead.entries()).filter(([, t]) => t.deleted).map(([id]) => id));
 
   // Pass 2: walk lead messages, dedup into per-customer rows.
   const internalView = req.nextUrl.searchParams.get("internal") || "hide";
@@ -128,6 +127,11 @@ export async function GET(req: NextRequest) {
   for (const m of messages) {
     if (!m.body || !m.body.includes("[NEW BUYBACK LEAD")) continue;
     if (deletedLeads.has(m.id)) continue;
+    // Recycle-only leads are $0 by definition — they belong on the leads
+    // page (with their ♻ chip) but they pollute customer totals if we
+    // count them as a "lead with a quote." /analytics already filters
+    // these; matching here keeps the two rollups in agreement.
+    if ((parseField(m.body, "Recycle-only") || "").toLowerCase() === "yes") continue;
     if (internalView !== "show" && isInternalLead(m.body)) {
       internalSkipped++;
       continue;
@@ -147,10 +151,10 @@ export async function GET(req: NextRequest) {
     // to the single-device Quote/Offer field. Without this the
     // customer rollup understates the totals every time a customer
     // submits more than one device. Skywalker 2026-05-24.
-    const totalFromBody = parseTotalPayout(m.body);
+    const totalFromBody = parseTotalPayoutLine(m.body);
     const quote = totalFromBody > 0
       ? totalFromBody
-      : parseQuoteAmount(parseField(m.body, "Quote") || parseField(m.body, "Offer"));
+      : parseDollarAmount(parseField(m.body, "Quote") || parseField(m.body, "Offer"));
     const smsRaw = parseField(m.body, "SMS opt-in")?.toLowerCase();
     const smsOptIn = smsRaw === "yes" ? true : smsRaw === "no" ? false : undefined;
     const status = statusByLead.get(m.id)?.status || "quote_requested";

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { DeviceCorrection } from "./DeviceCorrection";
+import { parseDollarAmount } from "../lib/lead-money";
 
 interface Lead {
   id: string;
@@ -1318,9 +1319,19 @@ export default function AdminPage() {
       return v && v === t;
     });
   })();
+  // Customer history modal "Total paid" — use the same 3-tier cascade
+  // the page header uses so it doesn't undercount multi-device leads
+  // (no Quote: field, only totalPayout) and doesn't collapse $1,250
+  // quotes to $1 the way the old /\d+/ regex did.
   const historyTotalPaid = historyLeads
     .filter((l) => isPaid(l.status))
-    .reduce((s, l) => s + (parseInt(l.quote?.match(/\d+/)?.[0] || "0", 10) || 0), 0);
+    .reduce((s, l) => {
+      const v =
+        (typeof l.payoutConfirmation?.amount === "number" && l.payoutConfirmation.amount > 0 ? l.payoutConfirmation.amount : 0)
+        || (typeof l.totalPayout === "number" && l.totalPayout > 0 ? l.totalPayout : 0)
+        || parseDollarAmount(l.quote);
+      return s + v;
+    }, 0);
 
   const saveStatus = async (lead: Lead, newStatus: string, reason?: string, payoutConfirmation?: { method: string; reference: string; note: string; amount?: number }) => {
     if (!token || newStatus === lead.status) return;
@@ -2912,13 +2923,22 @@ export default function AdminPage() {
                             setPayoutMethod(defaultMethod);
                             setPayoutReference("");
                             setPayoutNote("");
-                            // Default amount to the latest agreed quote
-                            // (digits only) — operator overrides if the
-                            // in-person inspection lowered it. Empty
-                            // when no quote on the lead.
-                            setPayoutAmount(((lead.totalPayout && lead.totalPayout > 0)
-                              ? String(lead.totalPayout)
-                              : (lead.quote || "").match(/\d+/)?.[0] || "") + "");
+                            // Default amount to the latest agreed quote —
+                            // operator overrides if the in-person
+                            // inspection lowered it. Empty when no quote
+                            // on the lead. parseDollarAmount handles
+                            // comma-grouped quotes ($1,250) that the old
+                            // /\d+/ regex collapsed to $1 — that was
+                            // why Nick's $570 mark-paid ended up logged
+                            // as $1 cash.
+                            const seedAmount =
+                              (lead.totalPayout && lead.totalPayout > 0)
+                                ? String(lead.totalPayout)
+                                : (() => {
+                                    const n = parseDollarAmount(lead.quote);
+                                    return n > 0 ? String(n) : "";
+                                  })();
+                            setPayoutAmount(seedAmount);
                             setPayoutAlsoLogResale(true);
                             setPendingStatus((p) => ({ ...p, [lead.id]: v }));
                             return;
