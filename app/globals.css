@@ -80,6 +80,46 @@
   .tap-confirm { animation: none; }
 }
 
+/* Hero headline 3D flip — on desktop, hovering the h1 rotates the inner
+   along Y to reveal the back face ("Get paid same-day. Cash on the spot.").
+   Touch devices and reduced-motion users see the front statically.
+   Focus-within also triggers it so keyboard users can experience it. */
+.hero-flip {
+  perspective: 1400px;
+  display: inline-block;
+}
+.hero-flip-inner {
+  display: inline-block;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: center center;
+  will-change: transform;
+}
+.hero-flip-face {
+  display: block;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.hero-flip-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: rotateY(180deg);
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero-flip:hover .hero-flip-inner,
+  .hero-flip:focus-within .hero-flip-inner {
+    transform: rotateY(180deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-flip-inner { transition: none; }
+  .hero-flip:hover .hero-flip-inner,
+  .hero-flip:focus-within .hero-flip-inner { transform: none; }
+}
+
 /* Hover-reveal detail — copy that stays collapsed until its card (.group)
    is hovered, so a step list reads as just the headlines. Gated on
    (hover: hover) so touch devices, which can't hover, always show the

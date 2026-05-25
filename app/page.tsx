@@ -7766,8 +7766,15 @@ export default function Home() {
                 <button type="button" onClick={() => setWelcomeBack(null)} aria-label="Dismiss" className="text-[#888] hover:text-white text-xl leading-none shrink-0 cursor-pointer">×</button>
               </div>
             )}
-            <h1 className="text-4xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up" style={{ letterSpacing: "-0.03em" }}>
-              Get <span className="text-[#00c853]">top dollar</span><br />for your device.
+            <h1 className="text-4xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up hero-flip" style={{ letterSpacing: "-0.03em" }} tabIndex={0} aria-label="Get top dollar for your device. On hover: Get paid same-day, cash on the spot.">
+              <span className="hero-flip-inner">
+                <span className="hero-flip-face hero-flip-front">
+                  Get <span className="text-[#00c853]">top dollar</span><br />for your device.
+                </span>
+                <span className="hero-flip-face hero-flip-back" aria-hidden="true">
+                  Get <span className="text-[#00c853]">paid same-day.</span><br />Cash on the spot.
+                </span>
+              </span>
             </h1>
             <p className="text-[#e6e6e6] text-lg lg:text-xl mb-2 font-medium hero-fade-up hero-d-1">
               Get an instant online quote, then your choice: meet us in Austin and get <span className="font-bold text-[#00c853] lg:font-medium">paid on the spot</span> after a quick ~15-minute inspection, or <span className="font-bold text-[#00c853] lg:font-medium">ship free from anywhere in the US</span> and get paid within 24 hours of your device arriving.
