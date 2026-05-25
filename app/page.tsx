@@ -5996,28 +5996,17 @@ export default function Home() {
 
   const selectionPanel = model && (
     <aside className="hidden lg:block lg:w-[330px] shrink-0">
-      {/* Sticky container with bounded height. The earlier inline-cart
-          attempt (8eea89e) put the cart at the bottom of a sticky panel
-          that overflowed viewport — so the TOTAL row was permanently
-          below the fold even though sticky was technically engaged.
-          Now the panel is bounded at calc(100vh - 7rem) and uses flex
-          column: image + label are shrink-0 at top, spec rows take
-          flex-1 with internal scroll, cart is shrink-0 pinned at the
-          bottom — always visible while the rest follows scroll. */}
-      <div className="sticky top-24 max-h-[calc(100vh-7rem)] flex flex-col bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
-        <div className="shrink-0 bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl mb-4 h-72 flex items-center justify-center overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-3">
+      <div className="sticky top-24 bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+        <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl mb-4 h-72 flex items-center justify-center overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-3">
           {model.image ? (
             <Pic src={model.image} alt={model.label} size={640} className="w-full h-full object-contain" style={{ filter: "drop-shadow(0 18px 22px rgba(0,0,0,0.55)) drop-shadow(0 4px 8px rgba(0,0,0,0.35))" }} />
           ) : (
             <svg className="w-14 h-14 opacity-30 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
           )}
         </div>
-        <p className="shrink-0 text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Selling</p>
-        <p className="shrink-0 text-[22px] font-extrabold text-white leading-tight mb-4">{model.label}</p>
-        {/* Spec rows + guarantee — middle column, scrolls internally if
-            tall enough to exceed remaining space. min-h-0 is required for
-            the flex-1 child to actually be allowed to shrink. */}
-        <div className="flex-1 min-h-0 overflow-y-auto pr-1 -mr-1 space-y-2 border-t border-white/10 pt-4">
+        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Selling</p>
+        <p className="text-[22px] font-extrabold text-white leading-tight mb-4">{model.label}</p>
+        <div className="space-y-2 border-t border-white/10 pt-4">
           {[
             { label: "Processor",    value: processor?.label,    active: step === "processor",    helpId: null as null,       onJump: editRow("processor"),    show: macSpecFlow },
             { label: "Memory",       value: memory?.label,       active: step === "memory",       helpId: null as null,       onJump: editRow("memory"),       show: macSpecFlow },
@@ -6070,74 +6059,13 @@ export default function Home() {
           })}
         </div>
         {/* Accurate-quote guarantee badge */}
-        <div className="shrink-0 mt-4 pt-4 border-t border-white/10 flex items-start gap-2.5">
+        <div className="mt-4 pt-4 border-t border-white/10 flex items-start gap-2.5">
           <span className="text-[#00c853] text-lg leading-none mt-0.5" style={{ filter: "drop-shadow(0 0 4px rgba(0,200,83,0.55))" }}>✓</span>
           <div>
             <p className="text-white text-[13px] font-extrabold leading-tight">Honored quote guarantee</p>
             <p className="text-[#e6e6e6] text-[12px] leading-snug mt-1">If your device matches the description above, we pay the quoted price — no surprise deductions.</p>
           </div>
         </div>
-        {/* Multi-device cart summary — pinned to the bottom of the sticky
-            container as a shrink-0 footer. Always visible while cart > 0,
-            no matter how tall the spec rows get above. The small green
-            pulse dot ("live") is the tiny indicator that confirms the
-            summary is tracking with scroll — matches the site's existing
-            green-accent motion language (animate-ping is the same shape
-            as the tcc-card hover glow). */}
-        {cartItems.length > 0 && (() => {
-          const totalItems = cartItems.reduce((s, it) => s + it.quantity, 0);
-          const totalDollars = cartItems.reduce((s, it) => s + it.price * it.quantity, 0);
-          const hasPending = cartItems.some((it) => !it.price);
-          return (
-            <div className="shrink-0 mt-3 pt-3 border-t border-white/10">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Order summary</p>
-                  {/* Tiny live indicator — pulsing green dot. */}
-                  <span className="relative flex h-1.5 w-1.5" aria-label="live cart">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00c853] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00c853]"></span>
-                  </span>
-                </div>
-                <span className="text-[10px] text-[#b8b8b8]">{totalItems} device{totalItems === 1 ? "" : "s"}</span>
-              </div>
-              <div className="max-h-[18vh] overflow-y-auto pr-1 -mr-1">
-                {cartItems.map((it, i) => (
-                  <div key={i} className="flex items-center gap-3 py-1.5 border-b border-white/10 last:border-0">
-                    <div className="shrink-0 w-8 h-8 rounded-md bg-[rgba(15,15,15,0.6)] border border-white/10 flex items-center justify-center overflow-hidden">
-                      {it.image ? (
-                        <Pic src={it.image} alt="" className="w-full h-full object-contain p-0.5" />
-                      ) : (
-                        <svg className="w-3.5 h-3.5 opacity-40 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-bold text-white leading-tight truncate">{it.model}</p>
-                      {(it.storage || it.condition) && (
-                        <p className="text-[9px] text-[#b8b8b8] leading-tight truncate">{[it.storage, it.condition].filter(Boolean).join(" · ")}</p>
-                      )}
-                    </div>
-                    <div className="shrink-0 text-right">
-                      {!it.price ? (
-                        <p className="text-[9px] font-semibold text-[#e6e6e6] leading-tight">Quoted</p>
-                      ) : (
-                        <p className="text-[11px] font-extrabold text-[#00c853] leading-tight">${it.price * it.quantity}</p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-2 pt-2 border-t border-white/10 flex items-baseline justify-between gap-2">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#e6e6e6]">Total</span>
-                {totalDollars === 0 && hasPending ? (
-                  <span className="text-[17px] font-extrabold text-[#e6e6e6]">TBD</span>
-                ) : (
-                  <span className="text-[17px] font-extrabold text-[#00c853]">${totalDollars}{hasPending && <span className="text-[9px] text-[#b8b8b8] font-semibold align-middle ml-1">+ quoted</span>}</span>
-                )}
-              </div>
-            </div>
-          );
-        })()}
       </div>
     </aside>
   );
@@ -11583,8 +11511,17 @@ export default function Home() {
       {/* STEP: CONTACT INFO */}
       {step === "contact" && page === "home" && payout && ((model && condition) || cartItems.length > 0) && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          {/* pb-28 mobile to clear the sticky CTA bar — see checkout. */}
-          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-28 lg:pb-8 lg:flex lg:gap-8 lg:items-start">
+          {/* pb-28 mobile to clear the sticky CTA bar — see checkout.
+              xl:items-stretch (full-screen desktops, ≥1280px) lets the
+              Order Summary aside stretch to match the form column's
+              tall height — that's what gives the sticky-top-24 inside
+              checkoutSummary actual room to engage and follow scroll.
+              At lg (1024–1279px, narrow laptops) we keep items-start so
+              the aside doesn't get a tall blank space below it; sticky
+              still works there but un-pins as soon as content scrolls
+              past the aside's natural height. Skywalker spec'd
+              "only on full screen" — that maps to xl+ here. */}
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-28 lg:pb-8 lg:flex lg:gap-8 lg:items-start xl:items-stretch">
             {/* Any cart contents → use the multi-line Order Summary
                 (works for 1+ items and survives a funnel-state reset). */}
             {cartItems.length > 0 ? checkoutSummary : selectionPanel}
