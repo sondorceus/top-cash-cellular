@@ -7891,7 +7891,11 @@ export default function Home() {
                       onClick={() => {
                         setCategory(d.cat);
                         setDeviceType(d.dt);
-                        setModel({ id: d.model, label: d.title, base: d.floor });
+                        // image: d.photo — was missing; without it the
+                        // sticky selectionPanel on the left rail rendered
+                        // a blank image slot for quick-quote starts.
+                        // Skywalker 2026-05-25.
+                        setModel({ id: d.model, label: d.title, base: d.floor, image: d.photo });
                         popThenRun(`feat-${d.model}`, () => { setStep("condition"); pushHistory("condition"); });
                       }}
                       className={`group bg-white/[0.07] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press tcc-anim-border ${funnelPop === `feat-${d.model}` ? "tap-confirm" : ""}`}
@@ -11135,8 +11139,12 @@ export default function Home() {
       {step === "checkout" && page === "home" && ((model && condition) || cartItems.length > 0) && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
           {/* pb-28 lg:pb-8 — extra bottom padding on mobile so the sticky
-              bottom CTA (rendered above) doesn't overlap the last form row. */}
-          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-28 lg:pb-8 lg:flex lg:gap-8 lg:items-start">
+              bottom CTA (rendered above) doesn't overlap the last form row.
+              xl:items-stretch matches the contact step — gives the
+              checkoutSummary aside scroll room on full-screen desktops
+              (≥1280px) so the sticky-top-24 inside it actually follows
+              scroll instead of un-pinning at its natural height. */}
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-28 lg:pb-8 lg:flex lg:gap-8 lg:items-start xl:items-stretch">
             {checkoutSummary}
             <div className="flex-1 min-w-0">
             <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
@@ -11290,8 +11298,10 @@ export default function Home() {
       {/* STEP: PAYOUT METHOD */}
       {step === "payout" && page === "home" && (
         <section className="animate-[fadeIn_0.3s_ease-out]">
-          {/* pb-28 mobile to clear the sticky CTA bar — see checkout. */}
-          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-28 lg:pb-8 lg:flex lg:gap-8 lg:items-start">
+          {/* pb-28 mobile to clear the sticky CTA bar — see checkout.
+              xl:items-stretch matches checkout + contact so the
+              Order Summary aside stays sticky across all 3 long pages. */}
+          <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-28 lg:pb-8 lg:flex lg:gap-8 lg:items-start xl:items-stretch">
             {/* Any cart contents → use the multi-line Order Summary
                 (works for 1+ items and survives a funnel-state reset).
                 Funnel state without cart → editable selection panel. */}
