@@ -14371,14 +14371,7 @@ export default function Home() {
                               swipeRef.current = null;
                             }}
                           >
-                            {/* Red "Delete" panel revealed beneath the row as it swipes left. */}
-                            <div className="absolute inset-0 flex items-center justify-end pr-5 bg-red-500/90 rounded-2xl text-white text-sm font-extrabold pointer-events-none select-none" aria-hidden>
-                              <span className="inline-flex items-center gap-1.5">
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22m-5 0V5a2 2 0 00-2-2H8a2 2 0 00-2 2v2" /></svg>
-                                Delete
-                              </span>
-                            </div>
-                            <div className="swipe-target relative" onClick={() => { setCartOpen(false); setPage("home"); setStep("checkout"); pushHistory("checkout"); window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }); }} style={{ background: "inherit" }}>
+                            <div className="swipe-target" onClick={() => { setCartOpen(false); setPage("home"); setStep("checkout"); pushHistory("checkout"); window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }); }}>
                           <div className={`tcc-card rounded-2xl ${pad} cursor-pointer`}>
                             <div className="flex items-start gap-3 mb-2">
                               <div className={`${imgW} rounded-xl bg-[rgba(15,15,15,0.55)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden p-1.5`}>
