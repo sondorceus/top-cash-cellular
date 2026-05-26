@@ -4363,20 +4363,9 @@ export default function Home() {
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [slotError, setSlotError] = useState<string | null>(null);
-  // Fetch open upcoming slots whenever the user lands on the contact
-  // step with handoffMethod=local. Filtered to today + later, open
-  // only. Cap at 18 displayed.
-  useEffect(() => {
-    if (step !== "contact" || handoffMethod !== "local") return;
-    let alive = true;
-    setSlotsLoading(true);
-    const fromDate = new Date().toISOString().slice(0, 10);
-    listSlots({ openOnly: true, fromDate })
-      .then((s) => { if (alive) setAvailableSlots(s.slice(0, 18)); })
-      .catch(() => {})
-      .finally(() => { if (alive) setSlotsLoading(false); });
-    return () => { alive = false; };
-  }, [step, handoffMethod]);
+  // Slot-loading effect was here originally — moved below the cart
+  // derivations (cartNeedsLocal) so a mixed cart triggers slot load
+  // even when the cart-level handoffMethod is "ship". See ~line 4730.
   // Google Places autocomplete on the shipping street field. Goes
   // through our own /api/places-autocomplete and /api/places-details
   // proxies (which talk to Google's Places API New server-to-server)
@@ -4718,6 +4707,31 @@ export default function Home() {
     ? cartItems.some(it => (it.handoff ?? "local") === "local")
     : handoffMethod === "local";
   const cartIsMixed = cartNeedsShip && cartNeedsLocal;
+
+  // Swipe-left-to-delete tracker shared by every cart row. Touch handlers
+  // on the row record startX + the inner element, then translate it on
+  // touchmove. If the drag passes the threshold on touchend the row
+  // slides off and the cart item is removed; otherwise it snaps back.
+  const swipeRef = useRef<{ startX: number; el: HTMLElement; dx: number } | null>(null);
+
+  // Fetch open upcoming slots whenever the user lands on the contact step
+  // with ANY local items in the cart — pure-local OR mixed. Previous
+  // gate of handoffMethod === "local" missed mixed carts (where cart-
+  // level handoffMethod might be "ship" because that's what the customer
+  // most-recently set on the funnel), so the slot picker showed an
+  // empty list even though submit required a slot pick.
+  useEffect(() => {
+    if (step !== "contact" || !cartNeedsLocal) return;
+    let alive = true;
+    setSlotsLoading(true);
+    const fromDate = new Date().toISOString().slice(0, 10);
+    listSlots({ openOnly: true, fromDate })
+      .then((s) => { if (alive) setAvailableSlots(s.slice(0, 18)); })
+      .catch(() => {})
+      .finally(() => { if (alive) setSlotsLoading(false); });
+    return () => { alive = false; };
+  }, [step, cartNeedsLocal]);
+
   // Bump counter — increments every time an item is added so the cart
   // icon + badge can re-animate (key change forces remount + keyframe).
   const [cartBump, setCartBump] = useState(0);
@@ -7808,9 +7822,13 @@ export default function Home() {
               Reverted to clean dark hero. */}
           {/* Promo banner moved into the top nav (between logo and menu). */}
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
-            {/* Returning-visitor greeting — shows on landing when a prior
-                submission left the tcc-returning marker. */}
-            {welcomeBack && (
+            {/* Returning-visitor greeting — only shown when the visitor is
+                actually signed in. Previously fired off the tcc-returning
+                marker alone (set after any past submission), which read as
+                a fake "logged in" message even to anonymous users who'd
+                just submitted once before. Now both the local marker AND
+                a live customerUser session must exist. */}
+            {welcomeBack && customerUser && (
               <div className="mb-5 bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
                 <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" /></svg>
                 <div className="flex-1 min-w-0">
@@ -14317,7 +14335,51 @@ export default function Home() {
                         const imgSrc = item.image || lookupImage(item.modelId);
                         const itemHandoff: "ship" | "local" = item.handoff ?? "local";
                         return (
-                          <div key={i} onClick={() => { setCartOpen(false); setPage("home"); setStep("checkout"); pushHistory("checkout"); window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }); }} className={`tcc-card rounded-2xl ${pad} cursor-pointer`}>
+                          <div
+                            key={i}
+                            className="relative overflow-hidden rounded-2xl"
+                            onTouchStart={(e) => {
+                              const target = (e.currentTarget.querySelector(".swipe-target") as HTMLElement) || null;
+                              if (!target) return;
+                              swipeRef.current = { startX: e.touches[0].clientX, el: target, dx: 0 };
+                              target.style.transition = "none";
+                            }}
+                            onTouchMove={(e) => {
+                              const ref = swipeRef.current;
+                              if (!ref) return;
+                              const dx = e.touches[0].clientX - ref.startX;
+                              const clamped = Math.min(0, Math.max(-140, dx));
+                              ref.dx = clamped;
+                              ref.el.style.transform = `translateX(${clamped}px)`;
+                            }}
+                            onTouchEnd={() => {
+                              const ref = swipeRef.current;
+                              if (!ref) return;
+                              ref.el.style.transition = "transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease";
+                              if (ref.dx < -80) {
+                                ref.el.style.transform = "translateX(-110%)";
+                                ref.el.style.opacity = "0";
+                                const snap = item;
+                                setTimeout(() => {
+                                  setCartItems(prev => prev.filter((_, idx) => idx !== i));
+                                  setCartToast({ model: snap.model, price: snap.price * snap.quantity, kind: "remove" });
+                                  setTimeout(() => setCartToast(null), 2400);
+                                }, 200);
+                              } else {
+                                ref.el.style.transform = "translateX(0)";
+                              }
+                              swipeRef.current = null;
+                            }}
+                          >
+                            {/* Red "Delete" panel revealed beneath the row as it swipes left. */}
+                            <div className="absolute inset-0 flex items-center justify-end pr-5 bg-red-500/90 rounded-2xl text-white text-sm font-extrabold pointer-events-none select-none" aria-hidden>
+                              <span className="inline-flex items-center gap-1.5">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22m-5 0V5a2 2 0 00-2-2H8a2 2 0 00-2 2v2" /></svg>
+                                Delete
+                              </span>
+                            </div>
+                            <div className="swipe-target relative" onClick={() => { setCartOpen(false); setPage("home"); setStep("checkout"); pushHistory("checkout"); window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }); }} style={{ background: "inherit" }}>
+                          <div className={`tcc-card rounded-2xl ${pad} cursor-pointer`}>
                             <div className="flex items-start gap-3 mb-2">
                               <div className={`${imgW} rounded-xl bg-[rgba(15,15,15,0.55)] border border-white/12 flex items-center justify-center shrink-0 overflow-hidden p-1.5`}>
                                 {imgSrc ? (
@@ -14365,6 +14427,8 @@ export default function Home() {
                                 <p className={`text-white font-extrabold ${priceSz} opacity-90`}>Quoted via email or text</p>
                               )}
                             </div>
+                          </div>
+                          </div>
                           </div>
                         );
                       };
