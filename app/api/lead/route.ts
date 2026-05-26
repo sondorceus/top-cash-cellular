@@ -194,9 +194,12 @@ export async function POST(req: NextRequest) {
   // — admin status SMS still gates on the smsOptIn flag saved on the
   // lead, so we won't accidentally text a ship customer who only
   // wanted us to print it on the label.
+  // Treat "mixed" the same as "ship" for SMS-consent purposes — both
+  // collect the phone for the FedEx label, not for marketing texts.
   const isShipHandoff =
     handoff && typeof handoff === "object" &&
-    (handoff as { method?: string }).method === "ship";
+    ((handoff as { method?: string }).method === "ship" ||
+     (handoff as { method?: string }).method === "mixed");
   if (
     phone && typeof phone === "string" && phone.replace(/\D/g, "").length >= 10 &&
     smsOptIn !== true && !isShipHandoff
@@ -219,7 +222,8 @@ export async function POST(req: NextRequest) {
   // Skywalker 2026-05-18.
   if (
     handoff && typeof handoff === "object" &&
-    (handoff as { method?: string }).method === "ship" &&
+    ((handoff as { method?: string }).method === "ship" ||
+     (handoff as { method?: string }).method === "mixed") &&
     typeof payout === "string" && payout.toLowerCase() === "cash"
   ) {
     payout = "Cash App (coerced — Cash not valid for shipping)";
@@ -426,6 +430,9 @@ export async function POST(req: NextRequest) {
     brokenFunctional?: boolean | null;
     paidOff?: boolean | null;
     imei?: string;
+    // Per-item handoff (ship | local) for mixed-cart orders so staff
+    // know which devices to expect in the FedEx box vs at the meetup.
+    handoff?: "ship" | "local";
   };
   const deviceList = Array.isArray(devices) ? (devices as DeviceEntry[]).filter((d) => d && (d.model || d.condition)) : [];
   const isMulti = deviceList.length > 1;
@@ -433,7 +440,10 @@ export async function POST(req: NextRequest) {
   if (isMulti) {
     multiLines.push(`Devices: ${deviceList.length}`);
     deviceList.forEach((d, i) => {
-      multiLines.push(`  ${i + 1}. ${cleanField(d.model, 120) || "—"}${d.storage ? ` · ${cleanField(d.storage, 30)}` : ""}${d.condition ? ` · ${cleanField(d.condition, 60)}` : ""}${d.quote ? ` · $${Number(d.quote) || 0}` : ""}${d.quantity && d.quantity > 1 ? ` (×${Number(d.quantity)})` : ""}`);
+      const handoffTag = d.handoff === "ship" ? " · 📦 SHIP"
+                       : d.handoff === "local" ? " · 🤝 LOCAL"
+                       : "";
+      multiLines.push(`  ${i + 1}. ${cleanField(d.model, 120) || "—"}${d.storage ? ` · ${cleanField(d.storage, 30)}` : ""}${d.condition ? ` · ${cleanField(d.condition, 60)}` : ""}${d.quote ? ` · $${Number(d.quote) || 0}` : ""}${d.quantity && d.quantity > 1 ? ` (×${Number(d.quantity)})` : ""}${handoffTag}`);
       // Per-device specs — indented under the device line so the admin
       // parser can pick them up via the "[Spec]: <value>" prefix. Each
       // line is the same key the single-device flow uses (Chip / RAM /
@@ -601,21 +611,22 @@ export async function POST(req: NextRequest) {
   const handoffLines: string[] = [];
   if (handoff && typeof handoff === "object") {
     const h = handoff as { method?: string; address?: Record<string, string>; area?: string; slot?: { id: string; date: string; time: string; label?: string } };
-    if (h.method === "ship" && h.address) {
-      // Address parts are customer-controlled — sanitize through
-      // cleanField() to defuse MC marker injection (same threat as
-      // name/model/etc).
+    // Helper — renders an address block. Address parts are
+    // customer-controlled, so sanitize through cleanField().
+    const renderShipBlock = (header: string) => {
+      if (!h.address) return;
       const street = cleanField(h.address.street, 120);
       const unit   = cleanField(h.address.unit, 40);
       const city   = cleanField(h.address.city, 80);
       const state  = cleanField(h.address.state, 2);
       const zip    = cleanField(h.address.zip, 10);
-      handoffLines.push("--- Handoff: SHIPPING ---");
+      handoffLines.push(header);
       handoffLines.push(`Address: ${street}${unit ? `, ${unit}` : ""}, ${city}, ${state} ${zip}`);
       handoffLines.push("Packaging: Seller sources own box (we don't ship kits).");
       handoffLines.push("Action: FedEx label auto-mints at submit (sandbox until prod cert lands). Confirm receipt + inspect on arrival.");
-    } else if (h.method === "local") {
-      handoffLines.push("--- Handoff: LOCAL MEETUP ---");
+    };
+    const renderLocalBlock = (header: string) => {
+      handoffLines.push(header);
       if (h.area) handoffLines.push(`Area: ${cleanField(h.area, 80)}`);
       if (h.slot) {
         const [hh, mm] = String(h.slot.time || "").split(":").map(Number);
@@ -629,6 +640,21 @@ export async function POST(req: NextRequest) {
       } else {
         handoffLines.push("Action: Reach out to schedule meetup time and location.");
       }
+    };
+    if (h.method === "ship") {
+      renderShipBlock("--- Handoff: SHIPPING ---");
+    } else if (h.method === "local") {
+      renderLocalBlock("--- Handoff: LOCAL MEETUP ---");
+    } else if (h.method === "mixed") {
+      // Mixed cart — customer had ship items AND local items in the
+      // same order. Render both fulfillment blocks; per-device .handoff
+      // on `devices` below tells staff which item goes where. FedEx
+      // label still auto-mints (address present), and the chosen slot
+      // covers the local items.
+      handoffLines.push("--- Handoff: MIXED (some ship, some local) ---");
+      handoffLines.push("Per-device handoff is listed in the devices section below.");
+      renderShipBlock("  --- Shipping items ---");
+      renderLocalBlock("  --- Local items ---");
     }
   }
 
@@ -1015,7 +1041,11 @@ Pick the best channel per device. Be concise.`;
     // through with an empty phone field. Don't gate the lead save —
     // we still want the customer's submission in the system; staff can
     // text them to collect the missing data + regenerate the label.
-    if (h.method === "ship" && leadId) {
+    // Mixed cart handoff includes an address for the ship items, so the
+    // FedEx label needs to fire on "mixed" as well as "ship". The local
+    // items are tracked separately via the slot booked client-side.
+    const needsLabel = h.method === "ship" || h.method === "mixed";
+    if (needsLabel && leadId) {
       const missing: string[] = [];
       if (!hasFullAddress) missing.push("address");
       if (phoneDigits.length < 10) missing.push("phone");
@@ -1036,7 +1066,7 @@ Pick the best channel per device. Be concise.`;
         } catch {}
       }
     }
-    if (h.method === "ship" && hasFullAddress && phoneDigits.length >= 10) {
+    if (needsLabel && hasFullAddress && phoneDigits.length >= 10) {
       // Multi-device shipments fit in ONE box. Total weight = sum of
       // per-device defaults + 2 lb packaging. Skywalker 2026-05-18:
       // FedEx bills the actual scanned weight regardless of what we

@@ -4696,9 +4696,28 @@ export default function Home() {
     brokenFunctional?: boolean | null;
     paidOff?: boolean | null;
     imei?: string;
+    // Per-item handoff — captured at add-to-cart time so a mixed cart
+    // (some items local, others shipped) preserves each customer's intent
+    // instead of last-write-wins on a cart-level handoffMethod. Optional
+    // so legacy localStorage payloads still hydrate; migration backfills
+    // from the cart-level handoffMethod at load time.
+    handoff?: "ship" | "local";
   };
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+
+  // Derived: which handoff methods the cart actually needs based on per-item
+  // .handoff. When the cart is empty we fall back to cart-level handoffMethod
+  // so the initial funnel (pre-add) still drives ship/local UI from the
+  // dual-path landing buttons. When the cart is mixed, BOTH flags are true,
+  // so the contact step renders both inputs + submit handles both fulfillments.
+  const cartNeedsShip = cartItems.length > 0
+    ? cartItems.some(it => (it.handoff ?? "local") === "ship")
+    : handoffMethod === "ship";
+  const cartNeedsLocal = cartItems.length > 0
+    ? cartItems.some(it => (it.handoff ?? "local") === "local")
+    : handoffMethod === "local";
+  const cartIsMixed = cartNeedsShip && cartNeedsLocal;
   // Bump counter — increments every time an item is added so the cart
   // icon + badge can re-animate (key change forces remount + keyframe).
   const [cartBump, setCartBump] = useState(0);
@@ -4972,7 +4991,16 @@ export default function Home() {
       if (raw) {
         const c = JSON.parse(raw);
         if (Array.isArray(c.items) && Date.now() - (c.ts || 0) < 7 * 24 * 60 * 60 * 1000 && c.items.length > 0) {
-          setCartItems(c.items);
+          // Legacy carts saved before per-item handoff have no `handoff`
+          // field. Backfill from the saved cart-level handoffMethod (also
+          // persisted in tcc-cart) — falling back to "local" since that's
+          // the most common Austin path.
+          const legacyHandoff: "ship" | "local" = c.handoffMethod === "ship" ? "ship" : "local";
+          const migrated = c.items.map((it: CartItem) => ({
+            ...it,
+            handoff: it.handoff ?? legacyHandoff,
+          }));
+          setCartItems(migrated);
         }
       }
     } catch {}
@@ -5181,12 +5209,16 @@ export default function Home() {
     if (!cartHydrated.current) return;
     try {
       if (cartItems.length > 0) {
-        localStorage.setItem("tcc-cart", JSON.stringify({ items: cartItems, ts: Date.now() }));
+        // Persist cart-level handoffMethod alongside items so a legacy
+        // cart (saved before per-item handoff existed) can still migrate
+        // its items to the right default on next hydrate. Going forward
+        // items carry their own .handoff so this is just a safety net.
+        localStorage.setItem("tcc-cart", JSON.stringify({ items: cartItems, handoffMethod, ts: Date.now() }));
       } else {
         localStorage.removeItem("tcc-cart");
       }
     } catch {}
-  }, [cartItems]);
+  }, [cartItems, handoffMethod]);
 
   useEffect(() => {
     if (step === "device") { localStorage.removeItem("tcc-session"); return; }
@@ -10989,14 +11021,23 @@ export default function Home() {
                       brokenFunctional: condition.id === "broken" ? brokenFunctional : undefined,
                       paidOff: paidOff ?? undefined,
                       imei: imeiInput.replace(/\D/g, "") || undefined,
+                      // Snapshot the handoff method as the user chose it for
+                      // THIS item. Falls back to "local" if they somehow
+                      // reached add-to-cart without picking — but the funnel
+                      // gates this earlier, so the fallback is defensive.
+                      handoff: handoffMethod ?? "local",
                     };
                     setCartItems(prev => {
-                      const key = `${model.id}-${storage?.label || ''}-${condition.label}`;
-                      const existing = prev.find(i => `${i.modelId}-${i.storage}-${i.condition}` === key);
-                      // Re-adding the same config bumps the quantity by 1
-                      // and refreshes the price + specs. The cart's +/- pills
-                      // can also adjust.
-                      if (existing) return prev.map(i => `${i.modelId}-${i.storage}-${i.condition}` === key ? { ...itemSnapshot, quantity: i.quantity + 1, image: model.image ?? i.image } : i);
+                      // Dedup includes handoff — same config added as
+                      // local AND as ship stays as TWO cart lines, so a
+                      // continuously bouncing customer doesn't get their
+                      // first choice silently rewritten.
+                      const itemHandoff = itemSnapshot.handoff ?? "local";
+                      const key = `${model.id}-${storage?.label || ''}-${condition.label}-${itemHandoff}`;
+                      const existing = prev.find(i => `${i.modelId}-${i.storage}-${i.condition}-${i.handoff ?? "local"}` === key);
+                      // Re-adding the same config + same handoff bumps the
+                      // quantity by 1 and refreshes the price + specs.
+                      if (existing) return prev.map(i => `${i.modelId}-${i.storage}-${i.condition}-${i.handoff ?? "local"}` === key ? { ...itemSnapshot, quantity: i.quantity + 1, image: model.image ?? i.image } : i);
                       return [...prev, itemSnapshot];
                     });
                     setCartBump(b => b + 1);
@@ -11650,12 +11691,15 @@ export default function Home() {
                   }
                 }
               };
-              if (!handoffMethod) {
+              // Per-item handoff means cart can need ship, local, or BOTH. Use
+              // the derived needs flags so a mixed cart validates against both
+              // input groups (address + slot).
+              if (!cartNeedsShip && !cartNeedsLocal) {
                 alert("Pick a handoff method (Ship or Local) first.");
                 focusByQuery(['[data-validate="handoff"]']);
                 return;
               }
-              if (handoffMethod === "ship" && (!shipStreet || !shipCity || !shipState || !shipZip)) {
+              if (cartNeedsShip && (!shipStreet || !shipCity || !shipState || !shipZip)) {
                 alert("Please fill in your full shipping address.");
                 focusByQuery([
                   !shipStreet ? '[data-validate="ship-street"]' : "",
@@ -11668,7 +11712,7 @@ export default function Home() {
               // Shipping requires a 10-digit phone — FedEx prints it on
               // the label. JS guard so we never hit the server's 400 with
               // a generic browser error. Skywalker 2026-05-19.
-              if (handoffMethod === "ship") {
+              if (cartNeedsShip) {
                 const phoneDigits = phone.replace(/\D/g, "");
                 if (phoneDigits.length < 10) {
                   setPhoneOpen(true);
@@ -11676,6 +11720,14 @@ export default function Home() {
                   focusByQuery(['[data-validate="phone"]']);
                   return;
                 }
+              }
+              // Local meetup requires a selected slot. Mixed carts must
+              // pick a slot for the local items even though shipping covers
+              // the others.
+              if (cartNeedsLocal && !selectedSlot) {
+                alert("Please pick a meetup window for your local items.");
+                focusByQuery(['[data-validate="slot"]']);
+                return;
               }
               setSubmittingLead(true);
               // Payout value carries the confirmed handle (Cashtag /
@@ -11692,7 +11744,7 @@ export default function Home() {
                 // re-pick instead of losing data / getting a confusing
                 // half-submitted state.
                 let bookedSlotInfo: { id: string; date: string; time: string; label?: string } | undefined;
-                if (handoffMethod === "local" && selectedSlot) {
+                if (cartNeedsLocal && selectedSlot) {
                   const r = await bookSlot(selectedSlot.id, {
                     sellerName: name,
                     sellerPhone: phone || undefined,
@@ -11714,7 +11766,17 @@ export default function Home() {
                   }
                   bookedSlotInfo = { id: selectedSlot.id, date: selectedSlot.date, time: selectedSlot.time, label: selectedSlot.label };
                 }
-                const handoffPayload = handoffMethod === "ship"
+                // Mixed cart: send both shipping address AND slot info under a
+                // "mixed" method so the backend can split fulfillment. Pure
+                // single-method orders keep their original payload shape for
+                // backend compatibility.
+                const handoffPayload = cartIsMixed
+                  ? {
+                      method: "mixed",
+                      address: { street: shipStreet, unit: shipUnit, city: shipCity, state: shipState, zip: shipZip },
+                      slot: bookedSlotInfo,
+                    }
+                  : cartNeedsShip
                   ? { method: "ship", address: { street: shipStreet, unit: shipUnit, city: shipCity, state: shipState, zip: shipZip } }
                   : { method: "local", slot: bookedSlotInfo };
                 // Snapshot the currently-edited photos into the active
@@ -11764,6 +11826,9 @@ export default function Home() {
                       brokenFunctional: it.brokenFunctional,
                       paidOff: it.paidOff,
                       imei: it.imei,
+                      // Per-item handoff so the backend can split mixed
+                      // carts into ship vs local fulfillment groups.
+                      handoff: it.handoff ?? "local",
                     };
                   });
                   const totalQuote = devicesPayload.reduce((s, d) => s + (d.quote || 0), 0);
@@ -11956,39 +12021,45 @@ export default function Home() {
                   </>
                 )}
 
-                {handoffMethod === "ship" && (
+                {cartNeedsShip && (
                   <div className="space-y-2">
+                    {cartIsMixed && (
+                      <div className="mb-2 inline-flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#9fd9fb] bg-[#4fc3f7]/12 border border-[#4fc3f7]/40 rounded-full px-2.5 py-1">
+                        Shipping items · {cartItems.filter(it => (it.handoff ?? "local") === "ship").length}
+                      </div>
+                    )}
                     <div className="flex items-center justify-between mb-1">
                       <label className="block text-xs font-medium text-[#e6e6e6] uppercase tracking-wider">Shipping address</label>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          // Switch ship -> local. Same conditional-
-                          // confirm logic as before, but now using the
-                          // styled in-app modal instead of confirm() so
-                          // the prompt matches the rest of the dark UI.
-                          // On success, a small toast fades in for ~2.5s
-                          // as positive feedback the switch took effect.
-                          const doSwitch = () => {
-                            setHandoffMethod("local");
-                            setLocalArea(null);
-                            setActionToast("Switched to local meetup");
-                            setTimeout(() => setActionToast(null), 2500);
-                          };
-                          const hasShipData = !!(
-                            shipStreet.trim() || shipCity.trim() || shipZip.trim()
-                          );
-                          if (!hasShipData) { doSwitch(); return; }
-                          setConfirmDialog({
-                            title: "Switch to local meetup?",
-                            body: "Your shipping address stays saved if you switch back.",
-                            confirmLabel: "Switch to local",
-                            cancelLabel: "Stay on shipping",
-                            onConfirm: doSwitch,
-                          });
-                        }}
-                        className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer"
-                      >Switch to local meetup instead</button>
+                      {/* Cart-level method toggle only makes sense for a
+                          single-method cart. When the cart is mixed, both
+                          handoff sections show together, so this switch
+                          would just hide the inputs the customer still
+                          needs — hide it. */}
+                      {!cartIsMixed && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const doSwitch = () => {
+                              setHandoffMethod("local");
+                              setLocalArea(null);
+                              setActionToast("Switched to local meetup");
+                              setTimeout(() => setActionToast(null), 2500);
+                            };
+                            const hasShipData = !!(
+                              shipStreet.trim() || shipCity.trim() || shipZip.trim()
+                            );
+                            if (!hasShipData) { doSwitch(); return; }
+                            setConfirmDialog({
+                              title: "Switch to local meetup?",
+                              body: "Your shipping address stays saved if you switch back.",
+                              confirmLabel: "Switch to local",
+                              cancelLabel: "Stay on shipping",
+                              onConfirm: doSwitch,
+                            });
+                          }}
+                          className="text-[11px] text-[#888] hover:text-[#00c853] underline cursor-pointer"
+                        >Switch to local meetup instead</button>
+                      )}
                     </div>
                     {/* Address autocomplete — plain input + custom dropdown,
                         backed by /api/places-autocomplete (suggestions) and
@@ -12046,30 +12117,28 @@ export default function Home() {
                   </div>
                 )}
 
-                {handoffMethod === "local" && (
+                {cartNeedsLocal && (
                   <div className="space-y-3">
+                    {cartIsMixed && (
+                      <div className="mb-2 inline-flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#7be8a8] bg-[#00c853]/15 border border-[#00c853]/45 rounded-full px-2.5 py-1">
+                        Local items · {cartItems.filter(it => (it.handoff ?? "local") === "local").length}
+                      </div>
+                    )}
                     <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#00c853]/5 border border-[#00c853]/20">
                       <svg className="w-5 h-5 text-[#00c853] shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-1">
                           <p className="text-white text-sm font-bold leading-tight">Local meetup</p>
+                          {/* Hide the cart-level switch when the cart is
+                              mixed — both sections need to stay visible. */}
+                          {!cartIsMixed && (
                           <button
                             type="button"
                             onClick={() => {
-                              // Switch local -> ship via the styled
-                              // modal. Mirrors the ship->local handler
-                              // above; only prompts when there's actual
-                              // local data to lose, and shows the
-                              // success toast on completion.
                               const doSwitch = () => {
                                 setHandoffMethod("ship");
                                 setActionToast("Switched to shipping");
                                 setTimeout(() => setActionToast(null), 2500);
-                                // Local's slot picker can render much taller than
-                                // ship's address form. Without an explicit scroll
-                                // the page reflows and dumps the user at the
-                                // footer. Wait a tick for the ship section to
-                                // mount, then scroll its address into view.
                                 setTimeout(() => {
                                   shipStreetInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
                                 }, 50);
@@ -12088,6 +12157,7 @@ export default function Home() {
                           >
                             Switch to shipping
                           </button>
+                          )}
                         </div>
                         <p className="text-[#bdbdbd] text-xs leading-snug">
                           {availableSlots.length > 0
@@ -12101,7 +12171,7 @@ export default function Home() {
                         published open slots via /admin/slots. Atomic
                         book on form submit prevents double-booking. */}
                     {(slotsLoading || availableSlots.length > 0) && (
-                      <div>
+                      <div data-validate="slot">
                         <label className="block text-xs font-medium text-[#e6e6e6] mb-2 uppercase tracking-wider">Pick a meetup time</label>
                         {slotsLoading ? (
                           <p className="text-[11px] text-[#888]">Loading available windows…</p>
@@ -14175,13 +14245,7 @@ export default function Home() {
                       const titleSz = tier === "lg" ? "text-[15px]" : tier === "md" ? "text-[14px]" : "text-[13px]";
                       const subSz   = tier === "lg" ? "text-[12px]" : "text-[11px]";
                       const priceSz = tier === "lg" ? "text-xl"  : tier === "md" ? "text-lg" : "text-base";
-                      // qty steppers — 36px on mobile (was 24-28px, well
-                      // under the 44px tap-target floor), compact 28px on
-                      // desktop where a mouse makes precision easy.
-                      // Skywalker 2026-05-19 iOS pass.
                       const qtyBtn  = "w-9 h-9 text-base lg:w-7 lg:h-7 lg:text-sm";
-                      // Fallback: look up the device image by modelId in case
-                      // a cart item was stored before we started saving image.
                       const lookupImage = (modelId: string): string | undefined => {
                         for (const series of IPHONE_SERIES) {
                           const v = series.variants.find(x => x.id === modelId);
@@ -14189,8 +14253,19 @@ export default function Home() {
                         }
                         return undefined;
                       };
-                      return cartItems.map((item, i) => {
+                      // Partition by per-item handoff so a mixed cart shows
+                      // two clearly-separated sections — "Local meetup" /
+                      // "Ship in" — instead of one ambiguous list. Preserve
+                      // each item's original index (`i`) so remove + qty
+                      // buttons still target the right cartItems entry.
+                      type Indexed = { item: CartItem; i: number };
+                      const indexed: Indexed[] = cartItems.map((item, i) => ({ item, i }));
+                      const localItems = indexed.filter(({ item }) => (item.handoff ?? "local") === "local");
+                      const shipItems = indexed.filter(({ item }) => (item.handoff ?? "local") === "ship");
+
+                      const renderRow = ({ item, i }: Indexed) => {
                         const imgSrc = item.image || lookupImage(item.modelId);
+                        const itemHandoff: "ship" | "local" = item.handoff ?? "local";
                         return (
                           <div key={i} onClick={() => { setCartOpen(false); setPage("home"); setStep("checkout"); pushHistory("checkout"); window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }); }} className={`tcc-card rounded-2xl ${pad} cursor-pointer`}>
                             <div className="flex items-start gap-3 mb-2">
@@ -14208,10 +14283,31 @@ export default function Home() {
                               <button onClick={(e) => { e.stopPropagation(); setCartItems(prev => prev.filter((_, idx) => idx !== i)); setCartToast({ model: item.model, price: item.price * item.quantity, kind: "remove" }); setTimeout(() => setCartToast(null), 2400); }} aria-label="Remove from cart" className="text-[#b8b8b8] hover:text-red-400 text-xs font-bold underline-offset-2 hover:underline transition cursor-pointer shrink-0 px-2 py-1.5 -mr-1 -mt-1">Remove</button>
                             </div>
                             <div className="flex items-center justify-between gap-3 mt-2 pt-2 border-t border-white/10">
-                              <div className="inline-flex items-center gap-2 bg-white/5 rounded-full px-1 py-1">
-                                <button onClick={(e) => { e.stopPropagation(); setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it)); }} aria-label="Decrease quantity" className={`${qtyBtn} rounded-full bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center cursor-pointer transition`}>−</button>
-                                <span className="text-white text-sm font-extrabold min-w-[20px] text-center">{item.quantity}</span>
-                                <button onClick={(e) => { e.stopPropagation(); setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it)); }} aria-label="Increase quantity" className={`${qtyBtn} rounded-full bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center cursor-pointer transition`}>+</button>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <div className="inline-flex items-center gap-2 bg-white/5 rounded-full px-1 py-1">
+                                  <button onClick={(e) => { e.stopPropagation(); setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it)); }} aria-label="Decrease quantity" className={`${qtyBtn} rounded-full bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center cursor-pointer transition`}>−</button>
+                                  <span className="text-white text-sm font-extrabold min-w-[20px] text-center">{item.quantity}</span>
+                                  <button onClick={(e) => { e.stopPropagation(); setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it)); }} aria-label="Increase quantity" className={`${qtyBtn} rounded-full bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center cursor-pointer transition`}>+</button>
+                                </div>
+                                {/* Per-item handoff toggle — lets a customer
+                                    fix a single line's handoff without
+                                    re-adding the device. */}
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    const next: "ship" | "local" = itemHandoff === "ship" ? "local" : "ship";
+                                    setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, handoff: next } : it));
+                                  }}
+                                  className={`inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-full border cursor-pointer transition ${
+                                    itemHandoff === "local"
+                                      ? "bg-[#00c853]/15 border-[#00c853]/45 text-[#7be8a8] hover:bg-[#00c853]/22"
+                                      : "bg-[#4fc3f7]/12 border-[#4fc3f7]/40 text-[#9fd9fb] hover:bg-[#4fc3f7]/18"
+                                  }`}
+                                  title={`Switch this item to ${itemHandoff === "local" ? "shipping" : "local meetup"}`}
+                                >
+                                  {itemHandoff === "local" ? "Local" : "Ship"} ⇄
+                                </button>
                               </div>
                               {item.price > 0 ? (
                                 <p className={`text-[#00c853] font-extrabold ${priceSz}`} style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price * item.quantity}</p>
@@ -14221,7 +14317,40 @@ export default function Home() {
                             </div>
                           </div>
                         );
-                      });
+                      };
+
+                      const groupHeader = (label: string, count: number, kind: "local" | "ship") => (
+                        <div className="flex items-center gap-2 pt-1">
+                          <span className={`inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-[0.15em] px-2 py-0.5 rounded-full border ${
+                            kind === "local"
+                              ? "bg-[#00c853]/15 border-[#00c853]/45 text-[#7be8a8]"
+                              : "bg-[#4fc3f7]/12 border-[#4fc3f7]/40 text-[#9fd9fb]"
+                          }`}>
+                            {kind === "local" ? "Local meetup" : "Shipping"} · {count}
+                          </span>
+                          <span className="h-px flex-1 bg-white/10" />
+                        </div>
+                      );
+
+                      // Show headers only when the cart is actually mixed —
+                      // a single-method cart doesn't need group banners.
+                      const showHeaders = localItems.length > 0 && shipItems.length > 0;
+                      return (
+                        <>
+                          {localItems.length > 0 && (
+                            <>
+                              {showHeaders && groupHeader("Local", localItems.length, "local")}
+                              {localItems.map(renderRow)}
+                            </>
+                          )}
+                          {shipItems.length > 0 && (
+                            <>
+                              {showHeaders && groupHeader("Shipping", shipItems.length, "ship")}
+                              {shipItems.map(renderRow)}
+                            </>
+                          )}
+                        </>
+                      );
                     })()}
 
                     {/* Add another device CTA */}
