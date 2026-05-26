@@ -1067,14 +1067,22 @@ Pick the best channel per device. Be concise.`;
       }
     }
     if (needsLabel && hasFullAddress && phoneDigits.length >= 10) {
+      // Mixed carts only ship items whose per-device handoff is "ship";
+      // local items go to the meetup and must NOT count toward the FedEx
+      // box's weight, declared value, or device manifest. Pure-ship and
+      // single-device orders pass every device through unchanged.
+      const shipOnlyDevices = (h.method === "mixed")
+        ? deviceList.filter((d) => d.handoff !== "local")
+        : deviceList;
+      const shipOnlyMulti = shipOnlyDevices.length > 1;
       // Multi-device shipments fit in ONE box. Total weight = sum of
       // per-device defaults + 2 lb packaging. Skywalker 2026-05-18:
       // FedEx bills the actual scanned weight regardless of what we
       // declare — but declaring the realistic weight upfront sets the
       // right service tier and avoids correction surcharges of $5-15.
-      const deviceKinds = isMulti
-        ? deviceList.map((d) => ({ deviceKind: deviceKindFromString(d.model || "") }))
-        : [{ deviceKind: deviceKindFromString(model as string) }];
+      const deviceKinds = shipOnlyMulti
+        ? shipOnlyDevices.map((d) => ({ deviceKind: deviceKindFromString(d.model || "") }))
+        : [{ deviceKind: deviceKindFromString((shipOnlyDevices[0]?.model || model) as string) }];
       const totalWeight = aggregateWeight(deviceKinds);
 
       // Auto-skip when ANY device in the order is too heavy/expensive
@@ -1106,17 +1114,22 @@ Pick the best channel per device. Be concise.`;
         // Build a customerReference that prints on the label stub.
         // Single-device: "iPhone 17 Pro Max" (or whatever model the
         // customer selected). Multi-device: "3 devices" so the dock
-        // intake person immediately sees how many to expect.
-        const deviceCount = deviceList.length || 1;
+        // intake person immediately sees how many to expect. Mixed cart
+        // counts ship items only — local items aren't in this box.
+        const deviceCount = shipOnlyDevices.length || 1;
         const refText = deviceCount > 1
           ? `${deviceCount} devices`
-          : (model ? String(model).slice(0, 30) : "1 device");
+          : (shipOnlyDevices[0]?.model
+              ? String(shipOnlyDevices[0].model).slice(0, 30)
+              : (model ? String(model).slice(0, 30) : "1 device"));
         // Declared value = the full quoted payout for everything in the
         // box. FedEx caps its liability at this amount if the package is
-        // lost or damaged; we absorb the small declared-value fee.
-        const shipDeclaredValue = isMulti
-          ? deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0)
-          : quoteNum;
+        // lost or damaged; we absorb the small declared-value fee. Mixed
+        // carts only insure the ship items — local items are paid at the
+        // meetup and never enter this box.
+        const shipDeclaredValue = shipOnlyMulti
+          ? shipOnlyDevices.reduce((s, d) => s + (Number(d.quote) || 0), 0)
+          : (shipOnlyDevices[0]?.quote != null ? Number(shipOnlyDevices[0].quote) : quoteNum);
         const label = await createReturnLabel({
           customerName: String(name),
           customerPhone: phoneDigits,
@@ -1205,7 +1218,17 @@ Pick the best channel per device. Be concise.`;
   if (TWILIO_SID && TWILIO_AUTH) {
     const photoNote = (photos as string[] | undefined)?.length ? ` Photos: ${(photos as string[])[0]}` : "";
     const reviewTag = reviewRequired ? "⚠️ REVIEW: " : "";
-    const ownerSms = `${reviewTag}NEW LEAD: ${name} wants to sell ${model} (${condition})${quote ? ` for $${quote}` : " — custom quote needed"}. Phone: ${phone || "N/A"} Email: ${email || "N/A"}${photoNote}`;
+    // Surface the fulfillment method so staff can dispatch immediately
+    // without opening the lead (ship needs warehouse intake, local needs
+    // a scheduled meetup, mixed needs both).
+    const handoffMethodStr = (handoff && typeof handoff === "object")
+      ? String((handoff as { method?: string }).method || "")
+      : "";
+    const handoffTag = handoffMethodStr === "ship" ? " [📦 SHIP]"
+                     : handoffMethodStr === "local" ? " [🤝 LOCAL]"
+                     : handoffMethodStr === "mixed" ? " [📦+🤝 MIXED]"
+                     : "";
+    const ownerSms = `${reviewTag}NEW LEAD${handoffTag}: ${name} wants to sell ${model} (${condition})${quote ? ` for $${quote}` : " — custom quote needed"}. Phone: ${phone || "N/A"} Email: ${email || "N/A"}${photoNote}`;
     try {
       await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
         method: "POST",

@@ -67,8 +67,14 @@ export async function POST(req: NextRequest) {
     typeof t === "string" && /^[A-Z0-9]{8,30}$/i.test(t);
   const labelUrlOk = !!fedexLabel && isVercelBlobUrl(fedexLabel.url);
   const labelTrackingOk = !!fedexLabel && isValidTracking(fedexLabel.tracking);
-  const isShipping = handoffMethod === "ship";
-  const hasLabel = isShipping && labelUrlOk && labelTrackingOk;
+  // "mixed" carts contain both ship + local items. For email-section
+  // purposes, treat anything that produced a real FedEx label as
+  // ship-bearing; mixed adds a parallel local section. isMixed callers
+  // should branch on both flags rather than just isShipping.
+  const isMixed = handoffMethod === "mixed";
+  const isShipping = handoffMethod === "ship" || isMixed;
+  const isLocal = handoffMethod === "local" || isMixed;
+  const hasLabel = (isShipping || isMixed) && labelUrlOk && labelTrackingOk;
   // Defensive: even if a stale client somehow sent payout="Cash" for a
   // ship handoff, the email should NEVER display "Cash" since we can't
   // mail physical cash. Coerce to "Cash App". Skywalker 2026-05-18.
@@ -406,19 +412,25 @@ One label covers the entire package — you don&#39;t need ${deviceArr.length} s
 <td width="40" valign="top" style="padding:8px 0">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00e676 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">1</td></tr></table>
 </td>
-<td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isShipping ? "Print your prepaid label and tape it to a padded box" : "We reach out to schedule a local meetup"}</td>
+<td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isMixed
+  ? "Ship items: print your prepaid label and tape it to a padded box. Local items: we reach out to schedule the meetup."
+  : isShipping ? "Print your prepaid label and tape it to a padded box" : "We reach out to schedule a local meetup"}</td>
 </tr>
 <tr>
 <td width="40" valign="top" style="padding:8px 0">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00e676 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">2</td></tr></table>
 </td>
-<td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isShipping ? "Drop at any FedEx location — no appointment needed" : "Quick inspection confirms the quote"}</td>
+<td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isMixed
+  ? "Drop the FedEx box at any FedEx location and meet us at the booked window for your local items"
+  : isShipping ? "Drop at any FedEx location — no appointment needed" : "Quick inspection confirms the quote"}</td>
 </tr>
 <tr>
 <td width="40" valign="top" style="padding:8px 0">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00e676 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">3</td></tr></table>
 </td>
-<td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isShipping ? "We inspect on arrival + pay within 24h via Cash App / Zelle / Bitcoin" : "You get paid on the spot — Cash, Cash App, Zelle, or BTC"}</td>
+<td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isMixed
+  ? "Ship items pay within 24h after we inspect; local items pay on the spot — Cash App / Zelle / Bitcoin / cash"
+  : isShipping ? "We inspect on arrival + pay within 24h via Cash App / Zelle / Bitcoin" : "You get paid on the spot — Cash, Cash App, Zelle, or BTC"}</td>
 </tr>
 </table>
 </td></tr>

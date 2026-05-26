@@ -4996,11 +4996,20 @@ export default function Home() {
           // persisted in tcc-cart) — falling back to "local" since that's
           // the most common Austin path.
           const legacyHandoff: "ship" | "local" = c.handoffMethod === "ship" ? "ship" : "local";
+          const needsMigration = c.items.some((it: CartItem) => it.handoff === undefined);
           const migrated = c.items.map((it: CartItem) => ({
             ...it,
             handoff: it.handoff ?? legacyHandoff,
           }));
           setCartItems(migrated);
+          // Re-write the migrated payload so a later hydrate doesn't have
+          // to re-run the migration (and won't lose per-item handoff if
+          // the user clears handoffMethod later in this session).
+          if (needsMigration) {
+            try {
+              localStorage.setItem("tcc-cart", JSON.stringify({ items: migrated, handoffMethod: c.handoffMethod, ts: Date.now() }));
+            } catch {}
+          }
         }
       }
     } catch {}
@@ -11939,6 +11948,9 @@ export default function Home() {
                       device: deviceType,
                       model: model?.label,
                       multi: isMultiCart,
+                      // Segment conversions by fulfillment so Ads can
+                      // optimize toward whichever path actually closes.
+                      handoff: cartIsMixed ? "mixed" : cartNeedsShip ? "ship" : "local",
                       quote: grossQuote,
                       value: estMargin,
                       currency: "USD",
@@ -11970,8 +11982,15 @@ export default function Home() {
                   }
                 } catch {}
                 if (email || phone) {
+                  // Cart-level handoff mode for the confirmation email.
+                  // "mixed" tells /api/confirm to show BOTH the print-label
+                  // step and the meetup-coordination step. Cart-level
+                  // handoffMethod (last-add value) would otherwise mislead.
+                  const cartHandoffMode: "ship" | "local" | "mixed" = cartIsMixed
+                    ? "mixed"
+                    : cartNeedsShip ? "ship" : "local";
                   const confirmBody = isMultiCart
-                    ? { name, phone, email, carrier: carrier?.label, payout: payoutValue, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity })), handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value }
+                    ? { name, phone, email, carrier: carrier?.label, payout: payoutValue, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity, handoff: it.handoff ?? "local" })), handoffMethod: cartHandoffMode, fedexLabel: leadLabel, couponBonus: couponValid?.value }
                     : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payoutValue, quantity, handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value };
                   fetch("/api/confirm", {
                     method: "POST",
