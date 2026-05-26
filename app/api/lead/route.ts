@@ -383,17 +383,44 @@ export async function POST(req: NextRequest) {
   // by other means. 2026-05-24.
   const SERVER_MARGIN_FLOOR_MULT = 0.75;
   const SERVER_QUOTE_TOLERANCE = 5;
-  const serverWorkingResell = getResellEstimate(typeof model === "string" ? model : "");
-  const serverCondMult = resellMultiplierForCondition(typeof condition === "string" ? condition : "");
-  const serverQuoteCap = serverWorkingResell != null
-    ? Math.round(serverWorkingResell * serverCondMult * SERVER_MARGIN_FLOOR_MULT)
-    : null;
+  // For a multi-device submission the order-level `model` is a summary
+  // string ("3 devices — iPhone … + 2 more") that getResellEstimate can't
+  // resolve, so the per-item cap is null and tampering goes through. Sum
+  // a real cap by walking the `devices` array and capping each item by
+  // its OWN resell × condition × margin-floor × quantity. Single-device
+  // submissions keep the original headline-model lookup.
+  const isMultiDeviceCart = Array.isArray((data as { devices?: unknown }).devices)
+    && ((data as { devices?: unknown[] }).devices?.length || 0) > 1;
+  const computeCap = (m: unknown, c: unknown): number | null => {
+    const r = getResellEstimate(typeof m === "string" ? m : "");
+    if (r == null) return null;
+    const cm = resellMultiplierForCondition(typeof c === "string" ? c : "");
+    return Math.round(r * cm * SERVER_MARGIN_FLOOR_MULT);
+  };
+  let serverQuoteCap: number | null;
+  if (isMultiDeviceCart) {
+    const devs = (data as { devices: { model?: string; condition?: string; quantity?: number }[] }).devices;
+    let acc = 0;
+    let anyKnown = false;
+    for (const d of devs) {
+      const cap = computeCap(d.model, d.condition);
+      if (cap != null) {
+        anyKnown = true;
+        acc += cap * (Number(d.quantity) || 1);
+      }
+    }
+    // If NO device in the cart is recognized we can't cap — leave null
+    // so the lead saves; manual review will catch it via other guards.
+    serverQuoteCap = anyKnown ? acc : null;
+  } else {
+    serverQuoteCap = computeCap(model, condition);
+  }
   let quoteTampered = false;
   let baseQuoteNum = submittedQuoteNum;
   if (serverQuoteCap != null && submittedQuoteNum > serverQuoteCap + SERVER_QUOTE_TOLERANCE) {
     quoteTampered = true;
     baseQuoteNum = serverQuoteCap;
-    console.warn(`[lead] Quote tamper detected: model=${String(model).slice(0,60)} condition=${String(condition).slice(0,30)} submitted=$${submittedQuoteNum} cap=$${serverQuoteCap} — clamped.`);
+    console.warn(`[lead] Quote tamper detected: ${isMultiDeviceCart ? "multi-device" : `model=${String(model).slice(0,60)} condition=${String(condition).slice(0,30)}`} submitted=$${submittedQuoteNum} cap=$${serverQuoteCap} — clamped.`);
   }
   // Bonus from the coupon is applied AFTER margin reference but
   // BEFORE line construction so couponLines can render the totals.

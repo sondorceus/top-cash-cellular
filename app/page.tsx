@@ -6101,7 +6101,7 @@ export default function Home() {
                 <span className={`text-[11px] font-medium uppercase tracking-wider inline-flex items-center gap-1.5 ${row.active ? "text-[#00c853]" : "text-[#b8b8b8]"}`}>
                   {row.label}
                   {row.helpId && (
-                    <button type="button" onClick={(e) => { e.stopPropagation(); setHelpTopic(helpTopic === row.helpId ? null : row.helpId); }} aria-label={`How to find ${row.label}`} className="w-4 h-4 rounded-full bg-white/10 hover:bg-[#00c853] hover:text-[#0a0a0a] flex items-center justify-center text-[10px] font-bold leading-none cursor-pointer transition">i</button>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); setHelpTopic(helpTopic === row.helpId ? null : row.helpId); }} aria-label={`How to find ${row.label}`} className="w-4 h-4 rounded-full bg-white/10 hover:bg-[#00c853] hover:text-[#0a0a0a] flex items-center justify-center text-[10px] font-bold leading-none cursor-pointer transition tap-expand">i</button>
                   )}
                 </span>
                 <span className={`text-right text-[15px] font-extrabold ${row.value ? (row.active ? "text-[#00c853]" : "text-white") : "text-[#888]"}`}>
@@ -8445,7 +8445,16 @@ export default function Home() {
                   {getConditionsFor(deviceType).map((c) => (
                     <button
                       key={c.id}
-                      onClick={() => setCondition(c)}
+                      onClick={() => {
+                        // Clear any prior broken-flow answers when switching
+                        // conditions, otherwise a previous "broken" pick
+                        // leaves a stale brokenGlass / brokenFunctional on
+                        // the submission. Matches the other condition-picker
+                        // call site (~line 10143).
+                        setCondition(c);
+                        setBrokenFunctional(null);
+                        setBrokenGlass(null);
+                      }}
                       className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/30 cursor-pointer transition text-left tap-press"
                     >
                       <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{c.icon}</svg>
@@ -11786,6 +11795,13 @@ export default function Home() {
                       setAvailableSlots(fresh.slice(0, 18));
                     } catch {}
                     setSelectedSlot(null);
+                    // Scroll the customer back to the slot picker so the
+                    // inline error isn't off-screen (it sits below the
+                    // submit button on mobile). Without this the user
+                    // sees Submit go quiet and doesn't realize they need
+                    // to re-pick a window.
+                    focusByQuery(['[data-validate="slot"]']);
+                    setSubmittingLead(false);
                     return;
                   }
                   bookedSlotInfo = { id: selectedSlot.id, date: selectedSlot.date, time: selectedSlot.time, label: selectedSlot.label };
