@@ -11634,7 +11634,22 @@ export default function Home() {
             {/* LABEL PROGRESS BANNER — final step. Shows different copy
                 depending on whether the customer picked Ship (label
                 gets minted) or Local (no label, just meetup). */}
-            {handoffMethod === "ship" ? (
+            {cartIsMixed ? (
+              <div className="mb-4 px-4 py-3 rounded-xl bg-gradient-to-r from-[#4fc3f7]/[0.10] to-[#00c853]/[0.10] border border-white/15 flex items-start gap-3">
+                <svg className="w-5 h-5 shrink-0 text-[#00c853] leading-none mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-white leading-tight mb-0.5">
+                    Final step — submit covers both your shipped + local items
+                  </p>
+                  <p className="text-[11px] text-[#d4d4d4] mt-1 leading-snug">
+                    Your cart is mixed:
+                    {" "}<span className="font-semibold text-[#9fd9fb]">{cartItems.filter(it => (it.handoff ?? "local") === "ship").reduce((s, it) => s + it.quantity, 0)} ship</span>
+                    {" + "}<span className="font-semibold text-[#7be8a8]">{cartItems.filter(it => (it.handoff ?? "local") === "local").reduce((s, it) => s + it.quantity, 0)} local</span>.
+                    Fill in your shipping address <em>and</em> pick a meetup window below. On submit, <FedExMark /> mints your prepaid label for the shipped items and we text you to confirm the local meetup spot.
+                  </p>
+                </div>
+              </div>
+            ) : cartNeedsShip ? (
               <div className="mb-4 px-4 py-3 rounded-xl bg-amber-500/[0.10] border border-amber-500/40 flex items-start gap-3">
                 <svg className="w-5 h-5 shrink-0 text-[#00c853] leading-none mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>
                 <div className="flex-1 min-w-0">
