@@ -15,7 +15,7 @@ import { callAI } from "../../../lib/ai-gateway";
 // Sonnet for solid voice + tone control. Cheap enough to run for
 // every review without breaking the bank.
 
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams;

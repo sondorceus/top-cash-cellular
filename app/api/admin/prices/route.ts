@@ -123,7 +123,7 @@ async function loadEbayReference(): Promise<EbayReference> {
 // Auth is the same token used by /api/admin/leads (TCC_ADMIN_TOKEN env —
 // required, no fallback). Pass via ?token= or x-admin-token header.
 
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 const BLOB_KEY = "prices/overrides.json";
 const HISTORY_PREFIX = "prices/history/";
 const HISTORY_LIMIT = 10;

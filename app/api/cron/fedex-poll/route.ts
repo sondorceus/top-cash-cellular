@@ -55,7 +55,8 @@ async function flipStatusWithNotify(
   status: string,
   customer: { name?: string; phone?: string; email?: string; device?: string; quote?: string; payout?: string },
 ): Promise<{ reached: boolean; mcPersisted: boolean }> {
-  const adminToken = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
+  const adminToken = process.env.TCC_ADMIN_TOKEN;
+  if (!adminToken) return { reached: false, mcPersisted: false };
   try {
     const r = await fetch(`${origin}/api/admin/leads/status?token=${encodeURIComponent(adminToken)}`, {
       method: "POST",

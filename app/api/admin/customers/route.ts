@@ -3,7 +3,7 @@ import { parseDollarAmount, parseTotalPayoutLine } from "../../../lib/lead-money
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 // Customer-aggregation backend. Scans recent MC comms for [NEW BUYBACK
 // LEAD] entries, dedupes them by normalized phone OR lowercased email,

@@ -6,7 +6,7 @@ import { REFERRAL_REFERRER_REWARD } from "../../../../lib/referral";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
@@ -476,7 +476,7 @@ export async function POST(req: NextRequest) {
     typeof shipAddress.city === "string" && shipAddress.city.trim().length > 0 &&
     typeof shipAddress.state === "string" && shipAddress.state.trim().length === 2 &&
     typeof shipAddress.zip === "string" && /^\d{5}/.test(shipAddress.zip);
-  if (status === "shipped" && hasFullShipAddress && phone && name) {
+  if (status === "shipped" && hasFullShipAddress && phone && name && ADMIN_TOKEN) {
     try {
       const labelReq = await fetch(`${new URL(req.url).origin}/api/admin/leads/label?token=${encodeURIComponent(ADMIN_TOKEN)}`, {
         method: "POST",

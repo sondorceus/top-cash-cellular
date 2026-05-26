@@ -6,7 +6,7 @@ const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 // admin Delete button from 502-ing while we're still finalizing the
 // server-side env config.
 const MC_KEY = process.env.MC_API_KEY || process.env.NEXT_PUBLIC_MC_API_KEY || "";
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 // Soft-delete a lead. MC /api/comms doesn't support DELETE, so we post
 // a marker message that the admin GET route filters out. The original

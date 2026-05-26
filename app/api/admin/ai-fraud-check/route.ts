@@ -14,7 +14,7 @@ import { callAI } from "../../../lib/ai-gateway";
 // Returns:
 //   { verdict, score (0-100), red_flags, green_flags, recommendation }
 
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 export async function POST(req: NextRequest) {
   if (req.nextUrl.searchParams.get("token") !== ADMIN_TOKEN && req.headers.get("x-admin-token") !== ADMIN_TOKEN) {

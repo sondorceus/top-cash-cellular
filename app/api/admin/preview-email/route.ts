@@ -13,7 +13,7 @@ import { NextRequest, NextResponse } from "next/server";
 // Returns text/html so the browser renders it directly. No Resend call,
 // no MC post, no side effects.
 
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams;

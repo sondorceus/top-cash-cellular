@@ -17,7 +17,7 @@ import { callAI } from "../../../lib/ai-gateway";
 // Reads as a one-shot since admin uses it interactively. Uses Sonnet
 // for solid reasoning without Opus pricing.
 
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams;

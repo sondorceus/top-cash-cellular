@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logComm } from "../../../../lib/comms-log";
 
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 // Resend an EXISTING FedEx label to a customer — no new label mint,
 // no new FedEx API call, no new tracking number. Staff uses this when

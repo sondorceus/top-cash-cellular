@@ -4,7 +4,7 @@ import { randomBytes } from "crypto";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 // Texas Secondhand Dealer Act compliance — captures the seller's
 // government-ID photo + DOB + ID number when staff handles a buyback.

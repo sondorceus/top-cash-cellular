@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logComm } from "../../../../lib/comms-log";
 
-const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })();
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 // Custom email composer — Skywalker 2026-05-18 "I should also be
 // able to send custom email there, not just resend. I do like the
