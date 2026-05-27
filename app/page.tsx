@@ -4865,7 +4865,6 @@ export default function Home() {
   const [inquiryDesc, setInquiryDesc] = useState("");
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
   const [heroPhonePop, setHeroPhonePop] = useState(false);
-  const [dualPathPop, setDualPathPop] = useState<"local" | "ship" | null>(null);
   // Funnel-advance buttons unmount the moment they're clicked, so the pop
   // animation needs a brief beat to play before the step changes.
   const [funnelPop, setFunnelPop] = useState<string | null>(null);
@@ -7837,9 +7836,8 @@ export default function Home() {
                 detail (address OR area), not both. */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 hero-scale-in hero-d-3">
               <button
-                onClick={() => { setDualPathPop("local"); setTimeout(() => { setDualPathPop(null); setHandoffMethod("local"); setStep("category"); pushHistory("category"); }, 280); }}
-                onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setDualPathPop(null); }}
-                className={`tcc-button-primary w-full py-4 text-base font-extrabold flex flex-col items-center gap-0.5 ${dualPathPop === "local" ? "phone-pop-3d" : ""}`}
+                onClick={() => { setHandoffMethod("local"); setStep("category"); pushHistory("category"); }}
+                className="tcc-button-primary w-full py-4 text-base font-extrabold flex flex-col items-center gap-0.5 tap-press"
               >
                 <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>Sell Local Today</span>
                 <span className="text-[11px] font-medium opacity-80">Meet in Austin · Paid in ~15 min</span>
@@ -7855,9 +7853,8 @@ export default function Home() {
                   #b8b8b8 to #d8d8d8 so it reads as cleanly as the local
                   pair's `opacity-80` white. */}
               <button
-                onClick={() => { setDualPathPop("ship"); setTimeout(() => { setDualPathPop(null); setHandoffMethod("ship"); setStep("category"); pushHistory("category"); }, 280); }}
-                onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setDualPathPop(null); }}
-                className={`w-full bg-[rgba(20,22,28,0.85)] backdrop-blur-[12px] hover:bg-[rgba(28,32,40,0.95)] hover:border-[#00c853]/60 border border-white/22 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-[270ms] ease-out shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_10px_30px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.02)] flex flex-col items-center gap-0.5 ${dualPathPop === "ship" ? "phone-pop-3d" : ""}`}
+                onClick={() => { setHandoffMethod("ship"); setStep("category"); pushHistory("category"); }}
+                className="w-full bg-[rgba(20,22,28,0.85)] backdrop-blur-[12px] hover:bg-[rgba(28,32,40,0.95)] hover:border-[#00c853]/60 border border-white/22 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-[270ms] ease-out shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_10px_30px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.02)] flex flex-col items-center gap-0.5 tap-press"
               >
                 <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>I&apos;m Shipping: Get a Label</span>
                 <span className="text-[11px] font-medium text-[#d8d8d8]">Mail in (~3 days) · Paid same day we inspect</span>
