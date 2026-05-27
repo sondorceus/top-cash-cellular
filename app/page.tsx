@@ -6192,12 +6192,11 @@ export default function Home() {
   );
   const checkoutSummary = checkoutLines.length > 0 && (
     <aside className="hidden lg:block lg:w-[330px] shrink-0">
-      {/* top-[136px] clears the SlideOnScrollNav (promo strip + logo row
-          + search row ≈ 130px tall when fully shown on desktop). Previous
-          top-24 was only 96px, so when the nav slid back in on
-          scroll-up it covered the top edge of this panel. Skywalker
-          flagged 2026-05-25. */}
-      <div className="sticky top-[136px] bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+      {/* top-[104px] clears the SlideOnScrollNav (logo row + search row
+          ≈ 100px tall on desktop after the weekly-promo strip was
+          removed). top-24 (96px) was a hair too short when the nav slid
+          back in on scroll-up. */}
+      <div className="sticky top-[104px] bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Order summary</p>
@@ -6642,29 +6641,6 @@ export default function Home() {
           middle of the screen while reading; slides back in on scroll-up
           or when returning to the top. */}
       <SlideOnScrollNav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
-        {/* PROMO STRIP — own row above the logo + menu so it never feels squeezed.
-            Click to claim the weekly bonus; bonus only applies once claimed. */}
-        <button
-          type="button"
-          onClick={() => {
-            if (promoClaimed) return;
-            setPromoClaimed(true);
-            try { localStorage.setItem("tcc_promo_claimed", "1"); } catch {}
-            setCartToast({ model: "Weekly bonus", price: promo?.flatBonus ?? 20 });
-            setTimeout(() => setCartToast(null), 2400);
-          }}
-          className={`block w-full text-center px-3 py-2 transition border-b cursor-pointer ${promoClaimed ? "bg-[#00c853]/25 border-[#00c853]/40" : "bg-gradient-to-r from-[#00c853]/15 via-[#00e676]/25 to-[#00c853]/15 hover:from-[#00c853]/25 hover:via-[#00e676]/35 hover:to-[#00c853]/25 border-[#00c853]/20"}`}
-          style={!promoClaimed ? { backgroundSize: "200% 100%", animation: "promoGradient 6s ease-in-out infinite" } : undefined}
-        >
-          {promoClaimed ? (
-            <span className="text-[#00c853] text-xs font-extrabold tracking-wide">✓ Bonus applied — your quote includes +${promo?.flatBonus ?? 20}</span>
-          ) : (
-            <>
-              <span className="hidden sm:inline-flex items-center gap-1 text-[#00c853] text-xs font-extrabold tracking-wide">{!promo?.active && <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>}{promo?.active ? `${promo.text} · Click to apply` : "This week — extra cash on select devices · Click to apply"}</span>
-              <span className="sm:hidden inline-flex items-center gap-1 text-[#00c853] text-[11px] font-extrabold tracking-wide">{!promo?.active && <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>}{promo?.active ? `${promo.text} · Click to apply` : "Extra cash · Click to apply"}</span>
-            </>
-          )}
-        </button>
         <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between relative">
           {/* LEFT: logo — Top Cash Cellular wordmark (Skywalker 2026-05-20) */}
           <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer shrink-0 tap-press inline-flex items-center bg-white/[0.12] border border-white/10 rounded-full px-3 py-1">
