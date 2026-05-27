@@ -10236,7 +10236,7 @@ export default function Home() {
                   {/* Grade illustration — a small phone outline with the
                       tier's damage cues so a customer can pick by eye, not
                       just by reading the description. Added 2026-05-22. */}
-                  <div className="w-9 h-9 shrink-0 rounded-lg bg-white/5 border border-white/10 text-white flex items-center justify-center overflow-hidden">
+                  <div className="w-9 h-9 shrink-0 rounded-lg bg-white/[0.10] border border-white/20 text-white flex items-center justify-center overflow-hidden">
                     <ConditionIllustration id={c.id as ConditionIllustrationId} className="w-5 h-7" />
                   </div>
                   <div className="flex-1 min-w-0">

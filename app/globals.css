@@ -117,9 +117,9 @@
     transform: rotateY(180deg);
   }
 }
-/* Mobile auto-flip — driven by React state (setInterval every 4s on touch
-   devices). Class applied to .hero-flip-inner so the same transform
-   pipeline drives both desktop hover + mobile timed flip. */
+/* Mobile auto-flip — state-driven from React (setInterval every 4s on
+   touch devices). Class is applied to .hero-flip-inner so the same
+   transform pipeline drives it. */
 .hero-flip-inner.is-flipped { transform: rotateY(180deg); }
 @media (prefers-reduced-motion: reduce) {
   .hero-flip-inner { transition: none; }
@@ -153,7 +153,14 @@
 
 body {
   color: #0a0a0a;
-  background: #ffffff;
+  /* Faint iPhone 17 Pro backdrop. Pages are dark-themed (main = #0a0a0a),
+     so we layer an image-over-dark wash on the body and force main
+     wrappers transparent so the body shows through. Tune alpha (lower =
+     more visible image — current 0.86 leaves a soft glow + silhouettes). */
+  background:
+    linear-gradient(rgba(10, 10, 10, 0.58), rgba(10, 10, 10, 0.58)),
+    url('/iphone-17-pro-backdrop.webp') center / cover no-repeat fixed,
+    #0a0a0a;
   font-family: var(--font-cabinet), -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -162,6 +169,23 @@ body {
   font-size: 17px;
   line-height: 1.55;
   letter-spacing: -0.005em;
+}
+/* All dark-themed main wrappers across the site (homepage, account, sell,
+   bulk, faq, etc.) hard-code bg-[#0a0a0a] which fully covers the body
+   backdrop. Force them transparent so the iPhone image shows through.
+   Cards/panels inside main keep their own bg colors and remain readable. */
+main.bg-\[\#0a0a0a\] {
+  background-color: transparent !important;
+}
+/* Mobile: cover sizing crops phones too tight on narrow viewports. Pin to
+   top-center and zoom out a hair so device silhouettes anchor near hero. */
+@media (max-width: 640px) {
+  body {
+    background:
+      linear-gradient(rgba(10, 10, 10, 0.62), rgba(10, 10, 10, 0.62)),
+      url('/iphone-17-pro-backdrop.webp') center top / 160% auto no-repeat fixed,
+      #0a0a0a;
+  }
 }
 /* Cabinet Grotesk renders better with slight tracking adjustments
    per size band — tighter on display, looser on small. */
@@ -345,10 +369,10 @@ body:not(.at-top) nav.sticky { box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35); }
    panels. Pair with .tcc-card on the same button. */
 .tcc-brand-card {
   border-width: 1px;
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.26);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.10),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
     0 6px 14px rgba(0, 0, 0, 0.45),
     0 14px 28px rgba(0, 0, 0, 0.35);
   transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease, background 250ms ease;
@@ -380,10 +404,10 @@ body:not(.at-top) nav.sticky { box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35); }
   width: 52px;
   height: 52px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
     0 6px 14px rgba(0, 0, 0, 0.45);
   overflow: hidden;
   transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
@@ -417,23 +441,23 @@ button:hover > .tcc-brand-tile {
   /* Was rgba(15,15,15,0.5) — dark grey on a dark grey page barely lifts.
      Switched to a faint white overlay so the card actually reads as
      elevated. Stronger border + slightly brighter rim light. */
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   /* inset highlight at top-left simulates rim light catching the edge; outer
      shadow gives the card depth against the dark page */
   box-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 0.08),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.12),
     0 10px 30px rgba(0, 0, 0, 0.5);
   transition: transform 300ms ease, background 300ms ease, border-color 300ms ease, box-shadow 300ms ease, filter 300ms ease;
 }
 .tcc-card:hover {
   transform: translateY(-3px);
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.12);
   border-color: #00c853;
   box-shadow:
-    inset 0 0 10px rgba(0, 200, 83, 0.10),
+    inset 0 0 10px rgba(0, 200, 83, 0.12),
     0 0 8px rgba(0, 200, 83, 0.22),
     0 14px 32px rgba(0, 0, 0, 0.55);
 }
