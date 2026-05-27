@@ -4115,7 +4115,7 @@ export default function Home() {
       <div className="flex items-center gap-3 mb-1.5">
         <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Step {funnelStepNum} of {funnelTotal}</span>
         <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden max-w-[180px]">
-          <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_6px_rgba(0,200,83,0.5)] transition-all duration-500" style={{ width: `${stableBarRatio * 100}%` }} />
+          <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_6px_rgba(0,200,83,0.5)] transition-all duration-[450ms]" style={{ width: `${stableBarRatio * 100}%` }} />
         </div>
       </div>
     </div>
@@ -5912,7 +5912,7 @@ export default function Home() {
               {/* Same `stableBarRatio` as the desktop bar — see the
                   comment by its useState declaration above. Fixes the
                   Verizon-pick retreat AND the entrance-glitch flash. */}
-              <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_4px_rgba(0,200,83,0.5)] transition-all duration-500" style={{ width: `${stableBarRatio * 100}%` }} />
+              <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_4px_rgba(0,200,83,0.5)] transition-all duration-[450ms]" style={{ width: `${stableBarRatio * 100}%` }} />
             </div>
           </div>
         </div>
@@ -6110,7 +6110,7 @@ export default function Home() {
             const canJump = !!row.value && !row.active;
             return (
             <div key={row.label} onClick={canJump ? row.onJump : undefined}
-              className={`rounded-lg px-3 py-2.5 transition-all duration-[250ms] ease-out ${row.active ? "bg-[#00c853]/12 border border-[#00c853]" : row.value ? "bg-[rgba(15,15,15,0.5)] border border-white/10" : "border border-transparent"}${canJump ? " cursor-pointer hover:border-[#00c853]/60" : ""}`}>
+              className={`rounded-lg px-3 py-2.5 transition-all duration-[225ms] ease-out ${row.active ? "bg-[#00c853]/12 border border-[#00c853]" : row.value ? "bg-[rgba(15,15,15,0.5)] border border-white/10" : "border border-transparent"}${canJump ? " cursor-pointer hover:border-[#00c853]/60" : ""}`}>
               <div className="flex items-center justify-between gap-2">
                 <span className={`text-[11px] font-medium uppercase tracking-wider inline-flex items-center gap-1.5 ${row.active ? "text-[#00c853]" : "text-[#b8b8b8]"}`}>
                   {row.label}
@@ -6468,7 +6468,7 @@ export default function Home() {
           two existing switch paths are rare enough to skip that for now). */}
       {confirmDialog && (
         <div
-          className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 animate-[fadeIn_0.18s_ease-out]"
+          className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 animate-[fadeIn_0.16s_ease-out]"
           onClick={() => setConfirmDialog(null)}
         >
           <div
@@ -6508,7 +6508,7 @@ export default function Home() {
           all close without committing. Skywalker 2026-05-23. */}
       {handoffPickerOpen && (
         <div
-          className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 animate-[fadeIn_0.18s_ease-out]"
+          className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 animate-[fadeIn_0.16s_ease-out]"
           onClick={() => setHandoffPickerOpen(false)}
         >
           <div
@@ -6682,7 +6682,7 @@ export default function Home() {
                 Sell
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
-              <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[720px] max-w-[calc(100vw-2rem)] transition-all duration-300 ease-out ${megaMenuOpen === "sell" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
+              <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[720px] max-w-[calc(100vw-2rem)] transition-all duration-[270ms] ease-out ${megaMenuOpen === "sell" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
                 <div className="bg-[#111] border border-white/10 rounded-3xl shadow-2xl p-6">
                   <div className="flex items-center justify-between mb-5">
                     <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em] tcc-green-pill">Sell your device</p>
@@ -6702,7 +6702,7 @@ export default function Home() {
                       <button
                         key={cat.id}
                         onClick={() => { setCategory(cat.id); setStep("brand"); pushHistory("brand"); }}
-                        className="group/cat flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer tap-press"
+                        className="group/cat flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-[180ms] cursor-pointer tap-press"
                       >
                         <CategoryIcon id={cat.id} className="w-9 h-9 text-white group-hover/cat:text-[#00c853] transition" />
                         <p className="text-[13px] font-semibold text-white">{cat.label}</p>
@@ -6743,7 +6743,7 @@ export default function Home() {
                                 pushHistory("condition");
                               });
                             }}
-                            className={`flex flex-col items-center text-center gap-1 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer tap-press ${funnelPop === `hot-${d.model}` ? "tap-confirm" : ""}`}
+                            className={`flex flex-col items-center text-center gap-1 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-[180ms] cursor-pointer tap-press ${funnelPop === `hot-${d.model}` ? "tap-confirm" : ""}`}
                           >
                             {isTight ? (
                               <div className="w-12 h-12 mb-1 flex items-center justify-center p-2">
@@ -6772,7 +6772,7 @@ export default function Home() {
                 Bulk
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </a>
-              <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[640px] max-w-[calc(100vw-2rem)] transition-all duration-300 ease-out ${megaMenuOpen === "bulk" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
+              <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[640px] max-w-[calc(100vw-2rem)] transition-all duration-[270ms] ease-out ${megaMenuOpen === "bulk" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
                 <div className="bg-[#111] border border-white/10 rounded-3xl shadow-2xl p-6">
                   <div className="flex items-center justify-between mb-5">
                     <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em] tcc-green-pill">Bulk trade-ins</p>
@@ -6781,21 +6781,21 @@ export default function Home() {
                   <div className="grid grid-cols-2 gap-3">
                     {/* LEFT — action cards */}
                     <div className="space-y-2">
-                      <a href="/bulk" className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
+                      <a href="/bulk" className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-[180ms]">
                         <svg className="w-6 h-6 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>
                         <div className="min-w-0">
                           <p className="text-[13px] font-bold text-white group-hover/blk:text-[#00c853] transition">Get a bulk quote</p>
                           <p className="text-[11px] text-[#b8b8b8] mt-0.5 leading-snug">One submission, one payout, volume pricing.</p>
                         </div>
                       </a>
-                      <a href={EMAIL_HREF} className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
+                      <a href={EMAIL_HREF} className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-[180ms]">
                         <svg className="w-6 h-6 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                         <div className="min-w-0">
                           <p className="text-[13px] font-bold text-white group-hover/blk:text-[#00c853] transition">Talk to bulk team</p>
                           <p className="text-[11px] text-[#b8b8b8] mt-0.5 leading-snug">Custom contracts, NDAs, decommissioning.</p>
                         </div>
                       </a>
-                      <a href="tel:+18775492056" className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
+                      <a href="tel:+18775492056" className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-[180ms]">
                         <svg className="w-6 h-6 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
                         <div className="min-w-0">
                           <p className="text-[13px] font-bold text-white group-hover/blk:text-[#00c853] transition">Call bulk line</p>
@@ -6846,7 +6846,7 @@ export default function Home() {
                 Support
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
-              <div className={`absolute top-full right-0 pt-3 z-50 w-[680px] max-w-[calc(100vw-2rem)] transition-all duration-300 ease-out ${megaMenuOpen === "support" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
+              <div className={`absolute top-full right-0 pt-3 z-50 w-[680px] max-w-[calc(100vw-2rem)] transition-all duration-[270ms] ease-out ${megaMenuOpen === "support" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
                 <div className="bg-[#111] border border-white/10 rounded-3xl shadow-2xl p-6">
                   <div className="flex items-center justify-between mb-5">
                     <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em] tcc-green-pill">Help &amp; info</p>
@@ -6865,7 +6865,7 @@ export default function Home() {
                         { href: "/track", icon: <><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></>, title: "Track your trade", sub: "Status, payout, tracking #" },
                         { href: EMAIL_HREF, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />, title: "Email customer service", sub: "CustomerService@topcashcells.com · same business day" },
                       ]).map(item => (
-                        <a key={item.title} href={item.href} className="group/sup flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-200">
+                        <a key={item.title} href={item.href} className="group/sup flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-[180ms]">
                           <svg className={`w-6 h-6 shrink-0 ${item.iconColor ?? "text-[#00c853]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{item.icon}</svg>
                           <div className="min-w-0">
                             <p className="text-[13px] font-bold text-white group-hover/sup:text-[#00c853] transition leading-tight">{item.title}</p>
@@ -6896,7 +6896,7 @@ export default function Home() {
                     </div>
                   </div>
                   {/* FOOTER — call CTA */}
-                  <a href="tel:+18775492056" className="mt-5 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#00c853]/15 border border-[#00c853]/40 hover:bg-[#00c853]/25 transition-all duration-200">
+                  <a href="tel:+18775492056" className="mt-5 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#00c853]/15 border border-[#00c853]/40 hover:bg-[#00c853]/25 transition-all duration-[180ms]">
                     <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
                     <span className="text-[13px] font-bold text-[#00c853]">Call (877) 549-2056 — Mon-Sat 9a-7p CT</span>
                   </a>
@@ -7046,7 +7046,7 @@ export default function Home() {
             never enters this branch since its bar is always visible. */}
         {searchOpen && (
           <div
-            className="sm:hidden lg:block border-t border-white/5 bg-[#0a0a0a]/95 backdrop-blur px-4 lg:px-8 py-3 animate-[fadeIn_0.15s_ease-out]"
+            className="sm:hidden lg:block border-t border-white/5 bg-[#0a0a0a]/95 backdrop-blur px-4 lg:px-8 py-3 animate-[fadeIn_0.135s_ease-out]"
             onKeyDown={(e) => { if (e.key === "Escape") setSearchOpen(false); }}
           >
             <div className="max-w-7xl mx-auto flex items-center gap-2 justify-end">
@@ -7130,7 +7130,7 @@ export default function Home() {
         {step !== "device" && step !== "done" && step !== "inquiry" && page === "home" && (
           <div className="h-1 lg:h-1.5 bg-white/10">
             <div
-              className="h-full bg-[#00c853] shadow-[0_0_8px_rgba(0,200,83,0.55)] transition-[width] duration-500 ease-out"
+              className="h-full bg-[#00c853] shadow-[0_0_8px_rgba(0,200,83,0.55)] transition-[width] duration-[450ms] ease-out"
               style={{ width: `${overallProgressPct}%` }}
             />
           </div>
@@ -7160,12 +7160,12 @@ export default function Home() {
           stay off so this never steals hover from the trigger. */}
       <div
         aria-hidden
-        className={`fixed inset-0 z-30 pointer-events-none transition-opacity duration-200 ease-out backdrop-blur-md bg-black/40 ${megaMenuOpen ? "opacity-100" : "opacity-0"}`}
+        className={`fixed inset-0 z-30 pointer-events-none transition-opacity duration-[180ms] ease-out backdrop-blur-md bg-black/40 ${megaMenuOpen ? "opacity-100" : "opacity-0"}`}
       />
 
       {/* MOBILE MENU DRAWER — same Sell/Bulk/Support/Login structure as the desktop mega-menu, accordion-style */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden animate-[fadeIn_0.15s_ease-out]" onClick={() => setMobileMenuOpen(false)}>
+        <div className="fixed inset-0 z-[60] lg:hidden animate-[fadeIn_0.135s_ease-out]" onClick={() => setMobileMenuOpen(false)}>
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
           <div
             className="absolute right-0 top-0 bottom-0 w-[88vw] max-w-md bg-[#0a0a0a] border-l border-white/10 shadow-2xl overflow-y-auto"
@@ -7347,7 +7347,7 @@ export default function Home() {
           a manual-review lead. Skywalker 2026-05-19. */}
       {partsModalOpen && (
         <div
-          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-[fadeIn_0.15s_ease-out]"
+          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-[fadeIn_0.135s_ease-out]"
           onClick={() => !partsSubmitting && setPartsModalOpen(false)}
         >
           <div
@@ -7815,7 +7815,7 @@ export default function Home() {
 
       {/* STEP: DEVICE TYPE */}
       {step === "device" && page === "home" && (
-        <section className="animate-[fadeIn_0.3s_ease-out]" style={{ background: "radial-gradient(120% 65% at 50% 0%, rgba(0,200,83,0.16), transparent 72%)" }}>
+        <section className="animate-[fadeIn_0.27s_ease-out]" style={{ background: "radial-gradient(120% 65% at 50% 0%, rgba(0,200,83,0.16), transparent 72%)" }}>
           {/* Hero backdrop removed 2026-05-17 per Skywalker — looked
               bad in production. The faded multi-device decoration was
               competing with the actual hero copy instead of receding.
@@ -7829,7 +7829,7 @@ export default function Home() {
                 just submitted once before. Now both the local marker AND
                 a live customerUser session must exist. */}
             {welcomeBack && customerUser && (
-              <div className="mb-5 bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
+              <div className="mb-5 bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 flex items-center gap-3 animate-[fadeIn_0.36s_ease-out]">
                 <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" /></svg>
                 <div className="flex-1 min-w-0">
                   <p className="text-white font-bold text-sm">Welcome back, {welcomeBack.name}!</p>
@@ -7881,7 +7881,7 @@ export default function Home() {
               <button
                 onClick={() => { setDualPathPop("ship"); setTimeout(() => { setDualPathPop(null); setHandoffMethod("ship"); setStep("category"); pushHistory("category"); }, 280); }}
                 onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setDualPathPop(null); }}
-                className={`w-full bg-[rgba(20,22,28,0.85)] backdrop-blur-[12px] hover:bg-[rgba(28,32,40,0.95)] hover:border-[#00c853]/60 border border-white/22 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-300 ease-out shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_10px_30px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.02)] flex flex-col items-center gap-0.5 ${dualPathPop === "ship" ? "phone-pop-3d" : ""}`}
+                className={`w-full bg-[rgba(20,22,28,0.85)] backdrop-blur-[12px] hover:bg-[rgba(28,32,40,0.95)] hover:border-[#00c853]/60 border border-white/22 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-[270ms] ease-out shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_10px_30px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.02)] flex flex-col items-center gap-0.5 ${dualPathPop === "ship" ? "phone-pop-3d" : ""}`}
               >
                 <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>I&apos;m Shipping: Get a Label</span>
                 <span className="text-[11px] font-medium text-[#d8d8d8]">Mail in (~3 days) · Paid same day we inspect</span>
@@ -7977,7 +7977,7 @@ export default function Home() {
                   // like iPhone / MacBook / iPad. Slot size stays
                   // constant so the row's vertical rhythm is preserved.
                   const isTight = (d as { tight?: boolean }).tight;
-                  const imgCls = "w-16 h-16 md:w-20 md:h-20 object-contain mb-2 transition-transform duration-300 group-hover:scale-110";
+                  const imgCls = "w-16 h-16 md:w-20 md:h-20 object-contain mb-2 transition-transform duration-[270ms] group-hover:scale-110";
                   const tightWrapCls = "w-16 h-16 md:w-20 md:h-20 mb-2 flex items-center justify-center p-3 md:p-4";
                   return (
                     <button
@@ -7996,7 +7996,7 @@ export default function Home() {
                     >
                       {isTight ? (
                         <div className={tightWrapCls}>
-                          <Pic src={d.photo} alt={d.title} className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110" loading="lazy" />
+                          <Pic src={d.photo} alt={d.title} className="w-full h-full object-contain transition-transform duration-[270ms] group-hover:scale-110" loading="lazy" />
                         </div>
                       ) : (
                         <Pic src={d.photo} alt={d.title} className={imgCls} loading="lazy" />
@@ -8059,7 +8059,7 @@ export default function Home() {
                 aria-label="Top Cash Cellular"
                 onClick={() => setHeroPhonePop(true)}
                 onAnimationEnd={(e) => { if (e.animationName === "phonePop3d") setHeroPhonePop(false); }}
-                className={`shrink-0 cursor-pointer border-0 bg-transparent p-0 transition-transform duration-200 hover:scale-105 ${heroPhonePop ? "phone-pop-3d" : ""}`}
+                className={`shrink-0 cursor-pointer border-0 bg-transparent p-0 transition-transform duration-[180ms] hover:scale-105 ${heroPhonePop ? "phone-pop-3d" : ""}`}
               >
                 <Pic src="/iphone17.png" alt="" className="h-24 w-auto object-contain pointer-events-none" style={{ filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.45))" }} />
               </button>
@@ -8119,7 +8119,7 @@ export default function Home() {
                       {expandedConditionTier !== null && (() => {
                         const t = tiers[expandedConditionTier];
                         return (
-                          <div className="mb-4 bg-[rgba(15,15,15,0.55)] backdrop-blur-[10px] border border-[#00c853]/30 rounded-2xl p-4 animate-[fadeIn_0.25s_ease-out]">
+                          <div className="mb-4 bg-[rgba(15,15,15,0.55)] backdrop-blur-[10px] border border-[#00c853]/30 rounded-2xl p-4 animate-[fadeIn_0.225s_ease-out]">
                             <div className="flex items-start gap-3 mb-2">
                               <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{t.icon}</svg>
                               <div className="min-w-0">
@@ -8204,7 +8204,7 @@ export default function Home() {
                     visually on the pill. */}
                 <span
                   role="tooltip"
-                  className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-[180px] sm:w-[220px] px-3 py-2 rounded-xl bg-[rgba(15,15,15,0.96)] backdrop-blur-[10px] border border-[#00c853]/30 shadow-[0_12px_30px_rgba(0,0,0,0.6),0_0_14px_rgba(0,200,83,0.18)] text-[11px] sm:text-[12px] text-[#e6e6e6] leading-snug text-left opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 group-focus:opacity-100 group-focus:translate-y-0 transition duration-200 z-20"
+                  className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-[180px] sm:w-[220px] px-3 py-2 rounded-xl bg-[rgba(15,15,15,0.96)] backdrop-blur-[10px] border border-[#00c853]/30 shadow-[0_12px_30px_rgba(0,0,0,0.6),0_0_14px_rgba(0,200,83,0.18)] text-[11px] sm:text-[12px] text-[#e6e6e6] leading-snug text-left opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 group-focus:opacity-100 group-focus:translate-y-0 transition duration-[180ms] z-20"
                 >
                   {s.tip}
                   <span aria-hidden className="absolute left-1/2 -translate-x-1/2 top-full w-2.5 h-2.5 bg-[rgba(15,15,15,0.96)] border-r border-b border-[#00c853]/30 -mt-1.5 rotate-45"></span>
@@ -8318,7 +8318,7 @@ export default function Home() {
               <details key={i} className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-white/20 transition reveal" data-stagger={Math.min(i + 1, 8)}>
                 <summary className="cursor-pointer px-5 py-4 flex items-center justify-between font-semibold list-none [&::-webkit-details-marker]:hidden">
                   <span className="pr-3">{f.q}</span>
-                  <svg className="w-5 h-5 text-[#00c853] flex-shrink-0 group-open:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
+                  <svg className="w-5 h-5 text-[#00c853] flex-shrink-0 group-open:rotate-180 transition-transform duration-[270ms]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
                 </summary>
                 <div className="px-5 pb-4 text-[#d4d4d4] text-sm leading-relaxed">{f.a}</div>
               </details>
@@ -8345,7 +8345,7 @@ export default function Home() {
 
       {/* STEP: CATEGORY */}
       {step === "category" && page === "home" && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -8381,29 +8381,40 @@ export default function Home() {
                     if (dt) { setDeviceType(dt as DeviceType); setStep("model"); pushHistory("model"); return; }
                     setCategory(cat.id); setStep("brand"); pushHistory("brand");
                   })}
-                  className={`tcc-card flex flex-col items-center justify-center p-4 rounded-2xl cursor-pointer reveal ${funnelPop === `cat-${cat.id}` ? "tap-confirm" : ""}`}
+                  className={`tcc-card flex flex-col items-center justify-center p-3 rounded-2xl cursor-pointer reveal ${funnelPop === `cat-${cat.id}` ? "tap-confirm" : ""}`}
                   data-stagger={Math.min(idx + 1, 8)}
                 >
-                  <CategoryIcon id={cat.id} className="w-9 h-9 mb-1.5 text-white" />
+                  <div className="w-12 h-12 mb-1.5 rounded-xl bg-white/[0.07] border border-white/15 flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+                    <CategoryIcon id={cat.id} className="w-7 h-7 text-white" />
+                  </div>
                   <p className="font-semibold text-white text-xs text-center">{cat.label}</p>
                 </button>
               ))}
-            </div>
-            <p className="text-[#d4d4d4] text-[11px] text-center mt-3">Some categories will connect you to our team for a custom quote</p>
-            <div className="text-center mt-2">
+              {/* "Sell Other" promoted into the grid as a 9th tile — the
+                  prior text link below the grid was easy to miss. Faded
+                  opacity sets it apart from the main 8 tiles. */}
               <button
-                onClick={() => {
+                onClick={() => popThenRun("cat-other", () => {
                   setInquiryCategory("Other");
                   setInquirySent(false);
                   setInquiryDesc("");
                   setStep("inquiry");
                   pushHistory("inquiry");
-                }}
-                className="text-[#e6e6e6] text-[11px] underline underline-offset-2 hover:text-[#00c853] cursor-pointer transition"
+                })}
+                className={`tcc-card flex flex-col items-center justify-center p-3 rounded-2xl cursor-pointer reveal opacity-70 hover:opacity-100 ${funnelPop === "cat-other" ? "tap-confirm" : ""}`}
+                data-stagger={8}
               >
-                Sell other
+                <div className="w-12 h-12 mb-1.5 rounded-xl bg-white/[0.07] border border-white/15 flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+                  <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
+                    <circle cx="6" cy="12" r="1.4" fill="currentColor" />
+                    <circle cx="12" cy="12" r="1.4" fill="currentColor" />
+                    <circle cx="18" cy="12" r="1.4" fill="currentColor" />
+                  </svg>
+                </div>
+                <p className="font-semibold text-white text-xs text-center">Sell Other</p>
               </button>
             </div>
+            <p className="text-[#d4d4d4] text-[11px] text-center mt-3">Some categories will connect you to our team for a custom quote</p>
 
             <FairPromise />
             <TrustBadge />
@@ -8413,7 +8424,7 @@ export default function Home() {
 
       {/* STEP: INQUIRY (unknown categories) — full quote flow */}
       {step === "inquiry" && page === "home" && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={() => { setStep("category"); pushHistory("category"); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -8616,7 +8627,7 @@ export default function Home() {
 
       {/* STEP: BRAND */}
       {step === "brand" && page === "home" && category && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -8756,7 +8767,7 @@ export default function Home() {
 
       {/* STEP: MODEL SELECTION */}
       {step === "model" && page === "home" && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -9645,7 +9656,7 @@ export default function Home() {
 
       {/* STEP: CONNECTIVITY (iPad only) — Wi-Fi vs Wi-Fi + Cellular */}
       {step === "connectivity" && page === "home" && model && deviceType === "ipad" && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9689,7 +9700,7 @@ export default function Home() {
       {/* STEP: STORAGE */}
       {/* STEP: PROCESSOR — additive-spec models (MacBook, Dell XPS), gated on hasAdditiveSpecs(model) */}
       {step === "processor" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9733,7 +9744,7 @@ export default function Home() {
 
       {/* STEP: MEMORY — additive-spec models (MacBook, Dell XPS) */}
       {step === "memory" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9765,7 +9776,7 @@ export default function Home() {
       {/* STEP: GRAPHICS — PC gaming laptops + workstations with multiple GPU
           options on IWM. Sits between storage and condition. */}
       {step === "graphics" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9806,7 +9817,7 @@ export default function Home() {
       {/* STEP: DISPLAY RESOLUTION — flagship PC gaming laptops where IWM
           prices FHD vs QHD vs UHD/OLED panels separately. */}
       {step === "displayresolution" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9843,7 +9854,7 @@ export default function Home() {
 
       {/* STEP: DISPLAY GLASS — MacBook Pro 16/14 only, between storage and condition */}
       {step === "displayglass" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9874,7 +9885,7 @@ export default function Home() {
 
       {/* STEP: BATTERY HEALTH — additive-spec models, between condition and charger */}
       {step === "batteryhealth" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9905,7 +9916,7 @@ export default function Home() {
 
       {/* STEP: CHARGER — additive-spec models, before quote (or extras if present) */}
       {step === "charger" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9982,7 +9993,7 @@ export default function Home() {
           return null;
         }
         return (
-          <section className="animate-[fadeIn_0.3s_ease-out]">
+          <section className="animate-[fadeIn_0.27s_ease-out]">
             <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
               {selectionPanel}
               <div className="flex-1 min-w-0">
@@ -10071,7 +10082,7 @@ export default function Home() {
       })()}
 
       {step === "storage" && page === "home" && model && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -10147,7 +10158,7 @@ export default function Home() {
 
       {/* STEP: CONDITION */}
       {step === "condition" && page === "home" && model && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -10162,7 +10173,7 @@ export default function Home() {
             </p>
             {stepProgress}
             <div className="tcc-selection-frame">
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {getConditionsFor(deviceType).map((c) => (
                 <button
                   key={c.id}
@@ -10335,7 +10346,7 @@ export default function Home() {
 
       {/* STEP: BROKEN FUNCTIONAL CHECK */}
       {step === "broken-functional" && page === "home" && model && condition?.id === "broken" && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -10430,7 +10441,7 @@ export default function Home() {
           when the user says the device still works. Front (display) glass
           is the bigger resale hit; back-only is mostly cosmetic. */}
       {step === "broken-glass" && page === "home" && model && condition?.id === "broken" && isPhoneFlow && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -10490,7 +10501,7 @@ export default function Home() {
 
       {/* STEP: CARRIER */}
       {step === "carrier" && page === "home" && model && condition && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -10542,7 +10553,7 @@ export default function Home() {
 
       {/* STEP: CARRIER LOCK — Yes/No after picking the carrier */}
       {step === "carrier-lock" && page === "home" && model && condition && carrier && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -10589,7 +10600,7 @@ export default function Home() {
 
       {/* STEP: QUOTE */}
       {step === "quote" && page === "home" && model && condition && (
-        <section className="animate-[fadeIn_0.3s_ease-out] relative">
+        <section className="animate-[fadeIn_0.27s_ease-out] relative">
           {showConfetti && (
             <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
               {Array.from({ length: 60 }).map((_, i) => (
@@ -10656,7 +10667,7 @@ export default function Home() {
               )}
             </div>
             {priceWhyOpen && !isManualQuote && !isPendingQuote && (
-              <div className="max-w-md mx-auto lg:mx-0 -mt-3 mb-3 px-3.5 py-2.5 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/35 text-left animate-[fadeIn_0.15s_ease-out]">
+              <div className="max-w-md mx-auto lg:mx-0 -mt-3 mb-3 px-3.5 py-2.5 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/35 text-left animate-[fadeIn_0.135s_ease-out]">
                 <p className="text-[12px] font-bold text-white leading-snug mb-1">Why our offer is higher</p>
                 <p className="text-[11px] text-[#bdbdbd] leading-snug">
                   Apple / Samsung trade-in routes you into a new device, not cash. We pay based on the actual resale value of your device after refurb — typically 30–60% more than store credit. No middleman, no "trade upgrade required."
@@ -11249,7 +11260,7 @@ export default function Home() {
 
       {/* STEP: CHECKOUT (email capture) */}
       {step === "checkout" && page === "home" && ((model && condition) || cartItems.length > 0) && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           {/* pb-28 lg:pb-8 — extra bottom padding on mobile so the sticky
               bottom CTA (rendered above) doesn't overlap the last form row.
               xl:items-stretch matches the contact step — gives the
@@ -11409,7 +11420,7 @@ export default function Home() {
 
       {/* STEP: PAYOUT METHOD */}
       {step === "payout" && page === "home" && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           {/* pb-28 mobile to clear the sticky CTA bar — see checkout.
               xl:items-stretch matches checkout + contact so the
               Order Summary aside stays sticky across all 3 long pages. */}
@@ -11632,7 +11643,7 @@ export default function Home() {
 
       {/* STEP: CONTACT INFO */}
       {step === "contact" && page === "home" && payout && ((model && condition) || cartItems.length > 0) && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           {/* pb-28 mobile to clear the sticky CTA bar — see checkout.
               xl:items-stretch (full-screen desktops, ≥1280px) lets the
               Order Summary aside stretch to match the form column's
@@ -11655,7 +11666,7 @@ export default function Home() {
             {cartItems.length > 0 ? checkoutSummaryMobile : selectionPanelMobile}
 
             {returningHint && returningHint.leadCount > 0 && (
-              <div className="bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 mb-5 flex items-center gap-3 animate-[fadeIn_0.4s_ease-out]">
+              <div className="bg-gradient-to-r from-[#00c853]/15 via-[#00c853]/8 to-[#00c853]/15 border border-[#00c853]/30 rounded-xl px-4 py-3 mb-5 flex items-center gap-3 animate-[fadeIn_0.36s_ease-out]">
                 <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" /></svg>
                 <div className="flex-1 text-sm">
                   <p className="text-white font-semibold">Welcome back{returningHint.name ? `, ${returningHint.name.split(" ")[0]}` : ""}!</p>
@@ -12539,7 +12550,7 @@ export default function Home() {
                     }];
                   }
                   return (
-                    <div className="mb-2 bg-[rgba(15,15,15,0.7)] border border-[#00c853]/30 rounded-xl p-3 space-y-3 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="mb-2 bg-[rgba(15,15,15,0.7)] border border-[#00c853]/30 rounded-xl p-3 space-y-3 animate-[fadeIn_0.135s_ease-out]">
                       {guides.map((g, gi) => (
                         <div key={gi}>
                           <p className="text-[11px] font-bold text-[#00c853] uppercase tracking-wider mb-1">{g.label}</p>
@@ -13028,7 +13039,7 @@ export default function Home() {
 
       {/* STEP: DONE */}
       {step === "done" && page === "home" && payout && ((model && condition) || (submittedDevices && submittedDevices.length > 0)) && (
-        <section className="animate-[fadeIn_0.3s_ease-out]">
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl mx-auto px-4 pt-6 lg:pt-10 pb-12">
             {/* Hero — beveled green tile with checkmark + glow rim */}
             <div className="text-center mb-5 lg:mb-8">
@@ -13343,7 +13354,7 @@ export default function Home() {
                 <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden px-4 py-3 flex items-center gap-3">
                   <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] shrink-0">The math</span>
                   <span className="flex-1 text-white text-[13px] sm:text-sm font-bold leading-tight">Why cash beats Apple + carrier trade-in</span>
-                  <svg className="w-4 h-4 text-[#00c853] flex-shrink-0 group-open:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
+                  <svg className="w-4 h-4 text-[#00c853] flex-shrink-0 group-open:rotate-180 transition-transform duration-[270ms]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
                 </summary>
                 <div className="px-4 pb-4 pt-1 border-t border-white/[0.06] grid grid-cols-1 md:grid-cols-3 gap-2.5">
                   <div className="bg-[#ff5566]/[0.06] border border-[#ff5566]/20 rounded-xl p-3">
@@ -13540,8 +13551,8 @@ export default function Home() {
                     <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{pill.icon}</svg>
                     <span className="text-white text-xs font-semibold">{pill.label}</span>
                     {/* Mobile tap cue — desktop reveals on hover, no cue needed. */}
-                    <svg className={`w-3 h-3 text-[#00c853] shrink-0 transition-transform duration-200 lg:hidden ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                    <span className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 max-w-[70vw] z-20 bg-[#0f0f0f] border border-[#00c853]/30 rounded-xl px-3 py-2 text-[11px] leading-snug font-medium text-[#e6e6e6] shadow-xl pointer-events-none transition-all duration-200 ${open ? "opacity-100 visible translate-y-0" : "opacity-0 invisible translate-y-1"} lg:opacity-0 lg:invisible lg:translate-y-1 lg:group-hover:opacity-100 lg:group-hover:visible lg:group-hover:translate-y-0`}>
+                    <svg className={`w-3 h-3 text-[#00c853] shrink-0 transition-transform duration-[180ms] lg:hidden ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    <span className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 max-w-[70vw] z-20 bg-[#0f0f0f] border border-[#00c853]/30 rounded-xl px-3 py-2 text-[11px] leading-snug font-medium text-[#e6e6e6] shadow-xl pointer-events-none transition-all duration-[180ms] ${open ? "opacity-100 visible translate-y-0" : "opacity-0 invisible translate-y-1"} lg:opacity-0 lg:invisible lg:translate-y-1 lg:group-hover:opacity-100 lg:group-hover:visible lg:group-hover:translate-y-0`}>
                       {pill.detail}
                     </span>
                   </button>
@@ -13584,13 +13595,13 @@ export default function Home() {
 
       {/* INNER PAGES */}
       {(page === "about" || page === "privacy" || page === "terms" || page === "grading" || page === "shipping" || page === "affiliate" || page === "itad" || page === "blog" || page === "cookies" || page === "accessibility") && (
-        <section className="min-h-[60vh] animate-[fadeIn_0.3s_ease-out]">
+        <section className="min-h-[60vh] animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-16">
             <button onClick={() => { setPage("home"); window.scrollTo({ top: 0 }); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Home
             </button>
-            {page === "about" && <div className="animate-[fadeIn_0.3s_ease-out]">
+            {page === "about" && <div className="animate-[fadeIn_0.27s_ease-out]">
               <h1 className="text-3xl font-bold mb-2">About Top Cash Cellular</h1>
               <p className="text-[#00c853] text-sm font-semibold mb-6">Austin&apos;s #1 Device Buyback Service</p>
 
@@ -13718,7 +13729,7 @@ export default function Home() {
             </div>}
 
             {page === "privacy" && (
-              <div className="animate-[fadeIn_0.3s_ease-out]">
+              <div className="animate-[fadeIn_0.27s_ease-out]">
                 <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
                 <div className="text-[#e6e6e6] text-sm space-y-4 leading-relaxed">
                   <p>Top Cash Cellular respects your privacy. We collect only the information needed to process your device sale: name, phone number, email, device details, and payout preference.</p>
@@ -13730,7 +13741,7 @@ export default function Home() {
             )}
 
             {page === "terms" && (
-              <div className="animate-[fadeIn_0.3s_ease-out]">
+              <div className="animate-[fadeIn_0.27s_ease-out]">
                 <h1 className="text-3xl font-bold mb-2">Terms of Service</h1>
                 <p className="text-[#b8b8b8] text-xs mb-6">Last updated May 11, 2026</p>
                 <div className="text-[#e6e6e6] text-sm space-y-5 leading-relaxed">
@@ -13771,7 +13782,7 @@ export default function Home() {
             )}
 
             {page === "grading" && (
-              <div className="animate-[fadeIn_0.3s_ease-out]">
+              <div className="animate-[fadeIn_0.27s_ease-out]">
                 <h1 className="text-3xl font-bold mb-2">Inspection &amp; grading guide</h1>
                 <p className="text-[#b8b8b8] text-sm mb-6">Exactly what we look for so there are no surprises at handoff.</p>
                 <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-5 mb-8">
@@ -13812,7 +13823,7 @@ export default function Home() {
             )}
 
             {page === "shipping" && (
-              <div className="animate-[fadeIn_0.3s_ease-out]">
+              <div className="animate-[fadeIn_0.27s_ease-out]">
                 <h1 className="text-3xl font-bold mb-2">Shipping &amp; returns</h1>
                 <p className="text-[#b8b8b8] text-sm mb-6">Local Austin? We meet you. Out of town? Ship free.</p>
                 <div className="space-y-4 mb-10">
@@ -13855,7 +13866,7 @@ export default function Home() {
             )}
 
             {page === "affiliate" && (
-              <div className="animate-[fadeIn_0.3s_ease-out]">
+              <div className="animate-[fadeIn_0.27s_ease-out]">
                 <h1 className="text-3xl font-bold mb-2">Become an affiliate</h1>
                 <p className="text-[#b8b8b8] text-sm mb-6">Earn cash for every customer you refer.</p>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 space-y-3 text-sm text-[#e6e6e6] leading-relaxed">
@@ -13872,7 +13883,7 @@ export default function Home() {
             )}
 
             {page === "itad" && (
-              <div className="animate-[fadeIn_0.3s_ease-out]">
+              <div className="animate-[fadeIn_0.27s_ease-out]">
                 <h1 className="text-3xl font-bold mb-2">IT Asset Disposition</h1>
                 <p className="text-[#b8b8b8] text-sm mb-6">Clearing out a fleet? We buy in bulk and document every device.</p>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 space-y-3 text-sm text-[#e6e6e6] leading-relaxed">
@@ -13889,7 +13900,7 @@ export default function Home() {
             )}
 
             {page === "blog" && (
-              <div className="animate-[fadeIn_0.3s_ease-out]">
+              <div className="animate-[fadeIn_0.27s_ease-out]">
                 <h1 className="text-3xl font-bold mb-2">Blog</h1>
                 <p className="text-[#b8b8b8] text-sm mb-6">Resale tips, gear breakdowns, and sustainability stories.</p>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 text-sm text-[#e6e6e6] leading-relaxed">
@@ -13900,7 +13911,7 @@ export default function Home() {
             )}
 
             {page === "cookies" && (
-              <div className="animate-[fadeIn_0.3s_ease-out]">
+              <div className="animate-[fadeIn_0.27s_ease-out]">
                 <h1 className="text-3xl font-bold mb-2">Cookie policy</h1>
                 <p className="text-[#b8b8b8] text-sm mb-6">What we store on your browser and why.</p>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 space-y-3 text-sm text-[#e6e6e6] leading-relaxed">
@@ -13913,7 +13924,7 @@ export default function Home() {
             )}
 
             {page === "accessibility" && (
-              <div className="animate-[fadeIn_0.3s_ease-out]">
+              <div className="animate-[fadeIn_0.27s_ease-out]">
                 <h1 className="text-3xl font-bold mb-2">Accessibility statement</h1>
                 <p className="text-[#b8b8b8] text-sm mb-6">We want this site to work for everyone.</p>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 space-y-3 text-sm text-[#e6e6e6] leading-relaxed">
@@ -14104,7 +14115,7 @@ export default function Home() {
                 the FAB to. */}
             {chatOpen && !hidden && (
               <div
-                className="fixed z-40 w-[300px] max-w-[calc(100vw-24px)] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]"
+                className="fixed z-40 w-[300px] max-w-[calc(100vw-24px)] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.18s_ease-out]"
                 style={panelStyle}
               >
                 <div className="bg-[#00c853] px-4 py-3 flex items-center justify-between">
@@ -14220,7 +14231,7 @@ export default function Home() {
         const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
         return (
           <>
-            <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]" onClick={() => setCartOpen(false)} />
+            <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm animate-[fadeIn_0.18s_ease-out]" onClick={() => setCartOpen(false)} />
             <aside
               className="fixed top-0 right-0 bottom-0 z-50 w-full sm:w-[460px] lg:w-[520px] bg-[rgba(46,46,52,0.97)] backdrop-blur-[14px] border-l border-white/15 shadow-[0_0_60px_rgba(0,0,0,0.7)] flex flex-col"
               style={{ animation: "slideInRight 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both" }}
@@ -14355,7 +14366,7 @@ export default function Home() {
                             onTouchEnd={() => {
                               const ref = swipeRef.current;
                               if (!ref) return;
-                              ref.el.style.transition = "transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease";
+                              ref.el.style.transition = "transform 200ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease";
                               if (ref.dx < -80) {
                                 ref.el.style.transform = "translateX(-110%)";
                                 ref.el.style.opacity = "0";
@@ -14542,7 +14553,7 @@ export default function Home() {
           hardcoded top-[52px] that broke when the search row was added. */}
 
       {cookieConsent === null && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111]/95 backdrop-blur-sm border-t border-white/10 px-3 pt-2 consent-bar-ios animate-[fadeIn_0.3s_ease-out]">
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111]/95 backdrop-blur-sm border-t border-white/10 px-3 pt-2 consent-bar-ios animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto flex flex-wrap items-center gap-x-3 gap-y-2">
             <p className="text-white/80 text-[11px] flex-1 min-w-[180px]">
               We use essential cookies to run the site. With your OK we also use analytics cookies to measure traffic and improve it.{" "}

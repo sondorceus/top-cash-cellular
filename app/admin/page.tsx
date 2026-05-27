@@ -3315,7 +3315,7 @@ export default function AdminPage() {
           open trades. Closes on backdrop click or Esc. */}
       {historyKey && (
         <div
-          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-[fadeIn_0.15s_ease-out]"
+          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-[fadeIn_0.135s_ease-out]"
           onClick={() => setHistoryKey(null)}
         >
           <div

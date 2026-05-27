@@ -117,7 +117,7 @@ function ProgressBar({ status, isShip }: { status: string; isShip: boolean }) {
       </div>
       {/* connector line */}
       <div className="relative h-1 bg-white/5 rounded-full -mt-[58px] mx-5 mb-12 -z-10">
-        <div className="absolute top-0 left-0 h-full bg-[#00c853] rounded-full transition-all duration-500" style={{ width: `${idx <= 0 ? 0 : (idx / (pipeline.length - 1)) * 100}%` }} />
+        <div className="absolute top-0 left-0 h-full bg-[#00c853] rounded-full transition-all duration-[450ms]" style={{ width: `${idx <= 0 ? 0 : (idx / (pipeline.length - 1)) * 100}%` }} />
       </div>
     </div>
   );

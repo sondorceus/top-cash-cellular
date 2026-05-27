@@ -18,7 +18,7 @@ export function SlideOnScrollNav({
   const hidden = useNavHideOnScroll();
   return (
     <nav
-      className={`${className} transition-transform duration-300 will-change-transform ${
+      className={`${className} transition-transform duration-[270ms] will-change-transform ${
         hidden ? "-translate-y-full" : "translate-y-0"
       }`}
     >
