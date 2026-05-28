@@ -6,6 +6,7 @@ import { reportError } from "../../lib/error-report";
 import { REFERRAL_REFEREE_BONUS, REFERRAL_CODE_RE } from "../../lib/referral";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "../../lib/payout-verify";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
+import { formatOfferNumber } from "../../lib/offer-number";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -1336,6 +1337,48 @@ Pick the best channel per device. Be concise.`;
     } catch {}
   }
 
+  // Auto-scheduling outreach — Skywalker 2026-05-28. A local/mixed lead
+  // that comes in WITHOUT a booked meetup slot used to rely on staff
+  // manually reaching out (the confirmation email literally says "we
+  // reach out to schedule"). Instead, immediately email the customer to
+  // lock in a time, and flag in the owner alert below that it auto-sent
+  // — so a lead never sits unscheduled and the owner sees the outreach
+  // fired (within seconds of submit). Ship-only leads are skipped (they
+  // get a prepaid label, no meetup); leads that already picked a slot in
+  // the funnel are skipped too.
+  const schedHandoff = (handoff && typeof handoff === "object")
+    ? (handoff as { method?: string; slot?: { id?: string } })
+    : null;
+  const schedMethod = schedHandoff?.method || "";
+  const alreadyScheduled = !!(schedHandoff?.slot && schedHandoff.slot.id);
+  const needsScheduling = (schedMethod === "local" || schedMethod === "mixed") && !alreadyScheduled;
+  let schedulingEmailSent = false;
+  if (needsScheduling && email && typeof email === "string" && process.env.RESEND_API_KEY) {
+    try {
+      const escS = (s: unknown) => String(s ?? "").replace(/[<>&]/g, (ch) => (ch === "<" ? "&lt;" : ch === ">" ? "&gt;" : "&amp;"));
+      const offerHref = `https://topcashcellular.com/offer/${encodeURIComponent(effectiveLeadId)}`;
+      const offerRef = formatOfferNumber(effectiveLeadId);
+      const firstName = (typeof name === "string" ? name.trim().split(/\s+/)[0] : "") || "there";
+      const deviceLabel = cleanField(model, 120) || cleanField(device, 80) || "your device";
+      const lockLine = quoteNum > 0
+        ? `Your offer of $${quoteNum} for ${deviceLabel} is locked in for 14 days.`
+        : `We've got your request for ${deviceLabel}.`;
+      const schedHtml = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#0a0a0a;color:#e6e6e6;margin:0;padding:24px 16px"><div style="max-width:520px;margin:0 auto;background:#0f0f0f;border:1px solid rgba(255,255,255,0.1);border-radius:14px;overflow:hidden"><div style="background:linear-gradient(135deg,#00e676 0%,#00a039 100%);padding:18px 22px;color:#0a0a0a;font-weight:800;font-size:18px">Let&apos;s set up your Austin meetup</div><div style="padding:20px 22px;font-size:14px;line-height:1.7">Hi ${escS(firstName)},<br><br>${escS(lockLine)}<br><br>To get you paid, just <b>reply to this email with a couple of times that work this week</b> and we&apos;ll confirm a quick Austin meetup — most wrap in under 15 minutes, paid on the spot (cash, Zelle, Cash App, or Venmo).<br><br><a href="${offerHref}" style="display:inline-block;margin-top:6px;padding:10px 20px;background:#00c853;color:#0a0a0a;font-weight:800;text-decoration:none;border-radius:999px;font-size:13px">View your offer →</a><div style="margin-top:16px;font-size:12px;color:#888">Reference: Offer #${escS(offerRef)}</div></div></div></div>`;
+      const schedText = `Hi ${firstName}, ${lockLine} To get paid, reply with a couple of times that work this week and we'll confirm a quick Austin meetup. View your offer: ${offerHref} — Offer #${offerRef}`;
+      const { Resend } = await import("resend");
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const sr = await resend.emails.send({
+        from: "Top Cash Cellular <noreply@topcashcellular.com>",
+        replyTo: "CustomerService@topcashcells.com",
+        to: email,
+        subject: `Pick a time for your Top Cash payout — Offer #${offerRef}`,
+        html: schedHtml,
+        text: schedText,
+      });
+      schedulingEmailSent = !!(sr?.data?.id);
+    } catch {}
+  }
+
   // Owner alert via EMAIL — the Twilio SMS above is dead until 10DLC
   // lands, so email is the working channel. Goes to OWNER_EMAIL; point
   // that env at a personal inbox (or a carrier SMS gateway) to be pinged
@@ -1356,6 +1399,10 @@ Pick the best channel per device. Be concise.`;
         ["Email", oneLine(email) || "N/A"],
       ];
       if (handoffTag) rows.push(["Handoff", handoffTag]);
+      // Confirm the auto-scheduling outreach fired (or flag that it
+      // couldn't) so the owner knows a no-slot lead is already being
+      // chased — no manual "did we reach out yet?" guessing.
+      if (needsScheduling) rows.push(["Auto-scheduling", schedulingEmailSent ? "✅ emailed customer to pick a time" : (email ? "⚠️ email failed — reach out manually" : "⚠️ no email on file — text/call to schedule")]);
       if (firstPhoto) rows.push(["Photo", firstPhoto]);
       const subject = oneLine(`${reviewRequired ? "⚠️ REVIEW · " : ""}New lead: ${oneLine(name)} — ${oneLine(model)}${quote ? ` ($${quote})` : " (custom)"}`).slice(0, 180);
       const html = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#0a0a0a;color:#e6e6e6;margin:0;padding:24px 16px"><div style="max-width:520px;margin:0 auto;background:#0f0f0f;border:1px solid rgba(255,255,255,0.1);border-radius:14px;overflow:hidden"><div style="background:linear-gradient(135deg,#00e676 0%,#00a039 100%);padding:18px 22px;color:#0a0a0a;font-weight:800;font-size:18px">${reviewRequired ? "⚠️ " : ""}New buyback lead</div><div style="padding:20px 22px;font-size:14px;line-height:1.7">${rows.map(([k, v]) => `<div><span style="color:#888">${esc(k)}:</span> <span style="color:#fff">${esc(v)}</span></div>`).join("")}<div style="margin-top:18px"><a href="https://topcashcellular.com/admin" style="display:inline-block;padding:10px 20px;background:#00c853;color:#0a0a0a;font-weight:800;text-decoration:none;border-radius:999px;font-size:13px">Open admin</a></div></div></div></div>`;
