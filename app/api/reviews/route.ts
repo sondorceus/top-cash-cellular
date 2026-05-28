@@ -161,6 +161,31 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Could not verify review link. Try again in a moment." }, { status: 502 });
   }
 
+  // One review reward per completed trade. A single lead can accrue more
+  // than one review token (staff flipping paid→met, or re-flipping, mints
+  // a fresh token each time) and the coupon mint only de-dupes by reviewId
+  // — so without this gate a customer could submit a review off each token
+  // and collect a $25 code every time. If this lead already has a reward
+  // coupon, refuse the duplicate submission. Best-effort: if the lookup
+  // fails we fall through rather than block a legitimate first review.
+  if (verification.leadId) {
+    try {
+      const cc = await fetch(`${MC_API}/api/coupons`, { headers: { "x-api-key": MC_KEY }, cache: "no-store" });
+      if (cc.ok) {
+        const cj = await cc.json();
+        const already = (cj.coupons || []).find(
+          (c: { leadId?: string; status?: string }) => c.leadId === verification.leadId && c.status !== "revoked",
+        );
+        if (already) {
+          return NextResponse.json(
+            { error: "You've already submitted a review for this trade — thank you! Your reward code was emailed to you." },
+            { status: 409 },
+          );
+        }
+      }
+    } catch { /* non-fatal — allow the first review through */ }
+  }
+
   try {
     // Stamp verified:true + the leadId on the upstream payload. The
     // caller has already validated the token + lead-is-paid-or-met
