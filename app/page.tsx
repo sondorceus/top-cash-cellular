@@ -4577,6 +4577,20 @@ export default function Home() {
       setCouponMessage("Couldn't verify the code right now");
     }
   };
+  // Review/thank-you codes are identity-bound (only the email or phone
+  // the code was issued to can redeem). The check runs once on "Apply"
+  // with whatever contact info exists then — so if the customer applies
+  // before filling email, or later corrects their email, the on-screen
+  // status goes stale ("enter the email…" lingers even once the right
+  // email is present). Re-validate, debounced, whenever email/phone
+  // changes while a code is entered, so the confirmation/error stays true.
+  useEffect(() => {
+    if (couponInput.trim().length < 6) return;
+    if (couponState === "checking") return;
+    const t = setTimeout(() => { checkCoupon(); }, 500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [email, phone]);
   // IMEI / serial validator (optional, contact step)
   const [imeiInput, setImeiInput] = useState("");
   const [imeiState, setImeiState] = useState<"idle" | "checking" | "ok" | "warn" | "error">("idle");
