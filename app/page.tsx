@@ -11756,10 +11756,13 @@ export default function Home() {
                   return;
                 }
               }
-              // Local meetup requires a selected slot. Mixed carts must
-              // pick a slot for the local items even though shipping covers
-              // the others.
-              if (cartNeedsLocal && !selectedSlot) {
+              // Local meetup requires a selected slot ONLY when staff have
+              // published open windows. With zero published slots the picker
+              // doesn't render, so requiring a pick here stranded the
+              // customer: they saw "we'll text you to coordinate a time" but
+              // Submit silently demanded a slot that didn't exist on screen.
+              // No slots → let them book and we coordinate by text.
+              if (cartNeedsLocal && availableSlots.length > 0 && !selectedSlot) {
                 alert("Please pick a meetup window for your local items.");
                 focusByQuery(['[data-validate="slot"]']);
                 return;
