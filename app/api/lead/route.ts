@@ -13,6 +13,11 @@ const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
+// Where new-lead alerts get emailed. Set this env to a personal inbox to
+// get pinged personally — or to a carrier email-to-SMS gateway (e.g.
+// 5125550199@vtext.com / @txt.att.net / @tmomail.net) to get a real text
+// on your phone without Twilio. Defaults to the support inbox.
+const OWNER_EMAIL = process.env.OWNER_EMAIL || "CustomerService@topcashcells.com";
 
 // Lead dedup: track recent submissions to prevent duplicates.
 // Custom-quote flows (no instant price) get a wider window keyed on
@@ -1284,6 +1289,43 @@ Pick the best channel per device. Be concise.`;
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({ To: OWNER_PHONE, From: TWILIO_FROM, Body: ownerSms }),
+      });
+    } catch {}
+  }
+
+  // Owner alert via EMAIL — the Twilio SMS above is dead until 10DLC
+  // lands, so email is the working channel. Goes to OWNER_EMAIL; point
+  // that env at a personal inbox (or a carrier SMS gateway) to be pinged
+  // personally on every new lead. Customer-supplied values are HTML-
+  // escaped before they enter the template.
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const esc = (s: unknown) => String(s ?? "").replace(/[<>&]/g, (ch) => (ch === "<" ? "&lt;" : ch === ">" ? "&gt;" : "&amp;"));
+      const oneLine = (s: unknown) => String(s ?? "").replace(/[\r\n]+/g, " ").trim();
+      const handoffMethodStr = (handoff && typeof handoff === "object") ? String((handoff as { method?: string }).method || "") : "";
+      const handoffTag = handoffMethodStr === "ship" ? "📦 SHIP" : handoffMethodStr === "local" ? "🤝 LOCAL" : handoffMethodStr === "mixed" ? "📦+🤝 MIXED" : "";
+      const firstPhoto = (photos as string[] | undefined)?.length ? (photos as string[])[0] : "";
+      const rows: [string, string][] = [
+        ["Customer", oneLine(name) || "—"],
+        ["Device", `${oneLine(model)} · ${oneLine(condition)}`],
+        ["Quote", quote ? `$${quote}` : "Custom / manual quote"],
+        ["Phone", oneLine(phone) || "N/A"],
+        ["Email", oneLine(email) || "N/A"],
+      ];
+      if (handoffTag) rows.push(["Handoff", handoffTag]);
+      if (firstPhoto) rows.push(["Photo", firstPhoto]);
+      const subject = oneLine(`${reviewRequired ? "⚠️ REVIEW · " : ""}New lead: ${oneLine(name)} — ${oneLine(model)}${quote ? ` ($${quote})` : " (custom)"}`).slice(0, 180);
+      const html = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#0a0a0a;color:#e6e6e6;margin:0;padding:24px 16px"><div style="max-width:520px;margin:0 auto;background:#0f0f0f;border:1px solid rgba(255,255,255,0.1);border-radius:14px;overflow:hidden"><div style="background:linear-gradient(135deg,#00e676 0%,#00a039 100%);padding:18px 22px;color:#0a0a0a;font-weight:800;font-size:18px">${reviewRequired ? "⚠️ " : ""}New buyback lead</div><div style="padding:20px 22px;font-size:14px;line-height:1.7">${rows.map(([k, v]) => `<div><span style="color:#888">${esc(k)}:</span> <span style="color:#fff">${esc(v)}</span></div>`).join("")}<div style="margin-top:18px"><a href="https://topcashcellular.com/admin" style="display:inline-block;padding:10px 20px;background:#00c853;color:#0a0a0a;font-weight:800;text-decoration:none;border-radius:999px;font-size:13px">Open admin</a></div></div></div></div>`;
+      const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n") + "\n\nhttps://topcashcellular.com/admin";
+      const { Resend } = await import("resend");
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from: "Top Cash Cellular <noreply@topcashcellular.com>",
+        replyTo: "CustomerService@topcashcells.com",
+        to: OWNER_EMAIL,
+        subject,
+        html,
+        text,
       });
     } catch {}
   }
