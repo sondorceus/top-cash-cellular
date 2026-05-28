@@ -12276,11 +12276,10 @@ export default function Home() {
                   Device photos. Collapsed for every handoff type; the
                   submit guard auto-opens it if a ship lead is missing the
                   number. Skywalker 2026-05-20.
-                  No-Twilio update: we don't run SMS, so phone is only
-                  collected when shipping is involved (FedEx prints it on
-                  the label). Pure local meetups don't ask for a phone —
-                  coordination is by email. */}
-              {cartNeedsShip && (
+                  Phone IS collected on local trades too — Skywalker texts
+                  customers from his own phone to coordinate the meetup
+                  (manual, not Twilio/automated SMS), so we still need the
+                  number. Optional, with SMS consent only if they enter it. */}
               <div className="border border-white/10 rounded-xl overflow-hidden">
                 <button
                   type="button"
@@ -12363,7 +12362,6 @@ export default function Home() {
                   </div>
                 )}
               </div>
-              )}
               {email && (
                 <p className="text-[#e6e6e6] text-xs">
                   Email: {email}
