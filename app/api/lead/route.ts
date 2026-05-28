@@ -790,7 +790,10 @@ export async function POST(req: NextRequest) {
         // sensibly without parsing the indented device list.
         `Device: ${safeModel || `${deviceList.length} devices`}`,
         `Condition: Multi-device (${deviceList.length})`,
-        safeCarrier ? `Carrier: ${safeCarrier}` : null,
+        // No top-level Carrier on a bundle — `carrier` here is leftover
+        // single-device state and misrepresents a mixed-carrier cart
+        // (e.g. an AT&T + Verizon bundle showed "Carrier: Verizon").
+        // Each device's real carrier is listed per-row in multiLines.
         `Quote: $${deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0)}`,
         `Payout: ${safePayout}`,
         ...couponLines,
