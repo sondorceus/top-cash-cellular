@@ -60,6 +60,11 @@ export async function POST(req: NextRequest) {
 
   const { leadId, name, phone, email, device, originalQuote, offer, reason } = body;
   if (!leadId) return NextResponse.json({ error: "leadId required" }, { status: 400 });
+  // Validate the id shape — it's interpolated into the [COUNTER-OFFER: id]
+  // MC marker, so a bracket-bearing id could close the marker and forge a
+  // [STATUS:]/[LEAD:] flip the admin parser reads back. Same guard the
+  // delete/restore routes use.
+  if (!/^[\w-]+$/.test(leadId)) return NextResponse.json({ error: "Invalid leadId" }, { status: 400 });
   if (typeof offer !== "number" || offer < 0) return NextResponse.json({ error: "offer (number) required" }, { status: 400 });
   if (typeof originalQuote !== "number") return NextResponse.json({ error: "originalQuote (number) required" }, { status: 400 });
   if (!reason || !reason.trim()) return NextResponse.json({ error: "reason required" }, { status: 400 });
@@ -88,7 +93,7 @@ export async function POST(req: NextRequest) {
         from: "topcash-web",
         fromName: "Top Cash Cellular",
         role: "system",
-        body: `[COUNTER-OFFER: ${leadId}] original=$${originalQuote} offer=$${offer} reason=${reason.replace(/[\n\r]/g, " ").slice(0, 300)}`,
+        body: `[COUNTER-OFFER: ${leadId}] original=$${originalQuote} offer=$${offer} reason=${reason.replace(/[[\]\n\r]/g, " ").slice(0, 300)}`,
         tags: ["counter-offer", "pending"],
         priority: "normal",
       }),

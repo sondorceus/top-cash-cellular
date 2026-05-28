@@ -564,10 +564,12 @@ export default function AdminPage() {
       setCounterOfferError("Reason should be at least a short sentence — the customer reads this verbatim.");
       return;
     }
-    // Original quote — parse out the leading $N from the quote string.
+    // Original quote — comma-aware so "$1,250" parses as 1250, not 1.
+    // (The old /\$?(\d+)/ stopped at the comma and recorded $1 as the
+    // original, making every counter-offer on a ≥$1k lead look like a
+    // massive cut to the customer.)
     const quoteStr = counterOfferLead.quote || "";
-    const origMatch = quoteStr.match(/\$?(\d+)/);
-    const originalQuote = origMatch ? parseInt(origMatch[1], 10) : counterOfferLead.totalPayout || 0;
+    const originalQuote = parseDollarAmount(quoteStr) || counterOfferLead.totalPayout || 0;
     if (!originalQuote) {
       setCounterOfferError("Can't determine the original quote on this lead.");
       return;

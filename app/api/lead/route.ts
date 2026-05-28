@@ -470,7 +470,7 @@ export async function POST(req: NextRequest) {
       const handoffTag = d.handoff === "ship" ? " · 📦 SHIP"
                        : d.handoff === "local" ? " · 🤝 LOCAL"
                        : "";
-      multiLines.push(`  ${i + 1}. ${cleanField(d.model, 120) || "—"}${d.storage ? ` · ${cleanField(d.storage, 30)}` : ""}${d.condition ? ` · ${cleanField(d.condition, 60)}` : ""}${d.quote ? ` · $${Number(d.quote) || 0}` : ""}${d.quantity && d.quantity > 1 ? ` (×${Number(d.quantity)})` : ""}${handoffTag}`);
+      multiLines.push(`  ${i + 1}. ${cleanField(d.model, 120) || "—"}${d.storage ? ` · ${cleanField(d.storage, 30)}` : ""}${d.condition ? ` · ${cleanField(d.condition, 60)}` : ""}${d.quote ? ` · $${Number(d.quote) || 0}${d.quantity && d.quantity > 1 ? " total" : ""}` : ""}${d.quantity && d.quantity > 1 ? ` (×${Number(d.quantity)})` : ""}${handoffTag}`);
       // Per-device specs — indented under the device line so the admin
       // parser can pick them up via the "[Spec]: <value>" prefix. Each
       // line is the same key the single-device flow uses (Chip / RAM /
@@ -757,7 +757,7 @@ export async function POST(req: NextRequest) {
         `Device: ${safeDevice || "multi"} — ${safeModel || `${deviceList.length} devices`}`,
         `Condition: Multi-device (${deviceList.length})`,
         safeCarrier ? `Carrier: ${safeCarrier}` : null,
-        `Quote: $${deviceList.reduce((s, d) => s + (Number(d.quote) || 0) * (Number(d.quantity) || 1), 0)}`,
+        `Quote: $${deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0)}`,
         `Payout: ${safePayout}`,
         ...couponLines,
         ...referralLines,

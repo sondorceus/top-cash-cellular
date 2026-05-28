@@ -41,9 +41,10 @@ function parseQuoteDollars(quote: string | null): number {
 export async function GET(req: NextRequest) {
   const auth = req.headers.get("authorization") || "";
   const secret = process.env.CRON_SECRET;
-  const queryToken = req.nextUrl.searchParams.get("token");
-  // Allow manual trigger via ?token= for testing — same secret either way.
-  const ok = secret && (auth === `Bearer ${secret}` || queryToken === secret);
+  // Header-only auth, matching the other crons. A ?token= query secret
+  // leaks into Vercel access logs, browser history, and Referer headers —
+  // and CRON_SECRET protects every cron, so one leak compromises them all.
+  const ok = secret && auth === `Bearer ${secret}`;
   if (!ok) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   if (!MC_KEY) return NextResponse.json({ error: "MC_API_KEY not configured" }, { status: 500 });
