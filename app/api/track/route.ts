@@ -144,9 +144,15 @@ export async function POST(req: NextRequest) {
     const isBuyback = /\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(body);
     const isChat = body.includes("[CHAT LEAD]");
     if (!isBuyback && !isChat) continue;
-    const bodyLower = body.toLowerCase();
-    const phoneMatch = normPhone && normalizePhone(body).includes(normPhone);
-    const emailMatch = normEmail && bodyLower.includes(normEmail);
+    // Match the contact against the lead's OWN Phone:/Email: fields only.
+    // The old code digit-stripped the WHOLE body and substring-matched, so
+    // a 10-digit phone could coincidentally hit another lead's IMEI, ZIP,
+    // Source-IP, or visitor-id and return a STRANGER's trade status. Parse
+    // the actual contact fields and compare exactly.
+    const leadPhoneDigits = normalizePhone(parseField(body, "Phone") || "");
+    const leadEmail = (parseField(body, "Email") || "").toLowerCase().trim();
+    const phoneMatch = !!normPhone && leadPhoneDigits.length >= 10 && leadPhoneDigits === normPhone;
+    const emailMatch = !!normEmail && leadEmail.length > 0 && leadEmail === normEmail;
     if (!phoneMatch && !emailMatch) continue;
 
     const deviceLine = parseField(body, "Device");
