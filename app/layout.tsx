@@ -72,6 +72,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`h-full antialiased ${cabinet.variable}`} suppressHydrationWarning>
       <head>
+        {/* Theme init — set data-theme BEFORE paint so there's no flash.
+            Dark is the default; light only when the user has chosen it. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(()=>{try{var t=localStorage.getItem('tcc-theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();`
+          }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `(()=>{if(typeof IntersectionObserver==='undefined')return;const o=new IntersectionObserver((es,ob)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');ob.unobserve(e.target);}});},{threshold:0.12,rootMargin:'0px 0px -8% 0px'});let p=false;const arm=()=>{p=false;document.querySelectorAll('.reveal:not(.is-visible)').forEach(el=>o.observe(el));};const sched=()=>{if(p)return;p=true;requestAnimationFrame(arm);};if(document.readyState==='complete')arm();else window.addEventListener('load',arm);try{new MutationObserver(sched).observe(document.documentElement,{childList:true,subtree:true});}catch(e){}})();`

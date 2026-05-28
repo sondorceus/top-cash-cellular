@@ -8,6 +8,7 @@ import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle
 import { formatOfferNumber } from "./lib/offer-number";
 import { SlideOnScrollNav } from "./components/SlideOnScrollNav";
 import { HeaderSearch } from "./components/HeaderSearch";
+import { ThemeToggle } from "./components/ThemeToggle";
 import Pic from "./components/Pic";
 import NextImage from "next/image";
 import { CARRIER_DEDUCTIONS, PRICE_TABLE, MIN_OFFER, MANUAL_REVIEW_DEVICES, MACBOOK_SPECS, type MacSpec, type MacSpecOption } from "./data/prices";
@@ -6917,6 +6918,9 @@ export default function Home() {
                 <path strokeLinecap="round" d="m20 20-3.5-3.5" />
               </svg>
             </button>
+
+            {/* Light/dark toggle — dark is the default + untouched theme. */}
+            <ThemeToggle />
 
             {/* CART — always visible on every screen size. Bumps + glows
                 when items are added (cartBump key change retriggers the

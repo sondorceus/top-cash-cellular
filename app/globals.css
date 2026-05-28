@@ -779,3 +779,57 @@ gmp-place-autocomplete {
 @media (prefers-reduced-motion: reduce) {
   .tcc-anim-border::before { animation: none; }
 }
+
+/* =========================================================================
+   LIGHT MODE — additive override layer, active ONLY when the user toggles
+   data-theme="light" on <html>. The dark theme (default) is never touched.
+   First-pass prototype: covers the homepage's main surfaces (backdrop,
+   text, panels, borders, nav). Deeply-nested one-off colors may need a
+   polish round. Brand green (#00c853) is intentionally left as-is.
+   Skywalker 2026-05-28.
+   ========================================================================= */
+html[data-theme="light"] { background-color: #f4f4f6; }
+html[data-theme="light"] body { color: #16161a; }
+/* Light backdrop wash — the iPhone shows faintly behind a light page. */
+html[data-theme="light"] body::before {
+  background:
+    linear-gradient(rgba(244, 244, 246, 0.86), rgba(244, 244, 246, 0.86)),
+    url('/iphone-17-pro-backdrop.webp') center / cover no-repeat,
+    #f4f4f6 !important;
+}
+@media (max-width: 640px) {
+  html[data-theme="light"] body::before {
+    background:
+      linear-gradient(rgba(244, 244, 246, 0.88), rgba(244, 244, 246, 0.88)),
+      url('/iphone-17-pro-backdrop.webp') center top / 160% auto no-repeat,
+      #f4f4f6 !important;
+  }
+}
+/* Nav + solid dark panels -> light/white */
+html[data-theme="light"] .bg-\[\#0a0a0a\]\/95 { background-color: rgba(255, 255, 255, 0.9) !important; }
+html[data-theme="light"] .bg-\[\#111\],
+html[data-theme="light"] .bg-\[\#0f0f0f\],
+html[data-theme="light"] .bg-\[\#1a1a1d\] { background-color: #ffffff !important; }
+/* Translucent-white surfaces -> translucent-black (subtle light panels) */
+html[data-theme="light"] .bg-white\/\[0\.03\] { background-color: rgba(0, 0, 0, 0.03) !important; }
+html[data-theme="light"] .bg-white\/5 { background-color: rgba(0, 0, 0, 0.04) !important; }
+html[data-theme="light"] .bg-white\/\[0\.06\] { background-color: rgba(0, 0, 0, 0.05) !important; }
+html[data-theme="light"] .bg-white\/10 { background-color: rgba(0, 0, 0, 0.06) !important; }
+html[data-theme="light"] .bg-white\/\[0\.12\] { background-color: rgba(0, 0, 0, 0.06) !important; }
+html[data-theme="light"] .bg-white\/15 { background-color: rgba(0, 0, 0, 0.08) !important; }
+/* Borders */
+html[data-theme="light"] .border-white\/5 { border-color: rgba(0, 0, 0, 0.06) !important; }
+html[data-theme="light"] .border-white\/10 { border-color: rgba(0, 0, 0, 0.1) !important; }
+html[data-theme="light"] .border-white\/15 { border-color: rgba(0, 0, 0, 0.12) !important; }
+/* Text — light theme uses DARK text (separate rule set; never bleeds into
+   the dark theme's light text). Brand green (#00c853) stays untouched. */
+html[data-theme="light"] .text-white { color: #16161a !important; }
+html[data-theme="light"] .text-\[\#e6e6e6\],
+html[data-theme="light"] .text-\[\#dcdcdc\],
+html[data-theme="light"] .text-\[\#d4d4d4\] { color: #2a2a2e !important; }
+html[data-theme="light"] .text-\[\#c5c5c5\],
+html[data-theme="light"] .text-\[\#bdbdbd\],
+html[data-theme="light"] .text-\[\#b8b8b8\] { color: #55555c !important; }
+html[data-theme="light"] .text-\[\#9a9a9a\],
+html[data-theme="light"] .text-\[\#888\],
+html[data-theme="light"] .text-\[\#666\] { color: #70707a !important; }
