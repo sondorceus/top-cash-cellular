@@ -1310,6 +1310,226 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
       { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.05 },
     ],
     hasNanoGlass: false },
+  // ---- Intel / legacy MacBooks (inquiry-only, base 0) ----
+  // These carry NO `adj` fields on purpose: base price is 0 so the funnel
+  // routes them to the pending/manual-quote screen (isPendingQuote), but
+  // having a spec entry makes hasAdditiveSpecs() true so the funnel still
+  // collects chip / RAM / storage. Without this the funnel skipped straight
+  // to condition and staff got a lead with no config — Skywalker's "all the
+  // important meat are missing" again, this time for older MacBooks.
+  // Options are real Apple build-to-order configs; multiplier kept 1.00
+  // since base 0 makes the math moot (no auto-price is ever shown).
+  mbp16_intel_2019: {
+    processors: [
+      { id: "i7_6c", label: "Intel Core i7", sub: "6-Core 2.6GHz", multiplier: 1.00 },
+      { id: "i9_8c", label: "Intel Core i9", sub: "8-Core 2.3GHz", multiplier: 1.00 },
+      { id: "i9_8c_24", label: "Intel Core i9", sub: "8-Core 2.4GHz", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "16", label: "16 GB", sub: "DDR4", multiplier: 1.00 },
+      { id: "32", label: "32 GB", sub: "DDR4", multiplier: 1.00 },
+      { id: "64", label: "64 GB", sub: "DDR4", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB", sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB", sub: "SSD", multiplier: 1.00 },
+      { id: "4tb", label: "4 TB", sub: "SSD", multiplier: 1.00 },
+      { id: "8tb", label: "8 TB", sub: "SSD", multiplier: 1.00 },
+    ],
+    hasNanoGlass: false },
+  mbp13_intel_2020: {
+    processors: [
+      { id: "i5_8c", label: "Intel Core i5", sub: "Quad-Core 8th Gen 1.4GHz", multiplier: 1.00 },
+      { id: "i7_8c", label: "Intel Core i7", sub: "Quad-Core 8th Gen 1.7GHz", multiplier: 1.00 },
+      { id: "i5_10c", label: "Intel Core i5", sub: "Quad-Core 10th Gen 2.0GHz", multiplier: 1.00 },
+      { id: "i7_10c", label: "Intel Core i7", sub: "Quad-Core 10th Gen 2.3GHz", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8", label: "8 GB", multiplier: 1.00 },
+      { id: "16", label: "16 GB", multiplier: 1.00 },
+      { id: "32", label: "32 GB", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB", sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB", sub: "SSD", multiplier: 1.00 },
+      { id: "4tb", label: "4 TB", sub: "SSD", multiplier: 1.00 },
+    ],
+    hasNanoGlass: false },
+  mbp_tb_2018_2019: {
+    processors: [
+      { id: "i5", label: "Intel Core i5", multiplier: 1.00 },
+      { id: "i7", label: "Intel Core i7", multiplier: 1.00 },
+      { id: "i9", label: "Intel Core i9", sub: "15-inch only", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8", label: "8 GB", multiplier: 1.00 },
+      { id: "16", label: "16 GB", multiplier: 1.00 },
+      { id: "32", label: "32 GB", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB", sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB", sub: "SSD", multiplier: 1.00 },
+      { id: "4tb", label: "4 TB", sub: "SSD", multiplier: 1.00 },
+    ],
+    hasNanoGlass: false },
+  mbp_tb_2016_2017: {
+    processors: [
+      { id: "i5", label: "Intel Core i5", multiplier: 1.00 },
+      { id: "i7", label: "Intel Core i7", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8", label: "8 GB", multiplier: 1.00 },
+      { id: "16", label: "16 GB", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB", sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB", sub: "SSD", multiplier: 1.00 },
+    ],
+    hasNanoGlass: false },
+  mbp_retina_2015: {
+    processors: [
+      { id: "i5", label: "Intel Core i5", multiplier: 1.00 },
+      { id: "i7", label: "Intel Core i7", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8", label: "8 GB", multiplier: 1.00 },
+      { id: "16", label: "16 GB", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "128", label: "128 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB", sub: "SSD", multiplier: 1.00 },
+    ],
+    hasNanoGlass: false },
+  mbp_retina_2014: {
+    processors: [
+      { id: "i5", label: "Intel Core i5", multiplier: 1.00 },
+      { id: "i7", label: "Intel Core i7", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8", label: "8 GB", multiplier: 1.00 },
+      { id: "16", label: "16 GB", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "128", label: "128 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB", sub: "SSD", multiplier: 1.00 },
+    ],
+    hasNanoGlass: false },
+  mba_intel_2020: {
+    processors: [
+      { id: "i3", label: "Intel Core i3", sub: "Dual-Core 10th Gen", multiplier: 1.00 },
+      { id: "i5", label: "Intel Core i5", sub: "Quad-Core 10th Gen", multiplier: 1.00 },
+      { id: "i7", label: "Intel Core i7", sub: "Quad-Core 10th Gen", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8", label: "8 GB", multiplier: 1.00 },
+      { id: "16", label: "16 GB", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB", sub: "SSD", multiplier: 1.00 },
+      { id: "2tb", label: "2 TB", sub: "SSD", multiplier: 1.00 },
+    ],
+    hasNanoGlass: false },
+  mba_retina_2018_2019: {
+    processors: [
+      { id: "i5", label: "Intel Core i5", sub: "Dual-Core", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8", label: "8 GB", multiplier: 1.00 },
+      { id: "16", label: "16 GB", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "128", label: "128 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "1tb", label: "1 TB", sub: "SSD", multiplier: 1.00 },
+      { id: "1_5tb", label: "1.5 TB", sub: "SSD", multiplier: 1.00 },
+    ],
+    hasNanoGlass: false },
+  mba_2017: {
+    processors: [
+      { id: "i5", label: "Intel Core i5", multiplier: 1.00 },
+      { id: "i7", label: "Intel Core i7", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8", label: "8 GB", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "128", label: "128 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+    ],
+    hasNanoGlass: false },
+  mba_2014_2015: {
+    processors: [
+      { id: "i5", label: "Intel Core i5", multiplier: 1.00 },
+      { id: "i7", label: "Intel Core i7", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "4", label: "4 GB", multiplier: 1.00 },
+      { id: "8", label: "8 GB", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "128", label: "128 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+    ],
+    hasNanoGlass: false },
+  mb12_2017: {
+    processors: [
+      { id: "m3", label: "Intel Core m3", multiplier: 1.00 },
+      { id: "i5", label: "Intel Core i5", multiplier: 1.00 },
+      { id: "i7", label: "Intel Core i7", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8", label: "8 GB", multiplier: 1.00 },
+      { id: "16", label: "16 GB", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+    ],
+    hasNanoGlass: false },
+  mb12_2016: {
+    processors: [
+      { id: "m3", label: "Intel Core m3", multiplier: 1.00 },
+      { id: "m5", label: "Intel Core m5", multiplier: 1.00 },
+      { id: "m7", label: "Intel Core m7", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8", label: "8 GB", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+    ],
+    hasNanoGlass: false },
+  mb12_2015: {
+    processors: [
+      { id: "m3", label: "Intel Core m3", multiplier: 1.00 },
+      { id: "m5", label: "Intel Core m5", multiplier: 1.00 },
+      { id: "m7", label: "Intel Core m7", multiplier: 1.00 },
+    ],
+    memory: [
+      { id: "8", label: "8 GB", multiplier: 1.00 },
+    ],
+    storage: [
+      { id: "256", label: "256 GB", sub: "SSD", multiplier: 1.00 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00 },
+    ],
+    hasNanoGlass: false },
   // Dell XPS 15 (2024) — IWM additive pricing
   dxps15: {
     processors: [
