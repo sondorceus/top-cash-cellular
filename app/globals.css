@@ -172,11 +172,10 @@ body {
   line-height: 1.55;
   letter-spacing: -0.005em;
 }
-/* THE backdrop is the LIGHT theme. Dark = solid #0a0a0a with no backdrop
-   (the clean default). Light = same glassy UI with the iPhone 17 Pro
-   image showing behind it (0.66 wash — the look Skywalker approved).
-   Fixed pseudo-element so it's composited once + smooth on scroll;
-   z-index:-1 sits behind content; main wrappers are forced transparent. */
+/* LIGHT = the "clear glass" theme. Dark = solid #0a0a0a, no backdrop
+   (clean default, untouched). Light = a faint-bright iPhone backdrop with
+   a LIGHT wash, behind frosted-white-glass panels + dark text (overrides
+   below). Fixed pseudo-element = composited once + smooth on scroll. */
 html[data-theme="light"] body::before {
   content: "";
   position: fixed;
@@ -184,9 +183,9 @@ html[data-theme="light"] body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    linear-gradient(rgba(10, 10, 10, 0.66), rgba(10, 10, 10, 0.66)),
+    linear-gradient(rgba(232, 236, 242, 0.40), rgba(232, 236, 242, 0.40)),
     url('/iphone-17-pro-backdrop.webp') center / cover no-repeat,
-    #0a0a0a;
+    #e8ecf2;
 }
 /* All dark-themed main wrappers across the site (homepage, account, sell,
    bulk, faq, etc.) hard-code bg-[#0a0a0a] which fully covers the body
@@ -200,9 +199,9 @@ main.bg-\[\#0a0a0a\] {
 @media (max-width: 640px) {
   html[data-theme="light"] body::before {
     background:
-      linear-gradient(rgba(10, 10, 10, 0.70), rgba(10, 10, 10, 0.70)),
+      linear-gradient(rgba(232, 236, 242, 0.46), rgba(232, 236, 242, 0.46)),
       url('/iphone-17-pro-backdrop.webp') center top / 160% auto no-repeat,
-      #0a0a0a;
+      #e8ecf2;
   }
 }
 /* Cabinet Grotesk renders better with slight tracking adjustments
@@ -781,8 +780,58 @@ gmp-place-autocomplete {
   .tcc-anim-border::before { animation: none; }
 }
 
-/* Light vs dark is purely the backdrop on/off (handled by the
-   html[data-theme="light"] body::before rule above). No color flipping —
-   the glassy UI is identical in both; light just shows the iPhone behind
-   it. (The earlier flat-white override layer was scrapped — it looked
-   wrong; "light" here means the airy backdrop look, not a white page.) */
+/* =========================================================================
+   LIGHT = "CLEAR GLASS" THEME (additive; dark is default + untouched).
+   Panels become frosted-white glass over the faint backdrop, text goes
+   dark + readable. Brand green (#00c853) stays. First pass — refined
+   section-by-section against screenshots. Skywalker 2026-05-28.
+   ========================================================================= */
+html[data-theme="light"] body { color: #15151b; }
+/* Frosted-white glass panels — translucent white + blur so dark text on
+   them is sharp while the backdrop stays faintly visible behind. */
+html[data-theme="light"] .bg-white\/\[0\.03\],
+html[data-theme="light"] .bg-white\/5,
+html[data-theme="light"] .bg-white\/\[0\.06\],
+html[data-theme="light"] .bg-white\/\[0\.08\] {
+  background-color: rgba(255, 255, 255, 0.58) !important;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+html[data-theme="light"] .bg-white\/10,
+html[data-theme="light"] .bg-white\/\[0\.12\],
+html[data-theme="light"] .bg-white\/15 {
+  background-color: rgba(255, 255, 255, 0.70) !important;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+/* Solid dark surfaces (nav, mega-menus, the ship CTA, modals) -> frosted
+   white glass. Includes the hero ship CTA's arbitrary rgba background. */
+html[data-theme="light"] .bg-\[\#0a0a0a\]\/95,
+html[data-theme="light"] .bg-\[\#111\],
+html[data-theme="light"] .bg-\[\#0f0f0f\],
+html[data-theme="light"] .bg-\[\#1a1a1d\],
+html[data-theme="light"] .bg-\[\#1a1a1a\],
+html[data-theme="light"] .bg-\[rgba\(20\,22\,28\,0\.85\)\],
+html[data-theme="light"] .bg-black\/40,
+html[data-theme="light"] .bg-black\/80 {
+  background-color: rgba(255, 255, 255, 0.78) !important;
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+}
+html[data-theme="light"] .border-white\/22 { border-color: rgba(0, 0, 0, 0.12) !important; }
+/* White logo wordmark is invisible on the frosted-white nav — darken it. */
+html[data-theme="light"] img[alt="Top Cash Cellular"] { filter: brightness(0.14); }
+/* Borders -> subtle dark */
+html[data-theme="light"] .border-white\/5 { border-color: rgba(0, 0, 0, 0.06) !important; }
+html[data-theme="light"] .border-white\/10 { border-color: rgba(0, 0, 0, 0.10) !important; }
+html[data-theme="light"] .border-white\/15 { border-color: rgba(0, 0, 0, 0.12) !important; }
+/* Text -> dark + readable (its own rule set; never touches dark theme). */
+html[data-theme="light"] .text-white { color: #15151b !important; }
+html[data-theme="light"] .text-\[\#e6e6e6\],
+html[data-theme="light"] .text-\[\#dcdcdc\],
+html[data-theme="light"] .text-\[\#d4d4d4\] { color: #22222a !important; }
+html[data-theme="light"] .text-\[\#c5c5c5\],
+html[data-theme="light"] .text-\[\#cfcfcf\],
+html[data-theme="light"] .text-\[\#bdbdbd\],
+html[data-theme="light"] .text-\[\#b8b8b8\] { color: #45454d !important; }
+html[data-theme="light"] .text-\[\#9a9a9a\],
+html[data-theme="light"] .text-\[\#9ca3af\],
+html[data-theme="light"] .text-\[\#888\],
+html[data-theme="light"] .text-\[\#666\] { color: #5f5f68 !important; }
