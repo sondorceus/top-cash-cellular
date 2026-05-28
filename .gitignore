@@ -42,3 +42,13 @@ next-env.d.ts
 
 .vercel
 .claude/
+
+# locally-generated data outputs from scripts/ (scrape + audit pipelines).
+# Kept on disk for the scripts, never part of the app build/deploy.
+/iwm-all-prices.json
+/iwm-audit-flagged.csv
+/iwm-audit-raw.json
+/iwm-audit-summary.txt
+/price-table-iphone.json
+/ebay-resell-data.json
+/atlas-margin-audit.csv

@@ -25,11 +25,15 @@ const OWNER_EMAIL = process.env.OWNER_EMAIL || "CustomerService@topcashcells.com
 // device-category + email — this catches the case where a user re-submits
 // the same kind of device with a tweaked free-text description.
 //
-// STORAGE NOTE: this Map lives in the Lambda instance and resets on cold
-// start. That leaves a small duplicate-payout window if a customer
-// resubmits right after a deploy. Audit 2026-05-24 flagged this — promote
-// to Vercel KV once provisioned: `import { kv } from "@vercel/kv"` and
-// swap recentLeads.{get,set} for `await kv.{get,set}(key, …, { ex: 300 })`.
+// STORAGE NOTE: this Map is only a same-instance FAST PATH (instant block
+// for a rapid double-click on a warm Lambda). It resets on cold start and
+// isn't shared across concurrent instances, so on its own it left a
+// duplicate-payout window (resubmit right after a deploy, or two parallel
+// submits landing on different Lambdas). The cross-instance authority is
+// isDuplicateMC() below, which checks Mission Control — the shared store
+// every Lambda already reads/writes — before posting. (Audit 2026-05-24
+// flagged the gap; this closes it without needing Vercel KV provisioned.
+// If KV is ever added, it can replace BOTH layers.)
 const recentLeads = new Map<string, number>();
 const DEDUP_REGULAR_MS = 60 * 1000; // 60s for instant-quote flows
 const DEDUP_CUSTOM_MS = 5 * 60 * 1000; // 5min for custom-quote flows
@@ -74,6 +78,45 @@ function isDuplicate(email: string, contact: string, device: string, model: stri
     }
   }
   return false;
+}
+
+// Cross-instance dedup authority. Scans recent Mission Control comms for
+// a [NEW BUYBACK LEAD] from the same contact (email or normalized phone)
+// for the same product, inside the dedup window. Because MC is shared
+// across every Lambda, this catches duplicates the in-memory Map can't:
+// cold starts and concurrent submits on different instances. Fails OPEN
+// (returns false) on any MC error so a real lead is never blocked by an
+// MC outage — matching the rest of this route's "MC down ≠ lost lead"
+// stance. Skywalker 2026-05-28.
+async function isDuplicateMC(email: string, contact: string, device: string, model: string, isCustom: boolean): Promise<boolean> {
+  const e = (email || "").toLowerCase().trim();
+  const c = (contact || "").replace(/\D/g, "").replace(/^1(?=\d{10}$)/, "");
+  if (!e && !c) return false;
+  const productKey = (isCustom ? (device || "") : (model || "")).toLowerCase().trim();
+  const windowMs = isCustom ? DEDUP_CUSTOM_MS : DEDUP_REGULAR_MS;
+  const cutoff = Date.now() - windowMs;
+  try {
+    const r = await fetch(`${MC_API}/api/comms?limit=200`, { headers: { "x-api-key": MC_KEY }, cache: "no-store" });
+    if (!r.ok) return false;
+    const data = await r.json().catch(() => ({}));
+    const msgs: { body?: string; timestamp?: string }[] = Array.isArray(data.messages) ? data.messages : [];
+    for (const m of msgs) {
+      const b = m.body || "";
+      if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(b)) continue;
+      const ts = m.timestamp ? new Date(m.timestamp).getTime() : 0;
+      if (!ts || ts < cutoff) continue; // outside the window
+      const bodyEmail = (b.match(/(?:^|\n)Email:[ \t]*([^\n]*)/i)?.[1] || "").toLowerCase().trim();
+      const bodyPhone = (b.match(/(?:^|\n)Phone:[ \t]*([^\n]*)/i)?.[1] || "").replace(/\D/g, "").replace(/^1(?=\d{10}$)/, "");
+      const contactMatch = (!!e && bodyEmail === e) || (!!c && !!bodyPhone && bodyPhone === c);
+      if (!contactMatch) continue;
+      // Product match mirrors the in-memory key: regular → model, custom →
+      // device-category. Empty productKey falls back to contact-in-window.
+      if (!productKey || b.toLowerCase().includes(productKey)) return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
 }
 
 // Resell values from Swappa (real market data, scraped 2026-05-12).
@@ -306,7 +349,9 @@ export async function POST(req: NextRequest) {
   const isPreviewSave = (!handoff || (typeof handoff === "object" && !(handoff as { method?: string }).method))
     && (!payout || payout === "TBD");
   const isCustom = !quote || quote === 0 || quote === "0";
-  if (!isPreviewSave && isDuplicate(email, phone, device, model, isCustom)) {
+  // In-memory fast path first (instant, side-effect records the key), then
+  // the MC cross-instance authority for the cold-start/concurrent case.
+  if (!isPreviewSave && (isDuplicate(email, phone, device, model, isCustom) || await isDuplicateMC(email, phone, device, model, isCustom))) {
     return NextResponse.json({ ok: true, deduped: true });
   }
 
