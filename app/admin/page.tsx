@@ -319,6 +319,10 @@ export default function AdminPage() {
   // top-level model/storage/etc (single-device). Save posts to
   // /api/admin/leads/items and we refetchLeads on success.
   const [correctingLead, setCorrectingLead] = useState<Lead | null>(null);
+  // Full-detail modal — clicking a lead's name opens a read-only panel
+  // with EVERYTHING: every device + spec, every photo (uncapped, unlike
+  // the 3-thumbnail row preview), handoff, notes, source, IMEI warnings.
+  const [detailLead, setDetailLead] = useState<Lead | null>(null);
   // AI fraud check — Skywalker 2026-05-19. Per-lead in-flight flag and
   // the cached verdict for each lead. Verdict stays visible until the
   // page reloads or staff hits the button again.
@@ -456,6 +460,36 @@ export default function AdminPage() {
       }
       setSelectedIds(new Set());
       setBulkStatus("");
+    } finally {
+      setBulkSaving(false);
+      setTimeout(() => setBulkProgress(null), 1500);
+    }
+  };
+
+  // Bulk soft-delete — moves every selected lead to Trash in one pass,
+  // reusing the same per-lead delete endpoint runBulkStatus mirrors. Soft
+  // (recoverable from Trash); MC comms history is permanent regardless.
+  const runBulkDelete = async () => {
+    if (!token || selectedIds.size === 0) return;
+    const ids = Array.from(selectedIds);
+    const ok = confirm(`Move ${ids.length} selected lead${ids.length === 1 ? "" : "s"} to Trash?\n\nThey'll be hidden from the Active feed but recoverable from the Trash view. MC comms history is permanent regardless.`);
+    if (!ok) return;
+    setBulkSaving(true);
+    setBulkProgress({ done: 0, total: ids.length });
+    try {
+      for (let i = 0; i < ids.length; i++) {
+        const lead = leads.find((l) => l.id === ids[i]);
+        try {
+          await fetch(`/api/admin/leads/delete?token=${encodeURIComponent(token)}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ leadId: ids[i], reason: `bulk delete via admin UI${lead?.name ? ` for ${lead.name}` : ""}` }),
+          });
+          setLeads((cur) => cur.filter((l) => l.id !== ids[i]));
+        } catch {}
+        setBulkProgress({ done: i + 1, total: ids.length });
+      }
+      setSelectedIds(new Set());
     } finally {
       setBulkSaving(false);
       setTimeout(() => setBulkProgress(null), 1500);
@@ -1900,7 +1934,14 @@ export default function AdminPage() {
                     </div>
                     <div>
                       <p className="font-semibold text-sm flex items-center gap-1.5 flex-wrap">
-                        {lead.name || "—"}
+                        <button
+                          type="button"
+                          onClick={() => setDetailLead(lead)}
+                          title="Open full detail"
+                          className="text-left hover:text-[#00c853] hover:underline cursor-pointer"
+                        >
+                          {lead.name || "—"}
+                        </button>
                         {(() => {
                           const stale = stalenessFor(lead);
                           if (stale === "ok") return null;
@@ -2262,7 +2303,7 @@ export default function AdminPage() {
                             </a>
                           ))}
                           {lead.photos.length > 3 && (
-                            <span className="w-10 h-10 rounded bg-white/5 border border-white/10 flex items-center justify-center text-[10px] text-[#dcdcdc]">+{lead.photos.length - 3}</span>
+                            <button type="button" onClick={() => setDetailLead(lead)} title="View all photos in full detail" className="w-10 h-10 rounded bg-white/5 border border-white/10 hover:border-[#00c853] hover:bg-white/10 flex items-center justify-center text-[10px] text-[#dcdcdc] cursor-pointer transition">+{lead.photos.length - 3}</button>
                           )}
                         </div>
                       )}
@@ -3291,7 +3332,7 @@ export default function AdminPage() {
               <p className="text-sm font-semibold text-white">{selectedIds.size} selected</p>
               <button onClick={() => setSelectedIds(new Set())} className="text-xs text-[#dcdcdc] hover:text-white cursor-pointer">Clear</button>
               {bulkProgress && (
-                <p className="text-xs text-[#00c853]">{bulkProgress.done}/{bulkProgress.total} updated</p>
+                <p className="text-xs text-[#00c853]">{bulkProgress.done}/{bulkProgress.total} done</p>
               )}
             </div>
             <div className="flex items-center gap-2">
@@ -3313,10 +3354,212 @@ export default function AdminPage() {
               >
                 {bulkSaving ? "Updating…" : "Apply"}
               </button>
+              <span className="w-px h-6 bg-white/15" aria-hidden />
+              <button
+                onClick={runBulkDelete}
+                disabled={bulkSaving}
+                title={view === "trash" ? "Selected leads are already in Trash" : "Move selected leads to Trash"}
+                className="px-4 py-2 bg-red-500/15 text-red-300 border border-red-500/40 rounded-lg text-sm font-semibold hover:bg-red-500/25 cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {bulkSaving ? "Working…" : "🗑 Delete"}
+              </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* FULL LEAD DETAIL MODAL — clicking a lead's name (or the "+N"
+          photo badge) opens this read-only panel showing the complete
+          lead: every device + spec, every photo uncapped (the row only
+          previews 3), handoff, notes, source, IMEI warnings, margins,
+          AI verdicts. Closes on backdrop click. */}
+      {detailLead && (() => {
+        const L = detailLead;
+        const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+          <div className="border-t border-white/10 pt-3">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[#8a8a8a] mb-1.5">{title}</p>
+            {children}
+          </div>
+        );
+        const specPairs = (d: { processor?: string; memory?: string; graphics?: string; displayResolution?: string; displayGlass?: string; batteryHealth?: string; charger?: string; carrier?: string; connectivity?: string; imei?: string; extras?: string[] }): [string, string][] => {
+          const out: [string, string][] = [];
+          if (d.processor) out.push(["Chip", d.processor]);
+          if (d.memory) out.push(["RAM", d.memory]);
+          if (d.graphics) out.push(["GPU", d.graphics]);
+          if (d.displayResolution) out.push(["Display", d.displayResolution]);
+          if (d.displayGlass) out.push(["Glass", d.displayGlass]);
+          if (d.batteryHealth) out.push(["Battery", d.batteryHealth]);
+          if (d.charger) out.push(["Charger", d.charger]);
+          if (d.carrier) out.push(["Carrier", d.carrier]);
+          if (d.connectivity) out.push(["Connectivity", d.connectivity]);
+          if (d.imei) out.push(["IMEI", d.imei]);
+          if (d.extras && d.extras.length > 0) out.push(["Extras", d.extras.join(", ")]);
+          return out;
+        };
+        const photoGrid = (urls: string[]) => (
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+            {urls.map((url, i) => (
+              <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="block aspect-square rounded-lg overflow-hidden border border-white/10 hover:border-[#00c853] transition" title={`Photo ${i + 1}`}>
+                <img src={url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
+              </a>
+            ))}
+          </div>
+        );
+        return (
+          <div
+            className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-[fadeIn_0.135s_ease-out]"
+            onClick={() => setDetailLead(null)}
+          >
+            <div
+              className="bg-[#0a0a0a] border border-white/15 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-3xl max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 bg-[#0a0a0a]/95 backdrop-blur border-b border-white/10 px-5 py-4 flex items-start justify-between gap-3 z-10">
+                <div className="min-w-0">
+                  <h2 className="text-lg font-extrabold flex items-center gap-2 flex-wrap">
+                    {L.name || "—"}
+                    <span className="px-2 py-0.5 rounded text-[11px] font-bold border" style={{ color: statusMeta(L.status).color, borderColor: statusMeta(L.status).color + "66" }}>{statusMeta(L.status).label}</span>
+                    {L.recycleOnly && <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/15 text-emerald-200 border border-emerald-500/30">♻ Recycle</span>}
+                  </h2>
+                  <p className="text-xs text-[#c5c5c5] mt-0.5">{new Date(L.timestamp).toLocaleString()} · <span className="font-mono">#{L.id}</span></p>
+                </div>
+                <button onClick={() => setDetailLead(null)} aria-label="Close" className="shrink-0 w-8 h-8 rounded-full bg-white/5 border border-white/10 text-[#dcdcdc] hover:bg-white/10 hover:text-white cursor-pointer transition">✕</button>
+              </div>
+
+              <div className="p-5 space-y-4 text-sm">
+                {/* Money */}
+                <div className="flex flex-wrap gap-2">
+                  {L.quote && <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10"><span className="text-[#8a8a8a] text-xs">Quote</span> <span className="font-extrabold">{L.quote}</span></span>}
+                  {typeof L.totalPayout === "number" && <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10"><span className="text-[#8a8a8a] text-xs">Bundle total</span> <span className="font-extrabold">${L.totalPayout}</span></span>}
+                  {L.payout && <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10"><span className="text-[#8a8a8a] text-xs">Payout</span> <span className="font-semibold">{L.payout}</span></span>}
+                  {typeof L.resellEstimate === "number" && <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10"><span className="text-[#8a8a8a] text-xs">Resell est.</span> <span className="font-semibold">${L.resellEstimate}</span></span>}
+                </div>
+
+                {/* Contact */}
+                <Section title="Contact">
+                  <div className="space-y-0.5 text-[#d4d4d4]">
+                    {L.phone && <p><span className="text-[#8a8a8a]">Phone:</span> <span className="text-white">{L.phone}</span></p>}
+                    {L.email && <p className="break-all"><span className="text-[#8a8a8a]">Email:</span> <span className="text-white">{L.email}</span></p>}
+                    {L.bestContact && <p><span className="text-[#8a8a8a]">Best contact:</span> <span className="text-white uppercase">{L.bestContact}</span></p>}
+                    {L.phone && <p><span className="text-[#8a8a8a]">SMS opt-in:</span> <span className="text-white">{L.smsOptIn ? "yes" : "no"}</span></p>}
+                    {(L.priorLeads ?? 0) > 0 && <p><span className="text-[#8a8a8a]">Prior leads:</span> <span className="text-white">{L.priorLeads}{typeof L.lifetimeSpend === "number" ? ` · lifetime $${L.lifetimeSpend}` : ""}</span></p>}
+                  </div>
+                </Section>
+
+                {/* Devices */}
+                <Section title={L.devices && L.devices.length > 0 ? `Devices (${L.deviceCount || L.devices.length})` : "Device"}>
+                  {L.devices && L.devices.length > 0 ? (
+                    <div className="space-y-3">
+                      {L.devices.map((d, i) => (
+                        <div key={i} className="bg-white/[0.03] border border-white/10 rounded-lg p-3">
+                          <p className="font-semibold text-white flex flex-wrap items-center gap-x-2">
+                            <span className="text-[#8a8a8a] font-mono">{i + 1}.</span>
+                            {d.model}
+                            {d.storage && <span className="text-[#c5c5c5] font-normal">· {d.storage}</span>}
+                            {d.condition && <span className="text-[#c5c5c5] font-normal">· {d.condition}</span>}
+                            {d.quote != null && (d.quote > 0 ? <span className="text-[#00c853] font-bold">· ${d.quote}</span> : <span className="text-amber-300 font-bold">· Manual review</span>)}
+                            {d.quantity && d.quantity > 1 ? <span className="text-[#c5c5c5] font-normal">×{d.quantity}</span> : null}
+                          </p>
+                          {specPairs(d).length > 0 && (
+                            <div className="mt-1.5 grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-0.5 text-xs">
+                              {specPairs(d).map(([k, v]) => <p key={k} className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">{k}:</span> <span className="text-white">{v}</span></p>)}
+                            </div>
+                          )}
+                          {(d.brokenGlass || d.brokenFunctional === false || d.paidOff === false) && (
+                            <div className="mt-1.5 flex flex-wrap gap-1">
+                              {d.brokenGlass && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-orange-500/15 text-orange-200 border border-orange-500/30">{d.brokenGlass.toUpperCase()} GLASS</span>}
+                              {d.brokenFunctional === false && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500/20 text-red-100 border border-red-500/40">NOT FUNCTIONAL</span>}
+                              {d.paidOff === false && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/20 text-amber-100 border border-amber-500/40">BALANCE OWED</span>}
+                            </div>
+                          )}
+                          {d.photos && d.photos.length > 0 && <div className="mt-2">{photoGrid(d.photos)}</div>}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-white font-medium">{[L.model || L.device, L.storage, L.condition, L.carrier].filter(Boolean).join(" · ") || "—"}</p>
+                      {specPairs(L).length > 0 && (
+                        <div className="mt-1.5 grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-0.5 text-xs">
+                          {specPairs(L).map(([k, v]) => <p key={k} className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">{k}:</span> <span className="text-white">{v}</span></p>)}
+                        </div>
+                      )}
+                      {(L.brokenGlass || L.brokenFunctional === false || L.paidOff === false) && (
+                        <div className="mt-1.5 flex flex-wrap gap-1">
+                          {L.brokenGlass && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-orange-500/15 text-orange-200 border border-orange-500/30">{L.brokenGlass.toUpperCase()} GLASS</span>}
+                          {L.brokenFunctional === false && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500/20 text-red-100 border border-red-500/40">NOT FUNCTIONAL</span>}
+                          {L.paidOff === false && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/20 text-amber-100 border border-amber-500/40">BALANCE OWED</span>}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </Section>
+
+                {/* IMEI warnings */}
+                {L.imeiWarnings && L.imeiWarnings.length > 0 && (
+                  <Section title="IMEI warnings">
+                    <ul className="list-disc list-inside text-yellow-300 space-y-0.5">
+                      {L.imeiWarnings.map((w, i) => <li key={i}>{w}</li>)}
+                    </ul>
+                  </Section>
+                )}
+
+                {/* All photos (uncapped) */}
+                {L.photos && L.photos.length > 0 && (
+                  <Section title={`Photos (${L.photos.length})`}>
+                    {photoGrid(L.photos)}
+                  </Section>
+                )}
+
+                {/* Handoff */}
+                {(L.handoffMethod || L.shipAddress || L.localSlot || L.fedexTracking) && (
+                  <Section title="Handoff">
+                    <div className="space-y-0.5 text-[#d4d4d4]">
+                      {L.handoffMethod && <p><span className="text-[#8a8a8a]">Method:</span> <span className="text-white">{L.handoffMethod === "ship" ? "📦 Ship" : "🤝 Local meetup"}</span></p>}
+                      {L.shipAddress && <p><span className="text-[#8a8a8a]">Address:</span> <span className="text-white">{L.shipAddress}</span></p>}
+                      {L.localArea && <p><span className="text-[#8a8a8a]">Area:</span> <span className="text-white">{L.localArea}</span></p>}
+                      {L.localSlot && <p><span className="text-[#8a8a8a]">Slot:</span> <span className="text-white">{L.localSlot}</span></p>}
+                      {L.fedexTracking && <p><span className="text-[#8a8a8a]">FedEx:</span> <span className="text-white font-mono">{L.fedexTracking}</span>{L.fedexLabelUrl && <a href={L.fedexLabelUrl} target="_blank" rel="noopener noreferrer" className="ml-2 text-[#00c853] hover:underline">label →</a>}</p>}
+                    </div>
+                  </Section>
+                )}
+
+                {/* Notes */}
+                {(L.customerNote || L.latestNote) && (
+                  <Section title="Notes">
+                    {L.customerNote && <p className="text-[#d4d4d4]"><span className="text-[#8a8a8a]">Customer:</span> <span className="text-white">{L.customerNote}</span></p>}
+                    {L.latestNote && <p className="text-[#d4d4d4]"><span className="text-[#8a8a8a]">Staff note:</span> <span className="text-white">{L.latestNote}</span>{L.noteCount ? <span className="text-[#8a8a8a]"> ({L.noteCount})</span> : null}</p>}
+                  </Section>
+                )}
+
+                {/* AI */}
+                {L.ai && (L.ai.flag || L.ai.summary || L.ai.note) && (
+                  <Section title="AI">
+                    {L.ai.flag && <p className="text-red-300">🚩 {L.ai.flag.body}</p>}
+                    {L.ai.summary && <p className="text-[#d4d4d4]">🤖 {L.ai.summary.fromName === "Theot" ? "Theot" : "AI"}: {L.ai.summary.body}</p>}
+                    {L.ai.note && !L.ai.flag && !L.ai.summary && <p className="text-[#d4d4d4]">🤖 {L.ai.note.body}</p>}
+                  </Section>
+                )}
+
+                {/* Source / attribution */}
+                {L.source && (L.source.raw || L.source.source) && (
+                  <Section title="Source">
+                    <p className="text-[#d4d4d4] break-all text-xs font-mono">{L.source.raw || [L.source.source, L.source.medium, L.source.campaign].filter(Boolean).join(" · ")}</p>
+                  </Section>
+                )}
+
+                {/* Payout confirmation / ID */}
+                {(L.payoutConfirmation || L.idCaptured) && (
+                  <Section title="Settlement">
+                    {L.payoutConfirmation && <p className="text-[#d4d4d4]"><span className="text-[#8a8a8a]">Paid:</span> <span className="text-white">{typeof L.payoutConfirmation.amount === "number" ? `$${L.payoutConfirmation.amount} ` : ""}{L.payoutConfirmation.method || ""}{L.payoutConfirmation.reference ? ` · ${L.payoutConfirmation.reference}` : ""}</span></p>}
+                    {L.idCaptured && <p className="text-[#d4d4d4]"><span className="text-[#8a8a8a]">ID:</span> <span className="text-white">{L.idCaptured.type} ···{L.idCaptured.last4} ({L.idCaptured.dobYear})</span>{L.idCaptured.photoUrl && <a href={L.idCaptured.photoUrl} target="_blank" rel="noopener noreferrer" className="ml-2 text-[#00c853] hover:underline">photo →</a>}</p>}
+                  </Section>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* CUSTOMER HISTORY MODAL — clicking an email or phone on a lead
           row opens this drawer with every previous lead that matches.
