@@ -103,7 +103,18 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     /---\s*Handoff:\s*LOCAL MEETUP/i.test(body) ? "local" : undefined;
   // Ship leads store the address as one "Address: ..." line.
   const shipAddress = handoffMethod === "ship" ? field(body, "Address") : undefined;
-  const localSlot = handoffMethod === "local" ? field(body, "Slot") : undefined;
+  // Strip the staff-only "(id=...)" tail so the customer sees a clean
+  // "Fri, May 29 · Any time" instead of a raw MC slot id. Also repair the
+  // legacy "12:undefined AM" / "NaN:.." times that older leads baked into
+  // their body (all-day slots whose empty time printed as undefined) so
+  // those existing offers read cleanly without a re-submit.
+  const localSlotRaw = handoffMethod === "local" ? field(body, "Slot") : undefined;
+  const localSlot = localSlotRaw
+    ? localSlotRaw
+        .replace(/\s*\(id=[^)]*\)\s*$/, "")
+        .replace(/\d{0,2}:?(?:undefined|NaN)(?:\s*[AP]M)?/gi, "Any time")
+        .trim()
+    : undefined;
 
   // Multi-device parsing — same shape /api/admin/leads emits, simplified.
   let devices: Array<{ model: string; storage?: string; condition?: string; quote?: number; quantity?: number }> | undefined;
@@ -113,7 +124,13 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (headerMatch) {
     deviceCount = parseInt(headerMatch[1], 10) || undefined;
     const lines = body.split("\n");
-    const re = /^\s{2,4}(\d+)\.\s+([^·\n]+?)(?:\s·\s+([^·\n]+?))?(?:\s·\s+([^·\n]+?))?(?:\s·\s+\$([0-9,]+))?(?:\s+\(×(\d+)\))?\s*$/;
+    // Per-device line: "  1. Model · Storage · Condition · $Quote[ total][ (×N)][ · 🤝 LOCAL]"
+    // The trailing handoff tag (· 🤝 LOCAL / · 📦 SHIP) and the " total"
+    // suffix used to break the old anchored regex, so multi-device offers
+    // collapsed to a single generic "N devices" row with no per-device
+    // photos. Tolerate both: consume " total", the (×N) tag, and any
+    // trailing " · ..." segment after the quote.
+    const re = /^\s{2,4}(\d+)\.\s+([^·\n]+?)(?:\s·\s+([^·\n]+?))?(?:\s·\s+([^·\n]+?))?(?:\s·\s+\$([0-9,]+)(?:\s+total)?)?(?:\s+\(×(\d+)\))?(?:\s·\s+.*)?$/;
     devices = [];
     for (const line of lines) {
       const dm = line.match(re);

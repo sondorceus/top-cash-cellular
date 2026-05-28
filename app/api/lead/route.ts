@@ -662,13 +662,27 @@ export async function POST(req: NextRequest) {
       handoffLines.push(header);
       if (h.area) handoffLines.push(`Area: ${cleanField(h.area, 80)}`);
       if (h.slot) {
-        const [hh, mm] = String(h.slot.time || "").split(":").map(Number);
-        const ampm = hh >= 12 ? "PM" : "AM";
-        const h12 = hh % 12 || 12;
-        const slotDate = cleanField(h.slot.date, 30);
+        // Open-day / all-day slots carry an empty time. The old code did
+        // "".split(":") → [NaN], printing "12:undefined AM". Treat a
+        // missing/!HH:MM time as "Any time" (matches the funnel picker).
+        const rawTime = String(h.slot.time || "").trim();
+        const tm = rawTime.match(/^(\d{1,2}):(\d{2})$/);
+        let slotTime = "Any time";
+        if (tm) {
+          const hh = Number(tm[1]);
+          const ampm = hh >= 12 ? "PM" : "AM";
+          const h12 = hh % 12 || 12;
+          slotTime = `${h12}:${tm[2]} ${ampm}`;
+        }
+        const slotDateRaw = cleanField(h.slot.date, 30);
+        let slotDate = slotDateRaw;
+        const dt = new Date(`${slotDateRaw}T12:00:00`);
+        if (!Number.isNaN(dt.getTime())) {
+          slotDate = dt.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+        }
         const slotLabel = cleanField(h.slot.label, 80);
         const slotId = cleanField(h.slot.id, 60);
-        handoffLines.push(`Slot: ${slotDate} ${h12}:${String(mm).padStart(2, "0")} ${ampm}${slotLabel ? ` · ${slotLabel}` : ""} (id=${slotId})`);
+        handoffLines.push(`Slot: ${slotDate} · ${slotTime}${slotLabel ? ` · ${slotLabel}` : ""} (id=${slotId})`);
         handoffLines.push("Action: Confirm meetup spot with seller for the booked window.");
       } else {
         handoffLines.push("Action: Reach out to schedule meetup time and location.");
