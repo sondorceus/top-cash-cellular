@@ -6067,8 +6067,8 @@ export default function Home() {
           <div className="border-t border-white/10 mt-2 pt-4 text-center">
             {isPendingQuote || isManualQuote ? (
               <>
-                <p className="text-[#b8b8b8] text-sm">{isManualQuote ? "This device needs a" : "Your device will be"}</p>
-                <p className="text-white font-extrabold text-xl mt-1 leading-tight">{isManualQuote ? "Custom quote — no instant value" : "Quoted via email or text"}</p>
+                <p className="text-[#b8b8b8] text-sm">{isManualQuote ? "We'll send you a" : "Your device will be"}</p>
+                <p className="text-white font-extrabold text-xl mt-1 leading-tight">{isManualQuote ? "Custom quote" : "Quoted via email or text"}</p>
                 <p className="text-[#888] text-xs mt-1">{isManualQuote ? "Staff texts you a fair offer within the hour" : ""}</p>
               </>
             ) : (
