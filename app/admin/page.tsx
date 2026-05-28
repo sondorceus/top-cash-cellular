@@ -1226,6 +1226,9 @@ export default function AdminPage() {
     let quoteN = 0;
     let revenue = 0;
     let revenueMonth = 0;
+    let revenueWeek = 0;
+    let pendingCount = 0;   // open leads (not paid/met/rejected) = the work queue
+    let shippedCount = 0;   // awaiting receipt — device in transit / dropping off
     let payoutLatencySum = 0;
     let payoutLatencyN = 0;
     const payoutTally: Record<string, number> = {};
@@ -1235,6 +1238,8 @@ export default function AdminPage() {
       if (ts >= monthAgo) thisMonth++;
       if (isPaid(l.status)) paidCount++;
       if (l.status !== "rejected") nonRejectedCount++;
+      if (l.status !== "paid" && l.status !== "met" && l.status !== "rejected") pendingCount++;
+      if (l.status === "shipped") shippedCount++;
       // Quote-value parsing — three sources, cascading:
       //  1) payoutConfirmation.amount  — actual amount paid out at mark-paid
       //     (most accurate; captures Rudy-style "quoted Pro Max, paid $80
@@ -1261,6 +1266,7 @@ export default function AdminPage() {
       if (isPaid(l.status) && dollarValue > 0) {
         revenue += dollarValue;
         if (l.statusUpdatedAt && new Date(l.statusUpdatedAt).getTime() >= monthAgo) revenueMonth += dollarValue;
+        if (l.statusUpdatedAt && new Date(l.statusUpdatedAt).getTime() >= weekAgo) revenueWeek += dollarValue;
       }
       // Payout latency = lead created → terminal-status timestamp, in hours
       if (isPaid(l.status) && l.statusUpdatedAt) {
@@ -1275,7 +1281,7 @@ export default function AdminPage() {
     const conversionRate = nonRejectedCount > 0 ? Math.round((paidCount / nonRejectedCount) * 100) : 0;
     const topPayouts = Object.entries(payoutTally).sort((a, b) => b[1] - a[1]).slice(0, 3);
     const avgPayoutHours = payoutLatencyN > 0 ? payoutLatencySum / payoutLatencyN : 0;
-    return { total: list.length, thisWeek, thisMonth, conversionRate, avgQuote, topPayouts, revenue, revenueMonth, avgPayoutHours, paidCount };
+    return { total: list.length, thisWeek, thisMonth, conversionRate, avgQuote, topPayouts, revenue, revenueMonth, revenueWeek, pendingCount, shippedCount, avgPayoutHours, paidCount };
   };
   const stats = computeStats(dedupedLeads);
 
@@ -1558,8 +1564,12 @@ export default function AdminPage() {
               </button>
               {moreOpen && (
                 <>
-                  <div className="fixed inset-0 z-30" onClick={() => setMoreOpen(false)} />
-                  <div className="absolute right-0 mt-2 w-60 bg-[#0f0f0f] border border-white/15 rounded-xl shadow-2xl shadow-black/60 z-40 py-2 text-sm" role="menu">
+                  <div className="fixed inset-0 z-40" onClick={() => setMoreOpen(false)} />
+                  {/* Mobile: a viewport-anchored sheet (left-3/right-3) so it
+                      can't overflow off-screen when the button wraps to the
+                      left of a narrow row — that was the "menu doesn't work on
+                      mobile" bug. Desktop: an attached right-aligned dropdown. */}
+                  <div className="fixed top-16 left-3 right-3 sm:absolute sm:top-auto sm:left-auto sm:right-0 sm:mt-2 sm:w-60 bg-[#0f0f0f] border border-white/15 rounded-xl shadow-2xl shadow-black/60 z-50 py-2 text-sm" role="menu">
                     <p className="px-3 pt-1 pb-1.5 text-[10px] uppercase tracking-wider text-[#666] font-bold">Pages</p>
                     <a href="/admin/prices" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">💲 Prices</a>
                     <a href="/admin/analytics" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">📊 Analytics</a>
@@ -1653,38 +1663,47 @@ export default function AdminPage() {
         })()}
 
         {leads.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 sm:gap-3 mb-4">
-            <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-3 col-span-2 md:col-span-2">
-              <p className="text-[10px] uppercase tracking-wider text-[#00c853] font-bold" title="Sum of $ TCC paid out to customers for phones acquired (COGS / cash-out). NOT realised sale revenue — that lives on /admin/profit and reflects what eBay/Atlas resells brought in.">💸 Paid out (this month)</p>
-              <p className="text-xl sm:text-2xl font-extrabold text-[#00c853] mt-0.5">${stats.revenueMonth.toLocaleString()}</p>
-              <p className="text-[10px] text-[#dcdcdc] mt-0.5">${stats.revenue.toLocaleString()} all-time · {stats.paidCount} paid · <a href="/admin/profit" className="underline hover:text-white">see sales revenue →</a></p>
+          // Command-center KPI row — money + live work queue. The three
+          // queue tiles (Open / Awaiting receipt / Needs attention) are
+          // buttons that filter the list, so a metric leads straight to
+          // the action. Glow is reserved for money + a non-zero alert.
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3 mb-4">
+            <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-3 col-span-2">
+              <p className="text-[10px] uppercase tracking-wider text-[#00c853] font-bold" title="Cash TCC paid customers for devices (COGS / cash-out), not resale revenue — that's on /admin/profit.">💸 Paid out · this week</p>
+              <p className="text-xl sm:text-2xl font-extrabold text-[#00c853] mt-0.5">${stats.revenueWeek.toLocaleString()}</p>
+              <p className="text-[10px] text-[#dcdcdc] mt-0.5">${stats.revenueMonth.toLocaleString()} this month · ${stats.revenue.toLocaleString()} all-time · <a href="/admin/profit" className="underline hover:text-white">sales →</a></p>
             </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-              <p className="text-[10px] uppercase tracking-wider text-[#c5c5c5] font-bold">This week</p>
-              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.thisWeek}</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-              <p className="text-[10px] uppercase tracking-wider text-[#c5c5c5] font-bold">This month</p>
-              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.thisMonth}</p>
-            </div>
+            <button
+              type="button"
+              onClick={() => setStatusFilter("active")}
+              title="Open leads not yet paid/met/rejected — your work queue. Click to filter."
+              className="text-left bg-white/5 border border-white/10 rounded-xl p-3 hover:bg-white/10 transition cursor-pointer"
+            >
+              <p className="text-[10px] uppercase tracking-wider text-[#c5c5c5] font-bold">Open leads</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.pendingCount}</p>
+            </button>
+            <button
+              type="button"
+              onClick={() => setStatusFilter("shipped")}
+              title="Devices shipped / dropping off — awaiting receipt. Click to filter."
+              className="text-left bg-white/5 border border-white/10 rounded-xl p-3 hover:bg-white/10 transition cursor-pointer"
+            >
+              <p className="text-[10px] uppercase tracking-wider text-[#c5c5c5] font-bold">Awaiting receipt</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.shippedCount}</p>
+            </button>
+            <button
+              type="button"
+              onClick={() => setStatusFilter("stale")}
+              title="Leads past their SLA — needs attention. Click to filter."
+              className={`text-left rounded-xl p-3 transition cursor-pointer border ${staleCount > 0 ? "bg-amber-500/10 border-amber-500/30 hover:bg-amber-500/15" : "bg-white/5 border-white/10 hover:bg-white/10"}`}
+            >
+              <p className={`text-[10px] uppercase tracking-wider font-bold ${staleCount > 0 ? "text-amber-300" : "text-[#c5c5c5]"}`}>Needs attention</p>
+              <p className={`text-2xl font-extrabold mt-0.5 ${staleCount > 0 ? "text-amber-300" : "text-white"}`}>{staleCount}</p>
+            </button>
             <div className="bg-white/5 border border-white/10 rounded-xl p-3">
               <p className="text-[10px] uppercase tracking-wider text-[#c5c5c5] font-bold">Conversion</p>
               <p className="text-2xl font-extrabold text-[#00c853] mt-0.5">{stats.conversionRate}%</p>
-              <p className="text-[10px] text-[#c5c5c5] mt-0.5">paid / non-rejected</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-              <p className="text-[10px] uppercase tracking-wider text-[#c5c5c5] font-bold">Avg payout</p>
-              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.avgPayoutHours > 0 ? (stats.avgPayoutHours < 48 ? `${Math.round(stats.avgPayoutHours)}h` : `${(stats.avgPayoutHours / 24).toFixed(1)}d`) : "—"}</p>
-              <p className="text-[10px] text-[#c5c5c5] mt-0.5">created → paid</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-3 col-span-2 md:col-span-1">
-              <p className="text-[10px] uppercase tracking-wider text-[#c5c5c5] font-bold">Avg quote</p>
-              <p className="text-2xl font-extrabold text-white mt-0.5">${stats.avgQuote}</p>
-              {stats.topPayouts.length > 0 && (
-                <p className="text-[10px] text-[#dcdcdc] mt-0.5 truncate" title={stats.topPayouts.map(([p, n]) => `${p} (${n})`).join(", ")}>
-                  Top payout: {stats.topPayouts[0][0]}
-                </p>
-              )}
+              <p className="text-[10px] text-[#c5c5c5] mt-0.5">avg payout {stats.avgPayoutHours > 0 ? (stats.avgPayoutHours < 48 ? `${Math.round(stats.avgPayoutHours)}h` : `${(stats.avgPayoutHours / 24).toFixed(1)}d`) : "—"} · avg ${stats.avgQuote}</p>
             </div>
           </div>
         )}
