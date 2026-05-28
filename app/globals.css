@@ -151,16 +151,18 @@
   .hover-detail { transition: none; }
 }
 
+/* Dark floor so the page can never flash white if the backdrop layer
+   below is still painting. */
+html { background-color: #0a0a0a; }
 body {
   color: #0a0a0a;
-  /* Faint iPhone 17 Pro backdrop. Pages are dark-themed (main = #0a0a0a),
-     so we layer an image-over-dark wash on the body and force main
-     wrappers transparent so the body shows through. Tune alpha (lower =
-     more visible image — current 0.86 leaves a soft glow + silhouettes). */
-  background:
-    linear-gradient(rgba(10, 10, 10, 0.58), rgba(10, 10, 10, 0.58)),
-    url('/iphone-17-pro-backdrop.webp') center / cover no-repeat fixed,
-    #0a0a0a;
+  /* Backdrop is painted by body::before (a position:fixed layer), NOT a
+     body background. background-attachment:fixed on the body caused the
+     image to JUDDER/jump on desktop scroll (the browser re-paints a
+     viewport-anchored background every scroll frame) and doesn't work on
+     iOS at all. A fixed pseudo-element is composited once and just stays —
+     smooth, no repaint. Body stays transparent so the ::before shows. */
+  background-color: transparent;
   font-family: var(--font-cabinet), -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -169,6 +171,21 @@ body {
   font-size: 17px;
   line-height: 1.55;
   letter-spacing: -0.005em;
+}
+/* Fixed iPhone 17 Pro backdrop — composited once, smooth on scroll.
+   Dark wash bumped 0.58 -> 0.66 (a tab darker). z-index:-1 sits behind
+   all content; body is transparent + main wrappers are forced
+   transparent so this shows through. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(10, 10, 10, 0.66), rgba(10, 10, 10, 0.66)),
+    url('/iphone-17-pro-backdrop.webp') center / cover no-repeat,
+    #0a0a0a;
 }
 /* All dark-themed main wrappers across the site (homepage, account, sell,
    bulk, faq, etc.) hard-code bg-[#0a0a0a] which fully covers the body
@@ -180,10 +197,10 @@ main.bg-\[\#0a0a0a\] {
 /* Mobile: cover sizing crops phones too tight on narrow viewports. Pin to
    top-center and zoom out a hair so device silhouettes anchor near hero. */
 @media (max-width: 640px) {
-  body {
+  body::before {
     background:
-      linear-gradient(rgba(10, 10, 10, 0.62), rgba(10, 10, 10, 0.62)),
-      url('/iphone-17-pro-backdrop.webp') center top / 160% auto no-repeat fixed,
+      linear-gradient(rgba(10, 10, 10, 0.70), rgba(10, 10, 10, 0.70)),
+      url('/iphone-17-pro-backdrop.webp') center top / 160% auto no-repeat,
       #0a0a0a;
   }
 }
