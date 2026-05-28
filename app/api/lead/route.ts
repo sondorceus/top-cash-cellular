@@ -188,6 +188,21 @@ export async function POST(req: NextRequest) {
   if (data?.recycle === true) {
     return handleRecycleLead(req, data);
   }
+  // Quote-save / progress preview — the funnel fires a lightweight POST
+  // (previewSave:true) when the customer enters their email at the
+  // "save this quote for later" box or the account step ("Continue as
+  // Guest" / returning / Google), BEFORE they've chosen a payout method
+  // or handoff. Those are NOT confirmed buyback leads: routing them
+  // through the normal path posted a full urgent [NEW BUYBACK LEAD] +
+  // owner-alert email — and, for guests who went on to finish, a
+  // duplicate of their real lead. Record them under a non-urgent
+  // [QUOTE SAVED] marker (so abandoners can be followed up) with no owner
+  // email, no FedEx, no coupon redemption. NOTE the custom/inquiry-device
+  // submit also posts payout:"TBD" with no handoff but IS a real lead —
+  // it does not set previewSave, so it still flows through the main path.
+  if (data?.previewSave === true) {
+    return handleQuoteSave(req, data);
+  }
   let { payout } = data;
   const { name, phone, email, device, model, storage, condition, carrier, carrierLock, accessoriesIncluded, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, referralCode } = data;
   // TCPA defense in depth — client checkbox is `required`, but a
@@ -1490,6 +1505,89 @@ async function handleRecycleLead(req: NextRequest, data: Record<string, unknown>
   }
 
   return NextResponse.json({ ok: true, recycle: true, leadId, emailSent });
+}
+
+// ---------------------------------------------------------------------------
+// Quote-save handler — see the previewSave branch in POST for the why.
+//
+// A preview-save is fired by the funnel when the customer enters their
+// email but hasn't picked a payout method or handoff yet. We capture it
+// under a [QUOTE SAVED] marker (NOT [NEW BUYBACK LEAD], so the admin
+// buyback feed — which keys on that marker — ignores it) at NORMAL
+// priority and with no "lead"/"buyback" tags, so it doesn't fire the
+// urgent new-lead alert. We deliberately skip the owner-alert email,
+// FedEx label mint, and coupon/referral redemption: none of those should
+// happen for a half-finished funnel. Best-effort — never blocks the UI
+// (the funnel calls this fire-and-forget).
+async function handleQuoteSave(req: NextRequest, data: Record<string, unknown>) {
+  const email = typeof data.email === "string" ? data.email : "";
+  // Nothing to capture without an email — the whole point is to be able
+  // to follow up with the customer later.
+  if (!email.trim() || !/.+@.+\..+/.test(email.trim())) {
+    return NextResponse.json({ ok: true, quoteSaved: false });
+  }
+
+  const name = typeof data.name === "string" ? data.name : "";
+  const device = typeof data.device === "string" ? data.device : "";
+  const model = typeof data.model === "string" ? data.model : "";
+  const storage = typeof data.storage === "string" ? data.storage : "";
+  const condition = typeof data.condition === "string" ? data.condition : "";
+  const carrier = typeof data.carrier === "string" ? data.carrier : "";
+  const quoteNum = Number(data.quote) || 0;
+
+  // Same marker-injection scrub the main + recycle paths use.
+  const safeName = cleanField(name, 120);
+  const safeEmail = cleanField(email, 200);
+  const safeDevice = cleanField(device, 80);
+  const safeModel = cleanField(model, 120);
+  const safeStorage = cleanField(storage, 30);
+  const safeCondition = cleanField(condition, 60);
+  const safeCarrier = cleanField(carrier, 40);
+
+  const ip = (
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    "unknown"
+  ).slice(0, 64);
+  const ua = (req.headers.get("user-agent") || "unknown").slice(0, 240);
+  const visitorId = (req.cookies.get("tcc_visitor_id")?.value || "").slice(0, 64);
+
+  const leadBody = [
+    `[QUOTE SAVED]`,
+    `Name: ${safeName || "(not provided yet)"}`,
+    `Email: ${safeEmail}`,
+    (safeDevice || safeModel) ? `Device: ${safeDevice || "—"} — ${safeModel}` : null,
+    safeStorage ? `Storage: ${safeStorage}` : null,
+    safeCarrier ? `Carrier: ${safeCarrier}` : null,
+    safeCondition ? `Condition: ${safeCondition}` : null,
+    quoteNum > 0 ? `Quote: $${quoteNum}` : `Quote: TBD`,
+    `Status: Incomplete — customer entered email but has not chosen a payout method or handoff. Not a confirmed buyback lead; follow up if it never completes.`,
+    `Source-IP: ${ip}`,
+    `Source-UA: ${ua}`,
+    visitorId ? `Visitor-ID: ${visitorId}` : null,
+  ].filter(Boolean).join("\n");
+
+  let leadId: string | null = null;
+  try {
+    const r = await fetch(`${MC_API}/api/comms`, {
+      method: "POST",
+      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "topcash-web",
+        fromName: "Top Cash Cellular",
+        role: "system",
+        body: leadBody,
+        tags: ["quote-saved"],
+        priority: "normal",
+      }),
+    });
+    if (r.ok) {
+      const d = await r.json().catch(() => ({}));
+      leadId = d?.message?.id || null;
+    }
+  } catch {}
+
+  return NextResponse.json({ ok: true, quoteSaved: true, leadId });
 }
 
 // Branded e-waste certificate email template. Dark theme, green accent,
