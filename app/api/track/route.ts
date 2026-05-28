@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, clientIp } from "../../lib/rate-limit";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -57,6 +58,11 @@ function parseField(body: string, key: string): string | undefined {
 }
 
 export async function POST(req: NextRequest) {
+  // Throttle enumeration — returns trade status from just email/phone.
+  const rl = rateLimit(`track:${clientIp(req)}`, 15, 60_000);
+  if (!rl.ok) {
+    return NextResponse.json({ error: "Too many requests — please wait a moment and try again." }, { status: 429 });
+  }
   let payload: { phone?: unknown; email?: unknown };
   try {
     payload = await req.json();

@@ -382,17 +382,10 @@ export default function PricesAdminPage() {
     if (!window.confirm(`Revert ${modelId} condition adjustments back to baseline?`)) return;
     const t = getToken();
     if (!t) return;
-    // The DELETE ?model= scope clears price + carrier + base + condAdj for that
-    // model, but we only want condAdj here. Backend doesn't yet have a
-    // dedicated condAdj-only delete, so we POST an "empty overrides for this
-    // model's condition_adj" — effectively reverting it. The merge in POST
-    // would normally ADD keys; to delete we need to send the full new state.
-    // Cheap workaround: POST with conditionAdj override removing the model
-    // by sending undefined… but our merge can't unset. So use DELETE ?model=
-    // which is the documented scope and accept that price/carrier/base for
-    // that model are also cleared (rare to have multiple override types on
-    // one model anyway).
-    const r = await fetch(`/api/admin/prices?model=${encodeURIComponent(modelId)}&token=${encodeURIComponent(t)}`, { method: "DELETE" });
+    // Condition-adjustments-only revert. Uses the dedicated ?condModel=
+    // scope so the model's price-cell / carrier / base overrides survive.
+    // (Previously this called ?model= and silently wiped ALL overrides.)
+    const r = await fetch(`/api/admin/prices?condModel=${encodeURIComponent(modelId)}&token=${encodeURIComponent(t)}`, { method: "DELETE" });
     if (!r.ok) return;
     setLastSaveMsg(`✓ Reverted ${modelId} condition adjustments`);
     const refresh = await fetch("/api/admin/prices");

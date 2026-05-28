@@ -59,8 +59,19 @@ async function postReviewTokenMarker(leadId: string, token: string, name?: strin
 // /api/lead wrote, then — if no [REFERRAL-EARNED:] marker already
 // names this referee-lead — post one. The scan-before-post is the
 // double-credit guard: re-flipping a lead to paid won't pay twice.
+// In-process guard against concurrent double-fires (double-click / quick
+// retry of the same paid/met flip). The scan-before-post below already
+// stops SEQUENTIAL re-credits, but two requests racing through the scan
+// window would both post a [REFERRAL-EARNED] marker and double-pay +
+// double-email. Holding the leadId here makes the second concurrent call
+// on the same instance bail immediately. (Cross-instance races remain
+// possible but are vanishingly rare at this volume; MC has no lock.)
+const referralCreditInFlight = new Set<string>();
+
 async function creditReferralIfAny(leadId: string): Promise<void> {
   if (!MC_KEY) return;
+  if (referralCreditInFlight.has(leadId)) return;
+  referralCreditInFlight.add(leadId);
   try {
     const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
       headers: { "x-api-key": MC_KEY },
@@ -110,6 +121,8 @@ async function creditReferralIfAny(leadId: string): Promise<void> {
   } catch {
     // Best-effort — never let a referral-payout hiccup block the
     // status update the admin actually clicked.
+  } finally {
+    referralCreditInFlight.delete(leadId);
   }
 }
 

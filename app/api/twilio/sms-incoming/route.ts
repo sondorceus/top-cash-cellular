@@ -38,7 +38,10 @@ function isValidTwilioSignature(
   params: Record<string, string>,
   header: string | null,
 ): boolean {
-  if (!TWILIO_AUTH) return true; // dev / unconfigured: don't block
+  // No auth token configured → fail CLOSED. We don't run Twilio, so a
+  // real signed request can't arrive anyway; accepting unsigned POSTs
+  // would let anyone inject fake "customer replies" into Mission Control.
+  if (!TWILIO_AUTH) return false;
   if (!header) return false;
   const sortedKeys = Object.keys(params).sort();
   const data = url + sortedKeys.map((k) => `${k}${params[k]}`).join("");

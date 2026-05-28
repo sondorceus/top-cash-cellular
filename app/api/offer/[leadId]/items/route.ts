@@ -18,6 +18,7 @@
 // Skywalker 2026-05-20.
 
 import { NextRequest, NextResponse } from "next/server";
+import { parseTotalPayoutLine, parseDollarAmount } from "../../../../lib/lead-money";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -93,6 +94,20 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // Confirm it's a real buyback lead (the leadId is the access secret).
   if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(leadMsg.body)) {
     return NextResponse.json({ error: "Offer not found" }, { status: 404 });
+  }
+
+  // Anti-inflation guard. The leadId is the only access control on this
+  // endpoint, and the client computes `quote` — so without this anyone
+  // with their offer link could POST an inflated quote and raise the
+  // estimate the offer page (and the admin total) shows. A genuine edit
+  // only ever LOWERS the estimate (the device is worse than quoted), so
+  // cap the new total at the original locked total; real increases are
+  // rare and go through a staff re-quote at inspection.
+  const originalTotal = parseTotalPayoutLine(leadMsg.body) || parseDollarAmount(field(leadMsg.body, "Quote"));
+  if (originalTotal > 0 && total > originalTotal) {
+    return NextResponse.json({
+      error: "An edit can only lower your estimate here. If your device is actually a higher tier, reply to your offer email and we'll re-quote it.",
+    }, { status: 422 });
   }
 
   const cancelled = messages.some((m) => m.body?.includes(`[DELETED-LEAD: ${leadId}]`));

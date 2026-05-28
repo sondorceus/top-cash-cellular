@@ -468,9 +468,10 @@ export async function POST(req: NextRequest) {
   });
 }
 
-// DELETE supports three scopes:
+// DELETE supports these scopes:
 //   no params       → clear ALL overrides (also snapshots first)
 //   ?model=ip17p    → strip every override for one model
+//   ?condModel=ip17p → strip ONLY the condition adjustments for one model
 //   ?cell=ip17p/256/sealed → revert one specific cell
 //   ?carrier=ip17p  → strip carrier deductions for one model
 export async function DELETE(req: NextRequest) {
@@ -478,6 +479,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const model = req.nextUrl.searchParams.get("model");
+  const condModel = req.nextUrl.searchParams.get("condModel");
   const cell = req.nextUrl.searchParams.get("cell");
   const carrier = req.nextUrl.searchParams.get("carrier");
   const baseId = req.nextUrl.searchParams.get("base");
@@ -494,6 +496,12 @@ export async function DELETE(req: NextRequest) {
       if (Object.keys(next.priceTable[m]).length === 0) delete next.priceTable[m];
     }
     action = `clear-cell:${cell}`;
+  } else if (condModel) {
+    // Condition-adjustments-only revert — leaves the model's price-cell,
+    // carrier, and base overrides intact. (The old "revert condition
+    // adjustments" button called ?model= and silently wiped all of them.)
+    delete next.conditionAdj[condModel];
+    action = `clear-condadj:${condModel}`;
   } else if (carrier) {
     delete next.carrierDeductions[carrier];
     action = `clear-carrier:${carrier}`;

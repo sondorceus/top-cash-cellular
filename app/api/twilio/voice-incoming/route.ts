@@ -23,7 +23,7 @@ function isValidTwilioSignature(
   params: Record<string, string>,
   header: string | null,
 ): boolean {
-  if (!TWILIO_AUTH) return true; // dev / unconfigured
+  if (!TWILIO_AUTH) return false; // unconfigured → fail closed (reject unsigned spoofs)
   if (!header) return false;
   const sortedKeys = Object.keys(params).sort();
   const data = url + sortedKeys.map((k) => `${k}${params[k]}`).join("");

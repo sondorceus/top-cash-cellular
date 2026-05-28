@@ -12,11 +12,18 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { signCustomerSession, CUSTOMER_COOKIE_NAME, COOKIE_MAX_AGE } from "../../../lib/auth";
+import { rateLimit, clientIp } from "../../../lib/rate-limit";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
 export async function POST(req: NextRequest) {
+  // Throttle — this mints a 30-day session from an email alone, so cap
+  // attempts per IP to blunt scripted probing of known addresses.
+  const rl = rateLimit(`login:${clientIp(req)}`, 8, 60_000);
+  if (!rl.ok) {
+    return NextResponse.json({ error: "Too many attempts — please wait a moment and try again." }, { status: 429 });
+  }
   let payload: { email?: unknown };
   try { payload = await req.json(); } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
