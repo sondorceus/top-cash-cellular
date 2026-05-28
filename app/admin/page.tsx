@@ -1491,6 +1491,13 @@ export default function AdminPage() {
             >
               🎁<span className="hidden sm:inline ml-1">Referrals</span>
             </a>
+            <a
+              href="/admin/saved-quotes"
+              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
+              title="Saved quotes — customers who didn't finish checkout (re-marketing list)"
+            >
+              💾<span className="hidden sm:inline ml-1">Saved Quotes</span>
+            </a>
             <button
               type="button"
               onClick={() => {
