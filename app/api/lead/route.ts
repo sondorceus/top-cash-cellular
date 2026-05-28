@@ -523,7 +523,14 @@ export async function POST(req: NextRequest) {
       }
     });
     const total = deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0);
-    multiLines.push(`Total payout: $${total}`);
+    // On tamper the per-device quotes are the inflated client values, so
+    // the honest figure is the clamped baseQuoteNum — keep this line in
+    // sync with the clamped headline above (review note has the detail).
+    multiLines.push(
+      quoteTampered
+        ? `Total payout: $${baseQuoteNum} (clamped from $${total})`
+        : `Total payout: $${total}`
+    );
   }
 
   const brokenLines: string[] = [];
@@ -782,7 +789,10 @@ export async function POST(req: NextRequest) {
 
   const leadBody = isMulti
     ? [
-        `[NEW BUYBACK LEAD — ${deviceList.length} DEVICES]`,
+        // NEEDS REVIEW flag mirrors the single-device path — bundles
+        // were silently skipping it even when the summed quote tripped
+        // the high-value / tamper guards.
+        `[NEW BUYBACK LEAD — ${deviceList.length} DEVICES]${reviewRequired ? " ⚠️ NEEDS REVIEW" : ""}`,
         `Name: ${safeName}`,
         `Phone: ${safePhone}`,
         safeEmail ? `Email: ${safeEmail}` : null,
@@ -794,10 +804,14 @@ export async function POST(req: NextRequest) {
         // single-device state and misrepresents a mixed-carrier cart
         // (e.g. an AT&T + Verizon bundle showed "Carrier: Verizon").
         // Each device's real carrier is listed per-row in multiLines.
-        `Quote: $${deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0)}`,
+        // Show the server-VALIDATED total: on tamper the per-device sum
+        // is the inflated client value, so fall back to the clamped
+        // baseQuoteNum (the summed per-item cap) and note the original.
+        `Quote: $${quoteTampered ? baseQuoteNum : deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0)}${quoteTampered ? ` (clamped from $${submittedQuoteNum})` : ""}`,
         `Payout: ${safePayout}`,
         ...couponLines,
         ...referralLines,
+        ...reviewLines,
         ...customerMetaLines,
         ...multiLines,
         ...handoffLines,
