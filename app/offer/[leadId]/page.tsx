@@ -6,6 +6,28 @@ import Image from "next/image";
 import { REQUOTE_CONDITIONS, REQUOTE_STORAGE, matchTier, requote } from "../../lib/requote";
 import { imageForModel } from "../../lib/device-images";
 import { formatOfferNumber } from "../../lib/offer-number";
+import { PRICE_TABLE } from "../../data/prices";
+import skuLabelsJson from "../../data/sku-labels.json";
+
+// Reverse model-label → SKU map so the offer-page re-quote can hit the
+// absolute PRICE_TABLE (the funnel's source of truth) for the edited
+// condition/storage instead of only scaling by tier ratios. Built once.
+const SKU_BY_LABEL: Record<string, string> = Object.fromEntries(
+  Object.entries(skuLabelsJson as Record<string, string>).map(([sku, label]) => [label.toLowerCase().trim(), sku]),
+);
+// Absolute per-unit price for an edited config, or null when the table
+// can't answer (unknown SKU, custom/inquiry device, or a $0/broken cell)
+// — caller then falls back to the ratio re-quote. The >0 guard keeps a
+// broken/manual edit on the existing path (never surfaces a bare $0).
+function tableRequote(modelLabel: string, storageLabel: string, conditionLabel: string): number | null {
+  const sku = SKU_BY_LABEL[(modelLabel || "").toLowerCase().trim()];
+  if (!sku) return null;
+  const storeId = matchTier(REQUOTE_STORAGE, storageLabel)?.id ?? "base";
+  const condId = matchTier(REQUOTE_CONDITIONS, conditionLabel)?.id;
+  if (!condId) return null;
+  const v = PRICE_TABLE[sku]?.[storeId]?.[condId] ?? PRICE_TABLE[sku]?.["base"]?.[condId];
+  return typeof v === "number" && v > 0 ? v : null;
+}
 
 // /offer/[leadId] — the customer's offer-management page. Shown right
 // after submit (replaces the bare "done" screen), linked from the
@@ -648,11 +670,17 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             {items.map((it, i) => {
               const isEditing = editIdx === i;
               const liveQuote = isEditing
-                ? Math.round(requote({
-                    originalQuote: it.quote,
-                    fromCondition: it.condition, toCondition: draftCondition,
-                    fromStorage: it.storage, toStorage: draftStorage,
-                  }) * (it.quantity > 0 ? draftQuantity / it.quantity : 1))
+                ? (() => {
+                    // Prefer the absolute table (matches the funnel exactly);
+                    // fall back to ratio scaling when the table can't answer.
+                    const perUnit = tableRequote(it.model, draftStorage, draftCondition);
+                    if (perUnit != null) return Math.round(perUnit * draftQuantity);
+                    return Math.round(requote({
+                      originalQuote: it.quote,
+                      fromCondition: it.condition, toCondition: draftCondition,
+                      fromStorage: it.storage, toStorage: draftStorage,
+                    }) * (it.quantity > 0 ? draftQuantity / it.quantity : 1));
+                  })()
                 : it.quote;
               const draftBroken = isEditing && matchTier(REQUOTE_CONDITIONS, draftCondition)?.id === "broken";
               // Broken + not functional → no auto price, goes to manual review.
