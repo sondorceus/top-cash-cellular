@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { DeviceCorrection } from "./DeviceCorrection";
 import { parseDollarAmount } from "../lib/lead-money";
+import { formatOfferNumber, offerNumberMatches } from "../lib/offer-number";
 
 interface Lead {
   id: string;
@@ -1129,7 +1130,7 @@ export default function AdminPage() {
 
   const matchesSearch = (lead: Lead, q: string): boolean => {
     if (!q) return true;
-    const needle = q.toLowerCase();
+    const needle = q.toLowerCase().trim();
     const hay = [
       lead.name,
       lead.phone,
@@ -1140,8 +1141,12 @@ export default function AdminPage() {
       lead.condition,
       lead.imei,
       lead.payout,
+      lead.id, // so pasting a customer's offer number finds the lead
     ].filter(Boolean).join(" ").toLowerCase();
-    return hay.includes(needle);
+    if (hay.includes(needle)) return true;
+    // Offer-number search: a pasted "#MPP…-…" / "Offer #MPP…" reference
+    // resolves to the lead even with the "#"/spaces/case stripped.
+    return offerNumberMatches(lead.id, q);
   };
 
   // Client-side de-dupe: collapse near-identical lead submissions from the same
@@ -3360,7 +3365,7 @@ export default function AdminPage() {
                     <span className="px-2 py-0.5 rounded text-[11px] font-bold border" style={{ color: statusMeta(L.status).color, borderColor: statusMeta(L.status).color + "66" }}>{statusMeta(L.status).label}</span>
                     {L.recycleOnly && <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/15 text-emerald-200 border border-emerald-500/30">♻ Recycle</span>}
                   </h2>
-                  <p className="text-xs text-[#c5c5c5] mt-0.5">{new Date(L.timestamp).toLocaleString()} · <span className="font-mono">#{L.id}</span></p>
+                  <p className="text-xs text-[#c5c5c5] mt-0.5">{new Date(L.timestamp).toLocaleString()} · Offer <span className="font-mono">#{formatOfferNumber(L.id)}</span></p>
                 </div>
                 <button onClick={() => setDetailLead(null)} aria-label="Close" className="shrink-0 w-8 h-8 rounded-full bg-white/5 border border-white/10 text-[#dcdcdc] hover:bg-white/10 hover:text-white cursor-pointer transition">✕</button>
               </div>

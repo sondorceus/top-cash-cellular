@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { reportError } from "../../lib/error-report";
+import { formatOfferNumber } from "../../lib/offer-number";
 
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
@@ -39,7 +40,7 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
   }
-  const { name, email, phone, devices, handoffMethod, fedexLabel } = body;
+  const { name, email, phone, devices, handoffMethod, fedexLabel, leadId } = body;
   let { payout } = body;
   // Coupon bonus ($) applied at submission — surfaced as its own line
   // in the receipt breakdown ("Coupon Bonus +$5"). Optional; 0/absent
@@ -119,7 +120,10 @@ export async function POST(req: NextRequest) {
   let smsSent = false;
 
   if (email && process.env.RESEND_API_KEY) {
-    const offerNum = Date.now().toString(36).toUpperCase();
+    // Offer number = the REAL lead id (canonical, matches the done screen
+    // + offer page + admin search). Falls back to a timestamp only if the
+    // funnel somehow didn't pass a leadId (e.g. MC was down at submit).
+    const offerNum = formatOfferNumber(typeof leadId === "string" ? leadId : "") || Date.now().toString(36).toUpperCase();
     const offerDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     // Digits-only phone for the /track URL query string. Falls back to
     // empty so the template's `phoneDigits || email` ternary picks email.
@@ -570,9 +574,12 @@ ${YELP_URL ? `<a href="${YELP_URL}" style="display:inline-block;margin:0 4px;pad
         from: "Top Cash Cellular <noreply@topcashcellular.com>",
         replyTo: "CustomerService@topcashcells.com",
         to: email,
+        // Offer # in the subject so a customer reply threads against a
+        // findable reference — staff paste it into admin search to pull
+        // up the exact lead (support-ticket linkage).
         subject: isPending
-          ? `We got your request for ${model} — custom quote coming`
-          : `Your $${offerTotal} quote for ${model} — Top Cash Cellular`,
+          ? `We got your request for ${model} — custom quote coming (Offer #${offerNum})`
+          : `Your $${offerTotal} quote for ${model} — Offer #${offerNum}`,
         html: htmlEmail,
         text: textFallback,
       });

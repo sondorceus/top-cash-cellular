@@ -5,6 +5,7 @@ import { track as vercelTrack } from "@vercel/analytics";
 import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT } from "./lib/resell-estimates";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "./lib/payout-verify";
+import { formatOfferNumber } from "./lib/offer-number";
 import { SlideOnScrollNav } from "./components/SlideOnScrollNav";
 import { HeaderSearch } from "./components/HeaderSearch";
 import Pic from "./components/Pic";
@@ -11852,6 +11853,12 @@ export default function Home() {
                 // done page (so the customer sees a "print your label"
                 // CTA right away). Local meetups: leadLabel stays null.
                 let leadLabel: { tracking: string; url: string; service: string } | null = null;
+                // Local capture of the MC lead id — setSubmittedLeadId is
+                // async so it can't be read back in this handler; we need
+                // the id synchronously to pass to /api/confirm so the
+                // emailed offer number matches the done-screen / offer-page
+                // number (and is searchable in admin).
+                let leadIdLocal: string | null = null;
                 if (isMultiCart) {
                   const devicesPayload = cartItems.map((it) => {
                     const key = `${it.modelId}-${it.storage}-${it.condition}`;
@@ -11915,7 +11922,7 @@ export default function Home() {
                   const d = await r.json().catch(() => ({}));
                   if (d?.fedexLabel) leadLabel = d.fedexLabel;
                   if (d?.fedexError) setSubmittedLabelError(d.fedexError);
-                  if (d?.leadId) setSubmittedLeadId(d.leadId);
+                  if (d?.leadId) { setSubmittedLeadId(d.leadId); leadIdLocal = d.leadId; }
                 } else {
                   const singleKey = model && condition ? `${model.id}-${storage?.label || 'N/A'}-${condition.label}` : "";
                   const singlePhotos = (singleKey && liveMap[singleKey]) || photoUrls;
@@ -11928,7 +11935,7 @@ export default function Home() {
                   const d = await res.json().catch(() => ({}));
                   if (d?.fedexLabel) leadLabel = d.fedexLabel;
                   if (d?.fedexError) setSubmittedLabelError(d.fedexError);
-                  if (d?.leadId) setSubmittedLeadId(d.leadId);
+                  if (d?.leadId) { setSubmittedLeadId(d.leadId); leadIdLocal = d.leadId; }
                 }
                 setSubmittedLabel(leadLabel);
                 // Leave a returning-visitor marker so a future visit
@@ -12020,8 +12027,8 @@ export default function Home() {
                     ? "mixed"
                     : cartNeedsShip ? "ship" : "local";
                   const confirmBody = isMultiCart
-                    ? { name, phone, email, carrier: carrier?.label, payout: payoutValue, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity, handoff: it.handoff ?? "local" })), handoffMethod: cartHandoffMode, fedexLabel: leadLabel, couponBonus: couponValid?.value }
-                    : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payoutValue, quantity, handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value };
+                    ? { name, phone, email, carrier: carrier?.label, payout: payoutValue, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity, handoff: it.handoff ?? "local" })), handoffMethod: cartHandoffMode, fedexLabel: leadLabel, couponBonus: couponValid?.value, leadId: leadIdLocal ?? undefined }
+                    : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payoutValue, quantity, handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value, leadId: leadIdLocal ?? undefined };
                   fetch("/api/confirm", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -13257,7 +13264,7 @@ export default function Home() {
                 boxShadow: "0 0 32px rgba(0,200,83,0.15), inset 0 1px 0 rgba(255,255,255,0.08)",
               }}>
                 <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Your offer page</p>
-                <p className="text-white text-lg font-extrabold mb-1 flex items-center justify-center gap-1.5"><svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>Offer #{submittedLeadId.slice(0, 10).toUpperCase()}</p>
+                <p className="text-white text-lg font-extrabold mb-1 flex items-center justify-center gap-1.5"><svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>Offer #{formatOfferNumber(submittedLeadId)}</p>
                 <p className="text-[#dcdcdc] text-xs leading-relaxed mb-4 max-w-md mx-auto">
                   {handoffMethod === "ship"
                     ? "Print your FedEx label, walk through the shipping checklist, see live status, or modify the offer — everything's on your offer page."

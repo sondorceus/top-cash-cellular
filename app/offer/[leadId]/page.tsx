@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { REQUOTE_CONDITIONS, REQUOTE_STORAGE, matchTier, requote } from "../../lib/requote";
 import { imageForModel } from "../../lib/device-images";
+import { formatOfferNumber } from "../../lib/offer-number";
 
 // /offer/[leadId] — the customer's offer-management page. Shown right
 // after submit (replaces the bare "done" screen), linked from the
@@ -430,7 +431,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
               type="button"
               onClick={() => {
                 const url = typeof window !== "undefined" ? window.location.href : "";
-                const title = `Top Cash Cellular Offer #${offer.id.slice(0, 10).toUpperCase()}`;
+                const title = `Top Cash Cellular Offer #${formatOfferNumber(offer.id)}`;
                 if (typeof navigator !== "undefined" && navigator.share) {
                   navigator.share({ title, url }).catch(() => {});
                   return;
@@ -1009,7 +1010,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
               </button>
             ) : (
               <div className="bg-red-500/10 border border-red-500/40 rounded-xl p-4">
-                <p className="text-red-200 font-bold text-sm mb-2">Cancel offer #{offer.id.slice(0, 10).toUpperCase()}?</p>
+                <p className="text-red-200 font-bold text-sm mb-2">Cancel offer #{formatOfferNumber(offer.id)}?</p>
                 <p className="text-red-200/80 text-[11px] mb-3">{isShip ? "Your shipping label will stop working. You can always start a new offer from the home page." : "Your meetup slot will be released. You can always start a new offer."}</p>
                 <textarea
                   value={cancelNote}
