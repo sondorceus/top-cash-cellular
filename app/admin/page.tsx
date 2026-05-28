@@ -323,6 +323,10 @@ export default function AdminPage() {
   // with EVERYTHING: every device + spec, every photo (uncapped, unlike
   // the 3-thumbnail row preview), handoff, notes, source, IMEI warnings.
   const [detailLead, setDetailLead] = useState<Lead | null>(null);
+  // Header "Menu" dropdown — secondary nav/tools live here instead of all
+  // competing in the header bar (kept only the workflow toggle + Live +
+  // Refresh visible). Skywalker 2026-05-28 admin-declutter.
+  const [moreOpen, setMoreOpen] = useState(false);
   // AI fraud check — Skywalker 2026-05-19. Per-lead in-flight flag and
   // the cached verdict for each lead. Verdict stays visible until the
   // page reloads or staff hits the button again.
@@ -1480,85 +1484,9 @@ export default function AdminPage() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
-            {/* Quick-nav links to sibling admin pages so staff don't have to
-                remember URLs. Mobile: emoji-only chips (the label text is
-                hidden < sm:) — saves precious header real estate. */}
-            <a
-              href="/admin/prices"
-              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#00c853]/10 hover:bg-[#00c853]/20 border border-[#00c853]/40 text-[#00c853] text-xs font-bold cursor-pointer transition"
-              title="Edit phone / MacBook / iPad prices"
-            >
-              💲<span className="hidden sm:inline ml-1">Prices</span>
-            </a>
-            <a
-              href="/admin/analytics"
-              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
-              title="Live leads + funnel analytics"
-            >
-              📊<span className="hidden sm:inline ml-1">Analytics</span>
-            </a>
-            <a
-              href="/admin/profit"
-              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
-              title="Resale profit ledger — cost / sold / fees / margin"
-            >
-              💰<span className="hidden sm:inline ml-1">Profit</span>
-            </a>
-            <a
-              href="/admin/customers"
-              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
-              title="Aggregated customer roster"
-            >
-              👥<span className="hidden sm:inline ml-1">Customers</span>
-            </a>
-            <a
-              href="/admin/newsletter"
-              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
-              title="Newsletter — subscriber list + send broadcasts"
-            >
-              📬<span className="hidden sm:inline ml-1">Newsletter</span>
-            </a>
-            <a
-              href="/admin/referrals"
-              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
-              title="Referral program — earnings + payouts"
-            >
-              🎁<span className="hidden sm:inline ml-1">Referrals</span>
-            </a>
-            <a
-              href="/admin/saved-quotes"
-              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
-              title="Saved quotes — customers who didn't finish checkout (re-marketing list)"
-            >
-              💾<span className="hidden sm:inline ml-1">Saved Quotes</span>
-            </a>
-            <button
-              type="button"
-              onClick={() => {
-                const next = !showInternal;
-                setShowInternal(next);
-                try { localStorage.setItem("tcc-show-internal", next ? "1" : "0"); } catch {}
-              }}
-              className={`px-2.5 sm:px-3 py-1.5 rounded-lg border text-xs font-bold cursor-pointer transition ${
-                showInternal
-                  ? "bg-yellow-500/15 border-yellow-500/40 text-yellow-300 hover:bg-yellow-500/25"
-                  : "bg-white/5 border-white/15 text-[#888] hover:bg-white/10 hover:text-white"
-              }`}
-              title={showInternal
-                ? "Internal/test leads ARE showing — click to hide"
-                : `Internal/test leads are hidden${internalHidden ? ` (${internalHidden})` : ""} — click to show`}
-            >
-              {showInternal
-                ? <span>🔓<span className="hidden sm:inline ml-1">Internal: ON</span></span>
-                : <span>🔒<span className="hidden sm:inline ml-1">Internal hidden{internalHidden ? ` (${internalHidden})` : ""}</span></span>}
-            </button>
-            <a
-              href="/admin/slots"
-              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold cursor-pointer transition"
-              title="Open meetup slots for local pickups"
-            >
-              🗓️<span className="hidden sm:inline ml-1">Slots</span>
-            </a>
+            {/* Secondary nav + tools moved into the Menu ▾ dropdown below to
+                declutter the header — only the workflow toggle, Live, and
+                Refresh stay visible. Skywalker 2026-05-28. */}
             {/* Google user chip — only renders when /api/auth/me returned
                 an authenticated admin. Click signs out + redirects to
                 Google login on next nav. */}
@@ -1617,27 +1545,68 @@ export default function AdminPage() {
             <button onClick={fetchLeads} disabled={loading} className="px-2.5 sm:px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-xs sm:text-sm hover:bg-white/10 transition disabled:opacity-50 cursor-pointer">
               {loading ? "…" : <>↻<span className="hidden sm:inline ml-1">Refresh</span></>}
             </button>
-            {/* CSV export — emoji-only on mobile to save space. */}
-            <button
-              onClick={() => {
-                const exportView = displayedLeads.filter((l) => {
-                  if (statusFilter === "all") return true;
-                  if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
-                  if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
-                  if (statusFilter === "stale") return isStale(l);
-                  return l.status === statusFilter;
-                });
-                exportFilteredCsv(exportView);
-              }}
-              disabled={displayedLeads.length === 0}
-              title="Download the current filtered view as CSV (Sheets/Excel/QuickBooks)"
-              className="px-2.5 sm:px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-xs sm:text-sm hover:bg-white/10 transition disabled:opacity-40 cursor-pointer"
-            >
-              📥<span className="hidden sm:inline ml-1">Export CSV</span>
-            </button>
-            <button onClick={handleLogout} className="hidden sm:inline-block px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm hover:bg-white/10 transition cursor-pointer">
-              Sign out
-            </button>
+            {/* Menu ▾ — all secondary nav + tools live here so the header
+                stays calm. Pages / Tools / Account, click-away to close. */}
+            <div className="relative">
+              <button
+                onClick={() => setMoreOpen((o) => !o)}
+                aria-haspopup="menu"
+                aria-expanded={moreOpen}
+                className="px-2.5 sm:px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-xs sm:text-sm hover:bg-white/10 transition cursor-pointer"
+              >
+                ☰<span className="hidden sm:inline ml-1">Menu</span>
+              </button>
+              {moreOpen && (
+                <>
+                  <div className="fixed inset-0 z-30" onClick={() => setMoreOpen(false)} />
+                  <div className="absolute right-0 mt-2 w-60 bg-[#0f0f0f] border border-white/15 rounded-xl shadow-2xl shadow-black/60 z-40 py-2 text-sm" role="menu">
+                    <p className="px-3 pt-1 pb-1.5 text-[10px] uppercase tracking-wider text-[#666] font-bold">Pages</p>
+                    <a href="/admin/prices" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">💲 Prices</a>
+                    <a href="/admin/analytics" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">📊 Analytics</a>
+                    <a href="/admin/profit" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">💰 Profit</a>
+                    <a href="/admin/customers" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">👥 Customers</a>
+                    <a href="/admin/saved-quotes" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">💾 Saved Quotes</a>
+                    <a href="/admin/referrals" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">🎁 Referrals</a>
+                    <a href="/admin/newsletter" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">📬 Newsletter</a>
+                    <a href="/admin/slots" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">🗓️ Slots</a>
+                    <div className="border-t border-white/10 my-1.5" />
+                    <p className="px-3 pb-1.5 text-[10px] uppercase tracking-wider text-[#666] font-bold">Tools</p>
+                    <button
+                      onClick={() => {
+                        const exportView = displayedLeads.filter((l) => {
+                          if (statusFilter === "all") return true;
+                          if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
+                          if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
+                          if (statusFilter === "stale") return isStale(l);
+                          return l.status === statusFilter;
+                        });
+                        exportFilteredCsv(exportView);
+                        setMoreOpen(false);
+                      }}
+                      disabled={displayedLeads.length === 0}
+                      className="block w-full text-left px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer disabled:opacity-40"
+                    >
+                      📥 Export CSV (current view)
+                    </button>
+                    <button
+                      onClick={() => {
+                        const next = !showInternal;
+                        setShowInternal(next);
+                        try { localStorage.setItem("tcc-show-internal", next ? "1" : "0"); } catch {}
+                        setMoreOpen(false);
+                      }}
+                      className="block w-full text-left px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer"
+                    >
+                      {showInternal ? "🔓 Internal leads: ON" : `🔒 Internal leads: hidden${internalHidden ? ` (${internalHidden})` : ""}`}
+                    </button>
+                    <div className="border-t border-white/10 my-1.5" />
+                    <button onClick={handleLogout} className="block w-full text-left px-3 py-1.5 text-red-300 hover:bg-red-500/10 transition cursor-pointer">
+                      Sign out
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -1647,7 +1616,10 @@ export default function AdminPage() {
             is clickable: clicking the banner header filters the list to
             stale only; clicking a row jumps to that lead. */}
         {staleCount > 0 && view === "active" && (() => {
-          const staleLeads = dedupedLeads
+          // Compact priority strip (was a 5-row gradient box that dominated
+          // the page). One thin line: count + the top 3 names with hours,
+          // click to filter the list to stale only. Calmer, still urgent.
+          const top = dedupedLeads
             .filter(isStale)
             .sort((a, b) => {
               const sa = stalenessFor(a) === "red" ? 0 : 1;
@@ -1655,80 +1627,28 @@ export default function AdminPage() {
               if (sa !== sb) return sa - sb;
               const la = new Date(a.statusUpdatedAt || a.timestamp).getTime();
               const lb = new Date(b.statusUpdatedAt || b.timestamp).getTime();
-              return la - lb; // oldest first within tier
+              return la - lb;
             })
-            .slice(0, 5);
+            .slice(0, 3);
           const redCount = dedupedLeads.filter((l) => stalenessFor(l) === "red").length;
           return (
-            <div className="mb-4 sm:mb-5 bg-gradient-to-r from-red-500/10 via-amber-500/10 to-amber-500/5 border border-red-500/30 rounded-2xl overflow-hidden">
-              <button
-                type="button"
-                onClick={() => setStatusFilter("stale")}
-                className="w-full px-4 sm:px-5 py-3 flex items-center justify-between text-left hover:bg-red-500/5 transition cursor-pointer border-b border-red-500/20"
-                title="Filter the list to stale leads only"
-              >
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-base">{redCount > 0 ? "🔴" : "🟡"}</span>
-                  <span className="font-bold text-white text-sm sm:text-base">
-                    {staleCount} lead{staleCount === 1 ? "" : "s"} need{staleCount === 1 ? "s" : ""} attention
-                  </span>
-                  {redCount > 0 && (
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-red-300 bg-red-500/15 border border-red-500/30 rounded px-1.5 py-0.5">
-                      {redCount} past alert
-                    </span>
-                  )}
-                </div>
-                <span className="text-xs text-[#cfcfcf] hidden sm:inline">View all →</span>
-              </button>
-              <ul className="divide-y divide-white/5">
-                {staleLeads.map((l) => {
-                  const stale = stalenessFor(l);
-                  const last = new Date(l.statusUpdatedAt || l.timestamp).getTime();
-                  const hrs = Math.floor((Date.now() - last) / 3600000);
-                  const isRed = stale === "red";
-                  return (
-                    <li key={l.id} className="px-4 sm:px-5 py-2 flex items-center gap-3 hover:bg-white/[0.02] transition">
-                      <span className={`text-base ${isRed ? "" : ""}`}>{isRed ? "🔴" : "🟡"}</span>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-white truncate">
-                          {l.name || l.email || l.phone || l.id}
-                          <span className="ml-2 text-[#bdbdbd] text-xs font-normal">· {l.model || l.device || "—"}</span>
-                        </p>
-                        <p className="text-[11px] text-[#cfcfcf]">
-                          <span className={`font-bold ${isRed ? "text-red-300" : "text-yellow-300"}`}>{hrs}h</span>
-                          {" in "}
-                          <span className="font-mono">{l.status.replace("_", " ")}</span>
-                          {l.quote && <span className="ml-2 text-[#00c853] font-semibold">{l.quote}</span>}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setStatusFilter("stale");
-                          // Best-effort scroll to the row once the filter is applied
-                          setTimeout(() => {
-                            const el = document.querySelector(`[data-lead-id="${l.id}"]`);
-                            if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-                          }, 100);
-                        }}
-                        className="text-[11px] text-[#00c853] hover:text-[#00e676] font-semibold cursor-pointer"
-                      >
-                        Jump →
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-              {staleCount > 5 && (
-                <button
-                  type="button"
-                  onClick={() => setStatusFilter("stale")}
-                  className="w-full px-4 sm:px-5 py-2 text-[12px] text-[#bdbdbd] hover:text-white hover:bg-white/[0.03] transition cursor-pointer"
-                >
-                  + {staleCount - 5} more stale lead{staleCount - 5 === 1 ? "" : "s"} — view all
-                </button>
-              )}
-            </div>
+            <button
+              type="button"
+              onClick={() => setStatusFilter("stale")}
+              title="Filter the list to stale leads only"
+              className="w-full mb-3 px-4 py-2.5 flex items-center gap-3 text-left bg-white/[0.03] hover:bg-white/[0.05] border-l-2 border-red-500/60 rounded-lg transition cursor-pointer"
+            >
+              <span className="text-sm shrink-0">{redCount > 0 ? "🔴" : "🟡"}</span>
+              <span className="font-bold text-white text-sm shrink-0">{staleCount} need{staleCount === 1 ? "s" : ""} attention</span>
+              <span className="text-xs text-[#bdbdbd] truncate min-w-0">
+                {top.map((l) => {
+                  const hrs = Math.floor((Date.now() - new Date(l.statusUpdatedAt || l.timestamp).getTime()) / 3600000);
+                  return `${(l.name || l.email || l.phone || "—").split(" ")[0]} ${hrs}h`;
+                }).join(" · ")}
+                {staleCount > 3 ? ` +${staleCount - 3} more` : ""}
+              </span>
+              <span className="ml-auto text-xs text-[#00c853] font-semibold shrink-0 hidden sm:inline">View queue →</span>
+            </button>
           );
         })()}
 
