@@ -101,6 +101,14 @@ export async function POST(req: NextRequest) {
   // itemize device subtotal / coupon / free shipping below it.
   const deviceSubtotal = Number(quote) || 0;
   const offerTotal = deviceSubtotal + couponBonus;
+  // Pending / manual-quote leads (inquiry-only devices like Intel MacBooks,
+  // below-minimum, broken) submit with a $0 total — there is no instant
+  // number yet. Without this flag the email/SMS told the customer their
+  // device was "locked in" at "$0", which reads as worthless and pushed
+  // them toward free recycling. Pending leads instead get a "custom quote
+  // coming within the hour" message; staff send the real number via the
+  // admin adjust/email actions once they price it.
+  const isPending = offerTotal <= 0;
 
   if (!email && !phone) return NextResponse.json({ ok: false, error: "No contact info" });
 
@@ -132,7 +140,7 @@ export async function POST(req: NextRequest) {
 <tr>
 <td style="vertical-align:middle">
 <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#0a0a0a;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div>
-<div style="font-size:24px;font-weight:800;color:#0a0a0a;line-height:1.15">You're locked in</div>
+<div style="font-size:24px;font-weight:800;color:#0a0a0a;line-height:1.15">${isPending ? "Request received" : "You're locked in"}</div>
 </td>
 <td style="vertical-align:middle;text-align:right">
 <div style="display:inline-block;padding:8px 14px;background:rgba(10,10,10,0.18);border:1px solid rgba(10,10,10,0.22);border-radius:999px;font-size:11px;font-weight:800;color:#0a0a0a;letter-spacing:0.1em;text-transform:uppercase">Austin, TX</div>
@@ -154,9 +162,11 @@ export async function POST(req: NextRequest) {
 <tr><td style="padding:6px 28px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.10);border-left:3px solid #00c853;border-radius:14px">
 <tr><td style="padding:22px 24px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.08)">
-<div style="font-size:10px;color:#00c853;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:6px;font-weight:800">Locked-In Offer</div>
+${isPending ? `<div style="font-size:10px;color:#00c853;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:6px;font-weight:800">Custom Quote</div>
+<div style="font-size:26px;font-weight:800;color:#00c853;line-height:1.2;text-shadow:0 0 18px rgba(0,200,83,0.4)">Coming within the hour</div>
+<div style="font-size:11px;color:#888;margin-top:10px;letter-spacing:0.08em;text-transform:uppercase">We'll text or email your offer</div>` : `<div style="font-size:10px;color:#00c853;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:6px;font-weight:800">Locked-In Offer</div>
 <div style="font-size:48px;font-weight:800;color:#00c853;line-height:1;text-shadow:0 0 18px rgba(0,200,83,0.4)">$${offerTotal}</div>
-<div style="font-size:11px;color:#888;margin-top:10px;letter-spacing:0.08em;text-transform:uppercase">Valid for 14 days</div>
+<div style="font-size:11px;color:#888;margin-top:10px;letter-spacing:0.08em;text-transform:uppercase">Valid for 14 days</div>`}
 </td></tr>
 <tr><td style="padding:16px 24px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -167,7 +177,7 @@ ${isMulti ? deviceArr.map((d) => `<tr><td style="padding:10px 0;border-bottom:1p
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Payout method</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06)">${payout}</td></tr>
 ${couponBonus > 0 ? `<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">🎁 Coupon bonus</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06)">+$${couponBonus}.00</td></tr>` : ""}
 ${isShipping ? `<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">🚚 Prepaid shipping label</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:800;border-bottom:1px solid rgba(255,255,255,0.06)">FREE</td></tr>` : ""}
-<tr><td style="padding:12px 0 4px 0;color:#fff;font-size:14px;font-weight:800">Offer total</td><td style="padding:12px 0 4px 0;color:#00c853;font-size:18px;text-align:right;font-weight:800">$${offerTotal}.00</td></tr>
+<tr><td style="padding:12px 0 4px 0;color:#fff;font-size:14px;font-weight:800">Offer total</td><td style="padding:12px 0 4px 0;color:#00c853;font-size:18px;text-align:right;font-weight:800">${isPending ? "Custom quote" : `$${offerTotal}.00`}</td></tr>
 </table>
 </td></tr>
 </table>
@@ -544,9 +554,11 @@ ${YELP_URL ? `<a href="${YELP_URL}" style="display:inline-block;margin:0 4px;pad
 </body>
 </html>`;
 
-    const textFallback = hasLabel
-      ? `Hi ${name || "there"}, your $${quote} quote for ${model} is locked. Your prepaid FedEx label is ready — tracking ${fedexLabel.tracking}, download: ${fedexLabel.url}. Print, tape to a padded box, drop at any FedEx location. Top Cash Cellular, Austin TX.`
-      : `Hi ${name || "there"}, your $${quote} quote for ${model} (${condition}, ${storage || "N/A"}) is locked for 14 days. We'll contact you within the hour. Reply to this email or write to CustomerService@topcashcells.com — Top Cash Cellular, Austin TX`;
+    const textFallback = isPending
+      ? `Hi ${name || "there"}, we got your request for ${model} (${condition}, ${storage || "N/A"}). Our team is pulling a custom quote and will text or email your offer within the hour. Reply to this email or write to CustomerService@topcashcells.com — Top Cash Cellular, Austin TX`
+      : hasLabel
+      ? `Hi ${name || "there"}, your $${offerTotal} quote for ${model} is locked. Your prepaid FedEx label is ready — tracking ${fedexLabel.tracking}, download: ${fedexLabel.url}. Print, tape to a padded box, drop at any FedEx location. Top Cash Cellular, Austin TX.`
+      : `Hi ${name || "there"}, your $${offerTotal} quote for ${model} (${condition}, ${storage || "N/A"}) is locked for 14 days. We'll contact you within the hour. Reply to this email or write to CustomerService@topcashcells.com — Top Cash Cellular, Austin TX`;
 
     try {
       const { Resend } = await import("resend");
@@ -555,7 +567,9 @@ ${YELP_URL ? `<a href="${YELP_URL}" style="display:inline-block;margin:0 4px;pad
         from: "Top Cash Cellular <noreply@topcashcellular.com>",
         replyTo: "CustomerService@topcashcells.com",
         to: email,
-        subject: `Your $${quote} quote for ${model} — Top Cash Cellular`,
+        subject: isPending
+          ? `We got your request for ${model} — custom quote coming`
+          : `Your $${offerTotal} quote for ${model} — Top Cash Cellular`,
         html: htmlEmail,
         text: textFallback,
       });
@@ -579,9 +593,11 @@ ${YELP_URL ? `<a href="${YELP_URL}" style="display:inline-block;margin:0 4px;pad
   }
 
   if (phone) {
-    const smsBody = hasLabel
-      ? `Top Cash Cellular: $${quote} quote locked for ${model}. Your prepaid FedEx label is ready — tracking ${fedexLabel.tracking}. Download: ${fedexLabel.url}`
-      : `Top Cash Cellular: Your $${quote} quote for ${model} is locked for 14 days! We'll contact you within the hour. Questions? Call (877) 549-2056`;
+    const smsBody = isPending
+      ? `Top Cash Cellular: We got your request for ${model}! Our team will text or email your custom quote within the hour. Questions? Call (877) 549-2056`
+      : hasLabel
+      ? `Top Cash Cellular: $${offerTotal} quote locked for ${model}. Your prepaid FedEx label is ready — tracking ${fedexLabel.tracking}. Download: ${fedexLabel.url}`
+      : `Top Cash Cellular: Your $${offerTotal} quote for ${model} is locked for 14 days! We'll contact you within the hour. Questions? Call (877) 549-2056`;
     smsSent = await sendSms(phone, smsBody);
   }
 
