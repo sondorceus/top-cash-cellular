@@ -35,11 +35,20 @@ export const metadata: Metadata = {
     locale: "en_US",
     siteName: "Top Cash Cellular",
     url: "https://topcashcellular.com",
+    images: [
+      {
+        url: "https://topcashcellular.com/logo.png",
+        width: 1376,
+        height: 768,
+        alt: "Top Cash Cellular — sell your phone for top dollar in Austin, TX",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Top Cash Cellular — Sell Your Phone for Top Dollar",
     description: "Instant quotes. Same-day payout. Cash, Cash App, Zelle, or BTC. Austin, TX.",
+    images: ["https://topcashcellular.com/logo.png"],
   },
   robots: { index: true, follow: true },
   alternates: { canonical: "https://topcashcellular.com" },

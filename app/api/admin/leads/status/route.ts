@@ -512,7 +512,10 @@ export async function POST(req: NextRequest) {
     typeof shipAddress.zip === "string" && /^\d{5}/.test(shipAddress.zip);
   if (status === "shipped" && hasFullShipAddress && phone && name && ADMIN_TOKEN) {
     try {
-      const labelReq = await fetch(`${new URL(req.url).origin}/api/admin/leads/label?token=${encodeURIComponent(ADMIN_TOKEN)}`, {
+      // Auth via the x-admin-token HEADER only — never the query string.
+      // A ?token= in the URL leaks the admin token into access logs and
+      // any Referer header. The label route's checkAuth accepts the header.
+      const labelReq = await fetch(`${new URL(req.url).origin}/api/admin/leads/label`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-admin-token": ADMIN_TOKEN },
         body: JSON.stringify({
