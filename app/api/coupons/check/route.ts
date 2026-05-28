@@ -3,6 +3,23 @@ import { NextRequest, NextResponse } from "next/server";
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
+// Mask the identity a code is bound to so the customer knows WHICH email
+// or phone to use, without exposing the full value to whoever holds the
+// code. "sondorceus@gmail.com" → "so•••@gmail.com"; "5125550199" → "•••-•••-0199".
+function maskEmail(e?: string): string {
+  if (!e || !e.includes("@")) return "";
+  const [local, domain] = e.split("@");
+  const head = local.slice(0, 2);
+  return `${head}•••@${domain}`;
+}
+function maskPhone(p?: string): string {
+  const d = (p || "").replace(/\D/g, "");
+  return d.length >= 4 ? `•••-•••-${d.slice(-4)}` : "";
+}
+function issuedToHint(c: { email?: string; phone?: string }): string {
+  return maskEmail(c.email) || maskPhone(c.phone) || "";
+}
+
 // Read-only coupon check — used by the funnel to validate a code
 // BEFORE submission so the customer sees their bonus applied (or
 // gets a clear error). Doesn't redeem; redemption happens in
@@ -35,10 +52,17 @@ export async function GET(req: NextRequest) {
     // email OR phone must match what the code was issued to.
     const emailMatch = c.email && email && c.email === email;
     const phoneMatch = c.phone && phone && c.phone === phone;
+    const hint = issuedToHint(c);
     if (email || phone) {
       if (!emailMatch && !phoneMatch) {
         return NextResponse.json(
-          { valid: false, error: "This code belongs to a different customer. Use the email or phone it was issued to." },
+          {
+            valid: false,
+            error: hint
+              ? `This code was issued to ${hint} — use that email or phone to redeem it.`
+              : "This code belongs to a different customer. Use the email or phone it was issued to.",
+            issuedTo: hint,
+          },
           { status: 403 },
         );
       }
@@ -51,6 +75,9 @@ export async function GET(req: NextRequest) {
       // If we can confirm identity match now, surface it; otherwise
       // the client should re-check after the customer fills email/phone.
       identityMatched: !!(emailMatch || phoneMatch),
+      // Masked email/phone the code is bound to, so the funnel can tell
+      // the customer exactly which contact to enter.
+      issuedTo: hint,
     });
   } catch (e) {
     // Server-side log only — don't echo error.message to public

@@ -4566,7 +4566,9 @@ export default function Home() {
       if (r.ok && d.valid) {
         setCouponState("valid");
         setCouponValid({ code: d.code, value: d.value });
-        setCouponMessage(d.identityMatched ? `✓ $${d.value} bonus will be added at checkout` : `✓ $${d.value} bonus available — enter the email/phone the code was issued to`);
+        setCouponMessage(d.identityMatched
+          ? `✓ $${d.value} bonus will be added at checkout`
+          : `✓ $${d.value} code found${d.issuedTo ? ` — enter ${d.issuedTo} above to redeem it` : " — enter the email/phone it was issued to"}`);
       } else {
         setCouponState("invalid");
         setCouponValid(null);

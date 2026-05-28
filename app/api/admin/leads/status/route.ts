@@ -49,6 +49,27 @@ async function postReviewTokenMarker(leadId: string, token: string, name?: strin
   } catch {}
 }
 
+// True if this lead already minted a review token. Used to avoid minting
+// a fresh one (and emailing another review invite) every time staff
+// re-flip the lead between paid/met. Best-effort: on lookup failure we
+// return false so a legitimate first token still gets minted.
+async function leadHasReviewToken(leadId: string): Promise<boolean> {
+  if (!MC_KEY) return false;
+  try {
+    const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
+      headers: { "x-api-key": MC_KEY },
+      cache: "no-store",
+    });
+    if (!r.ok) return false;
+    const data = await r.json().catch(() => ({}));
+    const messages: { body?: string }[] = Array.isArray(data.messages) ? data.messages : [];
+    const re = new RegExp(`\\[REVIEW-TOKEN:\\s*${leadId}\\]`, "i");
+    return messages.some((m) => !!m.body && re.test(m.body));
+  } catch {
+    return false;
+  }
+}
+
 // Referral payout — Skywalker 2026-05-22. When a lead completes (paid
 // or met), credit the friend who referred this customer. Best-effort:
 // every MC call is wrapped, and any failure returns silently so the
@@ -586,8 +607,14 @@ export async function POST(req: NextRequest) {
   // verify-token endpoint can validate it later.
   let reviewToken: string | undefined;
   if (status === "paid" || status === "met") {
-    reviewToken = mintReviewToken();
-    await postReviewTokenMarker(leadId, reviewToken, name, device);
+    // Only mint a token the FIRST time a lead completes. Re-flipping
+    // paid↔met (or re-saving paid) used to mint a brand-new token each
+    // time and email the customer another review invite. Skip if one
+    // already exists; their original single-use token still works.
+    if (!(await leadHasReviewToken(leadId))) {
+      reviewToken = mintReviewToken();
+      await postReviewTokenMarker(leadId, reviewToken, name, device);
+    }
     // Credit the referrer (if this lead carries a "Referred-by:" line).
     // Best-effort + idempotent — see creditReferralIfAny. A re-flip to
     // paid/met won't double-pay; an MC outage just skips it silently.
