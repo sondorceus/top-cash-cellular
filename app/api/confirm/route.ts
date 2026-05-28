@@ -91,7 +91,10 @@ export async function POST(req: NextRequest) {
     Array.isArray(devices) ? devices : [];
   const isMulti = deviceArr.length > 1;
   if (isMulti) {
-    quote = deviceArr.reduce((s, d) => s + (Number(d.quote) || 0) * (Number(d.quantity) || 1), 0);
+    // d.quote is already the line total (price × qty) — the funnel sends
+    // `quote: it.price * it.quantity`. Do NOT multiply by quantity again
+    // or the emailed grand total is inflated (e.g. 2× a $100 item → $400).
+    quote = deviceArr.reduce((s, d) => s + (Number(d.quote) || 0), 0);
     model = `${deviceArr.length} devices`;
     storage = "Multiple";
     condition = "See list below";
@@ -170,7 +173,7 @@ ${isPending ? `<div style="font-size:10px;color:#00c853;text-transform:uppercase
 </td></tr>
 <tr><td style="padding:16px 24px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-${isMulti ? deviceArr.map((d) => `<tr><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:0"><div style="color:#fff;font-size:13px;font-weight:700;line-height:1.3">${d.model || "—"}</div><div style="color:#888;font-size:11px;margin-top:2px">${[d.storage, d.condition].filter(Boolean).join(" · ")}${d.quantity && d.quantity > 1 ? ` · ×${d.quantity}` : ""}</div></td><td style="text-align:right;padding:0"><div style="color:#00c853;font-size:14px;font-weight:800">$${(Number(d.quote) || 0) * (Number(d.quantity) || 1)}</div></td></tr></table></td></tr>`).join("") : `
+${isMulti ? deviceArr.map((d) => `<tr><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:0"><div style="color:#fff;font-size:13px;font-weight:700;line-height:1.3">${d.model || "—"}</div><div style="color:#888;font-size:11px;margin-top:2px">${[d.storage, d.condition].filter(Boolean).join(" · ")}${d.quantity && d.quantity > 1 ? ` · ×${d.quantity}` : ""}</div></td><td style="text-align:right;padding:0"><div style="color:#00c853;font-size:14px;font-weight:800">$${Number(d.quote) || 0}</div></td></tr></table></td></tr>`).join("") : `
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Device</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06);font-weight:600">${model}</td></tr>
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Storage</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${storage || "N/A"}</td></tr>
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Condition</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${condition}</td></tr>`}
