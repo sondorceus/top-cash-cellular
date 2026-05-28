@@ -4701,6 +4701,11 @@ export default function Home() {
     brokenFunctional?: boolean | null;
     paidOff?: boolean | null;
     imei?: string;
+    // IMEI blacklist/stolen warnings for THIS device, snapshotted at
+    // add-to-cart time. Without this a flagged phone in a bundle lost its
+    // warning (single-device leads kept it) — staff could unknowingly buy
+    // a blacklisted device in a multi-device order.
+    imeiWarnings?: string[];
     // Per-item handoff — captured at add-to-cart time so a mixed cart
     // (some items local, others shipped) preserves each customer's intent
     // instead of last-write-wins on a cart-level handoffMethod. Optional
@@ -11043,6 +11048,7 @@ export default function Home() {
                       brokenFunctional: condition.id === "broken" ? brokenFunctional : undefined,
                       paidOff: paidOff ?? undefined,
                       imei: imeiInput.replace(/\D/g, "") || undefined,
+                      imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined,
                       // Snapshot the handoff method as the user chose it for
                       // THIS item. Falls back to "local" if they somehow
                       // reached add-to-cart without picking — but the funnel
@@ -11873,6 +11879,7 @@ export default function Home() {
                       brokenFunctional: it.brokenFunctional,
                       paidOff: it.paidOff,
                       imei: it.imei,
+                      imeiWarnings: it.imeiWarnings,
                       // Per-item handoff so the backend can split mixed
                       // carts into ship vs local fulfillment groups.
                       handoff: it.handoff ?? "local",

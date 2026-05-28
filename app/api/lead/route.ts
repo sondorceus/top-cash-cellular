@@ -477,6 +477,7 @@ export async function POST(req: NextRequest) {
     brokenFunctional?: boolean | null;
     paidOff?: boolean | null;
     imei?: string;
+    imeiWarnings?: string[];
     // Per-item handoff (ship | local) for mixed-cart orders so staff
     // know which devices to expect in the FedEx box vs at the meetup.
     handoff?: "ship" | "local";
@@ -509,6 +510,7 @@ export async function POST(req: NextRequest) {
       if (d.carrier)           specBits.push(`Carrier: ${cleanField(d.carrier, 40)}`);
       if (d.connectivity)      specBits.push(`Connectivity: ${cleanField(d.connectivity, 40)}`);
       if (d.imei)              specBits.push(`IMEI: ${cleanField(d.imei, 20).replace(/[^0-9]/g, "")}`);
+      if (Array.isArray(d.imeiWarnings) && d.imeiWarnings.length > 0) specBits.push(`[IMEI WARNINGS] ${(d.imeiWarnings as unknown[]).map((x) => cleanField(x, 100)).filter(Boolean).join(" | ")}`);
       if (Array.isArray(d.extras) && d.extras.length > 0) specBits.push(`Extras: ${(d.extras as unknown[]).map((x) => cleanField(x, 40)).filter(Boolean).join(", ")}`);
       if (d.paidOff === false) specBits.push("Balance: ⚠️ NOT PAID OFF");
       else if (d.paidOff === true) specBits.push("Balance: Fully paid off");
