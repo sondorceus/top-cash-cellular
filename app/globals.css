@@ -200,9 +200,12 @@ main.bg-\[\#0a0a0a\] {
    top-center and zoom out a hair so device silhouettes anchor near hero. */
 @media (max-width: 640px) {
   html[data-theme="light"] body::before {
+    /* cover (not 160% auto) so the fixed full-viewport layer FILLS the
+       mobile screen — the old 160%/auto height left the bottom of the
+       viewport as bare #0a0a0a ("half image, half black" mid-scroll). */
     background:
       linear-gradient(rgba(10, 10, 10, 0.64), rgba(10, 10, 10, 0.64)),
-      url('/iphone-17-pro-backdrop.webp') center top / 160% auto no-repeat,
+      url('/iphone-17-pro-backdrop.webp') center / cover no-repeat,
       #0a0a0a;
   }
 }
@@ -217,14 +220,14 @@ html[data-theme="light"] .bg-white\/\[0\.03\],
 html[data-theme="light"] .bg-white\/5,
 html[data-theme="light"] .bg-white\/\[0\.06\],
 html[data-theme="light"] .bg-white\/\[0\.08\] {
-  background-color: rgba(9, 11, 15, 0.58) !important;
-  -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
+  background-color: rgba(9, 11, 15, 0.66) !important;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
 }
 html[data-theme="light"] .bg-white\/10,
 html[data-theme="light"] .bg-white\/\[0\.12\],
 html[data-theme="light"] .bg-white\/15 {
-  background-color: rgba(9, 11, 15, 0.66) !important;
-  -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
+  background-color: rgba(9, 11, 15, 0.74) !important;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
 }
 /* Solid dark panels that sit over the backdrop (selection frame, brand
    tiles, modals) get the same treatment so they don't read as flat black
