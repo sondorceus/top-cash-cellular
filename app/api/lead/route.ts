@@ -760,14 +760,23 @@ export async function POST(req: NextRequest) {
     marginLines.push("--- MARGIN: Manual quote needed (no auto-price) ---");
   }
 
-  const reviewRequired = needsManualReview(model as string, quoteNum) || quoteTampered;
+  // High-value review trigger. For a bundle the order-level `model` is a
+  // summary string and quoteNum is the whole-cart total — judging review
+  // on that flagged EVERY bundle over $1000 (cheap-phone carts cross it
+  // easily). Judge per-device instead: a bundle needs review only if some
+  // INDIVIDUAL device is high-value (>= $1000 or a review-keyword model).
+  // Single-device keeps the original headline-model check.
+  const highValueReview = isMulti
+    ? deviceList.some((d) => needsManualReview(typeof d.model === "string" ? d.model : "", Number(d.quote) || 0))
+    : needsManualReview(model as string, quoteNum);
+  const reviewRequired = highValueReview || quoteTampered;
   const reviewLines: string[] = [];
   if (quoteTampered) {
     reviewLines.push("🚨 QUOTE TAMPER DETECTED — client posted a quote above the server-side margin ceiling.");
     reviewLines.push(`Submitted: $${submittedQuoteNum} · Server cap: $${serverQuoteCap} · Clamped to: $${baseQuoteNum} (before coupon/referral).`);
     reviewLines.push("Verify funnel integrity / inspect lead source before paying out.");
   }
-  if (needsManualReview(model as string, quoteNum)) {
+  if (highValueReview) {
     reviewLines.push("⚠️ MANUAL REVIEW REQUIRED — high-value device");
     reviewLines.push("Verify: condition matches description, check IMEI, confirm config (chip/RAM/storage)");
   }

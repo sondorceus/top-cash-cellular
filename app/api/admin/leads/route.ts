@@ -745,6 +745,25 @@ export async function GET(req: NextRequest) {
     // Skywalker 2026-05-17: multi-device leads were getting skipped
     // because the literal includes() check missed them.
     if (!m.body || !/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
+    // Skip legacy phantom preview-saves. Before the previewSave fix
+    // (2026-05-28) the funnel's "save quote for later" box and the
+    // account step ("Continue as Guest" / returning / Google) posted a
+    // full [NEW BUYBACK LEAD] the moment the customer typed their email
+    // — with a dollar Quote, Payout: TBD, and NO handoff section. Those
+    // are junk: they clutter the feed and duplicate the customer's real
+    // lead once they finish checkout. New saves post [QUOTE SAVED]
+    // instead (ignored by this parser), so this only suppresses the
+    // already-stored stragglers. Distinguishers that keep REAL leads
+    // visible: completed leads always carry a "--- Handoff:" block;
+    // custom/inquiry-quote leads carry "Quote: TBD (custom)" (no dollar
+    // amount); recycle leads carry "Payout: Free recycling".
+    {
+      const payoutVal = (parseField(m.body, "Payout") || "").trim().toLowerCase();
+      const quoteVal = parseField(m.body, "Quote") || "";
+      const hasDollarQuote = /\$\s*\d/.test(quoteVal);
+      const hasHandoff = /---\s*Handoff:/i.test(m.body);
+      if (!hasHandoff && hasDollarQuote && (payoutVal === "" || payoutVal === "tbd")) continue;
+    }
     // Status drives the auto-purge policy (active leads stay forever in
     // trash, finished leads purge after 24h) so look it up before
     // bucketing. Skywalker 2026-05-19. (Fixed 2026-05-19: pass the
