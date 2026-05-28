@@ -1,15 +1,17 @@
 // Shared re-quote tables for the offer-page device editor.
 //
-// The sell funnel and /api/tcc/estimate use different pricing tables,
-// and neither is a shared module — so the offer page re-quotes by
-// DELTA instead: it takes the customer's original (locked) quote and
-// multiplies by the ratio of the new vs. old condition/storage
-// multipliers. Reverting to the original specs returns the EXACT
-// original number; any change moves it correctly.
+// The funnel prices off an absolute per-condition table (app/data/prices.ts)
+// — the deliberate "big-buyback-company" model, NOT global multipliers. The
+// offer page can't re-run that table without the device's SKU, so when a
+// customer edits condition/storage here it re-quotes by DELTA: take the
+// original (locked) quote and scale by the ratio of the new vs. old tier.
+// Reverting to the original specs returns the EXACT original number.
 //
-// These multipliers mirror the sell funnel's condition + storage
-// tiers (app/page.tsx). The re-quoted figure is an estimate — the
-// final price is always confirmed at inspection. Skywalker 2026-05-20.
+// NOTE these ratios only APPROXIMATE the absolute table (which sets prices
+// per device, not a uniform curve), so an edited re-quote can differ
+// slightly from what the funnel would show for that exact config. The
+// re-quoted figure is explicitly an estimate — final price is confirmed at
+// inspection. Skywalker 2026-05-20.
 
 export type RequoteTier = { id: string; label: string; multiplier: number };
 
