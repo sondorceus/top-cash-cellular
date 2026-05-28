@@ -184,7 +184,7 @@ export async function POST(req: NextRequest) {
     return handleRecycleLead(req, data);
   }
   let { payout } = data;
-  const { name, phone, email, device, model, storage, condition, carrier, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, referralCode } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, carrierLock, accessoriesIncluded, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, referralCode } = data;
   // TCPA defense in depth — client checkbox is `required`, but a
   // bypass (DevTools, malformed client) could submit phone without
   // consent. Reject any phone-bearing lead that didn't get explicit
@@ -539,6 +539,12 @@ export async function POST(req: NextRequest) {
   // with a balance, but the offer is adjusted for blacklist risk.
   if (paidOff === false) specLines.push("Balance: ⚠️ NOT PAID OFF — blacklist risk, adjust offer");
   else if (paidOff === true) specLines.push("Balance: Fully paid off");
+  // Carrier lock + accessories both move the quote (−$200 lock deduction,
+  // +$10–30 accessory bonus) but weren't surfaced to staff. Without them
+  // the admin can't reconcile the quote against the device on arrival.
+  if (carrierLock) specLines.push(`Carrier lock: ${cleanField(carrierLock, 40)}`);
+  if (accessoriesIncluded === true) specLines.push("Accessories: ✅ all original accessories included (bonus applied)");
+  else if (accessoriesIncluded === false) specLines.push("Accessories: none included");
 
   const imeiLines: string[] = [];
   if (imei) imeiLines.push(`IMEI: ${cleanField(imei, 20).replace(/[^0-9]/g, "")}`);
