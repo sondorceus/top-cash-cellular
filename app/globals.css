@@ -206,6 +206,33 @@ main.bg-\[\#0a0a0a\] {
       #0a0a0a;
   }
 }
+/* Glass-theme panel dimming (light only; dark theme untouched). The
+   translucent panels (bg-white/N) sit over the iPhone backdrop, and where
+   the backdrop is BRIGHT (phone screens, reflections) they washed out —
+   "too bright" on the reviews, carrier cards, device photo, etc. Tint them
+   with a semi-opaque DARK frost (NOT white) so they dim + blur the bright
+   backdrop behind them, stay readable, and the backdrop still shows in the
+   open gaps between panels. Skywalker 2026-05-28. */
+html[data-theme="light"] .bg-white\/\[0\.03\],
+html[data-theme="light"] .bg-white\/5,
+html[data-theme="light"] .bg-white\/\[0\.06\],
+html[data-theme="light"] .bg-white\/\[0\.08\] {
+  background-color: rgba(9, 11, 15, 0.58) !important;
+  -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
+}
+html[data-theme="light"] .bg-white\/10,
+html[data-theme="light"] .bg-white\/\[0\.12\],
+html[data-theme="light"] .bg-white\/15 {
+  background-color: rgba(9, 11, 15, 0.66) !important;
+  -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
+}
+/* Solid dark panels that sit over the backdrop (selection frame, brand
+   tiles, modals) get the same treatment so they don't read as flat black
+   bricks over the photo. */
+html[data-theme="light"] .tcc-selection-frame {
+  background: rgba(9, 11, 15, 0.60) !important;
+}
+
 /* Cabinet Grotesk renders better with slight tracking adjustments
    per size band — tighter on display, looser on small. */
 h1, h2, h3 { letter-spacing: -0.02em; }
