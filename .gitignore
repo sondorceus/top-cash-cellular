@@ -53,3 +53,6 @@ next-env.d.ts
 /ebay-resell-data.json
 /atlas-margin-audit.csv
 /iwm-vr-prices.json
+
+# stray downloaded artifacts (FedEx test labels, filled cover sheets, gallery imgs)
+"top cash /"
