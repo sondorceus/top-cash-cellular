@@ -3,7 +3,7 @@ import { reportError } from "../../lib/error-report";
 
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
+const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 
 // Review-platform links shown in the email footer. TCC has no social
 // media, but does have Trustpilot + Yelp. Both env-overridable so the
@@ -502,7 +502,7 @@ ${(phoneDigits || email) ? `<tr><td style="padding:18px 28px 0 28px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(0,200,83,0.06);border:1px solid rgba(0,200,83,0.22);border-radius:12px">
 <tr><td style="padding:14px 18px;font-size:13px;color:#e6e6e6;line-height:1.55;text-align:center">
 ${isShipping
-  ? `<strong style=\"color:#00c853\">Wrong address?</strong> Reply to this email within the hour and we'll resend a corrected label. Need help? Text or call <a href=\"tel:+18775492056\" style=\"color:#00c853;text-decoration:none;font-weight:700\">(877) 549-2056</a>.`
+  ? `<strong style=\"color:#00c853\">Wrong address?</strong> Reply to this email within the hour and we'll resend a corrected label. Need help? Just reply to this email — we answer within ~1 hour.`
   : `<strong style=\"color:#00c853\">Austin local?</strong> We meet locally — no shipping. Prefer to ship? Reply and we'll send a prepaid label.`}
 </td></tr>
 </table>
@@ -594,10 +594,10 @@ ${YELP_URL ? `<a href="${YELP_URL}" style="display:inline-block;margin:0 4px;pad
 
   if (phone) {
     const smsBody = isPending
-      ? `Top Cash Cellular: We got your request for ${model}! Our team will text or email your custom quote within the hour. Questions? Call (877) 549-2056`
+      ? `Top Cash Cellular: We got your request for ${model}! Our team will text or email your custom quote within the hour. Questions? Just reply to this text.`
       : hasLabel
       ? `Top Cash Cellular: $${offerTotal} quote locked for ${model}. Your prepaid FedEx label is ready — tracking ${fedexLabel.tracking}. Download: ${fedexLabel.url}`
-      : `Top Cash Cellular: Your $${offerTotal} quote for ${model} is locked for 14 days! We'll contact you within the hour. Questions? Call (877) 549-2056`;
+      : `Top Cash Cellular: Your $${offerTotal} quote for ${model} is locked for 14 days! We'll contact you within the hour. Questions? Just reply to this text.`;
     smsSent = await sendSms(phone, smsBody);
   }
 

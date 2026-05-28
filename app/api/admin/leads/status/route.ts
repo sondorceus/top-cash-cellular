@@ -9,7 +9,7 @@ const MC_KEY = process.env.MC_API_KEY || "";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
+const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 
 // "met" = local meetup completed (cash handoff in person). Distinct from
 // "paid" which is the digital payout flow. Both terminate the trade and

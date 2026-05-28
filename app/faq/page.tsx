@@ -102,7 +102,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "I picked the wrong payout method — can I change it?",
-    a: "Yes — as long as we haven't sent payment yet. Text us at (877) 549-2056 or reply to your confirmation email with your offer number + the new method. Once Cash App / Zelle / BTC has fired, it's irreversible from our end, but we'll work with you on next steps if you catch it after.",
+    a: "Yes — as long as we haven't sent payment yet. Reply to your confirmation email (or email CustomerService@topcashcells.com) with your offer number + the new method. Once Cash App / Zelle / BTC has fired, it's irreversible from our end, but we'll work with you on next steps if you catch it after.",
   },
   {
     q: "I disagree with your inspection — what now?",

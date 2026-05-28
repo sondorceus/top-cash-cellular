@@ -6770,13 +6770,6 @@ export default function Home() {
                           <p className="text-[11px] text-[#b8b8b8] mt-0.5 leading-snug">Custom contracts, NDAs, decommissioning.</p>
                         </div>
                       </a>
-                      <a href="tel:+18775492056" className="group/blk flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-[180ms]">
-                        <svg className="w-6 h-6 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
-                        <div className="min-w-0">
-                          <p className="text-[13px] font-bold text-white group-hover/blk:text-[#00c853] transition">Call bulk line</p>
-                          <p className="text-[11px] text-[#b8b8b8] mt-0.5 leading-snug">(877) 549-2056 · same-day callback</p>
-                        </div>
-                      </a>
                     </div>
                     {/* RIGHT — inline FAQ */}
                     <div className="bg-white/[0.05] rounded-2xl p-4 border border-white/10">
@@ -6870,10 +6863,10 @@ export default function Home() {
                       </a>
                     </div>
                   </div>
-                  {/* FOOTER — call CTA */}
-                  <a href="tel:+18775492056" className="mt-5 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#00c853]/15 border border-[#00c853]/40 hover:bg-[#00c853]/25 transition-all duration-[180ms]">
-                    <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
-                    <span className="text-[13px] font-bold text-[#00c853]">Call (877) 549-2056 — Mon-Sat 9a-7p CT</span>
+                  {/* FOOTER — email CTA */}
+                  <a href={EMAIL_HREF} className="mt-5 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#00c853]/15 border border-[#00c853]/40 hover:bg-[#00c853]/25 transition-all duration-[180ms]">
+                    <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                    <span className="text-[13px] font-bold text-[#00c853]">Email us — we reply within ~1 hour</span>
                   </a>
                 </div>
               </div>
@@ -7255,13 +7248,6 @@ export default function Home() {
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-white">Customer service</p>
                       <p className="text-[11px] text-[#e6e6e6] truncate">CustomerService@topcashcells.com</p>
-                    </div>
-                  </a>
-                  <a href="tel:+18775492056" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
-                    <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
-                    <div>
-                      <p className="text-sm font-semibold text-white">Call us</p>
-                      <p className="text-[11px] text-[#e6e6e6]">(877) 549-2056</p>
                     </div>
                   </a>
                 </div>
@@ -7897,7 +7883,7 @@ export default function Home() {
             </div>
 
             <div className="mt-6 flex flex-wrap items-center gap-2 hero-fade-up hero-d-4">
-              <a href="#reviews" className="inline-flex items-center gap-1.5 bg-[#ffb400]/10 text-[#ffb400] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#ffb400]/20 hover:bg-[#ffb400]/15 transition">
+              <a href="/reviews" className="inline-flex items-center gap-1.5 bg-[#ffb400]/10 text-[#ffb400] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#ffb400]/20 hover:bg-[#ffb400]/15 transition">
                 <span className="text-sm leading-none">★</span>
                 4.9 — Read reviews
               </a>
@@ -12994,22 +12980,16 @@ export default function Home() {
             <div className="mt-6 pt-6 border-t border-white/8 text-center">
               <p className="text-[#888] text-[11px] uppercase tracking-[0.14em] font-semibold mb-2">Need help?</p>
               <a
-                href="tel:+18775492056"
+                href="mailto:CustomerService@topcashcells.com"
                 className="inline-flex items-center gap-2 text-[#00c853] hover:text-[#00e676] transition text-base font-bold"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.95.69l1.5 4.5a1 1 0 01-.5 1.21l-2.26 1.13a11 11 0 005.52 5.52l1.13-2.26a1 1 0 011.21-.5l4.5 1.5a1 1 0 01.69.95V19a2 2 0 01-2 2h-1C9.72 21 3 14.28 3 6V5z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                (877) 549-2056
+                CustomerService@topcashcells.com
               </a>
-              <p className="text-[#888] text-xs mt-1">
-                or email{" "}
-                <a href="mailto:CustomerService@topcashcells.com" className="text-[#00c853] hover:underline">
-                  CustomerService@topcashcells.com
-                </a>
-              </p>
               <p className="text-[#666] text-[10px] mt-2">
-                Mon–Sat · 9 AM – 7 PM CT · Austin, TX
+                We reply within ~1 hour · Mon–Sat · Austin, TX
               </p>
             </div>
             </div>

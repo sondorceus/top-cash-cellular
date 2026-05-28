@@ -11,7 +11,7 @@ const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
+const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 
 // Lead dedup: track recent submissions to prevent duplicates.

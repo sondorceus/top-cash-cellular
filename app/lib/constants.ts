@@ -20,12 +20,10 @@ export const EMAIL_HREF = `mailto:${EMAIL}`;
 export const SUPPORT_DOMAIN = "topcashcells.com";
 export const MARKETING_DOMAIN = "topcashcellular.com";
 
-// Twilio toll-free that publishes the brand in caller-ID. Display form
-// is what we show; href form is the tel: dial string. Owner cell is
-// the on-call routing target — NOT shown to customers.
-export const PHONE_E164 = "+18775492056";
-export const PHONE_DISPLAY = "(877) 549-2056";
-export const PHONE_HREF = `tel:${PHONE_E164}`;
+// No public phone number: the old Twilio toll-free was retired and never
+// replaced with a working line. Customers reach us by email (EMAIL above);
+// local-meetup sellers get a text from Skywalker's own phone. Do not
+// reintroduce a PHONE_* constant until a real, working number is in service.
 
 export const CITY = "Austin";
 export const STATE = "TX";

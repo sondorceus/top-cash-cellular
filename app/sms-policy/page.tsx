@@ -12,7 +12,7 @@ export const metadata = {
     "How customers opt in to SMS updates from Top Cash Cellular, what messages we send, and how to stop them.",
 };
 
-import { BRAND, EMAIL, PHONE_DISPLAY } from "../lib/constants";
+import { BRAND, EMAIL } from "../lib/constants";
 
 export default function SmsPolicyPage() {
   return (
@@ -101,7 +101,6 @@ export default function SmsPolicyPage() {
           <p className="text-[#e6e6e6] text-sm leading-relaxed">
             Questions about SMS, opt-in, or your data:<br />
             Email: <a href={`mailto:${EMAIL}`} className="text-[#00c853] hover:underline font-semibold">{EMAIL}</a><br />
-            Phone: <span className="text-white font-semibold">{PHONE_DISPLAY}</span><br />
             See also our <Link href="/privacy" className="text-[#00c853] hover:underline">Privacy Policy</Link>.
           </p>
         </section>

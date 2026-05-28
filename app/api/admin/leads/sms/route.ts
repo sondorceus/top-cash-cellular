@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_FROM = process.env.TWILIO_PHONE || "+18775492056";
+const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 
 // Customer SMS conversation thread for a single lead. Pulls both directions
 // (TCC ↔ customer) from Twilio, sorts chronologically, returns last 30.
