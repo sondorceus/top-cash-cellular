@@ -818,6 +818,18 @@ html[data-theme="light"] .bg-black\/80 {
 html[data-theme="light"] .border-white\/22 { border-color: rgba(0, 0, 0, 0.12) !important; }
 /* White logo wordmark is invisible on the frosted-white nav — darken it. */
 html[data-theme="light"] img[alt="Top Cash Cellular"] { filter: brightness(0.14); }
+/* Dark SECTION/band backgrounds (bg-[#0a0a0a]/[#0d0d0d] on <section>/<div>,
+   not just <main>) -> transparent so the backdrop shows through (glass),
+   instead of staying as opaque dark bands in a light page. */
+html[data-theme="light"] .bg-\[\#0a0a0a\],
+html[data-theme="light"] .bg-\[\#0d0d0d\],
+html[data-theme="light"] .bg-\[\#0b0b0b\],
+html[data-theme="light"] .bg-black { background-color: transparent !important; }
+/* Footer is a dark green gradient — make it frosted white like the rest. */
+html[data-theme="light"] footer {
+  background: rgba(255, 255, 255, 0.74) !important;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
 /* Borders -> subtle dark */
 html[data-theme="light"] .border-white\/5 { border-color: rgba(0, 0, 0, 0.06) !important; }
 html[data-theme="light"] .border-white\/10 { border-color: rgba(0, 0, 0, 0.10) !important; }
