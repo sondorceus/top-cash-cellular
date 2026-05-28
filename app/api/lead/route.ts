@@ -768,7 +768,7 @@ export async function POST(req: NextRequest) {
         safeEmail ? `Email: ${safeEmail}` : null,
         // Headline summary so the staff feed's model column reads
         // sensibly without parsing the indented device list.
-        `Device: ${safeDevice || "multi"} — ${safeModel || `${deviceList.length} devices`}`,
+        `Device: ${safeModel || `${deviceList.length} devices`}`,
         `Condition: Multi-device (${deviceList.length})`,
         safeCarrier ? `Carrier: ${safeCarrier}` : null,
         `Quote: $${deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0)}`,
