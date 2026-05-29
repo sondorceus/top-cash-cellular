@@ -44,7 +44,7 @@ function confirmationHtml(email: string, success: boolean): string {
 <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px">
 <div style="max-width:520px;width:100%;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;text-align:center">
 <div style="padding:26px 28px;border-bottom:1px solid rgba(255,255,255,0.08);color:#ffffff">
-<div style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#9aa0bd;margin-bottom:6px">TOP CASH <span style="color:${success ? "#00c853" : "#ff6b6b"}">CELLULAR</span></div>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="background:#0e0f22;border:1px solid rgba(255,255,255,0.14);border-radius:999px;padding:9px 18px"><img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none" /></td></tr></table>
 <div style="font-size:22px;font-weight:700;line-height:1.3;color:#ffffff">${title}</div>
 </div>
 <div style="padding:28px;font-size:15px;line-height:1.6;color:#dcdcdc">

@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td style="vertical-align:middle">
-<div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#9aa0bd;margin-bottom:4px">Top Cash Cellular</div>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="background:#0e0f22;border:1px solid rgba(255,255,255,0.14);border-radius:999px;padding:9px 18px"><img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none" /></td></tr></table>
 <div style="font-size:24px;font-weight:800;color:#ffffff;line-height:1.15">${isPending ? "Request received" : "You're locked in"}</div>
 </td>
 <td style="vertical-align:middle;text-align:right">

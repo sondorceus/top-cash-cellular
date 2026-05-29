@@ -1745,7 +1745,7 @@ function renderRecycleCertificateEmail(opts: {
 
 <!-- Header — clean: brand wordmark + thin green accent rule, no green block -->
 <tr><td style="padding:30px 32px 22px;border-bottom:1px solid rgba(255,255,255,0.08)">
-<div style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#9a9db5">TOP CASH <span style="color:#00c853">CELLULAR</span></div>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="background:#0e0f22;border:1px solid rgba(255,255,255,0.14);border-radius:999px;padding:9px 18px"><img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none" /></td></tr></table>
 <div style="font-size:22px;font-weight:700;color:#ffffff;line-height:1.3;margin-top:11px">Certificate of Responsible Recycling</div>
 </td></tr>
 
