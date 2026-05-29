@@ -6647,7 +6647,7 @@ export default function Home() {
       {actionToast && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 lg:left-auto lg:right-6 lg:translate-x-0 z-[65] toast-in-up">
           <div className="flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-[rgba(15,15,15,0.92)] backdrop-blur-[14px] border border-[#00c853]/40 shadow-[0_18px_45px_rgba(0,0,0,0.6),0_0_18px_rgba(0,200,83,0.18)]">
-            <span className="w-6 h-6 rounded-full flex items-center justify-center text-[#0a0a0a] font-extrabold text-xs shrink-0 bg-[#00c853] shadow-[0_0_10px_rgba(0,200,83,0.55)]">✓</span>
+            <span className="w-6 h-6 rounded-full flex items-center justify-center text-[#0a0a0a] font-extrabold text-xs shrink-0 bg-[#00c853]">✓</span>
             <p className="text-white text-[13px] font-extrabold leading-tight">{actionToast}</p>
           </div>
         </div>
@@ -7177,7 +7177,7 @@ export default function Home() {
         {step !== "device" && step !== "done" && step !== "inquiry" && page === "home" && (
           <div className="h-1 lg:h-1.5 bg-white/10">
             <div
-              className="h-full bg-[#00c853] shadow-[0_0_8px_rgba(0,200,83,0.55)] transition-[width] duration-[450ms] ease-out"
+              className="h-full bg-[#00c853] transition-[width] duration-[450ms] ease-out"
               style={{ width: `${overallProgressPct}%` }}
             />
           </div>
