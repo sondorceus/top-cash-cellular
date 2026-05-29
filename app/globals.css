@@ -869,38 +869,6 @@ gmp-place-autocomplete {
   padding: 3px 10px;
 }
 
-/* Animated gradient border — a soft green light that travels around
-   the card edge. Used on the homepage device cards so they read as
-   alive/premium on the dark theme (a cast shadow has no contrast on
-   near-black). The card's own faint border stays as the base ring. */
-@property --tcc-border-angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
-@keyframes tcc-border-spin {
-  to { --tcc-border-angle: 360deg; }
-}
-.tcc-anim-border {
-  position: relative;
-}
-.tcc-anim-border::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.5px;
-  background: conic-gradient(from var(--tcc-border-angle), transparent 60%, #00c853 85%, #9defc0 93%, transparent 100%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  animation: tcc-border-spin 5s linear infinite;
-  pointer-events: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .tcc-anim-border::before { animation: none; }
-}
 
 /* NOTE: the "white version" (frosted-white panels + dark text override
    layer) was DELETED — Skywalker never wanted white. The two themes are

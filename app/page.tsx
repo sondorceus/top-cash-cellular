@@ -8021,7 +8021,7 @@ export default function Home() {
                           popThenRun(`feat-${d.model}`, () => { setStep("condition"); pushHistory("condition"); });
                         });
                       }}
-                      className={`group bg-white/[0.07] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press tcc-anim-border ${funnelPop === `feat-${d.model}` ? "tap-confirm" : ""}`}
+                      className={`group bg-white/[0.07] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press ${funnelPop === `feat-${d.model}` ? "tap-confirm" : ""}`}
                     >
                       {isTight ? (
                         <div className={tightWrapCls}>
