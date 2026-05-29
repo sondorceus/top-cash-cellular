@@ -263,8 +263,15 @@ html[data-theme="light"] nav.bg-\[\#0a0a0a\]\/95 {
    too and the whole bar reads as one clear sheet. White text/icons stay
    readable over the blur. */
 html[data-theme="light"] nav .bg-white\/\[0\.12\] {
-  background-color: rgba(12, 14, 20, 0.42) !important;
-  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  background-color: rgba(54, 58, 96, 0.28) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(150%); backdrop-filter: blur(16px) saturate(150%);
+}
+/* Mega-menu category/hot-today tiles — were dark cards (bg-white/[0.06] ->
+   near-black frost). Give them a subtle indigo glass tint so they belong
+   to the glass panel they sit in, while staying a touch distinct (border +
+   hover) so they still read as tappable cards. */
+html[data-theme="light"] nav .bg-white\/\[0\.06\] {
+  background-color: rgba(46, 50, 82, 0.26) !important;
 }
 /* Glass nav: lift the faint white/10 hairline borders + the cart-cluster
    divider so the logo pill, center menu pill and cart/login cluster read
