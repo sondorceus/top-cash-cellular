@@ -172,14 +172,14 @@ async function sendReferralEarnedEmail(to: string): Promise<void> {
       </td></tr>
       <tr><td style="padding:18px 28px 28px 28px">
         <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:16px"></div>
-        <div style="font-size:12px;color:#888;line-height:1.6;text-align:center">Questions? <a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-weight:600">CustomerService@topcashcells.com</a></div>
+        <div style="font-size:12px;color:#888;line-height:1.6;text-align:center">Questions? <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">support@topcashcellular.com</a></div>
       </td></tr>
     </table>
   </div>
 </body></html>`;
     await resend.emails.send({
       from: "Top Cash Cellular <noreply@topcashcellular.com>",
-      replyTo: "CustomerService@topcashcells.com",
+      replyTo: "support@topcashcellular.com",
       to,
       subject: `You earned a ${reward} referral reward — Top Cash Cellular`,
       html,
@@ -253,11 +253,11 @@ function smsTemplate(status: string, ctx: TemplateCtx): string {
       return `Top Cash: Thanks for meeting up, ${first}! Hope you're happy with the trade.${reviewLink ? ` If you had a smooth experience, mind leaving a quick review? ${reviewLink}` : ""}`;
     case "rejected":
       if (ctx.rejectionReason) {
-        return `Top Cash: Hi ${first}, we couldn't accept ${dev} — ${ctx.rejectionReason}. Email CustomerService@topcashcells.com if you'd like to discuss.`;
+        return `Top Cash: Hi ${first}, we couldn't accept ${dev} — ${ctx.rejectionReason}. Email support@topcashcellular.com if you'd like to discuss.`;
       }
-      return `Top Cash: There's an issue with ${dev}, ${first}. Please email CustomerService@topcashcells.com — we'll work it out.`;
+      return `Top Cash: There's an issue with ${dev}, ${first}. Please email support@topcashcellular.com — we'll work it out.`;
     default:
-      return `Top Cash: Status update on your ${dev} — ${status}. Email CustomerService@topcashcells.com with questions.`;
+      return `Top Cash: Status update on your ${dev} — ${status}. Email support@topcashcellular.com with questions.`;
   }
 }
 
@@ -408,7 +408,7 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
               <td style="text-align:center">
                 ${isReviewAsk
                   ? `<a href="${reviewUrl}" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#ffd54f 0%,#ffb400 60%,#e69900 100%);color:#1a1100;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(255,180,0,0.35)">★ Leave a review</a>`
-                  : `<a href="mailto:CustomerService@topcashcells.com" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply to this email</a>`}
+                  : `<a href="mailto:support@topcashcellular.com" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply to this email</a>`}
               </td>
             </tr>
           </table>
@@ -437,7 +437,7 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
         <td style="padding:0 28px 28px 28px">
           <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:18px"></div>
           <div style="font-size:12px;color:#888;line-height:1.6;text-align:center">
-            Questions? Reply directly or write to <a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-weight:600">CustomerService@topcashcells.com</a><br>
+            Questions? Reply directly or write to <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">support@topcashcellular.com</a><br>
             <span style="color:#666">Top Cash Cellular · Austin, TX · <a href="https://topcashcellular.com" style="color:#666;text-decoration:none">topcashcellular.com</a></span>
           </div>
         </td>
@@ -453,7 +453,7 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
     const TRUSTPILOT_BCC = "topcashcellular.com+edf80bdc00@invite.trustpilot.com";
     const r = await resend.emails.send({
       from: "Top Cash Cellular <noreply@topcashcellular.com>",
-      replyTo: "CustomerService@topcashcells.com",
+      replyTo: "support@topcashcellular.com",
       to,
       ...(isReviewAsk ? { bcc: TRUSTPILOT_BCC } : {}),
       subject: `${subject} — Top Cash Cellular`,

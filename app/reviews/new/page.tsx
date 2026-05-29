@@ -138,7 +138,7 @@ function NewReviewInner() {
               <Link href="/reviews" className="bg-white/[0.06] border border-white/10 text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-white/[0.1] transition">
                 Read existing reviews →
               </Link>
-              <a href="mailto:CustomerService@topcashcells.com?subject=Need%20my%20review%20link" className="bg-[#00c853] text-black px-6 py-3 rounded-full text-sm font-bold hover:bg-[#00e676] transition inline-flex items-center justify-center gap-1.5">
+              <a href="mailto:support@topcashcellular.com?subject=Need%20my%20review%20link" className="bg-[#00c853] text-black px-6 py-3 rounded-full text-sm font-bold hover:bg-[#00e676] transition inline-flex items-center justify-center gap-1.5">
                 <svg className="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg> Email us — we&apos;ll send your link
               </a>
             </div>

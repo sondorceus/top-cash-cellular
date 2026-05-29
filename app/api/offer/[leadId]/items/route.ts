@@ -128,7 +128,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   }
   if (LOCKED.has(status)) {
     return NextResponse.json({
-      error: "This offer can no longer be edited — your trade is already on its way. Email CustomerService@topcashcells.com if something's wrong.",
+      error: "This offer can no longer be edited — your trade is already on its way. Email support@topcashcellular.com if something's wrong.",
     }, { status: 409 });
   }
 

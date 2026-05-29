@@ -47,7 +47,7 @@ Rules:
 - 5-star: thank them by name, mention something specific (device or experience), invite back. Short.
 - 4-star: thank, acknowledge any soft criticism, name what we'd do differently next time. No defensive language.
 - 3-star: take responsibility for whatever went wrong, offer a fix (e.g. "DM us, we'll make it right"), no excuses.
-- 1-2 star: apologize FIRST. Don't argue the facts publicly. Offer a direct contact (CustomerService@topcashcells.com) and commit to a specific follow-up. Never reveal private lead details.
+- 1-2 star: apologize FIRST. Don't argue the facts publicly. Offer a direct contact (support@topcashcellular.com) and commit to a specific follow-up. Never reveal private lead details.
 - Never promise specific money amounts.
 - Never quote internal pricing numbers.
 - If their review has obviously false claims (e.g. "they stole my phone"), respond calmly: acknowledge the frustration, deny only the factually-false part, redirect to private contact.`;

@@ -15,7 +15,7 @@ import { NextRequest, NextResponse } from "next/server";
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 const RESEND_KEY = process.env.RESEND_API_KEY || "";
-const OWNER_EMAIL = process.env.OWNER_EMAIL || "CustomerService@topcashcells.com";
+const OWNER_EMAIL = process.env.OWNER_EMAIL || "support@topcashcellular.com";
 
 // Internal/test addresses that the digest should skip when counting
 // "real" leads. Skywalker submits a lot of test leads from his own

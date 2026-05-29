@@ -534,7 +534,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
         </Link>
 
         <p className="text-center text-[#555] text-xs">
-          Or email us: <a href="mailto:CustomerService@topcashcells.com" className="text-[#00c853] hover:underline">CustomerService@topcashcells.com</a>
+          Or email us: <a href="mailto:support@topcashcellular.com" className="text-[#00c853] hover:underline">support@topcashcellular.com</a>
         </p>
       </section>
 

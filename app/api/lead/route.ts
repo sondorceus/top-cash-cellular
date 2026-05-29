@@ -18,7 +18,7 @@ const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 // get pinged personally — or to a carrier email-to-SMS gateway (e.g.
 // 5125550199@vtext.com / @txt.att.net / @tmomail.net) to get a real text
 // on your phone without Twilio. Defaults to the support inbox.
-const OWNER_EMAIL = process.env.OWNER_EMAIL || "CustomerService@topcashcells.com";
+const OWNER_EMAIL = process.env.OWNER_EMAIL || "support@topcashcellular.com";
 
 // Lead dedup: track recent submissions to prevent duplicates.
 // Custom-quote flows (no instant price) get a wider window keyed on
@@ -1321,7 +1321,7 @@ Pick the best channel per device. Be concise.`;
         const raw = err instanceof Error ? err.message : String(err);
         const addressy = /address|postal|street|city|state|zip/i.test(raw);
         fedexError = addressy
-          ? { kind: "ADDRESS_INVALID", hint: "FedEx couldn't validate your shipping address. Please double-check the street, city, state, and ZIP — then email CustomerService@topcashcells.com with the correction and we'll resend your label." }
+          ? { kind: "ADDRESS_INVALID", hint: "FedEx couldn't validate your shipping address. Please double-check the street, city, state, and ZIP — then email support@topcashcellular.com with the correction and we'll resend your label." }
           : { kind: "SERVICE_UNAVAILABLE", hint: "We couldn't print your FedEx label right now. Your trade-in is saved — we'll email your label as soon as the issue clears (usually within an hour)." };
         // Address-invalid is a customer-data issue — staff doesn't need
         // a 3am SMS. Service-unavailable means our FedEx integration is
@@ -1414,7 +1414,7 @@ Pick the best channel per device. Be concise.`;
       const resend = new Resend(process.env.RESEND_API_KEY);
       const sr = await resend.emails.send({
         from: "Top Cash Cellular <noreply@topcashcellular.com>",
-        replyTo: "CustomerService@topcashcells.com",
+        replyTo: "support@topcashcellular.com",
         to: email,
         subject: `Pick a time for your Top Cash payout — Offer #${offerRef}`,
         html: schedHtml,
@@ -1456,7 +1456,7 @@ Pick the best channel per device. Be concise.`;
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
         from: "Top Cash Cellular <noreply@topcashcellular.com>",
-        replyTo: "CustomerService@topcashcells.com",
+        replyTo: "support@topcashcellular.com",
         to: OWNER_EMAIL,
         subject,
         html,
@@ -1595,13 +1595,13 @@ async function handleRecycleLead(req: NextRequest, data: Record<string, unknown>
       certNumber,
       certDate,
     });
-    const text = `Hi ${safeName}, this is your Certificate of Responsible Recycling from Top Cash Cellular. Device: ${deviceLabel}. Certificate #${certNumber}. Issued ${certDate}. Your device will be securely wiped to NIST 800-88 and either refurbished for reuse or broken down for component recovery — never landfilled. Questions? Reply to this email or write to CustomerService@topcashcells.com.`;
+    const text = `Hi ${safeName}, this is your Certificate of Responsible Recycling from Top Cash Cellular. Device: ${deviceLabel}. Certificate #${certNumber}. Issued ${certDate}. Your device will be securely wiped to NIST 800-88 and either refurbished for reuse or broken down for component recovery — never landfilled. Questions? Reply to this email or write to support@topcashcellular.com.`;
     try {
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
       const result = await resend.emails.send({
         from: "Top Cash Cellular <noreply@topcashcellular.com>",
-        replyTo: "CustomerService@topcashcells.com",
+        replyTo: "support@topcashcellular.com",
         to: email.trim(),
         subject: "Your e-waste certificate — Top Cash Cellular",
         html,
@@ -1793,7 +1793,7 @@ Your device will be securely wiped to <strong style="color:#fff">NIST 800-88</st
 <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:18px"></div>
 <div style="text-align:center">
 <div style="font-size:10px;color:#00c853;text-transform:uppercase;letter-spacing:0.18em;font-weight:800;margin-bottom:8px">Customer Service</div>
-<div style="margin-bottom:8px"><a href="mailto:CustomerService@topcashcells.com" style="display:inline-block;padding:8px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.10);border-radius:999px;color:#fff;text-decoration:none;font-size:13px;font-weight:700">CustomerService@topcashcells.com</a></div>
+<div style="margin-bottom:8px"><a href="mailto:support@topcashcellular.com" style="display:inline-block;padding:8px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.10);border-radius:999px;color:#fff;text-decoration:none;font-size:13px;font-weight:700">support@topcashcellular.com</a></div>
 <div style="font-size:12px;color:#888;line-height:1.6">Top Cash Cellular · Austin, TX</div>
 <div style="font-size:12px;color:#888;line-height:1.6"><a href="https://topcashcellular.com" style="color:#00c853;text-decoration:none">topcashcellular.com</a> · Mon–Sat 8 AM–8 PM CT</div>
 <div style="font-size:11px;color:#555;margin-top:10px">© ${new Date().getFullYear()} Top Cash Cellular. All rights reserved.</div>

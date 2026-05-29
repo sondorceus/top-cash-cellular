@@ -149,7 +149,7 @@ ${hasLabel ? `
 <tr><td style="padding:24px 28px 28px 28px">
 <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:18px"></div>
 <div style="text-align:center">
-<a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-size:14px;font-weight:700">CustomerService@topcashcells.com</a>
+<a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-size:14px;font-weight:700">support@topcashcellular.com</a>
 <div style="font-size:12px;color:#666;line-height:1.5;margin-top:6px">Top Cash Cellular · Austin, TX</div>
 </div>
 </td></tr>

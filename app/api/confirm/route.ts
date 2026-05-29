@@ -466,7 +466,7 @@ ${(phoneDigits || email) ? `<tr><td style="padding:18px 28px 0 28px">
 
 <!-- CTA -->
 <tr><td style="padding:18px 28px 6px 28px;text-align:center">
-<a href="mailto:CustomerService@topcashcells.com" style="display:inline-block;padding:14px 32px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply with questions</a>
+<a href="mailto:support@topcashcellular.com" style="display:inline-block;padding:14px 32px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply with questions</a>
 </td></tr>
 
 <!-- TRUST STRIP — 3 trust badges, builds confidence before footer -->
@@ -547,7 +547,7 @@ ${phone ? `<tr><td style="padding:4px 0;color:#888;font-size:12px">Phone</td><td
 <a href="${TRUSTPILOT_URL}" style="display:inline-block;margin:0 4px;padding:8px 16px;background:rgba(0,182,122,0.12);border:1px solid rgba(0,182,122,0.4);border-radius:999px;color:#00b67a;text-decoration:none;font-size:12px;font-weight:800">★ Trustpilot</a>
 ${YELP_URL ? `<a href="${YELP_URL}" style="display:inline-block;margin:0 4px;padding:8px 16px;background:rgba(211,47,47,0.12);border:1px solid rgba(211,47,47,0.4);border-radius:999px;color:#ff6b6b;text-decoration:none;font-size:12px;font-weight:800">★ Yelp</a>` : ""}
 </div>
-<div style="margin-bottom:8px"><a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-size:14px;font-weight:700">CustomerService@topcashcells.com</a></div>
+<div style="margin-bottom:8px"><a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-size:14px;font-weight:700">support@topcashcellular.com</a></div>
 <div style="font-size:12px;color:#888;line-height:1.6">Top Cash Cellular · Austin, TX</div>
 <div style="font-size:12px;color:#888;line-height:1.6"><a href="https://topcashcellular.com" style="color:#00c853;text-decoration:none">topcashcellular.com</a> · Mon–Sat 8 AM–8 PM CT</div>
 <div style="font-size:11px;color:#555;margin-top:10px">© ${new Date().getFullYear()} Top Cash Cellular. All rights reserved.</div>
@@ -562,17 +562,17 @@ ${YELP_URL ? `<a href="${YELP_URL}" style="display:inline-block;margin:0 4px;pad
 </html>`;
 
     const textFallback = isPending
-      ? `Hi ${name || "there"}, we got your request for ${model} (${condition}, ${storage || "N/A"}). Our team is pulling a custom quote and will text or email your offer within the hour. Reply to this email or write to CustomerService@topcashcells.com — Top Cash Cellular, Austin TX`
+      ? `Hi ${name || "there"}, we got your request for ${model} (${condition}, ${storage || "N/A"}). Our team is pulling a custom quote and will text or email your offer within the hour. Reply to this email or write to support@topcashcellular.com — Top Cash Cellular, Austin TX`
       : hasLabel
       ? `Hi ${name || "there"}, your $${offerTotal} quote for ${model} is locked. Your prepaid FedEx label is ready — tracking ${fedexLabel.tracking}, download: ${fedexLabel.url}. Print, tape to a padded box, drop at any FedEx location. Top Cash Cellular, Austin TX.`
-      : `Hi ${name || "there"}, your $${offerTotal} quote for ${model} (${condition}, ${storage || "N/A"}) is locked for 14 days. We'll contact you within the hour. Reply to this email or write to CustomerService@topcashcells.com — Top Cash Cellular, Austin TX`;
+      : `Hi ${name || "there"}, your $${offerTotal} quote for ${model} (${condition}, ${storage || "N/A"}) is locked for 14 days. We'll contact you within the hour. Reply to this email or write to support@topcashcellular.com — Top Cash Cellular, Austin TX`;
 
     try {
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
       const result = await resend.emails.send({
         from: "Top Cash Cellular <noreply@topcashcellular.com>",
-        replyTo: "CustomerService@topcashcells.com",
+        replyTo: "support@topcashcellular.com",
         to: email,
         // Offer # in the subject so a customer reply threads against a
         // findable reference — staff paste it into admin search to pull

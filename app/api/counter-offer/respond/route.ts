@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
         }
         if (prevResponse && prevResponse !== response) {
           return NextResponse.json({
-            error: `This offer has already been ${prevResponse === "accept" ? "accepted" : "declined"}. Contact CustomerService@topcashcells.com to change your decision.`,
+            error: `This offer has already been ${prevResponse === "accept" ? "accepted" : "declined"}. Contact support@topcashcellular.com to change your decision.`,
           }, { status: 409 });
         }
       }

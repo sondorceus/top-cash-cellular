@@ -99,7 +99,7 @@ ${preheaderBlock}
 </td></tr>
 <tr><td style="padding:18px 28px 28px;border-top:1px solid rgba(255,255,255,0.06)">
 <div style="font-size:12px;color:#888;line-height:1.6;text-align:center">
-Reply directly or write to <a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-weight:600">CustomerService@topcashcells.com</a><br>
+Reply directly or write to <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">support@topcashcellular.com</a><br>
 <span style="color:#666">Top Cash Cellular · Austin, TX · <a href="https://topcashcellular.com" style="color:#666;text-decoration:none">topcashcellular.com</a></span>
 </div>
 <div style="margin-top:10px;font-size:11px;color:#666;text-align:center">
@@ -262,7 +262,7 @@ export async function POST(req: NextRequest) {
       // so Gmail/Outlook show the inbox 1-click unsubscribe button.
       const r = await resend.emails.send({
         from: "Top Cash Cellular <noreply@topcashcellular.com>",
-        replyTo: "CustomerService@topcashcells.com",
+        replyTo: "support@topcashcellular.com",
         to: sub.email,
         subject,
         html,

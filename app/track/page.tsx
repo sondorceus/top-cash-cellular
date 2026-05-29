@@ -84,7 +84,7 @@ function ProgressBar({ status, isShip }: { status: string; isShip: boolean }) {
     return (
       <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 my-3">
         <p className="text-red-400 text-sm font-semibold flex items-center gap-2">
-          <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg> Issue with this device — please email CustomerService@topcashcells.com
+          <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg> Issue with this device — please email support@topcashcellular.com
         </p>
       </div>
     );
@@ -268,7 +268,7 @@ function TrackInner() {
                   <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-3">
                     <p className="text-amber-300 text-sm font-semibold mb-1 flex items-center gap-2"><svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg> Label is on the way</p>
                     <p className="text-[#dcdcdc] text-xs leading-relaxed">
-                      Your shipping label is being prepared. If you don't see it in your email within an hour, reply to <a href="mailto:CustomerService@topcashcells.com" className="underline">CustomerService@topcashcells.com</a> with this lead ID and we'll resend it.
+                      Your shipping label is being prepared. If you don't see it in your email within an hour, reply to <a href="mailto:support@topcashcellular.com" className="underline">support@topcashcellular.com</a> with this lead ID and we'll resend it.
                     </p>
                     <p className="text-[#c5c5c5] text-[10px] font-mono mt-2">Lead ID: {lead.id}</p>
                   </div>

@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
       const html = buildCounterOfferEmail({ name: first, device: dev, originalQuote, offer, reason, offerUrl, diff });
       const r = await resend.emails.send({
         from: "Top Cash Cellular <noreply@topcashcellular.com>",
-        replyTo: "CustomerService@topcashcells.com",
+        replyTo: "support@topcashcellular.com",
         to: [email],
         subject: `Revised offer for ${dev} — Top Cash Cellular`,
         html,
@@ -190,7 +190,7 @@ function buildCounterOfferEmail(args: { name: string; device: string; originalQu
 <tr><td style="padding:24px 28px 28px 28px">
 <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:16px"></div>
 <div style="font-size:12px;color:#888;line-height:1.6;text-align:center">
-  Questions? Reply directly or write to <a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-weight:600">CustomerService@topcashcells.com</a><br>
+  Questions? Reply directly or write to <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">support@topcashcellular.com</a><br>
   <span style="color:#666">Top Cash Cellular · Austin, TX</span>
 </div>
 </td></tr>

@@ -38,7 +38,7 @@ function tableRequote(modelLabel: string, storageLabel: string, conditionLabel: 
 // Read-only for now. Modify / cancel / add-another-device require
 // destructive admin-side workflows that aren't built — we surface a
 // "Contact us to modify" CTA instead so the customer can email
-// support@topcashcells.com.
+// support@topcashcellular.com.
 
 type Offer = {
   found: boolean;
@@ -595,7 +595,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
               Label couldn&apos;t be generated
             </p>
             <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">{offer.fedexErrorReason || "We couldn't validate your shipping address with FedEx. Email us a corrected address and we'll resend your label."}</p>
-            <a href={`mailto:CustomerService@topcashcells.com?subject=${encodeURIComponent("Fix shipping address for offer " + offer.id)}`} className="inline-block px-4 py-2.5 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] rounded-xl text-sm font-bold transition">
+            <a href={`mailto:support@topcashcellular.com?subject=${encodeURIComponent("Fix shipping address for offer " + offer.id)}`} className="inline-block px-4 py-2.5 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] rounded-xl text-sm font-bold transition">
               Email us your correction
             </a>
           </div>
@@ -844,7 +844,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             <p className="text-[#888] text-[11px] mt-2">Spotted a mistake? Edit a device above — your estimate updates instantly.</p>
           )}
           {!isCancelled && offer.status !== "quote_requested" && (
-            <p className="text-[#888] text-[11px] mt-2 flex items-start gap-1.5"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg><span>Device details lock once your trade is on its way. Need a change? <a href={`mailto:CustomerService@topcashcells.com?subject=${encodeURIComponent("Offer " + offer.id)}`} className="text-[#00c853] hover:underline">Email us</a>.</span></p>
+            <p className="text-[#888] text-[11px] mt-2 flex items-start gap-1.5"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg><span>Device details lock once your trade is on its way. Need a change? <a href={`mailto:support@topcashcellular.com?subject=${encodeURIComponent("Offer " + offer.id)}`} className="text-[#00c853] hover:underline">Email us</a>.</span></p>
           )}
         </div>
 

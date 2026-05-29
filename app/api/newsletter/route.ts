@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
         <p style="margin:0 0 28px;"><a href="https://topcashcellular.com/" style="display:inline-block;background:#00c853;color:#0a0a0a;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;">Get an instant quote →</a></p>
       </td></tr>
       <tr><td style="padding:18px 28px 28px;border-top:1px solid rgba(255,255,255,0.06);">
-        <p style="margin:0;color:#9a9a9a;font-size:12px;line-height:1.5;">Top Cash Cellular · Austin, TX · <a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;">CustomerService@topcashcells.com</a></p>
+        <p style="margin:0;color:#9a9a9a;font-size:12px;line-height:1.5;">Top Cash Cellular · Austin, TX · <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;">support@topcashcellular.com</a></p>
         <p style="margin:8px 0 0;color:#7a7a7a;font-size:11px;line-height:1.5;">Don't want these? <a href="${unsubUrl}" style="color:#7a7a7a;text-decoration:underline;">Unsubscribe in one click</a>.</p>
       </td></tr>
     </table>
@@ -96,7 +96,7 @@ Unsubscribe: ${unsubUrl}`;
       const resend = new Resend(process.env.RESEND_API_KEY);
       const result = await resend.emails.send({
         from: "Top Cash Cellular <noreply@topcashcellular.com>",
-        replyTo: "CustomerService@topcashcells.com",
+        replyTo: "support@topcashcellular.com",
         to: email,
         subject: "You're on the list — Top Cash Cellular",
         html: htmlEmail,

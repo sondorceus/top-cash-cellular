@@ -1,7 +1,7 @@
 // Single source of truth for the customer-facing brand identifiers.
 // Added 2026-05-24 after audit found `info@topcashcellular.com` had
 // silently drifted into /privacy while every other page used
-// `CustomerService@topcashcells.com`. Customers emailing the privacy
+// `support@topcashcellular.com`. Customers emailing the privacy
 // address got no response.
 //
 // Migration: existing files keep their local `const BRAND = …` / etc.
@@ -11,13 +11,13 @@
 
 export const BRAND = "Top Cash Cellular";
 
-// Domain note: branding is "Top Cash Cellular" / topcashcellular.com,
-// but customer email lives on the shorter `topcashcells.com` mailbox
-// (separate from the marketing domain). Don't "fix" this to match the
-// marketing domain — the mailbox is intentionally on the short domain.
-export const EMAIL = "CustomerService@topcashcells.com";
+// Domain note: support email now lives on the marketing domain,
+// support@topcashcellular.com (Skywalker 2026-05-29 — consolidated off the
+// old topcashcells.com mailbox). topcashcellular.com is the domain verified
+// for sending (Resend DKIM + SES SPF), so replies/mailto are all one domain.
+export const EMAIL = "support@topcashcellular.com";
 export const EMAIL_HREF = `mailto:${EMAIL}`;
-export const SUPPORT_DOMAIN = "topcashcells.com";
+export const SUPPORT_DOMAIN = "topcashcellular.com";
 export const MARKETING_DOMAIN = "topcashcellular.com";
 
 // No public phone number: the old Twilio toll-free was retired and never

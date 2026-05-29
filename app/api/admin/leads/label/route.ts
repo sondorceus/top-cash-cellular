@@ -37,7 +37,7 @@ async function emailLabel(to: string, name: string, tracking: string, labelUrl: 
     const first = name.split(" ")[0] || "there";
     const r = await resend.emails.send({
       from: "Top Cash Cellular <noreply@topcashcellular.com>",
-      replyTo: "CustomerService@topcashcells.com",
+      replyTo: "support@topcashcellular.com",
       to,
       subject: `Your prepaid FedEx label — drop it any time`,
       text: `Hi ${first},\n\nHere's your prepaid FedEx label for the device you're sending to Top Cash:\n\nDownload: ${labelUrl}\nTracking: ${tracking} (${serviceType})\n\nPrint the PDF, tape it to your box, and drop the package at any FedEx location — no appointment needed. We'll text you the moment it arrives.\n\nQuestions? Reply to this email.\n\n— Top Cash Cellular`,

@@ -97,12 +97,12 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "I didn't get my confirmation email — what now?",
-    a: <>Check spam / promotions first (Gmail loves to filter us). If still missing, email <a href="mailto:CustomerService@topcashcells.com" className="text-[#00c853] hover:underline">CustomerService@topcashcells.com</a> with the name + device you submitted and we'll resend within an hour. You can also use our <Link href="/track" className="text-[#00c853] hover:underline">/track page</Link> to confirm the lead landed — it shows every submission tied to your phone or email.</>,
-    aText: "Check spam / promotions first (Gmail loves to filter us). If still missing, email CustomerService@topcashcells.com with the name + device you submitted and we'll resend within an hour. You can also use our /track page to confirm the lead landed — it shows every submission tied to your phone or email.",
+    a: <>Check spam / promotions first (Gmail loves to filter us). If still missing, email <a href="mailto:support@topcashcellular.com" className="text-[#00c853] hover:underline">support@topcashcellular.com</a> with the name + device you submitted and we'll resend within an hour. You can also use our <Link href="/track" className="text-[#00c853] hover:underline">/track page</Link> to confirm the lead landed — it shows every submission tied to your phone or email.</>,
+    aText: "Check spam / promotions first (Gmail loves to filter us). If still missing, email support@topcashcellular.com with the name + device you submitted and we'll resend within an hour. You can also use our /track page to confirm the lead landed — it shows every submission tied to your phone or email.",
   },
   {
     q: "I picked the wrong payout method — can I change it?",
-    a: "Yes — as long as we haven't sent payment yet. Reply to your confirmation email (or email CustomerService@topcashcells.com) with your offer number + the new method. Once Cash App / Zelle / BTC has fired, it's irreversible from our end, but we'll work with you on next steps if you catch it after.",
+    a: "Yes — as long as we haven't sent payment yet. Reply to your confirmation email (or email support@topcashcellular.com) with your offer number + the new method. Once Cash App / Zelle / BTC has fired, it's irreversible from our end, but we'll work with you on next steps if you catch it after.",
   },
   {
     q: "I disagree with your inspection — what now?",

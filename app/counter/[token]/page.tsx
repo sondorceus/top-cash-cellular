@@ -97,7 +97,7 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
           <p className="text-[#bdbdbd] text-sm mb-5">{errorMsg}</p>
           <p className="text-[11px] text-[#888] mb-4">Tokens expire after 14 days. If you need help, reach out below.</p>
           <a
-            href="mailto:CustomerService@topcashcells.com"
+            href="mailto:support@topcashcellular.com"
             className="inline-flex items-center justify-center w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-sm px-4 py-3 rounded-full transition"
           >
             Email CustomerService
@@ -118,7 +118,7 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
           <p className="text-[#dcdcdc] text-sm mb-4 leading-relaxed">
             Got it. We&apos;re moving <strong className="text-white">${decoded.offer}</strong> to payout — you&apos;ll receive payment via your chosen method within 24 hours.
           </p>
-          <p className="text-[11px] text-[#888]">Confirmation also sent via SMS / email. Questions: CustomerService@topcashcells.com</p>
+          <p className="text-[11px] text-[#888]">Confirmation also sent via SMS / email. Questions: support@topcashcellular.com</p>
           <Link href="/" className="block mt-5 text-[#00c853] text-xs hover:underline">← Top Cash Cellular home</Link>
         </div>
       </main>
@@ -134,7 +134,7 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
           <p className="text-[#dcdcdc] text-sm mb-4 leading-relaxed">
             No problem. We&apos;ll ship your device back to you within 2 business days at no cost. Expect an email with the return tracking number.
           </p>
-          <p className="text-[11px] text-[#888]">Questions: CustomerService@topcashcells.com</p>
+          <p className="text-[11px] text-[#888]">Questions: support@topcashcellular.com</p>
           <Link href="/" className="block mt-5 text-[#00c853] text-xs hover:underline">← Top Cash Cellular home</Link>
         </div>
       </main>
@@ -206,7 +206,7 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
 
         <p className="text-[11px] text-[#666] text-center mt-6 leading-relaxed">
           Accept and we pay you via your chosen method within 24 hours. Decline and we ship your device back at no cost (2 business days). Either way, no fee, no surprise.<br/>
-          Need to talk first? <a href="mailto:CustomerService@topcashcells.com" className="text-[#00c853] hover:underline">CustomerService@topcashcells.com</a>
+          Need to talk first? <a href="mailto:support@topcashcellular.com" className="text-[#00c853] hover:underline">support@topcashcellular.com</a>
         </p>
       </div>
     </main>

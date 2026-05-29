@@ -6865,7 +6865,7 @@ export default function Home() {
                         { href: "/faq", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Full FAQ", sub: "Plain answers, common questions" },
                         { href: "/reviews", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />, title: "Reviews", sub: "★ 4.9 from real sellers", iconColor: "text-[#ffb400]" },
                         { href: "/track", icon: <><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></>, title: "Track your trade", sub: "Status, payout, tracking #" },
-                        { href: EMAIL_HREF, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />, title: "Email customer service", sub: "CustomerService@topcashcells.com · same business day" },
+                        { href: EMAIL_HREF, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />, title: "Email customer service", sub: "support@topcashcellular.com · same business day" },
                       ]).map(item => (
                         <a key={item.title} href={item.href} className="group/sup flex items-start gap-3 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-[180ms]">
                           <svg className={`w-6 h-6 shrink-0 ${item.iconColor ?? "text-[#00c853]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{item.icon}</svg>
@@ -7285,7 +7285,7 @@ export default function Home() {
                     <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-white">Customer service</p>
-                      <p className="text-[11px] text-[#e6e6e6] truncate">CustomerService@topcashcells.com</p>
+                      <p className="text-[11px] text-[#e6e6e6] truncate">support@topcashcellular.com</p>
                     </div>
                   </a>
                 </div>
@@ -8292,7 +8292,7 @@ export default function Home() {
           <div className="px-4 mt-6 flex flex-col sm:flex-row items-center justify-center gap-2 text-center text-[#888] text-[12px] leading-snug">
             <span>★ Verified customers only — review link comes in your payout email.</span>
             <span className="hidden sm:inline">·</span>
-            <a href="mailto:CustomerService@topcashcells.com?subject=Need%20my%20review%20link" className="text-[#dcdcdc] hover:text-[#00c853] underline">Lost yours? Email us</a>
+            <a href="mailto:support@topcashcellular.com?subject=Need%20my%20review%20link" className="text-[#dcdcdc] hover:text-[#00c853] underline">Lost yours? Email us</a>
           </div>
         </section>
       )}
@@ -13027,13 +13027,13 @@ export default function Home() {
             <div className="mt-6 pt-6 border-t border-white/8 text-center">
               <p className="text-[#888] text-[11px] uppercase tracking-[0.14em] font-semibold mb-2">Need help?</p>
               <a
-                href="mailto:CustomerService@topcashcells.com"
+                href="mailto:support@topcashcellular.com"
                 className="inline-flex items-center gap-2 text-[#00c853] hover:text-[#00e676] transition text-base font-bold"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                CustomerService@topcashcells.com
+                support@topcashcellular.com
               </a>
               <p className="text-[#666] text-[10px] mt-2">
                 We reply within ~1 hour · Mon–Sat · Austin, TX
@@ -13228,7 +13228,7 @@ export default function Home() {
                         <p className="text-white text-xs leading-snug">{shipStreet}{shipUnit ? `, ${shipUnit}` : ""}<br/>{shipCity}, {shipState} {shipZip}</p>
                       </div>
                       <a
-                        href={`mailto:CustomerService@topcashcells.com?subject=${encodeURIComponent("Fix shipping address for my trade-in")}&body=${encodeURIComponent(`Hi — my address didn't validate with FedEx. Please use this corrected address:\n\nName: ${name}\nPhone: ${phone}\nCorrected address:\n\n(replace this line with your corrected street, city, state, ZIP)\n\nDevice: ${(submittedDevices && submittedDevices.length > 0) ? submittedDevices.map((it) => `${it.model} (${it.condition})`).join(", ") : ""}`)}`}
+                        href={`mailto:support@topcashcellular.com?subject=${encodeURIComponent("Fix shipping address for my trade-in")}&body=${encodeURIComponent(`Hi — my address didn't validate with FedEx. Please use this corrected address:\n\nName: ${name}\nPhone: ${phone}\nCorrected address:\n\n(replace this line with your corrected street, city, state, ZIP)\n\nDevice: ${(submittedDevices && submittedDevices.length > 0) ? submittedDevices.map((it) => `${it.model} (${it.condition})`).join(", ") : ""}`)}`}
                         className="inline-flex items-center justify-center gap-2 w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-sm px-4 py-3 rounded-full transition cursor-pointer"
                       >
                         Email us your correction
@@ -13305,7 +13305,7 @@ export default function Home() {
                   <span className="text-[#666]">·</span>
                   <a href="/faq" target="_blank" className="text-[#dcdcdc] hover:text-white inline-flex items-center gap-1"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>FAQ</a>
                   <span className="text-[#666]">·</span>
-                  <a href="mailto:CustomerService@topcashcells.com" className="text-[#dcdcdc] hover:text-white inline-flex items-center gap-1"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>Email us</a>
+                  <a href="mailto:support@topcashcellular.com" className="text-[#dcdcdc] hover:text-white inline-flex items-center gap-1"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>Email us</a>
                 </div>
               </div>
             ) : (
@@ -14059,7 +14059,7 @@ export default function Home() {
             <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Customer Service</p>
             <a href={EMAIL_HREF} className="inline-flex items-center gap-2 text-sm text-white hover:text-[#00c853] transition font-semibold bg-white/[0.12] border border-white/10 rounded-full px-4 py-2">
               <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-              CustomerService@topcashcells.com
+              support@topcashcellular.com
             </a>
             <p className="text-[11px] text-[#9a9a9a] mt-2">We reply within one business day · Mon–Sat 8 AM–8 PM CT</p>
           </div>

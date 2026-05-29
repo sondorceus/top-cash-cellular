@@ -56,13 +56,13 @@ async function emailAdjust(to: string, name: string | undefined, device: string 
 </div>
 <div style="font-size:14px;color:#aaa;line-height:1.5;margin-bottom:16px"><strong style="color:#fff">Reason:</strong> ${reason}</div>
 <div style="font-size:13px;color:#888;border-top:1px solid #222;padding-top:16px">
-Questions? Just reply to this email or write to <a href="mailto:CustomerService@topcashcells.com" style="color:#00c853">CustomerService@topcashcells.com</a>.
+Questions? Just reply to this email or write to <a href="mailto:support@topcashcellular.com" style="color:#00c853">support@topcashcellular.com</a>.
 </div>
 </td></tr></table></body></html>`;
-    const text = `Top Cash Cellular: After in-person inspection, we've adjusted your offer for ${dev} to $${newQuote}. Reason: ${reason}. Questions? Reply to this email or write to CustomerService@topcashcells.com.`;
+    const text = `Top Cash Cellular: After in-person inspection, we've adjusted your offer for ${dev} to $${newQuote}. Reason: ${reason}. Questions? Reply to this email or write to support@topcashcellular.com.`;
     const r = await resend.emails.send({
       from: "Top Cash Cellular <topcash@resend.dev>",
-      replyTo: "CustomerService@topcashcells.com",
+      replyTo: "support@topcashcellular.com",
       to,
       subject: `Updated offer for ${dev} — Top Cash Cellular`,
       html,
@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
 
   const first = name?.split(" ")[0] || "there";
   const dev = device || "your device";
-  const smsBody = `Top Cash: Hi ${first}, your offer for ${dev} was adjusted to $${newQuote} — ${reason}. Reply or email CustomerService@topcashcells.com with questions.`;
+  const smsBody = `Top Cash: Hi ${first}, your offer for ${dev} was adjusted to $${newQuote} — ${reason}. Reply or email support@topcashcellular.com with questions.`;
 
   const [smsSent, emailSent] = await Promise.all([
     phone ? sendSms(phone, smsBody) : Promise.resolve(false),

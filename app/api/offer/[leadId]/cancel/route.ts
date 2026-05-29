@@ -82,7 +82,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   const TERMINAL = new Set(["received", "tested", "paid", "met"]);
   if (TERMINAL.has(status)) {
     return NextResponse.json({
-      error: `This offer is already ${status === "paid" || status === "met" ? "paid" : "in inspection"} — please email CustomerService@topcashcells.com to discuss.`,
+      error: `This offer is already ${status === "paid" || status === "met" ? "paid" : "in inspection"} — please email support@topcashcellular.com to discuss.`,
     }, { status: 409 });
   }
 

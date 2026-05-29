@@ -38,7 +38,7 @@ function confirmationHtml(email: string, success: boolean): string {
   const title = success ? "You're unsubscribed" : "Couldn't unsubscribe";
   const body = success
     ? `<p>${email} won't get any more emails from Top Cash Cellular. Changed your mind later? <a href="https://topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">Re-subscribe at our home page</a>.</p>`
-    : `<p>The unsubscribe link looks tampered or expired. Email <a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-weight:600">CustomerService@topcashcells.com</a> and we'll handle it manually.</p>`;
+    : `<p>The unsubscribe link looks tampered or expired. Email <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">support@topcashcellular.com</a> and we'll handle it manually.</p>`;
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title></head>
 <body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
 <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px">

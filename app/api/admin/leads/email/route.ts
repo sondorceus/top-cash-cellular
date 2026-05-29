@@ -52,7 +52,7 @@ function wrap(html: string, opts: { eyebrow: string; first: string; bodyHtml: st
 <tr><td style="background:linear-gradient(135deg,#00e676 0%,#00a039 100%);padding:24px 28px"><div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#0a0a0a;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div><div style="font-size:20px;font-weight:800;color:#0a0a0a;line-height:1.2">${opts.eyebrow}</div></td></tr>
 <tr><td style="padding:28px 28px 8px 28px"><div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:14px">Hi ${opts.first},</div>${opts.bodyHtml}</td></tr>
 <tr><td style="padding:8px 28px 24px 28px"><div style="font-size:14px;color:#e6e6e6;line-height:1.6">— The Top Cash Cellular team<br><span style="color:#888;font-size:12px">Austin, TX · a small business · real humans</span></div></td></tr>
-<tr><td style="padding:0 28px 28px 28px"><div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:18px"></div><div style="font-size:12px;color:#888;line-height:1.6;text-align:center">Reply directly or write to <a href="mailto:CustomerService@topcashcells.com" style="color:#00c853;text-decoration:none;font-weight:600">CustomerService@topcashcells.com</a><br><span style="color:#666">Top Cash Cellular · Austin, TX · <a href="https://topcashcellular.com" style="color:#666;text-decoration:none">topcashcellular.com</a></span></div></td></tr>
+<tr><td style="padding:0 28px 28px 28px"><div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:18px"></div><div style="font-size:12px;color:#888;line-height:1.6;text-align:center">Reply directly or write to <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">support@topcashcellular.com</a><br><span style="color:#666">Top Cash Cellular · Austin, TX · <a href="https://topcashcellular.com" style="color:#666;text-decoration:none">topcashcellular.com</a></span></div></td></tr>
 </table></div></body></html>`;
 }
 
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const r = await resend.emails.send({
       from: "Top Cash Cellular <noreply@topcashcellular.com>",
-      replyTo: "CustomerService@topcashcells.com",
+      replyTo: "support@topcashcellular.com",
       to,
       subject: cleanSubject,
       html,
