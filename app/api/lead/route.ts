@@ -1595,7 +1595,18 @@ async function handleRecycleLead(req: NextRequest, data: Record<string, unknown>
       certNumber,
       certDate,
     });
-    const text = `Hi ${safeName}, this is your Certificate of Responsible Recycling from Top Cash Cellular. Device: ${deviceLabel}. Certificate #${certNumber}. Issued ${certDate}. Your device will be securely wiped to NIST 800-88 and either refurbished for reuse or broken down for component recovery — never landfilled. Questions? Reply to this email or write to support@topcashcellular.com.`;
+    const text = `Hi ${safeName}, your Certificate of Responsible Recycling from Top Cash Cellular is attached as a PDF. Device: ${deviceLabel}. Certificate #${certNumber}. Issued ${certDate}. Your device will be securely wiped to NIST 800-88 and either refurbished for reuse or broken down for component recovery — never landfilled. Questions? Reply to this email or write to support@topcashcellular.com.`;
+    // Generate the actual certificate PDF to attach. Graceful: if PDF gen
+    // ever fails, we still send the email (which has the certificate panel
+    // in-body) rather than leaving the customer with nothing.
+    let certAttachments: { filename: string; content: Buffer }[] | undefined;
+    try {
+      const { generateRecycleCertificatePdf } = await import("../../lib/recycle-certificate-pdf");
+      const pdfBytes = await generateRecycleCertificatePdf({ customerName: safeName, deviceLabel, certNumber, certDate });
+      certAttachments = [{ filename: `Recycling-Certificate-${certNumber}.pdf`, content: Buffer.from(pdfBytes) }];
+    } catch (err) {
+      reportError("recycle.cert.pdf", err, { customerEmail: email, critical: false, extra: { model: safeModel } });
+    }
     try {
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
@@ -1606,6 +1617,7 @@ async function handleRecycleLead(req: NextRequest, data: Record<string, unknown>
         subject: "Your e-waste certificate — Top Cash Cellular",
         html,
         text,
+        ...(certAttachments ? { attachments: certAttachments } : {}),
       });
       emailSent = !!(result?.data?.id);
       if (!emailSent) {
@@ -1749,7 +1761,7 @@ function renderRecycleCertificateEmail(opts: {
 <!-- Greeting -->
 <tr><td style="padding:28px 28px 6px 28px">
 <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:8px">Hi ${customerName || "there"},</div>
-<div style="font-size:14px;color:#bdbdbd;line-height:1.6">Thank you for choosing to recycle responsibly. Below is your digital certificate — keep it for your records.</div>
+<div style="font-size:14px;color:#bdbdbd;line-height:1.6">Thank you for choosing to recycle responsibly. Your certificate is <strong style="color:#fff">attached as a PDF</strong> — and shown below for your records.</div>
 </td></tr>
 
 <!-- Certificate panel -->
