@@ -4350,6 +4350,9 @@ export default function Home() {
   const [shipCity, setShipCity] = useState("");
   const [shipState, setShipState] = useState("TX");
   const [shipZip, setShipZip] = useState("");
+  // Required agreement to the $100 shipping coverage limit before we mint a
+  // label (liability — we don't cover full device value on shipped trades).
+  const [shipCoverageAck, setShipCoverageAck] = useState(false);
   // Does the seller already have a box to ship in? Captured upfront so we
   // can include packaging with the label (or know to ship a box) instead
   // of finding out after the fact via support email.
@@ -6923,7 +6926,7 @@ export default function Home() {
                       <div className="space-y-3">
                         {[
                           { q: "How fast do I get paid?", a: "Same business day after we verify. Cash App / Zelle in minutes." },
-                          { q: "Is shipping free?", a: "Yes — we email a prepaid FedEx label, insured for your full quoted value." },
+                          { q: "Is shipping free?", a: "Yes — we email a prepaid FedEx label with $100 base shipping coverage. For higher-value devices you can declare extra insurance at FedEx, or pick a local Austin meetup for full protection." },
                           { q: "What if condition mismatches?", a: "Revised offer with photos. Reject = free return ship." },
                           { q: "Is my data safe?", a: "NIST 800-88 wipe on every device. Recommend you reset first." },
                         ].map(f => (
@@ -11158,7 +11161,7 @@ export default function Home() {
               const shipBullets = [
                 { icon: ICON_MONEY, text: "No selling fees" },
                 { icon: ICON_BOX, text: "Free prepaid FedEx label" },
-                { icon: ICON_SHIELD, text: "Full-value shipping insurance included" },
+                { icon: ICON_SHIELD, text: "$100 base shipping coverage included" },
                 { icon: ICON_BOLT, text: "Same-day payout after we verify" },
               ];
               const neutralBullets = [
@@ -11210,7 +11213,7 @@ export default function Home() {
                 { icon: G_BOLT, title: "Cash in 15 Minutes", body: "Quote → meet → inspect → cash. Average local handoff wraps in under 15 minutes. Cash on the spot, or Zelle / Cash App / Venmo / BTC instantly." },
               ] : handoffMethod === "ship" ? [
                 { icon: G_TARGET, title: "Transparent Pricing", body: "Your quote is what we pay if the device matches your description. If anything differs we email photos + a written explanation before adjusting — never a silent change." },
-                { icon: G_SHIELD, title: "Insured Shipping", body: "Every prepaid FedEx label is declared for your full quoted value — so a lost or damaged device is covered for the full amount we quoted. No extra step, no counter fee." },
+                { icon: G_SHIELD, title: "$100 Shipping Coverage", body: "Every prepaid FedEx label includes $100 of base coverage if a package is lost or damaged. We don't cover full device value — for more, declare extra insurance at FedEx, or meet us locally in Austin for full protection." },
                 { icon: G_REFRESH, title: "Free Return Ship", body: "If you reject our revised offer for any reason, we ship the device back to you at our cost — no questions asked." },
                 { icon: G_BOLT, title: "Same-Day Payout", body: "Most payouts go out the same business day we receive and verify. Cash App + Zelle land in minutes; Bitcoin sends on-chain in ~30 minutes." },
               ] : [
@@ -11805,6 +11808,13 @@ export default function Home() {
                 ].filter(Boolean));
                 return;
               }
+              // Liability gate: shipping is covered for $100 base only and the
+              // customer must explicitly agree before we mint a label.
+              if (cartNeedsShip && !shipCoverageAck) {
+                alert("Please confirm you understand the $100 shipping coverage limit to continue.");
+                focusByQuery(['[data-validate="ship-ack"]']);
+                return;
+              }
               // Shipping requires a 10-digit phone — FedEx prints it on
               // the label. JS guard so we never hit the server's 400 with
               // a generic browser error. Skywalker 2026-05-19.
@@ -12237,6 +12247,12 @@ export default function Home() {
                       <span className="text-[#00c853] font-bold inline-flex items-center gap-1 align-text-bottom"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>You provide the box.</span> Any plain padded mailer or small box works for phones; bigger trades use any unmarked box. We&apos;ll email packing tips with your label.
                     </div>
                     <p className="text-[#888] text-[11px] leading-relaxed">Prepaid label hits {email || "your email"} within the hour. Drop the box at any FedEx location — we cover return shipping.</p>
+                    {/* Required $100 coverage acknowledgement — liability gate
+                        before the label is minted. Skywalker 2026-05-29. */}
+                    <label data-validate="ship-ack" className="mt-1 flex items-start gap-2.5 bg-[#bf5af2]/[0.06] border border-[#bf5af2]/25 rounded-xl px-3 py-2.5 cursor-pointer select-none">
+                      <input type="checkbox" checked={shipCoverageAck} onChange={e => setShipCoverageAck(e.target.checked)} className="mt-0.5 w-4 h-4 shrink-0 accent-[#00c853] cursor-pointer" />
+                      <span className="text-[11px] text-[#dcdcdc] leading-snug">I understand shipping coverage is limited to <strong className="text-white">$100</strong> — Top Cash Cellular does not cover the full device value in transit, and I&apos;m responsible for declaring extra insurance at FedEx if I want more. <span className="text-[#9a9db5]">(Want full protection? Choose a local Austin meetup instead.)</span></span>
+                    </label>
                   </div>
                 )}
 

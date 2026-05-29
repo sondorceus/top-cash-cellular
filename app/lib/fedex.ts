@@ -105,9 +105,10 @@ export type LabelInputs = {
   // Second customer-reference slot (PO number). FedEx allows up to 2.
   poNumber?: string;
   // Declared value (USD) — FedEx's liability cap if the package is lost
-  // or damaged. We declare the device's full quoted value so a lost
-  // device is covered for what we'd have paid, not FedEx's $100 default.
-  // Capped at FEDEX_MAX_DECLARED_VALUE (FedEx Ground max is $2,000).
+  // or damaged. Per policy this is capped at $100 base coverage inside
+  // createReturnLabel (the customer agrees and is responsible for value
+  // above $100), so passing the full quote here still results in a $100
+  // declared value.
   declaredValueUsd?: number;
 };
 
@@ -177,11 +178,14 @@ export async function createReturnLabel(input: LabelInputs): Promise<LabelResult
   const shipDate = new Date().toISOString().slice(0, 10);
   const weight = input.weightLbs ?? defaultWeight(input.deviceKind);
   // Declared value caps FedEx's liability if the box is lost or damaged.
-  // We declare the quoted payout (FedEx bills TCC ~$4.50-$15 for it) so a
-  // lost device is covered for its real value, not the $100 default.
-  const declaredCap = Number(process.env.FEDEX_MAX_DECLARED_VALUE) || 2000;
+  // POLICY (Skywalker 2026-05-29): TCC's prepaid label covers a $100 base
+  // only — the customer agrees to this and is responsible for value above
+  // it (they can declare/insure extra themselves). So we cap the declared
+  // value at $100 regardless of the quote. Cheaper devices declare their
+  // own (lower) value; everything else caps at $100.
+  const SHIPPING_COVERAGE_CAP = 100;
   const declaredAmount = input.declaredValueUsd && input.declaredValueUsd > 0
-    ? Math.min(Math.round(input.declaredValueUsd), declaredCap)
+    ? Math.min(Math.round(input.declaredValueUsd), SHIPPING_COVERAGE_CAP)
     : 0;
   const phone = digitsOnly(input.customerPhone);
   if (phone.length < 10) {

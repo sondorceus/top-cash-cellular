@@ -49,7 +49,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "What about insurance during shipping?",
-    a: "Your shipment is automatically insured for the full value we quoted you. We declare that amount with FedEx on every prepaid label and cover the cost ourselves — so if your device is lost or damaged in transit, you're protected for the full quote. There's nothing for you to add at the counter.",
+    a: "Our prepaid FedEx label includes $100 of base shipping coverage — that's what we cover if a package is lost or damaged in transit. We do not cover the full device value. If your device is worth more and you want it fully protected, you're responsible for declaring and paying for the additional insurance at the FedEx counter when you drop it off. By choosing to ship, you agree to the $100 coverage limit. Want full protection with zero shipping risk? Pick a local Austin meetup instead — paid on the spot.",
   },
   {
     q: "Can I change my mind after shipping?",
