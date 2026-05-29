@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SlideOnScrollNav } from "../components/SlideOnScrollNav";
 import { HeaderSearch } from "../components/HeaderSearch";
 import SiteFooter from "../components/SiteFooter";
+import FaqList from "./FaqList";
 
 export const metadata: Metadata = {
   title: "FAQ — Top Cash Cellular | Trade-In Questions Answered",
@@ -219,29 +220,12 @@ export default function FAQPage() {
         <h1 className="text-4xl font-bold mb-3">Frequently Asked Questions</h1>
         <p className="text-[#dcdcdc] mb-10">Everything you need to know before trading in.</p>
 
-        <div className="space-y-10">
-          {FAQ_CATEGORIES.map((cat) => (
-            <div key={cat.name}>
-              <h2 className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-3">{cat.name}</h2>
-              <div className="space-y-3">
-                {FAQ.filter((item) => cat.questions.includes(item.q)).map((item, i) => (
-                  <details key={i} className="group bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.07] transition open:bg-white/[0.07]">
-                    <summary className="flex items-center justify-between cursor-pointer list-none">
-                      <span className="font-semibold text-white pr-4">{item.q}</span>
-                      <span className="text-[#00c853] text-xl flex-shrink-0 group-open:rotate-45 transition-transform">+</span>
-                    </summary>
-                    <p className="text-[#e5e5e5] text-sm mt-3 leading-relaxed">{item.a}</p>
-                  </details>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        <FaqList faq={FAQ} categories={FAQ_CATEGORIES} />
 
         <div className="mt-12 bg-[#00c853]/10 border border-[#00c853]/30 rounded-2xl p-6 text-center">
           <p className="text-white font-semibold mb-2">Didn&apos;t see your question?</p>
           <p className="text-[#e5e5e5] text-sm mb-4">Email us — we usually reply within an hour during business hours.</p>
-          <Link href="/?ask=handoff" className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition">Get a quote →</Link>
+          <a href="mailto:support@topcashcellular.com" className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition">Get help →</a>
         </div>
       </div>
 
