@@ -7212,12 +7212,12 @@ export default function Home() {
 
       {/* MOBILE MENU DRAWER — same Sell/Bulk/Support/Login structure as the desktop mega-menu, accordion-style */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden animate-[fadeIn_0.135s_ease-out]" onClick={() => setMobileMenuOpen(false)}>
+        <div className="fixed inset-0 z-[60] lg:hidden animate-[fadeIn_0.3s_ease-out]" onClick={() => setMobileMenuOpen(false)}>
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
           <div
             className="absolute right-0 top-0 bottom-0 w-[88vw] max-w-md bg-[#0a0a0a] border-l border-white/10 shadow-2xl overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
-            style={{ animation: "slideInRight 0.22s cubic-bezier(0.2,0.8,0.2,1)" }}
+            style={{ animation: "drawerIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both" }}
           >
             {/* Drawer header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 sticky top-0 bg-[#0a0a0a] z-10">
@@ -14284,10 +14284,10 @@ export default function Home() {
         const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
         return (
           <>
-            <div className="tcc-cart-backdrop fixed inset-0 z-40 bg-black/70 backdrop-blur-sm animate-[fadeIn_0.18s_ease-out]" onClick={() => setCartOpen(false)} />
+            <div className="tcc-cart-backdrop fixed inset-0 z-40 bg-black/70 backdrop-blur-sm animate-[fadeIn_0.3s_ease-out]" onClick={() => setCartOpen(false)} />
             <aside
               className="tcc-cart-drawer fixed top-0 right-0 bottom-0 z-50 w-full sm:w-[460px] lg:w-[520px] bg-[rgba(46,46,52,0.97)] backdrop-blur-[14px] border-l border-white/15 shadow-[0_0_60px_rgba(0,0,0,0.7)] flex flex-col"
-              style={{ animation: "slideInRight 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both" }}
+              style={{ animation: "drawerIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both" }}
             >
               {/* HEADER */}
               <div className="px-6 py-5 border-b border-white/10 flex items-start justify-between gap-4">

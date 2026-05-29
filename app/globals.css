@@ -8,6 +8,15 @@
   to { transform: translateX(0); }
 }
 
+/* Premium drawer entrance — slide in from the right WITH a fade, on a slow
+   smooth ease-out (no snappy bounce). Used by the mobile hamburger menu and
+   the cart drawer so they "appear" deliberately like the rest of the UI
+   instead of snapping in. */
+@keyframes drawerIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
 /* Selection frame — wraps a group of selection rows (storage, condition,
    carrier) in a slightly-elevated glass container so the whole group
    reads as ONE 3D object instead of loose floating tiles. Inspired by
