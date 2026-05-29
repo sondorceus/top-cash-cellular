@@ -7882,7 +7882,7 @@ export default function Home() {
 
       {/* STEP: DEVICE TYPE */}
       {step === "device" && page === "home" && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           {/* Hero backdrop removed 2026-05-17 per Skywalker — looked
               bad in production. The faded multi-device decoration was
               competing with the actual hero copy instead of receding.
@@ -8404,7 +8404,7 @@ export default function Home() {
 
       {/* STEP: CATEGORY */}
       {step === "category" && page === "home" && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -8483,7 +8483,7 @@ export default function Home() {
 
       {/* STEP: INQUIRY (unknown categories) — full quote flow */}
       {step === "inquiry" && page === "home" && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={() => { setStep("category"); pushHistory("category"); }} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-6 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -8686,7 +8686,7 @@ export default function Home() {
 
       {/* STEP: BRAND */}
       {step === "brand" && page === "home" && category && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -8826,7 +8826,7 @@ export default function Home() {
 
       {/* STEP: MODEL SELECTION */}
       {step === "model" && page === "home" && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-6 pb-8">
             <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -9715,7 +9715,7 @@ export default function Home() {
 
       {/* STEP: CONNECTIVITY (iPad only) — Wi-Fi vs Wi-Fi + Cellular */}
       {step === "connectivity" && page === "home" && model && deviceType === "ipad" && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9759,7 +9759,7 @@ export default function Home() {
       {/* STEP: STORAGE */}
       {/* STEP: PROCESSOR — additive-spec models (MacBook, Dell XPS), gated on hasAdditiveSpecs(model) */}
       {step === "processor" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9803,7 +9803,7 @@ export default function Home() {
 
       {/* STEP: MEMORY — additive-spec models (MacBook, Dell XPS) */}
       {step === "memory" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9835,7 +9835,7 @@ export default function Home() {
       {/* STEP: GRAPHICS — PC gaming laptops + workstations with multiple GPU
           options on IWM. Sits between storage and condition. */}
       {step === "graphics" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9876,7 +9876,7 @@ export default function Home() {
       {/* STEP: DISPLAY RESOLUTION — flagship PC gaming laptops where IWM
           prices FHD vs QHD vs UHD/OLED panels separately. */}
       {step === "displayresolution" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9913,7 +9913,7 @@ export default function Home() {
 
       {/* STEP: DISPLAY GLASS — MacBook Pro 16/14 only, between storage and condition */}
       {step === "displayglass" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9944,7 +9944,7 @@ export default function Home() {
 
       {/* STEP: BATTERY HEALTH — additive-spec models, between condition and charger */}
       {step === "batteryhealth" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -9975,7 +9975,7 @@ export default function Home() {
 
       {/* STEP: CHARGER — additive-spec models, before quote (or extras if present) */}
       {step === "charger" && page === "home" && model && hasAdditiveSpecs(model.id) && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -10052,7 +10052,7 @@ export default function Home() {
           return null;
         }
         return (
-          <section className="animate-[fadeIn_0.27s_ease-out]">
+          <section className="tcc-step-in">
             <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
               {selectionPanel}
               <div className="flex-1 min-w-0">
@@ -10141,7 +10141,7 @@ export default function Home() {
       })()}
 
       {step === "storage" && page === "home" && model && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -10217,7 +10217,7 @@ export default function Home() {
 
       {/* STEP: CONDITION */}
       {step === "condition" && page === "home" && model && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -10405,7 +10405,7 @@ export default function Home() {
 
       {/* STEP: BROKEN FUNCTIONAL CHECK */}
       {step === "broken-functional" && page === "home" && model && condition?.id === "broken" && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -10500,7 +10500,7 @@ export default function Home() {
           when the user says the device still works. Front (display) glass
           is the bigger resale hit; back-only is mostly cosmetic. */}
       {step === "broken-glass" && page === "home" && model && condition?.id === "broken" && isPhoneFlow && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -10560,7 +10560,7 @@ export default function Home() {
 
       {/* STEP: CARRIER */}
       {step === "carrier" && page === "home" && model && condition && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -10612,7 +10612,7 @@ export default function Home() {
 
       {/* STEP: CARRIER LOCK — Yes/No after picking the carrier */}
       {step === "carrier-lock" && page === "home" && model && condition && carrier && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
             {selectionPanel}
             <div className="flex-1 min-w-0">
@@ -10659,7 +10659,7 @@ export default function Home() {
 
       {/* STEP: QUOTE */}
       {step === "quote" && page === "home" && model && condition && (
-        <section className="animate-[fadeIn_0.27s_ease-out] relative">
+        <section className="tcc-step-in relative">
           {showConfetti && (
             <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
               {Array.from({ length: 60 }).map((_, i) => (
@@ -11320,7 +11320,7 @@ export default function Home() {
 
       {/* STEP: CHECKOUT (email capture) */}
       {step === "checkout" && page === "home" && ((model && condition) || cartItems.length > 0) && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           {/* pb-28 lg:pb-8 — extra bottom padding on mobile so the sticky
               bottom CTA (rendered above) doesn't overlap the last form row.
               xl:items-stretch matches the contact step — gives the
@@ -11481,7 +11481,7 @@ export default function Home() {
 
       {/* STEP: PAYOUT METHOD */}
       {step === "payout" && page === "home" && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           {/* pb-28 mobile to clear the sticky CTA bar — see checkout.
               xl:items-stretch matches checkout + contact so the
               Order Summary aside stays sticky across all 3 long pages. */}
@@ -11704,7 +11704,7 @@ export default function Home() {
 
       {/* STEP: CONTACT INFO */}
       {step === "contact" && page === "home" && payout && ((model && condition) || cartItems.length > 0) && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           {/* pb-28 mobile to clear the sticky CTA bar — see checkout.
               xl:items-stretch (full-screen desktops, ≥1280px) lets the
               Order Summary aside stretch to match the form column's
@@ -13131,7 +13131,7 @@ export default function Home() {
 
       {/* STEP: DONE */}
       {step === "done" && page === "home" && payout && ((model && condition) || (submittedDevices && submittedDevices.length > 0)) && (
-        <section className="animate-[fadeIn_0.27s_ease-out]">
+        <section className="tcc-step-in">
           <div className="max-w-lg md:max-w-3xl mx-auto px-4 pt-6 lg:pt-10 pb-12">
             {/* Hero — beveled green tile with checkmark + glow rim */}
             <div className="text-center mb-5 lg:mb-8">

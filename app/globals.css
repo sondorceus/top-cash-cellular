@@ -35,6 +35,16 @@
 }
 .tcc-modal-in { animation: gentleReveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
+/* Funnel step reveal — fade + gentle slide-up on a smooth ease, so moving
+   between steps (and into checkout from the cart) reads as a deliberate
+   "rise into place" instead of a flat opacity flicker. Skywalker 2026-05-29
+   "loved the cart→checkout transition — use it everywhere after." */
+@keyframes stepIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tcc-step-in { animation: stepIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
 /* Centered modal entrance — gentle scale + fade (premium, no slide). */
 @keyframes popIn {
   from { transform: scale(0.96); opacity: 0; }
