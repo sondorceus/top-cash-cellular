@@ -161,9 +161,9 @@ async function sendReferralEarnedEmail(to: string): Promise<void> {
 <body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
   <div style="background:#13142b;padding:32px 16px">
     <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden">
-      <tr><td style="background:linear-gradient(135deg,#00c853 0%,#00a039 100%);padding:24px 28px">
-        <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#0a0a0a;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div>
-        <div style="font-size:22px;font-weight:800;color:#0a0a0a;line-height:1.1">You earned a referral reward</div>
+      <tr><td style="padding:24px 28px">
+        <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#9aa0bd;margin-bottom:4px">Top Cash Cellular</div>
+        <div style="font-size:22px;font-weight:800;color:#ffffff;line-height:1.1">You earned a referral reward</div>
       </td></tr>
       <tr><td style="padding:28px 28px 8px 28px">
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">Good news — a friend you referred just completed their trade with us, so your <strong style="color:#fff">${reward} referral reward</strong> is yours.</p>
@@ -361,15 +361,15 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
         <td style="padding:0">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
             <tr>
-              <td style="background:linear-gradient(135deg,#00c853 0%,#00a039 100%);padding:24px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
+              <td style="padding:24px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                   <tr>
                     <td style="vertical-align:middle">
-                      <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#0a0a0a;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div>
-                      <div style="font-size:22px;font-weight:800;color:#0a0a0a;line-height:1.1">${accentLabel}</div>
+                      <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#9aa0bd;margin-bottom:4px">Top Cash Cellular</div>
+                      <div style="font-size:22px;font-weight:800;color:#ffffff;line-height:1.1">${accentLabel}</div>
                     </td>
                     <td style="vertical-align:middle;text-align:right">
-                      <div style="display:inline-block;padding:8px 14px;background:rgba(10,10,10,0.18);border:1px solid rgba(10,10,10,0.22);border-radius:999px;font-size:11px;font-weight:800;color:#0a0a0a;letter-spacing:0.1em;text-transform:uppercase">Austin, TX</div>
+                      <div style="display:inline-block;padding:8px 14px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;font-size:11px;font-weight:800;color:#ffffff;letter-spacing:0.1em;text-transform:uppercase">Austin, TX</div>
                     </td>
                   </tr>
                 </table>

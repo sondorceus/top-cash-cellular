@@ -43,9 +43,9 @@ function confirmationHtml(email: string, success: boolean): string {
 <body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
 <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px">
 <div style="max-width:520px;width:100%;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;text-align:center">
-<div style="background:${success ? "linear-gradient(135deg,#00c853 0%,#00a039 100%)" : "linear-gradient(135deg,#ff5252 0%,#a31515 100%)"};padding:24px 28px;color:#0a0a0a">
-<div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div>
-<div style="font-size:22px;font-weight:800;line-height:1.1">${title}</div>
+<div style="padding:26px 28px;border-bottom:1px solid rgba(255,255,255,0.08);color:#ffffff">
+<div style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#9aa0bd;margin-bottom:6px">TOP CASH <span style="color:${success ? "#00c853" : "#ff6b6b"}">CELLULAR</span></div>
+<div style="font-size:22px;font-weight:700;line-height:1.3;color:#ffffff">${title}</div>
 </div>
 <div style="padding:28px;font-size:15px;line-height:1.6;color:#dcdcdc">
 ${body}

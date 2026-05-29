@@ -1408,7 +1408,7 @@ Pick the best channel per device. Be concise.`;
       const lockLine = quoteNum > 0
         ? `Your offer of $${quoteNum} for ${deviceLabel} is locked in for 14 days.`
         : `We've got your request for ${deviceLabel}.`;
-      const schedHtml = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:24px 16px"><div style="max-width:520px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.1);border-radius:14px;overflow:hidden"><div style="background:linear-gradient(135deg,#00c853 0%,#00a039 100%);padding:18px 22px;color:#0a0a0a;font-weight:800;font-size:18px">Let&apos;s set up your Austin meetup</div><div style="padding:20px 22px;font-size:14px;line-height:1.7">Hi ${escS(firstName)},<br><br>${escS(lockLine)}<br><br>To get you paid, just <b>reply to this email with a couple of times that work this week</b> and we&apos;ll confirm a quick Austin meetup — most wrap in under 15 minutes, paid on the spot (cash, Zelle, Cash App, or Venmo).<br><br><a href="${offerHref}" style="display:inline-block;margin-top:6px;padding:10px 20px;background:#00c853;color:#0a0a0a;font-weight:800;text-decoration:none;border-radius:999px;font-size:13px">View your offer →</a><div style="margin-top:16px;font-size:12px;color:#888">Reference: Offer #${escS(offerRef)}</div></div></div></div>`;
+      const schedHtml = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:24px 16px"><div style="max-width:520px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.1);border-radius:14px;overflow:hidden"><div style="padding:18px 22px;color:#ffffff;font-weight:800;font-size:18px">Let&apos;s set up your Austin meetup</div><div style="padding:20px 22px;font-size:14px;line-height:1.7">Hi ${escS(firstName)},<br><br>${escS(lockLine)}<br><br>To get you paid, just <b>reply to this email with a couple of times that work this week</b> and we&apos;ll confirm a quick Austin meetup — most wrap in under 15 minutes, paid on the spot (cash, Zelle, Cash App, or Venmo).<br><br><a href="${offerHref}" style="display:inline-block;margin-top:6px;padding:10px 20px;background:#00c853;color:#0a0a0a;font-weight:800;text-decoration:none;border-radius:999px;font-size:13px">View your offer →</a><div style="margin-top:16px;font-size:12px;color:#888">Reference: Offer #${escS(offerRef)}</div></div></div></div>`;
       const schedText = `Hi ${firstName}, ${lockLine} To get paid, reply with a couple of times that work this week and we'll confirm a quick Austin meetup. View your offer: ${offerHref} — Offer #${offerRef}`;
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
@@ -1450,7 +1450,7 @@ Pick the best channel per device. Be concise.`;
       if (needsScheduling) rows.push(["Auto-scheduling", schedulingEmailSent ? "✅ emailed customer to pick a time" : (email ? "⚠️ email failed — reach out manually" : "⚠️ no email on file — text/call to schedule")]);
       if (firstPhoto) rows.push(["Photo", firstPhoto]);
       const subject = oneLine(`${reviewRequired ? "⚠️ REVIEW · " : ""}New lead: ${oneLine(name)} — ${oneLine(model)}${quote ? ` ($${quote})` : " (custom)"}`).slice(0, 180);
-      const html = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:24px 16px"><div style="max-width:520px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.1);border-radius:14px;overflow:hidden"><div style="background:linear-gradient(135deg,#00c853 0%,#00a039 100%);padding:18px 22px;color:#0a0a0a;font-weight:800;font-size:18px">${reviewRequired ? "⚠️ " : ""}New buyback lead</div><div style="padding:20px 22px;font-size:14px;line-height:1.7">${rows.map(([k, v]) => `<div><span style="color:#888">${esc(k)}:</span> <span style="color:#fff">${esc(v)}</span></div>`).join("")}<div style="margin-top:18px"><a href="https://topcashcellular.com/admin" style="display:inline-block;padding:10px 20px;background:#00c853;color:#0a0a0a;font-weight:800;text-decoration:none;border-radius:999px;font-size:13px">Open admin</a></div></div></div></div>`;
+      const html = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:24px 16px"><div style="max-width:520px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.1);border-radius:14px;overflow:hidden"><div style="padding:18px 22px;color:#ffffff;font-weight:800;font-size:18px">${reviewRequired ? "⚠️ " : ""}New buyback lead</div><div style="padding:20px 22px;font-size:14px;line-height:1.7">${rows.map(([k, v]) => `<div><span style="color:#888">${esc(k)}:</span> <span style="color:#fff">${esc(v)}</span></div>`).join("")}<div style="margin-top:18px"><a href="https://topcashcellular.com/admin" style="display:inline-block;padding:10px 20px;background:#00c853;color:#0a0a0a;font-weight:800;text-decoration:none;border-radius:999px;font-size:13px">Open admin</a></div></div></div></div>`;
       const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n") + "\n\nhttps://topcashcellular.com/admin";
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
@@ -1741,21 +1741,12 @@ function renderRecycleCertificateEmail(opts: {
 <body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;color:#e6e6e6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#13142b;background-image:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.22) 0%, transparent 62%)">
 <tr><td align="center" style="padding:40px 16px">
-<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;width:100%;margin:0 auto;border-collapse:separate;background:#13142b;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45),0 0 0 1px rgba(0,200,83,0.05)">
+<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;width:100%;margin:0 auto;border-collapse:separate;background:#171936;border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,0.4)">
 
-<!-- Hero header — same gradient as the payout-confirmation email -->
-<tr><td style="background:linear-gradient(135deg,#00c853 0%,#00a039 100%);padding:28px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-<tr>
-<td style="vertical-align:middle">
-<div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#0a0a0a;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div>
-<div style="font-size:24px;font-weight:800;color:#0a0a0a;line-height:1.15">Certificate of Responsible Recycling</div>
-</td>
-<td style="vertical-align:middle;text-align:right">
-<div style="display:inline-block;padding:8px 14px;background:rgba(10,10,10,0.18);border:1px solid rgba(10,10,10,0.22);border-radius:999px;font-size:11px;font-weight:800;color:#0a0a0a;letter-spacing:0.1em;text-transform:uppercase">♻ Recycle</div>
-</td>
-</tr>
-</table>
+<!-- Header — clean: brand wordmark + thin green accent rule, no green block -->
+<tr><td style="padding:30px 32px 22px;border-bottom:1px solid rgba(255,255,255,0.08)">
+<div style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#9a9db5">TOP CASH <span style="color:#00c853">CELLULAR</span></div>
+<div style="font-size:22px;font-weight:700;color:#ffffff;line-height:1.3;margin-top:11px">Certificate of Responsible Recycling</div>
 </td></tr>
 
 <!-- Greeting -->
@@ -1766,7 +1757,7 @@ function renderRecycleCertificateEmail(opts: {
 
 <!-- Certificate panel -->
 <tr><td style="padding:18px 28px 6px 28px">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.10);border-left:3px solid #00c853;border-radius:14px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);border-radius:14px">
 <tr><td style="padding:22px 24px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.08)">
 <div style="font-size:10px;color:#00c853;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:8px;font-weight:800">Certificate</div>
 <div style="font-size:34px;font-weight:800;color:#fff;line-height:1;letter-spacing:-0.01em;font-family:ui-monospace,SFMono-Regular,'SF Mono',Menlo,monospace">#${certNumber}</div>
@@ -1793,7 +1784,7 @@ Your device will be securely wiped to <strong style="color:#fff">NIST 800-88</st
 
 <!-- Next step — short, no follow-up promise -->
 <tr><td style="padding:16px 28px 4px 28px">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(0,200,83,0.06);border:1px solid rgba(0,200,83,0.22);border-radius:12px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px">
 <tr><td style="padding:14px 18px;font-size:13px;color:#e6e6e6;line-height:1.55">
 <strong style="color:#00c853">Heads up:</strong> we&#39;ll be in touch within one business day to arrange the handoff — drop-off in Austin or a prepaid recycle label by mail if you&#39;re out of town. No payout, no follow-up — this is on us.
 </td></tr>

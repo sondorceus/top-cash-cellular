@@ -95,16 +95,16 @@ async function buildPreview(p: {
 <body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;color:#e6e6e6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#13142b;background-image:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.22) 0%, transparent 62%)">
 <tr><td align="center" style="padding:40px 16px">
-<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;width:100%;margin:0 auto;border-collapse:separate;background:#13142b;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45),0 0 0 1px rgba(0,200,83,0.05)">
+<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;width:100%;margin:0 auto;border-collapse:separate;background:#13142b;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45)">
 
-<tr><td style="background:linear-gradient(135deg,#00c853 0%,#00a039 100%);padding:28px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
+<tr><td style="padding:28px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
 <td style="vertical-align:middle">
-<div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#0a0a0a;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div>
-<div style="font-size:24px;font-weight:800;color:#0a0a0a;line-height:1.15">You're locked in</div>
+<div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#9aa0bd;margin-bottom:4px">Top Cash Cellular</div>
+<div style="font-size:24px;font-weight:800;color:#ffffff;line-height:1.15">You're locked in</div>
 </td>
 <td style="vertical-align:middle;text-align:right">
-<div style="display:inline-block;padding:8px 14px;background:rgba(10,10,10,0.18);border:1px solid rgba(10,10,10,0.22);border-radius:999px;font-size:11px;font-weight:800;color:#0a0a0a;letter-spacing:0.1em;text-transform:uppercase">Austin, TX</div>
+<div style="display:inline-block;padding:8px 14px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:999px;font-size:11px;font-weight:800;color:#ffffff;letter-spacing:0.1em;text-transform:uppercase">Austin, TX</div>
 </td></tr></table>
 </td></tr>
 
@@ -135,7 +135,7 @@ ${hasLabel ? `
     <div style="font-size:11px;color:#a8a8a8;margin-top:2px">Generated at submit · billed to TCC</div>
   </td>
 </tr></table>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(0,200,83,0.06);border:1px solid rgba(0,200,83,0.30);border-left:3px solid #00c853;border-radius:14px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.30);border-left:3px solid #00c853;border-radius:14px">
 <tr><td style="padding:18px 20px">
 <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#00c853;font-weight:800;margin-bottom:6px">Tracking</div>
 <div style="font-size:16px;color:#fff;font-weight:700;font-family:ui-monospace,SFMono-Regular,monospace">${p.fedexLabel?.tracking}</div>
