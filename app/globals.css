@@ -172,12 +172,13 @@ body {
   line-height: 1.55;
   letter-spacing: -0.005em;
 }
-/* CLEAR-GLASS BACKDROP theme. The two themes are simply backdrop on/off —
-   the dark glassy UI (light text, dark translucent panels) is IDENTICAL in
-   both. Dark = solid #0a0a0a, no backdrop. Light = the iPhone backdrop
-   showing THROUGH that same dark glass (clear glass over the photo). NO
-   white panels, NO dark text. Dark wash keeps the light UI text readable.
-   Fixed pseudo-element = composited once + smooth on scroll. */
+/* GLASS theme = frosted glass over a subtle dark gradient — NO photo.
+   The image backdrop fought mobile (a 16:9 photo can't fill a portrait
+   phone without zoom/crop/an iOS top-bottom split), so glass is now pure
+   CSS: a fixed dark gradient + the frosted translucent panels below.
+   Renders identically on every device — no image geometry to fight, and
+   the dark gradient blends with the #0a0a0a floor so iOS can't show a
+   bright/dark split. Dark theme = flat #0a0a0a (the default). */
 html[data-theme="light"] body::before {
   content: "";
   position: fixed;
@@ -185,30 +186,22 @@ html[data-theme="light"] body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    linear-gradient(rgba(10, 10, 10, 0.60), rgba(10, 10, 10, 0.60)),
-    url('/iphone-17-pro-backdrop.webp') center / cover no-repeat,
-    #0a0a0a;
+    radial-gradient(135% 95% at 50% -15%, rgba(0, 200, 83, 0.10), transparent 52%),
+    radial-gradient(120% 90% at 88% 116%, rgba(56, 110, 220, 0.10), transparent 55%),
+    linear-gradient(168deg, #13161c 0%, #0c0e12 48%, #07080b 100%);
 }
-/* All dark-themed main wrappers across the site (homepage, account, sell,
-   bulk, faq, etc.) hard-code bg-[#0a0a0a] which fully covers the body
-   backdrop. Force them transparent so the iPhone image shows through.
-   Cards/panels inside main keep their own bg colors and remain readable. */
+/* main wrappers transparent so the gradient shows through (both themes;
+   in dark it just reveals the #0a0a0a floor). */
 main.bg-\[\#0a0a0a\] {
   background-color: transparent !important;
 }
-/* Mobile: cover sizing crops phones too tight on narrow viewports. Pin to
-   top-center and zoom out a hair so device silhouettes anchor near hero. */
-@media (max-width: 640px) {
-  html[data-theme="light"] body::before {
-    /* cover (not 160% auto) so the fixed full-viewport layer FILLS the
-       mobile screen — the old 160%/auto height left the bottom of the
-       viewport as bare #0a0a0a ("half image, half black" mid-scroll). */
-    background:
-      linear-gradient(rgba(10, 10, 10, 0.64), rgba(10, 10, 10, 0.64)),
-      url('/iphone-17-pro-backdrop.webp') center / cover no-repeat,
-      #0a0a0a;
-  }
-}
+/* Glass only: dark sections/footer -> transparent so the gradient shows
+   through the whole page, then the frosted panels sit over it. */
+html[data-theme="light"] .bg-\[\#0a0a0a\],
+html[data-theme="light"] .bg-\[\#0d0d0d\],
+html[data-theme="light"] .bg-\[\#0b0b0b\],
+html[data-theme="light"] .bg-black { background-color: transparent !important; }
+html[data-theme="light"] footer { background: transparent !important; }
 /* Glass-theme panel dimming (light only; dark theme untouched). The
    translucent panels (bg-white/N) sit over the iPhone backdrop, and where
    the backdrop is BRIGHT (phone screens, reflections) they washed out —
