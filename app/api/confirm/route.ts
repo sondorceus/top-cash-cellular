@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td style="vertical-align:middle">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="background:#0e0f22;border:1px solid rgba(255,255,255,0.14);border-radius:999px;padding:9px 18px"><img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none" /></td></tr></table>
+<img src="https://topcashcellular.com/logo-email.png" alt="Top Cash Cellular" width="188" style="display:block;width:188px;height:auto;border:0;outline:none" />
 <div style="font-size:24px;font-weight:800;color:#ffffff;line-height:1.15">${isPending ? "Request received" : "You're locked in"}</div>
 </td>
 <td style="vertical-align:middle;text-align:right">
@@ -167,7 +167,7 @@ export async function POST(req: NextRequest) {
 
 <!-- Quote card — glass + left accent rim -->
 <tr><td style="padding:6px 28px">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.10);border-left:3px solid #00c853;border-radius:14px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.10);border-radius:14px">
 <tr><td style="padding:22px 24px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.08)">
 ${isPending ? `<div style="font-size:10px;color:#00c853;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:6px;font-weight:800">Custom Quote</div>
 <div style="font-size:26px;font-weight:800;color:#00c853;line-height:1.2;text-shadow:0 0 18px rgba(0,200,83,0.4)">Coming within the hour</div>
@@ -262,7 +262,7 @@ ${hasLabel ? `
     <div style="font-size:11px;color:#a8a8a8;margin-top:2px">Generated at submit · billed to TCC</div>
   </td>
 </tr></table>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.30);border-left:3px solid #00c853;border-radius:14px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,83,0.30);border-radius:14px">
 <tr><td style="padding:18px 20px">
 <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#00c853;font-weight:800;margin-bottom:6px">Tracking</div>
 <div style="font-size:16px;color:#fff;font-weight:700;font-family:ui-monospace,SFMono-Regular,monospace">${fedexLabel.tracking}</div>

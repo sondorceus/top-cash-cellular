@@ -150,7 +150,7 @@ function buildCounterOfferEmail(args: { name: string; device: string; originalQu
 <div style="background:#13142b;padding:32px 16px">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden">
 <tr><td style="background:linear-gradient(135deg,#ffd54f 0%,#ff9100 100%);padding:24px 28px">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="background:#0e0f22;border:1px solid rgba(255,255,255,0.14);border-radius:999px;padding:9px 18px"><img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none" /></td></tr></table>
+<img src="https://topcashcellular.com/logo-email.png" alt="Top Cash Cellular" width="188" style="display:block;width:188px;height:auto;border:0;outline:none" />
 <div style="font-size:22px;font-weight:800;color:#1a1100;line-height:1.1">Revised offer for your trade</div>
 </td></tr>
 
