@@ -4856,6 +4856,20 @@ export default function Home() {
       window.history.replaceState({}, "", clean);
     }
   }, []);
+  // After a funnel step changes, suppress the green card hover until the
+  // user actually moves the pointer (or 700ms passes). Without this, a card
+  // grid that mounts under a stationary cursor instantly lights up green
+  // and then "disappears" as the reveal animation slides it out — reads as
+  // a green flash on every step click. Skywalker 2026-05-29.
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const el = document.documentElement;
+    el.classList.add("tcc-nav-settling");
+    const clear = () => el.classList.remove("tcc-nav-settling");
+    const t = window.setTimeout(clear, 700);
+    window.addEventListener("pointermove", clear, { once: true });
+    return () => { window.clearTimeout(t); window.removeEventListener("pointermove", clear); };
+  }, [step]);
   useEffect(() => {
     // Only arm the timer when the cart has items AND the user hasn't
     // already moved past the funnel (the post-funnel steps quote /

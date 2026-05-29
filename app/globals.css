@@ -591,6 +591,19 @@ button:hover > .tcc-brand-tile {
   .tcc-card { transition: none; }
   .tcc-card:hover { transform: none; }
 }
+/* Suppress the green hover for a beat right after a funnel step changes.
+   When a new step's card grid mounts under a stationary cursor, the card
+   under it would instantly light up green (then "disappear" as the reveal
+   animation slides it out from under the cursor) — reads as a green flash
+   on every click. While `tcc-nav-settling` is set (cleared on the first
+   pointer move, or after 700ms), neutralize the green hover so nothing
+   reacts until the user actually moves the mouse. */
+html.tcc-nav-settling .tcc-card:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+}
+html.tcc-nav-settling .tcc-brand-card:hover {
+  border-color: rgba(255, 255, 255, 0.26);
+}
 
 /* Animated gradient ring — slow-rotating green-cyan conic gradient that
    sits around the hero dual-path buttons. Wrap any element with
