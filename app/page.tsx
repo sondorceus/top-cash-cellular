@@ -5435,7 +5435,10 @@ export default function Home() {
   // of the "sealed" premium. For used iPhone/Samsung the accessories
   // don't move resale meaningfully so we don't ask.
   const isNewTier = condition?.id === "sealed" || condition?.id === "mint";
-  const showAccessoryQuestion = isNewTier || deviceType === "macbook";
+  // Sealed = factory-new in the box, so accessories are already included —
+  // asking the accessory question is redundant (and risked an extra bonus
+  // on top of the sealed base). Only Mint / MacBook get the question.
+  const showAccessoryQuestion = (isNewTier || deviceType === "macbook") && condition?.id !== "sealed";
   const accessoryBonusAmount = deviceType === "macbook" ? 30 : (isNewTier && deviceType === "iphone" ? 10 : 0);
   const accessoryBonus = showAccessoryQuestion && accessoriesIncluded ? accessoryBonusAmount : 0;
   // MacBook spec multipliers — only fire when the picked model has a
@@ -5458,13 +5461,28 @@ export default function Home() {
   const lookupPrice =
     priceOverrides?.priceTable?.[model?.id ?? ""]?.[storage?.id ?? "base"]?.[condition?.id ?? ""]
     ?? PRICE_TABLE[model?.id ?? ""]?.[storage?.id ?? "base"]?.[condition?.id ?? ""];
+  // Carrier gap (flat $). AT&T / T-Mobile / Other are always treated as
+  // locked (no lock question), so their table value applies directly.
+  // Verizon is the ONLY carrier we ask the lock question — its iPhones
+  // auto-unlock after 60 days. Verizon UNLOCKED pays the full unlocked
+  // price ($0 gap); Verizon LOCKED must lose the SAME carrier gap as
+  // AT&T, or a flat amount underprices high-end models and we overpay vs
+  // Atlas resale (ip17pm 256 sealed: Atlas locked $770 — a flat $200 gap
+  // left us at ~$727, a ~$43 margin, vs ~$178 at the AT&T gap).
+  const carrierModelId = model?.id ?? "";
   const carrierDeduction =
-    priceOverrides?.carrierDeductions?.[model?.id ?? ""]?.[carrier?.id ?? ""]
-    ?? CARRIER_DEDUCTIONS[model?.id ?? ""]?.[carrier?.id ?? ""]
-    ?? 0;
-  // Lock deduction: Verizon $0 only if unlocked. All carriers lose ~$200 if locked.
-  const lockDeduction = (carrier?.id !== "unlocked" && carrierLock?.id === "yes") ? 200 : 0;
-  const totalCarrierDeduction = carrierDeduction + lockDeduction;
+    carrier?.id === "verizon"
+      ? (carrierLock?.id === "yes"
+          ? (priceOverrides?.carrierDeductions?.[carrierModelId]?.verizon
+             ?? CARRIER_DEDUCTIONS[carrierModelId]?.verizon
+             ?? priceOverrides?.carrierDeductions?.[carrierModelId]?.att
+             ?? CARRIER_DEDUCTIONS[carrierModelId]?.att
+             ?? 0)
+          : 0)
+      : (priceOverrides?.carrierDeductions?.[carrierModelId]?.[carrier?.id ?? ""]
+         ?? CARRIER_DEDUCTIONS[carrierModelId]?.[carrier?.id ?? ""]
+         ?? 0);
+  const totalCarrierDeduction = carrierDeduction;
   // For devices in the price table, use flat deduction instead of multiplier
   const useDirectPricing = lookupPrice != null;
   // MacBook additive mode: use IWM's exact $ adjustments (no multipliers)
