@@ -6732,7 +6732,7 @@ export default function Home() {
                 Sell
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
-              <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[720px] max-w-[calc(100vw-2rem)] transition-all duration-[270ms] ease-out ${megaMenuOpen === "sell" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
+              <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[720px] max-w-[calc(100vw-2rem)] transition-all duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${megaMenuOpen === "sell" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
                 <div className="bg-[#111] border border-white/10 rounded-3xl shadow-2xl p-6">
                   <div className="flex items-center justify-between mb-5">
                     <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em] tcc-green-pill">Sell your device</p>
@@ -6822,7 +6822,7 @@ export default function Home() {
                 Bulk
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </a>
-              <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[640px] max-w-[calc(100vw-2rem)] transition-all duration-[270ms] ease-out ${megaMenuOpen === "bulk" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
+              <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 w-[640px] max-w-[calc(100vw-2rem)] transition-all duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${megaMenuOpen === "bulk" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
                 <div className="bg-[#111] border border-white/10 rounded-3xl shadow-2xl p-6">
                   <div className="flex items-center justify-between mb-5">
                     <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em] tcc-green-pill">Bulk trade-ins</p>
@@ -6889,7 +6889,7 @@ export default function Home() {
                 Support
                 <svg className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:rotate-180 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
-              <div className={`absolute top-full right-0 pt-3 z-50 w-[680px] max-w-[calc(100vw-2rem)] transition-all duration-[270ms] ease-out ${megaMenuOpen === "support" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
+              <div className={`absolute top-full right-0 pt-3 z-50 w-[680px] max-w-[calc(100vw-2rem)] transition-all duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${megaMenuOpen === "support" ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-2"}`} onClick={() => setMegaMenuOpen(null)}>
                 <div className="bg-[#111] border border-white/10 rounded-3xl shadow-2xl p-6">
                   <div className="flex items-center justify-between mb-5">
                     <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em] tcc-green-pill">Help &amp; info</p>
@@ -7207,7 +7207,7 @@ export default function Home() {
           stay off so this never steals hover from the trigger. */}
       <div
         aria-hidden
-        className={`fixed inset-0 z-30 pointer-events-none transition-opacity duration-[180ms] ease-out backdrop-blur-md bg-black/40 ${megaMenuOpen ? "opacity-100" : "opacity-0"}`}
+        className={`fixed inset-0 z-30 pointer-events-none transition-opacity duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] backdrop-blur-md bg-black/40 ${megaMenuOpen ? "opacity-100" : "opacity-0"}`}
       />
 
       {/* MOBILE MENU DRAWER — same Sell/Bulk/Support/Login structure as the desktop mega-menu, accordion-style */}
@@ -7217,7 +7217,7 @@ export default function Home() {
           <div
             className="absolute right-0 top-0 bottom-0 w-[88vw] max-w-md bg-[#0a0a0a] border-l border-white/10 shadow-2xl overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
-            style={{ animation: "drawerIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both" }}
+            style={{ animation: "drawerIn 0.5s cubic-bezier(0.32, 0.72, 0, 1) both" }}
           >
             {/* Drawer header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 sticky top-0 bg-[#0a0a0a] z-10">
@@ -14276,7 +14276,7 @@ export default function Home() {
             <div className="tcc-cart-backdrop fixed inset-0 z-40 bg-black/70 backdrop-blur-sm animate-[fadeIn_0.3s_ease-out]" onClick={() => setCartOpen(false)} />
             <aside
               className="tcc-cart-drawer fixed top-0 right-0 bottom-0 z-50 w-full sm:w-[460px] lg:w-[520px] bg-[rgba(46,46,52,0.97)] backdrop-blur-[14px] border-l border-white/15 shadow-[0_0_60px_rgba(0,0,0,0.7)] flex flex-col"
-              style={{ animation: "drawerIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both" }}
+              style={{ animation: "drawerIn 0.5s cubic-bezier(0.32, 0.72, 0, 1) both" }}
             >
               {/* HEADER */}
               <div className="px-6 py-5 border-b border-white/10 flex items-start justify-between gap-4">
