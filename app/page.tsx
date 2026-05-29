@@ -14226,9 +14226,9 @@ export default function Home() {
         const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
         return (
           <>
-            <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm animate-[fadeIn_0.18s_ease-out]" onClick={() => setCartOpen(false)} />
+            <div className="tcc-cart-backdrop fixed inset-0 z-40 bg-black/70 backdrop-blur-sm animate-[fadeIn_0.18s_ease-out]" onClick={() => setCartOpen(false)} />
             <aside
-              className="fixed top-0 right-0 bottom-0 z-50 w-full sm:w-[460px] lg:w-[520px] bg-[rgba(46,46,52,0.97)] backdrop-blur-[14px] border-l border-white/15 shadow-[0_0_60px_rgba(0,0,0,0.7)] flex flex-col"
+              className="tcc-cart-drawer fixed top-0 right-0 bottom-0 z-50 w-full sm:w-[460px] lg:w-[520px] bg-[rgba(46,46,52,0.97)] backdrop-blur-[14px] border-l border-white/15 shadow-[0_0_60px_rgba(0,0,0,0.7)] flex flex-col"
               style={{ animation: "slideInRight 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both" }}
             >
               {/* HEADER */}
@@ -14477,7 +14477,7 @@ export default function Home() {
 
               {/* STICKY FOOTER */}
               {cartItems.length > 0 && (
-                <div className="border-t border-white/10 px-6 py-5 bg-[rgba(10,10,10,0.95)]">
+                <div className="tcc-cart-footer border-t border-white/10 px-6 py-5 bg-[rgba(40,40,46,0.98)]">
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <p className="text-[#b8b8b8] text-[11px] font-bold uppercase tracking-wider">Total payout</p>

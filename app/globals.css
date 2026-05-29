@@ -286,6 +286,24 @@ html[data-theme="light"] nav .bg-white\/10 {
 html[data-theme="light"] .tcc-logo-dark { display: none; }
 html[data-theme="light"] .tcc-logo-glass { display: inline-block; }
 
+/* Cart drawer on glass — in dark it's a solid grey panel (fine), but on
+   glass that grey + a flat-black sticky footer read as an off-theme slab.
+   Make the drawer translucent dark glass so the indigo carries through and
+   it belongs to the theme, tint the backdrop dim with a little indigo
+   instead of pure black, and let the footer sit a touch deeper. Heavy blur
+   keeps the device rows / prices crisp. Dark theme keeps the grey. */
+html[data-theme="light"] .tcc-cart-drawer {
+  background-color: rgba(18, 20, 31, 0.66) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(140%); backdrop-filter: blur(28px) saturate(140%);
+}
+html[data-theme="light"] .tcc-cart-footer {
+  background-color: rgba(14, 16, 26, 0.74) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(140%); backdrop-filter: blur(28px) saturate(140%);
+}
+html[data-theme="light"] .tcc-cart-backdrop {
+  background-color: rgba(8, 9, 22, 0.62) !important;
+}
+
 /* Cabinet Grotesk renders better with slight tracking adjustments
    per size band — tighter on display, looser on small. */
 h1, h2, h3 { letter-spacing: -0.02em; }
