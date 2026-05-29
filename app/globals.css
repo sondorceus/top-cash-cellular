@@ -172,12 +172,13 @@ body {
   line-height: 1.55;
   letter-spacing: -0.005em;
 }
-/* GLASS theme = frosted glass over a subtle dark gradient — NO photo.
-   The image backdrop fought mobile (a 16:9 photo can't fill a portrait
-   phone without zoom/crop/an iOS top-bottom split), so glass is now pure
-   CSS: a fixed dark gradient + the frosted translucent panels below.
-   Renders identically on every device — no image geometry to fight, and
-   the dark gradient blends with the #0a0a0a floor so iOS can't show a
+/* GLASS theme = frosted glass over an Apple-style "liquid glass" mesh
+   gradient — NO photo. The image backdrop fought mobile (a 16:9 photo
+   can't fill a portrait phone without zoom/crop/an iOS top-bottom split),
+   so glass is now pure CSS: soft blurred pools of Apple's own system
+   colors (indigo, blue, green, purple) over a near-black base, with the
+   frosted translucent panels on top. Renders identically on every device,
+   and the dark base blends with the #0a0a0a floor so iOS can't show a
    bright/dark split. Dark theme = flat #0a0a0a (the default). */
 html[data-theme="light"] body::before {
   content: "";
@@ -186,9 +187,11 @@ html[data-theme="light"] body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(135% 95% at 50% -15%, rgba(0, 200, 83, 0.10), transparent 52%),
-    radial-gradient(120% 90% at 88% 116%, rgba(56, 110, 220, 0.10), transparent 55%),
-    linear-gradient(168deg, #13161c 0%, #0c0e12 48%, #07080b 100%);
+    radial-gradient(58% 48% at 18% 14%, rgba(94, 92, 230, 0.36), transparent 62%),
+    radial-gradient(56% 46% at 85% 18%, rgba(10, 132, 255, 0.32), transparent 62%),
+    radial-gradient(64% 58% at 84% 86%, rgba(48, 209, 88, 0.22), transparent 64%),
+    radial-gradient(60% 54% at 14% 88%, rgba(191, 90, 242, 0.28), transparent 62%),
+    linear-gradient(155deg, #0c0d12 0%, #090a0e 50%, #07080b 100%);
 }
 /* main wrappers transparent so the gradient shows through (both themes;
    in dark it just reveals the #0a0a0a floor). */

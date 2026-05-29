@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { DeviceCorrection } from "./DeviceCorrection";
 import { parseDollarAmount } from "../lib/lead-money";
 import { formatOfferNumber, offerNumberMatches } from "../lib/offer-number";
+import { ThemeToggle } from "../components/ThemeToggle";
 
 interface Lead {
   id: string;
@@ -1520,6 +1521,21 @@ export default function AdminPage() {
                 >Sign out</button>
               </div>
             )}
+            {/* EXPERIMENTAL: clear-glass theme preview. Flips the global
+                data-theme + localStorage for THIS browser only, so a
+                staffer can preview the public site in the Apple-style
+                glass look. Public visitors never see this control — the
+                live site stays full-dark for everyone. Skywalker
+                2026-05-28: keep glass backend-only for now. */}
+            <div
+              className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-full pl-3 pr-0.5 py-0.5"
+              title="Experimental — preview the clear-glass theme (this browser only)"
+            >
+              <span className="text-[11px] text-[#9aa0a6] font-semibold whitespace-nowrap">
+                Glass <span className="text-[#00c853]">beta</span>
+              </span>
+              <ThemeToggle />
+            </div>
             {/* Active / Needs review / Trash toggle. Needs review is a
                 client-side filter on the active list — surfaces leads
                 with AI flags, "pass" recommendations, stale status,

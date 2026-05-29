@@ -8,7 +8,6 @@ import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle
 import { formatOfferNumber } from "./lib/offer-number";
 import { SlideOnScrollNav } from "./components/SlideOnScrollNav";
 import { HeaderSearch } from "./components/HeaderSearch";
-import { ThemeToggle } from "./components/ThemeToggle";
 import Pic from "./components/Pic";
 import NextImage from "next/image";
 import { CARRIER_DEDUCTIONS, PRICE_TABLE, MIN_OFFER, MANUAL_REVIEW_DEVICES, MACBOOK_SPECS, type MacSpec, type MacSpecOption } from "./data/prices";
@@ -6919,8 +6918,9 @@ export default function Home() {
               </svg>
             </button>
 
-            {/* Light/dark toggle — dark is the default + untouched theme. */}
-            <ThemeToggle />
+            {/* Glass-theme toggle moved to /admin (experimental). The public
+                site stays on full dark for everyone; only a staffer flipping
+                the toggle in the backend previews glass. Skywalker 2026-05-28. */}
 
             {/* CART — always visible on every screen size. Bumps + glows
                 when items are added (cartBump key change retriggers the
