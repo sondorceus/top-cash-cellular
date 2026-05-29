@@ -4717,6 +4717,16 @@ export default function Home() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
 
+  // One handoff for the whole order — no mixed ship+local carts. Picking a
+  // method (hero dual-path, cart picker, checkout picker) sets the cart-level
+  // method AND re-tags every line to match, so the cart can never become
+  // mixed. New adds already snapshot the current handoffMethod. Skywalker
+  // 2026-05-28 "should they be able to do both shipping and local" — no.
+  const chooseHandoff = (method: "ship" | "local") => {
+    setHandoffMethod(method);
+    setCartItems(prev => prev.map(it => ({ ...it, handoff: method })));
+  };
+
   // Derived: which handoff methods the cart actually needs based on per-item
   // .handoff. When the cart is empty we fall back to cart-level handoffMethod
   // so the initial funnel (pre-add) still drives ship/local UI from the
@@ -5026,15 +5036,16 @@ export default function Home() {
       if (raw) {
         const c = JSON.parse(raw);
         if (Array.isArray(c.items) && Date.now() - (c.ts || 0) < 7 * 24 * 60 * 60 * 1000 && c.items.length > 0) {
-          // Legacy carts saved before per-item handoff have no `handoff`
-          // field. Backfill from the saved cart-level handoffMethod (also
-          // persisted in tcc-cart) — falling back to "local" since that's
-          // the most common Austin path.
-          const legacyHandoff: "ship" | "local" = c.handoffMethod === "ship" ? "ship" : "local";
-          const needsMigration = c.items.some((it: CartItem) => it.handoff === undefined);
+          // One handoff for the whole cart — force every line to a single
+          // method on load so a cart can never be mixed, including legacy
+          // carts (no `handoff` field) and any saved while the old per-item
+          // mix was possible. Collapse to the saved cart-level method, else
+          // "local" (the most common Austin path).
+          const target: "ship" | "local" = c.handoffMethod === "ship" ? "ship" : "local";
+          const needsMigration = c.items.some((it: CartItem) => it.handoff !== target);
           const migrated = c.items.map((it: CartItem) => ({
             ...it,
-            handoff: it.handoff ?? legacyHandoff,
+            handoff: target,
           }));
           setCartItems(migrated);
           // Re-write the migrated payload so a later hydrate doesn't have
@@ -6553,7 +6564,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => {
-                  setHandoffMethod("local");
+                  chooseHandoff("local");
                   setHandoffPickerOpen(false);
                   setStep("category"); pushHistory("category");
                 }}
@@ -6565,7 +6576,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => {
-                  setHandoffMethod("ship");
+                  chooseHandoff("ship");
                   setHandoffPickerOpen(false);
                   setStep("category"); pushHistory("category");
                 }}
@@ -7849,7 +7860,7 @@ export default function Home() {
                 detail (address OR area), not both. */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 hero-scale-in hero-d-3">
               <button
-                onClick={() => { setHandoffMethod("local"); setStep("category"); pushHistory("category"); }}
+                onClick={() => { chooseHandoff("local"); setStep("category"); pushHistory("category"); }}
                 className="tcc-button-primary w-full py-4 text-base font-extrabold flex flex-col items-center gap-0.5 tap-press"
               >
                 <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>Sell Local Today</span>
@@ -7866,7 +7877,7 @@ export default function Home() {
                   #b8b8b8 to #d8d8d8 so it reads as cleanly as the local
                   pair's `opacity-80` white. */}
               <button
-                onClick={() => { setHandoffMethod("ship"); setStep("category"); pushHistory("category"); }}
+                onClick={() => { chooseHandoff("ship"); setStep("category"); pushHistory("category"); }}
                 className="w-full bg-[rgba(20,22,28,0.85)] backdrop-blur-[12px] hover:bg-[rgba(28,32,40,0.95)] hover:border-[#00c853]/60 border border-white/22 text-white py-4 rounded-2xl text-base font-extrabold cursor-pointer transition-all duration-[270ms] ease-out shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_10px_30px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.02)] flex flex-col items-center gap-0.5 tap-press"
               >
                 <span className="flex items-center gap-2"><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>I&apos;m Shipping: Get a Label</span>
@@ -11273,8 +11284,9 @@ export default function Home() {
                 Skywalker 2026-05-19 follow-up: local-meetup users got
                 this same FedEx copy even though they're meeting in
                 Austin — branch the banner so shipping copy never
-                shows on the local path. */}
-            {handoffMethod === "local" ? (
+                shows on the local path. Keyed off the cart's actual handoff
+                (not the possibly-null handoffMethod) so the copy matches. */}
+            {!cartNeedsShip ? (
               <div className="mb-4 px-4 py-3 rounded-xl bg-[#00c853]/[0.08] border border-[#00c853]/30 flex items-start gap-3">
                 <svg className="w-5 h-5 shrink-0 text-[#00c853] leading-none mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 <div className="flex-1 min-w-0">
@@ -11311,7 +11323,7 @@ export default function Home() {
               }} className="space-y-3 mb-4">
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 tcc-input text-sm" />
                 <button type="submit" data-primary-cta className="tcc-button-primary w-full py-4 text-base font-extrabold">Continue As Guest →</button>
-                <p className="text-[11px] text-[#888] text-center mt-1">{handoffMethod === "local" ? "Next: choose how you'd like to be paid, then book a meetup window" : <>Next: pick payment method, then enter shipping address for your free <FedExMark /> label</>}</p>
+                <p className="text-[11px] text-[#888] text-center mt-1">{!cartNeedsShip ? "Next: choose how you'd like to be paid, then book a meetup window" : <>Next: pick payment method, then enter shipping address for your free <FedExMark /> label</>}</p>
               </form>
 
               <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#d4d4d4] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
@@ -12075,7 +12087,7 @@ export default function Home() {
                   <>
                     <label data-validate="handoff" className="block text-xs font-medium text-[#e6e6e6] mb-2 uppercase tracking-wider">How are you handing off the device?</label>
                     <div className="grid grid-cols-2 gap-2 mb-3">
-                      <button type="button" onClick={() => setHandoffMethod("ship")} className="flex items-center gap-3 px-3 py-3 rounded-xl border border-white/10 cursor-pointer text-left tap-press transition" style={{ background: "rgba(255,255,255,0.03)" }}>
+                      <button type="button" onClick={() => chooseHandoff("ship")} className="flex items-center gap-3 px-3 py-3 rounded-xl border border-white/10 cursor-pointer text-left tap-press transition" style={{ background: "rgba(255,255,255,0.03)" }}>
                         <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
                           <svg className="w-4 h-4 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7h13l4 4v6a1 1 0 01-1 1h-2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
                         </div>
@@ -12084,7 +12096,7 @@ export default function Home() {
                           <p className="text-[#bdbdbd] text-[11px] leading-snug">Free prepaid label</p>
                         </div>
                       </button>
-                      <button type="button" onClick={() => setHandoffMethod("local")} className="flex items-center gap-3 px-3 py-3 rounded-xl border border-white/10 cursor-pointer text-left tap-press transition" style={{ background: "rgba(255,255,255,0.03)" }}>
+                      <button type="button" onClick={() => chooseHandoff("local")} className="flex items-center gap-3 px-3 py-3 rounded-xl border border-white/10 cursor-pointer text-left tap-press transition" style={{ background: "rgba(255,255,255,0.03)" }}>
                         <div className="w-8 h-8 rounded-lg bg-[#00c853]/15 border border-[#00c853]/30 flex items-center justify-center shrink-0">
                           <svg className="w-4 h-4 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
                         </div>
@@ -12116,7 +12128,7 @@ export default function Home() {
                           type="button"
                           onClick={() => {
                             const doSwitch = () => {
-                              setHandoffMethod("local");
+                              chooseHandoff("local");
                               setLocalArea(null);
                               setActionToast("Switched to local meetup");
                               setTimeout(() => setActionToast(null), 2500);
@@ -12212,7 +12224,7 @@ export default function Home() {
                             type="button"
                             onClick={() => {
                               const doSwitch = () => {
-                                setHandoffMethod("ship");
+                                chooseHandoff("ship");
                                 setActionToast("Switched to shipping");
                                 setTimeout(() => setActionToast(null), 2500);
                                 setTimeout(() => {
@@ -14261,7 +14273,7 @@ export default function Home() {
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
-                      onClick={() => setHandoffMethod("ship")}
+                      onClick={() => chooseHandoff("ship")}
                       className="flex flex-col items-start gap-0.5 p-2.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.07] cursor-pointer text-left tap-press transition"
                     >
                       <span className="text-white text-[12px] font-extrabold">Ship It</span>
@@ -14269,7 +14281,7 @@ export default function Home() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setHandoffMethod("local")}
+                      onClick={() => chooseHandoff("local")}
                       className="flex flex-col items-start gap-0.5 p-2.5 rounded-xl border border-[#00c853]/35 bg-[#00c853]/[0.08] hover:bg-[#00c853]/[0.14] cursor-pointer text-left tap-press transition"
                     >
                       <span className="text-white text-[12px] font-extrabold">Local Meetup</span>
@@ -14339,7 +14351,6 @@ export default function Home() {
 
                       const renderRow = ({ item, i }: Indexed) => {
                         const imgSrc = item.image || lookupImage(item.modelId);
-                        const itemHandoff: "ship" | "local" = item.handoff ?? "local";
                         return (
                           <div
                             key={i}
@@ -14400,25 +14411,6 @@ export default function Home() {
                                   <span className="text-white text-sm font-extrabold min-w-[20px] text-center">{item.quantity}</span>
                                   <button onClick={(e) => { e.stopPropagation(); setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, quantity: Math.min(10, it.quantity + 1) } : it)); }} aria-label="Increase quantity" className={`${qtyBtn} rounded-full bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center cursor-pointer transition`}>+</button>
                                 </div>
-                                {/* Per-item handoff toggle — lets a customer
-                                    fix a single line's handoff without
-                                    re-adding the device. */}
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    const next: "ship" | "local" = itemHandoff === "ship" ? "local" : "ship";
-                                    setCartItems(prev => prev.map((it, idx) => idx === i ? { ...it, handoff: next } : it));
-                                  }}
-                                  className={`inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-full border cursor-pointer transition ${
-                                    itemHandoff === "local"
-                                      ? "bg-[#00c853]/15 border-[#00c853]/45 text-[#7be8a8] hover:bg-[#00c853]/22"
-                                      : "bg-[#4fc3f7]/12 border-[#4fc3f7]/40 text-[#9fd9fb] hover:bg-[#4fc3f7]/18"
-                                  }`}
-                                  title={`Switch this item to ${itemHandoff === "local" ? "shipping" : "local meetup"}`}
-                                >
-                                  {itemHandoff === "local" ? "Local" : "Ship"} ⇄
-                                </button>
                               </div>
                               {item.price > 0 ? (
                                 <p className={`text-[#00c853] font-extrabold ${priceSz}`} style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price * item.quantity}</p>
