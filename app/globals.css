@@ -182,6 +182,14 @@ html[data-theme="light"] body::before {
   content: "";
   position: fixed;
   inset: 0;
+  /* iOS Safari shrinks/grows the visual viewport as the address bar
+     shows/hides; inset:0 alone can leave the fixed layer short, so the
+     backdrop covers only the top and the rest reads as black (a top/bottom
+     split visible ONLY on real iOS, not desktop). Pin to the LARGEST
+     viewport height so it always covers. 100vh fallback first, then lvh. */
+  height: 100vh;
+  height: 100lvh;
+  width: 100vw;
   z-index: -1;
   pointer-events: none;
   background:
@@ -235,6 +243,17 @@ html[data-theme="light"] .bg-white\/15 {
 html[data-theme="light"] .tcc-selection-frame {
   background: rgba(9, 11, 15, 0.60) !important;
 }
+/* Opaque dark SECTIONS/footer -> transparent so the backdrop shows through
+   the WHOLE page, not just the top. Without this, lower sections
+   (category, "Our Promise", footer) stay solid black and the page reads
+   as "backdrop on top, black on bottom" — a hard split (worst on tall
+   mobile pages). NOT the white version — the dark glassy panels + light
+   text stay; this only reveals the backdrop behind the bare sections. */
+html[data-theme="light"] .bg-\[\#0a0a0a\],
+html[data-theme="light"] .bg-\[\#0d0d0d\],
+html[data-theme="light"] .bg-\[\#0b0b0b\],
+html[data-theme="light"] .bg-black { background-color: transparent !important; }
+html[data-theme="light"] footer { background: transparent !important; }
 
 /* Cabinet Grotesk renders better with slight tracking adjustments
    per size band — tighter on display, looser on small. */
