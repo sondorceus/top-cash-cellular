@@ -11790,6 +11790,16 @@ export default function Home() {
                   }
                 }
               };
+              // Require an EXPLICIT Ship/Local choice — never default it for
+              // the customer. "Decide later" lets them browse, but they must
+              // pick before submitting since the checkout differs for each.
+              // (cart items otherwise fall back to "local", which would
+              // silently submit a deferred cart as local.) Skywalker 2026-05-29.
+              if (!handoffMethod) {
+                alert("Please choose Ship It or Local Meetup before submitting.");
+                focusByQuery(['[data-validate="handoff"]']);
+                return;
+              }
               // Per-item handoff means cart can need ship, local, or BOTH. Use
               // the derived needs flags so a mixed cart validates against both
               // input groups (address + slot).
@@ -12154,7 +12164,7 @@ export default function Home() {
                   </>
                 )}
 
-                {cartNeedsShip && (
+                {handoffMethod !== null && cartNeedsShip && (
                   <div className="space-y-2">
                     {cartIsMixed && (
                       <div className="mb-2 inline-flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#9fd9fb] bg-[#4fc3f7]/12 border border-[#4fc3f7]/40 rounded-full px-2.5 py-1">
@@ -12256,7 +12266,7 @@ export default function Home() {
                   </div>
                 )}
 
-                {cartNeedsLocal && (
+                {handoffMethod !== null && cartNeedsLocal && (
                   <div className="space-y-3">
                     {cartIsMixed && (
                       <div className="mb-2 inline-flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#7be8a8] bg-[#00c853]/15 border border-[#00c853]/45 rounded-full px-2.5 py-1">
