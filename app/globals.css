@@ -231,6 +231,60 @@ html[data-theme="light"] .bg-white\/15 {
 html[data-theme="light"] .tcc-selection-frame {
   background: rgba(9, 11, 15, 0.60) !important;
 }
+/* Floating menu surfaces — the nav dropdowns/mega-menus, the account
+   menu, modals, the search panel, the consent bar. These are coded as
+   solid near-black bricks (bg-[#111]/[#0f0f0f]/[#101010]/[#181818]) so in
+   dark they vanish into the page, but in glass they floated as flat black
+   slabs over the indigo backdrop ("dark black menu items"). Match the same
+   clear grey frost as the rest of the theme so the indigo carries through
+   and the menu reads as one glass sheet, not a darker box than everything
+   else. Heavy blur keeps text crisp even where there's no page-dim behind
+   the panel (account menu, consent bar). Skywalker 2026-05-28. */
+html[data-theme="light"] .bg-\[\#111\],
+html[data-theme="light"] .bg-\[\#0f0f0f\],
+html[data-theme="light"] .bg-\[\#101010\],
+html[data-theme="light"] .bg-\[\#181818\] {
+  background-color: rgba(11, 13, 18, 0.58) !important;
+  -webkit-backdrop-filter: blur(28px); backdrop-filter: blur(28px);
+}
+/* The sticky nav bar is bg-[#0a0a0a]/95 — the /95 opacity variant is a
+   DIFFERENT class than bare bg-[#0a0a0a] (handled above), so the override
+   missed it and the whole header stayed a flat black bar instead of glass.
+   Frost it so the indigo backdrop carries up through the header and the
+   pill outlines/logo read as glass, not gray-on-black. */
+html[data-theme="light"] nav.bg-\[\#0a0a0a\]\/95 {
+  background-color: rgba(10, 11, 15, 0.34) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(140%); backdrop-filter: blur(22px) saturate(140%);
+}
+/* The nav pills (logo / center menu / cart cluster / account chip) are
+   bg-white/[0.12] → the generic glass rule tints them a fairly opaque dark
+   (0.74). Inside the now-clear header that read heavy, so clarify the nav
+   pills specifically: lighter dark glass so the indigo flows through them
+   too and the whole bar reads as one clear sheet. White text/icons stay
+   readable over the blur. */
+html[data-theme="light"] nav .bg-white\/\[0\.12\] {
+  background-color: rgba(12, 14, 20, 0.42) !important;
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+}
+/* Glass nav: lift the faint white/10 hairline borders + the cart-cluster
+   divider so the logo pill, center menu pill and cart/login cluster read
+   crisply over the bright indigo instead of washing out. Dark theme keeps
+   the subtle white/10. */
+html[data-theme="light"] nav .border-white\/10 {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+}
+html[data-theme="light"] nav .bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.22) !important;
+}
+/* Logo — the wordmark PNG has a dark plate/shadow baked behind the letters.
+   It's invisible on the dark theme, but on the clear glass pill it showed
+   as a gray "box-in-a-box". So we ship two wordmarks: the original (with
+   its 3D drop-shadow) on dark, and a plate-stripped version on glass so the
+   lettering sits clean on the indigo. The logo pill itself just inherits
+   the same clear glass as the other nav pills (rule above). */
+.tcc-logo-glass { display: none; }
+html[data-theme="light"] .tcc-logo-dark { display: none; }
+html[data-theme="light"] .tcc-logo-glass { display: inline-block; }
 
 /* Cabinet Grotesk renders better with slight tracking adjustments
    per size band — tighter on display, looser on small. */

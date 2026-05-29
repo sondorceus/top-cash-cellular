@@ -6664,8 +6664,9 @@ export default function Home() {
       <SlideOnScrollNav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between relative">
           {/* LEFT: logo — Top Cash Cellular wordmark (Skywalker 2026-05-20) */}
-          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="cursor-pointer shrink-0 tap-press inline-flex items-center bg-white/[0.12] border border-white/10 rounded-full px-3 py-1">
-            <NextImage src="/logo-wordmark.png" alt="Top Cash Cellular" width={1000} height={382} className="h-9 lg:h-11 w-auto" loading="eager" />
+          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="tcc-logo-pill cursor-pointer shrink-0 tap-press inline-flex items-center bg-white/[0.12] border border-white/10 rounded-full px-3 py-1">
+            <NextImage src="/logo-wordmark.png" alt="Top Cash Cellular" width={1000} height={382} className="tcc-logo-dark h-9 lg:h-11 w-auto" loading="eager" />
+            <NextImage src="/logo-wordmark-glass.png" alt="Top Cash Cellular" width={1000} height={382} className="tcc-logo-glass h-9 lg:h-11 w-auto" loading="eager" />
           </button>
 
           {/* CENTER (lg+ only, absolutely centered relative to the nav row): Sell / Bulk / Support */}
