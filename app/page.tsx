@@ -13152,7 +13152,10 @@ export default function Home() {
 
       {/* STEP: DONE */}
       {step === "done" && page === "home" && payout && ((model && condition) || (submittedDevices && submittedDevices.length > 0)) && (
-        <section className="tcc-step-in">
+        // Opacity-only reveal (no transform) so the fixed bottom "Open my
+        // offer page" CTA below can pin to the viewport on mobile — a
+        // transform would make the section a containing block and trap it.
+        <section className="tcc-fade-in">
           <div className="max-w-lg md:max-w-3xl mx-auto px-4 pt-6 lg:pt-10 pb-12">
             {/* Hero — beveled green tile with checkmark + glow rim */}
             <div className="text-center mb-5 lg:mb-8">
@@ -13445,7 +13448,25 @@ export default function Home() {
                 Sell another device
               </button>
             </div>
+            {/* Spacer so the fixed offer CTA doesn't sit on top of the
+                content above it on mobile. */}
+            {submittedLeadId && <div className="lg:hidden h-28" />}
           </div>
+          {/* QUICK-ACCESS OFFER CTA — mobile-only fixed bottom bar, styled
+              like the funnel's "Add to Cart" button, so the customer can
+              jump straight to their offer page without scrolling. Desktop
+              already shows the offer hero card inline above, so this is
+              hidden on lg+. */}
+          {submittedLeadId && (
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-[rgba(10,10,10,0.95)] backdrop-blur-md border-t border-white/10 px-4 pt-4 cta-bar-ios">
+              <a
+                href={`/offer/${encodeURIComponent(submittedLeadId)}`}
+                className="tcc-button-primary no-underline flex items-center justify-center gap-2 w-full py-5 text-base font-extrabold"
+              >
+                {handoffMethod === "ship" ? "Open offer + print label →" : "Open my offer page →"}
+              </a>
+            </div>
+          )}
         </section>
       )}
 
