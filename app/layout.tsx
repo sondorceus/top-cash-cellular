@@ -73,10 +73,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`h-full antialiased ${cabinet.variable}`} suppressHydrationWarning>
       <head>
         {/* Theme init — set data-theme BEFORE paint so there's no flash.
-            Dark is the default; light only when the user has chosen it. */}
+            Indigo glass ('light') is now the default everyone sees; dark
+            only when explicitly chosen via the backend switch (/admin). */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(()=>{try{var t=localStorage.getItem('tcc-theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();`
+            __html: `(()=>{try{var t=localStorage.getItem('tcc-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){document.documentElement.setAttribute('data-theme','light');}})();`
           }}
         />
         <script

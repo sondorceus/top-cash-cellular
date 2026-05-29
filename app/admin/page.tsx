@@ -1521,18 +1521,18 @@ export default function AdminPage() {
                 >Sign out</button>
               </div>
             )}
-            {/* EXPERIMENTAL: clear-glass theme preview. Flips the global
-                data-theme + localStorage for THIS browser only, so a
-                staffer can preview the public site in the Apple-style
-                glass look. Public visitors never see this control — the
-                live site stays full-dark for everyone. Skywalker
-                2026-05-28: keep glass backend-only for now. */}
+            {/* Site theme switch. Indigo glass is now the LIVE default for
+                everyone (set pre-paint in layout.tsx). This control stays
+                backend-only — it flips data-theme + localStorage for THIS
+                browser, so staff can flip to the full-dark fallback to
+                compare. Public visitors don't see this switch; they just
+                land on indigo. Skywalker 2026-05-29: indigo went live. */}
             <div
               className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-full pl-3 pr-0.5 py-0.5"
-              title="Experimental — preview the clear-glass theme (this browser only)"
+              title="Switch this browser between indigo glass (live default) and full dark"
             >
               <span className="text-[11px] text-[#9aa0a6] font-semibold whitespace-nowrap">
-                Glass <span className="text-[#00c853]">beta</span>
+                Indigo <span className="text-[#00c853]">live</span>
               </span>
               <ThemeToggle />
             </div>
