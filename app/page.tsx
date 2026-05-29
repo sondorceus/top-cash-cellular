@@ -14477,8 +14477,8 @@ export default function Home() {
 
               {/* STICKY FOOTER */}
               {cartItems.length > 0 && (
-                <div className="tcc-cart-footer border-t border-white/10 px-6 py-3.5 bg-[rgba(40,40,46,0.98)]">
-                  <div className="flex items-center justify-between mb-3">
+                <div className="tcc-cart-footer border-t border-white/10 px-6 py-3 bg-[rgba(40,40,46,0.98)]">
+                  <div className="flex items-center justify-between mb-2.5">
                     <div>
                       <p className="text-[#b8b8b8] text-[10px] font-bold uppercase tracking-wider">Total payout</p>
                       <p className="text-[#00c853] font-extrabold text-[28px] leading-none mt-0.5" style={{ textShadow: "0 0 10px rgba(0,200,83,0.3)" }}>${total}</p>
@@ -14517,24 +14517,14 @@ export default function Home() {
                       mirror the chosen handoff method; the null/default
                       case keeps the local copy since that's what the
                       hero copy upstream promises by default. */}
-                  <div className="mt-2.5 grid grid-cols-3 gap-2 text-center">
+                  <div className="mt-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-[#9a9a9a] text-[10px] font-semibold leading-tight">
                     {handoffMethod === "ship" ? (
-                      <>
-                        <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight"><svg className="w-4 h-4 block mx-auto mb-0.5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Same-day<br />after inspect</div>
-                        <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight"><svg className="w-4 h-4 block mx-auto mb-0.5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>Insured<br />+ tracked</div>
-                      </>
+                      <><span>Same-day after inspect</span><span className="text-white/20">·</span><span>Insured + tracked</span></>
                     ) : (
-                      <>
-                        <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight"><svg className="w-4 h-4 block mx-auto mb-0.5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Same-day<br />payout</div>
-                        <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight"><svg className="w-4 h-4 block mx-auto mb-0.5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>On-site<br />data wipe</div>
-                      </>
+                      <><span>Same-day payout</span><span className="text-white/20">·</span><span>On-site data wipe</span></>
                     )}
-                    <div className="text-[#c8c8c8] text-[10px] font-semibold leading-tight">
-                      <svg className="w-4 h-4 block mx-auto mb-0.5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                      {handoffMethod === "ship"
-                        ? <>Cash App · Zelle<br />Venmo · BTC</>
-                        : <>Cash · Zelle<br />Cash App · BTC</>}
-                    </div>
+                    <span className="text-white/20">·</span>
+                    <span>{handoffMethod === "ship" ? "Cash App · Zelle · BTC" : "Cash · Zelle · BTC"}</span>
                   </div>
                 </div>
               )}
