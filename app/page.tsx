@@ -4802,6 +4802,11 @@ export default function Home() {
   // funnel + post-funnel copy / badges / messaging stayed generic
   // until checkout. The modal makes every CTA committal.
   const [handoffPickerOpen, setHandoffPickerOpen] = useState(false);
+  // Optional action to run AFTER the handoff picker resolves. Lets a device
+  // card (quick-quote / hot-today) prompt ship-vs-local first, then resume
+  // straight into THAT device instead of dropping the user on the category
+  // grid. Null = picker resumes into category (the default funnel entry).
+  const [pendingFunnelAction, setPendingFunnelAction] = useState<(() => void) | null>(null);
   // Wrap any CTA that wants to enter the funnel. If handoff is
   // already committed (hero, prior session), it just routes straight
   // into category. Otherwise the picker pops first.
@@ -4813,6 +4818,28 @@ export default function Home() {
       return;
     }
     setHandoffPickerOpen(true);
+  };
+  // Like startFunnel, but resumes into a specific device (`run`) once the
+  // handoff is picked — or immediately if it's already committed. Used by
+  // the quick-quote / featured device cards so they ask ship-vs-local first,
+  // same as the hero CTA, instead of skipping straight to the device.
+  const startFunnelWith = (run: () => void) => {
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    if (handoffMethod) { run(); return; }
+    setPendingFunnelAction(() => run);
+    setHandoffPickerOpen(true);
+  };
+  // Resolve the picker: run the pending device action if one was queued,
+  // otherwise fall back to the category grid.
+  const resumeAfterHandoff = () => {
+    if (pendingFunnelAction) {
+      const fn = pendingFunnelAction;
+      setPendingFunnelAction(null);
+      fn();
+    } else {
+      setStep("category");
+      pushHistory("category");
+    }
   };
   // Cross-route entry — separate Next.js route pages (/faq, /how-it-
   // works, /sell/[slug], /reviews, etc.) can't call startFunnel()
@@ -6566,7 +6593,7 @@ export default function Home() {
                 onClick={() => {
                   chooseHandoff("local");
                   setHandoffPickerOpen(false);
-                  setStep("category"); pushHistory("category");
+                  resumeAfterHandoff();
                 }}
                 className="tcc-button-primary w-full py-3 text-sm font-extrabold flex flex-col items-center gap-0.5"
               >
@@ -6578,7 +6605,7 @@ export default function Home() {
                 onClick={() => {
                   chooseHandoff("ship");
                   setHandoffPickerOpen(false);
-                  setStep("category"); pushHistory("category");
+                  resumeAfterHandoff();
                 }}
                 className="w-full bg-[rgba(20,22,28,0.85)] hover:bg-[rgba(28,32,40,0.95)] border border-white/22 hover:border-[#00c853]/60 text-white py-3 rounded-2xl text-sm font-extrabold cursor-pointer transition flex flex-col items-center gap-0.5"
               >
@@ -6590,7 +6617,7 @@ export default function Home() {
               type="button"
               onClick={() => {
                 setHandoffPickerOpen(false);
-                setStep("category"); pushHistory("category");
+                resumeAfterHandoff();
               }}
               className="block mx-auto mt-3 text-[11px] text-[#888] hover:text-[#00c853] underline underline-offset-2 cursor-pointer transition"
             >
@@ -6675,9 +6702,9 @@ export default function Home() {
       <SlideOnScrollNav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-lg md:max-w-3xl lg:max-w-none mx-auto px-4 lg:px-8 py-3 flex items-center justify-between relative">
           {/* LEFT: logo — Top Cash Cellular wordmark (Skywalker 2026-05-20) */}
-          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label="Go to homepage" className="tcc-logo-pill cursor-pointer shrink-0 tap-press inline-flex items-center bg-white/[0.12] border border-white/10 rounded-full px-3 py-1">
-            <NextImage src="/logo-wordmark.png" alt="Top Cash Cellular" width={1000} height={382} className="tcc-logo-dark h-9 lg:h-11 w-auto" loading="eager" />
-            <NextImage src="/logo-wordmark-glass.png" alt="Top Cash Cellular" width={1000} height={382} className="tcc-logo-glass h-9 lg:h-11 w-auto" loading="eager" />
+          <button onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }} onMouseDown={(e) => e.preventDefault()} aria-label="Go to homepage" className="tcc-logo-pill cursor-pointer shrink-0 tap-press inline-flex items-center bg-white/[0.12] border border-white/10 rounded-full px-3 py-1 select-none">
+            <NextImage src="/logo-wordmark.png" alt="Top Cash Cellular" width={1000} height={382} draggable={false} className="tcc-logo-dark h-9 lg:h-11 w-auto pointer-events-none select-none" loading="eager" />
+            <NextImage src="/logo-wordmark-glass.png" alt="Top Cash Cellular" width={1000} height={382} draggable={false} className="tcc-logo-glass h-9 lg:h-11 w-auto pointer-events-none select-none" loading="eager" />
           </button>
 
           {/* CENTER (lg+ only, absolutely centered relative to the nav row): Sell / Bulk / Support */}
@@ -7980,14 +8007,19 @@ export default function Home() {
                     <button
                       key={d.model}
                       onClick={() => {
-                        setCategory(d.cat);
-                        setDeviceType(d.dt);
-                        // image: d.photo — was missing; without it the
-                        // sticky selectionPanel on the left rail rendered
-                        // a blank image slot for quick-quote starts.
-                        // Skywalker 2026-05-25.
-                        setModel({ id: d.model, label: d.title, base: d.floor, image: d.photo });
-                        popThenRun(`feat-${d.model}`, () => { setStep("condition"); pushHistory("condition"); });
+                        // Ask ship-vs-local first (same as the hero CTA),
+                        // then resume into this specific device. Skywalker
+                        // 2026-05-29 — quick-quote cards were skipping the
+                        // handoff prompt the rest of the home flow uses.
+                        startFunnelWith(() => {
+                          setCategory(d.cat);
+                          setDeviceType(d.dt);
+                          // image: d.photo — without it the sticky
+                          // selectionPanel on the left rail renders a blank
+                          // image slot for quick-quote starts.
+                          setModel({ id: d.model, label: d.title, base: d.floor, image: d.photo });
+                          popThenRun(`feat-${d.model}`, () => { setStep("condition"); pushHistory("condition"); });
+                        });
                       }}
                       className={`group bg-white/[0.07] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press tcc-anim-border ${funnelPop === `feat-${d.model}` ? "tap-confirm" : ""}`}
                     >
