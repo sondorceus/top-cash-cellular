@@ -51,6 +51,14 @@
    viewport. Reverting to transform:none at rest frees it. */
 .tcc-step-in { animation: stepIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
 
+/* Opacity-only reveal — NO transform, so the element never becomes a
+   containing block for position:fixed children. Used on the QUOTE screen,
+   whose mobile "Add to Cart" CTA is fixed to the viewport bottom; a
+   transform-based reveal (tcc-step-in) trapped that bar inside the
+   section. Other steps have no fixed children and keep the slide reveal. */
+@keyframes fadeInOnly { from { opacity: 0; } to { opacity: 1; } }
+.tcc-fade-in { animation: fadeInOnly 0.32s ease-out backwards; }
+
 /* Centered modal entrance — gentle scale + fade (premium, no slide). */
 @keyframes popIn {
   from { transform: scale(0.96); opacity: 0; }

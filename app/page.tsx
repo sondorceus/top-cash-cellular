@@ -10677,7 +10677,10 @@ export default function Home() {
 
       {/* STEP: QUOTE */}
       {step === "quote" && page === "home" && model && condition && (
-        <section className="tcc-step-in relative">
+        // Opacity-only reveal (no transform) so the fixed bottom-pinned
+        // "Add to Cart" CTA stays pinned to the viewport on mobile — a
+        // transform here makes the section a containing block and traps it.
+        <section className="tcc-fade-in relative">
           {showConfetti && (
             <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
               {Array.from({ length: 60 }).map((_, i) => (
