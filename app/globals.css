@@ -311,6 +311,21 @@ html[data-theme="light"] .tcc-cart-backdrop {
   background-color: rgba(8, 9, 22, 0.62) !important;
 }
 
+/* Admin / backend on glass. The wrapper is display:contents so it adds no
+   layout — it's only a scoping hook. The admin's page <main> is bg-black
+   (→ transparent via the global rule, so the indigo gradient shows through,
+   which is what we want). But its modals + sticky bars use bg-[#0a0a0a],
+   which the global rule ALSO turns transparent — so they'd render see-through
+   over the gradient and become unreadable. Frost those to a solid-ish dark
+   glass here (admin-scoped, so the public site's bg-[#0a0a0a] still goes
+   fully transparent as intended). Skywalker 2026-05-29. */
+.tcc-admin { display: contents; }
+html[data-theme="light"] .tcc-admin .bg-\[\#0a0a0a\],
+html[data-theme="light"] .tcc-admin .bg-\[\#0a0a0a\]\/95 {
+  background-color: rgba(13, 15, 22, 0.8) !important;
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+}
+
 /* Cabinet Grotesk renders better with slight tracking adjustments
    per size band — tighter on display, looser on small. */
 h1, h2, h3 { letter-spacing: -0.02em; }
