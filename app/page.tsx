@@ -7841,7 +7841,7 @@ export default function Home() {
 
       {/* STEP: DEVICE TYPE */}
       {step === "device" && page === "home" && (
-        <section className="animate-[fadeIn_0.27s_ease-out]" style={{ background: "radial-gradient(120% 65% at 50% 0%, rgba(0,200,83,0.16), transparent 72%)" }}>
+        <section className="animate-[fadeIn_0.27s_ease-out]">
           {/* Hero backdrop removed 2026-05-17 per Skywalker — looked
               bad in production. The faded multi-device decoration was
               competing with the actual hero copy instead of receding.
