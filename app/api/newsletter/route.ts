@@ -63,10 +63,10 @@ export async function POST(req: NextRequest) {
     const unsubUrl = `https://topcashcellular.com/api/newsletter/unsubscribe?token=${unsubToken}`;
 
     const htmlEmail = `<!DOCTYPE html>
-<html><body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#fff;">
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#0a0a0a;padding:32px 16px;">
+<html><body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#fff;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#13142b;padding:32px 16px;">
   <tr><td align="center">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:560px;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:560px;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;">
       <tr><td style="padding:32px 28px 0;">
         <p style="margin:0 0 4px;color:#00c853;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;">Top Cash Cellular</p>
         <h1 style="margin:0 0 16px;font-size:24px;line-height:1.25;color:#fff;font-weight:800;">${greeting}</h1>

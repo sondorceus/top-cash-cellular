@@ -43,14 +43,14 @@ async function emailAdjust(to: string, name: string | undefined, device: string 
   try {
     const { Resend } = await import("resend");
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const html = `<!DOCTYPE html><html><body style="margin:0;padding:24px;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,sans-serif">
-<table width="600" style="max-width:600px;margin:0 auto;background:#111;border:1px solid #222;border-radius:12px;padding:24px">
+    const html = `<!DOCTYPE html><html><body style="margin:0;padding:24px;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,sans-serif">
+<table width="600" style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid #222;border-radius:12px;padding:24px">
 <tr><td>
 <div style="font-size:22px;font-weight:800;color:#00c853;margin-bottom:8px">💰 Top Cash Cellular</div>
 <div style="font-size:14px;color:#888;margin-bottom:20px">Austin's #1 Device Buyback</div>
 <div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:12px">Hi ${first},</div>
 <div style="font-size:15px;color:#ccc;line-height:1.6;margin-bottom:16px">After in-person inspection, we adjusted the offer for ${dev}.</div>
-<div style="background:#1a1a2e;border:1px solid #333;border-radius:10px;padding:16px;margin-bottom:16px;text-align:center">
+<div style="background:#13142b;border:1px solid #333;border-radius:10px;padding:16px;margin-bottom:16px;text-align:center">
 <div style="font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Updated Offer</div>
 <div style="font-size:36px;font-weight:800;color:#00c853">$${newQuote}</div>
 </div>

@@ -146,9 +146,9 @@ function buildCounterOfferEmail(args: { name: string; device: string; originalQu
   const { name, device, originalQuote, offer, reason, offerUrl, diff } = args;
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
-<div style="background:#0a0a0a;padding:32px 16px">
-<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden">
+<body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
+<div style="background:#13142b;padding:32px 16px">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden">
 <tr><td style="background:linear-gradient(135deg,#ffd54f 0%,#ff9100 100%);padding:24px 28px">
 <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#1a1100;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div>
 <div style="font-size:22px;font-weight:800;color:#1a1100;line-height:1.1">Revised offer for your trade</div>
@@ -183,7 +183,7 @@ function buildCounterOfferEmail(args: { name: string; device: string; originalQu
 </td></tr>
 
 <tr><td style="padding:24px 28px 8px 28px;text-align:center">
-<a href="${offerUrl}" style="display:inline-block;padding:14px 32px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Review &amp; respond →</a>
+<a href="${offerUrl}" style="display:inline-block;padding:14px 32px;background:linear-gradient(180deg,#00c853 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Review &amp; respond →</a>
 <p style="font-size:11px;color:#888;margin:12px 4px 0;line-height:1.55">No pressure. Accept the revised offer and we pay you within 24 hours. Decline and we return your device free — no questions asked.</p>
 </td></tr>
 

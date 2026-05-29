@@ -40,10 +40,10 @@ function confirmationHtml(email: string, success: boolean): string {
     ? `<p>${email} won't get any more emails from Top Cash Cellular. Changed your mind later? <a href="https://topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">Re-subscribe at our home page</a>.</p>`
     : `<p>The unsubscribe link looks tampered or expired. Email <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">support@topcashcellular.com</a> and we'll handle it manually.</p>`;
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title></head>
-<body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
+<body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
 <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px">
-<div style="max-width:520px;width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;text-align:center">
-<div style="background:${success ? "linear-gradient(135deg,#00e676 0%,#00a039 100%)" : "linear-gradient(135deg,#ff5252 0%,#a31515 100%)"};padding:24px 28px;color:#0a0a0a">
+<div style="max-width:520px;width:100%;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;text-align:center">
+<div style="background:${success ? "linear-gradient(135deg,#00c853 0%,#00a039 100%)" : "linear-gradient(135deg,#ff5252 0%,#a31515 100%)"};padding:24px 28px;color:#0a0a0a">
 <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7;margin-bottom:4px">Top Cash Cellular</div>
 <div style="font-size:22px;font-weight:800;line-height:1.1">${title}</div>
 </div>

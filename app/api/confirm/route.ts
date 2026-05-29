@@ -131,18 +131,18 @@ export async function POST(req: NextRequest) {
     const htmlEmail = `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#1a1a1d;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;color:#e6e6e6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
+<body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;color:#e6e6e6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
 <!-- Outer wrapper — matches the email card background so on desktop
      (Gmail/Outlook web, Resend preview) the email doesn't sit on a
      gray void with empty side margins. Subtle radial highlight at top
      gives depth on wide viewports. Skywalker 2026-05-19 — "looks good
      on mobile but not on desktop". -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#1a1a1d;background-image:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,200,83,0.12) 0%, transparent 60%)">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#13142b;background-image:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.22) 0%, transparent 62%)">
 <tr><td align="center" style="padding:40px 16px">
-<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;width:100%;margin:0 auto;border-collapse:separate;background:#1a1a1d;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45),0 0 0 1px rgba(0,200,83,0.05)">
+<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;width:100%;margin:0 auto;border-collapse:separate;background:#13142b;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45),0 0 0 1px rgba(0,200,83,0.05)">
 
 <!-- Hero header — green gradient with inset rim light -->
-<tr><td style="background:linear-gradient(135deg,#00e676 0%,#00a039 100%);padding:28px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
+<tr><td style="background:linear-gradient(135deg,#00c853 0%,#00a039 100%);padding:28px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td style="vertical-align:middle">
@@ -268,7 +268,7 @@ ${hasLabel ? `
 <div style="font-size:16px;color:#fff;font-weight:700;font-family:ui-monospace,SFMono-Regular,monospace">${fedexLabel.tracking}</div>
 <div style="font-size:12px;color:#b8b8b8;margin-top:4px">${String(fedexLabel.service || "").replace(/_/g, " ")} · prepaid · drop at any FedEx location</div>
 <div style="margin-top:14px;text-align:center">
-<a href="${fedexLabel.url}" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Download label PDF</a>
+<a href="${fedexLabel.url}" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00c853 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Download label PDF</a>
 </div>
 </td></tr>
 </table>
@@ -427,7 +427,7 @@ One label covers the entire package — you don&#39;t need ${deviceArr.length} s
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td width="40" valign="top" style="padding:8px 0">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00e676 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">1</td></tr></table>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00c853 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">1</td></tr></table>
 </td>
 <td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isMixed
   ? "Ship items: print your prepaid label and tape it to a padded box. Local items: we reach out to schedule the meetup."
@@ -435,7 +435,7 @@ One label covers the entire package — you don&#39;t need ${deviceArr.length} s
 </tr>
 <tr>
 <td width="40" valign="top" style="padding:8px 0">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00e676 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">2</td></tr></table>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00c853 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">2</td></tr></table>
 </td>
 <td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isMixed
   ? "Drop the FedEx box at any FedEx location and meet us at the booked window for your local items"
@@ -443,7 +443,7 @@ One label covers the entire package — you don&#39;t need ${deviceArr.length} s
 </tr>
 <tr>
 <td width="40" valign="top" style="padding:8px 0">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00e676 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">3</td></tr></table>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00c853 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">3</td></tr></table>
 </td>
 <td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isMixed
   ? "Ship items pay within 24h after we inspect; local items pay on the spot — Cash App / Zelle / Bitcoin / cash"
@@ -466,7 +466,7 @@ ${(phoneDigits || email) ? `<tr><td style="padding:18px 28px 0 28px">
 
 <!-- CTA -->
 <tr><td style="padding:18px 28px 6px 28px;text-align:center">
-<a href="mailto:support@topcashcellular.com" style="display:inline-block;padding:14px 32px;background:linear-gradient(180deg,#00e676 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply with questions</a>
+<a href="mailto:support@topcashcellular.com" style="display:inline-block;padding:14px 32px;background:linear-gradient(180deg,#00c853 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply with questions</a>
 </td></tr>
 
 <!-- TRUST STRIP — 3 trust badges, builds confidence before footer -->
