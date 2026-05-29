@@ -6583,13 +6583,13 @@ export default function Home() {
           all close without committing. Skywalker 2026-05-23. */}
       {handoffPickerOpen && (
         <div
-          className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 animate-[fadeIn_0.16s_ease-out]"
+          className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center px-4 animate-[fadeIn_0.3s_ease-out]"
           onClick={() => setHandoffPickerOpen(false)}
         >
           <div
             onClick={(e) => e.stopPropagation()}
             className="bg-[rgba(20,20,24,0.97)] backdrop-blur-[14px] border border-white/15 rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.8)] w-full max-w-md p-5"
-            style={{ animation: "slideInRight 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both" }}
+            style={{ animation: "popIn 0.34s cubic-bezier(0.22, 1, 0.36, 1) both" }}
           >
             <div className="flex items-start justify-between gap-3 mb-3">
               <div>
@@ -7240,7 +7240,7 @@ export default function Home() {
                 <svg className={`w-4 h-4 text-white/50 transition ${mobileMenuExpanded === "sell" ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
               {mobileMenuExpanded === "sell" && (
-                <div className="px-3 pb-4 grid grid-cols-3 gap-2">
+                <div className="px-3 pb-4 grid grid-cols-3 gap-2 animate-[accordionDown_0.28s_ease-out]">
                   {[
                     { id: "phones" as const, label: "Phone" },
                     { id: "tablets" as const, label: "Tablet" },
@@ -7274,7 +7274,7 @@ export default function Home() {
                 <svg className={`w-4 h-4 text-white/50 transition ${mobileMenuExpanded === "bulk" ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
               {mobileMenuExpanded === "bulk" && (
-                <div className="px-3 pb-3 space-y-1">
+                <div className="px-3 pb-3 space-y-1 animate-[accordionDown_0.28s_ease-out]">
                   <a href="/bulk" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
                     <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>
                     <div>
@@ -7303,7 +7303,7 @@ export default function Home() {
                 <svg className={`w-4 h-4 text-white/50 transition ${mobileMenuExpanded === "support" ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
               {mobileMenuExpanded === "support" && (
-                <div className="px-3 pb-3 space-y-1">
+                <div className="px-3 pb-3 space-y-1 animate-[accordionDown_0.28s_ease-out]">
                   <a href="/how-it-works" onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
                     <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <div>
@@ -7956,7 +7956,7 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-2 hero-fade-up hero-d-4">
+            <div className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-2 hero-fade-up hero-d-4">
               <a href="/reviews" className="inline-flex items-center gap-1.5 bg-[#ffb400]/10 text-[#ffb400] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#ffb400]/20 hover:bg-[#ffb400]/15 transition">
                 <span className="text-sm leading-none">★</span>
                 4.9 — Read reviews

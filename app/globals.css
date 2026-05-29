@@ -17,6 +17,20 @@
   to { transform: translateX(0); opacity: 1; }
 }
 
+/* Centered modal entrance — gentle scale + fade (premium, no slide). */
+@keyframes popIn {
+  from { transform: scale(0.96); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Accordion / disclosure reveal — soft slide-down + fade so expanding a
+   section (e.g. the mobile menu's Sell/Bulk/Support) eases open instead of
+   snapping. */
+@keyframes accordionDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* Selection frame — wraps a group of selection rows (storage, condition,
    carrier) in a slightly-elevated glass container so the whole group
    reads as ONE 3D object instead of loose floating tiles. Inspired by
