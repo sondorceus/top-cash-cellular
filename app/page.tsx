@@ -4638,7 +4638,19 @@ export default function Home() {
   // Returning-customer lookup (Option A login)
   const [lookupOpen, setLookupOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuClosing, setMobileMenuClosing] = useState(false);
   const [mobileMenuExpanded, setMobileMenuExpanded] = useState<"sell" | "bulk" | "support" | null>("sell");
+  // Close the hamburger with a slide-out animation, then run an optional
+  // follow-up (e.g. navigate into the funnel) so tapping a device doesn't
+  // make the drawer vanish instantly. Skywalker 2026-05-29.
+  const closeMobileMenu = (after?: () => void) => {
+    setMobileMenuClosing(true);
+    window.setTimeout(() => {
+      setMobileMenuOpen(false);
+      setMobileMenuClosing(false);
+      after?.();
+    }, 300);
+  };
   const [lookupContact, setLookupContact] = useState("");
   const [lookupLoading, setLookupLoading] = useState(false);
   const [lookupResult, setLookupResult] = useState<{ found: boolean; name?: string; lastQuote?: string; leadCount?: number; leads?: Array<{ name?: string; device?: string; model?: string; quote?: string; timestamp: string }> } | null>(null);
@@ -4719,6 +4731,18 @@ export default function Home() {
   };
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [cartClosing, setCartClosing] = useState(false);
+  // Close the cart drawer with a slide-out, then run an optional follow-up
+  // (e.g. go to checkout) so the transition reads smoothly instead of the
+  // drawer + page snapping. Skywalker 2026-05-29.
+  const closeCart = (after?: () => void) => {
+    setCartClosing(true);
+    window.setTimeout(() => {
+      setCartOpen(false);
+      setCartClosing(false);
+      after?.();
+    }, 300);
+  };
 
   // One handoff for the whole order — no mixed ship+local carts. Picking a
   // method (hero dual-path, cart picker, checkout picker) sets the cart-level
@@ -7215,17 +7239,17 @@ export default function Home() {
 
       {/* MOBILE MENU DRAWER — same Sell/Bulk/Support/Login structure as the desktop mega-menu, accordion-style */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden animate-[fadeIn_0.3s_ease-out]" onClick={() => setMobileMenuOpen(false)}>
+        <div className={`fixed inset-0 z-[60] lg:hidden ${mobileMenuClosing ? "animate-[fadeOut_0.3s_ease-out_forwards]" : "animate-[fadeIn_0.3s_ease-out]"}`} onClick={() => closeMobileMenu()}>
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
           <div
             className="absolute right-0 top-0 bottom-0 w-[88vw] max-w-md bg-[#0a0a0a] border-l border-white/10 shadow-2xl overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
-            style={{ animation: "drawerIn 0.5s cubic-bezier(0.32, 0.72, 0, 1) both" }}
+            style={{ animation: mobileMenuClosing ? "drawerOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards" : "drawerIn 0.5s cubic-bezier(0.32, 0.72, 0, 1) both" }}
           >
             {/* Drawer header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 sticky top-0 bg-[#0a0a0a] z-10">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Menu</p>
-              <button onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center tap-press">
+              <button onClick={() => closeMobileMenu()} aria-label="Close menu" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center tap-press">
                 <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
@@ -7253,7 +7277,7 @@ export default function Home() {
                   ].map((cat) => (
                     <button
                       key={cat.id}
-                      onClick={() => { setMobileMenuOpen(false); setCategory(cat.id); setStep("brand"); pushHistory("brand"); }}
+                      onClick={() => closeMobileMenu(() => { setCategory(cat.id); setStep("brand"); pushHistory("brand"); })}
                       className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/[0.06] border border-white/10 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer tap-press"
                     >
                       <CategoryIcon id={cat.id} className="w-7 h-7 mb-1 text-white" />
@@ -7357,7 +7381,7 @@ export default function Home() {
               </>
             ) : (
               <button
-                onClick={() => { setMobileMenuOpen(false); setLookupOpen(true); }}
+                onClick={() => closeMobileMenu(() => setLookupOpen(true))}
                 className="w-full flex items-center gap-3 px-5 py-4 hover:bg-white/[0.06] transition tap-press border-b border-white/10"
               >
                 <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
@@ -14299,10 +14323,10 @@ export default function Home() {
         const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
         return (
           <>
-            <div className="tcc-cart-backdrop fixed inset-0 z-40 bg-black/70 backdrop-blur-sm animate-[fadeIn_0.3s_ease-out]" onClick={() => setCartOpen(false)} />
+            <div className={`tcc-cart-backdrop fixed inset-0 z-40 bg-black/70 backdrop-blur-sm ${cartClosing ? "animate-[fadeOut_0.3s_ease-out_forwards]" : "animate-[fadeIn_0.3s_ease-out]"}`} onClick={() => closeCart()} />
             <aside
               className="tcc-cart-drawer fixed top-0 right-0 bottom-0 z-50 w-full sm:w-[460px] lg:w-[520px] bg-[rgba(46,46,52,0.97)] backdrop-blur-[14px] border-l border-white/15 shadow-[0_0_60px_rgba(0,0,0,0.7)] flex flex-col"
-              style={{ animation: "drawerIn 0.5s cubic-bezier(0.32, 0.72, 0, 1) both" }}
+              style={{ animation: cartClosing ? "drawerOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards" : "drawerIn 0.5s cubic-bezier(0.32, 0.72, 0, 1) both" }}
             >
               {/* HEADER */}
               <div className="px-6 py-5 border-b border-white/10 flex items-start justify-between gap-4">
@@ -14310,7 +14334,7 @@ export default function Home() {
                   <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#00c853]">Your Box</p>
                   <h2 className="text-white text-2xl font-extrabold leading-tight mt-0.5">{itemCount === 0 ? "Empty" : `${itemCount} ${itemCount === 1 ? "device" : "devices"}`}</h2>
                 </div>
-                <button onClick={() => setCartOpen(false)} aria-label="Close cart" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press shrink-0">
+                <button onClick={() => closeCart()} aria-label="Close cart" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press shrink-0">
                   <svg className="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               </div>
@@ -14540,21 +14564,25 @@ export default function Home() {
                   </div>
                   <button
                     onClick={() => {
-                      // Always force the user back to the funnel page
-                      // before transitioning into the checkout step.
-                      // Without this, if they were on /privacy /faq
-                      // /about /etc. (any setPage non-home state), the
-                      // checkout section never renders because its
-                      // mount condition is `step === "checkout" &&
-                      // page === "home"`, and they get stranded on
-                      // the page they came from — Skywalker 2026-05-17
-                      // "click on cart and hit proceed it just goes
-                      // to the footer".
-                      setCartOpen(false);
-                      setPage("home");
-                      setStep("checkout");
-                      pushHistory("checkout");
-                      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+                      // Require an explicit Ship/Local pick before checkout —
+                      // the checkout differs for each, so never let an
+                      // undecided cart through. The cart's "How are you
+                      // handing off?" picker is shown right above when
+                      // undecided. Skywalker 2026-05-29.
+                      if (!handoffMethod) {
+                        alert("Please choose Ship It or Local Meetup first — the checkout is different for each.");
+                        return;
+                      }
+                      // Close the cart with a slide-out, then enter checkout.
+                      // Always force back to the funnel page first (the
+                      // checkout only mounts on `step === "checkout" && page
+                      // === "home"`) so a non-home page doesn't strand them.
+                      closeCart(() => {
+                        setPage("home");
+                        setStep("checkout");
+                        pushHistory("checkout");
+                        window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+                      });
                     }}
                     className="tcc-button-primary w-full py-3 text-base font-extrabold"
                   >

@@ -16,6 +16,17 @@
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 }
+/* Drawer exit — slide back out + fade. Paired with a short JS timeout that
+   unmounts after the animation so the menu closes smoothly instead of
+   vanishing instantly on a device tap. */
+@keyframes drawerOut {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
 
 /* Centered modal entrance — gentle scale + fade (premium, no slide). */
 @keyframes popIn {
