@@ -6573,7 +6573,7 @@ export default function Home() {
           <div
             onClick={(e) => e.stopPropagation()}
             className="bg-[rgba(20,20,24,0.97)] backdrop-blur-[14px] border border-white/15 rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.8)] w-full max-w-sm p-5"
-            style={{ animation: "slideInRight 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both" }}
+            style={{ animation: "gentleReveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) both" }}
           >
             <h3 className="text-white text-base font-extrabold mb-1">{confirmDialog.title}</h3>
             <p className="text-[#c8c8c8] text-[13px] leading-snug mb-4">{confirmDialog.body}</p>
@@ -6613,7 +6613,7 @@ export default function Home() {
           <div
             onClick={(e) => e.stopPropagation()}
             className="bg-[rgba(20,20,24,0.97)] backdrop-blur-[14px] border border-white/15 rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.8)] w-full max-w-md p-5"
-            style={{ animation: "popIn 0.34s cubic-bezier(0.22, 1, 0.36, 1) both" }}
+            style={{ animation: "gentleReveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) both" }}
           >
             <div className="flex items-start justify-between gap-3 mb-3">
               <div>
@@ -7414,12 +7414,12 @@ export default function Home() {
           a manual-review lead. Skywalker 2026-05-19. */}
       {partsModalOpen && (
         <div
-          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-[fadeIn_0.135s_ease-out]"
+          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-[fadeIn_0.3s_ease-out]"
           onClick={() => !partsSubmitting && setPartsModalOpen(false)}
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full sm:max-w-md bg-[#0f0f0f] sm:rounded-2xl rounded-t-2xl border border-white/10 p-5 max-h-[92vh] overflow-y-auto"
+            className="w-full sm:max-w-md bg-[#0f0f0f] sm:rounded-2xl rounded-t-2xl border border-white/10 p-5 max-h-[92vh] overflow-y-auto tcc-modal-in"
           >
             {partsSubmitted ? (
               <div className="text-center py-3">
@@ -7591,7 +7591,7 @@ export default function Home() {
         if (!c) return null;
         return (
           <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setConditionHelpId(null)}>
-            <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6),0_0_20px_rgba(0,200,83,0.15)]" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6),0_0_20px_rgba(0,200,83,0.15)] tcc-modal-in" onClick={(e) => e.stopPropagation()}>
               <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
                 <div className="min-w-0">
                   <p className="text-[#00c853] text-[10px] font-extrabold uppercase tracking-[0.18em]">What qualifies as</p>
@@ -7662,7 +7662,7 @@ export default function Home() {
         if (!s) return null;
         return (
           <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setStorageHelpId(null)}>
-            <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6),0_0_20px_rgba(0,200,83,0.15)]" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6),0_0_20px_rgba(0,200,83,0.15)] tcc-modal-in" onClick={(e) => e.stopPropagation()}>
               <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
                 <div className="min-w-0">
                   <p className="text-[#00c853] text-[10px] font-extrabold uppercase tracking-[0.18em]">What you get with</p>
@@ -7688,7 +7688,7 @@ export default function Home() {
       {/* CONNECTIVITY HELP MODAL — 'Help me choose' for WiFi vs Cellular */}
       {connectivityHelpOpen && (
         <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setConnectivityHelpOpen(false)}>
-          <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6),0_0_20px_rgba(0,200,83,0.15)]" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6),0_0_20px_rgba(0,200,83,0.15)] tcc-modal-in" onClick={(e) => e.stopPropagation()}>
             <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
               <div className="min-w-0">
                 <p className="text-[#00c853] text-[10px] font-extrabold uppercase tracking-[0.18em]">Help me choose</p>
@@ -7719,7 +7719,7 @@ export default function Home() {
       {/* HELP MODAL — where to find storage / carrier on each platform */}
       {helpTopic && (
         <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setHelpTopic(null)}>
-          <div className="bg-[rgba(45,45,45,0.95)] backdrop-blur-[12px] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)]" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[rgba(45,45,45,0.95)] backdrop-blur-[12px] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] tcc-modal-in" onClick={(e) => e.stopPropagation()}>
             <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
               <div>
                 <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em]">How to find</p>
@@ -7778,7 +7778,7 @@ export default function Home() {
       {/* RETURNING-CUSTOMER LOOKUP MODAL */}
       {lookupOpen && (
         <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setLookupOpen(false)}>
-          <div className="bg-[#111] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[#111] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl tcc-modal-in" onClick={(e) => e.stopPropagation()}>
             <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
               <div>
                 <p className="text-[#00c853] text-[10px] font-bold uppercase tracking-[0.18em]">Returning customer</p>

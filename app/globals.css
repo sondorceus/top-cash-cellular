@@ -27,6 +27,13 @@
   from { opacity: 1; }
   to { opacity: 0; }
 }
+/* Gentle popup/modal entrance — soft fade + small slide-up, no scale-pop
+   or bounce, so dialogs "reveal" calmly instead of jumping at the screen. */
+@keyframes gentleReveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tcc-modal-in { animation: gentleReveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
 /* Centered modal entrance — gentle scale + fade (premium, no slide). */
 @keyframes popIn {
