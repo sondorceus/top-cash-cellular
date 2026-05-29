@@ -617,10 +617,13 @@ body:not(.at-top) nav.sticky { box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35); }
 }
 button:hover > .tcc-brand-tile {
   transform: translateY(-1px);
+  /* Crisp green border only — NO green glow bloom. The glow made the tile
+     "pop" green when the brand grid mounted under a stationary cursor on a
+     step transition (the persistent desktop green flash), and a glow
+     violates the green-accent-only rule. */
   border-color: rgba(0, 200, 83, 0.4);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 0 8px -2px rgba(0, 200, 83, 0.3),
     0 10px 20px rgba(0, 0, 0, 0.5);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -668,6 +671,13 @@ html.tcc-nav-settling .tcc-card:hover {
 }
 html.tcc-nav-settling .tcc-brand-card:hover {
   border-color: rgba(255, 255, 255, 0.26);
+}
+/* Brand-icon tile too — its green hover border + lift would otherwise
+   "pop" on the brand step when the grid mounts under a stationary cursor
+   (the persistent desktop green flash after device selection). */
+html.tcc-nav-settling button:hover > .tcc-brand-tile {
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: none;
 }
 
 /* Animated gradient ring — slow-rotating green-cyan conic gradient that

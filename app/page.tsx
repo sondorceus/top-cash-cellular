@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useCallback, useRef } from "react";
 import Script from "next/script";
 import { track as vercelTrack } from "@vercel/analytics";
 import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT } from "./lib/resell-estimates";
@@ -13,6 +13,10 @@ import NextImage from "next/image";
 import { CARRIER_DEDUCTIONS, PRICE_TABLE, MIN_OFFER, MANUAL_REVIEW_DEVICES, MACBOOK_SPECS, type MacSpec, type MacSpecOption } from "./data/prices";
 
 import { BRAND, EMAIL, EMAIL_HREF } from "./lib/constants";
+
+// Runs before paint on the client (kills flash-of-hover), falls back to
+// useEffect on the server so React doesn't warn during SSR.
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 // Category icons — bold filled silhouette style inspired by IWM but with our
 // own twist: a chunky body shape in soft white/15 fill, a 2px currentColor
@@ -4888,7 +4892,11 @@ export default function Home() {
   // grid that mounts under a stationary cursor instantly lights up green
   // and then "disappears" as the reveal animation slides it out — reads as
   // a green flash on every step click. Skywalker 2026-05-29.
-  useEffect(() => {
+  // useLayoutEffect (not useEffect): add the hover-suppression class BEFORE
+  // the browser paints the new step's grid, otherwise a card/brand-tile
+  // under a stationary desktop cursor flashes green for one frame before
+  // the class lands. Cleared on the first pointer move (or after 700ms).
+  useIsomorphicLayoutEffect(() => {
     if (typeof document === "undefined") return;
     const el = document.documentElement;
     el.classList.add("tcc-nav-settling");
