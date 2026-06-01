@@ -108,7 +108,7 @@ export async function GET(req: NextRequest) {
   }
   let r: Response;
   try {
-    r = await fetch(`${MC_API}/api/comms?limit=1000`, {
+    r = await fetch(`${MC_API}/api/comms?limit=5000`, {
       headers: { "x-api-key": MC_KEY },
       cache: "no-store",
     });

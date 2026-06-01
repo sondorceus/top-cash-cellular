@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
   // litter on MC but confusing in audit logs.
   let leadOk = false;
   try {
-    const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
+    const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
       headers: { "x-api-key": MC_KEY },
       cache: "no-store",
     });

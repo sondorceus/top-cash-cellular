@@ -418,14 +418,18 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Bumped 300 → 1000 so lead backlog of 100+ stays addressable. Each
-  // lead can have status / note / delete / restore comms in addition to
-  // the original [NEW BUYBACK LEAD], so 300 was running thin.
+  // Bumped to 5000 (== MC's COMMS_CAP) so the full lead backlog stays
+  // addressable. Each lead carries ~8-12 markers (status / note / delete
+  // / restore / label / comm-sent / AI / review-token …) on top of the
+  // original [NEW BUYBACK LEAD], so at 1000 only the newest ~119 of 214
+  // leads parsed — the rest fell outside the window. MC caps the response
+  // at COMMS_CAP regardless, and this route returns parsed lead objects
+  // (not raw comms) to the client, so the browser payload stays small.
   // Also pull customer reviews so admin row can render the attached
   // review inline (Skywalker 2026-05-18 "I should be able to see what
   // they review on the back end").
   const [r, reviewsRes] = await Promise.all([
-    fetch(`${MC_API}/api/comms?limit=1000`, {
+    fetch(`${MC_API}/api/comms?limit=5000`, {
       headers: { "x-api-key": MC_KEY },
       cache: "no-store",
     }),

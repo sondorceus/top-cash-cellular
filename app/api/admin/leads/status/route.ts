@@ -56,7 +56,7 @@ async function postReviewTokenMarker(leadId: string, token: string, name?: strin
 async function leadHasReviewToken(leadId: string): Promise<boolean> {
   if (!MC_KEY) return false;
   try {
-    const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
+    const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
       headers: { "x-api-key": MC_KEY },
       cache: "no-store",
     });
@@ -94,7 +94,7 @@ async function creditReferralIfAny(leadId: string): Promise<void> {
   if (referralCreditInFlight.has(leadId)) return;
   referralCreditInFlight.add(leadId);
   try {
-    const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
+    const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
       headers: { "x-api-key": MC_KEY },
       cache: "no-store",
     });
