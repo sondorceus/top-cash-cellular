@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { DeviceCorrection } from "./DeviceCorrection";
 import { parseDollarAmount } from "../lib/lead-money";
 import { formatOfferNumber, offerNumberMatches } from "../lib/offer-number";
@@ -298,6 +298,54 @@ export default function AdminPage() {
   // Active vs Trash view. Trashed leads stay recoverable for 24h then
   // auto-purge. Skywalker 2026-05-17 "save my quotes for 24hr".
   const [view, setView] = useState<"active" | "trash" | "needs-review">("active");
+
+  // ── Stale-refresh guard + optimistic-mutation suppression ─────────────
+  // MC lives on Railway with wildly variable latency — a GET /api/comms
+  // can take anywhere from <1s to ~10s, and a freshly POSTed marker isn't
+  // readable for a beat after the write returns (read-after-write lag).
+  // The 5s auto-refresh fires on a fixed interval WITHOUT awaiting the
+  // previous fetch, so two problems used to surface (Skywalker: "I delete
+  // a lead and it comes back on refresh"):
+  //   1. Stale overwrite — a slow GET started before the delete resolves
+  //      AFTER a fast later one and clobbers the list with the lead still
+  //      present.
+  //   2. Propagation lag — the first refresh(es) after a delete read MC
+  //      before the [DELETED-LEAD] marker is visible, so the lead is still
+  //      "active" server-side and reappears.
+  //
+  // Fix: (a) tag every fetch with a monotonic sequence; only apply a
+  // response if it's the freshest one we've seen (drops stragglers).
+  // (b) keep a client-side set of leadIds we've just deleted/restored and
+  // suppress them from any incoming list until the server result agrees
+  // (or a TTL elapses) — so a lagging GET can't resurrect a deleted lead.
+  const fetchSeqRef = useRef(0);        // increments per request started
+  const appliedSeqRef = useRef(0);      // highest seq actually applied
+  // leadId → expiry (ms epoch). Within window, the lead is force-hidden
+  // from Active no matter what MC returns. TTL covers MC's worst-case
+  // write+read lag with margin; if a delete genuinely failed the lead
+  // reappears after expiry so the operator can retry.
+  const pendingDeleteRef = useRef<Map<string, number>>(new Map());
+  // leadId → expiry. Force-hidden from Trash after a restore.
+  const pendingRestoreRef = useRef<Map<string, number>>(new Map());
+  const PENDING_TTL_MS = 30_000;
+  const markPending = useCallback((ref: { current: Map<string, number> }, id: string) => {
+    ref.current.set(id, Date.now() + PENDING_TTL_MS);
+  }, []);
+  // Drop expired entries + apply suppression to an incoming list for the
+  // CURRENT view. Active hides pending-deletes; Trash hides pending-
+  // restores. Returns the filtered list.
+  const applyPending = useCallback((list: Lead[], currentView: "active" | "trash" | "needs-review"): Lead[] => {
+    const now = Date.now();
+    for (const [id, exp] of pendingDeleteRef.current) if (exp <= now) pendingDeleteRef.current.delete(id);
+    for (const [id, exp] of pendingRestoreRef.current) if (exp <= now) pendingRestoreRef.current.delete(id);
+    if (currentView === "trash") {
+      if (pendingRestoreRef.current.size === 0) return list;
+      return list.filter((l) => !pendingRestoreRef.current.has(l.id));
+    }
+    // active / needs-review
+    if (pendingDeleteRef.current.size === 0) return list;
+    return list.filter((l) => !pendingDeleteRef.current.has(l.id));
+  }, []);
   // Hide internal/test leads (Skywalker's own submissions matching
   // INTERNAL_IPS / INTERNAL_EMAILS server-side). Defaults to hidden;
   // toggle persisted in localStorage. 2026-05-19.
@@ -483,19 +531,27 @@ export default function AdminPage() {
     setBulkSaving(true);
     setBulkProgress({ done: 0, total: ids.length });
     try {
+      let failed = 0;
       for (let i = 0; i < ids.length; i++) {
         const lead = leads.find((l) => l.id === ids[i]);
         try {
-          await fetch(`/api/admin/leads/delete?token=${encodeURIComponent(token)}`, {
+          const r = await fetch(`/api/admin/leads/delete?token=${encodeURIComponent(token)}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ leadId: ids[i], reason: `bulk delete via admin UI${lead?.name ? ` for ${lead.name}` : ""}` }),
           });
+          // Only treat it as deleted if the server actually accepted it.
+          // Previously a 502/503 (MC down / key missing) still ran the
+          // optimistic removal below, so the lead vanished then snapped
+          // back on the next refresh — looking like "delete doesn't work".
+          if (!r.ok) { failed++; continue; }
+          markPending(pendingDeleteRef, ids[i]);
           setLeads((cur) => cur.filter((l) => l.id !== ids[i]));
-        } catch {}
+        } catch { failed++; }
         setBulkProgress({ done: i + 1, total: ids.length });
       }
       setSelectedIds(new Set());
+      if (failed > 0) setError(`${failed} of ${ids.length} deletes failed — those leads are still active. Try again.`);
     } finally {
       setBulkSaving(false);
       setTimeout(() => setBulkProgress(null), 1500);
@@ -925,6 +981,7 @@ export default function AdminPage() {
     if (!token) return;
     setLoading(true);
     setError(null);
+    const seq = ++fetchSeqRef.current;
     try {
       // needs-review is a client-side filter on top of the active list,
       // so coerce to "active" for the backend fetch.
@@ -938,14 +995,18 @@ export default function AdminPage() {
       }
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const d = await r.json();
-      setLeads(d.leads || []);
+      // Drop this response if a newer fetch already landed — MC's variable
+      // latency means an older slow request can resolve last and clobber.
+      if (seq <= appliedSeqRef.current) return;
+      appliedSeqRef.current = seq;
+      setLeads(applyPending(d.leads || [], view));
       setInternalHidden(d.internalHidden || 0);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load leads");
     } finally {
       setLoading(false);
     }
-  }, [token, view, showInternal]);
+  }, [token, view, showInternal, applyPending]);
 
   // Pull the resale ledger alongside leads so each row can show
   // "Sold $X · Profit $Y" without forcing a server-side join. Best-
@@ -1008,15 +1069,18 @@ export default function AdminPage() {
         } catch {}
         throw new Error(detail);
       }
-      // Optimistic — remove from current list. Next auto-refresh will
-      // re-confirm via the deleted-marker filter.
+      // Optimistic — remove from current list AND register a pending-
+      // delete so the next few auto-refreshes (which may read MC before
+      // the [DELETED-LEAD] marker propagates, or resolve out of order)
+      // can't resurrect the lead.
+      markPending(pendingDeleteRef, lead.id);
       setLeads((prev) => prev.filter((l) => l.id !== lead.id));
     } catch (e) {
       setError(e instanceof Error ? `Delete failed: ${e.message}` : "Delete failed");
     } finally {
       setDeletingId(null);
     }
-  }, [token]);
+  }, [token, markPending]);
 
   // Restore a trashed lead. Posts a [RESTORED-LEAD: <id>] marker that
   // the admin GET treats as un-trashing when newer than the matching
@@ -1036,15 +1100,17 @@ export default function AdminPage() {
         try { const errBody = await r.json(); if (errBody?.error) detail = errBody.error; } catch {}
         throw new Error(detail);
       }
-      // Optimistic — remove from current Trash view. Next auto-refresh
-      // will surface it back in Active.
+      // Optimistic — remove from current Trash view AND register a
+      // pending-restore so a lagging read can't pull it back into Trash.
+      // Next auto-refresh will surface it back in Active.
+      markPending(pendingRestoreRef, lead.id);
       setLeads((prev) => prev.filter((l) => l.id !== lead.id));
     } catch (e) {
       setError(e instanceof Error ? `Restore failed: ${e.message}` : "Restore failed");
     } finally {
       setRestoringId(null);
     }
-  }, [token]);
+  }, [token, markPending]);
 
   useEffect(() => {
     if (token) {
@@ -1067,6 +1133,7 @@ export default function AdminPage() {
     if (!token || !autoRefresh) return;
     const tick = async () => {
       if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+      const seq = ++fetchSeqRef.current;
       try {
         const wireView = view === "needs-review" ? "active" : view;
         const r = await fetch(
@@ -1075,7 +1142,13 @@ export default function AdminPage() {
         );
         if (!r.ok) return;
         const d = await r.json();
-        const next: Lead[] = d.leads || [];
+        // Ignore stale stragglers — only the freshest started fetch wins.
+        if (seq <= appliedSeqRef.current) return;
+        appliedSeqRef.current = seq;
+        // Suppress leads we've optimistically deleted (and trashed leads
+        // we've restored) until MC catches up, so a lagging read can't
+        // resurrect them.
+        const next: Lead[] = applyPending(d.leads || [], view);
         setLeads((prev) => {
           const prevById = new Map(prev.map((l) => [l.id, l.status]));
           const changedIds: string[] = [];
