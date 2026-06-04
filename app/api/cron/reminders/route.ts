@@ -101,14 +101,25 @@ async function logReminderSent(leadId: string, kind: "quote" | "review") {
   } catch {}
 }
 
-// Email template wrapper — keeps the visual identity consistent across
-// the three reminder variants. accentColor sets the header gradient.
+// Email template wrapper. Sonny's 2026-05-29 design (PNG logo at 118px,
+// indigo card #1b1d39) is preserved — Skywalker's "logo messed up"
+// screenshot was actually Gmail iOS auto-inverting the dark card to a
+// light pinkish bg, which left the dark PNG sitting in a near-white
+// frame with the body-text contrast inverted. Fix: declare the email
+// as `color-scheme: light dark` + matching <meta> so Gmail honors the
+// authored palette instead of re-tinting it. The dark header/card now
+// renders dark on every client.
 function wrapEmail(opts: { title: string; bodyHtml: string; ctaHref?: string; ctaLabel?: string; accent?: string }): string {
   const accent = opts.accent || "#00c853";
   const cta = opts.ctaHref && opts.ctaLabel
-    ? `<div style="text-align:center;margin:24px 0 12px"><a href="${opts.ctaHref}" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,${accent} 0%,${accent} 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:0 4px 14px rgba(0,200,83,0.35)">${opts.ctaLabel}</a></div>`
+    ? `<div style="text-align:center;margin:24px 0 12px"><a href="${opts.ctaHref}" style="display:inline-block;padding:13px 28px;background:${accent};color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:0 4px 14px rgba(0,200,83,0.35)">${opts.ctaLabel}</a></div>`
     : "";
-  return `<!doctype html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:32px 16px"><div style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden"><div style="padding:24px 28px;color:#ffffff"><img src="https://topcashcellular.com/logo-email.png" alt="Top Cash Cellular" width="118" style="display:block;width:118px;height:auto;border:0;outline:none;margin:0" /><div style="font-size:22px;font-weight:800;line-height:1.1">${opts.title}</div></div><div style="padding:28px">${opts.bodyHtml}${cta}<p style="font-size:12px;color:#888;line-height:1.6;margin:24px 0 0;text-align:center;border-top:1px solid rgba(255,255,255,0.08);padding-top:18px">Questions? Reply or write to <a href="mailto:support@topcashcellular.com" style="color:${accent};text-decoration:none">support@topcashcellular.com</a></p></div></div></body></html>`;
+  // Logo URL fix — Sonny's prior wrapEmail referenced `/logo-email.png`
+  // which 404s in prod (the actually-deployed file is `/email-logo.png`,
+  // the chunky 3D TOP CASH CELLULAR wordmark). That's the broken-image
+  // icon in Skywalker's screenshot. Switched + bumped width to 170px
+  // so the wordmark reads at a comfortable size in mobile Gmail.
+  return `<!doctype html><html><head><meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"></head><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:32px 16px;color-scheme:light dark;supported-color-schemes:light dark"><div style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden"><div style="padding:24px 28px;color:#ffffff;background:#1b1d39"><img src="https://topcashcellular.com/email-logo.png" alt="Top Cash Cellular" width="170" style="display:block;width:170px;height:auto;border:0;outline:none;margin:0 0 18px 0" /><div style="font-size:22px;font-weight:800;line-height:1.2;color:#ffffff">${opts.title}</div></div><div style="padding:28px;background:#1b1d39">${opts.bodyHtml}${cta}<p style="font-size:12px;color:#9a9bb0;line-height:1.6;margin:24px 0 0;text-align:center;border-top:1px solid rgba(255,255,255,0.08);padding-top:18px">Questions? Reply or write to <a href="mailto:support@topcashcellular.com" style="color:${accent};text-decoration:none">support@topcashcellular.com</a></p></div></div></body></html>`;
 }
 
 type LeadShape = {
@@ -130,11 +141,16 @@ function templateQuoteReminder(lead: LeadShape, handoffKind: "ship" | "local" | 
   const quoteStr = lead.quote ? `${lead.quote}` : "your locked-in price";
   if (handoffKind === "ship") {
     return {
-      smsBody: `Top Cash: Hi ${first}, just checking in — your quote for ${device} (${quoteStr}) is still good. Your prepaid FedEx label is in your inbox; print + tape + drop at any FedEx location whenever you're ready. Reply STOP to opt out.`,
-      emailSubject: `Reminder: your FedEx label is ready when you are`,
+      // Skywalker 2026-06-04: the ship reminder shouldn't re-front the
+      // label — the label was already emailed at handoff time and a
+      // second "your label is ready" subject reads as a redundant
+      // duplicate in the inbox. Reframe around the quote still being
+      // locked in + a calm "drop whenever you're ready" CTA.
+      smsBody: `Top Cash: Hi ${first}, just checking in — your quote for ${device} (${quoteStr}) is still locked in. Drop your device at any FedEx location whenever you're ready and we'll text you the moment it lands. Reply STOP to opt out.`,
+      emailSubject: `Your quote for ${device} is still locked in`,
       emailHtml: wrapEmail({
-        title: "Your label is ready when you are",
-        bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Quick reminder — your quote for <span style="color:#00c853;font-weight:600">${device}</span> at <span style="color:#00c853;font-weight:700">${quoteStr}</span> is still locked in. Your prepaid FedEx label is waiting in your inbox from yesterday's confirmation email.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Print it, tape it to a padded box, drop at any FedEx location. We'll text you the moment it lands.</p>`,
+        title: "Your quote is still locked in",
+        bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Quick reminder — your quote for <span style="color:#00c853;font-weight:600">${device}</span> at <span style="color:#00c853;font-weight:700">${quoteStr}</span> is still locked in.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Drop your device at any FedEx location whenever you're ready. We'll text you the moment it lands — same business day inspection and payout.</p>`,
       }),
     };
   }
