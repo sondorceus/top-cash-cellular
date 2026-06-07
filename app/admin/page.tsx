@@ -2006,6 +2006,13 @@ export default function AdminPage() {
                           >
                             {lead.phone}
                           </button>
+                          <a
+                            href={`sms:${lead.phone!.replace(/[^0-9+]/g, "")}`}
+                            title="Text this customer directly"
+                            className="text-[10px] px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[#d4d4d4] hover:bg-white/10 cursor-pointer transition no-underline"
+                          >
+                            💬 Text
+                          </a>
                           <button
                             type="button"
                             onClick={() => {
@@ -2016,9 +2023,10 @@ export default function AdminPage() {
                                 if (!smsThreads[lead.id]) loadSmsThread(lead);
                               }
                             }}
+                            title="View the Twilio SMS thread"
                             className="text-[10px] px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[#d4d4d4] hover:bg-white/10 cursor-pointer transition"
                           >
-                            💬 {smsOpenId === lead.id ? "Hide" : "SMS"}
+                            🧵 {smsOpenId === lead.id ? "Hide" : "Thread"}
                           </button>
                         </p>
                       )}
