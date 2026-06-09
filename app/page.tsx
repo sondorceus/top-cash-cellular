@@ -5328,6 +5328,22 @@ export default function Home() {
       if (s.payout) setPayout(s.payout);
       if (s.name) setName(s.name);
       if (s.phone) setPhone(s.phone);
+      // Restore the spec / connectivity / carrier-lock / broken state that
+      // the quote math depends on (mirrors the persisted fields above) so a
+      // resumed session re-prices identically to the live one. (bug fix)
+      if (s.connectivity) setConnectivity(s.connectivity);
+      if (s.carrierLock) setCarrierLock(s.carrierLock);
+      if (s.processor) setProcessor(s.processor);
+      if (s.memory) setMemory(s.memory);
+      if (s.graphics) setGraphics(s.graphics);
+      if (s.displayResolution) setDisplayResolution(s.displayResolution);
+      if (s.displayGlass) setDisplayGlass(s.displayGlass);
+      if (s.batteryHealth) setBatteryHealth(s.batteryHealth);
+      if (s.charger) setCharger(s.charger);
+      if (s.brokenFunctional) setBrokenFunctional(s.brokenFunctional);
+      if (s.brokenGlass) setBrokenGlass(s.brokenGlass);
+      if (s.extras) setExtras(s.extras);
+      if (typeof s.extrasIndex === "number") setExtrasIndex(s.extrasIndex);
       setStep(s.step);
     } catch {}
   }, []);
@@ -5358,10 +5374,18 @@ export default function Home() {
         step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email,
         handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, shipHasBox,
         payout, name, phone,
+        // Spec / connectivity / carrier-lock / broken sub-state MUST persist
+        // too — without them a refresh-resume to "quote" recomputes the price
+        // from null inputs: locked Verizon phones lose their carrier deduction
+        // (overpay), cellular iPads lose the connectivity multiplier, and
+        // additive MacBooks/PC laptops collapse to the base floor. (bug fix)
+        connectivity, carrierLock, processor, memory, graphics,
+        displayResolution, displayGlass, batteryHealth, charger,
+        brokenFunctional, brokenGlass, extras, extrasIndex,
         ts: Date.now(),
       }));
     } catch {}
-  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, shipHasBox, payout, name, phone]);
+  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, shipHasBox, payout, name, phone, connectivity, carrierLock, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, brokenFunctional, brokenGlass, extras, extrasIndex]);
 
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrierMultiplierFor(carrier?.id, carrierLock?.id);
@@ -6528,8 +6552,13 @@ export default function Home() {
                       setModel({ id: h.modelId, label: h.label, base: h.base, image: h.image });
                       popThenRun(`search-${h.modelId}-${i}`, () => {
                         setSearchQuery("");
-                        setStep("condition");
-                        pushHistory("condition");
+                        // Additive devices (MacBook / PC laptop) must enter at
+                        // their first spec step — jumping to "condition" skips
+                        // processor/memory/storage and collapses the quote to
+                        // the base floor. Mirrors the normal model picker. (bug fix)
+                        const ns: Step = hasAdditiveSpecs(h.modelId) ? "processor" : "condition";
+                        setStep(ns);
+                        pushHistory(ns);
                       });
                     }}
                     className={`w-full text-left px-4 py-2.5 hover:bg-white/5 transition flex items-center gap-3 border-b border-white/10 last:border-0 cursor-pointer ${funnelPop === `search-${h.modelId}-${i}` ? "tap-confirm" : ""}`}
@@ -6844,8 +6873,11 @@ export default function Home() {
                               setModel({ id: d.model, label: d.title, base: d.floor, image: d.photo });
                               popThenRun(`hot-${d.model}`, () => {
                                 setMegaMenuOpen(null);
-                                setStep("condition");
-                                pushHistory("condition");
+                                // Additive devices enter at their first spec step
+                                // (see search/quick-quote). (bug fix)
+                                const ns: Step = hasAdditiveSpecs(d.model) ? "processor" : "condition";
+                                setStep(ns);
+                                pushHistory(ns);
                               });
                             }}
                             className={`flex flex-col items-center text-center gap-1 p-3 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-[#00c853]/10 hover:border-[#00c853]/50 hover:-translate-y-0.5 transition-all duration-[180ms] cursor-pointer tap-press ${funnelPop === `hot-${d.model}` ? "tap-confirm" : ""}`}
@@ -8076,7 +8108,10 @@ export default function Home() {
                           // selectionPanel on the left rail renders a blank
                           // image slot for quick-quote starts.
                           setModel({ id: d.model, label: d.title, base: d.floor, image: d.photo });
-                          popThenRun(`feat-${d.model}`, () => { setStep("condition"); pushHistory("condition"); });
+                          // Additive devices (e.g. MacBook Pro M4) enter at their
+                          // first spec step — "condition" would skip processor/
+                          // memory/storage and break the additive quote. (bug fix)
+                          popThenRun(`feat-${d.model}`, () => { const ns: Step = hasAdditiveSpecs(d.model) ? "processor" : "condition"; setStep(ns); pushHistory(ns); });
                         });
                       }}
                       className={`group bg-white/[0.07] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press ${funnelPop === `feat-${d.model}` ? "tap-confirm" : ""}`}

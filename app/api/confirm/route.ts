@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { reportError } from "../../lib/error-report";
 import { formatOfferNumber } from "../../lib/offer-number";
+import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
@@ -34,6 +35,13 @@ async function sendSms(to: string, body: string): Promise<boolean> {
 }
 
 export async function POST(req: NextRequest) {
+  // Rate-limit: this endpoint sends mail (Resend) + SMS (Twilio) to a
+  // body-supplied recipient with body-supplied content. Without a cap it's an
+  // email/SMS-bomb + phishing relay from our verified domain. Match the
+  // public lead route's per-IP budget. (bug fix)
+  const rlIp = clientIp(req);
+  const rl = rateLimit(`confirm:${rlIp}`, 8, 5 * 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs, "Too many confirmations — please wait a few minutes.");
   let body;
   try {
     body = await req.json();
@@ -116,6 +124,20 @@ export async function POST(req: NextRequest) {
 
   if (!email && !phone) return NextResponse.json({ ok: false, error: "No contact info" });
 
+  // HTML-escape every customer-controlled field before it enters the email
+  // HTML body. Combined with the rate limit above, this neutralizes the
+  // injected-markup/phishing vector (the other email routes already escape;
+  // confirm was the gap). Subject lines + SMS stay raw (not HTML). (bug fix)
+  const esc = (v: unknown) => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const hName = esc(name || "there");
+  const hNameNA = esc(name || "N/A");
+  const hModel = esc(model);
+  const hStorage = esc(storage || "N/A");
+  const hCondition = esc(condition);
+  const hPayout = esc(payout);
+  const hEmail = esc(email);
+  const hPhone = esc(phone);
+
   let emailSent = false;
   let smsSent = false;
 
@@ -158,7 +180,7 @@ export async function POST(req: NextRequest) {
 
 <!-- Welcome -->
 <tr><td style="padding:28px 28px 12px 28px">
-<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:8px">Hi ${name || "there"},</div>
+<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:8px">Hi ${hName},</div>
 <div style="font-size:14px;color:#bdbdbd;line-height:1.6">Below is everything you need for a successful trade-in. We'll reach out within the hour to set up pickup.</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px">
 <tr><td style="font-size:11px;color:#777;letter-spacing:0.1em;text-transform:uppercase">Offer #${offerNum}</td><td style="font-size:11px;color:#777;text-align:right;letter-spacing:0.1em;text-transform:uppercase">${offerDate}</td></tr>
@@ -177,11 +199,11 @@ ${isPending ? `<div style="font-size:10px;color:#00c853;text-transform:uppercase
 </td></tr>
 <tr><td style="padding:16px 24px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-${isMulti ? deviceArr.map((d) => `<tr><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:0"><div style="color:#fff;font-size:13px;font-weight:700;line-height:1.3">${d.model || "—"}</div><div style="color:#888;font-size:11px;margin-top:2px">${[d.storage, d.condition].filter(Boolean).join(" · ")}${d.quantity && d.quantity > 1 ? ` · ×${d.quantity}` : ""}</div></td><td style="text-align:right;padding:0"><div style="color:#00c853;font-size:14px;font-weight:800">$${Number(d.quote) || 0}</div></td></tr></table></td></tr>`).join("") : `
-<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Device</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06);font-weight:600">${model}</td></tr>
-<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Storage</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${storage || "N/A"}</td></tr>
-<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Condition</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${condition}</td></tr>`}
-<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Payout method</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06)">${payout}</td></tr>
+${isMulti ? deviceArr.map((d) => `<tr><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:0"><div style="color:#fff;font-size:13px;font-weight:700;line-height:1.3">${esc(d.model || "—")}</div><div style="color:#888;font-size:11px;margin-top:2px">${[esc(d.storage), esc(d.condition)].filter(Boolean).join(" · ")}${d.quantity && d.quantity > 1 ? ` · ×${d.quantity}` : ""}</div></td><td style="text-align:right;padding:0"><div style="color:#00c853;font-size:14px;font-weight:800">$${Number(d.quote) || 0}</div></td></tr></table></td></tr>`).join("") : `
+<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Device</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06);font-weight:600">${hModel}</td></tr>
+<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Storage</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${hStorage}</td></tr>
+<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Condition</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${hCondition}</td></tr>`}
+<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Payout method</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06)">${hPayout}</td></tr>
 ${couponBonus > 0 ? `<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">🎁 Coupon bonus</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06)">+$${couponBonus}.00</td></tr>` : ""}
 ${isShipping ? `<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">🚚 Prepaid shipping label</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:800;border-bottom:1px solid rgba(255,255,255,0.06)">FREE</td></tr>` : ""}
 <tr><td style="padding:12px 0 4px 0;color:#fff;font-size:14px;font-weight:800">Offer total</td><td style="padding:12px 0 4px 0;color:#00c853;font-size:18px;text-align:right;font-weight:800">${isPending ? "Custom quote" : `$${offerTotal}.00`}</td></tr>
@@ -521,15 +543,15 @@ ${isShipping
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px">
 <tr><td style="padding:14px 18px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-<tr><td style="padding:4px 0;color:#888;font-size:12px">Device</td><td style="padding:4px 0;color:#fff;font-size:12px;text-align:right;font-weight:600">${model}</td></tr>
-<tr><td style="padding:4px 0;color:#888;font-size:12px">Storage</td><td style="padding:4px 0;color:#e6e6e6;font-size:12px;text-align:right">${storage || "N/A"}</td></tr>
-<tr><td style="padding:4px 0;color:#888;font-size:12px">Condition</td><td style="padding:4px 0;color:#e6e6e6;font-size:12px;text-align:right">${condition}</td></tr>
+<tr><td style="padding:4px 0;color:#888;font-size:12px">Device</td><td style="padding:4px 0;color:#fff;font-size:12px;text-align:right;font-weight:600">${hModel}</td></tr>
+<tr><td style="padding:4px 0;color:#888;font-size:12px">Storage</td><td style="padding:4px 0;color:#e6e6e6;font-size:12px;text-align:right">${hStorage}</td></tr>
+<tr><td style="padding:4px 0;color:#888;font-size:12px">Condition</td><td style="padding:4px 0;color:#e6e6e6;font-size:12px;text-align:right">${hCondition}</td></tr>
 <tr><td style="padding:4px 0;color:#888;font-size:12px">Quote</td><td style="padding:4px 0;color:#00c853;font-size:12px;text-align:right;font-weight:700">$${quote}</td></tr>
-<tr><td style="padding:4px 0;color:#888;font-size:12px">Payout</td><td style="padding:4px 0;color:#e6e6e6;font-size:12px;text-align:right">${payout}</td></tr>
+<tr><td style="padding:4px 0;color:#888;font-size:12px">Payout</td><td style="padding:4px 0;color:#e6e6e6;font-size:12px;text-align:right">${hPayout}</td></tr>
 <tr><td colspan="2" style="padding:6px 0 0"><div style="height:1px;background:rgba(255,255,255,0.06)"></div></td></tr>
-<tr><td style="padding:6px 0 4px;color:#888;font-size:12px">Name</td><td style="padding:6px 0 4px;color:#e6e6e6;font-size:12px;text-align:right">${name || "N/A"}</td></tr>
-<tr><td style="padding:4px 0;color:#888;font-size:12px">Email</td><td style="padding:4px 0;color:#e6e6e6;font-size:12px;text-align:right">${email}</td></tr>
-${phone ? `<tr><td style="padding:4px 0;color:#888;font-size:12px">Phone</td><td style="padding:4px 0;color:#e6e6e6;font-size:12px;text-align:right">${phone}</td></tr>` : ''}
+<tr><td style="padding:6px 0 4px;color:#888;font-size:12px">Name</td><td style="padding:6px 0 4px;color:#e6e6e6;font-size:12px;text-align:right">${hNameNA}</td></tr>
+<tr><td style="padding:4px 0;color:#888;font-size:12px">Email</td><td style="padding:4px 0;color:#e6e6e6;font-size:12px;text-align:right">${hEmail}</td></tr>
+${phone ? `<tr><td style="padding:4px 0;color:#888;font-size:12px">Phone</td><td style="padding:4px 0;color:#e6e6e6;font-size:12px;text-align:right">${hPhone}</td></tr>` : ''}
 </table>
 </td></tr>
 </table>

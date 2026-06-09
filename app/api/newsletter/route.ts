@@ -22,6 +22,10 @@ function isDuplicate(email: string): boolean {
 }
 
 function isValidEmail(email: string): boolean {
+  // Disallow brackets explicitly: the old [^\s@]+ class permitted "[" and "]",
+  // so an email like "x@e.com][STATUS:paid][LEAD:id" passed validation and
+  // injected fake markers into the MC comms body the admin parser reads. (bug fix)
+  if (/[\[\]]/.test(email)) return false;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 

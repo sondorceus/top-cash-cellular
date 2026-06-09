@@ -144,6 +144,12 @@ export async function POST(req: NextRequest) {
 
 function buildCounterOfferEmail(args: { name: string; device: string; originalQuote: number; offer: number; reason: string; offerUrl: string; diff: number }): string {
   const { name, device, originalQuote, offer, reason, offerUrl, diff } = args;
+  // Escape customer-submitted name/device and the admin-typed reason before
+  // they enter the email HTML (reason previously only stripped <>). (bug fix)
+  const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const nameHtml = esc(name);
+  const deviceHtml = esc(device);
+  const reasonHtml = esc(reason);
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
@@ -155,9 +161,9 @@ function buildCounterOfferEmail(args: { name: string; device: string; originalQu
 </td></tr>
 
 <tr><td style="padding:28px 28px 8px 28px">
-<div style="font-size:16px;color:#fff;font-weight:600;margin-bottom:14px">Hi ${name},</div>
+<div style="font-size:16px;color:#fff;font-weight:600;margin-bottom:14px">Hi ${nameHtml},</div>
 <p style="margin:0 0 16px;font-size:14px;line-height:1.65;color:#e6e6e6">
-  We inspected <strong style="color:#fff">${device}</strong> and the condition isn't quite what was described in the original quote. We&apos;d still love to buy it — here&apos;s our honest revised offer.
+  We inspected <strong style="color:#fff">${deviceHtml}</strong> and the condition isn't quite what was described in the original quote. We&apos;d still love to buy it — here&apos;s our honest revised offer.
 </p>
 </td></tr>
 
@@ -177,7 +183,7 @@ function buildCounterOfferEmail(args: { name: string; device: string; originalQu
 <div style="font-size:11px;color:#ffb400;letter-spacing:0.18em;text-transform:uppercase;font-weight:800;margin-bottom:8px">Why we revised</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,180,0,0.06);border:1px solid rgba(255,180,0,0.30);border-left:3px solid #ffb400;border-radius:10px">
 <tr><td style="padding:14px 18px;font-size:14px;color:#e6e6e6;line-height:1.55">
-  ${reason.replace(/[<>]/g, "")}
+  ${reasonHtml}
 </td></tr>
 </table>
 </td></tr>

@@ -227,6 +227,11 @@ async function sendSms(to: string, body: string): Promise<boolean> {
 
 type TemplateCtx = { name?: string; device?: string; quote?: string; payout?: string; rejectionReason?: string; reviewToken?: string; phone?: string; email?: string };
 
+// Escape customer-controlled ctx fields (name/device/quote/payout) before they
+// enter the status email HTML — they come straight from the lead row. SMS +
+// subject lines stay raw (not HTML). (bug fix)
+const esc = (s: unknown): string => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
 function smsTemplate(status: string, ctx: TemplateCtx): string {
   const dev = ctx.device || "your device";
   const first = ctx.name?.split(" ")[0] || "there";
@@ -275,8 +280,9 @@ function smsTemplate(status: string, ctx: TemplateCtx): string {
 //   4. A graceful out ("if something went wrong, tell us FIRST")
 //   5. Signed by a person, not a brand
 function emailBodyHtml(status: string, ctx: TemplateCtx): string {
-  const first = ctx.name?.split(" ")[0] || "there";
-  const dev = ctx.device || "your device";
+  // Escaped: every value here is rendered into HTML.
+  const first = esc(ctx.name?.split(" ")[0] || "there");
+  const dev = esc(ctx.device || "your device");
   if (status === "paid") {
     // "Paid" serves both ship + local-digital-payout. Avoid Austin-
     // specific language here so ship customers (often out-of-state)
@@ -286,7 +292,7 @@ function emailBodyHtml(status: string, ctx: TemplateCtx): string {
     // read Austin-only text on review they won't review".
     return `
 <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">
-  Your trade is wrapped — payment for <strong style="color:#fff">${dev}</strong>${ctx.payout ? ` is on its way via <strong style="color:#fff">${ctx.payout}</strong>` : " is on its way"}. Thanks for trusting a small business with it. We genuinely don&apos;t take it lightly.
+  Your trade is wrapped — payment for <strong style="color:#fff">${dev}</strong>${ctx.payout ? ` is on its way via <strong style="color:#fff">${esc(ctx.payout)}</strong>` : " is on its way"}. Thanks for trusting a small business with it. We genuinely don&apos;t take it lightly.
 </p>
 <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">
   One small favor — if your experience was a good one, would you drop a 30-second review? The link below is yours alone, single-use, expires in 60 days. Every honest review helps the next person find us instead of getting lowballed by a faceless website.
@@ -309,8 +315,10 @@ function emailBodyHtml(status: string, ctx: TemplateCtx): string {
   <strong style="color:#fff">Something off?</strong> Hit reply first — we&apos;d rather make it right than read about it on a review. Small team, real humans, we&apos;ll answer.
 </div>`;
   }
-  // Other statuses — keep the existing tight transactional copy.
-  return `<div style="font-size:15px;color:#e6e6e6;line-height:1.65">${smsTemplate(status, ctx)}</div>`;
+  // Other statuses — keep the existing tight transactional copy. smsTemplate
+  // returns plain text containing raw ctx fields, so escape before embedding
+  // it in HTML. (bug fix)
+  return `<div style="font-size:15px;color:#e6e6e6;line-height:1.65">${esc(smsTemplate(status, ctx))}</div>`;
 }
 
 async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
@@ -380,7 +388,7 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
       </tr>
       <tr>
         <td style="padding:28px 28px 8px 28px">
-          <div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:14px">Hi ${first},</div>
+          <div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:14px">Hi ${esc(first)},</div>
           ${emailBodyHtml(status, ctx)}
         </td>
       </tr>
@@ -390,11 +398,11 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
             <tr>
               <td style="padding:18px 20px">
                 <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#00c853;font-weight:800;margin-bottom:8px">Your trade</div>
-                ${ctx.device ? `<div style="font-size:16px;color:#fff;font-weight:700;margin-bottom:4px">${ctx.device}</div>` : ""}
+                ${ctx.device ? `<div style="font-size:16px;color:#fff;font-weight:700;margin-bottom:4px">${esc(ctx.device)}</div>` : ""}
                 <div style="font-size:13px;color:#b8b8b8">
-                  ${ctx.quote ? `Quote: <span style="color:#00c853;font-weight:700">${ctx.quote}</span>` : ""}
+                  ${ctx.quote ? `Quote: <span style="color:#00c853;font-weight:700">${esc(ctx.quote)}</span>` : ""}
                   ${ctx.quote && ctx.payout ? "  ·  " : ""}
-                  ${ctx.payout ? `Payout: <span style="color:#e6e6e6;font-weight:600">${ctx.payout}</span>` : ""}
+                  ${ctx.payout ? `Payout: <span style="color:#e6e6e6;font-weight:600">${esc(ctx.payout)}</span>` : ""}
                 </div>
               </td>
             </tr>
@@ -625,7 +633,10 @@ export async function POST(req: NextRequest) {
   }
 
   // 2. Fire SMS + email in parallel.
-  const ctx: TemplateCtx = { name, device, quote, payout, rejectionReason, reviewToken };
+  // phone/email feed the personalized "Track your trade" link in both the SMS
+  // and the email CTA block (smsTemplate + emailBodyHtml branch on ctx.phone/
+  // ctx.email). Omitting them left the email CTA unrendered and SMS links bare. (bug fix)
+  const ctx: TemplateCtx = { name, device, quote, payout, rejectionReason, reviewToken, phone, email };
   const [smsSent, emailSent] = await Promise.all([
     phone ? sendSms(phone, smsTemplate(status, ctx)) : Promise.resolve(false),
     email ? emailStatus(email, status, ctx) : Promise.resolve(false),
