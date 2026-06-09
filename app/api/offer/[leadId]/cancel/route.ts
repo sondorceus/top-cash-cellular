@@ -79,10 +79,14 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
       }
     }
   }
-  const TERMINAL = new Set(["received", "tested", "paid", "met"]);
+  // "shipped" is terminal for self-cancel: the device is already in transit
+  // with a minted label, so trashing the lead would orphan an inbound package.
+  // Matches the sibling items route's LOCKED set. (bug fix)
+  const TERMINAL = new Set(["received", "tested", "paid", "met", "shipped"]);
   if (TERMINAL.has(status)) {
+    const phase = status === "paid" || status === "met" ? "paid" : status === "shipped" ? "already on its way to us" : "in inspection";
     return NextResponse.json({
-      error: `This offer is already ${status === "paid" || status === "met" ? "paid" : "in inspection"} — please email support@topcashcellular.com to discuss.`,
+      error: `This offer is ${phase} — please email support@topcashcellular.com to discuss.`,
     }, { status: 409 });
   }
 

@@ -4464,6 +4464,11 @@ export default function Home() {
   // falls through to the footer (Skywalker 2026-05-18 "famous footer"
   // bug report).
   useEffect(() => {
+    // Clears a cash payout if the cart-level handoff flips to ship. The
+    // mixed-cart + restored-session cases (handoffMethod==="local" but an item
+    // still ships) are covered downstream by the payout-list gate
+    // (cartNeedsLocal && !cartNeedsShip) and the submit-time cash+ship guard —
+    // both reference cartItems, which isn't in scope this early. (bug fix)
     if (handoffMethod === "ship" && payout?.id === "cash") {
       setPayout(null);
       setPayoutHandle("");
@@ -11206,7 +11211,11 @@ export default function Home() {
                       // continuously bouncing customer doesn't get their
                       // first choice silently rewritten.
                       const itemHandoff = itemSnapshot.handoff ?? "local";
-                      const key = `${model.id}-${storage?.label || ''}-${condition.label}-${itemHandoff}`;
+                      // storage fallback MUST match the snapshot's ("N/A"),
+                      // else storage-less devices (consoles/watches/Wi-Fi
+                      // tablets) never dedup → duplicate cart lines instead
+                      // of a quantity bump. (bug fix)
+                      const key = `${model.id}-${storage?.label || "N/A"}-${condition.label}-${itemHandoff}`;
                       const existing = prev.find(i => `${i.modelId}-${i.storage}-${i.condition}-${i.handoff ?? "local"}` === key);
                       // Re-adding the same config + same handoff bumps the
                       // quantity by 1 and refreshes the price + specs.
@@ -11607,8 +11616,13 @@ export default function Home() {
                   can render for shipping. Filter approach was correct but
                   Skywalker kept seeing Cash on mobile shipping — guessing
                   cache or some edge case. Hard-coding both lists removes
-                  any doubt. Skywalker 2026-05-18. */}
-              {(handoffMethod === "local"
+                  any doubt. Skywalker 2026-05-18.
+                  Gate on the DERIVED cart flags, not the cart-level
+                  handoffMethod: a mixed cart (or a restored session) can have
+                  handoffMethod==="local" while an item still ships — Cash for a
+                  shipped device is impossible to fulfill. Cash shows only when
+                  the whole order is local (needs local, needs no ship). (bug fix) */}
+              {(cartNeedsLocal && !cartNeedsShip
                 ? [
                     { id: "cash",    label: "Cash" },
                     { id: "cashapp", label: "Cash App" },
@@ -11890,12 +11904,37 @@ export default function Home() {
                 focusByQuery(['[data-validate="handoff"]']);
                 return;
               }
+              // Re-validate email + name at submit. Email is captured on the
+              // checkout step but there's no field on the contact step, so a
+              // cleared/invalid value (back-nav, restored session) would
+              // otherwise submit a lead with no working confirmation address.
+              // Route back to checkout where the field lives. (bug fix)
+              const emailTrim = (email || "").trim();
+              if (!emailTrim || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrim)) {
+                alert("Please enter a valid email so we can send your offer confirmation.");
+                setStep("checkout"); pushHistory("checkout");
+                return;
+              }
+              if (!name.trim()) {
+                alert("Please enter your name.");
+                focusByQuery(['[data-validate="name"]', 'input[name="name"]']);
+                return;
+              }
               // Per-item handoff means cart can need ship, local, or BOTH. Use
               // the derived needs flags so a mixed cart validates against both
               // input groups (address + slot).
               if (!cartNeedsShip && !cartNeedsLocal) {
                 alert("Pick a handoff method (Ship or Local) first.");
                 focusByQuery(['[data-validate="handoff"]']);
+                return;
+              }
+              // Cash can't be mailed — block a cash payout whenever the order
+              // ships (pure-ship OR mixed). Belt to the payout-list gate above,
+              // and the catch for a restored/stale cash selection. (bug fix)
+              if (cartNeedsShip && payout?.id === "cash") {
+                alert("Cash payout isn't available when any item ships — please pick a digital payout (Cash App, Zelle, or Bitcoin).");
+                setPayout(null); setPayoutHandle(""); setPayoutHandleConfirm("");
+                setStep("payout"); pushHistory("payout");
                 return;
               }
               if (cartNeedsShip && (!shipStreet || !shipCity || !shipState || !shipZip)) {

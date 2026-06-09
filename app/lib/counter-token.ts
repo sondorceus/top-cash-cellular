@@ -9,7 +9,17 @@
 
 import crypto from "crypto";
 
-const SECRET = process.env.TCC_TOKEN_SECRET || process.env.TCC_SESSION_SECRET || process.env.TCC_ADMIN_TOKEN || "topcash-counter-fallback";
+// Signing secret. There is intentionally NO hardcoded fallback — a public
+// default would let anyone forge a counter-offer token (and the dollar amount
+// it carries) the moment the env var is unset. Mirrors auth.ts getSecret().
+// Precedence is preserved (TCC_* first) so tokens already minted in prod stay
+// valid; NEXTAUTH_SECRET/MC_API_KEY are accepted as they always exist in prod.
+// Lazy so a missing secret throws on first use, not at import. (bug fix)
+function getSecret(): string {
+  const s = process.env.TCC_TOKEN_SECRET || process.env.TCC_SESSION_SECRET || process.env.TCC_ADMIN_TOKEN || process.env.NEXTAUTH_SECRET || process.env.MC_API_KEY;
+  if (!s) throw new Error("counter-token signing secret env required (TCC_ADMIN_TOKEN / NEXTAUTH_SECRET / MC_API_KEY)");
+  return s;
+}
 const TTL_MS = 14 * 24 * 60 * 60 * 1000;
 
 export type CounterPayload = {
@@ -41,14 +51,14 @@ export function signCounterToken(input: Omit<CounterPayload, "iat" | "exp">): st
     exp: now + TTL_MS,
   };
   const body = base64url(Buffer.from(JSON.stringify(full)));
-  const sig = base64url(crypto.createHmac("sha256", SECRET).update(body).digest());
+  const sig = base64url(crypto.createHmac("sha256", getSecret()).update(body).digest());
   return `${body}.${sig}`;
 }
 
 export function verifyCounterToken(token: string | undefined | null): CounterPayload | null {
   if (!token || !token.includes(".")) return null;
   const [body, sig] = token.split(".");
-  const expected = base64url(crypto.createHmac("sha256", SECRET).update(body).digest());
+  const expected = base64url(crypto.createHmac("sha256", getSecret()).update(body).digest());
   const a = Buffer.from(sig);
   const b = Buffer.from(expected);
   if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;

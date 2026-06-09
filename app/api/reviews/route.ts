@@ -190,6 +190,12 @@ export async function POST(req: NextRequest) {
     } catch { /* non-fatal — allow the first review through */ }
   }
 
+  // Clamp rating to an integer 1-5 before it's stored or rendered. An
+  // out-of-range value skews the public average on /reviews and throws a
+  // RangeError inside "★".repeat() in notifyOwner (which, being caught,
+  // silently drops the owner alert for that review). (bug fix)
+  const safeRating = Math.max(1, Math.min(5, Math.round(Number(body.rating) || 0)));
+
   try {
     // Stamp verified:true + the leadId on the upstream payload. The
     // caller has already validated the token + lead-is-paid-or-met
@@ -200,15 +206,18 @@ export async function POST(req: NextRequest) {
     const r = await fetch(`${MC_API}/api/reviews`, {
       method: "POST",
       headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({ ...body, verified: true, leadId: verification.leadId }),
+      body: JSON.stringify({ ...body, rating: safeRating, verified: true, leadId: verification.leadId }),
     });
     const data = await r.json();
     if (!r.ok) return NextResponse.json({ error: data.error || "Submission failed." }, { status: r.status });
 
     // Burn the token — post a [REVIEW-USED: token=X] marker so this
     // token can never submit again. The verify-token endpoint refuses
-    // any submission once this marker exists.
-    fetch(`${MC_API}/api/comms`, {
+    // any submission once this marker exists. AWAIT it (was fire-and-
+    // forget) so the marker is durably posted before we return — a
+    // sequential retry/double-click then sees it and is blocked. (Truly
+    // concurrent submits still need MC-side atomic single-use; noted.) (bug fix)
+    await fetch(`${MC_API}/api/comms`, {
       method: "POST",
       headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
       body: JSON.stringify({

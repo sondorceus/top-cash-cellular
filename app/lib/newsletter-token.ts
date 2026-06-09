@@ -5,11 +5,19 @@
 
 import crypto from "crypto";
 
-const SECRET =
-  process.env.TCC_TOKEN_SECRET ||
-  process.env.TCC_SESSION_SECRET ||
-  process.env.TCC_ADMIN_TOKEN ||
-  "topcash-newsletter-fallback";
+// No hardcoded fallback — a public default makes unsubscribe tokens forgeable
+// (anyone could unsubscribe arbitrary emails). Precedence preserved so live
+// tokens stay valid; throws on first use if no secret is set. (bug fix)
+function getSecret(): string {
+  const s =
+    process.env.TCC_TOKEN_SECRET ||
+    process.env.TCC_SESSION_SECRET ||
+    process.env.TCC_ADMIN_TOKEN ||
+    process.env.NEXTAUTH_SECRET ||
+    process.env.MC_API_KEY;
+  if (!s) throw new Error("newsletter-token signing secret env required (TCC_ADMIN_TOKEN / NEXTAUTH_SECRET / MC_API_KEY)");
+  return s;
+}
 
 export type NewsletterPayload = {
   email: string;
@@ -36,7 +44,7 @@ export function signNewsletterToken(email: string): string {
   const payload: NewsletterPayload = { email: email.toLowerCase().trim(), iat: Date.now() };
   const body = base64url(Buffer.from(JSON.stringify(payload)));
   const sig = base64url(
-    crypto.createHmac("sha256", SECRET).update(body).digest(),
+    crypto.createHmac("sha256", getSecret()).update(body).digest(),
   );
   return `${body}.${sig}`;
 }
@@ -45,7 +53,7 @@ export function verifyNewsletterToken(token: string | undefined | null): Newslet
   if (!token || !token.includes(".")) return null;
   const [body, sig] = token.split(".");
   const expected = base64url(
-    crypto.createHmac("sha256", SECRET).update(body).digest(),
+    crypto.createHmac("sha256", getSecret()).update(body).digest(),
   );
   const a = Buffer.from(sig);
   const b = Buffer.from(expected);
