@@ -544,7 +544,10 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   px5: {
     "base": { broken: 4, fair: 18, good: 32, mint: 40, sealed: 54 } },
   px5a: {
-    "base": { broken: 27, fair: 22, good: 32, mint: 36, sealed: 50 } },
+    // broken was 27 — ABOVE fair (22), so claiming worse condition paid more.
+    // Lowered to 6 to restore the ladder, derived from the Pixel-family
+    // broken/fair ratio (px5 4/18, px6 9/32 ≈ 0.22-0.28 × fair 22). Confirm. (bug fix)
+    "base": { broken: 6, fair: 22, good: 32, mint: 36, sealed: 50 } },
   px6: {
     "128": { broken: 9, fair: 32, good: 45, mint: 58, sealed: 86 },
     "256": { broken: 11, fair: 40, good: 54, mint: 68, sealed: 99 } },

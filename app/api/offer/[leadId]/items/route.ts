@@ -8,8 +8,10 @@
 // public offer GET route, since the customer reaches this from their
 // own private offer link. No sign-in required: an edit only changes a
 // customer-facing ESTIMATE (the real price is verified at inspection)
-// and the owner gets an SMS on every edit. Cancelling still requires
-// sign-in — that one is destructive — but a spec edit does not.
+// and the owner gets an SMS on every edit. (Cancel uses the SAME
+// leadId-as-secret model — see cancel/route.ts — also no sign-in; the
+// owner SMS + the terminal-status gate are its safeguards. An earlier
+// comment here claimed cancel required sign-in; it never did.)
 //
 // Editing is allowed only BEFORE shipping — once the lead is marked
 // shipped/received/tested/paid/met it's locked (409). On success it

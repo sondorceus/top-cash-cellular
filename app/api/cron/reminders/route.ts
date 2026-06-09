@@ -34,7 +34,12 @@ const RESEND_KEY = process.env.RESEND_API_KEY || "";
 
 // 24-48 hour aging window. Reminders only fire once per lead per kind.
 const REMIND_AFTER_MS = 24 * 60 * 60 * 1000;
-const REMIND_UNTIL_MS = 48 * 60 * 60 * 1000;
+// Catch-up window widened 48h → 7d. The hourly cron used to only fire inside a
+// 24-48h slice, so a single MC outage overlapping that slice meant a lead aged
+// past 48h and NEVER got its quote/review reminder (no retry). The not-already-
+// reminded flag keeps it idempotent — each lead still gets exactly one. 7d
+// bounds it so genuinely stale leads aren't re-engaged forever. (bug fix)
+const REMIND_UNTIL_MS = 7 * 24 * 60 * 60 * 1000;
 
 async function sendSms(to: string, body: string): Promise<boolean> {
   if (!TWILIO_SID || !TWILIO_AUTH) return false;

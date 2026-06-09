@@ -248,7 +248,7 @@ export async function POST(req: NextRequest) {
     return handleQuoteSave(req, data);
   }
   let { payout } = data;
-  const { name, phone, email, device, model, storage, condition, carrier, carrierLock, accessoriesIncluded, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, referralCode } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, carrierLock, accessoriesIncluded, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, promoCode, referralCode } = data;
   // TCPA defense in depth — client checkbox is `required`, but a
   // bypass (DevTools, malformed client) could submit phone without
   // consent. Reject any phone-bearing lead that didn't get explicit
@@ -481,6 +481,33 @@ export async function POST(req: NextRequest) {
   } else {
     serverQuoteCap = computeCap(model, condition);
   }
+  // Quote-step promo coupons (/coupons.json) apply a PERCENT bonus that the
+  // client folds into the submitted quote. The server MUST re-validate the code
+  // against the same source (never trust a client-claimed percent) and raise the
+  // cap by that percent — otherwise a legit promo quote trips the tamper clamp,
+  // silently dropping the customer's discount AND logging them as a fraudster.
+  // Single-device only: the cap is one device's ceiling, so a validated percent
+  // maps cleanly. Multi-device carts snapshot per-item prices under possibly
+  // different promo states, so raising the summed cap there would be a small
+  // fraud vector — left for a deliberate fix. (bug fix)
+  let promoApplied: { code: string; percent: number } | null = null;
+  if (typeof promoCode === "string" && promoCode.trim() && !isMultiDeviceCart && serverQuoteCap != null) {
+    const cleanPromo = promoCode.trim().toUpperCase();
+    try {
+      const origin = new URL(req.url).origin;
+      const pr = await fetch(`${origin}/coupons.json`, { cache: "no-store" });
+      if (pr.ok) {
+        const promos = (await pr.json().catch(() => ({}))) as Record<string, { percent?: number; active?: boolean }>;
+        const p = promos[cleanPromo];
+        const pct = Number(p?.percent);
+        if (p?.active && Number.isFinite(pct) && pct > 0) {
+          const safePct = Math.min(pct, 50); // hard ceiling, defense-in-depth
+          promoApplied = { code: cleanPromo, percent: safePct };
+          serverQuoteCap = Math.round(serverQuoteCap * (1 + safePct / 100));
+        }
+      }
+    } catch { /* non-fatal — fall through to the un-raised cap */ }
+  }
   let quoteTampered = false;
   let baseQuoteNum = submittedQuoteNum;
   if (serverQuoteCap != null && submittedQuoteNum > serverQuoteCap + SERVER_QUOTE_TOLERANCE) {
@@ -637,6 +664,11 @@ export async function POST(req: NextRequest) {
     couponLines.push(`Total payout amount: $${quoteNum} (base $${baseQuoteNum} + bonus $${couponApplied.value})`);
   } else if (couponError && typeof couponCode === "string" && couponCode.trim()) {
     couponLines.push(`Coupon attempt: ${couponCode.trim().toUpperCase()} · failed: ${couponError.slice(0, 200)}`);
+  }
+  // Promo (percent) coupon audit — the discount is already inside the quote;
+  // this line records that the cap was raised so the offer wasn't clamped.
+  if (promoApplied) {
+    couponLines.push(`Promo applied: ${promoApplied.code} (+${promoApplied.percent}% — included in quote)`);
   }
 
   // Referral outcome — written into the lead body so (a) admin sees the

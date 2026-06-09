@@ -4848,6 +4848,12 @@ export default function Home() {
   // into category. Otherwise the picker pops first.
   const startFunnel = () => {
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    // Clear the financed-balance answer when starting a (new) device. paidOff
+    // is asked once at the contact step but snapshotted per cart item, so
+    // without this "Add another device" would inherit the prior device's
+    // value into the next item's snapshot. (bug fix) Per-device vs order-level
+    // paidOff modeling is a deeper product question — flagged separately.
+    setPaidOff(null);
     if (handoffMethod) {
       setStep("category");
       pushHistory("category");
@@ -5939,6 +5945,7 @@ export default function Home() {
     setProcessor(null); setMemory(null); setGraphics(null); setDisplayResolution(null); setDisplayGlass(null);
     setBatteryHealth(null); setCharger(null); setBrokenPhotoUrl(null);
     setExtras({}); setExtrasIndex(0);
+    setPaidOff(null);
     setBestContact(null); setCustomerNote(""); setSmsOptIn(false);
     setCouponInput(""); setCouponState("idle"); setCouponValid(null); setCouponMessage("");
   };
@@ -12130,7 +12137,7 @@ export default function Home() {
                   const res = await fetch("/api/lead", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, carrierLock: carrierLock?.label, accessoriesIncluded: (showAccessoryQuestion && accessoryBonusAmount > 0) ? accessoriesIncluded : undefined, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined), referralCode: referralCode || undefined }),
+                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, carrierLock: carrierLock?.label, accessoriesIncluded: (showAccessoryQuestion && accessoryBonusAmount > 0) ? accessoriesIncluded : undefined, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined), promoCode: couponLabel || undefined, referralCode: referralCode || undefined }),
                   });
                   if (!res.ok) throw new Error('Failed');
                   const d = await res.json().catch(() => ({}));
