@@ -12,6 +12,8 @@ export default function Pic({
   loading = "lazy",
   style,
   size = 256,
+  sizes,
+  priority,
 }: {
   src?: string | null;
   alt: string;
@@ -19,6 +21,14 @@ export default function Pic({
   loading?: "lazy" | "eager";
   style?: CSSProperties;
   size?: number;
+  // When set, next/image picks the srcset variant from `sizes` (CSS px the
+  // image actually occupies) instead of the `size` prop. Two <Pic>s sharing
+  // the SAME `sizes` resolve to the SAME optimized URL on a given device —
+  // that's what lets the hidden catalog warmer pre-fetch the exact variant
+  // the device hero later renders, so the hero pops from cache, no lag.
+  sizes?: string;
+  // priority sets loading=eager + fetchpriority=high + a <link rel=preload>.
+  priority?: boolean;
 }) {
   if (!src) return null;
   return (
@@ -27,7 +37,9 @@ export default function Pic({
       alt={alt}
       width={size}
       height={size}
-      loading={loading}
+      loading={priority ? undefined : loading}
+      priority={priority}
+      sizes={sizes}
       className={className}
       style={style}
     />

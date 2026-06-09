@@ -6193,7 +6193,7 @@ export default function Home() {
       <div className="sticky top-24 bg-[rgba(15,15,15,0.7)] backdrop-blur-[12px] border border-white/10 rounded-2xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
         <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/10 rounded-2xl mb-4 h-72 flex items-center justify-center overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-3">
           {model.image ? (
-            <Pic src={model.image} alt={model.label} size={640} className="w-full h-full object-contain" style={{ filter: "drop-shadow(0 18px 22px rgba(0,0,0,0.55)) drop-shadow(0 4px 8px rgba(0,0,0,0.35))" }} />
+            <Pic src={model.image} alt={model.label} size={640} sizes="300px" loading="eager" className="w-full h-full object-contain" style={{ filter: "drop-shadow(0 18px 22px rgba(0,0,0,0.55)) drop-shadow(0 4px 8px rgba(0,0,0,0.35))" }} />
           ) : (
             <svg className="w-14 h-14 opacity-30 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
           )}
@@ -6570,7 +6570,9 @@ export default function Home() {
     if (srcs.length === 0) return null;
     return (
       <div aria-hidden="true" style={{ position: "absolute", width: 0, height: 0, overflow: "hidden", opacity: 0, pointerEvents: "none" }}>
-        {srcs.map((src) => <Pic key={src} src={src} alt="" loading="eager" />)}
+        {/* size/sizes MUST mirror the device hero (selectionPanel) exactly
+            so the warmed variant === the hero's variant on every device. */}
+        {srcs.map((src) => <Pic key={src} src={src} alt="" size={640} sizes="300px" loading="eager" />)}
       </div>
     );
   })();

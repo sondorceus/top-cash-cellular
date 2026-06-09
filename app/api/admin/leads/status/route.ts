@@ -162,7 +162,7 @@ async function sendReferralEarnedEmail(to: string): Promise<void> {
   <div style="background:#13142b;padding:32px 16px">
     <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden">
       <tr><td style="padding:24px 28px">
-        <img src="https://topcashcellular.com/logo-email.png" alt="Top Cash Cellular" width="118" style="display:block;width:118px;height:auto;border:0;outline:none;margin:0" />
+        <img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;margin:0" />
         <div style="font-size:22px;font-weight:800;color:#ffffff;line-height:1.1">You earned a referral reward</div>
       </td></tr>
       <tr><td style="padding:28px 28px 8px 28px">
@@ -365,7 +365,7 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                   <tr>
                     <td style="vertical-align:middle">
-                      <img src="https://topcashcellular.com/logo-email.png" alt="Top Cash Cellular" width="118" style="display:block;width:118px;height:auto;border:0;outline:none;margin:0" />
+                      <img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;margin:0" />
                       <div style="font-size:22px;font-weight:800;color:#ffffff;line-height:1.1">${accentLabel}</div>
                     </td>
                     <td style="vertical-align:middle;text-align:right">
