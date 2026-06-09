@@ -11136,7 +11136,11 @@ export default function Home() {
               );
             })()}
 
-            {/* Coupon code */}
+            {/* Coupon code — promo (%) coupons apply to a single-device
+                checkout only (the server validates the code + raises the cap on
+                that path). Once the cart has items the order is multi-device,
+                where the promo can't be honored safely, so hide the input. (bug fix) */}
+            {cartItems.length === 0 && (
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-left">
               <p className="text-xs font-semibold text-[#e6e6e6] uppercase tracking-wider mb-2">Have a coupon code?</p>
               {couponLabel ? (
@@ -11154,6 +11158,7 @@ export default function Home() {
                 </>
               )}
             </div>
+            )}
 
             <div className="flex items-center justify-center lg:justify-start gap-2 mb-4">
               <span className="inline-flex items-center gap-1.5 bg-[#ffb400]/12 border border-[#ffb400]/35 text-[#ffb400] text-xs font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(255,180,0,0.25)]">
@@ -11188,7 +11193,14 @@ export default function Home() {
                       // checkout don't lie about value. The backend lead
                       // body still includes condition + specs so staff
                       // can quote it manually post-arrival.
-                      price: isManualQuote ? 0 : quote,
+                      // Strip the quote-step PROMO multiplier (couponMultiplier)
+                      // from the cart-stored price: the multi-device submit path
+                      // doesn't send promoCode, so a promo-inflated cart price
+                      // would trip the server's tamper clamp (lost discount +
+                      // false fraud flag). Promo only applies to the single-
+                      // device checkout, where the live quote + promoCode are
+                      // server-validated. couponMultiplier is always ≥ 1. (bug fix)
+                      price: isManualQuote ? 0 : Math.round(quote / couponMultiplier),
                       quantity: 1,
                       image: model.image,
                       carrier: carrier?.label,
@@ -12092,7 +12104,13 @@ export default function Home() {
                       extras: it.extras,
                       brokenGlass: it.brokenGlass,
                       brokenFunctional: it.brokenFunctional,
-                      paidOff: it.paidOff,
+                      // Carrier balance is asked ONCE at the contact step
+                      // (order-level), AFTER items are snapshotted — so the
+                      // per-item snapshot (it.paidOff) is stale/null and would
+                      // disagree with the top-level answer staff see. Apply the
+                      // order-level answer to each carrier-connected device; the
+                      // question doesn't apply to non-carrier devices. (bug fix)
+                      paidOff: it.carrier ? paidOff : undefined,
                       imei: it.imei,
                       imeiWarnings: it.imeiWarnings,
                       // Per-item handoff so the backend can split mixed

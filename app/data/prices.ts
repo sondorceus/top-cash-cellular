@@ -225,7 +225,11 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   ip16e: {
     "128": { broken: 66, fair: 152, good: 214, mint: 247, sealed: 281 },
     "256": { broken: 86, fair: 218, good: 280, mint: 314, sealed: 323 },
-    "512": { broken: 104, fair: 266, good: 328, mint: 361, sealed: 357 } },
+    // 512 sealed was 357 — BELOW mint (361), so a factory-sealed unit paid less
+    // than mint. mint follows a clean +33 good→mint step across all tiers, so
+    // sealed was the low one. Raised to 365 (mint + a small premium continuing
+    // the shrinking sealed-over-mint trend: +34 @128, +9 @256, ~+4 @512). (bug fix)
+    "512": { broken: 104, fair: 266, good: 328, mint: 361, sealed: 365 } },
   ip16p: {
     "128": { broken: 217, fair: 315, good: 417, mint: 434, sealed: 504 },
     // 1TB sealed capped down from 646 → 478 (= resell $638 × MARGIN_FLOOR_MULT 0.75)
