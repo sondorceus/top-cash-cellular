@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { safeEqual } from "../../../../lib/admin-auth";
 
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
@@ -12,7 +13,7 @@ const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 function checkAuth(req: NextRequest): boolean {
   const headerToken = req.headers.get("x-admin-token");
   const queryToken = req.nextUrl.searchParams.get("token");
-  return headerToken === ADMIN_TOKEN || queryToken === ADMIN_TOKEN;
+  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
 }
 
 function toE164(raw: string): string | null {

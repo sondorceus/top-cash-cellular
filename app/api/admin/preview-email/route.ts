@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { safeEqual } from "../../../lib/admin-auth";
 
 // Admin-gated email preview — Skywalker 2026-05-19 wanted to check that
 // the /api/confirm template renders cleanly on desktop (the live email
@@ -17,7 +18,7 @@ const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams;
-  if (q.get("token") !== ADMIN_TOKEN) {
+  if (!safeEqual(q.get("token"), ADMIN_TOKEN)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const isShip = q.get("ship") !== "0";

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { safeEqual } from "../../../../lib/admin-auth";
 import { logComm } from "../../../../lib/comms-log";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -15,7 +16,7 @@ const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 function checkAuth(req: NextRequest): boolean {
   const headerToken = req.headers.get("x-admin-token");
   const queryToken = req.nextUrl.searchParams.get("token");
-  return headerToken === ADMIN_TOKEN || queryToken === ADMIN_TOKEN;
+  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
 }
 
 async function sendSms(to: string, body: string): Promise<boolean> {

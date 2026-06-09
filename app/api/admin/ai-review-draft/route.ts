@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { safeEqual } from "../../../lib/admin-auth";
 import { callAI } from "../../../lib/ai-gateway";
 
 // Trustpilot / Google review response drafter — given a customer
@@ -19,7 +20,7 @@ const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams;
-  if (q.get("token") !== ADMIN_TOKEN) {
+  if (!safeEqual(q.get("token"), ADMIN_TOKEN)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const ratingRaw = q.get("rating");

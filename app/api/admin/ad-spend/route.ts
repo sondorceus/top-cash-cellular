@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { safeEqual } from "../../../lib/admin-auth";
 
 // Ad-spend ledger. Same MC-comms pattern as the sales endpoint, but
 // every entry costs us money instead of earning us money — net profit
@@ -13,7 +14,7 @@ const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 function checkAuth(req: NextRequest): boolean {
   const headerToken = req.headers.get("x-admin-token");
   const queryToken = req.nextUrl.searchParams.get("token");
-  return headerToken === ADMIN_TOKEN || queryToken === ADMIN_TOKEN;
+  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
 }
 
 function genId(): string {

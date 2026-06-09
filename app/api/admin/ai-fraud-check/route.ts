@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { safeEqual } from "../../../lib/admin-auth";
 import { callAI } from "../../../lib/ai-gateway";
 
 // AI fraud narrative — given a lead's fingerprint (IP, UA, visitor
@@ -17,7 +18,7 @@ import { callAI } from "../../../lib/ai-gateway";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 export async function POST(req: NextRequest) {
-  if (req.nextUrl.searchParams.get("token") !== ADMIN_TOKEN && req.headers.get("x-admin-token") !== ADMIN_TOKEN) {
+  if (!safeEqual(req.nextUrl.searchParams.get("token"), ADMIN_TOKEN) && !safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   let data: Record<string, unknown> = {};

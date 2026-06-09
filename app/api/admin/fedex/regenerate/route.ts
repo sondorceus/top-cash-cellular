@@ -7,14 +7,15 @@
 // classified error on failure so the admin UI can show actionable copy.
 
 import { NextRequest, NextResponse } from "next/server";
+import { safeEqual } from "../../../../lib/admin-auth";
 import { retryFedexLabel } from "../../../../lib/fedex-retry";
 
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 export async function POST(req: NextRequest) {
   if (
-    req.nextUrl.searchParams.get("token") !== ADMIN_TOKEN &&
-    req.headers.get("x-admin-token") !== ADMIN_TOKEN
+    !safeEqual(req.nextUrl.searchParams.get("token"), ADMIN_TOKEN) &&
+    !safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN)
   ) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

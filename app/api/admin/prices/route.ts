@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { safeEqual } from "../../../lib/admin-auth";
 import { PRICE_TABLE, CARRIER_DEDUCTIONS, BASE_PRICED_MODELS, MACBOOK_SPECS, type MacSpec } from "../../../data/prices";
 import { getResellEstimate } from "../../../lib/resell-estimates";
 import { lookupAtlasResell } from "../../../lib/atlas-lookup";
@@ -131,7 +132,7 @@ const HISTORY_LIMIT = 10;
 function checkAuth(req: NextRequest): boolean {
   const headerToken = req.headers.get("x-admin-token");
   const queryToken = req.nextUrl.searchParams.get("token");
-  return headerToken === ADMIN_TOKEN || queryToken === ADMIN_TOKEN;
+  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
 }
 
 type OverridesShape = {

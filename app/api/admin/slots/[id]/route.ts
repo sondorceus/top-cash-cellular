@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { safeEqual } from "../../../../lib/admin-auth";
 
 // ADMIN slot removal. Same auth + proxy pattern as ../route.ts.
 // 2026-05-24.
@@ -10,7 +11,7 @@ const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 function checkAuth(req: NextRequest): boolean {
   const headerToken = req.headers.get("x-admin-token");
   const queryToken = req.nextUrl.searchParams.get("token");
-  return headerToken === ADMIN_TOKEN || queryToken === ADMIN_TOKEN;
+  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
 }
 
 export async function DELETE(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {

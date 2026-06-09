@@ -12081,7 +12081,9 @@ export default function Home() {
                 let leadIdLocal: string | null = null;
                 if (isMultiCart) {
                   const devicesPayload = cartItems.map((it) => {
-                    const key = `${it.modelId}-${it.storage}-${it.condition}`;
+                    // Must match the photo-tab __key (incl. handoff) so each
+                    // cart line's photos attach to the right device. (bug fix)
+                    const key = `${it.modelId}-${it.storage}-${it.condition}-${it.handoff ?? "local"}`;
                     return {
                       model: it.model,
                       storage: it.storage,
@@ -13060,7 +13062,11 @@ export default function Home() {
                 const items = cartItems.map((it, idx) => ({
                   ...it,
                   __idx: idx,
-                  __key: `${it.modelId}-${it.storage}-${it.condition}`,
+                  // Include handoff — the cart dedup key does, so two lines that
+                  // differ ONLY by handoff (same device shipped vs local) are
+                  // distinct rows and must NOT share one photo bucket. Must match
+                  // the submit-side key (see liveMap read) exactly. (bug fix)
+                  __key: `${it.modelId}-${it.storage}-${it.condition}-${it.handoff ?? "local"}`,
                   __isSealed: /^(sealed|brand[- ]?new|new in box|nib)$/i.test(it.condition),
                 }));
                 const effective = activePhotoKey || items[0].__key;
@@ -13113,7 +13119,7 @@ export default function Home() {
               <div>
                 <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">
                   {cartItems.length > 1
-                    ? <>Photos for <span className="text-[#00c853]">{(cartItems.find((it) => `${it.modelId}-${it.storage}-${it.condition}` === activePhotoKey)?.model) || cartItems[0].model}</span></>
+                    ? <>Photos for <span className="text-[#00c853]">{(cartItems.find((it) => `${it.modelId}-${it.storage}-${it.condition}-${it.handoff ?? "local"}` === activePhotoKey)?.model) || cartItems[0].model}</span></>
                     : <>Device Photos {condition?.id === "broken" || condition?.id === "fair"
                         ? <span className="normal-case text-[12px] text-[#00c853]">— recommended for {condition?.id === "broken" ? "broken" : "worn"} devices to lock in your quote</span>
                         : <span className="normal-case text-[12px]">(optional — up to 3, speeds up payout)</span>}</>}
