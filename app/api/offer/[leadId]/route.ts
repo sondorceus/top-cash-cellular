@@ -5,6 +5,7 @@
 // tracking-number links. Skywalker 2026-05-19.
 
 import { NextRequest, NextResponse } from "next/server";
+import { referralCodeForEmail, referralLinkForCode } from "../../../lib/referral";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -168,13 +169,23 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
       : devices.reduce((s, d) => s + (d.quote || 0), 0);
   }
 
+  // Refer-a-friend — the customer's own share code is deterministic
+  // from their email (referralCodeForEmail), so we can surface it on the
+  // offer page (a happy post-sale moment) without a login. leadId is the
+  // secret here, same trust model as the rest of this payload.
+  const customerEmail = field(body, "Email");
+  const referralCode = customerEmail ? referralCodeForEmail(customerEmail) : undefined;
+  const referralLink = referralCode ? referralLinkForCode(referralCode) : undefined;
+
   return NextResponse.json({
     found: true,
     id: leadId,
     timestamp: leadMsg.timestamp,
     name: field(body, "Name"),
     phone: phoneOverride || field(body, "Phone"),
-    email: field(body, "Email"),
+    email: customerEmail,
+    referralCode,
+    referralLink,
     device: field(body, "Device"),
     // The lead body has no standalone "Model:" line — the model is the
     // second half of the "Device: <type> — <model>" line. Parse it out

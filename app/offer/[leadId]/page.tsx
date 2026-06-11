@@ -47,6 +47,11 @@ type Offer = {
   name?: string;
   phone?: string;
   email?: string;
+  // Refer-a-friend — the customer's deterministic share code + link,
+  // computed server-side from their email so we can surface it here
+  // without a login.
+  referralCode?: string;
+  referralLink?: string;
   device?: string;
   model?: string;
   storage?: string;
@@ -240,6 +245,8 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   const [coSubmitting, setCoSubmitting] = useState(false);
   const [coError, setCoError] = useState("");
   const [coSubmitted, setCoSubmitted] = useState(false);
+  // Refer-a-friend share-link copy feedback.
+  const [refCopied, setRefCopied] = useState(false);
   // Phone-number editing — the only contact field the customer can
   // change themselves (name stays fixed; email is the account identity).
   const [editingPhone, setEditingPhone] = useState(false);
@@ -1110,6 +1117,43 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                 </div>
               </>
             )}
+          </div>
+        )}
+
+        {/* Refer a friend — both sides get $10. The customer's personal
+            share link comes from the offer payload (deterministic from
+            their email). Best surfaced post-sale, so we show it on any
+            live offer. */}
+        {offer.referralLink && !isCancelled && (
+          <div className="bg-gradient-to-br from-[#00c853]/[0.07] to-transparent border border-[#00c853]/25 rounded-2xl p-5 mb-5">
+            <div className="flex items-start gap-3">
+              <div className="shrink-0 w-9 h-9 rounded-full bg-[#00c853]/15 border border-[#00c853]/30 flex items-center justify-center">
+                <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Refer a friend</p>
+                <p className="text-sm font-bold text-white mb-1">Give $10, get $10</p>
+                <p className="text-[#bdbdbd] text-xs leading-relaxed mb-3">Send your link — your friend gets <span className="text-white font-semibold">$10 off-the-top</span> on their first trade, and you earn <span className="text-white font-semibold">$10</span> when it completes.</p>
+                <div className="flex items-stretch gap-2">
+                  <div className="flex-1 min-w-0 px-3 py-2 bg-black/40 border border-white/10 rounded-lg text-xs text-[#dcdcdc] font-mono truncate flex items-center" title={offer.referralLink}>
+                    {offer.referralLink.replace(/^https?:\/\//, "")}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(offer.referralLink!);
+                        setRefCopied(true);
+                        setTimeout(() => setRefCopied(false), 2200);
+                      } catch { /* clipboard blocked — link is visible to copy by hand */ }
+                    }}
+                    className={`shrink-0 px-4 py-2 rounded-lg text-sm font-extrabold cursor-pointer transition ${refCopied ? "bg-[#00c853]/20 text-[#00c853] border border-[#00c853]/40" : "bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a]"}`}
+                  >
+                    {refCopied ? "Copied ✓" : "Copy"}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
