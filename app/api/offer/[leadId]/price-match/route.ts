@@ -39,21 +39,28 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
   }
 
-  let body: { competitor?: unknown; amount?: unknown; url?: unknown; note?: unknown };
+  let body: { competitor?: unknown; amount?: unknown; url?: unknown; note?: unknown; kind?: unknown };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
+  // Two flavors share this endpoint, owner-SMS, and human-in-the-loop
+  // honoring:
+  //   - "price-match": customer found a higher quote elsewhere (needs a
+  //     competitor + their number).
+  //   - "counter": customer just isn't happy with our number and wants
+  //     to propose their own (no competitor required, note optional).
+  const isCounter = body.kind === "counter";
   const competitor = clean(typeof body.competitor === "string" ? body.competitor : "", 60);
   const amount = Math.round(Number(body.amount));
   const url = clean(typeof body.url === "string" ? body.url : "", 240);
   const note = clean(typeof body.note === "string" ? body.note : "", 300);
-  if (!competitor) {
+  if (!isCounter && !competitor) {
     return NextResponse.json({ error: "Tell us where you got the other quote." }, { status: 400 });
   }
   if (!Number.isFinite(amount) || amount <= 0) {
-    return NextResponse.json({ error: "Enter the dollar amount they quoted." }, { status: 400 });
+    return NextResponse.json({ error: isCounter ? "Enter the amount you were hoping for." : "Enter the dollar amount they quoted." }, { status: 400 });
   }
   // The URL is optional; if provided, lightly check it looks like a URL
   // before letting it land in the marker. Don't try to "verify" it — a
@@ -79,16 +86,18 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // the lead row and surfaces the details so staff can mint a counter
   // through the existing counter-offer flow.
   const at = new Date().toISOString();
-  const markerBody = `[PRICE-MATCH-REQUEST: leadId=${leadId} competitor=${competitor} amount=${amount} at=${at}]${url ? `\nUrl: ${url}` : ""}${note ? `\nNote: ${note}` : ""}`;
+  const markerBody = isCounter
+    ? `[COUNTER-REQUEST: leadId=${leadId} amount=${amount} at=${at}]${note ? `\nNote: ${note}` : ""}`
+    : `[PRICE-MATCH-REQUEST: leadId=${leadId} competitor=${competitor} amount=${amount} at=${at}]${url ? `\nUrl: ${url}` : ""}${note ? `\nNote: ${note}` : ""}`;
   const postRes = await fetch(`${MC_API}/api/comms`, {
     method: "POST",
     headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
     body: JSON.stringify({
       from: "topcash-web",
-      fromName: "Price-Match Request",
+      fromName: isCounter ? "Counter-Offer Request" : "Price-Match Request",
       role: "system",
       body: markerBody,
-      tags: ["price-match", "request"],
+      tags: isCounter ? ["counter-request", "request"] : ["price-match", "request"],
       priority: "high",
     }),
   });
@@ -104,7 +113,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
       const customerName = field(leadMsg.body, "Name") || "Customer";
       const model = field(leadMsg.body, "Model") || field(leadMsg.body, "Device") || "device";
       const ourQuote = field(leadMsg.body, "Quote") || "";
-      const text = `🎯 PRICE-MATCH: ${customerName} (${model}) says ${competitor} quoted $${amount}${ourQuote ? ` — we quoted ${ourQuote}` : ""}. Offer ${leadId.slice(0, 10).toUpperCase()}.`;
+      const text = isCounter
+        ? `💬 COUNTER: ${customerName} (${model}) isn't happy — wants $${amount}${ourQuote ? ` (we quoted ${ourQuote})` : ""}.${note ? ` "${note}"` : ""} Offer ${leadId.slice(0, 10).toUpperCase()}.`
+        : `🎯 PRICE-MATCH: ${customerName} (${model}) says ${competitor} quoted $${amount}${ourQuote ? ` — we quoted ${ourQuote}` : ""}. Offer ${leadId.slice(0, 10).toUpperCase()}.`;
       await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
         method: "POST",
         headers: {

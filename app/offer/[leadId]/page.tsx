@@ -230,6 +230,16 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   const [pmSubmitting, setPmSubmitting] = useState(false);
   const [pmError, setPmError] = useState("");
   const [pmSubmitted, setPmSubmitted] = useState(false);
+  // "Not happy with the price?" counter — lighter-weight than price-match:
+  // no competitor needed, the customer just proposes their own number.
+  // Posts a [COUNTER-REQUEST] marker + owner SMS; staff honors by hand via
+  // the existing counter-offer flow.
+  const [coOpen, setCoOpen] = useState(false);
+  const [coAmount, setCoAmount] = useState("");
+  const [coReason, setCoReason] = useState("");
+  const [coSubmitting, setCoSubmitting] = useState(false);
+  const [coError, setCoError] = useState("");
+  const [coSubmitted, setCoSubmitted] = useState(false);
   // Phone-number editing — the only contact field the customer can
   // change themselves (name stays fixed; email is the account identity).
   const [editingPhone, setEditingPhone] = useState(false);
@@ -327,6 +337,35 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
       setPmError("Network error — try again.");
     } finally {
       setPmSubmitting(false);
+    }
+  };
+
+  // Submit a "not happy with the price" counter. Reuses the price-match
+  // endpoint with kind=counter — no competitor, just the customer's
+  // hoped-for number + an optional reason. Human-in-the-loop, same as
+  // price-match.
+  const doCounter = async () => {
+    const amount = parseInt(coAmount.replace(/[^0-9]/g, ""), 10);
+    if (!amount || amount <= 0) { setCoError("Enter the amount you were hoping for."); return; }
+    setCoSubmitting(true);
+    setCoError("");
+    try {
+      const r = await fetch(`/api/offer/${encodeURIComponent(leadId)}/price-match`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          kind: "counter",
+          amount,
+          note: coReason.trim() || undefined,
+        }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) { setCoError(d.error || "Couldn't send your counter — try again."); return; }
+      setCoSubmitted(true);
+    } catch {
+      setCoError("Network error — try again.");
+    } finally {
+      setCoSubmitting(false);
     }
   };
 
@@ -925,18 +964,83 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                 <p className="text-[#bdbdbd] text-xs leading-relaxed">A real person checks every request, usually same business day. We&apos;ll reach out by text or email with our response.</p>
               </div>
             ) : !pmOpen ? (
-              <button
-                type="button"
-                onClick={() => setPmOpen(true)}
-                className="w-full flex items-start justify-between gap-3 text-left cursor-pointer group"
-              >
-                <div className="min-w-0">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Best Price Guarantee</p>
-                  <p className="text-sm font-bold text-white mb-1">Found a better quote elsewhere?</p>
-                  <p className="text-[#bdbdbd] text-xs leading-relaxed">Tell us where — we aim to match or beat any honest comparable quote.</p>
+              <>
+                <button
+                  type="button"
+                  onClick={() => setPmOpen(true)}
+                  className="w-full flex items-start justify-between gap-3 text-left cursor-pointer group"
+                >
+                  <div className="min-w-0">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Best Price Guarantee</p>
+                    <p className="text-sm font-bold text-white mb-1">Found a better quote elsewhere?</p>
+                    <p className="text-[#bdbdbd] text-xs leading-relaxed">Tell us where — we aim to match or beat any honest comparable quote.</p>
+                  </div>
+                  <svg className="w-5 h-5 shrink-0 text-[#00c853] mt-1 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                </button>
+
+                {/* Lighter "just not happy" path — no competitor needed,
+                    the customer names their own number. */}
+                <div className="mt-4 pt-4 border-t border-white/8">
+                  {coSubmitted ? (
+                    <p className="text-xs text-[#bdbdbd] leading-relaxed">
+                      <span className="text-white font-semibold">Counter sent.</span> A real person will review your number and reach out by text or email — usually same business day.
+                    </p>
+                  ) : !coOpen ? (
+                    <button
+                      type="button"
+                      onClick={() => setCoOpen(true)}
+                      className="text-xs text-[#bdbdbd] hover:text-white transition cursor-pointer"
+                    >
+                      Not happy with this price? <span className="text-[#00c853] font-semibold">Make a counter offer →</span>
+                    </button>
+                  ) : (
+                    <div className="space-y-3">
+                      <p className="text-sm font-bold text-white">What would make this work?</p>
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Amount you were hoping for ($)</label>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={coAmount}
+                          onChange={(e) => setCoAmount(e.target.value.replace(/[^0-9]/g, "").slice(0, 6))}
+                          placeholder="e.g. 450"
+                          className="w-full px-3 py-2 bg-black/40 border border-white/15 rounded-lg text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Why? <span className="text-[#666] normal-case font-normal">(optional)</span></label>
+                        <textarea
+                          value={coReason}
+                          onChange={(e) => setCoReason(e.target.value.slice(0, 300))}
+                          placeholder="Anything that helps us understand — condition, accessories, what you've seen elsewhere…"
+                          rows={2}
+                          className="w-full px-3 py-2 bg-black/40 border border-white/15 rounded-lg text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] resize-none"
+                        />
+                      </div>
+                      {coError && <p className="text-red-300 text-[11px] font-semibold">{coError}</p>}
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={doCounter}
+                          disabled={coSubmitting}
+                          className="flex-1 px-3 py-2.5 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] rounded-lg text-sm font-extrabold cursor-pointer disabled:opacity-50 transition"
+                        >
+                          {coSubmitting ? "Sending…" : "Send my counter"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setCoOpen(false); setCoError(""); }}
+                          disabled={coSubmitting}
+                          className="px-3 py-2.5 bg-white/5 border border-white/15 rounded-lg text-sm font-semibold cursor-pointer disabled:opacity-50 transition"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                      <p className="text-[10px] text-[#666] leading-relaxed">No obligation — we&apos;ll review your number and reply. Your device stays yours until you accept.</p>
+                    </div>
+                  )}
                 </div>
-                <svg className="w-5 h-5 shrink-0 text-[#00c853] mt-1 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </button>
+              </>
             ) : (
               <>
                 <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Best Price Guarantee</p>
