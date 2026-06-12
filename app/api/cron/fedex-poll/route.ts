@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTracking, type TrackingState } from "../../../lib/fedex";
+import { getTracking } from "../../../lib/fedex";
 
 // Hourly FedEx tracking poll — Skywalker 2026-05-19. For every ship-
 // handoff lead in quote_requested or shipped status with a tracking

@@ -54,10 +54,6 @@ export async function POST(req: NextRequest) {
   // in the receipt breakdown ("Coupon Bonus +$5"). Optional; 0/absent
   // means no coupon and the line is hidden. Skywalker 2026-05-19.
   const couponBonus = Number(body?.couponBonus) > 0 ? Math.round(Number(body.couponBonus)) : 0;
-  // Phone normalized to digits-only for the /track URL — parallel commit
-  // 3707f6e referenced phoneDigits before declaring it. Restoring the
-  // intended derivation here so the type-check passes.
-  const phoneDigits = typeof phone === "string" ? phone.replace(/\D/g, "") : "";
   // fedexLabel = { tracking, url, service } when /api/lead minted a label.
   // Only ship handoffs get one — local meetups stay on the existing copy.
   //
@@ -82,7 +78,6 @@ export async function POST(req: NextRequest) {
   // should branch on both flags rather than just isShipping.
   const isMixed = handoffMethod === "mixed";
   const isShipping = handoffMethod === "ship" || isMixed;
-  const isLocal = handoffMethod === "local" || isMixed;
   const hasLabel = (isShipping || isMixed) && labelUrlOk && labelTrackingOk;
   // Defensive: even if a stale client somehow sent payout="Cash" for a
   // ship handoff, the email should NEVER display "Cash" since we can't

@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useLayoutEffect, useCallback, useRef } from "react";
-import Script from "next/script";
 import { track as vercelTrack } from "@vercel/analytics";
 import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT } from "./lib/resell-estimates";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
@@ -10,7 +9,7 @@ import { SlideOnScrollNav } from "./components/SlideOnScrollNav";
 import { HeaderSearch } from "./components/HeaderSearch";
 import Pic from "./components/Pic";
 import NextImage from "next/image";
-import { CARRIER_DEDUCTIONS, PRICE_TABLE, MIN_OFFER, MANUAL_REVIEW_DEVICES, MACBOOK_SPECS, type MacSpec, type MacSpecOption } from "./data/prices";
+import { CARRIER_DEDUCTIONS, PRICE_TABLE, MIN_OFFER, MACBOOK_SPECS, type MacSpec, type MacSpecOption } from "./data/prices";
 
 import { BRAND, EMAIL, EMAIL_HREF } from "./lib/constants";
 
@@ -333,24 +332,6 @@ function FedExMark({ className = "" }: { className?: string }) {
   );
 }
 
-// Carrier icons — real brand logos that Skywalker provided live under
-// /public/carriers/. Each carrier card just renders the supplied PNG.
-// 'other' has no logo so it still falls back to a neutral padlock SVG.
-type CarrierIconId = "unlocked" | "att" | "tmobile" | "verizon" | "other";
-function CarrierIcon({ id, className = "" }: { id: CarrierIconId; className?: string }) {
-  if (id === "other") {
-    return (
-      <svg viewBox="0 0 32 32" className={className}>
-        <rect x="3" y="3" width="26" height="26" rx="6" fill="currentColor" fillOpacity="0.08" stroke="currentColor" strokeWidth="1.6" />
-        <path d="M11 16 v-3 a5 5 0 0 1 10 0 v3" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-        <rect x="9" y="16" width="14" height="9" rx="1.6" fill="currentColor" fillOpacity="0.7" stroke="currentColor" strokeWidth="1.6" />
-        <circle cx="16" cy="20" r="1.4" fill="#0a0a0a" />
-        <line x1="16" y1="20.6" x2="16" y2="23" stroke="#0a0a0a" strokeWidth="1.6" strokeLinecap="round" />
-      </svg>
-    );
-  }
-  return <img src={`/carriers/${id}.png`} alt="" className={`${className} object-contain`} loading="lazy" />;
-}
 
 // CARRIER_DEDUCTIONS + PRICE_TABLE extracted to ./data/prices.ts so the
 // admin UI (/admin/prices) and API routes can read/write the grid without
@@ -785,18 +766,6 @@ const LENOVO_PC_SERIES = [
 // resolver doesn't break when checking against it.
 const LENOVO_PC_ALL_SUB_SERIES: { id: string; label: string; variants: { id: string; label: string; base: number }[] }[] = [];
 
-const DELL_MODELS = [
-  { id: "dxps17", label: "XPS 17 (2024)", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
-  { id: "dxps15", label: "XPS 15 (2024)", base: 620, image: "/devices/dell-xps.webp" },
-  { id: "dxps13", label: "XPS 13 (2024)", base: 420, image: "/devices/dell-xps.webp" },
-  { id: "dxps15g23", label: "XPS 15 (2023)", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
-  { id: "dxps13g23", label: "XPS 13 (2023)", base: 0, inquiryOnly: true, image: "/devices/dell-xps.webp" },
-  { id: "dlat7440", label: "Latitude 7440", base: 630, inquiryOnly: false, image: "/devices/dell-latitude.jpg" },
-  { id: "dlat5540", label: "Latitude 5540", base: 630, inquiryOnly: false, image: "/devices/dell-latitude.jpg" },
-  { id: "dinsp16p", label: "Inspiron 16 Plus", base: 284, inquiryOnly: false, image: "/devices/dell-inspiron-15.webp" },
-  { id: "dinsp15", label: "Inspiron 15", base: 108, inquiryOnly: false, image: "/devices/dell-inspiron-15.webp" },
-  { id: "dinsp14", label: "Inspiron 14", base: 54, inquiryOnly: false, image: "/devices/dell-inspiron-15.webp" },
-];
 
 // Alienware laptop categories restructured 2026-05-06 to mirror itsworthmore.com
 // All variants inquiry-only; per-SKU images sourced from IWM product pages
@@ -1116,12 +1085,6 @@ const LG_PC_SERIES = [
 const LG_PC_ALL_SUB_SERIES = [
   ...LG_GRAM_SUB_SERIES, ...LG_GRAM_PRO_SUB_SERIES, ...LG_GRAM_SUPERSLIM_SUB_SERIES,
 ];
-const LG_PC_MODELS = [
-  ...LG_GRAM_14_VARIANTS, ...LG_GRAM_14_2IN1_VARIANTS, ...LG_GRAM_15_VARIANTS,
-  ...LG_GRAM_16_VARIANTS, ...LG_GRAM_16_2IN1_VARIANTS, ...LG_GRAM_17_VARIANTS,
-  ...LG_GRAM_PRO_16_VARIANTS, ...LG_GRAM_PRO_16_2IN1_VARIANTS, ...LG_GRAM_PRO_17_VARIANTS,
-  ...LG_GRAM_SUPERSLIM_15_VARIANTS,
-];
 
 // Apple Desktops — 4 family boxes (iMac / Mac Mini / Mac Studio / Mac Pro)
 // Prices reduced 20% per Skywalker's competitor-research directive 2026-05-04
@@ -1150,12 +1113,6 @@ const APPLE_DESKTOP_SERIES = [
   { id: "ad_macmini", label: "Mac Mini", year: "Compact", topPrice: 480, variants: APPLE_MACMINI_VARIANTS },
   { id: "ad_macstudio", label: "Mac Studio", year: "Pro", topPrice: 1760, variants: APPLE_MACSTUDIO_VARIANTS },
   { id: "ad_macpro", label: "Mac Pro", year: "Workstation", topPrice: 2240, variants: APPLE_MACPRO_VARIANTS },
-];
-const APPLE_DESKTOP_MODELS = [
-  ...APPLE_IMAC_VARIANTS,
-  ...APPLE_MACMINI_VARIANTS,
-  ...APPLE_MACSTUDIO_VARIANTS,
-  ...APPLE_MACPRO_VARIANTS,
 ];
 
 const DELL_DESKTOP_MODELS = [
@@ -1639,7 +1596,6 @@ const IPAD_SERIES = [
   ]},
 ];
 
-const IPAD_MODELS = IPAD_SERIES.flatMap(s => s.variants);
 
 // Disc vs Digital is no longer a separate model — it's asked at the
 // extras step with an 8% multiplier reduction for digital. So PS5
@@ -2001,14 +1957,6 @@ const SURFACE_SERIES = [
   { id: "surf_original", label: "Original (Non-Pro)", year: "RT / 2 / 3", topPrice: 0, variants: SURFACE_ORIGINAL_VARIANTS, inquiryOnly: true },
   { id: "surf_duo", label: "Duo", year: "Dual-Screen", topPrice: 0, variants: SURFACE_DUO_VARIANTS, inquiryOnly: true },
 ];
-const SURFACE_MODELS = [
-  ...SURFACE_PRO_VARIANTS,
-  ...SURFACE_GO_VARIANTS,
-  ...SURFACE_X_VARIANTS,
-  ...SURFACE_BOOKSTUDIO_VARIANTS,
-  ...SURFACE_ORIGINAL_VARIANTS,
-  ...SURFACE_DUO_VARIANTS,
-];
 
 const LENOVO_LEGION_TAB_VARIANTS = [
   { id: "legtabg5", label: "Legion Tab Gen 5 (8.8\")", base: 0, inquiryOnly: true },
@@ -2041,13 +1989,6 @@ const LENOVO_TAB_SERIES = [
   { id: "lenovo_tabpk", label: "Tab P & K", year: "Education", topPrice: 0, variants: LENOVO_TABPK_VARIANTS, inquiryOnly: true },
   { id: "lenovo_tabm", label: "Tab M & Plus", year: "Budget", topPrice: 0, variants: LENOVO_TABM_VARIANTS, inquiryOnly: true },
   { id: "lenovo_thinktab", label: "ThinkTab", year: "Industrial", topPrice: 0, variants: LENOVO_THINKTAB_VARIANTS, inquiryOnly: true },
-];
-const LENOVO_TAB_MODELS = [
-  ...LENOVO_LEGION_TAB_VARIANTS,
-  ...LENOVO_IDEA_TAB_VARIANTS,
-  ...LENOVO_TABPK_VARIANTS,
-  ...LENOVO_TABM_VARIANTS,
-  ...LENOVO_THINKTAB_VARIANTS,
 ];
 
 const ONEPLUS_TAB_MODELS = [
@@ -2772,13 +2713,6 @@ type BrandExtra = { id: string; question: string; helper?: string; options: Extr
 // Samsung / OnePlus / Lenovo / Google tablets: 128GB = $0, 256GB ≈ +$15,
 // 512GB ≈ +$45, 1TB ≈ +$70. Surface uses a separate config (chip+RAM+SSD)
 // picker downstream because the matrix is wide.
-const TABLET_STORAGE_OPTIONS = [
-  { id: "64",  label: "64 GB",  multiplier: 1.00, adj: -10 },
-  { id: "128", label: "128 GB", multiplier: 1.00, adj: 0 },
-  { id: "256", label: "256 GB", multiplier: 1.00, adj: 15 },
-  { id: "512", label: "512 GB", multiplier: 1.00, adj: 45 },
-  { id: "1tb", label: "1 TB",   multiplier: 1.00, adj: 70 },
-];
 
 // Per-variant tablet spec — drives which questions getBrandExtras()
 // shows for each tablet, and the $ deltas it uses. Sourced from
@@ -2788,7 +2722,7 @@ const TABLET_STORAGE_OPTIONS = [
 //   stylusAdj   = how much LESS we pay if the included stylus is
 //                 missing (negative number). omit if no stylus question.
 //   storages    = the storage tiers IWM actually has for this model
-//                 (we filter TABLET_STORAGE_OPTIONS down to this set).
+//                 (IWM lists only these storage tiers for this model).
 type TabletSpec = {
   cellularAdj?: number;
   stylusAdj?: number;
@@ -4334,7 +4268,6 @@ export default function Home() {
   const [displayGlass, setDisplayGlass] = useState<MacSpecOption | null>(null);
   const [batteryHealth, setBatteryHealth] = useState<(typeof BATTERY_HEALTH_OPTIONS)[number] | null>(null);
   const [charger, setCharger] = useState<(typeof CHARGER_OPTIONS)[number] | null>(null);
-  const [brokenPhotoUrl, setBrokenPhotoUrl] = useState<string | null>(null);
   // Brand-specific extra answers (PS5 disc drive, DJI hours flown, etc).
   // Keyed by the extra's id; value is the option that was picked.
   const [extras, setExtras] = useState<Record<string, ExtraOption>>({});
@@ -4349,7 +4282,6 @@ export default function Home() {
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMode, setChatMode] = useState<"choose" | "chat" | "call">("choose");
   const [chatMsg, setChatMsg] = useState("");
-  const [chatSent, setChatSent] = useState(false);
   const [chatMessages, setChatMessages] = useState<{ from: "user" | "bot"; text: string }[]>([
     { from: "bot", text: "Hey! I'm here to help you sell your device. Ask me anything about pricing, how it works, or what we buy!" }
   ]);
@@ -4657,16 +4589,6 @@ export default function Home() {
   }, [payout, payoutHandle]);
 
   const [localArea, setLocalArea] = useState<string | null>(null);
-  const AUSTIN_AREAS = [
-    { id: "south", label: "South Austin", desc: "South Lamar, 78704, Bouldin" },
-    { id: "north", label: "North Austin", desc: "Domain, Anderson Lane, 78758" },
-    { id: "central", label: "Central / Downtown", desc: "Downtown, UT, East 6th" },
-    { id: "east", label: "East Austin", desc: "Mueller, Manor Rd, 78702/23" },
-    { id: "west", label: "West Austin", desc: "Westlake, Bee Cave, 78746" },
-    { id: "rr", label: "Round Rock / Pflugerville", desc: "Round Rock, Pflugerville" },
-    { id: "cp", label: "Cedar Park / Leander", desc: "Cedar Park, Leander, 78613" },
-    { id: "georgetown", label: "Georgetown / North", desc: "Georgetown + further north" },
-  ];
   // Contact step extras — Skywalker 2026-05-18 "make sure im getting
   // every detail: number email full spec best contact shipping vs
   // local". bestContact lets the seller pick how they'd rather hear
@@ -5820,7 +5742,6 @@ export default function Home() {
   const isPendingQuote = !model?.base;
   const isBrokenNonFunctional = condition?.id === "broken" && brokenFunctional === false;
   const isManualQuote = isBelowMinimum || isBrokenNonFunctional || needsMarginReview;
-  const needsReview = MANUAL_REVIEW_DEVICES.has(model?.id ?? "");
   // Personalize the "why we need to review" message per trigger so the
   // customer understands what's specifically blocking the instant quote.
   // Skywalker 2026-05-19 — generic "below threshold" was confusing for
@@ -5851,13 +5772,6 @@ export default function Home() {
         title: "Manual review needed",
         body: "Add it to your box and we'll text you a fair custom quote within the hour.",
       };
-
-  const maxQuoteFor = (v: { id: string; base: number }) => {
-    const sids = STORAGE_MAP[v.id];
-    const maxStorageMult = sids?.length ? Math.max(...sids.map(sid => ALL_STORAGES.find(s => s.id === sid)?.multiplier ?? 1)) : 1;
-    return Math.round(v.base * maxStorageMult * 1.15);
-  };
-  const maxQuoteForSeries = (vs: { id: string; base: number }[]) => Math.max(...vs.map(maxQuoteFor));
 
   const pushHistory = useCallback((s: string) => {
     window.history.pushState({ step: s }, "", `#${s}`);
@@ -6116,7 +6030,7 @@ export default function Home() {
     setShipStreet(""); setShipUnit(""); setShipCity(""); setShipState("TX"); setShipZip("");
     setLocalArea(null);
     setProcessor(null); setMemory(null); setGraphics(null); setDisplayResolution(null); setDisplayGlass(null);
-    setBatteryHealth(null); setCharger(null); setBrokenPhotoUrl(null);
+    setBatteryHealth(null); setCharger(null);
     setExtras({}); setExtrasIndex(0);
     setPaidOff(null);
     setBestContact(null); setCustomerNote(""); setSmsOptIn(false);
