@@ -4982,6 +4982,11 @@ export default function Home() {
   // of scope here (separate filter).
   const [paidOff, setPaidOff] = useState<boolean | null>(null);
   const [inquiryDesc, setInquiryDesc] = useState("");
+  // Custom/inquiry-device flow has its own lightweight handoff preference
+  // (local vs ship) — the cart-level handoffMethod machinery (FedEx mint,
+  // address autocomplete, cash-payout clearing) doesn't run on this path,
+  // so a custom lead used to arrive with no local/ship signal at all.
+  const [inquiryHandoff, setInquiryHandoff] = useState<"ship" | "local" | null>(null);
   const [cookieConsent, setCookieConsent] = useState<string | null>(null);
   const [heroPhonePop, setHeroPhonePop] = useState(false);
   // Funnel-advance buttons unmount the moment they're clicked, so the pop
@@ -5940,6 +5945,7 @@ export default function Home() {
     setPhone("");
     setEmail("");
     setHandoffMethod(null);
+    setInquiryHandoff(null);
     setShipStreet(""); setShipUnit(""); setShipCity(""); setShipState("TX"); setShipZip("");
     setLocalArea(null);
     setProcessor(null); setMemory(null); setGraphics(null); setDisplayResolution(null); setDisplayGlass(null);
@@ -8643,15 +8649,43 @@ export default function Home() {
                 </div>
                 <form onSubmit={async (e) => {
                   e.preventDefault();
+                  if (!inquiryHandoff) return; // required — picker below gates submit too
                   try {
                     await fetch("/api/lead", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ name, phone, email, device: inquiryCategory, model: model.label, storage: "N/A", condition: condition.label, quote: 0, payout: "TBD", notes: "Custom device - full flow submission", photos: photoUrls, smsOptIn, attribution: readAttribution() }),
+                      // Custom/TBD quote — send only the handoff METHOD (no address).
+                      // The server records the ship/local preference and skips the
+                      // FedEx label mint until a price is agreed and an address is
+                      // collected (renderShipBlock no-address branch in /api/lead).
+                      body: JSON.stringify({ name, phone, email, device: inquiryCategory, model: model.label, storage: "N/A", condition: condition.label, quote: 0, payout: "TBD", handoff: { method: inquiryHandoff }, notes: "Custom device - full flow submission", photos: photoUrls, smsOptIn, attribution: readAttribution() }),
                     });
                   } catch {}
                   setInquirySent(true);
                 }} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-medium text-[#e6e6e6] mb-2 uppercase tracking-wider">How are you handing off the device?</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button type="button" onClick={() => setInquiryHandoff("local")} className={`flex items-center gap-3 px-3 py-3 rounded-xl border cursor-pointer text-left tap-press transition ${inquiryHandoff === "local" ? "border-[#00c853]/60 bg-[#00c853]/10" : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]"}`}>
+                        <div className="w-8 h-8 rounded-lg bg-[#00c853]/15 border border-[#00c853]/30 flex items-center justify-center shrink-0">
+                          <svg className="w-4 h-4 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-white text-[13px] font-extrabold leading-tight">Local Meetup</p>
+                          <p className="text-[#bdbdbd] text-[11px] leading-snug">We come to you</p>
+                        </div>
+                      </button>
+                      <button type="button" onClick={() => setInquiryHandoff("ship")} className={`flex items-center gap-3 px-3 py-3 rounded-xl border cursor-pointer text-left tap-press transition ${inquiryHandoff === "ship" ? "border-[#00c853]/60 bg-[#00c853]/10" : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]"}`}>
+                        <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                          <svg className="w-4 h-4 text-[#00c853]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7h13l4 4v6a1 1 0 01-1 1h-2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-white text-[13px] font-extrabold leading-tight">Ship It</p>
+                          <p className="text-[#bdbdbd] text-[11px] leading-snug">Prepaid label after quote</p>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
                   <div>
                     <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">Name</label>
                     <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 tcc-input text-sm" />
@@ -8730,8 +8764,8 @@ export default function Home() {
                       </div>
                     )}
                   </div>
-                  <button type="submit" disabled={uploading} className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press disabled:opacity-40 disabled:cursor-not-allowed">
-                    Get My Custom Quote
+                  <button type="submit" disabled={uploading || !inquiryHandoff} className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press disabled:opacity-40 disabled:cursor-not-allowed">
+                    {inquiryHandoff ? "Get My Custom Quote" : "Choose a handoff method above"}
                   </button>
                 </form>
                 <button onClick={() => setCondition(null)} className="mt-4 text-[#e6e6e6] text-sm cursor-pointer hover:text-white transition">← Change condition</button>

@@ -754,13 +754,22 @@ export async function POST(req: NextRequest) {
     // Helper — renders an address block. Address parts are
     // customer-controlled, so sanitize through cleanField().
     const renderShipBlock = (header: string) => {
-      if (!h.address) return;
+      handoffLines.push(header);
+      // Custom / inquiry leads capture the ship PREFERENCE before any
+      // quote exists — there's no address yet (and no FedEx label mints,
+      // see the mint guard below). Record the intent so staff know to
+      // collect the address + mint the label once the price is agreed,
+      // instead of leaving the handoff section blank. Skywalker 2026-06-12.
+      if (!h.address) {
+        handoffLines.push("Address: (not collected yet — custom/TBD quote)");
+        handoffLines.push("Action: Send quote first, then collect shipping address + mint label.");
+        return;
+      }
       const street = cleanField(h.address.street, 120);
       const unit   = cleanField(h.address.unit, 40);
       const city   = cleanField(h.address.city, 80);
       const state  = cleanField(h.address.state, 2);
       const zip    = cleanField(h.address.zip, 10);
-      handoffLines.push(header);
       handoffLines.push(`Address: ${street}${unit ? `, ${unit}` : ""}, ${city}, ${state} ${zip}`);
       handoffLines.push("Packaging: Seller sources own box (we don't ship kits).");
       handoffLines.push("Action: FedEx label auto-mints at submit (sandbox until prod cert lands). Confirm receipt + inspect on arrival.");
