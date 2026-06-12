@@ -11244,8 +11244,11 @@ export default function Home() {
             {/* Coupon code — promo (%) coupons apply to a single-device
                 checkout only (the server validates the code + raises the cap on
                 that path). Once the cart has items the order is multi-device,
-                where the promo can't be honored safely, so hide the input. (bug fix) */}
-            {cartItems.length === 0 && (
+                where the promo can't be honored safely, so hide the input. (bug fix)
+                Also hidden on manual/pending (parts, below-min, custom, recycle)
+                quotes — there's no firm payout for a +% coupon to apply to, so a
+                code box there is meaningless and misleading. */}
+            {cartItems.length === 0 && !isManualQuote && !isPendingQuote && (
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-left">
               <p className="text-xs font-semibold text-[#e6e6e6] uppercase tracking-wider mb-2">Have a coupon code?</p>
               {couponLabel ? (
@@ -11265,12 +11268,17 @@ export default function Home() {
             </div>
             )}
 
+            {/* "Price locked" only makes sense when there's an actual firm
+                quote — hide it on manual/pending (parts/custom/recycle) devices
+                where the real number comes later by text. */}
+            {!isManualQuote && !isPendingQuote && (
             <div className="flex items-center justify-center lg:justify-start gap-2 mb-4">
               <span className="inline-flex items-center gap-1.5 bg-[#ffb400]/12 border border-[#ffb400]/35 text-[#ffb400] text-xs font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(255,180,0,0.25)]">
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.4}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                 Price locked · 14 days
               </span>
             </div>
+            )}
 
             {/* Back / Add to Cart row — kept inline on desktop, pinned to
                 the bottom of the viewport on mobile so the primary CTA is
