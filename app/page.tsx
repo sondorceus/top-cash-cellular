@@ -3644,6 +3644,143 @@ const BRAND_LABELS: Record<string, string> = {
 
 type DeviceType = "iphone" | "android" | "pixel" | "macbook" | "samsung_pc" | "lenovo" | "dell" | "alienware" | "hp" | "acer" | "lg_pc" | "asus_pc" | "apple_desktop" | "dell_desktop" | "lenovo_desktop" | "hp_desktop" | "asus_desktop" | "alienware_desktop" | "msi_desktop" | "console" | "sony" | "microsoft" | "nintendo" | "applewatch" | "pixelwatch" | "garmin" | "samsungwatch" | "dji" | "samsung_tab" | "surface" | "lenovo_tab" | "oneplus_tab" | "google_tab" | "apple_vr" | "meta_vr" | "valve_vr" | "psvr" | "ipad" | null;
 
+// One catalog-wide match used by BOTH the homepage search dropdown and the
+// inquiry "did you mean — get an instant offer" interceptor, so the two can
+// never drift. `match` runs against every priced model label; callers supply
+// the predicate (substring for search, token/normalized for the interceptor).
+type CatCategory = "phones" | "tablets" | "computers" | "desktops" | "consoles" | "watches" | "drones" | "vr";
+type CatalogHit = { label: string; deviceType: DeviceType; seriesId: string; modelId: string; category: CatCategory; base: number; image: string };
+function collectCatalogHits(match: (label: string) => boolean): CatalogHit[] {
+  const hits: CatalogHit[] = [];
+  const collectFromSeries = (list: { id: string; label: string; image?: string; variants: { id: string; label: string; base: number; image?: string }[] }[], deviceType: DeviceType, cat: CatCategory) => {
+    for (const s of list) {
+      for (const v of s.variants) {
+        if (match(v.label)) {
+          hits.push({ label: v.label, deviceType, seriesId: s.id, modelId: v.id, category: cat, base: v.base || 0, image: v.image || s.image || "" });
+        }
+      }
+    }
+  };
+  collectFromSeries(IPHONE_SERIES, "iphone", "phones");
+  collectFromSeries(SAMSUNG_SERIES, "android", "phones");
+  collectFromSeries(PIXEL_SERIES, "pixel", "phones");
+  collectFromSeries(IPAD_SERIES, "ipad", "tablets");
+  collectFromSeries(MACBOOK_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "macbook", "computers");
+  collectFromSeries(APPLE_DESKTOP_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "apple_desktop", "desktops");
+  collectFromSeries(SONY_SERIES, "sony", "consoles");
+  collectFromSeries(SURFACE_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "surface", "tablets");
+  const flatLists: { list: { id: string; label: string; base: number; image?: string }[]; dt: DeviceType; cat: CatCategory }[] = [
+    { list: ASUS_PC_MODELS, dt: "asus_pc", cat: "computers" },
+    { list: LENOVO_THINKBOOK_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_IDEAPAD_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_LEGION_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_LOQ_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_SLIM_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_YOGA_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_TP_X1_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_TP_X13_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_TP_X390_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_TP_X9_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_TP_T_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_TP_P_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_TP_L_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_TP_E_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: LENOVO_TP_Z_VARIANTS, dt: "lenovo", cat: "computers" },
+    { list: DELL_PC_ALL_SUB_SERIES.flatMap(s => s.variants), dt: "dell", cat: "computers" },
+    { list: HP_ENVY_VARIANTS, dt: "hp", cat: "computers" },
+    { list: HP_PAVILION_VARIANTS, dt: "hp", cat: "computers" },
+    { list: HP_PROBOOK_VARIANTS, dt: "hp", cat: "computers" },
+    { list: HP_SPECTRE_VARIANTS, dt: "hp", cat: "computers" },
+    { list: HP_VICTUS_VARIANTS, dt: "hp", cat: "computers" },
+    { list: HP_ZBOOK_VARIANTS, dt: "hp", cat: "computers" },
+    { list: HP_NOTEBOOK_VARIANTS, dt: "hp", cat: "computers" },
+    { list: HP_OMNIBOOK_VARIANTS, dt: "hp", cat: "computers" },
+    { list: HP_ELITEBOOK_STD_VARIANTS, dt: "hp", cat: "computers" },
+    { list: HP_ELITEBOOK_ULTRA_VARIANTS, dt: "hp", cat: "computers" },
+    { list: HP_OMEN_STD_VARIANTS, dt: "hp", cat: "computers" },
+    { list: HP_OMEN_TRANSCEND_VARIANTS, dt: "hp", cat: "computers" },
+    { list: ACER_NITRO_VARIANTS, dt: "acer", cat: "computers" },
+    { list: ACER_PREDATOR_VARIANTS, dt: "acer", cat: "computers" },
+    { list: SAMSUNG_BOOK5_VARIANTS, dt: "samsung_pc", cat: "computers" },
+    { list: SAMSUNG_BOOK4_VARIANTS, dt: "samsung_pc", cat: "computers" },
+    { list: SAMSUNG_BOOK3_VARIANTS, dt: "samsung_pc", cat: "computers" },
+    { list: SAMSUNG_BOOK2_VARIANTS, dt: "samsung_pc", cat: "computers" },
+    { list: SAMSUNG_BOOK1_VARIANTS, dt: "samsung_pc", cat: "computers" },
+    { list: LG_GRAM_14_VARIANTS, dt: "lg_pc", cat: "computers" },
+    { list: LG_GRAM_14_2IN1_VARIANTS, dt: "lg_pc", cat: "computers" },
+    { list: LG_GRAM_15_VARIANTS, dt: "lg_pc", cat: "computers" },
+    { list: LG_GRAM_16_VARIANTS, dt: "lg_pc", cat: "computers" },
+    { list: LG_GRAM_16_2IN1_VARIANTS, dt: "lg_pc", cat: "computers" },
+    { list: LG_GRAM_17_VARIANTS, dt: "lg_pc", cat: "computers" },
+    { list: LG_GRAM_PRO_16_VARIANTS, dt: "lg_pc", cat: "computers" },
+    { list: LG_GRAM_PRO_16_2IN1_VARIANTS, dt: "lg_pc", cat: "computers" },
+    { list: LG_GRAM_PRO_17_VARIANTS, dt: "lg_pc", cat: "computers" },
+    { list: LG_GRAM_SUPERSLIM_15_VARIANTS, dt: "lg_pc", cat: "computers" },
+    // Desktops
+    { list: DELL_DESKTOP_MODELS, dt: "dell_desktop", cat: "desktops" },
+    { list: LENOVO_DESKTOP_MODELS, dt: "lenovo_desktop", cat: "desktops" },
+    { list: HP_DESKTOP_MODELS, dt: "hp_desktop", cat: "desktops" },
+    { list: ASUS_DESKTOP_MODELS, dt: "asus_desktop", cat: "desktops" },
+    { list: ALIENWARE_DESKTOP_MODELS, dt: "alienware_desktop", cat: "desktops" },
+    { list: MSI_DESKTOP_MODELS, dt: "msi_desktop", cat: "desktops" },
+    // Alienware laptops
+    { list: ALIENWARE_MODELS, dt: "alienware", cat: "computers" },
+    // VR / mixed reality headsets
+    { list: APPLE_VR_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "apple_vr", cat: "vr" },
+    { list: META_VR_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "meta_vr", cat: "vr" },
+    { list: VALVE_VR_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "valve_vr", cat: "vr" },
+    { list: PSVR_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "psvr", cat: "vr" },
+    // Smartwatches
+    { list: APPLEWATCH_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "applewatch", cat: "watches" },
+    { list: PIXELWATCH_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "pixelwatch", cat: "watches" },
+    { list: GARMIN_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "garmin", cat: "watches" },
+    { list: SAMSUNGWATCH_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "samsungwatch", cat: "watches" },
+    // Other consoles (Sony already covered via SONY_SERIES)
+    { list: MICROSOFT_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "microsoft", cat: "consoles" },
+    { list: NINTENDO_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "nintendo", cat: "consoles" },
+    // Drones
+    { list: DJI_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "dji", cat: "drones" },
+    // Non-Apple tablets
+    { list: SAMSUNG_TAB_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "samsung_tab", cat: "tablets" },
+    { list: LENOVO_TAB_SERIES.flatMap(s => s.variants) as unknown as { id: string; label: string; base: number; image?: string }[], dt: "lenovo_tab", cat: "tablets" },
+    { list: ONEPLUS_TAB_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "oneplus_tab", cat: "tablets" },
+    { list: GOOGLE_TAB_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "google_tab", cat: "tablets" },
+  ];
+  for (const fl of flatLists) {
+    for (const v of fl.list) {
+      if (match(v.label)) {
+        hits.push({ label: v.label, deviceType: fl.dt, seriesId: "", modelId: v.id, category: fl.cat, base: v.base || 0, image: v.image || "" });
+      }
+    }
+  }
+  return hits;
+}
+
+// Inquiry interceptor — when a seller in the free-text "custom device" flow
+// describes something we ALREADY price, route them to the instant quote
+// instead of a TBD manual lead. Two confidence tiers, both high-precision
+// (no fuzzy digit-dropping that would confuse e.g. iPhone 14 vs 15):
+//   exact: the full model+storage string appears → jump straight to the model
+//   line:  the model line (storage stripped) appears → send to the brand's
+//          model picker so they choose the storage variant themselves
+const catNorm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+const catStripStorage = (label: string) => label.replace(/\s*\([^)]*\)\s*$/, "").replace(/\b\d+\s?(gb|tb)\b/gi, "");
+function suggestFromInquiry(text: string): { hit: CatalogHit; exact: boolean } | null {
+  const nt = catNorm(text);
+  if (nt.length < 4) return null;
+  const exact = collectCatalogHits((label) => { const nl = catNorm(label); return nl.length >= 4 && nt.includes(nl); });
+  if (exact.length) {
+    exact.sort((a, b) => catNorm(b.label).length - catNorm(a.label).length || b.base - a.base);
+    return { hit: exact[0], exact: true };
+  }
+  const line = collectCatalogHits((label) => { const nc = catNorm(catStripStorage(label)); return nc.length >= 5 && nt.includes(nc); });
+  if (line.length) {
+    line.sort((a, b) => catNorm(catStripStorage(b.label)).length - catNorm(catStripStorage(a.label)).length || b.base - a.base);
+    return { hit: line[0], exact: false };
+  }
+  return null;
+}
+
 function FairPromise() {
   return (
     <div className="tcc-card mt-6 rounded-2xl p-5">
@@ -5009,6 +5146,36 @@ export default function Home() {
     // noticeably snappier, and the progress bar (which advances on the
     // setStep inside `run`) catches up to the click without a gap.
     setTimeout(() => { setFunnelPop(null); run(); }, 200);
+  };
+  // Route a catalog hit into the priced flow. Shared by the search dropdown
+  // and the inquiry interceptor so both navigate identically. `toModel` jumps
+  // straight to the chosen variant's first step (exact match); otherwise we
+  // drop the seller on the brand's model picker to choose a storage variant.
+  const goToCatalogModel = (h: CatalogHit, popId: string) => {
+    setCategory(h.category);
+    setDeviceType(h.deviceType);
+    if (h.seriesId) setSelectedSeries(h.seriesId);
+    setModel({ id: h.modelId, label: h.label, base: h.base, image: h.image });
+    popThenRun(popId, () => {
+      setSearchQuery("");
+      // Additive devices (MacBook / PC laptop) must enter at their first spec
+      // step — jumping to "condition" skips processor/memory/storage and
+      // collapses the quote to the base floor. Mirrors the normal model picker.
+      const ns: Step = hasAdditiveSpecs(h.modelId) ? "processor" : "condition";
+      setStep(ns);
+      pushHistory(ns);
+    });
+  };
+  const goToCatalogBrand = (h: CatalogHit, popId: string) => {
+    setCategory(h.category);
+    setDeviceType(h.deviceType);
+    if (h.seriesId) setSelectedSeries(h.seriesId);
+    setModel(null);
+    popThenRun(popId, () => {
+      setSearchQuery("");
+      setStep("model");
+      pushHistory("model");
+    });
   };
   const [statsVisible, setStatsVisible] = useState(false);
   const [animatedStats, setAnimatedStats] = useState({ devices: 0, payout: 0, time: 0 });
@@ -6439,8 +6606,7 @@ export default function Home() {
       )}
       {searchQuery.trim().length >= 2 && (() => {
         const q = searchQuery.toLowerCase().trim();
-        type Hit = { label: string; deviceType: DeviceType; seriesId: string; modelId: string; category: typeof category; base: number; image: string };
-        const hits: Hit[] = [];
+        const hits = collectCatalogHits((label) => label.toLowerCase().includes(q));
         const catFallback = (cat: typeof category): React.ReactNode => ({
           phones: <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />,
           tablets: <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 18.75a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3zM8.625.75A3.375 3.375 0 005.25 4.125v15.75a3.375 3.375 0 003.375 3.375h6.75a3.375 3.375 0 003.375-3.375V4.125A3.375 3.375 0 0015.375.75h-6.75z" />,
@@ -6451,107 +6617,6 @@ export default function Home() {
           drones: <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />,
           vr: <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 9.75A2.25 2.25 0 014.5 7.5h15a2.25 2.25 0 012.25 2.25v4.5A2.25 2.25 0 0119.5 16.5h-3.31a2.25 2.25 0 01-1.59-.659L13.06 14.3a1.5 1.5 0 00-2.12 0l-1.541 1.541a2.25 2.25 0 01-1.59.659H4.5A2.25 2.25 0 012.25 14.25v-4.5z" />,
         } as Record<string, React.ReactNode>)[cat || ""] || <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />;
-        const collectFromSeries = (list: { id: string; label: string; image?: string; variants: { id: string; label: string; base: number; image?: string }[] }[], deviceType: DeviceType, cat: typeof category) => {
-          for (const s of list) {
-            for (const v of s.variants) {
-              if (v.label.toLowerCase().includes(q)) {
-                hits.push({ label: v.label, deviceType, seriesId: s.id, modelId: v.id, category: cat, base: v.base || 0, image: v.image || s.image || "" });
-              }
-            }
-          }
-        };
-        collectFromSeries(IPHONE_SERIES, "iphone", "phones");
-        collectFromSeries(SAMSUNG_SERIES, "android", "phones");
-        collectFromSeries(PIXEL_SERIES, "pixel", "phones");
-        collectFromSeries(IPAD_SERIES, "ipad", "tablets");
-        collectFromSeries(MACBOOK_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "macbook", "computers");
-        collectFromSeries(APPLE_DESKTOP_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "apple_desktop", "desktops");
-        collectFromSeries(SONY_SERIES, "sony", "consoles");
-        collectFromSeries(SURFACE_SERIES.map(s => ({...s, variants: s.variants as { id: string; label: string; base: number; image?: string }[]})), "surface", "tablets");
-        const flatLists: { list: { id: string; label: string; base: number; image?: string }[]; dt: DeviceType; cat: typeof category }[] = [
-          { list: ASUS_PC_MODELS, dt: "asus_pc", cat: "computers" },
-          { list: LENOVO_THINKBOOK_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_IDEAPAD_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_LEGION_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_LOQ_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_SLIM_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_YOGA_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_TP_X1_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_TP_X13_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_TP_X390_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_TP_X9_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_TP_T_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_TP_P_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_TP_L_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_TP_E_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: LENOVO_TP_Z_VARIANTS, dt: "lenovo", cat: "computers" },
-          { list: DELL_PC_ALL_SUB_SERIES.flatMap(s => s.variants), dt: "dell", cat: "computers" },
-          { list: HP_ENVY_VARIANTS, dt: "hp", cat: "computers" },
-          { list: HP_PAVILION_VARIANTS, dt: "hp", cat: "computers" },
-          { list: HP_PROBOOK_VARIANTS, dt: "hp", cat: "computers" },
-          { list: HP_SPECTRE_VARIANTS, dt: "hp", cat: "computers" },
-          { list: HP_VICTUS_VARIANTS, dt: "hp", cat: "computers" },
-          { list: HP_ZBOOK_VARIANTS, dt: "hp", cat: "computers" },
-          { list: HP_NOTEBOOK_VARIANTS, dt: "hp", cat: "computers" },
-          { list: HP_OMNIBOOK_VARIANTS, dt: "hp", cat: "computers" },
-          { list: HP_ELITEBOOK_STD_VARIANTS, dt: "hp", cat: "computers" },
-          { list: HP_ELITEBOOK_ULTRA_VARIANTS, dt: "hp", cat: "computers" },
-          { list: HP_OMEN_STD_VARIANTS, dt: "hp", cat: "computers" },
-          { list: HP_OMEN_TRANSCEND_VARIANTS, dt: "hp", cat: "computers" },
-          { list: ACER_NITRO_VARIANTS, dt: "acer", cat: "computers" },
-          { list: ACER_PREDATOR_VARIANTS, dt: "acer", cat: "computers" },
-          { list: SAMSUNG_BOOK5_VARIANTS, dt: "samsung_pc", cat: "computers" },
-          { list: SAMSUNG_BOOK4_VARIANTS, dt: "samsung_pc", cat: "computers" },
-          { list: SAMSUNG_BOOK3_VARIANTS, dt: "samsung_pc", cat: "computers" },
-          { list: SAMSUNG_BOOK2_VARIANTS, dt: "samsung_pc", cat: "computers" },
-          { list: SAMSUNG_BOOK1_VARIANTS, dt: "samsung_pc", cat: "computers" },
-          { list: LG_GRAM_14_VARIANTS, dt: "lg_pc", cat: "computers" },
-          { list: LG_GRAM_14_2IN1_VARIANTS, dt: "lg_pc", cat: "computers" },
-          { list: LG_GRAM_15_VARIANTS, dt: "lg_pc", cat: "computers" },
-          { list: LG_GRAM_16_VARIANTS, dt: "lg_pc", cat: "computers" },
-          { list: LG_GRAM_16_2IN1_VARIANTS, dt: "lg_pc", cat: "computers" },
-          { list: LG_GRAM_17_VARIANTS, dt: "lg_pc", cat: "computers" },
-          { list: LG_GRAM_PRO_16_VARIANTS, dt: "lg_pc", cat: "computers" },
-          { list: LG_GRAM_PRO_16_2IN1_VARIANTS, dt: "lg_pc", cat: "computers" },
-          { list: LG_GRAM_PRO_17_VARIANTS, dt: "lg_pc", cat: "computers" },
-          { list: LG_GRAM_SUPERSLIM_15_VARIANTS, dt: "lg_pc", cat: "computers" },
-          // Desktops
-          { list: DELL_DESKTOP_MODELS, dt: "dell_desktop", cat: "desktops" },
-          { list: LENOVO_DESKTOP_MODELS, dt: "lenovo_desktop", cat: "desktops" },
-          { list: HP_DESKTOP_MODELS, dt: "hp_desktop", cat: "desktops" },
-          { list: ASUS_DESKTOP_MODELS, dt: "asus_desktop", cat: "desktops" },
-          { list: ALIENWARE_DESKTOP_MODELS, dt: "alienware_desktop", cat: "desktops" },
-          { list: MSI_DESKTOP_MODELS, dt: "msi_desktop", cat: "desktops" },
-          // Alienware laptops
-          { list: ALIENWARE_MODELS, dt: "alienware", cat: "computers" },
-          // VR / mixed reality headsets
-          { list: APPLE_VR_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "apple_vr", cat: "vr" },
-          { list: META_VR_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "meta_vr", cat: "vr" },
-          { list: VALVE_VR_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "valve_vr", cat: "vr" },
-          { list: PSVR_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "psvr", cat: "vr" },
-          // Smartwatches
-          { list: APPLEWATCH_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "applewatch", cat: "watches" },
-          { list: PIXELWATCH_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "pixelwatch", cat: "watches" },
-          { list: GARMIN_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "garmin", cat: "watches" },
-          { list: SAMSUNGWATCH_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "samsungwatch", cat: "watches" },
-          // Other consoles (Sony already covered via SONY_SERIES)
-          { list: MICROSOFT_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "microsoft", cat: "consoles" },
-          { list: NINTENDO_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "nintendo", cat: "consoles" },
-          // Drones
-          { list: DJI_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "dji", cat: "drones" },
-          // Non-Apple tablets
-          { list: SAMSUNG_TAB_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "samsung_tab", cat: "tablets" },
-          { list: LENOVO_TAB_SERIES.flatMap(s => s.variants) as unknown as { id: string; label: string; base: number; image?: string }[], dt: "lenovo_tab", cat: "tablets" },
-          { list: ONEPLUS_TAB_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "oneplus_tab", cat: "tablets" },
-          { list: GOOGLE_TAB_MODELS as unknown as { id: string; label: string; base: number; image?: string }[], dt: "google_tab", cat: "tablets" },
-        ];
-        for (const fl of flatLists) {
-          for (const v of fl.list) {
-            if (v.label.toLowerCase().includes(q)) {
-              hits.push({ label: v.label, deviceType: fl.dt, seriesId: "", modelId: v.id, category: fl.cat, base: v.base || 0, image: v.image || "" });
-            }
-          }
-        }
         const top = hits.slice(0, 12);
         return (
           <div className="absolute z-50 left-0 right-0 mt-2 bg-[#111] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
@@ -6563,22 +6628,7 @@ export default function Home() {
                 {top.map((h, i) => (
                   <button
                     key={`${h.deviceType}-${h.seriesId}-${h.modelId}-${i}`}
-                    onClick={() => {
-                      setCategory(h.category);
-                      setDeviceType(h.deviceType);
-                      if (h.seriesId) setSelectedSeries(h.seriesId);
-                      setModel({ id: h.modelId, label: h.label, base: h.base, image: h.image });
-                      popThenRun(`search-${h.modelId}-${i}`, () => {
-                        setSearchQuery("");
-                        // Additive devices (MacBook / PC laptop) must enter at
-                        // their first spec step — jumping to "condition" skips
-                        // processor/memory/storage and collapses the quote to
-                        // the base floor. Mirrors the normal model picker. (bug fix)
-                        const ns: Step = hasAdditiveSpecs(h.modelId) ? "processor" : "condition";
-                        setStep(ns);
-                        pushHistory(ns);
-                      });
-                    }}
+                    onClick={() => goToCatalogModel(h, `search-${h.modelId}-${i}`)}
                     className={`w-full text-left px-4 py-2.5 hover:bg-white/5 transition flex items-center gap-3 border-b border-white/10 last:border-0 cursor-pointer ${funnelPop === `search-${h.modelId}-${i}` ? "tap-confirm" : ""}`}
                   >
                     {h.image ? (
@@ -6623,6 +6673,11 @@ export default function Home() {
       </div>
     );
   })();
+
+  // Inquiry interceptor — only meaningful on the free-text custom step. If the
+  // typed description names a device we already price, surface a one-tap route
+  // to the instant quote instead of letting it become a TBD manual lead.
+  const inquirySuggestion = step === "inquiry" && !inquirySent ? suggestFromInquiry(inquiryDesc) : null;
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-clip">
@@ -8595,6 +8650,22 @@ export default function Home() {
                     <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">Device Details</label>
                     <textarea value={inquiryDesc} onChange={(e) => setInquiryDesc(e.target.value)} required placeholder={`Brand, model, storage size, any issues (e.g. "Samsung Galaxy S24, 256GB, small crack on back")`} rows={3} className="w-full px-4 py-3 tcc-input text-sm resize-none" />
                   </div>
+                  {inquirySuggestion && (
+                    <button
+                      type="button"
+                      onClick={() => inquirySuggestion.exact
+                        ? goToCatalogModel(inquirySuggestion.hit, `inquiry-${inquirySuggestion.hit.modelId}`)
+                        : goToCatalogBrand(inquirySuggestion.hit, `inquiry-${inquirySuggestion.hit.modelId}`)}
+                      className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl border border-[#00c853]/40 bg-[#00c853]/10 text-left cursor-pointer hover:bg-[#00c853]/15 transition tap-press ${funnelPop === `inquiry-${inquirySuggestion.hit.modelId}` ? "tap-confirm" : ""}`}
+                    >
+                      <svg className="w-6 h-6 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white text-sm font-bold leading-tight">Good news — we have an instant offer for the {inquirySuggestion.hit.label}</p>
+                        <p className="text-[#bdbdbd] text-xs mt-0.5">{inquirySuggestion.exact ? "See your price now — no waiting for a manual quote." : "Pick your storage and see your price now — no manual quote needed."}</p>
+                      </div>
+                      <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  )}
                   <button
                     onClick={() => { if (inquiryDesc.trim()) { setModel({ id: "custom", label: inquiryDesc.trim(), base: 0 }); } }}
                     disabled={!inquiryDesc.trim()}
