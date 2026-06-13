@@ -535,13 +535,20 @@ export async function POST(req: NextRequest) {
       }
     });
     const total = deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0);
+    // The thank-you ($) coupon and referral referee bonus are NOT gated to
+    // single-device (only the percent promo is), so a multi-device cart can
+    // carry them — and they ARE part of what we pay. parseTotalPayoutLine /
+    // the analytics + customers rollups read this "Total payout:" line, so
+    // it must include the bonus or the recorded payout undercounts the real
+    // one (the single-device Quote/headline already folds the bonus in).
+    const multiBonus = (couponApplied?.value || 0) + referralBonus;
     // On tamper the per-device quotes are the inflated client values, so
     // the honest figure is the clamped baseQuoteNum — keep this line in
     // sync with the clamped headline above (review note has the detail).
     multiLines.push(
       quoteTampered
-        ? `Total payout: $${baseQuoteNum} (clamped from $${total})`
-        : `Total payout: $${total}`
+        ? `Total payout: $${baseQuoteNum + multiBonus} (clamped from $${total})`
+        : `Total payout: $${total + multiBonus}`
     );
   }
 
