@@ -828,7 +828,13 @@ export async function GET(req: NextRequest) {
       // / Battery / Photos / etc.) until the next numbered device or the
       // "Total payout" footer.
       const bodyLines = m.body.split("\n");
-      const deviceLineRe = /^\s{2,4}(\d+)\.\s+([^·\n]+?)(?:\s·\s+([^·\n]+?))?(?:\s·\s+([^·\n$]+?))?(?:\s·\s+\$([0-9,]+))?(?:\s+\(×(\d+)\))?\s*$/;
+      // Must tolerate the same line shape /api/lead writes and the offer
+      // routes parse: "  1. Model · Storage · Condition · $700 total (×2) · 🤝 LOCAL".
+      // i.e. an optional " total" after the quote and a trailing handoff
+      // tag (or any "· …" segment). Without it, every line carrying a
+      // handoff tag or qty>1 failed to match and the device — plus all its
+      // indented spec lines — silently dropped from the staff view.
+      const deviceLineRe = /^\s{2,4}(\d+)\.\s+([^·\n]+?)(?:\s·\s+([^·\n]+?))?(?:\s·\s+([^·\n]+?))?(?:\s·\s+\$([0-9,]+)(?:\s+total)?)?(?:\s+\(×(\d+)\))?(?:\s·\s+.*)?$/;
       const specLineRe = /^\s{4,}([A-Z][^:]+):\s*(.+)$/;
       devices = [];
       let current: NonNullable<AdminLead["devices"]>[number] | null = null;

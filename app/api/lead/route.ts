@@ -7,6 +7,7 @@ import { REFERRAL_REFEREE_BONUS, REFERRAL_CODE_RE } from "../../lib/referral";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "../../lib/payout-verify";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 import { formatOfferNumber } from "../../lib/offer-number";
+import { getResellEstimate, resellMultiplierForCondition } from "../../lib/resell-estimates";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -121,77 +122,12 @@ async function isDuplicateMC(email: string, contact: string, device: string, mod
 
 // Resell values from Swappa (real market data, scraped 2026-05-12).
 // Used to calculate profit margin on each lead for the owner's review.
-const RESELL_ESTIMATES: Record<string, number> = {
-  // iPhones — Swappa mid price (actual listings)
-  "iPhone 17 Pro Max": 1081, "iPhone 17 Pro": 949, "iPhone 17": 695,
-  "iPhone 16 Pro Max": 721, "iPhone 16 Pro": 638, "iPhone 16 Plus": 428, "iPhone 16": 520,
-  "iPhone 15 Pro Max": 525, "iPhone 15 Pro": 528, "iPhone 15": 349,
-  "iPhone 14 Pro Max": 417, "iPhone 14 Pro": 358, "iPhone 14": 268,
-  "iPhone 13 Pro Max": 338, "iPhone 13 Pro": 268, "iPhone 13": 211,
-  // Samsung — Swappa mid price
-  "Galaxy S26 Ultra": 927, "Galaxy S25 Ultra": 714, "Galaxy S24 Ultra": 544,
-  "Galaxy S26": 741, "Galaxy S25": 372,
-  // Pixel — Swappa mid price
-  "Pixel 10 Pro XL": 657, "Pixel 10 Pro": 567, "Pixel 9 Pro XL": 392, "Pixel 9 Pro": 375,
-  // Consoles — PriceCharting
-  "PlayStation 5 Pro": 680, "PlayStation 5 Slim": 310, "PlayStation 5": 347,
-  "Xbox Series X": 220, "Xbox Series S": 130,
-  "Nintendo Switch 2": 370, "Nintendo Switch OLED": 180,
-  // MacBook — estimates pending eBay API
-  "MacBook Pro 16\" M4": 1500, "MacBook Pro 14\" M4": 1000, "MacBook Pro 16\" M3": 1100,
-  "MacBook Pro 14\" M3": 700, "MacBook Air M4": 600, "MacBook Air M3": 450,
-};
-
-// Match the customer's model name against RESELL_ESTIMATES. The naive
-// previous implementation used `includes()` in dictionary order, which
-// matched "iPhone 16" against "iPhone 16 Pro Max" first (Pro Max appears
-// earlier in the dict and contains "iPhone 16" as a substring) and quoted
-// a wildly inflated $721 resell value for a regular iPhone 16. Fix: walk
-// every key, prefer an exact match, otherwise pick the LONGEST key whose
-// label is fully contained in the customer's model string. Longest-key
-// match avoids "iPhone 16" matching "iPhone 16 Pro Max" while still
-// letting "iPhone 16 Pro Max 256GB" match "iPhone 16 Pro Max".
-function getResellEstimate(modelName: string): number | null {
-  if (!modelName) return null;
-  const m = modelName.trim();
-  let best: { key: string; val: number } | null = null;
-  for (const [key, val] of Object.entries(RESELL_ESTIMATES)) {
-    if (m === key) return val; // exact wins immediately
-    if (m.includes(key) && (!best || key.length > best.key.length)) {
-      best = { key, val };
-    }
-  }
-  return best ? best.val : null;
-}
-
-// Broken / heavily-damaged devices resell as parts on eBay for a fraction
-// of working price. Cap the resell estimate accordingly so the margin
-// math doesn't claim a $595 win on a $721 reference price when the device
-// is broken. Multipliers calibrated against actual eBay "for parts" sold
-// listings 2026-05-16. Condition strings come from the funnel — after
-// Skywalker's 2026-05-19 collapse the live values are:
-//   "Sealed" → 1.0   "Excellent" → 1.0 (= old Mint)
-//   "Good"   → 0.80  "Fair"      → 0.65   "Broken" → 0.30
-// Plus DJI/console label overrides ("Lightly Flown", "Well-Maintained",
-// "Heavily Used") that fold into the same buckets. Legacy MC leads with
-// "Mint" or "Very Good" still in the body parse correctly — VG drops to
-// Good-tier per the new pricing intent.
-function resellMultiplierForCondition(condition: string | undefined): number {
-  const c = (condition || "").toLowerCase();
-  if (c.includes("broken") || c.includes("crack") || c.includes("dead") || c.includes("won't")) return 0.30;
-  // "heav" catches both "heavy" and DJI's "Heavily Used" (heavily ≠ heavy
-  // as a substring — easy to miss; checked it).
-  if (c.includes("fair") || c.includes("heav")) return 0.65;
-  // very good check before plain good (substring) — legacy VG leads fall
-  // to Good-tier under the new pricing intent.
-  if (c.includes("very good")) return 0.80;
-  if (c.includes("good") || c.includes("well-maintained") || c.includes("wellmaintained")) return 0.80;
-  // "Excellent" is the new top working-condition tier (= old Mint, 1.0x).
-  // "Lightly Flown" is DJI's Excellent override.
-  if (c.includes("excellent") || c.includes("lightly")) return 1.0;
-  // mint, sealed, flawless, like-new, pristine — full resell
-  return 1.0;
-}
+// Resell estimates + condition/brokenGlass multipliers live in the shared
+// lib/resell-estimates.ts so the server margin guardrail uses the EXACT
+// same table the funnel quotes from. (This route used to carry a private
+// fork that drifted — stale Xbox numbers, missing Pixels/Watches/iPad, and
+// no brokenGlass deduction — which silently clamped legit quotes down and
+// false-flagged them as tampered. Always import; never re-fork.)
 
 // High-value devices that need manual review before payout
 const REVIEW_KEYWORDS = [
@@ -457,19 +393,20 @@ export async function POST(req: NextRequest) {
   // submissions keep the original headline-model lookup.
   const isMultiDeviceCart = Array.isArray((data as { devices?: unknown }).devices)
     && ((data as { devices?: unknown[] }).devices?.length || 0) > 1;
-  const computeCap = (m: unknown, c: unknown): number | null => {
+  const computeCap = (m: unknown, c: unknown, bg?: unknown): number | null => {
     const r = getResellEstimate(typeof m === "string" ? m : "");
     if (r == null) return null;
-    const cm = resellMultiplierForCondition(typeof c === "string" ? c : "");
+    const glass = bg === "front" || bg === "back" || bg === "both" ? bg : null;
+    const cm = resellMultiplierForCondition(typeof c === "string" ? c : "", glass);
     return Math.round(r * cm * SERVER_MARGIN_FLOOR_MULT);
   };
   let serverQuoteCap: number | null;
   if (isMultiDeviceCart) {
-    const devs = (data as { devices: { model?: string; condition?: string; quantity?: number }[] }).devices;
+    const devs = (data as { devices: { model?: string; condition?: string; quantity?: number; brokenGlass?: unknown }[] }).devices;
     let acc = 0;
     let anyKnown = false;
     for (const d of devs) {
-      const cap = computeCap(d.model, d.condition);
+      const cap = computeCap(d.model, d.condition, d.brokenGlass);
       if (cap != null) {
         anyKnown = true;
         acc += cap * (Number(d.quantity) || 1);
@@ -479,7 +416,7 @@ export async function POST(req: NextRequest) {
     // so the lead saves; manual review will catch it via other guards.
     serverQuoteCap = anyKnown ? acc : null;
   } else {
-    serverQuoteCap = computeCap(model, condition);
+    serverQuoteCap = computeCap(model, condition, brokenGlass);
   }
   // Quote-step promo coupons (/coupons.json) apply a PERCENT bonus that the
   // client folds into the submitted quote. The server MUST re-validate the code
@@ -828,7 +765,7 @@ export async function POST(req: NextRequest) {
   // quoteNum (computed above) includes the coupon bonus so margin math
   // reflects the real outlay.
   const resellWorking = getResellEstimate(model as string);
-  const condMult = resellMultiplierForCondition(condition as string);
+  const condMult = resellMultiplierForCondition(condition as string, (brokenGlass ?? null) as "front" | "back" | "both" | null);
   const resellEst = resellWorking != null ? Math.round(resellWorking * condMult) : null;
   const marginLines: string[] = [];
   if (resellEst && quoteNum > 0) {
