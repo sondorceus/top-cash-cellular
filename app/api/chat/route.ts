@@ -14,8 +14,9 @@ function smartReply(message: string): string {
   if (m.match(/pay|cashapp|cash app|zelle|btc|bitcoin|cash|money/)) return "We pay via Cash, Cash App, Zelle, or BTC — your choice! Payment is same-day for local Austin pickups. We pay on the spot.";
   if (m.match(/broken|crack|damage|screen/)) return "We buy devices in ANY condition — even cracked or water damaged. You'll get a lower offer than a pristine device, but we'll still pay you. Select 'Fair' or 'Poor' in our quote tool.";
   if (m.match(/how|work|process|step/)) return "Super simple: 1) Use our quote tool to get an instant price, 2) We arrange a local meetup in Austin, 3) We inspect and pay you on the spot. Takes about 5 minutes total!";
-  if (m.match(/where|location|austin|meet|pickup/)) return "We do local meetups all across Austin, TX. Public locations like coffee shops or parking lots — safe, fast, and convenient. We meet local!";
-  if (m.match(/ship|mail|send/)) return "We're currently Austin local pickup only — no shipping needed! We meet you at a convenient location and pay on the spot.";
+  if (m.match(/where|location|store|address|visit|come in|walk.?in|austin|meet|pickup/)) return "We don't have a walk-in store — we're online-first. You can either meet us at a safe public spot in the Austin area (paid on the spot in ~15 min) or ship it free with a prepaid label. Whichever's easier for you!";
+  if (m.match(/ship|mail|send/)) return "Yes, we ship! We send a free prepaid FedEx label — pack it up, drop it off, and we pay same-day after we inspect (usually the next business day after it arrives). No store visit needed.";
+  if (m.match(/human|person|talk|call.?back|text.*back|representative|agent|someone/)) return "Absolutely — I can pass your message to our team and they'll get back to you. Just drop your name and the best phone or email to reach you, and we'll text you back shortly!";
   if (m.match(/hi|hey|hello|sup|yo|what'?s up/)) return "Hey there! 👋 Welcome to Top Cash Cellular. Got a device you want to sell? I can help with pricing, tell you how the process works, or answer any questions. What's on your mind?";
   if (m.match(/thank|thanks|thx|appreciate/)) return "You're welcome! 😊 Ready to get a quote? Just tap 'Get Your Quote' on our homepage, or ask me anything else!";
   if (m.match(/bye|later|done|gtg/)) return "See you! When you're ready to sell, we're here. Use the quote tool anytime or email us at support@topcashcellular.com. 💰";
@@ -33,6 +34,17 @@ function sanitizeForMc(s: string): string {
   return s.replace(/[\[\]]/g, "").slice(0, 500);
 }
 
+// Pull a phone number or email out of free text so a visitor who types
+// "text me at 512-555-1212" gets a reachable lead even if they never
+// fill the optional contact field. Returns "" when nothing looks like
+// contact info.
+function detectContact(s: string): string {
+  const email = s.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/)?.[0];
+  if (email) return email;
+  const phone = s.match(/(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/)?.[0];
+  return phone || "";
+}
+
 // Hard bounds — input size + history depth — keep Anthropic cost
 // bounded if someone scripts the endpoint. Real chat messages from the
 // widget are well under 1KB; a 2KB cap is forgiving without inviting
@@ -42,7 +54,7 @@ const MAX_MESSAGE_LEN = 2000;
 const MAX_HISTORY_LEN = 12;
 
 export async function POST(req: NextRequest) {
-  let payload: { message?: unknown; history?: unknown };
+  let payload: { message?: unknown; history?: unknown; contact?: unknown };
   try {
     payload = await req.json();
   } catch {
@@ -53,6 +65,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "message required" }, { status: 400 });
   }
   const message = rawMessage.slice(0, MAX_MESSAGE_LEN);
+  // Optional "text me back" contact the visitor typed into the widget,
+  // plus a fallback sniff of the message itself. Either gives staff a
+  // way to actually reply to the lead.
+  const rawContact = typeof payload.contact === "string" ? payload.contact : "";
+  const contact = (sanitizeForMc(rawContact).trim() || detectContact(message)).slice(0, 120);
   const rawHistory = Array.isArray(payload.history) ? payload.history : [];
   const history = rawHistory
     .slice(-MAX_HISTORY_LEN)
@@ -73,8 +90,10 @@ export async function POST(req: NextRequest) {
         from: "topcash-web",
         fromName: "Top Cash Cellular Chat",
         role: "system",
-        body: `[CHAT LEAD] Visitor: "${sanitizeForMc(message)}"`,
-        tags: ["chat-lead"],
+        body: contact
+          ? `[CHAT LEAD] Visitor (reply to: ${sanitizeForMc(contact)}): "${sanitizeForMc(message)}"`
+          : `[CHAT LEAD] Visitor: "${sanitizeForMc(message)}"`,
+        tags: contact ? ["chat-lead", "has-contact"] : ["chat-lead"],
         priority: "high",
       }),
     });
@@ -130,7 +149,13 @@ export async function POST(req: NextRequest) {
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 200,
-      system: "You are the friendly AI assistant for Top Cash Cellular — a phone buyback service in Austin, TX. Keep responses SHORT (2-3 sentences). Help sellers get quotes and understand the process. We buy iPhones 11+, Samsung S21+, MacBooks M1+, game consoles. Payout: Cash, Cash App, Zelle, BTC. Local Austin meetup = paid on the spot in ~15 min. Shipped trades = free prepaid FedEx label, paid same-day after we inspect (typically next business day after arrival).",
+      system: [
+        "You are the warm, helpful AI assistant for Top Cash Cellular, a phone & device buyback service based in Austin, TX. Keep replies SHORT (2-3 sentences) and friendly.",
+        "CRITICAL — we have NO physical store and NO walk-in counter. We are online-first. NEVER tell anyone to 'come to our store', 'visit our location', 'stop by', or 'walk in'. There are exactly two ways to sell: (1) LOCAL — meet us at a safe public spot in the Austin area, inspected and paid on the spot in ~15 min; or (2) SHIP — we send a free prepaid FedEx label and pay same-day after we inspect (usually the next business day after it arrives).",
+        "YOU CAN RELAY MESSAGES TO THE TEAM. If someone wants a human, asks something you can't fully answer, or wants a callback, NEVER say you can't help or can't pass a message along. Instead, ask for their name and best phone number or email, then confirm: 'Got it — I'll pass this to our team and they'll text you back shortly.' Every message is already logged for the team.",
+        "We buy: iPhones 11+, Samsung Galaxy S21+ (incl. Z Fold/Flip), MacBooks M1+, and game consoles (PS4/PS5, Xbox, Switch) — any condition, even cracked or water-damaged (lower offer). Payout: Cash, Cash App, Zelle, or BTC, the customer's choice. For an exact price, point them to the instant quote tool on the homepage (~30 seconds).",
+        "GOAL: gently help them get a quote or leave their device + a phone/email so we can text an offer. Encourage, never pressure, and never require info to keep chatting.",
+      ].join(" "),
       messages,
     });
 

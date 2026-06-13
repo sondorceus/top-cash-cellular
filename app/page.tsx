@@ -4406,15 +4406,39 @@ export default function Home() {
   // Flat search index across all device categories — populated once at module scope below
   // (see SEARCH_INDEX const further down)
 
-  const sendChat = async () => {
-    if (!chatMsg.trim()) return;
+  // Optional "text me back" contact for the chat. Lets the team actually
+  // reply to a visitor without forcing anyone to fill a form first.
+  // Pre-fills from a signed-in customer or anything already typed in the
+  // funnel, but stays fully optional.
+  const [chatContact, setChatContact] = useState("");
+  useEffect(() => {
+    if (chatOpen && !chatContact && (phone || email)) {
+      setChatContact(phone || email);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatOpen]);
+
+  // Tappable starters shown at the top of a fresh chat — a soft nudge to
+  // convert without forcing the visitor to type or hand over info.
+  const CHAT_QUICK_REPLIES = [
+    "💰 What's my device worth?",
+    "📦 How does it work?",
+    "🙋 Talk to a human",
+  ];
+
+  // `override` lets quick-reply chips send their own text without routing
+  // through the textarea state. Guard the type so an onClick MouseEvent
+  // never gets mistaken for a message.
+  const sendChat = async (override?: string) => {
+    const text = (typeof override === "string" ? override : chatMsg).trim();
+    if (!text) return;
     if (chatLoading) return; // Enter-key can fire while a send is in flight.
-    const msg = chatMsg;
-    setChatMsg("");
-    setChatMessages(prev => [...prev, { from: "user", text: msg }]);
+    if (typeof override !== "string") setChatMsg("");
+    const outgoing = [...chatMessages, { from: "user" as const, text }];
+    setChatMessages(outgoing);
     setChatLoading(true);
     try {
-      const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: msg, history: chatMessages }) });
+      const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text, history: chatMessages, contact: chatContact.trim() || undefined }) });
       const data = await res.json();
       setChatMessages(prev => [...prev, { from: "bot", text: data.reply }]);
     } catch {
@@ -14480,12 +14504,24 @@ export default function Home() {
                             <div className={`max-w-[85%] px-3 py-2 rounded-xl text-sm leading-relaxed ${m.from === "user" ? "bg-[#00c853] text-[#0a0a0a]" : "bg-white/10 text-white/90"}`}>{m.text}</div>
                           </div>
                         ))}
+                        {/* Soft conversion nudge — only on a fresh chat. Tapping a
+                            chip starts the conversation; nothing is required. */}
+                        {chatMessages.length <= 1 && !chatLoading && (
+                          <div className="flex flex-wrap gap-2 pt-1">
+                            {CHAT_QUICK_REPLIES.map(q => (
+                              <button key={q} onClick={() => sendChat(q)} className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-white/90 hover:bg-white/10 hover:border-[#00c853]/60 transition cursor-pointer tap-press">{q}</button>
+                            ))}
+                          </div>
+                        )}
                         {chatLoading && <div className="flex justify-start"><div className="bg-white/10 text-white/60 px-3 py-2 rounded-xl text-sm">Typing...</div></div>}
                       </div>
                       <div className="flex gap-2 items-end">
                         <textarea ref={chatInputRef} value={chatMsg} rows={1} onChange={(e) => setChatMsg(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } }} placeholder="Ask me anything..." aria-label="Chat message" className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] resize-none leading-relaxed max-h-[120px] overflow-y-auto" />
-                        <button onClick={sendChat} disabled={chatLoading} aria-label="Send message" className="bg-[#00c853] text-[#0a0a0a] px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-[#00e676] transition disabled:opacity-50 shrink-0">Send</button>
+                        <button onClick={() => sendChat()} disabled={chatLoading} aria-label="Send message" className="bg-[#00c853] text-[#0a0a0a] px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-[#00e676] transition disabled:opacity-50 shrink-0">Send</button>
                       </div>
+                      {/* Optional reply-back contact. Clearly optional so it
+                          nudges conversion without gating the chat. */}
+                      <input value={chatContact} onChange={(e) => setChatContact(e.target.value)} placeholder="📱 Phone or email for a reply (optional)" aria-label="Your phone or email (optional)" className="mt-2 w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-[#9a9a9a] focus:outline-none focus:border-[#00c853]" />
                     </>
                   )}
                   {chatMode === "call" && (
