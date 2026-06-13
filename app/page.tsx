@@ -4286,6 +4286,31 @@ export default function Home() {
     { from: "bot", text: "Hey! I'm here to help you sell your device. Ask me anything about pricing, how it works, or what we buy!" }
   ]);
   const [chatLoading, setChatLoading] = useState(false);
+  // Chat panel size toggle. "normal" is the compact bubble; "large" gives a
+  // roomy box that's easy to read/type in. Persisted so the user's choice
+  // sticks across visits.
+  const [chatExpanded, setChatExpanded] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try { setChatExpanded(localStorage.getItem("tcc_chat_expanded") === "1"); } catch {}
+  }, []);
+  const toggleChatSize = () => {
+    setChatExpanded(prev => {
+      const next = !prev;
+      try { localStorage.setItem("tcc_chat_expanded", next ? "1" : "0"); } catch {}
+      return next;
+    });
+  };
+  // Chat input grows with the text so long messages wrap onto new lines
+  // (mobile + desktop) instead of scrolling horizontally out of view. Caps
+  // at ~5 lines, then scrolls internally. Re-runs on send-reset too.
+  const chatInputRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    const t = chatInputRef.current;
+    if (!t) return;
+    t.style.height = "auto";
+    t.style.height = `${Math.min(t.scrollHeight, 120)}px`;
+  }, [chatMsg, chatMode, chatOpen]);
   const [searchQuery, setSearchQuery] = useState("");
   // Referral program — a friend's REF-XXXXXX code arrives via ?ref= in
   // the URL. When set, the funnel shows a calm "$10 bonus" banner and
@@ -14386,13 +14411,15 @@ export default function Home() {
         const fy = fabPos ? fabPos.y : vh - 24 - fabSize;
         const openDown = fy < vh / 2;
         const openRight = fx < vw / 2;
+        // Panel width tracks the size toggle; clamping keeps it on-screen.
+        const panelW = chatExpanded ? 420 : 340;
         const panelStyle: React.CSSProperties = openDown
           ? { top: `${fy + fabSize + 12}px` }
           : { bottom: `${Math.max(12, vh - fy + 12)}px` };
         if (openRight) {
-          panelStyle.left = `${Math.max(12, Math.min(vw - 320 - 12, fx))}px`;
+          panelStyle.left = `${Math.max(12, Math.min(vw - panelW - 12, fx))}px`;
         } else {
-          panelStyle.right = `${Math.max(12, Math.min(vw - 320 - 12, vw - fx - fabSize))}px`;
+          panelStyle.right = `${Math.max(12, Math.min(vw - panelW - 12, vw - fx - fabSize))}px`;
         }
         const fabContainerStyle: React.CSSProperties = fabPos
           ? { left: `${fabPos.x}px`, top: `${fabPos.y}px`, bottom: "auto" }
@@ -14407,12 +14434,26 @@ export default function Home() {
                 the FAB to. */}
             {chatOpen && !hidden && (
               <div
-                className="fixed z-40 w-[300px] max-w-[calc(100vw-24px)] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.18s_ease-out]"
+                className={`fixed z-40 ${chatExpanded ? "w-[420px]" : "w-[340px]"} max-w-[calc(100vw-24px)] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.18s_ease-out]`}
                 style={panelStyle}
               >
                 <div className="bg-[#00c853] px-4 py-3 flex items-center justify-between">
                   <p className="text-white font-semibold text-sm">Top Cash Cellular</p>
-                  <button onClick={() => setChatOpen(false)} aria-label="Close chat" className="text-white/80 hover:text-white cursor-pointer text-lg">×</button>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={toggleChatSize}
+                      aria-label={chatExpanded ? "Shrink chat" : "Enlarge chat"}
+                      title={chatExpanded ? "Make smaller" : "Make larger"}
+                      className="text-white/80 hover:text-white cursor-pointer p-1 rounded-md hover:bg-white/15 transition"
+                    >
+                      {chatExpanded ? (
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 9L4 4m0 0v4m0-4h4m6 6l5 5m0 0v-4m0 4h-4" /></svg>
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+                      )}
+                    </button>
+                    <button onClick={() => setChatOpen(false)} aria-label="Close chat" className="text-white/80 hover:text-white cursor-pointer text-lg leading-none px-1">×</button>
+                  </div>
                 </div>
                 <div className="p-4">
                   {chatMode === "choose" && (
@@ -14433,17 +14474,17 @@ export default function Home() {
                   {chatMode === "chat" && (
                     <>
                       <button onClick={() => setChatMode("choose")} className="text-[#e6e6e6] text-xs mb-2 cursor-pointer hover:text-white">← Back</button>
-                      <div className="h-[200px] overflow-y-auto space-y-2 mb-2 pr-1">
+                      <div className={`${chatExpanded ? "h-[440px]" : "h-[300px]"} overflow-y-auto space-y-2 mb-2 pr-1 transition-[height]`}>
                         {chatMessages.map((m, i) => (
                           <div key={i} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
-                            <div className={`max-w-[85%] px-3 py-2 rounded-xl text-xs ${m.from === "user" ? "bg-[#00c853] text-[#0a0a0a]" : "bg-white/10 text-white/90"}`}>{m.text}</div>
+                            <div className={`max-w-[85%] px-3 py-2 rounded-xl text-sm leading-relaxed ${m.from === "user" ? "bg-[#00c853] text-[#0a0a0a]" : "bg-white/10 text-white/90"}`}>{m.text}</div>
                           </div>
                         ))}
-                        {chatLoading && <div className="flex justify-start"><div className="bg-white/10 text-white/60 px-3 py-2 rounded-xl text-xs">Typing...</div></div>}
+                        {chatLoading && <div className="flex justify-start"><div className="bg-white/10 text-white/60 px-3 py-2 rounded-xl text-sm">Typing...</div></div>}
                       </div>
-                      <div className="flex gap-2">
-                        <input value={chatMsg} onChange={(e) => setChatMsg(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendChat()} placeholder="Ask me anything..." aria-label="Chat message" className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853]" />
-                        <button onClick={sendChat} disabled={chatLoading} aria-label="Send message" className="bg-[#00c853] text-[#0a0a0a] px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer hover:bg-[#00e676] transition disabled:opacity-50">Send</button>
+                      <div className="flex gap-2 items-end">
+                        <textarea ref={chatInputRef} value={chatMsg} rows={1} onChange={(e) => setChatMsg(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } }} placeholder="Ask me anything..." aria-label="Chat message" className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] resize-none leading-relaxed max-h-[120px] overflow-y-auto" />
+                        <button onClick={sendChat} disabled={chatLoading} aria-label="Send message" className="bg-[#00c853] text-[#0a0a0a] px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-[#00e676] transition disabled:opacity-50 shrink-0">Send</button>
                       </div>
                     </>
                   )}
