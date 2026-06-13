@@ -21,6 +21,9 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { parseTotalPayoutLine, parseDollarAmount } from "../../../../lib/lead-money";
+import {
+  field, cleanField, latestStatus, resolveCurrentDevices, devicesTotal, LOCKED_STATUSES,
+} from "../../../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -28,16 +31,6 @@ const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
-
-const LOCKED = new Set(["shipped", "received", "tested", "paid", "met"]);
-
-function field(body: string, key: string): string | undefined {
-  const m = body.match(new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i"));
-  return m?.[1]?.trim() || undefined;
-}
-function clean(s: unknown, max: number): string {
-  return String(s ?? "").replace(/[\[\]\n\r\t]/g, " ").trim().slice(0, max);
-}
 
 type InDevice = { model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown };
 
@@ -63,9 +56,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     const quote = Math.round(Number(d.quote));
     const quantity = Math.round(Number(d.quantity) || 1);
     return {
-      model: clean(d.model, 80),
-      storage: clean(d.storage, 30),
-      condition: clean(d.condition, 30),
+      model: cleanField(d.model, 80),
+      storage: cleanField(d.storage, 30),
+      condition: cleanField(d.condition, 30),
       quote: Number.isFinite(quote) && quote >= 0 && quote <= 100000 ? quote : 0,
       quantity: quantity >= 1 && quantity <= 50 ? quantity : 1,
       // Set by the editor for a broken + non-functional device — it
@@ -103,32 +96,41 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // with their offer link could POST an inflated quote and raise the
   // estimate the offer page (and the admin total) shows. A genuine edit
   // only ever LOWERS the estimate (the device is worse than quoted), so
-  // cap the new total at the original locked total; real increases are
-  // rare and go through a staff re-quote at inspection.
-  const originalTotal = parseTotalPayoutLine(leadMsg.body) || parseDollarAmount(field(leadMsg.body, "Quote"));
-  if (originalTotal > 0 && total > originalTotal) {
+  // cap the new total at the order's CURRENT total.
+  //
+  // The ceiling must be the *current* total, not just the original lead
+  // body: a prior edit / added device (resolved from the latest
+  // [ITEM-UPDATE] marker) legitimately changes it, and reading only the
+  // body would (a) wrongly block edits after a legit add and (b) miss
+  // multi-device leads whose only price is in the per-device lines. Take
+  // the max across resolved current devices + the body footer/Quote so we
+  // never under-estimate the ceiling and falsely reject a lowering edit.
+  const current = resolveCurrentDevices(leadMsg.body, messages, leadId);
+  const ceiling = Math.max(
+    devicesTotal(current),
+    parseTotalPayoutLine(leadMsg.body),
+    parseDollarAmount(field(leadMsg.body, "Quote")),
+  );
+  if (ceiling > 0 && total > ceiling) {
     return NextResponse.json({
       error: "An edit can only lower your estimate here. If your device is actually a higher tier, reply to your offer email and we'll re-quote it.",
     }, { status: 422 });
   }
+  // No price baseline anywhere (inquiry-only / manual-quote lead) — we
+  // can't validate the submitted total, so never trust it as the estimate:
+  // force a manual staff re-quote instead of silently accepting it.
+  const unverifiable = ceiling === 0 && total > 0;
 
   const cancelled = messages.some((m) => m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
   if (cancelled) {
     return NextResponse.json({ error: "This offer was cancelled." }, { status: 409 });
   }
 
-  // Status gate — editing locks once the device is on its way.
-  let status = "quote_requested";
-  let statusAt = "";
-  for (const m of messages) {
-    if (!m.body) continue;
-    const sm = m.body.match(new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
-    if (sm && (!statusAt || m.timestamp > statusAt)) {
-      status = sm[1].toLowerCase();
-      statusAt = m.timestamp;
-    }
-  }
-  if (LOCKED.has(status)) {
+  // Status gate — editing locks once the device is on its way. Unknown /
+  // typo'd status markers are ignored (latestStatus whitelists), so a
+  // stray marker can't open this gate when GET would keep the real status.
+  const status = latestStatus(messages, leadId);
+  if (LOCKED_STATUSES.has(status)) {
     return NextResponse.json({
       error: "This offer can no longer be edited — your trade is already on its way. Email support@topcashcellular.com if something's wrong.",
     }, { status: 409 });
@@ -136,13 +138,18 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
 
   // A broken + non-functional device can't be auto-quoted — flag the
   // edit for a manual staff re-quote. (Functional broken devices keep
-  // their auto estimate.) Skywalker 2026-05-20.
-  const anyReview = devices.some((d) => d.needsReview);
+  // their auto estimate.) Skywalker 2026-05-20. Also flag when we had no
+  // baseline to cap the total against (see `unverifiable` above).
+  const anyReview = devices.some((d) => d.needsReview) || unverifiable;
 
   // Post the item-update marker. Human-readable lead-in for staff
   // scanning MC; the trailing JSON is what the offer GET route parses.
   const json = JSON.stringify({ v: 1, devices, total });
-  const reviewNote = anyReview ? " ⚠️ MANUAL REVIEW NEEDED — customer marked a device broken; re-quote by hand." : "";
+  const reviewNote = devices.some((d) => d.needsReview)
+    ? " ⚠️ MANUAL REVIEW NEEDED — customer marked a device broken; re-quote by hand."
+    : unverifiable
+      ? " ⚠️ MANUAL REVIEW NEEDED — no original quote to verify this edit against; re-quote by hand."
+      : "";
   const updateBody = `[ITEM-UPDATE: ${leadId}] Customer edited device specs — new estimated total $${total}.${reviewNote} ${json}`;
   const postRes = await fetch(`${MC_API}/api/comms`, {
     method: "POST",

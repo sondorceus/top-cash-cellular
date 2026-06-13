@@ -6,16 +6,10 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { referralCodeForEmail, referralLinkForCode } from "../../../lib/referral";
+import { field, DEVICE_LINE_RE, OFFER_STATUSES } from "../../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
-
-const STATUSES = ["quote_requested", "shipped", "received", "tested", "paid", "met", "rejected"];
-
-function field(body: string, key: string): string | undefined {
-  const m = body.match(new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i"));
-  return m?.[1]?.trim() || undefined;
-}
 
 export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: string }> }) {
   const { leadId } = await ctx.params;
@@ -70,7 +64,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
       } catch { /* ignore malformed marker */ }
     }
     const sm = m.body.match(new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
-    if (sm && STATUSES.includes(sm[1].toLowerCase())) {
+    if (sm && (OFFER_STATUSES as readonly string[]).includes(sm[1].toLowerCase())) {
       if (!statusAt || m.timestamp > statusAt) {
         status = sm[1].toLowerCase();
         statusAt = m.timestamp;
@@ -131,10 +125,9 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     // collapsed to a single generic "N devices" row with no per-device
     // photos. Tolerate both: consume " total", the (×N) tag, and any
     // trailing " · ..." segment after the quote.
-    const re = /^\s{2,4}(\d+)\.\s+([^·\n]+?)(?:\s·\s+([^·\n]+?))?(?:\s·\s+([^·\n]+?))?(?:\s·\s+\$([0-9,]+)(?:\s+total)?)?(?:\s+\(×(\d+)\))?(?:\s·\s+.*)?$/;
     devices = [];
     for (const line of lines) {
-      const dm = line.match(re);
+      const dm = line.match(DEVICE_LINE_RE);
       if (!dm) continue;
       const [, , dLabel, dStorage, dCondition, dQuote, dQty] = dm;
       devices.push({
