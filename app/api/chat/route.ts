@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
+import { notifyOwnerSms } from "../../lib/owner-sms";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -108,6 +109,22 @@ export async function POST(req: NextRequest) {
       chatLeadId = d?.message?.id || null;
     }
   } catch { /* silent */ }
+
+  // Real-time owner SMS for HOT chat leads, so a visitor asking for a human
+  // (or dropping their number) reaches the owner's phone instantly, not just
+  // the Mission Control inbox. Deliberately narrow to avoid one text per
+  // message: fires (1) the moment a "talk to a human" handoff starts, and
+  // (2) any turn where the visitor types a phone/email in this message.
+  // Runs in after() so it never delays the chat reply.
+  const detectedNow = detectContact(message);
+  const handoffStarted = isHumanHandoff && history.length <= 1;
+  if (handoffStarted || detectedNow) {
+    const snippet = sanitizeForMc(message).slice(0, 200);
+    const alert = handoffStarted
+      ? `🔥 TopCash chat: a visitor wants to talk to a human.\n"${snippet}"${contact ? `\nReply to: ${contact}` : ""}`
+      : `📱 TopCash chat lead left contact: ${detectedNow}\n"${snippet}"`;
+    after(() => notifyOwnerSms(alert));
+  }
 
   // AI triage — classify the visitor's intent + urgency + sentiment
   // and post an [AI-TRIAGE] marker to MC tied to the chat comm. Runs

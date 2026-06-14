@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { notifyOwnerSms } from "../../lib/owner-sms";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
-const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
-const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_FROM = process.env.TWILIO_PHONE || "";
-const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 
 // Fires after the lead has already been submitted — captures the customer's
 // chosen delivery method (ship vs local meetup) and the supporting details
@@ -88,21 +85,10 @@ export async function POST(req: NextRequest) {
     });
   } catch {}
 
-  if (TWILIO_SID && TWILIO_AUTH) {
-    const summary = method === "shipping"
-      ? `${name} chose SHIP ${model || "device"} from ${clean(address?.city, 80) || "?"}, ${clean(address?.state, 2) || "?"} ${clean(address?.zip, 10) || ""}. Send label.`
-      : `${name} chose LOCAL meetup in ${area || "Austin area"} for ${model || "device"}. Reach out to schedule.`;
-    try {
-      await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
-        method: "POST",
-        headers: {
-          "Authorization": "Basic " + Buffer.from(`${TWILIO_SID}:${TWILIO_AUTH}`).toString("base64"),
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({ To: OWNER_PHONE, From: TWILIO_FROM, Body: `DELIVERY: ${summary}` }),
-      });
-    } catch {}
-  }
+  const summary = method === "shipping"
+    ? `${name} chose SHIP ${model || "device"} from ${clean(address?.city, 80) || "?"}, ${clean(address?.state, 2) || "?"} ${clean(address?.zip, 10) || ""}. Send label.`
+    : `${name} chose LOCAL meetup in ${area || "Austin area"} for ${model || "device"}. Reach out to schedule.`;
+  await notifyOwnerSms(`DELIVERY: ${summary}`);
 
   return NextResponse.json({ ok: true });
 }
