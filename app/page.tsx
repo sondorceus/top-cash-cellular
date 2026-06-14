@@ -4430,6 +4430,22 @@ export default function Home() {
   // concierge lead-capture persona and every subsequent send carries
   // mode:"human" so the backend keeps that persona + flags the lead.
   const [chatHandoff, setChatHandoff] = useState(false);
+  // Stable id for this chat session so the backend threads all of one
+  // conversation's leads into a single Mission Control entry. Generated
+  // lazily client-side (avoids any SSR/hydration concerns).
+  const chatSessionRef = useRef<string>("");
+  const ensureChatSession = () => {
+    if (!chatSessionRef.current) {
+      try {
+        chatSessionRef.current = (typeof crypto !== "undefined" && crypto.randomUUID)
+          ? crypto.randomUUID().replace(/-/g, "").slice(0, 16)
+          : (Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)).slice(0, 16);
+      } catch {
+        chatSessionRef.current = (Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)).slice(0, 16);
+      }
+    }
+    return chatSessionRef.current;
+  };
 
   // `override` lets quick-reply chips send their own text without routing
   // through the textarea state. Guard the type so an onClick MouseEvent
@@ -4447,7 +4463,7 @@ export default function Home() {
     setChatMessages(outgoing);
     setChatLoading(true);
     try {
-      const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text, history: chatMessages, contact: chatContact.trim() || undefined, mode: handoff ? "human" : undefined }) });
+      const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text, history: chatMessages, contact: chatContact.trim() || undefined, mode: handoff ? "human" : undefined, sessionId: ensureChatSession() }) });
       const data = await res.json();
       setChatMessages(prev => [...prev, { from: "bot", text: data.reply }]);
     } catch {

@@ -47,6 +47,20 @@ function detectContact(s: string): string {
   return phone || "";
 }
 
+// Best-effort device summary scraped from the whole conversation so a
+// captured lead reads "iPhone 14 Pro, 256gb, cracked" instead of just a
+// contact. Heuristic and forgiving — returns "" when nothing matches.
+function extractDevice(text: string): string {
+  // Collect every brand/model hit and keep the most specific (longest) one,
+  // so "iPhone 14 Pro" wins over a bare "iphone" mentioned earlier.
+  const brands = text.match(/iphone(?:\s+\d+\s*(?:pro\s*max|pro|plus|mini)?)?|galaxy\s*[a-z]?\s*\d*\s*(?:ultra|plus|fe)?|samsung|pixel\s*\d*|macbook(?:\s+(?:air|pro))?(?:\s+\d{2}")?|ipad(?:\s+(?:pro|air|mini))?|imac|mac\s*mini|playstation\s*\d?|ps[45]|xbox(?:\s+series\s*[sx])?|nintendo\s*switch|switch|apple\s*watch|airpods/gi) || [];
+  const brand = brands.map((b) => b.trim()).sort((a, b) => b.length - a.length)[0];
+  if (!brand) return "";
+  const storage = text.match(/\b\d{2,4}\s?(?:gb|tb)\b/i)?.[0];
+  const condition = text.match(/cracked|shattered|broken|water\s*damage|won'?t\s*(?:turn on|boot|charge)|mint|like\s*new|brand\s*new|excellent|good|fair|poor|scratched|dented/i)?.[0];
+  return [brand, storage, condition].filter((s): s is string => !!s).map((s) => s.trim().replace(/\s+/g, " ")).join(", ");
+}
+
 // Hard bounds — input size + history depth — keep Anthropic cost
 // bounded if someone scripts the endpoint. Real chat messages from the
 // widget are well under 1KB; a 2KB cap is forgiving without inviting
@@ -56,7 +70,7 @@ const MAX_MESSAGE_LEN = 2000;
 const MAX_HISTORY_LEN = 12;
 
 export async function POST(req: NextRequest) {
-  let payload: { message?: unknown; history?: unknown; contact?: unknown; mode?: unknown };
+  let payload: { message?: unknown; history?: unknown; contact?: unknown; mode?: unknown; sessionId?: unknown };
   try {
     payload = await req.json();
   } catch {
@@ -76,11 +90,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ reply: "You're sending messages really fast! Give me a few seconds, then try again 🙂" });
   }
   const message = rawMessage.slice(0, MAX_MESSAGE_LEN);
-  // Optional "text me back" contact the visitor typed into the widget,
-  // plus a fallback sniff of the message itself. Either gives staff a
-  // way to actually reply to the lead.
-  const rawContact = typeof payload.contact === "string" ? payload.contact : "";
-  const contact = (sanitizeForMc(rawContact).trim() || detectContact(message)).slice(0, 120);
+  // Stable per-conversation id from the widget so all of one chat's leads
+  // thread together in Mission Control instead of scattering into N comms.
+  const sessionId = (typeof payload.sessionId === "string" ? payload.sessionId : "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 24);
   // "human" mode = the visitor tapped "Talk to a human", so Theot runs the
   // warm concierge lead-capture flow and the lead is flagged for a real
   // teammate to follow up.
@@ -95,40 +107,65 @@ export async function POST(req: NextRequest) {
     )
     .map((m) => ({ from: m.from, text: m.text.slice(0, MAX_MESSAGE_LEN) }));
 
-  // Forward lead to Mission Control
+  // Read contact + a rough device summary from the WHOLE conversation, not
+  // just this message, so a number typed two turns ago still reaches staff.
+  const rawContact = typeof payload.contact === "string" ? payload.contact : "";
+  const fieldContact = sanitizeForMc(rawContact).trim();
+  const priorUserText = history.filter((m) => m.from === "user").map((m) => m.text).join("  ");
+  const userText = `${priorUserText}  ${message}`;
+  const contact = (fieldContact || detectContact(userText)).slice(0, 120);
+  const deviceSummary = extractDevice(userText);
+
+  // Decide whether THIS turn is worth a Mission Control post. Posting every
+  // message buried real leads in chatter; instead we post only on material
+  // turns — the opener, a human-handoff start, or the turn a contact first
+  // appears — all threaded by sessionId so one chat reads as one lead.
+  const contactSeenBefore = !!detectContact(priorUserText);
+  const detectedNow = !!detectContact(message);
+  const contactJustArrived = !contactSeenBefore && (detectedNow || (!!fieldContact && history.length === 0));
+  const isOpener = history.length === 0;
+  const handoffStarted = isHumanHandoff && history.length <= 1;
+  const material = isOpener || handoffStarted || contactJustArrived;
+
+  // Forward material leads to Mission Control
   let chatLeadId: string | null = null;
-  try {
-    const r = await fetch(`${MC_API}/api/comms`, {
-      method: "POST",
-      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from: "topcash-web",
-        fromName: "Top Cash Cellular Chat",
-        role: "system",
-        body: `${isHumanHandoff ? "[HUMAN HANDOFF] " : ""}[CHAT LEAD] Visitor${contact ? ` (reply to: ${sanitizeForMc(contact)})` : ""}: "${sanitizeForMc(message)}"`,
-        tags: [
-          "chat-lead",
-          ...(contact ? ["has-contact"] : []),
-          ...(isHumanHandoff ? ["human-handoff", "needs-callback"] : []),
-        ],
-        priority: "high",
-      }),
-    });
-    if (r.ok) {
-      const d = await r.json().catch(() => ({}));
-      chatLeadId = d?.message?.id || null;
-    }
-  } catch { /* silent */ }
+  if (material) {
+    const sess = sessionId ? `sess:${sessionId} · ` : "";
+    const body = contactJustArrived
+      ? `[CHAT LEAD ✅] ${sess}${deviceSummary ? `${deviceSummary} · ` : ""}reply to: ${sanitizeForMc(contact)}\n"${sanitizeForMc(message)}"`
+      : `${isHumanHandoff ? "[HUMAN HANDOFF] " : ""}[CHAT LEAD] ${sess}Visitor${contact ? ` (reply to: ${sanitizeForMc(contact)})` : ""}: "${sanitizeForMc(message)}"`;
+    try {
+      const r = await fetch(`${MC_API}/api/comms`, {
+        method: "POST",
+        headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: "topcash-web",
+          fromName: "Top Cash Cellular Chat",
+          role: "system",
+          body,
+          tags: [
+            "chat-lead",
+            ...(sessionId ? [`sess-${sessionId}`] : []),
+            ...(contact ? ["has-contact"] : []),
+            ...(contactJustArrived ? ["lead-complete"] : []),
+            ...(isHumanHandoff ? ["human-handoff", "needs-callback"] : []),
+          ],
+          priority: "high",
+        }),
+      });
+      if (r.ok) {
+        const d = await r.json().catch(() => ({}));
+        chatLeadId = d?.message?.id || null;
+      }
+    } catch { /* silent */ }
+  }
 
   // Real-time owner SMS for HOT chat leads, so a visitor asking for a human
-  // (or dropping their number) reaches the owner's phone instantly, not just
-  // the Mission Control inbox. Deliberately narrow to avoid one text per
-  // message: fires (1) the moment a "talk to a human" handoff starts, and
-  // (2) any turn where the visitor types a phone/email in this message.
-  // Runs in after() so it never delays the chat reply.
-  const detectedNow = detectContact(message);
-  const handoffStarted = isHumanHandoff && history.length <= 1;
-  if (handoffStarted || detectedNow) {
+  // (or dropping their contact) reaches the owner's phone instantly, not just
+  // the Mission Control inbox. Same narrow triggers as a material lead post,
+  // so it's at most a couple texts per conversation. Runs in after() so it
+  // never delays the chat reply.
+  if (handoffStarted || contactJustArrived) {
     // Belt-and-suspenders on the SMS fan-out: even within the chat allowance,
     // bound texts to the owner's phone — 3 per IP / 15 min, and a global
     // backstop of 20 / 10 min so distributed abuse still can't bomb it.
@@ -138,7 +175,7 @@ export async function POST(req: NextRequest) {
       const snippet = sanitizeForMc(message).slice(0, 200);
       const alert = handoffStarted
         ? `🔥 TopCash chat: a visitor wants to talk to a human.\n"${snippet}"${contact ? `\nReply to: ${contact}` : ""}`
-        : `📱 TopCash chat lead left contact: ${detectedNow}\n"${snippet}"`;
+        : `📱 TopCash chat lead left contact: ${contact}${deviceSummary ? ` (${deviceSummary})` : ""}\n"${snippet}"`;
       after(() => notifyOwnerSms(alert));
     }
   }
