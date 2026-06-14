@@ -4426,25 +4426,39 @@ export default function Home() {
     "🙋 Talk to a human",
   ];
 
+  // Once the visitor taps "Talk to a human", Theot switches to the warm
+  // concierge lead-capture persona and every subsequent send carries
+  // mode:"human" so the backend keeps that persona + flags the lead.
+  const [chatHandoff, setChatHandoff] = useState(false);
+
   // `override` lets quick-reply chips send their own text without routing
   // through the textarea state. Guard the type so an onClick MouseEvent
-  // never gets mistaken for a message.
-  const sendChat = async (override?: string) => {
+  // never gets mistaken for a message. `forceHandoff` starts the concierge
+  // flow on this very send (state updates are async, so we can't rely on
+  // chatHandoff having flipped yet).
+  const sendChat = async (override?: string, forceHandoff?: boolean) => {
     const text = (typeof override === "string" ? override : chatMsg).trim();
     if (!text) return;
     if (chatLoading) return; // Enter-key can fire while a send is in flight.
     if (typeof override !== "string") setChatMsg("");
+    const handoff = forceHandoff || chatHandoff;
+    if (forceHandoff && !chatHandoff) setChatHandoff(true);
     const outgoing = [...chatMessages, { from: "user" as const, text }];
     setChatMessages(outgoing);
     setChatLoading(true);
     try {
-      const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text, history: chatMessages, contact: chatContact.trim() || undefined }) });
+      const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text, history: chatMessages, contact: chatContact.trim() || undefined, mode: handoff ? "human" : undefined }) });
       const data = await res.json();
       setChatMessages(prev => [...prev, { from: "bot", text: data.reply }]);
     } catch {
       setChatMessages(prev => [...prev, { from: "bot", text: "Sorry, something went wrong. Try again or call us!" }]);
     }
     setChatLoading(false);
+  };
+  // Starts the concierge handoff from a chip or the choose screen.
+  const startHumanHandoff = () => {
+    setChatMode("chat");
+    sendChat("I'd like to talk to a human about selling my device", true);
   };
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -14445,6 +14459,19 @@ export default function Home() {
         } else {
           panelStyle.right = `${Math.max(12, Math.min(vw - panelW - 12, vw - fx - fabSize))}px`;
         }
+        // Pin the panel height to the space actually available between its
+        // anchor and the viewport edge so it never clips off-screen (e.g.
+        // expanded box on a short window). The inner message list flexes to
+        // fill whatever's left; the desired height is the comfortable max.
+        // Only the live conversation needs a tall fixed box; the choose/call
+        // screens size to their content (capped by max-h on the panel).
+        if (chatMode === "chat") {
+          const availH = openDown
+            ? vh - (fy + fabSize + 12) - 12
+            : vh - Math.max(12, vh - fy + 12) - 12;
+          const desiredH = chatExpanded ? 640 : 500;
+          panelStyle.height = `${Math.max(300, Math.min(desiredH, availH > 0 ? availH : desiredH))}px`;
+        }
         const fabContainerStyle: React.CSSProperties = fabPos
           ? { left: `${fabPos.x}px`, top: `${fabPos.y}px`, bottom: "auto" }
           // Default rest position lifts above the iOS home indicator —
@@ -14458,11 +14485,18 @@ export default function Home() {
                 the FAB to. */}
             {chatOpen && !hidden && (
               <div
-                className={`fixed z-40 ${chatExpanded ? "w-[420px]" : "w-[340px]"} max-w-[calc(100vw-24px)] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.18s_ease-out]`}
+                className={`fixed z-40 flex flex-col ${chatExpanded ? "w-[420px]" : "w-[340px]"} max-w-[calc(100vw-24px)] max-h-[calc(100dvh-24px)] bg-[#111] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.18s_ease-out]`}
                 style={panelStyle}
               >
                 <div className="bg-[#00c853] px-4 py-3 flex items-center justify-between">
-                  <p className="text-white font-semibold text-sm">Top Cash Cellular</p>
+                  {chatMode === "chat" ? (
+                    <div className="leading-tight">
+                      <p className="text-white font-semibold text-sm">Theot</p>
+                      <p className="text-white/80 text-[11px] flex items-center gap-1"><span className="inline-block w-1.5 h-1.5 rounded-full bg-white" />Top Cash team · online</p>
+                    </div>
+                  ) : (
+                    <p className="text-white font-semibold text-sm">Top Cash Cellular</p>
+                  )}
                   <div className="flex items-center gap-1">
                     <button
                       onClick={toggleChatSize}
@@ -14479,7 +14513,7 @@ export default function Home() {
                     <button onClick={() => setChatOpen(false)} aria-label="Close chat" className="text-white/80 hover:text-white cursor-pointer text-lg leading-none px-1">×</button>
                   </div>
                 </div>
-                <div className="p-4">
+                <div className="p-4 flex-1 min-h-0 flex flex-col">
                   {chatMode === "choose" && (
                     <>
                       <p className="text-white text-sm mb-4">Hey! Got a device to sell? How can we help?</p>
@@ -14498,7 +14532,7 @@ export default function Home() {
                   {chatMode === "chat" && (
                     <>
                       <button onClick={() => setChatMode("choose")} className="text-[#e6e6e6] text-xs mb-2 cursor-pointer hover:text-white">← Back</button>
-                      <div className={`${chatExpanded ? "h-[440px]" : "h-[300px]"} overflow-y-auto space-y-2 mb-2 pr-1 transition-[height]`}>
+                      <div className="flex-1 min-h-0 overflow-y-auto space-y-2 mb-2 pr-1">
                         {chatMessages.map((m, i) => (
                           <div key={i} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
                             <div className={`max-w-[85%] px-3 py-2 rounded-xl text-sm leading-relaxed ${m.from === "user" ? "bg-[#00c853] text-[#0a0a0a]" : "bg-white/10 text-white/90"}`}>{m.text}</div>
@@ -14509,7 +14543,7 @@ export default function Home() {
                         {chatMessages.length <= 1 && !chatLoading && (
                           <div className="flex flex-wrap gap-2 pt-1">
                             {CHAT_QUICK_REPLIES.map(q => (
-                              <button key={q} onClick={() => sendChat(q)} className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-white/90 hover:bg-white/10 hover:border-[#00c853]/60 transition cursor-pointer tap-press">{q}</button>
+                              <button key={q} onClick={() => /human/i.test(q) ? startHumanHandoff() : sendChat(q)} className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-white/90 hover:bg-white/10 hover:border-[#00c853]/60 transition cursor-pointer tap-press">{q}</button>
                             ))}
                           </div>
                         )}
@@ -14525,10 +14559,13 @@ export default function Home() {
                     </>
                   )}
                   {chatMode === "call" && (
-                    <div className="text-center py-2">
-                      <button onClick={() => setChatMode("choose")} className="text-[#e6e6e6] text-xs mb-3 cursor-pointer hover:text-white block mx-auto">← Back</button>
-                      <a href={EMAIL_HREF} className="flex items-center justify-center gap-2 w-full bg-[#00c853] text-[#0a0a0a] py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2"><svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>Email Us</a>
-                      <p className="text-[#e6e6e6] text-xs">Mon-Sat 8AM-8PM</p>
+                    <div className="py-2">
+                      <button onClick={() => setChatMode("choose")} className="text-[#e6e6e6] text-xs mb-3 cursor-pointer hover:text-white block">← Back</button>
+                      {/* Primary path: Theot grabs the visitor's info now and a
+                          real teammate follows up. Email is the secondary path. */}
+                      <button onClick={startHumanHandoff} className="flex items-center justify-center gap-2 w-full bg-[#00c853] text-[#0a0a0a] py-3 rounded-xl text-sm font-semibold hover:bg-[#00e676] transition text-center mb-2 cursor-pointer tap-press"><svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>Chat with our team now</button>
+                      <a href={EMAIL_HREF} className="flex items-center justify-center gap-2 w-full bg-white/5 border border-white/10 text-white py-3 rounded-xl text-sm font-semibold hover:bg-white/10 transition text-center mb-2"><svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>Email Us Instead</a>
+                      <p className="text-[#e6e6e6] text-xs text-center">Mon-Sat 8AM-8PM</p>
                     </div>
                   )}
                 </div>

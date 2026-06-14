@@ -54,7 +54,7 @@ const MAX_MESSAGE_LEN = 2000;
 const MAX_HISTORY_LEN = 12;
 
 export async function POST(req: NextRequest) {
-  let payload: { message?: unknown; history?: unknown; contact?: unknown };
+  let payload: { message?: unknown; history?: unknown; contact?: unknown; mode?: unknown };
   try {
     payload = await req.json();
   } catch {
@@ -70,6 +70,10 @@ export async function POST(req: NextRequest) {
   // way to actually reply to the lead.
   const rawContact = typeof payload.contact === "string" ? payload.contact : "";
   const contact = (sanitizeForMc(rawContact).trim() || detectContact(message)).slice(0, 120);
+  // "human" mode = the visitor tapped "Talk to a human", so Theot runs the
+  // warm concierge lead-capture flow and the lead is flagged for a real
+  // teammate to follow up.
+  const isHumanHandoff = payload.mode === "human";
   const rawHistory = Array.isArray(payload.history) ? payload.history : [];
   const history = rawHistory
     .slice(-MAX_HISTORY_LEN)
@@ -90,10 +94,12 @@ export async function POST(req: NextRequest) {
         from: "topcash-web",
         fromName: "Top Cash Cellular Chat",
         role: "system",
-        body: contact
-          ? `[CHAT LEAD] Visitor (reply to: ${sanitizeForMc(contact)}): "${sanitizeForMc(message)}"`
-          : `[CHAT LEAD] Visitor: "${sanitizeForMc(message)}"`,
-        tags: contact ? ["chat-lead", "has-contact"] : ["chat-lead"],
+        body: `${isHumanHandoff ? "[HUMAN HANDOFF] " : ""}[CHAT LEAD] Visitor${contact ? ` (reply to: ${sanitizeForMc(contact)})` : ""}: "${sanitizeForMc(message)}"`,
+        tags: [
+          "chat-lead",
+          ...(contact ? ["has-contact"] : []),
+          ...(isHumanHandoff ? ["human-handoff", "needs-callback"] : []),
+        ],
         priority: "high",
       }),
     });
@@ -136,6 +142,27 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // Shared facts both personas must respect.
+  const FACTS = [
+    "CRITICAL — we have NO physical store and NO walk-in counter. We are online-first. NEVER tell anyone to 'come to our store', 'visit our location', 'stop by', or 'walk in'. There are exactly two ways to sell: (1) LOCAL — meet us at a safe public spot in the Austin area, inspected and paid on the spot in ~15 min; or (2) SHIP — we send a free prepaid FedEx label and pay same-day after we inspect (usually the next business day after it arrives).",
+    "We buy: iPhones 11+, Samsung Galaxy S21+ (incl. Z Fold/Flip), MacBooks M1+, and game consoles (PS4/PS5, Xbox, Switch) — any condition, even cracked or water-damaged (lower offer). Payout: Cash, Cash App, Zelle, or BTC, the customer's choice. For an exact price, point them to the instant quote tool on the homepage (~30 seconds).",
+  ];
+  // Default assistant vs. the warm concierge lead-capture flow.
+  const systemPrompt = isHumanHandoff
+    ? [
+        "You are Theot, the concierge for Top Cash Cellular (Austin, TX device buyback). The visitor just asked to talk to a human, so a real teammate WILL follow up — your job is to warmly greet them, gather what the team needs, and keep them excited about a great offer. Be warm and human, brief (2-3 sentences), and ask only ONE question at a time.",
+        "Be honest: you are the team's assistant and a real person follows up — never claim to literally be a human, but never say you 'can't help' or 'can't pass a message' either.",
+        "Collect, conversationally, only what's still missing, in this rough order: (1) what device they're selling (model + storage) and its condition; (2) their name; (3) the best phone number or email for the team to reach them. The moment you have a device AND a way to contact them, confirm warmly by name: 'Perfect, {name} — I've got this to our team and they'll text you a firm offer shortly,' then invite them to grab an instant ballpark from the quote tool on the homepage while they wait.",
+        "Build value as you go (mention strong payouts, fast same-day pay, easy local-or-ship). Encourage, never pressure; if they decline to share info, stay friendly and still offer the quote tool.",
+        ...FACTS,
+      ].join(" ")
+    : [
+        "You are Theot, the warm, helpful assistant for Top Cash Cellular, a phone & device buyback service based in Austin, TX. Keep replies SHORT (2-3 sentences) and friendly.",
+        ...FACTS,
+        "YOU CAN RELAY MESSAGES TO THE TEAM. If someone wants a human, asks something you can't fully answer, or wants a callback, NEVER say you can't help or can't pass a message along. Instead, ask for their name and best phone number or email, then confirm: 'Got it — I'll pass this to our team and they'll text you back shortly.' Every message is already logged for the team.",
+        "GOAL: gently help them get a quote or leave their device + a phone/email so we can text an offer. Encourage, never pressure, and never require info to keep chatting.",
+      ].join(" ");
+
   // Try Anthropic first, fall back to smart replies
   try {
     const Anthropic = (await import("@anthropic-ai/sdk")).default;
@@ -149,19 +176,23 @@ export async function POST(req: NextRequest) {
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 200,
-      system: [
-        "You are the warm, helpful AI assistant for Top Cash Cellular, a phone & device buyback service based in Austin, TX. Keep replies SHORT (2-3 sentences) and friendly.",
-        "CRITICAL — we have NO physical store and NO walk-in counter. We are online-first. NEVER tell anyone to 'come to our store', 'visit our location', 'stop by', or 'walk in'. There are exactly two ways to sell: (1) LOCAL — meet us at a safe public spot in the Austin area, inspected and paid on the spot in ~15 min; or (2) SHIP — we send a free prepaid FedEx label and pay same-day after we inspect (usually the next business day after it arrives).",
-        "YOU CAN RELAY MESSAGES TO THE TEAM. If someone wants a human, asks something you can't fully answer, or wants a callback, NEVER say you can't help or can't pass a message along. Instead, ask for their name and best phone number or email, then confirm: 'Got it — I'll pass this to our team and they'll text you back shortly.' Every message is already logged for the team.",
-        "We buy: iPhones 11+, Samsung Galaxy S21+ (incl. Z Fold/Flip), MacBooks M1+, and game consoles (PS4/PS5, Xbox, Switch) — any condition, even cracked or water-damaged (lower offer). Payout: Cash, Cash App, Zelle, or BTC, the customer's choice. For an exact price, point them to the instant quote tool on the homepage (~30 seconds).",
-        "GOAL: gently help them get a quote or leave their device + a phone/email so we can text an offer. Encourage, never pressure, and never require info to keep chatting.",
-      ].join(" "),
+      system: systemPrompt,
       messages,
     });
 
-    const reply = response.content[0].type === "text" ? response.content[0].text : smartReply(message);
+    const reply = response.content[0].type === "text" ? response.content[0].text : fallbackReply(message, isHumanHandoff, history.length);
     return NextResponse.json({ reply });
   } catch {
-    return NextResponse.json({ reply: smartReply(message) });
+    return NextResponse.json({ reply: fallbackReply(message, isHumanHandoff, history.length) });
   }
+}
+
+// Picks the right canned reply when Anthropic is unavailable. On the first
+// turn of a human handoff we open with the warm concierge greeting; after
+// that we defer to the keyword matcher.
+function fallbackReply(message: string, isHumanHandoff: boolean, historyLen: number): string {
+  if (isHumanHandoff && historyLen <= 1) {
+    return "Hey, it's Theot from the Top Cash team 👋 Happy to get a real person on this for you. To start — what device are you looking to sell, and what kind of condition is it in?";
+  }
+  return smartReply(message);
 }
