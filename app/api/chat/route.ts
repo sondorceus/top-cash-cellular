@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
+import { clientIp, rateLimit } from "../../lib/rate-limit";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -65,6 +66,15 @@ export async function POST(req: NextRequest) {
   if (!rawMessage.trim()) {
     return NextResponse.json({ error: "message required" }, { status: 400 });
   }
+
+  // Throttle this public, unauthenticated endpoint BEFORE any costly work
+  // (Anthropic tokens, an MC post per message, an owner SMS). On a soft trip
+  // we return a friendly 200 so a fast-typing human isn't shown an error,
+  // but we skip all the fan-out. ~25 msgs / 5 min is generous for real chat.
+  const ip = clientIp(req);
+  if (!rateLimit(`chat:${ip}`, 25, 5 * 60_000).ok) {
+    return NextResponse.json({ reply: "You're sending messages really fast! Give me a few seconds, then try again 🙂" });
+  }
   const message = rawMessage.slice(0, MAX_MESSAGE_LEN);
   // Optional "text me back" contact the visitor typed into the widget,
   // plus a fallback sniff of the message itself. Either gives staff a
@@ -119,11 +129,18 @@ export async function POST(req: NextRequest) {
   const detectedNow = detectContact(message);
   const handoffStarted = isHumanHandoff && history.length <= 1;
   if (handoffStarted || detectedNow) {
-    const snippet = sanitizeForMc(message).slice(0, 200);
-    const alert = handoffStarted
-      ? `🔥 TopCash chat: a visitor wants to talk to a human.\n"${snippet}"${contact ? `\nReply to: ${contact}` : ""}`
-      : `📱 TopCash chat lead left contact: ${detectedNow}\n"${snippet}"`;
-    after(() => notifyOwnerSms(alert));
+    // Belt-and-suspenders on the SMS fan-out: even within the chat allowance,
+    // bound texts to the owner's phone — 3 per IP / 15 min, and a global
+    // backstop of 20 / 10 min so distributed abuse still can't bomb it.
+    const smsOk = rateLimit(`chat-sms:${ip}`, 3, 15 * 60_000).ok
+      && rateLimit("chat-sms:global", 20, 10 * 60_000).ok;
+    if (smsOk) {
+      const snippet = sanitizeForMc(message).slice(0, 200);
+      const alert = handoffStarted
+        ? `🔥 TopCash chat: a visitor wants to talk to a human.\n"${snippet}"${contact ? `\nReply to: ${contact}` : ""}`
+        : `📱 TopCash chat lead left contact: ${detectedNow}\n"${snippet}"`;
+      after(() => notifyOwnerSms(alert));
+    }
   }
 
   // AI triage — classify the visitor's intent + urgency + sentiment
