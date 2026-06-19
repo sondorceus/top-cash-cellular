@@ -140,6 +140,12 @@ export async function GET(req: NextRequest) {
       const quote = leadQuote.get(leadId) || 0;
       if (INTERNAL_EMAILS.includes(email)) continue;
       const isPaid = status === "paid" || status === "met";
+      // Use the ACTUAL amount paid (Payout-confirmation amount=) when present,
+      // not the original quote — captures in-person downgrades (quoted Pro Max,
+      // paid $80 on an actual iPhone 14) so the digest doesn't overstate revenue.
+      const paidAmtRaw = isPaid ? m.body.match(/Payout-confirmation:[^\n]*amount=([\d.]+)/i)?.[1] : undefined;
+      const paidAmt = paidAmtRaw !== undefined ? Number(paidAmtRaw) : NaN;
+      const revenueAmt = Number.isFinite(paidAmt) ? paidAmt : quote;
       // Count a lead's payout ONCE. A lead that flips paid→met (or is
       // re-flipped paid) emits multiple [STATUS: paid|met] markers; without
       // this the revenue + paid count double-counted that customer.
@@ -147,10 +153,10 @@ export async function GET(req: NextRequest) {
       if (isPaid && !alreadyPaid) {
         paidCounted.add(leadId);
         allTimePaid++;
-        allTimeRevenue += quote;
+        allTimeRevenue += revenueAmt;
       }
       const bump = (b: DayBucket) => {
-        if (isPaid) { if (!alreadyPaid) { b.paid++; b.revenue += quote; } }
+        if (isPaid) { if (!alreadyPaid) { b.paid++; b.revenue += revenueAmt; } }
         else if (status === "shipped") b.shipped++;
         else if (status === "received") b.received++;
         else if (status === "rejected") b.rejected++;

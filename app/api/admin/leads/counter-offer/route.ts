@@ -71,6 +71,26 @@ export async function POST(req: NextRequest) {
   if (!reason || !reason.trim()) return NextResponse.json({ error: "reason required" }, { status: 400 });
   if (!phone && !email) return NextResponse.json({ error: "phone or email required to reach customer" }, { status: 400 });
 
+  // Don't send a counter on a lead that's already closed — the customer would
+  // get a live accept/decline link for a finished trade. Counters during
+  // inspection (shipped/received/tested) are normal and stay allowed. Fails
+  // OPEN if MC is unreachable so a transient blip doesn't block staff.
+  try {
+    const cr = await fetch(`${MC_API}/api/comms?limit=1000`, { headers: { "x-api-key": MC_KEY }, cache: "no-store" });
+    if (cr.ok) {
+      const cd = await cr.json();
+      const msgs: { body?: string; timestamp: string }[] = cd.messages || [];
+      let curStatus = "", curAt = "";
+      for (const m of msgs) {
+        const sm = m.body?.match(new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
+        if (sm && (!curAt || m.timestamp > curAt)) { curStatus = sm[1].toLowerCase(); curAt = m.timestamp; }
+      }
+      if (["paid", "met", "rejected"].includes(curStatus)) {
+        return NextResponse.json({ error: `Can't send a counter — this lead is already ${curStatus}.` }, { status: 409 });
+      }
+    }
+  } catch { /* MC read failed — allow the counter rather than block staff */ }
+
   const token = signCounterToken({
     leadId,
     originalQuote: Math.round(originalQuote),

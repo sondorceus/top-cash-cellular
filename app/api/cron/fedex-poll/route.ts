@@ -153,8 +153,13 @@ export async function GET(req: NextRequest) {
         name: parseField(m.body, "Name"),
         phone: parseField(m.body, "Phone"),
         email: parseField(m.body, "Email"),
-        device: parseField(m.body, "Device"),
-        quote: parseField(m.body, "Quote"),
+        // The "Device:" line is "<type> — <model>"; the status templates
+        // inject this verbatim ("We got Phone — iPhone 15 Pro!"), so take the
+        // clean model half like the offer GET + reminders already do.
+        device: parseField(m.body, "Device")?.split(" — ").slice(-1)[0]?.trim() || parseField(m.body, "Device"),
+        // Strip the internal "(clamped from $X)" tamper note so it can't reach
+        // a customer-facing status SMS/email.
+        quote: parseField(m.body, "Quote")?.replace(/\s*\(clamped from[^)]*\)/i, "").trim(),
         payout: parseField(m.body, "Payout"),
       },
     });

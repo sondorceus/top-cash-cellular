@@ -49,6 +49,15 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   // Customer-edited devices — the latest [ITEM-UPDATE] marker wins.
   let itemUpdate: { devices: Array<{ model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown }>; total?: unknown } | null = null;
   let itemUpdateAt = "";
+  // Inspection-time price revisions. Without resolving these here, a customer
+  // who accepts a revised counter-offer — or whose quote staff adjusted at
+  // inspection — keeps seeing the ORIGINAL payout on their offer page.
+  let counterOfferAmt: number | null = null;
+  let counterOfferAt = "";
+  let counterRespAccept: boolean | null = null;
+  let counterRespAt = "";
+  let quoteAdjustedAmt: number | null = null;
+  let quoteAdjustedAt = "";
   for (const m of messages) {
     if (!m.body) continue;
     const cu = m.body.match(new RegExp(`\\[CONTACT-UPDATE:\\s*${leadId}\\][^\\n]*phone=([^\\n]+)`, "i"));
@@ -83,6 +92,24 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
         fedexErrorKind = k || "";
         fedexErrorReason = reason || "";
       }
+    }
+    // Staff counter-offer + the customer's accept/decline. Decimal/comma-safe
+    // (same parse as the admin leads route).
+    const co = m.body.match(new RegExp(`\\[COUNTER-OFFER:\\s*${leadId}\\][^\\n]*?offer=\\$?([\\d,]+(?:\\.\\d+)?)`, "i"));
+    if (co && (!counterOfferAt || m.timestamp > counterOfferAt)) {
+      counterOfferAmt = Math.round(parseFloat(co[1].replace(/,/g, "")));
+      counterOfferAt = m.timestamp;
+    }
+    const cr = m.body.match(new RegExp(`\\[COUNTER-RESPONSE:\\s*${leadId}\\][^\\n]*?response=(accept|decline)`, "i"));
+    if (cr && (!counterRespAt || m.timestamp > counterRespAt)) {
+      counterRespAccept = cr[1].toLowerCase() === "accept";
+      counterRespAt = m.timestamp;
+    }
+    // Staff quote adjustment at inspection: "[QUOTE ADJUSTED: $N] [LEAD: id]".
+    const qa = m.body.match(new RegExp(`\\[QUOTE ADJUSTED:\\s*\\$?([\\d,]+(?:\\.\\d+)?)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
+    if (qa && (!quoteAdjustedAt || m.timestamp > quoteAdjustedAt)) {
+      quoteAdjustedAmt = Math.round(parseFloat(qa[1].replace(/,/g, "")));
+      quoteAdjustedAt = m.timestamp;
     }
   }
 
@@ -138,8 +165,8 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
         quantity: dQty ? parseInt(dQty, 10) : undefined,
       });
     }
-    const totalMatch = body.match(/^Total payout:\s*\$([0-9,]+)/m);
-    if (totalMatch) totalPayout = parseInt(totalMatch[1].replace(/,/g, ""), 10);
+    const totalMatch = body.match(/^Total payout:\s*\$([0-9,]+(?:\.\d+)?)/m);
+    if (totalMatch) totalPayout = Math.round(parseFloat(totalMatch[1].replace(/,/g, "")));
   }
 
   // Cancellation / deletion check — staff can soft-delete leads.
@@ -160,6 +187,21 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     totalPayout = Number.isFinite(Number(itemUpdate.total))
       ? Number(itemUpdate.total)
       : devices.reduce((s, d) => s + (d.quote || 0), 0);
+  }
+
+  // Resolve the FINAL negotiated payout. An accepted counter-offer or a
+  // staff quote adjustment supersedes the original/edited total — whichever
+  // is most recent wins. This is the number the customer agreed to; without
+  // it the offer page keeps showing the pre-negotiation figure.
+  let offerRevised: { amount: number; kind: "counter" | "adjusted" } | undefined;
+  if (counterRespAccept === true && counterOfferAmt != null) {
+    offerRevised = { amount: counterOfferAmt, kind: "counter" };
+  }
+  if (quoteAdjustedAmt != null && (!offerRevised || quoteAdjustedAt > counterRespAt)) {
+    offerRevised = { amount: quoteAdjustedAmt, kind: "adjusted" };
+  }
+  if (offerRevised && offerRevised.amount >= 0) {
+    totalPayout = offerRevised.amount;
   }
 
   // Refer-a-friend — the customer's own share code is deterministic
@@ -196,7 +238,10 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
       const n = q ? parseInt(q, 10) : NaN;
       return Number.isFinite(n) && n > 0 ? n : undefined;
     })(),
-    quote: field(body, "Quote"),
+    // Strip the internal tamper note — the lead body writes
+    // "Quote: $500 (clamped from $700)" on a clamp, and this string is shown
+    // to the customer as their payout. Never leak the fraud-flag language.
+    quote: field(body, "Quote")?.replace(/\s*\(clamped from[^)]*\)/i, "").trim(),
     payout: field(body, "Payout"),
     handoffMethod,
     shipAddress,
@@ -204,6 +249,10 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     devices,
     deviceCount,
     totalPayout,
+    // Present when a counter-offer was accepted or staff adjusted the quote at
+    // inspection — lets the page show "revised offer" context, and guarantees
+    // the headline total above reflects the agreed number.
+    offerRevised,
     status: cancelled ? "rejected" : status,
     statusAt,
     fedexTracking: fedexTracking || undefined,
