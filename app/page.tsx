@@ -13981,7 +13981,7 @@ export default function Home() {
             </button>
             {page === "about" && <div className="animate-[fadeIn_0.27s_ease-out]">
               <h1 className="text-3xl font-bold mb-2">About Top Cash Cellular</h1>
-              <p className="text-[#00c853] text-sm font-semibold mb-6">Austin&apos;s #1 Device Buyback Service</p>
+              <p className="text-[#00c853] text-sm font-semibold mb-6">Austin&apos;s Trusted Device Buyback Service</p>
 
               <div className="bg-gradient-to-br from-[#00c853]/10 to-transparent border border-[#00c853]/20 rounded-2xl p-6 mb-8">
                 <p className="text-white text-lg font-medium leading-relaxed mb-3">We started Top Cash Cellular with a simple idea: selling your phone shouldn&apos;t be a hassle.</p>

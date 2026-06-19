@@ -132,7 +132,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "@context": "https://schema.org",
               "@type": "LocalBusiness",
               "name": "Top Cash Cellular",
-              "description": "Austin's #1 phone and device buyback service. Sell your iPhone, Samsung, MacBook, or game console for top dollar.",
+              "description": "Austin's trusted phone and device buyback service. Sell your iPhone, Samsung, MacBook, or game console for top dollar.",
               "url": "https://topcashcellular.com",
               "email": "support@topcashcellular.com",
               "address": { "@type": "PostalAddress", "addressLocality": "Austin", "addressRegion": "TX", "addressCountry": "US" },
