@@ -402,12 +402,12 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "base": { broken: 14, fair: 45, good: 58, mint: 68, sealed: 90 } },
   // === FULL IWM SCRAPE — all remaining devices ===
   gnote10: {
-    "base": { broken: 9, sealed: 99 },
-    "brandnew": { fair: 140, good: 162, mint: 171 },
-    "broken": { fair: 50, good: 72, mint: 81 },
-    "fair": { fair: 81, good: 104, mint: 112 },
-    "flawless": { fair: 112, good: 135, mint: 144 },
-    "good": { fair: 104, good: 126, mint: 135 } },
+    // Note 10 is 256GB-only. Prices = live IWM payout × 0.90 (house rule),
+    // scraped 2026-06-19: Broken $10 / Fair $45 / Good $70 / Flawless $80 /
+    // Brand New $110. mint=Flawless, sealed=Brand New. (Replaces a malformed
+    // entry whose inner keys were condition grades, not storage tiers, so
+    // every Note 10 quote was silently falling back to the multiplier path.)
+    "256": { broken: 9, fair: 40, good: 63, mint: 72, sealed: 99 } },
   gnote10p: {
     "256": { broken: 38, fair: 45, good: 99, mint: 117, sealed: 135 },
     "512": { broken: 47, fair: 54, good: 108, mint: 126, sealed: 158 } },
