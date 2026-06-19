@@ -4,6 +4,7 @@ import { put } from "@vercel/blob";
 import { createReturnLabel, deviceKindFromString, type LabelInputs } from "../../../../lib/fedex";
 import { findFreshLabel } from "../../../../lib/fedex-retry";
 import { logComm } from "../../../../lib/comms-log";
+import { mailShell, mailDetails, esc } from "../../../../lib/email-shell";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -43,7 +44,20 @@ async function emailLabel(to: string, name: string, tracking: string, labelUrl: 
       to,
       subject: `Your prepaid FedEx label — drop it any time`,
       text: `Hi ${first},\n\nHere's your prepaid FedEx label for the device you're sending to Top Cash:\n\nDownload: ${labelUrl}\nTracking: ${tracking} (${serviceType})\n\nPrint the PDF, tape it to your box, and drop the package at any FedEx location — no appointment needed. We'll text you the moment it arrives.\n\nShipping coverage: this prepaid label includes $100 of base coverage if the package is lost or damaged. We do not cover full device value — for more, declare additional insurance at the FedEx counter. By shipping, you agree to the $100 coverage limit.\n\nQuestions? Reply to this email.\n\n— Top Cash Cellular`,
-      html: `<!doctype html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:32px 16px"><div style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden"><div style="padding:24px 28px;color:#ffffff"><img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;margin:0" /><div style="font-size:22px;font-weight:800;line-height:1.1">Your label is ready</div></div><div style="padding:28px"><p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.6;margin:0 0 18px">Your prepaid FedEx label is attached and linked below. Print it, tape it to a padded box around your device, and drop at any FedEx location — no appointment needed.</p><div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.10);border-radius:14px;padding:18px 20px;margin:0 0 22px"><div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#00c853;font-weight:800;margin-bottom:6px">Tracking</div><div style="font-size:16px;color:#fff;font-weight:700;font-family:ui-monospace,monospace">${tracking}</div><div style="font-size:12px;color:#b8b8b8;margin-top:4px">${serviceType.replace(/_/g, " ")}</div></div><div style="text-align:center;margin:0 0 14px"><a href="${labelUrl}" style="display:inline-block;padding:14px 28px;background:linear-gradient(180deg,#00c853 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px">Download label PDF</a></div><p style="font-size:13px;color:#888;line-height:1.6;text-align:center;margin:18px 0 0">We'll text you the moment it arrives at our Austin office. Questions? Reply to this email.</p><p style="font-size:11px;color:#7d8099;line-height:1.6;text-align:center;margin:16px 0 0;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08)"><strong style="color:#b7bacb">Shipping coverage:</strong> this prepaid label includes $100 of base coverage if the package is lost or damaged. We do not cover full device value — for more, declare additional insurance at the FedEx counter. By shipping, you agree to the $100 coverage limit.</p></div></div></body></html>`,
+      html: mailShell({
+        preheader: `Your prepaid FedEx label — tracking ${tracking}`,
+        eyebrow: "Prepaid label",
+        title: "Your label is ready",
+        introHtml: `Hi ${esc(first)},<br><br>Your prepaid FedEx label is attached and linked below. Print it, tape it to a padded box around your device, and drop at any FedEx location — no appointment needed.`,
+        contentHtml: mailDetails([
+          ["Tracking", `<span style="font-family:ui-monospace,monospace">${esc(tracking)}</span>`],
+          ["Service", esc(serviceType.replace(/_/g, " "))],
+        ]),
+        buttonHref: labelUrl,
+        buttonLabel: "Download label PDF",
+        afterButtonHtml: `<p style="font-size:13px;color:#8a8fa3;line-height:1.6;text-align:center;margin:6px 0 0">We&apos;ll text you the moment it arrives at our Austin office.</p>`,
+        footerHtml: `<strong style="color:#b7bacb">Shipping coverage:</strong> this prepaid label includes $100 of base coverage if the package is lost or damaged. We do not cover full device value — for more, declare additional insurance at the FedEx counter. By shipping, you agree to the $100 coverage limit.`,
+      }),
     });
     return !!(r?.data?.id);
   } catch {

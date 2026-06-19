@@ -30,10 +30,20 @@ export type Sequence = {
   steps: SeqStep[];
 };
 
-// Shared dark email shell — matches TCC's transactional emails (dark navy +
-// crisp green accent, no white theme, no green glow). `cta` is the button.
+// Shared dark email shell — now routes through the unified mailShell so the
+// recovery sequence renders identically (and Outlook-safe, with the VML
+// button) to every other TCC email.
+import { mailShell } from "./email-shell";
+
 function shell(opts: { heading: string; bodyHtml: string; ctaUrl: string; ctaLabel: string }): string {
-  return `<!doctype html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:32px 16px"><div style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden"><div style="padding:24px 28px"><img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;margin:0 0 16px" /><div style="font-size:22px;font-weight:800;line-height:1.15;color:#fff">${opts.heading}</div></div><div style="padding:4px 28px 28px">${opts.bodyHtml}<div style="text-align:center;margin:24px 0 6px"><a href="${opts.ctaUrl}" style="display:inline-block;padding:14px 30px;background:#00c853;color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px">${opts.ctaLabel}</a></div><p style="font-size:12px;color:#7d8099;line-height:1.6;text-align:center;margin:18px 0 0;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08)">Not looking to sell anymore? Just ignore this — we won't keep nudging. Questions? Reply to this email or write support@topcashcellular.com.</p></div></div></body></html>`;
+  return mailShell({
+    preheader: opts.heading,
+    title: opts.heading,
+    contentHtml: opts.bodyHtml,
+    buttonHref: opts.ctaUrl,
+    buttonLabel: opts.ctaLabel,
+    footerHtml: "Not looking to sell anymore? Just ignore this — we won't keep nudging.",
+  });
 }
 
 const p = (s: string) => `<p style="font-size:15px;line-height:1.6;color:#cfd2e0;margin:0 0 14px">${s}</p>`;

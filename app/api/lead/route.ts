@@ -8,6 +8,7 @@ import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 import { formatOfferNumber } from "../../lib/offer-number";
 import { getResellEstimate, resellMultiplierForCondition } from "../../lib/resell-estimates";
+import { mailShell, mailDetails, MAIL } from "../../lib/email-shell";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -1425,7 +1426,15 @@ Pick the best channel per device. Be concise.`;
       const lockLine = quoteNum > 0
         ? `Your offer of $${quoteNum} for ${deviceLabel} is locked in for 14 days.`
         : `We've got your request for ${deviceLabel}.`;
-      const schedHtml = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:24px 16px"><div style="max-width:520px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.1);border-radius:14px;overflow:hidden"><div style="padding:18px 22px;color:#ffffff;font-weight:800;font-size:18px">Let&apos;s set up your Austin meetup</div><div style="padding:20px 22px;font-size:14px;line-height:1.7">Hi ${escS(firstName)},<br><br>${escS(lockLine)}<br><br>To get you paid, just <b>reply to this email with a couple of times that work this week</b> and we&apos;ll confirm a quick Austin meetup — most wrap in under 15 minutes, paid on the spot (cash, Zelle, Cash App, or Venmo).<br><br><a href="${offerHref}" style="display:inline-block;margin-top:6px;padding:10px 20px;background:#00c853;color:#0a0a0a;font-weight:800;text-decoration:none;border-radius:999px;font-size:13px">View your offer →</a><div style="margin-top:16px;font-size:12px;color:#888">Reference: Offer #${escS(offerRef)}</div></div></div></div>`;
+      const schedHtml = mailShell({
+        preheader: `Pick a time for your Austin payout — Offer #${offerRef}`,
+        eyebrow: "Local meetup",
+        title: "Let's set up your Austin meetup",
+        introHtml: `Hi ${escS(firstName)},<br><br>${escS(lockLine)}<br><br>To get you paid, just <b style="color:#fff">reply to this email with a couple of times that work this week</b> and we'll confirm a quick Austin meetup — most wrap in under 15 minutes, paid on the spot (cash, Zelle, Cash App, or Venmo).`,
+        buttonHref: offerHref,
+        buttonLabel: "View your offer →",
+        afterButtonHtml: `<div style="font-size:12px;color:#8a8fa3;text-align:center;">Reference: Offer #${escS(offerRef)}</div>`,
+      });
       const schedText = `Hi ${firstName}, ${lockLine} To get paid, reply with a couple of times that work this week and we'll confirm a quick Austin meetup. View your offer: ${offerHref} — Offer #${offerRef}`;
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
@@ -1467,7 +1476,15 @@ Pick the best channel per device. Be concise.`;
       if (needsScheduling) rows.push(["Auto-scheduling", schedulingEmailSent ? "✅ emailed customer to pick a time" : (email ? "⚠️ email failed — reach out manually" : "⚠️ no email on file — text/call to schedule")]);
       if (firstPhoto) rows.push(["Photo", firstPhoto]);
       const subject = oneLine(`${reviewRequired ? "⚠️ REVIEW · " : ""}New lead: ${oneLine(name)} — ${oneLine(model)}${quote ? ` ($${quote})` : " (custom)"}`).slice(0, 180);
-      const html = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:24px 16px"><div style="max-width:520px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.1);border-radius:14px;overflow:hidden"><div style="padding:18px 22px;color:#ffffff;font-weight:800;font-size:18px">${reviewRequired ? "⚠️ " : ""}New buyback lead</div><div style="padding:20px 22px;font-size:14px;line-height:1.7">${rows.map(([k, v]) => `<div><span style="color:#888">${esc(k)}:</span> <span style="color:#fff">${esc(v)}</span></div>`).join("")}<div style="margin-top:18px"><a href="https://topcashcellular.com/admin" style="display:inline-block;padding:10px 20px;background:#00c853;color:#0a0a0a;font-weight:800;text-decoration:none;border-radius:999px;font-size:13px">Open admin</a></div></div></div></div>`;
+      const html = mailShell({
+        preheader: subject,
+        eyebrow: reviewRequired ? "⚠️ Needs review" : "New lead",
+        eyebrowColor: reviewRequired ? MAIL.yellow : MAIL.green,
+        title: "New buyback lead",
+        contentHtml: mailDetails(rows.map(([k, v]) => [k, k === "Photo" ? `<a href="${esc(v)}" style="color:${MAIL.green};text-decoration:none;">View photo →</a>` : esc(v)] as [string, string])),
+        buttonHref: "https://topcashcellular.com/admin",
+        buttonLabel: "Open admin",
+      });
       const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n") + "\n\nhttps://topcashcellular.com/admin";
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
