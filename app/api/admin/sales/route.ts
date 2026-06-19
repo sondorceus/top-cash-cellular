@@ -36,7 +36,11 @@ function num(v: unknown): number {
 // for the multi-line body, but kill `[` and `]` so a stray bracket
 // can't fake a downstream tag like `[STATUS: ...]`.
 function clean(v: unknown, maxLen = 240): string {
-  return String(v ?? "").replace(/[\[\]]/g, "").replace(/\s+$/g, "").slice(0, maxLen);
+  // Collapse interior newlines too. The SALE body is line-anchored
+  // (parseSaleBody reads each "Key: value" line), so a newline in a value
+  // like note/device could inject fake fields ("x\nSold-Price: 99999\nCost: 0")
+  // and corrupt the parsed profit. Brackets are killed for the same reason.
+  return String(v ?? "").replace(/[\[\]]/g, "").replace(/[\r\n]+/g, " ").replace(/\s+$/g, "").slice(0, maxLen);
 }
 
 export interface SaleRecord {

@@ -432,6 +432,46 @@ function makeRow(label: string, payout: number, resell: number | null): MarginRo
   return { label, payout, resell, margin, marginPct };
 }
 
+// Validate every leaf is a finite number in a sane range BEFORE it merges
+// into the live price blob the customer funnel reads. Without this a stray
+// string / NaN / negative / huge object could corrupt live quotes (negative
+// payouts, "$NaN") with no guard. Deductions/adjustments may be negative.
+function validatePriceShape(body: {
+  priceTable?: Record<string, unknown>;
+  carrierDeductions?: Record<string, unknown>;
+  baseOverrides?: Record<string, unknown>;
+  conditionAdj?: Record<string, unknown>;
+}): string | null {
+  const MAX_KEYS = 2000;
+  const numOk = (v: unknown, lo: number, hi: number) =>
+    typeof v === "number" && Number.isFinite(v) && v >= lo && v <= hi;
+  const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
+
+  const pt = body.priceTable || {};
+  if (Object.keys(pt).length > MAX_KEYS) return "priceTable too large";
+  for (const [model, storages] of Object.entries(pt)) {
+    if (!isObj(storages)) return `priceTable.${model} must be an object`;
+    for (const [stor, conds] of Object.entries(storages)) {
+      if (!isObj(conds)) return `priceTable.${model}.${stor} must be an object`;
+      for (const [cond, val] of Object.entries(conds)) {
+        if (!numOk(val, 0, 100000)) return `priceTable.${model}.${stor}.${cond} must be a number 0–100000`;
+      }
+    }
+  }
+  for (const [model, m] of Object.entries(body.carrierDeductions || {})) {
+    if (!isObj(m)) return `carrierDeductions.${model} must be an object`;
+    for (const [k, v] of Object.entries(m)) if (!numOk(v, -100000, 100000)) return `carrierDeductions.${model}.${k} must be a number -100000–100000`;
+  }
+  for (const [model, m] of Object.entries(body.conditionAdj || {})) {
+    if (!isObj(m)) return `conditionAdj.${model} must be an object`;
+    for (const [k, v] of Object.entries(m)) if (!numOk(v, -100000, 100000)) return `conditionAdj.${model}.${k} must be a number -100000–100000`;
+  }
+  for (const [model, v] of Object.entries(body.baseOverrides || {})) {
+    if (!numOk(v, 0, 100000)) return `baseOverrides.${model} must be a number 0–100000`;
+  }
+  return null;
+}
+
 export async function POST(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -447,6 +487,8 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Bad JSON" }, { status: 400 });
   }
+  const shapeErr = validatePriceShape(body);
+  if (shapeErr) return NextResponse.json({ error: shapeErr }, { status: 400 });
 
   const current = await readOverrides();
   await snapshotToHistory(current);
