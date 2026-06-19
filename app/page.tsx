@@ -4368,10 +4368,13 @@ export default function Home() {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const p = params.get("page");
+    // These are now real, crawlable routes — redirect old ?page= deep links
+    // to them so there's no duplicate content and the canonical URL wins.
+    const REAL_ROUTE: Record<string, string> = { terms: "/terms", grading: "/grading-guide", shipping: "/shipping-returns", accessibility: "/accessibility" };
+    if (p && REAL_ROUTE[p]) { window.location.replace(REAL_ROUTE[p]); return; }
     if (
-      p === "about" || p === "terms" || p === "grading" || p === "shipping" ||
-      p === "affiliate" || p === "itad" || p === "blog" || p === "cookies" ||
-      p === "accessibility"
+      p === "about" ||
+      p === "affiliate" || p === "itad" || p === "blog" || p === "cookies"
     ) {
       setPage(p);
       params.delete("page");
@@ -14339,8 +14342,9 @@ export default function Home() {
               <div className="space-y-2">
                 <button onClick={() => { setStep("category"); window.scrollTo({ top: 0 }); pushHistory("category"); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Get Custom Quote</button>
                 <a href="/how-it-works" className="block text-xs hover:text-[#00c853] transition">How It Works</a>
-                <button onClick={() => { setPage("grading"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Grading Guide</button>
-                <button onClick={() => { setPage("shipping"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Shipping &amp; Returns</button>
+                <a href="/grading-guide" className="block text-xs hover:text-[#00c853] transition">Grading Guide</a>
+                <a href="/shipping-returns" className="block text-xs hover:text-[#00c853] transition">Shipping &amp; Returns</a>
+                <a href="/best-price-guarantee" className="block text-xs hover:text-[#00c853] transition">Best Price Guarantee</a>
                 <a href="/faq" className="block text-xs hover:text-[#00c853] transition">FAQ</a>
               </div>
             </div>
@@ -14359,10 +14363,10 @@ export default function Home() {
               <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Legal</p>
               <div className="space-y-2">
                 <a href="/privacy" className="block text-xs hover:text-[#00c853] transition">Privacy Policy</a>
-                <button onClick={() => { setPage("terms"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Terms &amp; Conditions</button>
+                <a href="/terms" className="block text-xs hover:text-[#00c853] transition">Terms &amp; Conditions</a>
                 <button onClick={() => { setPage("cookies"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Cookie Policy</button>
                 <button onClick={() => { localStorage.removeItem("cookie-consent"); setCookieConsent(null); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Cookie Settings</button>
-                <button onClick={() => { setPage("accessibility"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Accessibility Statement</button>
+                <a href="/accessibility" className="block text-xs hover:text-[#00c853] transition">Accessibility Statement</a>
                 <p className="text-xs text-[#9a9a9a] pt-2">Austin, TX · Mon–Sat 8 AM–8 PM</p>
               </div>
             </div>
