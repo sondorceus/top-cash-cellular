@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, rateLimitResponse, clientIp } from "../../lib/rate-limit";
 
 // Server-side proxy for Google Places API (New) Place Details. Pairs
 // with /api/places-autocomplete. Given a placeId returned from the
@@ -15,6 +16,10 @@ type AddressComponent = {
 };
 
 export async function POST(req: NextRequest) {
+  // Each call is a billed Google Place Details request — throttle per IP.
+  const rl = rateLimit(`places-det:${clientIp(req)}`, 30, 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs);
+
   let body: { placeId?: string; sessionToken?: string };
   try {
     body = await req.json();

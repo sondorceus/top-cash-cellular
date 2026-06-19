@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, rateLimitResponse, clientIp } from "../../../lib/rate-limit";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -26,6 +27,12 @@ function issuedToHint(c: { email?: string; phone?: string }): string {
 // /api/lead at submit. Skywalker 2026-05-18 review-reward feature.
 
 export async function GET(req: NextRequest) {
+  // Throttle: this validates codes and returns a masked identity hint, so an
+  // unthrottled caller could brute-force TCC-XXXX codes and enumerate the
+  // masked email/phone bound to each. Rate-limit blunts the guessing.
+  const rl = rateLimit(`coupon-check:${clientIp(req)}`, 12, 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs);
+
   const code = (req.nextUrl.searchParams.get("code") || "").trim().toUpperCase();
   const email = (req.nextUrl.searchParams.get("email") || "").trim().toLowerCase();
   const phone = (req.nextUrl.searchParams.get("phone") || "").replace(/\D/g, "");

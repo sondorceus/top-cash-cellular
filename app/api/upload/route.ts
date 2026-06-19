@@ -11,6 +11,21 @@ const MAX_BYTES = 10 * 1024 * 1024; // 10MB / file
 const UPLOAD_LIMIT = 12; // uploads per IP per 10-min window
 const UPLOAD_WINDOW_MS = 10 * 60 * 1000;
 
+// Magic-byte sniff. file.type is client-supplied — spoofable, and empty on
+// some HEIC captures — so the declared MIME can't be trusted. This inspects
+// the actual leading bytes and is the one check a lying client can't bypass.
+function sniffAllowedImage(head: Buffer): boolean {
+  if (head.length < 12) return false;
+  if (head[0] === 0xff && head[1] === 0xd8 && head[2] === 0xff) return true; // JPEG
+  if (head[0] === 0x89 && head[1] === 0x50 && head[2] === 0x4e && head[3] === 0x47) return true; // PNG
+  if (head.toString("ascii", 0, 4) === "RIFF" && head.toString("ascii", 8, 12) === "WEBP") return true; // WEBP
+  if (head.toString("ascii", 4, 8) === "ftyp") { // HEIC/HEIF (ISO-BMFF)
+    const brand = head.toString("ascii", 8, 12).toLowerCase();
+    if (/heic|heif|heix|hevc|hevm|hevs|heim|heis|mif1|msf1/.test(brand)) return true;
+  }
+  return false;
+}
+
 export async function POST(req: NextRequest) {
   // Per-IP rate limit. 12 uploads per 10 min covers a legit customer
   // photographing every angle of one device with retries; rejects
@@ -34,6 +49,14 @@ export async function POST(req: NextRequest) {
     }
     if (file.type && !ALLOWED_MIME.has(file.type.toLowerCase())) {
       return NextResponse.json({ error: `Unsupported file type "${file.type}". Use JPEG, PNG, WEBP, or HEIC.` }, { status: 415 });
+    }
+    // Authoritative check: verify the real bytes, not the (spoofable, possibly
+    // empty) declared type — closes the "blank Content-Type stores arbitrary
+    // bytes as a public blob" bypass, which matters since these URLs are later
+    // fed to the vision model.
+    const head = Buffer.from(await file.slice(0, 16).arrayBuffer());
+    if (!sniffAllowedImage(head)) {
+      return NextResponse.json({ error: "That file doesn't look like a JPEG, PNG, WEBP, or HEIC image." }, { status: 415 });
     }
 
     if (!process.env.BLOB_READ_WRITE_TOKEN) {

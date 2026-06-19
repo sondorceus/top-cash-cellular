@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, rateLimitResponse, clientIp } from "../../lib/rate-limit";
 
 // Server-side proxy for Google Places API (New) Autocomplete.
 //
@@ -18,6 +19,11 @@ import { NextRequest, NextResponse } from "next/server";
 const GOOGLE_API_KEY = process.env.GOOGLE_MAPS_SERVER_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
 export async function POST(req: NextRequest) {
+  // Each call is a billed Google Autocomplete request — throttle per IP so a
+  // script can't run up the Maps bill.
+  const rl = rateLimit(`places-ac:${clientIp(req)}`, 30, 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs);
+
   let body: { input?: string; sessionToken?: string };
   try {
     body = await req.json();

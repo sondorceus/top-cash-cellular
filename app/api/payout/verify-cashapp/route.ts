@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cashtagFormatValid, normalizeCashtag } from "../../../lib/payout-verify";
+import { rateLimit, rateLimitResponse, clientIp } from "../../../lib/rate-limit";
 
 // Best-effort Cash App $cashtag existence check.
 //
@@ -55,6 +56,12 @@ function cacheSet(key: string, status: CachedResult["status"]): void {
 const SCRAPE_TIMEOUT_MS = 5000;
 
 export async function GET(req: NextRequest) {
+  // Public endpoint that makes a server-side fetch to cash.app per call —
+  // throttle so it can't be looped into an outbound-request amplifier that
+  // gets TCC's IP blocked by Cash App (which would break it for everyone).
+  const rl = rateLimit(`cashapp:${clientIp(req)}`, 20, 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs);
+
   const rawTag = req.nextUrl.searchParams.get("tag") || "";
   // normalizeCashtag trims + ensures the leading $ so a customer who
   // pasted "sarah" still gets validated correctly. The format check
