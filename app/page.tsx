@@ -4693,6 +4693,10 @@ export default function Home() {
   // the gray area. Server rejects POST if phone present + smsOptIn !==
   // true (defense in depth — client may be bypassed).
   const [smsOptIn, setSmsOptIn] = useState(false);
+  // Compliance gate: customer must affirm 18+ AND legal ownership before
+  // submit (TX secondhand-dealer law + Terms §2). Recorded server-side
+  // with IP/timestamp as the audit trail.
+  const [complianceAttested, setComplianceAttested] = useState(false);
   // Coupon code entry on contact step — Skywalker 2026-05-18 review-
   // reward feature. Customer who left a review gets a $25 code they
   // can apply to their next trade. Client-side check is informational
@@ -12130,6 +12134,14 @@ export default function Home() {
                 focusByQuery(['[data-validate="slot"]']);
                 return;
               }
+              // Compliance gate: must affirm 18+ and legal ownership before
+              // we take the device. Server records the disposition + IP as
+              // the audit trail; this is the customer-facing gate.
+              if (!complianceAttested) {
+                alert("Please confirm you're 18 or older and the legal owner of this device to continue.");
+                focusByQuery(['[data-validate="attestation"]']);
+                return;
+              }
               setSubmittingLead(true);
               // Payout value carries the confirmed handle (Cashtag /
               // Zelle / BTC address) so admin, the offer page, and the
@@ -12278,6 +12290,7 @@ export default function Home() {
                       attribution: readAttribution(),
                       couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined),
                       referralCode: referralCode || undefined,
+                      attestation: complianceAttested,
                     }),
                   });
                   if (!r.ok) throw new Error("Failed");
@@ -12291,7 +12304,7 @@ export default function Home() {
                   const res = await fetch("/api/lead", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, carrierLock: carrierLock?.label, accessoriesIncluded: (showAccessoryQuestion && accessoryBonusAmount > 0) ? accessoriesIncluded : undefined, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined), promoCode: couponLabel || undefined, referralCode: referralCode || undefined }),
+                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, carrierLock: carrierLock?.label, accessoriesIncluded: (showAccessoryQuestion && accessoryBonusAmount > 0) ? accessoriesIncluded : undefined, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined), promoCode: couponLabel || undefined, referralCode: referralCode || undefined, attestation: complianceAttested }),
                   });
                   if (!res.ok) throw new Error('Failed');
                   const d = await res.json().catch(() => ({}));
@@ -13361,6 +13374,18 @@ export default function Home() {
                   </div>
                 )}
               </div>
+              <label data-validate="attestation" className="flex items-start gap-2.5 cursor-pointer select-none bg-white/[0.03] border border-white/10 rounded-xl px-3.5 py-3">
+                <input
+                  type="checkbox"
+                  checked={complianceAttested}
+                  onChange={(e) => setComplianceAttested(e.target.checked)}
+                  required
+                  className="mt-0.5 w-4 h-4 shrink-0 rounded border-white/25 bg-white/5 accent-[#00c853] cursor-pointer"
+                />
+                <span className="text-[#e6e6e6] text-[11px] leading-relaxed">
+                  I confirm I&apos;m 18 or older and the legal owner of this device, with the right to sell it. It isn&apos;t lost, stolen, or activation-locked, and any balance owed is current. See our <a href="/?page=terms" className="underline hover:text-[#00c853]">terms</a>.
+                </span>
+              </label>
               <p className="text-[#c5c5c5] text-[11px] text-center leading-relaxed">By submitting, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>
               <button
                 type="submit"
@@ -14096,7 +14121,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="text-white font-bold mb-1">2. Eligibility</p>
-                    <p>You must be 18 or older to sell to us. Devices must be legally owned by you — stolen, fraudulently obtained, or financed-but-unpaid devices will be refused and reported to law enforcement. We may require valid government-issued photo ID at handoff.</p>
+                    <p>You must be 18 or older to sell to us. Devices must be legally owned by you — stolen, fraudulently obtained, or financed-but-unpaid devices will be refused and reported to law enforcement. When you submit, you confirm that you are 18 or older and the legal owner of the device with the right to sell it. We verify each device&apos;s IMEI/serial against blacklist and lost/stolen databases before payment.</p>
                   </div>
                   <div>
                     <p className="text-white font-bold mb-1">3. Inspection & condition adjustments</p>

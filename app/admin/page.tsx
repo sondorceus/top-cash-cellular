@@ -285,6 +285,13 @@ export default function AdminPage() {
   const [payoutMethod, setPayoutMethod] = useState<string>("");
   const [payoutReference, setPayoutReference] = useState<string>("");
   const [payoutNote, setPayoutNote] = useState<string>("");
+  // IMEI/serial-required-pre-payout gate. We never pay without a device
+  // identifier on record (verified against blacklist + lost/stolen). If
+  // the lead has no IMEI/serial, staff enters it here, or ticks the
+  // override (e.g. an accessory with no serial) with a reason. Folded
+  // into the payout note so it lands in the immutable audit record.
+  const [payoutImei, setPayoutImei] = useState<string>("");
+  const [payoutImeiOverride, setPayoutImeiOverride] = useState(false);
   // Actual amount paid out — often differs from the original quote
   // when the device is downgraded at inspection (Rudy: quoted Pro
   // Max, paid 80 on actual iPhone 14). Stored in the same Payout-
@@ -3143,6 +3150,8 @@ export default function AdminPage() {
                             setPayoutMethod(defaultMethod);
                             setPayoutReference("");
                             setPayoutNote("");
+                            setPayoutImei("");
+                            setPayoutImeiOverride(false);
                             // Default amount to the latest agreed quote —
                             // operator overrides if the in-person
                             // inspection lowered it. Empty when no quote
@@ -3392,6 +3401,37 @@ export default function AdminPage() {
                             placeholder="Note (optional)"
                             className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#00c853]"
                           />
+                          {/* IMEI/serial-required-pre-payout gate. If the
+                              lead already has an identifier on file we just
+                              confirm it; otherwise staff must enter one or
+                              explicitly override before Mark Paid enables. */}
+                          {lead.imei ? (
+                            <p className="text-[10px] text-[#7be8a8] flex items-center gap-1">
+                              <span>✓ IMEI/serial on file:</span>
+                              <span className="font-mono text-[#c5c5c5]">{lead.imei}</span>
+                            </p>
+                          ) : (
+                            <div className="rounded border border-[#ffcf4d]/30 bg-[#ffcf4d]/[0.06] p-2 space-y-1.5">
+                              <p className="text-[10px] text-[#ffcf4d] font-bold">No IMEI/serial on record — required before payout</p>
+                              <input
+                                type="text"
+                                value={payoutImei}
+                                onChange={(e) => setPayoutImei(e.target.value)}
+                                placeholder="Enter device IMEI / serial"
+                                disabled={payoutImeiOverride}
+                                className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-[#00c853] disabled:opacity-40"
+                              />
+                              <label className="flex items-center gap-2 text-[10px] text-[#c5c5c5] cursor-pointer select-none">
+                                <input
+                                  type="checkbox"
+                                  checked={payoutImeiOverride}
+                                  onChange={(e) => setPayoutImeiOverride(e.target.checked)}
+                                  className="accent-[#ffcf4d] cursor-pointer"
+                                />
+                                <span>No identifier on this item (explain in note)</span>
+                              </label>
+                            </div>
+                          )}
                           {/* Auto-log to the resale ledger so the
                               cost side of the profit row is filled in
                               the moment the buy is recorded — staff
@@ -3408,13 +3448,22 @@ export default function AdminPage() {
                           <div className="flex gap-1.5">
                             <button
                               type="button"
-                              disabled={!payoutMethod || (payoutMethod !== "cash" && !payoutReference.trim()) || !payoutAmount.trim() || Number(payoutAmount) <= 0}
+                              disabled={!payoutMethod || (payoutMethod !== "cash" && !payoutReference.trim()) || !payoutAmount.trim() || Number(payoutAmount) <= 0 || !(lead.imei || payoutImei.trim().length >= 4 || (payoutImeiOverride && payoutNote.trim().length > 0))}
                               onClick={async () => {
                                 const amt = Number(payoutAmount) || 0;
+                                // Fold the device identifier (or override
+                                // reason) into the note so it persists in
+                                // the immutable payout audit line.
+                                const idLine = lead.imei
+                                  ? ""
+                                  : payoutImeiOverride
+                                    ? " [IMEI/serial: none — override]"
+                                    : payoutImei.trim() ? ` [IMEI/serial at payout: ${payoutImei.trim().replace(/[\[\]]/g, "")}]` : "";
+                                const composedNote = `${payoutNote.trim()}${idLine}`.trim();
                                 await saveStatus(lead, payingStatus, undefined, {
                                   method: payoutMethod,
                                   reference: payoutReference.trim(),
-                                  note: payoutNote.trim(),
+                                  note: composedNote,
                                   amount: amt,
                                 });
                                 // Best-effort: also create the profit
@@ -3438,7 +3487,7 @@ export default function AdminPage() {
                                         shipping: 0,
                                         saleDate: new Date().toISOString().slice(0, 10),
                                         leadId: lead.id,
-                                        note: payoutNote.trim() || "auto-created at payout",
+                                        note: composedNote || "auto-created at payout",
                                       }),
                                     });
                                   } catch { /* surfaced if it matters via /admin/profit */ }
@@ -3452,7 +3501,7 @@ export default function AdminPage() {
                             </button>
                             <button
                               type="button"
-                              onClick={() => { setPayingId(null); setPayoutMethod(""); setPayoutReference(""); setPayoutNote(""); setPayoutAmount(""); setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; }); }}
+                              onClick={() => { setPayingId(null); setPayoutMethod(""); setPayoutReference(""); setPayoutNote(""); setPayoutAmount(""); setPayoutImei(""); setPayoutImeiOverride(false); setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; }); }}
                               className="px-2 py-1.5 bg-white/5 border border-white/10 rounded text-[11px] text-[#d4d4d4] hover:bg-white/10 transition cursor-pointer"
                             >
                               Cancel

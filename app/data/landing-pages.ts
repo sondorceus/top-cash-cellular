@@ -89,7 +89,7 @@ export const LANDING_PAGES: LandingConfig[] = [
       },
       {
         q: "What do I need to bring or do before selling?",
-        a: "Back up your data, sign out of iCloud and turn off Find My iPhone, and factory-reset if you can. Bring a valid photo ID. You must be 18+ and the legal owner of the device.",
+        a: "Back up your data, sign out of iCloud and turn off Find My iPhone, and factory-reset if you can. You must be 18+ and the legal owner of the device — you'll confirm that when you submit.",
       },
     ],
   },
@@ -131,7 +131,7 @@ export const LANDING_PAGES: LandingConfig[] = [
       },
       {
         q: "What should I do before selling my Galaxy?",
-        a: "Back up your data, remove your Google and Samsung accounts, and factory-reset if you can. Bring a valid photo ID. You must be 18+ and the legal owner.",
+        a: "Back up your data, remove your Google and Samsung accounts, and factory-reset if you can. You must be 18+ and the legal owner — you'll confirm that when you submit.",
       },
     ],
   },
@@ -215,7 +215,7 @@ export const LANDING_PAGES: LandingConfig[] = [
       },
       {
         q: "What should I do before selling?",
-        a: "Back up your data, sign out of iCloud and turn off Find My, and factory-reset if you can. Bring a valid photo ID. You must be 18+ and the legal owner.",
+        a: "Back up your data, sign out of iCloud and turn off Find My, and factory-reset if you can. You must be 18+ and the legal owner — you'll confirm that when you submit.",
       },
     ],
   },

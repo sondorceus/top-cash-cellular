@@ -184,7 +184,15 @@ export async function POST(req: NextRequest) {
     return handleQuoteSave(req, data);
   }
   let { payout } = data;
-  const { name, phone, email, device, model, storage, condition, carrier, carrierLock, accessoriesIncluded, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, promoCode, referralCode } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, carrierLock, accessoriesIncluded, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, promoCode, referralCode, attestation } = data;
+  // Compliance attestation (18+ & legal ownership). The funnel makes the
+  // customer tick a required box affirming both before submit. We record
+  // the disposition + IP + timestamp in the immutable MC lead record as
+  // the audit trail. A missing/false attestation does NOT hard-reject
+  // (avoids breaking adjacent/legacy callers) — instead it flags the lead
+  // for manual review so staff confirm age + ownership and capture photo
+  // ID at handoff per Terms §2.
+  const attested = attestation === true;
   // TCPA defense in depth — client checkbox is `required`, but a
   // bypass (DevTools, malformed client) could submit phone without
   // consent. Reject any phone-bearing lead that didn't get explicit
@@ -698,6 +706,14 @@ export async function POST(req: NextRequest) {
   customerMetaLines.push(`Source-IP: ${ip}`);
   customerMetaLines.push(`Source-UA: ${ua}`);
   if (visitorId) customerMetaLines.push(`Visitor-ID: ${visitorId}`);
+  // Compliance audit line — pairs the attestation disposition with the IP
+  // already captured above. `[ATTEST: ...]` is a stable marker the admin
+  // lead view can surface as a badge.
+  customerMetaLines.push(
+    attested
+      ? `[ATTEST: yes] Customer affirmed 18+ & legal ownership at submit (IP ${ip})`
+      : `[ATTEST: no] No 18+/ownership attestation at submit — confirm age + legal ownership with the seller before paying (Terms §2)`
+  );
 
   const handoffLines: string[] = [];
   if (handoff && typeof handoff === "object") {
@@ -809,8 +825,11 @@ export async function POST(req: NextRequest) {
   const highValueReview = isMulti
     ? deviceList.some((d) => needsManualReview(typeof d.model === "string" ? d.model : "", Number(d.quote) || 0))
     : needsManualReview(model as string, quoteNum);
-  const reviewRequired = highValueReview || quoteTampered;
+  const reviewRequired = highValueReview || quoteTampered || !attested;
   const reviewLines: string[] = [];
+  if (!attested) {
+    reviewLines.push("⚠️ NO 18+/OWNERSHIP ATTESTATION — confirm the seller is 18+ and the legal owner of the device before paying (Terms §2).");
+  }
   if (quoteTampered) {
     reviewLines.push("🚨 QUOTE TAMPER DETECTED — client posted a quote above the server-side margin ceiling.");
     reviewLines.push(`Submitted: $${submittedQuoteNum} · Server cap: $${serverQuoteCap} · Clamped to: $${baseQuoteNum} (before coupon/referral).`);
