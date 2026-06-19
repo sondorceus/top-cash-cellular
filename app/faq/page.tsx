@@ -66,7 +66,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "What happens to my data?",
-    a: "Every device gets a full factory wipe before resale or recycling. We're certified to handle data sanitization to NIST 800-88 standards. You can also wipe the device yourself before shipping — recommended.",
+    a: "Every device gets a full factory wipe before resale or recycling, following NIST 800-88 data-sanitization guidelines. You can also wipe the device yourself before shipping — recommended.",
   },
   {
     q: "Do you buy broken or cracked devices?",

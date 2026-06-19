@@ -38,6 +38,10 @@ export type LandingConfig = {
   gridLimit: number;
   gridHeading: string;
   gridSub: string;
+  // Overrides the "How it works" step-1 line. Default assumes a phone
+  // (model/storage/carrier/condition); set this for device classes that
+  // don't have a carrier (MacBook, iPad).
+  quotePickLine?: string;
 
   // Honest eligibility / how-it-works callout (locked, financed).
   notice?: LandingNotice;
@@ -141,19 +145,20 @@ export const LANDING_PAGES: LandingConfig[] = [
     metaDescription:
       "Sell your MacBook Pro or MacBook Air for cash in Austin, TX. Instant quote, same-day payout, local meetup or free insured shipping. Any year, any condition.",
     h1: "Sell Your MacBook for Cash in Austin",
-    heroLine: "Instant quote. Same-day cash. Local meetup or free insured shipping.",
+    heroLine: "Instant quote. Same-day cash. Local meetup or free prepaid shipping.",
     intro:
-      "MacBook Pro or MacBook Air, M-series or Intel — get a real cash offer based on your exact chip, RAM, and storage, then meet up in Austin or ship it free and insured. No lowballs, no trade-in credit games.",
+      "MacBook Pro or MacBook Air, M-series or Intel — get a real cash offer based on your exact chip, RAM, and storage, then meet up in Austin or ship it free. Our prepaid FedEx label includes $100 base coverage; for a high-value Mac, add declared value at FedEx or choose a local Austin meetup. No lowballs, no trade-in credit games.",
     showHeroPrice: true,
     pickCategory: "MacBook",
     gridLimit: 8,
     gridHeading: "MacBook payouts",
     gridSub: "Tap your model for an exact quote. Chip, RAM, storage, and condition set the final number.",
+    quotePickLine: "Pick your model, chip, RAM, storage, and condition for an instant cash number.",
     whyHeading: "Why sell your MacBook to Top Cash Cellular?",
     whyBullets: [
       "Priced on your real specs — chip, RAM, and storage — not a flat guess.",
       "Real cash, not Apple Store credit toward your next purchase.",
-      "Free insured shipping, or a same-day local Austin meetup.",
+      "Free prepaid shipping ($100 base coverage; add declared value for a high-value Mac), or a same-day local Austin meetup.",
       "We securely wipe every machine; ask for a data-destruction note if you need one.",
       "Cash, Cash App, Zelle, or Bitcoin.",
     ],
@@ -173,7 +178,7 @@ export const LANDING_PAGES: LandingConfig[] = [
       },
       {
         q: "How does shipping work for a laptop?",
-        a: "We send a free prepaid, insured label. Pack it well, drop it off, and we pay the same day we inspect it. Prefer in person? Meet locally in Austin for same-day cash.",
+        a: "We send a free prepaid FedEx label that includes $100 of base coverage. For a high-value Mac, add declared value at FedEx for full protection, or choose an Austin local meetup instead. Pack it well, drop it off, and we pay the same day we inspect it.",
       },
     ],
   },
@@ -191,6 +196,7 @@ export const LANDING_PAGES: LandingConfig[] = [
     gridLimit: 8,
     gridHeading: "iPad payouts",
     gridSub: "Tap your model for an exact quote. Storage, connectivity, and condition set the final number.",
+    quotePickLine: "Pick your model, storage, connectivity, and condition for an instant cash number.",
     whyHeading: "Why sell your iPad to Top Cash Cellular?",
     whyBullets: [
       "Real cash — not store credit or trade-in vouchers.",

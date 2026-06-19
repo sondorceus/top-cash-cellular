@@ -151,7 +151,7 @@ export default function SellLandingPage({ config }: { config: LandingConfig }) {
           <h2 className="text-lg font-bold mb-4">How it works</h2>
           <div className="space-y-4">
             {[
-              { num: "1", title: "Get your quote", desc: "Pick your model, storage, carrier, and condition for an instant cash number." },
+              { num: "1", title: "Get your quote", desc: config.quotePickLine || "Pick your model, storage, carrier, and condition for an instant cash number." },
               { num: "2", title: "Meet up or ship", desc: "Local Austin meetup or a free prepaid shipping label — your choice." },
               { num: "3", title: "Get paid", desc: "Cash, Cash App, Zelle, or Bitcoin. Same-day payout on local meetups." },
             ].map((s) => (

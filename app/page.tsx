@@ -8075,7 +8075,7 @@ export default function Home() {
             </p>
             <p className="text-[#e6e6e6] text-sm mb-6 font-medium hero-fade-up hero-d-2 flex items-center gap-2">
               <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-              <span>Every device gets a <span className="font-bold text-[#00c853] lg:font-medium">certified data wipe</span> — at local meetups, you watch it happen.</span>
+              <span>Every device gets a <span className="font-bold text-[#00c853] lg:font-medium">thorough data wipe</span> — at local meetups, you watch it happen.</span>
             </p>
 
             {/* DUAL-PATH ENTRY — local vs. shipping. Each button locks in the
@@ -8533,7 +8533,7 @@ export default function Home() {
               { q: "Do you ship for free?", a: "Yes — any offer over $50 gets a free prepaid FedEx label, emailed at checkout. Local to Austin? Free pickup instead." },
               { q: "What if my device is worth less than the quote?", a: "We send a revised offer with photos. Don't like it? We ship the device back free — no pressure, no surprises." },
               { q: "Are you really in Austin?", a: "Yes — Austin-based, real humans. Meet us locally and get paid cash on the spot, or ship free from anywhere in the US." },
-              { q: "Is my data safe?", a: "We run a certified factory wipe on every device. We still recommend signing out of iCloud/Google and removing screen locks first." },
+              { q: "Is my data safe?", a: "We run a thorough factory wipe on every device, following NIST 800-88 data-sanitization guidelines. We still recommend signing out of iCloud/Google and removing screen locks first." },
             ].map((f, i) => (
               <details key={i} className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-white/20 transition reveal" data-stagger={Math.min(i + 1, 8)}>
                 <summary className="cursor-pointer px-5 py-4 flex items-center justify-between font-semibold list-none [&::-webkit-details-marker]:hidden">
@@ -13907,7 +13907,7 @@ export default function Home() {
                   { icon: <><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></>, label: "Austin-Based Business", detail: "A real local shop in Austin, Texas — not an anonymous mail-in middleman." },
                   { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />, label: "Real People, Local Meetups", detail: "Meet a real person at a safe public spot in Austin — we inspect your device together." },
                   { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />, label: "Paid On the Spot Locally", detail: "Local trades are paid the moment we meet, right after a quick ~15-minute inspection." },
-                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />, label: "Secure Transactions", detail: "Every device gets a certified data wipe, and payouts run through methods you already trust." },
+                  { icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />, label: "Secure Transactions", detail: "Every device gets a thorough data wipe, and payouts run through methods you already trust." },
                 ].map((pill, i) => {
                   const open = openPill === i;
                   return (
@@ -14137,7 +14137,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="text-white font-bold mb-1">6. Data on your device</p>
-                    <p>You are responsible for backing up and removing your personal data before selling. We recommend a factory reset and sign-out from Find My iPhone / Google Account / Samsung Account. We perform a NIST 800-88 compliant wipe before resale or recycling, but we&apos;re not liable for any data left on your device prior to handoff.</p>
+                    <p>You are responsible for backing up and removing your personal data before selling. We recommend a factory reset and sign-out from Find My iPhone / Google Account / Samsung Account. We perform a NIST 800-88–aligned wipe before resale or recycling, but we&apos;re not liable for any data left on your device prior to handoff.</p>
                   </div>
                   <div>
                     <p className="text-white font-bold mb-1">7. Finality</p>
@@ -14257,7 +14257,7 @@ export default function Home() {
                 <h1 className="text-3xl font-bold mb-2">IT Asset Disposition</h1>
                 <p className="text-[#b8b8b8] text-sm mb-6">Clearing out a fleet? We buy in bulk and document every device.</p>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 space-y-3 text-sm text-[#e6e6e6] leading-relaxed">
-                  <p>Decommissioning end-of-lease laptops, refreshing your sales team's iPhones, or shutting down a remote office? We handle the whole chain: pickup, secure wipe (NIST 800-88 certified), serial-by-serial reporting, and a single bulk payout.</p>
+                  <p>Decommissioning end-of-lease laptops, refreshing your sales team's iPhones, or shutting down a remote office? We handle the whole chain: pickup, secure wipe (NIST 800-88–aligned), serial-by-serial reporting, and a single bulk payout.</p>
                   <p><strong className="text-white">What we buy in bulk:</strong> iPhones, iPads, MacBooks, Android phones, Galaxy tablets, Windows laptops, Pixel phones, smartwatches. Working, broken, anywhere in the lifecycle.</p>
                   <p><strong className="text-white">What you get:</strong> a fixed offer per asset type before pickup, a chain-of-custody receipt with every serial, a signed certificate of data destruction, and payment within 5 business days of inspection.</p>
                 </div>
