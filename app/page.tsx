@@ -8239,18 +8239,26 @@ export default function Home() {
               <div className="overflow-hidden tcc-marquee-mask">
                 <div className="flex gap-3 w-max animate-[marquee_36s_linear_infinite] hover:[animation-play-state:paused]">
                   {(() => {
+                    // Prices are computed from the SAME getMaxPrice() ceiling
+                    // the picker cards use (sourced from PRICE_TABLE), so the
+                    // ticker can never drift from the real "up to $X" quote —
+                    // the old hardcoded numbers ($850 / $1200) read as bait-
+                    // and-switch next to the card. id must match a PRICE_TABLE
+                    // key; entries that don't resolve are dropped.
                     const devices = [
-                      { name: "iPhone 17 Pro Max", price: 850, brand: "iphone" as const },
-                      { name: "iPhone 16 Pro Max", price: 720, brand: "iphone" as const },
-                      { name: "Samsung S24 Ultra", price: 500, brand: "android" as const },
-                      { name: "MacBook Pro 16\" M4", price: 1200, brand: "macbook" as const },
-                      { name: "iPhone 15 Pro Max", price: 470, brand: "iphone" as const },
-                      { name: "Galaxy Z Fold 5", price: 500, brand: "android" as const },
-                      { name: "MacBook Air M3", price: 600, brand: "macbook" as const },
-                      { name: "PlayStation 5", price: 300, brand: "sony" as const },
-                      { name: "iPhone 14 Pro Max", price: 250, brand: "iphone" as const },
-                      { name: "iPad Pro M4 13\"", price: 700, brand: "ipad" as const },
-                    ];
+                      { name: "iPhone 17 Pro Max", id: "ip17pm", brand: "iphone" as const },
+                      { name: "iPhone 16 Pro Max", id: "ip16pm", brand: "iphone" as const },
+                      { name: "Galaxy S24 Ultra", id: "gs24u", brand: "android" as const },
+                      { name: "MacBook Pro 16\" M4", id: "mbp16m4", brand: "macbook" as const },
+                      { name: "iPhone 15 Pro Max", id: "ip15pm", brand: "iphone" as const },
+                      { name: "Galaxy Z Fold 5", id: "gzfold5", brand: "android" as const },
+                      { name: "MacBook Air 15\" M3", id: "mba15m3", brand: "macbook" as const },
+                      { name: "PlayStation 5", id: "ps5", brand: "sony" as const },
+                      { name: "iPhone 14 Pro Max", id: "ip14pm", brand: "iphone" as const },
+                      { name: "iPad Pro 13\" M4", id: "ipadpro13m4", brand: "ipad" as const },
+                    ]
+                      .map((d) => ({ ...d, price: getMaxPrice({ id: d.id }, d.brand) }))
+                      .filter((d) => d.price > 0);
                     // Single set duplicated only for the marquee loop infinite-scroll
                     return [...devices, ...devices].map((d, i) => (
                       <button key={i} onClick={() => { setDeviceType(d.brand); setStep("model"); pushHistory("model"); }} className="flex-shrink-0 w-[280px] flex items-center justify-between gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3 hover:bg-white/10 hover:border-[#00c853]/40 transition cursor-pointer text-left tap-press">
