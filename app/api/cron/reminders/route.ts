@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
+import { fetchCommsPaged } from "../../../lib/mc-comms";
 
 // Hourly reminder cron — Skywalker 2026-05-18 "remind 24hr after they
 // get quote to meet/respond/ship, make custom depending on shipping
@@ -210,17 +211,24 @@ export async function GET(req: NextRequest) {
   // Pull a generous slice of MC comms — needs to cover both the lead
   // submission timestamps AND any [REMINDER-SENT]/[REVIEW-USED] markers
   // that would suppress a re-send.
+  // Page a recent window rather than a single limit=1000 slice. Reminders
+  // only act on leads aged 1–7 days (REMIND_UNTIL_MS), and the dedup markers
+  // ([REMINDER-SENT]/[REVIEW-USED]/[STATUS]) that suppress a re-send are
+  // equally recent — but on a busy feed the newest 1000 messages can span
+  // less than 7 days, so a still-eligible lead (or its dedup marker) could
+  // fall outside the slice → a duplicate or missed reminder. 14 days of
+  // history (well inside the live feed, no archive needed) covers it.
   let messages: { id?: string; body?: string; timestamp: string }[] = [];
   try {
-    const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
-      headers: { "x-api-key": MC_KEY },
-      cache: "no-store",
+    messages = await fetchCommsPaged({
+      apiKey: MC_KEY,
+      includeArchive: false,
+      sinceMs: 14 * 24 * 60 * 60 * 1000,
+      maxPages: 8,
     });
-    if (!r.ok) {
-      return NextResponse.json({ error: "MC unavailable", status: r.status }, { status: 502 });
+    if (messages.length === 0) {
+      return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
     }
-    const data = await r.json();
-    messages = Array.isArray(data.messages) ? data.messages : [];
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : "fetch failed" }, { status: 502 });
   }

@@ -5,6 +5,7 @@ import path from "path";
 import { lookupAtlasResell, type AtlasReference } from "../../../lib/atlas-lookup";
 import { ebayGrossToNet, atlasResellToNet } from "../../../lib/comp-economics";
 import { parseDollarAmount } from "../../../lib/lead-money";
+import { fetchCommsPaged } from "../../../lib/mc-comms";
 import skuLabelsJson from "../../../data/sku-labels.json";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -429,21 +430,22 @@ export async function GET(req: NextRequest) {
   // Also pull customer reviews so admin row can render the attached
   // review inline (Skywalker 2026-05-18 "I should be able to see what
   // they review on the back end").
-  const [r, reviewsRes] = await Promise.all([
-    fetch(`${MC_API}/api/comms?limit=5000`, {
-      headers: { "x-api-key": MC_KEY },
-      cache: "no-store",
-    }),
+  // Page the full comms history (incl. the trimmed-overflow archive) instead
+  // of a single capped limit=5000 slice — otherwise, once the live feed is
+  // full, the OLDEST leads silently fall off every admin view. fetchCommsPaged
+  // walks backward via the `before` cursor, deduped by id.
+  const [messages, reviewsRes] = await Promise.all([
+    fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, maxPages: 12 }),
     fetch(`${MC_API}/api/reviews?limit=500`, {
       headers: { "x-api-key": MC_KEY },
       cache: "no-store",
     }),
   ]);
-  if (!r.ok) {
+  // The feed always carries lead markers, so an empty result means MC was
+  // unreachable (the helper returns [] on fetch failure) rather than "no leads".
+  if (messages.length === 0) {
     return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
   }
-  const data = await r.json();
-  const messages: { id: string; body?: string; timestamp: string; fromName?: string; from?: string }[] = data.messages || [];
 
   // Index reviews by leadId. Reviews without a leadId (pre-token,
   // unbackfilled) stay un-attached — they still show on /reviews
