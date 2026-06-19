@@ -740,7 +740,7 @@ export async function POST(req: NextRequest) {
       const zip    = cleanField(h.address.zip, 10);
       handoffLines.push(`Address: ${street}${unit ? `, ${unit}` : ""}, ${city}, ${state} ${zip}`);
       handoffLines.push("Packaging: Seller sources own box (we don't ship kits).");
-      handoffLines.push("Action: FedEx label auto-mints at submit (sandbox until prod cert lands). Confirm receipt + inspect on arrival.");
+      handoffLines.push("Action: FedEx label auto-mints at submit. Confirm receipt + inspect on arrival.");
     };
     const renderLocalBlock = (header: string) => {
       handoffLines.push(header);
