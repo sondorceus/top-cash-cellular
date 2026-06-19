@@ -62,9 +62,67 @@ def extract_quiz_blob(html: str):
     return best[0] if best else None
 
 
+def _cur(a):
+    """An answer's current payout value. IWM uses `value_current`; fall back
+    to `value` when the dated field is absent."""
+    v = a.get("value_current")
+    return v if isinstance(v, (int, float)) else (a.get("value") or 0)
+
+
+def _model_name_from_url(url: str) -> str:
+    slug = url.rstrip("/").split("/")[-1]
+    # "iphone-16-pro" -> "Iphone 16 Pro"; good enough as a programmatic key.
+    return slug.replace("-", " ").strip().title() or slug
+
+
+def grid_new_format(quiz, url: str):
+    """New IWM layout (changed ~2026): one PAGE == one model. quiz[0] is a
+    'Conditions' picker whose answers carry the BASE payout per grade (at the
+    cheapest storage, unlocked) plus a `go_to` pointing at a branch; the
+    branches (quiz[1:]) carry the per-storage DELTAS plus carrier / unlock /
+    operational / accessory adjustments.
+
+    Clean unlocked-working comp = base + storage_delta (carrier/unlock/
+    operational all 0 for an unlocked, fully-operational device). Returns
+    {model: {storage_label: {condition_label: iwm_price}}} to match the
+    legacy shape."""
+    cond_q = next((q for q in quiz[0].get("questions", [])
+                   if "condition" in (q.get("text") or "").lower()), None)
+    if not cond_q:
+        return None
+    # Index branches by their leading number ("3. Excellent/..." -> "3"),
+    # which is the first token of an answer's go_to ("3,1" -> "3").
+    branches = {}
+    for e in quiz[1:]:
+        mm = re.match(r"\s*(\d+)\.", e.get("name", ""))
+        if mm:
+            branches[mm.group(1)] = e
+
+    def storage_deltas(branch):
+        for q in branch.get("questions", []):
+            t = (q.get("text") or "").lower()
+            if "storage" in t and "secondary" not in t:
+                return [(a["text"], _cur(a)) for a in q.get("answers", [])]
+        return [("-", 0)]
+
+    model = _model_name_from_url(url)
+    grid = {}
+    for a in cond_q.get("answers", []):
+        base = _cur(a)
+        branch = branches.get(str(a.get("go_to", "")).split(",")[0].strip())
+        if not branch:
+            continue
+        for s_lbl, s_delta in storage_deltas(branch):
+            grid.setdefault(s_lbl, {})[a["text"]] = base + s_delta
+    return {model: grid} if grid else None
+
+
 def grid_per_model(quiz):
-    """Return {model_label: {storage_label: {condition_label: iwm_price}}}.
-    First entry in the quiz is the model picker, rest are per-model branches.
+    """LEGACY IWM layout: quiz[0] is a model picker, quiz[1:] are per-model
+    branches each carrying their own storage + condition questions. Kept as a
+    fallback for any page still serving the old shape.
+
+    Return {model_label: {storage_label: {condition_label: iwm_price}}}.
     SUMS the MAX value_current from every other question (processor, RAM,
     GPU, secondary drive, accessories...) so the reported price reflects
     a TOP-configured device at the chosen storage + condition."""
@@ -114,7 +172,12 @@ def main():
     if not quiz:
         print(f"No quiz blob found on {url}")
         sys.exit(2)
-    grid = grid_per_model(quiz)
+    # Detect layout: new format leads with a 'Conditions' picker; legacy leads
+    # with a 'Models' picker. Try new first, fall back to legacy.
+    q0_text = ((quiz[0].get("questions") or [{}])[0].get("text") or "").lower()
+    grid = grid_new_format(quiz, url) if "condition" in q0_text else None
+    if not grid:
+        grid = grid_per_model(quiz)
     if want_json:
         print(json.dumps(grid, indent=2))
         return
