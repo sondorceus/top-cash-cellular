@@ -195,6 +195,33 @@ function priorityBucket(l: Lead): PriorityBucket | null {
   return "money";
 }
 
+// The single most-important next step for a lead — drives the one bold "Next:"
+// line + primary button on the v2 card. kind: how the primary button acts —
+// "sms" texts the seller, "received" flips status, "detail" opens the full
+// modal (used for anything that needs confirmation: quoting, risk, label,
+// payout — keeping money/label actions deliberate, per the label-protection rule).
+type NextAction = { label: string; cta: string; kind: "sms" | "received" | "detail"; color: string };
+function nextAction(l: Lead): NextAction {
+  const b = priorityBucket(l);
+  const s = (l.status || "quote_requested").toLowerCase();
+  const green = "#00c853", blue = "#38bdf8", amber = "#f59e0b", violet = "#a78bfa", grey = "#9aa0a6";
+  if (b === "risk") return { label: "Verify IMEI / balance before quoting", cta: "Review risk", kind: "detail", color: amber };
+  if (b === "quote") return { label: "Manual quote needed — price it", cta: "Open & quote", kind: "detail", color: blue };
+  if (b === "shipping") {
+    if (s === "shipped") return { label: "In transit — mark received on arrival", cta: "Mark received", kind: "received", color: violet };
+    if (s === "received") return { label: "Inspect, then send the payout", cta: "Inspect & pay", kind: "detail", color: violet };
+    if (s === "tested") return { label: "Tested — send the payout", cta: "Pay out", kind: "detail", color: violet };
+    return { label: "Label created — nudge seller to ship", cta: "Text seller", kind: "sms", color: violet };
+  }
+  if (b === "stale") return { label: "Old lead — follow up or trash", cta: "Text seller", kind: "sms", color: grey };
+  // money bucket
+  if (l.handoffMethod === "ship") {
+    if (l.fedexTracking || l.fedexLabelUrl) return { label: "Label sent — nudge seller to ship", cta: "Text seller", kind: "sms", color: green };
+    return { label: "Seller ready — generate the shipping label", cta: "Open & label", kind: "detail", color: blue };
+  }
+  return { label: "Text seller to schedule the meetup", cta: "Text seller", kind: "sms", color: green };
+}
+
 function timeAgo(iso?: string): string {
   if (!iso) return "";
   const ms = Date.now() - new Date(iso).getTime();
@@ -976,6 +1003,15 @@ export default function AdminPage() {
   // Command-center value bucket filter (null = show all). Set by the priority
   // bar; intersects with the status chips on the list below.
   const [bucketFilter, setBucketFilter] = useState<PriorityBucket | null>(null);
+  // Compact "command center" lead card (5 zones + one next-action). Opt-in so
+  // the proven dense row stays the default until the new card is dialed in.
+  // Toggle persists in localStorage; ?preview=1 / ?preview=0 also flips it.
+  const [previewCard, setPreviewCard] = useState<boolean>(false);
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("preview");
+    if (q === "1" || q === "0") { setPreviewCard(q === "1"); localStorage.setItem("tcc-admin-preview", q); return; }
+    setPreviewCard(localStorage.getItem("tcc-admin-preview") === "1");
+  }, []);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Google sign-in info (rendered in the header when present). proxy.ts
@@ -1683,6 +1719,14 @@ export default function AdminPage() {
             <button onClick={fetchLeads} disabled={loading} className="px-2.5 sm:px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-xs sm:text-sm hover:bg-white/10 transition disabled:opacity-50 cursor-pointer">
               {loading ? "…" : <>↻<span className="hidden sm:inline ml-1">Refresh</span></>}
             </button>
+            {/* New command-center card vs the classic dense row. Opt-in. */}
+            <button
+              onClick={() => { setPreviewCard((v) => { const nv = !v; localStorage.setItem("tcc-admin-preview", nv ? "1" : "0"); return nv; }); }}
+              title={previewCard ? "Showing the new command-center card — click for the classic row" : "Try the new command-center card layout"}
+              className={`px-2.5 sm:px-3 py-2 border rounded-lg text-xs font-semibold transition cursor-pointer ${previewCard ? "bg-[#00c853]/15 border-[#00c853]/40 text-[#00c853]" : "bg-white/5 border-white/10 text-[#dcdcdc] hover:bg-white/10"}`}
+            >
+              ✦<span className="hidden sm:inline ml-1">{previewCard ? "New view" : "Classic"}</span>
+            </button>
             {/* Menu ▾ — all secondary nav + tools live here so the header
                 stays calm. Pages / Tools / Account, click-away to close. */}
             <div className="relative">
@@ -2028,6 +2072,75 @@ export default function AdminPage() {
               }).map((lead) => {
                 const current = pendingStatus[lead.id] ?? lead.status;
                 const meta = statusMeta(current);
+                // ── Command-center card (opt-in preview) ──────────────────
+                // Compact 5-zone summary + one clear next action. The dense
+                // classic row (below) is the default; the rich per-lead
+                // controls all still live in the detail modal ("More ▾").
+                if (previewCard) {
+                  const na = nextAction(lead);
+                  const b = priorityBucket(lead);
+                  const ACC: Record<string, string> = { money: "#00c853", quote: "#38bdf8", risk: "#f59e0b", shipping: "#a78bfa", stale: "#9aa0a6" };
+                  const accent = b ? ACC[b] : "rgba(255,255,255,.12)";
+                  const hrs = lead.staleHours ?? 0;
+                  const ageLbl = hrs < 24 ? `${Math.max(1, Math.round(hrs))}h` : `${Math.round(hrs / 24)}d`;
+                  const ageCls = hrs < 72 ? "bg-[#00c853]/15 text-[#7be8a8]" : hrs >= 168 ? "bg-amber-500/15 text-amber-200" : "bg-white/10 text-[#aab0c2]";
+                  const offer = lead.quote || (lead.totalPayout != null ? `$${lead.totalPayout}` : "—");
+                  const net = lead.grossMargin;
+                  const phone = (lead.phone || "").replace(/[^0-9+]/g, "");
+                  const risky = (lead.imeiWarnings?.length || 0) > 0 || lead.paidOff === false || (lead.duplicateCount || 0) > 0;
+                  const flagLoss = lead.marginFlag === "loss" || lead.marginFlag === "negative";
+                  const CTA_INK = "#0a0f1a";
+                  return (
+                    <li
+                      key={lead.id}
+                      data-lead-id={lead.id}
+                      style={{ borderLeft: `3px solid ${accent}` }}
+                      className={`grid grid-cols-1 md:grid-cols-[1.4fr_1.5fr_1.1fr_1.9fr] hover:bg-white/[0.02] transition ${selectedIds.has(lead.id) ? "bg-[#00c853]/5" : ""} ${recentlyChanged[lead.id] ? "ring-1 ring-[#00c853]/40" : ""}`}
+                    >
+                      {/* 1 · customer + urgency */}
+                      <div className="px-4 py-3.5 md:border-r border-white/[0.06] flex flex-col justify-center gap-1.5 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <button onClick={() => setDetailLead(lead)} className="font-semibold text-sm text-left hover:text-[#00c853] truncate cursor-pointer">{lead.name || "—"}</button>
+                          <span className={`text-[9.5px] font-bold uppercase px-1.5 py-0.5 rounded ${ageCls}`}>{ageLbl}</span>
+                          {(lead.priorLeads || 0) > 0 && <span className="text-[9.5px] font-bold uppercase px-1.5 py-0.5 rounded bg-[#38bdf8]/15 text-[#9fd8fb]">Returning</span>}
+                          {(lead.duplicateCount || 0) > 0 && <span className="text-[9.5px] font-bold uppercase px-1.5 py-0.5 rounded bg-[#ff5566]/[0.16] text-[#ff96a3]">Dup ×{lead.duplicateCount}</span>}
+                        </div>
+                        <div className="text-xs text-[#aab0c2] truncate">{lead.phone ? `📱 ${lead.phone}` : lead.email ? `✉️ ${lead.email}` : "no contact"}{lead.bestContact ? ` · ${lead.bestContact}` : ""}</div>
+                      </div>
+                      {/* 2 · device + risk */}
+                      <div className="px-4 py-3.5 md:border-r border-white/[0.06] flex flex-col justify-center gap-1 min-w-0">
+                        <div className="font-semibold text-sm truncate">{lead.deviceCount && lead.deviceCount > 1 ? `${lead.deviceCount} devices` : (lead.model || lead.device || "—")}</div>
+                        <div className="text-xs text-[#aab0c2] truncate">{[lead.storage, lead.condition, lead.carrier].filter(Boolean).join(" · ") || "—"}</div>
+                        {risky
+                          ? <div className="text-[11px] font-bold text-[#ff96a3] truncate">⚠️ {lead.paidOff === false ? "Balance owed" : (lead.imeiWarnings?.length ? "IMEI flagged" : "Duplicate")}</div>
+                          : <div className="text-[11px] text-[#7be8a8] font-semibold">✓ Clean</div>}
+                      </div>
+                      {/* 3 · money */}
+                      <div className="px-4 py-3.5 md:border-r border-white/[0.06] flex flex-col justify-center gap-1">
+                        <div className="text-[20px] font-extrabold leading-none">{offer}</div>
+                        <div className="text-[11px] text-[#aab0c2] leading-tight">{lead.resellEstimate ? `resale ~$${lead.resellEstimate}` : ""}{net != null ? `${lead.resellEstimate ? " · " : ""}net ${net >= 0 ? "+" : ""}$${net}` : ""}</div>
+                        {lead.marginFlag && <span className={`text-[9.5px] font-extrabold uppercase px-1.5 py-0.5 rounded inline-block w-fit ${flagLoss ? "bg-[#ff5566]/[0.16] text-[#ff96a3]" : /thin/i.test(lead.marginFlag) ? "bg-amber-500/15 text-amber-200" : "bg-[#00c853]/15 text-[#7be8a8]"}`}>{lead.marginFlag}{lead.marginPercent != null ? ` ${lead.marginPercent}%` : ""}</span>}
+                      </div>
+                      {/* 4 · next step + 5 · primary action */}
+                      <div className="px-4 py-3.5 flex flex-col justify-center gap-2.5">
+                        <div>
+                          <div className="text-[10px] uppercase tracking-[0.1em] text-[#7f8699] font-bold">Next</div>
+                          <div className="text-[13px] font-bold leading-tight">{na.label}</div>
+                        </div>
+                        <div className="flex gap-2 items-center">
+                          {na.kind === "sms" && phone ? (
+                            <a href={`sms:${phone}`} className="flex-1 text-center rounded-lg py-2 px-3 font-extrabold text-[12.5px] cursor-pointer" style={{ background: na.color, color: CTA_INK }}>{na.cta}</a>
+                          ) : na.kind === "received" ? (
+                            <button onClick={() => saveStatus(lead, "received")} className="flex-1 rounded-lg py-2 px-3 font-extrabold text-[12.5px] cursor-pointer" style={{ background: na.color, color: CTA_INK }}>{na.cta}</button>
+                          ) : (
+                            <button onClick={() => setDetailLead(lead)} className="flex-1 rounded-lg py-2 px-3 font-extrabold text-[12.5px] cursor-pointer" style={{ background: na.color, color: CTA_INK }}>{na.cta}</button>
+                          )}
+                          <button onClick={() => setDetailLead(lead)} className="rounded-lg py-2 px-3 font-bold text-[12.5px] bg-white/[0.06] border border-white/10 text-[#aab0c2] hover:bg-white/10 cursor-pointer">More ▾</button>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                }
                 return (
                   <li
                     key={lead.id}
