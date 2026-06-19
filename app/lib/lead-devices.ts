@@ -37,7 +37,13 @@ export const LOCKED_STATUSES = new Set(["shipped", "received", "tested", "paid",
 //   "  1. Model · Storage · Condition · $Quote[ total][ (×N)][ · 🤝 LOCAL]"
 // Tolerates the optional " total" suffix, the (×N) qty tag, and any
 // trailing " · …" segment (the 🤝 LOCAL / 📦 SHIP handoff tag).
-export const DEVICE_LINE_RE = /^\s{2,4}(\d+)\.\s+([^·\n]+?)(?:\s·\s+([^·\n]+?))?(?:\s·\s+([^·\n]+?))?(?:\s·\s+\$([0-9,]+)(?:\s+total)?)?(?:\s+\(×(\d+)\))?(?:\s·\s+.*)?$/;
+//
+// The Storage/Condition groups exclude `$` so the price segment can't be
+// swallowed into them on a sparse line (e.g. "  1. iPhone 14 · $500" with
+// no storage/condition) — that previously left the $Quote group undefined
+// and the device parsed to $0, undercounting the rebuilt order total. The
+// money group also accepts cents (e.g. $1,250.50).
+export const DEVICE_LINE_RE = /^\s{2,4}(\d+)\.\s+([^·\n]+?)(?:\s·\s+([^·\n$]+?))?(?:\s·\s+([^·\n$]+?))?(?:\s·\s+\$([0-9,]+(?:\.\d+)?)(?:\s+total)?)?(?:\s+\(×(\d+)\))?(?:\s·\s+.*)?$/;
 
 // "Field: value" line lookup (case-insensitive).
 export function field(body: string, key: string): string | undefined {

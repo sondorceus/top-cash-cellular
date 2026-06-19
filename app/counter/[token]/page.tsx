@@ -59,7 +59,11 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
   }, [params]);
 
   const respond = useCallback(async (response: "accept" | "decline") => {
-    if (!token || responseState !== "idle") return;
+    // Allow a retry after a failed submit: block only while a request is in
+    // flight or once a terminal response has been recorded. Previously this
+    // returned on any non-"idle" state, so a single transient error left
+    // both Accept and Decline permanently dead with no way to recover.
+    if (!token || responseState === "submitting" || responseState === "accepted" || responseState === "declined") return;
     setResponseState("submitting");
     try {
       const r = await fetch("/api/counter-offer/respond", {

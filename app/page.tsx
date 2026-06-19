@@ -6130,6 +6130,12 @@ export default function Home() {
     setPaidOff(null);
     setBestContact(null); setCustomerNote(""); setSmsOptIn(false);
     setCouponInput(""); setCouponState("idle"); setCouponValid(null); setCouponMessage("");
+    // Also clear the % promo (feeds couponMultiplier → baseQuote) and the
+    // condition flags. Without this, "sell another device" carried the prior
+    // device's promo + accessories/broken-glass state onto the next quote,
+    // silently inflating or distorting it.
+    setCouponCode(""); setCouponPercent(0); setCouponLabel("");
+    setAccessoriesIncluded(false); setBrokenFunctional(null); setBrokenGlass(null);
   };
 
   // Brand → flat variant lists (the series intermediate step was removed
@@ -11245,7 +11251,7 @@ export default function Home() {
                   {showRow && weBeatThem && (
                     <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${savings} more with us</p>
                   )}
-                  <a href={`mailto:offers@topcashcellular.com?subject=Price%20Match%20Request&body=Model%3A%20${encodeURIComponent(model?.label || '')}%0AStorage%3A%20${encodeURIComponent(storage?.label || '')}%0AStorage%3A%20${encodeURIComponent(condition?.label || '')}%0ACompetitor%20URL%3A%20%0ACompetitor%20offer%3A%20%24`} className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#00c853]/10 border border-[#00c853]/30 hover:bg-[#00c853]/15 text-[#00c853] text-xs font-bold transition"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Got a higher offer? We&apos;ll beat it by $25</a>
+                  <a href={`mailto:offers@topcashcellular.com?subject=Price%20Match%20Request&body=Model%3A%20${encodeURIComponent(model?.label || '')}%0AStorage%3A%20${encodeURIComponent(storage?.label || '')}%0ACondition%3A%20${encodeURIComponent(condition?.label || '')}%0ACompetitor%20URL%3A%20%0ACompetitor%20offer%3A%20%24`} className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#00c853]/10 border border-[#00c853]/30 hover:bg-[#00c853]/15 text-[#00c853] text-xs font-bold transition"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Got a higher offer? We&apos;ll beat it by $25</a>
                 </div>
               );
             })()}

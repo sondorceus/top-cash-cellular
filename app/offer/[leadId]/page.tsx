@@ -421,9 +421,13 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         return;
       }
       const saved: EditItem[] = Array.isArray(d.devices) ? d.devices : next;
+      // `it.quote` is already the per-line total (price × qty) — same
+      // convention the funnel/lead/items routes use — so DON'T multiply by
+      // quantity again (that double-counted multi-unit lines). This fallback
+      // must match the always-rendered total below (sum of it.quote).
       const total = typeof d.total === "number"
         ? d.total
-        : saved.reduce((s, it) => s + it.quote * it.quantity, 0);
+        : saved.reduce((s, it) => s + it.quote, 0);
       setItems(saved);
       setOffer((prev) => prev ? { ...prev, devices: saved, totalPayout: total } : prev);
       setEditIdx(null);
