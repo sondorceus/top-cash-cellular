@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../../lib/admin-auth";
 import { put } from "@vercel/blob";
 import { createReturnLabel, deviceKindFromString, type LabelInputs } from "../../../../lib/fedex";
+import { findFreshLabel } from "../../../../lib/fedex-retry";
 import { logComm } from "../../../../lib/comms-log";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -76,6 +77,23 @@ export async function POST(req: NextRequest) {
     customerReference: customer.customerReference || (deviceLabel ? String(deviceLabel).slice(0, 30) : "1 device"),
     poNumber: customer.poNumber || `TCC-${leadId}`,
   };
+
+  // Idempotency guard. createReturnLabel hits the FedEx Ship API, which BILLS
+  // per call and mints a NEW tracking number every time. If a fresh label
+  // already exists (operator double-click, or the status-route auto-fire
+  // raced this manual call), reuse it instead of creating — and paying for —
+  // a second shipment the customer would never use.
+  const existing = await findFreshLabel(leadId);
+  if (existing) {
+    return NextResponse.json({
+      ok: true,
+      tracking: existing.tracking,
+      labelUrl: existing.url,
+      serviceType: existing.service,
+      emailSent: false,
+      reused: true,
+    });
+  }
 
   let label;
   try {

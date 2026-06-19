@@ -50,37 +50,57 @@ function getReturnContact() {
 // the same serverless instance. Worst case (cold start) we fetch a new
 // token — cheap and rate-limited well within FedEx's limits.
 let cachedToken: { token: string; expiresAt: number } | null = null;
+// Single-flight guard: holds the in-progress OAuth request so concurrent
+// callers share one fetch instead of each firing their own.
+let inflightToken: Promise<string> | null = null;
 
 async function getAccessToken(): Promise<string> {
   if (cachedToken && cachedToken.expiresAt > Date.now() + 60_000) {
     return cachedToken.token;
   }
-  const clientId = getClientId();
-  const clientSecret = getClientSecret();
-  if (!clientId || !clientSecret) {
-    throw new Error("FedEx not configured — set FEDEX_CLIENT_ID + FEDEX_CLIENT_SECRET on Vercel.");
+  // If a refresh is already running, await it rather than stampeding FedEx's
+  // rate-limited /oauth/token endpoint. Without this, a burst of concurrent
+  // label/track calls (e.g. fedex-poll over 25 leads on an expired cache)
+  // fires N parallel OAuth requests and can get 429'd — making getTracking
+  // silently return "unknown" for the whole batch and stalling status flips.
+  if (inflightToken) return inflightToken;
+
+  inflightToken = (async () => {
+    const clientId = getClientId();
+    const clientSecret = getClientSecret();
+    if (!clientId || !clientSecret) {
+      throw new Error("FedEx not configured — set FEDEX_CLIENT_ID + FEDEX_CLIENT_SECRET on Vercel.");
+    }
+    const res = await fetch(`${getBase()}/oauth/token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "client_credentials",
+        client_id: clientId,
+        client_secret: clientSecret,
+      }),
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      throw new Error(`FedEx OAuth failed: ${res.status}${body ? " — " + body.slice(0, 300) : ""}`);
+    }
+    const data = (await res.json()) as { access_token?: string; expires_in?: number };
+    if (!data.access_token) throw new Error("FedEx OAuth returned no access_token");
+    cachedToken = {
+      token: data.access_token,
+      expiresAt: Date.now() + (data.expires_in || 3600) * 1000,
+    };
+    return cachedToken.token;
+  })();
+
+  try {
+    return await inflightToken;
+  } finally {
+    // Clear the guard whether we succeeded or failed, so a failed refresh
+    // doesn't pin every future caller to the same rejected promise.
+    inflightToken = null;
   }
-  const res = await fetch(`${getBase()}/oauth/token`, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      grant_type: "client_credentials",
-      client_id: clientId,
-      client_secret: clientSecret,
-    }),
-    cache: "no-store",
-  });
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    throw new Error(`FedEx OAuth failed: ${res.status}${body ? " — " + body.slice(0, 300) : ""}`);
-  }
-  const data = (await res.json()) as { access_token?: string; expires_in?: number };
-  if (!data.access_token) throw new Error("FedEx OAuth returned no access_token");
-  cachedToken = {
-    token: data.access_token,
-    expiresAt: Date.now() + (data.expires_in || 3600) * 1000,
-  };
-  return cachedToken.token;
 }
 
 export type LabelInputs = {

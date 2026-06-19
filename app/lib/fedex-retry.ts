@@ -63,6 +63,35 @@ async function hasFreshLabel(leadId: string): Promise<boolean> {
   return !!lastSuccessAt && lastSuccessAt > lastFailAt;
 }
 
+// Like hasFreshLabel, but returns the existing label's parsed marker
+// (tracking/url/service) so callers can REUSE it instead of minting a new
+// one. createReturnLabel hits the FedEx Ship API, which BILLS per call and
+// issues a fresh tracking number, so the label-mint path must be idempotent.
+export async function findFreshLabel(leadId: string): Promise<{ tracking: string; url: string; service: string } | null> {
+  if (!MC_KEY) return null;
+  const r = await fetch(`${MC_API}/api/comms?limit=500`, {
+    headers: { "x-api-key": MC_KEY },
+    cache: "no-store",
+  });
+  if (!r.ok) return null;
+  const data = await r.json();
+  const messages: { body?: string; timestamp: string }[] = data.messages || [];
+  let lastFailAt = "";
+  let best: { ts: string; body: string } | null = null;
+  const wantedFail = `[LABEL-FAILED: ${leadId}]`;
+  const wantedSuccess = `[LABEL: ${leadId}]`;
+  for (const m of messages) {
+    if (!m.body) continue;
+    if (m.body.includes(wantedFail) && m.timestamp > lastFailAt) lastFailAt = m.timestamp;
+    if (m.body.includes(wantedSuccess) && (!best || m.timestamp > best.ts)) best = { ts: m.timestamp, body: m.body };
+  }
+  if (!best || best.ts <= lastFailAt) return null;
+  const tracking = best.body.match(/\[LABEL:[^\]]*\]\s*tracking=(\S+)/)?.[1] || "";
+  const url = best.body.match(/url=(\S+)/)?.[1] || "";
+  const service = best.body.match(/service=(\S+)/)?.[1] || "";
+  return tracking && url ? { tracking, url, service } : null;
+}
+
 export async function retryFedexLabel(leadId: string): Promise<RetryResult> {
   if (await hasFreshLabel(leadId)) {
     return { ok: false, kind: "ALREADY_LABELED", error: "Label already minted for this lead.", leadId };

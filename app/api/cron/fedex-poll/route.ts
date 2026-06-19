@@ -97,7 +97,7 @@ export async function GET(req: NextRequest) {
   // Index: latest status per lead, latest FEDEX-EVENT state per lead,
   // and the set of deleted lead ids.
   const statusByLead = new Map<string, { status: string; ts: string }>();
-  const lastFedexStateByLead = new Map<string, { state: string; ts: string }>();
+  const lastFedexStateByLead = new Map<string, { state: string; code: string; ts: string }>();
   const deletedLeads = new Set<string>();
   for (const m of messages) {
     if (!m.body) continue;
@@ -106,10 +106,10 @@ export async function GET(req: NextRequest) {
       const prev = statusByLead.get(sm[2]);
       if (!prev || m.timestamp > prev.ts) statusByLead.set(sm[2], { status: sm[1].toLowerCase(), ts: m.timestamp });
     }
-    const fm = m.body.match(/\[FEDEX-EVENT:\s*([\w-]+)\s+state=([a-z_]+)/i);
+    const fm = m.body.match(/\[FEDEX-EVENT:\s*([\w-]+)\s+state=([a-z_]+)(?:\s+code=(\S+))?/i);
     if (fm) {
       const prev = lastFedexStateByLead.get(fm[1]);
-      if (!prev || m.timestamp > prev.ts) lastFedexStateByLead.set(fm[1], { state: fm[2].toLowerCase(), ts: m.timestamp });
+      if (!prev || m.timestamp > prev.ts) lastFedexStateByLead.set(fm[1], { state: fm[2].toLowerCase(), code: (fm[3] || "").replace(/\]$/, ""), ts: m.timestamp });
     }
     const dm = m.body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
     if (dm) deletedLeads.add(dm[1]);
@@ -118,7 +118,7 @@ export async function GET(req: NextRequest) {
   // Walk lead messages, pick the ship-handoff ones in active states with
   // a tracking number, and skip what we've already processed.
   type Candidate = {
-    id: string; tracking: string; status: string; lastState?: string;
+    id: string; tracking: string; status: string; lastState?: string; lastCode?: string;
     // Customer fields parsed from the lead body — needed so a status
     // flip can address the SMS + email to the right person.
     customer: { name?: string; phone?: string; email?: string; device?: string; quote?: string; payout?: string };
@@ -137,6 +137,7 @@ export async function GET(req: NextRequest) {
     const status = statusByLead.get(m.id)?.status || "quote_requested";
     if (["paid", "met", "rejected", "received", "tested"].includes(status)) continue; // terminal or post-receive
     const lastState = lastFedexStateByLead.get(m.id)?.state;
+    const lastCode = lastFedexStateByLead.get(m.id)?.code;
     // Find the lead's tracking number from a [LABEL: leadId] marker.
     // /api/lead writes these immediately after minting.
     let tracking = "";
@@ -147,7 +148,7 @@ export async function GET(req: NextRequest) {
     }
     if (!tracking) continue;
     candidates.push({
-      id: m.id, tracking, status, lastState,
+      id: m.id, tracking, status, lastState, lastCode,
       customer: {
         name: parseField(m.body, "Name"),
         phone: parseField(m.body, "Phone"),
@@ -177,9 +178,13 @@ export async function GET(req: NextRequest) {
     // per-second cap but politeness beats getting throttled.
     await new Promise((r) => setTimeout(r, 150));
     const newState = result.state;
-    if (c.lastState === newState && newState !== "exception") {
-      // Already reacted to this state. Skip silently.
-      continue;
+    if (c.lastState === newState) {
+      // Already reacted to this state. For exceptions we still want to
+      // re-alert if FedEx reports a NEW exception code (a different problem),
+      // but a persistent same-code exception must not re-ping every run (was
+      // spamming up to 12 "FedEx exception" alerts/day per stuck package).
+      const sameCode = (c.lastCode || "") === (result.lastEventCode || "");
+      if (newState !== "exception" || sameCode) continue;
     }
 
     // Decide what to do based on (currentStatus, newState).
