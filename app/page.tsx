@@ -3745,7 +3745,7 @@ function FairPromise() {
 function TrustBadge() {
   return (
     <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[#e6e6e6] text-xs">
-      <span className="inline-flex items-center gap-1"><svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>Thousands of happy sellers</span>
+      <span className="inline-flex items-center gap-1"><svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>Verified seller reviews</span>
       <span>·</span>
       <span className="inline-flex items-center gap-1"><svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>14-day price lock</span>
       <span>·</span>
@@ -7001,7 +7001,7 @@ export default function Home() {
                 <div className="bg-[#111] border border-white/10 rounded-3xl shadow-2xl p-6">
                   <div className="flex items-center justify-between mb-5">
                     <p className="text-[#00c853] text-[11px] font-bold uppercase tracking-[0.2em] tcc-green-pill">Bulk trade-ins</p>
-                    <p className="text-[#9a9a9a] text-[11px]">10+ devices · enterprise &amp; resellers</p>
+                    <p className="text-[#9a9a9a] text-[11px]">5+ devices · enterprise &amp; resellers</p>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     {/* LEFT — action cards */}
@@ -7026,7 +7026,7 @@ export default function Home() {
                       <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Bulk FAQ</p>
                       <div className="space-y-3">
                         {[
-                          { q: "How many is bulk?", a: "10+ devices in one shipment." },
+                          { q: "How many is bulk?", a: "5+ devices in one shipment." },
                           { q: "Mixed brands OK?", a: "Yes — iPhones, MacBooks, PCs in one quote." },
                           { q: "Payout timing?", a: "Same business day after inspection." },
                           { q: "NIST 800-88 wipe report?", a: "Included free for any 25+ device order." },
@@ -7079,7 +7079,7 @@ export default function Home() {
                       {([
                         { href: "/how-it-works", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "How it works", sub: "Drawer to dollars in 3 steps" },
                         { href: "/faq", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, title: "Full FAQ", sub: "Plain answers, common questions" },
-                        { href: "/reviews", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />, title: "Reviews", sub: "★ 4.9 from real sellers", iconColor: "text-[#ffb400]" },
+                        { href: "/reviews", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />, title: "Reviews", sub: "★ 4.8 from real sellers", iconColor: "text-[#ffb400]" },
                         { href: "/track", icon: <><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></>, title: "Track your trade", sub: "Status, payout, tracking #" },
                         { href: EMAIL_HREF, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />, title: "Email customer service", sub: "support@topcashcellular.com · same business day" },
                       ]).map(item => (
@@ -7494,7 +7494,7 @@ export default function Home() {
                     <svg className="w-5 h-5 shrink-0 text-[#ffb400]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
                     <div>
                       <p className="text-sm font-semibold text-white">Reviews</p>
-                      <p className="text-[11px] text-[#e6e6e6]">4.9 — read what customers say.</p>
+                      <p className="text-[11px] text-[#e6e6e6]">4.8 — read what customers say.</p>
                     </div>
                   </a>
                   <a href={EMAIL_HREF} onClick={() => setMobileMenuOpen(false)} className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-white/5 transition">
@@ -8131,7 +8131,7 @@ export default function Home() {
             <div className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-2 hero-fade-up hero-d-4">
               <a href="/reviews" className="inline-flex items-center gap-1.5 bg-[#ffb400]/10 text-[#ffb400] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#ffb400]/20 hover:bg-[#ffb400]/15 transition">
                 <span className="text-sm leading-none">★</span>
-                4.9 — Read reviews
+                4.8 — Read reviews
               </a>
               <span className="inline-flex items-center gap-1.5 bg-[#00c853]/15 text-[#00c853] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#00c853]/20">
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
@@ -8223,7 +8223,7 @@ export default function Home() {
             {/* TOP PAYOUTS TICKER — what we're paying today, no duplicates */}
             <div className="mt-8 -mx-4">
               <div className="flex items-center justify-between px-4 mb-3">
-                <p className="text-[#e6e6e6] text-xs font-semibold uppercase tracking-wider">Today&apos;s top payouts</p>
+                <p className="text-[#e6e6e6] text-xs font-semibold uppercase tracking-wider">Recent payouts · varies by condition</p>
                 <span className="inline-flex items-center gap-1.5 text-[10px] text-[#00c853] font-bold uppercase tracking-wider">
                   <span className="relative flex h-1.5 w-1.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00c853] opacity-75"></span><span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00c853]"></span></span>
                   Live
@@ -8446,16 +8446,19 @@ export default function Home() {
               contents and centers it horizontally via the parent. */}
           <div className="flex justify-center reveal">
             <div className="inline-flex items-center gap-3 sm:gap-4 flex-wrap justify-center text-center bg-white/[0.12] border border-white/10 rounded-full px-4 py-2">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] hidden sm:inline">Trusted by thousands</p>
-              <span className="hidden sm:inline text-white/20">·</span>
               <span className="inline-flex items-baseline gap-1.5">
-                <span className="text-lg font-extrabold text-[#00c853] leading-none"><CountUp end={5000} suffix="+" /></span>
-                <span className="text-[#e6e6e6] text-[11px] font-medium">devices bought</span>
+                <span className="text-lg font-extrabold text-[#00c853] leading-none">Austin</span>
+                <span className="text-[#e6e6e6] text-[11px] font-medium">local cash</span>
               </span>
               <span className="text-white/20">·</span>
               <span className="inline-flex items-baseline gap-1.5">
-                <span className="text-lg font-extrabold text-[#00c853] leading-none">4.9★</span>
-                <span className="text-[#e6e6e6] text-[11px] font-medium">review avg</span>
+                <span className="text-lg font-extrabold text-[#00c853] leading-none">24h</span>
+                <span className="text-[#e6e6e6] text-[11px] font-medium">ship payout</span>
+              </span>
+              <span className="text-white/20">·</span>
+              <span className="inline-flex items-baseline gap-1.5">
+                <span className="text-lg font-extrabold text-[#00c853] leading-none">Free</span>
+                <span className="text-[#e6e6e6] text-[11px] font-medium">prepaid label</span>
               </span>
             </div>
           </div>
@@ -10577,7 +10580,7 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <svg className="w-6 h-6 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
-                  <p className="text-xs text-[#e6e6e6] mt-1">Thousands of happy sellers</p>
+                  <p className="text-xs text-[#e6e6e6] mt-1">Verified seller reviews</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <svg className="w-6 h-6 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
@@ -11494,7 +11497,7 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <svg className="w-7 h-7 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
-                  <p className="text-xs text-[#e6e6e6] mt-1">Thousands of happy sellers</p>
+                  <p className="text-xs text-[#e6e6e6] mt-1">Verified seller reviews</p>
                 </div>
                 <div className="text-center p-3 bg-white/5 rounded-xl">
                   <svg className="w-7 h-7 mx-auto text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
@@ -13785,50 +13788,12 @@ export default function Home() {
               Both views share the same statsVisible / animatedStats
               count-up via the existing IntersectionObserver on the
               wrapping section. */}
-          <section className="py-5 lg:py-14 bg-[#111]" ref={(el) => { if (el && !statsVisible) { const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect(); } }, { threshold: 0.3 }); obs.observe(el); } }}>
-            <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4">
-              {/* Mobile / tablet: compact inline strip — wrapped in the
-                  same logo-style pill (bg-white/0.12 + border + rounded-
-                  full) as the Trust strip above so the two proof pills
-                  visually rhyme. */}
-              <div className="lg:hidden flex justify-center">
-                <div className="inline-flex items-center gap-3 sm:gap-4 flex-wrap justify-center text-center bg-white/[0.12] border border-white/10 rounded-full px-4 py-2">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] hidden sm:inline">By the numbers</p>
-                  <span className="hidden sm:inline text-white/20">·</span>
-                  <span className="inline-flex items-baseline gap-1.5">
-                    <span className="text-lg font-extrabold text-[#00c853] tabular-nums leading-none">${animatedStats.payout}K+</span>
-                    <span className="text-[#e6e6e6] text-[11px] font-medium">paid out</span>
-                  </span>
-                  <span className="text-white/20">·</span>
-                  <span className="inline-flex items-baseline gap-1.5">
-                    <span className="text-lg font-extrabold text-[#00c853] tabular-nums leading-none">&lt;{animatedStats.time}h</span>
-                    <span className="text-[#e6e6e6] text-[11px] font-medium">avg payout</span>
-                  </span>
-                </div>
-              </div>
-              {/* Desktop: original full 3-card grid + section header */}
-              <div className="hidden lg:block">
-                <p className="text-[#e6e6e6] text-xs font-semibold uppercase tracking-wider text-center mb-8">Top Cash Cellular by the numbers</p>
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
-                    <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">{animatedStats.devices}+</p>
-                    <p className="text-white text-xs font-semibold mt-1">Devices Bought</p>
-                    <p className="text-[#e6e6e6] text-[10px] mt-0.5">and counting</p>
-                  </div>
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
-                    <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">${animatedStats.payout}K+</p>
-                    <p className="text-white text-xs font-semibold mt-1">Paid Out</p>
-                    <p className="text-[#e6e6e6] text-[10px] mt-0.5">to sellers nationwide</p>
-                  </div>
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-3 overflow-hidden">
-                    <p className="text-2xl md:text-3xl font-extrabold text-[#00c853] tabular-nums">&lt;{animatedStats.time}h</p>
-                    <p className="text-white text-xs font-semibold mt-1">Avg Payout</p>
-                    <p className="text-[#e6e6e6] text-[10px] mt-0.5">from quote to cash</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+          {/* "By the numbers" removed (site-audit credibility cleanup
+              2026-06-19). The figures were hardcoded placeholders (5,000
+              devices / $1,500K / <24h), not real data, and rendered "0+"
+              before the count-up animation fired — which read as fake/
+              unfinished. Reinstate this section ONLY when wired to real
+              aggregate counts worth showing. */}
 
           {/* PAYMENT TIMELINE */}
           <section className="py-12 bg-[#0d0d0d]">
@@ -14040,7 +14005,7 @@ export default function Home() {
                   <p className="text-[#e6e6e6] text-xs mt-1">Devices Purchased</p>
                 </div>
                 <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
-                  <p className="text-3xl font-bold text-[#00c853]">4.9★</p>
+                  <p className="text-3xl font-bold text-[#00c853]">4.8★</p>
                   <p className="text-[#e6e6e6] text-xs mt-1">Customer Rating</p>
                 </div>
                 <div className="bg-white/5 rounded-2xl p-5 border border-white/10 text-center">
