@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, rateLimitResponse, clientIp } from "../../lib/rate-limit";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -30,6 +31,13 @@ function isValidEmail(email: string): boolean {
 }
 
 export async function POST(req: NextRequest) {
+  // Each signup sends a Resend welcome email to the supplied address. The
+  // 60s dedup only stops double-clicks on the SAME address; without a
+  // per-IP cap an attacker could enumerate addresses (a1@…, a2@…) to
+  // mail-bomb arbitrary third parties from our verified domain. Throttle it.
+  const rl = rateLimit(`newsletter:${clientIp(req)}`, 5, 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs);
+
   let email = "";
   let name = "";
   try {

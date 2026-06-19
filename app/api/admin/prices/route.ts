@@ -228,7 +228,14 @@ async function snapshotToHistory(current: OverridesShape) {
   } catch {}
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  // The GET payload assembles the full effective price table, per-cell
+  // margins, and wholesale (Atlas/eBay/IWM) references — i.e. the entire
+  // cost/margin model. It must be admin-gated like POST/DELETE; without
+  // this, `curl /api/admin/prices` leaked the whole pricing model.
+  if (!checkAuth(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const overrides = await readOverrides();
   const history = await readHistory();
   const pcSpecs = await loadPcSpecs();

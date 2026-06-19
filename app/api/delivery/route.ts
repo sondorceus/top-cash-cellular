@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
+import { rateLimit, rateLimitResponse, clientIp } from "../../lib/rate-limit";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -21,6 +22,11 @@ function clean(s: unknown, max = 200): string {
 }
 
 export async function POST(req: NextRequest) {
+  // Public, unauthenticated, and fires an owner SMS + MC post per call —
+  // throttle it so it can't be looped into an owner-SMS bomb / MC flood.
+  const rl = rateLimit(`delivery:${clientIp(req)}`, 8, 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs);
+
   let data: Record<string, unknown>;
   try {
     data = await req.json();

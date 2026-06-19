@@ -1,5 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callAI } from "../../../lib/ai-gateway";
+import { safeEqual } from "../../../lib/admin-auth";
+
+// Auth gate. Production triage is done INLINE via callAI() inside
+// /api/chat + /api/twilio/sms-incoming, so this standalone HTTP route
+// has no first-party caller — leaving it open was a free, unauthenticated
+// LLM-cost endpoint anyone could hammer. Require the admin token.
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
+function authed(req: NextRequest): boolean {
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
+}
 
 // Inbound-message triage — classify a customer message (chat /
 // inbound SMS / email reply) into a routing tag so the admin can
@@ -29,6 +39,9 @@ const INTENTS = [
 ] as const;
 
 export async function POST(req: NextRequest) {
+  if (!authed(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   let data: { message?: string; channel?: string; context?: string } = {};
   try { data = await req.json(); } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });

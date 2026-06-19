@@ -63,6 +63,9 @@ export async function POST(req: NextRequest) {
   const file = form.get("photo") as File | null;
 
   if (!leadId) return NextResponse.json({ error: "leadId required" }, { status: 400 });
+  // Validate before it goes into the blob path AND the [ID-CAPTURED: …]
+  // marker — same guard as the sibling lead routes.
+  if (!/^[\w-]{1,64}$/.test(leadId)) return NextResponse.json({ error: "Invalid leadId" }, { status: 400 });
   if (!idType || !["DL", "STATE_ID", "PASSPORT", "MILITARY", "OTHER"].includes(idType)) {
     return NextResponse.json({ error: "idType must be one of DL, STATE_ID, PASSPORT, MILITARY, OTHER" }, { status: 400 });
   }

@@ -504,6 +504,14 @@ export async function POST(req: NextRequest) {
   if (!leadId || !status || !STATUSES.includes(status)) {
     return NextResponse.json({ error: "leadId and valid status required" }, { status: 400 });
   }
+  // leadId is interpolated into MC markers ([STATUS: …] [LEAD: …]) AND into a
+  // live `new RegExp` in leadHasReviewToken — validate it like the sibling
+  // delete/restore/adjust routes do, to block marker-forgery (a leadId like
+  // "x] [STATUS: paid] [LEAD: victim") and regex injection (metacharacters
+  // throwing → a re-minted token + duplicate review email to the customer).
+  if (!/^[\w-]{1,64}$/.test(String(leadId))) {
+    return NextResponse.json({ error: "Invalid leadId" }, { status: 400 });
+  }
 
   // Auto-fire FedEx label generation when a ship-handoff lead transitions
   // to "shipped". Triple-gated: the lead must be a ship handoff (UI

@@ -27,6 +27,11 @@ export async function POST(req: NextRequest) {
   if (!leadId || !note || typeof note !== "string" || !note.trim()) {
     return NextResponse.json({ error: "leadId and note required" }, { status: 400 });
   }
+  // Validate leadId before interpolating it into the [NOTE: …] [LEAD: …]
+  // marker — same marker-forgery guard as delete/restore/adjust/status.
+  if (!/^[\w-]{1,64}$/.test(String(leadId))) {
+    return NextResponse.json({ error: "Invalid leadId" }, { status: 400 });
+  }
   // Strip brackets from the note before wrapping it in [NOTE: …]. A
   // staff-supplied note ending with ']' would otherwise close the
   // marker and could inject a fake [STATUS:] or [LEAD:] downstream

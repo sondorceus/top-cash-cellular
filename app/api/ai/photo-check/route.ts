@@ -1,5 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callAI, postAIMarker } from "../../../lib/ai-gateway";
+import { safeEqual } from "../../../lib/admin-auth";
+
+// Auth gate. The live photo-check is run INLINE inside /api/lead; this
+// standalone HTTP route has no first-party caller, so leaving it open was
+// an unauthenticated Sonnet-vision endpoint: anyone could drive ~1¢+
+// vision calls with attacker-supplied image URLs AND write [AI-FLAG]
+// markers against any leadId. Require the admin token.
+const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
+function authed(req: NextRequest): boolean {
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
+}
 
 // AI photo QA — pass a lead's photos + the device the customer
 // claimed, get back a structured verdict on whether the photos
@@ -24,6 +35,9 @@ import { callAI, postAIMarker } from "../../../lib/ai-gateway";
 // looks like Y" without staff having to open every photo manually.
 
 export async function POST(req: NextRequest) {
+  if (!authed(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   let data: { leadId?: string; model?: string; condition?: string; photos?: string[] } = {};
   try { data = await req.json(); } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
