@@ -339,12 +339,19 @@ export async function GET(req: NextRequest) {
     try {
       const handoffKind: "ship" | "local" | "none" = lead.handoffMethod || "none";
       const tmpl = templateQuoteReminder(lead, handoffKind);
-      const tasks: Promise<unknown>[] = [];
+      const tasks: Promise<boolean>[] = [];
       if (lead.phone) tasks.push(sendSms(lead.phone, tmpl.smsBody));
       if (lead.email) tasks.push(sendEmail(lead.email, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody));
-      await Promise.all(tasks);
-      await logReminderSent(lead.id, "quote");
-      quoteSent++;
+      const results = await Promise.all(tasks);
+      // Only mark reminded if a channel actually delivered. sendSms/sendEmail
+      // return false (they don't throw) on a Twilio/Resend failure, so the old
+      // unconditional log would permanently suppress the retry after an outage.
+      if (results.some(Boolean)) {
+        await logReminderSent(lead.id, "quote");
+        quoteSent++;
+      } else {
+        errors.push(`quote ${lead.id}: all channels failed`);
+      }
     } catch (e) {
       errors.push(`quote ${lead.id}: ${e instanceof Error ? e.message : String(e)}`);
     }
@@ -388,12 +395,17 @@ export async function GET(req: NextRequest) {
       if (dev) params.set("device", dev);
       const reviewUrl = `https://topcashcellular.com/reviews/new?${params.toString()}`;
       const tmpl = templateReviewReminder(lead, reviewUrl);
-      const tasks: Promise<unknown>[] = [];
+      const tasks: Promise<boolean>[] = [];
       if (lead.phone) tasks.push(sendSms(lead.phone, tmpl.smsBody));
       if (lead.email) tasks.push(sendEmail(lead.email, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody));
-      await Promise.all(tasks);
-      await logReminderSent(lead.id, "review");
-      reviewSent++;
+      const results = await Promise.all(tasks);
+      // Only mark reminded if a channel actually delivered (see quote loop).
+      if (results.some(Boolean)) {
+        await logReminderSent(lead.id, "review");
+        reviewSent++;
+      } else {
+        errors.push(`review ${lead.id}: all channels failed`);
+      }
     } catch (e) {
       errors.push(`review ${lead.id}: ${e instanceof Error ? e.message : String(e)}`);
     }

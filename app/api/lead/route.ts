@@ -361,7 +361,14 @@ export async function POST(req: NextRequest) {
           // a free $10. Compared case-insensitively against this lead's
           // own email. On a match we drop the referral entirely.
           const ownEmail = (email || "").toLowerCase().trim();
-          if (referrerEmail && referrerEmail !== ownEmail) {
+          // First-trade gate. The referee bonus is a NEW-customer incentive;
+          // without this a repeat customer could paste a friend's code on
+          // EVERY trade and collect +$10 each time. Reuse the comms we already
+          // pulled: if this email is on a prior buyback lead, skip the bonus.
+          const isReturning = !!ownEmail && refMsgs.some((m) =>
+            !!m.body && /\[NEW BUYBACK LEAD/i.test(m.body) &&
+            (m.body.match(/(?:^|\n)Email:[ \t]*([^\n]*)/i)?.[1] || "").toLowerCase().trim() === ownEmail);
+          if (referrerEmail && referrerEmail !== ownEmail && !isReturning) {
             referralApplied = { code: cleanRef, referrerEmail };
           }
         }
