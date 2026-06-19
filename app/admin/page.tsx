@@ -164,6 +164,37 @@ function isPaid(status?: string): boolean {
   return !!status && PAID_STATUSES.has(status);
 }
 
+// Value-priority bucket for the "command center" queue — turns the flat lead
+// list into a decision system: classify each OPEN lead by what it needs next,
+// in strict priority order so a lead only ever lands in ONE bucket.
+//   money    — fresh, priced, clean: act now to close $
+//   quote    — custom / unclear: needs a manual price
+//   risk     — IMEI flag / duplicate / balance owed / loss margin: verify first
+//   shipping — in transit or awaiting inspection/payout
+//   stale    — 7d+ open, low urgency
+// Closed leads (paid/met/rejected) are out of the queue → null.
+export type PriorityBucket = "money" | "quote" | "risk" | "shipping" | "stale";
+function priorityBucket(l: Lead): PriorityBucket | null {
+  const s = (l.status || "quote_requested").toLowerCase();
+  if (s === "paid" || s === "met" || s === "rejected") return null;
+  // Risk gates everything — a risky lead must never hide inside another bucket.
+  const risky =
+    (l.imeiWarnings?.length || 0) > 0 ||
+    (l.duplicateCount || 0) > 0 ||
+    l.paidOff === false ||
+    l.marginFlag === "loss" ||
+    l.marginFlag === "negative";
+  if (risky) return "risk";
+  // Can't be auto-priced → needs a human quote.
+  if (l.itemsNeedReview || !l.quote || /manual|tbd|custom|—/i.test(l.quote)) return "quote";
+  // Logistics in motion (shipped/received/tested, or a label/tracking exists).
+  if (s === "shipped" || s === "received" || s === "tested" || l.fedexTracking) return "shipping";
+  // Old and still open.
+  if ((l.staleHours ?? 0) >= 168) return "stale";
+  // Fresh, priced, clean → money to make.
+  return "money";
+}
+
 function timeAgo(iso?: string): string {
   if (!iso) return "";
   const ms = Date.now() - new Date(iso).getTime();
@@ -942,6 +973,9 @@ export default function AdminPage() {
     }
   };
   const [statusFilter, setStatusFilter] = useState<string>("active");
+  // Command-center value bucket filter (null = show all). Set by the priority
+  // bar; intersects with the status chips on the list below.
+  const [bucketFilter, setBucketFilter] = useState<PriorityBucket | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Google sign-in info (rendered in the header when present). proxy.ts
@@ -1291,7 +1325,11 @@ export default function AdminPage() {
     return false;
   }
   const needsReviewLeads = filteredLeads.filter(leadNeedsReview);
-  const displayedLeads = view === "needs-review" ? needsReviewLeads : filteredLeads;
+  const displayedLeadsBase = view === "needs-review" ? needsReviewLeads : filteredLeads;
+  // Apply the command-center bucket filter everywhere displayedLeads is read.
+  const displayedLeads = bucketFilter
+    ? displayedLeadsBase.filter((l) => priorityBucket(l) === bucketFilter)
+    : displayedLeadsBase;
 
   const computeStats = (list: Lead[]) => {
     const now = Date.now();
@@ -1819,6 +1857,52 @@ export default function AdminPage() {
         )}
 
         {error && <div className="bg-[#ef5350]/10 border border-[#ef5350]/30 rounded-xl p-4 mb-4 text-sm text-[#ef5350]">{error}</div>}
+
+        {/* Command center — value-priority queue. Splits the firehose into
+            "what needs action" so the operator sees in 3 seconds who makes
+            money, who's risky, and who needs a quote. Each card filters the
+            list below; click again to clear. The card render is unchanged. */}
+        {view !== "trash" && leads.length > 0 && (() => {
+          const BUCKETS: { key: PriorityBucket; label: string; hint: string; accent: string; emoji: string }[] = [
+            { key: "money",    label: "Today's money",    hint: "Fresh, priced — close it",        accent: "#00c853", emoji: "💰" },
+            { key: "quote",    label: "Needs a quote",    hint: "Custom / unclear — price it",     accent: "#38bdf8", emoji: "✍️" },
+            { key: "risk",     label: "Risk review",      hint: "IMEI · dup · balance — verify",    accent: "#f59e0b", emoji: "⚠️" },
+            { key: "shipping", label: "Shipping / QC",    hint: "In transit or awaiting test",     accent: "#a78bfa", emoji: "📦" },
+            { key: "stale",    label: "Stale 7d+",        hint: "Old, low urgency",                accent: "#9aa0a6", emoji: "🕓" },
+          ];
+          const counts: Record<string, number> = {};
+          for (const l of filteredLeads) { const b = priorityBucket(l); if (b) counts[b] = (counts[b] || 0) + 1; }
+          return (
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[10px] uppercase tracking-[0.18em] font-bold text-[#8b93a3]">Command center · what needs action</span>
+                {bucketFilter && (
+                  <button onClick={() => setBucketFilter(null)} className="text-[11px] font-semibold text-[#9aa0a6] hover:text-white cursor-pointer">Clear ✕</button>
+                )}
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                {BUCKETS.map((b) => {
+                  const n = counts[b.key] || 0;
+                  const on = bucketFilter === b.key;
+                  return (
+                    <button
+                      key={b.key}
+                      onClick={() => setBucketFilter(on ? null : b.key)}
+                      style={{ borderLeft: `3px solid ${b.accent}` }}
+                      className={`text-left rounded-xl px-3 py-2.5 border transition cursor-pointer ${on ? "bg-white/[0.08] border-white/25" : "bg-white/[0.03] border-white/10 hover:bg-white/[0.06]"}`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[11px] font-bold text-white leading-tight">{b.emoji} {b.label}</span>
+                        <span className="text-lg font-extrabold tabular-nums leading-none" style={{ color: n > 0 ? b.accent : "#5b6270" }}>{n}</span>
+                      </div>
+                      <div className="text-[10px] text-[#9aa0a6] mt-1 leading-tight">{b.hint}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
 
         {leads.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
