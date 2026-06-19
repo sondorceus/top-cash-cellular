@@ -100,6 +100,9 @@ export async function GET(req: NextRequest) {
   const statusByLead = new Map<string, { status: string; ts: string }>();
   const lastFedexStateByLead = new Map<string, { state: string; code: string; ts: string }>();
   const deletedLeads = new Set<string>();
+  // Leads we've already sent a "stalled shipment" alert for, so the
+  // watchdog pings the owner once, not every run.
+  const staleAlertedLeads = new Set<string>();
   for (const m of messages) {
     if (!m.body) continue;
     const sm = m.body.match(/\[STATUS:\s*([\w_]+)\]\s*\[LEAD:\s*([\w-]+)\]/i);
@@ -114,12 +117,15 @@ export async function GET(req: NextRequest) {
     }
     const dm = m.body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
     if (dm) deletedLeads.add(dm[1]);
+    const stm = m.body.match(/\[SHIP-STALE:\s*([\w-]+)\]/i);
+    if (stm) staleAlertedLeads.add(stm[1]);
   }
 
   // Walk lead messages, pick the ship-handoff ones in active states with
   // a tracking number, and skip what we've already processed.
   type Candidate = {
     id: string; tracking: string; status: string; lastState?: string; lastCode?: string;
+    labelAt?: string; // timestamp of the [LABEL:] marker — for the stalled-ship watchdog
     // Customer fields parsed from the lead body — needed so a status
     // flip can address the SMS + email to the right person.
     customer: { name?: string; phone?: string; email?: string; device?: string; quote?: string; payout?: string };
@@ -142,14 +148,15 @@ export async function GET(req: NextRequest) {
     // Find the lead's tracking number from a [LABEL: leadId] marker.
     // /api/lead writes these immediately after minting.
     let tracking = "";
+    let labelAt: string | undefined;
     for (const lm of messages) {
       if (!lm.body) continue;
       const lab = lm.body.match(new RegExp(`\\[LABEL:\\s*${m.id}\\][^\\n]*?tracking=([^\\s\\]]+)`, "i"));
-      if (lab) { tracking = lab[1]; break; }
+      if (lab) { tracking = lab[1]; labelAt = lm.timestamp; break; }
     }
     if (!tracking) continue;
     candidates.push({
-      id: m.id, tracking, status, lastState, lastCode,
+      id: m.id, tracking, status, lastState, lastCode, labelAt,
       customer: {
         name: parseField(m.body, "Name"),
         phone: parseField(m.body, "Phone"),
@@ -184,6 +191,26 @@ export async function GET(req: NextRequest) {
     // per-second cap but politeness beats getting throttled.
     await new Promise((r) => setTimeout(r, 150));
     const newState = result.state;
+    // Stalled-ship watchdog — a label that's been sitting for STALE_DAYS with
+    // FedEx showing no scan ("unknown") or only "label created" (never picked
+    // up) almost always means the customer delivered another way or never
+    // dropped the box. Ping the owner ONCE (gated on a [SHIP-STALE:] marker)
+    // so the lead doesn't sit silent forever (Pedro: 3 labels, never scanned,
+    // no follow-up). Runs even when the state is unchanged. Skywalker 2026-06-19.
+    const STALE_DAYS = 4;
+    if (
+      (newState === "unknown" || newState === "label_created") &&
+      c.labelAt && !staleAlertedLeads.has(c.id)
+    ) {
+      const ageMs = Date.now() - new Date(c.labelAt).getTime();
+      if (ageMs > STALE_DAYS * 24 * 60 * 60 * 1000) {
+        const days = Math.floor(ageMs / (24 * 60 * 60 * 1000));
+        const who = c.customer.name || "A customer";
+        await postToMc(`[SHIP-STALE: ${c.id}] Label ${days}d old, FedEx still "${newState}" (no scan). ${who} likely delivered another way or hasn't dropped it off — follow up. tracking=${c.tracking}`);
+        await notifyOwnerSms(`📦❓ ${who}'s shipment still hasn't hit FedEx after ${days} days (${c.tracking}). They may have delivered another way or not dropped it off — worth a quick follow-up.`);
+        staleAlertedLeads.add(c.id);
+      }
+    }
     if (c.lastState === newState) {
       // Already reacted to this state. For exceptions we still want to
       // re-alert if FedEx reports a NEW exception code (a different problem),
