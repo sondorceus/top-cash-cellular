@@ -204,8 +204,8 @@ type NextAction = { label: string; cta: string; kind: "sms" | "received" | "deta
 function nextAction(l: Lead): NextAction {
   const b = priorityBucket(l);
   const s = (l.status || "quote_requested").toLowerCase();
-  const green = "#00c853", blue = "#38bdf8", amber = "#f59e0b", violet = "#a78bfa", grey = "#9aa0a6";
-  if (b === "risk") return { label: "Verify IMEI / balance before quoting", cta: "Review risk", kind: "detail", color: amber };
+  const green = "#00c853", blue = "#38bdf8", red = "#ff5566", violet = "#a78bfa", grey = "#9aa0a6";
+  if (b === "risk") return { label: "Verify IMEI / balance before quoting", cta: "Review risk", kind: "detail", color: red };
   if (b === "quote") return { label: "Manual quote needed — price it", cta: "Open & quote", kind: "detail", color: blue };
   if (b === "shipping") {
     if (s === "shipped") return { label: "In transit — mark received on arrival", cta: "Mark received", kind: "received", color: violet };
@@ -1457,7 +1457,6 @@ export default function AdminPage() {
     return "ok";
   };
   const isStale = (lead: Lead) => stalenessFor(lead) !== "ok";
-  const staleCount = dedupedLeads.filter(isStale).length;
 
   // CSV export — dumps the current filtered view (after search + filter)
   // as a CSV file the user can drop into Sheets / Excel / QuickBooks.
@@ -1625,20 +1624,16 @@ export default function AdminPage() {
             <h1 className="text-xl sm:text-2xl font-bold">TCC Staff Ops</h1>
             <p className="text-[#dcdcdc] text-sm">
               {(() => {
-                const statusFiltered = filteredLeads.filter((l) => {
-                  if (statusFilter === "all") return true;
-                  if (statusFilter === "active") return !isPaid(l.status) && l.status !== "rejected";
-                  if (statusFilter === "completed") return isPaid(l.status) || l.status === "rejected";
-                  if (statusFilter === "stale") return isStale(l);
-                  return l.status === statusFilter;
-                });
-                if (statusFilter === "all" && !searchQuery) {
-                  const dupeNote = leads.length !== dedupedLeads.length ? ` (${leads.length - dedupedLeads.length} dupes merged)` : "";
-                  return `${dedupedLeads.length} unique lead${dedupedLeads.length === 1 ? "" : "s"}${dupeNote}`;
-                }
-                const labels: Record<string, string> = { active: "active", completed: "completed", all: "all" };
-                const label = labels[statusFilter] || statusFilter.replace("_", " ");
-                return `${statusFiltered.length} of ${dedupedLeads.length} · ${label}${searchQuery ? ` · matching "${searchQuery}"` : ""}`;
+                // ONE stable, honest top-line: total · open · completed. (Was
+                // "X of Y · <status>" which read "0 of 26 · shipped" and felt
+                // broken.) A filter/search note is appended, never replaces it.
+                const total = dedupedLeads.length;
+                const open = stats.pendingCount;
+                const completed = total - open;
+                const dupeNote = leads.length !== dedupedLeads.length ? ` · ${leads.length - dedupedLeads.length} dupes merged` : "";
+                const filterActive = bucketFilter || searchQuery || (statusFilter !== "active" && statusFilter !== "all");
+                const filterNote = filterActive ? ` · showing ${displayedLeads.length}` : "";
+                return `${total} lead${total === 1 ? "" : "s"} · ${open} open · ${completed} completed${dupeNote}${filterNote}`;
               })()}
             </p>
           </div>
@@ -1801,85 +1796,21 @@ export default function AdminPage() {
             only when at least one lead is over its SLA target. Each row
             is clickable: clicking the banner header filters the list to
             stale only; clicking a row jumps to that lead. */}
-        {staleCount > 0 && view === "active" && (() => {
-          // Compact priority strip (was a 5-row gradient box that dominated
-          // the page). One thin line: count + the top 3 names with hours,
-          // click to filter the list to stale only. Calmer, still urgent.
-          const top = dedupedLeads
-            .filter(isStale)
-            .sort((a, b) => {
-              const sa = stalenessFor(a) === "red" ? 0 : 1;
-              const sb = stalenessFor(b) === "red" ? 0 : 1;
-              if (sa !== sb) return sa - sb;
-              const la = new Date(a.statusUpdatedAt || a.timestamp).getTime();
-              const lb = new Date(b.statusUpdatedAt || b.timestamp).getTime();
-              return la - lb;
-            })
-            .slice(0, 3);
-          const redCount = dedupedLeads.filter((l) => stalenessFor(l) === "red").length;
-          return (
-            <button
-              type="button"
-              onClick={() => setStatusFilter("stale")}
-              title="Filter the list to stale leads only"
-              className="w-full mb-3 px-4 py-2.5 flex items-center gap-3 text-left bg-white/[0.03] hover:bg-white/[0.05] border-l-2 border-red-500/60 rounded-lg transition cursor-pointer"
-            >
-              <span className="text-sm shrink-0">{redCount > 0 ? "🔴" : "🟡"}</span>
-              <span className="font-bold text-white text-sm shrink-0">{staleCount} need{staleCount === 1 ? "s" : ""} attention</span>
-              <span className="text-xs text-[#bdbdbd] truncate min-w-0">
-                {top.map((l) => {
-                  const hrs = Math.floor((Date.now() - new Date(l.statusUpdatedAt || l.timestamp).getTime()) / 3600000);
-                  return `${(l.name || l.email || l.phone || "—").split(" ")[0]} ${hrs}h`;
-                }).join(" · ")}
-                {staleCount > 3 ? ` +${staleCount - 3} more` : ""}
-              </span>
-              <span className="ml-auto text-xs text-[#00c853] font-semibold shrink-0 hidden sm:inline">View queue →</span>
-            </button>
-          );
-        })()}
-
+        {/* Money + performance only — the WORK QUEUE counts moved to the
+            header line (total/open/completed) and the command center below,
+            so this row no longer repeats "open / needs attention / shipped"
+            three different ways. */}
         {leads.length > 0 && (
-          // Command-center KPI row — money + live work queue. The three
-          // queue tiles (Open / Awaiting receipt / Needs attention) are
-          // buttons that filter the list, so a metric leads straight to
-          // the action. Glow is reserved for money + a non-zero alert.
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3 mb-4">
-            <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-3 col-span-2">
-              <p className="text-[10px] uppercase tracking-wider text-[#00c853] font-bold" title="Cash TCC paid customers for devices (COGS / cash-out), not resale revenue — that's on /admin/profit.">💸 Paid out · this week</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4">
+            <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-3">
+              <p className="text-[10px] uppercase tracking-wider text-[#00c853] font-bold" title="Cash TCC paid customers for the phones it bought (COGS / cash-out) — NOT resale revenue. Resale + profit live on /admin/profit.">💸 Paid to customers · this week</p>
               <p className="text-xl sm:text-2xl font-extrabold text-[#00c853] mt-0.5">${stats.revenueWeek.toLocaleString()}</p>
-              <p className="text-[10px] text-[#dcdcdc] mt-0.5">${stats.revenueMonth.toLocaleString()} this month · ${stats.revenue.toLocaleString()} all-time · <a href="/admin/profit" className="underline hover:text-white">sales →</a></p>
+              <p className="text-[10px] text-[#dcdcdc] mt-0.5">${stats.revenueMonth.toLocaleString()} MTD · ${stats.revenue.toLocaleString()} all-time · <a href="/admin/profit" className="underline hover:text-white">resale + profit →</a></p>
             </div>
-            <button
-              type="button"
-              onClick={() => setStatusFilter("active")}
-              title="Open leads not yet paid/met/rejected — your work queue. Click to filter."
-              className="text-left bg-white/5 border border-white/10 rounded-xl p-3 hover:bg-white/10 transition cursor-pointer"
-            >
-              <p className="text-[10px] uppercase tracking-wider text-[#c5c5c5] font-bold">Open leads</p>
-              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.pendingCount}</p>
-            </button>
-            <button
-              type="button"
-              onClick={() => setStatusFilter("shipped")}
-              title="Devices shipped / dropping off — awaiting receipt. Click to filter."
-              className="text-left bg-white/5 border border-white/10 rounded-xl p-3 hover:bg-white/10 transition cursor-pointer"
-            >
-              <p className="text-[10px] uppercase tracking-wider text-[#c5c5c5] font-bold">Awaiting receipt</p>
-              <p className="text-2xl font-extrabold text-white mt-0.5">{stats.shippedCount}</p>
-            </button>
-            <button
-              type="button"
-              onClick={() => setStatusFilter("stale")}
-              title="Leads past their SLA — needs attention. Click to filter."
-              className={`text-left rounded-xl p-3 transition cursor-pointer border ${staleCount > 0 ? "bg-amber-500/10 border-amber-500/30 hover:bg-amber-500/15" : "bg-white/5 border-white/10 hover:bg-white/10"}`}
-            >
-              <p className={`text-[10px] uppercase tracking-wider font-bold ${staleCount > 0 ? "text-amber-300" : "text-[#c5c5c5]"}`}>Needs attention</p>
-              <p className={`text-2xl font-extrabold mt-0.5 ${staleCount > 0 ? "text-amber-300" : "text-white"}`}>{staleCount}</p>
-            </button>
             <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-              <p className="text-[10px] uppercase tracking-wider text-[#c5c5c5] font-bold">Conversion</p>
-              <p className="text-2xl font-extrabold text-[#00c853] mt-0.5">{stats.conversionRate}%</p>
-              <p className="text-[10px] text-[#c5c5c5] mt-0.5">avg payout {stats.avgPayoutHours > 0 ? (stats.avgPayoutHours < 48 ? `${Math.round(stats.avgPayoutHours)}h` : `${(stats.avgPayoutHours / 24).toFixed(1)}d`) : "—"} · avg ${stats.avgQuote}</p>
+              <p className="text-[10px] uppercase tracking-wider text-[#c5c5c5] font-bold">📊 Performance</p>
+              <p className="text-xl sm:text-2xl font-extrabold text-[#00c853] mt-0.5">{stats.conversionRate}% <span className="text-sm font-semibold text-[#c5c5c5]">conversion</span></p>
+              <p className="text-[10px] text-[#c5c5c5] mt-0.5">avg payout time {stats.avgPayoutHours > 0 ? (stats.avgPayoutHours < 48 ? `${Math.round(stats.avgPayoutHours)}h` : `${(stats.avgPayoutHours / 24).toFixed(1)}d`) : "—"} · avg offer ${stats.avgQuote}</p>
             </div>
           </div>
         )}
@@ -1907,10 +1838,12 @@ export default function AdminPage() {
             money, who's risky, and who needs a quote. Each card filters the
             list below; click again to clear. The card render is unchanged. */}
         {view !== "trash" && leads.length > 0 && (() => {
+          // Ordered by urgency tier — CRITICAL (loss/fraud) first, then the
+          // revenue actions, logistics, and lastly the low-priority stale pile.
           const BUCKETS: { key: PriorityBucket; label: string; hint: string; accent: string; emoji: string }[] = [
+            { key: "risk",     label: "Critical · risk",  hint: "IMEI · dup · balance · mismatch", accent: "#ff5566", emoji: "🔴" },
             { key: "money",    label: "Today's money",    hint: "Fresh, priced — close it",        accent: "#00c853", emoji: "💰" },
             { key: "quote",    label: "Needs a quote",    hint: "Custom / unclear — price it",     accent: "#38bdf8", emoji: "✍️" },
-            { key: "risk",     label: "Risk review",      hint: "IMEI · dup · balance — verify",    accent: "#f59e0b", emoji: "⚠️" },
             { key: "shipping", label: "Shipping / QC",    hint: "In transit or awaiting test",     accent: "#a78bfa", emoji: "📦" },
             { key: "stale",    label: "Stale 7d+",        hint: "Old, low urgency",                accent: "#9aa0a6", emoji: "🕓" },
           ];
@@ -1991,7 +1924,6 @@ export default function AdminPage() {
               return (
                 <>
                   {chip("active", "🟢 Active")}
-                  {staleCount > 0 && chip("stale", "⚠️ Needs attention")}
                   {STATUS_OPTIONS.filter((o) => o.value !== "paid" && o.value !== "rejected").map((opt) => chip(opt.value, opt.label, opt.color))}
                   <span className="w-px bg-white/10 self-stretch mx-1" aria-hidden />
                   {chip("completed", "✅ Completed")}
@@ -2079,7 +2011,7 @@ export default function AdminPage() {
                 if (previewCard) {
                   const na = nextAction(lead);
                   const b = priorityBucket(lead);
-                  const ACC: Record<string, string> = { money: "#00c853", quote: "#38bdf8", risk: "#f59e0b", shipping: "#a78bfa", stale: "#9aa0a6" };
+                  const ACC: Record<string, string> = { money: "#00c853", quote: "#38bdf8", risk: "#ff5566", shipping: "#a78bfa", stale: "#9aa0a6" };
                   const accent = b ? ACC[b] : "rgba(255,255,255,.12)";
                   const hrs = lead.staleHours ?? 0;
                   const ageLbl = hrs < 24 ? `${Math.max(1, Math.round(hrs))}h` : `${Math.round(hrs / 24)}d`;
