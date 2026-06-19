@@ -3401,21 +3401,24 @@ export default function AdminPage() {
                             placeholder="Note (optional)"
                             className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#00c853]"
                           />
-                          {/* IMEI/serial-required-pre-payout gate. If the
-                              lead already has an identifier on file we just
-                              confirm it; otherwise staff must enter one or
-                              explicitly override before Mark Paid enables. */}
-                          {lead.imei ? (
+                          {/* IMEI/serial-required-pre-payout gate. "On file"
+                              = a single-device lead.imei OR a multi-device
+                              lead where every device carries its own imei
+                              (the body parser can't read the indented per-
+                              device IMEI lines into lead.imei, so check
+                              lead.devices too). Otherwise staff enters one or
+                              explicitly overrides before Mark Paid enables. */}
+                          {(lead.imei || (lead.devices && lead.devices.length > 0 && lead.devices.every((d) => !!d.imei))) ? (
                             <p className="text-[10px] text-[#7be8a8] flex items-center gap-1">
-                              <span>✓ IMEI/serial on file:</span>
-                              <span className="font-mono text-[#c5c5c5]">{lead.imei}</span>
+                              <span>✓ IMEI/serial on file{lead.imei ? ":" : ` for all ${lead.devices?.length} devices`}</span>
+                              {lead.imei && <span className="font-mono text-[#c5c5c5]">{lead.imei}</span>}
                             </p>
                           ) : (
                             <div className="rounded border border-[#ffcf4d]/30 bg-[#ffcf4d]/[0.06] p-2 space-y-1.5">
                               <p className="text-[10px] text-[#ffcf4d] font-bold">No IMEI/serial on record — required before payout</p>
                               <input
                                 type="text"
-                                value={payoutImei}
+                                value={payoutImeiOverride ? "" : payoutImei}
                                 onChange={(e) => setPayoutImei(e.target.value)}
                                 placeholder="Enter device IMEI / serial"
                                 disabled={payoutImeiOverride}
@@ -3425,7 +3428,7 @@ export default function AdminPage() {
                                 <input
                                   type="checkbox"
                                   checked={payoutImeiOverride}
-                                  onChange={(e) => setPayoutImeiOverride(e.target.checked)}
+                                  onChange={(e) => { setPayoutImeiOverride(e.target.checked); if (e.target.checked) setPayoutImei(""); }}
                                   className="accent-[#ffcf4d] cursor-pointer"
                                 />
                                 <span>No identifier on this item (explain in note)</span>
@@ -3448,13 +3451,14 @@ export default function AdminPage() {
                           <div className="flex gap-1.5">
                             <button
                               type="button"
-                              disabled={!payoutMethod || (payoutMethod !== "cash" && !payoutReference.trim()) || !payoutAmount.trim() || Number(payoutAmount) <= 0 || !(lead.imei || payoutImei.trim().length >= 4 || (payoutImeiOverride && payoutNote.trim().length > 0))}
+                              disabled={!payoutMethod || (payoutMethod !== "cash" && !payoutReference.trim()) || !payoutAmount.trim() || Number(payoutAmount) <= 0 || !(lead.imei || (lead.devices && lead.devices.length > 0 && lead.devices.every((d) => !!d.imei)) || (!payoutImeiOverride && payoutImei.trim().length >= 4) || (payoutImeiOverride && payoutNote.trim().length > 0))}
                               onClick={async () => {
                                 const amt = Number(payoutAmount) || 0;
                                 // Fold the device identifier (or override
                                 // reason) into the note so it persists in
                                 // the immutable payout audit line.
-                                const idLine = lead.imei
+                                const idOnFile = !!lead.imei || !!(lead.devices && lead.devices.length > 0 && lead.devices.every((d) => !!d.imei));
+                                const idLine = idOnFile
                                   ? ""
                                   : payoutImeiOverride
                                     ? " [IMEI/serial: none — override]"

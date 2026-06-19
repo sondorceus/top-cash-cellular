@@ -143,7 +143,7 @@ export const LANDING_PAGES: LandingConfig[] = [
     slug: "sell-macbook-austin",
     metaTitle: "Sell Your MacBook for Cash in Austin TX | Top Cash Cellular",
     metaDescription:
-      "Sell your MacBook Pro or MacBook Air for cash in Austin, TX. Instant quote, same-day payout, local meetup or free insured shipping. Any year, any condition.",
+      "Sell your MacBook Pro or MacBook Air for cash in Austin, TX. Instant quote, same-day payout, local meetup or free prepaid shipping. Any year, any condition.",
     h1: "Sell Your MacBook for Cash in Austin",
     heroLine: "Instant quote. Same-day cash. Local meetup or free prepaid shipping.",
     intro:

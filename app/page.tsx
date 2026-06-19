@@ -14206,7 +14206,7 @@ export default function Home() {
                 <p className="text-[#b8b8b8] text-sm mb-6">Local Austin? We meet you. Out of town? Ship free.</p>
                 <div className="space-y-4 mb-10">
                   {[
-                    { step: "1", title: "Get your quote", body: "Accept the price on our site. We email you a confirmation with a prepaid FedEx shipping label — automatically insured for your full quoted value, at no cost to you." },
+                    { step: "1", title: "Get your quote", body: "Accept the price on our site. We email you a confirmation with a free prepaid FedEx shipping label that includes $100 of base coverage — for a higher-value device, add declared value at FedEx or choose an Austin local meetup." },
                     { step: "2", title: "Pack &amp; drop off", body: "Use any padded box you have at home. Wrap the device, drop it at any FedEx location, and keep your receipt. Tracking number arrives in our system automatically." },
                     { step: "3", title: "We inspect within 1 business day", body: "Once the device arrives we test it against the tier you selected. You get an email with the result the same day." },
                     { step: "4", title: "Same-day payout", body: "If the inspection matches your quote, we pay you that same business day — Cash App or Zelle in minutes, Bitcoin on-chain in ~30 min, or check via mail." },
