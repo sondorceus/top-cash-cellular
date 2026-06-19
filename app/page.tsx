@@ -13594,6 +13594,18 @@ export default function Home() {
                           </div>
                         </div>
                       )}
+                      {/* Single-device shippers with more to sell: nudge them
+                          to bundle so they don't end up with several boxes/
+                          labels (one seller shipped 3 devices in 3 boxes when
+                          one would've done — Skywalker 2026-06-19). */}
+                      {(!submittedDevices || submittedDevices.length <= 1) && (
+                        <div className="bg-white/[0.04] border border-white/10 rounded-xl p-3 mb-3 flex items-start gap-2.5">
+                          <svg className="w-5 h-5 shrink-0 text-[#00c853] mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>
+                          <p className="text-[#c8c8c8] text-[11px] leading-relaxed flex-1 min-w-0">
+                            <span className="text-white font-semibold">Selling more than one device?</span> Quote them all in one order next time and we&apos;ll send a single label — ship everything in one box, one trip. Got more to add to this one? Email <a href="mailto:support@topcashcellular.com" className="text-[#00c853] hover:underline">support@topcashcellular.com</a> before you ship and we&apos;ll combine them.
+                          </p>
+                        </div>
+                      )}
                       <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-3 mb-3">
                         <p className="text-[10px] uppercase tracking-wider text-[#00c853] font-bold mb-1">Tracking</p>
                         <p className="text-white font-mono font-bold text-sm break-all">{submittedLabel.tracking}</p>
