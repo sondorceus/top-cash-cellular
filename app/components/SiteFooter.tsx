@@ -106,6 +106,18 @@ export default function SiteFooter() {
           </div>
         </div>
 
+        <div className="border-t border-[#00c853]/15 pt-6 mb-6">
+          <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3 text-center">Sell in Austin</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            <a href="/sell-iphone-austin" className="text-xs hover:text-[#00c853] transition">Sell iPhone</a>
+            <a href="/sell-samsung-austin" className="text-xs hover:text-[#00c853] transition">Sell Samsung</a>
+            <a href="/sell-macbook-austin" className="text-xs hover:text-[#00c853] transition">Sell MacBook</a>
+            <a href="/sell-ipad-austin" className="text-xs hover:text-[#00c853] transition">Sell iPad</a>
+            <a href="/sell-locked-iphone" className="text-xs hover:text-[#00c853] transition">Carrier-Locked iPhone</a>
+            <a href="/sell-financed-phone" className="text-xs hover:text-[#00c853] transition">Financed Phone</a>
+          </div>
+        </div>
+
         <div className="border-t border-[#00c853]/15 pt-6 mb-6 text-center">
           <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Customer Service</p>
           <a href={EMAIL_HREF} className="inline-flex items-center gap-2 text-sm text-white hover:text-[#00c853] transition font-semibold bg-white/[0.12] border border-white/10 rounded-full px-4 py-2">
