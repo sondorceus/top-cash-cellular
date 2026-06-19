@@ -10,6 +10,7 @@ import { HeaderSearch } from "./components/HeaderSearch";
 import Pic from "./components/Pic";
 import NextImage from "next/image";
 import { CARRIER_DEDUCTIONS, PRICE_TABLE, MIN_OFFER, MACBOOK_SPECS, type MacSpec, type MacSpecOption } from "./data/prices";
+import { CATALOG_PRICE_BY_MODEL_ID } from "./data/catalog-prices";
 
 import { BRAND, EMAIL, EMAIL_HREF } from "./lib/constants";
 
@@ -2652,6 +2653,16 @@ const maxPopularDeviceBonus = (dt?: string | null): number => {
   return 0;
 };
 const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): number => {
+  // Direction B (2026-06-19): the displayed "up to $X" is the realistic
+  // catalog headline — the SAME number /sell/[slug] + landing pages show —
+  // not the sealed-2TB ceiling. Keeps homepage cards, the Top Payouts
+  // ticker, and every funnel "up to" label consistent with /sell, so there's
+  // no bait-and-switch and we never advertise a price almost no one gets
+  // (a used MacBook 14 M3 read "up to $2955" off the raw ceiling). Models
+  // not in the catalog (consoles, Dell, desktops, Surface, DJI) fall through
+  // to the computed ceiling below.
+  const catalogPrice = CATALOG_PRICE_BY_MODEL_ID[m.id];
+  if (typeof catalogPrice === "number" && catalogPrice > 0) return catalogPrice;
   const table = PRICE_TABLE[m.id];
   if (table) {
     let topPrice = 0;
