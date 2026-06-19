@@ -104,7 +104,10 @@ export async function GET() {
   for (const m of messages) {
     if (!m.body) continue;
     if (!m.body.includes("[NEW BUYBACK LEAD")) continue;
-    if (!m.body.toLowerCase().includes(email)) continue;
+    // Match the lead's OWN parsed Email: field, not a whole-body substring —
+    // a substring hit on a stranger's lead body would expose their trade
+    // (IDOR). Same fix as /api/track, /api/lookup, /api/account/login.
+    if (((parseField(m.body, "Email") || "").toLowerCase().trim()) !== email) continue;
     const handoffLine = parseField(m.body, "Handoff")?.toLowerCase();
     const handoffMethod: "ship" | "local" | undefined =
       handoffLine?.includes("ship") ? "ship" :

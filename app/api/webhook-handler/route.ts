@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { safeEqual } from "../../lib/admin-auth";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
+const MAX_EVENT_BODY = 8000; // cap input tokens forwarded to the model
 
 const SYSTEM_PROMPTS: Record<string, string> = {
   lead: `You are Theot, an AI assistant on the Top Cash Cellular team. A new buyback lead just came in. Your job:
@@ -20,13 +22,23 @@ Flag any gaps. Keep response under 150 words.`,
 };
 
 export async function POST(req: NextRequest) {
+  // Constant-time secret compare (everywhere else uses safeEqual); a plain
+  // !== leaks match length via timing.
   const secret = req.headers.get("x-webhook-secret");
-  if (!process.env.WEBHOOK_SECRET || secret !== process.env.WEBHOOK_SECRET) {
+  if (!process.env.WEBHOOK_SECRET || !safeEqual(secret, process.env.WEBHOOK_SECRET)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { event, hook, message } = await req.json();
+  let event: unknown, hook: unknown, message: { body?: string; tags?: string[] };
+  try {
+    ({ event, hook, message } = await req.json());
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
   if (!message?.body) return NextResponse.json({ error: "No message body" }, { status: 400 });
+  // Cap the forwarded body so a valid-secret caller can't drive unbounded
+  // Anthropic input-token spend with a giant payload.
+  const eventBody = String(message.body).slice(0, MAX_EVENT_BODY);
 
   const matchedTag = (message.tags || []).find((t: string) => SYSTEM_PROMPTS[t]);
   const systemPrompt = SYSTEM_PROMPTS[matchedTag || ""] || SYSTEM_PROMPTS.default;
@@ -39,7 +51,7 @@ export async function POST(req: NextRequest) {
       model: "claude-haiku-4-5-20251001",
       max_tokens: 300,
       system: systemPrompt,
-      messages: [{ role: "user", content: `Event: ${event}\nHook: ${hook}\n\nMessage:\n${message.body}` }],
+      messages: [{ role: "user", content: `Event: ${String(event)}\nHook: ${String(hook)}\n\nMessage:\n${eventBody}` }],
     });
     response = result.content[0].type === "text" ? result.content[0].text : "Could not process event.";
   } catch (e) {

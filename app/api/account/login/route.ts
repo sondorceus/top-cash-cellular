@@ -50,8 +50,13 @@ export async function POST(req: NextRequest) {
         const messages: { body?: string; timestamp: string }[] = data.messages || [];
         for (const m of messages) {
           if (!m.body) continue;
-          if (!m.body.toLowerCase().includes(email)) continue;
           if (!m.body.includes("[NEW BUYBACK LEAD")) continue;
+          // Compare against the lead's OWN parsed Email: field, not a
+          // whole-body substring — otherwise an email that merely appears in
+          // a STRANGER'S lead body (notes, etc.) would grant a session and
+          // count their trade as yours (IDOR). Same fix as /api/track + /lookup.
+          const leadEmail = m.body.match(/(?:^|\n)Email:[ \t]*([^\n]*)/i)?.[1]?.trim().toLowerCase() || "";
+          if (leadEmail !== email) continue;
           leadCount += 1;
           if (!name) {
             const nm = m.body.match(/(?:^|\n)Name:[ \t]*([^\n]*)/i);

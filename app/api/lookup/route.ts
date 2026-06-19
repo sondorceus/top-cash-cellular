@@ -26,17 +26,20 @@ function normalizePhone(p: string): string {
   return p.replace(/\D/g, "").replace(/^1/, "");
 }
 
+// Pull a "Key: value" field from a lead body. Line-anchored, inline
+// whitespace only (avoids \s* swallowing the next field on an empty value).
+function field(body: string, key: string): string | undefined {
+  const m = body.match(new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i"));
+  const v = m?.[1]?.trim();
+  return v || undefined;
+}
+// Matches single-device "[NEW BUYBACK LEAD]" and multi-device
+// "[NEW BUYBACK LEAD — N DEVICES]".
+const BUYBACK_RE = /\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i;
+
 function parseLeadBody(body: string, timestamp: string): PastLead | null {
-  if (!body.includes("[NEW BUYBACK LEAD]") && !body.includes("[CHAT LEAD]")) return null;
-  const get = (key: string) => {
-    // Anchor to line-start; only inline whitespace ([ \t]*) after the key.
-    // Avoids \s* (which includes \n) swallowing the next field when value
-    // is empty. See app/api/admin/leads/route.ts for full bug context.
-    const m = body.match(new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i"));
-    if (!m) return undefined;
-    const v = m[1].trim();
-    return v || undefined;
-  };
+  if (!BUYBACK_RE.test(body) && !body.includes("[CHAT LEAD]")) return null;
+  const get = (key: string) => field(body, key);
   return {
     name: get("Name"),
     device: get("Device")?.split(" — ")[0],
@@ -94,14 +97,21 @@ export async function POST(req: NextRequest) {
   const data = await r.json();
   const messages: { body?: string; timestamp: string }[] = data.messages || [];
 
-  // Filter messages whose body contains the phone or email
+  // Match the contact against each lead's OWN parsed Phone:/Email: fields —
+  // NOT a whole-body substring. The old code digit-stripped the entire body
+  // and substring-matched, so a 10-digit phone could collide with another
+  // lead's IMEI / ZIP / Source-IP / visitor-id, and an email typed into a
+  // different lead's notes would leak that stranger's trade. (Same IDOR fix
+  // already applied to /api/track.)
   const matched: PastLead[] = [];
   for (const m of messages) {
     if (!m.body) continue;
     const body = m.body;
-    const bodyLower = body.toLowerCase();
-    const phoneMatch = normPhone && normalizePhone(body).includes(normPhone);
-    const emailMatch = normEmail && bodyLower.includes(normEmail);
+    if (!BUYBACK_RE.test(body) && !body.includes("[CHAT LEAD]")) continue;
+    const leadPhone = normalizePhone(field(body, "Phone") || "");
+    const leadEmail = (field(body, "Email") || "").toLowerCase().trim();
+    const phoneMatch = !!normPhone && leadPhone.length >= 10 && leadPhone === normPhone;
+    const emailMatch = !!normEmail && leadEmail.length > 0 && leadEmail === normEmail;
     if (!phoneMatch && !emailMatch) continue;
     const lead = parseLeadBody(body, m.timestamp);
     if (lead) matched.push(lead);
