@@ -67,9 +67,16 @@ export function getResellEstimate(modelName: string | undefined | null): number 
   let best: { key: string; val: number } | null = null;
   for (const [key, val] of Object.entries(RESELL_ESTIMATES)) {
     if (m === key) return val;
-    if (m.includes(key) && (!best || key.length > best.key.length)) {
-      best = { key, val };
-    }
+    if (!m.includes(key)) continue;
+    // Trailing-token guard. A substring key must not match a query that
+    // carries a model-distinguishing token BEYOND the key — otherwise
+    // "iPhone 17 Air" matches "iPhone 17" (and gets clipped to the wrong,
+    // lower resell), "iPhone 16E"/"17E" match "iPhone 16"/"17", etc. Only a
+    // bare storage suffix ("256GB") is safe to ignore. Suffix-style keys
+    // (" M4", " (M3)") still match because the key reaches the query's end.
+    const rest = m.slice(m.indexOf(key) + key.length).trim();
+    if (rest !== "" && !/^\d+\s?(gb|tb)$/i.test(rest)) continue;
+    if (!best || key.length > best.key.length) best = { key, val };
   }
   return best ? best.val : null;
 }
