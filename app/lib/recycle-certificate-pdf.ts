@@ -10,7 +10,16 @@ export async function generateRecycleCertificatePdf(opts: {
   certNumber: string;
   certDate: string;
 }): Promise<Uint8Array> {
-  const { customerName, deviceLabel, certNumber, certDate } = opts;
+  // pdf-lib's StandardFonts use WinAnsi encoding, which THROWS on codepoints
+  // it can't encode (emoji, CJK, …). An exotic customer name would otherwise
+  // crash generateRecycleCertificatePdf and the certificate email would never
+  // send. Strip to the safe printable Latin-1 range and clamp length (also
+  // prevents a no-space mega-string from overflowing the centered line).
+  const winAnsiSafe = (s: string, max: number) =>
+    (s || "").replace(/[^\x20-\x7E\xC0-\xFF]/g, "").replace(/\s+/g, " ").trim().slice(0, max);
+  const { certNumber, certDate } = opts;
+  const customerName = winAnsiSafe(opts.customerName, 48);
+  const deviceLabel = winAnsiSafe(opts.deviceLabel, 60);
 
   const doc = await PDFDocument.create();
   doc.setTitle(`Certificate of Responsible Recycling — #${certNumber}`);

@@ -88,6 +88,9 @@ export async function GET(req: NextRequest) {
   // Track lead → email to filter internal addresses
   const leadEmail: Map<string, string> = new Map();
   const leadQuote: Map<string, number> = new Map();
+  // Leads whose payout has already been counted — guards against a
+  // paid→met (or re-flipped) lead inflating revenue + paid totals.
+  const paidCounted = new Set<string>();
   const leadDevice: Map<string, string> = new Map();
 
   // Error-monitor counters — see app/lib/error-report.ts. Posts an
@@ -137,12 +140,17 @@ export async function GET(req: NextRequest) {
       const quote = leadQuote.get(leadId) || 0;
       if (INTERNAL_EMAILS.includes(email)) continue;
       const isPaid = status === "paid" || status === "met";
-      if (isPaid) {
+      // Count a lead's payout ONCE. A lead that flips paid→met (or is
+      // re-flipped paid) emits multiple [STATUS: paid|met] markers; without
+      // this the revenue + paid count double-counted that customer.
+      const alreadyPaid = isPaid && paidCounted.has(leadId);
+      if (isPaid && !alreadyPaid) {
+        paidCounted.add(leadId);
         allTimePaid++;
         allTimeRevenue += quote;
       }
       const bump = (b: DayBucket) => {
-        if (isPaid) { b.paid++; b.revenue += quote; }
+        if (isPaid) { if (!alreadyPaid) { b.paid++; b.revenue += quote; } }
         else if (status === "shipped") b.shipped++;
         else if (status === "received") b.received++;
         else if (status === "rejected") b.rejected++;

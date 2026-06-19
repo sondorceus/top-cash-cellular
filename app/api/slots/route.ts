@@ -32,7 +32,22 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ slots: [], mcStatus: r.status }, { status: 200 });
     }
     const data = await r.json();
-    return NextResponse.json({ slots: data.slots || [] });
+    // Project each slot down to the fields the public booking UI needs —
+    // NEVER pass MC's raw slot through, which may carry a bookings[] array of
+    // other customers' name/phone/email/device (a PII + physical-safety leak
+    // on a public, unauthenticated endpoint). `booked` is just the count.
+    const slots = (Array.isArray(data.slots) ? data.slots : []).map((s: Record<string, unknown>) => ({
+      id: s.id,
+      date: s.date,
+      time: s.time,
+      allDay: s.allDay === true,
+      label: s.label,
+      capacity: s.capacity,
+      booked: typeof s.booked === "number"
+        ? s.booked
+        : (Array.isArray(s.bookings) ? s.bookings.length : 0),
+    }));
+    return NextResponse.json({ slots });
   } catch (e) {
     return NextResponse.json(
       { slots: [], error: e instanceof Error ? e.message : "MC unreachable" },
