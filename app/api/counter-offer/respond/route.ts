@@ -11,6 +11,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyCounterToken } from "../../../lib/counter-token";
 import { reportError } from "../../../lib/error-report";
+import { rateLimit, rateLimitResponse, clientIp } from "../../../lib/rate-limit";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -20,6 +21,12 @@ const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 
 export async function POST(req: NextRequest) {
+  // Throttle — this drives a money decision (accept/decline) + owner SMS and,
+  // unlike /api/lead and /api/confirm, had no limit. A forwarded token must
+  // not be loopable into conflicting responses / an SMS flood.
+  const rl = rateLimit(`counter-respond:${clientIp(req)}`, 15, 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs);
+
   let body: { token?: string; response?: "accept" | "decline"; note?: string };
   try {
     body = await req.json();

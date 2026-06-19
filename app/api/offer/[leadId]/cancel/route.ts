@@ -15,6 +15,7 @@
 // via the existing parser path. Skywalker 2026-05-19.
 
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -33,6 +34,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (!leadId || !/^[\w-]+$/.test(leadId)) {
     return NextResponse.json({ error: "Invalid offer id" }, { status: 400 });
   }
+  // Throttle — leadId is the only access control; don't let a leaked link
+  // flood MC / owner SMS.
+  const rl = rateLimit(`offer:${clientIp(req)}`, 20, 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs);
   if (!MC_KEY) {
     return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
   }

@@ -20,6 +20,7 @@
 // Skywalker 2026-05-20.
 
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
 import { parseTotalPayoutLine, parseDollarAmount } from "../../../../lib/lead-money";
 import {
   field, cleanField, latestStatus, resolveCurrentDevices, devicesTotal, LOCKED_STATUSES,
@@ -39,6 +40,11 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (!leadId || !/^[\w-]+$/.test(leadId)) {
     return NextResponse.json({ error: "Invalid offer id" }, { status: 400 });
   }
+  // Throttle — the only access control is the leadId, and this posts to MC +
+  // can fire owner SMS, so a leaked offer link must not be loopable into a
+  // MC-flood / owner-SMS bomb.
+  const rl = rateLimit(`offer:${clientIp(req)}`, 20, 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs);
   if (!MC_KEY) {
     return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
   }
