@@ -137,6 +137,9 @@ export type LabelResult = {
   // Base64-encoded PDF of the label. Caller persists to Vercel Blob.
   labelPdfBase64: string;
   serviceType: string;
+  // Account-billed cost of this label (USD), best-effort from the FedEx
+  // rating response. Undefined when FedEx didn't return a rate.
+  cost?: number;
 };
 
 // Per-device weight defaults calibrated against real device weights
@@ -291,13 +294,18 @@ export async function createReturnLabel(input: LabelInputs): Promise<LabelResult
     const errBody = await res.text().catch(() => "");
     throw new Error(`FedEx Ship API ${res.status}${errBody ? " — " + errBody.slice(0, 500) : ""}`);
   }
+  type RateDetail = { totalNetCharge?: number | { amount?: number }; totalNetChargeAmount?: number };
   const data = (await res.json()) as {
     output?: {
       transactionShipments?: Array<{
         masterTrackingNumber?: string;
         serviceType?: string;
+        completedShipmentDetail?: {
+          shipmentRating?: { shipmentRateDetails?: RateDetail[] };
+        };
         pieceResponses?: Array<{
           trackingNumber?: string;
+          netChargeAmount?: number;
           packageDocuments?: Array<{ contentType?: string; encodedLabel?: string; url?: string }>;
         }>;
       }>;
@@ -310,10 +318,21 @@ export async function createReturnLabel(input: LabelInputs): Promise<LabelResult
   if (!tracking || !label?.encodedLabel) {
     throw new Error("FedEx response missing tracking or label PDF.");
   }
+  // Best-effort billed cost — FedEx returns the rate in a couple of shapes
+  // depending on account config; try each. Undefined when not present (we
+  // never block the label on a missing rate). Gives the owner visibility
+  // into what each account-billed label actually costs.
+  const rd = ship?.completedShipmentDetail?.shipmentRating?.shipmentRateDetails?.[0];
+  const rawCharge =
+    (typeof rd?.totalNetCharge === "number" ? rd.totalNetCharge : rd?.totalNetCharge?.amount) ??
+    rd?.totalNetChargeAmount ??
+    ship?.pieceResponses?.[0]?.netChargeAmount;
+  const cost = typeof rawCharge === "number" && rawCharge > 0 ? Math.round(rawCharge * 100) / 100 : undefined;
   return {
     trackingNumber: tracking,
     labelPdfBase64: label.encodedLabel,
     serviceType: ship?.serviceType || "FEDEX_GROUND",
+    cost,
   };
 }
 

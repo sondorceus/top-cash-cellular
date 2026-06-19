@@ -1167,7 +1167,7 @@ Pick the best channel per device. Be concise.`;
   // print + drop their device immediately. Skywalker 2026-05-17. Local
   // meetups never call FedEx. Failures here are non-fatal — the lead is
   // already saved; staff can regenerate from /admin if needed.
-  let fedexLabel: { tracking: string; url: string; service: string } | null = null;
+  let fedexLabel: { tracking: string; url: string; service: string; cost?: number } | null = null;
   // When a ship-handoff label can't be minted, we tell the customer
   // why on the done page — so they can fix a bad address themselves
   // instead of staring at a silent dead-end. Classified to two kinds:
@@ -1303,7 +1303,7 @@ Pick the best channel per device. Be concise.`;
           access: "public",
           contentType: "application/pdf",
         });
-        fedexLabel = { tracking: label.trackingNumber, url: blob.url, service: label.serviceType };
+        fedexLabel = { tracking: label.trackingNumber, url: blob.url, service: label.serviceType, cost: label.cost };
         // Post the [LABEL: <leadId>] marker so the admin GET parser
         // attaches tracking + URL to the lead row. Gated on a REAL
         // leadId — when MC is down there's nothing to attach it to;
@@ -1317,7 +1317,7 @@ Pick the best channel per device. Be concise.`;
                 from: "topcash-web",
                 fromName: "Top Cash Cellular",
                 role: "system",
-                body: `[LABEL: ${leadId}] tracking=${label.trackingNumber} url=${blob.url} service=${label.serviceType}`,
+                body: `[LABEL: ${leadId}] tracking=${label.trackingNumber} url=${blob.url} service=${label.serviceType}${label.cost != null ? ` cost=$${label.cost}` : ""}`,
                 tags: ["fedex-label", "auto-generated"],
                 priority: "low",
               }),
@@ -1380,7 +1380,13 @@ Pick the best channel per device. Be concise.`;
                      : handoffMethodStr === "local" ? " [🤝 LOCAL]"
                      : handoffMethodStr === "mixed" ? " [📦+🤝 MIXED]"
                      : "";
-    const ownerSms = `${reviewTag}NEW LEAD${handoffTag}: ${name} wants to sell ${model} (${condition})${quote ? ` for $${quote}` : " — custom quote needed"}. Phone: ${phone || "N/A"} Email: ${email || "N/A"}${photoNote}`;
+    // Surface the FedEx label cost so the owner sees what each
+    // account-billed label costs the moment it mints (was invisible —
+    // Skywalker 2026-06-19 "didn't show that I got billed").
+    const labelNote = fedexLabel
+      ? ` 📦 FedEx label minted${fedexLabel.cost != null ? ` — billed ~$${fedexLabel.cost}` : " (cost pending)"}.`
+      : "";
+    const ownerSms = `${reviewTag}NEW LEAD${handoffTag}: ${name} wants to sell ${model} (${condition})${quote ? ` for $${quote}` : " — custom quote needed"}. Phone: ${phone || "N/A"} Email: ${email || "N/A"}${photoNote}${labelNote}`;
     try {
       await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
         method: "POST",

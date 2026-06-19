@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTracking } from "../../../lib/fedex";
+import { notifyOwnerSms } from "../../../lib/owner-sms";
 
 // Hourly FedEx tracking poll — Skywalker 2026-05-19. For every ship-
 // handoff lead in quote_requested or shipped status with a tracking
@@ -192,20 +193,31 @@ export async function GET(req: NextRequest) {
       if (newState !== "exception" || sameCode) continue;
     }
 
-    // Decide what to do based on (currentStatus, newState).
+    // Decide what to do based on (currentStatus, newState). mcMessage goes
+    // to the MC board; ownerMsg is the owner's phone SMS (high-signal, named
+    // by customer + device so Skywalker knows exactly what's moving — the
+    // board ping alone meant shipping events went unnoticed). Skywalker
+    // 2026-06-19: "I wasn't notified of shipping or that it was moving."
     let nextStatus: string | undefined;
     let mcMessage: string | undefined;
+    let ownerMsg: string | undefined;
+    const who = c.customer.name || "A customer";
+    const dev = c.customer.device ? ` (${c.customer.device})` : "";
     if (newState === "picked_up" && c.status === "quote_requested") {
       nextStatus = "shipped";
       mcMessage = `📦 Package picked up by customer — ${c.id} tracking=${c.tracking}. Auto-flipped to Shipped.`;
+      ownerMsg = `📦 ${who}'s package is on the move${dev} — now in transit to you. FedEx ${c.tracking}.`;
     } else if (newState === "out_for_delivery") {
       mcMessage = `🚚 Out for delivery today — ${c.id} tracking=${c.tracking}. Watch the inbox.`;
+      ownerMsg = `🚚 ${who}'s package${dev} is OUT FOR DELIVERY today. FedEx ${c.tracking}.`;
     } else if (newState === "delivered" && c.status !== "received") {
       nextStatus = "received";
       const when = result.deliveredAt ? ` at ${result.deliveredAt}` : "";
       mcMessage = `📬 Package DELIVERED${when} — ${c.id} tracking=${c.tracking}. Auto-flipped to Received. Inspect + test next.`;
+      ownerMsg = `📬 ${who}'s package${dev} was DELIVERED${when}. Inspect + test, then pay. FedEx ${c.tracking}.`;
     } else if (newState === "exception") {
       mcMessage = `⚠️ FedEx exception on ${c.id} (${c.tracking}): ${result.lastEventDescription || result.lastEventCode || "unknown"}. Manual check needed.`;
+      ownerMsg = `⚠️ FedEx issue on ${who}'s package${dev}: ${result.lastEventDescription || result.lastEventCode || "unknown"}. FedEx ${c.tracking}.`;
     }
 
     // Persist the state marker so we don't reprocess this on the next run.
@@ -214,6 +226,12 @@ export async function GET(req: NextRequest) {
     let mcPosted = false;
     if (mcMessage) {
       mcPosted = await postToMc(mcMessage);
+    }
+    // Text the owner on every real movement event (best-effort; no-ops if
+    // Twilio unconfigured). This is the fix for shipping events going
+    // unnoticed — the board ping isn't enough.
+    if (ownerMsg) {
+      await notifyOwnerSms(ownerMsg);
     }
     if (nextStatus) {
       // Status flip — route through the admin status endpoint so the
