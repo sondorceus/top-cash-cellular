@@ -111,6 +111,11 @@ export default function ProfitPage() {
   const [data, setData] = useState<Payload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // FedEx label spend — actual account-billed shipping cost, classified by
+  // whether each label was actually scanned (FedEx bills on use).
+  const [labelSpend, setLabelSpend] = useState<{
+    summary: { chargedTotal: number; pendingTotal: number; totalLabels: number; chargedCount: number; pendingCount: number; unusedCount: number; unknownCostCount: number };
+  } | null>(null);
   const [range, setRange] = useState<Range>("all");
   // Inclusive custom date range (YYYY-MM-DD). Default both to today
   // so picking "Custom" with no further input narrows to a known
@@ -185,6 +190,15 @@ export default function ProfitPage() {
   }, [token]);
 
   useEffect(() => { fetchAdSpend(); }, [fetchAdSpend]);
+
+  const fetchLabelSpend = useCallback(async () => {
+    try {
+      const r = await fetch("/api/admin/label-spend", { headers: token ? { "x-admin-token": token } : {}, cache: "no-store" });
+      if (r.ok) setLabelSpend(await r.json());
+    } catch { /* non-critical — leave the card hidden */ }
+  }, [token]);
+
+  useEffect(() => { fetchLabelSpend(); }, [fetchLabelSpend]);
 
   // Lazy-load the leads list the first time the operator touches the
   // Lead-ID input. We don't pull it eagerly because most form-fills
@@ -613,6 +627,33 @@ export default function ProfitPage() {
             tone={netProfit >= 0 ? "good" : "bad"}
           />
         </div>
+
+        {/* FedEx label spend — auto-captured account-billed shipping cost,
+            split by whether FedEx actually scanned the label (it bills on
+            use, so unused labels are free). Distinct from the manually-keyed
+            "Shipping" ledger column above. */}
+        {labelSpend && labelSpend.summary.totalLabels > 0 && (
+          <div className="mt-3 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <div className="flex items-center justify-between mb-3 flex-wrap gap-1">
+              <p className="text-[11px] uppercase tracking-wider text-[#00c853] font-bold">FedEx label spend</p>
+              <p className="text-[10px] text-[#888]">FedEx bills on use — unused labels cost $0 · {labelSpend.summary.totalLabels} labels minted</p>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <p className="text-xl font-extrabold text-white">${money(labelSpend.summary.chargedTotal)}</p>
+                <p className="text-[10px] text-[#9a9a9a] leading-tight mt-0.5">Charged · {labelSpend.summary.chargedCount} shipped{labelSpend.summary.unknownCostCount > 0 ? ` (+${labelSpend.summary.unknownCostCount} pre-tracking)` : ""}</p>
+              </div>
+              <div>
+                <p className="text-xl font-extrabold text-[#ffb400]">${money(labelSpend.summary.pendingTotal)}</p>
+                <p className="text-[10px] text-[#9a9a9a] leading-tight mt-0.5">Pending · {labelSpend.summary.pendingCount} not yet scanned</p>
+              </div>
+              <div>
+                <p className="text-xl font-extrabold text-[#9a9a9a]">{labelSpend.summary.unusedCount}</p>
+                <p className="text-[10px] text-[#9a9a9a] leading-tight mt-0.5">Unused (free) · never scanned</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Per-day bar chart — only when the range spans more than
             today and there's at least one day with activity. Sales-
