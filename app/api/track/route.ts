@@ -35,6 +35,14 @@ interface TrackedLead {
   // Lets the /track UI pick the right funnel — 5-step for ship,
   // 3-step for local meetups (matches the offer page).
   handoffMethod?: "ship" | "local";
+  // Live FedEx delivery sub-state for the in-transit leg, parsed from the
+  // hourly fedex-poll cron's [FEDEX-EVENT: leadId state=X code=Y] markers.
+  // One of: label_created | picked_up | out_for_delivery | delivered |
+  // exception. Lets /track show "where's my package" detail between the
+  // coarse Shipped and Received pipeline stages.
+  fedexState?: string;
+  fedexEventDesc?: string;
+  fedexStateAt?: string;
 }
 
 // "met" terminates a local meetup (the local twin of "paid") — it
@@ -105,8 +113,19 @@ export async function POST(req: NextRequest) {
   const statusByLead = new Map<string, { status: string; timestamp: string }>();
   // Pass 1.5: collect FedEx label info by lead id (most recent wins).
   const labelByLead = new Map<string, { tracking: string; url: string; service?: string; timestamp: string }>();
+  // Pass 1.6: collect the latest FedEx delivery sub-state per lead from the
+  // cron's [FEDEX-EVENT: leadId state=X code=Y] description markers.
+  const fedexEventByLead = new Map<string, { state: string; desc?: string; timestamp: string }>();
   for (const m of messages) {
     if (!m.body) continue;
+    const fm = m.body.match(/\[FEDEX-EVENT:\s*([\w-]+)\s+state=([a-z_]+)(?:\s+code=\S+)?\]\s*([^\n\r]*)/i);
+    if (fm) {
+      const leadId = fm[1];
+      const existing = fedexEventByLead.get(leadId);
+      if (!existing || m.timestamp > existing.timestamp) {
+        fedexEventByLead.set(leadId, { state: fm[2].toLowerCase(), desc: fm[3]?.trim() || undefined, timestamp: m.timestamp });
+      }
+    }
     const sm = m.body.match(/\[STATUS:\s*(\w+)\]/i);
     const lm = m.body.match(/\[LEAD:\s*([\w-]+)\]/i);
     if (sm && lm && STATUSES.includes(sm[1].toLowerCase())) {
@@ -158,6 +177,7 @@ export async function POST(req: NextRequest) {
     const deviceLine = parseField(body, "Device");
     const status = statusByLead.get(m.id);
     const label = labelByLead.get(m.id);
+    const fedexEvent = fedexEventByLead.get(m.id);
     // Detect handoff from the lead body's "--- Handoff: SHIPPING ---"
     // / "--- Handoff: LOCAL MEETUP ---" header marker (same regex the
     // offer route uses, so /track and /offer agree on the funnel).
@@ -181,6 +201,9 @@ export async function POST(req: NextRequest) {
       fedexService: label?.service,
       shipExpectingLabel: isShipHandoff && !label,
       handoffMethod,
+      fedexState: fedexEvent?.state,
+      fedexEventDesc: fedexEvent?.desc,
+      fedexStateAt: fedexEvent?.timestamp,
     });
   }
 

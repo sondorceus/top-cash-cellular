@@ -23,6 +23,9 @@ interface Lead {
   fedexService?: string;
   shipExpectingLabel?: boolean;
   handoffMethod?: "ship" | "local";
+  fedexState?: string;
+  fedexEventDesc?: string;
+  fedexStateAt?: string;
 }
 
 // Shared funnel glyphs (matches the offer page so both surfaces show
@@ -119,6 +122,64 @@ function ProgressBar({ status, isShip }: { status: string; isShip: boolean }) {
       <div className="relative h-1 bg-white/5 rounded-full -mt-[58px] mx-5 mb-12 -z-10">
         <div className="absolute top-0 left-0 h-full bg-[#00c853] rounded-full transition-all duration-[450ms]" style={{ width: `${idx <= 0 ? 0 : (idx / (pipeline.length - 1)) * 100}%` }} />
       </div>
+    </div>
+  );
+}
+
+// Granular FedEx delivery sub-stages, shown during the in-transit leg
+// (between the coarse "Shipped" and "Received" pipeline steps) so the
+// customer can watch the package move. States come from /api/track, which
+// reads the fedex-poll cron's [FEDEX-EVENT: …] markers. "picked_up" is
+// FedEx's PU/IT/AR — i.e. the box is moving.
+const DELIVERY_STAGES = [
+  { state: "label_created", label: "Label made", icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" },
+  { state: "picked_up", label: "In transit", icon: TRUCK_ICON },
+  { state: "out_for_delivery", label: "Out for delivery", icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z" },
+  { state: "delivered", label: "Delivered", icon: "M5 13l4 4L19 7" },
+];
+
+function DeliveryTracker({ state, desc, at }: { state?: string; desc?: string; at?: string }) {
+  if (!state) return null;
+  if (state === "exception") {
+    return (
+      <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-3">
+        <p className="text-amber-300 text-sm font-semibold mb-1 flex items-center gap-2">
+          <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          Delivery exception
+        </p>
+        <p className="text-[#dcdcdc] text-xs leading-relaxed">{desc || "FedEx reported a hold or issue with this package."} We&apos;re keeping an eye on it — email <a href="mailto:support@topcashcellular.com" className="underline">support@topcashcellular.com</a> if you have questions.</p>
+      </div>
+    );
+  }
+  const idx = DELIVERY_STAGES.findIndex((s) => s.state === state);
+  if (idx < 0) return null; // unknown — don't render a misleading tracker
+  const delivered = state === "delivered";
+  return (
+    <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-3">
+      <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Where&apos;s your package?</p>
+      <div className="flex items-center justify-between gap-1">
+        {DELIVERY_STAGES.map((s, i) => {
+          const done = i < idx || delivered;
+          const current = i === idx && !delivered;
+          return (
+            <div key={s.state} className="flex-1 flex flex-col items-center gap-1.5 min-w-0">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center transition ${
+                done ? "bg-[#00c853] text-[#0a0a0a]" :
+                current ? "bg-[#00c853] text-[#0a0a0a] ring-4 ring-[#00c853]/30 animate-pulse" :
+                "bg-white/5 border border-white/10 text-[#c5c5c5]"
+              }`}>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d={done ? "M5 13l4 4L19 7" : s.icon} />
+                </svg>
+              </div>
+              <p className={`text-[9px] text-center leading-tight ${done || current ? "text-white font-semibold" : "text-[#c5c5c5]"}`}>{s.label}</p>
+            </div>
+          );
+        })}
+      </div>
+      {(desc || at) && (
+        <p className="text-[#c5c5c5] text-[10px] mt-3 text-center">{desc}{desc && at ? " · " : ""}{at ? timeAgo(at) : ""}</p>
+      )}
     </div>
   );
 }
@@ -263,6 +324,12 @@ function TrackInner() {
                       <p className="text-[#c5c5c5] text-[10px] mt-2">Service: {lead.fedexService}</p>
                     )}
                   </div>
+                )}
+                {/* Live delivery sub-tracker — only while the package is in
+                    transit to us (before staff marks it Received, which the
+                    coarse pipeline above then reflects). */}
+                {lead.fedexState && lead.fedexTracking && (lead.status === "shipped" || lead.status === "quote_requested") && (
+                  <DeliveryTracker state={lead.fedexState} desc={lead.fedexEventDesc} at={lead.fedexStateAt} />
                 )}
                 {lead.shipExpectingLabel && !lead.fedexTracking && (
                   <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-3">
