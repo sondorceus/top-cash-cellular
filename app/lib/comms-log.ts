@@ -14,7 +14,7 @@ const MC_KEY = process.env.MC_API_KEY || "";
 type LogArgs = {
   leadId: string;
   channel: "sms" | "email";
-  kind: "status" | "label" | "label-resend" | "adjust" | "manual";
+  kind: "status" | "label" | "label-resend" | "adjust" | "manual" | "sequence" | "reminder";
   to: string;
   // One-line summary so a human skimming MC comms can see what went
   // out. Truncated + newlines collapsed when written to the marker.

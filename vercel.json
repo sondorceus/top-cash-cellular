@@ -24,6 +24,10 @@
     {
       "path": "/api/cron/watchdog",
       "schedule": "15 */6 * * *"
+    },
+    {
+      "path": "/api/cron/sequences",
+      "schedule": "0 17 * * *"
     }
   ]
 }
