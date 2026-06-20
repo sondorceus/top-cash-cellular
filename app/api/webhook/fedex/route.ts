@@ -52,6 +52,9 @@ function extractTracking(payload: unknown): string {
     nested("trackingNumberInfo", "trackingNumber"),
     nested("data", "tracking_number"),
     nested("msg", "tracking_number"),
+    nested("result", "tracking_code"), // EasyPost tracker.updated
+    nested("result", "tracking_number"),
+    nested("tracker", "tracking_code"), // AfterShip / others
   ];
   for (const c of cands) {
     if (typeof c === "string" && c.trim()) return c.trim().replace(/[^A-Za-z0-9-]/g, "");

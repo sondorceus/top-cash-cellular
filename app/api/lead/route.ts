@@ -9,6 +9,7 @@ import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 import { formatOfferNumber } from "../../lib/offer-number";
 import { getResellEstimate, resellMultiplierForCondition } from "../../lib/resell-estimates";
 import { mailShell, mailDetails, MAIL } from "../../lib/email-shell";
+import { registerEasyPostTracker } from "../../lib/easypost";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -1305,6 +1306,9 @@ Pick the best channel per device. Be concise.`;
           contentType: "application/pdf",
         });
         fedexLabel = { tracking: label.trackingNumber, url: blob.url, service: label.serviceType, cost: label.cost };
+        // Register with EasyPost (if configured) so it pushes real-time scan
+        // webhooks to /api/webhook/fedex. Best-effort, never blocks the label.
+        registerEasyPostTracker(label.trackingNumber).catch(() => {});
         // Post the [LABEL: <leadId>] marker so the admin GET parser
         // attaches tracking + URL to the lead row. Gated on a REAL
         // leadId — when MC is down there's nothing to attach it to;
