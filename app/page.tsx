@@ -5067,7 +5067,14 @@ export default function Home() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const v = new URLSearchParams(window.location.search).get("addToOrder");
-    if (v && /^[\w-]+$/.test(v)) setAddToOrderId(v);
+    if (v && /^[\w-]+$/.test(v)) {
+      setAddToOrderId(v);
+      // Start the add-a-device flow CLEAN: drop any persisted cart + session so
+      // a stale cart/step can't jump the funnel past the quote step (where the
+      // "Add to offer" CTA lives). This effect is declared before the cart/
+      // session restore effects, so they hydrate to nothing → fresh flow.
+      try { localStorage.removeItem("tcc-cart"); localStorage.removeItem("tcc-session"); } catch {}
+    }
   }, []);
   // After a funnel step changes, suppress the green card hover until the
   // user actually moves the pointer (or 700ms passes). Without this, a card
