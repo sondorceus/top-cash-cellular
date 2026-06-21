@@ -4328,6 +4328,13 @@ export default function Home() {
   // passes the code to /api/lead on submit, where the referee bonus is
   // applied + the referral recorded. Skywalker 2026-05-22.
   const [referralCode, setReferralCode] = useState<string | null>(null);
+  // "Add another device" to an existing offer. Arrives via ?addToOrder=<leadId>
+  // from the offer page. When set, the quote step's primary CTA appends the
+  // priced device to that offer (POST /api/offer/<id>/append) instead of the
+  // normal new-lead/cart checkout flow, then returns to the offer page.
+  const [addToOrderId, setAddToOrderId] = useState<string | null>(null);
+  const [addingToOrder, setAddingToOrder] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
   // Lets the global <HeaderSearch> on /faq, /bulk, /reviews, etc. land
   // a user on the funnel with their query already typed in. Reads ?q=
   // from the URL once on mount, then scrubs it so a refresh doesn't
@@ -5053,6 +5060,14 @@ export default function Home() {
       const clean = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
       window.history.replaceState({}, "", clean);
     }
+  }, []);
+  // "Add another device" mode — read ?addToOrder=<leadId> once on mount.
+  // Same id shape the append route enforces. Left in the URL so it survives
+  // in-funnel navigation; cleared on a successful append (we redirect anyway).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const v = new URLSearchParams(window.location.search).get("addToOrder");
+    if (v && /^[\w-]+$/.test(v)) setAddToOrderId(v);
   }, []);
   // After a funnel step changes, suppress the green card hover until the
   // user actually moves the pointer (or 700ms passes). Without this, a card
@@ -5855,6 +5870,44 @@ export default function Home() {
   const isPendingQuote = !model?.base;
   const isBrokenNonFunctional = condition?.id === "broken" && brokenFunctional === false;
   const isManualQuote = isBelowMinimum || isBrokenNonFunctional || needsMarginReview;
+
+  // Add-to-order mode: append the currently-priced device to an existing offer.
+  // NOTE: the append route wants `quote` as the LINE TOTAL (price × qty), and
+  // our `quote` is per-unit — so send `quote * quantity`. On success we leave
+  // the funnel for the offer page.
+  const isAddToOrder = !!addToOrderId;
+  const submitAddToOrder = async () => {
+    if (!addToOrderId || !model || !condition || addingToOrder) return;
+    setAddError(null);
+    setAddingToOrder(true);
+    try {
+      const devices = [{
+        model: model.label,
+        storage: storage?.label,
+        condition: condition.label,
+        quote: quote * quantity,
+        quantity,
+        needsReview: isManualQuote || isPendingQuote,
+      }];
+      const r = await fetch(`/api/offer/${encodeURIComponent(addToOrderId)}/append`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ devices }),
+      });
+      if (!r.ok) {
+        const d = await r.json().catch(() => ({}));
+        setAddError(d?.error || "Couldn't add the device — please try again.");
+        setAddingToOrder(false);
+        if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      window.location.href = `/offer/${encodeURIComponent(addToOrderId)}`;
+    } catch {
+      setAddError("Couldn't reach the server — please try again.");
+      setAddingToOrder(false);
+      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
   // Personalize the "why we need to review" message per trigger so the
   // customer understands what's specifically blocking the instant quote.
   // Skywalker 2026-05-19 — generic "below threshold" was confusing for
@@ -10931,6 +10984,12 @@ export default function Home() {
                 quote step matches the same selectionPanelMobile pattern
                 used on every other funnel step. */}
             {selectionPanelMobile}
+            {isAddToOrder && (
+              <div className="mb-3 px-3 py-2 rounded-xl text-sm text-left" style={{ background: "rgba(0,200,83,0.10)", border: "1px solid rgba(0,200,83,0.35)", color: "#a7f3c0" }}>
+                Adding to your existing offer <strong>#{addToOrderId!.slice(0, 10).toUpperCase()}</strong>. Price this device, then tap &ldquo;Add to offer.&rdquo;
+                {addError && <div className="mt-1 text-amber-300 font-semibold">{addError}</div>}
+              </div>
+            )}
             <div className="hidden lg:block mb-2">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853] mb-1">Your offer</p>
               {isPendingQuote || isManualQuote ? (
@@ -11345,6 +11404,15 @@ export default function Home() {
               <button onClick={goBack} className="flex-1 bg-white/10 text-white py-5 rounded-2xl text-base lg:text-lg font-extrabold cursor-pointer hover:bg-white/15 transition tap-press">
                 Back
               </button>
+              {isAddToOrder ? (
+                <button
+                  onClick={submitAddToOrder}
+                  disabled={addingToOrder || !model || !condition}
+                  className="tcc-button-primary flex-[2] py-5 text-base lg:text-lg font-extrabold disabled:opacity-50"
+                >
+                  {addingToOrder ? "Adding…" : `Add to offer ($${(quote * quantity).toLocaleString()})`}
+                </button>
+              ) : (
               <button
                 onClick={() => {
                   if (model && condition) {
@@ -11423,6 +11491,7 @@ export default function Home() {
               >
                 Add to Cart →
               </button>
+              )}
             </div>
             {/* Spacer so the sticky CTA row on mobile doesn't sit on top of
                 the trust strip below. Disabled on lg+ where the row is inline. */}

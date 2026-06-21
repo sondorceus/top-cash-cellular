@@ -939,7 +939,16 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           </div>
 
           {canEditItems && (
-            <p className="text-[#888] text-[11px] mt-2">Spotted a mistake? Edit a device above — your estimate updates instantly.</p>
+            <>
+              <a
+                href={`/?addToOrder=${encodeURIComponent(leadId)}`}
+                className="mt-3 inline-flex items-center justify-center gap-1.5 w-full py-3 rounded-xl font-bold text-sm cursor-pointer transition hover:brightness-110"
+                style={{ background: "rgba(0,200,83,0.12)", border: "1px solid rgba(0,200,83,0.40)", color: "#00c853" }}
+              >
+                + Add another device
+              </a>
+              <p className="text-[#888] text-[11px] mt-2">Spotted a mistake? Edit a device above — your estimate updates instantly.</p>
+            </>
           )}
           {!isCancelled && offer.status !== "quote_requested" && (
             <p className="text-[#888] text-[11px] mt-2 flex items-start gap-1.5"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg><span>Device details lock once your trade is on its way. Need a change? <a href={`mailto:support@topcashcellular.com?subject=${encodeURIComponent("Offer " + offer.id)}`} className="text-[#00c853] hover:underline">Email us</a>.</span></p>
