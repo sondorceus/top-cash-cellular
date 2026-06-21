@@ -5,6 +5,7 @@ import { createReturnLabel, deviceKindFromString, aggregateWeight, shouldBlockAu
 import { reportError } from "../../lib/error-report";
 import { REFERRAL_REFEREE_BONUS, REFERRAL_CODE_RE } from "../../lib/referral";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "../../lib/payout-verify";
+import { validateEmail, looksLikeEmail, suggestEmail, isDisposableEmail } from "../../lib/email-validate";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 import { formatOfferNumber } from "../../lib/offer-number";
 import { getResellEstimate, resellMultiplierForCondition } from "../../lib/resell-estimates";
@@ -217,6 +218,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "SMS consent required when providing a phone number." }, { status: 400 });
   }
   if (!name || (!phone && !email)) return NextResponse.json({ error: "Name and contact info required" }, { status: 400 });
+  // Reject typo'd / fake / disposable emails so we don't capture dead leads or
+  // form spam. Only runs when an email is actually provided (phone-only leads
+  // are unaffected). MX lookup fails open on transient DNS errors.
+  if (email && typeof email === "string") {
+    const ec = await validateEmail(email, { checkMx: true });
+    if (!ec.ok) {
+      return NextResponse.json({ error: ec.reason || "Please enter a valid email address.", suggestion: ec.suggestion }, { status: 400 });
+    }
+  }
   // FedEx requires a recipient phone on every label. Reject ship
   // handoffs that arrive without one so the auto-label-mint downstream
   // doesn't silently fail. UI already requires the field, this is the
@@ -1691,9 +1701,10 @@ async function handleRecycleLead(req: NextRequest, data: Record<string, unknown>
 // (the funnel calls this fire-and-forget).
 async function handleQuoteSave(req: NextRequest, data: Record<string, unknown>) {
   const email = typeof data.email === "string" ? data.email : "";
-  // Nothing to capture without an email — the whole point is to be able
-  // to follow up with the customer later.
-  if (!email.trim() || !/.+@.+\..+/.test(email.trim())) {
+  // Nothing to capture without a GOOD email — the whole point is to be able to
+  // follow up later. Skip saving when it's malformed, an obvious typo, or a
+  // disposable inbox so the abandoned-quote drip never nudges a dead address.
+  if (!email.trim() || !looksLikeEmail(email) || !!suggestEmail(email) || isDisposableEmail(email)) {
     return NextResponse.json({ ok: true, quoteSaved: false });
   }
 
