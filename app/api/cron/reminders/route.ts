@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mailLogo } from "../../../lib/email-shell";
+import { mailLogo, mailButton } from "../../../lib/email-shell";
 import { randomBytes } from "crypto";
 import { fetchCommsPaged } from "../../../lib/mc-comms";
 
@@ -119,7 +119,7 @@ async function logReminderSent(leadId: string, kind: "quote" | "review") {
 function wrapEmail(opts: { title: string; bodyHtml: string; ctaHref?: string; ctaLabel?: string; accent?: string }): string {
   const accent = opts.accent || "#00c853";
   const cta = opts.ctaHref && opts.ctaLabel
-    ? `<div style="text-align:center;margin:24px 0 12px"><a href="${opts.ctaHref}" style="display:inline-block;padding:13px 28px;background:${accent};color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:0 4px 14px rgba(0,200,83,0.35)">${opts.ctaLabel}</a></div>`
+    ? `<div style="text-align:center;margin:24px 0 12px">${mailButton(opts.ctaHref, opts.ctaLabel, accent.toLowerCase() === "#00c853" ? "green" : "yellow")}</div>`
     : "";
   // Logo: transparent glass wordmark (`/logo-wordmark-glass.png`) at 150px.
   // The old `email-logo.png` carried a grungy distressed black texture and

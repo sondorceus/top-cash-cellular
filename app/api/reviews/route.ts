@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mailLogo } from "../../lib/email-shell";
+import { mailLogo, mailButton, esc as shellEsc } from "../../lib/email-shell";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -76,7 +76,7 @@ async function notifyOwner(review: { name: string; rating: number; body: string;
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
       const accent = lowRating ? "#ff5566" : "#ffb400";
-      const html = `<!doctype html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:32px 16px"><div style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden"><div style="background:linear-gradient(135deg,${accent} 0%,#b07900 100%);padding:24px 28px;color:#1a1100"><div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7;margin-bottom:4px">Top Cash Cellular · Owner alert</div><div style="font-size:22px;font-weight:800;line-height:1.1">${lowRating ? "⚠️ Low-rating review" : "★ New customer review"}</div></div><div style="padding:28px"><div style="font-size:32px;color:${accent};line-height:1;margin-bottom:8px">${stars}</div><p style="font-size:18px;color:#fff;font-weight:700;margin:0 0 6px">${esc(review.name)}${review.city ? ` <span style="font-weight:400;color:#888">· ${esc(review.city)}</span>` : ""}</p>${review.device ? `<p style="font-size:13px;color:#888;margin:0 0 14px">Sold: ${esc(review.device)}</p>` : ""}${review.title ? `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 8px">${esc(review.title)}</p>` : ""}<p style="font-size:15px;line-height:1.6;color:#e6e6e6;margin:0 0 22px;white-space:pre-wrap">${esc(review.body)}</p><div style="text-align:center"><a href="https://topcashcellular.com/reviews" style="display:inline-block;padding:12px 24px;background:linear-gradient(180deg,#00c853 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:13px;text-decoration:none;border-radius:999px">View all reviews</a></div></div></div></body></html>`;
+      const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:32px 16px"><div style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden"><div style="background:linear-gradient(135deg,${accent} 0%,#b07900 100%);padding:24px 28px;color:#1a1100"><div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7;margin-bottom:4px">Top Cash Cellular · Owner alert</div><div style="font-size:22px;font-weight:800;line-height:1.1">${lowRating ? "⚠️ Low-rating review" : "★ New customer review"}</div></div><div style="padding:28px"><div style="font-size:32px;color:${accent};line-height:1;margin-bottom:8px">${stars}</div><p style="font-size:18px;color:#fff;font-weight:700;margin:0 0 6px">${esc(review.name)}${review.city ? ` <span style="font-weight:400;color:#888">· ${esc(review.city)}</span>` : ""}</p>${review.device ? `<p style="font-size:13px;color:#888;margin:0 0 14px">Sold: ${esc(review.device)}</p>` : ""}${review.title ? `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 8px">${esc(review.title)}</p>` : ""}<p style="font-size:15px;line-height:1.6;color:#e6e6e6;margin:0 0 22px;white-space:pre-wrap">${esc(review.body)}</p><div style="text-align:center">${mailButton("https://topcashcellular.com/reviews", "View all reviews", "green")}</div></div></div></body></html>`;
       const text = `${subject}\n\n${stars}\n${review.name}${review.city ? ` · ${review.city}` : ""}\n${review.device ? `Sold: ${review.device}\n` : ""}${review.title ? `\n${review.title}\n` : ""}\n${review.body}\n\nhttps://topcashcellular.com/reviews`;
       await resend.emails.send({
         from: "Top Cash Cellular <noreply@topcashcellular.com>",
@@ -103,14 +103,14 @@ async function mailCoupon(opts: { to: string; firstName: string; code: string; v
     const resend = new Resend(process.env.RESEND_API_KEY);
     const expDate = new Date(opts.expiresAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
     const subject = `Your $${opts.value} thank-you coupon — ${opts.code}`;
-    const html = `<!doctype html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:32px 16px">
+    const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:32px 16px">
 <div style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
   <div style="background:linear-gradient(135deg,#ffd54f 0%,#ffb400 60%,#e69900 100%);padding:24px 28px;color:#1a1100">
     <div style="margin:0 0 16px">${mailLogo()}</div>
     <div style="font-size:22px;font-weight:800;line-height:1.1">Thanks for the review — here's $${opts.value} for next time</div>
   </div>
   <div style="padding:28px">
-    <p style="margin:0 0 14px;font-size:16px;color:#fff;font-weight:700">Hi ${opts.firstName},</p>
+    <p style="margin:0 0 14px;font-size:16px;color:#fff;font-weight:700">Hi ${shellEsc(opts.firstName)},</p>
     <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#e6e6e6">Genuinely appreciate you taking 30 seconds to share your experience. As a small thanks, here's a $${opts.value} bonus you can apply to your next trade with us — no minimum, no fine print, just $${opts.value} added to whatever device you sell next.</p>
     <div style="background:rgba(255,180,0,0.08);border:2px dashed rgba(255,180,0,0.5);border-radius:14px;padding:22px;margin:0 0 20px;text-align:center">
       <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#ffd54f;font-weight:800;margin-bottom:8px">Your code</div>
@@ -118,7 +118,7 @@ async function mailCoupon(opts: { to: string; firstName: string; code: string; v
       <div style="font-size:12px;color:#bdbdbd;margin-top:10px">Expires ${expDate} · One use · Bound to ${opts.to}</div>
     </div>
     <p style="margin:0 0 14px;font-size:14px;line-height:1.65;color:#dcdcdc">Just paste this code when you're checking out your next trade — we'll add $${opts.value} to whatever your offer is. The code only works with the email above, so it can't be passed around (we'd rather give YOU a fresh one next time than reward a stranger).</p>
-    <div style="text-align:center;margin:24px 0 8px"><a href="https://topcashcellular.com" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00c853 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px">Get a quote →</a></div>
+    <div style="text-align:center;margin:24px 0 8px">${mailButton("https://topcashcellular.com", "Get a quote →", "green")}</div>
     <p style="margin:18px 0 0;font-size:14px;color:#e6e6e6;line-height:1.6">— The Top Cash Cellular team<br><span style="color:#888;font-size:12px">Austin, TX · a small business · real humans</span></p>
     <div style="margin:24px 0 0;padding-top:18px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;color:#888;line-height:1.6;text-align:center">Lost this email? Reply or write to <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">support@topcashcellular.com</a> and we'll resend.</div>
   </div>

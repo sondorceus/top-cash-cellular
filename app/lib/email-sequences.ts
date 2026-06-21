@@ -33,7 +33,7 @@ export type Sequence = {
 // Shared dark email shell — now routes through the unified mailShell so the
 // recovery sequence renders identically (and Outlook-safe, with the VML
 // button) to every other TCC email.
-import { mailShell } from "./email-shell";
+import { mailShell, esc } from "./email-shell";
 
 function shell(opts: { heading: string; bodyHtml: string; ctaUrl: string; ctaLabel: string }): string {
   return mailShell({
@@ -62,9 +62,9 @@ export const SEQUENCES: Sequence[] = [
         subject: (v) => `Your ${v.device} offer is still good${v.quote ? ` — ${v.quote}` : ""}`,
         html: (v) =>
           shell({
-            heading: `Your offer's still locked in, ${v.firstName}`,
+            heading: `Your offer's still locked in, ${esc(v.firstName)}`,
             bodyHtml:
-              p(`Hi ${v.firstName}, just a friendly note that your ${v.device} offer${v.quote ? ` of <strong style="color:#fff">${v.quote}</strong>` : ""} is still good.`) +
+              p(`Hi ${esc(v.firstName)}, just a friendly note that your ${esc(v.device)} offer${v.quote ? ` of <strong style="color:#fff">${esc(v.quote)}</strong>` : ""} is still good.`) +
               p(`Cashing out is quick: we send a prepaid shipping label (or meet you locally in Austin), and you're paid the day your device checks out — Zelle, Cash App, Venmo, PayPal, BTC, or cash.`) +
               p(`Your offer page has everything in one place:`),
             ctaUrl: v.offerUrl,
@@ -81,9 +81,9 @@ export const SEQUENCES: Sequence[] = [
         subject: (v) => `Anything holding up your ${v.device} sale?`,
         html: (v) =>
           shell({
-            heading: `Still want to sell your ${v.device}?`,
+            heading: `Still want to sell your ${esc(v.device)}?`,
             bodyHtml:
-              p(`Hi ${v.firstName} — checking in one last time on your ${v.device}${v.quote ? ` (${v.quote})` : ""}.`) +
+              p(`Hi ${esc(v.firstName)} — checking in one last time on your ${esc(v.device)}${v.quote ? ` (${esc(v.quote)})` : ""}.`) +
               p(`Prices move with the market, so locking in now is usually the safe bet. If something's holding you up — a question on the price, how shipping works, or how you get paid — just reply and a real person will help.`) +
               p(`Otherwise your offer's right here whenever you're ready:`),
             ctaUrl: v.offerUrl,

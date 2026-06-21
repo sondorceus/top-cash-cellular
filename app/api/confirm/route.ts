@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mailLogo } from "../../lib/email-shell";
+import { mailLogo, mailButton, mailDeviceImg } from "../../lib/email-shell";
 import { reportError } from "../../lib/error-report";
 import { formatOfferNumber } from "../../lib/offer-number";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
@@ -148,7 +148,7 @@ export async function POST(req: NextRequest) {
     const phoneDigits = phone ? phone.replace(/\D/g, "") : "";
     const htmlEmail = `<!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>
 <body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;color:#e6e6e6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
 <!-- Outer wrapper — matches the email card background so on desktop
      (Gmail/Outlook web, Resend preview) the email doesn't sit on a
@@ -188,14 +188,15 @@ export async function POST(req: NextRequest) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.10);border-radius:14px">
 <tr><td style="padding:22px 24px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.08)">
 ${isPending ? `<div style="font-size:10px;color:#00c853;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:6px;font-weight:800">Custom Quote</div>
-<div style="font-size:26px;font-weight:800;color:#00c853;line-height:1.2;text-shadow:0 0 18px rgba(0,200,83,0.4)">Coming within the hour</div>
+<div style="font-size:26px;font-weight:800;color:#00c853;line-height:1.2">Coming within the hour</div>
 <div style="font-size:11px;color:#888;margin-top:10px;letter-spacing:0.08em;text-transform:uppercase">We'll text or email your offer</div>` : `<div style="font-size:10px;color:#00c853;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:6px;font-weight:800">Locked-In Offer</div>
-<div style="font-size:48px;font-weight:800;color:#00c853;line-height:1;text-shadow:0 0 18px rgba(0,200,83,0.4)">$${offerTotal}</div>
+<div style="font-size:48px;font-weight:800;color:#00c853;line-height:1">$${offerTotal}</div>
 <div style="font-size:11px;color:#888;margin-top:10px;letter-spacing:0.08em;text-transform:uppercase">Valid for 14 days</div>`}
 </td></tr>
+${!isMulti && mailDeviceImg(model, 104) ? `<tr><td style="padding:18px 24px 2px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.08)"><div style="display:inline-block">${mailDeviceImg(model, 104)}</div></td></tr>` : ""}
 <tr><td style="padding:16px 24px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-${isMulti ? deviceArr.map((d) => `<tr><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:0"><div style="color:#fff;font-size:13px;font-weight:700;line-height:1.3">${esc(d.model || "—")}</div><div style="color:#888;font-size:11px;margin-top:2px">${[esc(d.storage), esc(d.condition)].filter(Boolean).join(" · ")}${d.quantity && d.quantity > 1 ? ` · ×${d.quantity}` : ""}</div></td><td style="text-align:right;padding:0"><div style="color:#00c853;font-size:14px;font-weight:800">$${Number(d.quote) || 0}</div></td></tr></table></td></tr>`).join("") : `
+${isMulti ? deviceArr.map((d) => { const thumb = mailDeviceImg(d.model, 44); return `<tr><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>${thumb ? `<td width="56" valign="middle" style="padding:0 12px 0 0">${thumb}</td>` : ""}<td style="padding:0" valign="middle"><div style="color:#fff;font-size:13px;font-weight:700;line-height:1.3">${esc(d.model || "—")}</div><div style="color:#888;font-size:11px;margin-top:2px">${[esc(d.storage), esc(d.condition)].filter(Boolean).join(" · ")}${d.quantity && d.quantity > 1 ? ` · ×${d.quantity}` : ""}</div></td><td style="text-align:right;padding:0" valign="middle"><div style="color:#00c853;font-size:14px;font-weight:800">$${Number(d.quote) || 0}</div></td></tr></table></td></tr>`; }).join("") : `
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Device</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06);font-weight:600">${hModel}</td></tr>
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Storage</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${hStorage}</td></tr>
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Condition</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${hCondition}</td></tr>`}
@@ -286,7 +287,7 @@ ${hasLabel ? `
 <div style="font-size:16px;color:#fff;font-weight:700;font-family:ui-monospace,SFMono-Regular,monospace">${fedexLabel.tracking}</div>
 <div style="font-size:12px;color:#b8b8b8;margin-top:4px">${String(fedexLabel.service || "").replace(/_/g, " ")} · prepaid · drop at any FedEx location</div>
 <div style="margin-top:14px;text-align:center">
-<a href="${fedexLabel.url}" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00c853 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Download label PDF</a>
+${mailButton(fedexLabel.url, "Download label PDF", "green")}
 </div>
 </td></tr>
 </table>
@@ -445,7 +446,7 @@ One label covers the entire package — you don&#39;t need ${deviceArr.length} s
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td width="40" valign="top" style="padding:8px 0">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00c853 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">1</td></tr></table>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:#00c853;background:linear-gradient(180deg,#00c853 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">1</td></tr></table>
 </td>
 <td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isMixed
   ? "Ship items: print your prepaid label and tape it to a padded box. Local items: we reach out to schedule the meetup."
@@ -453,7 +454,7 @@ One label covers the entire package — you don&#39;t need ${deviceArr.length} s
 </tr>
 <tr>
 <td width="40" valign="top" style="padding:8px 0">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00c853 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">2</td></tr></table>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:#00c853;background:linear-gradient(180deg,#00c853 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">2</td></tr></table>
 </td>
 <td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isMixed
   ? "Drop the FedEx box at any FedEx location and meet us at the booked window for your local items"
@@ -461,7 +462,7 @@ One label covers the entire package — you don&#39;t need ${deviceArr.length} s
 </tr>
 <tr>
 <td width="40" valign="top" style="padding:8px 0">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:linear-gradient(180deg,#00c853 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">3</td></tr></table>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:30px;height:30px;background:#00c853;background:linear-gradient(180deg,#00c853 0%,#00a039 100%);color:#0a0a0a;border-radius:50%;text-align:center;font-weight:800;font-size:14px;line-height:30px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4)">3</td></tr></table>
 </td>
 <td style="padding:8px 0 8px 12px;font-size:14px;color:#e6e6e6;line-height:1.5;vertical-align:middle">${isMixed
   ? "Ship items pay within 24h after we inspect; local items pay on the spot — Cash App / Zelle / Bitcoin / cash"
@@ -484,7 +485,7 @@ ${(phoneDigits || email) ? `<tr><td style="padding:18px 28px 0 28px">
 
 <!-- CTA -->
 <tr><td style="padding:18px 28px 6px 28px;text-align:center">
-<a href="mailto:support@topcashcellular.com" style="display:inline-block;padding:14px 32px;background:linear-gradient(180deg,#00c853 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Reply with questions</a>
+${mailButton("mailto:support@topcashcellular.com", "Reply with questions", "green")}
 </td></tr>
 
 <!-- TRUST STRIP — 3 trust badges, builds confidence before footer -->

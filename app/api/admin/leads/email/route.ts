@@ -49,7 +49,7 @@ function bodyToHtml(text: string): string {
 }
 
 function wrap(html: string, opts: { eyebrow: string; first: string; bodyHtml: string }): string {
-  return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head><body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
 <div style="background:#13142b;padding:32px 16px"><table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
 <tr><td style="padding:24px 28px"><div style="margin:0 0 16px">${mailLogo()}</div><div style="font-size:20px;font-weight:800;color:#ffffff;line-height:1.2">${opts.eyebrow}</div></td></tr>
 <tr><td style="padding:28px 28px 8px 28px"><div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:14px">Hi ${opts.first},</div>${opts.bodyHtml}</td></tr>

@@ -9,6 +9,8 @@
 // Brand tokens are TCC's dark/green identity (NOT the notary gold).
 // =========================================================================
 
+import { imageForModel } from "./device-images";
+
 export const MAIL = {
   bg: "#13142b", // outer body — dark navy
   card: "#1b1d39", // content card
@@ -38,6 +40,23 @@ export function mailLogo(): string {
     `<div style="font-size:25px;font-weight:800;letter-spacing:-0.5px;color:${MAIL.ink};">TOP CASH</div>` +
     `<div style="font-size:13px;font-weight:700;letter-spacing:4px;color:${MAIL.green};text-transform:uppercase;padding-top:4px;">CELLULAR</div>` +
     `</div>`
+  );
+}
+
+// Absolute-URL device photo for emails, resolved from the catalog
+// (imageForModel). Returns "" when there's no image for the model so the
+// caller renders without a thumbnail. Emails need absolute URLs (relative
+// paths don't resolve in an inbox). Note: many catalog images are
+// .webp/.svg — these render in Apple Mail / Gmail / iOS but NOT Outlook
+// desktop; the alt text is the graceful fallback there.
+const MAIL_SITE = "https://topcashcellular.com";
+export function mailDeviceImg(model: string | null | undefined, px = 64): string {
+  const path = imageForModel(model || "");
+  if (!path) return "";
+  const src = path.startsWith("http") ? path : `${MAIL_SITE}${path}`;
+  return (
+    `<img src="${src}" alt="${esc(model || "Device")}" width="${px}" height="${px}" ` +
+    `style="width:${px}px;height:${px}px;object-fit:contain;border:0;outline:none;display:block;border-radius:10px;background:rgba(255,255,255,0.05)" />`
   );
 }
 

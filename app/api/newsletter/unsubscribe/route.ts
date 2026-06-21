@@ -8,7 +8,7 @@
 // GET response is a friendly confirmation page.
 
 import { NextRequest, NextResponse } from "next/server";
-import { mailLogo } from "../../../lib/email-shell";
+import { mailLogo, esc as shellEsc } from "../../../lib/email-shell";
 import { verifyNewsletterToken } from "../../../lib/newsletter-token";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -38,9 +38,9 @@ async function postUnsubMarker(email: string): Promise<boolean> {
 function confirmationHtml(email: string, success: boolean): string {
   const title = success ? "You're unsubscribed" : "Couldn't unsubscribe";
   const body = success
-    ? `<p>${email} won't get any more emails from Top Cash Cellular. Changed your mind later? <a href="https://topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">Re-subscribe at our home page</a>.</p>`
+    ? `<p>${shellEsc(email)} won't get any more emails from Top Cash Cellular. Changed your mind later? <a href="https://topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">Re-subscribe at our home page</a>.</p>`
     : `<p>The unsubscribe link looks tampered or expired. Email <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">support@topcashcellular.com</a> and we'll handle it manually.</p>`;
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title></head>
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"><title>${title}</title></head>
 <body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
 <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px">
 <div style="max-width:520px;width:100%;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;text-align:center">

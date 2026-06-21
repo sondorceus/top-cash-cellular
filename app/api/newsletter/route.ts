@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mailLogo } from "../../lib/email-shell";
+import { mailLogo, mailButton } from "../../lib/email-shell";
 import { rateLimit, rateLimitResponse, clientIp } from "../../lib/rate-limit";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
     const unsubUrl = `https://topcashcellular.com/api/newsletter/unsubscribe?token=${unsubToken}`;
 
     const htmlEmail = `<!DOCTYPE html>
-<html><body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#fff;">
+<html><head><meta charset="utf-8"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head><body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#fff;">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#13142b;padding:32px 16px;">
   <tr><td align="center">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:560px;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;">
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
         <h1 style="margin:0 0 16px;font-size:24px;line-height:1.25;color:#fff;font-weight:800;">${greeting}</h1>
         <p style="margin:0 0 14px;color:#e6e6e6;font-size:15px;line-height:1.5;">Thanks for signing up. We'll only email when prices move on something you might own, or when we run a real promo — never just for the sake of it.</p>
         <p style="margin:0 0 22px;color:#e6e6e6;font-size:15px;line-height:1.5;">In the meantime, if you've got something gathering dust, grab a quote in under a minute:</p>
-        <p style="margin:0 0 28px;"><a href="https://topcashcellular.com/" style="display:inline-block;background:#00c853;color:#0a0a0a;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;">Get an instant quote →</a></p>
+        <p style="margin:0 0 28px;">${mailButton("https://topcashcellular.com/", "Get an instant quote →", "green")}</p>
       </td></tr>
       <tr><td style="padding:18px 28px 28px;border-top:1px solid rgba(255,255,255,0.06);">
         <p style="margin:0;color:#9a9a9a;font-size:12px;line-height:1.5;">Top Cash Cellular · Austin, TX · <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;">support@topcashcellular.com</a></p>

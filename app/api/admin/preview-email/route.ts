@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mailLogo } from "../../../lib/email-shell";
+import { mailLogo, mailButton } from "../../../lib/email-shell";
 import { safeEqual } from "../../../lib/admin-auth";
 
 // Admin-gated email preview — Skywalker 2026-05-19 wanted to check that
@@ -119,7 +119,7 @@ async function buildPreview(p: {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.10);border-radius:14px">
 <tr><td style="padding:22px 24px;text-align:center">
 <div style="font-size:10px;color:#00c853;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:6px;font-weight:800">Locked-In Offer</div>
-<div style="font-size:48px;font-weight:800;color:#00c853;line-height:1;text-shadow:0 0 18px rgba(0,200,83,0.4)">$${quote}</div>
+<div style="font-size:48px;font-weight:800;color:#00c853;line-height:1">$${quote}</div>
 <div style="font-size:11px;color:#888;margin-top:10px;letter-spacing:0.08em;text-transform:uppercase">${model} · ${storage} · ${condition}</div>
 </td></tr></table>
 </td></tr>
@@ -143,7 +143,7 @@ ${hasLabel ? `
 <div style="font-size:16px;color:#fff;font-weight:700;font-family:ui-monospace,SFMono-Regular,monospace">${p.fedexLabel?.tracking}</div>
 <div style="font-size:12px;color:#b8b8b8;margin-top:4px">FedEx Ground · prepaid · drop at any FedEx location</div>
 <div style="margin-top:14px;text-align:center">
-<a href="${p.fedexLabel?.url}" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00c853 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px">Download label PDF</a>
+${mailButton(p.fedexLabel?.url || "#", "Download label PDF", "green")}
 </div>
 </td></tr></table>
 </td></tr>` : ""}

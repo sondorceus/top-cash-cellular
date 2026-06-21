@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { mailButton } from "../../../lib/email-shell";
 
 // Daily morning summary email — runs once a day via Vercel cron at
 // ~9am CT and emails the owner a single-page dashboard of yesterday's
@@ -243,7 +244,7 @@ function buildDigestHtml(args: {
       <div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:0.12em;margin-top:4px">${label}</div>
     </td>`;
   return `<!DOCTYPE html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>
 <body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
 <div style="background:#13142b;padding:32px 16px">
 <table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
@@ -288,7 +289,7 @@ ${stat("Lifetime revenue", `$${allTimeRevenue.toLocaleString()}`, "#00c853")}
 </td></tr>
 
 <tr><td style="padding:24px 28px 28px 28px;text-align:center">
-<a href="https://topcashcellular.com/admin" style="display:inline-block;padding:13px 28px;background:linear-gradient(180deg,#00c853 0%,#00c853 60%,#00a039 100%);color:#0a0a0a;font-weight:800;font-size:14px;text-decoration:none;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 4px 14px rgba(0,200,83,0.35)">Open admin dashboard →</a>
+${mailButton("https://topcashcellular.com/admin", "Open admin dashboard →", "green")}
 <p style="margin:16px 4px 0;font-size:11px;color:#666;line-height:1.5">Internal test emails (${INTERNAL_EMAILS.join(", ")}) are filtered out of these numbers.<br>Override via TCC_INTERNAL_EMAILS env var.</p>
 </td></tr>
 </table>
