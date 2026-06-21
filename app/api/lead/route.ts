@@ -887,7 +887,7 @@ export async function POST(req: NextRequest) {
         // Show the server-VALIDATED total: on tamper the per-device sum
         // is the inflated client value, so fall back to the clamped
         // baseQuoteNum (the summed per-item cap) and note the original.
-        `Quote: $${quoteTampered ? baseQuoteNum : deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0)}${quoteTampered ? ` (clamped from $${submittedQuoteNum})` : ""}`,
+        `Quote: $${(quoteTampered ? baseQuoteNum : deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0)) + (couponApplied?.value || 0) + referralBonus}${quoteTampered ? ` (clamped from $${submittedQuoteNum})` : ""}`,
         `Payout: ${safePayout}`,
         ...couponLines,
         ...referralLines,

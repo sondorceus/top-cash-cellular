@@ -69,7 +69,11 @@ export async function GET(req: NextRequest) {
 
   // Window must comfortably cover the last step's offset + margin.
   const messages = await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: false, sinceMs: 21 * D, maxPages: 10 });
-  if (messages.length === 0) return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
+  // Empty can mean "MC genuinely had no recent messages" (quiet window) OR a
+  // transient fetch failure — fetchCommsPaged returns [] for both. Either way
+  // there's simply nothing to nudge this run; the cron is idempotent, so the
+  // next run catches up. Treat it as a clean no-op, not a 502 false alarm.
+  if (messages.length === 0) return NextResponse.json({ ok: true, processed: 0, note: "no recent messages" });
 
   const now = Date.now();
   const ms = (t?: string) => (t ? new Date(t).getTime() : 0);
