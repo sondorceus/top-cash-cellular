@@ -58,6 +58,15 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   let counterRespAt = "";
   let quoteAdjustedAmt: number | null = null;
   let quoteAdjustedAt = "";
+  // Customer-visible payout proof — parsed from the freshest paid/met
+  // [STATUS] message's "Payout-confirmation:" line. Surfaces the method,
+  // reference (Zelle conf #, BTC txhash, Cash App receipt, …) and the
+  // amount actually sent so a remote customer can self-confirm a transfer
+  // landed instead of emailing "did I get paid?". The internal staff `note`
+  // is deliberately NOT surfaced.
+  let payoutMethod = "";
+  let payoutRef = "";
+  let payoutAmount: number | null = null;
   for (const m of messages) {
     if (!m.body) continue;
     const cu = m.body.match(new RegExp(`\\[CONTACT-UPDATE:\\s*${leadId}\\][^\\n]*phone=([^\\n]+)`, "i"));
@@ -77,6 +86,16 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
       if (!statusAt || m.timestamp > statusAt) {
         status = sm[1].toLowerCase();
         statusAt = m.timestamp;
+        // Re-parse payout proof from THIS freshest status message (a later
+        // status flip with no payout line should clear a stale proof).
+        payoutMethod = ""; payoutRef = ""; payoutAmount = null;
+        if (status === "paid" || status === "met") {
+          const pc = m.body.match(/Payout-confirmation:\s*([^\n]+)/i)?.[1] || "";
+          payoutMethod = pc.match(/method=([^·\n]+?)(?:\s*·|$)/i)?.[1]?.trim() || "";
+          payoutRef = pc.match(/ref=([^·\n]+?)(?:\s*·|$)/i)?.[1]?.trim() || "";
+          const am = pc.match(/amount=([\d.]+)/i)?.[1];
+          payoutAmount = am && Number.isFinite(Number(am)) ? Number(am) : null;
+        }
       }
     }
     if (m.body.includes(`[LABEL: ${leadId}]`)) {
@@ -255,6 +274,17 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     offerRevised,
     status: cancelled ? "rejected" : status,
     statusAt,
+    // Customer-visible payout receipt — present once a lead is paid/met and
+    // staff recorded a confirmation. Lets the customer self-verify the
+    // transfer (method + reference + amount + when) without contacting us.
+    payoutProof: !cancelled && (status === "paid" || status === "met") && (payoutMethod || payoutRef || payoutAmount != null)
+      ? {
+          method: payoutMethod || undefined,
+          reference: payoutRef || undefined,
+          amount: payoutAmount ?? undefined,
+          at: statusAt || undefined,
+        }
+      : undefined,
     fedexTracking: fedexTracking || undefined,
     fedexLabelUrl: fedexLabelUrl || undefined,
     fedexService: fedexService || undefined,

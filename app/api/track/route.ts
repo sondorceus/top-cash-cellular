@@ -20,6 +20,8 @@ interface TrackedLead {
   payout?: string;
   status: string;
   statusUpdatedAt?: string;
+  // Payout receipt — present once paid/met (customer-safe; no staff note).
+  payoutProof?: { method?: string; reference?: string; amount?: number; at?: string };
   // FedEx label info — only ship-handoff leads. Parsed from the
   // [LABEL: leadId] marker that /api/lead writes to MC when a label
   // is minted at submission time. Skywalker 2026-05-17 #2 "lost-
@@ -110,7 +112,8 @@ export async function POST(req: NextRequest) {
   const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
 
   // Pass 1: collect status updates by lead id.
-  const statusByLead = new Map<string, { status: string; timestamp: string }>();
+  type PayoutProof = { method?: string; reference?: string; amount?: number; at?: string };
+  const statusByLead = new Map<string, { status: string; timestamp: string; payoutProof?: PayoutProof }>();
   // Pass 1.5: collect FedEx label info by lead id (most recent wins).
   const labelByLead = new Map<string, { tracking: string; url: string; service?: string; timestamp: string }>();
   // Pass 1.6: collect the latest FedEx delivery sub-state per lead from the
@@ -132,7 +135,17 @@ export async function POST(req: NextRequest) {
       const leadId = lm[1];
       const existing = statusByLead.get(leadId);
       if (!existing || m.timestamp > existing.timestamp) {
-        statusByLead.set(leadId, { status: sm[1].toLowerCase(), timestamp: m.timestamp });
+        const st = sm[1].toLowerCase();
+        let payoutProof: PayoutProof | undefined;
+        if (st === "paid" || st === "met") {
+          const pc = m.body.match(/Payout-confirmation:\s*([^\n]+)/i)?.[1] || "";
+          const method = pc.match(/method=([^·\n]+?)(?:\s*·|$)/i)?.[1]?.trim();
+          const reference = pc.match(/ref=([^·\n]+?)(?:\s*·|$)/i)?.[1]?.trim();
+          const am = pc.match(/amount=([\d.]+)/i)?.[1];
+          const amount = am && Number.isFinite(Number(am)) ? Number(am) : undefined;
+          if (method || reference || amount != null) payoutProof = { method, reference, amount, at: m.timestamp };
+        }
+        statusByLead.set(leadId, { status: st, timestamp: m.timestamp, payoutProof });
       }
     }
     // [LABEL: leadId] tracking=... url=... service=...
@@ -196,6 +209,7 @@ export async function POST(req: NextRequest) {
       payout: parseField(body, "Payout"),
       status: status?.status || "quote_requested",
       statusUpdatedAt: status?.timestamp,
+      payoutProof: status?.payoutProof,
       fedexTracking: label?.tracking,
       fedexLabelUrl: label?.url,
       fedexService: label?.service,

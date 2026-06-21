@@ -25,6 +25,9 @@ type Trade = {
   payout?: string;
   status: string;
   statusAt?: string;
+  // Payout receipt — present once paid/met (parsed from the status
+  // marker's Payout-confirmation line). Internal staff note excluded.
+  payoutProof?: { method?: string; reference?: string; amount?: number; at?: string };
   handoffMethod?: "ship" | "local";
   fedexTracking?: string;
   // Address used on this trade — surfaced so /account can show a
@@ -82,7 +85,8 @@ export async function GET() {
   // email (case-insensitive). Pass 2: pick the most-recent status per
   // lead so the trade list shows live state.
   const trades: Trade[] = [];
-  const statusByLead = new Map<string, { status: string; at: string }>();
+  type PayoutProof = { method?: string; reference?: string; amount?: number; at?: string };
+  const statusByLead = new Map<string, { status: string; at: string; payoutProof?: PayoutProof }>();
   const labelByLead = new Map<string, string>();
   for (const m of messages) {
     if (!m.body) continue;
@@ -92,7 +96,21 @@ export async function GET() {
     if (sm && STATUSES.includes(sm[1].toLowerCase())) {
       const lid = sm[2];
       const prev = statusByLead.get(lid);
-      if (!prev || m.timestamp > prev.at) statusByLead.set(lid, { status: sm[1].toLowerCase(), at: m.timestamp });
+      if (!prev || m.timestamp > prev.at) {
+        const st = sm[1].toLowerCase();
+        // Parse the customer-safe payout receipt off the freshest paid/met
+        // status message (drop the internal `note=` field).
+        let payoutProof: PayoutProof | undefined;
+        if (st === "paid" || st === "met") {
+          const pc = body.match(/Payout-confirmation:\s*([^\n]+)/i)?.[1] || "";
+          const method = pc.match(/method=([^·\n]+?)(?:\s*·|$)/i)?.[1]?.trim();
+          const reference = pc.match(/ref=([^·\n]+?)(?:\s*·|$)/i)?.[1]?.trim();
+          const am = pc.match(/amount=([\d.]+)/i)?.[1];
+          const amount = am && Number.isFinite(Number(am)) ? Number(am) : undefined;
+          if (method || reference || amount != null) payoutProof = { method, reference, amount, at: m.timestamp };
+        }
+        statusByLead.set(lid, { status: st, at: m.timestamp, payoutProof });
+      }
     }
     // FedEx label marker
     const lblm = body.match(/\[LABEL:\s*([\w-]+)\]\s*tracking=([^\s]+)/i);
@@ -128,6 +146,7 @@ export async function GET() {
       payout: parseField(m.body, "Payout"),
       status: status?.status || "quote_requested",
       statusAt: status?.at,
+      payoutProof: status?.payoutProof,
       handoffMethod,
       fedexTracking: labelByLead.get(m.id),
       address: (street && city && state && zip)

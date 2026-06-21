@@ -68,6 +68,9 @@ type Offer = {
   totalPayout?: number;
   status: string;
   statusAt?: string;
+  // Customer payout receipt — present once paid/met. Lets the customer
+  // self-confirm the transfer instead of emailing "did I get paid?".
+  payoutProof?: { method?: string; reference?: string; amount?: number; at?: string };
   fedexTracking?: string;
   fedexLabelUrl?: string;
   fedexService?: string;
@@ -137,6 +140,19 @@ function fmtDate(iso?: string): string {
   const d = new Date(iso);
   return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) + ", " +
          d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+}
+
+// Pretty-print a payout method key (as recorded on the payout
+// confirmation) for the customer-facing receipt.
+function payoutMethodLabel(m?: string): string {
+  if (!m) return "your chosen method";
+  const k = m.toLowerCase().trim();
+  const map: Record<string, string> = {
+    cashapp: "Cash App", "cash app": "Cash App", cash: "cash",
+    zelle: "Zelle", venmo: "Venmo", paypal: "PayPal",
+    btc: "Bitcoin", bitcoin: "Bitcoin", ach: "ACH", check: "check",
+  };
+  return map[k] || m.trim();
 }
 
 // Normalize an offer into the editable device list — multi-device
@@ -569,6 +585,33 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             block. Visual hierarchy: this is what the customer should see
             at a glance, not the pipeline above it. */}
         <StatusBanner status={offer.status} cancelled={isCancelled} isShip={isShip} hasLabel={!!offer.fedexLabelUrl} />
+
+        {/* Payout receipt — once paid/met, show proof of the transfer so a
+            remote customer can self-confirm it landed (method · amount ·
+            reference · when) instead of emailing "did I get paid?". Crisp
+            green accent, no glow. Skywalker. */}
+        {isPaid && offer.payoutProof && (
+          <div className="bg-[#00c853]/[0.06] border border-[#00c853]/40 rounded-2xl p-4 mb-5">
+            <div className="flex items-start gap-2.5">
+              <svg className="w-5 h-5 shrink-0 text-[#00c853] mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div className="min-w-0">
+                <p className="text-white text-sm font-bold">
+                  Payment sent{offer.payoutProof.amount != null ? ` — $${offer.payoutProof.amount.toLocaleString()}` : ""} via {payoutMethodLabel(offer.payoutProof.method)}
+                </p>
+                <p className="text-[#bdbdbd] text-xs mt-0.5">
+                  {offer.payoutProof.at ? fmtDate(offer.payoutProof.at) : "Completed"}
+                  {offer.payoutProof.reference ? <> · Ref <span className="font-mono text-[#dcdcdc] break-all">{offer.payoutProof.reference}</span></> : null}
+                </p>
+                <p className="text-[#888] text-xs mt-1.5">
+                  Don&apos;t see it? Check the {payoutMethodLabel(offer.payoutProof.method)} account tied to your trade, then{" "}
+                  <a href="mailto:support@topcashcellular.com" className="text-[#00c853] font-semibold">contact us</a> and we&apos;ll trace it.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Live-tracking reassurance — ship leads get an SMS + email at
             every FedEx movement (the fedex-poll cron), so tell them up

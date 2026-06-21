@@ -18,6 +18,7 @@ interface Lead {
   payout?: string;
   status: string;
   statusUpdatedAt?: string;
+  payoutProof?: { method?: string; reference?: string; amount?: number; at?: string };
   fedexTracking?: string;
   fedexLabelUrl?: string;
   fedexService?: string;
@@ -26,6 +27,18 @@ interface Lead {
   fedexState?: string;
   fedexEventDesc?: string;
   fedexStateAt?: string;
+}
+
+// Pretty-print a recorded payout method for the receipt line.
+function payoutMethodLabel(m?: string): string {
+  if (!m) return "your chosen method";
+  const k = m.toLowerCase().trim();
+  const map: Record<string, string> = {
+    cashapp: "Cash App", "cash app": "Cash App", cash: "cash",
+    zelle: "Zelle", venmo: "Venmo", paypal: "PayPal",
+    btc: "Bitcoin", bitcoin: "Bitcoin", ach: "ACH", check: "check",
+  };
+  return map[k] || m.trim();
 }
 
 // Shared funnel glyphs (matches the offer page so both surfaces show
@@ -338,6 +351,17 @@ function TrackInner() {
                       Your shipping label is being prepared. If you don't see it in your email within an hour, reply to <a href="mailto:support@topcashcellular.com" className="underline">support@topcashcellular.com</a> with this lead ID and we'll resend it.
                     </p>
                     <p className="text-[#c5c5c5] text-[10px] font-mono mt-2">Lead ID: {lead.id}</p>
+                  </div>
+                )}
+                {lead.payoutProof && (lead.status === "paid" || lead.status === "met") && (
+                  <div className="bg-[#00c853]/[0.06] border border-[#00c853]/40 rounded-xl p-3 mb-3">
+                    <p className="text-white text-sm font-bold flex items-center gap-2">
+                      <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      Payment sent{lead.payoutProof.amount != null ? ` — $${lead.payoutProof.amount.toLocaleString()}` : ""} via {payoutMethodLabel(lead.payoutProof.method)}
+                    </p>
+                    {lead.payoutProof.reference && (
+                      <p className="text-[#bdbdbd] text-[11px] mt-1">Ref <span className="font-mono text-[#dcdcdc] break-all">{lead.payoutProof.reference}</span></p>
+                    )}
                   </div>
                 )}
                 <p className="text-[#c5c5c5] text-[11px] text-center">

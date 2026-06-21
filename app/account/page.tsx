@@ -24,10 +24,23 @@ type Trade = {
   payout?: string;
   status: string;
   statusAt?: string;
+  payoutProof?: { method?: string; reference?: string; amount?: number; at?: string };
   handoffMethod?: "ship" | "local";
   fedexTracking?: string;
   address?: { street?: string; unit?: string; city?: string; state?: string; zip?: string };
 };
+
+// Pretty-print a recorded payout method for the receipt line.
+function payoutMethodLabel(m?: string): string {
+  if (!m) return "your chosen method";
+  const k = m.toLowerCase().trim();
+  const map: Record<string, string> = {
+    cashapp: "Cash App", "cash app": "Cash App", cash: "cash",
+    zelle: "Zelle", venmo: "Venmo", paypal: "PayPal",
+    btc: "Bitcoin", bitcoin: "Bitcoin", ach: "ACH", check: "check",
+  };
+  return map[k] || m.trim();
+}
 
 type Section = "account" | "trades" | "addresses" | "referral";
 
@@ -666,6 +679,14 @@ export default function AccountPage() {
                         </span>
                       </div>
                     </a>
+                    {/* Payout receipt — proof the transfer went out, so the
+                        customer can self-confirm without contacting us. */}
+                    {t.payoutProof && (
+                      <p className="mt-1.5 text-[11px] text-[#9fdfb5]">
+                        ✓ Sent{t.payoutProof.amount != null ? ` $${t.payoutProof.amount.toLocaleString()}` : ""} via {payoutMethodLabel(t.payoutProof.method)}
+                        {t.payoutProof.reference ? <> · ref <span className="font-mono text-[#bdbdbd] break-all">{t.payoutProof.reference}</span></> : null}
+                      </p>
+                    )}
                     {/* Two-tap repeat sale — prefills the funnel with the
                         same device/storage/condition and drops the customer
                         at the quote step. Only shown on finished trades
