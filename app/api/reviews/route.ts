@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { mailLogo } from "../../lib/email-shell";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -105,7 +106,7 @@ async function mailCoupon(opts: { to: string; firstName: string; code: string; v
     const html = `<!doctype html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:32px 16px">
 <div style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
   <div style="background:linear-gradient(135deg,#ffd54f 0%,#ffb400 60%,#e69900 100%);padding:24px 28px;color:#1a1100">
-    <img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;margin:0" />
+    <div style="margin:0 0 16px">${mailLogo()}</div>
     <div style="font-size:22px;font-weight:800;line-height:1.1">Thanks for the review — here's $${opts.value} for next time</div>
   </div>
   <div style="padding:28px">

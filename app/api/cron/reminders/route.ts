@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { mailLogo } from "../../../lib/email-shell";
 import { randomBytes } from "crypto";
 import { fetchCommsPaged } from "../../../lib/mc-comms";
 
@@ -126,7 +127,7 @@ function wrapEmail(opts: { title: string; bodyHtml: string; ctaHref?: string; ct
   // #1b1d39 card — both read as "not clean / not seamless". The transparent
   // wordmark has no plate and no grunge, so it sits seamlessly on the card
   // in every client. Unified across all email routes.
-  return `<!doctype html><html><head><meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"></head><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:32px 16px;color-scheme:light dark;supported-color-schemes:light dark"><div style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden"><div style="padding:24px 28px;color:#ffffff;background:#1b1d39"><img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;margin:0 0 18px 0" /><div style="font-size:22px;font-weight:800;line-height:1.2;color:#ffffff">${opts.title}</div></div><div style="padding:28px;background:#1b1d39">${opts.bodyHtml}${cta}<p style="font-size:12px;color:#9a9bb0;line-height:1.6;margin:24px 0 0;text-align:center;border-top:1px solid rgba(255,255,255,0.08);padding-top:18px">Questions? Reply or write to <a href="mailto:support@topcashcellular.com" style="color:${accent};text-decoration:none">support@topcashcellular.com</a></p></div></div></body></html>`;
+  return `<!doctype html><html><head><meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"></head><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:32px 16px;color-scheme:light dark;supported-color-schemes:light dark"><div style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden"><div style="padding:24px 28px;color:#ffffff;background:#1b1d39"><div style="margin:0 0 16px">${mailLogo()}</div><div style="font-size:22px;font-weight:800;line-height:1.2;color:#ffffff">${opts.title}</div></div><div style="padding:28px;background:#1b1d39">${opts.bodyHtml}${cta}<p style="font-size:12px;color:#9a9bb0;line-height:1.6;margin:24px 0 0;text-align:center;border-top:1px solid rgba(255,255,255,0.08);padding-top:18px">Questions? Reply or write to <a href="mailto:support@topcashcellular.com" style="color:${accent};text-decoration:none">support@topcashcellular.com</a></p></div></div></body></html>`;
 }
 
 type LeadShape = {

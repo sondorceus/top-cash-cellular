@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { mailLogo } from "../../lib/email-shell";
 import { rateLimit, rateLimitResponse, clientIp } from "../../lib/rate-limit";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -80,7 +81,7 @@ export async function POST(req: NextRequest) {
   <tr><td align="center">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:560px;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;">
       <tr><td style="padding:32px 28px 0;">
-        <img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;margin:0" />
+        <div style="margin:0 0 16px">${mailLogo()}</div>
         <h1 style="margin:0 0 16px;font-size:24px;line-height:1.25;color:#fff;font-weight:800;">${greeting}</h1>
         <p style="margin:0 0 14px;color:#e6e6e6;font-size:15px;line-height:1.5;">Thanks for signing up. We'll only email when prices move on something you might own, or when we run a real promo — never just for the sake of it.</p>
         <p style="margin:0 0 22px;color:#e6e6e6;font-size:15px;line-height:1.5;">In the meantime, if you've got something gathering dust, grab a quote in under a minute:</p>

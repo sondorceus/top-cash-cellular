@@ -15,6 +15,7 @@
 // committing.
 
 import { NextRequest, NextResponse } from "next/server";
+import { mailLogo } from "../../../../lib/email-shell";
 import { safeEqual } from "../../../../lib/admin-auth";
 import { signNewsletterToken } from "../../../../lib/newsletter-token";
 
@@ -91,7 +92,7 @@ ${preheaderBlock}
 <div style="background:#13142b;padding:32px 16px">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
 <tr><td style="padding:24px 28px">
-<img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;margin:0" />
+<div style="margin:0 0 16px">${mailLogo()}</div>
 <div style="font-size:20px;font-weight:800;color:#ffffff;line-height:1.2">${htmlEsc(opts.subject)}</div>
 </td></tr>
 <tr><td style="padding:28px 28px 8px 28px"><div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:14px">Hi ${htmlEsc(opts.first)},</div>${opts.bodyHtml}</td></tr>

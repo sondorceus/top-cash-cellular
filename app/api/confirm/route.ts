@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { mailLogo } from "../../lib/email-shell";
 import { reportError } from "../../lib/error-report";
 import { formatOfferNumber } from "../../lib/offer-number";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
@@ -163,7 +164,7 @@ export async function POST(req: NextRequest) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td style="vertical-align:middle">
-<img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;margin:0" />
+<div style="margin:0 0 16px">${mailLogo()}</div>
 <div style="font-size:24px;font-weight:800;color:#ffffff;line-height:1.15">${isPending ? "Request received" : "You're locked in"}</div>
 </td>
 <td style="vertical-align:middle;text-align:right">

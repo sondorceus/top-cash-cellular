@@ -8,6 +8,7 @@
 // GET response is a friendly confirmation page.
 
 import { NextRequest, NextResponse } from "next/server";
+import { mailLogo } from "../../../lib/email-shell";
 import { verifyNewsletterToken } from "../../../lib/newsletter-token";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -44,7 +45,7 @@ function confirmationHtml(email: string, success: boolean): string {
 <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px">
 <div style="max-width:520px;width:100%;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;text-align:center">
 <div style="padding:26px 28px;border-bottom:1px solid rgba(255,255,255,0.08);color:#ffffff">
-<img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;margin:0" />
+<div style="margin:0 0 16px">${mailLogo()}</div>
 <div style="font-size:22px;font-weight:700;line-height:1.3;color:#ffffff">${title}</div>
 </div>
 <div style="padding:28px;font-size:15px;line-height:1.6;color:#dcdcdc">

@@ -8,7 +8,7 @@ import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 import { formatOfferNumber } from "../../lib/offer-number";
 import { getResellEstimate, resellMultiplierForCondition } from "../../lib/resell-estimates";
-import { mailShell, mailDetails, MAIL } from "../../lib/email-shell";
+import { mailShell, mailDetails, MAIL, mailLogo } from "../../lib/email-shell";
 import { registerEasyPostTracker } from "../../lib/easypost";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -1783,7 +1783,7 @@ function renderRecycleCertificateEmail(opts: {
 
 <!-- Header — clean: brand wordmark + thin green accent rule, no green block -->
 <tr><td style="padding:30px 32px 22px;border-bottom:1px solid rgba(255,255,255,0.08)">
-<img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;margin:0" />
+<div style="margin:0 0 16px">${mailLogo()}</div>
 <div style="font-size:22px;font-weight:700;color:#ffffff;line-height:1.3;margin-top:11px">Certificate of Responsible Recycling</div>
 </td></tr>
 

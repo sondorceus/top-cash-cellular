@@ -25,6 +25,22 @@ export const MAIL = {
   font: "-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif",
 } as const;
 
+// Brand wordmark for email headers — a styled-text lockup that mirrors
+// the site nav (white "TOP CASH" over bright-green "CELLULAR"). Single
+// source of truth: every email header uses this instead of a logo image,
+// so they all render crisp, on-brand (exact MAIL.green), correctly sized,
+// and with nothing to load. inline-block so it sits left or centered
+// depending on the parent's text-align. Skywalker — replaced the oversized
+// forest-green glass PNG that didn't match the site.
+export function mailLogo(): string {
+  return (
+    `<div style="display:inline-block;font-family:${MAIL.font};line-height:1;text-align:left;">` +
+    `<div style="font-size:25px;font-weight:800;letter-spacing:-0.5px;color:${MAIL.ink};">TOP CASH</div>` +
+    `<div style="font-size:13px;font-weight:700;letter-spacing:4px;color:${MAIL.green};text-transform:uppercase;padding-top:4px;">CELLULAR</div>` +
+    `</div>`
+  );
+}
+
 export function esc(s: unknown): string {
   return String(s ?? "")
     .replace(/&/g, "&amp;")
@@ -87,9 +103,13 @@ export function mailShell(a: MailShellArgs): string {
     (a.preheader ? `<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">${esc(a.preheader)}</div>` : "") +
     `<div style="background:${MAIL.bg};padding:24px 12px;font-family:${MAIL.font};">` +
     `<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="max-width:600px;width:100%;margin:0 auto;">` +
-    // brand header
-    `<tr><td style="padding:0 0 18px;text-align:center;">` +
-    `<img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:inline-block;width:150px;height:auto;border:0;outline:none;" /></td></tr>` +
+    // Brand header — a text lockup that mirrors the site nav wordmark
+    // exactly (white "TOP CASH" over bright-green "CELLULAR"). The old
+    // glass PNG rendered oversized, used a duller forest-green, and didn't
+    // match the site; a styled-text lockup is crisp, on-brand (exact
+    // MAIL.green), correctly sized, and renders reliably everywhere with
+    // no image to load. Skywalker.
+    `<tr><td style="padding:4px 0 20px;text-align:center;">${mailLogo()}</td></tr>` +
     // content card
     `<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${MAIL.card};border:1px solid ${MAIL.border};border-radius:18px;overflow:hidden;">` +
     `<tr><td style="height:4px;background:${MAIL.green};line-height:4px;font-size:0;">&nbsp;</td></tr>` +

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { mailLogo } from "../../../../lib/email-shell";
 import { safeEqual } from "../../../../lib/admin-auth";
 import { logComm } from "../../../../lib/comms-log";
 
@@ -50,7 +51,7 @@ function bodyToHtml(text: string): string {
 function wrap(html: string, opts: { eyebrow: string; first: string; bodyHtml: string }): string {
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
 <div style="background:#13142b;padding:32px 16px"><table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
-<tr><td style="padding:24px 28px"><img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;margin:0" /><div style="font-size:20px;font-weight:800;color:#ffffff;line-height:1.2">${opts.eyebrow}</div></td></tr>
+<tr><td style="padding:24px 28px"><div style="margin:0 0 16px">${mailLogo()}</div><div style="font-size:20px;font-weight:800;color:#ffffff;line-height:1.2">${opts.eyebrow}</div></td></tr>
 <tr><td style="padding:28px 28px 8px 28px"><div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:14px">Hi ${opts.first},</div>${opts.bodyHtml}</td></tr>
 <tr><td style="padding:8px 28px 24px 28px"><div style="font-size:14px;color:#e6e6e6;line-height:1.6">— The Top Cash Cellular team<br><span style="color:#888;font-size:12px">Austin, TX · a small business · real humans</span></div></td></tr>
 <tr><td style="padding:0 28px 28px 28px"><div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:18px"></div><div style="font-size:12px;color:#888;line-height:1.6;text-align:center">Reply directly or write to <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">support@topcashcellular.com</a><br><span style="color:#666">Top Cash Cellular · Austin, TX · <a href="https://topcashcellular.com" style="color:#666;text-decoration:none">topcashcellular.com</a></span></div></td></tr>

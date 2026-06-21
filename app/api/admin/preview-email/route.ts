@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { mailLogo } from "../../../lib/email-shell";
 import { safeEqual } from "../../../lib/admin-auth";
 
 // Admin-gated email preview — Skywalker 2026-05-19 wanted to check that
@@ -101,7 +102,7 @@ async function buildPreview(p: {
 <tr><td style="padding:28px 28px;border-bottom:1px solid rgba(255,255,255,0.12)">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
 <td style="vertical-align:middle">
-<img src="https://topcashcellular.com/logo-wordmark-glass.png" alt="Top Cash Cellular" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;margin:0" />
+<div style="margin:0 0 16px">${mailLogo()}</div>
 <div style="font-size:24px;font-weight:800;color:#ffffff;line-height:1.15">You're locked in</div>
 </td>
 <td style="vertical-align:middle;text-align:right">
