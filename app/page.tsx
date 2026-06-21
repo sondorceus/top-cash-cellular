@@ -8220,18 +8220,29 @@ export default function Home() {
                           popThenRun(`feat-${d.model}`, () => { const ns: Step = hasAdditiveSpecs(d.model) ? "processor" : "condition"; setStep(ns); pushHistory(ns); });
                         });
                       }}
-                      className={`group bg-white/[0.07] border border-white/10 hover:bg-white/[0.08] hover:border-[#00c853]/40 rounded-2xl p-3 flex flex-col items-center text-center transition cursor-pointer tap-press ${funnelPop === `feat-${d.model}` ? "tap-confirm" : ""}`}
+                      className={`group relative overflow-hidden rounded-2xl flex flex-col text-center cursor-pointer tap-press bg-white/[0.045] border border-white/10 hover:border-[#00c853]/45 ${funnelPop === `feat-${d.model}` ? "tap-confirm" : ""}`}
                     >
-                      {isTight ? (
-                        <div className={tightWrapCls}>
-                          <Pic src={d.photo} alt={d.title} className="w-full h-full object-contain transition-transform duration-[270ms] group-hover:scale-110" loading="lazy" />
+                      {/* Image stage — a subtly lighter surface so the product
+                          photo reads as a clean catalog shot, not floating on
+                          a flat tile. */}
+                      <div className="flex items-center justify-center pt-4 pb-2 px-3 bg-gradient-to-b from-white/[0.05] to-transparent">
+                        {isTight ? (
+                          <div className={tightWrapCls}>
+                            <Pic src={d.photo} alt={d.title} className="w-full h-full object-contain" loading="lazy" />
+                          </div>
+                        ) : (
+                          <Pic src={d.photo} alt={d.title} className={imgCls.replace(" transition-transform duration-[270ms] group-hover:scale-110", "").replace("mb-2", "")} loading="lazy" />
+                        )}
+                      </div>
+                      {/* Info zone */}
+                      <div className="px-2.5 pb-3.5 pt-1 flex flex-col items-center w-full">
+                        <p className="text-white text-[11px] md:text-xs font-semibold leading-tight mb-2 min-h-[2.2em] flex items-center justify-center">{d.title}</p>
+                        <div className="flex items-baseline gap-1 mb-1.5">
+                          <span className="text-[#7d8290] text-[9px] font-bold uppercase tracking-[0.08em]">up to</span>
+                          <span className="text-[#00c853] text-lg md:text-xl font-extrabold leading-none">${topPrice}</span>
                         </div>
-                      ) : (
-                        <Pic src={d.photo} alt={d.title} className={imgCls} loading="lazy" />
-                      )}
-                      <p className="text-white text-[11px] md:text-xs font-semibold leading-tight mb-1 min-h-[2.2em]">{d.title}</p>
-                      <p className="text-[#00c853] text-lg md:text-xl font-extrabold leading-none tcc-green-pill">up to ${topPrice}</p>
-                      <p className="text-[#e6e6e6] text-[10px] mt-1.5 group-hover:text-[#00c853] transition font-semibold">Get my quote →</p>
+                        <span className="inline-flex items-center gap-1 text-[#9aa0ac] text-[10px] font-semibold group-hover:text-[#00c853] transition-colors">Get my quote <span className="transition-transform duration-200 group-hover:translate-x-0.5">→</span></span>
+                      </div>
                     </button>
                   );
                 })}
