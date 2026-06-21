@@ -5,6 +5,7 @@ import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT } fr
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "./lib/payout-verify";
 import { formatOfferNumber } from "./lib/offer-number";
+import { emailFieldError } from "./lib/email-format";
 import { SlideOnScrollNav } from "./components/SlideOnScrollNav";
 import { HeaderSearch } from "./components/HeaderSearch";
 import Pic from "./components/Pic";
@@ -4501,6 +4502,14 @@ export default function Home() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [quoteEmail, setQuoteEmail] = useState("");
+  // Instant client-side email feedback — checks format/typo/disposable the
+  // moment the field loses focus, so a bad email is caught up front instead of
+  // only at final submit. (Server still does the authoritative MX check.)
+  const [emailErr, setEmailErr] = useState<{ message: string; suggestion?: string } | null>(null);
+  const checkEmailField = (v: string) => setEmailErr(emailFieldError(v));
+  const applyEmailSuggestion = () => {
+    if (emailErr?.suggestion) { setEmail(emailErr.suggestion); setQuoteEmail(emailErr.suggestion); setEmailErr(null); }
+  };
   const [quoteSaved, setQuoteSaved] = useState(false);
   // Free-recycling secondary CTA — only renders on the quote step when
   // the funnel landed at a manual-review / no-instant-price state
@@ -8903,7 +8912,8 @@ export default function Home() {
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">Email</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                    <input type="email" value={email} onChange={(e) => { setEmail(e.target.value); if (emailErr) setEmailErr(null); }} onBlur={(e) => checkEmailField(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                    {emailErr && <p className="text-[12px] mt-1 text-amber-300">{emailErr.message}{emailErr.suggestion && <> <button type="button" onClick={applyEmailSuggestion} className="underline font-semibold text-[#00c853] cursor-pointer">Use it</button></>}</p>}
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">Photos (optional)</label>
@@ -11635,15 +11645,18 @@ export default function Home() {
               <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4">
                 <p className="text-[#e6e6e6] text-xs font-medium mb-3">Not ready yet? Save this quote for later.</p>
                 <div className="flex gap-2">
-                  <input type="email" value={quoteEmail} onChange={(e) => setQuoteEmail(e.target.value)} placeholder="your@email.com" aria-label="Email for quote" className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition" />
+                  <input type="email" value={quoteEmail} onChange={(e) => { setQuoteEmail(e.target.value); if (emailErr) setEmailErr(null); }} onBlur={(e) => checkEmailField(e.target.value)} placeholder="your@email.com" aria-label="Email for quote" className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition" />
                   <button onClick={async () => {
                     if (!quoteEmail) return;
+                    const err = emailFieldError(quoteEmail);
+                    if (err) { setEmailErr(err); return; }
                     try { await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ previewSave: true, name: "", phone: "", email: quoteEmail, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote, payout: "TBD" }) }); } catch {}
                     setQuoteSaved(true);
                   }} className="bg-white/10 text-white px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-white/15 transition tap-press">
                     Save
                   </button>
                 </div>
+                {emailErr && <p className="text-[12px] mt-2 text-amber-300">{emailErr.message}{emailErr.suggestion && <> <button type="button" onClick={applyEmailSuggestion} className="underline font-semibold text-[#00c853] cursor-pointer">Use it</button></>}</p>}
               </div>
             ) : (
               <p className="mt-5 text-[#00c853] text-sm font-medium">Quote saved! Check your inbox.</p>
@@ -11722,7 +11735,8 @@ export default function Home() {
                 fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ previewSave: true, name: "Guest", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-4">
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                <input type="email" value={email} onChange={(e) => { setEmail(e.target.value); if (emailErr) setEmailErr(null); }} onBlur={(e) => checkEmailField(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                {emailErr && <p className="text-[12px] mt-1 text-amber-300">{emailErr.message}{emailErr.suggestion && <> <button type="button" onClick={applyEmailSuggestion} className="underline font-semibold text-[#00c853] cursor-pointer">Use it</button></>}</p>}
                 <button type="submit" data-primary-cta className="tcc-button-primary w-full py-4 text-base font-extrabold">Continue As Guest →</button>
                 <p className="text-[11px] text-[#888] text-center mt-1">{!cartNeedsShip ? "Next: choose how you'd like to be paid, then book a meetup window" : <>Next: pick payment method, then enter shipping address for your free <FedExMark /> label</>}</p>
               </form>
@@ -11758,7 +11772,8 @@ export default function Home() {
                   setLoginLoading(false);
                 }
               }} className="space-y-3 mb-2">
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email from past trade" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                <input type="email" value={email} onChange={(e) => { setEmail(e.target.value); if (emailErr) setEmailErr(null); }} onBlur={(e) => checkEmailField(e.target.value)} required placeholder="Email from past trade" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                {emailErr && <p className="text-[12px] mt-1 text-amber-300">{emailErr.message}{emailErr.suggestion && <> <button type="button" onClick={applyEmailSuggestion} className="underline font-semibold text-[#00c853] cursor-pointer">Use it</button></>}</p>}
                 {loginError && <p className="text-[#ff5566] text-xs font-semibold">{loginError}</p>}
                 <button type="submit" disabled={loginLoading} className="w-full bg-white/10 text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed transition tap-press">
                   {loginLoading ? "Verifying…" : "Look up my info"}
@@ -12174,8 +12189,9 @@ export default function Home() {
               // otherwise submit a lead with no working confirmation address.
               // Route back to checkout where the field lives. (bug fix)
               const emailTrim = (email || "").trim();
-              if (!emailTrim || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrim)) {
-                alert("Please enter a valid email so we can send your offer confirmation.");
+              const eErr = emailFieldError(emailTrim);
+              if (!emailTrim || eErr) {
+                setEmailErr(eErr || { message: "Please enter a valid email so we can send your offer confirmation." });
                 setStep("checkout"); pushHistory("checkout");
                 return;
               }
