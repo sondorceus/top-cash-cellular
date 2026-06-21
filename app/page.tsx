@@ -4334,6 +4334,9 @@ export default function Home() {
   // priced device to that offer (POST /api/offer/<id>/append) instead of the
   // normal new-lead/cart checkout flow, then returns to the offer page.
   const [addToOrderId, setAddToOrderId] = useState<string | null>(null);
+  // The existing offer's handoff method — added devices INHERIT it (one trade =
+  // one handoff), so we skip re-asking ship/local and avoid a mismatch.
+  const [addToOrderVia, setAddToOrderVia] = useState<"ship" | "local" | null>(null);
   const [addingToOrder, setAddingToOrder] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
   // Lets the global <HeaderSearch> on /faq, /bulk, /reviews, etc. land
@@ -5075,7 +5078,8 @@ export default function Home() {
   // in-funnel navigation; cleared on a successful append (we redirect anyway).
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const v = new URLSearchParams(window.location.search).get("addToOrder");
+    const sp = new URLSearchParams(window.location.search);
+    const v = sp.get("addToOrder");
     if (v && /^[\w-]+$/.test(v)) {
       setAddToOrderId(v);
       // Start the add-a-device flow CLEAN: drop any persisted cart + session so
@@ -5083,6 +5087,17 @@ export default function Home() {
       // "Add to offer" CTA lives). This effect is declared before the cart/
       // session restore effects, so they hydrate to nothing → fresh flow.
       try { localStorage.removeItem("tcc-cart"); localStorage.removeItem("tcc-session"); } catch {}
+      // INHERIT the offer's handoff (ship/local) and skip the hero's ship/local
+      // question entirely — one trade has one handoff, so re-asking only invites
+      // a mismatch (the append ignores it anyway). Jump straight to picking a
+      // device. Falls back to the normal hero if the offer's method is unknown.
+      const via = sp.get("via");
+      if (via === "ship" || via === "local") {
+        setAddToOrderVia(via);
+        chooseHandoff(via);
+        setStep("category");
+        pushHistory("category");
+      }
     }
   }, []);
   // After a funnel step changes, suppress the green card hover until the
@@ -11003,7 +11018,7 @@ export default function Home() {
             {selectionPanelMobile}
             {isAddToOrder && (
               <div className="mb-3 px-3 py-2 rounded-xl text-sm text-left" style={{ background: "rgba(0,200,83,0.10)", border: "1px solid rgba(0,200,83,0.35)", color: "#a7f3c0" }}>
-                Adding to your existing offer <strong>#{addToOrderId!.slice(0, 10).toUpperCase()}</strong>. Price this device, then tap &ldquo;Add to offer.&rdquo;
+                Adding to your existing offer <strong>#{addToOrderId!.slice(0, 10).toUpperCase()}</strong>{addToOrderVia ? <> · {addToOrderVia === "ship" ? "Shipping" : "Local pickup"}</> : null}. Price this device, then tap &ldquo;Add to offer.&rdquo;
                 {addError && <div className="mt-1 text-amber-300 font-semibold">{addError}</div>}
               </div>
             )}

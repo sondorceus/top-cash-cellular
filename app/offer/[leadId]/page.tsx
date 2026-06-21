@@ -941,7 +941,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           {canEditItems && (
             <>
               <a
-                href={`/?addToOrder=${encodeURIComponent(leadId)}`}
+                href={`/?addToOrder=${encodeURIComponent(leadId)}${offer.handoffMethod ? `&via=${offer.handoffMethod}` : ""}`}
                 className="mt-3 inline-flex items-center justify-center gap-1.5 w-full py-3 rounded-xl font-bold text-sm cursor-pointer transition hover:brightness-110"
                 style={{ background: "rgba(0,200,83,0.12)", border: "1px solid rgba(0,200,83,0.40)", color: "#00c853" }}
               >
