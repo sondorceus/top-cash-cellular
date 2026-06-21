@@ -563,22 +563,27 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           </p>
         )}
 
-        {/* Hero — offer number, date, payout total */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-3">
-          <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
-            <div>
-              <p className="text-[10px] text-[#888] uppercase tracking-[0.18em] font-bold mb-1">Offer</p>
-              <p className="text-2xl font-extrabold tracking-tight">#{offer.id.slice(0, 10).toUpperCase()}</p>
-              <p className="text-[#bdbdbd] text-xs mt-1">{fmtDate(offer.timestamp)}</p>
+        {/* Hero — offer number, date, payout total. Premium surface: a
+            subtle top-lit gradient + crisp green accent rail (brand-tied,
+            no glow) so the headline payout reads as the centerpiece. */}
+        <div className="relative overflow-hidden bg-gradient-to-b from-white/[0.08] to-white/[0.02] border border-white/10 rounded-2xl mb-3">
+          <div className="h-1 bg-[#00c853]" />
+          <div className="p-5">
+            <div className="flex items-start justify-between flex-wrap gap-3 mb-4">
+              <div>
+                <p className="text-[10px] text-[#8a8f9c] uppercase tracking-[0.18em] font-bold mb-1">Offer</p>
+                <p className="text-2xl font-extrabold tracking-tight">#{offer.id.slice(0, 10).toUpperCase()}</p>
+                <p className="text-[#bdbdbd] text-xs mt-1">{fmtDate(offer.timestamp)}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] text-[#8a8f9c] uppercase tracking-[0.18em] font-bold mb-1">Total payout</p>
+                <p className="text-[2.6rem] leading-[1.05] font-extrabold text-[#00c853] tracking-tight">{total}</p>
+                {offer.payout && <p className="text-[#bdbdbd] text-xs mt-1.5">Payout via <span className="text-white font-semibold">{offer.payout}</span></p>}
+              </div>
             </div>
-            <div className="text-right">
-              <p className="text-[10px] text-[#888] uppercase tracking-[0.18em] font-bold mb-1">Total payout</p>
-              <p className="text-3xl font-extrabold text-[#00c853]">{total}</p>
-              {offer.payout && <p className="text-[#bdbdbd] text-xs mt-1">Payout via {offer.payout}</p>}
-            </div>
-          </div>
 
-          {!isCancelled && <StatusPipeline status={offer.status} isShip={isShip} />}
+            {!isCancelled && <StatusPipeline status={offer.status} isShip={isShip} />}
+          </div>
         </div>
 
         {/* Big prominent status banner — mirrors IWM's "Awaiting Shipment"
@@ -706,7 +711,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
 
         {/* Shipping prep checklist — ship leads only, before label drop-off */}
         {isShip && !isPaid && !isCancelled && (
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-5">
+          <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.015] border border-white/10 rounded-2xl p-5 mb-5">
             <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Shipping checklist</p>
             <p className="text-[#bdbdbd] text-sm mb-4">Quick walkthrough before you drop off — we won&apos;t check, but it keeps your payout on schedule.</p>
 
@@ -754,7 +759,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         {/* Offer items — editable before shipping. Editing re-quotes by
             delta (app/lib/requote); the figure is an estimate, the final
             price is confirmed at inspection. */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-5">
+        <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.015] border border-white/10 rounded-2xl p-5 mb-5">
           <div className="flex items-center justify-between gap-2 mb-3">
             <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold">Offer items</p>
             {itemsSaved && <span className="inline-flex items-center gap-1 text-[10px] text-[#00c853] font-semibold"><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Saved</span>}
@@ -942,7 +947,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         </div>
 
         {/* Contact info */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-5">
+        <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.015] border border-white/10 rounded-2xl p-5 mb-5">
           <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Contact info</p>
           {offer.name && <p className="text-sm font-semibold mb-1">{offer.name}</p>}
           {offer.shipAddress && (
