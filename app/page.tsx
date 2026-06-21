@@ -5093,11 +5093,14 @@ export default function Home() {
       // device. Falls back to the normal hero if the offer's method is unknown.
       const via = sp.get("via");
       if (via === "ship" || via === "local") {
+        // Known handoff → inherit it (one trade = one handoff).
         setAddToOrderVia(via);
         chooseHandoff(via);
-        setStep("category");
-        pushHistory("category");
       }
+      // ALWAYS skip the home hero and drop straight onto the device picker —
+      // someone adding to an existing order shouldn't see the landing page.
+      setStep("category");
+      pushHistory("category");
     }
   }, []);
   // After a funnel step changes, suppress the green card hover until the
