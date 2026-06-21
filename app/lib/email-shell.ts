@@ -128,7 +128,7 @@ export function mailShell(a: MailShellArgs): string {
     // match the site; a styled-text lockup is crisp, on-brand (exact
     // MAIL.green), correctly sized, and renders reliably everywhere with
     // no image to load. Skywalker.
-    `<tr><td style="padding:4px 0 20px;text-align:center;">${mailLogo()}</td></tr>` +
+    `<tr><td style="padding:4px 0 20px;text-align:left;">${mailLogo()}</td></tr>` +
     // content card
     `<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${MAIL.card};border:1px solid ${MAIL.border};border-radius:18px;overflow:hidden;">` +
     `<tr><td style="height:4px;background:${MAIL.green};line-height:4px;font-size:0;">&nbsp;</td></tr>` +
