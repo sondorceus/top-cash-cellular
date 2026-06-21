@@ -1756,6 +1756,7 @@ export default function AdminPage() {
                     <a href="/admin/saved-quotes" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">💾 Saved Quotes</a>
                     <a href="/admin/referrals" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">🎁 Referrals</a>
                     <a href="/admin/newsletter" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">📬 Newsletter</a>
+                    <a href="/admin/sequences" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">✉️ Sequences</a>
                     <a href="/admin/slots" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">🗓️ Slots</a>
                     <div className="border-t border-white/10 my-1.5" />
                     <p className="px-3 pb-1.5 text-[10px] uppercase tracking-wider text-[#666] font-bold">Tools</p>
