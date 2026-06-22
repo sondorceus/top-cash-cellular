@@ -4440,9 +4440,9 @@ export default function Home() {
   // Tappable starters shown at the top of a fresh chat — a soft nudge to
   // convert without forcing the visitor to type or hand over info.
   const CHAT_QUICK_REPLIES = [
-    "💰 What's my device worth?",
-    "📦 How does it work?",
-    "🙋 Talk to a human",
+    "What's my device worth?",
+    "How does it work?",
+    "Talk to a human",
   ];
 
   // Once the visitor taps "Talk to a human", Theot switches to the warm
@@ -14718,7 +14718,7 @@ export default function Home() {
                       </div>
                       {/* Optional reply-back contact. Clearly optional so it
                           nudges conversion without gating the chat. */}
-                      <input value={chatContact} onChange={(e) => setChatContact(e.target.value)} placeholder="📱 Phone or email for a reply (optional)" aria-label="Your phone or email (optional)" className="mt-2 w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-[#9a9a9a] focus:outline-none focus:border-[#00c853]" />
+                      <input value={chatContact} onChange={(e) => setChatContact(e.target.value)} placeholder="Phone or email for a reply (optional)" aria-label="Your phone or email (optional)" className="mt-2 w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder:text-[#9a9a9a] focus:outline-none focus:border-[#00c853]" />
                     </>
                   )}
                   {chatMode === "call" && (

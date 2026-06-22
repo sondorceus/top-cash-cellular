@@ -1051,7 +1051,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                 <div className="mt-4 pt-4 border-t border-white/8">
                   {coSubmitted ? (
                     <p className="text-xs text-[#bdbdbd] leading-relaxed">
-                      <span className="text-white font-semibold">Counter sent.</span> A real person will review your number and reach out by text or email — usually same business day.
+                      <span className="text-white font-semibold">Counter sent.</span> We'll review your number and reach out by text or email — usually same business day.
                     </p>
                   ) : !coOpen ? (
                     <button
