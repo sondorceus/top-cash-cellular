@@ -36,6 +36,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# python (scrape/build scripts) — compiled bytecode kept leaking into the
+# weekly price-refresh PRs as scripts/__pycache__/*.pyc junk.
+__pycache__/
+*.pyc
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
