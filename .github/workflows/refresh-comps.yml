@@ -106,9 +106,12 @@ jobs:
           pip install playwright
           playwright install chromium --with-deps
       - name: Scrape IWM Flawless prices for ~470 PC laptops
-        # Runs single-threaded inside the runner; ~40 min for the full pass.
+        # Runs single-threaded inside the runner. Originally ~40 min, but IWM
+        # got slower / added models and it began timing out at 90 (stale PC
+        # laptop prices for 5+ weeks). Bumped to 180; GH job cap is 6h so
+        # there's headroom alongside the 60-min specs scrape below.
         run: python scripts/scrape-iwm-pc-laptop-prices.py
-        timeout-minutes: 90
+        timeout-minutes: 180
       - name: Apply IWM × 0.90 to page.tsx
         run: python scripts/apply-iwm-pc-laptop-prices.py
       - name: Scrape IWM additive specs (chip / RAM / storage / GPU / display)
