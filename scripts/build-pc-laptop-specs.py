@@ -381,6 +381,17 @@ def pick_submodel(v: dict, page_vid: str, target_slug=None):
 
 def main():
     adj = json.load(open(ADJ))
+    # Drop scrape artifacts / placeholder rows so a test or generic entry
+    # (e.g. "...-testing", IWM's catch-all "windows-laptop" / "laptop") can
+    # never map to a customer-facing spec. Skywalker: kill false-wording specs.
+    PLACEHOLDER = re.compile(
+        r"-testing\b|(?:^|/)windows-laptop$|(?:^|/)laptop$|placeholder|\bsample\b|\bdummy\b",
+        re.I,
+    )
+    adj = {
+        k: v for k, v in adj.items()
+        if not (PLACEHOLDER.search(k) or PLACEHOLDER.search(v.get("model") or ""))
+    }
     img_to_slug = build_image_to_slug()
     # Index adj entries by IWM model slug AND by submodel slug. Some
     # umbrella URLs (xps-laptop/xps-13-laptop) host the per-submodel
@@ -395,6 +406,8 @@ def main():
         # that points back at this URL's entry — pick_submodel will
         # then dive into the matching submodel.
         for subkey in (v.get("submodels") or {}):
+            if PLACEHOLDER.search(subkey):
+                continue
             by_slug.setdefault(subkey, []).append(v)
 
     # Read page.tsx variants to extract id ↔ image.
