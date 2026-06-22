@@ -397,18 +397,19 @@ def main():
         for subkey in (v.get("submodels") or {}):
             by_slug.setdefault(subkey, []).append(v)
 
-    # Read page.tsx variants in the PC laptop section to extract id ↔ image
+    # Read page.tsx variants to extract id ↔ image.
     src = PAGE.read_text()
-    # Non-Apple laptop span: lines ~1260..2245 (see apply script)
-    lines = src.splitlines(keepends=True)
-    starts = []
-    pos = 0
-    for ln in lines:
-        starts.append(pos); pos += len(ln)
-    # Span covers non-Apple laptop arrays AND Alienware/MSI desktop arrays
-    # near line 2260 — extended end so MSI desktop variants get matched.
-    span_start = starts[1259] if len(starts) > 1259 else 0
-    span_end = starts[2280] if len(starts) > 2280 else len(src)
+    # Scan the WHOLE file, not a hardcoded line window. This used to be
+    # pinned to lines ~1260..2280, but page.tsx grew past 15k lines and the
+    # PC-laptop variant arrays drifted out of that window — so the build
+    # silently resolved only a fraction of variants (451 -> ~110), and the
+    # committed specs file went stale because no refresh PR merged for weeks.
+    # Resolution below is slug-gated (img_to_slug / MANUAL maps are built from
+    # the laptop bridges only), so phone/tablet/MacBook/console variants that
+    # share the {id,label,base,image} shape simply don't resolve and are
+    # skipped — making a full-file scan safe.
+    span_start = 0
+    span_end = len(src)
     vre = re.compile(
         r'\{\s*id:\s*"(?P<id>[^"]+)",\s*label:\s*"(?P<label>[^"]+)",\s*base:\s*\d+'
         r'(?:,\s*inquiryOnly:\s*(?:true|false))?\s*,\s*image:\s*"(?P<image>/devices/[^"]+)"\s*\}'
