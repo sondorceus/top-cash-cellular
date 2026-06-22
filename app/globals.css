@@ -182,13 +182,20 @@
     transform: rotateY(180deg);
   }
 }
-/* Mobile auto-flip — state-driven from React (setInterval every 4s on
-   touch devices). Class is applied to .hero-flip-inner so the same
-   transform pipeline drives it. */
-.hero-flip-inner.is-flipped { transform: rotateY(180deg); }
+/* Mobile auto-flip — pure CSS keyframe loop (was a 4s React setInterval that
+   re-rendered the whole funnel tree). On touch devices the inner flips on an
+   8s loop: hold the front ~3.6s, rotate, hold the back ~3.6s, rotate back.
+   Desktop keeps the hover-driven flip above. */
+@keyframes heroAutoFlip {
+  0%, 45%  { transform: rotateY(0deg); }
+  50%, 95% { transform: rotateY(180deg); }
+  100%     { transform: rotateY(0deg); }
+}
+@media (hover: none) {
+  .hero-flip-inner { animation: heroAutoFlip 8s ease-in-out infinite; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .hero-flip-inner { transition: none; }
-  .hero-flip-inner.is-flipped { transform: none; }
+  .hero-flip-inner { transition: none; animation: none; }
   .hero-flip:hover .hero-flip-inner,
   .hero-flip:focus-within .hero-flip-inner { transform: none; }
 }
@@ -319,7 +326,10 @@ html[data-theme="light"] .bg-\[\#181818\] {
    pill outlines/logo read as glass, not gray-on-black. */
 html[data-theme="light"] nav.bg-\[\#0a0a0a\]\/95 {
   background-color: rgba(10, 11, 15, 0.34) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(140%); backdrop-filter: blur(22px) saturate(140%);
+  /* 18px (was 22px): the sticky nav re-composites its backdrop-filter on
+     every scroll frame, so its blur radius is the single biggest per-frame
+     scroll cost on mobile. 18px is visually near-identical, materially cheaper. */
+  -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%);
 }
 /* The nav pills (logo / center menu / cart cluster / account chip) are
    bg-white/[0.12] → the generic glass rule tints them a fairly opaque dark
@@ -453,11 +463,6 @@ button, a, [role="button"] {
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
-@keyframes imgFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
 @keyframes logoBreath {
   0%, 100% { transform: scale(1); filter: drop-shadow(0 0 6px rgba(0,200,83,0.45)); }
   50% { transform: scale(1.07); filter: drop-shadow(0 0 14px rgba(0,230,118,0.85)); }
@@ -485,12 +490,6 @@ button, a, [role="button"] {
 .tcc-marquee-mask {
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
   mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
-}
-img {
-  background-color: rgba(255,255,255,0.04);
-}
-img[loading="lazy"] {
-  animation: imgFadeIn 0.45s ease-out both;
 }
 
 .tap-press {
@@ -809,7 +808,10 @@ html.tcc-nav-settling button:hover > .tcc-brand-tile {
   opacity: 0;
   transform: translateY(28px);
   transition: opacity 650ms cubic-bezier(.22, 1, .36, 1), transform 650ms cubic-bezier(.22, 1, .36, 1);
-  will-change: opacity, transform;
+  /* No permanent will-change: opacity + transform are already compositor-
+     friendly, and pinning will-change on every reveal element keeps a GPU
+     layer alive for the whole page life (memory + compositing bloat with
+     dozens of reveals). The browser promotes on-demand during the transition. */
 }
 .reveal.is-visible { opacity: 1; transform: none; }
 .reveal-left { transform: translateX(-36px); }
@@ -864,18 +866,24 @@ html.tcc-nav-settling button:hover > .tcc-brand-tile {
 .no-scrollbar::-webkit-scrollbar,
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 
-/* Smooth image loading — fade in once decoded (prevents flash of broken/empty images during page load) */
+/* Smooth image loading — fade lazy-loaded images in once decoded so they ease
+   into place on scroll instead of popping. Scoped to loading="lazy" ONLY:
+   above-the-fold + cached images render instantly with no fade flash, and the
+   page no longer composites an opacity animation for EVERY <img> on load
+   (this was duplicated three times with conflicting 200ms / 0.45s timings). */
 @keyframes imgFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 img {
-  animation: imgFadeIn 200ms ease-out both;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: rgba(255, 255, 255, 0.03);
   border-radius: inherit;
 }
+img[loading="lazy"] {
+  animation: imgFadeIn 0.4s ease-out both;
+}
 @media (prefers-reduced-motion: reduce) {
-  img { animation: none; }
+  img[loading="lazy"] { animation: none; }
 }
 
 /* ----------------------------------------------------------------

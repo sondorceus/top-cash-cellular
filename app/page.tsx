@@ -3971,17 +3971,11 @@ export default function Home() {
   }, []);
 
   // Hero headline auto-flip — desktop uses CSS hover, touch devices auto-flip
-  // every 4s so mobile users get the same speed-claim reveal. Pauses on
-  // prefers-reduced-motion. State toggle is applied via .is-flipped class.
-  const [heroFlipped, setHeroFlipped] = useState(false);
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const isTouch = window.matchMedia('(hover: none)').matches;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!isTouch || reduced) return;
-    const id = setInterval(() => setHeroFlipped((f) => !f), 4000);
-    return () => clearInterval(id);
-  }, []);
+  // on an 8s CSS keyframe loop (see .hero-flip-inner @media (hover: none) in
+  // globals.css). This used to be a 4s setInterval that toggled React state,
+  // which re-rendered the entire ~11k-line Home tree every 4 seconds for a
+  // purely visual flip. Pure CSS gives the identical animation with zero
+  // React work — one of the biggest idle-jank wins on the page.
   const [step, setStep] = useState<Step>("device");
   const [category, setCategory] = useState<"phones" | "tablets" | "computers" | "desktops" | "consoles" | "watches" | "drones" | "vr" | null>(null);
   const [deviceType, setDeviceType] = useState<DeviceType>(null);
@@ -8159,7 +8153,7 @@ export default function Home() {
               </div>
             )}
             <h1 className="text-4xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.05] mb-3 hero-fade-up hero-flip" style={{ letterSpacing: "-0.03em" }} tabIndex={0} aria-label="Get top dollar for your device. Also: Get paid same-day.">
-              <span className={`hero-flip-inner${heroFlipped ? ' is-flipped' : ''}`}>
+              <span className="hero-flip-inner">
                 <span className="hero-flip-face hero-flip-front">
                   Get <span className="text-[#00c853]">top dollar</span><br />for your device.
                 </span>
