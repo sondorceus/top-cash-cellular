@@ -1539,7 +1539,7 @@ const ALIENWARE_DESKTOP_MODELS = [
   { id: "awaurorar13", label: "Aurora R13", base: 306, inquiryOnly: false, image: "/devices/alienware-aurora-r13.webp" },
   { id: "awaurorar12", label: "Aurora R12", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r12.webp" },
   { id: "awaurorar10", label: "Aurora R10", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r10.webp" },
-  { id: "awarea51desktop", label: "Area-51 Desktop", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51-desktop.webp" },
+  { id: "awarea51desktop", label: "Area-51 Desktop", base: 2205, inquiryOnly: false, image: "/devices/alienware-area-51-desktop.webp" },
 ];
 
 // MSI desktops — prices and SKUs from IWM web-head scrape 2026-05-17.
