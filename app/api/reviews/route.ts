@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { mailLogo, mailButton, esc as shellEsc } from "../../lib/email-shell";
+import { rateLimit, rateLimitResponse, clientIp } from "../../lib/rate-limit";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -139,6 +140,13 @@ async function mailCoupon(opts: { to: string; firstName: string; code: string; v
 }
 
 export async function POST(req: NextRequest) {
+  // Throttle — this route posts to MC, mints a coupon, and fires owner SMS +
+  // customer email. The single-use token gate is the real guard, but rate-
+  // limit so a replayed/leaked token can't be looped into an SMS/email/coupon
+  // burst before the [REVIEW-USED] marker lands. Defense-in-depth.
+  const rl = rateLimit(`reviews:${clientIp(req)}`, 8, 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs);
+
   let body;
   try {
     body = await req.json();
