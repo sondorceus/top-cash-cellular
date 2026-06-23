@@ -311,34 +311,46 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, deduped: true });
   }
 
-  // Coupon redemption — Skywalker 2026-05-18 review-reward feature.
-  // Tries to redeem the customer's $25 thank-you code if they
-  // entered one. Identity is bound to email + phone on mint, so the
-  // PATCH refuses if the redeemer doesn't match. Failures (invalid,
-  // used, expired, mismatch) silently skip applying the bonus —
-  // the lead still saves, just without the +$25. Runs BEFORE line
-  // construction so couponLines + margin math both see the result.
+  // Coupon — Skywalker 2026-05-18 review-reward feature. We VALIDATE the
+  // customer's $25 thank-you code here (read-only) to fold its value into
+  // couponLines + margin math, but DON'T burn it yet: the redeem is
+  // committed only AFTER the lead POST succeeds (see the redeem-commit
+  // below the MC post). A pre-post redeem burned the one-time code even
+  // when the lead POST then failed (MC outage) — the customer lost the
+  // credit for a trade that never recorded. Validation mirrors the
+  // read-only /api/coupons/check: active + unexpired + identity-bound
+  // (email OR phone must match the recipient). Failures (invalid, used,
+  // expired, mismatch) silently skip the bonus — the lead still saves.
   let couponApplied: { code: string; value: number } | null = null;
   let couponError: string | null = null;
   if (typeof couponCode === "string" && couponCode.trim()) {
     const cleanCode = couponCode.trim().toUpperCase();
     try {
       const phoneDigits = (phone || "").replace(/\D/g, "");
-      const cr = await fetch(`${MC_API}/api/coupons`, {
-        method: "PATCH",
-        headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          code: cleanCode,
-          action: "redeem",
-          email: (email || "").toLowerCase().trim(),
-          phone: phoneDigits,
-        }),
+      const ownEmail = (email || "").toLowerCase().trim();
+      const cr = await fetch(`${MC_API}/api/coupons?status=active`, {
+        headers: { "x-api-key": MC_KEY },
+        cache: "no-store",
       });
       const cd = await cr.json().catch(() => ({}));
-      if (cr.ok && cd?.coupon?.value) {
-        couponApplied = { code: cd.coupon.code || cleanCode, value: Number(cd.coupon.value) || 0 };
+      const c = cr.ok
+        ? ((Array.isArray(cd.coupons) ? cd.coupons : []) as Array<{ code?: string; value?: number; status?: string; expiresAt?: string; email?: string; phone?: string }>)
+            .find((x) => (x.code || "").toUpperCase() === cleanCode)
+        : null;
+      if (!c) {
+        couponError = cr.ok ? "Code not found or already used" : `Coupon couldn't be verified (${cr.status})`;
+      } else if (c.status && c.status !== "active") {
+        couponError = `Code is ${c.status}`;
+      } else if (c.expiresAt && new Date(c.expiresAt).getTime() < Date.now()) {
+        couponError = "Code has expired";
+      } else if (
+        (c.email || c.phone) &&
+        !((c.email && ownEmail && c.email.toLowerCase() === ownEmail) ||
+          (c.phone && phoneDigits && String(c.phone).replace(/\D/g, "") === phoneDigits))
+      ) {
+        couponError = "This code belongs to a different customer.";
       } else {
-        couponError = cd?.error || `Coupon couldn't be applied (${cr.status})`;
+        couponApplied = { code: c.code || cleanCode, value: Number(c.value) || 0 };
       }
     } catch (e) {
       couponError = e instanceof Error ? e.message : "Coupon service unavailable";
@@ -361,7 +373,15 @@ export async function POST(req: NextRequest) {
     // Format guard — only well-formed REF-XXXXXX codes get to query MC.
     if (REFERRAL_CODE_RE.test(cleanRef)) {
       try {
-        const rr = await fetch(`${MC_API}/api/comms?limit=1000`, {
+        // Pull a wide window — this same scan resolves the referrer's
+        // [REFERRAL-CODE:] marker AND gates the first-trade bonus (isReturning
+        // below). MC /api/comms only supports a flat last-N pull (no
+        // tag/search filter), so at 1000 a busy stream could age out an older
+        // referral marker (referee silently loses $10) OR an older prior lead
+        // (a returning customer slips the first-trade gate and re-collects).
+        // 5000 matches the heaviest consumers (admin referrals/analytics) and
+        // covers far more history. A definitive fix needs MC-side filtering.
+        const rr = await fetch(`${MC_API}/api/comms?limit=5000`, {
           headers: { "x-api-key": MC_KEY },
           cache: "no-store",
         });
@@ -955,6 +975,29 @@ export async function POST(req: NextRequest) {
     if (r.ok) {
       const data = await r.json().catch(() => ({}));
       leadId = data?.message?.id || null;
+      // Commit the coupon burn NOW that the lead is safely recorded — never
+      // before (a pre-post redeem burns the one-time code even if this POST
+      // fails). Best-effort: if the burn itself fails, the lead still stands
+      // with its credit and staff reconcile from the "Coupon applied" line —
+      // far better than silently eating the customer's code. MC re-checks
+      // identity + already-used server-side, so this stays authoritative.
+      if (couponApplied) {
+        try {
+          const rdm = await fetch(`${MC_API}/api/coupons`, {
+            method: "PATCH",
+            headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              code: couponApplied.code,
+              action: "redeem",
+              email: (email || "").toLowerCase().trim(),
+              phone: (phone || "").replace(/\D/g, ""),
+            }),
+          });
+          if (!rdm.ok) console.warn(`[lead] coupon ${couponApplied.code} applied to lead ${leadId} but redeem-commit failed (${rdm.status}) — reconcile manually.`);
+        } catch (e) {
+          console.warn(`[lead] coupon ${couponApplied.code} redeem-commit threw for lead ${leadId}:`, e instanceof Error ? e.message : e);
+        }
+      }
     }
   } catch {}
 
