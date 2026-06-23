@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../../lib/admin-auth";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
-const MC_KEY = process.env.MC_API_KEY || process.env.NEXT_PUBLIC_MC_API_KEY || "";
+// Server-only — never the NEXT_PUBLIC_ fallback (master MC key must not be
+// bundle-eligible). See app/api/admin/leads/delete/route.ts.
+const MC_KEY = process.env.MC_API_KEY || "";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 // Restore a soft-trashed lead. Mirrors /api/admin/leads/delete — posts
@@ -39,7 +41,7 @@ export async function POST(req: NextRequest) {
   }
   if (!MC_KEY) {
     return NextResponse.json(
-      { error: "MC API key not configured on Vercel — set MC_API_KEY (server) or NEXT_PUBLIC_MC_API_KEY (public)." },
+      { error: "MC API key not configured on Vercel — set MC_API_KEY (server-only)." },
       { status: 503 },
     );
   }

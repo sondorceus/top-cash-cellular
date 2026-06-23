@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../../lib/admin-auth";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
-// Fall back to NEXT_PUBLIC_MC_API_KEY when MC_API_KEY isn't set on
-// Vercel. The public key works for /api/comms POST and prevents the
-// admin Delete button from 502-ing while we're still finalizing the
-// server-side env config.
-const MC_KEY = process.env.MC_API_KEY || process.env.NEXT_PUBLIC_MC_API_KEY || "";
+// Server-only. The NEXT_PUBLIC_ fallback was removed: a NEXT_PUBLIC_ var
+// is the master MC credential and must never be bundle-eligible. MC_API_KEY
+// is set server-side in prod (the whole lead pipeline relies on it), so the
+// fallback was dead weight that kept the dangerous public-var alive.
+const MC_KEY = process.env.MC_API_KEY || "";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 // Soft-delete a lead. MC /api/comms doesn't support DELETE, so we post
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
   // instead of a generic 502 (which tripped Skywalker on 2026-05-17).
   if (!MC_KEY) {
     return NextResponse.json(
-      { error: "MC API key not configured on Vercel — set MC_API_KEY (server) or NEXT_PUBLIC_MC_API_KEY (public)." },
+      { error: "MC API key not configured on Vercel — set MC_API_KEY (server-only)." },
       { status: 503 },
     );
   }

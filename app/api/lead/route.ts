@@ -53,10 +53,17 @@ const DEDUP_CUSTOM_MS = 5 * 60 * 1000; // 5min for custom-quote flows
 // the lead body. The legitimate `[NEW BUYBACK LEAD]` / `[IMEI
 // WARNINGS]` markers are added by us in plain template strings, so
 // they're unaffected by this strip.
+//
+// Newlines/tabs are stripped too: customer fields (Name, Device, Model,
+// Payout, …) are emitted as "Key: value" lines ABOVE the real Quote:/
+// Payout: lines, and the admin parser is line-anchored + first-match — so
+// a `\n` in a field could inject a forged `Quote: $99999` / `Payout: …`
+// line. Matches the shared cleanField in app/lib/lead-devices.ts (the two
+// had drifted; this one was bracket-only).
 function cleanField(s: unknown, max = 300): string {
   if (s === undefined || s === null) return "";
   const str = typeof s === "string" ? s : String(s);
-  return str.replace(/[\[\]]/g, "").slice(0, max).trim();
+  return str.replace(/[\[\]\n\r\t]/g, " ").slice(0, max).trim();
 }
 
 function isDuplicate(email: string, contact: string, device: string, model: string, isCustom: boolean): boolean {
