@@ -11,7 +11,7 @@ const GATEWAY = "https://ai-gateway.vercel.sh/v1/chat/completions";
 export type AIModel =
   | "anthropic/claude-haiku-4-5"      // cheap + fast — triage, classification, summaries
   | "anthropic/claude-sonnet-4-6"     // workhorse — vision, drafts, fraud narrative
-  | "anthropic/claude-opus-4-7"       // expensive — reserve for hard reasoning
+  | "anthropic/claude-opus-4-8"       // expensive — reserve for hard reasoning
   | "openai/gpt-5-nano"               // alternative cheap fallback
   | "openai/gpt-5";                   // alternative workhorse
 
