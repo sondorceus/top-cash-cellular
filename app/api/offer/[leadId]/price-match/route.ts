@@ -74,8 +74,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     return NextResponse.json({ error: "If you include a link, it should start with http:// or https://." }, { status: 400 });
   }
 
-  // Verify the lead exists (the leadId is the access secret).
-  const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
+  // Verify the lead exists (the leadId is the access secret). limit=5000
+  // (full live cap, was 1000) so an older offer still resolves by id.
+  const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
     headers: { "x-api-key": MC_KEY },
     cache: "no-store",
   });

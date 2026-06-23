@@ -19,7 +19,12 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (!MC_KEY) {
     return NextResponse.json({ error: "Offer service unavailable" }, { status: 503 });
   }
-  const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
+  // limit=5000 (full live cap, was 1000): the offer is resolved by id from
+  // this slice, so an older offer 404'd once the feed grew past the window.
+  // 5000 is MC's live cap — covers an offer's full life at current volume.
+  // (If offers ever need to resolve from the trimmed archive, switch to
+  // fetchCommsPaged with includeArchive — see app/lib/mc-comms.ts.)
+  const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
     headers: { "x-api-key": MC_KEY },
     cache: "no-store",
   });

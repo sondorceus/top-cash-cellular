@@ -51,8 +51,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   } catch { /* note is optional */ }
 
   // Pull the lead body to verify ownership AND check it's still
-  // cancellable (not already received / paid / cancelled).
-  const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
+  // cancellable (not already received / paid / cancelled). limit=5000
+  // (full live cap, was 1000) so an older offer still resolves by id
+  // instead of 404'ing once the feed grows past the window.
+  const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
     headers: { "x-api-key": MC_KEY },
     cache: "no-store",
   });

@@ -185,8 +185,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     return NextResponse.json({ error: "Every device needs a model." }, { status: 400 });
   }
 
-  // Pull the lead to verify ownership + that it's still editable.
-  const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
+  // Pull the lead to verify ownership + that it's still editable. limit=5000
+  // (full live cap, was 1000) so an older offer still resolves by id.
+  const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
     headers: { "x-api-key": MC_KEY },
     cache: "no-store",
   });

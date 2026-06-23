@@ -56,8 +56,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // Strip characters that would break the MC marker / lead parser.
   const phoneClean = phone.replace(/[\[\]\n\r]/g, " ").trim().slice(0, 40);
 
-  // Pull the lead body to confirm it's a real buyback lead.
-  const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
+  // Pull the lead body to confirm it's a real buyback lead. limit=5000
+  // (full live cap, was 1000) so an older offer still resolves by id.
+  const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
     headers: { "x-api-key": MC_KEY },
     cache: "no-store",
   });
