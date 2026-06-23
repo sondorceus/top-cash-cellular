@@ -66,6 +66,10 @@ type Offer = {
   devices?: Array<{ model: string; storage?: string; condition?: string; quote?: number; quantity?: number; needsReview?: boolean }>;
   deviceCount?: number;
   totalPayout?: number;
+  // Coupon/referral credit, shown as its own line. `totalPayout` already
+  // includes it; device line items do NOT, so device-subtotal + bonus
+  // reconciles to totalPayout (and a device edit can't strip the bonus).
+  bonus?: number;
   status: string;
   statusAt?: string;
   // Customer payout receipt — present once paid/met. Lets the customer
@@ -169,11 +173,15 @@ function buildItems(o: Offer): EditItem[] {
     }));
   }
   const q = o.quote ? parseInt(o.quote.replace(/[^0-9]/g, ""), 10) || 0 : 0;
+  // The single-device quote/total folds in the coupon/referral bonus; strip
+  // it back out so the device line shows the device's own value and the
+  // bonus renders as its own line. A re-quote on edit then can't drop it.
+  const grand = o.totalPayout != null ? o.totalPayout : q;
   return [{
     model: o.model || o.device || "Device",
     storage: o.storage || "",
     condition: o.condition || "",
-    quote: o.totalPayout != null ? o.totalPayout : q,
+    quote: Math.max(0, grand - (o.bonus || 0)),
     quantity: o.quantity && o.quantity > 0 ? o.quantity : 1,
     needsReview: false,
   }];
@@ -439,13 +447,14 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
       const saved: EditItem[] = Array.isArray(d.devices) ? d.devices : next;
       // `it.quote` is already the per-line total (price × qty) — same
       // convention the funnel/lead/items routes use — so DON'T multiply by
-      // quantity again (that double-counted multi-unit lines). This fallback
-      // must match the always-rendered total below (sum of it.quote).
-      const total = typeof d.total === "number"
+      // quantity again (that double-counted multi-unit lines). This is the
+      // device subtotal; the bonus is added on top so the optimistic total
+      // matches what GET returns on reload (device subtotal + bonus).
+      const subtotal = typeof d.total === "number"
         ? d.total
         : saved.reduce((s, it) => s + it.quote, 0);
       setItems(saved);
-      setOffer((prev) => prev ? { ...prev, devices: saved, totalPayout: total } : prev);
+      setOffer((prev) => prev ? { ...prev, devices: saved, totalPayout: subtotal + (prev.bonus || 0) } : prev);
       setEditIdx(null);
       setItemsSaved(true);
       setTimeout(() => setItemsSaved(false), 2500);
@@ -931,11 +940,17 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             })}
           </div>
 
+          {(offer.bonus ?? 0) > 0 && !items.some(itemNeedsReview) && (
+            <div className="mt-3 flex items-baseline justify-between">
+              <span className="text-[11px] text-[#bdbdbd]">Bonus credit <span className="text-[#8a8f9c]">(coupon / referral)</span></span>
+              <span className="text-[#00c853] font-semibold text-sm">+${(offer.bonus ?? 0).toLocaleString()}</span>
+            </div>
+          )}
           <div className="mt-3 pt-3 border-t border-white/15 flex items-baseline justify-between">
             <span className="text-[11px] uppercase tracking-wider text-[#e6e6e6] font-bold">Total</span>
             {items.some(itemNeedsReview)
               ? <span className="text-amber-300 font-extrabold text-sm inline-flex items-center gap-1"><svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>Manual review</span>
-              : <span className="text-[#00c853] font-extrabold text-lg">${items.reduce((s, it) => s + it.quote, 0).toLocaleString()}</span>}
+              : <span className="text-[#00c853] font-extrabold text-lg">${(items.reduce((s, it) => s + it.quote, 0) + (offer.bonus ?? 0)).toLocaleString()}</span>}
           </div>
 
           {canEditItems && (

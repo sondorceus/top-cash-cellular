@@ -188,6 +188,17 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     if (totalMatch) totalPayout = Math.round(parseFloat(totalMatch[1].replace(/,/g, "")));
   }
 
+  // Coupon ($) + referral credit recorded at submit. Surfaced as its own
+  // line on the offer page (not baked into a device price) and preserved
+  // across device edits — the marker lives in the IMMUTABLE original body,
+  // so an [ITEM-UPDATE] (which carries only device lines) can't strip it.
+  let bonus = 0;
+  const bonusMatch = body.match(/\[OFFER-BONUS:\s*amount=([\d.]+)\]/i);
+  if (bonusMatch) {
+    const b = Math.round(parseFloat(bonusMatch[1]));
+    if (Number.isFinite(b) && b > 0 && b <= 1000) bonus = b;
+  }
+
   // Cancellation / deletion check — staff can soft-delete leads.
   const cancelled = messages.some((m) => m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
 
@@ -203,9 +214,13 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
       needsReview: !!d.needsReview,
     }));
     deviceCount = devices.length;
-    totalPayout = Number.isFinite(Number(itemUpdate.total))
+    // The [ITEM-UPDATE] marker stores only the edited device subtotal, so
+    // re-add the bonus on top — otherwise a customer edit silently drops the
+    // coupon/referral credit from their total.
+    const editedSubtotal = Number.isFinite(Number(itemUpdate.total))
       ? Number(itemUpdate.total)
       : devices.reduce((s, d) => s + (d.quote || 0), 0);
+    totalPayout = editedSubtotal + bonus;
   }
 
   // Resolve the FINAL negotiated payout. An accepted counter-offer or a
@@ -221,6 +236,10 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   }
   if (offerRevised && offerRevised.amount >= 0) {
     totalPayout = offerRevised.amount;
+    // A negotiated counter-offer / staff adjustment is the final agreed
+    // number — it already reflects everything, so don't add a separate
+    // bonus line on top of it.
+    bonus = 0;
   }
 
   // Refer-a-friend — the customer's own share code is deterministic
@@ -268,6 +287,10 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     devices,
     deviceCount,
     totalPayout,
+    // Coupon/referral credit shown as its own offer-page line. `totalPayout`
+    // already includes it; the page renders the device subtotal + this line
+    // so the two reconcile and an edit can't strip the credit.
+    bonus: bonus > 0 ? bonus : undefined,
     // Present when a counter-offer was accepted or staff adjusted the quote at
     // inspection — lets the page show "revised offer" context, and guarantees
     // the headline total above reflects the agreed number.

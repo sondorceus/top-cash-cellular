@@ -484,6 +484,13 @@ export async function POST(req: NextRequest) {
   // The referral referee bonus stacks on top — both may apply, that's
   // intentional (a coupon and a referral are independent rewards).
   const quoteNum = baseQuoteNum + (couponApplied?.value || 0) + referralBonus;
+  // The coupon ($) + referral referee bonus as one explicit figure. Folded
+  // into quoteNum above for the headline/analytics, but also written to the
+  // body as a machine-readable [OFFER-BONUS] marker (see bonusLines) so the
+  // offer page can show it as its OWN line item and preserve it across a
+  // customer device edit — instead of silently baking it into a device price
+  // (where a re-quote on edit would drop it).
+  const offerBonus = (couponApplied?.value || 0) + referralBonus;
 
   const photoLines = (photos as string[] | undefined)?.length
     ? [`Photos: ${(photos as string[]).join(" | ")}`]
@@ -568,7 +575,7 @@ export async function POST(req: NextRequest) {
     // the analytics + customers rollups read this "Total payout:" line, so
     // it must include the bonus or the recorded payout undercounts the real
     // one (the single-device Quote/headline already folds the bonus in).
-    const multiBonus = (couponApplied?.value || 0) + referralBonus;
+    const multiBonus = offerBonus;
     // On tamper the per-device quotes are the inflated client values, so
     // the honest figure is the clamped baseQuoteNum — keep this line in
     // sync with the clamped headline above (review note has the detail).
@@ -653,6 +660,13 @@ export async function POST(req: NextRequest) {
     referralLines.push(`Referred-by: ${referralApplied.code} (${cleanField(referralApplied.referrerEmail, 200)})`);
     referralLines.push(`Referral bonus: +$${REFERRAL_REFEREE_BONUS} off-the-top (referee first-trade bonus)`);
   }
+
+  // Machine-readable bonus marker — the offer GET parses this to render the
+  // coupon/referral credit as its own line on the customer's offer page and
+  // keep it across a device edit (the marker lives in the immutable original
+  // body, so an [ITEM-UPDATE] can't strip it). Only present when a bonus
+  // actually applies. Bracketed-marker convention = never matched as a field.
+  const bonusLines: string[] = offerBonus > 0 ? [`[OFFER-BONUS: amount=${offerBonus}]`] : [];
 
   // Customer-level meta lines — best contact preference, free-form
   // note, quantity (single-device only). Skywalker 2026-05-18 "make
@@ -887,10 +901,11 @@ export async function POST(req: NextRequest) {
         // Show the server-VALIDATED total: on tamper the per-device sum
         // is the inflated client value, so fall back to the clamped
         // baseQuoteNum (the summed per-item cap) and note the original.
-        `Quote: $${(quoteTampered ? baseQuoteNum : deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0)) + (couponApplied?.value || 0) + referralBonus}${quoteTampered ? ` (clamped from $${submittedQuoteNum})` : ""}`,
+        `Quote: $${(quoteTampered ? baseQuoteNum : deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0)) + offerBonus}${quoteTampered ? ` (clamped from $${submittedQuoteNum})` : ""}`,
         `Payout: ${safePayout}`,
         ...couponLines,
         ...referralLines,
+        ...bonusLines,
         ...reviewLines,
         ...customerMetaLines,
         ...multiLines,
@@ -909,6 +924,7 @@ export async function POST(req: NextRequest) {
         `Payout: ${safePayout}`,
         ...couponLines,
         ...referralLines,
+        ...bonusLines,
         ...customerMetaLines,
         ...specLines,
         ...brokenLines,
