@@ -29,7 +29,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "Is the price you quote on the website actually what I'll get?",
-    a: "Yes — provided your device matches the condition tier you selected (Sealed, Excellent, Good, Fair, Broken) and isn't carrier-locked, KG-locked, or financially encumbered. Read the condition tier descriptions on the quote page carefully.",
+    a: "Yes — provided your device matches the condition tier you selected (Sealed, Excellent, Good, Fair, Broken), isn't activation-locked (iCloud/Find My, Google FRP, or a Samsung/KG reactivation lock), and isn't reported lost or stolen. Carrier-locked is fine — we buy locked phones, and the quote just reflects your carrier/lock status. Phones on a current installment plan are eligible too. Read the condition tier descriptions on the quote page carefully.",
   },
   {
     q: "Do you cover shipping?",

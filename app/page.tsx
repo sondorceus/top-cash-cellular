@@ -14255,7 +14255,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="text-white font-bold mb-1">2. Eligibility</p>
-                    <p>You must be 18 or older to sell to us. Devices must be legally owned by you — stolen, fraudulently obtained, or financed-but-unpaid devices will be refused and reported to law enforcement. When you submit, you confirm that you are 18 or older and the legal owner of the device with the right to sell it. We verify each device&apos;s IMEI/serial against blacklist and lost/stolen databases before payment.</p>
+                    <p>You must be 18 or older to sell to us. Devices must be legally owned by you — stolen, fraudulently obtained, activation-locked, or account-locked devices will be refused and reported to law enforcement. Devices with a past-due or defaulted financing balance are also refused; phones on a current installment plan are eligible. When you submit, you confirm that you are 18 or older and the legal owner of the device with the right to sell it. We verify each device&apos;s IMEI/serial against blacklist and lost/stolen databases before payment.</p>
                   </div>
                   <div>
                     <p className="text-white font-bold mb-1">3. Inspection & condition adjustments</p>

@@ -34,7 +34,7 @@ const STEPS = [
 const PROMISES = [
   { icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z", title: "Locked-in prices", body: "What you see at quote is what you get — provided your device matches the condition tier you picked." },
   { icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z", title: "Free return shipping", body: "Don't like the final offer? We mail it back free. No restocking fee, no questions." },
-  { icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z", title: "Certified data wipe", body: "Every device gets a NIST 800-88 compliant factory wipe before resale or recycling." },
+  { icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z", title: "Secure data wipe", body: "Every device gets a NIST 800-88–aligned factory wipe before resale or recycling." },
   { icon: "M13 10V3L4 14h7v7l9-11h-7z", title: "Same-day payouts", body: "Most payments go out the same business day. Cash App/Zelle in minutes, BTC on-chain in ~30." },
 ];
 
