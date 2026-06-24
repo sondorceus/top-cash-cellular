@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, clientIp } from "../../lib/rate-limit";
+import { verifyTrackToken } from "../../lib/track-token";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -73,31 +74,31 @@ export async function POST(req: NextRequest) {
   if (!rl.ok) {
     return NextResponse.json({ error: "Too many requests — please wait a moment and try again." }, { status: 429 });
   }
-  let payload: { phone?: unknown; email?: unknown };
+  let payload: { phone?: unknown; email?: unknown; token?: unknown };
   try {
     payload = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
-  const phone = typeof payload.phone === "string" ? payload.phone : "";
-  const email = typeof payload.email === "string" ? payload.email : "";
-  if (!phone && !email) {
-    return NextResponse.json({ error: "Phone or email required" }, { status: 400 });
-  }
 
-  const normPhone = phone ? normalizePhone(phone) : "";
-  const normEmail = email ? email.toLowerCase().trim() : "";
-  // Privacy guard: a too-short normalized phone or email lets the
-  // substring match in pass 2 leak OTHER customers' leads (e.g. a phone
-  // of "5" matches every lead body containing a 5). Require at least a
-  // 10-digit phone (US format the funnel collects) and an email with a
-  // local-part + domain so the substring check is meaningfully unique.
-  const phoneOk = !normPhone || normPhone.length >= 10;
-  const emailOk = !normEmail || (normEmail.length >= 5 && normEmail.includes("@") && normEmail.indexOf("@") > 0);
-  if (!phoneOk || !emailOk) {
-    return NextResponse.json({ error: "Enter a full phone number or email address." }, { status: 400 });
-  }
-  if (!normPhone && !normEmail) {
+  // Identity must be proven by a signed magic-link token (sent to the
+  // customer's own phone/email via /api/track/request). Raw phone/email
+  // lookups are no longer served directly — that let anyone enumerate other
+  // people's trades. The token carries the already-normalized contact.
+  const token = typeof payload.token === "string" ? payload.token : "";
+  let normPhone = "";
+  let normEmail = "";
+  if (token) {
+    const contact = verifyTrackToken(token);
+    if (!contact) {
+      return NextResponse.json({ error: "This tracking link is invalid or expired. Request a new one.", expired: true }, { status: 401 });
+    }
+    if (contact.includes("@")) normEmail = contact; else normPhone = contact;
+  } else if ((typeof payload.phone === "string" && payload.phone) || (typeof payload.email === "string" && payload.email)) {
+    // Legacy raw lookup (incl. old ?phone=/?email= deep-links): don't serve;
+    // signal the UI to send a verification link instead.
+    return NextResponse.json({ needVerify: true }, { status: 403 });
+  } else {
     return NextResponse.json({ error: "Phone or email required" }, { status: 400 });
   }
 

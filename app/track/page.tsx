@@ -201,47 +201,72 @@ function TrackInner() {
   const searchParams = useSearchParams();
   const [contact, setContact] = useState("");
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [searched, setSearched] = useState(false);
+  const [verifying, setVerifying] = useState(false); // resolving a ?t= link
+  const [resolved, setResolved] = useState(false);   // a valid token finished
+  const [sending, setSending] = useState(false);     // requesting a link
+  const [requested, setRequested] = useState(false); // link sent
 
-  const lookup = useCallback(async (input: string) => {
-    if (!input.trim()) return;
-    setLoading(true);
+  // Resolve a signed magic-link token (?t=) into the customer's trades.
+  const verifyToken = useCallback(async (token: string) => {
+    setVerifying(true);
     setError(null);
-    setSearched(true);
-    const isEmail = input.includes("@");
     try {
       const r = await fetch("/api/track", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(isEmail ? { email: input } : { phone: input }),
+        body: JSON.stringify({ token }),
       });
       const d = await r.json();
-      if (d.found) {
+      if (r.ok && d.found) {
         setLeads(d.leads || []);
+      } else if (r.status === 401) {
+        setError("That tracking link has expired. Request a fresh one below.");
       } else {
         setLeads([]);
       }
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Lookup failed");
+      setResolved(true);
+    } catch {
+      setError("Couldn't load your trades — try the link again.");
     } finally {
-      setLoading(false);
+      setVerifying(false);
     }
   }, []);
 
-  // Auto-lookup if ?phone= or ?email= passed in URL
+  // Send a secure magic link to the entered phone/email.
+  const requestLink = useCallback(async (input: string) => {
+    if (!input.trim()) return;
+    setSending(true);
+    setError(null);
+    try {
+      const r = await fetch("/api/track/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contact: input }),
+      });
+      if (r.status === 429 || r.status === 400) {
+        const d = await r.json().catch(() => ({}));
+        setError(d.error || "Couldn't send the link — try again.");
+      } else {
+        setRequested(true);
+      }
+    } catch {
+      setError("Couldn't send the link — try again.");
+    } finally {
+      setSending(false);
+    }
+  }, []);
+
+  // ?t= → resolve the link. Old ?phone=/?email= deep-links just prefill the
+  // box — we no longer auto-show trades without a verified link.
   useEffect(() => {
+    const t = searchParams.get("t");
     const p = searchParams.get("phone");
     const e = searchParams.get("email");
-    if (p) {
-      setContact(p);
-      lookup(p);
-    } else if (e) {
-      setContact(e);
-      lookup(e);
-    }
-  }, [searchParams, lookup]);
+    if (t) verifyToken(t);
+    else if (p) setContact(p);
+    else if (e) setContact(e);
+  }, [searchParams, verifyToken]);
 
   return (
     <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
@@ -270,30 +295,44 @@ function TrackInner() {
 
       <div className="max-w-2xl mx-auto px-4 pt-10 pb-16">
         <h1 className="text-3xl md:text-4xl font-bold mb-2">Track your trade-in</h1>
-        <p className="text-[#dcdcdc] mb-8 text-sm">Enter the phone or email you used when submitting. No password — we'll show you every device you've sold to us and where it stands.</p>
+        <p className="text-[#dcdcdc] mb-8 text-sm">Enter the phone or email you used when submitting. For your privacy, we&apos;ll send a secure link to that phone or email — only you can open it — showing every device you&apos;ve sold to us and where it stands.</p>
 
-        <form onSubmit={(e) => { e.preventDefault(); lookup(contact); }} className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6 flex gap-2">
-          <input
-            type="text"
-            value={contact}
-            onChange={(e) => setContact(e.target.value)}
-            placeholder="Phone or email"
-            className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition"
-          />
-          <button type="submit" disabled={loading || !contact.trim()} className="px-5 py-3 bg-[#00c853] text-[#0a0a0a] rounded-xl text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed">
-            {loading ? "…" : "Track"}
-          </button>
-        </form>
-
-        {error && <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-4 text-sm text-red-400">{error}</div>}
-
-        {searched && !loading && leads.length === 0 && !error && (
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
-            <svg className="w-7 h-7 text-[#00c853] mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-            <p className="text-white font-semibold mb-1">No trade-ins found</p>
-            <p className="text-[#dcdcdc] text-sm">Double-check the contact info, or <Link href="/" className="text-[#00c853] hover:underline">start a new quote</Link>.</p>
+        {verifying && (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center mb-6">
+            <p className="text-[#dcdcdc] text-sm">Loading your trade-ins…</p>
           </div>
         )}
+
+        {!verifying && leads.length === 0 && (
+          requested ? (
+            <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-2xl p-6 mb-6 text-center">
+              <svg className="w-8 h-8 text-[#00c853] mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+              <p className="text-white font-semibold mb-1">Check your phone or email</p>
+              <p className="text-[#dcdcdc] text-sm">If we have trade-ins for that contact, a secure link is on its way. It expires in 30 minutes.</p>
+              <button onClick={() => setRequested(false)} className="mt-4 text-[#00c853] text-sm hover:underline cursor-pointer">Use a different phone or email</button>
+            </div>
+          ) : (
+            <form onSubmit={(e) => { e.preventDefault(); requestLink(contact); }} className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={contact}
+                  onChange={(e) => setContact(e.target.value)}
+                  placeholder="Phone or email"
+                  className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition"
+                />
+                <button type="submit" disabled={sending || !contact.trim()} className="px-5 py-3 bg-[#00c853] text-[#0a0a0a] rounded-xl text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+                  {sending ? "…" : "Send link"}
+                </button>
+              </div>
+              {resolved && (
+                <p className="text-[#c5c5c5] text-xs mt-3">No trade-ins matched that link. Double-check the contact, or <Link href="/" className="text-[#00c853] hover:underline">start a new quote</Link>.</p>
+              )}
+            </form>
+          )
+        )}
+
+        {error && <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-4 text-sm text-red-400">{error}</div>}
 
         {leads.length > 0 && (
           <div className="space-y-4">
