@@ -79,7 +79,7 @@ export default function SiteFooter() {
             <div className="space-y-2">
               <a href="/?page=about" className="block text-xs hover:text-[#00c853] transition">About Us</a>
               <a href="/?page=affiliate" className="block text-xs hover:text-[#00c853] transition">Become an Affiliate</a>
-              <a href="/?page=itad" className="block text-xs hover:text-[#00c853] transition">IT Asset Disposition</a>
+              <a href="/it-asset-disposition" className="block text-xs hover:text-[#00c853] transition">IT Asset Disposition</a>
               <a href="/?page=blog" className="block text-xs hover:text-[#00c853] transition">Blog</a>
               <a href="/reviews" className="block text-xs hover:text-[#00c853] transition">Reviews</a>
               <a href={EMAIL_HREF} className="block text-xs hover:text-[#00c853] transition">Contact Us</a>

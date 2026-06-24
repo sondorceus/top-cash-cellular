@@ -29,7 +29,7 @@ export default function BestPriceGuaranteePage() {
         <p className="text-[#b8b8b8] text-sm mb-8">Found a higher cash offer? We&apos;ll match or beat it.</p>
 
         <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-5 mb-8 text-sm text-[#e6e6e6] leading-relaxed">
-          <p>Show us a current, verifiable cash buyback offer for the same device and we&apos;ll match it — and beat it by <strong className="text-white">$25</strong> when we can. We&apos;d rather earn your sale than send you elsewhere.</p>
+          <p>Show us a current, verifiable cash buyback offer for the same device — matching model, storage, carrier/lock status, and condition — and we&apos;ll match it. On offers over <strong className="text-white">$200</strong>, we&apos;ll beat it by <strong className="text-white">$25</strong> when margin allows. We&apos;d rather earn your sale than send you elsewhere.</p>
         </div>
 
         <h2 className="text-xl font-bold mb-3">What qualifies</h2>

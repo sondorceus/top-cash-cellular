@@ -2098,7 +2098,7 @@ const getDeviceGroups = <T extends { id: string }>(deviceType: string | null | u
 // "Very Good" still parse — see resellMultiplierForCondition in
 // app/lib/resell-estimates.ts and the lead-side back-compat below.
 const CONDITIONS = [
-  { id: "sealed", label: "Sealed", desc: "Factory sealed, never opened", multiplier: 1.03, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, details: ["Still in factory original sealed packaging", "Plastic wrap or seal is intact and has not been tampered with", "Device has never been activated or powered on", "Must include original box with matching serial number", "Contains all original accessories unopened"] },
+  { id: "sealed", label: "Sealed / Unopened", desc: "Factory sealed, never opened", multiplier: 1.03, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, details: ["Still in factory original sealed packaging", "Plastic wrap or seal is intact and has not been tampered with", "Device has never been activated or powered on", "Must include original box with matching serial number", "Contains all original accessories unopened"] },
   { id: "mint", label: "Excellent", desc: "Looks brand new, zero signs of use", multiplier: 1.0, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />, details: ["Zero scratches, scuffs, or other marks — looks brand new", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 90% capacity", "Powers on and functions 100% as intended"] },
   { id: "good", label: "Good", desc: "Normal wear, fully functional", multiplier: 0.969, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />, details: ["Light to moderate signs of wear — visible scratches and/or minor dents", "Display is free of defects such as cracks, dead pixels, white spots, or burn-in", "Original battery above 80% capacity", "Powers on and functions 100% as intended"] },
   { id: "fair", label: "Fair", desc: "Heavy wear, still functional", multiplier: 0.852, icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />, details: ["Heavy signs of wear — deep scratches, dents, or scuffs", "Display is free of cracks but may have minor blemishes", "Battery may be below 80% capacity", "Powers on and functions as intended"] },
@@ -2453,16 +2453,16 @@ const CARRIER_LOCKS = [
 const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: string; desc?: string }>>> = {
   // Apple family — 'Mint' becomes 'Pristine' / 'Sealed' label
   iphone: {
-    sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
+    sealed: { label: "Sealed / Unopened", desc: "Factory sealed, never activated" },
   },
   ipad: {
-    sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
+    sealed: { label: "Sealed / Unopened", desc: "Factory sealed, never activated" },
   },
   macbook: {
-    sealed: { label: "Sealed", desc: "Factory sealed, original packaging" },
+    sealed: { label: "Sealed / Unopened", desc: "Factory sealed, original packaging" },
   },
   apple_desktop: {
-    sealed: { label: "Sealed", desc: "Factory sealed, never plugged in" },
+    sealed: { label: "Sealed / Unopened", desc: "Factory sealed, never plugged in" },
   },
   applewatch: {
     broken:   { label: "Cracked or dead", desc: "Cracked face, dead battery, or won't power on" },
@@ -2471,20 +2471,20 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   },
   // Samsung family — 'Flawless' becomes 'New'
   android: {
-    sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
+    sealed: { label: "Sealed / Unopened", desc: "Factory sealed, never activated" },
   },
   samsung_tab: {
-    sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
+    sealed: { label: "Sealed / Unopened", desc: "Factory sealed, never activated" },
   },
   samsung_pc: {
-    sealed: { label: "Sealed", desc: "Factory sealed" },
+    sealed: { label: "Sealed / Unopened", desc: "Factory sealed" },
   },
   samsungwatch: {
     broken:   { label: "Cracked or dead", desc: "Cracked face, dead battery, or won't power on" },
   },
   // Google family
   pixel: {
-    sealed: { label: "Sealed", desc: "Factory sealed, never activated" },
+    sealed: { label: "Sealed / Unopened", desc: "Factory sealed, never activated" },
   },
   pixelwatch: {
     broken:   { label: "Cracked or dead", desc: "Cracked face, dead battery, or won't power on" },
@@ -2493,28 +2493,28 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   },
   // Consoles — different vocabulary; the customer thinks about working/broken not flawless/fair
   sony: {
-    sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
+    sealed: { label: "Sealed / Unopened", desc: "Factory sealed, never opened" },
     mint:     { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
     fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
     broken:   { label: "Disc drive broken / won't power on", desc: "Major hardware fault" },
   },
   microsoft: {
-    sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
+    sealed: { label: "Sealed / Unopened", desc: "Factory sealed, never opened" },
     mint:     { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
     fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
     broken:   { label: "Disc drive broken / won't power on", desc: "Major hardware fault" },
   },
   nintendo: {
-    sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
+    sealed: { label: "Sealed / Unopened", desc: "Factory sealed, never opened" },
     mint:     { label: "Excellent", desc: "Works perfectly, light cosmetic wear" },
     good:     { label: "Good", desc: "Works perfectly, normal wear & tear" },
     fair:     { label: "Fair", desc: "Works, heavy cosmetic wear" },
     broken:   { label: "Joy-Con drift / won't power on", desc: "Major hardware fault" },
   },
   console: {
-    sealed: { label: "Sealed", desc: "Factory sealed, never opened" },
+    sealed: { label: "Sealed / Unopened", desc: "Factory sealed, never opened" },
     broken:   { label: "Disc drive broken / won't power on" },
   },
   // Drones
@@ -2530,7 +2530,7 @@ const BRAND_CONDITION_LABELS: Record<string, Partial<Record<string, { label: str
   },
   // VR
   meta_vr: {
-    sealed: { label: "Sealed", desc: "Factory sealed, never paired" },
+    sealed: { label: "Sealed / Unopened", desc: "Factory sealed, never paired" },
     broken:   { label: "Cracked lens / won't power on" },
   },
   valve_vr: {
@@ -4386,7 +4386,7 @@ export default function Home() {
     const p = params.get("page");
     // These are now real, crawlable routes — redirect old ?page= deep links
     // to them so there's no duplicate content and the canonical URL wins.
-    const REAL_ROUTE: Record<string, string> = { terms: "/terms", grading: "/grading-guide", shipping: "/shipping-returns", accessibility: "/accessibility" };
+    const REAL_ROUTE: Record<string, string> = { terms: "/terms", grading: "/grading-guide", shipping: "/shipping-returns", accessibility: "/accessibility", itad: "/it-asset-disposition" };
     if (p && REAL_ROUTE[p]) { window.location.replace(REAL_ROUTE[p]); return; }
     if (
       p === "about" ||
@@ -14505,7 +14505,7 @@ export default function Home() {
               <div className="space-y-2">
                 <button onClick={() => { setPage("about"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">About Us</button>
                 <button onClick={() => { setPage("affiliate"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Become an Affiliate</button>
-                <button onClick={() => { setPage("itad"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">IT Asset Disposition</button>
+                <a href="/it-asset-disposition" className="block text-xs hover:text-[#00c853] transition">IT Asset Disposition</a>
                 <button onClick={() => { setPage("blog"); window.scrollTo({ top: 0 }); }} className="block text-xs hover:text-[#00c853] transition cursor-pointer text-left">Blog</button>
                 <a href="/reviews" className="block text-xs hover:text-[#00c853] transition">Reviews</a>
                 <a href={EMAIL_HREF} className="block text-xs hover:text-[#00c853] transition">Contact Us</a>
