@@ -1108,7 +1108,7 @@ const APPLE_MACSTUDIO_VARIANTS = [
   { id: "macstudiom2m", label: "Mac Studio M2 Max", base: 800, image: "/devices/mac-studio-m2.webp" },
 ];
 const APPLE_MACPRO_VARIANTS = [
-  { id: "macprom2u", label: "Mac Pro M2 Ultra", base: 2240, image: "/devices/mac-studio-m2.webp" },
+  { id: "macprom2u", label: "Mac Pro M2 Ultra", base: 2240, image: "/devices/mac-pro-m2.webp" },
 ];
 const APPLE_DESKTOP_SERIES = [
   { id: "ad_imac", label: "iMac", year: "All-in-one", topPrice: 720, variants: APPLE_IMAC_VARIANTS },

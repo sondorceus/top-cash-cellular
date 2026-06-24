@@ -516,7 +516,7 @@ export const DEVICE_IMAGES: Record<string, string> = {
   "Mac Mini M2": "/devices/mac-mini-m2.webp",
   "Mac Mini M4": "/devices/mac-mini-m2.webp",
   "Mac Mini M4 Pro": "/devices/mac-mini-m2.webp",
-  "Mac Pro M2 Ultra": "/devices/mac-studio-m2.webp",
+  "Mac Pro M2 Ultra": "/devices/mac-pro-m2.webp",
   "Mac Studio M2 Max": "/devices/mac-studio-m2.webp",
   "Mac Studio M2 Ultra": "/devices/mac-studio-m2.webp",
   "Mac Studio M4 Max": "/devices/mac-studio-m2.webp",
