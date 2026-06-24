@@ -49,7 +49,7 @@ export default function ShippingReturnsPage() {
 
         <h2 className="text-xl font-bold mb-3">Local Austin meetups</h2>
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-10 space-y-2 text-sm text-[#e6e6e6] leading-relaxed">
-          <p>Inside the Austin metro? Skip shipping. We meet at a <strong className="text-white">public location</strong> — a bank lobby, coffee shop, FedEx Office, or another agreed public spot — inspect on the spot, and pay cash or your preferred digital method. No private-home meetups required. Most local handoffs take under 10 minutes.</p>
+          <p>Inside the Austin metro? Skip shipping. We meet at a <strong className="text-white">public location</strong> — a bank lobby, coffee shop, FedEx Office, or another agreed public spot — inspect on the spot, and pay cash or your preferred digital method. No private-home meetups required. Most local meetups take 10–15 minutes.</p>
           <p>Pickup hours: Mon–Sat, 8 AM – 8 PM CT.</p>
         </div>
 

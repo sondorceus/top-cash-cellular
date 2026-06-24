@@ -8216,7 +8216,6 @@ export default function Home() {
                 { label: "Cash", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /> },
                 { label: "Zelle", svg: "/pay/zelle.svg" },
                 { label: "Cash App", svg: "/pay/cashapp.svg" },
-                { label: "BTC", svg: "/pay/bitcoin.svg" },
               ] as Array<{ label: string; icon?: React.ReactNode; svg?: string }>).filter(p => p.label !== "Cash" || handoffMethod === "local").map(p => (
                 <span key={p.label} className="inline-flex items-center gap-1 bg-white/5 border border-white/10 text-[#e6e6e6] text-[11px] font-semibold px-2 py-1 rounded-full">
                   {p.svg
@@ -8628,7 +8627,7 @@ export default function Home() {
           </div>
           <div className="space-y-2">
             {[
-              { q: "How do I get paid?", a: "Local Austin meetup: we inspect together (about 15 minutes) and you're paid on the spot. Shipping: paid within 24 hours of your device arriving. Methods — Cash, Cash App, Zelle, or BTC." },
+              { q: "How do I get paid?", a: "Local Austin meetup: we inspect together (10–15 minutes) and you're paid on the spot. Shipping: paid within 24 hours of your device arriving. Methods — Cash, Cash App, Zelle, or BTC." },
               { q: "Do you ship for free?", a: "Yes — any offer over $50 gets a free prepaid FedEx label, emailed at checkout. Local to Austin? Free pickup instead." },
               { q: "What if my device is worth less than the quote?", a: "We send a revised offer with photos. Don't like it? We ship the device back free — no pressure, no surprises." },
               { q: "Are you really in Austin?", a: "Yes — Austin-based, real humans. Meet us locally and get paid cash on the spot, or ship free from anywhere in the US." },
@@ -13962,30 +13961,24 @@ export default function Home() {
             <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto">
               <h2 className="text-xl font-bold text-center mb-2 px-4">When do I get paid?</h2>
               <p className="text-[#e6e6e6] text-sm text-center mb-8 px-4">Transparent timelines. No surprises.</p>
-              <div className="overflow-hidden tcc-marquee-mask">
-                <div className="flex gap-3 w-max animate-[marquee_32s_linear_infinite] hover:[animation-play-state:paused]">
-                  {[...Array(2)].flatMap((_, dup) => ([
-                    { method: "Local Pickup", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />, timeline: "On the spot", desc: "We meet in Austin, inspect together in about 15 minutes, and pay you on the spot.", highlight: false },
-                    { method: "Cash", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, timeline: "On the spot", desc: "Handed to you in person at the local meetup.", highlight: false },
-                    { method: "Cash App", logos: ["/pay/cashapp.svg"], timeline: "Minutes", desc: "Sent while you watch — lands in your account in minutes.", highlight: false },
-                    { method: "Zelle", logos: ["/pay/zelle.svg"], timeline: "Minutes", desc: "Sent while you watch — lands in your account in minutes.", highlight: false },
-                    { method: "Bitcoin (BTC)", logos: ["/pay/bitcoin.svg"], timeline: "~30 min", desc: "Sent on-chain to your wallet — confirms in about 30 minutes.", highlight: false },
-                    { method: "Ship To Us", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />, timeline: "Within 24 hrs", desc: "We inspect and pay you within 24 hours of your device arriving.", highlight: false },
-                  ] as Array<{ method: string; icon?: React.ReactNode; logos?: string[]; timeline: string; desc: string; highlight: boolean }>).filter(p => p.method !== "Cash" || handoffMethod === "local").map((p, i) => (
-                    <div key={`${dup}-${i}`} className={`flex-shrink-0 w-[280px] flex items-start gap-3 rounded-2xl p-4 border ${p.highlight ? "bg-[#00c853]/10 border-[#00c853]/30" : "bg-white/5 border-white/10"}`}>
-                      {p.logos
-                        ? <span className="flex items-center gap-1 shrink-0">{p.logos.map((l) => <img key={l} src={l} alt="" className="w-6 h-6 object-contain" />)}</span>
-                        : <svg className="w-6 h-6 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{p.icon}</svg>}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <p className="text-white text-sm font-bold">{p.method}</p>
-                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${p.highlight ? "bg-[#00c853]/20 text-[#00c853]" : "bg-white/10 text-[#d4d4d4]"}`}>{p.timeline}</span>
-                        </div>
-                        <p className="text-[#e6e6e6] text-xs leading-snug">{p.desc}</p>
-                      </div>
+              {/* Three plain promises — was an auto-scrolling marquee that
+                  rendered its items twice (read as duplicated/unfinished).
+                  Static grid; the "offer changes" card carries the
+                  inspection-photo + free-return trust line. */}
+              <div className="grid gap-3 md:grid-cols-3 px-4">
+                {[
+                  { title: "Local Austin", time: "On the spot", desc: "We inspect together — 10–15 minutes — and you're paid before you leave." },
+                  { title: "Shipping", time: "Within 24 hrs", desc: "Paid within 24 hours of your device arriving and passing inspection." },
+                  { title: "If the offer changes", time: "Your call", desc: "We send photos showing exactly why before you decide — accept, or we ship it back free, no questions asked." },
+                ].map((p) => (
+                  <div key={p.title} className="rounded-2xl p-5 border bg-white/5 border-white/10">
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <p className="text-white text-sm font-bold">{p.title}</p>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] whitespace-nowrap">{p.time}</span>
                     </div>
-                  )))}
-                </div>
+                    <p className="text-[#e6e6e6] text-xs leading-snug">{p.desc}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </section>
@@ -14357,7 +14350,7 @@ export default function Home() {
 
                 <h2 className="text-xl font-bold mb-3">Local Austin</h2>
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8 space-y-2 text-sm text-[#e6e6e6] leading-relaxed">
-                  <p>Inside the Austin metro? Skip shipping. We meet at a public location — coffee shop, parking lot, your office — inspect on the spot, and pay cash or your preferred digital method. Most local meetups take under 10 minutes door-to-door.</p>
+                  <p>Inside the Austin metro? Skip shipping. We meet at a public location — coffee shop, parking lot, your office — inspect on the spot, and pay cash or your preferred digital method. Most local meetups take 10–15 minutes door-to-door.</p>
                   <p>Pickup hours: Mon–Sat, 8 AM – 8 PM CT.</p>
                 </div>
 
@@ -14559,7 +14552,7 @@ export default function Home() {
               <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
               support@topcashcellular.com
             </a>
-            <p className="text-[11px] text-[#9a9a9a] mt-2">We reply within one business day · Mon–Sat 8 AM–8 PM CT</p>
+            <p className="text-[11px] text-[#9a9a9a] mt-2">We usually reply within 1 business hour · Mon–Sat 8 AM–8 PM CT · next business day after hours</p>
           </div>
           <div className="border-t border-[#00c853]/15 pt-6 text-center">
             <p className="text-[11px] text-[#cfcfcf]/70 mb-3">© 2026 {BRAND}</p>

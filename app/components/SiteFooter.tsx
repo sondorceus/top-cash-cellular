@@ -124,7 +124,7 @@ export default function SiteFooter() {
             <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
             {EMAIL}
           </a>
-          <p className="text-[11px] text-[#9a9a9a] mt-2">We reply within one business day · Mon–Sat 8 AM–8 PM CT</p>
+          <p className="text-[11px] text-[#9a9a9a] mt-2">We usually reply within 1 business hour · Mon–Sat 8 AM–8 PM CT · next business day after hours</p>
         </div>
 
         <div className="border-t border-[#00c853]/15 pt-6 text-center">

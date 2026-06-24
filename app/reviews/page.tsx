@@ -60,7 +60,7 @@ function timeAgo(iso: string): string {
 export default async function ReviewsPage() {
   const reviews = await loadReviews();
   const count = reviews.length;
-  const avg = count ? reviews.reduce((s, r) => s + r.rating, 0) / count : 4.9;
+  const avg = count ? reviews.reduce((s, r) => s + r.rating, 0) / count : 4.8;
 
   return (
     <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">

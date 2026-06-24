@@ -305,7 +305,7 @@ export const LANDING_PAGES: LandingConfig[] = [
     faqs: [
       {
         q: "Can I sell a phone I'm still making payments on?",
-        a: "Often yes. If the carrier account is current and the IMEI is clean, you can sell it and use the cash toward your remaining balance. We verify the IMEI at inspection.",
+        a: "Often yes — at a reduced rate. If the carrier account is current and the IMEI is clean, you can sell it and use the cash toward your remaining balance. The offer is lower than an owned-outright phone because there's still a balance on it, but we'll give you an honest number. We verify the IMEI at inspection.",
       },
       {
         q: "What if the phone is past due or the balance is unpaid?",

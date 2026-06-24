@@ -53,7 +53,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2 className="text-lg font-semibold text-white mb-3">5. Data Retention</h2>
-          <p>We retain your contact information and transaction details for up to 12 months after your last interaction. Analytics data is retained according to Google Analytics default settings (14 months).</p>
+          <p>We retain ordinary quote and contact records for up to 12 months after your last interaction. Completed-transaction records — including seller ownership attestations and device records (IMEI/serial) — may be retained longer where required by secondhand-dealer recordkeeping rules and other applicable law. Analytics data is retained according to Google Analytics default settings (14 months).</p>
         </section>
 
         <section>

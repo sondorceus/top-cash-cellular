@@ -17,7 +17,7 @@ const TIERS: { tier: string; color: string; desc: string }[] = [
 ];
 
 const CHECKS: { h: string; p: string }[] = [
-  { h: "IMEI / serial number", p: "Run against carrier blacklist and Apple/Samsung activation-lock databases. Locked or blacklisted devices are still purchased but priced separately." },
+  { h: "IMEI / serial number", p: "Run against carrier blacklist and Apple/Samsung activation-lock databases. Carrier-locked (SIM-locked) devices are accepted at a lower price. Blacklisted, lost/stolen, fraud-reported, activation-locked, or account-locked devices are refused." },
   { h: "Activation lock", p: "Find My iPhone, Google FRP, and Samsung Reactivation Lock must be off. We’ll guide you through removing them at handoff if needed." },
   { h: "Battery health", p: "On iPhones we read Settings › Battery › Battery Health; on Samsung/Android we run a diagnostic." },
   { h: "Water-damage indicators", p: "Apple LCI in the SIM tray and Samsung indicators are checked. Tripped indicators move a device to the Damaged tier." },

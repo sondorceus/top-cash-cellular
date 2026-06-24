@@ -72,7 +72,13 @@ export default function BulkPage() {
 
       <div className="max-w-2xl mx-auto px-4 pt-10 pb-16">
         <h1 className="text-4xl font-bold mb-3">Bulk Trade-In</h1>
-        <p className="text-[#dcdcdc] mb-8">5+ devices? Get a custom quote, free pickup in Austin, and same-business-day payment after we inspect (typically within 24 hours of pickup).</p>
+        <p className="text-[#dcdcdc] mb-6">For offices, schools, repair shops, and resellers. 5+ devices? Get a custom quote, free pickup in Austin, and same-business-day payment after we inspect (typically within 24 hours of pickup).</p>
+
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8 text-sm text-[#dcdcdc] leading-relaxed">
+          <p className="text-white font-bold mb-2">Send your list, get a real number back</p>
+          <p className="mb-2"><span className="text-white font-semibold">You send:</span> model, storage, carrier/lock status, condition, and IMEI/serial if you have it — paste it in the form below or email us a spreadsheet.</p>
+          <p><span className="text-white font-semibold">You get back:</span> an itemized quote with per-device pricing, your total payout, and pickup or free-shipping options — one payment for the whole batch. A NIST 800-88–aligned wipe report is included free on orders of 25+.</p>
+        </div>
 
         <div className="grid grid-cols-3 gap-2 mb-8">
           <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">

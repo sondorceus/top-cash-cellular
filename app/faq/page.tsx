@@ -29,7 +29,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "Is the price you quote on the website actually what I'll get?",
-    a: "Yes — provided your device matches the condition tier you selected (Sealed, Excellent, Good, Fair, Broken), isn't activation-locked (iCloud/Find My, Google FRP, or a Samsung/KG reactivation lock), and isn't reported lost or stolen. Carrier-locked is fine — we buy locked phones, and the quote just reflects your carrier/lock status. Phones on a current installment plan are eligible too. Read the condition tier descriptions on the quote page carefully.",
+    a: "Yes — provided your device matches the condition tier you selected (Sealed, Excellent, Good, Fair, Broken), isn't activation-locked (iCloud/Find My, Google FRP, or a Samsung Knox Guard / finance lock — also called KG-lock), and isn't reported lost or stolen. Carrier-locked is fine — we buy locked phones, and the quote just reflects your carrier/lock status. Phones still on an installment plan are eligible too — we buy them at a reduced rate, as long as the account is current and the IMEI is clean. Read the condition tier descriptions on the quote page carefully.",
   },
   {
     q: "Do you cover shipping?",
@@ -37,7 +37,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "Step-by-step — how does shipping actually work?",
-    a: "1. Submit your trade-in on our site and pick \"Ship It.\" 2. Within seconds we email you a prepaid FedEx label (PDF) along with packing instructions. 3. Pack your device in any plain box or padded mailer — no special supplies needed. Wrap in bubble wrap, balled paper, or even a t-shirt so it doesn't rattle. 4. Tape the label flat on top, barcode visible. 5. Drop at any FedEx location or self-service drop box — no appointment, no waiting. 6. FedEx scans it, we get a tracking ping, and you can watch it on our /track page or in FedEx's app.",
+    a: "1. Submit your trade-in on our site and pick \"Ship It.\" 2. Within seconds we email you a prepaid FedEx label (PDF) along with packing instructions. 3. Pack it in a sturdy box with padding on all sides so the device can't shift or rattle — phones can go in a well-padded mailer, but laptops and tablets must ship in a real box, never a loose mailer. 4. Tape the label flat on top, barcode visible. 5. Drop at any FedEx location or self-service drop box — no appointment, no waiting. 6. FedEx scans it, we get a tracking ping, and you can watch it on our /track page or in FedEx's app.",
   },
   {
     q: "How do I track my package?",
@@ -122,6 +122,18 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
     a: <>Yes — visit our <Link href="/bulk" className="text-[#00c853] hover:underline">bulk trade-in page</Link> for a dedicated quote and pickup option.</>,
     aText: "Yes — visit our bulk trade-in page for a dedicated quote and pickup option.",
   },
+  {
+    q: "What won't you buy?",
+    a: "To keep every sale clean, we don't buy: lost or stolen devices, fraud-reported devices, devices tied to an active theft claim, iCloud/Find My–locked or Google FRP–locked devices, Samsung Knox Guard / finance-locked (KG-locked) devices, blacklisted IMEIs, or any device you can't confirm you legally own. Carrier-locked (SIM-locked) phones are fine — those we do buy. We check each IMEI/serial against blacklist and lost/stolen databases before paying.",
+  },
+  {
+    q: "How do I prep my device before selling?",
+    a: "Quick checklist before your meetup or shipment: 1. Back up your device. 2. Sign out of iCloud / Find My, Google / FRP, and any Samsung account — this is required, we can't buy a locked device. 3. Remove your screen passcode. 4. Take out your SIM and any SD card. 5. Charge to at least 20% so we can power it on and inspect. 6. Only bring the original box if you're claiming Sealed / Like-new. You don't need to wipe it yourself — we run a NIST 800-88–aligned wipe — but signing out of your accounts is the one step only you can do.",
+  },
+  {
+    q: "How does a local Austin meetup work?",
+    a: "We meet at a safe public spot in the Austin area and inspect the device together, right in front of you — 10–15 minutes. You sign out of any iCloud / Google / Samsung lock on the spot if you haven't already, we agree on the final number, and you're paid before you leave (cash, Cash App, or Zelle). You get a receipt by email or text. No shipping, no waiting.",
+  },
 ];
 
 // Groups the flat FAQ list above into sections for display. Each entry
@@ -162,6 +174,8 @@ const FAQ_CATEGORIES: { name: string; questions: string[] }[] = [
       "Do I need to include the charger, cable, or original box?",
       "How do I find my exact model?",
       "What does \"unlocked\" mean and why does it matter?",
+      "What won't you buy?",
+      "How do I prep my device before selling?",
     ],
   },
   {
@@ -172,6 +186,7 @@ const FAQ_CATEGORIES: { name: string; questions: string[] }[] = [
       "I disagree with your inspection — what now?",
       "Is there a minimum age to trade in?",
       "I have 5+ devices to trade — is there a faster path?",
+      "How does a local Austin meetup work?",
     ],
   },
 ];
@@ -224,7 +239,7 @@ export default function FAQPage() {
 
         <div className="mt-12 bg-[#00c853]/10 border border-[#00c853]/30 rounded-2xl p-6 text-center">
           <p className="text-white font-semibold mb-2">Didn&apos;t see your question?</p>
-          <p className="text-[#e5e5e5] text-sm mb-4">Email us — we usually reply within an hour during business hours.</p>
+          <p className="text-[#e5e5e5] text-sm mb-4">Email us — we usually reply within 1 business hour, Mon–Sat 8 AM–8 PM CT (next business day after hours).</p>
           <a href="mailto:support@topcashcellular.com" className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition">Get help →</a>
         </div>
       </div>
