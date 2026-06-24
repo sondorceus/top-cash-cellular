@@ -8395,33 +8395,17 @@ export default function Home() {
               <div className="flex-1">
                 <p className="text-[#00c853] text-xs font-bold uppercase tracking-[0.18em] mb-1">Used, gently worn, like-new</p>
                 <h2 className="text-2xl md:text-3xl font-bold mb-2 leading-tight">Working devices get top dollar.</h2>
-                <p className="text-[#e6e6e6] text-sm mb-4">Where we pay best: phones that turn on, hold a charge, and have a clean screen. Minor scratches or a faded battery are fine — that&apos;s normal wear. We&apos;ll still look at devices with bigger issues, but the quote reflects the condition. No surprise deductions and no walk-away gimmicks.</p>
+                <p className="text-[#e6e6e6] text-sm mb-4">Find the one that looks like yours. Minor wear still pays close to the headline.</p>
                 {(() => {
+                  // Visual condition ladder — the phone illustrations carry a
+                  // built-in green→amber→red wear signal so the tier reads at a
+                  // glance; the big payout % is the one number that matters.
+                  // Tap a tier for a compact detail (chips, not paragraphs).
                   const tiers = [
-                    {
-                      icon: <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />, t: "Like new", note: "Best payout",
-                      headline: "Sealed or flawless — the top tier.",
-                      body: "Box-fresh or opened-but-unused condition. No scratches, no scuffs, no display marks. Battery still above 80%. This is where the headline price lives.",
-                      bullets: ["Zero cosmetic wear", "Battery health ≥80%", "Powers on, no functional issues", "Quote pays at 100% of our top rate"],
-                    },
-                    {
-                      icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />, t: "Light wear", note: "Top tier",
-                      headline: "Lived-in but still beautiful.",
-                      body: "Minor scratches visible only up close. Display is still clean — no cracks, no discolouration. Most phones older than 6 months land here, and we still pay close to the headline.",
-                      bullets: ["A few fine micro-scratches", "No cracks or dents", "Display lights up cleanly", "Pays ~85–95% of top rate"],
-                    },
-                    {
-                      icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, t: "Visible wear", note: "Still fair",
-                      headline: "Honest wear, honest quote.",
-                      body: "You can see the marks from across the room — scuffs on the frame, deeper scratches on the back. Screen is still intact and the phone works. We&apos;ll buy it, just at a lower rate.",
-                      bullets: ["Scuffs / dents on the frame OK", "Back glass scratched but not cracked", "Screen still clean & functional", "Pays ~60–75% of top rate"],
-                    },
-                    {
-                      icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />, t: "Bigger issues", note: "Honest quote",
-                      headline: "Cracked, dead, or 'just take it'.",
-                      body: "Cracked display, won&apos;t turn on, water damage, missing parts — we still buy. The quote drops accordingly, but you still walk out paid on the spot. No salvage runaround.",
-                      bullets: ["Cracked screens fine", "Dead batteries fine", "Water-damaged fine", "Quote reflects the condition — no surprise deductions"],
-                    },
+                    { id: "sealed" as const, t: "Like new",      payout: "100%",   level: 4, headline: "Flawless — top tier",        chips: ["Zero wear", "Battery ≥80%", "Powers on clean"] },
+                    { id: "good" as const,   t: "Light wear",    payout: "85–95%", level: 3, headline: "Lived-in, still clean",      chips: ["Faint micro-scratches", "No cracks or dents", "Screen clean"] },
+                    { id: "fair" as const,   t: "Visible wear",  payout: "60–75%", level: 2, headline: "Honest wear, honest quote",  chips: ["Scuffs & dents OK", "Scratched, not cracked", "Screen still works"] },
+                    { id: "broken" as const, t: "Bigger issues", payout: "Fair",   level: 1, headline: "Cracked or dead — still buy", chips: ["Cracked screen OK", "Dead battery OK", "Water damage OK", "Paid on the spot"] },
                   ];
                   return (
                     <>
@@ -8434,13 +8418,17 @@ export default function Home() {
                               type="button"
                               onClick={() => setExpandedConditionTier(open ? null : i)}
                               aria-expanded={open}
-                              className={`text-center rounded-xl p-3 transition cursor-pointer tap-press border ${open
-                                ? "bg-[#00c853]/15 border-[#00c853]/50 shadow-[0_0_14px_rgba(0,200,83,0.18)]"
+                              className={`flex flex-col items-center text-center rounded-xl p-3 transition cursor-pointer tap-press border ${open
+                                ? "bg-[#00c853]/12 border-[#00c853]/55"
                                 : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"}`}
                             >
-                              <svg className="w-6 h-6 mx-auto mb-1 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{item.icon}</svg>
+                              <ConditionIllustration id={item.id} className="w-8 h-12 mb-1.5 text-white/55" />
                               <p className="text-[11px] font-semibold text-white leading-tight">{item.t}</p>
-                              <p className={`text-[10px] mt-0.5 ${open ? "text-[#00e676]" : "text-[#00c853]"}`}>{item.note}</p>
+                              <p className="text-base font-extrabold text-[#00c853] leading-none mt-1">{item.payout}</p>
+                              {/* payout level bar — visual stand-in for the % */}
+                              <span className="mt-2 w-full h-1 rounded-full bg-white/10 overflow-hidden" aria-hidden>
+                                <span className="block h-full rounded-full bg-[#00c853]" style={{ width: `${item.level * 25}%` }} />
+                              </span>
                             </button>
                           );
                         })}
@@ -8448,22 +8436,21 @@ export default function Home() {
                       {expandedConditionTier !== null && (() => {
                         const t = tiers[expandedConditionTier];
                         return (
-                          <div className="mb-4 bg-[rgba(15,15,15,0.55)] backdrop-blur-[10px] border border-[#00c853]/30 rounded-2xl p-4 animate-[fadeIn_0.225s_ease-out]">
-                            <div className="flex items-start gap-3 mb-2">
-                              <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>{t.icon}</svg>
-                              <div className="min-w-0">
+                          <div className="mb-4 bg-[rgba(15,15,15,0.55)] backdrop-blur-[10px] border border-[#00c853]/30 rounded-2xl p-4 flex items-center gap-4 animate-[fadeIn_0.225s_ease-out]">
+                            <ConditionIllustration id={t.id} className="w-12 h-[72px] shrink-0 text-white/60" />
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-baseline gap-2 flex-wrap">
                                 <p className="text-white text-sm font-extrabold leading-tight">{t.headline}</p>
-                                <p className="text-[#e6e6e6] text-xs mt-1 leading-snug">{t.body}</p>
+                                <span className="text-[#00c853] text-sm font-extrabold">{t.payout}<span className="text-[#9aa0ac] text-[10px] font-semibold"> of top rate</span></span>
+                              </div>
+                              <div className="mt-2 flex flex-wrap gap-1.5">
+                                {t.chips.map(c => (
+                                  <span key={c} className="inline-flex items-center gap-1 text-[11px] text-[#e6e6e6] bg-white/5 border border-white/10 rounded-full px-2 py-0.5">
+                                    <span className="text-[#00c853]">✓</span>{c}
+                                  </span>
+                                ))}
                               </div>
                             </div>
-                            <ul className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
-                              {t.bullets.map(b => (
-                                <li key={b} className="flex items-start gap-2 text-[#e6e6e6] text-xs leading-snug">
-                                  <span className="text-[#00c853] mt-0.5 shrink-0" style={{ filter: "drop-shadow(0 0 4px rgba(0,200,83,0.45))" }}>✓</span>
-                                  <span>{b}</span>
-                                </li>
-                              ))}
-                            </ul>
                           </div>
                         );
                       })()}
