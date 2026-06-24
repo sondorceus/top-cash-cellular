@@ -50,7 +50,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "What about insurance during shipping?",
-    a: "Our prepaid FedEx label includes $100 of base shipping coverage — that's what we cover if a package is lost or damaged in transit. We do not cover the full device value. If your device is worth more and you want it fully protected, you're responsible for declaring and paying for the additional insurance at the FedEx counter when you drop it off. By choosing to ship, you agree to the $100 coverage limit. Want full protection with zero shipping risk? Pick a local Austin meetup instead — paid on the spot.",
+    a: "Our prepaid FedEx label includes $100 of base shipping coverage — that's what we cover if a package is lost or damaged in transit. We do not cover the full device value. If your device is worth more and you want it fully protected, you're responsible for declaring and paying for the additional insurance at the FedEx counter when you drop it off. By choosing to ship, you agree to the $100 coverage limit. Want to skip carrier-shipping risk entirely? Pick a local Austin meetup instead — paid on the spot.",
   },
   {
     q: "Can I change my mind after shipping?",
@@ -94,7 +94,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "How long is my quote locked in?",
-    a: "14 days from submission. If FedEx delivers your device within that window, you're guaranteed the quoted price (subject to condition matching). If something slips past 14 days, we re-quote based on current market — sometimes higher, sometimes lower.",
+    a: "14 days. Your quoted price is locked for 14 days from the quote — to keep it, drop off (or meet us locally) within that window and have the device match the model, storage, condition, lock, and financing status you selected. Past 14 days we re-quote at current market — sometimes higher, sometimes lower.",
   },
   {
     q: "I didn't get my confirmation email — what now?",
@@ -132,7 +132,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "How does a local Austin meetup work?",
-    a: "We meet at a safe public spot in the Austin area and inspect the device together, right in front of you — 10–15 minutes. You sign out of any iCloud / Google / Samsung lock on the spot if you haven't already, we agree on the final number, and you're paid before you leave (cash, Cash App, or Zelle). You get a receipt by email or text. No shipping, no waiting.",
+    a: "We meet at a safe public spot in the Austin area and inspect the device together, right in front of you — 10–15 minutes. You sign out of any iCloud / Google / Samsung lock on the spot if you haven't already, we agree on the final number, and you're paid before you leave (cash, Cash App, or Zelle). You get a receipt by email or text showing the device, serial/IMEI, final price, payout method, and time. No shipping, no waiting.",
   },
 ];
 

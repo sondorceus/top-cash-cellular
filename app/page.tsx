@@ -13504,7 +13504,7 @@ export default function Home() {
                   className="mt-0.5 w-4 h-4 shrink-0 rounded border-white/25 bg-white/5 accent-[#00c853] cursor-pointer"
                 />
                 <span className="text-[#e6e6e6] text-[11px] leading-relaxed">
-                  I confirm I&apos;m 18 or older and the legal owner of this device, with the right to sell it. It isn&apos;t lost, stolen, or activation-locked, and any balance owed is current. See our <a href="/?page=terms" className="underline hover:text-[#00c853]">terms</a>.
+                  I confirm I&apos;m 18 or older and the legal owner of this device, with the right to sell it. It isn&apos;t lost or stolen, any balance owed is current, and I understand activation locks (Find My / Google FRP / Samsung account) must be removed before payout. See our <a href="/?page=terms" className="underline hover:text-[#00c853]">terms</a>.
                 </span>
               </label>
               <p className="text-[#c5c5c5] text-[11px] text-center leading-relaxed">By submitting, you agree that the quoted price is an estimate. Final offer confirmed at inspection based on device condition.</p>

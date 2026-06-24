@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 const STEPS: { step: string; title: string; body: string }[] = [
-  { step: "1", title: "Get your quote", body: "Accept the price on our site. We email a confirmation with a prepaid FedEx label — free to you. The label includes $100 of base shipping coverage; for a higher-value device you can declare additional value at the FedEx counter, or choose a local Austin meetup for zero shipping risk." },
+  { step: "1", title: "Get your quote", body: "Accept the price on our site. We email a confirmation with a prepaid FedEx label — free to you. The label includes $100 of base shipping coverage; for a higher-value device you can declare additional value at the FedEx counter, or choose a local Austin meetup to avoid carrier-shipping risk entirely." },
   { step: "2", title: "Pack & drop off", body: "Use any padded box you have at home. Wrap the device, drop it at any FedEx location, and keep your receipt. Your tracking number flows into our system automatically." },
   { step: "3", title: "We inspect within 1 business day", body: "Once the device arrives we test it against the tier you selected and email you the result the same day." },
   { step: "4", title: "Same-business-day payout", body: "If the inspection matches your quote, we pay you that same business day — Cash App or Zelle in minutes, Bitcoin on-chain in ~30 min, or a mailed check. Weekend or after-hours arrivals process the next business day." },
@@ -36,7 +36,7 @@ export default function ShippingReturnsPage() {
 
         <h2 className="text-xl font-bold mb-3">Shipping coverage</h2>
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8 text-sm text-[#e6e6e6] leading-relaxed">
-          <p>The free prepaid FedEx label includes <strong className="text-white">$100 of base coverage</strong> if the package is lost or damaged in transit — it does not cover the full device value. For a high-value device, you can declare and pay for additional coverage at the FedEx counter when you drop off, or pick a <strong className="text-white">local Austin meetup</strong> for zero shipping risk — paid on the spot.</p>
+          <p>The free prepaid FedEx label includes <strong className="text-white">$100 of base coverage</strong> if the package is lost or damaged in transit — it does not cover the full device value. For a high-value device, you can declare and pay for additional coverage at the FedEx counter when you drop off, or pick a <strong className="text-white">local Austin meetup</strong> with no carrier-shipping risk — paid on the spot.</p>
         </div>
 
         <h2 className="text-xl font-bold mb-3">If we change the offer</h2>

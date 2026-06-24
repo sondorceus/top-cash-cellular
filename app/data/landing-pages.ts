@@ -291,7 +291,7 @@ export const LANDING_PAGES: LandingConfig[] = [
     notice: {
       tone: "warn",
       title: "Read this before you sell a financed phone",
-      body: "We can buy a financed phone only if the carrier account is current and the device's IMEI is clean (not blacklisted, not reported lost or stolen). If you stop paying after selling, the carrier can blacklist the IMEI and the buyer is left with a brick — so we verify the IMEI at inspection. Use your payout to settle the remaining balance, and sign out of iCloud / turn off Find My first. We cannot buy a phone with an unpaid, past-due, or blacklisted balance.",
+      body: "We can buy a financed phone only if the carrier account is current and the device's IMEI is clean (not blacklisted, not reported lost or stolen). If you stop paying after selling, the carrier can blacklist the IMEI and the buyer is left with a brick — so we verify the IMEI at inspection. Use your payout to settle the remaining balance, and sign out of iCloud / turn off Find My first. Selling the device does not cancel your carrier agreement — you remain responsible for any remaining balance with your carrier. We cannot buy a phone with an unpaid, past-due, or blacklisted balance.",
     },
     whyHeading: "How selling a financed phone works here",
     whyBullets: [
