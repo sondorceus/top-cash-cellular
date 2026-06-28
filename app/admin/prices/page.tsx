@@ -205,6 +205,16 @@ export default function PricesAdminPage() {
   const [filter, setFilter] = useState<string>("");
   const [marginFilter, setMarginFilter] = useState<"all" | "green" | "yellow" | "red" | "nocomp">("all");
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  // Bumped every time fresh data loads from the server (initial load, after a
+  // save, or after a revert). The editable <input>s are uncontrolled
+  // (defaultValue) and keyed by THIS counter — not by their live value — so
+  // typing a new number doesn't remount the input and steal focus. A server
+  // refresh bumps it, remounting the inputs so they pick up the new baseline.
+  const [dataVersion, setDataVersion] = useState(0);
+  const loadData = (d: Payload) => {
+    setData(d);
+    setDataVersion((v) => v + 1);
+  };
 
   // Predicate: does this SKU pass the active margin filter? Used alongside
   // the text filter in every device section.
@@ -230,7 +240,7 @@ export default function PricesAdminPage() {
   useEffect(() => {
     fetch("/api/admin/prices")
       .then((r) => r.json())
-      .then(setData)
+      .then(loadData)
       .catch(() => {});
   }, []);
 
@@ -365,7 +375,7 @@ export default function PricesAdminPage() {
       setLastSaveMsg(`✓ Saved at ${new Date(j.updatedAt).toLocaleTimeString()} — ${j.overrideModels} model override(s) live`);
       setEdits({ price: {}, carrier: {}, base: {}, condAdj: {} });
       const refresh = await fetch("/api/admin/prices");
-      setData(await refresh.json());
+      loadData(await refresh.json());
     } finally {
       setSaving(false);
     }
@@ -375,7 +385,7 @@ export default function PricesAdminPage() {
     if (editCount === 0) return;
     if (!window.confirm(`Discard ${editCount} unsaved edit${editCount === 1 ? "" : "s"}?`)) return;
     setEdits({ price: {}, carrier: {}, base: {}, condAdj: {} });
-    setData((d) => (d ? { ...d } : d));
+    setDataVersion((v) => v + 1);
   };
 
   const resetCondAdj = async (modelId: string) => {
@@ -389,7 +399,7 @@ export default function PricesAdminPage() {
     if (!r.ok) return;
     setLastSaveMsg(`✓ Reverted ${modelId} condition adjustments`);
     const refresh = await fetch("/api/admin/prices");
-    setData(await refresh.json());
+    loadData(await refresh.json());
   };
 
   const resetBase = async (modelId: string) => {
@@ -404,7 +414,7 @@ export default function PricesAdminPage() {
     }
     setLastSaveMsg(`✓ Reverted ${modelId} base price to baseline`);
     const refresh = await fetch("/api/admin/prices");
-    setData(await refresh.json());
+    loadData(await refresh.json());
   };
 
   const resetCell = async (model: string, storage: string, cond: string) => {
@@ -420,7 +430,7 @@ export default function PricesAdminPage() {
     }
     setLastSaveMsg(`✓ Reverted ${cell} to baseline`);
     const refresh = await fetch("/api/admin/prices");
-    setData(await refresh.json());
+    loadData(await refresh.json());
   };
 
   const resetCarrier = async (model: string) => {
@@ -431,7 +441,7 @@ export default function PricesAdminPage() {
     if (!r.ok) return;
     setLastSaveMsg(`✓ Reverted ${model} carrier deductions to baseline`);
     const refresh = await fetch("/api/admin/prices");
-    setData(await refresh.json());
+    loadData(await refresh.json());
   };
 
   const resetModel = async (model: string) => {
@@ -442,7 +452,7 @@ export default function PricesAdminPage() {
     if (!r.ok) return;
     setLastSaveMsg(`✓ Reverted all ${model} overrides`);
     const refresh = await fetch("/api/admin/prices");
-    setData(await refresh.json());
+    loadData(await refresh.json());
   };
 
   const resetAll = async () => {
@@ -458,7 +468,7 @@ export default function PricesAdminPage() {
     setLastSaveMsg(`✓ All overrides cleared`);
     setEdits({ price: {}, carrier: {}, base: {}, condAdj: {} });
     const refresh = await fetch("/api/admin/prices");
-    setData(await refresh.json());
+    loadData(await refresh.json());
   };
 
   const groupNames = Array.from(grouped.keys()).sort();
@@ -740,7 +750,7 @@ export default function PricesAdminPage() {
                               </div>
                               <span className="text-[10px] text-[#888]">$</span>
                               <input
-                                key={`${id}-${v}`}
+                                key={`${id}-${dataVersion}`}
                                 type="number"
                                 defaultValue={v}
                                 onChange={(e) => setBaseCell(id, parseInt(e.target.value) || 0)}
@@ -825,7 +835,7 @@ export default function PricesAdminPage() {
                         return (
                           <td key={c} className="px-0.5 py-1">
                             <input
-                              key={`${id}-cond-${c}-${v}`}
+                              key={`${id}-cond-${c}-${dataVersion}`}
                               type="number"
                               defaultValue={v}
                               onChange={(e) => setCondAdjCell(id, c, parseInt(e.target.value) || 0)}
@@ -932,7 +942,7 @@ export default function PricesAdminPage() {
                                   <label key={c} className="inline-flex items-center gap-1">
                                     <span className="uppercase text-[10px]">{c}</span>
                                     <input
-                                      key={`${modelId}-car-${c}-${data.overrides?.priceTable && JSON.stringify(data.overrides.carrierDeductions[modelId])}`}
+                                      key={`${modelId}-car-${c}-${dataVersion}`}
                                       type="number"
                                       defaultValue={effectiveCarrier(modelId, c) ?? 0}
                                       onChange={(e) => setCarrierCell(modelId, c, parseInt(e.target.value) || 0)}
@@ -994,7 +1004,7 @@ export default function PricesAdminPage() {
                                         <div className="flex flex-col items-end gap-0">
                                           <div className="flex items-center justify-end gap-0.5">
                                             <input
-                                              key={`${modelId}-${stor}-${cond}-${v}`}
+                                              key={`${modelId}-${stor}-${cond}-${dataVersion}`}
                                               type="number"
                                               defaultValue={v}
                                               onChange={(e) => setPriceCell(modelId, stor, cond, parseInt(e.target.value) || 0)}
