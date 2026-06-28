@@ -96,10 +96,10 @@
    Triggered by changing the React key on the cart button so the
    animation replays on every add. */
 @keyframes cart-bump {
-  0%   { transform: scale(1);    box-shadow: 0 0 0 0 rgba(0,200,83,0); }
-  25%  { transform: scale(1.18); box-shadow: 0 0 12px 4px rgba(0,200,83,0.45); }
-  60%  { transform: scale(0.96); box-shadow: 0 0 8px 2px rgba(0,200,83,0.25); }
-  100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(0,200,83,0); }
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.18); }
+  60%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
 }
 .cart-bump { animation: cart-bump 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 
@@ -449,7 +449,7 @@ button, a, [role="button"] {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: conic-gradient(from 0deg, transparent 0%, #00c853 20%, #00ff88 40%, #4fc3f7 60%, #00c853 80%, transparent 100%);
+  background: conic-gradient(from 0deg, transparent 0%, rgba(255,255,255,0.22) 40%, transparent 80%);
   animation: spinRing 2s linear infinite;
   pointer-events: none;
 }
@@ -464,8 +464,8 @@ button, a, [role="button"] {
 }
 
 @keyframes logoBreath {
-  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 6px rgba(0,200,83,0.45)); }
-  50% { transform: scale(1.07); filter: drop-shadow(0 0 14px rgba(0,230,118,0.85)); }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.07); }
 }
 
 @keyframes logoCoin {
@@ -502,7 +502,7 @@ button, a, [role="button"] {
 @media (hover: hover) {
   .tap-press:hover:not(:active) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 22px rgba(0, 200, 83, 0.12), 0 2px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.3);
   }
   .tap-press:hover:not(:active) img {
     transform: scale(1.06);
@@ -514,8 +514,7 @@ button, a, [role="button"] {
 }
 .tap-press:active {
   transform: scale(0.91);
-  box-shadow: 0 0 0 6px rgba(0, 200, 83, 0.18), 0 0 22px rgba(0, 200, 83, 0.18);
-  transition: transform 65ms ease-out, box-shadow 65ms ease-out;
+  transition: transform 65ms ease-out;
 }
 .tap-press:active p,
 .tap-press:active span:not([class*="bg-"]) {
@@ -527,16 +526,10 @@ button, a, [role="button"] {
   transition: transform 215ms ease-out, filter 215ms ease-out;
 }
 
-/* Gentle pulse for the primary CTAs — calls attention without nagging.
-   Slow enough that it reads as "alive" not "blinking ad." */
-@keyframes ctaPulse {
-  0%, 100% { box-shadow: 0 4px 12px rgba(0, 200, 83, 0.25), 0 0 0 0 rgba(0, 200, 83, 0.35); }
-  50%      { box-shadow: 0 6px 18px rgba(0, 200, 83, 0.32), 0 0 0 8px rgba(0, 200, 83, 0); }
-}
-.cta-pulse { animation: ctaPulse 2.8s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) {
-  .cta-pulse { animation: none; }
-}
+/* Primary-CTA resting depth — a calm dark shadow, NOT a pulsing green glow
+   (green is a crisp accent only). Kept as a static class so existing
+   .cta-pulse usages stay valid without an animated halo. */
+.cta-pulse { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4); }
 
 /* Scroll-aware nav shadow — appears once the user scrolls past the top */
 nav.sticky { transition: box-shadow 180ms ease-out; }
@@ -697,7 +690,7 @@ html.tcc-nav-settling button:hover > .tcc-brand-tile {
   inset: 0;
   border-radius: inherit;
   padding: 2px;
-  background: conic-gradient(from 0deg, transparent 0deg, #00c853 60deg, #00e5ff 180deg, #00c853 300deg, transparent 360deg);
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.22) 180deg, transparent 360deg);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
           mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -734,7 +727,7 @@ html.tcc-nav-settling button:hover > .tcc-brand-tile {
   .tcc-input { font-size: 0.875rem; }
 }
 .tcc-input:hover { background: rgba(255, 255, 255, 0.065); border-color: rgba(255, 255, 255, 0.16); border-bottom-color: rgba(255, 255, 255, 0.38); }
-.tcc-input:focus { outline: none; border-color: rgba(0, 200, 83, 0.6); border-bottom-color: #00c853; box-shadow: 0 0 0 4px rgba(0, 200, 83, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.06); background: rgba(255, 255, 255, 0.07); }
+.tcc-input:focus { outline: none; border-color: #00c853; border-bottom-color: #00c853; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06); background: rgba(255, 255, 255, 0.07); }
 .tcc-input::placeholder { color: #8a8a8a; }
 .tcc-input:focus::placeholder { color: #a8a8a8; }
 
@@ -757,8 +750,8 @@ html.tcc-nav-settling button:hover > .tcc-brand-tile {
 }
 
 /* Primary CTA — beveled gradient green button with a thin white rim at
-   top and a soft outer green glow. Reads tactile / pressable instead
-   of flat. Hover deepens the gradient slightly and brightens the glow. */
+   top. Reads tactile / pressable via the bevel + depth shadow, NOT a green
+   glow (green is a crisp accent only — no halo). Hover deepens the gradient. */
 .tcc-button-primary {
   background: linear-gradient(180deg, #00e676 0%, #00c853 60%, #00a039 100%);
   color: #0a0a0a;
@@ -767,7 +760,6 @@ html.tcc-nav-settling button:hover > .tcc-brand-tile {
   position: relative;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    0 0 15px rgba(0, 200, 83, 0.32),
     0 4px 12px rgba(0, 0, 0, 0.4);
   transition: filter 225ms ease, box-shadow 225ms ease, transform 225ms ease;
   cursor: pointer;
@@ -776,8 +768,7 @@ html.tcc-nav-settling button:hover > .tcc-brand-tile {
   filter: brightness(1.08) saturate(1.05);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.55),
-    0 0 22px rgba(0, 200, 83, 0.5),
-    0 6px 18px rgba(0, 0, 0, 0.4);
+    0 6px 18px rgba(0, 0, 0, 0.45);
 }
 .tcc-button-primary:active { transform: translateY(1px); }
 @media (prefers-reduced-motion: reduce) {
@@ -785,23 +776,13 @@ html.tcc-nav-settling button:hover > .tcc-brand-tile {
   .tcc-button-primary:active { transform: none; }
 }
 
-/* Payment tile icon glow — each payout option's emoji gets a colored
-   drop-shadow matching the payment brand. Use .payglow-<id> on the
-   icon element. */
-.payglow-cash    { filter: drop-shadow(0 0 10px rgba(0, 200, 83, 0.6));   }
-.payglow-cashapp { filter: drop-shadow(0 0 10px rgba(0, 200, 83, 0.6));   }
-.payglow-zelle   { filter: drop-shadow(0 0 10px rgba(160, 80, 255, 0.65));}
-.payglow-btc     { filter: drop-shadow(0 0 10px rgba(247, 147, 26, 0.7)); }
-
-/* Condition icon glow — each condition emoji gets a soft colored
-   drop-shadow matching the condition's tier so the icons read tactile
-   like little neon lights. Apply via .cond-glow-<id> on the icon span. */
-.cond-glow-brandnew { filter: drop-shadow(0 0 6px rgba(0, 150, 255, 0.6));  }
-.cond-glow-flawless { filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.65)); }
-.cond-glow-verygood { filter: drop-shadow(0 0 6px rgba(0, 200, 255, 0.65)); }
-.cond-glow-good     { filter: drop-shadow(0 0 6px rgba(0, 200, 83, 0.6));   }
-.cond-glow-fair     { filter: drop-shadow(0 0 6px rgba(255, 180, 0, 0.6));  }
-.cond-glow-broken   { filter: drop-shadow(0 0 6px rgba(255, 77, 77, 0.6));  }
+/* Payment + condition icons — flat, crisp (no neon glow). The green ones
+   broke the "green is a crisp accent only" rule; the whole set is flattened
+   together so the icons read uniform instead of half-glowing. Class names
+   kept so existing markup needs no change. */
+.payglow-cash, .payglow-cashapp, .payglow-zelle, .payglow-btc,
+.cond-glow-brandnew, .cond-glow-flawless, .cond-glow-verygood,
+.cond-glow-good, .cond-glow-fair, .cond-glow-broken { filter: none; }
 
 /* scroll-reveal: opt-in classes that fade/slide in when entering the viewport */
 .reveal {

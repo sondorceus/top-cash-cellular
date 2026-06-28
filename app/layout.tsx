@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { DEVICES } from "./data/sell-catalog";
 import "./globals.css";
 
 // Cabinet Grotesk Variable — single brand font for the entire site.
@@ -69,6 +70,19 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // JSON-LD buyback offers — generated from the sell-catalog SoT (top device
+  // per category), never hardcoded, so the structured-data prices can't drift
+  // from the real headline prices the site shows.
+  const buybackOffers = ["iPhone", "Samsung", "MacBook", "iPad", "Console"]
+    .map((cat) => DEVICES.filter((d) => d.category === cat).sort((a, b) => b.price - a.price)[0])
+    .filter(Boolean)
+    .map((d) => ({
+      "@type": "Offer",
+      "itemOffered": { "@type": "Product", "name": d.name },
+      "price": String(d.price),
+      "priceCurrency": "USD",
+      "description": `Sell your ${d.name} for up to $${d.price}`,
+    }));
   return (
     <html lang="en" className={`h-full antialiased ${cabinet.variable}`} suppressHydrationWarning>
       <head>
@@ -142,12 +156,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "hasOfferCatalog": {
                 "@type": "OfferCatalog",
                 "name": "Device Buyback Prices",
-                "itemListElement": [
-                  { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "iPhone 16 Pro Max" }, "price": "500", "priceCurrency": "USD", "description": "Sell your iPhone 16 Pro Max for up to $500" },
-                  { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "iPhone 15 Pro Max" }, "price": "310", "priceCurrency": "USD", "description": "Sell your iPhone 15 Pro Max for up to $310" },
-                  { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Samsung Galaxy S24 Ultra" }, "price": "500", "priceCurrency": "USD", "description": "Sell your Samsung S24 Ultra for up to $500" },
-                  { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "MacBook Pro 16 M4" }, "price": "1200", "priceCurrency": "USD", "description": "Sell your MacBook Pro M4 for up to $1200" }
-                ]
+                "itemListElement": buybackOffers
               }
             }),
           }}

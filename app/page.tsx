@@ -3735,7 +3735,7 @@ function FairPromise() {
       <p className="text-[#e8e8e8] text-xs mb-4">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
       <div className="space-y-3">
         <div className="flex gap-3">
-          <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} style={{filter:"drop-shadow(0 0 8px rgba(0,200,83,0.55))"}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <svg className="w-7 h-7 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           <div><p className="text-sm font-extrabold text-white">Consistent grading</p><p className="text-xs text-[#e8e8e8] leading-snug mt-0.5">Every device is evaluated using a standardized process based on the condition you select.</p></div>
         </div>
         <div className="flex gap-3">
@@ -4197,7 +4197,7 @@ export default function Home() {
       <div className="flex items-center gap-3 mb-1.5">
         <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#00c853]">Step {funnelStepNum} of {funnelTotal}</span>
         <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden max-w-[180px]">
-          <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_6px_rgba(0,200,83,0.5)] transition-all duration-[450ms]" style={{ width: `${stableBarRatio * 100}%` }} />
+          <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] transition-all duration-[450ms]" style={{ width: `${stableBarRatio * 100}%` }} />
         </div>
       </div>
     </div>
@@ -6361,12 +6361,12 @@ export default function Home() {
               {/* Same `stableBarRatio` as the desktop bar — see the
                   comment by its useState declaration above. Fixes the
                   Verizon-pick retreat AND the entrance-glitch flash. */}
-              <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] shadow-[0_0_4px_rgba(0,200,83,0.5)] transition-all duration-[450ms]" style={{ width: `${stableBarRatio * 100}%` }} />
+              <div className="h-full bg-gradient-to-r from-[#00c853] to-[#00e676] transition-all duration-[450ms]" style={{ width: `${stableBarRatio * 100}%` }} />
             </div>
           </div>
         </div>
       )}
-      <div className="lg:hidden mb-3 rounded-2xl bg-[rgba(15,15,15,0.78)] backdrop-blur-[12px] border border-white/15 p-3 shadow-[inset_1px_1px_0_rgba(255,255,255,0.1),0_18px_45px_rgba(0,0,0,0.75),0_0_0_1px_rgba(0,200,83,0.08)]">
+      <div className="lg:hidden mb-3 rounded-2xl bg-[rgba(15,15,15,0.78)] backdrop-blur-[12px] border border-white/15 p-3 shadow-[inset_1px_1px_0_rgba(255,255,255,0.1),0_18px_45px_rgba(0,0,0,0.75)]">
         {/* TOP — compact device thumb + model name (no 'Sell Your' label
             on mobile — selections are already implied by the breadcrumbs
             and the current funnel step, so we keep this hero tight to
@@ -6502,7 +6502,7 @@ export default function Home() {
             ) : (
               <>
                 <p className="text-[#b8b8b8] text-sm">Your device is valued at</p>
-                <p className="text-[#00c853] font-extrabold text-4xl mt-1" style={{ textShadow: "0 0 8px rgba(0,200,83,0.22)" }}>${quote * quantity}</p>
+                <p className="text-[#00c853] font-extrabold text-4xl mt-1">${quote * quantity}</p>
               </>
             )}
           </div>
@@ -6577,7 +6577,7 @@ export default function Home() {
         </div>
         {/* Accurate-quote guarantee badge */}
         <div className="mt-4 pt-4 border-t border-white/10 flex items-start gap-2.5">
-          <span className="text-[#00c853] text-lg leading-none mt-0.5" style={{ filter: "drop-shadow(0 0 4px rgba(0,200,83,0.55))" }}>✓</span>
+          <span className="text-[#00c853] text-lg leading-none mt-0.5">✓</span>
           <div>
             <p className="text-white text-[13px] font-extrabold leading-tight">Honored quote guarantee</p>
             <p className="text-[#e6e6e6] text-[12px] leading-snug mt-1">If your device matches the description above, we pay the quoted price — no surprise deductions.</p>
@@ -6917,7 +6917,7 @@ export default function Home() {
           which has the model+price layout; this is just a single line. */}
       {actionToast && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 lg:left-auto lg:right-6 lg:translate-x-0 z-[65] toast-in-up">
-          <div className="flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-[rgba(15,15,15,0.92)] backdrop-blur-[14px] border border-[#00c853]/40 shadow-[0_18px_45px_rgba(0,0,0,0.6),0_0_18px_rgba(0,200,83,0.18)]">
+          <div className="flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-[rgba(15,15,15,0.92)] backdrop-blur-[14px] border border-[#00c853]/40 shadow-[0_18px_45px_rgba(0,0,0,0.6)]">
             <span className="w-6 h-6 rounded-full flex items-center justify-center text-[#0a0a0a] font-extrabold text-xs shrink-0 bg-[#00c853]">✓</span>
             <p className="text-white text-[13px] font-extrabold leading-tight">{actionToast}</p>
           </div>
@@ -7262,7 +7262,7 @@ export default function Home() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
               </svg>
               {cartItems.length > 0 && (
-                <span key={`badge-${cartBump}`} className={`absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#00c853] text-[#0a0a0a] text-[10px] font-extrabold flex items-center justify-center shadow-[0_0_5px_rgba(0,200,83,0.4)] ${cartBump > 0 ? "badge-pop" : ""}`}>
+                <span key={`badge-${cartBump}`} className={`absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#00c853] text-[#0a0a0a] text-[10px] font-extrabold flex items-center justify-center ${cartBump > 0 ? "badge-pop" : ""}`}>
                   {cartItems.reduce((sum, i) => sum + i.quantity, 0)}
                 </span>
               )}
@@ -7838,7 +7838,7 @@ export default function Home() {
         if (!c) return null;
         return (
           <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setConditionHelpId(null)}>
-            <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6),0_0_20px_rgba(0,200,83,0.15)] tcc-modal-in" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6)] tcc-modal-in" onClick={(e) => e.stopPropagation()}>
               <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
                 <div className="min-w-0">
                   <p className="text-[#00c853] text-[10px] font-extrabold uppercase tracking-[0.18em]">What qualifies as</p>
@@ -7859,7 +7859,7 @@ export default function Home() {
               <ul className="p-5 pt-3 space-y-2.5">
                 {(c as { details?: string[] }).details?.map((d, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-[#e8e8e8] text-sm leading-snug">
-                    <span className="text-[#00c853] mt-0.5 shrink-0" style={{ filter: "drop-shadow(0 0 4px rgba(0,200,83,0.5))" }}>✓</span>
+                    <span className="text-[#00c853] mt-0.5 shrink-0">✓</span>
                     <span>{d}</span>
                   </li>
                 ))}
@@ -7909,7 +7909,7 @@ export default function Home() {
         if (!s) return null;
         return (
           <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setStorageHelpId(null)}>
-            <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6),0_0_20px_rgba(0,200,83,0.15)] tcc-modal-in" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6)] tcc-modal-in" onClick={(e) => e.stopPropagation()}>
               <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
                 <div className="min-w-0">
                   <p className="text-[#00c853] text-[10px] font-extrabold uppercase tracking-[0.18em]">What you get with</p>
@@ -7922,7 +7922,7 @@ export default function Home() {
               <ul className="p-5 space-y-2.5">
                 {s.details?.map((d, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-[#e8e8e8] text-sm leading-snug">
-                    <span className="text-[#00c853] mt-0.5 shrink-0" style={{ filter: "drop-shadow(0 0 4px rgba(0,200,83,0.5))" }}>✓</span>
+                    <span className="text-[#00c853] mt-0.5 shrink-0">✓</span>
                     <span>{d}</span>
                   </li>
                 ))}
@@ -7935,7 +7935,7 @@ export default function Home() {
       {/* CONNECTIVITY HELP MODAL — 'Help me choose' for WiFi vs Cellular */}
       {connectivityHelpOpen && (
         <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={() => setConnectivityHelpOpen(false)}>
-          <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6),0_0_20px_rgba(0,200,83,0.15)] tcc-modal-in" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[rgba(20,28,40,0.92)] backdrop-blur-[14px] border border-[#00c853]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-[0_24px_50px_rgba(0,0,0,0.6)] tcc-modal-in" onClick={(e) => e.stopPropagation()}>
             <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
               <div className="min-w-0">
                 <p className="text-[#00c853] text-[10px] font-extrabold uppercase tracking-[0.18em]">Help me choose</p>
@@ -8519,7 +8519,7 @@ export default function Home() {
                     visually on the pill. */}
                 <span
                   role="tooltip"
-                  className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-[180px] sm:w-[220px] px-3 py-2 rounded-xl bg-[rgba(15,15,15,0.96)] backdrop-blur-[10px] border border-[#00c853]/30 shadow-[0_12px_30px_rgba(0,0,0,0.6),0_0_14px_rgba(0,200,83,0.18)] text-[11px] sm:text-[12px] text-[#e6e6e6] leading-snug text-left opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 group-focus:opacity-100 group-focus:translate-y-0 transition duration-[180ms] z-20"
+                  className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-[180px] sm:w-[220px] px-3 py-2 rounded-xl bg-[rgba(15,15,15,0.96)] backdrop-blur-[10px] border border-[#00c853]/30 shadow-[0_12px_30px_rgba(0,0,0,0.6)] text-[11px] sm:text-[12px] text-[#e6e6e6] leading-snug text-left opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 group-focus:opacity-100 group-focus:translate-y-0 transition duration-[180ms] z-20"
                 >
                   {s.tip}
                   <span aria-hidden className="absolute left-1/2 -translate-x-1/2 top-full w-2.5 h-2.5 bg-[rgba(15,15,15,0.96)] border-r border-b border-[#00c853]/30 -mt-1.5 rotate-45"></span>
@@ -10667,7 +10667,7 @@ export default function Home() {
               <p className="text-[#e6e6e6] text-xs mb-4">Concerned about quote adjustments? Here&apos;s how we handle inspections.</p>
               <div className="space-y-3">
                 <div className="flex gap-3">
-                  <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} style={{filter:"drop-shadow(0 0 8px rgba(0,200,83,0.55))"}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   <div><p className="text-sm font-bold text-white">Transparent Pricing</p><p className="text-xs text-[#e6e6e6]">What you see is what you get. Your quote is based on the condition you select — no surprise deductions.</p></div>
                 </div>
                 <div className="flex gap-3">
@@ -10948,7 +10948,7 @@ export default function Home() {
                         <p className="text-[#b8b8b8] text-[12px] leading-snug mt-0.5">{lock.desc}</p>
                       </div>
                       {lock.id === "no" && (
-                        <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-full shadow-[0_0_8px_rgba(0,200,83,0.35)] shrink-0">Best value</span>
+                        <span className="bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-full shrink-0">Best value</span>
                       )}
                       <svg className="w-4 h-4 text-[#e6e6e6] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                     </button>
@@ -11023,7 +11023,7 @@ export default function Home() {
                 </>
               ) : (
                 <div className="inline-flex items-center gap-2 mt-1">
-                  <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853]" style={{ textShadow: "0 0 8px rgba(0, 200, 83, 0.22)" }}>${quote * quantity}</p>
+                  <p className="text-5xl lg:text-6xl font-extrabold text-[#00c853]">${quote * quantity}</p>
                   {/* "Why our price is higher" affordance — hover (desktop)
                       or tap (mobile) reveals a small popover with our
                       pricing rationale vs Apple/Samsung trade-ins. Counters
@@ -11337,9 +11337,9 @@ export default function Home() {
                 <div className="bg-[rgba(15,15,15,0.5)] backdrop-blur-[12px] border border-white/12 rounded-2xl p-5 mb-6 text-left shadow-[inset_1px_1px_0_rgba(255,255,255,0.06),0_10px_30px_rgba(0,0,0,0.5)]">
                   <p className="text-[10px] font-extrabold text-[#00c853] uppercase tracking-[0.18em] mb-3">How we compare</p>
                   <div className="divide-y divide-white/[0.06]">
-                    <div className="flex items-center justify-between -mx-2 px-2 py-3 rounded-lg bg-[#00c853]/10 border border-[#00c853]/30 shadow-[0_0_10px_rgba(0,200,83,0.18)]">
+                    <div className="flex items-center justify-between -mx-2 px-2 py-3 rounded-lg bg-[#00c853]/10 border border-[#00c853]/30">
                       <span className="text-[15px] font-extrabold text-white">Top Cash Cellular</span>
-                      <span className="text-xl font-extrabold text-[#00c853]" style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${quote * quantity}</span>
+                      <span className="text-xl font-extrabold text-[#00c853]">${quote * quantity}</span>
                     </div>
                     {showOemNoTradeBadge && (
                       <div className="flex items-center justify-between py-3 px-2">
@@ -13431,7 +13431,7 @@ export default function Home() {
                         key={i}
                         className={`relative aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center text-center px-1.5 transition
                           ${isLocked ? "bg-white/[0.02] border-white/8 cursor-not-allowed opacity-50" : "bg-white/5 border-white/20 cursor-pointer hover:bg-white/10 hover:border-[#00c853]/50"}
-                          ${isNextUp && !uploading && !isLocked ? "border-[#00c853]/45 shadow-[0_0_0_3px_rgba(0,200,83,0.08)]" : ""}
+                          ${isNextUp && !uploading && !isLocked ? "border-[#00c853]/45" : ""}
                           ${uploading ? "opacity-50 pointer-events-none" : ""}`}
                       >
                         <svg className={`w-7 h-7 mb-1 ${isNextUp && !isLocked ? "text-[#00c853]" : "text-[#d4d4d4]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
@@ -13559,7 +13559,7 @@ export default function Home() {
                 style={{
                   background: "linear-gradient(180deg, #00e676 0%, #00c853 60%, #00a039 100%)",
                   boxShadow:
-                    "inset 0 2px 0 rgba(255,255,255,0.55), inset 0 -3px 6px rgba(0,0,0,0.28), 0 0 32px rgba(0, 200, 83, 0.5), 0 10px 30px rgba(0,0,0,0.5)",
+                    "inset 0 2px 0 rgba(255,255,255,0.55), inset 0 -3px 6px rgba(0,0,0,0.28), 0 10px 30px rgba(0,0,0,0.5)",
                 }}
               >
                 <svg className="w-8 h-8 lg:w-12 lg:h-12 text-[#0a0a0a]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -13621,7 +13621,7 @@ export default function Home() {
                   </div>
                   <div className="mt-3 pt-3 border-t border-white/15 flex items-baseline justify-between">
                     <span className="text-[12px] uppercase tracking-wider text-[#e6e6e6] font-bold">Total payout</span>
-                    <span className="text-[#00c853] font-extrabold text-2xl lg:text-3xl" style={{ textShadow: "0 0 18px rgba(0,200,83,0.4)" }}>
+                    <span className="text-[#00c853] font-extrabold text-2xl lg:text-3xl">
                       ${submittedDevices.reduce((s, d) => s + d.price * d.quantity, 0)}
                     </span>
                   </div>
@@ -13660,7 +13660,7 @@ export default function Home() {
                           <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Payout</p>
                           {isManualQuote || isPendingQuote
                             ? <p className="text-white font-extrabold text-lg leading-none">Custom quote</p>
-                            : <p className="text-[#00c853] font-extrabold text-2xl lg:text-3xl leading-none" style={{ textShadow: "0 0 18px rgba(0,200,83,0.4)" }}>${price}</p>
+                            : <p className="text-[#00c853] font-extrabold text-2xl lg:text-3xl leading-none">${price}</p>
                           }
                         </div>
                       </div>
@@ -13794,7 +13794,7 @@ export default function Home() {
               <div className="rounded-2xl p-6 mb-6 text-center" style={{
                 background: "linear-gradient(180deg, rgba(0,200,83,0.18) 0%, rgba(0,200,83,0.06) 100%)",
                 border: "1px solid rgba(0,200,83,0.45)",
-                boxShadow: "0 0 32px rgba(0,200,83,0.15), inset 0 1px 0 rgba(255,255,255,0.08)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)",
               }}>
                 <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Your offer page</p>
                 <p className="text-white text-lg font-extrabold mb-1 flex items-center justify-center gap-1.5"><svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>Offer #{formatOfferNumber(submittedLeadId)}</p>
@@ -13805,7 +13805,7 @@ export default function Home() {
                 </p>
                 <a
                   href={`/offer/${encodeURIComponent(submittedLeadId)}`}
-                  className="inline-flex items-center justify-center gap-2 w-full max-w-md mx-auto bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-base px-6 py-4 rounded-full transition cursor-pointer shadow-[0_8px_24px_rgba(0,200,83,0.35)]"
+                  className="inline-flex items-center justify-center gap-2 w-full max-w-md mx-auto bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-base px-6 py-4 rounded-full transition cursor-pointer shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
                 >
                   {handoffMethod === "ship" ? (
                     <><svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>Open offer + print label →</>
@@ -14839,7 +14839,7 @@ export default function Home() {
               {itemCount >= 4 && (
                 <a
                   href="/bulk"
-                  className="block mx-6 mt-4 rounded-2xl bg-[#00c853]/15 border border-[#00c853]/40 px-4 py-3 transition hover:bg-[#00c853]/22 shadow-[0_0_18px_rgba(0,200,83,0.18)]"
+                  className="block mx-6 mt-4 rounded-2xl bg-[#00c853]/15 border border-[#00c853]/40 px-4 py-3 transition hover:bg-[#00c853]/22"
                 >
                   <p className="text-[#00c853] text-[10px] font-extrabold uppercase tracking-[0.18em]">Looks like a bulk sell</p>
                   <p className="text-white text-sm font-extrabold leading-tight mt-1">{itemCount} devices in your box — consider our bulk program</p>
@@ -14955,7 +14955,7 @@ export default function Home() {
                                 </div>
                               </div>
                               {item.price > 0 ? (
-                                <p className={`text-[#00c853] font-extrabold ${priceSz}`} style={{ textShadow: "0 0 6px rgba(0,200,83,0.25)" }}>${item.price * item.quantity}</p>
+                                <p className={`text-[#00c853] font-extrabold ${priceSz}`}>${item.price * item.quantity}</p>
                               ) : (
                                 <p className={`text-white font-extrabold ${priceSz} opacity-90`}>Quoted via email or text</p>
                               )}
@@ -15015,7 +15015,7 @@ export default function Home() {
                   <div className="flex items-center justify-between mb-2.5">
                     <div>
                       <p className="text-[#b8b8b8] text-[10px] font-bold uppercase tracking-wider">Total payout</p>
-                      <p className="text-[#00c853] font-extrabold text-[28px] leading-none mt-0.5" style={{ textShadow: "0 0 10px rgba(0,200,83,0.3)" }}>${total}</p>
+                      <p className="text-[#00c853] font-extrabold text-[28px] leading-none mt-0.5">${total}</p>
                     </div>
                     <p className="text-[#c8c8c8] text-xs text-right">{itemCount} {itemCount === 1 ? "device" : "devices"} · Free shipping</p>
                   </div>

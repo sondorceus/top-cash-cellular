@@ -87,7 +87,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
           Get up to <span className="text-[#00c853] font-bold">${device.price}</span> — Austin TX
         </p>
 
-        <Link href="/?ask=handoff" className="block w-full bg-[#00c853] text-[#0a0a0a] py-5 rounded-2xl text-xl font-bold text-center hover:bg-[#00e676] transition shadow-lg shadow-[#00c853]/20 mb-8">
+        <Link href="/?ask=handoff" className="block w-full bg-[#00c853] text-[#0a0a0a] py-5 rounded-2xl text-xl font-bold text-center hover:bg-[#00e676] transition shadow-lg mb-8">
           Get My Quote Now
         </Link>
 
