@@ -12,8 +12,8 @@ export const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
   // iPhone 17 family — Atlas Mobile wholesale carrier-gap (NIB Sealed
   // Unlocked − Locked). "Other" = gap + $100 per Skywalker's rule.
   // Verizon and Unlocked: no entry → defaults to $0 deduction.
-  ip17pm: { att: 335, tmobile: 335, other: 435 },
-  ip17p:  { att: 280, tmobile: 280, other: 380 },
+  ip17pm: { att: 0, tmobile: 0, other: 0 },
+  ip17p:  { att: 0, tmobile: 0, other: 0 },
   ip17air: { att: 355, tmobile: 355, other: 455 },
   ip17:   { att: 195, tmobile: 195, other: 295 },
   ip17e:  { att: 200, tmobile: 200, other: 300 },
@@ -262,19 +262,19 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 100, fair: 160, good: 240, mint: 270, sealed: 270 },
     "512": { broken: 140, fair: 190, good: 280, mint: 310, sealed: 310 } },
   ip17p: {
-    // 1TB sealed capped 1071 → 920 (= resell $949 × 0.75 ≈ $711, lifted to keep above 512 sealed). 2026-05-24.
-    "1tb": { broken: 417, fair: 642, good: 893, mint: 910, sealed: 920 },
-    "256": { broken: 350, fair: 527, good: 697, mint: 715, sealed: 825 },
-    "512": { broken: 385, fair: 566, good: 783, mint: 799, sealed: 919 } },
+    // Custom flat pricing (Skywalker, 2026-06): 17 Pro Max ladder minus $40 (excellent OFFER
+    // $580 = base 555 + $25 bonus); +$55/tier; no carrier penalty. Broken left unchanged.
+    "1tb": { broken: 417, fair: 625, good: 645, mint: 665, sealed: 695 },
+    "256": { broken: 350, fair: 515, good: 535, mint: 555, sealed: 585 },
+    "512": { broken: 385, fair: 570, good: 590, mint: 610, sealed: 640 } },
   ip17pm: {
-    // 1TB/2TB sealed clipped to keep ladder above 512 sealed but realistic.
-    // Resell $1081 × 0.75 = $810 base cap; 1TB/2TB tiers get small bump on
-    // top to reflect storage premium without re-introducing the bait-and-
-    // switch where runtime silently clipped from $1203/$1420. 2026-05-24.
-    "1tb": { broken: 527, fair: 702, good: 944, mint: 961, sealed: 1050 },
-    "256": { broken: 434, fair: 608, good: 783, mint: 799, sealed: 927 },
-    "2tb": { broken: 566, fair: 757, good: 1029, mint: 1046, sealed: 1150 },
-    "512": { broken: 472, fair: 647, good: 863, mint: 880, sealed: 1037 } },
+    // Custom flat pricing (Skywalker, 2026-06): excellent OFFER $620 = base 595 + $25
+    // popular-phone bonus; ladder sealed/good/fair 650/600/580; +$55 per storage tier;
+    // NO carrier penalty (deductions zeroed above). Broken left unchanged.
+    "1tb": { broken: 527, fair: 665, good: 685, mint: 705, sealed: 735 },
+    "256": { broken: 434, fair: 555, good: 575, mint: 595, sealed: 625 },
+    "2tb": { broken: 566, fair: 720, good: 740, mint: 760, sealed: 790 },
+    "512": { broken: 472, fair: 610, good: 630, mint: 650, sealed: 680 } },
   // === SAMSUNG S SERIES (10% below IWM) ===
   gs24: {
     "128": { broken: 13, fair: 39, good: 128, mint: 137, sealed: 187 },
