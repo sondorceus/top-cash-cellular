@@ -296,13 +296,17 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 135, fair: 213, good: 472, mint: 513, sealed: 558 },
     "512": { broken: 141, fair: 213, good: 495, mint: 536, sealed: 580 } },
   gs26: {
+    // S26 has no real 128GB tier — mirror 256 so mislabeled "128gb" listings still price right.
+    "128": { broken: 90, fair: 284, good: 356, mint: 405, sealed: 450 },
     "256": { broken: 90, fair: 284, good: 356, mint: 405, sealed: 450 },
     "512": { broken: 99, fair: 306, good: 378, mint: 428, sealed: 477 } },
   gs26p: {
+    "128": { broken: 108, fair: 306, good: 387, mint: 450, sealed: 495 },
     "256": { broken: 108, fair: 306, good: 387, mint: 450, sealed: 495 },
     "512": { broken: 117, fair: 342, good: 423, mint: 486, sealed: 540 } },
   gs26u: {
     "1tb": { broken: 144, fair: 468, good: 576, mint: 657, sealed: 720 },
+    "128": { broken: 126, fair: 396, good: 504, mint: 585, sealed: 630 },
     "256": { broken: 126, fair: 396, good: 504, mint: 585, sealed: 630 },
     "512": { broken: 135, fair: 432, good: 540, mint: 621, sealed: 675 } },
   // === SAMSUNG Z SERIES ===
