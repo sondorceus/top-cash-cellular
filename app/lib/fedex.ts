@@ -24,6 +24,15 @@ function getAccountNumber(): string {
   return process.env.FEDEX_ACCOUNT_NUMBER || "";
 }
 
+// Email address FedEx sends shipment-event notifications to (pickup /
+// delivery / exception). Because our Ship API IS authorized but the Track
+// API is NOT (getTracking gets 403), we let FedEx itself email the owner
+// on delivery — the alert the Track poll can't produce. Empty ⇒ no
+// notification block is added (label request is byte-identical to today).
+function getNotifyEmail(): string {
+  return process.env.FEDEX_NOTIFY_EMAIL || process.env.OWNER_EMAIL || "";
+}
+
 // Where customers ship devices TO. Pulled from envs so Skywalker can
 // update address without a redeploy. Defaults safe-but-bogus so a
 // misconfigured env produces a clear sandbox error rather than mailing
@@ -219,10 +228,36 @@ export async function createReturnLabel(input: LabelInputs): Promise<LabelResult
     ...(input.customerUnit ? [input.customerUnit] : []),
   ];
 
-  const body = {
+  // FedEx-side email alert attached to the label: FedEx emails this address
+  // on pickup / delivery / exception. Recipient type OTHER so it's a fixed
+  // owner address, independent of the shipment's shipper (the customer) and
+  // recipient (us). Only built when an address is configured.
+  const notifyEmail = getNotifyEmail();
+  const emailNotificationDetail = notifyEmail
+    ? {
+        aggregationType: "PER_SHIPMENT",
+        personalMessage: "Top Cash Cellular — inbound device shipment",
+        emailNotificationRecipients: [
+          {
+            name: "Top Cash Cellular",
+            emailNotificationRecipientType: "OTHER",
+            emailAddress: notifyEmail,
+            notificationFormatType: "HTML",
+            notificationType: "EMAIL",
+            locale: "en_US",
+            notificationEventType: ["ON_PICKUP_DRIVER_ARRIVED", "ON_TENDER", "ON_DELIVERY", "ON_EXCEPTION"],
+          },
+        ],
+      }
+    : null;
+
+  const makeBody = (withNotify: boolean) => ({
     labelResponseOptions: "LABEL",
     accountNumber: { value: accountNumber },
     requestedShipment: {
+      // Notification block is spread in first but key order is irrelevant to
+      // FedEx. Included only when we have an address AND this attempt wants it.
+      ...(withNotify && emailNotificationDetail ? { emailNotificationDetail } : {}),
       shipper: {
         contact: {
           personName: input.customerName,
@@ -278,18 +313,47 @@ export async function createReturnLabel(input: LabelInputs): Promise<LabelResult
         },
       ],
     },
-  };
+  });
 
-  const res = await fetch(`${getBase()}/ship/v1/shipments`, {
+  const postShip = (b: unknown) => fetch(`${getBase()}/ship/v1/shipments`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
       "X-locale": "en_US",
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(b),
     cache: "no-store",
   });
+
+  let res = await postShip(makeBody(true));
+  // SAFETY NET: the email-notification block is the ONLY non-essential part
+  // of this request. If FedEx rejects the request while it's present, retry
+  // ONCE without it so a bad notification structure can NEVER stop a label
+  // from minting. A non-2xx means FedEx created nothing and billed nothing,
+  // so the retry cannot double-mint. On fallback we best-effort ping MC so a
+  // broken structure is visible (and I can fix the field shape) rather than
+  // silently degrading back to "no delivery emails".
+  if (!res.ok && emailNotificationDetail) {
+    const firstErr = await res.text().catch(() => "");
+    console.warn(`[fedex] label email-notification rejected (${res.status}) — retrying without it: ${firstErr.slice(0, 300)}`);
+    try {
+      const mcApi = "https://missioncontrolsdjg-production.up.railway.app";
+      const mcKey = process.env.MC_API_KEY || "";
+      if (mcKey) {
+        await fetch(`${mcApi}/api/comms`, {
+          method: "POST",
+          headers: { "x-api-key": mcKey, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            from: "powerhouse",
+            fromName: "Powerhouse",
+            body: `[FEDEX-EMAILNOTIFY-REJECTED] FedEx rejected the label's email-notification block (${res.status}); label re-minted WITHOUT it, so no FedEx delivery email will fire for this shipment. Fix the emailNotificationDetail shape. First error: ${firstErr.replace(/[\[\]]/g, " ").slice(0, 300)}`,
+          }),
+        });
+      }
+    } catch { /* best-effort */ }
+    res = await postShip(makeBody(false));
+  }
   if (!res.ok) {
     const errBody = await res.text().catch(() => "");
     throw new Error(`FedEx Ship API ${res.status}${errBody ? " — " + errBody.slice(0, 500) : ""}`);
