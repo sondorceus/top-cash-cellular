@@ -149,6 +149,10 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
   const diff = decoded.originalQuote - decoded.offer;
   const diffPct = decoded.originalQuote > 0 ? Math.round((diff / decoded.originalQuote) * 100) : 0;
   const submitting = responseState === "submitting";
+  // A final invoice is an offer at (or above) the quoted price — the device
+  // matched its description, so there's nothing to "revise" and no reason to
+  // show. Present it as a clean confirm-and-get-paid, not a reduction.
+  const isFinal = decoded.offer >= decoded.originalQuote;
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -157,22 +161,36 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
           <span>Top Cash Cellular</span>
         </Link>
 
-        <h1 className="text-3xl font-bold mb-2">Your revised offer</h1>
-        <p className="text-[#bdbdbd] text-sm mb-6">After we inspected your device, the condition didn&apos;t quite match the original description. Here&apos;s our honest revised number.</p>
+        <h1 className="text-3xl font-bold mb-2">{isFinal ? "Your final offer" : "Your revised offer"}</h1>
+        <p className="text-[#bdbdbd] text-sm mb-6">{isFinal
+          ? "We inspected your device and it's exactly as described — everything checks out. Approve your final offer below and we send your payout."
+          : "After we inspected your device, the condition didn't quite match the original description. Here's our honest revised number."}</p>
 
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Original quote</p>
-          <p className="text-2xl text-[#bdbdbd] line-through mb-4">${decoded.originalQuote.toLocaleString()}</p>
+          {isFinal ? (
+            <>
+              <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Final offer</p>
+              <p className="text-5xl text-[#00c853] font-extrabold mb-1">${decoded.offer.toLocaleString()}</p>
+              <p className="text-xs text-[#a8a8a8]">Approve below and we pay you within 24 hours.</p>
+            </>
+          ) : (
+            <>
+              <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Original quote</p>
+              <p className="text-2xl text-[#bdbdbd] line-through mb-4">${decoded.originalQuote.toLocaleString()}</p>
 
-          <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Revised offer</p>
-          <p className="text-5xl text-[#00c853] font-extrabold mb-1">${decoded.offer.toLocaleString()}</p>
-          <p className="text-xs text-[#a8a8a8]">{diff > 0 ? `Reduced by $${diff.toLocaleString()} (${diffPct}%)` : "Same as original"}</p>
+              <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Revised offer</p>
+              <p className="text-5xl text-[#00c853] font-extrabold mb-1">${decoded.offer.toLocaleString()}</p>
+              <p className="text-xs text-[#a8a8a8]">{diff > 0 ? `Reduced by $${diff.toLocaleString()} (${diffPct}%)` : "Same as original"}</p>
+            </>
+          )}
         </div>
 
-        <div className="bg-amber-500/10 border border-amber-500/30 border-l-4 border-l-amber-500 rounded-xl p-5 mb-6">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-amber-300 font-bold mb-2">Why the revision</p>
-          <p className="text-[#e6e6e6] text-sm leading-relaxed whitespace-pre-wrap">{decoded.reason}</p>
-        </div>
+        {!isFinal && (
+          <div className="bg-amber-500/10 border border-amber-500/30 border-l-4 border-l-amber-500 rounded-xl p-5 mb-6">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-amber-300 font-bold mb-2">Why the revision</p>
+            <p className="text-[#e6e6e6] text-sm leading-relaxed whitespace-pre-wrap">{decoded.reason}</p>
+          </div>
+        )}
 
         <div className="bg-white/[0.04] border border-white/10 rounded-xl p-5 mb-6">
           <label className="block text-xs font-semibold text-[#dcdcdc] uppercase tracking-wider mb-2">Optional note for staff</label>

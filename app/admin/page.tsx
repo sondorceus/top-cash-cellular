@@ -696,12 +696,18 @@ export default function AdminPage() {
   const [counterOfferError, setCounterOfferError] = useState<string>("");
   const [counterOfferSentFor, setCounterOfferSentFor] = useState<string | null>(null);
 
-  const openCounterOffer = useCallback((lead: Lead) => {
+  const openCounterOffer = useCallback((lead: Lead, opts?: { prefillQuote?: boolean }) => {
     setCounterOfferLead(lead);
-    // Default amount: last counter (so re-mint after decline is one tap)
-    // or empty so staff thinks deliberately. Reason is always blank —
-    // we don't reuse the prior reason.
-    setCounterOfferAmount(lead.counterOffer ? String(lead.counterOffer.offer) : "");
+    // "Send final invoice" (prefillQuote) opens at the agreed quoted price so
+    // it's a one-tap confirm-and-pay. Otherwise default to the last counter
+    // (so a re-mint after decline is one tap) or empty so staff thinks
+    // deliberately. Reason is always blank — we don't reuse the prior reason.
+    if (opts?.prefillQuote) {
+      const q = parseDollarAmount(lead.quote || "") || lead.totalPayout || 0;
+      setCounterOfferAmount(q ? String(q) : "");
+    } else {
+      setCounterOfferAmount(lead.counterOffer ? String(lead.counterOffer.offer) : "");
+    }
     setCounterOfferReason("");
     setCounterOfferError("");
   }, []);
@@ -720,11 +726,6 @@ export default function AdminPage() {
       setCounterOfferError("Enter a valid dollar amount.");
       return;
     }
-    const reason = counterOfferReason.trim();
-    if (reason.length < 10) {
-      setCounterOfferError("Reason should be at least a short sentence — the customer reads this verbatim.");
-      return;
-    }
     // Original quote — comma-aware so "$1,250" parses as 1250, not 1.
     // (The old /\$?(\d+)/ stopped at the comma and recorded $1 as the
     // original, making every counter-offer on a ≥$1k lead look like a
@@ -733,6 +734,14 @@ export default function AdminPage() {
     const originalQuote = parseDollarAmount(quoteStr) || counterOfferLead.totalPayout || 0;
     if (!originalQuote) {
       setCounterOfferError("Can't determine the original quote on this lead.");
+      return;
+    }
+    // A reason is only needed when we're LOWERING the price (a real counter).
+    // A final invoice at/above the quoted price is just confirm-and-pay — no
+    // explanation to write. Mirrors the server-side rule.
+    const reason = counterOfferReason.trim();
+    if (offer < originalQuote && reason.length < 10) {
+      setCounterOfferError("Reason should be at least a short sentence — the customer reads this verbatim.");
       return;
     }
     setCounterOfferSending(true);
@@ -2866,6 +2875,21 @@ export default function AdminPage() {
                         >
                           {emailSentById[lead.id] ? "✓ Sent" : "✉️ Email"}
                         </button>
+                        {/* Send final invoice — the "device matched, confirm
+                            & pay" path. Opens the same modal pre-filled at the
+                            quoted price so it ships as a final invoice the
+                            seller approves, then we pay. Distinct button so
+                            it's discoverable during inspection (staff kept
+                            missing it inside "Counter-offer"). */}
+                        <button
+                          type="button"
+                          onClick={() => openCounterOffer(lead, { prefillQuote: true })}
+                          disabled={!lead.phone && !lead.email}
+                          className="inline-flex items-center gap-1 text-[10px] font-bold transition cursor-pointer px-2 py-1 rounded border bg-emerald-500/10 border-emerald-500/40 text-emerald-200 hover:bg-emerald-500/20 disabled:opacity-40 disabled:cursor-not-allowed"
+                          title={!lead.phone && !lead.email ? "Need phone or email to send the invoice" : "Send the seller a final invoice at the quoted price — they approve, then you pay"}
+                        >
+                          🧾 Final invoice
+                        </button>
                         {/* Counter-offer — third path between accept-as-
                             quoted and full reject. Opens a modal asking
                             for the revised dollar amount + a customer-
@@ -3855,15 +3879,21 @@ export default function AdminPage() {
           any lead row. POSTs to /api/admin/leads/counter-offer which
           mints a tokenized accept-or-decline link and sends the
           customer SMS + email. */}
-      {counterOfferLead && (
+      {counterOfferLead && (() => {
+        // Derive final-invoice vs counter live from amount-vs-quote so the
+        // modal reframes as staff types — same rule the server enforces.
+        const modalQuote = parseDollarAmount(counterOfferLead.quote || "") || counterOfferLead.totalPayout || 0;
+        const modalAmt = parseInt(counterOfferAmount, 10);
+        const modalIsFinal = Number.isFinite(modalAmt) && modalAmt >= modalQuote && counterOfferAmount.trim() !== "";
+        return (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
           onClick={(e) => { if (e.target === e.currentTarget && !counterOfferSending) closeCounterOffer(); }}
         >
-          <div className="w-full max-w-lg bg-[#0f0f0f] border border-purple-500/30 rounded-2xl p-5 shadow-2xl">
+          <div className={`w-full max-w-lg bg-[#0f0f0f] border ${modalIsFinal ? "border-emerald-500/30" : "border-purple-500/30"} rounded-2xl p-5 shadow-2xl`}>
             <div className="flex items-start justify-between mb-3">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.18em] text-purple-300 font-bold">💬 Counter-offer</p>
+                <p className={`text-[10px] uppercase tracking-[0.18em] font-bold ${modalIsFinal ? "text-emerald-300" : "text-purple-300"}`}>{modalIsFinal ? "🧾 Final invoice — confirm & pay" : "💬 Counter-offer"}</p>
                 <h2 className="text-lg font-bold text-white mt-0.5">{counterOfferLead.name || counterOfferLead.id}</h2>
                 <p className="text-[11px] text-[#888] mt-0.5">{counterOfferLead.model || counterOfferLead.device}{counterOfferLead.storage ? ` · ${counterOfferLead.storage}` : ""}{counterOfferLead.condition ? ` · ${counterOfferLead.condition}` : ""}</p>
               </div>
@@ -3882,7 +3912,7 @@ export default function AdminPage() {
               <span className="text-2xl font-bold text-[#00c853]">{counterOfferLead.quote || "—"}</span>
             </div>
 
-            <label className="block text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold mb-1">Revised offer ($)</label>
+            <label className="block text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold mb-1">{modalIsFinal ? "Final offer ($)" : "Revised offer ($)"}</label>
             <input
               type="number"
               min="0"
@@ -3890,21 +3920,30 @@ export default function AdminPage() {
               onChange={(e) => setCounterOfferAmount(e.target.value)}
               disabled={counterOfferSending}
               autoFocus
-              className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-base text-white focus:outline-none focus:border-purple-400 transition mb-3 disabled:opacity-50"
+              className={`w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-base text-white focus:outline-none transition mb-1 disabled:opacity-50 ${modalIsFinal ? "focus:border-emerald-400" : "focus:border-purple-400"}`}
               placeholder="e.g. 320"
             />
+            <p className="text-[10px] text-[#888] mb-3">
+              {modalIsFinal
+                ? "At or above the quote → sent as a final invoice: device matched, confirm & pay. Enter a lower number to send a counter instead."
+                : "Below the quote → sent as a counter with the reason below."}
+            </p>
 
-            <label className="block text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold mb-1">Reason (customer sees this verbatim)</label>
-            <textarea
-              value={counterOfferReason}
-              onChange={(e) => setCounterOfferReason(e.target.value)}
-              disabled={counterOfferSending}
-              rows={4}
-              maxLength={500}
-              className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white leading-relaxed focus:outline-none focus:border-purple-400 transition resize-none disabled:opacity-50"
-              placeholder="Be honest and specific. e.g. 'Back glass has a hairline crack we couldn't see in your photos. Otherwise everything functions perfectly.'"
-            />
-            <p className="text-[10px] text-[#888] mt-1">{counterOfferReason.length}/500 · Goes verbatim in their SMS + email.</p>
+            {!modalIsFinal && (
+              <>
+                <label className="block text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold mb-1">Reason (customer sees this verbatim)</label>
+                <textarea
+                  value={counterOfferReason}
+                  onChange={(e) => setCounterOfferReason(e.target.value)}
+                  disabled={counterOfferSending}
+                  rows={4}
+                  maxLength={500}
+                  className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white leading-relaxed focus:outline-none focus:border-purple-400 transition resize-none disabled:opacity-50"
+                  placeholder="Be honest and specific. e.g. 'Back glass has a hairline crack we couldn't see in your photos. Otherwise everything functions perfectly.'"
+                />
+                <p className="text-[10px] text-[#888] mt-1">{counterOfferReason.length}/500 · Goes verbatim in their SMS + email.</p>
+              </>
+            )}
 
             {counterOfferError && (
               <p className="text-[11px] text-red-300 mt-2">⚠️ {counterOfferError}</p>
@@ -3914,10 +3953,14 @@ export default function AdminPage() {
               <button
                 type="button"
                 onClick={submitCounterOffer}
-                disabled={counterOfferSending || !counterOfferAmount.trim() || counterOfferReason.trim().length < 10}
-                className="flex-1 px-4 py-2.5 bg-gradient-to-b from-purple-500 to-purple-600 text-white font-bold text-sm rounded-full hover:from-purple-400 hover:to-purple-500 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                disabled={counterOfferSending || !counterOfferAmount.trim() || (!modalIsFinal && counterOfferReason.trim().length < 10)}
+                className={`flex-1 px-4 py-2.5 text-white font-bold text-sm rounded-full transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer bg-gradient-to-b ${modalIsFinal ? "from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500" : "from-purple-500 to-purple-600 hover:from-purple-400 hover:to-purple-500"}`}
               >
-                {counterOfferSending ? "Sending…" : `Send revised offer${counterOfferAmount ? ` ($${counterOfferAmount})` : ""}`}
+                {counterOfferSending
+                  ? "Sending…"
+                  : modalIsFinal
+                    ? `Send final invoice${counterOfferAmount ? ` ($${counterOfferAmount})` : ""}`
+                    : `Send revised offer${counterOfferAmount ? ` ($${counterOfferAmount})` : ""}`}
               </button>
               <button
                 type="button"
@@ -3929,14 +3972,15 @@ export default function AdminPage() {
               </button>
             </div>
             <p className="text-[10px] text-[#666] mt-3 leading-relaxed">
-              Customer gets a SMS{counterOfferLead.email ? " + email" : ""} with an accept/decline link. Accept → we pay {counterOfferLead.payout || "via their chosen method"}. Decline → we ship back free.
+              Customer gets a SMS{counterOfferLead.email ? " + email" : ""} with {modalIsFinal ? "an approve/decline" : "an accept/decline"} link. {modalIsFinal ? "Approve" : "Accept"} → we pay {counterOfferLead.payout || "via their chosen method"}. Decline → we ship back free.
             </p>
           </div>
         </div>
-      )}
+        );
+      })()}
       {counterOfferSentFor && (
         <div className="fixed top-4 right-4 z-50 bg-emerald-500/15 border border-emerald-500/40 text-emerald-200 px-4 py-2 rounded-lg shadow-lg text-sm font-bold">
-          ✓ Counter-offer sent
+          ✓ Offer sent to seller
         </div>
       )}
       <DeviceCorrection

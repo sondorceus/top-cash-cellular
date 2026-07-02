@@ -375,6 +375,17 @@ export type TrackingResult = {
   lastEventDescription?: string;
   lastEventDate?: string;
   deliveredAt?: string;
+  // True when FedEx rejects the Track call with 403 FORBIDDEN — i.e. the
+  // credentials are NOT authorized for the Track API (the Ship API can be
+  // authorized independently, so labels still mint). Distinct from a plain
+  // "unknown" (which is a real but un-scanned/too-new tracking number) so
+  // the cron can alert the owner to enable the Track API instead of silently
+  // treating every package as never-scanned — and, critically, so it stops
+  // firing the "seller never dropped it off" stale-shipment accusation when
+  // the real problem is our own tracking being switched off. Skywalker
+  // 2026-07-02: a package was DELIVERED with zero notification because every
+  // poll got 403 and degraded to "unknown".
+  authError?: boolean;
 };
 
 export async function getTracking(trackingNumber: string): Promise<TrackingResult> {
@@ -399,9 +410,11 @@ export async function getTracking(trackingNumber: string): Promise<TrackingResul
     cache: "no-store",
   });
   if (!res.ok) {
-    // 404 = unknown tracking number, 401 = expired token (refresh next call)
-    // Either way return "unknown" so the cron skips this lead.
-    return { trackingNumber, state: "unknown" };
+    // 404 = unknown tracking number, 401 = expired token (refresh next call).
+    // 403 = credentials not authorized for the Track API — a configuration
+    // problem, not a transient one; flag it so the cron can alert once and
+    // skip the false "never dropped off" watchdog.
+    return { trackingNumber, state: "unknown", authError: res.status === 403 };
   }
   type TrackEvent = { eventType?: string; eventDescription?: string; date?: string };
   type TrackResult = {

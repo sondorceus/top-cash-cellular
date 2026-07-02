@@ -103,6 +103,11 @@ export async function GET(req: NextRequest) {
   // Leads we've already sent a "stalled shipment" alert for, so the
   // watchdog pings the owner once, not every run.
   const staleAlertedLeads = new Set<string>();
+  // Timestamp of the last "[FEDEX-TRACK-FORBIDDEN]" alert. The Track API
+  // returning 403 for every number is a standing config problem (Track
+  // API not enabled on the FedEx project), so we alert at most once per
+  // ~20h instead of every 30-min run.
+  let trackForbiddenAlertAt = "";
   for (const m of messages) {
     if (!m.body) continue;
     const sm = m.body.match(/\[STATUS:\s*([\w_]+)\]\s*\[LEAD:\s*([\w-]+)\]/i);
@@ -119,6 +124,9 @@ export async function GET(req: NextRequest) {
     if (dm) deletedLeads.add(dm[1]);
     const stm = m.body.match(/\[SHIP-STALE:\s*([\w-]+)\]/i);
     if (stm) staleAlertedLeads.add(stm[1]);
+    if (/\[FEDEX-TRACK-FORBIDDEN\]/i.test(m.body) && m.timestamp > trackForbiddenAlertAt) {
+      trackForbiddenAlertAt = m.timestamp;
+    }
   }
 
   // Walk lead messages, pick the ship-handoff ones in active states with
@@ -179,6 +187,9 @@ export async function GET(req: NextRequest) {
   const MAX_PER_RUN = 25;
   const processed: Array<{ leadId: string; tracking: string; before: string; nowState: string; flippedTo?: string; mcPosted: boolean; error?: string }> = [];
   let errorCount = 0;
+  // Set if any Track call comes back 403 FORBIDDEN — the credentials aren't
+  // authorized for the Track API. One standing problem, alerted once below.
+  let trackForbidden = false;
   for (const c of candidates.slice(0, MAX_PER_RUN)) {
     let result;
     try { result = await getTracking(c.tracking); }
@@ -191,6 +202,7 @@ export async function GET(req: NextRequest) {
     // per-second cap but politeness beats getting throttled.
     await new Promise((r) => setTimeout(r, 150));
     const newState = result.state;
+    if (result.authError) trackForbidden = true;
     // Stalled-ship watchdog — a label that's been sitting for STALE_DAYS with
     // FedEx showing no scan ("unknown") or only "label created" (never picked
     // up) almost always means the customer delivered another way or never
@@ -200,6 +212,10 @@ export async function GET(req: NextRequest) {
     const STALE_DAYS = 4;
     if (
       (newState === "unknown" || newState === "label_created") &&
+      // Don't accuse the seller of not dropping off when the real reason we
+      // see no scan is our own Track API returning 403 (authError). That
+      // false accusation already fired against a real seller.
+      !result.authError &&
       c.labelAt && !staleAlertedLeads.has(c.id)
     ) {
       const ageMs = Date.now() - new Date(c.labelAt).getTime();
@@ -275,6 +291,20 @@ export async function GET(req: NextRequest) {
     processed.push({ leadId: c.id, tracking: c.tracking, before: c.status, nowState: newState, flippedTo: nextStatus, mcPosted });
   }
 
+  // Track API not authorized (403 on every number). This silently broke
+  // ALL inbound-delivery detection — labels mint (Ship API is authorized)
+  // but no pickup/out-for-delivery/delivered event ever lands, so packages
+  // arrive with zero notification. Can't be fixed in code: the Track API
+  // must be added to the FedEx project at developer.fedex.com. Alert the
+  // owner at most once per ~20h so it can't rot unnoticed again.
+  if (trackForbidden) {
+    const lastMs = trackForbiddenAlertAt ? Date.now() - new Date(trackForbiddenAlertAt).getTime() : Infinity;
+    if (lastMs > 20 * 60 * 60 * 1000) {
+      await postToMc(`[FEDEX-TRACK-FORBIDDEN] FedEx Track API returns 403 for every tracking number — credentials are NOT authorized for the Track API, so NO delivery notifications fire (labels still work). Add the Track API to the FedEx project at developer.fedex.com, same project as FEDEX_CLIENT_ID. ${processed.length} package(s) affected this run.`);
+      await notifyOwnerSms(`⚠️ TCC tracking is OFF: FedEx won't authorize our Track API (403), so package deliveries arrive with NO alert. Fix: enable the Track API on the FedEx developer project. Labels still work.`);
+    }
+  }
+
   // Alert MC if the error rate spiked — likely FedEx credentials
   // rotated or their API went down. One ping per run, idempotency
   // not needed (cron is hourly so worst-case 24 alerts/day).
@@ -286,6 +316,7 @@ export async function GET(req: NextRequest) {
     candidates: candidates.length,
     processed: processed.length,
     errors: errorCount,
+    trackForbidden,
     flippedToShipped: processed.filter((p) => p.flippedTo === "shipped").length,
     flippedToReceived: processed.filter((p) => p.flippedTo === "received").length,
     exceptions: processed.filter((p) => p.nowState === "exception").length,
