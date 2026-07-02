@@ -695,9 +695,31 @@ export default function AdminPage() {
   const [counterOfferSending, setCounterOfferSending] = useState<boolean>(false);
   const [counterOfferError, setCounterOfferError] = useState<string>("");
   const [counterOfferSentFor, setCounterOfferSentFor] = useState<string | null>(null);
+  // Itemized deductions (label + $ amount). When ≥1 valid row exists the
+  // offer becomes an itemized invoice: final = quote − sum(deductions),
+  // computed live; the manual amount + reason fields are hidden.
+  const [counterOfferDeductions, setCounterOfferDeductions] = useState<Array<{ label: string; amount: string }>>([]);
+  // Multi-device invoice items. Non-empty ⇒ the modal is in multi-device
+  // mode: one row per device (auto-loaded from the lead, plus any staff
+  // adds), each with its own quote + deductions, rolled to a grand total.
+  type OfferItem = { device: string; storage: string; quote: string; deductions: Array<{ label: string; amount: string }> };
+  const [counterOfferItems, setCounterOfferItems] = useState<OfferItem[]>([]);
 
   const openCounterOffer = useCallback((lead: Lead, opts?: { prefillQuote?: boolean }) => {
     setCounterOfferLead(lead);
+    // Multi-device lead ⇒ auto-load every device the customer picked as its
+    // own invoice line (no manual re-entry). Staff can then add deductions
+    // per device or "+ Add device" for bulk extras.
+    if ((lead.devices?.length ?? 0) > 1) {
+      setCounterOfferItems(lead.devices!.map((d) => ({
+        device: d.model || "",
+        storage: d.storage || "",
+        quote: d.quote != null ? String(d.quote) : "",
+        deductions: [],
+      })));
+    } else {
+      setCounterOfferItems([]);
+    }
     // "Send final invoice" (prefillQuote) opens at the agreed quoted price so
     // it's a one-tap confirm-and-pay. Otherwise default to the last counter
     // (so a re-mint after decline is one tap) or empty so staff thinks
@@ -709,6 +731,7 @@ export default function AdminPage() {
       setCounterOfferAmount(lead.counterOffer ? String(lead.counterOffer.offer) : "");
     }
     setCounterOfferReason("");
+    setCounterOfferDeductions([]);
     setCounterOfferError("");
   }, []);
 
@@ -716,16 +739,92 @@ export default function AdminPage() {
     setCounterOfferLead(null);
     setCounterOfferAmount("");
     setCounterOfferReason("");
+    setCounterOfferDeductions([]);
+    setCounterOfferItems([]);
     setCounterOfferError("");
   }, []);
 
+  // Enter multi-device mode from the single editor: seed the current single
+  // device as line 1 (carrying any deductions already typed), then a blank
+  // row ready to fill — the "+ Add device" affordance for bulk drop-offs.
+  const addDeviceToOffer = useCallback(() => {
+    setCounterOfferItems((cur) => {
+      if (cur.length > 0) return [...cur, { device: "", storage: "", quote: "", deductions: [] }];
+      const lead = counterOfferLead;
+      const q = lead ? (parseDollarAmount(lead.quote || "") || lead.totalPayout || 0) : 0;
+      const first: OfferItem = {
+        device: lead?.model || lead?.device || "",
+        storage: lead?.storage || "",
+        quote: counterOfferAmount || (q ? String(q) : ""),
+        deductions: [...counterOfferDeductions],
+      };
+      return [first, { device: "", storage: "", quote: "", deductions: [] }];
+    });
+  }, [counterOfferLead, counterOfferAmount, counterOfferDeductions]);
+
   const submitCounterOffer = useCallback(async () => {
     if (!counterOfferLead || !token) return;
-    const offer = parseInt(counterOfferAmount, 10);
-    if (!Number.isFinite(offer) || offer < 0) {
-      setCounterOfferError("Enter a valid dollar amount.");
+
+    // Multi-device mode: build the per-device line items; the server computes
+    // the grand total and renders the multi-device invoice. Needs ≥2 devices
+    // that each have a name + a valid price.
+    if (counterOfferItems.length > 0) {
+      const validItems = counterOfferItems
+        .map((it) => ({
+          device: it.device.trim(),
+          storage: it.storage.trim(),
+          quote: Math.round(Number(it.quote)),
+          deductions: it.deductions
+            .map((d) => ({ label: d.label.trim(), amount: Math.round(Number(d.amount)) }))
+            .filter((d) => d.label && Number.isFinite(d.amount) && d.amount >= 0),
+        }))
+        .filter((it) => it.device && Number.isFinite(it.quote) && it.quote >= 0);
+      if (validItems.length < 2) {
+        setCounterOfferError("Add at least 2 devices (name + price each), or remove the extra rows to send a single-device offer.");
+        return;
+      }
+      for (const it of validItems) {
+        if (it.deductions.reduce((s, d) => s + d.amount, 0) > it.quote) {
+          setCounterOfferError(`Deductions on "${it.device}" exceed its $${it.quote} price.`);
+          return;
+        }
+      }
+      const grandQuote = validItems.reduce((s, it) => s + it.quote, 0);
+      const grandTotal = validItems.reduce((s, it) => s + Math.max(0, it.quote - it.deductions.reduce((a, d) => a + d.amount, 0)), 0);
+      setCounterOfferSending(true);
+      setCounterOfferError("");
+      try {
+        const r = await fetch(`/api/admin/leads/counter-offer`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-admin-token": token },
+          body: JSON.stringify({
+            leadId: counterOfferLead.id,
+            name: counterOfferLead.name,
+            phone: counterOfferLead.phone,
+            email: counterOfferLead.email,
+            device: counterOfferLead.model || counterOfferLead.device,
+            originalQuote: grandQuote,
+            offer: grandTotal,
+            reason: "",
+            items: validItems,
+          }),
+        });
+        const d = await r.json().catch(() => ({}));
+        if (!r.ok) { setCounterOfferError(d.error || `HTTP ${r.status}`); return; }
+        const sentAt = new Date().toISOString();
+        const leadId = counterOfferLead.id;
+        setLeads((cur) => cur.map((l) => l.id === leadId ? { ...l, counterOffer: { status: "pending" as const, originalQuote: grandQuote, offer: grandTotal, reason: "", sentAt } } : l));
+        setCounterOfferSentFor(leadId);
+        setTimeout(() => setCounterOfferSentFor((cur) => (cur === leadId ? null : cur)), 3500);
+        closeCounterOffer();
+      } catch (e) {
+        setCounterOfferError(e instanceof Error ? e.message : "Network error");
+      } finally {
+        setCounterOfferSending(false);
+      }
       return;
     }
+
     // Original quote — comma-aware so "$1,250" parses as 1250, not 1.
     // (The old /\$?(\d+)/ stopped at the comma and recorded $1 as the
     // original, making every counter-offer on a ≥$1k lead look like a
@@ -736,11 +835,28 @@ export default function AdminPage() {
       setCounterOfferError("Can't determine the original quote on this lead.");
       return;
     }
-    // A reason is only needed when we're LOWERING the price (a real counter).
-    // A final invoice at/above the quoted price is just confirm-and-pay — no
-    // explanation to write. Mirrors the server-side rule.
+    // Clean itemized deductions: keep rows with a label + a valid ≥0 amount.
+    const cleanDeductions = counterOfferDeductions
+      .map((d) => ({ label: d.label.trim(), amount: Math.round(Number(d.amount)) }))
+      .filter((d) => d.label && Number.isFinite(d.amount) && d.amount >= 0);
+    const isItemized = cleanDeductions.length > 0;
+    const dedTotal = cleanDeductions.reduce((s, d) => s + d.amount, 0);
+
+    // Itemized ⇒ final is computed from the quote; otherwise take the typed amount.
+    const offer = isItemized ? Math.max(0, originalQuote - dedTotal) : parseInt(counterOfferAmount, 10);
+    if (!Number.isFinite(offer) || offer < 0) {
+      setCounterOfferError("Enter a valid dollar amount.");
+      return;
+    }
+    if (isItemized && dedTotal > originalQuote) {
+      setCounterOfferError(`Deductions ($${dedTotal}) exceed the quote ($${originalQuote}). Adjust the line items.`);
+      return;
+    }
+    // A reason is only needed when we're LOWERING the price with a lump sum
+    // (a non-itemized counter). Itemized offers explain themselves; a final
+    // invoice at/above the quote is just confirm-and-pay. Mirrors the server.
     const reason = counterOfferReason.trim();
-    if (offer < originalQuote && reason.length < 10) {
+    if (!isItemized && offer < originalQuote && reason.length < 10) {
       setCounterOfferError("Reason should be at least a short sentence — the customer reads this verbatim.");
       return;
     }
@@ -759,6 +875,7 @@ export default function AdminPage() {
           originalQuote,
           offer,
           reason,
+          ...(isItemized ? { deductions: cleanDeductions } : {}),
         }),
       });
       const d = await r.json().catch(() => ({}));
@@ -781,7 +898,7 @@ export default function AdminPage() {
     } finally {
       setCounterOfferSending(false);
     }
-  }, [counterOfferLead, counterOfferAmount, counterOfferReason, token, closeCounterOffer]);
+  }, [counterOfferLead, counterOfferAmount, counterOfferReason, counterOfferDeductions, counterOfferItems, token, closeCounterOffer]);
 
   // Tracks per-lead "Copied!" flash for the review-link button.
   // Skywalker 2026-05-17: "give them to ask for reviews" — admin needs a
@@ -3884,16 +4001,38 @@ export default function AdminPage() {
         // modal reframes as staff types — same rule the server enforces.
         const modalQuote = parseDollarAmount(counterOfferLead.quote || "") || counterOfferLead.totalPayout || 0;
         const modalAmt = parseInt(counterOfferAmount, 10);
-        const modalIsFinal = Number.isFinite(modalAmt) && modalAmt >= modalQuote && counterOfferAmount.trim() !== "";
+        // Itemized when there's ≥1 deduction row with a label (amount may be
+        // mid-typed). Final = quote − sum(valid amounts).
+        const modalValidDeds = counterOfferDeductions.filter((d) => d.label.trim());
+        const modalIsItemized = modalValidDeds.length > 0;
+        const modalDedTotal = counterOfferDeductions.reduce((s, d) => s + (Number.isFinite(Number(d.amount)) ? Math.max(0, Math.round(Number(d.amount))) : 0), 0);
+        const modalItemFinal = Math.max(0, modalQuote - modalDedTotal);
+        const modalIsFinal = !modalIsItemized && Number.isFinite(modalAmt) && modalAmt >= modalQuote && counterOfferAmount.trim() !== "";
+        const modalDedsExceed = modalIsItemized && modalDedTotal > modalQuote;
+        const updateDed = (i: number, patch: Partial<{ label: string; amount: string }>) =>
+          setCounterOfferDeductions((cur) => cur.map((d, idx) => idx === i ? { ...d, ...patch } : d));
+        // Multi-device mode (≥1 item row present). Grand total = Σ device
+        // totals; each device total = its quote − its deductions.
+        const modalIsMulti = counterOfferItems.length > 0;
+        const num = (s: string) => (Number.isFinite(Number(s)) ? Math.max(0, Math.round(Number(s))) : 0);
+        const itemFinal = (it: OfferItem) => Math.max(0, num(it.quote) - it.deductions.reduce((s, d) => s + num(d.amount), 0));
+        const modalGrand = counterOfferItems.reduce((s, it) => s + itemFinal(it), 0);
+        const modalGrandQuote = counterOfferItems.reduce((s, it) => s + num(it.quote), 0);
+        const modalReadyItems = counterOfferItems.filter((it) => it.device.trim() && it.quote.trim()).length;
+        const setItem = (i: number, patch: Partial<OfferItem>) => setCounterOfferItems((cur) => cur.map((it, idx) => idx === i ? { ...it, ...patch } : it));
+        const removeItem = (i: number) => setCounterOfferItems((cur) => cur.filter((_, idx) => idx !== i));
+        const addItemDed = (i: number) => setCounterOfferItems((cur) => cur.map((it, idx) => idx === i ? { ...it, deductions: [...it.deductions, { label: "", amount: "" }] } : it));
+        const setItemDed = (i: number, j: number, patch: Partial<{ label: string; amount: string }>) => setCounterOfferItems((cur) => cur.map((it, idx) => idx === i ? { ...it, deductions: it.deductions.map((d, jd) => jd === j ? { ...d, ...patch } : d) } : it));
+        const removeItemDed = (i: number, j: number) => setCounterOfferItems((cur) => cur.map((it, idx) => idx === i ? { ...it, deductions: it.deductions.filter((_, jd) => jd !== j) } : it));
         return (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
           onClick={(e) => { if (e.target === e.currentTarget && !counterOfferSending) closeCounterOffer(); }}
         >
-          <div className={`w-full max-w-lg bg-[#0f0f0f] border ${modalIsFinal ? "border-emerald-500/30" : "border-purple-500/30"} rounded-2xl p-5 shadow-2xl`}>
+          <div className={`w-full max-w-lg bg-[#0f0f0f] border ${(modalIsMulti || modalIsItemized) ? "border-amber-500/40" : modalIsFinal ? "border-emerald-500/30" : "border-purple-500/30"} rounded-2xl p-5 shadow-2xl max-h-[92vh] overflow-y-auto`}>
             <div className="flex items-start justify-between mb-3">
               <div>
-                <p className={`text-[10px] uppercase tracking-[0.18em] font-bold ${modalIsFinal ? "text-emerald-300" : "text-purple-300"}`}>{modalIsFinal ? "🧾 Final invoice — confirm & pay" : "💬 Counter-offer"}</p>
+                <p className={`text-[10px] uppercase tracking-[0.18em] font-bold ${(modalIsMulti || modalIsItemized) ? "text-amber-300" : modalIsFinal ? "text-emerald-300" : "text-purple-300"}`}>{modalIsMulti ? `🧾 Itemized invoice · ${counterOfferItems.length} device${counterOfferItems.length === 1 ? "" : "s"}` : modalIsItemized ? "🧾 Itemized invoice" : modalIsFinal ? "🧾 Final invoice — confirm & pay" : "💬 Counter-offer"}</p>
                 <h2 className="text-lg font-bold text-white mt-0.5">{counterOfferLead.name || counterOfferLead.id}</h2>
                 <p className="text-[11px] text-[#888] mt-0.5">{counterOfferLead.model || counterOfferLead.device}{counterOfferLead.storage ? ` · ${counterOfferLead.storage}` : ""}{counterOfferLead.condition ? ` · ${counterOfferLead.condition}` : ""}</p>
               </div>
@@ -3907,41 +4046,137 @@ export default function AdminPage() {
               </button>
             </div>
 
+            {modalIsMulti ? (
+              <div className="mb-3">
+                <datalist id="ded-presets-m">
+                  <option value="Cracked screen" /><option value="Cracked back glass" /><option value="IMEI blacklisted / bad ESN" /><option value="Activation lock (iCloud/Google)" /><option value="Financed / carrier locked" /><option value="Battery service needed" /><option value="Heavy scratches / wear" /><option value="Won't power on" /><option value="Water damage" /><option value="Missing parts / accessories" />
+                </datalist>
+                <p className="text-[10px] text-[#888] mb-2">One invoice, every device. Each device auto-loaded from the order — set its price and add per-device deductions. One approval pays the whole order.</p>
+                <div className="space-y-3">
+                  {counterOfferItems.map((it, i) => {
+                    const tot = itemFinal(it);
+                    const over = it.deductions.reduce((s, d) => s + num(d.amount), 0) > num(it.quote);
+                    return (
+                      <div key={i} className="bg-white/[0.03] border border-white/10 rounded-xl p-3">
+                        <div className="flex gap-2 items-center mb-2">
+                          <span className="text-[10px] text-[#666] font-bold w-4 shrink-0">{i + 1}.</span>
+                          <input value={it.device} onChange={(e) => setItem(i, { device: e.target.value })} disabled={counterOfferSending} placeholder="Device (e.g. iPhone 14)" className="flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-400 disabled:opacity-50" />
+                          <button type="button" onClick={() => removeItem(i)} disabled={counterOfferSending} title="Remove device" className="text-[#888] hover:text-red-300 text-lg leading-none px-1 cursor-pointer disabled:opacity-40">×</button>
+                        </div>
+                        <div className="flex gap-2 mb-2 pl-6">
+                          <input value={it.storage} onChange={(e) => setItem(i, { storage: e.target.value })} disabled={counterOfferSending} placeholder="Storage (e.g. 128GB)" className="flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-[13px] text-white focus:outline-none focus:border-amber-400 disabled:opacity-50" />
+                          <div className="relative w-28 shrink-0">
+                            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[#00c853] text-sm pointer-events-none">$</span>
+                            <input type="number" min="0" value={it.quote} onChange={(e) => setItem(i, { quote: e.target.value })} disabled={counterOfferSending} placeholder="price" className="w-full bg-black/40 border border-white/10 rounded-lg pl-6 pr-2 py-2 text-sm text-white text-right focus:outline-none focus:border-amber-400 disabled:opacity-50" />
+                          </div>
+                        </div>
+                        {it.deductions.map((d, j) => (
+                          <div key={j} className="flex gap-2 items-center mb-1.5 pl-6">
+                            <input list="ded-presets-m" value={d.label} onChange={(e) => setItemDed(i, j, { label: e.target.value })} disabled={counterOfferSending} placeholder="Deduction (e.g. bad IMEI)" className="flex-1 bg-black/40 border border-white/10 rounded-lg px-2.5 py-1.5 text-[13px] text-white focus:outline-none focus:border-amber-400 disabled:opacity-50" />
+                            <div className="relative w-20 shrink-0">
+                              <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-[#ff8a80] text-[13px] pointer-events-none">−$</span>
+                              <input type="number" min="0" value={d.amount} onChange={(e) => setItemDed(i, j, { amount: e.target.value })} disabled={counterOfferSending} placeholder="0" className="w-full bg-black/40 border border-white/10 rounded-lg pl-6 pr-1.5 py-1.5 text-[13px] text-white text-right focus:outline-none focus:border-amber-400 disabled:opacity-50" />
+                            </div>
+                            <button type="button" onClick={() => removeItemDed(i, j)} disabled={counterOfferSending} className="text-[#888] hover:text-red-300 text-base leading-none px-0.5 cursor-pointer disabled:opacity-40">×</button>
+                          </div>
+                        ))}
+                        <div className="flex items-center justify-between mt-1.5 pl-6">
+                          <button type="button" onClick={() => addItemDed(i)} disabled={counterOfferSending} className="text-[10px] font-bold text-amber-300 hover:text-amber-200 cursor-pointer disabled:opacity-40">+ deduction</button>
+                          {(it.device.trim() || it.quote.trim()) && <span className={`text-[11px] font-bold ${over ? "text-red-300" : "text-[#00c853]"}`}>{over ? "deductions exceed price" : `= $${tot}`}</span>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <button type="button" onClick={addDeviceToOffer} disabled={counterOfferSending} className="w-full mt-3 py-2 rounded-lg border border-dashed border-amber-500/40 text-amber-300 text-xs font-bold hover:bg-amber-500/10 cursor-pointer disabled:opacity-40">+ Add device</button>
+                <div className="mt-3 rounded-lg p-3 flex items-baseline justify-between bg-emerald-500/10 border border-emerald-500/30">
+                  <span className="text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold">Order total<span className="text-[#888] font-normal normal-case tracking-normal"> · {counterOfferItems.length} devices</span></span>
+                  <span className="text-2xl font-bold text-[#00c853]">${modalGrand}</span>
+                </div>
+              </div>
+            ) : (
+              <>
             <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-3 flex items-baseline justify-between">
               <span className="text-[10px] uppercase tracking-wider text-[#888] font-bold">Original quote</span>
               <span className="text-2xl font-bold text-[#00c853]">{counterOfferLead.quote || "—"}</span>
             </div>
 
-            <label className="block text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold mb-1">{modalIsFinal ? "Final offer ($)" : "Revised offer ($)"}</label>
-            <input
-              type="number"
-              min="0"
-              value={counterOfferAmount}
-              onChange={(e) => setCounterOfferAmount(e.target.value)}
-              disabled={counterOfferSending}
-              autoFocus
-              className={`w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-base text-white focus:outline-none transition mb-1 disabled:opacity-50 ${modalIsFinal ? "focus:border-emerald-400" : "focus:border-purple-400"}`}
-              placeholder="e.g. 320"
-            />
-            <p className="text-[10px] text-[#888] mb-3">
-              {modalIsFinal
-                ? "At or above the quote → sent as a final invoice: device matched, confirm & pay. Enter a lower number to send a counter instead."
-                : "Below the quote → sent as a counter with the reason below."}
-            </p>
+            {/* Itemized deductions editor. Each row becomes a line on the
+                invoice. ≥1 row ⇒ itemized invoice (final = quote − sum).
+                Empty ⇒ plain final invoice / lump revised offer below. */}
+            <datalist id="ded-presets">
+              <option value="Cracked screen" />
+              <option value="Cracked back glass" />
+              <option value="IMEI blacklisted / bad ESN" />
+              <option value="Activation lock (iCloud/Google)" />
+              <option value="Financed / carrier locked" />
+              <option value="Battery service needed" />
+              <option value="Heavy scratches / wear" />
+              <option value="Won't power on" />
+              <option value="Water damage" />
+              <option value="Missing parts / accessories" />
+            </datalist>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold">Deductions (itemized invoice)</label>
+              <button type="button" onClick={() => setCounterOfferDeductions((c) => [...c, { label: "", amount: "" }])} disabled={counterOfferSending} className="text-[10px] font-bold text-amber-300 hover:text-amber-200 cursor-pointer disabled:opacity-40">+ Add deduction</button>
+            </div>
+            {counterOfferDeductions.length === 0 ? (
+              <p className="text-[10px] text-[#888] mb-3">Add line items (bad IMEI, cracks, etc.) to send an itemized invoice — or leave empty for a plain offer.</p>
+            ) : (
+              <div className="space-y-2 mb-2">
+                {counterOfferDeductions.map((d, i) => (
+                  <div key={i} className="flex gap-2 items-center">
+                    <input list="ded-presets" value={d.label} onChange={(e) => updateDed(i, { label: e.target.value })} disabled={counterOfferSending} placeholder="Reason (e.g. bad IMEI)" className="flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-400 transition disabled:opacity-50" />
+                    <div className="relative w-24 shrink-0">
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[#ff8a80] text-sm pointer-events-none">−$</span>
+                      <input type="number" min="0" value={d.amount} onChange={(e) => updateDed(i, { amount: e.target.value })} disabled={counterOfferSending} placeholder="0" className="w-full bg-black/40 border border-white/10 rounded-lg pl-7 pr-2 py-2 text-sm text-white text-right focus:outline-none focus:border-amber-400 transition disabled:opacity-50" />
+                    </div>
+                    <button type="button" onClick={() => setCounterOfferDeductions((c) => c.filter((_, idx) => idx !== i))} disabled={counterOfferSending} className="text-[#888] hover:text-red-300 text-lg leading-none px-1 cursor-pointer disabled:opacity-40">×</button>
+                  </div>
+                ))}
+              </div>
+            )}
 
-            {!modalIsFinal && (
+            {modalIsItemized ? (
+              <div className={`rounded-lg p-3 mb-3 flex items-baseline justify-between border ${modalDedsExceed ? "bg-red-500/10 border-red-500/40" : "bg-emerald-500/10 border-emerald-500/30"}`}>
+                <span className="text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold">Final offer<span className="text-[#888] font-normal normal-case tracking-normal"> · ${modalQuote} − ${modalDedTotal}</span></span>
+                <span className={`text-2xl font-bold ${modalDedsExceed ? "text-red-300" : "text-[#00c853]"}`}>${modalItemFinal}</span>
+              </div>
+            ) : (
               <>
-                <label className="block text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold mb-1">Reason (customer sees this verbatim)</label>
-                <textarea
-                  value={counterOfferReason}
-                  onChange={(e) => setCounterOfferReason(e.target.value)}
+                <label className="block text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold mb-1">{modalIsFinal ? "Final offer ($)" : "Offer ($)"}</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={counterOfferAmount}
+                  onChange={(e) => setCounterOfferAmount(e.target.value)}
                   disabled={counterOfferSending}
-                  rows={4}
-                  maxLength={500}
-                  className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white leading-relaxed focus:outline-none focus:border-purple-400 transition resize-none disabled:opacity-50"
-                  placeholder="Be honest and specific. e.g. 'Back glass has a hairline crack we couldn't see in your photos. Otherwise everything functions perfectly.'"
+                  className={`w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-base text-white focus:outline-none transition mb-1 disabled:opacity-50 ${modalIsFinal ? "focus:border-emerald-400" : "focus:border-purple-400"}`}
+                  placeholder="e.g. 320"
                 />
-                <p className="text-[10px] text-[#888] mt-1">{counterOfferReason.length}/500 · Goes verbatim in their SMS + email.</p>
+                <p className="text-[10px] text-[#888] mb-3">
+                  {modalIsFinal
+                    ? "At or above the quote → plain final invoice (confirm & pay)."
+                    : "Below the quote → a lump counter with the reason below. (Or add deductions above for an itemized invoice.)"}
+                </p>
+                {!modalIsFinal && (
+                  <>
+                    <label className="block text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold mb-1">Reason (customer sees this verbatim)</label>
+                    <textarea
+                      value={counterOfferReason}
+                      onChange={(e) => setCounterOfferReason(e.target.value)}
+                      disabled={counterOfferSending}
+                      rows={3}
+                      maxLength={500}
+                      className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white leading-relaxed focus:outline-none focus:border-purple-400 transition resize-none disabled:opacity-50"
+                      placeholder="Be honest and specific. e.g. 'Back glass has a hairline crack we couldn't see in your photos.'"
+                    />
+                    <p className="text-[10px] text-[#888] mt-1">{counterOfferReason.length}/500 · Goes verbatim in their SMS + email.</p>
+                  </>
+                )}
+              </>
+            )}
+                <button type="button" onClick={addDeviceToOffer} disabled={counterOfferSending} className="w-full mt-2 py-2 rounded-lg border border-dashed border-amber-500/40 text-amber-300 text-xs font-bold hover:bg-amber-500/10 cursor-pointer disabled:opacity-40">+ Add device — bill multiple devices on one invoice</button>
               </>
             )}
 
@@ -3953,14 +4188,18 @@ export default function AdminPage() {
               <button
                 type="button"
                 onClick={submitCounterOffer}
-                disabled={counterOfferSending || !counterOfferAmount.trim() || (!modalIsFinal && counterOfferReason.trim().length < 10)}
-                className={`flex-1 px-4 py-2.5 text-white font-bold text-sm rounded-full transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer bg-gradient-to-b ${modalIsFinal ? "from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500" : "from-purple-500 to-purple-600 hover:from-purple-400 hover:to-purple-500"}`}
+                disabled={counterOfferSending || (modalIsMulti ? (modalReadyItems < 2) : (modalDedsExceed || (modalIsItemized ? false : (!counterOfferAmount.trim() || (!modalIsFinal && counterOfferReason.trim().length < 10)))))}
+                className={`flex-1 px-4 py-2.5 text-white font-bold text-sm rounded-full transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer bg-gradient-to-b ${(modalIsMulti || modalIsItemized) ? "from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500" : modalIsFinal ? "from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500" : "from-purple-500 to-purple-600 hover:from-purple-400 hover:to-purple-500"}`}
               >
                 {counterOfferSending
                   ? "Sending…"
-                  : modalIsFinal
-                    ? `Send final invoice${counterOfferAmount ? ` ($${counterOfferAmount})` : ""}`
-                    : `Send revised offer${counterOfferAmount ? ` ($${counterOfferAmount})` : ""}`}
+                  : modalIsMulti
+                    ? `Send itemized invoice ($${modalGrand})`
+                    : modalIsItemized
+                    ? `Send itemized invoice ($${modalItemFinal})`
+                    : modalIsFinal
+                      ? `Send final invoice${counterOfferAmount ? ` ($${counterOfferAmount})` : ""}`
+                      : `Send revised offer${counterOfferAmount ? ` ($${counterOfferAmount})` : ""}`}
               </button>
               <button
                 type="button"

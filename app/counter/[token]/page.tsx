@@ -12,12 +12,16 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { imageForModel } from "../../lib/device-images";
 
 type Decoded = {
   leadId: string;
   originalQuote: number;
   offer: number;
   reason: string;
+  device?: string;
+  deductions?: Array<{ label: string; amount: number }>;
+  items?: Array<{ device?: string; storage?: string; quote: number; deductions?: Array<{ label: string; amount: number }> }>;
   iat: number;
   exp: number;
 };
@@ -152,7 +156,13 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
   // A final invoice is an offer at (or above) the quoted price — the device
   // matched its description, so there's nothing to "revise" and no reason to
   // show. Present it as a clean confirm-and-get-paid, not a reduction.
-  const isFinal = decoded.offer >= decoded.originalQuote;
+  const items = decoded.items ?? [];
+  const isMulti = items.length > 1;
+  const deductions = decoded.deductions ?? [];
+  const isItemized = !isMulti && deductions.length > 0;
+  const dedTotal = deductions.reduce((s, d) => s + d.amount, 0);
+  const isFinal = !isMulti && !isItemized && decoded.offer >= decoded.originalQuote;
+  const itemTotal = (it: { quote: number; deductions?: Array<{ amount: number }> }) => Math.max(0, it.quote - (it.deductions ?? []).reduce((s, d) => s + d.amount, 0));
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -161,31 +171,101 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
           <span>Top Cash Cellular</span>
         </Link>
 
-        <h1 className="text-3xl font-bold mb-2">{isFinal ? "Your final offer" : "Your revised offer"}</h1>
-        <p className="text-[#bdbdbd] text-sm mb-6">{isFinal
+        <h1 className="text-3xl font-bold mb-2">{isMulti ? `Your itemized offer — ${items.length} devices` : isItemized ? "Your itemized offer" : isFinal ? "Your final offer" : "Your revised offer"}</h1>
+        <p className="text-[#bdbdbd] text-sm mb-6">{isMulti
+          ? "We inspected all the devices in your order and put together one honest, itemized offer. Here's the price on each — every deduction spelled out. One approval pays out the whole order."
+          : isItemized
+          ? "We inspected your device and put together an honest, itemized offer. Here's exactly how we got to the number — every deduction is spelled out below."
+          : isFinal
           ? "We inspected your device and it's exactly as described — everything checks out. Approve your final offer below and we send your payout."
           : "After we inspected your device, the condition didn't quite match the original description. Here's our honest revised number."}</p>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
-          {isFinal ? (
-            <>
-              <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Final offer</p>
-              <p className="text-5xl text-[#00c853] font-extrabold mb-1">${decoded.offer.toLocaleString()}</p>
-              <p className="text-xs text-[#a8a8a8]">Approve below and we pay you within 24 hours.</p>
-            </>
-          ) : (
-            <>
-              <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Original quote</p>
-              <p className="text-2xl text-[#bdbdbd] line-through mb-4">${decoded.originalQuote.toLocaleString()}</p>
+        {isMulti && (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 mb-6 divide-y divide-white/10">
+            {items.map((it, i) => (
+              <div key={i} className="py-4 first:pt-0 last:pb-0">
+                <div className="flex items-center gap-3">
+                  {imageForModel(it.device || "") ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={imageForModel(it.device || "")!} alt={it.device || "Device"} width={44} height={44} className="w-11 h-11 object-contain rounded-lg bg-white/5 shrink-0" />
+                  ) : null}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-semibold text-sm truncate">{it.device || `Device ${i + 1}`}{it.storage ? <span className="text-[#8a8a8a] font-normal"> · {it.storage}</span> : null}</p>
+                  </div>
+                  <span className="text-sm text-[#bdbdbd] whitespace-nowrap">${it.quote.toLocaleString()}</span>
+                </div>
+                {(it.deductions ?? []).map((d, j) => (
+                  <div key={j} className="flex items-center justify-between pl-14 mt-1.5">
+                    <span className="text-[13px] text-[#cfcfcf]">{d.label}</span>
+                    <span className="text-[13px] text-[#ff8a80] font-semibold whitespace-nowrap">− ${d.amount.toLocaleString()}</span>
+                  </div>
+                ))}
+                <div className="flex items-center justify-between pl-14 mt-1.5">
+                  <span className="text-xs text-[#8a8a8a]">Device total</span>
+                  <span className="text-[15px] text-[#00c853] font-bold">${itemTotal(it).toLocaleString()}</span>
+                </div>
+              </div>
+            ))}
+            <div className="flex items-center justify-between pt-4">
+              <span className="text-white font-extrabold">Order total <span className="text-[#8a8a8a] font-normal text-sm">· {items.length} items</span></span>
+              <span className="text-3xl text-[#00c853] font-extrabold">${decoded.offer.toLocaleString()}</span>
+            </div>
+          </div>
+        )}
 
-              <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Revised offer</p>
-              <p className="text-5xl text-[#00c853] font-extrabold mb-1">${decoded.offer.toLocaleString()}</p>
-              <p className="text-xs text-[#a8a8a8]">{diff > 0 ? `Reduced by $${diff.toLocaleString()} (${diffPct}%)` : "Same as original"}</p>
-            </>
-          )}
-        </div>
+        {!isMulti && (isItemized ? (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
+            {decoded.device && (
+              <div className="flex items-center gap-3 pb-4 mb-2 border-b border-white/10">
+                {imageForModel(decoded.device) ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={imageForModel(decoded.device)!} alt={decoded.device} width={56} height={56} className="w-14 h-14 object-contain rounded-lg bg-white/5" />
+                ) : null}
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold">Item</p>
+                  <p className="text-base text-white font-bold">{decoded.device}</p>
+                </div>
+              </div>
+            )}
+            <div className="flex items-center justify-between pb-3">
+              <span className="text-sm text-[#bdbdbd]">Quoted price</span>
+              <span className="text-lg text-white font-bold">${decoded.originalQuote.toLocaleString()}</span>
+            </div>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-amber-300 font-bold pt-1 pb-1">Deductions at inspection</p>
+            {deductions.map((d, i) => (
+              <div key={i} className="flex items-center justify-between py-2 border-b border-white/[0.06]">
+                <span className="text-sm text-[#e6e6e6] pr-3">{d.label}</span>
+                <span className="text-sm text-[#ff8a80] font-bold whitespace-nowrap">− ${d.amount.toLocaleString()}</span>
+              </div>
+            ))}
+            <div className="flex items-center justify-between pt-4">
+              <span className="text-base text-white font-extrabold">Final offer</span>
+              <span className="text-3xl text-[#00c853] font-extrabold">${decoded.offer.toLocaleString()}</span>
+            </div>
+            <p className="text-xs text-[#8a8a8a] mt-2">Total deductions: <span className="text-[#ff8a80] font-semibold">−${dedTotal.toLocaleString()}</span> off the ${decoded.originalQuote.toLocaleString()} quote.</p>
+          </div>
+        ) : (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
+            {isFinal ? (
+              <>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Final offer</p>
+                <p className="text-5xl text-[#00c853] font-extrabold mb-1">${decoded.offer.toLocaleString()}</p>
+                <p className="text-xs text-[#a8a8a8]">Approve below and we pay you within 24 hours.</p>
+              </>
+            ) : (
+              <>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#888] font-bold mb-1">Original quote</p>
+                <p className="text-2xl text-[#bdbdbd] line-through mb-4">${decoded.originalQuote.toLocaleString()}</p>
 
-        {!isFinal && (
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Revised offer</p>
+                <p className="text-5xl text-[#00c853] font-extrabold mb-1">${decoded.offer.toLocaleString()}</p>
+                <p className="text-xs text-[#a8a8a8]">{diff > 0 ? `Reduced by $${diff.toLocaleString()} (${diffPct}%)` : "Same as original"}</p>
+              </>
+            )}
+          </div>
+        ))}
+
+        {!isMulti && !isFinal && !isItemized && (
           <div className="bg-amber-500/10 border border-amber-500/30 border-l-4 border-l-amber-500 rounded-xl p-5 mb-6">
             <p className="text-[10px] uppercase tracking-[0.18em] text-amber-300 font-bold mb-2">Why the revision</p>
             <p className="text-[#e6e6e6] text-sm leading-relaxed whitespace-pre-wrap">{decoded.reason}</p>

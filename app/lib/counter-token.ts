@@ -29,6 +29,21 @@ export type CounterPayload = {
   offer: number;
   // Free-text rationale the staff entered, shown verbatim to customer.
   reason: string;
+  // Device model (e.g. "Galaxy S25 Ultra") so the /counter page can show
+  // the same product photo + name the email does, with no DB lookup.
+  device?: string;
+  // Itemized deductions taken off the quoted price during inspection
+  // (e.g. "Cracked back glass" −$30, "IMEI blacklisted" −$100). When
+  // present (length > 0) the offer is rendered as an itemized invoice:
+  // quoted price minus each line = final offer. Empty/absent ⇒ the plain
+  // single-line offer email. Signed into the token so the /counter page
+  // shows the same breakdown the customer got by email without a DB read.
+  deductions?: Array<{ label: string; amount: number }>;
+  // Multi-device order: one line per device, each with its own quote and
+  // deductions. When length > 1 the offer renders as a multi-device invoice
+  // (grand total = Σ device totals). offer/originalQuote carry the rolled-up
+  // grand total / summed quote so older readers still see sane numbers.
+  items?: Array<{ device?: string; storage?: string; quote: number; deductions?: Array<{ label: string; amount: number }> }>;
   // Issued-at + expiry, ms epoch.
   iat: number;
   exp: number;
