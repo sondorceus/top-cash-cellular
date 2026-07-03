@@ -799,20 +799,20 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "2tb": { broken: 8, fair: 252, good: 342, mint: 387, sealed: 428 } },
   // === SAMSUNG TABLETS (10% below IWM) ===
   stabs11u: {
+    "1tb": { broken: 104, fair: 450, good: 549, mint: 594, sealed: 680 },
     "256": { broken: 90, fair: 369, good: 468, mint: 513, sealed: 567 },
-    "512": { broken: 99, fair: 423, good: 522, mint: 567, sealed: 621 },
-    "1tb": { broken: 104, fair: 481, good: 580, mint: 625, sealed: 679 } },
+    "512": { broken: 99, fair: 414, good: 513, mint: 558, sealed: 621 } },
   stabs11: {
     "128": { broken: 58, fair: 225, good: 288, mint: 324, sealed: 342 },
-    "256": { broken: 63, fair: 247, good: 310, mint: 346, sealed: 364 },
-    "512": { broken: 68, fair: 270, good: 333, mint: 369, sealed: 387 } },
+    "256": { broken: 63, fair: 243, good: 306, mint: 342, sealed: 364 },
+    "512": { broken: 68, fair: 261, good: 324, mint: 360, sealed: 387 } },
   stabs10u: {
+    "1tb": { broken: 86, fair: 405, good: 454, mint: 490, sealed: 522 },
     "256": { broken: 76, fair: 333, good: 382, mint: 418, sealed: 454 },
-    "512": { broken: 81, fair: 369, good: 418, mint: 454, sealed: 490 },
-    "1tb": { broken: 86, fair: 436, good: 486, mint: 522, sealed: 558 } },
+    "512": { broken: 81, fair: 378, good: 428, mint: 464, sealed: 490 } },
   stabs9: {
-    "128": { broken: 22, fair: 121, good: 171, mint: 198, sealed: 225 },
-    "256": { broken: 27, fair: 139, good: 189, mint: 216, sealed: 238 } },
+    "128": { broken: 22, fair: 140, good: 189, mint: 216, sealed: 243 },
+    "256": { broken: 27, fair: 162, good: 212, mint: 238, sealed: 256 } },
   // === Baked absolute per-condition tables (VR / Drones / Garmin) ===
   // Auto-generated from BASE_PRICED_MODELS base x universal condition
   // multipliers (sealed 1.03 / mint 1.0 / good .969 / fair .852 / broken .5)
