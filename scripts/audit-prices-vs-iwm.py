@@ -326,12 +326,18 @@ def extract_price_grid(tree):
             if "storage" in qt or "memory" in qt or "capacity" in qt:
                 storages = answers
             elif "carrier" in qt:
-                # default to unlocked / Wi-Fi
-                for a in answers:
-                    at = (a.get("text") or "").lower()
-                    if "unlock" in at or "wifi" in at or "wi-fi" in at:
-                        extras_delta += int(a.get("value_current") or 0)
-                        break
+                # Pick the BASE connectivity config so we don't inherit a
+                # premium. Tablets list "WiFi ONLY" ($0) vs "Unlocked"
+                # (cellular, +$). Phones list "Unlocked" ($0) as the base.
+                # So: prefer Wi-Fi if present (tablet base), else unlocked
+                # (phone base). The old code matched "unlock" FIRST and
+                # grabbed the +$30 cellular option on tablets → $30 overpay
+                # on every Wi-Fi tablet. Verified on Galaxy Tab S11 Ultra.
+                wifi = next((a for a in answers if any(w in (a.get("text") or "").lower() for w in ("wifi", "wi-fi"))), None)
+                unlocked = next((a for a in answers if "unlock" in (a.get("text") or "").lower()), None)
+                pick = wifi if wifi is not None else unlocked
+                if pick is not None:
+                    extras_delta += int(pick.get("value_current") or 0)
             elif "operational" in qt:
                 # Take the "Yes" answer (broken-but-working pricing).
                 for a in answers:
