@@ -149,6 +149,8 @@ export const OEM_SLUG_TO_MODEL: Record<string, { oem: "apple" | "samsung" | "goo
   "ipad-pro-11-m5":  { oem: "apple", modelId: "ipadpro11m5" },
   "ipad-pro-13-m4":  { oem: "apple", modelId: "ipadpro13m4" },
   "ipad-pro-11-m4":  { oem: "apple", modelId: "ipadpro11m4" },
+  "ipad-air-13-m4":  { oem: "apple", modelId: "ipadair13m4" },
+  "ipad-air-11-m4":  { oem: "apple", modelId: "ipadair11m4" },
   "ipad-air-13-m3":  { oem: "apple", modelId: "ipadair13m3" },
   "ipad-air-11-m3":  { oem: "apple", modelId: "ipadair11m3" },
   "ipad-air-13-m2":  { oem: "apple", modelId: "ipadair13m2" },

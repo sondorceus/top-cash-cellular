@@ -1582,7 +1582,9 @@ const IPAD_SERIES = [
     { id: "ipadpro129g6", label: "iPad Pro 12.9\" 6th Gen", base: 270, image: "/devices/ipad-pro-12-9.webp" },
     { id: "ipadpro11g4", label: "iPad Pro 11\" 4th Gen", base: 225, image: "/devices/ipad-pro-11-4g.webp" },
   ]},
-  { id: "ipadair", label: "iPad Air", topPrice: 470, image: "/ipadair.png", variants: [
+  { id: "ipadair", label: "iPad Air", topPrice: 675, image: "/ipadair.png", variants: [
+    { id: "ipadair13m4", label: "iPad Air 13\" M4", base: 423, image: "/devices/ipad-air-13-m4.webp" },
+    { id: "ipadair11m4", label: "iPad Air 11\" M4", base: 297, image: "/devices/ipad-air-11-m4.webp" },
     { id: "ipadair13m3", label: "iPad Air 13\" M3", base: 360, image: "/devices/ipad-air-13-m3.webp" },
     { id: "ipadair11m3", label: "iPad Air 11\" M3", base: 275, image: "/devices/ipad-air-11-m3.webp" },
     { id: "ipadair13m2", label: "iPad Air 13\" M2", base: 275, image: "/devices/ipad-air-13-m2.webp" },
@@ -2370,6 +2372,8 @@ const STORAGE_MAP: Record<string, string[]> = {
   ipadpro11m4: ["256", "512", "1tb", "2tb"],
   ipadpro129g6: ["128", "256", "512", "1tb", "2tb"],
   ipadpro11g4: ["128", "256", "512", "1tb", "2tb"],
+  ipadair13m4: ["128", "256", "512", "1tb"],
+  ipadair11m4: ["128", "256", "512", "1tb"],
   ipadair13m3: ["128", "256", "512", "1tb"],
   ipadair11m3: ["128", "256", "512", "1tb"],
   ipadair13m2: ["128", "256", "512", "1tb"],
@@ -9444,7 +9448,7 @@ export default function Home() {
               type IpadGroup = { label: string; year: string; ids: string[] };
               const ipadGroups: IpadGroup[] = [
                 { label: "iPad Pro",  year: "2022–2025", ids: ["ipadpro13m5","ipadpro11m5","ipadpro13m4","ipadpro11m4","ipadpro129g6","ipadpro11g4"] },
-                { label: "iPad Air",  year: "2024–2025", ids: ["ipadair13m3","ipadair11m3","ipadair13m2","ipadair11m2"] },
+                { label: "iPad Air",  year: "2024–2026", ids: ["ipadair13m4","ipadair11m4","ipadair13m3","ipadair11m3","ipadair13m2","ipadair11m2"] },
                 { label: "iPad Mini", year: "2021–2024", ids: ["ipadmini7","ipadmini6"] },
                 { label: "iPad",      year: "2021–2022", ids: ["ipad10","ipad9"] },
               ];

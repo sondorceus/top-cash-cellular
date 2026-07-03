@@ -512,6 +512,16 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "1tb": { broken: 158, fair: 364, good: 418, mint: 472, sealed: 612 },
     "256": { broken: 144, fair: 270, good: 324, mint: 378, sealed: 432 },
     "512": { broken: 148, fair: 302, good: 356, mint: 410, sealed: 522 } },
+  ipadair11m4: {
+    "128": { broken: 112, fair: 184, good: 252, mint: 297, sealed: 324 },
+    "1tb": { broken: 180, fair: 328, good: 396, mint: 441, sealed: 504 },
+    "256": { broken: 135, fair: 220, good: 288, mint: 333, sealed: 369 },
+    "512": { broken: 158, fair: 256, good: 324, mint: 369, sealed: 414 } },
+  ipadair13m4: {
+    "128": { broken: 135, fair: 306, good: 382, mint: 423, sealed: 450 },
+    "1tb": { broken: 189, fair: 450, good: 526, mint: 567, sealed: 675 },
+    "256": { broken: 153, fair: 342, good: 418, mint: 459, sealed: 495 },
+    "512": { broken: 171, fair: 378, good: 454, mint: 495, sealed: 585 } },
   ipadmini6: {
     "256": { broken: 38, fair: 126, good: 162, mint: 180, sealed: 184 },
     "64": { broken: 36, fair: 90, good: 126, mint: 144, sealed: 162 } },
