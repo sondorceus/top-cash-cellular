@@ -246,6 +246,85 @@ def parse_iwm_blob(html):
     return None
 
 
+def extract_additive_grid(tree, prefer_material=None):
+    """For ADDITIVE IWM pages (watches, consoles, some VR) where price =
+    material_base + Σ(no-premium option deltas) + condition_delta, and the
+    condition values are RELATIVE (Brand New +25, Flawless 0, Good -40…),
+    not absolute. The absolute base lives on the material/primary selector
+    answers (Aluminum $100 / Titanium $140). Returns {"base": {cond: $}}.
+
+    Distinct from extract_price_grid (flat: top-level absolute condition
+    bases + storage deltas — phones/tablets). Use this when extract_price_grid
+    returns {} or only a single condition.
+
+    prefer_material: substring to force the material branch (e.g. "titanium"
+    for Apple Watch Ultra); otherwise the LOWEST-base branch (conservative).
+    Broken is intentionally omitted — its delta hides a nested "operational?"
+    branch and is unreliable; the caller keeps its own broken value.
+    """
+    def cond_id(t):
+        t = (t or "").lower()
+        if "brand new" in t or "sealed" in t: return "sealed"
+        if "flawless" in t: return "mint"
+        if "very good" in t: return "verygood"
+        if t.startswith("good") or t == "good": return "good"
+        if "fair" in t or "poor" in t: return "fair"
+        if "broken" in t or "cracked" in t: return "broken"
+        return None
+    if not isinstance(tree, list):
+        return {}
+    materials = []  # (name, base, section_ordinal)
+    for e in tree:
+        for q in e.get("questions") or []:
+            for a in q.get("answers") or []:
+                gt = a.get("go_to")
+                if gt and isinstance(a.get("value_current"), (int, float)):
+                    try:
+                        materials.append((a.get("text", ""), int(a.get("value_current") or 0), int(str(gt).split(",")[0])))
+                    except Exception:
+                        pass
+            if materials:
+                break
+        if materials:
+            break
+    if not materials:
+        return {}
+    chosen = None
+    if prefer_material:
+        chosen = next((mm for mm in materials if prefer_material.lower() in mm[0].lower()), None)
+    if not chosen:
+        chosen = min(materials, key=lambda x: x[1])
+    _, base, sec = chosen
+    section = None
+    for e in tree:
+        nm = (e.get("name") or "")
+        head = nm.split(".")[0].strip()
+        if head == str(sec):
+            section = e
+            break
+    if section is None:
+        return {}
+    default_delta = 0
+    cond_deltas = {}
+    for q in section.get("questions") or []:
+        qt = (q.get("text") or "").lower()
+        lab = (q.get("label") or "")
+        ans = q.get("answers") or []
+        if lab == "condition" or "condition" in qt:
+            for a in ans:
+                cid = cond_id(a.get("text"))
+                if cid:
+                    cond_deltas[cid] = int(a.get("value_current") or 0)
+        elif "accessor" in qt or lab == "accessories":
+            continue
+        else:
+            vals = [int(a.get("value_current") or 0) for a in ans]
+            if vals:
+                default_delta += min(vals, key=abs)
+    grid = {c: base + default_delta + d for c, d in cond_deltas.items() if c != "verygood" and c != "broken"}
+    return {"base": grid, "_material": chosen[0], "_base": base}
+
+
 def extract_price_grid(tree):
     """Walk IWM tree and return {storage_id: {condition_id: iwm_dollars}}.
 

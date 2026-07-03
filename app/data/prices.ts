@@ -654,7 +654,7 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "base": { broken: 21, fair: 54, good: 90, mint: 135, sealed: 158 },
     "carbonblack": { broken: 43, fair: 86, good: 148, mint: 184, sealed: 220 } },
   aws10: {
-    "base": { fair: 23, good: 59, mint: 95, sealed: 117 } },
+    "base": { fair: 18, good: 54, mint: 90, sealed: 112 } },
   aws7: {
     "base": { good: 9, mint: 27, sealed: 40 } },
   aws8: {
