@@ -173,22 +173,25 @@ IWM_URLS = {
     "mbp16m4":   ("macbook", "apple-macbook-pro-16-m4"),
     "mbp16_m5pmax_2026":  ("macbook", "apple-macbook-pro-16-m5-pro-max-2026"),
 
-    # iPads — IWM lists each model with its own page under apple-tablet
-    "ipad9":         ("apple-tablet", "apple-ipad-9"),
-    "ipad10":        ("apple-tablet", "apple-ipad-10"),
-    "ipad11":        ("apple-tablet", "apple-ipad-11"),
-    "ipadair11m2":   ("apple-tablet", "apple-ipad-air-11-m2"),
-    "ipadair13m2":   ("apple-tablet", "apple-ipad-air-13-m2"),
-    "ipadair11m3":   ("apple-tablet", "apple-ipad-air-11-m3"),
-    "ipadair13m3":   ("apple-tablet", "apple-ipad-air-13-m3"),
-    "ipadmini6":     ("apple-tablet", "apple-ipad-mini-6"),
-    "ipadmini7":     ("apple-tablet", "apple-ipad-mini-7"),
-    "ipadpro11g4":   ("apple-tablet", "apple-ipad-pro-11-m2"),
-    "ipadpro129g6":  ("apple-tablet", "apple-ipad-pro-12-9-m2"),
-    "ipadpro11m4":   ("apple-tablet", "apple-ipad-pro-11-m4"),
-    "ipadpro13m4":   ("apple-tablet", "apple-ipad-pro-13-m4"),
-    "ipadpro11m5":   ("apple-tablet", "apple-ipad-pro-11-m5"),
-    "ipadpro13m5":   ("apple-tablet", "apple-ipad-pro-13-m5"),
+    # iPads — IWM splits by series: /sell/{ipad-original|ipad-air|ipad-mini|
+    # ipad-pro}/{slug}. (The old "apple-tablet/apple-ipad-*" slugs 404'd, so
+    # iPad prices silently never re-scraped. Verified against the live IWM
+    # category pages 2026-07-02.)
+    "ipad9":         ("ipad-original", "ipad-9th-gen"),
+    "ipad10":        ("ipad-original", "ipad-10th-gen"),
+    "ipad11":        ("ipad-original", "ipad-11th-gen"),
+    "ipadair11m2":   ("ipad-air", "ipad-air-11-inch-m2"),
+    "ipadair13m2":   ("ipad-air", "ipad-air-13-inch-m2"),
+    "ipadair11m3":   ("ipad-air", "ipad-air-11-inch-m3"),
+    "ipadair13m3":   ("ipad-air", "ipad-air-13-inch-m3"),
+    "ipadmini6":     ("ipad-mini", "ipad-mini-6th-gen"),
+    "ipadmini7":     ("ipad-mini", "ipad-mini-a17-pro"),
+    "ipadpro11g4":   ("ipad-pro", "ipad-pro-11-inch-4th-gen"),
+    "ipadpro129g6":  ("ipad-pro", "ipad-pro-129-inch-6th-gen"),
+    "ipadpro11m4":   ("ipad-pro", "ipad-pro-11-inch-m4"),
+    "ipadpro13m4":   ("ipad-pro", "ipad-pro-13-inch-m4"),
+    "ipadpro11m5":   ("ipad-pro", "ipad-pro-11-inch-m5"),
+    "ipadpro13m5":   ("ipad-pro", "ipad-pro-13-inch-m5"),
 
     # Apple desktops
     "imac24m1":     ("apple-imac", "apple-imac-24-m1"),
