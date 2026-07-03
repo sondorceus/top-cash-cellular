@@ -8211,6 +8211,16 @@ export default function Home() {
               </button>
             </div>
 
+            {/* Small third path — bulk / lots. Understated link under the two
+                primary handoff buttons so a 5+ device seller has an obvious
+                door without competing with the main local/ship choice. */}
+            <div className="flex justify-center mb-4 -mt-1 hero-scale-in hero-d-3">
+              <a href="/bulk" className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#bdbdbd] hover:text-[#00c853] transition group">
+                <svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg>
+                Got 5+ devices? <span className="text-[#e6e6e6] group-hover:text-[#00c853]">Sell in bulk →</span>
+              </a>
+            </div>
+
             <div className="glow-border mb-6 p-[3px] hero-scale-in hero-d-3 hidden">
               <button
                 onClick={() => startFunnel()}
@@ -8227,7 +8237,7 @@ export default function Home() {
                 { label: "Cash", icon: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /> },
                 { label: "Zelle", svg: "/pay/zelle.svg" },
                 { label: "Cash App", svg: "/pay/cashapp.svg" },
-              ] as Array<{ label: string; icon?: React.ReactNode; svg?: string }>).filter(p => p.label !== "Cash" || handoffMethod === "local").map(p => (
+              ] as Array<{ label: string; icon?: React.ReactNode; svg?: string }>).filter(p => p.label !== "Cash" || handoffMethod !== "ship").map(p => (
                 <span key={p.label} className="inline-flex items-center gap-1 bg-white/5 border border-white/10 text-[#e6e6e6] text-[11px] font-semibold px-2 py-1 rounded-full">
                   {p.svg
                     ? <img src={p.svg} alt="" className="w-4 h-4 object-contain" />
