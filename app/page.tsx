@@ -2584,6 +2584,11 @@ const TOP_CARRIER_MULT = 1.0;
 const HIGH_MARGIN_DEVICE_TYPES = new Set<string>([
   // Phones — IWM pays a real sealed-in-box premium, so do we.
   "iphone", "android", "pixel",
+  // Tablets — sealed/new iPads + Galaxy/Pixel tablets sell at a real
+  // premium (gift returns, upgrade path). Without this they were stuck on
+  // the 4-tier ladder with NO "New / Sealed" option — top tier was only
+  // "Excellent" — even though the sealed prices + labels already exist.
+  "ipad", "samsung_tab", "google_tab",
   // Laptops
   "macbook", "samsung_pc", "lenovo", "dell", "alienware", "hp", "acer", "lg_pc", "asus_pc",
   // Desktops
