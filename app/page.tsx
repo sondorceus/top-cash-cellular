@@ -1594,7 +1594,8 @@ const IPAD_SERIES = [
     { id: "ipadmini7", label: "iPad Mini 7th Gen", base: 225, image: "/devices/ipad-mini-7.webp" },
     { id: "ipadmini6", label: "iPad Mini 6th Gen", base: 150, image: "/devices/ipad-mini-6.webp" },
   ]},
-  { id: "ipadbase", label: "iPad", topPrice: 198, image: "/ipadbase.png", variants: [
+  { id: "ipadbase", label: "iPad", topPrice: 297, image: "/ipadbase.png", variants: [
+    { id: "ipad11", label: "iPad 11th Gen", base: 135, image: "/devices/ipad-11.webp" },
     { id: "ipad10", label: "iPad 10th Gen", base: 150, image: "/devices/ipad-10.webp" },
     { id: "ipad9", label: "iPad 9th Gen", base: 100, image: "/devices/ipad-9.webp" },
   ]},
@@ -2378,6 +2379,7 @@ const STORAGE_MAP: Record<string, string[]> = {
   ipadair11m3: ["128", "256", "512", "1tb"],
   ipadair13m2: ["128", "256", "512", "1tb"],
   ipadair11m2: ["128", "256", "512", "1tb"],
+  ipad11: ["128", "256", "512"],
   ipad10: ["64", "256"],
   ipad9: ["64", "128"],
   ipadmini7: ["128", "256", "512"],
@@ -9460,7 +9462,7 @@ export default function Home() {
                 { label: "iPad Pro",  year: "2022–2025", ids: ["ipadpro13m5","ipadpro11m5","ipadpro13m4","ipadpro11m4","ipadpro129g6","ipadpro11g4"] },
                 { label: "iPad Air",  year: "2024–2026", ids: ["ipadair13m4","ipadair11m4","ipadair13m3","ipadair11m3","ipadair13m2","ipadair11m2"] },
                 { label: "iPad Mini", year: "2021–2024", ids: ["ipadmini7","ipadmini6"] },
-                { label: "iPad",      year: "2021–2022", ids: ["ipad10","ipad9"] },
+                { label: "iPad",      year: "2021–2025", ids: ["ipad11","ipad10","ipad9"] },
               ];
               const byId = new Map(models.map(m => [m.id, m]));
               const groups = ipadGroups

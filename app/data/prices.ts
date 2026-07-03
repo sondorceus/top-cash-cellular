@@ -486,6 +486,10 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "1tb": { broken: 1, fair: 35, good: 145, mint: 153, sealed: 200 },
     "256": { broken: 1, fair: 35, good: 145, mint: 153, sealed: 200 },
     "512": { broken: 1, fair: 35, good: 145, mint: 153, sealed: 200 } },
+  ipad11: {
+    "128": { broken: 32, fair: 81, good: 112, mint: 135, sealed: 162 },
+    "256": { broken: 45, fair: 117, good: 148, mint: 171, sealed: 207 },
+    "512": { broken: 58, fair: 171, good: 202, mint: 225, sealed: 297 } },
   ipad10: {
     "256": { broken: 32, fair: 99, good: 135, mint: 162, sealed: 198 },
     "64": { broken: 22, fair: 63, good: 99, mint: 126, sealed: 153 } },

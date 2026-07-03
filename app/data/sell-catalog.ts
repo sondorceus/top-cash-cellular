@@ -345,6 +345,7 @@ export const DEVICES: Device[] = [
   { slug: "ipad-air-11-m2", name: "iPad Air 11\" M2", category: "iPad", price: 200, year: 2024 },
   { slug: "ipad-mini-7th-gen", name: "iPad Mini 7th Gen", category: "iPad", price: 225, year: 2024 },
   { slug: "ipad-mini-6th-gen", name: "iPad Mini 6th Gen", category: "iPad", price: 150, year: 2021 },
+  { slug: "ipad-11th-gen", name: "iPad 11th Gen", category: "iPad", price: 162, year: 2025 },
   { slug: "ipad-10th-gen", name: "iPad 10th Gen", category: "iPad", price: 150, year: 2022 },
   { slug: "ipad-9th-gen", name: "iPad 9th Gen", category: "iPad", price: 100, year: 2021 },
 

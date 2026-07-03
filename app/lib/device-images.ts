@@ -394,6 +394,7 @@ export const DEVICE_IMAGES: Record<string, string> = {
   "Instinct Crossover": "/devices/pixel-watch.png",
   "Instinct E": "/devices/pixel-watch.png",
   "iPad": "/ipadbase.png",
+  "iPad 11th Gen": "/devices/ipad-11.webp",
   "iPad 10th Gen": "/devices/ipad-10.webp",
   "iPad 9th Gen": "/devices/ipad-9.webp",
   "iPad Air": "/ipadair.png",
