@@ -74,15 +74,10 @@ function renderManyChat(reply: BotReply, self: string, secret: string) {
   }
   if (actions.length) content.actions = actions;
 
-  if (reply.retextState) {
-    content.external_message_callback = {
-      url: cb,
-      method: "post",
-      headers: { "X-Bot-Secret": secret },
-      payload: { state: reply.retextState, retext: true },
-      timeout: 600,
-    };
-  }
+  // NOTE: intentionally NO external_message_callback. It fired on quick-reply
+  // taps in ManyChat (treating a tap as a "message"), which looped the funnel
+  // ("almost there" nudge repeating). Taps use the dynamic_block_callback quick
+  // replies only; typed messages simply fall through (users tap the buttons).
 
   return NextResponse.json({ version: "v2", content });
 }
