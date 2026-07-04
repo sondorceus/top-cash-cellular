@@ -96,6 +96,19 @@ function renderManyChat(reply: BotReply, self: string, secret: string) {
   return NextResponse.json({ version: "v2", content });
 }
 
+// Fire-and-forget lead alert on a hot offer ($300+) or human handoff. POSTs to
+// MSGR_NOTIFY_URL (unset → no-op, safe). Lets a human catch a hot lead without
+// staring at the ManyChat inbox. `at` stamped so late alerts are obvious.
+function notifyLead(kind: string, reply: BotReply) {
+  const url = process.env.MSGR_NOTIFY_URL;
+  if (!url) return;
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ src: "manychat", kind, handoff: reply.handoff, offer: reply.offer, at: new Date().toISOString() }),
+  }).catch(() => {});
+}
+
 export async function POST(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
@@ -113,6 +126,9 @@ export async function POST(req: NextRequest) {
   const state: ConvoState = body.state || seeded || { step: "start" };
 
   const reply = await advance(state, req.nextUrl.origin);
+  // Alert a human on the money moments: hot quote or handoff (bulk/MacBook/human).
+  if (reply.handoff) notifyLead(reply.handoff.bulk ? "bulk_lead" : "needs_human", reply);
+  else if (reply.offer?.hot) notifyLead("hot_lead", reply);
   // Typed instead of tapped? Nudge to tap rather than re-asking the whole
   // question (which read as an annoying loop).
   if (body.retext && reply.quickReplies.length) {
