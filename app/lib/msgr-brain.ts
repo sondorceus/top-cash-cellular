@@ -107,7 +107,7 @@ const CARRIERS: { caption: string; value: string }[] = [
 function askBrand(): BotReply {
   return {
     texts: [
-      "Hey! 👋 I'll get you a real cash offer in about 30 seconds.",
+      "Hey! 👋 I'll get you a real cash offer in about 30 seconds — local pickup, cash in hand, no obligation. 💵",
       "What are you selling? Tap one 👇",
     ],
     quickReplies: [
@@ -133,7 +133,7 @@ function askModel(brand: "apple" | "samsung" | "google"): BotReply {
     caption: "Not listed",
     state: { step: "storage", brand, device_slug: "__other__", device_name: "Other device" },
   });
-  return { texts: ["Got it. Which model?"], quickReplies, retextState: { step: "model", brand } };
+  return { texts: ["Nice 👍 Which one?"], quickReplies, retextState: { step: "model", brand } };
 }
 
 function askStorage(s: ConvoState): BotReply {
@@ -190,8 +190,8 @@ function handToHuman(reason: string): BotReply {
 function handToLocal(s: ConvoState): BotReply {
   return {
     texts: [
-      "🤝 Locked in! We're local — we'll meet up and hand you cash on the spot 💵",
-      "Someone will text you shortly to set a quick time. What's the best number to reach you?",
+      "🤝 Locked in! We meet up local, do a quick 2-min check, and you walk away with cash in hand — no fees, no waiting. 💵",
+      "Someone will text you shortly to set a time. What's the best number to reach you?",
     ],
     quickReplies: [],
     handoff: { reason: `LOCK-IN (local meetup): ${s.device_name || "device"} — reach out to schedule + pay cash` },
@@ -215,11 +215,11 @@ function handToSite(s: ConvoState, origin: string): BotReply {
   const link = `${origin}/?src=msgr&d=${encodeURIComponent(s.device_slug || "")}`;
   return {
     texts: [
-      "📦 Out of town? No problem — you can sell from anywhere on our site.",
-      "We'll email you a free prepaid shipping label and pay you the day it lands 👉",
+      "🌐 Check out topcashcellular.com — see everything we buy, real reviews, and exactly how it works.",
+      "Out of town? You can sell right there too — free prepaid shipping label, and we pay the day it lands. 👉",
     ],
     quickReplies: [{ caption: "➕ Sell another", state: { step: "start" } }],
-    urlButtons: [{ caption: "🔒 Finish on our site", url: link }],
+    urlButtons: [{ caption: "🌐 Go to our site", url: link }],
   };
 }
 
@@ -292,12 +292,13 @@ async function presentOffer(s: ConvoState, carrier: string, origin: string): Pro
   return {
     texts: [
       `💰 Your ${s.device_name} (${prettyCondition(s.condition)}, ${storagePretty(s.storage)}) is worth up to $${r.offer}!`,
-      "We're local — cash on the spot, no fees, no obligation 💵 Lock it in and we'll text you to set a quick time. 👇",
+      "We're local — cash on the spot, no fees, no obligation 💵 Lock it in below, or browse the site / chat with the team. 👇",
     ],
     // Messenger caps button titles at 20 chars.
     quickReplies: [
       { caption: "🤝 Lock it in", state: { ...s, step: "lock" } },
-      { caption: "📦 I'm out of town", state: { ...s, step: "ship" } },
+      { caption: "💬 Talk to our team", state: { step: "start", device_slug: "__other__", device_name: "human request" } },
+      { caption: "🌐 See our site", state: { ...s, step: "ship" } },
       { caption: "➕ Sell another", state: { step: "start" } },
     ],
     offer: { quote: r.offer, deviceName: s.device_name || "your device", hot: r.offer >= HOT_LEAD_OFFER },
