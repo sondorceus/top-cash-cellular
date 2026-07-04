@@ -19,11 +19,17 @@ export const dynamic = "force-dynamic";
 function authed(req: NextRequest): boolean {
   const expected = process.env.MSGR_BOT_SECRET;
   if (!expected) return false; // fail closed if unconfigured
-  return req.headers.get("x-bot-secret")?.trim() === expected;
+  const header = req.headers.get("x-bot-secret")?.trim();
+  const qp = req.nextUrl.searchParams.get("s")?.trim();
+  return header === expected || qp === expected;
 }
 
 // Render a BotReply into ManyChat Dynamic Block v2 JSON.
 function renderManyChat(reply: BotReply, self: string, secret: string) {
+  // Callback URL carries the secret as a query param too — ManyChat does not
+  // reliably forward per-quick-reply `headers` on dynamic_block_callback taps,
+  // so the header alone can 401 the callback and dead-end the conversation.
+  const cb = `${self}?s=${encodeURIComponent(secret)}`;
   const messages: Record<string, unknown>[] = reply.texts.map((t, i) => {
     const isLast = i === reply.texts.length - 1;
     if (isLast && reply.urlButtons?.length) {
@@ -47,7 +53,7 @@ function renderManyChat(reply: BotReply, self: string, secret: string) {
     content.quick_replies = reply.quickReplies.map((qr) => ({
       type: "dynamic_block_callback",
       caption: qr.caption,
-      url: self,
+      url: cb,
       method: "post",
       headers: { "X-Bot-Secret": secret },
       payload: { state: qr.state },
@@ -70,7 +76,7 @@ function renderManyChat(reply: BotReply, self: string, secret: string) {
 
   if (reply.retextState) {
     content.external_message_callback = {
-      url: self,
+      url: cb,
       method: "post",
       headers: { "X-Bot-Secret": secret },
       payload: { state: reply.retextState, retext: true },
