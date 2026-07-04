@@ -32,7 +32,7 @@ function authed(req: NextRequest): boolean {
 }
 
 // ---- conversation state ---------------------------------------------------
-type Step = "start" | "model" | "storage" | "condition" | "carrier";
+type Step = "start" | "model" | "storage" | "condition" | "carrier" | "bulk";
 type ConvoState = {
   step: Step;
   brand?: "apple" | "samsung" | "google";
@@ -153,9 +153,14 @@ function askBrand(self: string, secret: string) {
     makeQR(self, secret, "📱 Samsung", { step: "model", brand: "samsung" }),
     makeQR(self, secret, "🔵 Google", { step: "model", brand: "google" }),
     makeQR(self, secret, "Something else", { step: "start", brand: undefined, device_slug: "__other__" }),
+    // Bulk/wholesale lots skip the single-device funnel and go to a human for a lot quote.
+    makeQR(self, secret, "📦 I've got a bunch (bulk)", { step: "bulk" }),
   ];
   return block(
-    ["Hey! 👋 I'll get you a real cash offer for your phone in about 30 seconds.", "First up — what brand is it?"],
+    [
+      "Hey! 👋 I'll get you a real cash offer in about 30 seconds — whether it's one phone or a whole batch.",
+      "First up — what brand? (Or tap “I've got a bunch” if you're selling in bulk.)",
+    ],
     qrs,
     { externalCallback: { self, secret, state: { step: "start" } } },
   );
@@ -200,6 +205,26 @@ function handToHuman(reason: string) {
       actions: [
         { action: "set_field_value", field_name: "manual", value: true },
         { action: "set_field_value", field_name: "manual_reason", value: reason },
+        { action: "add_tag", tag_name: "needs_human" },
+      ],
+    },
+  );
+}
+
+// Bulk/wholesale terminal — big lots are priced by hand, so collect what they
+// have and route to a human with a bulk tag.
+function handToBulk() {
+  return block(
+    [
+      "📦 Love it — a whole batch! We buy in bulk and pay wholesale rates for lots.",
+      "Tell me roughly how many devices and what they are (e.g. “12 iPhones, mix of 12–14, a few Samsungs”) and a team member will put together a lot quote for you. What've you got?",
+    ],
+    [],
+    {
+      actions: [
+        { action: "set_field_value", field_name: "manual", value: true },
+        { action: "set_field_value", field_name: "manual_reason", value: "bulk/wholesale lot" },
+        { action: "add_tag", tag_name: "bulk_lead" },
         { action: "add_tag", tag_name: "needs_human" },
       ],
     },
@@ -284,6 +309,8 @@ export async function POST(req: NextRequest) {
     case "start":
       if (state.device_slug === "__other__") return handToHuman("chose 'something else' / human request");
       return askBrand(self, secret);
+    case "bulk":
+      return handToBulk();
     case "model":
       return state.brand ? askModel(self, secret, state.brand) : askBrand(self, secret);
     case "storage":
