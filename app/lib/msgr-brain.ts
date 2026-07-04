@@ -276,6 +276,9 @@ export function seedState(seed: string | null | undefined): ConvoState | null {
       return { step: "macbook" };
     case "bulk":
       return { step: "bulk" };
+    case "human":
+      // routes into the start step's "__other__" branch → straight to a human.
+      return { step: "start", device_slug: "__other__" };
     default:
       return null;
   }
