@@ -18,7 +18,7 @@
 
 import { quoteDevice, type QuoteSpec } from "./quote";
 
-export type Step = "start" | "model" | "storage" | "condition" | "carrier" | "bulk" | "macbook" | "lock" | "ship" | "spanish";
+export type Step = "start" | "model" | "storage" | "condition" | "carrier" | "bulk" | "macbook" | "lock" | "ship" | "spanish" | "team";
 
 export type ConvoState = {
   step: Step;
@@ -198,6 +198,18 @@ function handToLocal(s: ConvoState): BotReply {
   };
 }
 
+// General "talk to a person" handoff (customer already has a quote / just wants help).
+function handToTeam(): BotReply {
+  return {
+    texts: [
+      "👋 You got it — a team member will jump in right here shortly to help you out.",
+      "Mind dropping your best number in case we get disconnected?",
+    ],
+    quickReplies: [],
+    handoff: { reason: "customer asked to talk to the team" },
+  };
+}
+
 // Spanish speakers: greet in Spanish and hand to a bilingual rep (fires owner SMS).
 function handToSpanish(): BotReply {
   return {
@@ -297,7 +309,7 @@ async function presentOffer(s: ConvoState, carrier: string, origin: string): Pro
     // Messenger caps button titles at 20 chars.
     quickReplies: [
       { caption: "🤝 Lock it in", state: { ...s, step: "lock" } },
-      { caption: "💬 Talk to our team", state: { step: "start", device_slug: "__other__", device_name: "human request" } },
+      { caption: "💬 Talk to our team", state: { step: "team" } },
       { caption: "🌐 See our site", state: { ...s, step: "ship" } },
       { caption: "➕ Sell another", state: { step: "start" } },
     ],
@@ -343,6 +355,8 @@ export async function advance(state: ConvoState, origin: string): Promise<BotRep
       return handToSite(state, origin);
     case "spanish":
       return handToSpanish();
+    case "team":
+      return handToTeam();
     case "model":
       return state.brand ? askModel(state.brand) : askBrand();
     case "storage":
