@@ -222,8 +222,8 @@ function askVzLock(s: ConvoState): BotReply {
   return {
     texts: ["📶 Quick one for Verizon — is it paid off, or still financed / locked to Verizon?"],
     quickReplies: [
-      { caption: "🔓 Paid off / unlocked", state: { ...s, step: "carrier", _carrier: "verizon", carrierLocked: false } },
-      { caption: "🔒 Still on Verizon", state: { ...s, step: "carrier", _carrier: "verizon", carrierLocked: true } },
+      { caption: "🔓 Paid off", state: { ...s, step: "carrier", _carrier: "verizon", carrierLocked: false } },
+      { caption: "🔒 Still financed", state: { ...s, step: "carrier", _carrier: "verizon", carrierLocked: true } },
     ],
   };
 }
