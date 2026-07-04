@@ -12,7 +12,7 @@
 // See: https://manychat.github.io/dynamic_block_docs/
 
 import { NextRequest, NextResponse } from "next/server";
-import { advance, seedState, type BotReply, type ConvoState } from "../../lib/msgr-brain";
+import { advance, seedState, detectBulkIntent, type BotReply, type ConvoState } from "../../lib/msgr-brain";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 
 export const dynamic = "force-dynamic";
@@ -125,7 +125,7 @@ async function notifyLead(reply: BotReply, state: ConvoState) {
 export async function POST(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  let body: { state?: ConvoState; retext?: boolean } = {};
+  let body: { state?: ConvoState; retext?: boolean; text?: string } = {};
   try {
     body = await req.json();
   } catch {
@@ -137,6 +137,11 @@ export async function POST(req: NextRequest) {
   // google|macbook|bulk → drops straight into that device's funnel.
   const seeded = seedState(req.nextUrl.searchParams.get("seed"));
   const state: ConvoState = body.state || seeded || { step: "start" };
+
+  // Smart bulk: a typed message like "I have 10 17 Pro Max" jumps straight to the
+  // bulk handoff (ManyChat must pass the user's text as `text` in the request body).
+  const typed = body.text ?? req.nextUrl.searchParams.get("text") ?? undefined;
+  if (typed && detectBulkIntent(typed)) state.step = "bulk";
 
   const reply = await advance(state, req.nextUrl.origin);
   // Text the owner on the money moments: any quote (deal) or any handoff.
