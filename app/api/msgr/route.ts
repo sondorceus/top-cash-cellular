@@ -101,6 +101,12 @@ export async function POST(req: NextRequest) {
   const state: ConvoState = body.state || { step: "start" };
 
   const reply = await advance(state, req.nextUrl.origin);
+  // Typed instead of tapped? Nudge to tap rather than re-asking the whole
+  // question (which read as an annoying loop).
+  if (body.retext && reply.quickReplies.length) {
+    reply.texts = ["👇 Almost there — just tap one of the buttons below to keep going!"];
+    reply.urlButtons = undefined;
+  }
   return renderManyChat(reply, self, secret);
 }
 

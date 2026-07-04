@@ -18,7 +18,7 @@
 
 import { quoteDevice, type QuoteSpec } from "./quote";
 
-export type Step = "start" | "model" | "storage" | "condition" | "carrier" | "bulk";
+export type Step = "start" | "model" | "storage" | "condition" | "carrier" | "bulk" | "macbook";
 
 export type ConvoState = {
   step: Step;
@@ -103,15 +103,16 @@ const CARRIERS: { caption: string; value: string }[] = [
 function askBrand(): BotReply {
   return {
     texts: [
-      "Hey! 👋 I'll get you a real cash offer in about 30 seconds — whether it's one phone or a whole batch.",
-      "First up — what brand? (Or tap “I've got a bunch” if you're selling in bulk.)",
+      "Hey! 👋 I'll get you a real cash offer in about 30 seconds.",
+      "What are you selling? Tap one 👇",
     ],
     quickReplies: [
-      { caption: "🍏 Apple", state: { step: "model", brand: "apple" } },
+      { caption: "📱 iPhone", state: { step: "model", brand: "apple" } },
       { caption: "📱 Samsung", state: { step: "model", brand: "samsung" } },
-      { caption: "🔵 Google", state: { step: "model", brand: "google" } },
+      { caption: "🔵 Pixel", state: { step: "model", brand: "google" } },
+      { caption: "💻 MacBook", state: { step: "macbook" } },
+      { caption: "📦 A bunch (bulk)", state: { step: "bulk" } },
       { caption: "Something else", state: { step: "start", device_slug: "__other__" } },
-      { caption: "📦 I've got a bunch (bulk)", state: { step: "bulk" } },
     ],
     retextState: { step: "start" },
   };
@@ -173,6 +174,17 @@ function handToHuman(reason: string): BotReply {
     ],
     quickReplies: [],
     handoff: { reason },
+  };
+}
+
+function handToMacBook(): BotReply {
+  return {
+    texts: [
+      "💻 Nice — MacBooks we price by hand so you get the most for it.",
+      "Tell me which MacBook it is (e.g. “MacBook Air M2 2022, 256GB”) plus the condition, and a team member will get you a quote right here. What've you got?",
+    ],
+    quickReplies: [],
+    handoff: { reason: "macbook — manual quote" },
   };
 }
 
@@ -242,6 +254,8 @@ export async function advance(state: ConvoState, origin: string): Promise<BotRep
       return askBrand();
     case "bulk":
       return handToBulk();
+    case "macbook":
+      return handToMacBook();
     case "model":
       return state.brand ? askModel(state.brand) : askBrand();
     case "storage":
