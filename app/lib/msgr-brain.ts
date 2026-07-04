@@ -30,6 +30,9 @@ export type ConvoState = {
   // Canonical carrier value, stashed on the carrier-choice quick reply so the
   // brain knows to compute the offer (vs. still asking the question).
   _carrier?: string;
+  // Verizon only: is the phone still financed/locked to Verizon? Undefined =
+  // not yet asked. A locked Verizon phone is worth ~$80 less, so we must ask.
+  carrierLocked?: boolean;
 };
 
 // The abstract reply. Renderers map these fields to their transport.
@@ -213,6 +216,18 @@ function storagePretty(s?: string) {
   return s === "1TB" ? "1 TB" : `${s} GB`;
 }
 
+// Verizon lock question — a financed/locked Verizon phone is worth ~$80 less,
+// so we ask before quoting (skipping it would overpay).
+function askVzLock(s: ConvoState): BotReply {
+  return {
+    texts: ["📶 Quick one for Verizon — is it paid off, or still financed / locked to Verizon?"],
+    quickReplies: [
+      { caption: "🔓 Paid off / unlocked", state: { ...s, step: "carrier", _carrier: "verizon", carrierLocked: false } },
+      { caption: "🔒 Still on Verizon", state: { ...s, step: "carrier", _carrier: "verizon", carrierLocked: true } },
+    ],
+  };
+}
+
 async function presentOffer(s: ConvoState, carrier: string, origin: string): Promise<BotReply> {
   if (!s.device_slug || s.device_slug === "__other__") {
     return handToHuman("model not in quick-quote catalog");
@@ -223,6 +238,7 @@ async function presentOffer(s: ConvoState, carrier: string, origin: string): Pro
     storage: s.storage,
     condition: s.condition || "good",
     carrier,
+    carrierLocked: s.carrierLocked,
     isPhone: true,
   };
   const r = await quoteDevice(spec).catch(() => null);
@@ -266,8 +282,10 @@ export async function advance(state: ConvoState, origin: string): Promise<BotRep
     case "condition":
       return askCondition(state);
     case "carrier":
-      if (state._carrier) return presentOffer(state, state._carrier, origin);
-      return askCarrier(state);
+      if (!state._carrier) return askCarrier(state);
+      // Verizon needs the locked/unlocked answer before we can quote right.
+      if (state._carrier === "verizon" && state.carrierLocked === undefined) return askVzLock(state);
+      return presentOffer(state, state._carrier, origin);
     default:
       return askBrand();
   }
