@@ -33,9 +33,6 @@ export type ConvoState = {
   // Verizon only: is the phone still financed/locked to Verizon? Undefined =
   // not yet asked. A locked Verizon phone is worth ~$80 less, so we must ask.
   carrierLocked?: boolean;
-  // iPhone generation chosen (Apple uses a 2-step: generation → model) so the
-  // whole lineup fits without hitting the 11-button cap.
-  gen?: string;
 };
 
 // The abstract reply. Renderers map these fields to their transport.
@@ -60,16 +57,16 @@ export const HOT_LEAD_OFFER = 300;
 // listed" route to a human.
 export const MODELS: Record<string, { name: string; slug: string }[]> = {
   apple: [
+    { name: "iPhone 17 Pro Max", slug: "ip17pm" },
+    { name: "iPhone 17 Pro", slug: "ip17p" },
+    { name: "iPhone 17", slug: "ip17" },
     { name: "iPhone 16 Pro Max", slug: "ip16pm" },
     { name: "iPhone 16 Pro", slug: "ip16p" },
     { name: "iPhone 16", slug: "ip16" },
     { name: "iPhone 15 Pro Max", slug: "ip15pm" },
-    { name: "iPhone 15 Pro", slug: "ip15p" },
     { name: "iPhone 15", slug: "ip15" },
     { name: "iPhone 14 Pro Max", slug: "ip14pm" },
     { name: "iPhone 14", slug: "ip14" },
-    { name: "iPhone 13 Pro Max", slug: "ip13pm" },
-    { name: "iPhone 13", slug: "ip13" },
   ],
   samsung: [
     { name: "Galaxy S24 Ultra", slug: "gs24u" },
@@ -87,45 +84,6 @@ export const MODELS: Record<string, { name: string; slug: string }[]> = {
     { name: "Pixel 9", slug: "px9" },
     { name: "Pixel 8 Pro", slug: "px8p" },
     { name: "Pixel 8", slug: "px8" },
-  ],
-};
-
-// Apple 2-step picker (generation → model) — keeps the whole iPhone lineup
-// under the 11-button cap. caption = short button label; name = full label for
-// the quote. Slugs must exist in PRICE_TABLE.
-const APPLE_GENS = ["iPhone 17", "iPhone 16", "iPhone 15", "iPhone 14", "iPhone 13"];
-const APPLE_BY_GEN: Record<string, { caption: string; name: string; slug: string }[]> = {
-  "iPhone 17": [
-    { caption: "17 Pro Max", name: "iPhone 17 Pro Max", slug: "ip17pm" },
-    { caption: "17 Pro", name: "iPhone 17 Pro", slug: "ip17p" },
-    { caption: "17 Air", name: "iPhone 17 Air", slug: "ip17air" },
-    { caption: "17", name: "iPhone 17", slug: "ip17" },
-    { caption: "17e", name: "iPhone 17e", slug: "ip17e" },
-  ],
-  "iPhone 16": [
-    { caption: "16 Pro Max", name: "iPhone 16 Pro Max", slug: "ip16pm" },
-    { caption: "16 Pro", name: "iPhone 16 Pro", slug: "ip16p" },
-    { caption: "16 Plus", name: "iPhone 16 Plus", slug: "ip16plus" },
-    { caption: "16", name: "iPhone 16", slug: "ip16" },
-    { caption: "16e", name: "iPhone 16e", slug: "ip16e" },
-  ],
-  "iPhone 15": [
-    { caption: "15 Pro Max", name: "iPhone 15 Pro Max", slug: "ip15pm" },
-    { caption: "15 Pro", name: "iPhone 15 Pro", slug: "ip15p" },
-    { caption: "15 Plus", name: "iPhone 15 Plus", slug: "ip15plus" },
-    { caption: "15", name: "iPhone 15", slug: "ip15" },
-  ],
-  "iPhone 14": [
-    { caption: "14 Pro Max", name: "iPhone 14 Pro Max", slug: "ip14pm" },
-    { caption: "14 Pro", name: "iPhone 14 Pro", slug: "ip14p" },
-    { caption: "14 Plus", name: "iPhone 14 Plus", slug: "ip14plus" },
-    { caption: "14", name: "iPhone 14", slug: "ip14" },
-  ],
-  "iPhone 13": [
-    { caption: "13 Pro Max", name: "iPhone 13 Pro Max", slug: "ip13pm" },
-    { caption: "13 Pro", name: "iPhone 13 Pro", slug: "ip13p" },
-    { caption: "13", name: "iPhone 13", slug: "ip13" },
-    { caption: "13 mini", name: "iPhone 13 mini", slug: "ip13mini" },
   ],
 };
 
@@ -174,32 +132,6 @@ function askModel(brand: "apple" | "samsung" | "google"): BotReply {
     state: { step: "storage", brand, device_slug: "__other__", device_name: "Other device" },
   });
   return { texts: ["Got it. Which model?"], quickReplies, retextState: { step: "model", brand } };
-}
-
-// Apple step 1: which generation. Step 2 (askAppleModel) then lists that gen's
-// specific models — full iPhone lineup without the 11-button cap.
-function askAppleGen(): BotReply {
-  return {
-    texts: ["Got it — which iPhone? 📱"],
-    quickReplies: APPLE_GENS.map((g) => ({
-      caption: g,
-      state: { step: "model" as const, brand: "apple" as const, gen: g },
-    })),
-    retextState: { step: "model", brand: "apple" },
-  };
-}
-
-function askAppleModel(gen: string): BotReply {
-  const list = APPLE_BY_GEN[gen] || [];
-  const quickReplies = list.map((m) => ({
-    caption: m.caption,
-    state: { step: "storage" as const, brand: "apple" as const, gen, device_slug: m.slug, device_name: m.name },
-  }));
-  quickReplies.push({
-    caption: "Not sure",
-    state: { step: "storage", brand: "apple", gen, device_slug: "__other__", device_name: `Other ${gen}` },
-  });
-  return { texts: [`Which ${gen}?`], quickReplies, retextState: { step: "model", brand: "apple", gen } };
 }
 
 function askStorage(s: ConvoState): BotReply {
@@ -331,6 +263,24 @@ async function presentOffer(s: ConvoState, carrier: string, origin: string): Pro
   };
 }
 
+// Seed a starting state from a URL param (?seed=), so a static ad button can
+// drop someone straight into a device's funnel (menu-first, no "Sell Now" tap).
+// apple/samsung/google → that brand's model list; macbook/bulk → their handoff.
+export function seedState(seed: string | null | undefined): ConvoState | null {
+  switch (seed) {
+    case "apple":
+    case "samsung":
+    case "google":
+      return { step: "model", brand: seed };
+    case "macbook":
+      return { step: "macbook" };
+    case "bulk":
+      return { step: "bulk" };
+    default:
+      return null;
+  }
+}
+
 // ---- the state machine ----------------------------------------------------
 // `origin` is the site origin (e.g. https://topcashcellular.com) for the CTA link.
 export async function advance(state: ConvoState, origin: string): Promise<BotReply> {
@@ -343,10 +293,7 @@ export async function advance(state: ConvoState, origin: string): Promise<BotRep
     case "macbook":
       return handToMacBook();
     case "model":
-      if (!state.brand) return askBrand();
-      // Apple: generation first, then the specific model.
-      if (state.brand === "apple") return state.gen ? askAppleModel(state.gen) : askAppleGen();
-      return askModel(state.brand);
+      return state.brand ? askModel(state.brand) : askBrand();
     case "storage":
       if (!state.device_slug || state.device_slug === "__other__") return handToHuman("model not listed");
       return askStorage(state);

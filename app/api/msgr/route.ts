@@ -12,7 +12,7 @@
 // See: https://manychat.github.io/dynamic_block_docs/
 
 import { NextRequest, NextResponse } from "next/server";
-import { advance, type BotReply, type ConvoState } from "../../lib/msgr-brain";
+import { advance, seedState, type BotReply, type ConvoState } from "../../lib/msgr-brain";
 
 export const dynamic = "force-dynamic";
 
@@ -107,7 +107,10 @@ export async function POST(req: NextRequest) {
   }
   const self = `${req.nextUrl.origin}/api/msgr`;
   const secret = process.env.MSGR_BOT_SECRET as string;
-  const state: ConvoState = body.state || { step: "start" };
+  // Fresh entry can be seeded by a static ad button via ?seed=apple|samsung|
+  // google|macbook|bulk → drops straight into that device's funnel.
+  const seeded = seedState(req.nextUrl.searchParams.get("seed"));
+  const state: ConvoState = body.state || seeded || { step: "start" };
 
   const reply = await advance(state, req.nextUrl.origin);
   // Typed instead of tapped? Nudge to tap rather than re-asking the whole
