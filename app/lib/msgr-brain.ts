@@ -165,7 +165,7 @@ function askCarrier(s: ConvoState): BotReply {
   // Each carrier QR re-enters step "carrier" with the canonical carrier value
   // stashed in `_carrier` — the brain reads that to compute the offer.
   return {
-    texts: ["Last question — who's the carrier?"],
+    texts: ["Last one — what carrier is it on? 📶 (Unlocked usually pays the most 💵)"],
     quickReplies: CARRIERS.map((c) => ({
       caption: c.caption,
       state: { ...s, step: "carrier" as const, _carrier: c.value },
@@ -292,7 +292,7 @@ async function presentOffer(s: ConvoState, carrier: string, origin: string): Pro
   return {
     texts: [
       `💰 Your ${s.device_name} (${prettyCondition(s.condition)}, ${storagePretty(s.storage)}) is worth up to $${r.offer}!`,
-      "We're local — meet up and get paid cash on the spot 💵 Lock it in below and we'll text you to set a quick time. 👇",
+      "We're local — cash on the spot, no fees, no obligation 💵 Lock it in and we'll text you to set a quick time. 👇",
     ],
     // Messenger caps button titles at 20 chars.
     quickReplies: [
