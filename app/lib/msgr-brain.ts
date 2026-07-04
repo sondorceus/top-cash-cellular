@@ -18,7 +18,7 @@
 
 import { quoteDevice, type QuoteSpec } from "./quote";
 
-export type Step = "start" | "model" | "storage" | "condition" | "carrier" | "bulk" | "macbook";
+export type Step = "start" | "model" | "storage" | "condition" | "carrier" | "bulk" | "macbook" | "lock" | "ship";
 
 export type ConvoState = {
   step: Step;
@@ -183,6 +183,32 @@ function handToHuman(reason: string): BotReply {
   };
 }
 
+// Local close: we don't ship — we meet up and pay cash. Fires a handoff so the
+// owner gets an SMS to reach out and set the meetup (see notifyLead in the route).
+function handToLocal(s: ConvoState): BotReply {
+  return {
+    texts: [
+      "🤝 Locked in! We're local — we'll meet up and hand you cash on the spot 💵",
+      "Someone will text you shortly to set a quick time. What's the best number to reach you?",
+    ],
+    quickReplies: [],
+    handoff: { reason: `LOCK-IN (local meetup): ${s.device_name || "device"} — reach out to schedule + pay cash` },
+  };
+}
+
+// Out-of-town close: send them to the site, which DOES ship (free label, pay on arrival).
+function handToSite(s: ConvoState, origin: string): BotReply {
+  const link = `${origin}/?src=msgr&d=${encodeURIComponent(s.device_slug || "")}`;
+  return {
+    texts: [
+      "📦 Out of town? No problem — you can sell from anywhere on our site.",
+      "We'll email you a free prepaid shipping label and pay you the day it lands 👉",
+    ],
+    quickReplies: [{ caption: "➕ Sell another", state: { step: "start" } }],
+    urlButtons: [{ caption: "🔒 Finish on our site", url: link }],
+  };
+}
+
 function handToMacBook(): BotReply {
   return {
     texts: [
@@ -249,19 +275,17 @@ async function presentOffer(s: ConvoState, carrier: string, origin: string): Pro
     return handToHuman(r?.reason || "quote engine returned no auto-offer");
   }
 
-  const link = `${origin}/?src=msgr&d=${encodeURIComponent(s.device_slug)}`;
   return {
     texts: [
       `💰 Your ${s.device_name} (${prettyCondition(s.condition)}, ${storagePretty(s.storage)}) is worth up to $${r.offer}!`,
-      "Tap below to lock it in — free prepaid shipping label, and payment goes out the day it lands. 📦",
+      "We're local — meet up and get paid cash on the spot 💵 Lock it in below and we'll text you to set a quick time. 👇",
     ],
+    // Messenger caps button titles at 20 chars.
     quickReplies: [
+      { caption: "🤝 Lock it in", state: { ...s, step: "lock" } },
+      { caption: "📦 I'm out of town", state: { ...s, step: "ship" } },
       { caption: "➕ Sell another", state: { step: "start" } },
-      { caption: "💬 Talk to a human", state: { step: "start", device_slug: "__other__", device_name: "human request" } },
     ],
-    // Messenger caps button titles at 20 chars — keep it short or the whole
-    // quote message fails to render (funnel dead-ends at carrier).
-    urlButtons: [{ caption: "🔒 Lock my offer", url: link }],
     offer: { quote: r.offer, deviceName: s.device_name || "your device", hot: r.offer >= HOT_LEAD_OFFER },
   };
 }
@@ -298,6 +322,10 @@ export async function advance(state: ConvoState, origin: string): Promise<BotRep
       return handToBulk();
     case "macbook":
       return handToMacBook();
+    case "lock":
+      return handToLocal(state);
+    case "ship":
+      return handToSite(state, origin);
     case "model":
       return state.brand ? askModel(state.brand) : askBrand();
     case "storage":
