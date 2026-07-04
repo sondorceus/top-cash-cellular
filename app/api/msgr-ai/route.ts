@@ -12,8 +12,9 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
-import { MODELS, type ConvoState } from "../../lib/msgr-brain";
+import { type ConvoState } from "../../lib/msgr-brain";
 import { quoteDevice, type QuoteSpec } from "../../lib/quote";
+import { PRICE_TABLE } from "../../data/prices";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 
 export const dynamic = "force-dynamic";
@@ -26,39 +27,80 @@ function authed(req: NextRequest): boolean {
   return header === expected || qp === expected;
 }
 
-// Resolve a spoken model name ("iPhone 14 Pro", "s24 ultra") to a real quote slug
-// from the SAME catalog the buttons use. Prefer exact, else the longest overlap so
-// "14 pro max" beats "14 pro". Returns null → the model isn't in the instant catalog.
-function resolveSlug(name: string): { slug: string; label: string } | null {
-  const norm = (x: string) => x.toLowerCase().replace(/[^a-z0-9]/g, "");
-  const n = norm(name);
-  if (!n) return null;
-  let best: { slug: string; label: string; len: number } | null = null;
-  for (const brand of Object.keys(MODELS)) {
-    for (const m of MODELS[brand]) {
-      const mn = norm(m.name);
-      if (mn === n) return { slug: m.slug, label: m.name };
-      if (n.includes(mn) || mn.includes(n)) {
-        if (!best || mn.length > best.len) best = { slug: m.slug, label: m.name, len: mn.length };
-      }
+// Turn a spoken model name ("iPhone 13 Pro Max", "galaxy s22 ultra", "pixel 8")
+// into a REAL price-table slug — by CONSTRUCTING the slug from the name and only
+// accepting it if it actually exists in PRICE_TABLE. This means we never quote a
+// wrong device: an unknown/miscombined model just returns null → team handoff.
+// Covers the whole phone catalog (iPhone 11-17, Galaxy S20-26 + Z Flip/Fold, Pixel 5-10).
+const have = (slug: string): boolean => !!PRICE_TABLE[slug];
+
+function nameToSlug(raw: string): { slug: string; label: string } | null {
+  const n = " " + raw.toLowerCase().replace(/[^a-z0-9+ ]/g, " ").replace(/\s+/g, " ") + " ";
+  const pro = /\bpro\b/.test(n);
+  const max = /pro\s*max|\bmax\b/.test(n);
+  const plus = /\bplus\b|\+/.test(n);
+  const ultra = /\bultra\b/.test(n);
+  const fe = /\bfe\b/.test(n);
+  const mini = /\bmini\b/.test(n);
+  const air = /\bair\b/.test(n);
+  const xl = /\bxl\b/.test(n);
+  const fold = /\bfold\b/.test(n);
+  const aser = /\d+\s*a\b|\b\d+a\b/.test(n);
+
+  // iPhone
+  let m = n.match(/i\s*phone\s*(\d{1,2})/) || (/iphone/.test(n) ? n.match(/\b(\d{1,2})\b/) : null);
+  if (m) {
+    const g = m[1];
+    const v = max ? "pm" : pro ? "p" : plus ? "plus" : mini ? "mini" : air ? "air" : /\b\d+\s*e\b|\be\b/.test(n) ? "e" : "";
+    if (have("ip" + g + v)) return { slug: "ip" + g + v, label: slugToDisplay("ip" + g + v) };
+  }
+  // Samsung Galaxy
+  if (/galaxy|samsung/.test(n)) {
+    let g2 = n.match(/z\s*flip\s*(\d+)/);
+    if (g2 && have("gzflip" + g2[1])) return { slug: "gzflip" + g2[1], label: slugToDisplay("gzflip" + g2[1]) };
+    g2 = n.match(/z\s*fold\s*(\d+)/);
+    if (g2 && have("gzfold" + g2[1])) return { slug: "gzfold" + g2[1], label: slugToDisplay("gzfold" + g2[1]) };
+    g2 = n.match(/s\s*(\d{2})/);
+    if (g2) {
+      const v = ultra ? "u" : plus ? "p" : fe ? "fe" : "";
+      if (have("gs" + g2[1] + v)) return { slug: "gs" + g2[1] + v, label: slugToDisplay("gs" + g2[1] + v) };
     }
   }
-  return best ? { slug: best.slug, label: best.label } : null;
+  // Google Pixel
+  m = n.match(/pixel\s*(\d+)/);
+  if (m) {
+    const g = m[1];
+    const v = pro && xl ? "pxl" : pro && fold ? "pfold" : pro ? "p" : aser ? "a" : "";
+    if (have("px" + g + v)) return { slug: "px" + g + v, label: slugToDisplay("px" + g + v) };
+  }
+  return null;
 }
 
-// Catalog string for the system prompt so the model knows what quotes instantly.
-function catalogList(): string {
-  return Object.values(MODELS)
-    .flat()
-    .map((m) => m.name)
-    .join(", ");
+// Slug → clean display name for the quote text (we control this, so it's accurate).
+function slugToDisplay(slug: string): string {
+  let m;
+  if ((m = slug.match(/^ip(\d+)(pm|p|plus|mini|e|air)?$/))) {
+    const v: Record<string, string> = { pm: " Pro Max", p: " Pro", plus: " Plus", mini: " mini", air: " Air" };
+    return m[2] === "e" ? `iPhone ${m[1]}e` : `iPhone ${m[1]}${v[m[2] || ""] || ""}`;
+  }
+  if ((m = slug.match(/^gs(\d+)(u|p|fe)?$/))) {
+    const v: Record<string, string> = { u: " Ultra", p: "+", fe: " FE" };
+    return `Galaxy S${m[1]}${v[m[2] || ""] || ""}`;
+  }
+  if ((m = slug.match(/^gzflip(\d+)$/))) return `Galaxy Z Flip ${m[1]}`;
+  if ((m = slug.match(/^gzfold(\d+)$/))) return `Galaxy Z Fold ${m[1]}`;
+  if ((m = slug.match(/^px(\d+)(pxl|pfold|p|a)?$/))) {
+    const v: Record<string, string> = { pxl: " Pro XL", pfold: " Pro Fold", p: " Pro" };
+    return m[2] === "a" ? `Pixel ${m[1]}a` : `Pixel ${m[1]}${v[m[2] || ""] || ""}`;
+  }
+  return slug;
 }
 
 type QuoteToolInput = { model?: string; storage?: string; condition?: string; carrier?: string };
 
 // Run the get_quote tool through the real engine — identical to the funnel's path.
 async function runQuote(input: QuoteToolInput): Promise<{ ok: boolean; offer?: number; device?: string; slug?: string; reason?: string }> {
-  const hit = resolveSlug(input.model || "");
+  const hit = nameToSlug(input.model || "");
   if (!hit) return { ok: false, reason: "not in the instant catalog — needs a manual quote from the team" };
   const spec: QuoteSpec = {
     modelId: hit.slug,
@@ -86,7 +128,7 @@ const SYSTEM = (lang: string) =>
     "WE BUY: iPhones (11+), Samsung Galaxy (S21+, Z Fold/Flip), Google Pixel, MacBooks, and consoles — ANY condition, even cracked (lower offer). Conditions: sealed (new in plastic), like-new, good, fair, broken.",
     "QUOTING — CRITICAL: NEVER make up or estimate a price. To quote, you MUST call the get_quote tool with the model, storage, condition, and carrier. Ask for whatever's missing FIRST (storage? condition? carrier? — unlocked usually pays most), then call the tool. If get_quote says the model isn't in the instant catalog (older/rare device, MacBook, bulk lot), DON'T guess — tell them a team member will price it by hand and call notify_team.",
     "AFTER A QUOTE: give the number plainly and invite them to lock it in for a local cash meetup. When someone wants to proceed, wants a human, gives a phone/email, or has a bulk lot / manual device, call notify_team so a real teammate follows up.",
-    `INSTANT-QUOTE CATALOG (models get_quote can price): ${catalogList()}.`,
+    "INSTANT-QUOTE CATALOG (get_quote can price these): iPhone 11 through 17 (all Pro / Pro Max / Plus / mini / e / Air variants), Samsung Galaxy S20 through S26 (incl. +, Ultra, FE) and Galaxy Z Flip / Z Fold (4-7), and Google Pixel 5 through 10 (incl. Pro, a-series, Pro XL, Pro Fold). Anything else — iPads, MacBooks, consoles, watches, or older/other phones — is NOT instant: don't guess, call notify_team for a manual quote.",
   ].join(" ");
 
 const TOOLS = [
