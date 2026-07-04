@@ -18,7 +18,7 @@
 
 import { quoteDevice, type QuoteSpec } from "./quote";
 
-export type Step = "start" | "model" | "storage" | "condition" | "carrier" | "bulk" | "macbook" | "lock" | "ship";
+export type Step = "start" | "model" | "storage" | "condition" | "carrier" | "bulk" | "macbook" | "lock" | "ship" | "spanish";
 
 export type ConvoState = {
   step: Step;
@@ -89,6 +89,7 @@ export const MODELS: Record<string, { name: string; slug: string }[]> = {
 
 const STORAGES = ["128", "256", "512", "1TB"];
 const CONDITIONS: { caption: string; value: string }[] = [
+  { caption: "🔒 Sealed (new)", value: "sealed" },
   { caption: "✨ Like new", value: "mint" },
   { caption: "👍 Good", value: "good" },
   { caption: "🩹 Fair / wear", value: "fair" },
@@ -115,6 +116,7 @@ function askBrand(): BotReply {
       { caption: "🔵 Pixel", state: { step: "model", brand: "google" } },
       { caption: "💻 MacBook", state: { step: "macbook" } },
       { caption: "📦 A bunch (bulk)", state: { step: "bulk" } },
+      { caption: "🌎 Español", state: { step: "spanish" } },
       { caption: "Something else", state: { step: "start", device_slug: "__other__" } },
     ],
     retextState: { step: "start" },
@@ -149,7 +151,7 @@ function askCondition(s: ConvoState): BotReply {
   return {
     texts: [
       "What kind of shape is it in? 📱",
-      "✨ Like new — no scratches, works perfectly\n👍 Good — light wear, fully working\n🩹 Fair — visible scratches/wear, still works\n💔 Broken — cracked or not working right",
+      "🔒 Sealed — brand new, still in the plastic\n✨ Like new — no scratches, works perfectly\n👍 Good — light wear, fully working\n🩹 Fair — visible scratches/wear, still works\n💔 Broken — cracked or not working right",
     ],
     quickReplies: CONDITIONS.map((c) => ({
       caption: c.caption,
@@ -193,6 +195,18 @@ function handToLocal(s: ConvoState): BotReply {
     ],
     quickReplies: [],
     handoff: { reason: `LOCK-IN (local meetup): ${s.device_name || "device"} — reach out to schedule + pay cash` },
+  };
+}
+
+// Spanish speakers: greet in Spanish and hand to a bilingual rep (fires owner SMS).
+function handToSpanish(): BotReply {
+  return {
+    texts: [
+      "¡Hola! 🇲🇽 Compramos tu teléfono, tablet o MacBook por efectivo — en persona y aquí cerca. 💵",
+      "Dinos qué tienes (modelo y condición) y te damos una oferta al instante. Alguien que habla español te atiende ahora mismo. ¿Cuál es tu mejor número?",
+    ],
+    quickReplies: [],
+    handoff: { reason: "🌎 Spanish speaker — necesita representante bilingüe" },
   };
 }
 
@@ -326,6 +340,8 @@ export async function advance(state: ConvoState, origin: string): Promise<BotRep
       return handToLocal(state);
     case "ship":
       return handToSite(state, origin);
+    case "spanish":
+      return handToSpanish();
     case "model":
       return state.brand ? askModel(state.brand) : askBrand();
     case "storage":
