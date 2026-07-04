@@ -33,34 +33,52 @@ function renderManyChat(reply: BotReply, self: string, secret: string) {
   // Messenger caps quick-reply/button titles at 20 chars; over-length titles
   // make the whole message fail to render. Clip defensively.
   const clip = (s: string) => (Array.from(s).length > 20 ? Array.from(s).slice(0, 20).join("") : s);
-  const messages: Record<string, unknown>[] = reply.texts.map((t, i) => {
-    const isLast = i === reply.texts.length - 1;
-    if (isLast && reply.urlButtons?.length) {
-      return {
-        type: "text",
-        text: t,
-        buttons: reply.urlButtons.map((b) => ({
-          type: "url",
-          caption: clip(b.caption),
-          url: b.url,
-          webview_size: "full",
-        })),
-      };
-    }
-    return { type: "text", text: t };
+  const mkCb = (qr: { caption: string; state: unknown }) => ({
+    type: "dynamic_block_callback",
+    caption: clip(qr.caption),
+    url: cb,
+    method: "post",
+    headers: { "X-Bot-Secret": secret },
+    payload: { state: qr.state },
+  });
+  const mkUrl = (b: { caption: string; url: string }) => ({
+    type: "url",
+    caption: clip(b.caption),
+    url: b.url,
+    webview_size: "full",
   });
 
-  const content: Record<string, unknown> = { messages };
+  // All tappable options: URL CTA(s) first, then the option callbacks.
+  const options = [...(reply.urlButtons ?? []).map(mkUrl), ...reply.quickReplies.map(mkCb)];
 
-  if (reply.quickReplies.length) {
-    content.quick_replies = reply.quickReplies.map((qr) => ({
-      type: "dynamic_block_callback",
-      caption: clip(qr.caption),
-      url: cb,
-      method: "post",
-      headers: { "X-Bot-Secret": secret },
-      payload: { state: qr.state },
-    }));
+  // BIG in-message buttons for short menus (≤6). Messenger button templates hold
+  // max 3, so chunk across messages. Long lists (the 11 phone models) stay as
+  // quick-reply pills — 11 buttons would be a wall of button-messages.
+  const bigButtons = options.length > 0 && options.length <= 6;
+
+  const messages: Record<string, unknown>[] = [];
+  if (bigButtons) {
+    reply.texts.slice(0, -1).forEach((t) => messages.push({ type: "text", text: t }));
+    const lead = reply.texts[reply.texts.length - 1] ?? "Tap one 👇";
+    const chunks: unknown[][] = [];
+    for (let i = 0; i < options.length; i += 3) chunks.push(options.slice(i, i + 3));
+    chunks.forEach((chunk, idx) => {
+      messages.push({ type: "text", text: idx === 0 ? lead : "👇", buttons: chunk });
+    });
+  } else {
+    reply.texts.forEach((t, i) => {
+      const isLast = i === reply.texts.length - 1;
+      messages.push(
+        isLast && reply.urlButtons?.length
+          ? { type: "text", text: t, buttons: reply.urlButtons.map(mkUrl) }
+          : { type: "text", text: t },
+      );
+    });
+  }
+
+  const content: Record<string, unknown> = { messages };
+  if (!bigButtons && reply.quickReplies.length) {
+    content.quick_replies = reply.quickReplies.map(mkCb);
   }
 
   // ACTIONS DISABLED: `set_field_value` on custom fields that don't exist in
