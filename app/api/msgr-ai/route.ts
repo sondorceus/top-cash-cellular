@@ -197,6 +197,15 @@ export async function POST(req: NextRequest) {
   // ManyChat's field chip wraps the message in literal curly braces (e.g. "{hello}").
   // Strip a single enclosing { } so the AI (and the customer) never see raw brackets.
   text = text.replace(/^\{([\s\S]*)\}$/, "$1").trim();
+  // TEMP DEBUG: log every inbound hit to Mission Control (survives across serverless instances)
+  // so we can see exactly which messages reach the AI. Remove after diagnosis.
+  after(() => {
+    fetch("https://missioncontrolsdjg-production.up.railway.app/api/comms", {
+      method: "POST",
+      headers: { "x-api-key": process.env.MC_API_KEY || "", "Content-Type": "application/json" },
+      body: JSON.stringify({ from: "msgr-ai-debug", fromName: "MSGR-AI Debug", role: "system", body: `[MSGR-AI HIT] "${text.slice(0, 120)}"`, tags: ["msgr-ai-debug"], priority: "low" }),
+    }).catch(() => {});
+  });
   if (!text) {
     return render(["Hey! 👋 Tell me what you're selling (model + condition) and I'll get you a cash offer."], [], origin, secret);
   }
