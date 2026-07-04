@@ -233,14 +233,16 @@ async function presentOffer(s: ConvoState, carrier: string, origin: string): Pro
   const link = `${origin}/?src=msgr&d=${encodeURIComponent(s.device_slug)}`;
   return {
     texts: [
-      `💰 Your ${s.device_name} (${prettyCondition(s.condition)}, ${storagePretty(s.storage)}) is worth up to **$${r.offer}**.`,
-      "Lock it in below and I'll send a free prepaid shipping label — payment goes out the day it lands. 📦",
+      `💰 Your ${s.device_name} (${prettyCondition(s.condition)}, ${storagePretty(s.storage)}) is worth up to $${r.offer}!`,
+      "Tap below to lock it in — free prepaid shipping label, and payment goes out the day it lands. 📦",
     ],
     quickReplies: [
       { caption: "➕ Sell another", state: { step: "start" } },
       { caption: "💬 Talk to a human", state: { step: "start", device_slug: "__other__", device_name: "human request" } },
     ],
-    urlButtons: [{ caption: "🔒 Lock my offer + free label", url: link }],
+    // Messenger caps button titles at 20 chars — keep it short or the whole
+    // quote message fails to render (funnel dead-ends at carrier).
+    urlButtons: [{ caption: "🔒 Lock my offer", url: link }],
     offer: { quote: r.offer, deviceName: s.device_name || "your device", hot: r.offer >= HOT_LEAD_OFFER },
   };
 }

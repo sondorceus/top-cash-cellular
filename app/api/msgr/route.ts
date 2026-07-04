@@ -30,6 +30,9 @@ function renderManyChat(reply: BotReply, self: string, secret: string) {
   // reliably forward per-quick-reply `headers` on dynamic_block_callback taps,
   // so the header alone can 401 the callback and dead-end the conversation.
   const cb = `${self}?s=${encodeURIComponent(secret)}`;
+  // Messenger caps quick-reply/button titles at 20 chars; over-length titles
+  // make the whole message fail to render. Clip defensively.
+  const clip = (s: string) => (Array.from(s).length > 20 ? Array.from(s).slice(0, 20).join("") : s);
   const messages: Record<string, unknown>[] = reply.texts.map((t, i) => {
     const isLast = i === reply.texts.length - 1;
     if (isLast && reply.urlButtons?.length) {
@@ -38,7 +41,7 @@ function renderManyChat(reply: BotReply, self: string, secret: string) {
         text: t,
         buttons: reply.urlButtons.map((b) => ({
           type: "url",
-          caption: b.caption,
+          caption: clip(b.caption),
           url: b.url,
           webview_size: "full",
         })),
@@ -52,7 +55,7 @@ function renderManyChat(reply: BotReply, self: string, secret: string) {
   if (reply.quickReplies.length) {
     content.quick_replies = reply.quickReplies.map((qr) => ({
       type: "dynamic_block_callback",
-      caption: qr.caption,
+      caption: clip(qr.caption),
       url: cb,
       method: "post",
       headers: { "X-Bot-Secret": secret },
