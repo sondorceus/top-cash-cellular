@@ -13,6 +13,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { advance, seedState, type BotReply, type ConvoState } from "../../lib/msgr-brain";
+import { notifyOwnerSms } from "../../lib/owner-sms";
 
 export const dynamic = "force-dynamic";
 
@@ -96,17 +97,29 @@ function renderManyChat(reply: BotReply, self: string, secret: string) {
   return NextResponse.json({ version: "v2", content });
 }
 
-// Fire-and-forget lead alert on a hot offer ($300+) or human handoff. POSTs to
-// MSGR_NOTIFY_URL (unset → no-op, safe). Lets a human catch a hot lead without
-// staring at the ManyChat inbox. `at` stamped so late alerts are obvious.
-function notifyLead(kind: string, reply: BotReply) {
+// Text the owner the moment the bot closes a deal (presents a quote) or hits a
+// handoff, so no lead sits unseen in the ManyChat inbox. Best-effort; awaited so
+// serverless doesn't cut the SMS off, but notifyOwnerSms never throws. Also fires
+// the optional MSGR_NOTIFY_URL webhook (MC etc.) when configured.
+async function notifyLead(reply: BotReply, state: ConvoState) {
+  let sms = "";
+  if (reply.offer) {
+    const tag = reply.offer.hot ? "🔥 HOT lead" : "💰 New lead";
+    const specs = [state.storage, state.condition, state._carrier].filter(Boolean).join(", ");
+    sms = `${tag} — TCC bot: ${reply.offer.deviceName}${specs ? ` (${specs})` : ""} → offered $${reply.offer.quote}. Close it in ManyChat 👉`;
+  } else if (reply.handoff) {
+    sms = `🙋 TCC bot needs you: ${reply.handoff.reason}${reply.handoff.bulk ? " — bulk lot" : ""}. Reply in ManyChat.`;
+  }
+  if (!sms) return;
+  await notifyOwnerSms(sms);
   const url = process.env.MSGR_NOTIFY_URL;
-  if (!url) return;
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ src: "manychat", kind, handoff: reply.handoff, offer: reply.offer, at: new Date().toISOString() }),
-  }).catch(() => {});
+  if (url) {
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ src: "manychat", handoff: reply.handoff, offer: reply.offer, at: new Date().toISOString() }),
+    }).catch(() => {});
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -126,9 +139,8 @@ export async function POST(req: NextRequest) {
   const state: ConvoState = body.state || seeded || { step: "start" };
 
   const reply = await advance(state, req.nextUrl.origin);
-  // Alert a human on the money moments: hot quote or handoff (bulk/MacBook/human).
-  if (reply.handoff) notifyLead(reply.handoff.bulk ? "bulk_lead" : "needs_human", reply);
-  else if (reply.offer?.hot) notifyLead("hot_lead", reply);
+  // Text the owner on the money moments: any quote (deal) or any handoff.
+  if (reply.offer || reply.handoff) await notifyLead(reply, state);
   // Typed instead of tapped? Nudge to tap rather than re-asking the whole
   // question (which read as an annoying loop).
   if (body.retext && reply.quickReplies.length) {
