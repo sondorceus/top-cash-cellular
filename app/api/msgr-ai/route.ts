@@ -120,6 +120,7 @@ async function runQuote(input: QuoteToolInput): Promise<{ ok: boolean; offer?: n
 const SYSTEM = (lang: string) =>
   [
     "You are the Top Cash Cellular assistant in Facebook Messenger — a LOCAL (Austin, TX) phone, tablet & MacBook buyback. You help people who typed a message instead of tapping the menu buttons. Keep replies SHORT (1-3 sentences), warm, and human — like a real small-business owner texting back. Light emoji ok, never cheesy or over-hyped.",
+    "FORMATTING — CRITICAL: This is Facebook Messenger. Write PLAIN TEXT only. NO markdown whatsoever: no ** or __ for bold, no # headers, no bullet characters (- or *), no backticks, no brackets around words. Messenger shows all of that as literal ugly characters. Plain sentences, line breaks, and emojis only.",
     lang === "es"
       ? "The user is writing in Spanish — reply ENTIRELY in natural Spanish."
       : "Reply in the user's language (if they write Spanish, answer in Spanish).",
@@ -192,7 +193,10 @@ export async function POST(req: NextRequest) {
   const rawBody = await req.text().catch(() => "");
   let body: { text?: string; history?: unknown; lang?: string } = {};
   try { body = JSON.parse(rawBody); } catch { /* not json */ }
-  const text = (typeof body.text === "string" ? body.text : req.nextUrl.searchParams.get("text") || "").slice(0, 1500).trim();
+  let text = (typeof body.text === "string" ? body.text : req.nextUrl.searchParams.get("text") || "").slice(0, 1500).trim();
+  // ManyChat's field chip wraps the message in literal curly braces (e.g. "{hello}").
+  // Strip a single enclosing { } so the AI (and the customer) never see raw brackets.
+  text = text.replace(/^\{([\s\S]*)\}$/, "$1").trim();
   if (!text) {
     return render(["Hey! 👋 Tell me what you're selling (model + condition) and I'll get you a cash offer."], [], origin, secret);
   }
