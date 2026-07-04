@@ -294,6 +294,24 @@ export async function POST(req: NextRequest) {
   return render([replyText], quickReplies, origin, secret);
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  // TEMP DEBUG: ?peek=1 reads the MC hit-log server-side (where MC_API_KEY works) so we can
+  // see exactly which messages reached the AI, from anywhere. Remove after diagnosis.
+  if (req.nextUrl.searchParams.get("peek")) {
+    try {
+      const r = await fetch("https://missioncontrolsdjg-production.up.railway.app/api/comms?limit=60", {
+        headers: { "x-api-key": process.env.MC_API_KEY || "" },
+        cache: "no-store",
+      });
+      const d = (await r.json()) as { messages?: { body?: string; timestamp?: string }[] };
+      const hits = (d.messages || [])
+        .filter((m) => (m.body || "").includes("MSGR-AI HIT"))
+        .slice(0, 15)
+        .map((m) => ({ at: m.timestamp, body: m.body }));
+      return NextResponse.json({ hitCount: hits.length, hits });
+    } catch (e) {
+      return NextResponse.json({ error: String(e) });
+    }
+  }
   return NextResponse.json({ ok: true, service: "tcc-msgr-ai", configured: !!process.env.MSGR_BOT_SECRET && !!process.env.ANTHROPIC_API_KEY });
 }
