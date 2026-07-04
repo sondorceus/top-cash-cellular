@@ -63,19 +63,12 @@ function renderManyChat(reply: BotReply, self: string, secret: string) {
     }));
   }
 
-  const actions: unknown[] = [];
-  if (reply.handoff) {
-    actions.push({ action: "set_field_value", field_name: "manual", value: true });
-    actions.push({ action: "set_field_value", field_name: "manual_reason", value: reply.handoff.reason });
-    if (reply.handoff.bulk) actions.push({ action: "add_tag", tag_name: "bulk_lead" });
-    actions.push({ action: "add_tag", tag_name: "needs_human" });
-  }
-  if (reply.offer) {
-    actions.push({ action: "set_field_value", field_name: "quote", value: reply.offer.quote });
-    actions.push({ action: "set_field_value", field_name: "device_name", value: reply.offer.deviceName });
-    if (reply.offer.hot) actions.push({ action: "add_tag", tag_name: "hot_lead" });
-  }
-  if (actions.length) content.actions = actions;
+  // ACTIONS DISABLED: `set_field_value` on custom fields that don't exist in
+  // the ManyChat account errors the whole message, so the offer step (the only
+  // one with actions) rendered nothing and the funnel dead-ended at carrier.
+  // Re-enable once the fields (quote, device_name, manual, manual_reason) + tags
+  // are created in ManyChat (via API). Lead-tagging is a nice-to-have; a
+  // working quote is not. reply.handoff / reply.offer still drive the copy.
 
   // NOTE: intentionally NO external_message_callback. It fired on quick-reply
   // taps in ManyChat (treating a tap as a "message"), which looped the funnel
