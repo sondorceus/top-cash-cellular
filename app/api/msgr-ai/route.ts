@@ -182,22 +182,16 @@ function render(texts: string[], quickReplies: { caption: string; state: ConvoSt
 
 type AnyBlock = { type: string; text?: string; id?: string; name?: string; input?: unknown };
 
-// TEMP DEBUG: capture the last inbound request so we can see EXACTLY what ManyChat
-// sends (is it even reaching us? is the text in query or body? encoded?). Read via
-// GET ?peek=1. Remove once the ManyChat wiring is verified.
-let lastReq: unknown = null;
-
 export async function POST(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const secret = process.env.MSGR_BOT_SECRET as string;
   const origin = req.nextUrl.origin;
 
+  // ManyChat's Default Reply dynamic block passes the typed message as a JSON body
+  // ({"text":"{{Last Text Input}}"}); read it raw (spaces would break a URL query).
   const rawBody = await req.text().catch(() => "");
   let body: { text?: string; history?: unknown; lang?: string } = {};
   try { body = JSON.parse(rawBody); } catch { /* not json */ }
-  const q = Object.fromEntries(req.nextUrl.searchParams.entries());
-  if (q.s) q.s = "***";
-  lastReq = { at: new Date().toISOString(), query: q, ct: req.headers.get("content-type"), rawBody: rawBody.slice(0, 600) };
   const text = (typeof body.text === "string" ? body.text : req.nextUrl.searchParams.get("text") || "").slice(0, 1500).trim();
   if (!text) {
     return render(["Hey! 👋 Tell me what you're selling (model + condition) and I'll get you a cash offer."], [], origin, secret);
@@ -287,7 +281,6 @@ export async function POST(req: NextRequest) {
   return render([replyText], quickReplies, origin, secret);
 }
 
-export async function GET(req: NextRequest) {
-  if (req.nextUrl.searchParams.get("peek")) return NextResponse.json({ lastReq });
+export async function GET() {
   return NextResponse.json({ ok: true, service: "tcc-msgr-ai", configured: !!process.env.MSGR_BOT_SECRET && !!process.env.ANTHROPIC_API_KEY });
 }
