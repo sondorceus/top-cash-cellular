@@ -147,7 +147,10 @@ function askStorage(s: ConvoState): BotReply {
 
 function askCondition(s: ConvoState): BotReply {
   return {
-    texts: ["What kind of shape is it in?"],
+    texts: [
+      "What kind of shape is it in? 📱",
+      "✨ Like new — no scratches, works perfectly\n👍 Good — light wear, fully working\n🩹 Fair — visible scratches/wear, still works\n💔 Broken — cracked or not working right",
+    ],
     quickReplies: CONDITIONS.map((c) => ({
       caption: c.caption,
       state: { ...s, step: "carrier" as const, condition: c.value },
