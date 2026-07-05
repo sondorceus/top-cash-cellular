@@ -92,6 +92,18 @@ VID_MAP = {
     "sgw8c":  ("samsung-watch/samsung-galaxy-watch-8-classic", None, None),
     "sgw8":   ("samsung-watch/samsung-galaxy-watch-8", None, None),
     "sgw7":   ("samsung-watch/samsung-galaxy-watch-7", None, None),
+    # Dell G15/G16 — images unbridged (shared dell-xps.webp rows), so the
+    # laptop apply never priced them; sat at $0 while IWM pays $500+.
+    "d_g15_5510": ("dell-g-series/dell-g-series-g15", r"^5510$", None),
+    "d_g15_5511": ("dell-g-series/dell-g-series-g15", r"^5511$", None),
+    "d_g15_5515": ("dell-g-series/dell-g-series-g15", r"^5515$", None),
+    "d_g15_5520": ("dell-g-series/dell-g-series-g15", r"^5520$", None),
+    "d_g15_5521": ("dell-g-series/dell-g-series-g15", r"^5521$", None),
+    "d_g15_5525": ("dell-g-series/dell-g-series-g15", r"^5525$", None),
+    "d_g15_5530": ("dell-g-series/dell-g-series-g15", r"^5530$", None),
+    "d_g15_5535": ("dell-g-series/dell-g-series-g15", r"^5535$", None),
+    "d_g16_7620": ("dell-g-series/dell-g-series-g16", r"^7620$", None),
+    "d_g16_7630": ("dell-g-series/dell-g-series-g16", r"^7630$", None),
 }
 
 FLAWLESS_LABELS = ("flawless", "excellent")

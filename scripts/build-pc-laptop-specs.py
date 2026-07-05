@@ -342,6 +342,11 @@ MANUAL_ID_TO_SUBMODEL = {
     "ln_tp_z13_g2": "z13-gen-2",
     "ln_tp_z16_g1": "z16-gen-1",
     "ln_tp_z16_g2": "z16-gen-2",
+    # Dell G15/G16 exact submodels (paired with MANUAL_ID_TO_DESKTOP_SLUG)
+    "d_g15_5510": "5510", "d_g15_5511": "5511", "d_g15_5515": "5515",
+    "d_g15_5520": "5520", "d_g15_5521": "5521", "d_g15_5525": "5525",
+    "d_g15_5530": "5530", "d_g15_5535": "5535",
+    "d_g16_7620": "7620", "d_g16_7630": "7630",
 }
 
 # Page variants whose IWM URL slug needs a manual hint (not derivable
@@ -370,6 +375,15 @@ MANUAL_ID_TO_DESKTOP_SLUG = {
     "lnthinkm90q": "lenovo-thinkcentre-tiny-desktop",
     "lnlegion5dtwr": "lenovo-legion-tower-5i",
     "lnlegion7dtwr": "lenovo-legion-tower-7i",
+    # Dell G15/G16 — page images are per-model PNGs the dell bridge never
+    # covered (bridge rows share dell-xps.webp), so these sat at $0
+    # inquiry-only while IWM pays $500+. Route via the umbrella model
+    # slug; MANUAL_ID_TO_SUBMODEL below pins the exact submodel.
+    "d_g15_5510": "dell-g-series-g15", "d_g15_5511": "dell-g-series-g15",
+    "d_g15_5515": "dell-g-series-g15", "d_g15_5520": "dell-g-series-g15",
+    "d_g15_5521": "dell-g-series-g15", "d_g15_5525": "dell-g-series-g15",
+    "d_g15_5530": "dell-g-series-g15", "d_g15_5535": "dell-g-series-g15",
+    "d_g16_7620": "dell-g-series-g16", "d_g16_7630": "dell-g-series-g16",
 }
 
 

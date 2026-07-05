@@ -10443,6 +10443,1478 @@
       }
     ]
   },
+  "d_g15_5510": {
+    "base_price": 250,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -40,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -75,
+      "good": -35,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_gtx_1650",
+        "label": "NVIDIA GeForce GTX 1650",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 250,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 350,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 410,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "d_g15_5511": {
+    "base_price": 325,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -40,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -120,
+      "good": -50,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 325,
+        "id": "intel_core_i5_11th_gen",
+        "label": "Intel Core i5 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 350,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 410,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 370,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "d_g15_5515": {
+    "base_price": 230,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -40,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -100,
+      "good": -50,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 230,
+        "id": "amd_ryzen_5_5600h",
+        "label": "AMD Ryzen 5 5600H",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 350,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 410,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 270,
+        "id": "amd_ryzen_7_5800h",
+        "label": "AMD Ryzen 7 5800H",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "d_g15_5520": {
+    "base_price": 350,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -40,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -110,
+      "good": -55,
+      "mint": 0,
+      "sealed": 25
+    },
+    "display": [],
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 350,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 410,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "d_g15_5521": {
+    "base_price": 350,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -40,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -130,
+      "good": -55,
+      "mint": 0,
+      "sealed": 25
+    },
+    "display": [],
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 350,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 350,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 400,
+        "id": "intel_core_i9_12th_gen",
+        "label": "Intel Core i9 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "d_g15_5525": {
+    "base_price": 325,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -40,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -130,
+      "good": -65,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [
+      {
+        "adj": -30,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 325,
+        "id": "amd_ryzen_5_6600h",
+        "label": "AMD Ryzen 5 6600H",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 350,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 410,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 375,
+        "id": "amd_ryzen_7_6800h",
+        "label": "AMD Ryzen 7 6800H",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 415,
+        "id": "amd_ryzen_9_6900hx",
+        "label": "AMD Ryzen 9 6900HX",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "d_g15_5530": {
+    "base_price": 440,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -40,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -150,
+      "good": -75,
+      "mint": 0,
+      "sealed": 25
+    },
+    "display": [],
+    "graphics": [
+      {
+        "adj": -75,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 440,
+        "id": "intel_core_i5_13th_gen",
+        "label": "Intel Core i5 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 350,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 410,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 535,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 55,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 90,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 35,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "d_g15_5535": {
+    "base_price": 420,
+    "battery_adj": {
+      "good": 0,
+      "poor": -75
+    },
+    "charger_adj": {
+      "no": -40,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -130,
+      "good": -65,
+      "mint": 0,
+      "sealed": 25
+    },
+    "display": [],
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 420,
+        "id": "amd_ryzen_5_7640hs",
+        "label": "AMD Ryzen 5 7640HS",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 350,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 410,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 455,
+        "id": "amd_ryzen_7_7840hs",
+        "label": "AMD Ryzen 7 7840HS",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 0,
+        "id": "128",
+        "label": "128GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "d_g16_7620": {
+    "base_price": 425,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -40,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -160,
+      "good": -80,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -40
+    },
+    "display": [],
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_3050_ti",
+        "label": "NVIDIA GeForce RTX 3050 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 120,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 425,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 475,
+        "id": "intel_core_i9_12th_gen",
+        "label": "Intel Core i9 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
+  "d_g16_7630": {
+    "base_price": 590,
+    "battery_adj": {
+      "good": 0,
+      "poor": -100
+    },
+    "charger_adj": {
+      "no": -40,
+      "yes": 0
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -230,
+      "good": -110,
+      "mint": 0,
+      "sealed": 30,
+      "verygood": -50
+    },
+    "display": [],
+    "graphics": [
+      {
+        "adj": 0,
+        "id": "nvidia_geforce_rtx_4050",
+        "label": "NVIDIA GeForce RTX 4050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "hasNanoGlass": false,
+    "memory": [
+      {
+        "adj": 0,
+        "id": "r16",
+        "label": "16GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "r32",
+        "label": "32GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "r64",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "processors": [
+      {
+        "adj": 590,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 670,
+        "id": "intel_core_i9_13th_gen",
+        "label": "Intel Core i9 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ],
+    "storage": [
+      {
+        "adj": 40,
+        "id": "1tb",
+        "label": "1TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "2tb",
+        "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      }
+    ]
+  },
   "d_g3_3500": {
     "base_price": 190,
     "battery_adj": {

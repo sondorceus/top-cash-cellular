@@ -1419,18 +1419,18 @@ const DELL_G7_VARIANTS = [
   { id: "d_g7_7500", label: "G7 7500", base: 477, inquiryOnly: false, image: "/devices/dell-g_series-g7-7500.png" },
 ];
 const DELL_G15_VARIANTS = [
-  { id: "d_g15_5535", label: "G15 5535", base: 0, inquiryOnly: true, image: "/devices/d_g15_5535.png" },
-  { id: "d_g15_5530", label: "G15 5530", base: 0, inquiryOnly: true, image: "/devices/d_g15_5530.png" },
-  { id: "d_g15_5525", label: "G15 5525", base: 0, inquiryOnly: true, image: "/devices/d_g15_5525.png" },
-  { id: "d_g15_5521", label: "G15 5521", base: 0, inquiryOnly: true, image: "/devices/d_g15_5521.png" },
-  { id: "d_g15_5520", label: "G15 5520", base: 0, inquiryOnly: true, image: "/devices/d_g15_5520.png" },
-  { id: "d_g15_5515", label: "G15 5515", base: 0, inquiryOnly: true, image: "/devices/d_g15_5515.png" },
-  { id: "d_g15_5511", label: "G15 5511", base: 0, inquiryOnly: true, image: "/devices/d_g15_5511.png" },
-  { id: "d_g15_5510", label: "G15 5510", base: 0, inquiryOnly: true, image: "/devices/d_g15_5510.png" },
+  { id: "d_g15_5535", label: "G15 5535", base: 567, inquiryOnly: false, image: "/devices/d_g15_5535.png" },
+  { id: "d_g15_5530", label: "G15 5530", base: 662, inquiryOnly: false, image: "/devices/d_g15_5530.png" },
+  { id: "d_g15_5525", label: "G15 5525", base: 513, inquiryOnly: false, image: "/devices/d_g15_5525.png" },
+  { id: "d_g15_5521", label: "G15 5521", base: 522, inquiryOnly: false, image: "/devices/d_g15_5521.png" },
+  { id: "d_g15_5520", label: "G15 5520", base: 608, inquiryOnly: false, image: "/devices/d_g15_5520.png" },
+  { id: "d_g15_5515", label: "G15 5515", base: 396, inquiryOnly: false, image: "/devices/d_g15_5515.png" },
+  { id: "d_g15_5511", label: "G15 5511", base: 495, inquiryOnly: false, image: "/devices/d_g15_5511.png" },
+  { id: "d_g15_5510", label: "G15 5510", base: 441, inquiryOnly: false, image: "/devices/d_g15_5510.png" },
 ];
 const DELL_G16_VARIANTS = [
-  { id: "d_g16_7630", label: "G16 7630", base: 0, inquiryOnly: true, image: "/devices/d_g16_7630.png" },
-  { id: "d_g16_7620", label: "G16 7620", base: 0, inquiryOnly: true, image: "/devices/d_g16_7620.png" },
+  { id: "d_g16_7630", label: "G16 7630", base: 882, inquiryOnly: false, image: "/devices/d_g16_7630.png" },
+  { id: "d_g16_7620", label: "G16 7620", base: 662, inquiryOnly: false, image: "/devices/d_g16_7620.png" },
 ];
 const DELL_PRO_13_VARIANTS = [
   { id: "d_pro_13_premium_pa13250", label: "Dell Pro 13 Premium PA13250", base: 630, inquiryOnly: false, image: "/devices/d_pro_13_premium_pa13250.png" },
@@ -1500,8 +1500,8 @@ const DELL_G_SUB_SERIES = [
   { id: "dell_g3", label: "G3", year: "Entry gaming", topPrice: 338, variants: DELL_G3_VARIANTS, image: "/devices/dell-xps.webp" },
   { id: "dell_g5", label: "G5", year: "Mid gaming", topPrice: 378, variants: DELL_G5_VARIANTS, image: "/devices/dell-xps.webp" },
   { id: "dell_g7", label: "G7", year: "Performance gaming", topPrice: 477, variants: DELL_G7_VARIANTS, image: "/devices/dell-xps.webp" },
-  { id: "dell_g15", label: "G15", year: "15-inch gaming", topPrice: 0, variants: DELL_G15_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
-  { id: "dell_g16", label: "G16", year: "16-inch gaming", topPrice: 0, variants: DELL_G16_VARIANTS, inquiryOnly: true, image: "/devices/dell-xps.webp" },
+  { id: "dell_g15", label: "G15", year: "15-inch gaming", topPrice: 662, variants: DELL_G15_VARIANTS, image: "/devices/dell-xps.webp" },
+  { id: "dell_g16", label: "G16", year: "16-inch gaming", topPrice: 882, variants: DELL_G16_VARIANTS, image: "/devices/dell-xps.webp" },
 ];
 const DELL_PRO_SUB_SERIES = [
   { id: "dell_pro_13", label: "Dell Pro 13", year: "13-inch", topPrice: 630, variants: DELL_PRO_13_VARIANTS, image: "/devices/dell-xps.webp" },
@@ -1517,7 +1517,7 @@ const DELL_PC_SERIES = [
   { id: "dell_inspiron", label: "Inspiron", year: "Everyday", topPrice: 608, subSeries: DELL_INSPIRON_SUB_SERIES, image: "/devices/dell-inspiron-15.webp" },
   { id: "dell_precision", label: "Precision", year: "Mobile workstation", topPrice: 1166, subSeries: DELL_PRECISION_SUB_SERIES, image: "/devices/dell-latitude.jpg" },
   { id: "dell_vostro", label: "Vostro", year: "Small-business", topPrice: 706, subSeries: DELL_VOSTRO_SUB_SERIES, image: "/devices/dell-inspiron-15.webp" },
-  { id: "dell_g", label: "G Series", year: "Gaming", topPrice: 477, subSeries: DELL_G_SUB_SERIES, image: "/devices/dell-xps.webp" },
+  { id: "dell_g", label: "G Series", year: "Gaming", topPrice: 882, subSeries: DELL_G_SUB_SERIES, image: "/devices/dell-xps.webp" },
   { id: "dell_pro", label: "Dell Pro", year: "AI-class business", topPrice: 1665, subSeries: DELL_PRO_SUB_SERIES, image: "/devices/dell-xps.webp" },
   { id: "dell_rugged", label: "Rugged", year: "Field/military", topPrice: 0, subSeries: DELL_RUGGED_SUB_SERIES, inquiryOnly: true, image: "/devices/dell-latitude.jpg" },
 ];
